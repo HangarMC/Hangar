@@ -24,6 +24,7 @@ public class ProjectsConfig {
     private int maxPageNameLen = 25;
     private int maxPages = 50;
     private int maxChannels = 5;
+    private int maxBBCodeLen = 30_000;
     private int initLoad = 25;
     private int initVersionLoad = 10;
     private int maxDescLen = 120;
@@ -113,6 +114,14 @@ public class ProjectsConfig {
 
     public void setMaxChannels(int maxChannels) {
         this.maxChannels = maxChannels;
+    }
+
+    public void setMaxBBCodeLen(int maxBBCodeLen) {
+        this.maxBBCodeLen = maxBBCodeLen;
+    }
+
+    public int getMaxBBCodeLen() {
+        return maxBBCodeLen;
     }
 
     public int getInitLoad() {

@@ -48,7 +48,7 @@ public class ProjectPageService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.minLength");
         }
 
-        if (contents.length() >  config.pages.getMaxLen()) {
+        if (contents.length() > config.pages.getMaxLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
 
@@ -134,6 +134,10 @@ public class ProjectPageService extends HangarComponent {
 
     @Transactional
     public void saveProjectPage(long projectId, long pageId, String newContents) {
+        if (newContents.length() > config.pages.getMaxLen()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
+        }
+
         ProjectPageTable pageTable = projectPagesDAO.getProjectPage(projectId, pageId);
         if (pageTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "No page found");

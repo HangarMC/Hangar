@@ -13,6 +13,7 @@ public class NewProjectForm extends ProjectSettingsForm {
     @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxNameLen)", message = "project.new.error.tooLongName")
     @Validate(SpEL = "@validate.regex(#root, @hangarConfig.projects.nameRegex)", message = "project.new.error.invalidName")
     private final String name;
+    @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxLen)", message = "page.new.error.maxLength")
     private final String pageContent;
 
     public NewProjectForm(ProjectSettings settings, Category category, String description, long ownerId, String name, String pageContent) {

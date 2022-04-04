@@ -51,6 +51,9 @@ public class ProjectPageController extends HangarComponent {
     @Anyone
     @PostMapping(path = "/render", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> renderMarkdown(@RequestBody @Valid StringContent content) {
+        if (content.getContent().length() > 1_000_000) { //TODO
+            throw new HangarApiException("page.new.error.name.maxLength");
+        }
         return ResponseEntity.ok(markdownService.render(content.getContent()));
     }
 
@@ -58,6 +61,9 @@ public class ProjectPageController extends HangarComponent {
     @ResponseBody
     @PostMapping(path = "/convert-bbcode", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     public String convertBBCode(@RequestBody @Valid StringContent bbCodeContent) {
+        if (bbCodeContent.getContent().length() > config.projects.getMaxBBCodeLen()) {
+            throw new HangarApiException("page.new.error.name.maxLength");
+        }
         BBCodeConverter bbCodeConverter = new BBCodeConverter();
         return bbCodeConverter.convertToMarkdown(bbCodeContent.getContent());
     }

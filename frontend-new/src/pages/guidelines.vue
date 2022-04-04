@@ -9,7 +9,7 @@ import Markdown from "~/components/Markdown.vue";
 const i18n = useI18n();
 const route = useRoute();
 
-// TODO Discuss and write proper guideliness, move to docs site, remove table
+// TODO Discuss and write proper guideliness, move to docs site
 const text = `
 Remember that these are just guidelines and that the Hangar team may choose to allow or disallow an action that is not
 explicitly listed here at our own discretion.
@@ -57,6 +57,12 @@ On the resource page, you may link to the following:
 * Donation links - you can also go to your project's donation settings to display them more prominently
 * Paid subscription services (such as Patreon) to receive early previews of upcoming, free releases
 
+### Sponsors
+
+In project settings, you are given a text area to write sponsors into. Listed sponsors may only be donators (for example
+one-time donators or Patreon subscribers) or OSS license sponsors (for example when being provided IntelliJ, YourKit, or
+JProfiler license keys). Use this field in moderation and keep it secondary to your project's documentation. Only
+information about sponsors may be put into the sponsors field.
 
 ## Obfuscation
 To circumvent license issues and the effort involved in reviewing obfuscated code, we do not allow submitted plugins to be obfuscated in any capacity.

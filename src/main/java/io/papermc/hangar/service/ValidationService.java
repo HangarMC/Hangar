@@ -13,7 +13,7 @@ public class ValidationService {
 
     private final HangarConfig config;
 
-    private static final Set<String> bannedRoutes = Set.of("api", "authors", "linkout", "logged-out", "new", "notifications", "staff", "admin", "organizations", "tools", "recommended", "null", "undefined");
+    private static final Set<String> bannedRoutes = Set.of("api", "authors", "linkout", "logged-out", "new", "notifications", "staff", "admin", "organizations", "tools", "recommended", "null", "undefined", "tos");
 
     public ValidationService(HangarConfig config) {
         this.config = config;

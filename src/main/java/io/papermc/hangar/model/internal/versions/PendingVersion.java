@@ -31,6 +31,7 @@ public class PendingVersion {
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
     private final Map<Platform, @Size(min = 1, message = "version.edit.error.noPlatformVersions") SortedSet<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
     @NotBlank(message = "version.new.error.noDescription")
+    @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxLen)", message = "page.new.error.maxLength")
     private final String description;
     private final FileInfo fileInfo;
     @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")

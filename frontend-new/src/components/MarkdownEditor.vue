@@ -5,13 +5,19 @@ import Markdown from "~/components/Markdown.vue";
 import Button from "~/components/design/Button.vue";
 import DeletePageModal from "~/components/modals/DeletePageModal.vue";
 
-const props = defineProps<{
-  raw: string;
-  editing: boolean;
-  deletable: boolean;
-  cancellable: boolean;
-  saveable: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    raw: string;
+    editing: boolean;
+    deletable: boolean;
+    cancellable: boolean;
+    saveable: boolean;
+    maxlength?: number;
+  }>(),
+  {
+    maxlength: 30_000,
+  }
+);
 
 const emit = defineEmits<{
   (e: "save", edited: string): void;
@@ -56,7 +62,7 @@ function deletePage() {
 <template>
   <div class="relative">
     <div v-show="internalEditing && !preview" class="pl-10">
-      <InputTextarea v-model="rawEdited" :rows="rawEdited.split(/\r\n|\r|\n/g).length + 3"></InputTextarea>
+      <InputTextarea v-model="rawEdited" :rows="rawEdited.split(/\r\n|\r|\n/g).length + 3" :maxlength="maxlength" counter></InputTextarea>
     </div>
     <Markdown v-show="!internalEditing" :raw="raw" class="pl-5" />
     <Markdown v-if="preview" :raw="rawEdited" class="pl-5" />
