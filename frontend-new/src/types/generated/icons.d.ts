@@ -19,6 +19,7 @@ declare module "vue" {
     IconMdiCloseCircle: typeof import("~icons/mdi/close-circle")["default"];
     IconMdiCloudSearch: typeof import("~icons/mdi/cloud-search")["default"];
     IconMdiContentSave: typeof import("~icons/mdi/content-save")["default"];
+    IconMdiCurrencyUsd: typeof import("~icons/mdi/currency-usd")["default"];
     IconMdiDelete: typeof import("~icons/mdi/delete")["default"];
     IconMdiDiamondStone: typeof import("~icons/mdi/diamond-stone")["default"];
     IconMdiDownload: typeof import("~icons/mdi/download")["default"];

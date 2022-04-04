@@ -54,7 +54,7 @@ const prettyDiff = computed(() => {
       <!-- eslint-disable-next-line vue/no-v-html -->
       <div v-html="prettyDiff"></div>
 
-      <Button type="gray" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
+      <Button button-type="gray" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
     </template>
     <template #activator="{ on }">
       <slot name="activator" :on="on"></slot>

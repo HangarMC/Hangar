@@ -48,9 +48,9 @@ export default viteSSR(App, options, async (ctx) => {
     pinia.state.value = initialState.pinia;
   }
 
-  settingsLog("Load locale " + pinia.state.value.settings.locale);
+  settingsLog("Load locale " + pinia.state.value.settings?.locale || "en");
   // Load default language async to avoid bundling all languages
-  await installI18n(app, pinia.state.value.settings.locale);
+  await installI18n(app, pinia.state.value.settings?.locale || "en");
 
   // really don't need to do stuff for such meta routes
   if (!initialRoute.fullPath.startsWith("/@vite")) {

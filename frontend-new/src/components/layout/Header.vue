@@ -26,6 +26,7 @@ import { authLog } from "~/composables/useLog";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import UserAvatar from "~/components/UserAvatar.vue";
+import DonationResult from "~/components/donation/DonationResult.vue";
 
 const settings = useSettingsStore();
 const { t } = useI18n();
@@ -67,6 +68,7 @@ authLog("render with user " + authStore.user?.name);
     <div v-if="backendData.announcements">
       <Announcement v-for="(announcement, idx) in backendData.announcements" :key="idx" :announcement="announcement" />
     </div>
+    <DonationResult />
 
     <nav class="container mx-auto flex justify-between px-4 py-2">
       <!-- Left side items -->

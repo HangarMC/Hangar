@@ -8,12 +8,12 @@ const props = withDefaults(
   defineProps<{
     disabled?: boolean;
     size?: "small" | "medium" | "large";
-    type?: "primary" | "gray" | "red";
+    buttonType?: "primary" | "gray" | "red";
   }>(),
   {
     disabled: false,
     size: "small",
-    type: "primary",
+    buttonType: "primary",
   }
 );
 const paddingClass = computed(() => {
@@ -34,7 +34,7 @@ const paddingClass = computed(() => {
 
 <template>
   <button
-    :class="'rounded-md text-white font-semibold h-min inline-flex items-center ' + paddingClass + ' button-' + type"
+    :class="'rounded-md text-white font-semibold h-min inline-flex items-center ' + paddingClass + ' button-' + buttonType"
     :disabled="disabled"
     v-bind="$attrs"
     @click="$emit('click')"

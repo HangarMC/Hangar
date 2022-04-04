@@ -28,7 +28,6 @@ const imageUrl = computed(() => {
 const starred = ref(props.project.userActions.starred);
 const watching = ref(props.project.userActions.watching);
 
-// I TODO: use a permission check? idk which one to use
 const canStarOrWatch = computed(() => !user || user.name === props.project.namespace.owner);
 
 function toggleState(stateType: keyof UserActions, route: string, i18nName: string = route) {

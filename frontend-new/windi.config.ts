@@ -117,6 +117,7 @@ export default defineConfig({
     "color-primary": "text-primary-400 dark:text-primary-100",
     "border-top-primary": "border-solid border-t-4 border-t-primary-400",
     "button-primary": "bg-primary-400 disabled:(bg-primary-100 dark:(bg-primary-800 text-neutral-500) cursor-not-allowed) enabled:hover:bg-primary-300",
+    "button-submit": "bg-primary-400 disabled:(bg-primary-100 dark:(bg-primary-800 text-neutral-500) cursor-not-allowed) enabled:hover:bg-primary-300",
     "button-red":
       "bg-red-500 dark:bg-red-600 disabled:(bg-red-300 dark:(bg-red-900 text-neutral-400) cursor-not-allowed) enabled:hover:(bg-red-400 dark:bg-red-500)",
     "button-gray":

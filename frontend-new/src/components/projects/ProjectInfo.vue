@@ -9,12 +9,14 @@ import DropdownItem from "~/components/design/DropdownItem.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import { HangarProject } from "hangar-internal";
+import DonationModal from "~/components/donation/DonationModal.vue";
 
 const props = defineProps<{
   project: HangarProject;
 }>();
 const i18n = useI18n();
 const slug = computed(() => props.project.namespace.owner + "/" + props.project.name);
+const publicHost = import.meta.env.HANGAR_PUBLIC_HOST;
 </script>
 
 <template>
@@ -73,7 +75,16 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
           {{ i18n.t("project.actions.forum") }}
         </DropdownItem>
       </DropdownButton>
-      <!-- todo donation modal -->
+      <DonationModal
+        v-if="project.settings.donation.enable"
+        :donation-email="project.settings.donation.email"
+        :default-amount="project.settings.donation.defaultAmount"
+        :one-time-amounts="project.settings.donation.oneTimeAmounts"
+        :monthly-amounts="project.settings.donation.monthlyAmounts"
+        :donation-target="project.namespace.owner + '/' + project.name"
+        :return-url="publicHost + '/' + project.namespace.owner + '/' + project.name + '?donation=success'"
+        :cancel-return-url="publicHost + '/' + project.namespace.owner + '/' + project.name + '?donation=failure'"
+      />
     </template>
   </Card>
 </template>

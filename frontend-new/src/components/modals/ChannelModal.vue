@@ -143,8 +143,8 @@ reset();
       <InputText v-model="form.color" :label="i18n.t('channel.modal.color')" :error-messages="errorMessages.color" :loading="loading.color" readonly />
       <InputCheckbox v-model="form.nonReviewed" :label="i18n.t('channel.modal.reviewQueue')" />
 
-      <Button type="gray" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
-      <Button type="primary" class="mt-2 ml-2" :disabled="!isValid" @click="create(on.click)">{{
+      <Button button-type="gray" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
+      <Button button-type="primary" class="mt-2 ml-2" :disabled="!isValid" @click="create(on.click)">{{
         edit ? i18n.t("general.save") : i18n.t("general.create")
       }}</Button>
     </template>
