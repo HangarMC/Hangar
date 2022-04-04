@@ -14,7 +14,7 @@ const text = `
 The documentation of resources on hangar uses Markdown, which is a markup language that allows you to format text in a simple manner.
 
 ## Basic Syntax
-Hangar supports all basic formatting options provided by the basic Markdown language.  
+Hangar supports most of the basic formatting options provided by the Base-Markdown language.  
 A full guide on the basics of Markdown can be found here: https://www.markdownguide.org/basic-syntax
 
 ## Additional Syntaxes
