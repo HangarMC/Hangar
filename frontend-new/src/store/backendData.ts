@@ -6,6 +6,7 @@ import { NamedPermission, Platform, ProjectCategory, Prompt } from "~/types/enum
 
 import { Announcement as AnnouncementObject, Announcement, IPermission, Role } from "hangar-api";
 import { fetchIfNeeded, useInternalApi } from "~/composables/useApi";
+import { Color } from "hangar-internal";
 
 interface Validation {
   regex?: string;
@@ -41,10 +42,11 @@ export const useBackendDataStore = defineStore("backendData", () => {
   const visibilities = ref<IVisibility[]>([]);
   const licenses = ref<string[]>([]);
   const orgRoles = ref<Role[]>([]);
+  const channelColors = ref<Color[]>([]);
 
   async function initBackendData() {
     try {
-      // todo make these run concurrently to speed up stuff
+      // todo make these run concurrently to speed up stuff, also consider caching them in node server/globally, these are all always needed
       await fetchIfNeeded(async () => {
         const categoryResult = await useInternalApi<IProjectCategory[]>("data/categories", false);
         for (const c of categoryResult) {
@@ -82,6 +84,8 @@ export const useBackendDataStore = defineStore("backendData", () => {
       await fetchIfNeeded(async () => useInternalApi("data/validations", false), validations);
 
       await fetchIfNeeded(async () => useInternalApi("data/orgRoles", false), orgRoles);
+
+      await fetchIfNeeded(async () => useInternalApi("data/channelColors", false), channelColors);
     } catch (e) {
       console.error("ERROR FETCHING BACKEND DATA");
       console.error(e);
@@ -101,6 +105,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
     announcements,
     visibilities,
     orgRoles,
+    channelColors,
     initBackendData,
     visibleCategories,
     visiblePlatforms,

@@ -49,7 +49,6 @@ async function deleteChannel(channel: ProjectChannel) {
 }
 
 async function addChannel(channel: ProjectChannel) {
-  if (!channel.id) return;
   await useInternalApi(`channels/${props.project.id}/create`, true, "post", {
     name: channel.name,
     color: channel.color,

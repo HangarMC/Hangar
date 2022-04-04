@@ -9,6 +9,9 @@ declare module "vue" {
     IconMdiBellOutline: typeof import("~icons/mdi/bell-outline")["default"];
     IconMdiCalendar: typeof import("~icons/mdi/calendar")["default"];
     IconMdiCheck: typeof import("~icons/mdi/check")["default"];
+    IconMdiCheckboxBlankCircleOutline: typeof import("~icons/mdi/checkbox-blank-circle-outline")["default"];
+    IconMdiCheckboxMarkedCircle: typeof import("~icons/mdi/checkbox-marked-circle")["default"];
+    IconMdiCheckCircle: typeof import("~icons/mdi/check-circle")["default"];
     IconMdiCheckCircleOutline: typeof import("~icons/mdi/check-circle-outline")["default"];
     IconMdiChevronDoubleDown: typeof import("~icons/mdi/chevron-double-down")["default"];
     IconMdiClipboardOutline: typeof import("~icons/mdi/clipboard-outline")["default"];
@@ -22,6 +25,8 @@ declare module "vue" {
     IconMdiEye: typeof import("~icons/mdi/eye")["default"];
     IconMdiEyeOff: typeof import("~icons/mdi/eye-off")["default"];
     IconMdiFile: typeof import("~icons/mdi/file")["default"];
+    IconMdiFileFind: typeof import("~icons/mdi/file-find")["default"];
+    IconMdiFormatListNumbered: typeof import("~icons/mdi/format-list-numbered")["default"];
     IconMdiHome: typeof import("~icons/mdi/home")["default"];
     IconMdiKeyOutline: typeof import("~icons/mdi/key-outline")["default"];
     IconMdiLicense: typeof import("~icons/mdi/license")["default"];
@@ -40,6 +45,7 @@ declare module "vue" {
     IconMdiSortVariant: typeof import("~icons/mdi/sort-variant")["default"];
     IconMdiStar: typeof import("~icons/mdi/star")["default"];
     IconMdiStarOutline: typeof import("~icons/mdi/star-outline")["default"];
+    IconMdiTag: typeof import("~icons/mdi/tag")["default"];
     IconMdiUpload: typeof import("~icons/mdi/upload")["default"];
     IconMdiWeatherNight: typeof import("~icons/mdi/weather-night")["default"];
     IconMdiWhiteBalanceSunny: typeof import("~icons/mdi/white-balance-sunny")["default"];

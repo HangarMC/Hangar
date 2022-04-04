@@ -104,10 +104,10 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
   - [x] design
   - [ ] qa
   * index
-    - [ ] fetch
-    - [ ] layout
-    - [ ] functionality
-    - [ ] design
+    - [x] fetch
+    - [x] layout
+    - [x] functionality
+    - [x] design
     - [ ] qa
   * settings (empty)
     - api-keys
@@ -186,7 +186,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
         - [ ] qa
       - new
         - [ ] fetch
-        - [ ] layout
+        - [ ] layout (rough draft)
         - [ ] functionality
         - [ ] design
         - [ ] qa
@@ -199,8 +199,8 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
         * [platform] (empty)
           - index
             - [x] fetch
-            - [ ] layout
-            - [ ] functionality
+            - [x] layout
+            - [ ] functionality (misses deleting, admin actions and other buttons)
             - [ ] design
             - [ ] qa
           - reviews
