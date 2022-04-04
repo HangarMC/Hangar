@@ -12,32 +12,63 @@ const route = useRoute();
 // TODO Finish up and move to docs site
 const text = `
 The documentation of resources on hangar uses Markdown, which is a markup language that allows you to format text in a simple manner.
-You can learn how to use Markdown here: https://www.markdownguide.org/basic-syntax/
 
-The most basic formatting tools are:
-* ### Header: \`### Header\`, one # being the largest, five # being the smallest
-* **Bold text**: \`**Bold**\`
-* Italics text*: \`*Italics*\`
-* Add line breaks by adding two or more spaces at the end of a line
-* And more, like block quotes (\`> Text\`), lists (\`1. First item\`), unordered lists (\`* Item\`), and code blocks (\\\`Code\\\`)
-* Embedding an image: \`![Alt text](image link)\` ![Snowy](https://i.imgur.com/o1zcXsM.png =32x32)
+## Basic Syntax
+Hangar supports all basic formatting options provided by the basic Markdown language.  
+A full guide on the basics of Markdown can be found here: https://www.markdownguide.org/basic-syntax
 
-Additionally, Hangar provides the following features on top of basic Markdown syntax:
-* ~~Strikethrough text~~: \`~~This will be striked through~~\`
-* Links and e-mails are converted to clickable links automatically
-* Footnotes[^footnote]: \`text [^footnote]\`, and later \`[^footnote]: footnote text\`
-* Emojis \`:smile:\` :smile:
-* [Tables](https://github.com/vsch/flexmark-java/tree/master/flexmark-ext-tables/src/test/resources)
+## Additional Syntaxes
+The following features are provided on top of basic Markdown syntax:
 
-Resizing images: \`![Alt text](Image URL =8x8)\`, in this case to size an image 8x8 pixels
-![Snowy](https://i.imgur.com/o1zcXsM.png =8x8)
+### Strikethrough
+Use \`~~text~~\` to make the text appear with a horizontal line through it.
 
-Embedding YouTube videos: \`@[YouTube](https://youtu.be/video-id)\`
-* @[YouTube](https://youtu.be/AG8VFyW61e0?t=3)
+**Example:**  
+\`~~Strikethrough~~\`: ~~Strikethrough~~
 
-Task lists: \`* [ ] First task\`, \`* [x] Completed task\`
-* [ ] Unfinished task
-* [x] Finished task
+### URLs and E-Mails
+URLs and E-Mails will automatically be transformed into clickable links.
+
+**Example:**  
+\`https://papermc.io\`: https://papermc.io
+
+### Footnotes
+Use \`Text[^footnote]\` to create a footnote.  
+You also need to put \`[^footnote]: text\` somewhere in the document to make it work.
+
+**Example:**  
+\`Footnote[^footnote]\`: Footnote[^footnote]
+
+### Emojis
+You can use emojis by using the common Emoji-Syntax for it.
+
+**Example:**  
+\`:smile:\`: :smile:
+
+### Image resizing
+You can change the size of an image by appending \`=:widthx:height\` after the URL in an embedded image (Make sure to replace \`:width\` and \`:height\` with actual numbers).
+
+**Example:**
+\`![image](https://i.imgur.com/o1zcXsM.png =16x16)\`:  
+![image](https://i.imgur.com/o1zcXsM.png =16x16)
+
+### Task lists
+Use \`* [ ] Text\` for an unchecked and \`* [x] Text\` for a checked list entry.
+
+**Examples:**  
+\`* [ ] Unchecked Entry\`:
+* [ ] Unchecked Entry
+
+\`* [x] Checked Entry\`:
+* [x] Checked Entry
+
+### Videos
+You can embed YouTube videos by using a slight variation of the embedded image syntax.  
+Use \`@[text](https://youtu.be/:video-id)\` to embed a video (Replace \`:video-id\` with a valid ID).
+
+**Example:**  
+\`@[video](https://youtu.be/AG8VFyW61e0)\`:  
+@[video](https://youtu.be/AG8VFyW61e0)
 
 [^footnote]: May contain traces of soy
 `;
