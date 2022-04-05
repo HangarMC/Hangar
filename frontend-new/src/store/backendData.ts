@@ -6,6 +6,8 @@ import { NamedPermission, Platform, ProjectCategory, Prompt } from "~/types/enum
 
 import { Announcement as AnnouncementObject, Announcement, IPermission, Role } from "hangar-api";
 import { fetchIfNeeded, useInternalApi } from "~/composables/useApi";
+import { Option } from "~/components/ui/InputSelect.vue";
+import { useI18n } from "vue-i18n";
 
 interface Validation {
   regex?: string;
@@ -97,6 +99,11 @@ export const useBackendDataStore = defineStore("backendData", () => {
   const visibleCategories = computed(() => [...(projectCategories.value?.values() || [])].filter((value) => value.visible));
   const visiblePlatforms = computed(() => (platforms.value ? [...platforms.value.values()].filter((value) => value.visible) : []));
 
+  const licenseOptions = computed<Option[]>(() => licenses.value.map<Option>((l) => ({ value: l, text: l })));
+  const categoryOptions = computed<Option[]>(() =>
+    visibleCategories.value.map<Option>((c) => ({ value: c.apiName, text: useI18n({ useScope: "global" }).t(c.title) }))
+  );
+
   return {
     projectCategories,
     permissions,
@@ -112,6 +119,8 @@ export const useBackendDataStore = defineStore("backendData", () => {
     initBackendData,
     visibleCategories,
     visiblePlatforms,
+    licenseOptions,
+    categoryOptions,
   };
 });
 

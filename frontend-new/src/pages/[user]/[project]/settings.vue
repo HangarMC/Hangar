@@ -60,16 +60,6 @@ const loading = reactive({
 });
 
 const isCustomLicense = computed(() => form.settings.license.type === "(custom)");
-const licenses = computed<Option[]>(() =>
-  backendData.licenses.map<Option>((l) => {
-    return { value: l, text: l };
-  })
-);
-const categories = computed<Option[]>(() =>
-  backendData.visibleCategories.map<Option>((c) => {
-    return { value: c.apiName, text: i18n.t(c.title) };
-  })
-);
 
 watch(route, (val) => (selectedTab.value = val.hash.replace("#", "")), { deep: true });
 watch(selectedTab, (val) => history.replaceState({}, "", route.path + "#" + val));
@@ -219,7 +209,7 @@ useHead(
       <Tabs v-model="selectedTab" :tabs="tabs">
         <template #general>
           <ProjectSettingsSection title="project.settings.category" description="project.settings.categorySub">
-            <InputSelect v-model="form.category" :values="categories" />
+            <InputSelect v-model="form.category" :values="backendData.categoryOptions" />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.description" description="project.settings.descriptionSub">
             <InputText v-model="form.description" counter :maxlength="backendData.validations?.project?.desc?.max" />
@@ -280,7 +270,7 @@ useHead(
           <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
             <div class="flex">
               <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
-                <InputSelect v-model="form.settings.license.type" :values="licenses" :label="i18n.t('project.settings.licenseType')" />
+                <InputSelect v-model="form.settings.license.type" :values="backendData.licenseOptions" :label="i18n.t('project.settings.licenseType')" />
               </div>
               <div v-if="isCustomLicense" class="basis-full md:basis-8/12">
                 <InputText v-model.trim="form.settings.license.name" :label="i18n.t('project.settings.licenseCustom')" />

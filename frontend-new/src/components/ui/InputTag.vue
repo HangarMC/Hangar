@@ -16,7 +16,6 @@ const props = defineProps<{
   errorMessages?: string[];
   counter?: boolean;
   maxlength?: number;
-  id: string;
 }>();
 
 // TODO proper validation

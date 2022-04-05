@@ -15,13 +15,24 @@ export interface Option {
   text: string;
 }
 
-const props = defineProps<{
-  modelValue: object | string | boolean | number | null | undefined;
-  values: Option[];
-  disabled?: boolean;
-  label?: string;
-  errorMessages?: string[];
-}>();
+const props = withDefaults(
+  defineProps<{
+    modelValue: object | string | boolean | number | null;
+    values: Option[] | Record<string, any> | string[];
+    itemValue?: string;
+    itemText?: string;
+    disabled?: boolean;
+    label?: string;
+    errorMessages?: string[];
+  }>(),
+  {
+    modelValue: "",
+    itemValue: "value",
+    itemText: "text",
+    label: "",
+    errorMessages: () => [],
+  }
+);
 
 // TODO proper validation
 const error = computed<boolean>(() => {
@@ -29,12 +40,11 @@ const error = computed<boolean>(() => {
 });
 </script>
 
-<!-- todo make fancy -->
 <template>
-  <label class="relative flex" :class="{ filled: modelValue, error: error }">
+  <label class="relative flex" :class="{ filled: internalVal, error: error }">
     <select v-model="internalVal" :disabled="disabled" :class="inputClasses">
-      <option v-for="val in values" :key="val.value" :value="val.value" class="dark:bg-[#191e28]">
-        {{ val.text }}
+      <option v-for="val in values" :key="val[itemValue] || val" :value="val[itemValue] || val" class="dark:bg-[#191e28]">
+        {{ val[itemText] || val }}
       </option>
     </select>
     <floating-label :label="label" />

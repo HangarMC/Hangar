@@ -2,17 +2,15 @@
 import { ProjectOwner, ProjectSettingsForm } from "hangar-internal";
 import { ProjectCategory } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { computed, Ref, ref, watch } from "vue";
+import { computed, reactive, Ref, ref, watch } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useContext } from "vite-ssr/vue";
-import PageTitle from "~/components/design/PageTitle.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
 import Steps, { Step } from "~/components/design/Steps.vue";
-import Card from "~/components/design/Card.vue";
 import { useSettingsStore } from "~/store/settings";
 import InputSelect from "~/components/ui/InputSelect.vue";
 import InputText from "~/components/ui/InputText.vue";
@@ -30,36 +28,34 @@ interface NewProjectForm extends ProjectSettingsForm {
 
 const ctx = useContext();
 const i18n = useI18n();
-const store = useBackendDataStore();
+const backendData = useBackendDataStore();
 const router = useRouter();
 const route = useRoute();
 const settings = useSettingsStore();
-const visibleCategories = store.visibleCategories;
-const licenses = store.licenses;
 
 // TODO move to useApi
 const projectOwners = await useInternalApi<ProjectOwner[]>("projects/possibleOwners");
-const error = ref("");
+const nameErrors: Ref<string[]> = ref([]);
 const projectCreationErrors: Ref<string[]> = ref([]);
-const form: NewProjectForm = {
+const projectLoading = ref(true);
+const form = ref<NewProjectForm>({
   category: ProjectCategory.ADMIN_TOOLS,
   settings: {
     license: {} as ProjectSettingsForm["settings"]["license"],
     donation: {} as ProjectSettingsForm["settings"]["donation"],
     keywords: [],
   } as unknown as ProjectSettingsForm["settings"],
-} as NewProjectForm;
-const projectName = ref(form.name);
+} as NewProjectForm);
 
-form.ownerId = projectOwners[0].userId;
+form.value.ownerId = projectOwners[0].userId;
 
-const converter = {
+const converter = ref({
   bbCode: "",
   markdown: "",
   loading: false,
-};
+});
 
-const isCustomLicense = computed(() => form.settings.license.type === "(custom)");
+const isCustomLicense = computed(() => form.value.settings.license.type === "(custom)");
 
 const selectedStep = ref("tos");
 const steps: Step[] = [
@@ -82,16 +78,16 @@ const bbCodeTabs: Tab[] = [
 useHead(useSeo("New Project", null, route, null));
 
 function convertBBCode() {
-  converter.loading = true;
+  converter.value.loading = true;
   useInternalApi<string>("pages/convert-bbcode", false, "post", {
-    content: converter.bbCode,
+    content: converter.value.bbCode,
   })
     .then((markdown) => {
-      converter.markdown = markdown;
+      converter.value.markdown = markdown;
     })
     .catch((e) => handleRequestError(e, ctx, i18n))
     .finally(() => {
-      converter.loading = false;
+      converter.value.loading = false;
     });
 }
 
@@ -113,26 +109,38 @@ function createProject() {
     });
 }
 
+const projectName = computed(() => form.value.name);
 watch(projectName, (newName) => {
+  nameErrors.value = [];
   if (!newName) {
-    error.value = "";
     return;
   }
   useInternalApi("projects/validateName", false, "get", {
-    userId: form.ownerId,
+    userId: form.value.ownerId,
     value: newName,
-  })
-    .then(() => {
-      error.value = "";
-      form.name = newName;
-    })
-    .catch((e) => {
-      if (!e.response?.data.isHangarApiException) {
-        return handleRequestError(e, ctx, i18n);
-      }
-      error.value = i18n.t(e.response?.data.message);
-    });
+  }).catch((e) => {
+    if (!e.response?.data.isHangarApiException) {
+      return handleRequestError(e, ctx, i18n);
+    }
+    nameErrors.value.push(i18n.t(e.response?.data.message));
+  });
 });
+
+function retry() {
+  if (!form.value.pageContent) {
+    form.value.pageContent = "# " + form.value.name + "  \nWelcome to your new project!";
+  }
+  useInternalApi<string>("projects/create", true, "post", form.value)
+    .then((url) => {
+      router.push(url);
+    })
+    .catch((err) => {
+      projectCreationErrors.value.push(err.response.data);
+    })
+    .finally(() => {
+      projectLoading.value = false;
+    });
+}
 </script>
 
 <!-- todo: rules, icon -->
@@ -145,14 +153,14 @@ watch(projectName, (newName) => {
     <template #basic>
       <div class="flex flex-wrap">
         <div class="basis-full md:basis-6/12">
-          <InputSelect v-model="form.ownerId" :values="projectOwners" :label="i18n.t('project.new.step2.userSelect')" />
+          <InputSelect v-model="form.ownerId" :values="projectOwners" item-value="id" item-text="name" :label="i18n.t('project.new.step2.userSelect')" />
         </div>
         <div class="basis-full md:basis-6/12">
           <InputText v-model.trim="form.name" :error-messages="nameErrors" :label="i18n.t('project.new.step2.projectName')" />
         </div>
         <div class="basis-full md:basis-8/12"><InputText v-model.trim="form.description" :label="i18n.t('project.new.step2.projectSummary')" /></div>
         <div class="basis-full md:basis-4/12">
-          <InputSelect v-model="form.category" :values="visibleCategories" :label="i18n.t('project.new.step2.projectCategory')" />
+          <InputSelect v-model="form.category" :values="backendData.categoryOptions" :label="i18n.t('project.new.step2.projectCategory')" />
         </div>
       </div>
     </template>
@@ -175,7 +183,7 @@ watch(projectName, (newName) => {
       </div>
       <div class="flex flex-wrap">
         <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
-          <InputSelect v-model="form.settings.license.type" :values="licenses" :label="i18n.t('project.new.step3.type')" />
+          <InputSelect v-model="form.settings.license.type" :values="backendData.licenseOptions" :label="i18n.t('project.new.step3.type')" />
         </div>
         <div v-if="isCustomLicense" class="basis-full md:basis-8/12">
           <InputText v-model.trim="form.settings.license.name" :label="i18n.t('project.new.step3.customName')" />
@@ -207,7 +215,7 @@ watch(projectName, (newName) => {
           <InputTextarea v-model="converter.markdown" :rows="6" :label="i18n.t('project.new.step4.convertLabels.output')" />
         </template>
         <template #preview>
-          <Button block color="primary" class="my-2" :disabled="form.pageContent === converter.markdown" @click="saveAsHomePage">
+          <Button block color="primary" class="my-2" :disabled="form.pageContent === converter.markdown" @click="form.pageContent = converter.markdown">
             <IconMdiContentSave />
             {{ i18n.t("project.new.step4.saveAsHomePage") }}
           </Button>
@@ -226,16 +234,20 @@ watch(projectName, (newName) => {
     <template #finishing>
       <!-- todo loader -->
       <!--<v-progress-circular v-if="projectLoading" indeterminate color="red" size="50" />-->
-      <span v-if="projectLoading">Loading....</span>
-      <div v-if="!projectError" class="text-h5 mt-2">
-        {{ i18n.t("project.new.step5.text") }}
-      </div>
-      <template v-else>
+      <span v-if="projectLoading">
+        Loading....
+        <Button @click="retry">button go brrrr</Button>
+      </span>
+      <template v-else-if="projectCreationErrors && projectCreationErrors.length > 0">
         <div class="text-lg mt-2">
           {{ i18n.t("project.new.error.create") }}
+          {{ projectCreationErrors }}
         </div>
         <Button @click="retry"> Retry </Button>
       </template>
+      <div v-else class="text-h5 mt-2">
+        {{ i18n.t("project.new.step5.text") }}
+      </div>
     </template>
   </Steps>
 </template>

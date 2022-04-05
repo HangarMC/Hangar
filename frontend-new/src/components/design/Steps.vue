@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import Link from "~/components/design/Link.vue";
 import Card from "~/components/design/Card.vue";
 import { useSettingsStore } from "~/store/settings";
@@ -17,23 +17,48 @@ const internalValue = computed({
   set: (value) => emit("update:modelValue", value),
 });
 
-const activeStep = computed(() => props.steps.find((s) => s.value === internalValue.value));
-const activeStepIndex = computed(() => props.steps.indexOf(activeStep.value as Step) + 1);
-
-export interface Step {
-  value: string;
-  header: string;
-}
-
 const props = defineProps<{
   modelValue: string;
   steps: Step[];
   buttonLangKey: string;
 }>();
+
+const activeStep = computed(() => props.steps.find((s) => s.value === internalValue.value));
+const activeStepIndex = computed(() => props.steps.indexOf(activeStep.value as Step) + 1);
+
+const canBack = ref(true);
+const canNext = ref(true);
+const showBack = ref(true);
+const showNext = ref(true);
+
+function back() {
+  if (canBack.value) {
+    internalValue.value = props.steps[activeStepIndex.value - 2].value;
+  }
+}
+
+function next() {
+  if (canNext.value) {
+    internalValue.value = props.steps[activeStepIndex.value].value;
+  }
+}
+
+function goto(step: Step) {
+  const idx = props.steps.indexOf(step);
+  if (idx >= activeStepIndex.value && canNext.value) {
+    next();
+  } else if (idx < activeStepIndex.value && canBack.value) {
+    back();
+  }
+}
+
+export interface Step {
+  value: string;
+  header: string;
+}
 </script>
 
 <template>
-  <!-- todo stepper logic to prevent stepping thru out of order -->
   <!-- todo style active, next and past step headers differently -->
   <div>
     <div class="w-full">
@@ -47,7 +72,7 @@ const props = defineProps<{
               :class="internalValue === step.value ? 'underline' : '!font-semibold'"
               :href="'#' + step.value"
               display="hidden md:inline"
-              @click.prevent="internalValue = step.value"
+              @click.prevent="goto(step)"
             >
               {{ step.header }}
             </Link>
@@ -64,9 +89,10 @@ const props = defineProps<{
         <div v-for="step in steps" :key="step.value">
           <slot v-if="internalValue === step.value" :name="step.value" />
         </div>
-        <!-- todo next/back button -->
-        <Button size="medium" class="mt-2 mr-2">{{ i18n.t(buttonLangKey + activeStepIndex + ".continue") }}</Button>
-        <Button size="medium" class="mt-2">{{ i18n.t(buttonLangKey + activeStepIndex + ".back") }}</Button>
+        <Button v-if="showBack" :disable="canBack" size="medium" class="mt-2 mr-2" @click="back">{{
+          i18n.t(buttonLangKey + activeStepIndex + ".back")
+        }}</Button>
+        <Button v-if="showNext" :disable="canNext" size="medium" class="mt-2" @click="next">{{ i18n.t(buttonLangKey + activeStepIndex + ".continue") }}</Button>
       </Card>
     </div>
   </div>
