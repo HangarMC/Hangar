@@ -257,7 +257,7 @@ useHead(
           </ProjectSettingsSection>
         </template>
         <template #optional>
-          <ProjectSettingsSection title="project.settings.keywords" description="project.settings.keywordsSub" optional>
+          <ProjectSettingsSection title="project.settings.keywords" description="project.settings.keywordsSub">
             <InputTag
               v-model="form.settings.keywords"
               counter
@@ -265,19 +265,19 @@ useHead(
               :label="i18n.t('project.new.step3.keywords')"
             />
           </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.homepage" description="project.settings.homepageSub" optional>
+          <ProjectSettingsSection title="project.settings.homepage" description="project.settings.homepageSub">
             <InputText v-model.trim="form.settings.homepage" :label="i18n.t('project.new.step3.homepage')"></InputText>
           </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.issues" description="project.settings.issuesSub" optional>
+          <ProjectSettingsSection title="project.settings.issues" description="project.settings.issuesSub">
             <InputText v-model.trim="form.settings.issues" :label="i18n.t('project.new.step3.issues')" />
           </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.source" description="project.settings.sourceSub" optional>
+          <ProjectSettingsSection title="project.settings.source" description="project.settings.sourceSub">
             <InputText v-model.trim="form.settings.source" :label="i18n.t('project.new.step3.source')" />
           </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.support" description="project.settings.supportSub" optional>
+          <ProjectSettingsSection title="project.settings.support" description="project.settings.supportSub">
             <InputText v-model.trim="form.settings.support" :label="i18n.t('project.new.step3.support')" />
           </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub" optional>
+          <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
             <div class="flex">
               <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
                 <InputSelect v-model="form.settings.license.type" :values="licenses" :label="i18n.t('project.settings.licenseType')" />

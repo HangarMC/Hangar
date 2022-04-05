@@ -1,12 +1,11 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-import { IPlatform, IProjectCategory, IPrompt, IVisibility } from "hangar-internal";
+import { IPlatform, IProjectCategory, IPrompt, IVisibility, Color } from "hangar-internal";
 import { NamedPermission, Platform, ProjectCategory, Prompt } from "~/types/enums";
 
 import { Announcement as AnnouncementObject, Announcement, IPermission, Role } from "hangar-api";
 import { fetchIfNeeded, useInternalApi } from "~/composables/useApi";
-import { Color } from "hangar-internal";
 
 interface Validation {
   regex?: string;

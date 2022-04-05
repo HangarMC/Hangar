@@ -33,7 +33,9 @@ const error = computed<boolean>(() => {
 <template>
   <label class="relative flex" :class="{ filled: modelValue, error: error }">
     <select v-model="internalVal" :disabled="disabled" :class="inputClasses">
-      <option v-for="val in values" :key="val.value" :value="val.value">{{ val.text }}</option>
+      <option v-for="val in values" :key="val.value" :value="val.value" class="dark:bg-[#191e28]">
+        {{ val.text }}
+      </option>
     </select>
     <floating-label :label="label" />
   </label>
