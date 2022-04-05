@@ -46,7 +46,7 @@ You can use emojis by using the common Emoji-Syntax for it.
 \`:smile:\`: :smile:
 
 ### Image resizing
-You can change the size of an image by appending \`=:widthx:height\` after the URL in an embedded image (Make sure to replace \`:width\` and \`:height\` with actual numbers).
+You can change the size of an image by appending \`=[with]x[height]\` after the URL in an embedded image (Make sure to replace \`[width]\` and \`[height]\` with actual numbers).
 
 **Example:**
 \`![image](https://i.imgur.com/o1zcXsM.png =16x16)\`:  
@@ -64,7 +64,7 @@ Use \`* [ ] Text\` for an unchecked and \`* [x] Text\` for a checked list entry.
 
 ### Videos
 You can embed YouTube videos by using a slight variation of the embedded image syntax.  
-Use \`@[text](https://youtu.be/:video-id)\` to embed a video (Replace \`:video-id\` with a valid ID).
+Use \`@[text](https://youtu.be/\<video-id\>)\` to embed a video (Replace \`\<video-id\>` with a valid ID).
 
 **Example:**  
 \`@[video](https://youtu.be/AG8VFyW61e0)\`:  
