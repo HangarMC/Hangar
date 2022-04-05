@@ -37,6 +37,7 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
+import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
@@ -151,6 +152,14 @@ public class ProjectService extends HangarComponent {
         projectTable.setDonationMonthlyAmounts(settingsForm.getSettings().getDonation().getMonthlyAmounts());
         projectsDAO.update(projectTable);
         homeProjectService.refreshHomeProjects();
+        // TODO what settings changed
+        projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
+    }
+
+    public void saveSponsors(String author, String slug, StringContent content) {
+        ProjectTable projectTable = getProjectTable(author, slug);
+        projectTable.setSponsors(content.getContent());
+        projectsDAO.update(projectTable);
         // TODO what settings changed
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
     }

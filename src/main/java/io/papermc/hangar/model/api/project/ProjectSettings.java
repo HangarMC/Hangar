@@ -27,9 +27,10 @@ public class ProjectSettings {
     @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywords)", message = "project.new.error.tooManyKeywords")
     private final Collection<String> keywords;
     private final boolean forumSync;
+    private final String sponsors;
 
     @JsonCreator
-    public ProjectSettings(@Nullable String homepage, @Nullable String issues, @Nullable String source, @Nullable String support, @Nested("license") ProjectLicense license, @Nested("donation") ProjectDonationSettings donation, Collection<String> keywords, boolean forumSync) {
+    public ProjectSettings(@Nullable String homepage, @Nullable String issues, @Nullable String source, @Nullable String support, @Nested("license") ProjectLicense license, @Nested("donation") ProjectDonationSettings donation, Collection<String> keywords, boolean forumSync, String sponsors) {
         this.homepage = homepage;
         this.issues = issues;
         this.source = source;
@@ -38,6 +39,7 @@ public class ProjectSettings {
         this.donation = donation;
         this.keywords = keywords;
         this.forumSync = forumSync;
+        this.sponsors = sponsors;
     }
 
     public String getHomepage() {
@@ -72,6 +74,10 @@ public class ProjectSettings {
         return forumSync;
     }
 
+    public String getSponsors() {
+        return sponsors;
+    }
+
     @Override
     public String toString() {
         return "ProjectSettings{" +
@@ -83,6 +89,7 @@ public class ProjectSettings {
                 ", donation=" + donation +
                 ", keywords=" + keywords +
                 ", forumSync=" + forumSync +
+                ", sponsors='" + sponsors + '\'' +
                 '}';
     }
 }

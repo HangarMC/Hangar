@@ -47,6 +47,8 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     private Collection<Integer> donationOnetimeAmounts;
     private Collection<Integer> donationMonthlyAmounts;
 
+    private String sponsors;
+
     public ProjectTable(ProjectOwner projectOwner, NewProjectForm form) {
         this.name = form.getName();
         this.slug = StringUtils.slugify(this.name);
@@ -69,6 +71,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.donationDefaultAmount = form.getSettings().getDonation().getDefaultAmount();
         this.donationOnetimeAmounts = form.getSettings().getDonation().getOneTimeAmounts();
         this.donationMonthlyAmounts = form.getSettings().getDonation().getMonthlyAmounts();
+        this.sponsors = "";
     }
 
     protected ProjectTable(ProjectTable other) {
@@ -94,13 +97,14 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.donationDefaultAmount = other.donationDefaultAmount;
         this.donationOnetimeAmounts = other.donationOnetimeAmounts;
         this.donationMonthlyAmounts = other.donationMonthlyAmounts;
+        this.sponsors = other.sponsors;
     }
 
     @JdbiConstructor
     public ProjectTable(OffsetDateTime createdAt, long id, String name, String slug, String ownerName, long ownerId, Long topicId,
                         Long postId, @EnumByOrdinal Category category, String description, @EnumByOrdinal Visibility visibility, Collection<String> keywords,
                         String homepage, String issues, String source, String support, String licenseName, String licenseUrl, boolean forumSync,
-                        boolean donationEnabled, String donationEmail, int donationDefaultAmount, Collection<Integer> donationOnetimeAmounts, Collection<Integer> donationMonthlyAmounts) {
+                        boolean donationEnabled, String donationEmail, int donationDefaultAmount, Collection<Integer> donationOnetimeAmounts, Collection<Integer> donationMonthlyAmounts, String sponsors) {
         super(createdAt, id);
         this.name = name;
         this.slug = slug;
@@ -124,6 +128,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.donationDefaultAmount = donationDefaultAmount;
         this.donationOnetimeAmounts = donationOnetimeAmounts;
         this.donationMonthlyAmounts = donationMonthlyAmounts;
+        this.sponsors = sponsors;
     }
 
     // TODO remove a bunch of these setters and use a SettingsSave object or smth
@@ -309,6 +314,14 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.donationMonthlyAmounts = donationMonthlyAmounts;
     }
 
+    public String getSponsors() {
+        return sponsors;
+    }
+
+    public void setSponsors(String sponsors) {
+        this.sponsors = sponsors;
+    }
+
     @Override
     public long getProjectId() {
         return id;
@@ -344,6 +357,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
                ", donationDefaultAmount=" + donationDefaultAmount +
                ", donationOnetimeAmounts=" + donationOnetimeAmounts +
                ", donationMonthlyAmounts=" + donationMonthlyAmounts +
+               ", sponsors='" + sponsors + '\'' +
                "} " + super.toString();
     }
 }

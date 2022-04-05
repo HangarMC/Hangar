@@ -60,7 +60,8 @@ public interface ProjectsApiDAO {
         "       p.donation_email," +
         "       p.donation_default_amount," +
         "       p.donation_onetime_amounts," +
-        "       p.donation_monthly_amounts" +
+        "       p.donation_monthly_amounts," +
+        "       p.sponsors" +
         "  FROM home_projects hp" +
         "         JOIN projects p ON hp.id = p.id" +
         "         WHERE lower(hp.slug) = lower(:slug) AND" +
@@ -105,7 +106,8 @@ public interface ProjectsApiDAO {
             p.donation_email,
             p.donation_default_amount,
             p.donation_onetime_amounts,
-            p.donation_monthly_amounts
+            p.donation_monthly_amounts,
+            p.sponsors
         FROM home_projects hp
             JOIN projects p on hp.id = p.id
             LEFT JOIN project_versions pv on p.id = pv.project_id

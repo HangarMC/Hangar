@@ -58,7 +58,8 @@ public interface HangarProjectsDAO {
             "       ps.donation_onetime_amounts," +
             "       ps.donation_monthly_amounts," +
             "       ps.topic_id," +
-            "       ps.post_id" +
+            "       ps.post_id," +
+            "       ps.sponsors" +
             "  FROM home_projects p" +
             "         JOIN projects ps ON p.id = ps.id" +
             "         JOIN users u ON ps.owner_id = u.id" +

@@ -36,6 +36,7 @@ declare module "hangar-api" {
     license: License;
     keywords: string[];
     forumSync: boolean;
+    sponsors: string | null;
     donation: {
       enable: false;
       email: string | null;
