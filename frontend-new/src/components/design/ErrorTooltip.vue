@@ -4,13 +4,14 @@ import { computed } from "vue";
 
 const props = defineProps<{
   errorMessages?: string[];
+  content: string;
 }>();
 
 const formattedError = computed<string>(() => {
   if (!props.errorMessages || props.errorMessages.length === 0) {
     return "";
   }
-  return [...new Set(props.errorMessages)].join(", ");
+  return props.errorMessages[0];
 });
 
 const hasError = computed<boolean>(() => {
@@ -22,9 +23,6 @@ const hasError = computed<boolean>(() => {
   <ClientOnly>
     <Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" :content="formattedError">
       <slot />
-      <template #content="props">
-        <slot name="content" v-bind="props" />
-      </template>
     </Popper>
   </ClientOnly>
 </template>

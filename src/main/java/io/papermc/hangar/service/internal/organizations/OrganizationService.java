@@ -99,4 +99,21 @@ public class OrganizationService extends HangarComponent {
             throw new MultiHangarApiException(errors);
         }
     }
+
+    public void editMember(String name, EditMembersForm.Member<OrganizationRole> member) {
+        OrganizationTable organizationTable = getOrganizationTable(name);
+        List<HangarApiException> errors = new ArrayList<>();
+        if (member.isNewMember()) {
+            organizationInviteService.sendInvites(errors, List.of(member), organizationTable);
+        } else if (member.isEditing()) {
+            organizationMemberService.editMembers(errors, List.of(member), organizationTable);
+        } else if (member.isToDelete()) {
+            organizationMemberService.removeMembers(errors, List.of(member), organizationTable);
+        } else {
+            throw new HangarApiException();
+        }
+        if (!errors.isEmpty()) {
+            throw new MultiHangarApiException(errors);
+        }
+    }
 }

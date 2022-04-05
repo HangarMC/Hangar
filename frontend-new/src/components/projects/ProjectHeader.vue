@@ -56,7 +56,7 @@ function toggleWatch() {
         :to="'/' + project.namespace.owner + '/' + project.name"
         :img-src="imageUrl"
       />
-      <div class="flex-grow sm:mr-4 <sm:mb-4">
+      <div class="flex-grow sm:mr-4 <sm:mb-4 overflow-clip">
         <p class="text-2xl <sm:text-lg pb-1 inline-flex space-x-1.2 items-center">
           <UserAvatar
             class="!w-8 !h-8 sm:hidden"
@@ -70,7 +70,7 @@ function toggleWatch() {
         </p>
         <p>{{ project.description }}</p>
       </div>
-      <div class="flex sm:flex-col space-y-2 items-end justify-between sm:justify-around">
+      <div class="flex sm:flex-col space-y-2 items-end justify-between sm:justify-around flex-shrink-0">
         <Button size="large">Download latest</Button>
         <div class="flex">
           <Tooltip>

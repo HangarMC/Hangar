@@ -151,6 +151,14 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
+    @PostMapping(path = "/project/{author}/{slug}/member", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void editProjectMember(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody EditMembersForm.Member<ProjectRole> member) {
+        projectService.editMember(author, slug, member);
+    }
+
+    @Unlocked
     @VisibilityRequired(type = Type.PROJECT, args = "{#projectId}")
     @PostMapping("/project/{id}/star/{state}")
     @ResponseStatus(HttpStatus.OK)

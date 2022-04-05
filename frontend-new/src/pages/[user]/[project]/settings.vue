@@ -293,7 +293,7 @@ useHead(
         </template>
         <template #management>
           <ProjectSettingsSection title="project.settings.rename" description="project.settings.renameSub">
-            <div class="flex">
+            <div class="flex items-center">
               <InputText v-model.trim="newName" :error-messages="nameErrors" />
               <Button :disabled="!newName || loading.rename || nameErrors.length > 0" class="ml-2" @click="rename">
                 <IconMdiRenameBox class="mr-2" />
@@ -345,7 +345,7 @@ useHead(
         </template>
       </Tabs>
     </Card>
-    <MemberList :model-value="project.members" class="basis-full md:basis-3/12" />
+    <MemberList :model-value="project.members" :author="project.owner.name" :slug="project.name" class="basis-full md:basis-3/12" />
   </div>
 </template>
 

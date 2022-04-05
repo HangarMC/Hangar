@@ -145,7 +145,8 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
           </ul>
         </Card>
       </template>
-      <MemberList v-else :model-value="organization.members" :roles="orgRoles" :org="true" />
+      <!-- todo org name??????????????????????? -->
+      <MemberList v-else :model-value="organization.members" :roles="orgRoles" organization :author="organization.owner.name" />
     </div>
   </div>
 </template>

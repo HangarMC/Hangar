@@ -28,9 +28,8 @@ const error = computed<boolean>(() => {
   <ErrorTooltip :error-messages="errorMessages">
     <label class="relative flex" :class="{ filled: modelValue, error: error }">
       <input v-model="value" type="text" :class="inputClasses" v-bind="$attrs" :maxlength="maxlength" />
-      <floating-label :label="label" />
-      <span v-if="counter && maxlength">{{ value?.length || 0 }}/{{ maxlength }}</span>
+      <span v-if="counter && maxlength" class="inline-flex items-center ml-2">{{ value?.length || 0 }}/{{ maxlength }}</span>
       <span v-else-if="counter">{{ value?.length || 0 }}</span>
-    </label></ErrorTooltip
-  >
+      <floating-label :label="label" /> </label
+  ></ErrorTooltip>
 </template>

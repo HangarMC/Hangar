@@ -37,7 +37,7 @@ const internalEditing = computed({
 });
 
 watch(
-  props,
+  ref(props),
   (val) => {
     if (!val.editing) {
       preview.value = false;

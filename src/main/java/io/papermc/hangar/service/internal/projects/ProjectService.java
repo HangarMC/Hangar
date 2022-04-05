@@ -228,6 +228,23 @@ public class ProjectService extends HangarComponent {
         }
     }
 
+    public void editMember(String author, String slug, EditMembersForm.Member<ProjectRole> member) {
+        ProjectTable projectTable = getProjectTable(author, slug);
+        List<HangarApiException> errors = new ArrayList<>();
+        if (member.isNewMember()) {
+            projectInviteService.sendInvites(errors, List.of(member), projectTable);
+        } else if (member.isEditing()) {
+            projectMemberService.editMembers(errors, List.of(member), projectTable);
+        } else if (member.isToDelete()) {
+            projectMemberService.removeMembers(errors, List.of(member), projectTable);
+        } else {
+            throw new HangarApiException();
+        }
+        if (!errors.isEmpty()) {
+            throw new MultiHangarApiException(errors);
+        }
+    }
+
     public List<UserTable> getProjectWatchers(long projectId) {
         return projectsDAO.getProjectWatchers(projectId);
     }

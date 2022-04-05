@@ -2,22 +2,36 @@
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { JoinableMember } from "hangar-internal";
+import { NamedPermission } from "~/types/enums";
 import Card from "~/components/design/Card.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Link from "~/components/design/Link.vue";
 import DropdownButton from "~/components/design/DropdownButton.vue";
 import DropdownItem from "~/components/design/DropdownItem.vue";
 import { avatarUrl } from "~/composables/useUrlHelper";
-import Button from "~/components/design/Button.vue";
 import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission } from "~/types/enums";
+import { useBackendDataStore } from "~/store/backendData";
+import { Role } from "hangar-api";
+import { useRoute } from "vue-router";
+import { useInternalApi } from "~/composables/useApi";
+import { useContext } from "vite-ssr/vue";
+import { handleRequestError } from "~/composables/useErrorHandling";
 
-const props = defineProps<{
-  modelValue: JoinableMember[];
-  forceEdit?: boolean;
-  disableSaveButton?: boolean;
-  class?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    modelValue: JoinableMember[];
+    disableSaving?: boolean;
+    class?: string;
+    organization?: boolean;
+    author?: string;
+    slug?: string;
+  }>(),
+  {
+    organization: false,
+    class: "",
+  }
+);
+
 const emit = defineEmits<{
   (e: "update:modelValue", value: JoinableMember[]): void;
 }>();
@@ -26,9 +40,65 @@ const value = computed({
   set: (v) => emit("update:modelValue", v),
 });
 const i18n = useI18n();
+const store = useBackendDataStore();
+const route = useRoute();
+const ctx = useContext();
+const roles: Role[] = store.projectRoles;
 
-const editing = ref(props.forceEdit);
-const dirty = ref<boolean>(false);
+const canEdit = computed<boolean>(() => {
+  return hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS);
+});
+const saving = ref<boolean>(false);
+
+function removeMember(member: JoinableMember) {
+  const editableMember: EditableMember = convertMember(member);
+  editableMember.toDelete = true;
+  post(editableMember);
+}
+
+function setRole(member: JoinableMember, role: Role) {
+  const editableMember: EditableMember = convertMember(member);
+  editableMember.editing = true;
+  editableMember.roleId = role.roleId;
+  post(editableMember);
+}
+
+async function post(member: EditableMember) {
+  const url = props.organization ? `organizations/org/${props.author}/member` : `projects/project/${props.author}/${props.slug}/member`;
+  console.log(props.author);
+  console.log(props.slug);
+  useInternalApi(url, true, "post", member)
+    .finally(() => {
+      saving.value = false;
+    })
+    .catch((e) => handleRequestError(e, ctx, i18n, "error.unknown"));
+}
+
+function convertMember(member: JoinableMember): EditableMember {
+  return {
+    name: member.user.name,
+    roleTitle: member.role.role.title,
+    roleId: member.role.role.roleId,
+    roleAccepted: member.role.accepted,
+    roleAssignable: member.role.role.assignable,
+    editing: false,
+    toDelete: false,
+    new: false,
+    hidden: member.hidden,
+  };
+}
+
+interface EditableMember {
+  name: string;
+  roleTitle?: string;
+  roleId?: number;
+  roleAssignable: boolean;
+  roleAccepted?: boolean;
+  editing: boolean;
+  toDelete: boolean;
+  new: boolean;
+  hidden: boolean;
+}
 </script>
 
 <template>
@@ -36,13 +106,6 @@ const dirty = ref<boolean>(false);
     <template #header>
       <div class="inline-flex w-full flex-cols space-between">
         <span class="flex-grow">{{ i18n.t("project.members") }}</span>
-        <Button v-if="!editing && hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" class="mr-1 inline-flex" size="medium" @click="editing = true"
-          ><IconMdiPencil class="text-xs" :title="i18n.t('general.edit')"
-        /></Button>
-        <Button v-else-if="!dirty" class="mr-1 inline-flex" @click="editing = false"><IconMdiClose /></Button>
-        <Button v-if="editing && !disableSaveButton" :disabled="!dirty" @click="save"
-          ><IconMdiCheck /> <span class="text-sm">{{ i18n.t("general.save") }}</span></Button
-        >
       </div>
     </template>
 
@@ -59,9 +122,13 @@ const dirty = ref<boolean>(false);
           </p>
           <p>{{ member.role.role.title }}</p>
         </div>
-        <DropdownButton v-if="editing" name="">
-          <!-- todo change role -->
-          <DropdownItem @click="alert('OK!')">Change role</DropdownItem>
+        <!-- todo confirmation modal, input field to search and add members -->
+        <DropdownButton v-if="canEdit && member.role.role.assignable" :name="i18n.t('general.edit')" :disabled="saving">
+          <DropdownItem v-for="role of roles" :key="role.title" @click="setRole(member, role)">
+            {{ role.title }}
+          </DropdownItem>
+          <hr />
+          <DropdownItem @click="removeMember(member)">Remove</DropdownItem>
         </DropdownButton>
       </div>
     </template>

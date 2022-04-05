@@ -282,7 +282,7 @@
       "iconUpload": "Upload",
       "iconReset": "Reset Icon",
       "rename": "Rename",
-      "renameSub": "Changing your projects name can have undesired consequences. We will not setup any redirects.",
+      "renameSub": "Changing your project's name can have undesired consequences. We will not setup any redirects.",
       "delete": "Delete",
       "deleteSub": "Once you delete a project, it cannot be recovered.",
       "hardDelete": "Hard Delete",

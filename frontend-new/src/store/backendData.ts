@@ -41,6 +41,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
   const visibilities = ref<IVisibility[]>([]);
   const licenses = ref<string[]>([]);
   const orgRoles = ref<Role[]>([]);
+  const projectRoles = ref<Role[]>([]);
   const channelColors = ref<Color[]>([]);
 
   async function initBackendData() {
@@ -85,6 +86,8 @@ export const useBackendDataStore = defineStore("backendData", () => {
       await fetchIfNeeded(async () => useInternalApi("data/orgRoles", false), orgRoles);
 
       await fetchIfNeeded(async () => useInternalApi("data/channelColors", false), channelColors);
+
+      await fetchIfNeeded(async () => useInternalApi("data/projectRoles", false), projectRoles);
     } catch (e) {
       console.error("ERROR FETCHING BACKEND DATA");
       console.error(e);
@@ -104,6 +107,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
     announcements,
     visibilities,
     orgRoles,
+    projectRoles,
     channelColors,
     initBackendData,
     visibleCategories,

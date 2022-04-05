@@ -94,6 +94,14 @@ public class OrganizationController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
+    @PostMapping(path = "/org/{name}/member", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void editProjectMembers(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
+        organizationService.editMember(name, member);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void create(@Valid @RequestBody CreateOrganizationForm createOrganizationForm) {
         organizationFactory.createOrganization(createOrganizationForm.getName(), createOrganizationForm.getNewInvitees());

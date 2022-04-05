@@ -14,6 +14,7 @@ import InputText from "~/components/ui/InputText.vue";
 import MemberList from "~/components/projects/MemberList.vue";
 import Button from "~/components/design/Button.vue";
 import Alert from "~/components/design/Alert.vue";
+import { HangarUser, JoinableMember } from "hangar-internal";
 
 const route = useRoute();
 const router = useRouter();
@@ -21,10 +22,10 @@ const i18n = useI18n();
 const ctx = useContext();
 const backendData = useBackendDataStore();
 
-const currentUser = useAuthStore().user;
+const currentUser: HangarUser = useAuthStore().user!;
 
 const name = ref<string>("");
-const members = ref([]);
+const members = ref<JoinableMember[]>([]);
 const nameErrorMessages = ref<string[]>([]);
 
 /*const canCreate = computed<boolean>(
@@ -67,7 +68,7 @@ async function create() {
     <template v-if="currentUser.headerData.organizationCount < backendData.validations.maxOrgCount">
       <InputText v-model="name" class="mt-2" :label="i18n.t('organization.new.name')" :error-messages="nameErrorMessages" />
 
-      <MemberList v-model="members" class="mt-2"></MemberList>
+      <MemberList v-model="members" organization disable-saving class="mt-2"></MemberList>
 
       <Button class="mt-2" @click="create">
         <IconMdiCheck class="float-left" />
