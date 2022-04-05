@@ -14,7 +14,7 @@ let organization = null;
 if (!user || !user.value) {
   await useRouter().push(useErrorRedirect(useRoute(), 404, "Not found"));
 } else if (user.value?.isOrganization) {
-  organization = (await useOrganization(route.params.user as string).catch) > ((e) => handleRequestError(e, ctx, i18n));
+  organization = await useOrganization(route.params.user as string).catch((e) => handleRequestError(e, ctx, i18n));
 }
 </script>
 
