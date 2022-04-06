@@ -25,7 +25,7 @@ const error = computed<boolean>(() => {
 </script>
 
 <template>
-  <ErrorTooltip :error-messages="errorMessages">
+  <ErrorTooltip :error-messages="errorMessages" class="w-full">
     <label class="relative flex" :class="{ filled: modelValue, error: error }">
       <input v-model="value" type="text" :class="inputClasses" v-bind="$attrs" :maxlength="maxlength" />
       <span v-if="counter && maxlength" class="inline-flex items-center ml-2">{{ value?.length || 0 }}/{{ maxlength }}</span>

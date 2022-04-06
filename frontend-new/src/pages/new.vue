@@ -152,67 +152,78 @@ function retry() {
     </template>
     <template #basic>
       <div class="flex flex-wrap">
+        <!-- todo i18n -->
+        <p class="basis-full mb-4">Please provide the basic settings for this project</p>
         <div class="basis-full md:basis-6/12">
           <InputSelect v-model="form.ownerId" :values="projectOwners" item-value="id" item-text="name" :label="i18n.t('project.new.step2.userSelect')" />
         </div>
-        <div class="basis-full md:basis-6/12">
+        <div class="basis-full md:basis-6/12 mt-4 md:mt-0">
           <InputText v-model.trim="form.name" :error-messages="nameErrors" :label="i18n.t('project.new.step2.projectName')" />
         </div>
-        <div class="basis-full md:basis-8/12"><InputText v-model.trim="form.description" :label="i18n.t('project.new.step2.projectSummary')" /></div>
-        <div class="basis-full md:basis-4/12">
+        <div class="basis-full md:basis-8/12 mt-4"><InputText v-model.trim="form.description" :label="i18n.t('project.new.step2.projectSummary')" /></div>
+        <div class="basis-full md:basis-4/12 mt-4">
           <InputSelect v-model="form.category" :values="backendData.categoryOptions" :label="i18n.t('project.new.step2.projectCategory')" />
         </div>
       </div>
     </template>
     <template #additional>
-      <div class="text-lg">
+      <!-- todo i18n -->
+      <p>You can provide these additional settings. You can change them in your project settings at any time.</p>
+      <div class="text-lg mt-4">
         <IconMdiLink />
         {{ i18n.t("project.new.step3.links") }}
         <hr />
       </div>
       <div class="flex flex-wrap">
-        <div class="basis-full"><InputText v-model.trim="form.settings.homepage" :label="i18n.t('project.new.step3.homepage')" /></div>
-        <div class="basis-full"><InputText v-model.trim="form.settings.issues" :label="i18n.t('project.new.step3.issues')" /></div>
-        <div class="basis-full"><InputText v-model.trim="form.settings.source" :label="i18n.t('project.new.step3.source')" /></div>
-        <div class="basis-full"><InputText v-model.trim="form.settings.support" :label="i18n.t('project.new.step3.support')" /></div>
+        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.homepage" :label="i18n.t('project.new.step3.homepage')" /></div>
+        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.issues" :label="i18n.t('project.new.step3.issues')" /></div>
+        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.source" :label="i18n.t('project.new.step3.source')" /></div>
+        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.support" :label="i18n.t('project.new.step3.support')" /></div>
       </div>
-      <div class="text-lg">
+      <div class="text-lg mt-6">
         <IconMdiLicense />
         {{ i18n.t("project.new.step3.license") }}
         <hr />
       </div>
       <div class="flex flex-wrap">
-        <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
+        <div class="basis-full mt-4" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
           <InputSelect v-model="form.settings.license.type" :values="backendData.licenseOptions" :label="i18n.t('project.new.step3.type')" />
         </div>
-        <div v-if="isCustomLicense" class="basis-full md:basis-8/12">
+        <div v-if="isCustomLicense" class="basis-full md:basis-8/12 mt-4">
           <InputText v-model.trim="form.settings.license.name" :label="i18n.t('project.new.step3.customName')" />
         </div>
-        <div class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
+        <div class="basis-full mt-4" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
           <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" />
         </div>
       </div>
-      <div class="text-lg">
+      <div class="text-lg mt-6">
         <IconMdiCloudSearch />
         {{ i18n.t("project.new.step3.seo") }}
         <hr />
       </div>
       <div class="flex">
-        <InputTag v-model="form.settings.keywords" :label="i18n.t('project.new.step3.keywords')" />
+        <div class="mt-4 basis-full"><InputTag v-model="form.settings.keywords" :label="i18n.t('project.new.step3.keywords')" /></div>
       </div>
     </template>
     <template #import>
+      <p class="mb-4">
+        You can optionally use this step to convert your existing description for your project form spigot. If you savely skip this and desing you rdescription
+        from scratch once you got your project created.
+      </p>
+      <!-- todo vertical tabs -->
       <Tabs v-model="selectBBCodeTab" :tabs="bbCodeTabs">
         <template #convert>
-          <InputTextarea v-model="converter.bbCode" :rows="6" :label="i18n.t('project.new.step4.convertLabels.bbCode')" />
-          <div>
-            <Button :disabled="converter.loading" @click="convertBBCode">
-              <IconMdiChevronDoubleDown />
-              {{ i18n.t("project.new.step4.convert") }}
-              <IconMdiChevronDoubleDown />
-            </Button>
+          <div class="flex flex-wrap">
+            <div class="basis-full"><InputTextarea v-model="converter.bbCode" :rows="6" :label="i18n.t('project.new.step4.convertLabels.bbCode')" /></div>
+            <div class="basis-full flex justify-center my-4">
+              <Button :disabled="converter.loading" size="large" @click="convertBBCode">
+                <IconMdiChevronDoubleDown />
+                {{ i18n.t("project.new.step4.convert") }}
+                <IconMdiChevronDoubleDown />
+              </Button>
+            </div>
+            <div class="basis-full"><InputTextarea v-model="converter.markdown" :rows="6" :label="i18n.t('project.new.step4.convertLabels.output')" /></div>
           </div>
-          <InputTextarea v-model="converter.markdown" :rows="6" :label="i18n.t('project.new.step4.convertLabels.output')" />
         </template>
         <template #preview>
           <Button block color="primary" class="my-2" :disabled="form.pageContent === converter.markdown" @click="form.pageContent = converter.markdown">

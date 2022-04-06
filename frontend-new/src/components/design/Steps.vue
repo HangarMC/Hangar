@@ -71,7 +71,7 @@ export interface Step {
             <Link
               :class="internalValue === step.value ? 'underline' : '!font-semibold'"
               :href="'#' + step.value"
-              display="hidden md:inline"
+              display="hidden ml-0 md:inline"
               @click.prevent="goto(step)"
             >
               {{ step.header }}
@@ -89,10 +89,10 @@ export interface Step {
         <div v-for="step in steps" :key="step.value">
           <slot v-if="internalValue === step.value" :name="step.value" />
         </div>
-        <Button v-if="showBack" :disable="canBack" size="medium" class="mt-2 mr-2" @click="back">{{
+        <Button v-if="showBack" :disable="canBack" size="medium" class="mt-6 mr-2" @click="back">{{
           i18n.t(buttonLangKey + activeStepIndex + ".back")
         }}</Button>
-        <Button v-if="showNext" :disable="canNext" size="medium" class="mt-2" @click="next">{{ i18n.t(buttonLangKey + activeStepIndex + ".continue") }}</Button>
+        <Button v-if="showNext" :disable="canNext" size="medium" class="mt-6" @click="next">{{ i18n.t(buttonLangKey + activeStepIndex + ".continue") }}</Button>
       </Card>
     </div>
   </div>

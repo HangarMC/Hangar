@@ -32,7 +32,7 @@ const props = defineProps<{
         </li>
       </ul>
     </div>
-    <div>
+    <div class="flex-grow">
       <template v-for="tab in tabs" :key="tab.value">
         <slot v-if="internalValue === tab.value" :name="tab.value" />
       </template>

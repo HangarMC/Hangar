@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { FloatingLabel, inputClasses } from "~/composables/useInputHelper";
+import ErrorTooltip from "~/components/design/ErrorTooltip.vue";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -23,15 +24,14 @@ const error = computed<boolean>(() => {
 </script>
 
 <template>
-  <label class="relative flex" :class="{ filled: modelValue, error: error }">
-    <textarea v-model="value" :class="inputClasses" v-bind="$attrs" :maxlength="maxlength" />
-    <floating-label :label="label" />
-  </label>
-  <div v-if="counter" class="mt-1 mb-2">
-    <span v-if="maxlength">{{ value?.length || 0 }}/{{ maxlength }}</span>
-    <span v-else>{{ value?.length || 0 }}</span>
-  </div>
-  <template v-if="errorMessages && errorMessages.length > 0">
-    <span v-for="msg in errorMessages" :key="msg" class="text-red-500">{{ msg }}</span>
-  </template>
+  <ErrorTooltip :error-messages="errorMessages" class="w-full">
+    <label class="relative flex" :class="{ filled: modelValue, error: error }">
+      <textarea v-model="value" :class="inputClasses" v-bind="$attrs" :maxlength="maxlength" />
+      <floating-label :label="label" />
+    </label>
+    <div v-if="counter" class="mt-1 mb-2">
+      <span v-if="maxlength">{{ value?.length || 0 }}/{{ maxlength }}</span>
+      <span v-else>{{ value?.length || 0 }}</span>
+    </div>
+  </ErrorTooltip>
 </template>
