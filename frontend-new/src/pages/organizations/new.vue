@@ -14,7 +14,7 @@ import InputText from "~/components/ui/InputText.vue";
 import MemberList from "~/components/projects/MemberList.vue";
 import Button from "~/components/design/Button.vue";
 import Alert from "~/components/design/Alert.vue";
-import { HangarUser, JoinableMember } from "hangar-internal";
+import { JoinableMember } from "hangar-internal";
 
 const route = useRoute();
 const router = useRouter();
@@ -22,7 +22,7 @@ const i18n = useI18n();
 const ctx = useContext();
 const backendData = useBackendDataStore();
 
-const currentUser: HangarUser = useAuthStore().user!;
+const currentUser = useAuthStore().user;
 
 const name = ref<string>("");
 const members = ref<JoinableMember[]>([]);

@@ -21,21 +21,20 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
 public abstract class MemberService<
-        LC extends LogContext<?, LC>,
-        R extends Role<RT>,
-        RT extends ExtendedRoleTable<R, LC>,
-        RD extends IRolesDAO<RT>,
-        S extends RoleService<RT, R, RD>,
-        J extends Table & Named & Loggable<LC>,
-        JNS extends JoinableNotificationService<RT, J>,
-        MD extends MembersDAO<MT>,
-        MT extends MemberTable
-        > extends HangarComponent {
+    LC extends LogContext<?, LC>,
+    R extends Role<RT>,
+    RT extends ExtendedRoleTable<R, LC>,
+    RD extends IRolesDAO<RT>,
+    S extends RoleService<RT, R, RD>,
+    J extends Table & Named & Loggable<LC>,
+    JNS extends JoinableNotificationService<RT, J>,
+    MD extends MembersDAO<MT>,
+    MT extends MemberTable
+    > extends HangarComponent {
 
     @Autowired
     private UserDAO userDAO;
@@ -82,101 +81,65 @@ public abstract class MemberService<
     }
 
     // TODO user's removing themselves from projects/organizations
+    @Transactional
     public void removeMember(RT roleTable, String userName, boolean removeRole) {
         membersDao.delete(roleTable.getPrincipalId(), roleTable.getUserId());
         if (removeRole) {
             roleService.deleteRole(roleTable);
         }
-        String sb = "Removed:" + userName + " (" + roleTable.getRole().getTitle() + ")";
-        logMemberRemoval(roleTable, sb);
+        logMemberRemoval(roleTable, "Removed:" + userName + " (" + roleTable.getRole().getTitle() + ")");
     }
 
-    public void removeMembers(List<HangarApiException> errors, List<Member<R>> members, J joinable) {
-        List<RT> toBeRemoved = new ArrayList<>();
-        StringBuilder sb = new StringBuilder("Removed: ");
-        handleEditOrRemoval(errors, toBeRemoved, members, joinable.getId(), (member, rt, notLast) -> {
-            sb.append(member.getName()).append(" (").append(member.getRole().getTitle()).append(")");
-            if (notLast) {
-                sb.append(", ");
-            }
-            return true;
-        });
-        for (RT rt : toBeRemoved) {
-            membersDao.delete(rt.getPrincipalId(), rt.getUserId());
-            roleService.deleteRole(rt);
-        }
-        if (!toBeRemoved.isEmpty()) {
-            joinableNotificationService.removedFrom(toBeRemoved, joinable);
-            logMemberRemoval(joinable, sb.toString());
-        }
+    @Transactional
+    public void removeMember(Member<R> member, J joinable) {
+        RT roleTable = handleEditOrRemoval(member, joinable.getId());
+        membersDao.delete(roleTable.getPrincipalId(), roleTable.getUserId());
+        roleService.deleteRole(roleTable);
+        joinableNotificationService.removedFrom(roleTable, joinable);
+        logMemberRemoval(joinable, "Removed: " + member.getName() + " (" + member.getRole().getTitle() + ")");
     }
 
     private void logMemberRemoval(Loggable<LC> loggable, String logEntry) {
         loggable.logAction(actionLogger, membersRemovedAction, logEntry, "");
     }
 
-    public void editMembers(List<HangarApiException> errors, List<Member<R>> members, J joinable) {
-        List<RT> toBeUpdated = new ArrayList<>();
-        StringBuilder oldState = new StringBuilder("Old Roles: ");
-        StringBuilder newState = new StringBuilder("New Roles: ");
-        handleEditOrRemoval(errors, toBeUpdated, members, joinable.getId(), (member, rt, notLast) -> {
-            if (member.getRole() == rt.getRole()) {
-                return false;
-            }
-            oldState.append(member.getName()).append(" (").append(rt.getRole().getTitle()).append(")");
-            if (notLast) {
-                oldState.append(", ");
-            }
-            rt.setRole(member.getRole());
-            newState.append(member.getName()).append(" (").append(rt.getRole().getTitle()).append(")");
-            if (notLast) {
-                newState.append(", ");
-            }
-            return true;
-        });
-        roleService.updateRoles(toBeUpdated);
-        if (!toBeUpdated.isEmpty()) {
-            joinableNotificationService.roleChanged(toBeUpdated, joinable);
-            logMemberUpdate(joinable, oldState.toString(), newState.toString());
+    public void editMember(Member<R> member, J joinable) {
+        RT roleTable = handleEditOrRemoval(member, joinable.getId());
+        if (member.getRole() == roleTable.getRole()) {
+            return;
         }
+
+        String oldTitle = roleTable.getRole().getTitle();
+        roleTable.setRole(member.getRole());
+
+        roleService.updateRole(roleTable);
+        joinableNotificationService.roleChanged(roleTable, joinable);
+        logMemberUpdate(joinable,
+            "Old Roles: " + member.getName() + " (" + oldTitle + ")",
+            "New Roles: " + member.getName() + " (" + roleTable.getRole().getTitle() + ")");
     }
 
     private void logMemberUpdate(Loggable<LC> loggable, String oldState, String newState) {
         loggable.logAction(actionLogger, memberRoleChangedAction, newState, oldState);
     }
 
-    @FunctionalInterface
-    private interface AdditionalValidation<R extends Role<RT>, RT extends ExtendedRoleTable<R, ?>> {
-
-        boolean check(Member<R> member, RT rt, boolean notLast);
-    }
-
-    private void handleEditOrRemoval(List<HangarApiException> errors, List<RT> toBeChanged, List<Member<R>> members, long principalId, AdditionalValidation<R, RT> consumer) {
-        for (int i = 0; i < members.size(); i++) {
-            Member<R> member = members.get(i);
-            UserTable userTable = userDAO.getUserTable(member.getName());
-            if (userTable == null) {
-                errors.add(new HangarApiException(this.errorPrefix + "invalidUser", member.getName()));
-                continue;
-            }
-            RT roleTable = roleService.getRole(principalId, userTable.getId());
-            if (roleTable == null) {
-                errors.add(new HangarApiException(this.errorPrefix + "notMember", member.getName()));
-                continue;
-            }
-            if (invalidRolesToChange().contains(member.getRole())) {
-                errors.add(new HangarApiException(this.errorPrefix + "invalidRole", member.getRole().getTitle()));
-                continue;
-            }
-            if (invalidRolesToChange().contains(roleTable.getRole())) {
-                errors.add(new HangarApiException(this.errorPrefix + "invalidRole", roleTable.getRole().getTitle()));
-                continue;
-            }
-            if (!consumer.check(member, roleTable, i + 1 != members.size())) {
-                continue;
-            }
-            toBeChanged.add(roleTable);
+    private RT handleEditOrRemoval(Member<R> member, long principalId) {
+        UserTable userTable = userDAO.getUserTable(member.getName());
+        if (userTable == null) {
+            throw new HangarApiException(this.errorPrefix + "invalidUser", member.getName());
         }
+
+        RT roleTable = roleService.getRole(principalId, userTable.getId());
+        if (roleTable == null) {
+            throw new HangarApiException(this.errorPrefix + "notMember", member.getName());
+        }
+        if (invalidRolesToChange().contains(member.getRole())) {
+            throw new HangarApiException(this.errorPrefix + "invalidRole", member.getRole().getTitle());
+        }
+        if (invalidRolesToChange().contains(roleTable.getRole())) {
+            throw new HangarApiException(this.errorPrefix + "invalidRole", roleTable.getRole().getTitle());
+        }
+        return roleTable;
     }
 
     abstract List<R> invalidRolesToChange();

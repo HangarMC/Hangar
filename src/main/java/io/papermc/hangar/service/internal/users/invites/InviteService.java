@@ -75,6 +75,21 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
         }
     }
 
+    public void sendInvite(Member<R> invitee, J joinable) {
+        UserTable userTable = userDAO.getUserTable(invitee.getName());
+        if (userTable == null) {
+            throw new HangarApiException(this.errorPrefix + "invalidUser", invitee.getName());
+        }
+
+        RT roleTable = roleService.addRole(invitee.getRole().create(joinable.getId(), userTable.getId(), false), true);
+        if (roleTable == null) {
+            throw new HangarApiException(this.errorPrefix + "alreadyInvited", invitee.getName());
+        }
+
+        joinableNotificationService.invited(List.of(roleTable), joinable);
+        logInvitesSent(joinable, "Invited: " + userTable.getName() + " (" + invitee.getRole().getTitle() + ")");
+    }
+
     abstract LogAction<LC> getInviteSentAction();
 
     protected void logInvitesSent(Loggable<LC> loggable, String log) {

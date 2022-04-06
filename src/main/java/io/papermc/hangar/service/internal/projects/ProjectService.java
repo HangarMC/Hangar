@@ -1,5 +1,33 @@
 package io.papermc.hangar.service.internal.projects;
 
+import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
+import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
+import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
+import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.api.project.Project;
+import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.common.projects.Visibility;
+import io.papermc.hangar.model.db.OrganizationTable;
+import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.db.projects.ProjectOwner;
+import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.db.roles.ProjectRoleTable;
+import io.papermc.hangar.model.internal.api.requests.StringContent;
+import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
+import io.papermc.hangar.model.internal.projects.HangarProject;
+import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo;
+import io.papermc.hangar.model.internal.projects.HangarProjectPage;
+import io.papermc.hangar.model.internal.user.JoinableMember;
+import io.papermc.hangar.service.PermissionService;
+import io.papermc.hangar.service.internal.organizations.OrganizationService;
+import io.papermc.hangar.service.internal.uploads.ProjectFiles;
+import io.papermc.hangar.service.internal.versions.RecommendedVersionService;
+import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
+import io.papermc.hangar.util.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -13,45 +41,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
-import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
-import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
-import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.exceptions.MultiHangarApiException;
-import io.papermc.hangar.model.api.project.Project;
-import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.common.projects.Visibility;
-import io.papermc.hangar.model.common.roles.ProjectRole;
-import io.papermc.hangar.model.db.OrganizationTable;
-import io.papermc.hangar.model.db.UserTable;
-import io.papermc.hangar.model.db.projects.ProjectOwner;
-import io.papermc.hangar.model.db.projects.ProjectTable;
-import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
-import io.papermc.hangar.model.internal.api.requests.StringContent;
-import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
-import io.papermc.hangar.model.internal.logs.LogAction;
-import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
-import io.papermc.hangar.model.internal.projects.HangarProject;
-import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo;
-import io.papermc.hangar.model.internal.projects.HangarProjectPage;
-import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.internal.organizations.OrganizationService;
-import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
-import io.papermc.hangar.service.internal.uploads.ProjectFiles;
-import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
-import io.papermc.hangar.service.internal.versions.RecommendedVersionService;
-import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
-import io.papermc.hangar.util.FileUtils;
 
 @Service
 public class ProjectService extends HangarComponent {
@@ -63,14 +58,12 @@ public class ProjectService extends HangarComponent {
     private final OrganizationService organizationService;
     private final ProjectPageService projectPageService;
     private final ProjectFiles projectFiles;
-    private final ProjectInviteService projectInviteService;
-    private final ProjectMemberService projectMemberService;
     private final PermissionService permissionService;
     private final RecommendedVersionService recommendedVersionService;
     private final HomeProjectService homeProjectService;
 
     @Autowired
-    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, ProjectInviteService projectInviteService, ProjectMemberService projectMemberService, PermissionService permissionService, RecommendedVersionService recommendedVersionService, HomeProjectService homeProjectService) {
+    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, PermissionService permissionService, RecommendedVersionService recommendedVersionService, HomeProjectService homeProjectService) {
         this.projectsDAO = projectDAO;
         this.hangarUsersDAO = hangarUsersDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
@@ -78,8 +71,6 @@ public class ProjectService extends HangarComponent {
         this.organizationService = organizationService;
         this.projectPageService = projectPageService;
         this.projectFiles = projectFiles;
-        this.projectInviteService = projectInviteService;
-        this.projectMemberService = projectMemberService;
         this.permissionService = permissionService;
         this.recommendedVersionService = recommendedVersionService;
         this.homeProjectService = homeProjectService;
@@ -113,7 +104,7 @@ public class ProjectService extends HangarComponent {
     public HangarProject getHangarProject(String author, String slug) {
         Pair<Long, Project> project = hangarProjectsDAO.getProject(author, slug, getHangarUserId());
         ProjectOwner projectOwner = getProjectOwner(author);
-        var members = hangarProjectsDAO.getProjectMembers(project.getLeft(), getHangarUserId(), permissionService.getProjectPermissions(getHangarUserId(), project.getLeft()).has(Permission.EditProjectSettings));
+        List<JoinableMember<ProjectRoleTable>> members = hangarProjectsDAO.getProjectMembers(project.getLeft(), getHangarUserId(), permissionService.getProjectPermissions(getHangarUserId(), project.getLeft()).has(Permission.EditProjectSettings));
         String lastVisibilityChangeComment = "";
         String lastVisibilityChangeUserName = "";
         if (project.getRight().getVisibility() == Visibility.NEEDSCHANGES || project.getRight().getVisibility() == Visibility.SOFTDELETE) {
@@ -213,36 +204,6 @@ public class ProjectService extends HangarComponent {
             logger.warn("Error while loading {} icon for project {}/{}: {}:{}", old, author, slug, e.getClass().getSimpleName(), e.getMessage());
         }
         return base64;
-    }
-
-    public void editMembers(String author, String slug, EditMembersForm<ProjectRole> editMembersForm) {
-        ProjectTable projectTable = getProjectTable(author, slug);
-        List<HangarApiException> errors = new ArrayList<>();
-
-        projectInviteService.sendInvites(errors, editMembersForm.getNewInvitees(), projectTable);
-        projectMemberService.editMembers(errors, editMembersForm.getEditedMembers(), projectTable);
-        projectMemberService.removeMembers(errors, editMembersForm.getDeletedMembers(), projectTable);
-
-        if (!errors.isEmpty()) {
-            throw new MultiHangarApiException(errors);
-        }
-    }
-
-    public void editMember(String author, String slug, EditMembersForm.Member<ProjectRole> member) {
-        ProjectTable projectTable = getProjectTable(author, slug);
-        List<HangarApiException> errors = new ArrayList<>();
-        if (member.isNewMember()) {
-            projectInviteService.sendInvites(errors, List.of(member), projectTable);
-        } else if (member.isEditing()) {
-            projectMemberService.editMembers(errors, List.of(member), projectTable);
-        } else if (member.isToDelete()) {
-            projectMemberService.removeMembers(errors, List.of(member), projectTable);
-        } else {
-            throw new HangarApiException();
-        }
-        if (!errors.isEmpty()) {
-            throw new MultiHangarApiException(errors);
-        }
     }
 
     public List<UserTable> getProjectWatchers(long projectId) {

@@ -27,6 +27,7 @@ import io.papermc.hangar.service.internal.organizations.OrganizationFactory;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import io.papermc.hangar.service.internal.users.UserService;
+import io.papermc.hangar.service.internal.users.invites.OrganizationInviteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -53,18 +54,20 @@ public class OrganizationController extends HangarComponent {
     private final UserService userService;
     private final OrganizationFactory organizationFactory;
     private final OrganizationService organizationService;
+    private final OrganizationMemberService memberService;
+    private final OrganizationInviteService inviteService;
     private final AuthenticationService authenticationService;
     private final ValidationService validationService;
-    private final OrganizationMemberService memberService;
 
     @Autowired
-    public OrganizationController(UserService userService, OrganizationFactory organizationFactory, OrganizationService organizationService, AuthenticationService authenticationService, ValidationService validationService, OrganizationMemberService memberService) {
+    public OrganizationController(UserService userService, OrganizationFactory organizationFactory, OrganizationService organizationService, OrganizationMemberService memberService, OrganizationInviteService inviteService, AuthenticationService authenticationService, ValidationService validationService) {
         this.userService = userService;
         this.organizationFactory = organizationFactory;
         this.organizationService = organizationService;
+        this.memberService = memberService;
+        this.inviteService = inviteService;
         this.authenticationService = authenticationService;
         this.validationService = validationService;
-        this.memberService = memberService;
     }
 
     @Anyone
@@ -87,24 +90,35 @@ public class OrganizationController extends HangarComponent {
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
-    @PostMapping(path = "/org/{name}/members", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void editProjectMembers(@PathVariable String name, @Valid @RequestBody EditMembersForm<OrganizationRole> editMembersForm) {
-        organizationService.editMembers(name, editMembersForm);
+    @PostMapping(path = "/org/{name}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addProjectMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
+        OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+        inviteService.sendInvite(member, organizationTable);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
-    @PostMapping(path = "/org/{name}/member", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void editProjectMembers(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
-        organizationService.editMember(name, member);
+    @PostMapping(path = "/org/{name}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void editProjectMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
+        OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+        memberService.editMember(member, organizationTable);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
+    @PostMapping(path = "/org/{name}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void removeProjectMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
+        OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+        memberService.removeMember(member, organizationTable);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void create(@Valid @RequestBody CreateOrganizationForm createOrganizationForm) {
-        organizationFactory.createOrganization(createOrganizationForm.getName(), createOrganizationForm.getNewInvitees());
+        organizationFactory.createOrganization(createOrganizationForm.getName(), createOrganizationForm.getMembers());
     }
 
     @Unlocked

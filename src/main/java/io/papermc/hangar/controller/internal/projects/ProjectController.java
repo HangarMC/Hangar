@@ -21,13 +21,13 @@ import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
+import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
 import io.papermc.hangar.service.internal.projects.HomeProjectService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
-import io.papermc.hangar.service.internal.projects.ProjectNoteService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.uploads.ImageService;
 import io.papermc.hangar.service.internal.users.UserService;
-import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
+import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -53,6 +53,8 @@ public class ProjectController extends HangarComponent {
 
     private final ProjectFactory projectFactory;
     private final ProjectService projectService;
+    private final ProjectMemberService projectMemberService;
+    private final ProjectInviteService projectInviteService;
     private final UserService userService;
     private final OrganizationService organizationService;
     private final ImageService imageService;
@@ -60,11 +62,13 @@ public class ProjectController extends HangarComponent {
     private final HomeProjectService homeProjectService;
 
     @Autowired
-    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService, ProjectNoteService projectNoteService, ProjectVisibilityService projectVisibilityService, ImageService imageService, StatService statService, HomeProjectService homeProjectService) {
+    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService, ProjectMemberService projectMemberService, ProjectInviteService projectInviteService, ImageService imageService, StatService statService, HomeProjectService homeProjectService) {
         this.projectFactory = projectFactory;
         this.projectService = projectService;
         this.userService = userService;
         this.organizationService = organizationService;
+        this.projectMemberService = projectMemberService;
+        this.projectInviteService = projectInviteService;
         this.imageService = imageService;
         this.statService = statService;
         this.homeProjectService = homeProjectService;
@@ -145,17 +149,28 @@ public class ProjectController extends HangarComponent {
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
-    @PostMapping(path = "/project/{author}/{slug}/members", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void editProjectMembers(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody EditMembersForm<ProjectRole> editMembersForm) {
-        projectService.editMembers(author, slug, editMembersForm);
+    @PostMapping(path = "/project/{author}/{slug}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addProjectMember(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody EditMembersForm.Member<ProjectRole> member) {
+        ProjectTable projectTable = projectService.getProjectTable(author, slug);
+        projectInviteService.sendInvite(member, projectTable);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
-    @PostMapping(path = "/project/{author}/{slug}/member", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/project/{author}/{slug}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void editProjectMember(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody EditMembersForm.Member<ProjectRole> member) {
-        projectService.editMember(author, slug, member);
+        ProjectTable projectTable = projectService.getProjectTable(author, slug);
+        projectMemberService.editMember(member, projectTable);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
+    @PostMapping(path = "/project/{author}/{slug}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void removeProjectMember(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody EditMembersForm.Member<ProjectRole> member) {
+        ProjectTable projectTable = projectService.getProjectTable(author, slug);
+        projectMemberService.removeMember(member, projectTable);
     }
 
     @Unlocked

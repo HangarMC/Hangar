@@ -7,8 +7,6 @@ import io.papermc.hangar.model.db.roles.IRoleTable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 public abstract class RoleService<RT extends IRoleTable<R>, R extends Role<RT>, D extends IRolesDAO<RT>> extends HangarComponent {
 
     protected final D roleDao;
@@ -42,10 +40,8 @@ public abstract class RoleService<RT extends IRoleTable<R>, R extends Role<RT>, 
         return roleTable;
     }
 
-    public void updateRoles(List<RT> roleTables) {
-        for (RT rt : roleTables) {
-            roleDao.update(rt);
-        }
+    public void updateRole(RT roleTable) {
+        roleDao.update(roleTable);
     }
 
     public void deleteRole(RT roleTable) {

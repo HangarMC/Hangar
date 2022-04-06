@@ -6,22 +6,17 @@ import io.papermc.hangar.db.dao.internal.table.OrganizationDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.roles.OrganizationRolesDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.exceptions.MultiHangarApiException;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.HangarOrganization;
-import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
-import io.papermc.hangar.service.internal.users.invites.OrganizationInviteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,17 +29,15 @@ public class OrganizationService extends HangarComponent {
     private final UserDAO userDAO;
     private final PermissionService permissionService;
     private final OrganizationMemberService organizationMemberService;
-    private final OrganizationInviteService organizationInviteService;
 
     @Autowired
-    public OrganizationService(HangarOrganizationsDAO hangarOrganizationsDAO, OrganizationRolesDAO organizationRolesDAO, OrganizationDAO organizationDAO, UserDAO userDAO, PermissionService permissionService, OrganizationMemberService organizationMemberService, OrganizationInviteService organizationInviteService) {
+    public OrganizationService(HangarOrganizationsDAO hangarOrganizationsDAO, OrganizationRolesDAO organizationRolesDAO, OrganizationDAO organizationDAO, UserDAO userDAO, PermissionService permissionService, OrganizationMemberService organizationMemberService) {
         this.hangarOrganizationsDAO = hangarOrganizationsDAO;
         this.organizationRolesDAO = organizationRolesDAO;
         this.organizationDAO = organizationDAO;
         this.userDAO = userDAO;
         this.permissionService = permissionService;
         this.organizationMemberService = organizationMemberService;
-        this.organizationInviteService = organizationInviteService;
     }
 
     public OrganizationTable getOrganizationTable(String name) {
@@ -85,35 +78,5 @@ public class OrganizationService extends HangarComponent {
 
     public long getUserOrganizationCount(long userId) {
         return organizationDAO.getOrganizationCount(userId);
-    }
-
-    public void editMembers(String name, EditMembersForm<OrganizationRole> editMembersForm) {
-        OrganizationTable organizationTable = getOrganizationTable(name);
-        List<HangarApiException> errors = new ArrayList<>();
-
-        organizationInviteService.sendInvites(errors, editMembersForm.getNewInvitees(), organizationTable);
-        organizationMemberService.editMembers(errors, editMembersForm.getEditedMembers(), organizationTable);
-        organizationMemberService.removeMembers(errors, editMembersForm.getDeletedMembers(), organizationTable);
-
-        if (!errors.isEmpty()) {
-            throw new MultiHangarApiException(errors);
-        }
-    }
-
-    public void editMember(String name, EditMembersForm.Member<OrganizationRole> member) {
-        OrganizationTable organizationTable = getOrganizationTable(name);
-        List<HangarApiException> errors = new ArrayList<>();
-        if (member.isNewMember()) {
-            organizationInviteService.sendInvites(errors, List.of(member), organizationTable);
-        } else if (member.isEditing()) {
-            organizationMemberService.editMembers(errors, List.of(member), organizationTable);
-        } else if (member.isToDelete()) {
-            organizationMemberService.removeMembers(errors, List.of(member), organizationTable);
-        } else {
-            throw new HangarApiException();
-        }
-        if (!errors.isEmpty()) {
-            throw new MultiHangarApiException(errors);
-        }
     }
 }

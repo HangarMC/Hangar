@@ -31,26 +31,20 @@ public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?
     public void invited(Collection<RT> inviteeRoleTables, J joinable) {
         Collection<NotificationTable> notificationTables = new HashSet<>();
         for (RT rt : inviteeRoleTables) {
-            notificationTables.add(new NotificationTable(rt.getUserId(), null, joinable.getId(), new String[]{ this.msgPrefix + "invite", rt.getRole().getTitle(), joinable.getName()}, NotificationType.SUCCESS));
+            notificationTables.add(new NotificationTable(rt.getUserId(), null, joinable.getId(), new String[]{this.msgPrefix + "invite", rt.getRole().getTitle(), joinable.getName()}, NotificationType.SUCCESS));
         }
         notificationsDAO.insert(notificationTables);
     }
 
-    public void removedFrom(Collection<RT> removedFromRoleTables, J joinable) {
-        Collection<NotificationTable> notificationTables = new HashSet<>();
-        for (RT rt : removedFromRoleTables) {
-            String msgKey = this.msgPrefix + (rt.isAccepted() ? "removed" : "inviteRescinded");
-            notificationTables.add(new NotificationTable(rt.getUserId(), null, joinable.getId(), new String[] {msgKey, rt.getRole().getTitle(), joinable.getName()}, NotificationType.WARNING));
-        }
-        notificationsDAO.insert(notificationTables);
+    public void removedFrom(RT removedFromRoleTable, J joinable) {
+        String msgKey = this.msgPrefix + (removedFromRoleTable.isAccepted() ? "removed" : "inviteRescinded");
+        notificationsDAO.insert(new NotificationTable(removedFromRoleTable.getUserId(), null, joinable.getId(),
+            new String[]{msgKey, removedFromRoleTable.getRole().getTitle(), joinable.getName()}, NotificationType.WARNING));
     }
 
-    public void roleChanged(Collection<RT> changedRoleTables, J joinable) {
-        Collection<NotificationTable> notificationTables = new HashSet<>();
-        for (RT rt : changedRoleTables) {
-            notificationTables.add(new NotificationTable(rt.getUserId(), null, joinable.getId(), new String[] {this.msgPrefix + "roleChanged", rt.getRole().getTitle(), joinable.getName()}, NotificationType.INFO));
-        }
-        notificationsDAO.insert(notificationTables);
+    public void roleChanged(RT changedRoleTable, J joinable) {
+        notificationsDAO.insert(new NotificationTable(changedRoleTable.getUserId(), null, joinable.getId(),
+            new String[]{this.msgPrefix + "roleChanged", changedRoleTable.getRole().getTitle(), joinable.getName()}, NotificationType.INFO));
     }
 
 

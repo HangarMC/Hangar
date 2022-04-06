@@ -29,6 +29,8 @@ const props = withDefaults(
   {
     organization: false,
     class: "",
+    author: undefined,
+    slug: undefined,
   }
 );
 
@@ -51,22 +53,17 @@ const canEdit = computed<boolean>(() => {
 const saving = ref<boolean>(false);
 
 function removeMember(member: JoinableMember) {
-  const editableMember: EditableMember = convertMember(member);
-  editableMember.toDelete = true;
-  post(editableMember);
+  post(convertMember(member), "remove");
 }
 
 function setRole(member: JoinableMember, role: Role) {
   const editableMember: EditableMember = convertMember(member);
-  editableMember.editing = true;
   editableMember.roleId = role.roleId;
-  post(editableMember);
+  post(editableMember, "edit");
 }
 
-async function post(member: EditableMember) {
-  const url = props.organization ? `organizations/org/${props.author}/member` : `projects/project/${props.author}/${props.slug}/member`;
-  console.log(props.author);
-  console.log(props.slug);
+async function post(member: EditableMember, action: "edit" | "add" | "remove") {
+  const url = props.organization ? `organizations/org/${props.author}/members/${action}` : `projects/project/${props.author}/${props.slug}/members/${action}`;
   useInternalApi(url, true, "post", member)
     .finally(() => {
       saving.value = false;
@@ -77,27 +74,13 @@ async function post(member: EditableMember) {
 function convertMember(member: JoinableMember): EditableMember {
   return {
     name: member.user.name,
-    roleTitle: member.role.role.title,
     roleId: member.role.role.roleId,
-    roleAccepted: member.role.accepted,
-    roleAssignable: member.role.role.assignable,
-    editing: false,
-    toDelete: false,
-    new: false,
-    hidden: member.hidden,
   };
 }
 
 interface EditableMember {
   name: string;
-  roleTitle?: string;
-  roleId?: number;
-  roleAssignable: boolean;
-  roleAccepted?: boolean;
-  editing: boolean;
-  toDelete: boolean;
-  new: boolean;
-  hidden: boolean;
+  roleId: number;
 }
 </script>
 
