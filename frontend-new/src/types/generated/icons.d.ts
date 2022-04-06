@@ -5,6 +5,7 @@
 declare module "vue" {
   export interface GlobalComponents {
     IconMdiAccountArrowRight: typeof import("~icons/mdi/account-arrow-right")["default"];
+    IconMdiAccountPlus: typeof import("~icons/mdi/account-plus")["default"];
     IconMdiBell: typeof import("~icons/mdi/bell")["default"];
     IconMdiBellOutline: typeof import("~icons/mdi/bell-outline")["default"];
     IconMdiCalendar: typeof import("~icons/mdi/calendar")["default"];

@@ -71,6 +71,7 @@ function toggleWatch() {
         <p>{{ project.description }}</p>
       </div>
       <div class="flex sm:flex-col space-y-2 items-end justify-between sm:justify-around flex-shrink-0">
+        <!-- TODO: download button component with functionality -->
         <Button size="large">Download latest</Button>
         <div class="flex">
           <Tooltip>
@@ -79,7 +80,7 @@ function toggleWatch() {
               <span v-else-if="starred">{{ i18n.t("project.actions.unstar") }}</span>
               <span v-else>{{ i18n.t("project.actions.star") }}</span>
             </template>
-            <Button size="small" :disabled="canStarOrWatch" @click="toggleStar">
+            <Button button-type="gray" size="small" :disabled="canStarOrWatch" @click="toggleStar">
               <IconMdiStar v-if="starred" />
               <IconMdiStarOutline v-else />
               <span class="ml-2">{{ project.stats.stars }}</span>
@@ -93,7 +94,7 @@ function toggleWatch() {
               <span v-else-if="starred">{{ i18n.t("project.actions.unwatch") }}</span>
               <span v-else>{{ i18n.t("project.actions.watch") }}</span>
             </template>
-            <Button size="small" :disabled="canStarOrWatch" @click="toggleWatch">
+            <Button button-type="gray" size="small" :disabled="canStarOrWatch" @click="toggleWatch">
               <IconMdiBell v-if="watching" />
               <IconMdiBellOutline v-else />
               <span class="ml-2">{{ project.stats.watchers }}</span>

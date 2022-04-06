@@ -138,7 +138,10 @@ interface EditableMember {
           </Tooltip>
         </div>
         <!-- todo confirmation modal -->
-        <DropdownButton v-if="canEdit && member.role.role.assignable" :name="i18n.t('general.edit')">
+        <DropdownButton v-if="true || (canEdit && member.role.role.assignable)" :name="i18n.t('general.edit')">
+          <template #button-label>
+            <IconMdiPencil />
+          </template>
           <DropdownItem v-for="role of roles" :key="role.title" :disabled="saving" @click="setRole(member, role)">
             {{ role.title }}
           </DropdownItem>
@@ -150,6 +153,9 @@ interface EditableMember {
         <!-- todo fancy search completion -->
         <InputText v-model="search" :label="i18n.t('form.memberList.addUser')" :error-messages="addErrors"></InputText>
         <DropdownButton :name="i18n.t('general.add')" class="ml-2">
+          <template #button-label>
+            <IconMdiAccountPlus class="ml-1" />
+          </template>
           <DropdownItem v-for="role of roles" :key="role.title" :disabled="saving" @click="invite(search, role)">
             {{ role.title }}
           </DropdownItem>
