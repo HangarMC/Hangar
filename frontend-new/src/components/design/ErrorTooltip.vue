@@ -4,7 +4,6 @@ import { computed } from "vue";
 
 const props = defineProps<{
   errorMessages?: string[];
-  content: string;
 }>();
 
 const formattedError = computed<string>(() => {

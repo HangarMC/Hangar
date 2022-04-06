@@ -19,6 +19,7 @@ import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useRoute } from "vue-router";
+import Tooltip from "~/components/design/Tooltip.vue";
 
 const props = defineProps<{
   user: User;
@@ -79,7 +80,9 @@ async function editChannel(channel: ProjectChannel) {
         <tr>
           <th><IconMdiTag />{{ i18n.t("channel.manage.channelName") }}</th>
           <th><IconMdiFormatListNumbered />{{ i18n.t("channel.manage.versionCount") }}</th>
-          <th><IconMdiFileFind />{{ i18n.t("channel.manage.reviewed") }}</th>
+          <Tooltip :content="i18n.t('channel.manage.reviewInfo')"
+            ><th><IconMdiFileFind />{{ i18n.t("channel.manage.reviewed") }}</th></Tooltip
+          >
           <th><IconMdiPencil />{{ i18n.t("channel.manage.edit") }}</th>
           <th v-if="channels.length !== 1"><IconMdiDelete />{{ i18n.t("channel.manage.trash") }}</th>
         </tr>

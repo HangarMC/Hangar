@@ -30,7 +30,9 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "error": {
-      "invalidUrl": "Invalid URL format"
+      "invalidUrl": "Invalid URL format",
+      "nameEmpty": "Name cannot be empty",
+      "fieldEmpty": "This field is required to be set"
     }
   },
   "hangar": {
@@ -478,6 +480,7 @@
     },
     "manage": {
       "title": "Release channels",
+      "reviewInfo": "Channel names may automatically be flagged for review and will only be published after",
       "subtitle": "Release channels represent the state of a plugin release. A project may have up to five release channels.",
       "channelName": "Channel Name",
       "versionCount": "Version Count",
@@ -518,7 +521,7 @@
       "addUser": "Add User...",
       "create": "Create",
       "editUser": "Edit User",
-      "invitedAs": "(Invited as {0})"
+      "invitedAs": "Pending invite as {0}"
     }
   },
   "notifications": {

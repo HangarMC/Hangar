@@ -56,7 +56,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
 - index
   - [x] fetch
   - [x] layout
-  - [ ] functionality (sorting, licence and version filter)
+  - [ ] functionality (search without reloading the page, sorting, licence and version filter)
   - [x] design
   - [ ] qa
 - linkout
@@ -64,7 +64,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
   - [x] layout
   - [x] functionality
   - [x] design
-  - [ ] qa
+  - [x] qa
 - new
   - [x] fetch
   - [x] layout
@@ -120,12 +120,12 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
     - [x] fetch
     - [x] layout
     - [x] functionality
-    - [ ] design (nav might need some work)
+    - [x] design
     - [ ] qa
     * channels
       - [x] fetch
       - [x] layout
-      - [ ] functionality (modal is missing)
+      - [x] functionality
       - [x] design
       - [ ] qa
     * discuss
@@ -143,7 +143,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
     * index
       - [x] fetch
       - [x] layout
-      - [ ] functionality (promoted versions)
+      - [ ] functionality (promoted versions, download latest)
       - [x] design
       - [ ] qa
     * notes

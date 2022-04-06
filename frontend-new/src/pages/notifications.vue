@@ -12,8 +12,6 @@ import { useHead } from "@vueuse/head";
 import { useNotificationStore } from "~/store/notification";
 import Card from "~/components/design/Card.vue";
 import Button from "~/components/design/Button.vue";
-import DropdownButton from "~/components/design/DropdownButton.vue";
-import DropdownItem from "~/components/design/DropdownItem.vue";
 import InputSelect from "~/components/ui/InputSelect.vue";
 
 const ctx = useContext();

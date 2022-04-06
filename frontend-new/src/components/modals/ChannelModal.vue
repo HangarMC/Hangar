@@ -3,7 +3,7 @@ import { useI18n } from "vue-i18n";
 import Button from "~/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { ProjectChannel } from "hangar-internal";
-import { computed, reactive, watch } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { useBackendDataStore } from "~/store/backendData";
 import { AxiosError } from "axios";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -24,21 +24,21 @@ const emit = defineEmits<{
 const i18n = useI18n();
 const ctx = useContext();
 
-const loading = reactive({
-  name: false,
-  color: false,
-});
-const errorMessages = reactive({
-  name: [] as string[],
-  color: [] as string[],
+const validation = reactive({
+  nameErrors: [] as string[],
+  colorErrors: [] as string[],
+  nameValid: false,
+  colorValid: false,
 });
 const form = reactive<ProjectChannel>({
   name: "",
   color: "",
-  nonReviewed: false,
+  nonReviewed: true, //TODO only do automated name validation
   editable: true,
   versionCount: 0,
 });
+const name = ref<string>(props.channel ? props.channel.name : "");
+const color = ref<string>(props.channel ? props.channel.color : "");
 const swatches = computed<string[][]>(() => {
   const result: string[][] = [];
   const backendColors = useBackendDataStore().channelColors;
@@ -56,60 +56,62 @@ const swatches = computed<string[][]>(() => {
 });
 
 const isValid = computed(() => {
-  return errorMessages.name?.length === 0 && errorMessages.color?.length === 0;
+  return validation.colorValid && validation.nameValid;
 });
 
-watch(
-  form,
-  (newVal) => {
-    checkName(newVal.name);
-    checkColor(newVal.color);
-  },
-  { deep: true }
-);
+watch(name, (newVal) => checkName(newVal));
+watch(color, (newVal) => checkColor(newVal));
 
 function checkName(name: string) {
-  if (!name) return;
-  loading.name = true;
-  errorMessages.name = [];
+  validation.nameValid = false;
+  validation.nameErrors = [];
+  if (name.length === 0) {
+    return;
+  }
+
   useInternalApi("channels/checkName", true, "get", {
     projectId: props.projectId,
     name: name,
     existingName: props.channel?.name,
   })
+    .then(() => {
+      validation.nameValid = true;
+    })
     .catch((err: AxiosError) => {
       if (!err.response?.data.isHangarApiException) {
         return handleRequestError(err, ctx, i18n);
       }
-      errorMessages.name.push(i18n.t(err.response.data.message));
-    })
-    .finally(() => {
-      loading.name = false;
+      validation.nameErrors.push(i18n.t(err.response.data.message));
     });
 }
 
 function checkColor(color: string) {
-  if (!color) return;
-  loading.color = true;
-  errorMessages.color = [];
+  validation.colorValid = false;
+  validation.colorErrors = [];
+  if (color.length === 0) {
+    return;
+  }
+
   useInternalApi("channels/checkColor", true, "get", {
     projectId: props.projectId,
     color: color,
     existingColor: props.channel?.color,
   })
+    .then(() => {
+      validation.colorValid = true;
+    })
     .catch((err: AxiosError) => {
       if (!err.response?.data.isHangarApiException) {
         return handleRequestError(err, ctx, i18n);
       }
-      errorMessages.color.push(i18n.t(err.response.data.message));
-    })
-    .finally(() => {
-      loading.color = false;
+      validation.colorErrors.push(i18n.t(err.response.data.message));
     });
 }
 
 function create(close: () => void) {
   close();
+  form.name = name.value;
+  form.color = color.value;
   emit("create", form);
 }
 
@@ -124,29 +126,29 @@ reset();
 <template>
   <Modal :title="edit ? i18n.t('channel.modal.titleEdit') : i18n.t('channel.modal.titleNew')">
     <template #default="{ on }">
-      <InputText v-model.trim="form.name" :label="i18n.t('channel.modal.name')" :disabled="loading.name" :error-messages="errorMessages.name" />
-      <span class="text-lg">{{ i18n.t("channel.modal.color") }}</span>
-      <div v-for="(arr, arrIndex) in swatches" :key="arrIndex" class="flex justify-center">
-        <div v-for="(color, n) in arr" :key="n" class="flex-grow-0 flex-shrink-1 pa-2 px-1 mb-2">
+      <InputText v-model.trim="name" :label="i18n.t('channel.modal.name')" :error-messages="validation.nameErrors" />
+      <p class="text-lg font-bold mt-3 mb-1">{{ i18n.t("channel.modal.color") }}</p>
+      <div v-for="(arr, arrIndex) in swatches" :key="arrIndex" class="flex">
+        <div v-for="(c, n) in arr" :key="n" class="flex-grow-0 flex-shrink-1 pa-2 pr-1 mb-1">
           <div
-            :style="`background-color: ${color}`"
-            class="w-40px h-25px cursor-pointer inline-flex justify-center items-center rounded-lg border-black border-1"
-            @click="form.color = color"
+            :style="`background-color: ${c}`"
+            class="w-27px h-25px cursor-pointer inline-flex justify-center items-center rounded-lg border-black border-1"
+            @click="color = c"
           >
             <IconMdiCheckboxMarkedCircle
-              class="ma-auto transition-all ease-in-out duration-300"
-              :class="form.color === color ? 'visible opacity-100' : 'invisible opacity-0'"
+              class="ma-auto transition-all ease-in-out duration-100"
+              :class="color === c ? 'visible opacity-100' : 'invisible opacity-0'"
             />
           </div>
         </div>
       </div>
-      <InputText v-model="form.color" :label="i18n.t('channel.modal.color')" :error-messages="errorMessages.color" :loading="loading.color" readonly />
-      <InputCheckbox v-model="form.nonReviewed" :label="i18n.t('channel.modal.reviewQueue')" />
+      <InputText v-model="color" :label="i18n.t('channel.modal.color')" :error-messages="validation.colorErrors" readonly />
+      <br />
 
-      <Button button-type="gray" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
-      <Button button-type="primary" class="mt-2 ml-2" :disabled="!isValid" @click="create(on.click)">{{
+      <Button button-type="primary" class="mt-2" :disabled="!isValid" @click="create(on.click)">{{
         edit ? i18n.t("general.save") : i18n.t("general.create")
       }}</Button>
+      <Button button-type="gray" class="mt-2 ml-2" v-on="on">{{ i18n.t("general.close") }}</Button>
     </template>
     <template #activator="{ on }">
       <slot name="activator" :on="on"></slot>

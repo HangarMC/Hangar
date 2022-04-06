@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { JoinableMember } from "hangar-internal";
 import { NamedPermission } from "~/types/enums";
@@ -12,10 +12,12 @@ import { avatarUrl } from "~/composables/useUrlHelper";
 import { hasPerms } from "~/composables/usePerm";
 import { useBackendDataStore } from "~/store/backendData";
 import { Role } from "hangar-api";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useInternalApi } from "~/composables/useApi";
 import { useContext } from "vite-ssr/vue";
-import { handleRequestError } from "~/composables/useErrorHandling";
+import IconMdiClock from "~icons/mdi/clock";
+import Tooltip from "~/components/design/Tooltip.vue";
+import InputText from "~/components/ui/InputText.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -44,6 +46,7 @@ const value = computed({
 const i18n = useI18n();
 const store = useBackendDataStore();
 const route = useRoute();
+const router = useRouter();
 const ctx = useContext();
 const roles: Role[] = store.projectRoles;
 
@@ -51,6 +54,12 @@ const canEdit = computed<boolean>(() => {
   return hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS);
 });
 const saving = ref<boolean>(false);
+const search = ref<string>("");
+const addErrors = ref<string[]>([]);
+
+watch(search, () => {
+  addErrors.value = [];
+});
 
 function removeMember(member: JoinableMember) {
   post(convertMember(member), "remove");
@@ -62,13 +71,34 @@ function setRole(member: JoinableMember, role: Role) {
   post(editableMember, "edit");
 }
 
+function invite(member: string, role: Role) {
+  const editableMember: EditableMember = { name: member, roleId: role.roleId };
+  post(editableMember, "add");
+  return "";
+}
+
 async function post(member: EditableMember, action: "edit" | "add" | "remove") {
+  addErrors.value = [];
+  if (search.value.length === 0) {
+    addErrors.value.push(i18n.t("general.error.nameEmpty"));
+    return;
+  }
+  if (saving.value) {
+    return;
+  }
+
+  saving.value = true;
   const url = props.organization ? `organizations/org/${props.author}/members/${action}` : `projects/project/${props.author}/${props.slug}/members/${action}`;
   useInternalApi(url, true, "post", member)
+    .then(() => {
+      router.go(0);
+    })
+    .catch((e) => {
+      addErrors.value.push(i18n.te(e.response?.data.message) ? i18n.t(e.response?.data.message, e.response?.data.messageArgs) : e.response?.data.message);
+    })
     .finally(() => {
       saving.value = false;
-    })
-    .catch((e) => handleRequestError(e, ctx, i18n, "error.unknown"));
+    });
 }
 
 function convertMember(member: JoinableMember): EditableMember {
@@ -103,15 +133,26 @@ interface EditableMember {
           <p class="font-semibold">
             <Link :to="'/' + member.user.name">{{ member.user.name }}</Link>
           </p>
-          <p>{{ member.role.role.title }}</p>
+          <Tooltip :disabled="member.role.accepted" :content="i18n.t('form.memberList.invitedAs', [member.role.role.title])">
+            <span class="items-center inline-flex"> {{ member.role.role.title }} <IconMdiClock v-if="!member.role.accepted" class="ml-1" /> </span>
+          </Tooltip>
         </div>
-        <!-- todo confirmation modal, input field to search and add members -->
-        <DropdownButton v-if="canEdit && member.role.role.assignable" :name="i18n.t('general.edit')" :disabled="saving">
-          <DropdownItem v-for="role of roles" :key="role.title" @click="setRole(member, role)">
+        <!-- todo confirmation modal -->
+        <DropdownButton v-if="canEdit && member.role.role.assignable" :name="i18n.t('general.edit')">
+          <DropdownItem v-for="role of roles" :key="role.title" :disabled="saving" @click="setRole(member, role)">
             {{ role.title }}
           </DropdownItem>
           <hr />
           <DropdownItem @click="removeMember(member)">Remove</DropdownItem>
+        </DropdownButton>
+      </div>
+      <div class="items-center inline-flex mt-3">
+        <!-- todo fancy search completion -->
+        <InputText v-model="search" :label="i18n.t('form.memberList.addUser')" :error-messages="addErrors"></InputText>
+        <DropdownButton :name="i18n.t('general.add')" class="ml-2">
+          <DropdownItem v-for="role of roles" :key="role.title" :disabled="saving" @click="invite(search, role)">
+            {{ role.title }}
+          </DropdownItem>
         </DropdownButton>
       </div>
     </template>

@@ -175,9 +175,13 @@ function getNonChannelTags(version: Version): ApiTag[] {
 
         <Card class="basis-6/12 md:basis-full flex-grow">
           <template #header>
-            <InputCheckbox v-model="filter.allChecked.channels" class="flex-right" @change="checkAllChannels" />
-            {{ i18n.t("version.channels") }}
-            <!-- todo channel editing -->
+            <div class="inline-flex w-full flex-cols space-between">
+              <InputCheckbox v-model="filter.allChecked.channels" class="flex-right" @change="checkAllChannels" />
+              <span class="flex-grow">{{ i18n.t("version.channels") }}</span>
+              <Link :to="`/${project.owner.name}/${project.name}/channels`">
+                <Button size="small" class="ml-2 text-sm"> <IconMdiPencil /> </Button
+              ></Link>
+            </div>
           </template>
 
           <ul>
