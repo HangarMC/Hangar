@@ -27,6 +27,7 @@ public class ProjectSettings {
     @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywords)", message = "project.new.error.tooManyKeywords")
     private final Collection<String> keywords;
     private final boolean forumSync;
+    @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxSponsorsLen)", message = "project.new.error.tooLongDesc")
     private final String sponsors;
 
     @JsonCreator

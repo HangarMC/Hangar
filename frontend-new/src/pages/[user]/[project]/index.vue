@@ -17,7 +17,6 @@ import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { ref } from "vue";
-import { pullAllBy } from "lodash-es";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 

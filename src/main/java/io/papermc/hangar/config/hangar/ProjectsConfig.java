@@ -28,6 +28,7 @@ public class ProjectsConfig {
     private int initLoad = 25;
     private int initVersionLoad = 10;
     private int maxDescLen = 120;
+    private int maxSponsorsLen = 500;
     private int maxKeywords = 5;
     private boolean fileValidate = true;
     @DurationUnit(ChronoUnit.DAYS)
@@ -122,6 +123,14 @@ public class ProjectsConfig {
 
     public int getMaxBBCodeLen() {
         return maxBBCodeLen;
+    }
+
+    public int getMaxSponsorsLen() {
+        return maxSponsorsLen;
+    }
+
+    public void setMaxSponsorsLen(final int maxSponsorsLen) {
+        this.maxSponsorsLen = maxSponsorsLen;
     }
 
     public int getInitLoad() {

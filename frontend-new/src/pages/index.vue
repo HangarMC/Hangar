@@ -73,7 +73,6 @@ if (p && p.value) {
 watch(filters, async () => updateProjects(), { deep: true });
 watch(query, async () => {
   await updateProjects();
-  await router.replace({ query: { q: query.value } });
 });
 
 async function updateProjects() {

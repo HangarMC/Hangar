@@ -20,7 +20,7 @@ const hasError = computed<boolean>(() => {
 
 <template>
   <ClientOnly>
-    <Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" :content="formattedError">
+    <Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" :content="formattedError" class="text-center">
       <slot />
     </Popper>
   </ClientOnly>

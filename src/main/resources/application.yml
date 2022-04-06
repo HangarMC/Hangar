@@ -104,6 +104,7 @@ hangar:
     max-name-len: 25
     max-pages: 50
     max-bbcode-len: 20000
+    max-sponsors-len: 500
     max-channels: 5
     init-load: 25
     init-version-load: 10

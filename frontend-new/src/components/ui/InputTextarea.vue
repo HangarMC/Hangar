@@ -26,9 +26,11 @@ const error = computed<boolean>(() => {
   <label class="relative flex" :class="{ filled: modelValue, error: error }">
     <textarea v-model="value" :class="inputClasses" v-bind="$attrs" :maxlength="maxlength" />
     <floating-label :label="label" />
-    <span v-if="counter && maxlength">{{ value?.length || 0 }}/{{ maxlength }}</span>
-    <span v-else-if="counter">{{ value?.length || 0 }}</span>
   </label>
+  <div v-if="counter" class="mt-1 mb-2">
+    <span v-if="maxlength">{{ value?.length || 0 }}/{{ maxlength }}</span>
+    <span v-else>{{ value?.length || 0 }}</span>
+  </div>
   <template v-if="errorMessages && errorMessages.length > 0">
     <span v-for="msg in errorMessages" :key="msg" class="text-red-500">{{ msg }}</span>
   </template>
