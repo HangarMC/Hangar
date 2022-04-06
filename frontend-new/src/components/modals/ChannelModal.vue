@@ -27,8 +27,8 @@ const ctx = useContext();
 const validation = reactive({
   nameErrors: [] as string[],
   colorErrors: [] as string[],
-  nameValid: false,
-  colorValid: false,
+  nameValid: props.edit,
+  colorValid: props.edit,
 });
 const form = reactive<ProjectChannel>({
   name: "",
@@ -62,9 +62,22 @@ const isValid = computed(() => {
 watch(name, (newVal) => checkName(newVal));
 watch(color, (newVal) => checkColor(newVal));
 
+let lastNameEdit = -1;
 function checkName(name: string) {
   validation.nameValid = false;
   validation.nameErrors = [];
+
+  // Don't immediately/constantly spam checks
+  const now = Date.now();
+  lastNameEdit = now;
+  setTimeout(() => {
+    if (lastNameEdit === now) {
+      checkName0(name);
+    }
+  }, 250);
+}
+
+function checkName0(name: string) {
   if (name.length === 0) {
     return;
   }
