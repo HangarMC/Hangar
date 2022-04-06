@@ -138,7 +138,7 @@ interface EditableMember {
           </Tooltip>
         </div>
         <!-- todo confirmation modal -->
-        <DropdownButton v-if="true || (canEdit && member.role.role.assignable)" :name="i18n.t('general.edit')">
+        <DropdownButton v-if="canEdit && member.role.role.assignable" :name="i18n.t('general.edit')">
           <template #button-label>
             <IconMdiPencil />
           </template>
