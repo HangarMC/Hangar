@@ -28,16 +28,13 @@ public class HangarUnanimousBased extends UnanimousBased {
         for (AccessDecisionVoter voter : getDecisionVoters()) {
             int result = voter.vote(authentication, object, attributes);
             switch (result) {
-                case AccessDecisionVoter.ACCESS_GRANTED:
-                    grant++;
-                    break;
-                case AccessDecisionVoter.ACCESS_DENIED:
+                case AccessDecisionVoter.ACCESS_GRANTED -> grant++;
+                case AccessDecisionVoter.ACCESS_DENIED -> {
                     if (voter instanceof HangarDecisionVoter) {
                         ((HangarDecisionVoter) voter).onAccessDenied();
                     }
                     throw new AccessDeniedException(this.messages.getMessage("AbstractAccessDecisionManager.accessDenied", "Access is denied"));
-                default:
-                    break;
+                }
             }
         }
         if (grant > 0) {

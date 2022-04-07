@@ -96,6 +96,10 @@ public class HangarApiException extends ResponseStatusException {
         return new HangarApiException(HttpStatus.NOT_FOUND);
     }
 
+    public static HangarApiException rateLimited() {
+        return new HangarApiException(HttpStatus.TOO_MANY_REQUESTS);
+    }
+
     public static HangarApiException forbidden() {
         return new HangarApiException(HttpStatus.FORBIDDEN);
     }

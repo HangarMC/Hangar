@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesAnnotationIntrospector;
 
+import io.papermc.hangar.security.annotations.ratelimit.RateLimitInterceptor;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
@@ -55,18 +57,25 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     private final HangarConfig hangarConfig;
     private final ObjectMapper mapper;
+    private final RateLimitInterceptor rateLimitInterceptor;
 
     private final List<Converter<?,?>> converters;
     private final List<ConverterFactory<?,?>> converterFactories;
     private final List<HandlerMethodArgumentResolver> resolvers;
 
     @Autowired
-    public WebConfig(HangarConfig hangarConfig, ObjectMapper mapper, List<Converter<?, ?>> converters, List<ConverterFactory<?, ?>> converterFactories, List<HandlerMethodArgumentResolver> resolvers) {
+    public WebConfig(HangarConfig hangarConfig, ObjectMapper mapper, RateLimitInterceptor rateLimitInterceptor, List<Converter<?, ?>> converters, List<ConverterFactory<?, ?>> converterFactories, List<HandlerMethodArgumentResolver> resolvers) {
         this.hangarConfig = hangarConfig;
         this.mapper = mapper;
+        this.rateLimitInterceptor = rateLimitInterceptor;
         this.converters = converters;
         this.converterFactories = converterFactories;
         this.resolvers = resolvers;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(rateLimitInterceptor).addPathPatterns("/**");
     }
 
     @Override
