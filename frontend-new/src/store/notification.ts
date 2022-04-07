@@ -17,16 +17,19 @@ export const useNotificationStore = defineStore("notification", () => {
 
   async function show(notification: Notification) {
     notifications.value.add(notification);
+    if (notification.timeout === -1) {
+      return;
+    }
     await waitTimeout(notification.timeout || 3000);
     remove(notification);
   }
 
-  async function success(message: string, clearable = true) {
-    await show({ message, color: "green", clearable });
+  async function success(message: string, clearable = true, timeout = 3000) {
+    await show({ message, color: "green", clearable, timeout });
   }
 
-  async function error(message: string, clearable = true) {
-    await show({ message, color: "red", clearable });
+  async function error(message: string, clearable = true, timeout = 3000) {
+    await show({ message, color: "red", clearable, timeout });
   }
 
   function remove(notification: Notification) {

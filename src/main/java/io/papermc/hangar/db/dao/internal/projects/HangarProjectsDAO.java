@@ -53,10 +53,7 @@ public interface HangarProjectsDAO {
             "       ps.keywords," +
             "       ps.forum_sync," +
             "       ps.donation_enabled," +
-            "       ps.donation_email," +
-            "       ps.donation_default_amount," +
-            "       ps.donation_onetime_amounts," +
-            "       ps.donation_monthly_amounts," +
+            "       ps.donation_subject," +
             "       ps.topic_id," +
             "       ps.post_id," +
             "       ps.sponsors" +

@@ -297,14 +297,8 @@
       "donation": {
         "enable": "Enable",
         "enableSub": "Enable the donation form for this project",
-        "email": "Email",
-        "emailSub": "The email address of the paypal account, that should receive the donations",
-        "defaultAmount": "Default Amount",
-        "defaultAmountSub": "The preselected default amount",
-        "oneTimeAmounts": "One-Time Amounts",
-        "oneTimeAmountsSub": "List of the options you want to give users for one time donations. Users can always enter custom amounts",
-        "monthlyAmounts": "Monthly Amounts",
-        "monthlyAmountsSub": "List of the options you want to give users for monthly donations. Users can always enter custom amounts"
+        "subject": "PayPal email or hosted button id",
+        "subjectSub": "Enter your PayPal email here. Alternatively, you can setup a hosted button on PayPals Website and enter the hosted button id here."
       },
       "error": {
         "invalidFile": "{0} is an invalid file type",
@@ -859,13 +853,8 @@
     "description": "{0} requested changes on {1}"
   },
   "donate": {
-    "title": "Donate to {0}",
-    "monthly": "Monthly",
-    "oneTime": "One-Time",
-    "selectAmount": "Select an amount above or enter an amount below",
-    "legal": "By donating to {0} you agree to Y and that tacos are delicious",
-    "cta": "Donate",
-    "submit": "Donate {0}"
+    "success": "Thank you for your {0} {1} donation to {2}!",
+    "buttonError": "Something went wrong with rendering the donation button!"
   },
   "lang": {
     "button": "Switch Language",

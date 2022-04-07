@@ -320,17 +320,8 @@ useHead(
           <ProjectSettingsSection title="project.settings.donation.enable" description="project.settings.donation.enableSub">
             <InputCheckbox v-model="form.settings.donation.enable" />
           </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.donation.email" description="project.settings.donation.emailSub">
-            <InputText v-model="form.settings.donation.email" />
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.donation.defaultAmount" description="project.settings.donation.defaultAmountSub">
-            <InputText v-model.number="form.settings.donation.defaultAmount" type="number" />
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.donation.oneTimeAmounts" description="project.settings.donation.oneTimeAmountsSub">
-            <InputTag v-model="form.settings.donation.oneTimeAmounts" />
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.donation.monthlyAmounts" description="project.settings.donation.monthlyAmountsSub">
-            <InputTag v-model="form.settings.donation.monthlyAmounts" />
+          <ProjectSettingsSection title="project.settings.donation.subject" description="project.settings.donation.subjectSub">
+            <InputText v-model="form.settings.donation.subject" />
           </ProjectSettingsSection>
         </template>
       </Tabs>

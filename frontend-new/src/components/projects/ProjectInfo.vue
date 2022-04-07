@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, nextTick, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { forumUrl } from "~/composables/useUrlHelper";
 import Card from "~/components/design/Card.vue";
@@ -77,13 +77,8 @@ const publicHost = import.meta.env.HANGAR_PUBLIC_HOST;
       </DropdownButton>
       <DonationModal
         v-if="project.settings.donation.enable"
-        :donation-email="project.settings.donation.email"
-        :default-amount="project.settings.donation.defaultAmount"
-        :one-time-amounts="project.settings.donation.oneTimeAmounts"
-        :monthly-amounts="project.settings.donation.monthlyAmounts"
+        :donation-subject="project.settings.donation.subject"
         :donation-target="project.namespace.owner + '/' + project.name"
-        :return-url="publicHost + '/' + project.namespace.owner + '/' + project.name + '?donation=success'"
-        :cancel-return-url="publicHost + '/' + project.namespace.owner + '/' + project.name + '?donation=failure'"
       />
     </template>
   </Card>

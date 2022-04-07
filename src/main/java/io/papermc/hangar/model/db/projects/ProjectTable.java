@@ -7,20 +7,13 @@ import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.identified.ProjectIdentified;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
-import io.papermc.hangar.model.internal.logs.LogAction;
-import io.papermc.hangar.model.internal.logs.LoggedAction;
-import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
-import io.papermc.hangar.model.loggable.Loggable;
 import io.papermc.hangar.model.loggable.ProjectLoggable;
-import io.papermc.hangar.service.internal.UserActionLogService;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.Collection;
-import java.util.function.Consumer;
 
 public class ProjectTable extends Table implements Visitable, ModelVisible, ProjectIdentified, ProjectLoggable {
 
@@ -42,10 +35,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     private String licenseUrl;
     private boolean forumSync;
     private boolean donationEnabled;
-    private String donationEmail;
-    private int donationDefaultAmount;
-    private Collection<Integer> donationOnetimeAmounts;
-    private Collection<Integer> donationMonthlyAmounts;
+    private String donationSubject;
 
     private String sponsors;
 
@@ -67,10 +57,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.licenseName = form.getSettings().getLicense().getName();
         this.licenseUrl = form.getSettings().getLicense().getUrl();
         this.donationEnabled = form.getSettings().getDonation().isEnable();
-        this.donationEmail = form.getSettings().getDonation().getEmail();
-        this.donationDefaultAmount = form.getSettings().getDonation().getDefaultAmount();
-        this.donationOnetimeAmounts = form.getSettings().getDonation().getOneTimeAmounts();
-        this.donationMonthlyAmounts = form.getSettings().getDonation().getMonthlyAmounts();
+        this.donationSubject = form.getSettings().getDonation().getSubject();
         this.sponsors = "";
     }
 
@@ -93,10 +80,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.licenseUrl = other.licenseUrl;
         this.forumSync = other.forumSync;
         this.donationEnabled = other.donationEnabled;
-        this.donationEmail = other.donationEmail;
-        this.donationDefaultAmount = other.donationDefaultAmount;
-        this.donationOnetimeAmounts = other.donationOnetimeAmounts;
-        this.donationMonthlyAmounts = other.donationMonthlyAmounts;
+        this.donationSubject = other.donationSubject;
         this.sponsors = other.sponsors;
     }
 
@@ -104,7 +88,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     public ProjectTable(OffsetDateTime createdAt, long id, String name, String slug, String ownerName, long ownerId, Long topicId,
                         Long postId, @EnumByOrdinal Category category, String description, @EnumByOrdinal Visibility visibility, Collection<String> keywords,
                         String homepage, String issues, String source, String support, String licenseName, String licenseUrl, boolean forumSync,
-                        boolean donationEnabled, String donationEmail, int donationDefaultAmount, Collection<Integer> donationOnetimeAmounts, Collection<Integer> donationMonthlyAmounts, String sponsors) {
+                        boolean donationEnabled, String donationSubject, String sponsors) {
         super(createdAt, id);
         this.name = name;
         this.slug = slug;
@@ -124,10 +108,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.licenseUrl = licenseUrl;
         this.forumSync = forumSync;
         this.donationEnabled = donationEnabled;
-        this.donationEmail = donationEmail;
-        this.donationDefaultAmount = donationDefaultAmount;
-        this.donationOnetimeAmounts = donationOnetimeAmounts;
-        this.donationMonthlyAmounts = donationMonthlyAmounts;
+        this.donationSubject = donationSubject;
         this.sponsors = sponsors;
     }
 
@@ -282,36 +263,12 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.donationEnabled = donationEnabled;
     }
 
-    public String getDonationEmail() {
-        return donationEmail;
+    public String getDonationSubject() {
+        return donationSubject;
     }
 
-    public void setDonationEmail(String donationEmail) {
-        this.donationEmail = donationEmail;
-    }
-
-    public int getDonationDefaultAmount() {
-        return donationDefaultAmount;
-    }
-
-    public void setDonationDefaultAmount(int donationDefaultAmount) {
-        this.donationDefaultAmount = donationDefaultAmount;
-    }
-
-    public Collection<Integer> getDonationOnetimeAmounts() {
-        return donationOnetimeAmounts;
-    }
-
-    public void setDonationOnetimeAmounts(Collection<Integer> donationOnetimeAmounts) {
-        this.donationOnetimeAmounts = donationOnetimeAmounts;
-    }
-
-    public Collection<Integer> getDonationMonthlyAmounts() {
-        return donationMonthlyAmounts;
-    }
-
-    public void setDonationMonthlyAmounts(Collection<Integer> donationMonthlyAmounts) {
-        this.donationMonthlyAmounts = donationMonthlyAmounts;
+    public void setDonationSubject(String donationSubject) {
+        this.donationSubject = donationSubject;
     }
 
     public String getSponsors() {
@@ -353,10 +310,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
                ", licenseUrl='" + licenseUrl + '\'' +
                ", forumSync=" + forumSync +
                ", donationEnabled=" + donationEnabled +
-               ", donationEmail='" + donationEmail + '\'' +
-               ", donationDefaultAmount=" + donationDefaultAmount +
-               ", donationOnetimeAmounts=" + donationOnetimeAmounts +
-               ", donationMonthlyAmounts=" + donationMonthlyAmounts +
+               ", donationEmail='" + donationSubject + '\'' +
                ", sponsors='" + sponsors + '\'' +
                "} " + super.toString();
     }

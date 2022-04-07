@@ -57,10 +57,7 @@ public interface ProjectsApiDAO {
         "       p.topic_id," +
         "       p.post_id," +
         "       p.donation_enabled," +
-        "       p.donation_email," +
-        "       p.donation_default_amount," +
-        "       p.donation_onetime_amounts," +
-        "       p.donation_monthly_amounts," +
+        "       p.donation_subject," +
         "       p.sponsors" +
         "  FROM home_projects hp" +
         "         JOIN projects p ON hp.id = p.id" +
@@ -103,10 +100,7 @@ public interface ProjectsApiDAO {
             p.topic_id,
             p.post_id,
             p.donation_enabled,
-            p.donation_email,
-            p.donation_default_amount,
-            p.donation_onetime_amounts,
-            p.donation_monthly_amounts,
+            p.donation_subject,
             p.sponsors
         FROM home_projects hp
             JOIN projects p on hp.id = p.id

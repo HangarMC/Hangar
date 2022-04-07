@@ -8,48 +8,27 @@ import java.util.StringJoiner;
 public class ProjectDonationSettings {
 
     private final boolean enable;
-    private final String email;
-    private final int defaultAmount;
-    private final List<Integer> oneTimeAmounts;
-    private final List<Integer> monthlyAmounts;
+    private final String subject;
 
     @JdbiConstructor
-    public ProjectDonationSettings(boolean enabled, String email, int defaultAmount, List<Integer> oneTimeAmounts, List<Integer> monthlyAmounts) {
+    public ProjectDonationSettings(boolean enabled, String subject) {
         this.enable = enabled;
-        this.email = email;
-        this.defaultAmount = defaultAmount;
-        this.oneTimeAmounts = oneTimeAmounts;
-        this.monthlyAmounts = monthlyAmounts;
+        this.subject = subject;
     }
 
     public boolean isEnable() {
         return enable;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public int getDefaultAmount() {
-        return defaultAmount;
-    }
-
-    public List<Integer> getOneTimeAmounts() {
-        return oneTimeAmounts;
-    }
-
-    public List<Integer> getMonthlyAmounts() {
-        return monthlyAmounts;
+    public String getSubject() {
+        return subject;
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", ProjectDonationSettings.class.getSimpleName() + "[", "]")
                 .add("enable=" + enable)
-                .add("email='" + email + "'")
-                .add("defaultAmount=" + defaultAmount)
-                .add("oneTimeAmounts=" + oneTimeAmounts)
-                .add("monthlyAmounts=" + monthlyAmounts)
+                .add("email='" + subject + "'")
                 .toString();
     }
 }

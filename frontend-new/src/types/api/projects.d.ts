@@ -39,10 +39,7 @@ declare module "hangar-api" {
     sponsors: string | null;
     donation: {
       enable: false;
-      email: string | null;
-      defaultAmount: number;
-      oneTimeAmounts: Array<number>;
-      monthlyAmounts: Array<number>;
+      subject: string;
     };
   }
 
