@@ -89,7 +89,7 @@ async function createPage() {
           :maxlength="backendData.validations.project.pageName.max"
           :minlength="backendData.validations.project.pageName.min"
         />
-        <InputSelect v-model="parent" :values="pageRoots" :label="i18n.t('page.new.parent')" />
+        <InputSelect v-model="parent" :values="pageRoots" :label="i18n.t('page.new.parent')" class="pt-2 pb-1" />
       </div>
       <div>
         <Button class="mt-2" :disabled="validateLoading || loading" @click="createPage">{{ i18n.t("general.create") }}</Button>

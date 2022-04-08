@@ -40,6 +40,12 @@ Examples of names that are **allowed**:
 The category you choose should be accurate. Your project should use the most fitting category rather than any category
 that only slightly applies. If no category appears accurate, the Miscellaneous category should be used.
 
+## Resource Updates
+
+While the ratelimit for uploading new versions is very lenient to allow sometimes necessary hotfixes, you should not
+unnecessarily push a large number updates to the release channel, solely to bump the update date of your project or to
+flood watching users with notifications.
+
 ## Monetization / Advertising
 
 Additional features or addons may not be hidden behind a paywall; this includes directly linking to off-site addons or "
@@ -105,8 +111,8 @@ command. Commands for granting specific, pre-programmed users OP or permissions 
 Other malicious actions, such as deleting a server's data or banning random players, are also prohibited.
 
 ---
-Currently being a modified version of Ore guidelines, this document is licensed under a
-[Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
+These guidelines are loosely based on [Ore's plugin submission guidelines](https://docs.spongepowered.org/stable/en/ore/guidelines.html),
+licensed under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 `;
 
 useHead(useSeo(i18n.t("pages.guidelinesTitle"), null, route, null));
