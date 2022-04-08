@@ -28,6 +28,7 @@ const name = ref<string>("");
 const members = ref<JoinableMember[]>([]);
 const nameErrorMessages = ref<string[]>([]);
 
+// TODO validation
 /*const canCreate = computed<boolean>(
   () =>
     this.validForm &&
@@ -68,9 +69,9 @@ async function create() {
     <template v-if="currentUser.headerData.organizationCount < backendData.validations.maxOrgCount">
       <InputText v-model="name" class="mt-2" :label="i18n.t('organization.new.name')" :error-messages="nameErrorMessages" />
 
-      <MemberList v-model="members" organization disable-saving class="mt-2"></MemberList>
+      <MemberList v-model="members" :author="name" organization disable-saving class="mt-4 shadow-0"></MemberList>
 
-      <Button class="mt-2" @click="create">
+      <Button class="mt-4" @click="create">
         <IconMdiCheck class="float-left" />
         {{ i18n.t("form.memberList.create") }}
       </Button>

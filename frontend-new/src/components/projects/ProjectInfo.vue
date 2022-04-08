@@ -61,7 +61,7 @@ const publicHost = import.meta.env.HANGAR_PUBLIC_HOST;
       </table>
     </template>
     <template #footer>
-      <DropdownButton v-if="hasPerms(NamedPermission.IS_STAFF)" :name="i18n.t('project.actions.adminActions')">
+      <DropdownButton v-if="hasPerms(NamedPermission.IS_STAFF)" :name="i18n.t('project.actions.adminActions')" class="mb-2">
         <DropdownItem :to="`/${slug}/flags`">
           {{ i18n.t("project.actions.flagHistory", [project.info.flagCount]) }}
         </DropdownItem>

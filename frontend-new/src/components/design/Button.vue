@@ -20,7 +20,7 @@ const paddingClass = computed(() => {
   switch (props.size) {
     default:
     case "small": {
-      return "p-1 space-x-0.7";
+      return "p-1 px-2 space-x-0.7";
     }
     case "medium": {
       return "p-2 space-x-0.7";

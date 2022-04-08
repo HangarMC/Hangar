@@ -9,7 +9,7 @@ const props = withDefaults(
     name?: string;
     buttonSize?: "small" | "medium" | "large";
     buttonType?: "primary" | "gray" | "red" | "transparent";
-    buttonArrow: boolean;
+    buttonArrow?: boolean;
   }>(),
   {
     name: "Dropdown",

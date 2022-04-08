@@ -96,6 +96,9 @@ public class OrganizationController extends HangarComponent {
     @PostMapping(path = "/org/{name}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addProjectMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
         OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+        if (organizationTable == null) {
+            throw new HangarApiException("Org " + name + " doesn't exist");
+        }
         inviteService.sendInvite(member, organizationTable);
     }
 
