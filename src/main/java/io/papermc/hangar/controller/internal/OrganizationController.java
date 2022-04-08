@@ -19,6 +19,7 @@ import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.AuthenticationService;
@@ -48,6 +49,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Controller
+@RateLimit(path = "organization")
 @RequestMapping("/api/internal/organizations")
 public class OrganizationController extends HangarComponent {
 
@@ -89,6 +91,7 @@ public class OrganizationController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
     @PostMapping(path = "/org/{name}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addProjectMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
@@ -116,6 +119,7 @@ public class OrganizationController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 60)
     @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void create(@Valid @RequestBody CreateOrganizationForm createOrganizationForm) {
         organizationFactory.createOrganization(createOrganizationForm.getName(), createOrganizationForm.getMembers());
@@ -123,6 +127,7 @@ public class OrganizationController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
     @PostMapping(path = "/org/{name}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveTagline(@PathVariable String name, @Valid @RequestBody StringContent content) {

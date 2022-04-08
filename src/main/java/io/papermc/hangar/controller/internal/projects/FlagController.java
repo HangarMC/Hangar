@@ -6,6 +6,7 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.internal.admin.FlagService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @LoggedIn
 @Controller
+@RateLimit(path = "flag")
 @RequestMapping("/api/internal/flags")
 public class FlagController extends HangarComponent {
 

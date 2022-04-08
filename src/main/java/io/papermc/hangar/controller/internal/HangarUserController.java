@@ -18,6 +18,7 @@ import io.papermc.hangar.model.internal.user.notifications.HangarNotification;
 import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.currentuser.CurrentUser;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import io.papermc.hangar.service.api.UsersApiService;
@@ -47,6 +48,7 @@ import java.util.List;
 
 @Controller
 @LoggedIn
+@RateLimit(path = "hangaruser")
 @RequestMapping(path = "/api/internal", produces = MediaType.APPLICATION_JSON_VALUE, method = { RequestMethod.GET, RequestMethod.POST })
 public class HangarUserController extends HangarComponent {
 
@@ -79,6 +81,7 @@ public class HangarUserController extends HangarComponent {
     @Unlocked
     @CurrentUser("#userName")
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
     @PostMapping(path = "/users/{userName}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveTagline(@PathVariable String userName, @Valid @RequestBody StringContent content) {

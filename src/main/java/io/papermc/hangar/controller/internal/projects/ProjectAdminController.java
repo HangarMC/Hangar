@@ -8,6 +8,7 @@ import io.papermc.hangar.model.internal.api.requests.projects.VisibilityChangeFo
 import io.papermc.hangar.model.internal.projects.HangarProjectNote;
 import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.projects.ProjectAdminService;
 import io.papermc.hangar.service.internal.projects.ProjectNoteService;
@@ -29,6 +30,7 @@ import java.util.List;
 
 @LoggedIn
 @Controller
+@RateLimit(path = "projectadmin")
 @RequestMapping("/api/internal/projects")
 public class ProjectAdminController extends HangarComponent {
 

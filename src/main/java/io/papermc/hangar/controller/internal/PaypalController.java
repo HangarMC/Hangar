@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller.internal;
 
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ public class PaypalController extends HangarComponent {
         this.paypalService = paypalService;
     }
 
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 3)
     @PostMapping("/ipn")
     public ResponseEntity<Object> ipn(@RequestBody String ipn) throws URISyntaxException {
         paypalService.handle(ipn);

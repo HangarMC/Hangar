@@ -2,6 +2,7 @@ package io.papermc.hangar.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.internal.auth.SSOService;
 
 @Controller
+@RateLimit(path = "login")
 public class LoginController extends HangarComponent {
 
     private final AuthenticationService authenticationService;
@@ -63,6 +65,7 @@ public class LoginController extends HangarComponent {
         }
     }
 
+    @RateLimit(overdraft = 5, refillTokens = 5, refillSeconds = 10)
     @GetMapping(path = "/login", params = {"code", "state"})
     public RedirectView loginFromAuth(@RequestParam String code, @RequestParam String state, @CookieValue String url) {
         UserTable user = ssoService.authenticate(code, state, config.getBaseUrl() + "/login");
@@ -146,7 +149,8 @@ public class LoginController extends HangarComponent {
     }
 
     @PostMapping("/sync")
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @RateLimit(overdraft = 5, refillTokens = 2, refillSeconds = 10)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void sync(@NotNull @RequestBody SsoSyncData body, @RequestHeader("X-Kratos-Hook-Api-Key") String apiKey) {
         if (!apiKey.equals("hookapikey-changeme")) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);

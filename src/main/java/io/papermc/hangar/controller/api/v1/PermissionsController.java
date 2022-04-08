@@ -9,6 +9,7 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.security.annotations.Anyone;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.PermissionService;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -22,6 +23,7 @@ import java.util.function.BiPredicate;
 
 @Anyone
 @Controller
+@RateLimit(path = "apipermissions", refillTokens = 100, greedy = true)
 public class PermissionsController extends HangarComponent implements IPermissionsController {
 
     private final PermissionService permissionService;

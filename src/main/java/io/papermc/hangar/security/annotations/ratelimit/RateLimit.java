@@ -26,7 +26,7 @@ public @interface RateLimit {
      * @return how many tokens can be accumulated in total
      */
     @IntRange(from = 1)
-    int overdraft() default 20;
+    int overdraft() default 100;
 
     /**
      * Returns how many tokens should be refilled per refill, as specified in {@link #refillSeconds()}.
@@ -34,7 +34,7 @@ public @interface RateLimit {
      * @return how many tokens should be refilled per refill
      */
     @IntRange(from = 1)
-    int refillTokens() default 5;
+    int refillTokens() default 20;
 
     /**
      * Returns after how many seconds {@link #refillTokens()} should be refilled.
@@ -44,7 +44,7 @@ public @interface RateLimit {
      * @return after how many seconds tokens should be refilled
      */
     @IntRange(from = 1, to = MAX_REFILL_DELAY)
-    int refillSeconds() default 10;
+    int refillSeconds() default 5;
 
     /**
      * Returns whether tokens should be gradually refilled within an interval.

@@ -15,6 +15,7 @@ import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
@@ -45,6 +46,7 @@ import java.util.List;
 
 @Controller
 @Secured("ROLE_USER")
+@RateLimit(path = "version")
 @RequestMapping(path = "/api/internal/versions")
 public class VersionController extends HangarComponent {
 
@@ -76,6 +78,7 @@ public class VersionController extends HangarComponent {
     }
 
     @Unlocked
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PendingVersion> createFromFile(@PathVariable("id") long projectId, @RequestParam MultipartFile pluginFile) {
@@ -83,6 +86,7 @@ public class VersionController extends HangarComponent {
     }
 
     @Unlocked
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE, params = "url")
     public ResponseEntity<PendingVersion> createFromUrl(@PathVariable("id") long projectId, @RequestParam String url) {
@@ -91,6 +95,7 @@ public class VersionController extends HangarComponent {
     }
 
     @Unlocked
+    @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 30)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{id}/create", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -99,6 +104,7 @@ public class VersionController extends HangarComponent {
     }
 
     @Unlocked
+    @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 30)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{projectId}/{versionId}/saveDescription", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -167,6 +173,7 @@ public class VersionController extends HangarComponent {
     }
 
     @ResponseBody
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
     @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public FileSystemResource download(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString, @PathVariable Platform platform, @RequestParam(required = false) String token) {

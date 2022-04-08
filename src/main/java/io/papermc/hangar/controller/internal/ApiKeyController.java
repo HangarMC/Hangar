@@ -8,6 +8,7 @@ import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.currentuser.CurrentUser;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.APIKeyService;
 import io.papermc.hangar.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import java.util.List;
 
 @LoggedIn
 @Controller
+@RateLimit(path = "apikey")
 @RequestMapping("/api/internal/api-keys")
 @PermissionRequired(NamedPermission.EDIT_API_KEYS)
 public class ApiKeyController {
@@ -64,6 +66,7 @@ public class ApiKeyController {
 
     @ResponseBody
     @CurrentUser("#user")
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
     @PostMapping(path = "/create-key/{user}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     public String createApiKey(@PathVariable UserTable user, @RequestBody @Valid CreateAPIKeyForm apiKeyForm) {
         return apiKeyService.createApiKey(user, apiKeyForm, permissionService.getAllPossiblePermissions(user.getId()));

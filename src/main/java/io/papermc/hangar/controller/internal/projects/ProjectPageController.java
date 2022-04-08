@@ -9,6 +9,7 @@ import io.papermc.hangar.model.internal.api.requests.projects.NewProjectPage;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
@@ -34,6 +35,7 @@ import javax.validation.Valid;
 
 @Anyone
 @Controller
+@RateLimit(path = "projectpage")
 @RequestMapping("/api/internal/pages")
 public class ProjectPageController extends HangarComponent {
 
@@ -49,6 +51,7 @@ public class ProjectPageController extends HangarComponent {
     }
 
     @Anyone
+    @RateLimit(overdraft = 10, refillTokens = 2, refillSeconds = 5)
     @PostMapping(path = "/render", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> renderMarkdown(@RequestBody @Valid StringContent content) {
         if (content.getContent().length() > 1_000_000) { //TODO
@@ -58,6 +61,7 @@ public class ProjectPageController extends HangarComponent {
     }
 
     @Anyone
+    @RateLimit(overdraft = 10, refillTokens = 2, refillSeconds = 5)
     @ResponseBody
     @PostMapping(path = "/convert-bbcode", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     public String convertBBCode(@RequestBody @Valid StringContent bbCodeContent) {
@@ -85,6 +89,7 @@ public class ProjectPageController extends HangarComponent {
     }
 
     @Unlocked
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#projectId}")
     @PostMapping(value = "/create/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -93,6 +98,7 @@ public class ProjectPageController extends HangarComponent {
     }
 
     @Unlocked
+    @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#projectId}")
     @PostMapping(value = "/save/{projectId}/{pageId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

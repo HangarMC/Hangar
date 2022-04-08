@@ -14,6 +14,7 @@ import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.api.VersionsApiService;
@@ -33,6 +34,7 @@ import java.util.Map;
 @Anyone
 @Controller
 @ResponseBody
+@RateLimit(path = "apiversions", overdraft = 200, refillTokens = 50, greedy = true)
 public class VersionsController implements IVersionsController {
 
     private final DownloadService downloadService;

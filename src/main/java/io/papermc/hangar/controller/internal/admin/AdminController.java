@@ -23,6 +23,7 @@ import io.papermc.hangar.model.internal.api.requests.admin.ChangePlatformVersion
 import io.papermc.hangar.model.internal.api.responses.HealthReport;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.admin.HealthService;
@@ -49,6 +50,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Controller
+@RateLimit(path = "admin")
 @RequestMapping("/api/internal/admin")
 public class AdminController extends HangarComponent {
 

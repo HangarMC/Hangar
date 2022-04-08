@@ -17,6 +17,7 @@ import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
@@ -49,6 +50,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
+@RateLimit(path = "project")
 @RequestMapping(path = "/api/internal/projects", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProjectController extends HangarComponent {
 
@@ -91,6 +93,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createProject(@RequestBody @Valid NewProjectForm newProject) {
         ProjectTable projectTable = projectFactory.createProject(newProject);
@@ -110,6 +113,7 @@ public class ProjectController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/settings", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveProjectSettings(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody ProjectSettingsForm settingsForm) {
@@ -118,6 +122,7 @@ public class ProjectController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 5)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/sponsors", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveProjectSettings(@PathVariable String author, @PathVariable String slug, @RequestBody @Valid StringContent content) {
@@ -129,6 +134,7 @@ public class ProjectController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 10, refillTokens = 2, refillSeconds = 30)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/saveIcon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void saveProjectIcon(@PathVariable String author, @PathVariable String slug, @RequestParam MultipartFile projectIcon) {
@@ -145,6 +151,7 @@ public class ProjectController extends HangarComponent {
 
     @Unlocked
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PostMapping(path = "/project/{author}/{slug}/rename", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> renameProject(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody StringContent nameContent) {
         return ResponseEntity.ok(projectFactory.renameProject(author, slug, nameContent.getContent()));
@@ -152,6 +159,7 @@ public class ProjectController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addProjectMember(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody EditMembersForm.Member<ProjectRole> member) {
@@ -179,6 +187,7 @@ public class ProjectController extends HangarComponent {
 
     @Unlocked
     @VisibilityRequired(type = Type.PROJECT, args = "{#projectId}")
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping("/project/{id}/star/{state}")
     @ResponseStatus(HttpStatus.OK)
     public void setProjectStarred(@PathVariable("id") long projectId, @PathVariable boolean state) {
@@ -187,6 +196,7 @@ public class ProjectController extends HangarComponent {
 
     @Unlocked
     @VisibilityRequired(type = Type.PROJECT, args = "{#projectId}")
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping("/project/{id}/watch/{state}")
     @ResponseStatus(HttpStatus.OK)
     public void setProjectWatching(@PathVariable("id") long projectId, @PathVariable boolean state) {

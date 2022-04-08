@@ -20,6 +20,7 @@ import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.security.annotations.Anyone;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.internal.PlatformService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -37,6 +38,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Controller
 @Anyone
+@RateLimit(path = "backenddata")
 @RequestMapping(path = "/api/internal/data", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
 public class BackendDataController {
 

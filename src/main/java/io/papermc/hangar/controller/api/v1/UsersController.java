@@ -10,6 +10,7 @@ import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.api.project.ProjectSortingStrategy;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.security.annotations.Anyone;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.api.UsersApiService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 
 @Anyone
 @Controller
+@RateLimit(path = "apiusers", overdraft = 200, refillTokens = 50, greedy = true)
 public class UsersController extends HangarComponent implements IUsersController {
 
     private final UsersApiService usersApiService;

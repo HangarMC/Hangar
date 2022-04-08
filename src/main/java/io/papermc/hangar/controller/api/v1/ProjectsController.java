@@ -15,6 +15,7 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.api.ProjectsApiService;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 @Anyone
 @Controller
+@RateLimit(path = "apiprojects", overdraft = 200, refillTokens = 50, greedy = true)
 public class ProjectsController extends HangarComponent implements IProjectsController {
 
     private final ProjectsApiService projectsApiService;

@@ -10,6 +10,7 @@ import io.papermc.hangar.model.internal.api.requests.projects.EditChannelForm;
 import io.papermc.hangar.model.internal.projects.HangarChannel;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
@@ -32,6 +33,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Controller
+@RateLimit(path = "channel")
 @RequestMapping(value = "/api/internal/channels", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ChannelController extends HangarComponent {
 
@@ -68,6 +70,7 @@ public class ChannelController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.CREATED)
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 15)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
     @PostMapping(path = "/{projectId}/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createChannel(@PathVariable long projectId, @Valid @RequestBody ChannelForm channelForm) {
@@ -76,6 +79,7 @@ public class ChannelController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 15)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
     @PostMapping(path = "/{projectId}/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void editChannel(@PathVariable long projectId, @Valid @RequestBody EditChannelForm channelForm) {

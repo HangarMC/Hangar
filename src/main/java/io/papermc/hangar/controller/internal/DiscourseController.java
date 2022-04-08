@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import static io.papermc.hangar.security.annotations.visibility.VisibilityRequir
 
 @LoggedIn
 @Controller
+@RateLimit(path = "discourse")
 @RequestMapping(value = "/api/internal/discourse", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DiscourseController extends HangarComponent {
 
@@ -32,6 +34,7 @@ public class DiscourseController extends HangarComponent {
 
     @PostMapping("/{projectId}/comment")
     @ResponseBody
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 30)
     @VisibilityRequired(type = Type.PROJECT, args = "{#projectId}")
     public String createPost(@PathVariable("projectId") long projectId, @RequestBody Map<String, String> content) {
         if (!config.discourse.isEnabled()) {

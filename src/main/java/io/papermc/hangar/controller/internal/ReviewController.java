@@ -6,6 +6,7 @@ import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.internal.api.requests.versions.ReviewMessage;
 import io.papermc.hangar.model.internal.versions.HangarReview;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.versions.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import java.util.List;
 
 @Controller
 @Secured("ROLE_USER")
+@RateLimit(path = "review")
 @RequestMapping(path = "/api/internal/reviews")
 @PermissionRequired(NamedPermission.REVIEWER)
 public class ReviewController {

@@ -7,6 +7,7 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.internal.versions.HangarReviewQueueEntry;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.internal.projects.ProjectAdminService;
 import io.papermc.hangar.service.internal.versions.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
+@RateLimit(path = "adminapproval")
 @PermissionRequired(NamedPermission.REVIEWER)
 @RequestMapping(path = "/api/internal/admin/approval", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminApprovalController extends HangarComponent {

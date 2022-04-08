@@ -7,6 +7,7 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.admin.activity.FlagActivity;
 import io.papermc.hangar.model.internal.admin.activity.ReviewActivity;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.internal.admin.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @Controller
 @ResponseBody
+@RateLimit(path = "adminactivity")
 @PermissionRequired(NamedPermission.REVIEWER)
 @RequestMapping(path = "/api/internal/admin/activity/{user}", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminActivityController extends HangarComponent {
