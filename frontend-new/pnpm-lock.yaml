@@ -35,7 +35,7 @@ specifiers:
   eslint-import-resolver-alias: ^1.1.2
   eslint-plugin-eslint-comments: ^3.2.0
   eslint-plugin-import: ^2.25.4
-  eslint-plugin-unicorn: ^41.0.1
+  eslint-plugin-unicorn: ^42.0.0
   eslint-plugin-vue: ^8.5.0
   filesize: ^8.0.7
   husky: ^7.0.4
@@ -119,7 +119,7 @@ devDependencies:
   eslint-import-resolver-alias: 1.1.2_eslint-plugin-import@2.25.4
   eslint-plugin-eslint-comments: 3.2.0_eslint@8.11.0
   eslint-plugin-import: 2.25.4_eslint@8.11.0
-  eslint-plugin-unicorn: 41.0.1_eslint@8.11.0
+  eslint-plugin-unicorn: 42.0.0_eslint@8.11.0
   eslint-plugin-vue: 8.5.0_eslint@8.11.0
   husky: 7.0.4
   lint-staged: 12.3.7
@@ -1393,8 +1393,8 @@ packages:
       - supports-color
     dev: true
 
-  /@intlify/bundle-utils/2.2.1_vue-i18n@9.1.9:
-    resolution: {integrity: sha512-8n8zhYEKypS+KP22KUAC6BnQifJDDWUGcn3OVPqsThqMMucU22MShGvOuiKqQ4AeT7XQ5O4pudlJmxv3L91JrQ==}
+  /@intlify/bundle-utils/3.0.0_vue-i18n@9.1.9:
+    resolution: {integrity: sha512-y43Z5Q3ZJvxqtD8xUH6U3yrlZeay7ZTqkzv1GQ4b0mGQtk5uptOT9Ra4qvGuUv8QyPQsortrA/OHWUD5ax5ZNQ==}
     engines: {node: '>= 12'}
     peerDependencies:
       petite-vue-i18n: '*'
@@ -1486,7 +1486,7 @@ packages:
       vue-i18n:
         optional: true
     dependencies:
-      '@intlify/bundle-utils': 2.2.1_vue-i18n@9.1.9
+      '@intlify/bundle-utils': 3.0.0_vue-i18n@9.1.9
       '@intlify/shared': 9.2.0-beta.34
       '@rollup/pluginutils': 4.2.0
       debug: 4.3.4
@@ -2986,8 +2986,8 @@ packages:
       tsconfig-paths: 3.14.1
     dev: true
 
-  /eslint-plugin-unicorn/41.0.1_eslint@8.11.0:
-    resolution: {integrity: sha512-gF5vo2dIj0YdNMQ/IMegiBkQdQ22GBFFVpdkJP+0og3w7XD4ypea0xQVRv6iofkLVR2w0phAdikcnU01ybd4Ow==}
+  /eslint-plugin-unicorn/42.0.0_eslint@8.11.0:
+    resolution: {integrity: sha512-ixBsbhgWuxVaNlPTT8AyfJMlhyC5flCJFjyK3oKE8TRrwBnaHvUbuIkCM1lqg8ryYrFStL/T557zfKzX4GKSlg==}
     engines: {node: '>=12'}
     peerDependencies:
       eslint: '>=8.8.0'
