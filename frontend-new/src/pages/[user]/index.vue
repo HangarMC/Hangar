@@ -24,6 +24,7 @@ import Tooltip from "~/components/design/Tooltip.vue";
 import IconMdiWrench from "~icons/mdi/wrench";
 import IconMdiKey from "~icons/mdi/key";
 import IconMdiCalendar from "~icons/mdi/calendar";
+import OrgVisibilityModal from "~/components/modals/OrgVisibilityModal.vue";
 
 const props = defineProps<{
   user: User;
@@ -91,7 +92,7 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
         <Card class="mb-4" accent>
           <template #header>
             {{ i18n.t("author.orgs") }}
-            <!-- todo org visibility modal -->
+            <OrgVisibilityModal v-model="organizationVisibility" />
           </template>
 
           <ul>

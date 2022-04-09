@@ -24,6 +24,7 @@ import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useNotificationStore } from "~/store/notification";
 import DropdownButton from "~/components/design/DropdownButton.vue";
 import DropdownItem from "~/components/design/DropdownItem.vue";
+import PlatformVersionEditModal from "~/components/modals/PlatformVersionEditModal.vue";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -149,7 +150,7 @@ async function restoreVersion() {
         <i v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy" class="mr-1">
           {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
         </i>
-        <IconMdiDiamondStone v-if="projectVersion.recommended.includes(platform.enumName)" :title="i18n.t('version.page.recommended')" />
+        <IconMdiDiamondStone v-if="projectVersion.recommended.includes(platform?.enumName)" :title="i18n.t('version.page.recommended')" />
         <IconMdiCheckCircleOutline v-if="isReviewStateChecked" :title="approvalTooltip" />
       </h2>
 
@@ -178,25 +179,26 @@ async function restoreVersion() {
   <div class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-8/12 flex-grow">
       <Alert v-if="requiresConfirmation" class="mb-8">{{ i18n.t("version.page.unsafeWarning") }}</Alert>
-      <MarkdownEditor
-        v-if="hasPerms(NamedPermission.EDIT_VERSION)"
-        ref="editor"
-        v-model:editing="editingPage"
-        :raw="projectVersion.description"
-        :deletable="false"
-        :cancellable="true"
-        :saveable="true"
-        @save="savePage"
-      />
-      <Markdown v-else :raw="projectVersion.description" />
+      <Card>
+        <MarkdownEditor
+          v-if="hasPerms(NamedPermission.EDIT_VERSION)"
+          ref="editor"
+          v-model:editing="editingPage"
+          :raw="projectVersion.description"
+          :deletable="false"
+          :cancellable="true"
+          :saveable="true"
+          @save="savePage"
+        />
+        <Markdown v-else :raw="projectVersion.description" />
+      </Card>
     </section>
 
     <section class="basis-full md:basis-4/12 flex-grow space-y-4">
       <Card>
         <template #header>
           {{ i18n.t("version.page.platform") }}
-          <!-- todo PlatformVersionEditModal -->
-          <!--<PlatformVersionEditModal :project="project" :versions="versions" /> -->
+          <PlatformVersionEditModal :project="project" :versions="versions" />
         </template>
 
         <!-- todo platform icon -->

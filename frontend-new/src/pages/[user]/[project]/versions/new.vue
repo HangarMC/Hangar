@@ -55,16 +55,16 @@ useHead(
     <template #basic>
       <p>We detected the following settings based on the artifact you provided. Please fill out the remaining fields.</p>
       <div class="flex flex-wrap">
-        <div class="basis-full md:basis-4/12"><InputText label="Version" /></div>
-        <div class="basis-full md:basis-4/12"><InputText label="File name" /></div>
-        <div class="basis-full md:basis-4/12"><InputText label="File size" /></div>
+        <div class="basis-full md:basis-4/12 mt-2"><InputText label="Version" /></div>
+        <div class="basis-full md:basis-4/12 mt-2"><InputText label="File name" /></div>
+        <div class="basis-full md:basis-4/12 mt-2"><InputText label="File size" /></div>
 
-        <div class="basis-8/12"><InputSelect label="Channel" /></div>
-        <Button class="basis-4/12">Add channel</Button>
+        <div class="basis-8/12 mt-2"><InputSelect label="Channel" /></div>
+        <Button class="basis-4/12 mt-2">Add channel</Button>
 
-        <div class="basis-4/12"><InputCheckbox label="Unstable" /></div>
-        <div class="basis-4/12"><InputCheckbox label="Recommended" /></div>
-        <div class="basis-4/12"><InputCheckbox label="Forum Post" /></div>
+        <div class="basis-4/12 mt-2"><InputCheckbox label="Unstable" /></div>
+        <div class="basis-4/12 mt-2"><InputCheckbox label="Recommended" /></div>
+        <div class="basis-4/12 mt-2"><InputCheckbox label="Forum Post" /></div>
       </div>
     </template>
     <template #dependencies>

@@ -15,12 +15,12 @@ const ctx = useContext();
 const i18n = useI18n();
 const route = useRoute();
 const staff = await useStaff().catch((e) => handleRequestError(e, ctx, i18n));
-// TODO i18n
+
 const headers = [
   { name: "pic", title: "", sortable: false },
-  { name: "name", title: "Username", sortable: true },
-  { name: "roles", title: "Roles", sortable: true },
-  { name: "joinDate", title: "Joined", sortable: true },
+  { name: "name", title: i18n.t("pages.headers.username"), sortable: true },
+  { name: "roles", title: i18n.t("pages.headers.roles"), sortable: true },
+  { name: "joinDate", title: i18n.t("pages.headers.joined"), sortable: true },
 ] as Header[];
 
 useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));

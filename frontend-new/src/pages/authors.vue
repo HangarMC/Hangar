@@ -15,11 +15,12 @@ const ctx = useContext();
 const i18n = useI18n();
 const route = useRoute();
 const authors = await useAuthors().catch((e) => handleRequestError(e, ctx, i18n));
+
 const headers = [
   { name: "pic", title: "", sortable: false },
-  { name: "name", title: "Username", sortable: true },
-  { name: "joinDate", title: "Joined", sortable: true },
-  { name: "projectCount", title: "Projects", sortable: true },
+  { name: "name", title: i18n.t("pages.headers.username"), sortable: true },
+  { name: "joinDate", title: i18n.t("pages.headers.joined"), sortable: true },
+  { name: "projectCount", title: i18n.t("pages.headers.projects"), sortable: true },
 ] as Header[];
 
 useHead(useSeo(i18n.t("pages.authorsTitle"), null, route, null));
