@@ -863,11 +863,12 @@
     "hangarAuth": "This only change the locale for your current browser (as a cookie). Click here to change your lang on paper auth for all paper services"
   },
   "validation": {
-    "required": "{0} is required",
-    "maxLength": "Maximum length is {0}",
+    "required": "{property} is required",
+    "requiredIf": "{property} is required",
+    "maxLength": "Maximum length is {max}",
     "minLength": "Minimum length is {0}",
-    "invalidFormat": "{0} is invalid",
-    "invalidUrl": "Invalid URL format"
+    "pattern": "{property} is invalid",
+    "url": "Invalid URL format"
   },
   "prompts": {
     "confirm": "Got it!",

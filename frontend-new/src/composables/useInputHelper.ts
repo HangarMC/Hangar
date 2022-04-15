@@ -22,6 +22,7 @@ export const FloatingLabel = defineComponent({
     label: {
       type: String,
       required: false,
+      default: "",
     },
   },
   render() {

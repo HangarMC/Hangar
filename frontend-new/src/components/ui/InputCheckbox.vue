@@ -1,24 +1,30 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useValidation } from "~/composables/useValidationHelpers";
+import { ValidationRule } from "@vuelidate/core";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean | boolean[]): void;
 }>();
 const internalVal = computed({
   get: () => props.modelValue,
-  set: (v) => emit("update:modelValue", v),
+  set: (val) => emit("update:modelValue", val),
 });
 const props = defineProps<{
   modelValue: boolean | boolean[];
   label?: string;
   disabled?: boolean;
+  errorMessages?: string[];
+  rules?: ValidationRule<string | undefined>[];
 }>();
+
+const { v, errors, hasError } = useValidation(props.label, props.rules, internalVal, props.errorMessages);
 </script>
 
 <template>
   <label class="group relative pl-30px customCheckboxContainer w-max" :cursor="disabled ? 'auto' : 'pointer'">
     <template v-if="props.label">{{ props.label }}</template>
-    <input v-model="internalVal" type="checkbox" class="hidden" v-bind="$attrs" :disabled="disabled" />
+    <input v-model="internalVal" type="checkbox" class="hidden" v-bind="$attrs" :disabled="disabled" @blur="v.$touch()" />
     <span
       class="absolute top-5px left-0 h-15px w-15px rounded bg-gray-300"
       after="absolute hidden content-DEFAULT top-1px left-5px border-solid w-6px h-12px border-r-3px border-b-3px border-white"

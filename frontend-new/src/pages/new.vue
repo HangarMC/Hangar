@@ -2,7 +2,7 @@
 import { ProjectOwner, ProjectSettingsForm } from "hangar-internal";
 import { ProjectCategory } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { computed, reactive, Ref, ref, watch } from "vue";
+import { computed, Ref, ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useContext } from "vite-ssr/vue";
 import { useBackendDataStore } from "~/store/backendData";
@@ -19,6 +19,8 @@ import Tabs, { Tab } from "~/components/design/Tabs.vue";
 import Button from "~/components/design/Button.vue";
 import Markdown from "~/components/Markdown.vue";
 import InputTextarea from "~/components/ui/InputTextarea.vue";
+import { useVuelidate } from "@vuelidate/core";
+import { required, maxLength, validName, pattern, url, requiredIf } from "~/composables/useValidationHelpers";
 
 interface NewProjectForm extends ProjectSettingsForm {
   ownerId: ProjectOwner["userId"];
@@ -35,7 +37,6 @@ const settings = useSettingsStore();
 
 // TODO move to useApi
 const projectOwners = await useInternalApi<ProjectOwner[]>("projects/possibleOwners");
-const nameErrors: Ref<string[]> = ref([]);
 const projectCreationErrors: Ref<string[]> = ref([]);
 const projectLoading = ref(true);
 const form = ref<NewProjectForm>({
@@ -54,6 +55,13 @@ const converter = ref({
   markdown: "",
   loading: false,
 });
+
+const rules = {
+  name: {
+    required,
+  },
+};
+const v = useVuelidate(rules, form);
 
 const isCustomLicense = computed(() => form.value.settings.license.type === "(custom)");
 
@@ -109,23 +117,6 @@ function createProject() {
     });
 }
 
-const projectName = computed(() => form.value.name);
-watch(projectName, (newName) => {
-  nameErrors.value = [];
-  if (!newName) {
-    return;
-  }
-  useInternalApi("projects/validateName", false, "get", {
-    userId: form.value.ownerId,
-    value: newName,
-  }).catch((e) => {
-    if (!e.response?.data.isHangarApiException) {
-      return handleRequestError(e, ctx, i18n);
-    }
-    nameErrors.value.push(i18n.t(e.response?.data.message));
-  });
-});
-
 function retry() {
   if (!form.value.pageContent) {
     form.value.pageContent = "# " + form.value.name + "  \nWelcome to your new project!";
@@ -155,14 +146,37 @@ function retry() {
         <!-- todo i18n -->
         <p class="basis-full mb-4">Please provide the basic settings for this project</p>
         <div class="basis-full md:basis-6/12">
-          <InputSelect v-model="form.ownerId" :values="projectOwners" item-value="id" item-text="name" :label="i18n.t('project.new.step2.userSelect')" />
+          <InputSelect
+            v-model="form.ownerId"
+            :values="projectOwners"
+            item-value="id"
+            item-text="name"
+            :label="i18n.t('project.new.step2.userSelect')"
+            :rules="[required()]"
+          />
         </div>
         <div class="basis-full md:basis-6/12 mt-4 md:mt-0">
-          <InputText v-model.trim="form.name" :error-messages="nameErrors" :label="i18n.t('project.new.step2.projectName')" />
+          <InputText
+            v-model.trim="form.name"
+            :label="i18n.t('project.new.step2.projectName')"
+            :rules="[
+              required(),
+              maxLength()(backendData.validations.project.name.max),
+              pattern()(backendData.validations.project.name.regex),
+              validName()(form.ownerId),
+            ]"
+          />
         </div>
-        <div class="basis-full md:basis-8/12 mt-4"><InputText v-model.trim="form.description" :label="i18n.t('project.new.step2.projectSummary')" /></div>
+        <div class="basis-full md:basis-8/12 mt-4">
+          <InputText v-model.trim="form.description" :label="i18n.t('project.new.step2.projectSummary')" :rules="[required()]" />
+        </div>
         <div class="basis-full md:basis-4/12 mt-4">
-          <InputSelect v-model="form.category" :values="backendData.categoryOptions" :label="i18n.t('project.new.step2.projectCategory')" />
+          <InputSelect
+            v-model="form.category"
+            :values="backendData.categoryOptions"
+            :label="i18n.t('project.new.step2.projectCategory')"
+            :rules="[required()]"
+          />
         </div>
       </div>
     </template>
@@ -175,10 +189,10 @@ function retry() {
         <hr />
       </div>
       <div class="flex flex-wrap">
-        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.homepage" :label="i18n.t('project.new.step3.homepage')" /></div>
-        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.issues" :label="i18n.t('project.new.step3.issues')" /></div>
-        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.source" :label="i18n.t('project.new.step3.source')" /></div>
-        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.support" :label="i18n.t('project.new.step3.support')" /></div>
+        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.homepage" :label="i18n.t('project.new.step3.homepage')" :rules="[url()]" /></div>
+        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.issues" :label="i18n.t('project.new.step3.issues')" :rules="[url()]" /></div>
+        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.source" :label="i18n.t('project.new.step3.source')" :rules="[url()]" /></div>
+        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.support" :label="i18n.t('project.new.step3.support')" :rules="[url()]" /></div>
       </div>
       <div class="text-lg mt-6">
         <IconMdiLicense />
@@ -187,13 +201,18 @@ function retry() {
       </div>
       <div class="flex flex-wrap">
         <div class="basis-full mt-4" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
-          <InputSelect v-model="form.settings.license.type" :values="backendData.licenseOptions" :label="i18n.t('project.new.step3.type')" />
+          <InputSelect
+            v-model="form.settings.license.type"
+            :values="backendData.licenseOptions"
+            :label="i18n.t('project.new.step3.type')"
+            :rules="[required()]"
+          />
         </div>
         <div v-if="isCustomLicense" class="basis-full md:basis-8/12 mt-4">
-          <InputText v-model.trim="form.settings.license.name" :label="i18n.t('project.new.step3.customName')" />
+          <InputText v-model.trim="form.settings.license.name" :label="i18n.t('project.new.step3.customName')" :rules="[requiredIf()(isCustomLicense)]" />
         </div>
         <div class="basis-full mt-4" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
-          <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" />
+          <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" :rules="[url()]" />
         </div>
       </div>
       <div class="text-lg mt-6">
@@ -202,7 +221,14 @@ function retry() {
         <hr />
       </div>
       <div class="flex">
-        <div class="mt-4 basis-full"><InputTag v-model="form.settings.keywords" :label="i18n.t('project.new.step3.keywords')" /></div>
+        <div class="mt-4 basis-full">
+          <InputTag
+            v-model="form.settings.keywords"
+            :label="i18n.t('project.new.step3.keywords')"
+            :rules="[maxLength()(backendData.validations.project.keywords.max)]"
+            :maxlength="backendData.validations.project.keywords.max"
+          />
+        </div>
       </div>
     </template>
     <template #import>

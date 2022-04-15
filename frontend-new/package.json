@@ -89,6 +89,5 @@
     "vite-plugin-pwa": "^0.11.13",
     "vite-plugin-vue-layouts": "^0.6.0",
     "vite-plugin-windicss": "^1.8.3"
-  },
-  "//": "VITE NEEDS TO BE 2.7 FOR NOW! https://github.com/frandiox/vite-ssr/discussions/143"
+  }
 }

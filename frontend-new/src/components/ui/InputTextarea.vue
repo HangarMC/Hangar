@@ -2,31 +2,32 @@
 import { computed } from "vue";
 import { FloatingLabel, inputClasses } from "~/composables/useInputHelper";
 import ErrorTooltip from "~/components/design/ErrorTooltip.vue";
+import { useValidation } from "~/composables/useValidationHelpers";
+import { ValidationRule } from "@vuelidate/core";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
 }>();
 const value = computed({
   get: () => props.modelValue,
-  set: (v) => emit("update:modelValue", v),
+  set: (val) => emit("update:modelValue", val),
 });
 const props = defineProps<{
   modelValue: string;
   label?: string;
-  errorMessages?: string[];
   counter?: boolean;
   maxlength?: number;
+  errorMessages?: string[];
+  rules?: ValidationRule<string | undefined>[];
 }>();
-// TODO proper validation
-const error = computed<boolean>(() => {
-  return props.errorMessages ? props.errorMessages.length > 0 : false;
-});
+
+const { v, errors, hasError } = useValidation(props.label, props.rules, value, props.errorMessages);
 </script>
 
 <template>
-  <ErrorTooltip :error-messages="errorMessages" class="w-full">
-    <label class="relative flex" :class="{ filled: modelValue, error: error }">
-      <textarea v-model="value" :class="inputClasses" v-bind="$attrs" :maxlength="maxlength" />
+  <ErrorTooltip :error-messages="errors" class="w-full">
+    <label class="relative flex" :class="{ filled: modelValue, error: hasError }">
+      <textarea v-model="value" :class="inputClasses" v-bind="$attrs" :maxlength="maxlength" @blur="v.$touch()" />
       <floating-label :label="label" />
     </label>
     <div v-if="counter" class="mt-1 mb-2">

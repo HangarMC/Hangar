@@ -2,13 +2,15 @@
 import { computed } from "vue";
 import { FloatingLabel, inputClasses } from "~/composables/useInputHelper";
 import ErrorTooltip from "~/components/design/ErrorTooltip.vue";
+import { useValidation } from "~/composables/useValidationHelpers";
+import { ValidationRule } from "@vuelidate/core";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: object | string | boolean | number | null | undefined): void;
 }>();
 const internalVal = computed({
   get: () => props.modelValue,
-  set: (v) => emit("update:modelValue", v),
+  set: (val) => emit("update:modelValue", val),
 });
 
 export interface Option {
@@ -25,6 +27,7 @@ const props = withDefaults(
     disabled?: boolean;
     label?: string;
     errorMessages?: string[];
+    rules?: ValidationRule<string | undefined>[];
   }>(),
   {
     modelValue: "",
@@ -32,19 +35,17 @@ const props = withDefaults(
     itemText: "text",
     label: "",
     errorMessages: () => [],
+    rules: () => [],
   }
 );
 
-// TODO proper validation
-const error = computed<boolean>(() => {
-  return props.errorMessages ? props.errorMessages.length > 0 : false;
-});
+const { v, errors, hasError } = useValidation(props.label, props.rules, internalVal, props.errorMessages);
 </script>
 
 <template>
-  <ErrorTooltip :error-messages="errorMessages" class="w-full">
-    <label class="relative flex" :class="{ filled: internalVal, error: error }">
-      <select v-model="internalVal" :disabled="disabled" :class="inputClasses">
+  <ErrorTooltip :error-messages="errors" class="w-full">
+    <label class="relative flex" :class="{ filled: internalVal, error: hasError }">
+      <select v-model="internalVal" :disabled="disabled" :class="inputClasses" @blur="v.$touch()">
         <option v-for="val in values" :key="val[itemValue] || val" :value="val[itemValue] || val" class="dark:bg-[#191e28]">
           {{ val[itemText] || val }}
         </option>

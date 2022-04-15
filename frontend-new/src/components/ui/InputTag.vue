@@ -2,6 +2,8 @@
 import { computed, ref } from "vue";
 import { FloatingLabel, inputClasses } from "~/composables/useInputHelper";
 import ErrorTooltip from "~/components/design/ErrorTooltip.vue";
+import { useValidation } from "~/composables/useValidationHelpers";
+import { ValidationRule } from "@vuelidate/core";
 
 const tag = ref<string>("");
 const emit = defineEmits<{
@@ -14,20 +16,19 @@ const tags = computed({
 const props = defineProps<{
   modelValue: string[];
   label?: string;
-  errorMessages?: string[];
   counter?: boolean;
   maxlength?: number;
+  errorMessages?: string[];
+  rules?: ValidationRule<string | undefined>[];
 }>();
 
-// TODO proper validation
-const error = computed<boolean>(() => {
-  return props.errorMessages ? props.errorMessages.length > 0 : false;
-});
+const { v, errors, hasError } = useValidation(props.label, props.rules, tags, props.errorMessages);
 
 if (!tags.value) tags.value = [];
 
 function remove(t: string) {
   tags.value = tags.value.filter((v) => v != t);
+  v.value.$touch();
 }
 
 function add() {
@@ -39,14 +40,14 @@ function add() {
 </script>
 
 <template>
-  <ErrorTooltip :error-messages="errorMessages" class="w-full">
-    <div class="relative flex items-center pointer-events-none text-left" :class="{ filled: (modelValue && modelValue.length) || tag, error: error }">
+  <ErrorTooltip :error-messages="errors" class="w-full">
+    <div class="relative flex items-center pointer-events-none text-left" :class="{ filled: (modelValue && modelValue.length) || tag, error: hasError }">
       <div :class="inputClasses" class="flex">
         <span v-for="t in tags" :key="t" class="bg-primary-light-400 rounded-4xl px-1 py-1 mx-1 h-30px inline-flex items-center" dark="text-black">
           {{ t }}
           <button class="text-gray-400 ml-1 inline-flex pointer-events-auto" hover="text-gray-500" @click="remove(t)"><icon-mdi-close-circle /></button>
         </span>
-        <input v-model="tag" type="text" class="pointer-events-auto outline-none bg-transparent flex-grow" @keydown.enter="add" />
+        <input v-model="tag" type="text" class="pointer-events-auto outline-none bg-transparent flex-grow" @keydown.enter="add" @blur="v.$touch()" />
         <floating-label :label="label" />
       </div>
       <span v-if="counter && maxlength">{{ tags?.length || 0 }}/{{ maxlength }}</span>

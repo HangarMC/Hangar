@@ -1,16 +1,18 @@
 <script lang="ts" setup>
 import Popper from "vue3-popper";
-import { computed } from "vue";
+import { ErrorObject } from "@vuelidate/core";
+import { computed, Ref } from "vue";
+import { isErrorObject } from "~/composables/useValidationHelpers";
 
 const props = defineProps<{
-  errorMessages?: string[];
+  errorMessages?: string[] | ErrorObject[];
 }>();
 
-const formattedError = computed<string>(() => {
+const formattedError = computed<string | Ref<string>>(() => {
   if (!props.errorMessages || props.errorMessages.length === 0) {
     return "";
   }
-  return props.errorMessages[0];
+  return isErrorObject(props.errorMessages[0]) ? props.errorMessages[0].$message : props.errorMessages[0];
 });
 
 const hasError = computed<boolean>(() => {
