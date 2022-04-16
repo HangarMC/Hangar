@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed } from "vue";
+import Spinner from "~/components/design/Spinner.vue";
 
 const emit = defineEmits<{
   (e: "click"): void;
@@ -9,11 +10,13 @@ const props = withDefaults(
     disabled?: boolean;
     size?: "small" | "medium" | "large";
     buttonType?: "primary" | "gray" | "red" | "transparent";
+    loading?: boolean;
   }>(),
   {
     disabled: false,
     size: "small",
     buttonType: "primary",
+    loading: false,
   }
 );
 const paddingClass = computed(() => {
@@ -34,11 +37,12 @@ const paddingClass = computed(() => {
 
 <template>
   <button
-    :class="'rounded-md font-semibold h-min inline-flex items-center ' + paddingClass + ' button-' + buttonType"
-    :disabled="disabled"
+    :class="'rounded-md font-semibold h-min inline-flex items-center ' + paddingClass + ' button-' + buttonType + (loading ? ' !cursor-wait' : '')"
+    :disabled="disabled || loading"
     v-bind="$attrs"
     @click="$emit('click')"
   >
     <slot></slot>
+    <span v-if="loading" class="pl-1"><Spinner class="stroke-gray-400" :diameter="1" :stroke="0.01" unit="rem" /></span>
   </button>
 </template>

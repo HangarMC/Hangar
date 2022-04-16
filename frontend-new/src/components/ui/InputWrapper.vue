@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import ErrorTooltip from "~/components/design/ErrorTooltip.vue";
+import Spinner from "~/components/design/Spinner.vue";
 
 const props = defineProps<{
   errors?: string[];
@@ -27,8 +28,7 @@ const props = defineProps<{
       <span class="flex pl-2">
         <span v-if="counter && maxlength" class="inline-flex items-center ml-2">{{ value?.length || 0 }}/{{ maxlength }}</span>
         <span v-else-if="counter">{{ value?.length || 0 }}</span>
-        <!-- todo proper loading indicator -->
-        <span v-if="loading">Loading...</span>
+        <span v-if="loading" class="w-[24px] h-[24px]"><Spinner class="stroke-gray-400" /></span>
       </span>
       <span
         v-if="label"

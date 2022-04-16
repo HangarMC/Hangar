@@ -21,6 +21,7 @@ import Markdown from "~/components/Markdown.vue";
 import InputTextarea from "~/components/ui/InputTextarea.vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, maxLength, validName, pattern, url, requiredIf } from "~/composables/useValidationHelpers";
+import Spinner from "~/components/design/Spinner.vue";
 
 interface NewProjectForm extends ProjectSettingsForm {
   ownerId: ProjectOwner["userId"];
@@ -101,7 +102,11 @@ function convertBBCode() {
 
 function createProject() {
   projectCreationErrors.value = [];
-  useInternalApi<string>("projects/create", true, "post", form)
+  projectLoading.value = true;
+  if (!form.value.pageContent) {
+    form.value.pageContent = "# " + form.value.name + "  \nWelcome to your new project!";
+  }
+  useInternalApi<string>("projects/create", true, "post", form.value)
     .then((url) => {
       router.push(url);
     })
@@ -114,19 +119,6 @@ function createProject() {
       }
 
       handleRequestError(err, ctx, i18n, "project.new.error.create");
-    });
-}
-
-function retry() {
-  if (!form.value.pageContent) {
-    form.value.pageContent = "# " + form.value.name + "  \nWelcome to your new project!";
-  }
-  useInternalApi<string>("projects/create", true, "post", form.value)
-    .then((url) => {
-      router.push(url);
-    })
-    .catch((err) => {
-      projectCreationErrors.value.push(err.response.data);
     })
     .finally(() => {
       projectLoading.value = false;
@@ -269,21 +261,19 @@ function retry() {
       </Tabs>
     </template>
     <template #finishing>
-      <!-- todo loader -->
-      <!--<v-progress-circular v-if="projectLoading" indeterminate color="red" size="50" />-->
-      <span v-if="projectLoading">
-        Loading....
-        <Button @click="retry">button go brrrr</Button>
-      </span>
-      <template v-else-if="projectCreationErrors && projectCreationErrors.length > 0">
-        <div class="text-lg mt-2">
-          {{ i18n.t("project.new.error.create") }}
-          {{ projectCreationErrors }}
+      <div class="flex flex-col">
+        <div v-if="projectLoading" class="text-center my-8"><Spinner class="stroke-red-500" :diameter="90" :stroke="6" /></div>
+        <div v-if="projectLoading" class="text-center"><Button @click="createProject">button go brrrr</Button></div>
+        <template v-else-if="projectCreationErrors && projectCreationErrors.length > 0">
+          <div class="text-lg mt-2">
+            {{ i18n.t("project.new.error.create") }}
+            {{ projectCreationErrors }}
+          </div>
+          <div class="text-center mt-2"><Button @click="createProject"> Retry </Button></div>
+        </template>
+        <div v-else class="text-h5 mt-2">
+          {{ i18n.t("project.new.step5.text") }}
         </div>
-        <Button @click="retry"> Retry </Button>
-      </template>
-      <div v-else class="text-h5 mt-2">
-        {{ i18n.t("project.new.step5.text") }}
       </div>
     </template>
   </Steps>

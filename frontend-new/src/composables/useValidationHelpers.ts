@@ -4,14 +4,12 @@ import * as validators from "@vuelidate/validators";
 import { createI18nMessage, helpers, ValidatorWrapper } from "@vuelidate/validators";
 import { I18n } from "~/i18n";
 import { useInternalApi } from "~/composables/useApi";
-import { AxiosError } from "axios";
 
 export function isErrorObject(errorObject: string | ErrorObject): errorObject is ErrorObject {
   return (<ErrorObject>errorObject).$message !== undefined;
 }
 
 export function constructValidators<T>(rules: ValidationRule<T | undefined>[] | undefined, name: string) {
-  // no clue why this cast is needed
   return rules ? { [name]: rules } : { [name]: {} };
 }
 

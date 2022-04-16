@@ -26,7 +26,7 @@ export function handleRequestError(
     } else if (err.response.data.isHangarValidationException) {
       const data: HangarValidationException = err.response.data;
       for (const fieldError of data.fieldErrors) {
-        notfication.error(fieldError.errorMsg);
+        notfication.error(i18n.te(fieldError.errorMsg) ? i18n.t(fieldError.errorMsg) : fieldError.errorMsg);
       }
       if (msg) {
         notfication.error(i18n.t(msg));
