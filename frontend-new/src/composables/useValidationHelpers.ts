@@ -4,6 +4,7 @@ import * as validators from "@vuelidate/validators";
 import { createI18nMessage, helpers, ValidatorWrapper } from "@vuelidate/validators";
 import { I18n } from "~/i18n";
 import { useInternalApi } from "~/composables/useApi";
+import { AxiosError } from "axios";
 
 export function isErrorObject(errorObject: string | ErrorObject): errorObject is ErrorObject {
   return (<ErrorObject>errorObject).$message !== undefined;
@@ -32,7 +33,7 @@ export function useValidation<T>(
     }
     return e;
   });
-  const hasError = computed(() => (errorMessages && errorMessages.length) || v.value.$error);
+  const hasError = computed(() => (errorMessages && errorMessages.length > 0) || v.value.$error);
 
   return { v, errors, hasError };
 }
@@ -82,7 +83,7 @@ export const validName = withOverrideMessage(
             value: value,
           });
           return { $valid: true };
-        } catch (e) {
+        } catch (e: any) {
           return !e.response?.data.isHangarApiException ? { $valid: false } : { $valid: false, $message: e.response?.data.message };
         }
       })

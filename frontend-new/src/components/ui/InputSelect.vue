@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { FloatingLabel, inputClasses } from "~/composables/useInputHelper";
-import ErrorTooltip from "~/components/design/ErrorTooltip.vue";
 import { useValidation } from "~/composables/useValidationHelpers";
 import { ValidationRule } from "@vuelidate/core";
+import InputWrapper from "~/components/ui/InputWrapper.vue";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: object | string | boolean | number | null | undefined): void;
@@ -26,6 +25,7 @@ const props = withDefaults(
     itemText?: string;
     disabled?: boolean;
     label?: string;
+    loading?: boolean;
     errorMessages?: string[];
     rules?: ValidationRule<string | undefined>[];
   }>(),
@@ -34,6 +34,7 @@ const props = withDefaults(
     itemValue: "value",
     itemText: "text",
     label: "",
+    loading: false,
     errorMessages: () => [],
     rules: () => [],
   }
@@ -43,14 +44,11 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
 </script>
 
 <template>
-  <ErrorTooltip :error-messages="errors" class="w-full">
-    <label class="relative flex" :class="{ filled: internalVal, error: hasError }">
-      <select v-model="internalVal" :disabled="disabled" :class="inputClasses" @blur="v.$touch()">
-        <option v-for="val in values" :key="val[itemValue] || val" :value="val[itemValue] || val" class="dark:bg-[#191e28]">
-          {{ val[itemText] || val }}
-        </option>
-      </select>
-      <floating-label :label="label" />
-    </label>
-  </ErrorTooltip>
+  <InputWrapper v-slot="slotProps" :errors="errors" :has-error="hasError" :loading="loading || v.$pending" :label="label" :value="internalVal">
+    <select v-model="internalVal" :disabled="disabled" :class="slotProps.class" @blur="v.$touch()">
+      <option v-for="val in values" :key="val[itemValue] || val" :value="val[itemValue] || val" class="dark:bg-[#191e28]">
+        {{ val[itemText] || val }}
+      </option>
+    </select>
+  </InputWrapper>
 </template>

@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { computed } from "vue";
-import { FloatingLabel, inputClasses } from "~/composables/useInputHelper";
-import ErrorTooltip from "~/components/design/ErrorTooltip.vue";
 import { ValidationRule } from "@vuelidate/core";
 import { useValidation } from "~/composables/useValidationHelpers";
+import InputWrapper from "~/components/ui/InputWrapper.vue";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value?: string): void;
@@ -17,6 +16,7 @@ const props = defineProps<{
   label?: string;
   counter?: boolean;
   maxlength?: number;
+  loading?: boolean;
   errorMessages?: string[];
   rules?: ValidationRule<string | undefined>[];
 }>();
@@ -25,11 +25,16 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, value, p
 </script>
 
 <template>
-  <ErrorTooltip :error-messages="errors" class="w-full">
-    <label class="relative flex" :class="{ filled: modelValue, error: hasError }">
-      <input v-model="value" type="text" :class="inputClasses" v-bind="$attrs" :maxlength="maxlength" @blur="v.$touch()" />
-      <span v-if="counter && maxlength" class="inline-flex items-center ml-2">{{ value?.length || 0 }}/{{ maxlength }}</span>
-      <span v-else-if="counter">{{ value?.length || 0 }}</span>
-      <floating-label :label="label" /> </label
-  ></ErrorTooltip>
+  <InputWrapper
+    v-slot="slotProps"
+    :errors="errors"
+    :has-error="hasError"
+    :counter="counter"
+    :maxlength="maxlength"
+    :loading="loading || v.$pending"
+    :label="label"
+    :value="value"
+  >
+    <input v-model="value" type="text" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" @blur="v.$touch()" />
+  </InputWrapper>
 </template>

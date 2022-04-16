@@ -1,0 +1,47 @@
+<script lang="ts" setup>
+import ErrorTooltip from "~/components/design/ErrorTooltip.vue";
+
+const props = defineProps<{
+  errors?: string[];
+  hasError: boolean;
+  label?: string;
+  counter?: boolean;
+  maxlength?: number;
+  loading?: boolean;
+  value: unknown;
+}>();
+</script>
+
+<template>
+  <ErrorTooltip :error-messages="errors" class="w-full" :class="{ filled: value, error: hasError }">
+    <label
+      :class="[
+        'relative flex w-full outline-none p-2 border-bottom-1px rounded',
+        'bg-primary-light-200 border-gray-400 dark:(bg-primary-300/8 border-gray-500)',
+        'focus:(bg-primary-200/5 dark:bg-primary-200/10 border-primary-400)',
+        'error:(border-red-400) disabled:(bg-black-15 text-black-50)',
+        'transition duration-200 ease',
+      ]"
+    >
+      <slot class="outline-none flex-grow bg-transparent"></slot>
+      <span class="flex pl-2">
+        <span v-if="counter && maxlength" class="inline-flex items-center ml-2">{{ value?.length || 0 }}/{{ maxlength }}</span>
+        <span v-else-if="counter">{{ value?.length || 0 }}</span>
+        <!-- todo proper loading indicator -->
+        <span v-if="loading">Loading...</span>
+      </span>
+      <span
+        v-if="label"
+        :class="[
+          'absolute origin-top-left left-2 italic',
+          'input-focused:(transform scale-62 opacity-100 not-italic) filled:(transform scale-62 text-black-50 not-italic)',
+          'opacity-80 error:(!text-red-400) input-focused:(text-primary-300)',
+          'top-10px input-focused:(top-0) filled:(top-0)',
+          'transition duration-250 ease',
+        ]"
+      >
+        {{ label }}
+      </span>
+    </label>
+  </ErrorTooltip>
+</template>
