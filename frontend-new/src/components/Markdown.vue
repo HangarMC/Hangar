@@ -4,6 +4,7 @@ import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
+import Spinner from "~/components/design/Spinner.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -87,7 +88,7 @@ function setupAdmonition() {
   <div class="prose max-w-full rounded p-4 markdown">
     <!-- eslint-disable-next-line vue/no-v-html -->
     <div v-if="!loading" v-bind="$attrs" v-html="renderedMarkdown" />
-    <div v-else>Loading...</div>
+    <div v-else><Spinner class="stroke-gray-400" /></div>
   </div>
 </template>
 

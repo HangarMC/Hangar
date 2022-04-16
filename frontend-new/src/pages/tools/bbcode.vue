@@ -10,6 +10,7 @@ import PageTitle from "~/components/design/PageTitle.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { useRoute } from "vue-router";
+import InputTextarea from "~/components/ui/InputTextarea.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -33,14 +34,16 @@ async function convertBBCode() {
 <template>
   <PageTitle>BBCode to Markdown Converter</PageTitle>
 
-  <h2 class="text-lg">Enter your BBCode below:</h2>
-  <textarea v-model="input" class="rounded-lg w-full min-h-50"></textarea>
+  <h2 class="text-lg mb-2">Enter your BBCode below:</h2>
+  <InputTextarea v-model="input" class="rounded-lg w-full min-h-50" :loading="loading" />
 
-  <Button class="w-full mb-4 text-lg font-medium" @click="convertBBCode"> Convert </Button>
+  <div class="text-center mt-4">
+    <Button class="w-min mb-4 text-lg font-medium" size="large" :loading="loading" @click="convertBBCode"> Convert </Button>
+  </div>
 
-  <h2 class="text-lg">Markdown output</h2>
-  <textarea v-model="output" class="mb-2 rounded-lg w-full min-h-50"></textarea>
+  <h2 class="text-lg mb-2">Markdown output</h2>
+  <InputTextarea v-model="output" class="mb-2 rounded-lg w-full min-h-50" />
 
-  <h2 class="text-lg">Markdown preview</h2>
+  <h2 class="text-lg my-2">Markdown preview</h2>
   <Markdown :raw="output"></Markdown>
 </template>

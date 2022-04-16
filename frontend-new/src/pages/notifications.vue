@@ -105,7 +105,7 @@ async function updateInvite(invite: Invite, status: "accept" | "decline" | "unac
           {{ i18n.t("notifications.readAll") }}
         </Button>
       </div>
-      <Card v-for="notification in filteredNotifications" :key="notification.id" :class="'text-' + notification.type + ' flex'">
+      <Card v-for="notification in filteredNotifications" :key="notification.id" :class="'text-' + notification.type + ' flex shadow-0'">
         {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
         <Button v-if="!notification.read" @click="markNotificationRead(notification)"><IconMdiCheck /></Button>
       </Card>
