@@ -23,13 +23,15 @@ watch(
 
 <template>
   <div v-for="item in items" :key="item[itemKey]" :class="props.clazz">
-    <IconMdiMenuDown
-      v-if="item.children && item.children.length > 0"
-      :class="'cursor-pointer transform transition-transform ' + (expanded[item[itemKey]] ? 'rotate-0' : '-rotate-90')"
-      @click="expanded[item[itemKey]] = !expanded[item[itemKey]]"
-    />
-    <span v-else class="pl-4" />
-    <slot name="item" :item="item"></slot>
+    <span class="flex">
+      <IconMdiMenuDown
+        v-if="item.children && item.children.length > 0"
+        :class="'cursor-pointer transform transition-transform ' + (expanded[item[itemKey]] ? 'rotate-0' : '-rotate-90')"
+        @click="expanded[item[itemKey]] = !expanded[item[itemKey]]"
+      />
+      <span v-else class="pl-4" />
+      <slot name="item" :item="item"></slot>
+    </span>
     <TreeView
       v-if="expanded[item[itemKey]] && item.children && item.children.length > 0"
       :key="item[itemKey]"

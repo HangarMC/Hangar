@@ -10,6 +10,7 @@ import { computed, FunctionalComponent } from "vue";
 import { NamedPermission } from "~/types/enums";
 import { hasPerms } from "~/composables/usePerm";
 import { useAuthStore } from "~/store/auth";
+import Tag from "~/components/Tag.vue";
 
 const props = defineProps<{
   user: User;
@@ -60,13 +61,13 @@ const canEditCurrentUser = computed<boolean>(() => {
       <div class="<md:hidden flex flex-col space-y-1 items-end flex-shrink-0">
         <span>{{ i18n.t("author.memberSince", [i18n.d(user.joinDate, "date")]) }}</span>
         <span>{{ i18n.t("author.numProjects", [user.projectCount], user.projectCount) }}</span>
-        <span v-for="role in user.roles" :key="role.roleId" :style="{ backgroundColor: role.color }" class="rounded p-1 w-max items-end">{{ role.title }}</span>
+        <Tag v-for="role in user.roles" :key="role.roleId" :color="{ background: role.color }" :name="role.title" />
       </div>
     </div>
     <div class="md:hidden flex flex-col space-y-1 items-end flex-shrink-0">
       <span>{{ i18n.t("author.memberSince", [i18n.d(user.joinDate, "date")]) }}</span>
       <span>{{ i18n.t("author.numProjects", [user.projectCount], user.projectCount) }}</span>
-      <span v-for="role in user.roles" :key="role.roleId" :style="{ backgroundColor: role.color }" class="rounded p-1 w-max items-end">{{ role.title }}</span>
+      <Tag v-for="role in user.roles" :key="role.roleId" :color="{ background: role.color }" :name="role.title" />
     </div>
   </Card>
   <hr class="border-gray-400 dark:border-gray-500 my-4 mb-4" />

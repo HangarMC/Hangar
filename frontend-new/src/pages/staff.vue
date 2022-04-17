@@ -10,6 +10,7 @@ import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Link from "~/components/design/Link.vue";
+import Tag from "~/components/Tag.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -32,7 +33,7 @@ useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));
     <template #item_pic="{ item }"><UserAvatar :username="item.name" size="xs"></UserAvatar></template>
     <template #item_joinDate="{ item }">{{ i18n.d(item.joinDate, "date") }}</template>
     <template #item_roles="{ item }">
-      <span v-for="role in item.roles" :key="role.roleId" :style="{ backgroundColor: role.color }" class="rounded p-1 w-max items-end">{{ role.title }}</span>
+      <Tag v-for="role in item.roles" :key="role.roleId" :color="{ background: role.color }" :name="role.title" />
     </template>
     <template #item_name="{ item }">
       <Link :to="'/' + item.name">{{ item.name }}</Link>

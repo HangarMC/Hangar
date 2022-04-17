@@ -5,67 +5,92 @@ import { computed } from "vue";
 const props = defineProps<{
   name?: string;
   data?: string;
-  color?: { foreground?: string; background: string };
+  color?: Color;
   tag?: Tag;
   shortForm?: boolean;
 }>();
 
+interface Color {
+  foreground?: string;
+  background?: string;
+}
+
 const cName = computed(() => (props.tag ? props.tag.name : props.name));
 const cData = computed(() => (props.tag ? props.tag.data : props.data));
 const cColor = computed(() => (props.tag ? props.tag.color : props.color));
+const ccColor = computed(() => {
+  if (cColor.value?.foreground) {
+    return cColor.value;
+  } else {
+    // https://stackoverflow.com/a/3943023
+    let background = cColor.value?.background;
+    let colors: number[] = [];
+    if (background?.startsWith("rgb")) {
+      console.log("background", background);
+      colors = background
+        ?.replace("rgb(", "")
+        .replace(")", "")
+        .split(",")
+        .map((c) => parseInt(c));
+    } else if (background?.startsWith("#")) {
+      const bg = background?.substring(1, 7);
+      colors = [parseInt(bg?.substring(0, 2), 16), parseInt(bg?.substring(2, 4), 16), parseInt(bg?.substring(4, 6), 16)];
+    } else {
+      console.error("Can't figure out color value for", background);
+      return cColor.value;
+    }
+    colors = colors
+      .map((col) => col / 255)
+      .map((col) => {
+        if (col <= 0.03928) {
+          return col / 12.92;
+        }
+        return Math.pow((col + 0.055) / 1.055, 2.4);
+      });
+    const L = 0.2126 * colors[0] + 0.7152 * colors[1] + 0.0722 * colors[2];
+    return {
+      foreground: L > 0.179 ? "black" : "white",
+      background: cColor.value?.background,
+    } as Color;
+  }
+});
 </script>
 
 <template>
-  <div class="tags" :class="{ 'has-addons': cData && !shortForm }">
+  <div class="tags inline-flex flex-wrap items-center justify-start p-1" :class="{ 'has-addons': cData && !shortForm }">
     <span
       :style="{
-        color: cColor.foreground,
-        background: cColor.background,
-        'border-color': cColor.background,
+        color: ccColor.foreground,
+        background: ccColor.background,
+        'border-color': ccColor.background,
       }"
-      class="tag"
+      class="tag flex rounded px-2 py-1"
     >
       {{ shortForm && cData ? cData : cName }}
     </span>
-    <span v-if="cData && !shortForm" class="tag">{{ cData }}</span>
+    <span v-if="cData && !shortForm" class="tag flex bg-gray-100 rounded px-2 py-1">{{ cData }}</span>
   </div>
 </template>
 
 <style lang="scss" scoped>
-// todo reimplement using windi, but I g2g now
 .tags {
-  display: inline-flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: center;
-
   &.has-addons {
     .tag:first-child {
       border-bottom-right-radius: 0;
       border-top-right-radius: 0;
-      margin-right: 0;
     }
 
     .tag:nth-child(2) {
       border-bottom-left-radius: 0;
       border-top-left-radius: 0;
       border-left: none;
-      margin-left: 0;
     }
   }
 
   .tag {
     border: 1px solid #dcdcdc;
-    display: flex;
-    background-color: #f5f5f5;
-    color: #495057;
-    border-radius: 3px;
-    font-size: 0.75em;
-    height: 2em;
-    padding-left: 0.75em;
-    padding-right: 0.75em;
-    white-space: nowrap;
-    margin: 5px;
+    font-size: 0.8em;
+    line-height: 1;
   }
 }
 </style>

@@ -20,7 +20,7 @@ Stuff that needs to be done before I consider this a successful POC
 - [x] investigate why eslint/prettier don't auto fix
 - [x] actually implement page transitions (as opposed to popping up below the page)
 - [ ] validation of forms/inputs etc (groundwork is done, just needs to be added everywhere...)
-- [ ] check that we have loading states everywhere, on like buttons and whatever  (groundwork is done, just needs to be added everywhere...)
+- [ ] check that we have loading states everywhere, on like buttons and whatever (groundwork is done, just needs to be added everywhere...)
 - [x] add header calls to all pages
 
 ## Big list of pages!

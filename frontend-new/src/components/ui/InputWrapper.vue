@@ -24,7 +24,7 @@ const props = defineProps<{
         'transition duration-200 ease',
       ]"
     >
-      <slot class="outline-none flex-grow bg-transparent"></slot>
+      <slot class="outline-none flex-grow bg-transparent w-full"></slot>
       <span class="flex pl-2">
         <span v-if="counter && maxlength" class="inline-flex items-center ml-2">{{ value?.length || 0 }}/{{ maxlength }}</span>
         <span v-else-if="counter">{{ value?.length || 0 }}</span>
@@ -33,7 +33,7 @@ const props = defineProps<{
       <span
         v-if="label"
         :class="[
-          'absolute origin-top-left left-2 italic',
+          'absolute origin-top-left left-2 italic pointer-events-none',
           'input-focused:(transform scale-62 opacity-100 not-italic) filled:(transform scale-62 text-black-50 not-italic)',
           'opacity-80 error:(!text-red-400) input-focused:(text-primary-300)',
           'top-10px input-focused:(top-0) filled:(top-0)',

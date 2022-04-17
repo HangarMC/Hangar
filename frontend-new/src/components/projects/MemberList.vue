@@ -122,45 +122,43 @@ interface EditableMember {
       </div>
     </template>
 
-    <template #default>
-      <div
-        v-for="member in modelValue"
-        :key="member.user.name"
-        class="p-2 w-full border border-neutral-100 dark:border-neutral-800 rounded inline-flex flex-row space-x-4"
-      >
-        <UserAvatar :username="member.user.name" :avatar-url="avatarUrl(member.user.name)" size="sm" />
-        <div class="flex-grow">
-          <p class="font-semibold">
-            <Link :to="'/' + member.user.name">{{ member.user.name }}</Link>
-          </p>
-          <Tooltip :disabled="member.role.accepted" :content="i18n.t('form.memberList.invitedAs', [member.role.role.title])">
-            <span class="items-center inline-flex"> {{ member.role.role.title }} <IconMdiClock v-if="!member.role.accepted" class="ml-1" /> </span>
-          </Tooltip>
-        </div>
-        <!-- todo confirmation modal -->
-        <DropdownButton v-if="canEdit && member.role.role.assignable" :name="i18n.t('general.edit')">
-          <template #button-label>
-            <IconMdiPencil />
-          </template>
-          <DropdownItem v-for="role of roles" :key="role.title" :disabled="saving" @click="setRole(member, role)">
-            {{ role.title }}
-          </DropdownItem>
-          <hr />
-          <DropdownItem @click="removeMember(member)">Remove</DropdownItem>
-        </DropdownButton>
+    <div
+      v-for="member in modelValue"
+      :key="member.user.name"
+      class="p-2 w-full border border-neutral-100 dark:border-neutral-800 rounded inline-flex flex-row space-x-4"
+    >
+      <UserAvatar :username="member.user.name" :avatar-url="avatarUrl(member.user.name)" size="sm" />
+      <div class="flex-grow">
+        <p class="font-semibold">
+          <Link :to="'/' + member.user.name">{{ member.user.name }}</Link>
+        </p>
+        <Tooltip :disabled="member.role.accepted" :content="i18n.t('form.memberList.invitedAs', [member.role.role.title])">
+          <span class="items-center inline-flex"> {{ member.role.role.title }} <IconMdiClock v-if="!member.role.accepted" class="ml-1" /> </span>
+        </Tooltip>
       </div>
-      <div class="items-center inline-flex mt-3">
-        <!-- todo fancy search completion -->
-        <InputText v-model="search" :label="i18n.t('form.memberList.addUser')" :error-messages="addErrors"></InputText>
-        <DropdownButton :name="i18n.t('general.add')" class="ml-2">
-          <template #button-label>
-            <IconMdiAccountPlus class="ml-1" />
-          </template>
-          <DropdownItem v-for="role of roles" :key="role.title" :disabled="saving" @click="invite(search, role)">
-            {{ role.title }}
-          </DropdownItem>
-        </DropdownButton>
-      </div>
-    </template>
+      <!-- todo confirmation modal -->
+      <DropdownButton v-if="canEdit && member.role.role.assignable" :name="i18n.t('general.edit')">
+        <template #button-label>
+          <IconMdiPencil />
+        </template>
+        <DropdownItem v-for="role of roles" :key="role.title" :disabled="saving" @click="setRole(member, role)">
+          {{ role.title }}
+        </DropdownItem>
+        <hr />
+        <DropdownItem @click="removeMember(member)">Remove</DropdownItem>
+      </DropdownButton>
+    </div>
+    <div v-if="canEdit" class="items-center inline-flex mt-3 w-full">
+      <!-- todo fancy search completion -->
+      <InputText v-model="search" :label="i18n.t('form.memberList.addUser')" :error-messages="addErrors" />
+      <DropdownButton :name="i18n.t('general.add')" class="ml-2">
+        <template #button-label>
+          <IconMdiAccountPlus class="ml-1" />
+        </template>
+        <DropdownItem v-for="role of roles" :key="role.title" :disabled="saving" @click="invite(search, role)">
+          {{ role.title }}
+        </DropdownItem>
+      </DropdownButton>
+    </div>
   </Card>
 </template>

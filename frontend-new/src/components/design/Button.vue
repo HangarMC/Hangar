@@ -37,7 +37,9 @@ const paddingClass = computed(() => {
 
 <template>
   <button
-    :class="'rounded-md font-semibold h-min inline-flex items-center ' + paddingClass + ' button-' + buttonType + (loading ? ' !cursor-wait' : '')"
+    :class="
+      'rounded-md font-semibold h-min inline-flex items-center justify-center ' + paddingClass + ' button-' + buttonType + (loading ? ' !cursor-wait' : '')
+    "
     :disabled="disabled || loading"
     v-bind="$attrs"
     @click="$emit('click')"
