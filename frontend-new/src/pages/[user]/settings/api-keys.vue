@@ -128,7 +128,7 @@ async function deleteKey(key: ApiKey) {
           </tr>
           <tr v-if="apiKeys.length === 0">
             <td colspan="5">
-              <Alert class="mt-4">
+              <Alert class="mt-4" type="warning">
                 {{ i18n.t("apiKeys.noKeys") }}
               </Alert>
             </td>

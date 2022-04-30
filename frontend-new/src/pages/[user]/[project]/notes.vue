@@ -73,7 +73,7 @@ async function addNote() {
     </h2>
     <SortableTable :items="notes" :headers="headers">
       <template #empty>
-        <Alert>{{ i18n.t("notes.noNotes") }}</Alert>
+        <Alert type="warning">{{ i18n.t("notes.noNotes") }}</Alert>
       </template>
       <template #item_createdAt="{ item }">
         {{ i18n.d(item.createdAt, "time") }}

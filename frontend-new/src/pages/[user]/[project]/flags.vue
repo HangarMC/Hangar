@@ -45,7 +45,7 @@ useHead(useSeo("Flags | " + props.project.name, props.project.description, route
 
     <SortableTable :headers="headers" :items="flags">
       <template #empty>
-        <Alert>
+        <Alert type="warning">
           {{ i18n.t("flags.noFlags") }}
         </Alert>
       </template>

@@ -104,7 +104,7 @@ useHead(meta);
 
 <template>
   <div class="flex flex-col items-center pt-10">
-    <Alert v-if="loggedOut" class="mb-4 -mt-4">You have been logged out!</Alert>
+    <Alert v-if="loggedOut" class="mb-4 -mt-4" type="success">You have been logged out!</Alert>
     <h2 class="text-3xl font-bold uppercase text-center">{{ i18n.t("hangar.projectSearch.title") }}</h2>
     <!-- Search Bar & Sorting button -->
     <div class="flex flex-row mt-6 rounded-md big-box-shadow">

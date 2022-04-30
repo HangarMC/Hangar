@@ -75,7 +75,7 @@ async function create() {
       </Button>
     </template>
 
-    <Alert v-else>
+    <Alert type="danger" v-else>
       {{ i18n.t("organization.new.error.tooManyOrgs", [backendData.validations.maxOrgCount]) }}
     </Alert>
   </Card>

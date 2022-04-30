@@ -14,6 +14,7 @@ import InputSelect from "~/components/ui/InputSelect.vue";
 import Button from "~/components/design/Button.vue";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import MarkdownEditor from "~/components/MarkdownEditor.vue";
+import { required } from "~/composables/useValidationHelpers";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -45,7 +46,7 @@ useHead(
   <Steps v-model="selectedStep" :steps="steps" button-lang-key="dum">
     <template #artifact>
       <p>Please specify the artifact. You can either upload a jar or a zip file, or you can link to an external site.</p>
-      <Alert>An external link needs to be a direct download link!</Alert>
+      <Alert class="my-4" type="info">An external link needs to be a direct download link!</Alert>
       <div class="flex flex-wrap">
         <InputFile />
         <span class="basis-full">or</span>
@@ -55,7 +56,7 @@ useHead(
     <template #basic>
       <p>We detected the following settings based on the artifact you provided. Please fill out the remaining fields.</p>
       <div class="flex flex-wrap">
-        <div class="basis-full md:basis-4/12 mt-2"><InputText label="Version" /></div>
+        <div class="basis-full md:basis-4/12 mt-2"><InputText label="Version" :rules="[required()]" /></div>
         <div class="basis-full md:basis-4/12 mt-2"><InputText label="File name" /></div>
         <div class="basis-full md:basis-4/12 mt-2"><InputText label="File size" /></div>
 

@@ -45,7 +45,7 @@ useHead(
         <Link :to="'/' + watcher.name">{{ watcher.name }}</Link>
       </div>
     </div>
-    <Alert v-else>
+    <Alert type="warning" v-else>
       {{ i18n.t("project.noWatchers") }}
     </Alert>
   </Card>
