@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import Card from "~/components/design/Card.vue";
-import Link from "~/components/design/Link.vue";
 import { User } from "hangar-api";
 import { useI18n } from "vue-i18n";
-import SortableTable, { Header } from "~/components/SortableTable.vue";
-import Alert from "~/components/design/Alert.vue";
+import { Header } from "~/components/SortableTable.vue";
 import { useContext } from "vite-ssr/vue";
 import { useProjectChannels } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";

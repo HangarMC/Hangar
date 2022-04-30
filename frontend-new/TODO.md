@@ -19,8 +19,8 @@ Stuff that needs to be done before I consider this a successful POC
 - [x] date formatting needs to go thru i18n
 - [x] investigate why eslint/prettier don't auto fix
 - [x] actually implement page transitions (as opposed to popping up below the page)
-- [ ] validation of forms/inputs etc (groundwork is done, just needs to be added everywhere...)
-- [ ] check that we have loading states everywhere, on like buttons and whatever (groundwork is done, just needs to be added everywhere...)
+- [ ] validation of forms/inputs etc (mostly done)
+- [ ] check that we have loading states everywhere, on like buttons and whatever (mostly done)
 - [x] add header calls to all pages
 
 ## Big list of pages!
@@ -113,7 +113,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
     - api-keys
       - [x] fetch
       - [x] layout
-      - [ ] functionality (loading animations, validation)
+      - [x] functionality
       - [x] design
       - [ ] qa
   * [project]
@@ -181,7 +181,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
       - index
         - [x] fetch
         - [x] layout
-        - [ ] functionality (channel editing, pagination)
+        - [ ] functionality (pagination)
         - [ ] design (don't like the version li yet)
         - [ ] qa
       - new

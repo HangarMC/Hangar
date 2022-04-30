@@ -20,6 +20,7 @@ import filesize from "filesize";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
+import Alert from "~/components/design/Alert.vue";
 
 const i18n = useI18n();
 const ctx = useContext();
@@ -162,6 +163,7 @@ function getNonChannelTags(version: Version): ApiTag[] {
             </router-link>
           </Card>
         </li>
+        <Alert v-if="!versions.result || versions.result.length === 0"> {{ i18n.t("version.page.noVersions") }} </Alert>
       </ul>
     </section>
 

@@ -17,7 +17,8 @@ export function useValidation<T>(
   name: string | undefined,
   rules: ValidationRule<T | undefined>[] | undefined,
   state: Ref,
-  errorMessages?: string[] | undefined
+  errorMessages?: string[] | undefined,
+  silentErrors = false
 ) {
   const n = name || "val";
   const v = useVuelidate(constructValidators(rules, n), { [n]: state });
@@ -26,8 +27,14 @@ export function useValidation<T>(
     if (errorMessages) {
       e.push(...errorMessages);
     }
-    if (v.value.$errors) {
-      e.push(...v.value.$errors);
+    if (silentErrors) {
+      if (v.value.$silentErrors) {
+        e.push(...v.value.$silentErrors);
+      }
+    } else {
+      if (v.value.$errors) {
+        e.push(...v.value.$errors);
+      }
     }
     return e;
   });
@@ -67,10 +74,10 @@ export const maxLength = withOverrideMessage(validators.maxLength);
 export const url = withOverrideMessage(validators.url);
 
 // custom
-export const validName = withOverrideMessage(
+export const validProjectName = withOverrideMessage(
   (ownerId: string) =>
     helpers.withParams(
-      { ownerId, type: "validName" },
+      { ownerId, type: "validProjectName" },
       helpers.withAsync(async (value: string) => {
         if (!helpers.req(value)) {
           return { $valid: true };
@@ -88,6 +95,86 @@ export const validName = withOverrideMessage(
     ) as ValidationRule<{ ownerId: string }>
 );
 
+export const validOrgName = withOverrideMessage(
+  helpers.withAsync(async (value: string) => {
+    if (!helpers.req(value)) {
+      return { $valid: true };
+    }
+    try {
+      await useInternalApi("organizations/validate", false, "get", {
+        name: value,
+      });
+      return { $valid: true };
+    } catch (e: any) {
+      return { $valid: false, $message: "organization.new.error.duplicateName" };
+    }
+  })
+);
+
+export const validApiKeyName = withOverrideMessage(
+  (username: string) =>
+    helpers.withParams(
+      { username, type: "validApiKeyName" },
+      helpers.withAsync(async (value: string) => {
+        if (!helpers.req(value)) {
+          return { $valid: true };
+        }
+        try {
+          await useInternalApi(`api-keys/check-key/${username}`, true, "get", {
+            name: value,
+          });
+          return { $valid: true };
+        } catch (e: any) {
+          return !e.response?.data.isHangarApiException ? { $valid: false } : { $valid: false, $message: e.response?.data.message };
+        }
+      })
+    ) as ValidationRule<{ ownerId: string }>
+);
+
+export const validChannelName = withOverrideMessage(
+  (projectId: string, existingName: string) =>
+    helpers.withParams(
+      { projectId, type: "validChannelName" },
+      helpers.withAsync(async (value: string) => {
+        if (!helpers.req(value)) {
+          return { $valid: true };
+        }
+        try {
+          await useInternalApi("channels/checkName", true, "get", {
+            projectId: projectId,
+            name: value,
+            existingName: existingName,
+          });
+          return { $valid: true };
+        } catch (e: any) {
+          return !e.response?.data.isHangarApiException ? { $valid: false } : { $valid: false, $message: e.response?.data.message };
+        }
+      })
+    ) as ValidationRule<{ ownerId: string }>
+);
+
+export const validChannelColor = withOverrideMessage(
+  (projectId: string, existingColor: string) =>
+    helpers.withParams(
+      { projectId, type: "validChannelColor" },
+      helpers.withAsync(async (value: string) => {
+        if (!helpers.req(value)) {
+          return { $valid: true };
+        }
+        try {
+          await useInternalApi("channels/checkColor", true, "get", {
+            projectId: projectId,
+            color: value,
+            existingColor: existingColor,
+          });
+          return { $valid: true };
+        } catch (e: any) {
+          return !e.response?.data.isHangarApiException ? { $valid: false } : { $valid: false, $message: e.response?.data.message };
+        }
+      })
+    ) as ValidationRule<{ ownerId: string }>
+);
+
 export const pattern = withOverrideMessage(
   (regex: string) =>
     helpers.withParams({ regex, type: "pattern" }, (value: string) => {
@@ -96,4 +183,12 @@ export const pattern = withOverrideMessage(
       }
       return { $valid: new RegExp(regex).test(value) };
     }) as ValidationRule<{ regex: string }>
+);
+
+export const dum = withOverrideMessage(
+  helpers.withAsync(async (value: any) => {
+    console.log("validate", value, value.length);
+    return false;
+    //return { $valid: false, $message: "dum2" };
+  })
 );

@@ -40,7 +40,7 @@ useHead(
 );
 </script>
 
-<!-- todo functionality, design, i18n, all the things -->
+<!-- todo functionality, design, i18n, validation, all the things -->
 <template>
   <Steps v-model="selectedStep" :steps="steps" button-lang-key="dum">
     <template #artifact>

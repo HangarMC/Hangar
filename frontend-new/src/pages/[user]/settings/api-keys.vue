@@ -3,12 +3,11 @@ import PageTitle from "~/components/design/PageTitle.vue";
 import { useI18n } from "vue-i18n";
 import InputText from "~/components/ui/InputText.vue";
 import Button from "~/components/design/Button.vue";
-import { ref, watch } from "vue";
+import { reactive, ref } from "vue";
 import { useContext } from "vite-ssr/vue";
 import { useInternalApi } from "~/composables/useApi";
-import { ApiKey, HangarApiException, IPermission, User } from "hangar-api";
+import { ApiKey, IPermission, User } from "hangar-api";
 import { useRoute } from "vue-router";
-import { AxiosError } from "axios";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import Table from "~/components/design/Table.vue";
@@ -18,11 +17,15 @@ import { useSeo } from "~/composables/useSeo";
 import { avatarUrl } from "~/composables/useUrlHelper";
 import { useHead } from "@vueuse/head";
 import { useNotificationStore } from "~/store/notification";
+import { maxLength, minLength, required, validApiKeyName, dum } from "~/composables/useValidationHelpers";
+import { useVuelidate } from "@vuelidate/core";
+import InputGroup from "~/components/ui/InputGroup.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
 const route = useRoute();
 const notification = useNotificationStore();
+const v = useVuelidate();
 
 const props = defineProps<{
   user: User;
@@ -31,32 +34,16 @@ const props = defineProps<{
 const apiKeys = ref(await useInternalApi<ApiKey[]>("api-keys/existing-keys/" + route.params.user));
 const possiblePerms = await useInternalApi<IPermission[]>("api-keys/possible-perms/" + route.params.user);
 
-// TODO validation, loading animations, validation loading
 const name = ref("");
-const loading = ref(false);
+const loadingCreate = ref(false);
+const loadingDelete = reactive<Record<string, boolean>>({});
 const selectedPerms = ref([]);
-const validateLoading = ref(false);
-const nameErrorMessages = ref<string[]>([]);
 
 useHead(useSeo(i18n.t("apiKeys.title") + " | " + props.user.name, null, route, avatarUrl(props.user.name)));
 
-watch(name, async (val: string) => {
-  if (!val) return;
-  validateLoading.value = true;
-  nameErrorMessages.value = [];
-  await useInternalApi(`api-keys/check-key/${route.params.user}`, true, "get", {
-    name: name.value,
-  }).catch((err: AxiosError<HangarApiException>) => {
-    if (!err.response?.data.isHangarApiException) {
-      return handleRequestError(err, ctx, i18n);
-    }
-    nameErrorMessages.value.push(i18n.t(err.response.data.message || ""));
-  });
-  validateLoading.value = false;
-});
-
 async function create() {
-  loading.value = true;
+  if (!(await v.value.$validate())) return;
+  loadingCreate.value = true;
   const key = await useInternalApi<string>(`api-keys/create-key/${route.params.user}`, true, "post", {
     name: name.value,
     permissions: selectedPerms.value,
@@ -68,19 +55,22 @@ async function create() {
       permissions: selectedPerms.value,
       createdAt: new Date().toISOString(),
     });
+    name.value = "";
+    selectedPerms.value = [];
+    v.value.$reset();
     notification.success(i18n.t("apiKeys.success.create", [name.value]));
   }
-  loading.value = true;
+  loadingCreate.value = false;
 }
 
 async function deleteKey(key: ApiKey) {
-  loading.value = false;
+  loadingDelete[key.name] = true;
   await useInternalApi(`api-keys/delete-key/${route.params.user}`, true, "post", {
     content: key.name,
   }).catch((err) => handleRequestError(err, ctx, i18n));
   apiKeys.value = apiKeys.value.filter((k) => k.name !== key.name);
   notification.success(i18n.t("apiKeys.success.delete", [key.name]));
-  loading.value = true;
+  loadingDelete[key.name] = false;
 }
 </script>
 
@@ -90,11 +80,17 @@ async function deleteKey(key: ApiKey) {
       <template #header>
         <PageTitle>{{ i18n.t("apiKeys.createNew") }}</PageTitle>
       </template>
-      <InputText v-model="name" :label="i18n.t('apiKeys.name')"></InputText>
-      <Button class="ml-2" @click="create">{{ i18n.t("apiKeys.createKey") }}</Button>
-      <div class="grid autofix mt-4">
-        <InputCheckbox v-for="perm in possiblePerms" :key="perm" v-model="selectedPerms" :label="perm" :value="perm" />
+      <div class="flex">
+        <div class="flex-grow">
+          <InputText v-model="name" :label="i18n.t('apiKeys.name')" :rules="[required(), minLength()(5), maxLength()(255), validApiKeyName()(user.name)]" />
+        </div>
+        <Button class="ml-2 w-max" :loading="loadingCreate || v.$pending" :disabled="v.$invalid" @click="create">{{ i18n.t("apiKeys.createKey") }}</Button>
       </div>
+      <InputGroup v-model="selectedPerms" :label="i18n.t('apiKeys.permissions')" :rules="[required(), minLength()(1)]" class="w-full mt-2">
+        <div class="grid autofix mt-2">
+          <InputCheckbox v-for="perm in possiblePerms" :key="perm" v-model="selectedPerms" :label="perm" :value="perm" />
+        </div>
+      </InputGroup>
     </Card>
     <Card>
       <template #header>
@@ -127,7 +123,7 @@ async function deleteKey(key: ApiKey) {
             <td>{{ key.tokenIdentifier }}</td>
             <td>{{ key.permissions.join(", ") }}</td>
             <td>
-              <Button @click="deleteKey(key)">{{ i18n.t("apiKeys.deleteKey") }}</Button>
+              <Button :loading="loadingDelete[key.name]" @click="deleteKey(key)">{{ i18n.t("apiKeys.deleteKey") }}</Button>
             </td>
           </tr>
           <tr v-if="apiKeys.length === 0">

@@ -63,7 +63,7 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
         />
         <Markdown v-else :raw="page.contents" />
       </Card>
-      <Card v-if="sponsors" class="mt-2 p-0 overflow-clip">
+      <Card v-if="sponsors || hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" class="mt-2 p-0 overflow-clip">
         <h1 class="mt-5 ml-5 text-xl">{{ i18n.t("project.sponsors") }}</h1>
         <MarkdownEditor
           v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)"

@@ -13,7 +13,7 @@ import { NamedPermission } from "~/types/enums";
 import Button from "~/components/design/Button.vue";
 import Tabs from "~/components/design/Tabs.vue";
 import { computed, reactive, ref, watch } from "vue";
-import InputSelect, { Option } from "~/components/ui/InputSelect.vue";
+import InputSelect from "~/components/ui/InputSelect.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import InputText from "~/components/ui/InputText.vue";
 import { cloneDeep } from "lodash-es";
@@ -26,12 +26,15 @@ import { useNotificationStore } from "~/store/notification";
 import InputTag from "~/components/ui/InputTag.vue";
 import TextAreaModal from "~/components/modals/TextAreaModal.vue";
 import ProjectSettingsSection from "~/components/projects/ProjectSettingsSection.vue";
+import { maxLength, required, requiredIf, url, validProjectName } from "~/composables/useValidationHelpers";
+import { useVuelidate } from "@vuelidate/core";
 
 const route = useRoute();
 const router = useRouter();
 const i18n = useI18n();
 const ctx = useContext();
 const backendData = useBackendDataStore();
+const v = useVuelidate();
 const props = defineProps<{
   project: HangarProject;
 }>();
@@ -51,7 +54,7 @@ const form = reactive({
 });
 const projectIcon = ref<File | null>(null);
 const newName = ref<string | null>("");
-const nameErrors = ref<string[]>([]);
+const newNameField = ref<InstanceType<typeof InputText> | null>(null);
 const loading = reactive({
   save: false,
   uploadIcon: false,
@@ -64,29 +67,10 @@ const isCustomLicense = computed(() => form.settings.license.type === "(custom)"
 watch(route, (val) => (selectedTab.value = val.hash.replace("#", "")), { deep: true });
 watch(selectedTab, (val) => history.replaceState({}, "", route.path + "#" + val));
 
-watch(newName, async (val) => {
-  if (!val) {
-    nameErrors.value = [];
-  } else {
-    try {
-      await useInternalApi("projects/validateName", false, "get", {
-        userId: props.project.owner.userId,
-        value: val,
-      });
-      nameErrors.value = [];
-    } catch (err) {
-      nameErrors.value = [];
-      if (!err.response?.data.isHangarApiException) {
-        return;
-      }
-      nameErrors.value.push(i18n.t(err.response.data.message));
-    }
-  }
-});
-
 async function save() {
   loading.save = true;
   try {
+    if (!(await v.value.$validate())) return;
     await useInternalApi(`projects/project/${route.params.user}/${route.params.project}/settings`, true, "post", {
       ...form,
     });
@@ -99,6 +83,7 @@ async function save() {
 
 async function rename() {
   loading.rename = true;
+  console.log("rename", newNameField.value, newNameField.value.v, newNameField.value.$setup);
   try {
     const newSlug = await useInternalApi<string>(`projects/project/${route.params.user}/${route.params.project}/rename`, true, "post", {
       content: newName.value,
@@ -197,7 +182,7 @@ useHead(
               :prop-visibility="project.visibility"
               :post-url="`projects/visibility/${project.id}`"
             ></VisibilityChangerModal>
-            <Button class="ml-2" @click="save">
+            <Button class="ml-2" :disabled="v.$invalid" :loading="loading.save" @click="save">
               <IconMdiCheck />
               {{ i18n.t("project.settings.save") }}
             </Button>
@@ -209,10 +194,15 @@ useHead(
       <Tabs v-model="selectedTab" :tabs="tabs">
         <template #general>
           <ProjectSettingsSection title="project.settings.category" description="project.settings.categorySub">
-            <InputSelect v-model="form.category" :values="backendData.categoryOptions" />
+            <InputSelect v-model="form.category" :values="backendData.categoryOptions" :rules="[required()]" />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.description" description="project.settings.descriptionSub">
-            <InputText v-model="form.description" counter :maxlength="backendData.validations?.project?.desc?.max" />
+            <InputText
+              v-model="form.description"
+              counter
+              :maxlength="backendData.validations?.project?.desc?.max"
+              :rules="[required(), maxLength()(backendData.validations?.project?.desc?.max)]"
+            />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.forum">
             <InputCheckbox v-model="form.settings.forumSync" :label="i18n.t('project.settings.forumSub')" />
@@ -226,11 +216,11 @@ useHead(
               <div class="col-span-2">
                 <InputFile v-model="projectIcon" accept="image/png, image/jpeg" show-size @change="onFileChange" />
               </div>
-              <Button :disabled="!projectIcon || loading.uploadIcon" @click="uploadIcon">
+              <Button :disabled="!projectIcon" :loading="loading.uploadIcon" @click="uploadIcon">
                 <IconMdiUpload />
                 {{ i18n.t("project.settings.iconUpload") }}
               </Button>
-              <Button :disabled="loading.resetIcon" @click="resetIcon">
+              <Button :loading="loading.resetIcon" @click="resetIcon">
                 <IconMdiUpload />
                 {{ i18n.t("project.settings.iconReset") }}
               </Button>
@@ -253,22 +243,24 @@ useHead(
               counter
               :maxlength="backendData.validations.project.keywords.max"
               :label="i18n.t('project.new.step3.keywords')"
+              :rules="[required(), maxLength()(backendData.validations.project.keywords.max)]"
             />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.homepage" description="project.settings.homepageSub">
-            <InputText v-model.trim="form.settings.homepage" :label="i18n.t('project.new.step3.homepage')"></InputText>
+            <InputText v-model.trim="form.settings.homepage" :label="i18n.t('project.new.step3.homepage')" :rules="[url()]"></InputText>
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.issues" description="project.settings.issuesSub">
-            <InputText v-model.trim="form.settings.issues" :label="i18n.t('project.new.step3.issues')" />
+            <InputText v-model.trim="form.settings.issues" :label="i18n.t('project.new.step3.issues')" :rules="[url()]" />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.source" description="project.settings.sourceSub">
-            <InputText v-model.trim="form.settings.source" :label="i18n.t('project.new.step3.source')" />
+            <InputText v-model.trim="form.settings.source" :label="i18n.t('project.new.step3.source')" :rules="[url()]" />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.support" description="project.settings.supportSub">
-            <InputText v-model.trim="form.settings.support" :label="i18n.t('project.new.step3.support')" />
+            <InputText v-model.trim="form.settings.support" :label="i18n.t('project.new.step3.support')" :rules="[url()]" />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
             <div class="flex">
+              <!-- todo is licence required? -->
               <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
                 <InputSelect v-model="form.settings.license.type" :values="backendData.licenseOptions" :label="i18n.t('project.settings.licenseType')" />
               </div>
@@ -276,7 +268,7 @@ useHead(
                 <InputText v-model.trim="form.settings.license.name" :label="i18n.t('project.settings.licenseCustom')" />
               </div>
               <div class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
-                <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" />
+                <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[url()]" />
               </div>
             </div>
           </ProjectSettingsSection>
@@ -284,8 +276,13 @@ useHead(
         <template #management>
           <ProjectSettingsSection title="project.settings.rename" description="project.settings.renameSub">
             <div class="flex items-center">
-              <InputText v-model.trim="newName" :error-messages="nameErrors" />
-              <Button :disabled="!newName || loading.rename || nameErrors.length > 0" class="ml-2" @click="rename">
+              <InputText
+                ref="newNameField"
+                v-model.trim="newName"
+                :label="i18n.t('project.settings.newName')"
+                :rules="[validProjectName()(project.owner.userId)]"
+              />
+              <Button :disabled="!newName || newNameField.v.$invalid" :loading="loading.rename" class="ml-2" @click="rename">
                 <IconMdiRenameBox class="mr-2" />
                 {{ i18n.t("project.settings.rename") }}
               </Button>
@@ -321,7 +318,7 @@ useHead(
             <InputCheckbox v-model="form.settings.donation.enable" />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.donation.subject" description="project.settings.donation.subjectSub">
-            <InputText v-model="form.settings.donation.subject" />
+            <InputText v-model="form.settings.donation.subject" :rules="[requiredIf()(form.settings.donation.enable)]" />
           </ProjectSettingsSection>
         </template>
       </Tabs>

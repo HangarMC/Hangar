@@ -20,7 +20,7 @@ import Button from "~/components/design/Button.vue";
 import Markdown from "~/components/Markdown.vue";
 import InputTextarea from "~/components/ui/InputTextarea.vue";
 import { useVuelidate } from "@vuelidate/core";
-import { required, maxLength, validName, pattern, url, requiredIf } from "~/composables/useValidationHelpers";
+import { required, maxLength, validProjectName, pattern, url, requiredIf } from "~/composables/useValidationHelpers";
 import Spinner from "~/components/design/Spinner.vue";
 
 interface NewProjectForm extends ProjectSettingsForm {
@@ -126,7 +126,7 @@ function createProject() {
 }
 </script>
 
-<!-- todo: rules, icon -->
+<!-- todo: icon -->
 <template>
   <Steps v-model="selectedStep" :steps="steps" button-lang-key="project.new.step">
     <template #tos>
@@ -155,7 +155,7 @@ function createProject() {
               required(),
               maxLength()(backendData.validations.project.name.max),
               pattern()(backendData.validations.project.name.regex),
-              validName()(form.ownerId),
+              validProjectName()(form.ownerId),
             ]"
           />
         </div>

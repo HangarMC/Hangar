@@ -22,6 +22,8 @@ const props = defineProps<{
 }>();
 
 const { v, errors, hasError } = useValidation(props.label, props.rules, value, props.errorMessages);
+
+defineExpose({ v });
 </script>
 
 <template>

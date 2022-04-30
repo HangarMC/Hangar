@@ -19,6 +19,7 @@ useHead(
 </script>
 
 <template>
+  <!-- todo reviews page -->
   <h1>reviews</h1>
 </template>
 

@@ -5,7 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useInvites, useNotifications } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { HangarNotification, Invite, Invites } from "hangar-internal";
-import { computed, ref, Ref, watch } from "vue";
+import { computed, ref, Ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";

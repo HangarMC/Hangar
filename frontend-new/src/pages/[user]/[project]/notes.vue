@@ -64,16 +64,16 @@ async function addNote() {
     </template>
 
     <div class="flex">
-      <InputText v-model="text" class="flex-grow" :placeholder="i18n.t('notes.placeholder')"></InputText>
-      <Button :disabled="!text || loading" class="ml-4" @click="addNote">{{ i18n.t("notes.addNote") }}</Button>
+      <div class="flex-grow"><InputText v-model="text" :placeholder="i18n.t('notes.placeholder')"></InputText></div>
+      <Button :disabled="!text || loading" size="medium" class="ml-4 w-max" @click="addNote">{{ i18n.t("notes.addNote") }}</Button>
     </div>
 
-    <h2 class="text-lg font-bold mb-1">
+    <h2 class="text-lg font-bold mb-1 mt-2">
       {{ i18n.t("notes.notes") }}
     </h2>
     <SortableTable :items="notes" :headers="headers">
       <template #empty>
-        <Alert v-text="i18n.t('notes.noNotes')" />
+        <Alert>{{ i18n.t("notes.noNotes") }}</Alert>
       </template>
       <template #item_createdAt="{ item }">
         {{ i18n.d(item.createdAt, "time") }}

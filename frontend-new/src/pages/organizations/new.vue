@@ -9,44 +9,30 @@ import { useBackendDataStore } from "~/store/backendData";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import InputText from "~/components/ui/InputText.vue";
 import MemberList from "~/components/projects/MemberList.vue";
 import Button from "~/components/design/Button.vue";
 import Alert from "~/components/design/Alert.vue";
 import { JoinableMember } from "hangar-internal";
+import { maxLength, minLength, pattern, required, validOrgName } from "~/composables/useValidationHelpers";
+import { useVuelidate } from "@vuelidate/core";
 
 const route = useRoute();
 const router = useRouter();
 const i18n = useI18n();
 const ctx = useContext();
 const backendData = useBackendDataStore();
+const v = useVuelidate();
 
 const currentUser = useAuthStore().user;
 
 const name = ref<string>("");
 const members = ref<JoinableMember[]>([]);
-const nameErrorMessages = ref<string[]>([]);
 
-// TODO validation
-/*const canCreate = computed<boolean>(
-  () =>
-    this.validForm &&
-    !this.validateLoading &&
-    (this.$refs.memberList.isEdited || (this.$refs.memberList.editedMembers.length === 0 && this.$refs.memberList.editingMembers.length === 0))
-);*/
+const canCreate = computed<boolean>(() => !v.value.$invalid && !v.value.$pending);
 
 useHead(useSeo(i18n.t("organization.new.title"), null, route, null));
-
-watch(name, async (val) => {
-  if (!val) return;
-  nameErrorMessages.value = [];
-  try {
-    await useInternalApi("organizations/validate", false, "get", { name: val });
-  } catch (e) {
-    nameErrorMessages.value.push(i18n.t("organization.new.error.duplicateName"));
-  }
-});
 
 async function create() {
   try {
@@ -67,11 +53,23 @@ async function create() {
     <p>{{ i18n.t("organization.new.text") }}</p>
 
     <template v-if="currentUser.headerData.organizationCount < backendData.validations.maxOrgCount">
-      <InputText v-model="name" class="mt-2" :label="i18n.t('organization.new.name')" :error-messages="nameErrorMessages" />
+      <InputText
+        v-model="name"
+        class="mt-2"
+        :label="i18n.t('organization.new.name')"
+        :maxlength="backendData.validations.org.max"
+        :rules="[
+          required(),
+          minLength()(backendData.validations.org.min),
+          maxLength()(backendData.validations.org.max),
+          pattern()(backendData.validations.org.regex),
+          validOrgName(),
+        ]"
+      />
 
       <MemberList v-model="members" :author="name" organization disable-saving class="mt-4 shadow-0"></MemberList>
 
-      <Button class="mt-4" @click="create">
+      <Button class="mt-4" :disabled="!canCreate" @click="create">
         <IconMdiCheck class="float-left" />
         {{ i18n.t("form.memberList.create") }}
       </Button>
