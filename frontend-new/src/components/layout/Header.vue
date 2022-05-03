@@ -68,7 +68,7 @@ authLog("render with user " + authStore.user?.name);
       <Announcement v-for="(announcement, idx) in backendData.announcements" :key="idx" :announcement="announcement" />
     </div>
 
-    <nav class="container mx-auto flex justify-between px-4 py-2">
+    <nav class="max-w-screen-xl mx-auto flex justify-between px-4 py-2">
       <!-- Left side items -->
       <div class="flex items-center gap-4">
         <Popover class="relative">
