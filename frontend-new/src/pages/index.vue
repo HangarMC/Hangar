@@ -111,7 +111,7 @@ useHead(meta);
       <!-- Text Input -->
       <input
         v-model="query"
-        class="rounded-l-md p-4 basis-full"
+        class="rounded-l-md p-4 basis-full min-w-0"
         type="text"
         :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
       />
@@ -119,7 +119,7 @@ useHead(meta);
       <Menu>
         <MenuButton class="bg-gradient-to-r from-[#004ee9] to-[#367aff] rounded-r-md text-left font-semibold flex items-center gap-2 text-white p-2">
           <span class="whitespace-nowrap">{{ i18n.t("hangar.projectSearch.sortBy") }}</span>
-          <icon-mdi-sort-variant class="text-2xl pointer-events-none" />
+          <icon-mdi-sort-variant class="text-xl pointer-events-none" />
         </MenuButton>
         <transition
           enter-active-class="transition duration-100 ease-out"
