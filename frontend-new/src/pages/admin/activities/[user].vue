@@ -59,7 +59,7 @@ function getRouteParams(activity: ReviewActivity) {
           </tr>
         </tbody>
       </Table>
-      <Alert type="success" v-else>
+      <Alert v-else type="success">
         {{ i18n.t("health.empty") }}
       </Alert>
     </Card>
@@ -79,7 +79,7 @@ function getRouteParams(activity: ReviewActivity) {
           </tr>
         </tbody>
       </Table>
-      <Alert type="success" v-else>
+      <Alert v-else type="success">
         {{ i18n.t("health.empty") }}
       </Alert>
     </Card>

@@ -50,7 +50,7 @@ async function create() {
 <template>
   <Card>
     <template #header>{{ i18n.t("organization.new.title") }}</template>
-    <p>{{ i18n.t("organization.new.text") }}</p>
+    <p class="mb-2">{{ i18n.t("organization.new.text") }}</p>
 
     <template v-if="currentUser.headerData.organizationCount < backendData.validations.maxOrgCount">
       <InputText
@@ -75,7 +75,7 @@ async function create() {
       </Button>
     </template>
 
-    <Alert type="danger" v-else>
+    <Alert v-else type="danger">
       {{ i18n.t("organization.new.error.tooManyOrgs", [backendData.validations.maxOrgCount]) }}
     </Alert>
   </Card>

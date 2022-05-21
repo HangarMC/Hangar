@@ -85,10 +85,10 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
   - [ ] qa
 - organizations (empty)
   - new
-    - [ ] fetch
-    - [ ] layout
-    - [ ] functionality
-    - [ ] design
+    - [x] fetch
+    - [x] layout
+    - [ ] functionality (member editing doesn't work)
+    - [x] design
     - [ ] qa
 - tools (empty)
   - bbcode
@@ -128,7 +128,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
       - [x] functionality
       - [x] design
       - [ ] qa
-    * discuss
+    * discuss (lets skip this for now)
       - [ ] fetch
       - [ ] layout
       - [ ] functionality
@@ -204,9 +204,9 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
             - [ ] design
             - [ ] qa
           - reviews
-            - [ ] fetch
-            - [ ] layout
-            - [ ] functionality
+            - [x] fetch
+            - [x] layout
+            - [x] functionality
             - [ ] design
             - [ ] qa
 - admin (empty)

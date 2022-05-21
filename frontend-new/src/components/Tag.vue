@@ -60,9 +60,9 @@ const ccColor = computed(() => {
   <div class="tags inline-flex flex-wrap items-center justify-start p-1" :class="{ 'has-addons': cData && !shortForm }">
     <span
       :style="{
-        color: ccColor.foreground,
-        background: ccColor.background,
-        'border-color': ccColor.background,
+        color: ccColor?.foreground,
+        background: ccColor?.background,
+        'border-color': ccColor?.background,
       }"
       class="tag flex rounded px-2 py-1"
     >

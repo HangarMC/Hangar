@@ -39,7 +39,7 @@ const props = defineProps<{
   versionPlatforms: Set<Platform>;
 }>();
 
-const p: Platform = (route.params.platform as string).toUpperCase() as Platform;
+const p: Platform = ((route.params.platform as string) || "").toUpperCase() as Platform;
 const projectVersion = computed<HangarVersion | undefined>(() => props.versions.get(p));
 if (!projectVersion.value) {
   await useRouter().push(useErrorRedirect(route, 404, "Not found"));
@@ -49,17 +49,17 @@ const isReviewStateChecked = computed<boolean>(
   () => projectVersion.value?.reviewState === ReviewState.PARTIALLY_REVIEWED || projectVersion.value?.reviewState === ReviewState.REVIEWED
 );
 const isUnderReview = computed<boolean>(() => projectVersion.value?.reviewState === ReviewState.UNDER_REVIEW);
-const channel = computed<Tag | null>(() => projectVersion.value?.tags?.find((t) => t.name === "Channel") || null);
+const channel = computed<Tag | null>(() => projectVersion.value?.tags?.find((t) => t?.name === "Channel") || null);
 const approvalTooltip = computed<string>(() =>
   projectVersion.value?.reviewState === ReviewState.PARTIALLY_REVIEWED ? i18n.t("version.page.partiallyApproved") : i18n.t("version.page.approved")
 );
-const platformTag = computed<Tag | null>(() => projectVersion.value?.tags.find((t) => t.name === platform.value?.name) || null);
+const platformTag = computed<Tag | null>(() => projectVersion.value?.tags.find((t) => t?.name === platform.value?.name) || null);
 const requiresConfirmation = computed<boolean>(() => projectVersion.value?.externalUrl !== null || projectVersion.value?.reviewState !== ReviewState.REVIEWED);
 const editingPage = ref(false);
 
 useHead(
   useSeo(
-    props.project.name + " " + projectVersion.value?.name,
+    props.project?.name + " " + projectVersion.value?.name,
     props.project.description,
     route,
     projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)
@@ -134,7 +134,7 @@ async function restoreVersion() {
 </script>
 
 <template>
-  <div class="flex">
+  <div v-if="projectVersion" class="flex">
     <div>
       <h1 class="text-3xl">
         {{ projectVersion.name }}
@@ -147,9 +147,9 @@ async function restoreVersion() {
     </div>
     <div class="flex-right">
       <h2>
-        <i v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy" class="mr-1">
+        <em v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy" class="mr-1">
           {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
-        </i>
+        </em>
         <IconMdiDiamondStone v-if="projectVersion.recommended.includes(platform?.enumName)" :title="i18n.t('version.page.recommended')" />
         <IconMdiCheckCircleOutline v-if="isReviewStateChecked" :title="approvalTooltip" />
       </h2>
@@ -176,7 +176,7 @@ async function restoreVersion() {
     </div>
   </div>
 
-  <div class="flex flex-wrap md:flex-nowrap gap-4">
+  <div v-if="projectVersion" class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-8/12 flex-grow">
       <Alert v-if="requiresConfirmation" class="mb-8" type="danger">{{ i18n.t("version.page.unsafeWarning") }}</Alert>
       <Card>

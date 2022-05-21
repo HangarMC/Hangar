@@ -34,7 +34,7 @@ const props = defineProps<{
       </li>
     </template>
   </ul>
-  <Alert type="danger" v-else>
+  <Alert v-else type="danger">
     {{ i18n.t("projectApproval.noProjects") }}
   </Alert>
 </template>

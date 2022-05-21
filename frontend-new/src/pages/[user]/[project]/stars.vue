@@ -45,7 +45,7 @@ useHead(
         <Link :to="'/' + stargazer.name">{{ stargazer.name }}</Link>
       </div>
     </div>
-    <Alert type="warning" v-else>
+    <Alert v-else type="warning">
       {{ i18n.t("project.noStargazers") }}
     </Alert>
   </Card>

@@ -163,7 +163,7 @@ function getNonChannelTags(version: Version): ApiTag[] {
             </router-link>
           </Card>
         </li>
-        <Alert type="warning" v-if="!versions.result || versions.result.length === 0"> {{ i18n.t("version.page.noVersions") }} </Alert>
+        <Alert v-if="!versions.result || versions.result.length === 0" type="warning"> {{ i18n.t("version.page.noVersions") }} </Alert>
       </ul>
     </section>
 
