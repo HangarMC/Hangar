@@ -46,7 +46,7 @@ function lastUpdated(date: Date): string {
         size="md"
       />
     </div>
-    <div class="overflow-clip">
+    <div class="overflow-clip min-w-0">
       <p>
         <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">{{ project.name }}</Link>
         by
