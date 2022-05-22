@@ -140,7 +140,7 @@ useHead(meta);
       </Menu>
     </div>
   </Container>
-  <Container class="mt-5" lg="flex gap-6">
+  <Container class="mt-5" lg="flex items-start gap-6">
     <!-- Projects -->
     <div class="w-full min-w-0 mb-5" lg="mb-0">
       <ProjectList :projects="projects" />
