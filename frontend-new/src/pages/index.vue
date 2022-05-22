@@ -142,7 +142,7 @@ useHead(meta);
   </Container>
   <Container class="mt-5" lg="flex gap-6">
     <!-- Projects -->
-    <div class="w-full mb-5" lg="mb-0">
+    <div class="w-full min-w-0 mb-5" lg="mb-0">
       <ProjectList :projects="projects" />
     </div>
     <!-- Sidebar -->
