@@ -381,6 +381,28 @@
         "platforms": "Platforms",
         "dependencies": "Plugin Dependencies"
       },
+      "steps": {
+        "1": {
+          "header": "Artifact",
+          "back": "Abort",
+          "continue": "Next"
+        },
+        "2": {
+          "header": "Basic Info",
+          "back": "Back",
+          "continue": "Next"
+        },
+        "3": {
+          "header": "Dependencies",
+          "back": "Back",
+          "continue": "Next"
+        },
+        "4": {
+          "header": "Changelog",
+          "back": "Back",
+          "continue": "Create"
+        }
+      },
       "error": {
         "metaNotFound": "Could not load metadata from uploaded file",
         "jarNotFound": "Could not open jar file",

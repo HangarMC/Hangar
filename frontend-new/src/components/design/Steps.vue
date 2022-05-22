@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, ComputedRef, Ref, ref } from "vue";
 import Link from "~/components/design/Link.vue";
 import Card from "~/components/design/Card.vue";
 import { useSettingsStore } from "~/store/settings";
 import Button from "~/components/design/Button.vue";
 import { useI18n } from "vue-i18n";
+import { useVuelidate } from "@vuelidate/core";
 
 const settings = useSettingsStore();
 const i18n = useI18n();
@@ -23,38 +24,49 @@ const props = defineProps<{
   buttonLangKey: string;
 }>();
 
+const v = useVuelidate();
+
 const activeStep = computed(() => props.steps.find((s) => s.value === internalValue.value));
 const activeStepIndex = computed(() => props.steps.indexOf(activeStep.value as Step) + 1);
 
-const canBack = ref(true);
-const canNext = ref(true);
-const showBack = ref(true);
-const showNext = ref(true);
+const disableBack = computed(() => (activeStep.value?.disableBack ? activeStep.value?.disableBack.value : false));
+const disableNext = computed(() => (activeStep.value?.disableNext ? activeStep.value?.disableNext.value : v.value.$invalid));
+const showBack = computed(() => (activeStep.value?.showBack ? activeStep.value?.showBack.value : true));
+const showNext = computed(() => (activeStep.value?.showNext ? activeStep.value?.showNext.value : true));
 
-function back() {
-  if (canBack.value) {
-    internalValue.value = props.steps[activeStepIndex.value - 2].value;
-  }
+async function back() {
+  if (disableBack.value) return;
+  if (activeStep.value?.beforeBack && !(await activeStep.value?.beforeBack())) return;
+
+  internalValue.value = props.steps[activeStepIndex.value - 2].value;
 }
 
-function next() {
-  if (canNext.value) {
-    internalValue.value = props.steps[activeStepIndex.value].value;
-  }
+async function next() {
+  if (disableNext.value) return;
+  if (!(await v.value.$validate())) return;
+  if (activeStep.value?.beforeNext && !(await activeStep.value?.beforeNext())) return;
+
+  internalValue.value = props.steps[activeStepIndex.value].value;
 }
 
-function goto(step: Step) {
+async function goto(step: Step) {
   const idx = props.steps.indexOf(step);
-  if (idx >= activeStepIndex.value && canNext.value) {
-    next();
-  } else if (idx < activeStepIndex.value && canBack.value) {
-    back();
+  if (idx >= activeStepIndex.value) {
+    await next();
+  } else if (idx < activeStepIndex.value) {
+    await back();
   }
 }
 
 export interface Step {
   value: string;
   header: string;
+  beforeBack?: () => Promise<boolean>;
+  beforeNext?: () => Promise<boolean>;
+  disableBack?: Ref<boolean>;
+  disableNext?: Ref<boolean>;
+  showBack?: Ref<boolean>;
+  showNext?: Ref<boolean>;
 }
 </script>
 
@@ -89,10 +101,12 @@ export interface Step {
         <div v-for="step in steps" :key="step.value">
           <slot v-if="internalValue === step.value" :name="step.value" />
         </div>
-        <Button v-if="showBack" :disable="canBack" size="medium" class="mt-6 mr-2" @click="back">{{
+        <Button v-if="showBack" :disabled="disableBack" size="medium" class="mt-6 mr-2" @click="back">{{
           i18n.t(buttonLangKey + activeStepIndex + ".back")
         }}</Button>
-        <Button v-if="showNext" :disable="canNext" size="medium" class="mt-6" @click="next">{{ i18n.t(buttonLangKey + activeStepIndex + ".continue") }}</Button>
+        <Button v-if="showNext" :disabled="disableNext" size="medium" class="mt-6" @click="next">{{
+          i18n.t(buttonLangKey + activeStepIndex + ".continue")
+        }}</Button>
       </Card>
     </div>
   </div>

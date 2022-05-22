@@ -5,14 +5,14 @@ import { ValidationRule } from "@vuelidate/core";
 import InputWrapper from "~/components/ui/InputWrapper.vue";
 
 const emit = defineEmits<{
-  (e: "update:modelValue", file: string): void;
+  (e: "update:modelValue", file: File): void;
 }>();
 const file = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
 });
 const props = defineProps<{
-  modelValue: string;
+  modelValue: File;
   label?: string;
   disabled?: boolean;
   showSize?: boolean;
@@ -22,11 +22,17 @@ const props = defineProps<{
 }>();
 
 const { v, errors, hasError } = useValidation(props.label, props.rules, file, props.errorMessages);
+
+function onFileChange(e: InputEvent) {
+  const files = (e.target as HTMLInputElement).files || e.dataTransfer?.files;
+  if (!files?.length) return;
+  file.value = files[0];
+}
 </script>
 
 <template>
   <InputWrapper v-slot="slotProps" :errors="errors" :has-error="hasError" :loading="loading || v.$pending" :label="label" :value="file">
-    <!-- todo make fancy, implement functionality -->
-    <input type="file" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" />
+    <!-- todo make button fancy -->
+    <input type="file" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" @change="onFileChange" />
   </InputWrapper>
 </template>

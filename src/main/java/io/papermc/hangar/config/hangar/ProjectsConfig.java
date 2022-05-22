@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class ProjectsConfig {
 
     private String nameRegex = "^[a-zA-Z0-9-_]{3,}$";
-    private String versionNameRegex = "^[a-zA-Z0-9-_.]+$";
+    private String versionNameRegex = "^[a-zA-Z0-9-_.+]+$";
     private String pageNameRegex = "^[a-zA-Z0-9-_.]+$";
     private Pattern namePattern = Pattern.compile(this.nameRegex);
     private Pattern versionNamePattern = Pattern.compile(this.versionNameRegex);
