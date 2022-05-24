@@ -17,10 +17,10 @@ const props = defineProps<{
   <ErrorTooltip :error-messages="errors" class="w-full" :class="{ filled: value, error: hasError }">
     <label
       :class="[
-        'relative flex w-full outline-none p-2 border-bottom-1px rounded',
-        'bg-primary-light-200 border-gray-400 dark:(bg-primary-300/8 border-gray-500)',
-        'focus:(bg-primary-200/5 dark:bg-primary-200/10 border-primary-400)',
-        'error:(border-red-400) disabled:(bg-black-15 text-black-50)',
+        'relative flex w-full outline-none p-2 border-1px rounded',
+        'border-gray-500',
+        'focus:border-primary-400',
+        'error:border-red-400',
         'transition duration-200 ease',
       ]"
     >

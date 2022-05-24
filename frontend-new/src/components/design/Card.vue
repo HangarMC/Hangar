@@ -13,12 +13,11 @@ const props = withDefaults(
 
 const clazz = computed(() => {
   return {
-    "bg-white": true,
-    "dark:bg-background-dark-90": true,
+    "background-default": true,
     border: true,
-    "dark:border-neutral-800": true,
+    "dark:border-gray-800": true,
     "!border-top-primary": props.accent,
-    "shadow-xl": true,
+    "shadow-md": true,
     "rounded-md": true,
     "p-4": true,
     "overflow-auto": true,

@@ -125,7 +125,7 @@ interface EditableMember {
     <div
       v-for="member in modelValue"
       :key="member.user.name"
-      class="p-2 w-full border border-neutral-100 dark:border-neutral-800 rounded inline-flex flex-row space-x-4"
+      class="p-2 w-full border border-gray-100 dark:border-gray-800 rounded inline-flex flex-row space-x-4"
     >
       <UserAvatar :username="member.user.name" :avatar-url="avatarUrl(member.user.name)" size="sm" />
       <div class="flex-grow">

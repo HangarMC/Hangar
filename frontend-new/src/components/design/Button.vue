@@ -10,7 +10,7 @@ const props = withDefaults(
   defineProps<{
     disabled?: boolean;
     size?: "small" | "medium" | "large";
-    buttonType?: "primary" | "gray" | "red" | "transparent";
+    buttonType?: "primary" | "secondary" | "red" | "transparent";
     loading?: boolean;
     to?: string | RouteLocationRaw | object;
   }>(),
@@ -42,7 +42,11 @@ const paddingClass = computed(() => {
   <component
     :is="to ? 'router-link' : 'button'"
     :class="
-      'rounded-md font-semibold h-min inline-flex items-center justify-center ' + paddingClass + ' button-' + buttonType + (loading ? ' !cursor-wait' : '')
+      'rounded-md font-semibold h-min inline-flex items-center justify-center text-white disabled:(bg-gray-300 cursor-not-allowed) disabled:dark:(text-gray-500 bg-gray-700) ' +
+      paddingClass +
+      ' button-' +
+      buttonType +
+      (loading ? ' !cursor-wait' : '')
     "
     :disabled="disabled || loading"
     :to="to"

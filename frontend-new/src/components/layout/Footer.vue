@@ -1,5 +1,5 @@
 <template>
-  <footer class="relative flex items-end mt-10 bg-[#ecf2fb] dark:bg-[#212121] px-8 pb-2 text-light-10 min-h-10">
+  <footer class="relative flex items-end mt-10 background-default px-8 pb-2 text-light-10 min-h-10">
     <div class="footerContent w-screen">
       <div class="footerBar flex items-center justify-around mt-4 max-w-1200px m-auto text-sm">
         <p>© 2022 <a href="https://papermc.io/">PaperMC</a></p>

@@ -107,7 +107,7 @@ useHead(meta);
     <Alert v-if="loggedOut" type="success">You have been logged out!</Alert>
     <h2 class="text-3xl font-bold uppercase text-center my-4">{{ i18n.t("hangar.projectSearch.title") }}</h2>
     <!-- Search Bar -->
-    <div class="relative rounded-md flex shadow-lg w-full max-w-screen-md">
+    <div class="relative rounded-md flex shadow-md w-full max-w-screen-md">
       <!-- Text Input -->
       <input
         v-model="query"

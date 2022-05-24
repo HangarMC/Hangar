@@ -63,7 +63,7 @@ authLog("render with user " + authStore.user?.name);
 </script>
 
 <template>
-  <header class="background-header">
+  <header class="background-default shadow-md">
     <div v-if="backendData.announcements">
       <Announcement v-for="(announcement, idx) in backendData.announcements" :key="idx" :announcement="announcement" />
     </div>
@@ -84,7 +84,7 @@ authLog("render with user " + authStore.user?.name);
             leave-to-class="translate-y-1 opacity-0"
           >
             <PopoverPanel
-              class="fixed z-10 w-9/10 background-header top-1/14 left-1/20 drop-shadow-md rounded-md border-top-primary text-xs p-[20px]"
+              class="fixed z-10 w-9/10 background-default top-1/14 left-1/20 drop-shadow-md rounded-md border-top-primary text-xs p-[20px]"
               md="absolute w-max top-10 rounded-none rounded-bl-md rounded-r-md"
             >
               <p class="text-base font-semibold color-primary mb-4">Hangar</p>
@@ -158,9 +158,7 @@ authLog("render with user " + authStore.user?.name);
                 {{ authStore.user.name }}
               </div>
             </MenuButton>
-            <MenuItems
-              class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 bg-background-light-0 dark:bg-background-dark-80 drop-shadow-xl"
-            >
+            <MenuItems class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 background-default drop-shadow-xl">
               <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
               <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
               <DropdownItem :href="'/' + authStore.user.name + '/settings/api-keys'">{{ t("nav.user.apiKeys") }}</DropdownItem>
@@ -199,7 +197,7 @@ authLog("render with user " + authStore.user?.name);
 
 <style lang="css" scoped>
 nav .router-link-active {
-  color: #4080ff;
+  @apply color-primary;
   font-weight: 700;
 }
 

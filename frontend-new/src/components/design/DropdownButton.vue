@@ -34,9 +34,7 @@ const props = withDefaults(
           </template>
         </Button>
       </MenuButton>
-      <MenuItems
-        class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 bg-background-light-0 dark:bg-background-dark-80 drop-shadow-xl"
-      >
+      <MenuItems class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 background-default shadow-lg">
         <slot></slot>
       </MenuItems>
     </div>
