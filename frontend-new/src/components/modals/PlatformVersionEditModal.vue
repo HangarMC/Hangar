@@ -58,8 +58,8 @@ async function save() {
         </li>
       </ul>
 
-      <Button button-type="secondary" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
-      <Button button-type="primary" class="mt-2 ml-2" :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
+      <Button button-type="primary" class="mt-2" :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
+      <Button button-type="secondary" class="mt-2 ml-2" v-on="on">{{ i18n.t("general.close") }}</Button>
     </template>
     <template #activator="{ on }">
       <Button v-on="on"><IconMdiPencil /></Button>

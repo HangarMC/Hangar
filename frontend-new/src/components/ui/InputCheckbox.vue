@@ -22,7 +22,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
 </script>
 
 <template>
-  <label class="group relative pl-30px customCheckboxContainer w-max" :cursor="disabled ? 'auto' : 'pointer'">
+  <label class="group relative pl-30px customCheckboxContainer w-max inline-flex" :cursor="disabled ? 'auto' : 'pointer'">
     <template v-if="props.label">{{ props.label }}</template>
     <input v-model="internalVal" type="checkbox" class="hidden" v-bind="$attrs" :disabled="disabled" @blur="v.$touch()" />
     <span
