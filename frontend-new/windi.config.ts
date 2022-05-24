@@ -5,7 +5,7 @@ import plugin from "windicss/plugin";
 
 export default defineConfig({
   darkMode: "class",
-  safelist: "order-last button-primary button-gray button-red button-transparent",
+  safelist: "order-last button-primary button-secondary button-red button-transparent",
   attributify: true,
   plugins: [
     typography(),
@@ -46,6 +46,7 @@ export default defineConfig({
       },
       red: colors.red,
       gray: colors.zinc,
+      secondary: colors.slate,
       white: colors.zinc[50],
       black: colors.zinc[900],
     },
@@ -101,16 +102,13 @@ export default defineConfig({
     },
   },
   shortcuts: {
-    "background-body": "bg-gray-100 dark:bg-gray-800",
-    "background-default": "bg-gray-50 dark:bg-gray-900",
-    "color-primary": "text-primary-400 dark:text-primary-200",
+    "background-body": "bg-gray-100 dark:bg-gray-900",
+    "background-default": "bg-gray-50 dark:bg-gray-800",
+    "color-primary": "text-primary-400",
     "border-top-primary": "border-solid border-t-4 border-t-primary-400",
-    "button-primary": "text-white bg-primary-400 disabled:(bg-primary-100 dark:(bg-primary-800 text-gray-500) cursor-not-allowed) enabled:hover:bg-primary-300",
-    "button-transparent":
-      "bg-transparent disabled:(text-gray-900 dark:text-white cursor-not-allowed) enabled:hover:(bg-primary-400/15 text-primary-400 dark:text-primary-100)",
-    "button-red":
-      "text-white bg-red-500 dark:bg-red-600 disabled:(bg-red-300 dark:(bg-red-900 text-gray-400) cursor-not-allowed) enabled:hover:(bg-red-400 dark:bg-red-500)",
-    "button-gray":
-      "text-white bg-gray-500 dark:bg-slate-700 disabled:(bg-gray-300 text-gray-500 dark:bg-gray-800 cursor-not-allowed) enabled:hover:(bg-gray-400 dark:bg-slate-600)",
+    "button-primary": "bg-primary-400 enabled:hover:bg-primary-300",
+    "button-secondary": "bg-secondary-500 enabled:hover:(bg-secondary-400 dark:bg-secondary-600)",
+    "button-transparent": "bg-transparent enabled:hover:(bg-primary-400/15 text-primary-400 dark:text-primary-100)",
+    "button-red": "bg-red-500 dark:bg-red-600 enabled:hover:(bg-red-400 dark:bg-red-500)",
   },
 });

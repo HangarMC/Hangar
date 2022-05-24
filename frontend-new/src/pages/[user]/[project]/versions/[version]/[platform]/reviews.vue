@@ -370,7 +370,7 @@ useHead(
             </Button>
           </div>
           <div v-else-if="currentUserReview === review" class="text-right">
-            <Button v-if="currentReviewLastAction === 'STOP'" size="small" button-type="gray" :loading="loadingValues.reopen" @click="reopenReview">
+            <Button v-if="currentReviewLastAction === 'STOP'" size="small" button-type="secondary" :loading="loadingValues.reopen" @click="reopenReview">
               <IconMdiRefresh />
               {{ t("reviews.reopenReview") }}
             </Button>

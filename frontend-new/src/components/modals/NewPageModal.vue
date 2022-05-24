@@ -93,7 +93,7 @@ async function createPage() {
       </div>
       <div>
         <Button class="mt-2" :disabled="validateLoading || loading" @click="createPage">{{ i18n.t("general.create") }}</Button>
-        <Button button-type="gray" class="mt-2 ml-2" v-on="on">{{ i18n.t("general.close") }}</Button>
+        <Button button-type="secondary" class="mt-2 ml-2" v-on="on">{{ i18n.t("general.close") }}</Button>
       </div>
     </template>
     <template #activator="{ on }">

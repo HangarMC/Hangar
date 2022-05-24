@@ -47,7 +47,7 @@ async function changeOrgVisibility(org: string) {
         </li>
       </ul>
 
-      <Button button-type="gray" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
+      <Button button-type="secondary" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
     </template>
     <template #activator="{ on }">
       <Button v-on="on"><IconMdiPencil /></Button>

@@ -117,7 +117,7 @@ useHead(meta);
       />
       <!-- Sorting Button -->
       <Menu>
-        <MenuButton class="bg-gradient-to-r from-[#004ee9] to-[#367aff] rounded-r-md text-left font-semibold flex items-center gap-2 text-gray-50 p-2">
+        <MenuButton class="bg-gradient-to-r from-[#004ee9] to-[#367aff] rounded-r-md text-left font-semibold flex items-center gap-2 text-white p-2">
           <span class="whitespace-nowrap">{{ i18n.t("hangar.projectSearch.sortBy") }}</span>
           <icon-mdi-sort-variant class="text-xl pointer-events-none" />
         </MenuButton>
@@ -131,7 +131,7 @@ useHead(meta);
         >
           <MenuItems class="absolute right-0 top-16 flex flex-col z-10 background-header drop-shadow-md rounded-md border-top-primary">
             <MenuItem v-for="sorter in sorters" :key="sorter.id" v-slot="{ active }">
-              <button :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-gray-50': active }" class="p-2 text-left">
+              <button :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': active }" class="p-2 text-left">
                 {{ sorter.label }}
               </button>
             </MenuItem>
