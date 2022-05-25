@@ -123,20 +123,20 @@ function getNonChannelTags(version: Version): ApiTag[] {
           <Card>
             <router-link :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${version.name}`">
               <div class="flex flex-wrap">
-                <div class="basis-4/12 md:basis-3/12 lg:basis-3/12">
+                <div class="basis-3/12 <sm:basis-4/12">
                   <div class="flex flex-wrap">
                     <span class="basis-full text-xl">{{ version.name }}</span>
                     <span class="basis-full"><Tag :tag="getChannelTag(version)" /></span>
                   </div>
                 </div>
-                <div class="basis-4/12 md:basis-3/12 lg:basis-3/12">
-                  <Tag v-for="(tag, index) in getNonChannelTags(version)" :key="index" :tag="tag" />
+                <div class="basis-4/12 <sm:1/12">
+                  <Tag v-for="(tag, index) in getNonChannelTags(version)" :key="index" :tag="tag" class="w-full" />
                 </div>
-                <div class="basis-2/12 md:basis-4/12 lg:basis-3/12">
+                <div class="basis-2/12 <sm:hidden">
                   <div class="flex flex-wrap">
                     <span class="basis-full inline-flex items-center">
-                      <IconMdiCalendar class="mr-1" />
-                      {{ i18n.d(version.createdAt, "date") }}
+                      <IconMdiAccountArrowRight class="mr-1" />
+                      <Link :to="'/' + version.author">{{ version.author }}</Link>
                     </span>
                     <span class="basis-full inline-flex items-center">
                       <IconMdiFile class="mr-1" />
@@ -147,11 +147,11 @@ function getNonChannelTags(version: Version): ApiTag[] {
                     </span>
                   </div>
                 </div>
-                <div class="basis-2/12 md:basis-2/12 lg:basis-3/12">
+                <div class="basis-3/12 <sm:basis-4/12">
                   <div class="flex flex-wrap">
                     <span class="basis-full inline-flex items-center">
-                      <IconMdiAccountArrowRight class="mr-1" />
-                      <Link :to="'/' + version.author">{{ version.author }}</Link>
+                      <IconMdiCalendar class="mr-1" />
+                      {{ i18n.d(version.createdAt, "date") }}
                     </span>
                     <span class="basis-full inline-flex items-center">
                       <IconMdiDownload class="mr-1" />
@@ -187,7 +187,7 @@ function getNonChannelTags(version: Version): ApiTag[] {
           </template>
 
           <ul>
-            <li v-for="channel in channels" :key="channel.name">
+            <li v-for="channel in channels" :key="channel.name" class="inline-flex w-full">
               <InputCheckbox v-model="filter.channels" :value="channel.name" @change="updateChannelCheckAll" />
               <Tag :name="channel.name" :color="{ background: channel.color }"></Tag>
             </li>
@@ -196,12 +196,14 @@ function getNonChannelTags(version: Version): ApiTag[] {
 
         <Card class="basis-6/12 md:basis-full flex-grow">
           <template #header>
-            <InputCheckbox v-model="filter.allChecked.platforms" class="flex-right" @change="checkAllPlatforms" />
-            {{ i18n.t("version.platforms") }}
+            <div class="inline-flex">
+              <InputCheckbox v-model="filter.allChecked.platforms" class="flex-right" @change="checkAllPlatforms" />
+              {{ i18n.t("version.platforms") }}
+            </div>
           </template>
 
           <ul>
-            <li v-for="platform in platforms" :key="platform.name">
+            <li v-for="platform in platforms" :key="platform.name" class="inline-flex w-full">
               <InputCheckbox v-model="filter.platforms" :value="platform.enumName" @change="updatePlatformCheckAll" />
               <Tag :name="platform.name" :color="platform.tagColor" />
             </li>

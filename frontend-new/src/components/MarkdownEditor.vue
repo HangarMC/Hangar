@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, defineExpose, reactive, ref, watch } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import InputTextarea from "~/components/ui/InputTextarea.vue";
 import Markdown from "~/components/Markdown.vue";
 import Button from "~/components/design/Button.vue";
