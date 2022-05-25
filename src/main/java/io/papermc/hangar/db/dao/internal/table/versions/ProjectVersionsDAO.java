@@ -23,8 +23,8 @@ public interface ProjectVersionsDAO {
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("INSERT INTO project_versions " +
-            "(created_at, version_string, description, project_id, channel_id, file_size, hash, file_name, external_url, author_id, create_forum_post) VALUES " +
-            "(:now, :versionString, :description, :projectId, :channelId, :fileSize, :hash, :fileName, :externalUrl, :authorId, :createForumPost)")
+            "(created_at, version_string, description, project_id, channel_id, file_size, hash, file_name, external_url, author_id, visibility, create_forum_post) VALUES " +
+            "(:now, :versionString, :description, :projectId, :channelId, :fileSize, :hash, :fileName, :externalUrl, :authorId, :visibility, :createForumPost)")
     ProjectVersionTable insert(@BindBean ProjectVersionTable projectVersionTable);
 
     @GetGeneratedKeys

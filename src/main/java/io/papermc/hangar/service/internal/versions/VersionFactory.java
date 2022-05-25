@@ -219,6 +219,7 @@ public class VersionFactory extends HangarComponent {
                 fileHash = pendingVersion.getFileInfo().getMd5Hash();
                 fileName = pendingVersion.getFileInfo().getName();
             }
+            //TODO automatic checks for malicious code or files => set visibility to NEEDSAPPROVAL
             projectVersionTable = projectVersionsDAO.insert(new ProjectVersionTable(
                     pendingVersion.getVersionString(),
                     pendingVersion.getDescription(),
@@ -234,7 +235,7 @@ public class VersionFactory extends HangarComponent {
 
             List<ProjectVersionTagTable> projectVersionTagTables = new ArrayList<>();
             List<ProjectVersionPlatformDependencyTable> platformDependencyTables = new ArrayList<>();
-            for (var entry : pendingVersion.getPlatformDependencies().entrySet()) {
+            for (Map.Entry<Platform, SortedSet<String>> entry : pendingVersion.getPlatformDependencies().entrySet()) {
                 projectVersionTagTables.add(new ProjectVersionTagTable(projectVersionTable.getId(), entry.getKey(), entry.getValue()));
                 for (String version : entry.getValue()) {
                     PlatformVersionTable platformVersionTable = platformVersionDAO.getByPlatformAndVersion(entry.getKey(), version);
@@ -245,7 +246,7 @@ public class VersionFactory extends HangarComponent {
             projectVersionPlatformDependenciesDAO.insertAll(platformDependencyTables);
 
             List<ProjectVersionDependencyTable> pluginDependencyTables = new ArrayList<>();
-            for (var platformListEntry : pendingVersion.getPluginDependencies().entrySet()) {
+            for (Map.Entry<Platform, Set<PluginDependency>> platformListEntry : pendingVersion.getPluginDependencies().entrySet()) {
                 for (PluginDependency pluginDependency : platformListEntry.getValue()) {
                     Long depProjectId = null;
                     if (pluginDependency.getNamespace() != null) {

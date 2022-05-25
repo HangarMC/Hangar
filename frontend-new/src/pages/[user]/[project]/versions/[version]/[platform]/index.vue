@@ -178,7 +178,7 @@ async function restoreVersion() {
 
   <div v-if="projectVersion" class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-8/12 flex-grow">
-      <Alert v-if="requiresConfirmation" class="mb-8" type="danger">{{ i18n.t("version.page.unsafeWarning") }}</Alert>
+      <Alert v-if="requiresConfirmation" class="mb-8" type="info">{{ i18n.t("version.page.unsafeWarning") }}</Alert>
       <Card>
         <MarkdownEditor
           v-if="hasPerms(NamedPermission.EDIT_VERSION)"

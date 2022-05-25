@@ -26,7 +26,6 @@ const ccColor = computed(() => {
     let background = cColor.value?.background;
     let colors: number[] = [];
     if (background?.startsWith("rgb")) {
-      console.log("background", background);
       colors = background
         ?.replace("rgb(", "")
         .replace(")", "")
@@ -68,7 +67,7 @@ const ccColor = computed(() => {
     >
       {{ shortForm && cData ? cData : cName }}
     </span>
-    <span v-if="cData && !shortForm" class="tag flex bg-gray-100 rounded px-2 py-1">{{ cData }}</span>
+    <span v-if="cData && !shortForm" class="tag flex bg-gray-100 rounded px-2 py-1 text-black">{{ cData }}</span>
   </div>
 </template>
 

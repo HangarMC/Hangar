@@ -119,10 +119,8 @@ export const useSettingsStore = defineStore("settings", () => {
     addEventListener("resize", () => {
       if (innerWidth <= mobileBreakPoint && !mobile.value) {
         enableMobile();
-        console.log(`Mobile: ${mobile.value}`);
       } else if (innerWidth > mobileBreakPoint && mobile) {
         disableMobile();
-        console.log(`Mobile: ${mobile.value}`);
       }
     });
   }
