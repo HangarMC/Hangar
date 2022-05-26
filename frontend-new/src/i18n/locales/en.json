@@ -438,7 +438,7 @@
       }
     },
     "page": {
-      "subheader": "{0} released this version on {1}",
+      "subheader": "{0} released this version: {1}",
       "dependencies": "Dependencies",
       "platform": "Platform",
       "required": "(required)",

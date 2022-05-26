@@ -32,8 +32,8 @@ const props = defineProps<{
 }>();
 const i18n = useI18n();
 const ctx = useContext();
-const route = useRoute();
 
+const route = useRoute();
 const { starred, watching, projects, organizations } = (await useUserData(props.user.name)).value || {};
 let organizationVisibility = null;
 if (props.user.name === useAuthStore().user?.name) {
@@ -91,8 +91,10 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
       <template v-if="!user.isOrganization">
         <Card class="mb-4" accent>
           <template #header>
-            {{ i18n.t("author.orgs") }}
-            <OrgVisibilityModal v-model="organizationVisibility" />
+            <div class="inline-flex w-full">
+              <span class="flex-grow">{{ i18n.t("author.orgs") }}</span>
+              <OrgVisibilityModal v-if="organizationVisibility" v-model="organizationVisibility" />
+            </div>
           </template>
 
           <ul>
@@ -101,9 +103,7 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
                 <UserAvatar :username="orgName" :avatar-url="avatarUrl(orgName)" size="xs" />
                 &nbsp;
                 {{ orgName }}
-                &nbsp;
-                {{ orgRole.role.title }}
-                &nbsp;
+                &nbsp; ({{ orgRole.role.title }}) &nbsp;
                 <span v-if="organizationVisibility && organizationVisibility[orgName]"> Hidden </span>
               </router-link>
             </li>

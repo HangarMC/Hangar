@@ -48,8 +48,8 @@ flood watching users with notifications.
 
 ## Monetization / Advertising
 
-Additional features or addons may not be hidden behind a paywall; this includes directly linking to off-site addons or "
-full" versions of a "lite" plugin version. Advertisements and other revenue generating links (e.g. adfly) are not
+Additional features or addons may not be hidden behind a paywall; this includes directly linking to off-site addons or
+"full" versions of a "lite" plugin version. Advertisements and other revenue generating links (e.g. adfly) are not
 permitted.
 
 All functionality present in your plugin should be usable without restriction and cannot require a license key to
@@ -99,7 +99,7 @@ Your project must either:
 - Continue a plugin that has been abandoned, with the author no longer answering messages or having stated that the
   project will no longer be updated.
 
-You have to acknowledge or credit the past plugin and developers. Essentially, do not claim it is a new plugin and
+You have to acknowledge or credit the past plugin and its developers. Essentially, do not claim it is a new plugin and
 exclusively your creation.
 
 ## Malicious Code
@@ -120,6 +120,6 @@ useHead(useSeo(i18n.t("pages.guidelinesTitle"), null, route, null));
 
 <template>
   <PageTitle>{{ i18n.t("guidelines.title") }}</PageTitle>
-  <h2 class="text-2xl font-bold uppercase">!!! NONE OF THIS IS FINAL, THIS IS JUST A QUICK MOCKUP !!!</h2>
+  <h2 class="text-2xl font-bold uppercase">!!! NONE OF THIS IS FINAL !!!</h2>
   <Markdown :raw="text"></Markdown>
 </template>

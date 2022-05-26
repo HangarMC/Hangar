@@ -6,6 +6,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useContext } from "vite-ssr/vue";
 import { useBackendDataStore } from "~/store/backendData";
+import { lastUpdated } from "~/composables/useTime";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { Tag } from "hangar-api";
@@ -25,6 +26,7 @@ import { useNotificationStore } from "~/store/notification";
 import DropdownButton from "~/components/design/DropdownButton.vue";
 import DropdownItem from "~/components/design/DropdownItem.vue";
 import PlatformVersionEditModal from "~/components/modals/PlatformVersionEditModal.vue";
+import Tooltip from "~/components/design/Tooltip.vue";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -138,14 +140,13 @@ async function restoreVersion() {
     <div>
       <h1 class="text-3xl">
         {{ projectVersion.name }}
-        <DropdownButton v-if="versionPlatforms.size > 1" class="text-2xl inline" :name="platform?.name">
-          <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()">{{ backendData.platforms?.get(plat)?.name }}</DropdownItem>
-        </DropdownButton>
+        <TagComponent :tag="channel" :short-form="true" />
       </h1>
-      <TagComponent :tag="channel" :short-form="true" />
-      <h2>{{ i18n.t("version.page.subheader", [projectVersion.author, i18n.d(projectVersion.createdAt, "date")]) }}</h2>
+      <h2>
+        {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(project.lastUpdated)]) }}
+      </h2>
     </div>
-    <div class="flex-right">
+    <div class="text-2xl mt-2 ml-1">
       <h2>
         <em v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy" class="mr-1">
           {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
@@ -153,7 +154,14 @@ async function restoreVersion() {
         <IconMdiDiamondStone v-if="projectVersion.recommended.includes(platform?.enumName)" :title="i18n.t('version.page.recommended')" />
         <IconMdiCheckCircleOutline v-if="isReviewStateChecked" :title="approvalTooltip" />
       </h2>
-
+      <!-- todo set recommended -->
+      <!-- todo delete -->
+      <!-- todo download -->
+      <!-- todo admin actions -->
+    </div>
+    <div class="flex-grow"></div>
+    <div class="inline-flex items-center">
+      <!-- todo Make these nicer/put somewhere else -->
       <template v-if="hasPerms(NamedPermission.REVIEWER)">
         <Button v-if="isReviewStateChecked" color="success" :to="route.path + '/reviews'">
           <IconMdiListStatus />
@@ -169,14 +177,13 @@ async function restoreVersion() {
         </Button>
       </template>
 
-      <!-- todo set recommended -->
-      <!-- todo delete -->
-      <!-- todo download -->
-      <!-- todo admin actions -->
+      <DropdownButton v-if="versionPlatforms.size > 1" class="text-xl inline ml-2" :name="platform?.name">
+        <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()">{{ backendData.platforms?.get(plat)?.name }}</DropdownItem>
+      </DropdownButton>
     </div>
   </div>
 
-  <div v-if="projectVersion" class="flex flex-wrap md:flex-nowrap gap-4">
+  <div v-if="projectVersion" class="flex flex-wrap md:flex-nowrap gap-4 mt-4">
     <section class="basis-full md:basis-8/12 flex-grow">
       <Alert v-if="requiresConfirmation" class="mb-8" type="info">{{ i18n.t("version.page.unsafeWarning") }}</Alert>
       <Card>
@@ -197,13 +204,15 @@ async function restoreVersion() {
     <section class="basis-full md:basis-4/12 flex-grow space-y-4">
       <Card>
         <template #header>
-          {{ i18n.t("version.page.platform") }}
-          <PlatformVersionEditModal :project="project" :versions="versions" />
+          <div class="inline-flex w-full">
+            <span class="flex-grow"> {{ i18n.t("version.page.platform") }}</span>
+            <PlatformVersionEditModal v-if="hasPerms(NamedPermission.EDIT_VERSION)" :project="project" :versions="versions" />
+          </div>
         </template>
 
         <!-- todo platform icon -->
         {{ platform?.name }}
-        {{ platformTag.data }}
+        {{ platformTag?.data }}
       </Card>
 
       <Card>
