@@ -13,9 +13,11 @@ const props = withDefaults(
     cancellable: boolean;
     saveable: boolean;
     maxlength?: number;
+    title?: string;
   }>(),
   {
     maxlength: 30_000,
+    title: undefined,
   }
 );
 
@@ -63,40 +65,45 @@ function deletePage() {
 
 <template>
   <div class="relative">
-    <div v-show="internalEditing && !preview" class="pl-10">
+    <div class="flex">
+      <h1 v-if="props.title" class="mt-3 ml-5 text-xl">{{ props.title }}</h1>
+      <div class="absolute top-2 right-2 space-x-1">
+        <Button v-if="!internalEditing" @click="internalEditing = true">
+          <IconMdiPencil />
+        </Button>
+        <Button v-if="internalEditing && saveable" :disabled="loading.save" @click="savePage">
+          <IconMdiContentSave />
+        </Button>
+        <Button v-if="internalEditing && !preview" @click="preview = true">
+          <IconMdiEye />
+        </Button>
+        <Button v-if="internalEditing && preview" @click="preview = false">
+          <IconMdiEyeOff />
+        </Button>
+        <DeletePageModal @delete="deletePage">
+          <template #activator="{ on }">
+            <Button v-if="internalEditing && deletable" :disabled="loading.delete" v-on="on">
+              <IconMdiDelete />
+            </Button>
+          </template>
+        </DeletePageModal>
+        <Button
+          v-if="internalEditing && cancellable"
+          @click="
+            internalEditing = false;
+            preview = false;
+          "
+        >
+          <IconMdiClose />
+        </Button>
+      </div>
+    </div>
+    <div v-if="!props.title && internalEditing && !preview" class="mt-11"></div>
+    <div v-show="internalEditing && !preview" class="pl-6 mt-1">
       <InputTextarea v-model="rawEdited" :rows="rawEdited.split(/\r\n|\r|\n/g).length + 3" :maxlength="maxlength" counter></InputTextarea>
     </div>
-    <Markdown v-show="!internalEditing" :raw="raw" class="pl-5" />
-    <Markdown v-if="preview" :raw="rawEdited" class="pl-5" />
-    <div class="absolute flex flex-col top-0 ml-2 mt-2 space-y-2">
-      <Button v-if="!internalEditing" @click="internalEditing = true">
-        <IconMdiPencil />
-      </Button>
-      <Button v-if="internalEditing && saveable" :disabled="loading.save" @click="savePage">
-        <IconMdiContentSave />
-      </Button>
-      <Button v-if="internalEditing && !preview" @click="preview = true">
-        <IconMdiEye />
-      </Button>
-      <Button v-if="internalEditing && preview" @click="preview = false">
-        <IconMdiEyeOff />
-      </Button>
-      <DeletePageModal @delete="deletePage">
-        <template #activator="{ on }">
-          <Button v-if="internalEditing && deletable" :disabled="loading.delete" v-on="on">
-            <IconMdiDelete />
-          </Button>
-        </template>
-      </DeletePageModal>
-      <Button
-        v-if="internalEditing && cancellable"
-        @click="
-          internalEditing = false;
-          preview = false;
-        "
-      >
-        <IconMdiClose />
-      </Button>
-    </div>
+    <div v-if="props.title && (!internalEditing || preview)" class="-mt-5"></div>
+    <Markdown v-show="!internalEditing" :raw="raw" class="pl-4" />
+    <Markdown v-if="preview" :raw="rawEdited" class="pl-4" />
   </div>
 </template>

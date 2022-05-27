@@ -64,7 +64,6 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
         <Markdown v-else :raw="page.contents" />
       </Card>
       <Card v-if="sponsors || hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" class="mt-2 p-0 overflow-clip">
-        <h1 class="mt-5 ml-5 text-xl">{{ i18n.t("project.sponsors") }}</h1>
         <MarkdownEditor
           v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)"
           v-model:editing="editingSponsors"
@@ -73,10 +72,11 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
           :saveable="true"
           :cancellable="true"
           :maxlength="500"
-          class="pt-0 -mt-2"
+          :title="i18n.t('project.sponsors')"
+          class="pt-0"
           @save="saveSponsors"
         />
-        <Markdown v-else :raw="sponsors" class="pt-0 -mt-2" />
+        <Markdown v-else :raw="sponsors" class="pt-0" />
       </Card>
     </section>
     <section class="basis-full md:basis-3/12 space-y-4 min-w-280px">
