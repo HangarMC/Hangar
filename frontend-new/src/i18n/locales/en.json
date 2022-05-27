@@ -135,9 +135,13 @@
     "actions": {
       "unwatch": "Unwatch",
       "watch": "Watch",
+      "watched": "You are now watching the resource",
+      "unwatched": "You are no longer watching the resource",
       "flag": "Flag",
       "star": "Star",
       "unstar": "Unstar",
+      "starred": "You starred the resource",
+      "unstarred": "You unstarred the resource",
       "adminActions": "Admin Actions",
       "flagHistory": "Flag history ({0})",
       "staffNotes": "Staff notes ({0})",

@@ -12,9 +12,12 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import Tooltip from "~/components/design/Tooltip.vue";
 import { useAuthStore } from "~/store/auth";
+import { useNotificationStore } from "~/store/notification";
+import { Ref } from "@vue/reactivity";
 
 const ctx = useContext();
 const i18n = useI18n();
+const notfication = useNotificationStore();
 const props = defineProps<{
   project: HangarProject;
 }>();
@@ -27,23 +30,32 @@ const imageUrl = computed(() => {
 
 const starred = ref(props.project.userActions.starred);
 const watching = ref(props.project.userActions.watching);
+const starredCount = ref(props.project.stats.stars);
+const watchingCount = ref(props.project.stats.watchers);
 
-const canStarOrWatch = computed(() => !user || user.name === props.project.namespace.owner);
+const cannotStarOrWatch = computed(() => !user || user.name === props.project.namespace.owner);
 
-function toggleState(stateType: keyof UserActions, route: string, i18nName: string = route) {
-  useInternalApi(`projects/project/${props.project.id}/${route}/${!props.project.userActions[stateType]}`, true, "post").catch((err) =>
-    handleRequestError(err, ctx, i18n, i18n.t(`project.error.${i18nName}`))
-  );
+function toggleState(route: string, completedKey: string, revokedKey: string, value: Ref<boolean>, count: Ref<number>) {
+  useInternalApi(`projects/project/${props.project.id}/${route}/${!value.value}`, true, "post")
+    .then(() => {
+      value.value = !value.value;
+      if (value.value) {
+        count.value++;
+      } else {
+        count.value--;
+      }
+
+      notfication.success(i18n.t("project.actions." + (value.value ? completedKey : revokedKey)));
+    })
+    .catch((err) => handleRequestError(err, ctx, i18n, i18n.t(`project.error.${route}`)));
 }
 
 function toggleStar() {
-  toggleState("starred", "star");
-  starred.value = !starred.value;
+  toggleState("star", "starred", "unstarred", starred, starredCount);
 }
 
 function toggleWatch() {
-  toggleState("watching", "watch");
-  watching.value = !watching.value;
+  toggleState("watch", "watched", "unwatched", watching, watchingCount);
 }
 </script>
 
@@ -76,28 +88,28 @@ function toggleWatch() {
         <div class="flex">
           <Tooltip>
             <template #content>
-              <span v-if="canStarOrWatch">{{ i18n.t("project.info.stars", 0) }}</span>
+              <span v-if="cannotStarOrWatch">{{ i18n.t("project.info.stars", 0) }}</span>
               <span v-else-if="starred">{{ i18n.t("project.actions.unstar") }}</span>
               <span v-else>{{ i18n.t("project.actions.star") }}</span>
             </template>
-            <Button button-type="secondary" size="small" :disabled="canStarOrWatch" @click="toggleStar">
+            <Button button-type="secondary" size="small" :disabled="cannotStarOrWatch" @click="toggleStar">
               <IconMdiStar v-if="starred" />
               <IconMdiStarOutline v-else />
-              <span class="ml-2">{{ project.stats.stars }}</span>
+              <span class="ml-2">{{ starredCount }}</span>
             </Button>
           </Tooltip>
           <!-- Tooltips mess with normal margins so this is a workaround -->
           <div class="px-1"></div>
           <Tooltip>
             <template #content>
-              <span v-if="canStarOrWatch">{{ i18n.t("project.info.watchers", 0) }}</span>
+              <span v-if="cannotStarOrWatch">{{ i18n.t("project.info.watchers", 0) }}</span>
               <span v-else-if="starred">{{ i18n.t("project.actions.unwatch") }}</span>
               <span v-else>{{ i18n.t("project.actions.watch") }}</span>
             </template>
-            <Button button-type="secondary" size="small" :disabled="canStarOrWatch" @click="toggleWatch">
+            <Button button-type="secondary" size="small" :disabled="cannotStarOrWatch" @click="toggleWatch">
               <IconMdiBell v-if="watching" />
               <IconMdiBellOutline v-else />
-              <span class="ml-2">{{ project.stats.watchers }}</span>
+              <span class="ml-2">{{ watchingCount }}</span>
             </Button>
           </Tooltip>
         </div>
