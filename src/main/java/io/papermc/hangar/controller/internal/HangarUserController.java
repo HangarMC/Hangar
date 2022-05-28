@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
@@ -117,8 +118,8 @@ public class HangarUserController extends HangarComponent {
     }
 
     @GetMapping("/notifications")
-    public ResponseEntity<List<HangarNotification>> getUserNotifications() {
-        return ResponseEntity.ok(notificationService.getUsersNotifications());
+    public ResponseEntity<List<HangarNotification>> getUserNotifications(@RequestParam(required = false) Integer amount) {
+        return ResponseEntity.ok(notificationService.getUsersNotifications(amount != null ? amount : Integer.MAX_VALUE));
     }
 
     @Unlocked

@@ -32,8 +32,8 @@ public class NotificationService extends HangarComponent {
         this.permissionService = permissionService;
     }
 
-    public List<HangarNotification> getUsersNotifications() {
-        return hangarNotificationsDAO.getNotifications(getHangarPrincipal().getId());
+    public List<HangarNotification> getUsersNotifications(int amount) {
+        return hangarNotificationsDAO.getNotifications(getHangarPrincipal().getId(), amount);
     }
 
     public boolean markNotificationAsRead(long notificationId) {

@@ -14,7 +14,6 @@ import { useErrorRedirect } from "~/composables/useErrorRedirect";
 import TagComponent from "~/components/Tag.vue";
 import { hasPerms } from "~/composables/usePerm";
 import Button from "~/components/design/Button.vue";
-import Alert from "~/components/design/Alert.vue";
 import MarkdownEditor from "~/components/MarkdownEditor.vue";
 import Markdown from "~/components/Markdown.vue";
 import Card from "~/components/design/Card.vue";
@@ -56,7 +55,6 @@ const approvalTooltip = computed<string>(() =>
   projectVersion.value?.reviewState === ReviewState.PARTIALLY_REVIEWED ? i18n.t("version.page.partiallyApproved") : i18n.t("version.page.approved")
 );
 const platformTag = computed<Tag | null>(() => projectVersion.value?.tags.find((t) => t?.name === platform.value?.name) || null);
-const requiresConfirmation = computed<boolean>(() => projectVersion.value?.externalUrl !== null || projectVersion.value?.reviewState !== ReviewState.REVIEWED);
 const editingPage = ref(false);
 
 useHead(
@@ -143,17 +141,15 @@ async function restoreVersion() {
         <TagComponent :tag="channel" :short-form="true" />
       </h1>
       <h2>
-        {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(project.lastUpdated)]) }}
+        {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
       </h2>
     </div>
-    <div class="text-2xl mt-2 ml-1">
-      <h2>
-        <em v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy" class="mr-1">
-          {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
-        </em>
-        <IconMdiDiamondStone v-if="projectVersion.recommended.includes(platform?.enumName)" :title="i18n.t('version.page.recommended')" />
-        <IconMdiCheckCircleOutline v-if="isReviewStateChecked" :title="approvalTooltip" />
-      </h2>
+    <div class="mt-2 text-2xl ml-1 flex">
+      <IconMdiDiamondStone v-if="projectVersion.recommended.includes(platform?.enumName)" :title="i18n.t('version.page.recommended')" />
+      <IconMdiCheckCircleOutline v-if="isReviewStateChecked" :title="approvalTooltip" />
+      <em v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy" class="ml-2 text-lg">
+        {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
+      </em>
       <!-- todo set recommended -->
       <!-- todo delete -->
       <!-- todo download -->
@@ -185,7 +181,6 @@ async function restoreVersion() {
 
   <div v-if="projectVersion" class="flex flex-wrap md:flex-nowrap gap-4 mt-4">
     <section class="basis-full md:basis-8/12 flex-grow">
-      <Alert v-if="requiresConfirmation" class="mb-8" type="info">{{ i18n.t("version.page.unsafeWarning") }}</Alert>
       <Card>
         <MarkdownEditor
           v-if="hasPerms(NamedPermission.EDIT_VERSION)"

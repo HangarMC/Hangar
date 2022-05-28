@@ -16,8 +16,9 @@ public interface HangarNotificationsDAO {
             "   FROM notifications n" +
             "   LEFT OUTER JOIN users u ON u.id = n.origin_id" +
             "   WHERE n.user_id = :userId" +
-            "   ORDER BY n.created_at")
-    List<HangarNotification> getNotifications(long userId);
+            "   ORDER BY n.created_at" +
+            "   LIMIT :amount")
+    List<HangarNotification> getNotifications(long userId, int amount);
 
     @RegisterConstructorMapper(HangarInvite.HangarProjectInvite.class)
     @SqlQuery("SELECT upr.id roleTableId," +

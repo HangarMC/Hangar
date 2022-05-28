@@ -57,6 +57,10 @@ export async function useNotifications(blocking = true) {
   return useInitialState("useNotifications", () => useInternalApi<HangarNotification[]>("notifications", false), blocking);
 }
 
+export async function useNotificationsAmount(blocking = true, amount: number) {
+  return useInitialState("useNotificationsAmount", () => useInternalApi<HangarNotification[]>("notifications?amount=" + amount, false), blocking);
+}
+
 export async function useFlags(blocking = true) {
   return useInitialState("useFlags", () => useInternalApi<Flag[]>("flags/", false), blocking);
 }

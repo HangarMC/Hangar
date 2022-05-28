@@ -446,7 +446,7 @@
       "dependencies": "Dependencies",
       "platform": "Platform",
       "required": "(required)",
-      "adminMsg": "{0} approved this version on {1}",
+      "adminMsg": "Approved by {0} {1}",
       "reviewLogs": "Review logs",
       "reviewStart": "Start review",
       "setRecommended": "Set as Recommended",

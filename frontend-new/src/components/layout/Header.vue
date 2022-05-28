@@ -18,6 +18,8 @@ import IconMdiPuzzle from "~icons/mdi/puzzle";
 import IconMdiDownloadCircle from "~icons/mdi/download-circle";
 import IconMdiKey from "~icons/mdi/key";
 import IconMdiFileCodumentAlert from "~icons/mdi/file-document-alert";
+import IconMdiBellOutline from "~icons/mdi/bell-outline";
+import IconMdiBellBadge from "~icons/mdi/bell-badge";
 
 import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
@@ -26,10 +28,25 @@ import { authLog } from "~/composables/useLog";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import UserAvatar from "~/components/UserAvatar.vue";
+import Button from "~/components/design/Button.vue";
+import { useNotificationsAmount } from "~/composables/useApiHelper";
+import { handleRequestError } from "~/composables/useErrorHandling";
+import { HangarNotification } from "hangar-internal";
+import { useContext } from "vite-ssr/vue";
+import { Ref, ref } from "vue";
+import Link from "~/components/design/Link.vue";
 
 const settings = useSettingsStore();
 const { t } = useI18n();
 const backendData = useBackendDataStore();
+
+const ctx = useContext();
+const i18n = useI18n();
+
+const notifications = ref<HangarNotification[]>([]);
+useNotificationsAmount(true, 10)
+  .then((v) => (notifications.value = filteredNotifications(v as Ref<HangarNotification[]>)))
+  .catch((e) => handleRequestError(e, ctx, i18n));
 
 const navBarLinks = [
   { link: "index", label: "Home" },
@@ -60,6 +77,12 @@ const authStore = useAuthStore();
 const auth = useAuth;
 const authHost = import.meta.env.HANGAR_AUTH_HOST;
 authLog("render with user " + authStore.user?.name);
+
+function filteredNotifications(notificationsRef: Ref<HangarNotification[]>): HangarNotification[] {
+  if (!notificationsRef || !notificationsRef.value) return [];
+  //TODO filter recent notifications
+  return notificationsRef.value;
+}
 </script>
 
 <template>
@@ -149,6 +172,24 @@ authLog("render with user " + authStore.user?.name);
           <icon-mdi-weather-night v-if="settings.darkMode" class="text-[1.2em]"></icon-mdi-weather-night>
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
+        <div v-if="authStore.user">
+          <!-- todo: make prettier -->
+          <!-- todo: either mark as read when opened and then closed, or have a "Mark as read" action -->
+          <Menu>
+            <MenuButton>
+              <div class="flex items-center gap-2 rounded-md p-2" hover="text-primary-400 bg-primary-0">
+                <IconMdiBellOutline v-if="notifications.length === 0" class="text-[1.2em]" />
+                <IconMdiBellBadge v-if="notifications.length !== 0" class="text-[1.2em]" />
+              </div>
+            </MenuButton>
+            <MenuItems class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 background-default drop-shadow-xl">
+              <MenuItem v-for="notification in notifications" :key="notification.id" :class="'text-' + notification.type + ' flex shadow-0 p-2 ml-3 mr-2'">
+                {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
+              </MenuItem>
+              <Link to="/notifications"><span class="ml-3 text-sm">View all notifications</span></Link>
+            </MenuItems>
+          </Menu>
+        </div>
         <!-- Profile dropdown -->
         <div v-if="authStore.user">
           <Menu>
