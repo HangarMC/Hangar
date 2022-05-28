@@ -79,7 +79,7 @@ function invite(member: string, role: Role) {
 
 async function post(member: EditableMember, action: "edit" | "add" | "remove") {
   addErrors.value = [];
-  if (search.value.length === 0) {
+  if (member.name.length === 0) {
     addErrors.value.push(i18n.t("general.error.nameEmpty"));
     return;
   }

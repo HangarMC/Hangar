@@ -100,14 +100,18 @@ async function updateInvite(invite: Invite, status: "accept" | "decline" | "unac
         <h1>{{ i18n.t("notifications.title") }}</h1>
       </template>
       <div class="flex mb-4">
-        <InputSelect v-model="filters.notification" :values="notificationFilter" class="mb-4" />
-        <Button v-if="filteredNotifications.length && filters && filters.notification === 'unread'" class="ml-4" size="medium" @click="markAllAsRead">
+        <span class="flex-grow">
+          <InputSelect v-model="filters.notification" :values="notificationFilter" />
+        </span>
+        <Button v-if="filteredNotifications.length && filters && filters.notification === 'unread'" size="medium" @click="markAllAsRead">
           {{ i18n.t("notifications.readAll") }}
         </Button>
       </div>
       <Card v-for="notification in filteredNotifications" :key="notification.id" :class="'text-' + notification.type + ' flex shadow-0'">
-        {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
-        <Button v-if="!notification.read" @click="markNotificationRead(notification)"><IconMdiCheck /></Button>
+        <span class="flex-grow">
+          {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
+        </span>
+        <Button v-if="!notification.read" class="ml-2" @click="markNotificationRead(notification)"><IconMdiCheck /></Button>
       </Card>
       <div v-if="!filteredNotifications.length" class="text-red-500 text-lg mt-4">
         {{ i18n.t(`notifications.empty.${filters.notification}`) }}
