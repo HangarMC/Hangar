@@ -20,6 +20,9 @@ import IconMdiKey from "~icons/mdi/key";
 import IconMdiFileCodumentAlert from "~icons/mdi/file-document-alert";
 import IconMdiBellOutline from "~icons/mdi/bell-outline";
 import IconMdiBellBadge from "~icons/mdi/bell-badge";
+import IconMdiAlertOutline from "~icons/mdi/alert-outline";
+import IconMdiInformationOutline from "~icons/mdi/information-outline";
+import IconMdiCheck from "~icons/mdi/check";
 
 import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
@@ -33,8 +36,9 @@ import { useNotificationsAmount } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { HangarNotification } from "hangar-internal";
 import { useContext } from "vite-ssr/vue";
-import { Ref, ref } from "vue";
+import { ref } from "vue";
 import Link from "~/components/design/Link.vue";
+import { useInternalApi } from "~/composables/useApi";
 
 const settings = useSettingsStore();
 const { t } = useI18n();
@@ -42,11 +46,26 @@ const backendData = useBackendDataStore();
 
 const ctx = useContext();
 const i18n = useI18n();
+const authStore = useAuthStore();
 
 const notifications = ref<HangarNotification[]>([]);
-useNotificationsAmount(true, 10)
-  .then((v) => (notifications.value = filteredNotifications(v as Ref<HangarNotification[]>)))
-  .catch((e) => handleRequestError(e, ctx, i18n));
+const unreadNotifications = ref<boolean>(false);
+if (authStore.user) {
+  useNotificationsAmount(true, 10)
+    .then((v) => {
+      if (v && v.value) {
+        //TODO filter recent notifications
+        notifications.value = v.value;
+      }
+
+      for (const notification of notifications.value) {
+        if (!notification.read) {
+          unreadNotifications.value = true;
+        }
+      }
+    })
+    .catch((e) => handleRequestError(e, ctx, i18n));
+}
 
 const navBarLinks = [
   { link: "index", label: "Home" },
@@ -73,15 +92,18 @@ const navBarMenuLinksMoreFromPaper = [
   { link: "https://hangar-auth.benndorf.dev/", label: t("nav.hangar.auth"), icon: IconMdiKey },
 ];
 
-const authStore = useAuthStore();
 const auth = useAuth;
 const authHost = import.meta.env.HANGAR_AUTH_HOST;
 authLog("render with user " + authStore.user?.name);
 
-function filteredNotifications(notificationsRef: Ref<HangarNotification[]>): HangarNotification[] {
-  if (!notificationsRef || !notificationsRef.value) return [];
-  //TODO filter recent notifications
-  return notificationsRef.value;
+async function markNotificationRead() {
+  for (const notification of notifications.value) {
+    if (!notification.read) {
+      useInternalApi(`notifications/${notification.id}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n));
+      notification.read = true;
+    }
+  }
+  unreadNotifications.value = false;
 }
 </script>
 
@@ -173,20 +195,36 @@ function filteredNotifications(notificationsRef: Ref<HangarNotification[]>): Han
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
         <div v-if="authStore.user">
-          <!-- todo: make prettier -->
-          <!-- todo: either mark as read when opened and then closed, or have a "Mark as read" action -->
+          <!-- todo: make prettier (show all unread and not just recent 20 unread/read, actually use action field) -->
           <Menu>
             <MenuButton>
               <div class="flex items-center gap-2 rounded-md p-2" hover="text-primary-400 bg-primary-0">
-                <IconMdiBellOutline v-if="notifications.length === 0" class="text-[1.2em]" />
-                <IconMdiBellBadge v-if="notifications.length !== 0" class="text-[1.2em]" />
+                <IconMdiBellOutline v-if="!unreadNotifications" class="text-[1.2em]" />
+                <IconMdiBellBadge v-if="unreadNotifications" class="text-[1.2em]" />
               </div>
             </MenuButton>
-            <MenuItems class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 background-default drop-shadow-xl">
-              <MenuItem v-for="notification in notifications" :key="notification.id" :class="'text-' + notification.type + ' flex shadow-0 p-2 ml-3 mr-2'">
+            <MenuItems class="absolute flex flex-col mt-1 z-10 rounded border-t-2 border-primary-400 background-default drop-shadow-xl overflow-auto">
+              <div v-if="notifications.length === 0">
+                <span class="flex shadow-0 p-2 mt-1 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
+              </div>
+              <div
+                v-for="notification in notifications"
+                :key="notification.id"
+                :class="'text-sm flex shadow-0 p-3 pr-4 inline-flex items-center ' + (!notification.read ? 'bg-blue-100 dark:bg-slate-700' : '')"
+              >
+                <div class="text-lg mr-2">
+                  <IconMdiInformationOutline v-if="notification.type === 'info'" class="text-lightBlue-600" />
+                  <IconMdiCheck v-else-if="notification.type === 'success'" class="text-lime-600" />
+                  <IconMdiAlertOutline v-else-if="notification.type === 'warning'" class="text-red-600" />
+                </div>
                 {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
-              </MenuItem>
-              <Link to="/notifications"><span class="ml-3 text-sm">View all notifications</span></Link>
+              </div>
+              <div class="ml-3 mb-1 space-x-3 text-sm">
+                <Link to="/notifications"
+                  ><span>{{ i18n.t("notifications.viewAll") }}</span></Link
+                >
+                <span v-if="unreadNotifications" class="color-primary font-bold hover:(underline)" @click="markNotificationRead">Mark as read</span>
+              </div>
             </MenuItems>
           </Menu>
         </div>

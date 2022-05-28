@@ -166,15 +166,9 @@ public class HangarUserController extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         switch (status) {
-            case DECLINE:
-                inviteService.declineInvite(table);
-                break;
-            case ACCEPT:
-                inviteService.acceptInvite(table);
-                break;
-            case UNACCEPT:
-                inviteService.unacceptInvite(table);
-                break;
+            case DECLINE -> inviteService.declineInvite(table);
+            case ACCEPT -> inviteService.acceptInvite(table);
+            case UNACCEPT -> inviteService.unacceptInvite(table);
         }
     }
 

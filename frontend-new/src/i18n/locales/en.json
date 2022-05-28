@@ -556,6 +556,7 @@
     "unread": "Unread",
     "read": "Read",
     "all": "All",
+    "viewAll": "View all notifications",
     "invite": {
       "all": "All",
       "projects": "Projects",
@@ -573,6 +574,7 @@
     },
     "empty": {
       "unread": "You have no unread notifications.",
+      "recent": "You have no recent notifications!",
       "read": "You have no read notifications.",
       "all": "You have no notifications.",
       "invites": "You have no invites"

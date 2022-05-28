@@ -9,7 +9,7 @@ declare module "hangar-internal" {
     message: string[];
     read: boolean;
     originUserName: string | null;
-    type: string;
+    type: "neutral" | "success" | "info" | "warning" | "error";
   }
 
   interface Invite {

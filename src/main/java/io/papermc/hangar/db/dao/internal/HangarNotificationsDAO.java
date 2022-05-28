@@ -16,7 +16,7 @@ public interface HangarNotificationsDAO {
             "   FROM notifications n" +
             "   LEFT OUTER JOIN users u ON u.id = n.origin_id" +
             "   WHERE n.user_id = :userId" +
-            "   ORDER BY n.created_at" +
+            "   ORDER BY n.created_at DESC" +
             "   LIMIT :amount")
     List<HangarNotification> getNotifications(long userId, int amount);
 
@@ -29,7 +29,7 @@ public interface HangarNotificationsDAO {
             "   JOIN projects p ON p.id = upr.project_id" +
             "   WHERE upr.user_id = :userId " +
             "       AND upr.accepted = FALSE" +
-            "   ORDER BY upr.created_at")
+            "   ORDER BY upr.created_at DESC")
     List<HangarInvite.HangarProjectInvite> getProjectInvites(long userId);
 
     @RegisterConstructorMapper(HangarInvite.HangarOrganizationInvite.class)
@@ -41,6 +41,6 @@ public interface HangarNotificationsDAO {
             "   JOIN organizations o ON o.id = uor.organization_id" +
             "   WHERE uor.user_id = :userId" +
             "       AND uor.accepted = FALSE" +
-            "   ORDER BY uor.created_at")
+            "   ORDER BY uor.created_at DESC")
     List<HangarInvite.HangarOrganizationInvite> getOrganizationInvites(long userId);
 }
