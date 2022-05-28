@@ -203,7 +203,7 @@ async function markNotificationRead() {
                 <IconMdiBellBadge v-if="unreadNotifications" class="text-[1.2em]" />
               </div>
             </MenuButton>
-            <MenuItems class="absolute flex flex-col mt-1 z-10 rounded border-t-2 border-primary-400 background-default drop-shadow-xl overflow-auto">
+            <MenuItems class="absolute flex flex-col mt-1 z-10 rounded border-t-2 border-primary-400 background-default drop-shadow-xl overflow-auto shadow-md">
               <div v-if="notifications.length === 0">
                 <span class="flex shadow-0 p-2 mt-1 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
               </div>
@@ -219,7 +219,7 @@ async function markNotificationRead() {
                 </div>
                 {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
               </div>
-              <div class="ml-3 mb-1 space-x-3 text-sm">
+              <div class="p-2 mb-1 ml-2 space-x-3 text-sm">
                 <Link to="/notifications"
                   ><span>{{ i18n.t("notifications.viewAll") }}</span></Link
                 >

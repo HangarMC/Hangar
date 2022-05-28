@@ -126,10 +126,10 @@ async function updateInvite(invite: Invite, status: "accept" | "decline" | "unac
         {{ i18n.t(!invite.accepted ? "notifications.invited" : "notifications.inviteAccepted", [invite.type]) }}:
         <router-link :to="invite.url" exact>{{ invite.name }}</router-link>
         <template v-if="invite.accepted">
-          <Button @click="updateInvite(invite, 'unaccept')">{{ i18n.t("notifications.invite.btns.unaccept") }}</Button>
+          <Button class="ml-2" @click="updateInvite(invite, 'unaccept')">{{ i18n.t("notifications.invite.btns.unaccept") }}</Button>
         </template>
         <template v-else>
-          <Button class="mr-2" @click="updateInvite(invite, 'accept')">{{ i18n.t("notifications.invite.btns.accept") }}</Button>
+          <Button class="mr-2 ml-2" @click="updateInvite(invite, 'accept')">{{ i18n.t("notifications.invite.btns.accept") }}</Button>
           <Button @click="updateInvite(invite, 'decline')">{{ i18n.t("notifications.invite.btns.decline") }}</Button>
         </template>
       </Card>
