@@ -557,6 +557,8 @@
     "read": "Read",
     "all": "All",
     "viewAll": "View all notifications",
+    "viewMoreUnread": "View {0} more unread notifications",
+    "markAsRead": "Mark as read",
     "invite": {
       "all": "All",
       "projects": "Projects",

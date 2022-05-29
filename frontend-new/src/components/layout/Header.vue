@@ -34,7 +34,7 @@ import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Button from "~/components/design/Button.vue";
-import { useNotificationsAmount } from "~/composables/useApiHelper";
+import { useNotificationsAmount, useUnreadNotifications } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { HangarNotification } from "hangar-internal";
 import { useContext } from "vite-ssr/vue";
@@ -50,19 +50,30 @@ const i18n = useI18n();
 const authStore = useAuthStore();
 
 const notifications = ref<HangarNotification[]>([]);
-const unreadNotifications = ref<boolean>(false);
+const unreadNotifications = ref<number>(0);
+const loadedUnreadNotifications = ref<number>(0);
 if (authStore.user) {
-  useNotificationsAmount(true, 10)
+  useUnreadNotifications().then((v) => {
+    if (v && v.value) {
+      unreadNotifications.value = v.value;
+    }
+  });
+  useNotificationsAmount(true, 30)
     .then((v) => {
       if (v && v.value) {
-        //TODO filter recent notifications
-        notifications.value = v.value;
-      }
+        // Only show notifications that are recent or unread (from the last 30 notifications)
+        let filteredAmount = 0;
+        notifications.value = v.value.filter((notification) => {
+          if (filteredAmount < 8 && (!notification.read || isRecent(notification.createdAt))) {
+            if (!notification.read) {
+              loadedUnreadNotifications.value++;
+            }
 
-      for (const notification of notifications.value) {
-        if (!notification.read) {
-          unreadNotifications.value = true;
-        }
+            filteredAmount++;
+            return true;
+          }
+          return false;
+        });
       }
     })
     .catch((e) => handleRequestError(e, ctx, i18n));
@@ -101,14 +112,20 @@ function markNotificationsRead() {
   for (const notification of notifications.value) {
     markNotificationRead(notification);
   }
-  unreadNotifications.value = false;
 }
 
 async function markNotificationRead(notification: HangarNotification) {
   if (!notification.read) {
-    useInternalApi(`notifications/${notification.id}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n));
     notification.read = true;
+    unreadNotifications.value--;
+    loadedUnreadNotifications.value--;
+    useInternalApi(`notifications/${notification.id}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n));
   }
+}
+
+function isRecent(date: string): boolean {
+  const now: Date = new Date();
+  return now.getTime() - new Date(date).getTime() < 60 * 60 * 24 * 1000 * 7;
 }
 </script>
 
@@ -203,11 +220,14 @@ async function markNotificationRead(notification: HangarNotification) {
           <Menu>
             <MenuButton>
               <div class="flex items-center gap-2 rounded-md p-2" hover="text-primary-400 bg-primary-0">
-                <IconMdiBellOutline v-if="!unreadNotifications" class="text-[1.2em]" />
-                <IconMdiBellBadge v-if="unreadNotifications" class="text-[1.2em]" />
+                <IconMdiBellOutline v-if="unreadNotifications === 0" class="text-[1.2em]" />
+                <IconMdiBellBadge v-if="unreadNotifications !== 0" class="text-[1.2em]" />
               </div>
             </MenuButton>
-            <MenuItems class="absolute flex flex-col mt-1 z-10 rounded border-t-2 border-primary-400 background-default drop-shadow-xl overflow-auto shadow-md">
+            <!-- todo: fix hard position change on smaller displays -->
+            <MenuItems
+              class="absolute flex flex-col mt-1 z-10 rounded border-t-2 border-primary-400 background-default drop-shadow-xl overflow-auto shadow-md <2xl:right-0 max-w-115"
+            >
               <div v-if="notifications.length === 0">
                 <span class="flex shadow-0 p-2 mt-2 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
               </div>
@@ -223,7 +243,7 @@ async function markNotificationRead(notification: HangarNotification) {
                   <IconMdiMessageOutline v-else-if="notification.type === 'neutral'" />
                 </div>
 
-                <router-link v-if="notification.action" :to="'/' + notification.action" active-class="">
+                <router-link v-if="notification.action" :to="'/' + notification.action" active-class="" @click="markNotificationRead(notification)">
                   {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
                   <div class="text-xs mt-1">{{ lastUpdated(new Date(notification.createdAt)) }}</div>
                 </router-link>
@@ -234,9 +254,15 @@ async function markNotificationRead(notification: HangarNotification) {
               </div>
               <div class="p-2 mb-1 ml-2 space-x-3 text-sm">
                 <Link to="/notifications"
-                  ><span>{{ i18n.t("notifications.viewAll") }}</span></Link
+                  ><span :class="loadedUnreadNotifications >= unreadNotifications ? 'font-normal' : ''">{{
+                    loadedUnreadNotifications >= unreadNotifications
+                      ? i18n.t("notifications.viewAll")
+                      : i18n.t("notifications.viewMoreUnread", [unreadNotifications - loadedUnreadNotifications])
+                  }}</span></Link
                 >
-                <span v-if="unreadNotifications" class="color-primary font-bold hover:(underline)" @click="markNotificationsRead">Mark as read</span>
+                <span v-if="loadedUnreadNotifications !== 0" class="color-primary hover:(underline)" @click="markNotificationsRead">{{
+                  i18n.t("notifications.markAsRead")
+                }}</span>
               </div>
             </MenuItems>
           </Menu>

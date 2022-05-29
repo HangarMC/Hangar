@@ -122,6 +122,11 @@ public class HangarUserController extends HangarComponent {
         return ResponseEntity.ok(notificationService.getUsersNotifications(amount != null ? amount : Integer.MAX_VALUE));
     }
 
+    @GetMapping("/unread")
+    public ResponseEntity<Long> getUnreadNotifications() {
+        return ResponseEntity.ok(notificationService.getUnreadNotifications());
+    }
+
     @Unlocked
     @PostMapping("/notifications/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

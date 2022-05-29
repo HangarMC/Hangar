@@ -36,6 +36,10 @@ public class NotificationService extends HangarComponent {
         return hangarNotificationsDAO.getNotifications(getHangarPrincipal().getId(), amount);
     }
 
+    public long getUnreadNotifications() {
+        return notificationsDAO.getUnreadNotificationCount(getHangarPrincipal().getId());
+    }
+
     public boolean markNotificationAsRead(long notificationId) {
         return notificationsDAO.markAsRead(notificationId, getHangarPrincipal().getId());
     }
