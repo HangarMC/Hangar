@@ -22,12 +22,14 @@ import IconMdiBellOutline from "~icons/mdi/bell-outline";
 import IconMdiBellBadge from "~icons/mdi/bell-badge";
 import IconMdiAlertOutline from "~icons/mdi/alert-outline";
 import IconMdiInformationOutline from "~icons/mdi/information-outline";
+import IconMdiMessageOutline from "~icons/mdi/message-outline";
 import IconMdiCheck from "~icons/mdi/check";
 
 import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
 import { useBackendDataStore } from "~/store/backendData";
 import { authLog } from "~/composables/useLog";
+import { lastUpdated } from "~/composables/useTime";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import UserAvatar from "~/components/UserAvatar.vue";
@@ -43,7 +45,6 @@ import { useInternalApi } from "~/composables/useApi";
 const settings = useSettingsStore();
 const { t } = useI18n();
 const backendData = useBackendDataStore();
-
 const ctx = useContext();
 const i18n = useI18n();
 const authStore = useAuthStore();
@@ -96,14 +97,18 @@ const auth = useAuth;
 const authHost = import.meta.env.HANGAR_AUTH_HOST;
 authLog("render with user " + authStore.user?.name);
 
-async function markNotificationRead() {
+function markNotificationsRead() {
   for (const notification of notifications.value) {
-    if (!notification.read) {
-      useInternalApi(`notifications/${notification.id}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n));
-      notification.read = true;
-    }
+    markNotificationRead(notification);
   }
   unreadNotifications.value = false;
+}
+
+async function markNotificationRead(notification: HangarNotification) {
+  if (!notification.read) {
+    useInternalApi(`notifications/${notification.id}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n));
+    notification.read = true;
+  }
 }
 </script>
 
@@ -195,7 +200,6 @@ async function markNotificationRead() {
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
         <div v-if="authStore.user">
-          <!-- todo: make prettier (show all unread and not just recent 20 unread/read, actually use action field) -->
           <Menu>
             <MenuButton>
               <div class="flex items-center gap-2 rounded-md p-2" hover="text-primary-400 bg-primary-0">
@@ -205,25 +209,34 @@ async function markNotificationRead() {
             </MenuButton>
             <MenuItems class="absolute flex flex-col mt-1 z-10 rounded border-t-2 border-primary-400 background-default drop-shadow-xl overflow-auto shadow-md">
               <div v-if="notifications.length === 0">
-                <span class="flex shadow-0 p-2 mt-1 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
+                <span class="flex shadow-0 p-2 mt-2 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
               </div>
               <div
                 v-for="notification in notifications"
                 :key="notification.id"
-                :class="'text-sm flex shadow-0 p-3 pr-4 inline-flex items-center ' + (!notification.read ? 'bg-blue-100 dark:bg-slate-700' : '')"
+                :class="'text-sm flex shadow-0 p-3 pt-2 pr-4 inline-flex items-center ' + (!notification.read ? 'bg-blue-100 dark:bg-slate-700' : '')"
               >
                 <div class="text-lg mr-2">
                   <IconMdiInformationOutline v-if="notification.type === 'info'" class="text-lightBlue-600" />
                   <IconMdiCheck v-else-if="notification.type === 'success'" class="text-lime-600" />
                   <IconMdiAlertOutline v-else-if="notification.type === 'warning'" class="text-red-600" />
+                  <IconMdiMessageOutline v-else-if="notification.type === 'neutral'" />
                 </div>
-                {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
+
+                <router-link v-if="notification.action" :to="'/' + notification.action" active-class="">
+                  {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
+                  <div class="text-xs mt-1">{{ lastUpdated(new Date(notification.createdAt)) }}</div>
+                </router-link>
+                <div v-else>
+                  {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
+                  <div class="text-xs mt-1">{{ lastUpdated(new Date(notification.createdAt)) }}</div>
+                </div>
               </div>
               <div class="p-2 mb-1 ml-2 space-x-3 text-sm">
                 <Link to="/notifications"
                   ><span>{{ i18n.t("notifications.viewAll") }}</span></Link
                 >
-                <span v-if="unreadNotifications" class="color-primary font-bold hover:(underline)" @click="markNotificationRead">Mark as read</span>
+                <span v-if="unreadNotifications" class="color-primary font-bold hover:(underline)" @click="markNotificationsRead">Mark as read</span>
               </div>
             </MenuItems>
           </Menu>

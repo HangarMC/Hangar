@@ -12,7 +12,7 @@ import java.util.List;
 public interface HangarNotificationsDAO {
 
     @RegisterConstructorMapper(HangarNotification.class)
-    @SqlQuery("SELECT n.id, n.type, n.action, n.message_args message, n.read, u.name as origin_user_name" +
+    @SqlQuery("SELECT n.created_at, n.id, n.type, n.action, n.message_args message, n.read, u.name as origin_user_name" +
             "   FROM notifications n" +
             "   LEFT OUTER JOIN users u ON u.id = n.origin_id" +
             "   WHERE n.user_id = :userId" +

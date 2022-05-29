@@ -31,7 +31,7 @@ public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?
     public void invited(Collection<RT> inviteeRoleTables, J joinable) {
         Collection<NotificationTable> notificationTables = new HashSet<>();
         for (RT rt : inviteeRoleTables) {
-            notificationTables.add(new NotificationTable(rt.getUserId(), null, joinable.getId(), new String[]{this.msgPrefix + "invite", rt.getRole().getTitle(), joinable.getName()}, NotificationType.INFO));
+            notificationTables.add(new NotificationTable(rt.getUserId(), "notifications", joinable.getId(), new String[]{this.msgPrefix + "invite", rt.getRole().getTitle(), joinable.getName()}, NotificationType.INFO));
         }
         notificationsDAO.insert(notificationTables);
     }

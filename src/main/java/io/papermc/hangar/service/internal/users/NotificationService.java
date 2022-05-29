@@ -44,10 +44,10 @@ public class NotificationService extends HangarComponent {
         List<NotificationTable> notificationTables = new ArrayList<>();
         for (UserTable projectWatcher : projectWatchers) {
             notificationTables.add(new NotificationTable(
-                    projectWatcher.getId(),
-                    projectTable.getOwnerName() + "/" + projectTable.getSlug(),
-                    projectTable.getId(),
-                    new String[]{"notifications.project.newVersion", projectTable.getName(), projectVersionTable.getVersionString()}, NotificationType.NEUTRAL)
+                projectWatcher.getId(),
+                projectTable.getOwnerName() + "/" + projectTable.getSlug() + "/versions/" + projectVersionTable.getVersionString(),
+                projectTable.getId(),
+                new String[]{"notifications.project.newVersion", projectTable.getName(), projectVersionTable.getVersionString()}, NotificationType.NEUTRAL)
             );
         }
         notificationsDAO.insert(notificationTables);
@@ -58,13 +58,13 @@ public class NotificationService extends HangarComponent {
         ProjectTable projectTable = projectsDAO.getById(projectVersionTable.getProjectId());
         permissionService.getProjectMemberPermissions(projectVersionTable.getProjectId()).forEach((user, perm) -> {
             if (perm.has(Permission.EditVersion)) {
-                if (partial) {
-                    notificationTables.add(new NotificationTable(user.getId(), null, null,
-                            new String[]{"notifications.project.reviewedPartial", projectTable.getSlug(), projectVersionTable.getVersionString()}, NotificationType.SUCCESS));
-                } else {
-                    notificationTables.add(new NotificationTable(user.getId(), null, null,
-                            new String[]{"notifications.project.reviewed", projectTable.getSlug(), projectVersionTable.getVersionString()}, NotificationType.SUCCESS));
-                }
+                notificationTables.add(new NotificationTable(
+                    user.getId(),
+                    projectTable.getOwnerName() + "/" + projectTable.getSlug() + "/versions/" + projectVersionTable.getVersionString(),
+                    projectTable.getId(),
+                    new String[]{partial ? "notifications.project.reviewedPartial" : "notifications.project.reviewed", projectTable.getSlug(), projectVersionTable.getVersionString()},
+                    NotificationType.SUCCESS)
+                );
             }
         });
         notificationsDAO.insert(notificationTables);

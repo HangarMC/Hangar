@@ -4,6 +4,7 @@ declare module "hangar-internal" {
   import type { RoleCategory } from "~/types/enums";
 
   interface HangarNotification {
+    createdAt: string;
     id: number;
     action: string;
     message: string[];
