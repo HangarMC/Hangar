@@ -20,7 +20,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <Card v-for="project in projects?.result" :key="project.name" class="flex mb-1 space-x-4">
+  <Card v-for="project in projects?.result" :key="project.name" class="flex space-x-4">
     <div>
       <UserAvatar
         :username="project.namespace.owner"
@@ -39,12 +39,12 @@ const props = defineProps({
     </div>
     <div class="flex-grow"></div>
     <div class="<sm:hidden flex flex-col flex-shrink-0 min-w-40">
-      <span class="inline-flex items-center"
-        ><IconMdiStar class="mx-1" /> {{ project.stats.stars }} {{ i18n.t("project.info.stars", project.stats.stars) }}</span
-      >
-      <span class="inline-flex items-center"
-        ><IconMdiDownload class="mx-1" /> {{ project.stats.downloads }} {{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}</span
-      >
+      <span class="inline-flex items-center">
+        <IconMdiStar class="mx-1" /> {{ project.stats.stars }} {{ i18n.t("project.info.stars", project.stats.stars) }}
+      </span>
+      <span class="inline-flex items-center">
+        <IconMdiDownload class="mx-1" /> {{ project.stats.downloads }} {{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}
+      </span>
       <Tooltip :content="i18n.t('project.info.lastUpdatedTooltip', [i18n.d(project.lastUpdated, 'datetime')])">
         <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" />{{ lastUpdated(project.lastUpdated) }}</span>
       </Tooltip>
