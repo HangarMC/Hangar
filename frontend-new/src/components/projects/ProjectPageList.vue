@@ -29,11 +29,11 @@ const route = useRoute();
 
     <TreeView :items="project.pages" item-key="slug" :open="open">
       <template #item="{ item }">
-        <Link v-if="item.home" :to="`/${route.params.user}/${route.params.project}`" exact class="inline-flex items-center">
+        <Link v-if="item.home" :to="`/${route.params.user}/${route.params.project}`" exact class="inline-flex items-center" active-underline>
           <IconMdiHome class="mr-1" />
           {{ item.name }}
         </Link>
-        <Link v-else :to="`/${route.params.user}/${route.params.project}/pages/${item.slug}`" exact> {{ item.name }}</Link>
+        <Link v-else :to="`/${route.params.user}/${route.params.project}/pages/${item.slug}`" exact active-underline> {{ item.name }}</Link>
       </template>
     </TreeView>
   </Card>

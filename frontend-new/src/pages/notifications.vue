@@ -13,6 +13,10 @@ import { useNotificationStore } from "~/store/notification";
 import Card from "~/components/design/Card.vue";
 import Button from "~/components/design/Button.vue";
 import InputSelect from "~/components/ui/InputSelect.vue";
+import IconMdiAlertOutline from "~icons/mdi/alert-outline";
+import IconMdiInformationOutline from "~icons/mdi/information-outline";
+import IconMdiMessageOutline from "~icons/mdi/message-outline";
+import IconMdiCheck from "~icons/mdi/check";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -70,23 +74,21 @@ function markAllAsRead() {
 }
 
 async function markNotificationRead(notification: HangarNotification, router = true) {
-  const result = await useInternalApi(`notifications/${notification.id}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n));
-  if (!result) return;
-  delete notifications.value[notifications.value.findIndex((n) => n.id === notification.id)];
+  await useInternalApi(`notifications/${notification.id}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n));
+  notification.read = true;
   if (notification.action && router) {
     await useRouter().push(notification.action);
   }
 }
 
 async function updateInvite(invite: Invite, status: "accept" | "decline" | "unaccept") {
-  const result = await useInternalApi(`invites/${invite.type}/${invite.roleTableId}/${status}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n));
-  if (!result) return;
+  await useInternalApi(`invites/${invite.type}/${invite.roleTableId}/${status}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n));
   if (status === "accept") {
     invite.accepted = true;
   } else if (status === "unaccept") {
     invite.accepted = false;
   } else {
-    delete invites.value[invite.type][invites.value[invite.type].indexOf(invite)];
+    invites.value[invite.type] = invites.value[invite.type].filter((i) => i.roleTableId !== invite.roleTableId);
   }
   notificationStore.success(i18n.t(`notifications.invite.msgs.${status}`, [invite.name]));
   await useRouter().go(0);
@@ -108,9 +110,17 @@ async function updateInvite(invite: Invite, status: "accept" | "decline" | "unac
         </Button>
       </div>
       <Card v-for="notification in filteredNotifications" :key="notification.id" :class="'text-' + notification.type + ' flex shadow-0'">
-        <span class="flex-grow">
-          {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
-        </span>
+        <div class="inline-flex items-center">
+          <span class="text-lg mr-2">
+            <IconMdiInformationOutline v-if="notification.type === 'info'" class="text-lightBlue-600" />
+            <IconMdiCheck v-else-if="notification.type === 'success'" class="text-lime-600" />
+            <IconMdiAlertOutline v-else-if="notification.type === 'warning'" class="text-red-600" />
+            <IconMdiMessageOutline v-else-if="notification.type === 'neutral'" />
+          </span>
+          <span class="flex-grow">
+            {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
+          </span>
+        </div>
         <Button v-if="!notification.read" class="ml-2" @click="markNotificationRead(notification)"><IconMdiCheck /></Button>
       </Card>
       <div v-if="!filteredNotifications.length" class="text-red-500 text-lg mt-4">

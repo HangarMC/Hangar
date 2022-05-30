@@ -74,7 +74,7 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
 <template>
   <UserHeader :user="user" :organization="organization" />
   <div class="flex gap-4 flex-basis-full flex-col md:flex-row">
-    <div class="flex-basis-full flex-grow md:max-w-2/3 md:min-w-1/3">
+    <div class="flex-basis-full flex flex-col gap-2 flex-grow md:max-w-2/3 md:min-w-1/3">
       <ProjectList :projects="projects"></ProjectList>
     </div>
     <div class="flex-basis-full flex-grow md:max-w-1/3 md:min-w-1/3">

@@ -236,12 +236,12 @@ function isRecent(date: string): boolean {
                 :key="notification.id"
                 :class="'text-sm flex shadow-0 p-3 pt-2 pr-4 inline-flex items-center ' + (!notification.read ? 'bg-blue-100 dark:bg-slate-700' : '')"
               >
-                <div class="text-lg mr-2">
+                <span class="text-lg mr-2">
                   <IconMdiInformationOutline v-if="notification.type === 'info'" class="text-lightBlue-600" />
                   <IconMdiCheck v-else-if="notification.type === 'success'" class="text-lime-600" />
                   <IconMdiAlertOutline v-else-if="notification.type === 'warning'" class="text-red-600" />
                   <IconMdiMessageOutline v-else-if="notification.type === 'neutral'" />
-                </div>
+                </span>
 
                 <router-link v-if="notification.action" :to="'/' + notification.action" active-class="" @click="markNotificationRead(notification)">
                   {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
