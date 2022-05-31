@@ -42,7 +42,7 @@ const props = defineProps<{
 const selectedTab = ref(route.hash.substring(1) || "general");
 const tabs = [
   { value: "general", header: i18n.t("project.settings.tabs.general") },
-  { value: "optional", header: i18n.t("project.settings.tabs.optional") },
+  { value: "links", header: i18n.t("project.settings.tabs.links") },
   { value: "management", header: i18n.t("project.settings.tabs.management") },
   { value: "donation", header: i18n.t("project.settings.tabs.donation") },
 ];
@@ -89,7 +89,7 @@ async function rename() {
       content: newName.value,
     });
     useNotificationStore().success(i18n.t("project.settings.success.rename", [newName.value]));
-    await router.push(route.params.user + "/" + newSlug);
+    await router.push("/" + route.params.user + "/" + newSlug);
   } catch (e) {
     handleRequestError(e, ctx, i18n);
   }
@@ -121,8 +121,12 @@ async function hardDelete(comment: string) {
 }
 
 async function uploadIcon() {
+  if (!projectIcon.value) {
+    return;
+  }
+
   const data = new FormData();
-  data.append("projectIcon", projectIcon.value!);
+  data.append("projectIcon", projectIcon.value);
   loading.uploadIcon = true;
   try {
     await useInternalApi(`projects/project/${route.params.user}/${route.params.project}/saveIcon`, true, "post", data);
@@ -138,8 +142,8 @@ async function resetIcon() {
     await useInternalApi(`projects/project/${route.params.user}/${route.params.project}/resetIcon`, true, "post");
     useNotificationStore().success(i18n.t("project.settings.success.resetIcon"));
     document
-      .getElementById("project-icon-preview")!
-      .setAttribute("src", `${projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)}?noCache=${Math.random()}`);
+      .getElementById("project-icon-preview")
+      ?.setAttribute("src", `${projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)}?noCache=${Math.random()}`);
     await router.go(0);
   } catch (e) {
     handleRequestError(e, ctx, i18n);
@@ -151,11 +155,11 @@ function onFileChange() {
   if (projectIcon.value) {
     const reader = new FileReader();
     reader.onload = (ev) => {
-      document.getElementById("project-icon-preview")!.setAttribute("src", ev.target!.result as string);
+      document.getElementById("project-icon-preview")?.setAttribute("src", ev.target?.result as string);
     };
     reader.readAsDataURL(projectIcon.value);
   } else {
-    document.getElementById("project-icon-preview")!.setAttribute("src", projectIconUrl(props.project.namespace.owner, props.project.namespace.slug));
+    document.getElementById("project-icon-preview")?.setAttribute("src", projectIconUrl(props.project.namespace.owner, props.project.namespace.slug));
   }
 }
 
@@ -204,8 +208,18 @@ useHead(
               :rules="[required(), maxLength()(backendData.validations?.project?.desc?.max)]"
             />
           </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.forum">
+          <!-- todo: forums integration -->
+          <!--<ProjectSettingsSection title="project.settings.forum">
             <InputCheckbox v-model="form.settings.forumSync" :label="i18n.t('project.settings.forumSub')" />
+          </ProjectSettingsSection>-->
+          <ProjectSettingsSection title="project.settings.keywords" description="project.settings.keywordsSub">
+            <InputTag
+              v-model="form.settings.keywords"
+              counter
+              :maxlength="backendData.validations.project.keywords.max"
+              :label="i18n.t('project.new.step3.keywords')"
+              :rules="[required(), maxLength()(backendData.validations.project.keywords.max)]"
+            />
           </ProjectSettingsSection>
           <ProjectSettingsSection>
             <div class="grid grid-cols-3 grid-rows-[1fr,1fr,min-content] gap-2 w-full">
@@ -236,16 +250,7 @@ useHead(
             </div>
           </ProjectSettingsSection>
         </template>
-        <template #optional>
-          <ProjectSettingsSection title="project.settings.keywords" description="project.settings.keywordsSub">
-            <InputTag
-              v-model="form.settings.keywords"
-              counter
-              :maxlength="backendData.validations.project.keywords.max"
-              :label="i18n.t('project.new.step3.keywords')"
-              :rules="[required(), maxLength()(backendData.validations.project.keywords.max)]"
-            />
-          </ProjectSettingsSection>
+        <template #links>
           <ProjectSettingsSection title="project.settings.homepage" description="project.settings.homepageSub">
             <InputText v-model.trim="form.settings.homepage" :label="i18n.t('project.new.step3.homepage')" :rules="[url()]"></InputText>
           </ProjectSettingsSection>
@@ -296,7 +301,7 @@ useHead(
           >
             <TextAreaModal :title="i18n.t('project.settings.delete')" :label="i18n.t('general.comment')" :submit="softDelete">
               <template #activator="{ on }">
-                <Button v-on="on">{{ i18n.t("project.settings.delete") }}</Button>
+                <Button button-type="red" v-on="on">{{ i18n.t("project.settings.delete") }}</Button>
               </template>
             </TextAreaModal>
           </ProjectSettingsSection>
@@ -308,17 +313,21 @@ useHead(
           >
             <TextAreaModal :title="i18n.t('project.settings.hardDelete')" :label="i18n.t('general.comment')" :submit="hardDelete">
               <template #activator="{ on }">
-                <Button v-on="on">{{ i18n.t("project.settings.hardDelete") }}</Button>
+                <Button button-type="red" v-on="on">{{ i18n.t("project.settings.hardDelete") }}</Button>
               </template>
             </TextAreaModal>
           </ProjectSettingsSection>
         </template>
         <template #donation>
-          <ProjectSettingsSection title="project.settings.donation.enable" description="project.settings.donation.enableSub">
-            <InputCheckbox v-model="form.settings.donation.enable" />
+          <ProjectSettingsSection title="project.settings.donation.enable">
+            <InputCheckbox v-model="form.settings.donation.enable" :label="i18n.t('project.settings.donation.enableSub')" />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.donation.subject" description="project.settings.donation.subjectSub">
-            <InputText v-model="form.settings.donation.subject" :rules="[requiredIf()(form.settings.donation.enable)]" />
+            <InputText
+              v-model="form.settings.donation.subject"
+              :label="i18n.t('project.settings.donation.subjectLabel')"
+              :rules="[requiredIf()(form.settings.donation.enable)]"
+            />
           </ProjectSettingsSection>
         </template>
       </Tabs>

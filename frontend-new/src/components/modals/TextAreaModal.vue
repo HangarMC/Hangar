@@ -29,8 +29,8 @@ async function _submit(close: () => void) {
     <template #default="{ on }">
       <InputTextarea v-model.trim="message" :label="label" :rows="2" @keydown.enter.prevent="" />
 
-      <Button class="mt-2 ml-2" :disabled="loading" @click="_submit(on.click)">{{ i18n.t("general.submit") }}</Button>
-      <Button button-type="secondary" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
+      <Button class="mt-2" :disabled="loading" @click="_submit(on.click)">{{ i18n.t("general.submit") }}</Button>
+      <Button button-type="secondary" class="mt-2 ml-2" v-on="on">{{ i18n.t("general.close") }}</Button>
     </template>
     <template #activator="{ on }">
       <slot name="activator" :on="on"></slot>

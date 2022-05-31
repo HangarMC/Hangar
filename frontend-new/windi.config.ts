@@ -44,7 +44,7 @@ export default defineConfig({
         800: "#00102F",
         900: "#000817",
       },
-      lightBlue: colors.lightBlue,
+      sky: colors.sky,
       blue: colors.blue,
       lime: colors.lime,
       slate: colors.slate,

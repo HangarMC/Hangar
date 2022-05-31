@@ -6,7 +6,7 @@ const props = withDefaults(
     activeUnderline?: boolean;
   }>(),
   {
-    activeUnderline: true,
+    activeUnderline: false,
     to: undefined,
     href: undefined,
   }

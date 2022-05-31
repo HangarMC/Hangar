@@ -112,7 +112,7 @@ async function updateInvite(invite: Invite, status: "accept" | "decline" | "unac
       <Card v-for="notification in filteredNotifications" :key="notification.id" :class="'text-' + notification.type + ' flex shadow-0'">
         <div class="inline-flex items-center">
           <span class="text-lg mr-2">
-            <IconMdiInformationOutline v-if="notification.type === 'info'" class="text-lightBlue-600" />
+            <IconMdiInformationOutline v-if="notification.type === 'info'" class="text-sky-600" />
             <IconMdiCheck v-else-if="notification.type === 'success'" class="text-lime-600" />
             <IconMdiAlertOutline v-else-if="notification.type === 'warning'" class="text-red-600" />
             <IconMdiMessageOutline v-else-if="notification.type === 'neutral'" />

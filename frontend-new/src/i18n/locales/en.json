@@ -36,6 +36,12 @@
     }
   },
   "hangar": {
+    "footer": {
+      "api": "API",
+      "resourceGuidelines": "Resource Guidelines",
+      "org": "GitHub Organization",
+      "tos": "Terms of Service"
+    },
     "projectSearch": {
       "query": "Search in {0} projects...",
       "sortBy": "Sort by",
@@ -304,7 +310,8 @@
         "enable": "Enable",
         "enableSub": "Enable the donation form for this project",
         "subject": "PayPal email or hosted button id",
-        "subjectSub": "Enter your PayPal email here. Alternatively, you can setup a hosted button on PayPals Website and enter the hosted button id here."
+        "subjectSub": "Enter your PayPal email here. Alternatively, you can setup a hosted button on PayPals Website and enter the hosted button id here.",
+        "subjectLabel": "PayPal email or button id"
       },
       "error": {
         "invalidFile": "{0} is an invalid file type",
@@ -325,9 +332,9 @@
       },
       "tabs": {
         "general": "General",
-        "optional": "Optional",
+        "links": "Links",
         "management": "Management",
-        "donation": "Donation"
+        "donation": "Donations"
       }
     },
     "discuss": {
