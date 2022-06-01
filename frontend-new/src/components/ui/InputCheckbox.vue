@@ -2,7 +2,6 @@
 import { computed } from "vue";
 import { useValidation } from "~/composables/useValidationHelpers";
 import { ValidationRule } from "@vuelidate/core";
-import IconMdiCheck from "~icons/mdi/check";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean | boolean[]): void;
