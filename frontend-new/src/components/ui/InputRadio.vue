@@ -21,26 +21,22 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
 </script>
 
 <template>
-  <label class="group relative cursor-pointer pl-30px customCheckboxContainer w-max">
-    <template v-if="props.label">{{ props.label }}</template>
-    <input v-model="internalVal" type="radio" class="hidden" v-bind="$attrs" @blur="v.$touch()" />
-    <span
-      class="absolute top-5px left-0 h-15px w-15px rounded-full bg-gray-300"
-      after="absolute hidden content-DEFAULT top-1px left-5px border-solid w-6px h-12px border-r-3px border-b-3px border-white rounded-full"
-      group-hover="bg-gray-400"
+  <label class="customRadioButton group relative cursor-pointer flex items-center select-none">
+    <input
+      v-model="internalVal"
+      type="radio"
+      class="appearance-none h-4 w-4 bg-gray-300 mr-2 rounded-full group-hover:bg-gray-400 !checked:bg-primary-400"
+      dark="bg-gray-600 group-hover:bg-gray-500"
+      v-bind="$attrs"
+      @blur="v.$touch()"
     />
+    <icon-mdi-circle class="absolute h-4 w-4 p-1 opacity-0 text-white" />
+    <template v-if="props.label">{{ props.label }}</template>
   </label>
 </template>
 
 <style>
-/*This is needed, because you cannot have more than one parent group in tailwind/windi*/
-.customCheckboxContainer input:checked ~ span {
-  background-color: #004ee9 !important;
-}
-
-/*The tailwind/windi utility class rotate-45 is BROKEN*/
-.customCheckboxContainer input:checked ~ span:after {
-  display: block;
-  transform: rotate(45deg);
+.customRadioButton input:checked ~ svg {
+  @apply opacity-100;
 }
 </style>
