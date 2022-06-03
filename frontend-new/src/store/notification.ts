@@ -12,6 +12,7 @@ function waitTimeout(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+const defaultTimeout = 4000;
 export const useNotificationStore = defineStore("notification", () => {
   const notifications = ref<Set<Notification>>(new Set<Notification>());
 
@@ -20,15 +21,15 @@ export const useNotificationStore = defineStore("notification", () => {
     if (notification.timeout === -1) {
       return;
     }
-    await waitTimeout(notification.timeout || 3000);
+    await waitTimeout(notification.timeout || defaultTimeout);
     remove(notification);
   }
 
-  async function success(message: string, clearable = true, timeout = 3000) {
+  async function success(message: string, clearable = true, timeout = defaultTimeout) {
     await show({ message, color: "green", clearable, timeout });
   }
 
-  async function error(message: string, clearable = true, timeout = 3000) {
+  async function error(message: string, clearable = true, timeout = defaultTimeout) {
     await show({ message, color: "red", clearable, timeout });
   }
 
