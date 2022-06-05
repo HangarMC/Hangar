@@ -94,6 +94,8 @@ There is a bunch of stuff to do, some of that is noted in the [**Roadmap Project
 Your best bet is joining #development on the [Hangar Discord](https://discord.gg/zvrAEbvJ4a) and just discussing with us.
 All contributions are very welcome, we will not be able to finish this alone!
 
+Updating the frontend dependencies can be done best by running `npx npm-check -u` and going thru the changelogs. Notice that package.json might contain some hints of which deps are broken.
+
 ## License
 
 Most of the frontend is a fork of Ore, licensed under MIT [here](https://github.com/SpongePowered/Ore/blob/staging/LICENSE.txt). 
