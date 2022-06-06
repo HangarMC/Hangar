@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Button from "~/components/design/Button.vue";
@@ -13,7 +13,6 @@ import { useContext } from "vite-ssr/vue";
 import Tooltip from "~/components/design/Tooltip.vue";
 import { useAuthStore } from "~/store/auth";
 import { useNotificationStore } from "~/store/notification";
-import { Ref } from "@vue/reactivity";
 
 const ctx = useContext();
 const i18n = useI18n();

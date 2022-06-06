@@ -21,8 +21,8 @@
   "dependencies": {
     "@headlessui/vue": "1.6.4",
     "@nuxt/devalue": "2.0.0",
-    "@vuelidate/core": "2.0.0-alpha.40",
-    "@vuelidate/validators": "2.0.0-alpha.28",
+    "@vuelidate/core": "2.0.0-alpha.41",
+    "@vuelidate/validators": "2.0.0-alpha.29",
     "@vueuse/core": "8.6.0",
     "@vueuse/head": "0.7.6",
     "@vueuse/integrations": "8.6.0",
@@ -48,7 +48,7 @@
     "vue3-popper": "1.5.0"
   },
   "devDependencies": {
-    "@iconify/json": "2.1.56",
+    "@iconify/json": "2.1.57",
     "@intlify/vite-plugin-vue-i18n": "3.4.0",
     "@types/accept-language-parser": "1.5.3",
     "@types/chartist": "0.11.1",
@@ -76,7 +76,7 @@
     "husky": "8.0.1",
     "lint-staged": "13.0.0",
     "node-fetch": "3.2.5",
-    "pnpm": "7.1.8",
+    "pnpm": "7.1.9",
     "prettier": "^2.6.2",
     "sass": "1.52.2",
     "typescript": "4.7.3",
