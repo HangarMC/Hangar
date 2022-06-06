@@ -22,7 +22,7 @@
     "@headlessui/vue": "1.6.4",
     "@nuxt/devalue": "2.0.0",
     "@vuelidate/core": "2.0.0-alpha.40",
-    "@vuelidate/validators": "2.0.0-alpha.28",
+    "@vuelidate/validators": "2.0.0-alpha.29",
     "@vueuse/core": "8.6.0",
     "@vueuse/head": "0.7.6",
     "@vueuse/integrations": "8.6.0",
