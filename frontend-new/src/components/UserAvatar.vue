@@ -10,6 +10,7 @@ const props = withDefaults(
     to?: string;
     size?: "xs" | "sm" | "md" | "lg" | "xl";
     background?: boolean;
+    disableLink?: boolean;
   }>(),
   {
     avatarUrl: undefined,
@@ -17,6 +18,7 @@ const props = withDefaults(
     size: "lg",
     to: "",
     background: true,
+    disableLink: false,
   }
 );
 
@@ -62,8 +64,8 @@ const url = computed(() => {
 
 <template>
   <div :class="'rounded-lg ' + backgroundClass + sizeClass">
-    <router-link :to="url">
+    <component :is="disableLink ? 'span' : 'router-link'" :to="url">
       <img class="rounded-lg w-full h-full" :title="username" :src="src" :alt="username" @error="errored = true" />
-    </router-link>
+    </component>
   </div>
 </template>

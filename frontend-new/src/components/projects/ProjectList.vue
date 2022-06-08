@@ -45,7 +45,10 @@ const props = defineProps({
       <span class="inline-flex items-center">
         <IconMdiDownload class="mx-1" /> {{ project.stats.downloads }} {{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}
       </span>
-      <Tooltip :content="i18n.t('project.info.lastUpdatedTooltip', [i18n.d(project.lastUpdated, 'datetime')])">
+      <Tooltip>
+        <template #content>
+          {{ i18n.t("project.info.lastUpdatedTooltip", [i18n.d(project.lastUpdated, "datetime")]) }}
+        </template>
         <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" />{{ lastUpdated(project.lastUpdated) }}</span>
       </Tooltip>
     </div>

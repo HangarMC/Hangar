@@ -22,7 +22,7 @@ const props = withDefaults(
     to: undefined,
   }
 );
-const paddingClass = computed(() => {
+const paddingClass = computed<string>(() => {
   switch (props.size) {
     default:
     case "small": {
@@ -36,23 +36,21 @@ const paddingClass = computed(() => {
     }
   }
 });
+
+const classes = computed<string>(() => {
+  const button = " button-" + props.buttonType;
+  const loading = props.loading ? " !cursor-wait" : "";
+  return (
+    "rounded-md font-semibold h-min inline-flex items-center justify-center text-white disabled:(bg-gray-300 cursor-not-allowed) disabled:dark:(text-gray-500 bg-gray-700) " +
+    paddingClass.value +
+    button +
+    loading
+  );
+});
 </script>
 
 <template>
-  <component
-    :is="to ? 'router-link' : 'button'"
-    :class="
-      'rounded-md font-semibold h-min inline-flex items-center justify-center text-white disabled:(bg-gray-300 cursor-not-allowed) disabled:dark:(text-gray-500 bg-gray-700) ' +
-      paddingClass +
-      ' button-' +
-      buttonType +
-      (loading ? ' !cursor-wait' : '')
-    "
-    :disabled="disabled || loading"
-    :to="to"
-    v-bind="$attrs"
-    @click="$emit('click')"
-  >
+  <component :is="to ? 'router-link' : 'button'" :class="classes" :disabled="disabled || loading" :to="to" v-bind="$attrs" @click="$emit('click')">
     <slot></slot>
     <span v-if="loading" class="pl-1"><Spinner class="stroke-gray-400" :diameter="1" :stroke="0.01" unit="rem" /></span>
   </component>

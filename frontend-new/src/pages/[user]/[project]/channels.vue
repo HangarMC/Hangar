@@ -78,9 +78,12 @@ async function editChannel(channel: ProjectChannel) {
         <tr>
           <th><IconMdiTag />{{ i18n.t("channel.manage.channelName") }}</th>
           <th><IconMdiFormatListNumbered />{{ i18n.t("channel.manage.versionCount") }}</th>
-          <Tooltip :content="i18n.t('channel.manage.reviewInfo')"
-            ><th><IconMdiFileFind />{{ i18n.t("channel.manage.reviewed") }}</th></Tooltip
-          >
+          <Tooltip>
+            <template #content>
+              {{ i18n.t("channel.manage.reviewInfo") }}
+            </template>
+            <th><IconMdiFileFind />{{ i18n.t("channel.manage.reviewed") }}</th>
+          </Tooltip>
           <th><IconMdiPencil />{{ i18n.t("channel.manage.edit") }}</th>
           <th v-if="channels.length !== 1"><IconMdiDelete />{{ i18n.t("channel.manage.trash") }}</th>
         </tr>

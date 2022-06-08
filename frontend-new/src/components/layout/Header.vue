@@ -272,7 +272,7 @@ function isRecent(date: string): boolean {
           <Menu>
             <MenuButton>
               <div class="flex items-center gap-2 rounded-md p-2" hover="text-primary-400 bg-primary-0">
-                <UserAvatar :username="authStore.user.name" size="xs" :background="false"></UserAvatar>
+                <UserAvatar :username="authStore.user.name" size="xs" :background="false" :disable-link="true" />
                 {{ authStore.user.name }}
               </div>
             </MenuButton>

@@ -24,7 +24,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String AUTH_NAME = "HangarAuth";
-    public static final String AUTH_NAME_REFRESH_COOKIE = AUTH_NAME + "_REFRESH";
+    public static final String REFRESH_COOKIE_NAME = AUTH_NAME + "_REFRESH";
 
     private static final RequestMatcher API_MATCHER = new AndRequestMatcher(new AntPathRequestMatcher("/api/**"), new NegatedRequestMatcher(new AntPathRequestMatcher("/api/v1/authenticate/**")));
     private static final RequestMatcher PUBLIC_API_MATCHER = new AndRequestMatcher(new AntPathRequestMatcher("/api/v1/**"), new NegatedRequestMatcher(new AntPathRequestMatcher("/api/v1/authenticate/**")));

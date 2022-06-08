@@ -12,7 +12,7 @@ import { useRouter } from "vue-router";
 import { useBackendDataStore } from "~/store/backendData";
 
 const props = defineProps<{
-  tagline: string;
+  tagline?: string;
   action: string;
 }>();
 

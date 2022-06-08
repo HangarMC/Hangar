@@ -3,7 +3,6 @@ import { useCookies } from "~/composables/useCookies";
 import { useContext } from "vite-ssr";
 import { useInternalApi } from "~/composables/useApi";
 import { useAxios } from "~/composables/useAxios";
-import { useApiToken } from "~/composables/useApiToken";
 import { authLog } from "~/composables/useLog";
 import { HangarUser } from "hangar-internal";
 import { useRequest } from "~/composables/useResReq";
@@ -13,14 +12,36 @@ class Auth {
     return `/login?returnUrl=${import.meta.env.HANGAR_PUBLIC_HOST}${redirectUrl}`;
   }
 
-  async processLogin(token: string): Promise<void> {
-    useAuthStore(this.usePiniaIfPresent()).$patch({ authenticated: true });
-    return await this.updateUser(token);
+  async logout() {
+    location.replace(`/logout?returnUrl=${import.meta.env.HANGAR_PUBLIC_HOST}?loggedOut`);
   }
 
-  async logout() {
-    const token = await useApiToken(true);
-    location.replace(`/logout?returnUrl=${import.meta.env.HANGAR_PUBLIC_HOST}?loggedOut&t=${token}`);
+  // TODO do we need to scope this to the user?
+  refreshPromise: Promise<boolean> | null = null;
+
+  async refreshToken() {
+    authLog("refresh token");
+    if (this.refreshPromise) {
+      authLog("locked, lets wait");
+      const result = await this.refreshPromise;
+      authLog("lock over", result);
+      return result;
+    }
+
+    // eslint-disable-next-line no-async-promise-executor
+    this.refreshPromise = new Promise<boolean>(async (resolve) => {
+      try {
+        authLog("do request");
+        await useAxios.get("/refresh");
+        authLog("done");
+        resolve(true);
+        this.refreshPromise = null;
+      } catch (e) {
+        authLog("Refresh failed", e);
+        resolve(false);
+      }
+    });
+    return this.refreshPromise;
   }
 
   async invalidate(shouldRedirect = true) {
@@ -32,33 +53,28 @@ class Auth {
     await useAxios.get("/invalidate").catch(() => console.log("invalidate failed"));
     if (!import.meta.env.SSR) {
       useCookies().remove("HangarAuth_REFRESH", { path: "/" });
-      authLog("Invalidate refresh cookie");
+      useCookies().remove("HangarAuth", { path: "/" });
+      authLog("Invalidated auth cookies");
     }
     if (shouldRedirect) {
       useContext().redirect("/logged-out");
     }
   }
 
-  async updateUser(token: string): Promise<void> {
-    const user = await useInternalApi<HangarUser>("users/@me", true, "get", {}, {}, token).catch(async (err) => {
-      console.log(err);
+  async updateUser(): Promise<void> {
+    const user = await useInternalApi<HangarUser>("users/@me").catch(async (err) => {
+      const { trace, ...data } = err.response.data;
+      console.log(data);
       console.log("LOGGING OUT ON updateUser");
       return this.invalidate(!import.meta.env.SSR);
     });
     if (user) {
       authLog("patching " + user.name);
-      useAuthStore(this.usePiniaIfPresent()).setUser(user);
-      authLog("user is now " + useAuthStore(this.usePiniaIfPresent()).user?.name);
+      const authStore = useAuthStore(this.usePiniaIfPresent());
+      authStore.setUser(user);
+      authStore.$patch({ authenticated: true });
+      authLog("user is now " + authStore.user?.name);
     }
-  }
-
-  async refreshUser() {
-    const token = await useApiToken(true);
-    if (!token) {
-      authLog("Got no token in refreshUser, invalidate!");
-      return this.invalidate(false);
-    }
-    return useAuthStore(this.usePiniaIfPresent()).authenticated ? this.updateUser(token) : this.processLogin(token);
   }
 
   usePiniaIfPresent() {

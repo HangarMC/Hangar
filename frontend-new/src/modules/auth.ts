@@ -1,6 +1,5 @@
 import type { UserModule } from "~/types";
 import { useAuth } from "~/composables/useAuth";
-import { useCookies } from "~/composables/useCookies";
 import { set, unset } from "~/composables/useResReq";
 import { authLog, routePermLog } from "~/composables/useLog";
 import { useAuthStore } from "~/store/auth";
@@ -42,13 +41,7 @@ export const install: UserModule = async ({ request, response, router, redirect 
 async function handleLogin(request: Context["request"], response: Context["response"]) {
   authLog("set request");
   set(request, response);
-  if (useCookies().get("HangarAuth_REFRESH")) {
-    authLog("Got refresh cookie, calling refresh...", useCookies().get("HangarAuth_REFRESH"));
-    await useAuth.refreshUser();
-  } else if (useAuthStore().authenticated) {
-    authLog("Logged in on the backend, calling refresh...");
-    await useAuth.refreshUser();
-  }
+  await useAuth.updateUser();
   unset();
   authLog("unset request");
 }

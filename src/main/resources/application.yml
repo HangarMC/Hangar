@@ -183,4 +183,5 @@ logging:
     org.springframework.context.support.PostProcessorRegistrationDelegate: WARN
     io.papermc.hangar.service.internal.JobService: DEBUG
     io.papermc.hangar.config.WebConfig.LoggingInterceptor: DEBUG
+    io.papermc.hangar.security: TRACE
 #    org.postgresql: TRACE

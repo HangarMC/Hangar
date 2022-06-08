@@ -8,7 +8,6 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.UserRefreshTokenDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.api.auth.RefreshResponse;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.auth.ApiKeyTable;
@@ -53,18 +52,18 @@ public class TokenService extends HangarComponent {
         return getVerifier().verify(token);
     }
 
-    public String createTokenForUser(UserTable userTable) {
+    public void issueRefreshAndAccessToken(UserTable userTable) {
         UserRefreshToken userRefreshToken = userRefreshTokenDAO.insert(new UserRefreshToken(userTable.getId(), UUID.randomUUID(), UUID.randomUUID()));
-        response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(SecurityConfig.AUTH_NAME_REFRESH_COOKIE, userRefreshToken.getToken().toString()).path("/").secure(config.security.isSecure()).maxAge(config.security.getRefreshTokenExpiry().toSeconds()).sameSite("Strict").build().toString());
-        return newToken0(userTable);
+        addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), config.security.getRefreshTokenExpiry().toSeconds());
+        String accessToken = newToken0(userTable);
+        addCookie(SecurityConfig.AUTH_NAME, accessToken, config.security.getTokenExpiry().toSeconds());
     }
 
-    private String newToken0(UserTable userTable) {
-        Permission globalPermissions = permissionService.getGlobalPermissions(userTable.getId());
-        return expiring(userTable, globalPermissions, null);
+    private void addCookie(String name, String value, long maxAge) {
+        response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, value).path("/").secure(config.security.isSecure()).maxAge(maxAge).sameSite("Strict").httpOnly(true).build().toString());
     }
 
-    public RefreshResponse refreshToken(String refreshToken) {
+    public void refreshAccessToken(String refreshToken) {
         if (refreshToken == null) {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "No refresh token found");
         }
@@ -75,16 +74,30 @@ public class TokenService extends HangarComponent {
         if (userRefreshToken.getLastUpdated().isBefore(OffsetDateTime.now().minus(config.security.getRefreshTokenExpiry()))) {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Expired refresh token");
         }
+        UserTable userTable = userService.getUserTable(userRefreshToken.getUserId());
+        if (userTable == null) {
+            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Unknown user");
+        }
+        // we gotta update the refresh token
         userRefreshToken.setToken(UUID.randomUUID());
         userRefreshToken = userRefreshTokenDAO.update(userRefreshToken);
-        UserTable userTable = userService.getUserTable(userRefreshToken.getUserId());
-        assert userTable != null;
-        String token = newToken0(userTable);
-        return new RefreshResponse(token, userRefreshToken.getToken().toString(), config.security.getRefreshTokenExpiry().toSeconds(), SecurityConfig.AUTH_NAME_REFRESH_COOKIE);
+        addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), config.security.getRefreshTokenExpiry().toSeconds());
+        // then issue a new access token
+        String accessToken = newToken0(userTable);
+        addCookie(SecurityConfig.AUTH_NAME, accessToken, config.security.getTokenExpiry().toSeconds());
     }
 
     public void invalidateToken(String refreshToken) {
-        userRefreshTokenDAO.delete(UUID.fromString(refreshToken));
+        if (refreshToken != null) {
+            userRefreshTokenDAO.delete(UUID.fromString(refreshToken));
+        }
+        addCookie(SecurityConfig.REFRESH_COOKIE_NAME, null, 0);
+        addCookie(SecurityConfig.AUTH_NAME, null, 0);
+    }
+
+    private String newToken0(UserTable userTable) {
+        Permission globalPermissions = permissionService.getGlobalPermissions(userTable.getId());
+        return expiring(userTable, globalPermissions, null);
     }
 
     public String expiring(UserTable userTable, Permission globalPermission, @Nullable String apiKeyIdentifier) {

@@ -81,7 +81,10 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
       <Card v-if="buttons.length !== 0" class="mb-4 border-solid border-top-4 border-top-red-500 dark:border-top-red-500">
         <template #header> Admin actions </template>
 
-        <Tooltip v-for="btn in buttons" :key="btn.name" :content="i18n.t(`author.tooltips.${btn.name}`)">
+        <Tooltip v-for="btn in buttons" :key="btn.name">
+          <template #content>
+            {{ i18n.t(`author.tooltips.${btn.name}`) }}
+          </template>
           <Link v-bind="btn.attr">
             <Button size="small" class="mr-1 inline-flex"><component :is="btn.icon" /></Button>
           </Link>

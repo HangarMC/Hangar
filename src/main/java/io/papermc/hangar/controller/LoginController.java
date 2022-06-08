@@ -57,7 +57,7 @@ public class LoginController extends HangarComponent {
             config.checkDev();
 
             UserTable fakeUser = authenticationService.loginAsFakeUser();
-            tokenService.createTokenForUser(fakeUser);
+            tokenService.issueRefreshAndAccessToken(fakeUser);
             return new RedirectView(returnUrl);
         } else {
             response.addCookie(new Cookie("url", returnUrl));
@@ -76,18 +76,19 @@ public class LoginController extends HangarComponent {
         if (!validationService.isValidUsername(user.getName())) {
             throw new HangarApiException("nav.user.error.invalidUsername");
         }
-        tokenService.createTokenForUser(user);
+        tokenService.issueRefreshAndAccessToken(user);
         return addBaseAndRedirect(url);
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<RefreshResponse> refreshToken(@CookieValue(name = SecurityConfig.AUTH_NAME_REFRESH_COOKIE, required = false) String refreshToken) {
-        return ResponseEntity.ok(tokenService.refreshToken(refreshToken));
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void refreshAccessToken(@CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) String refreshToken) {
+        tokenService.refreshAccessToken(refreshToken);
     }
 
     @GetMapping("/invalidate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void invalidateRefreshToken(@CookieValue(name = SecurityConfig.AUTH_NAME_REFRESH_COOKIE) String refreshToken) {
+    public void invalidateRefreshToken(@CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME) String refreshToken) {
         tokenService.invalidateToken(refreshToken);
         HttpSession session = request.getSession(false);
         if (session != null) {
@@ -95,7 +96,6 @@ public class LoginController extends HangarComponent {
         }
     }
 
-    @LoggedIn
     @GetMapping(path = "/logout", params = "returnUrl")
     public RedirectView logout(@RequestParam(defaultValue = "/logged-out") String returnUrl) {
         if (config.fakeUser.isEnabled()) {
@@ -108,7 +108,7 @@ public class LoginController extends HangarComponent {
     }
 
     @GetMapping(path = "/fake-logout")
-    public RedirectView fakeLogout(@CookieValue(value = "url", defaultValue = "/logged-out") String returnUrl, @CookieValue(name = SecurityConfig.AUTH_NAME_REFRESH_COOKIE, required = false) String refreshToken) {
+    public RedirectView fakeLogout(@CookieValue(value = "url", defaultValue = "/logged-out") String returnUrl, @CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) String refreshToken) {
         // invalidate refresh token
         if (refreshToken != null) {
             tokenService.invalidateToken(refreshToken);
@@ -122,7 +122,7 @@ public class LoginController extends HangarComponent {
     }
 
     @GetMapping(path = "/handle-logout", params = "state")
-    public RedirectView loggedOut(@RequestParam String state, @CookieValue(value = "url", defaultValue = "/logged-out") String returnUrl, @CookieValue(name = SecurityConfig.AUTH_NAME_REFRESH_COOKIE, required = false) String refreshToken) {
+    public RedirectView loggedOut(@RequestParam String state, @CookieValue(value = "url", defaultValue = "/logged-out") String returnUrl, @CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) String refreshToken) {
         // get username
         DecodedJWT decodedJWT = tokenService.verify(state);
         String username = decodedJWT.getSubject();

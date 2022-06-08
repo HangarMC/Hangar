@@ -4,6 +4,9 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.TokenService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.log.LogMessage;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +34,7 @@ import java.util.stream.Stream;
 public class HangarAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String AUTH_TOKEN_ATTR = SecurityConfig.AUTH_NAME + "JWTToken";
+    private static final Logger logger = LoggerFactory.getLogger(HangarAuthenticationFilter.class);
 
     private final TokenService tokenService;
 
@@ -50,9 +54,7 @@ public class HangarAuthenticationFilter extends AbstractAuthenticationProcessing
                     Optional.ofNullable(request.getCookies()).flatMap(cookies -> Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConfig.AUTH_NAME)).map(Cookie::getValue).findFirst())
             ).flatMap(Optional::stream).findFirst();
             if (token.isEmpty()) {
-                if (this.logger.isTraceEnabled()) {
-                    logger.trace("Couldn't find a " + SecurityConfig.AUTH_NAME + " token on the request");
-                }
+                logger.trace("Couldn't find a {} token on the request {}", SecurityConfig.AUTH_NAME, request.getRequestURI());
                 return false;
             }
             request.setAttribute(AUTH_TOKEN_ATTR, token.get());
@@ -80,9 +82,7 @@ public class HangarAuthenticationFilter extends AbstractAuthenticationProcessing
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         SecurityContextHolder.getContext().setAuthentication(authResult);
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug(LogMessage.format("Set SecurityContextHolder to %s", authResult));
-        }
+        logger.debug("Set SecurityContextHolder to {}", authResult);
         chain.doFilter(request, response);
     }
 }

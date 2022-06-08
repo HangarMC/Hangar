@@ -132,7 +132,10 @@ interface EditableMember {
         <p class="font-semibold">
           <Link :to="'/' + member.user.name">{{ member.user.name }}</Link>
         </p>
-        <Tooltip :disabled="member.role.accepted" :content="i18n.t('form.memberList.invitedAs', [member.role.role.title])">
+        <Tooltip :disabled="member.role.accepted">
+          <template #content>
+            {{ i18n.t("form.memberList.invitedAs", [member.role.role.title]) }}
+          </template>
           <span class="items-center inline-flex"> {{ member.role.role.title }} <IconMdiClock v-if="!member.role.accepted" class="ml-1" /> </span>
         </Tooltip>
       </div>
