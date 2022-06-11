@@ -58,7 +58,7 @@ fake-user:
 
 hangar:
   dev: true
-  base-url: "http://localhost:3000"
+  base-url: "http://localhost:3333"
   ga-code: "UA-38006759-9"
 
   licenses:
@@ -134,7 +134,7 @@ hangar:
 
   sso:
     enabled: true
-    oauth-url: "http://localhost:3000" # proxied to 4444
+    oauth-url: "http://localhost:3333" # proxied to 4444
     login-url: "/oauth2/auth"
     token-url: "/oauth2/token"
     logout-url: "/oauth2/sessions/logout"

@@ -1,5 +1,6 @@
 const proxyHost = process.env.proxyHost || "http://localhost:8080";
 const authHost = process.env.authHost || "http://localhost:3001";
+const oauthHost = process.env.oauthHost || "http://localhost:4444";
 
 exports["default"] = {
   // backend
@@ -19,5 +20,5 @@ exports["default"] = {
   // auth
   "/avatar": authHost,
   "/oauth/logout": authHost,
-  "/oauth2": authHost,
+  "/oauth2": oauthHost,
 };
