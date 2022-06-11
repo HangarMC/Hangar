@@ -21,10 +21,10 @@ const hasError = computed<boolean>(() => {
 </script>
 
 <template>
-  <div><slot /></div>
-  <!--<Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" :content="formattedError" class="text-center">
+  <!-- todo this throws hydration errors -->
+  <Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" :content="formattedError" class="text-center">
     <slot />
-  </Popper>-->
+  </Popper>
 </template>
 
 <style scoped>
