@@ -6,6 +6,10 @@ export const useCookies = () => {
   if (import.meta.env.SSR) {
     const req = useRequest();
     const res = useResponse();
+    if (!req || !req.headers) {
+      console.error("req null?!");
+      console.trace();
+    }
     const cookies = createCookies(req)();
     cookies.addChangeListener((change) => {
       if (!res || res.headersSent) {

@@ -1,10 +1,9 @@
 import type { UserModule } from "~/types";
 import { useAuth } from "~/composables/useAuth";
-import { set, unset } from "~/composables/useResReq";
-import { authLog, routePermLog } from "~/composables/useLog";
+import { routePermLog } from "~/composables/useLog";
 import { useAuthStore } from "~/store/auth";
 import { RouteLocationNormalized, RouteLocationRaw } from "vue-router";
-import { Context, useContext } from "vite-ssr/vue";
+import { useContext } from "vite-ssr/vue";
 import { useApi } from "~/composables/useApi";
 import { PermissionCheck, UserPermissions } from "hangar-api";
 import { useErrorRedirect } from "~/composables/useErrorRedirect";
@@ -13,9 +12,11 @@ import { NamedPermission, PermissionType } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useI18n } from "vue-i18n";
 import { useSettingsStore } from "~/store/settings";
+import * as domain from "~/composables/useDomain";
 
 export const install: UserModule = async ({ request, response, router, redirect }) => {
   router.beforeEach(async (to, from, next) => {
+    const d = domain.create(request, response);
     if (to.fullPath.startsWith("/@vite")) {
       // really don't need to do stuff for such meta routes
       return;
@@ -29,22 +30,15 @@ export const install: UserModule = async ({ request, response, router, redirect 
     } else {
       next();
     }
+    domain.exit(d);
   });
   if (request?.url.includes("/@vite")) {
     // really don't need to do stuff for such meta routes
     return;
   }
-  await handleLogin(request, response);
+  await useAuth.updateUser();
   await useSettingsStore().loadSettingsServer(request, response);
 };
-
-async function handleLogin(request: Context["request"], response: Context["response"]) {
-  authLog("set request");
-  set(request, response);
-  await useAuth.updateUser();
-  unset();
-  authLog("unset request");
-}
 
 async function loadPerms(to: RouteLocationNormalized) {
   const authStore = useAuthStore();

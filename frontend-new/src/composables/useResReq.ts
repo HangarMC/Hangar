@@ -1,15 +1,35 @@
 import { useContext } from "vite-ssr";
+import * as domain from "~/composables/useDomain";
+import { Context } from "vite-ssr/vue";
 
-let _req: any = null;
-let _res: any = null;
+export const useRequest = () => {
+  if (import.meta.env.SSR) {
+    if (domain.isActive()) {
+      return domain.get<Context["request"]>("req");
+    }
+    const ctx = useContext();
+    if (ctx) {
+      return ctx.request;
+    }
+    console.error("request null!");
+    console.trace();
+    return null;
+  }
 
-export const set = (req: any, res: any) => {
-  _req = req;
-  _res = res;
+  console.error("useRequest called on client?!");
+  console.trace();
+  return null;
 };
-export const unset = () => {
-  _req = null;
-  _res = null;
+export const useResponse = () => {
+  if (import.meta.env.SSR) {
+    if (domain.isActive()) {
+      return domain.get<Context["response"]>("res");
+    }
+    const ctx = useContext();
+    if (ctx) {
+      return ctx.response;
+    }
+  }
+
+  return null;
 };
-export const useRequest = () => _req || (import.meta.env.SSR ? useContext()?.request : null);
-export const useResponse = () => _res || (import.meta.env.SSR ? useContext()?.response : null);

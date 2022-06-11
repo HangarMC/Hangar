@@ -78,7 +78,7 @@ class Auth {
   }
 
   usePiniaIfPresent() {
-    return useRequest()?.pinia;
+    return import.meta.env.SSR ? useRequest()?.pinia : null;
   }
 }
 

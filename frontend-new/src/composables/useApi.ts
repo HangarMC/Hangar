@@ -20,6 +20,7 @@ interface StatCookie {
 }
 
 function request<T>(url: string, method: AxiosRequestConfig["method"], data: object, headers: Record<string, string> = {}, retry = false): Promise<T> {
+  const cookies = useCookies();
   return new Promise<T>((resolve, reject) => {
     return useAxios
       .request<T>({
@@ -41,7 +42,6 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
           if (statString) {
             const statCookie: StatCookie = new Cookies("statString") as unknown as StatCookie;
 
-            const cookies = useCookies();
             cookies.set("hangar_stats", statCookie.hangar_stats, {
               path: statCookie.Path,
               expires: new Date(statCookie.Expires),

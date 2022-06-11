@@ -10,6 +10,7 @@ import "./styles/main.css";
 import { useBackendDataStore } from "~/store/backendData";
 import devalue from "@nuxt/devalue";
 import { settingsLog } from "~/composables/useLog";
+import * as domain from "~/composables/useDomain";
 
 const routes = setupLayouts(generatedRoutes);
 // we need to override the path on the error route to have the patch math
@@ -31,9 +32,11 @@ const options: Parameters<typeof viteSSR>["1"] = {
 };
 
 export default viteSSR(App, options, async (ctx) => {
-  const { app, initialState, initialRoute, request } = ctx;
+  const { app, initialState, initialRoute, request, response } = ctx;
 
   app.component(ClientOnly.name, ClientOnly);
+
+  const d = domain.create(request, response);
 
   const head = createHead();
   const pinia = createPinia();
@@ -62,6 +65,7 @@ export default viteSSR(App, options, async (ctx) => {
     request.ctx = ctx;
     request.pinia = pinia;
   }
+  domain.exit(d);
 
   return { head };
 });

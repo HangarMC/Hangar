@@ -8,3 +8,10 @@ declare module "*.md" {
   const component: ComponentOptions;
   export default component;
 }
+
+declare module "domain" {
+  const active: Domain;
+  declare interface Domain {
+    context: Record<string, any> | null;
+  }
+}
