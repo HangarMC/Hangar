@@ -95,8 +95,8 @@ export interface Step {
     </div>
     <div class="mt-4">
       <Card accent>
-        <template v-if="settings.mobile" #header>
-          {{ activeStep.header }}
+        <template #header>
+          <span v-show="settings.mobile">{{ activeStep.header }}</span>
         </template>
         <div v-for="step in steps" :key="step.value">
           <slot v-if="internalValue === step.value" :name="step.value" />

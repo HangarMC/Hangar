@@ -48,48 +48,44 @@ export const useBackendDataStore = defineStore("backendData", () => {
 
   async function initBackendData() {
     try {
-      // todo make these run concurrently to speed up stuff, also consider caching them in node server/globally, these are all always needed
-      await fetchIfNeeded(async () => {
-        const categoryResult = await useInternalApi<IProjectCategory[]>("data/categories", false);
-        for (const c of categoryResult) {
-          c.title = "project.category." + c.apiName;
-        }
-        return convertToMap<ProjectCategory, IProjectCategory>(categoryResult, (value) => value.apiName);
-      }, projectCategories);
+      // todo consider caching these in node server/globally, these are all always needed
+      await Promise.all([
+        fetchIfNeeded(async () => {
+          const categoryResult = await useInternalApi<IProjectCategory[]>("data/categories", false);
+          for (const c of categoryResult) {
+            c.title = "project.category." + c.apiName;
+          }
+          return convertToMap<ProjectCategory, IProjectCategory>(categoryResult, (value) => value.apiName);
+        }, projectCategories),
 
-      await fetchIfNeeded(async () => {
-        const permissionResultTemp = await useInternalApi<{ value: NamedPermission; frontendName: string; permission: string }[]>("data/permissions", false);
-        const permissionResult: IPermission[] = permissionResultTemp.map(({ value, frontendName, permission }) => ({
-          value,
-          frontendName,
-          permission: BigInt("0b" + permission),
-        }));
-        return convertToMap<NamedPermission, IPermission>(permissionResult, (value) => value.value);
-      }, permissions);
+        fetchIfNeeded(async () => {
+          const permissionResultTemp = await useInternalApi<{ value: NamedPermission; frontendName: string; permission: string }[]>("data/permissions", false);
+          const permissionResult: IPermission[] = permissionResultTemp.map(({ value, frontendName, permission }) => ({
+            value,
+            frontendName,
+            permission: BigInt("0b" + permission),
+          }));
+          return convertToMap<NamedPermission, IPermission>(permissionResult, (value) => value.value);
+        }, permissions),
 
-      await fetchIfNeeded(async () => {
-        const platformResult: IPlatform[] = await useInternalApi<IPlatform[]>("data/platforms", false);
-        return convertToMap<Platform, IPlatform>(platformResult, (value) => value.name.toUpperCase());
-      }, platforms);
+        fetchIfNeeded(async () => {
+          const platformResult: IPlatform[] = await useInternalApi<IPlatform[]>("data/platforms", false);
+          return convertToMap<Platform, IPlatform>(platformResult, (value) => value.name.toUpperCase());
+        }, platforms),
 
-      await fetchIfNeeded(async () => {
-        const promptsResult: IPrompt[] = await useInternalApi<IPrompt[]>("data/prompts", false);
-        return convertToMap<Prompt, IPrompt>(promptsResult, (value) => value.name);
-      }, prompts);
+        fetchIfNeeded(async () => {
+          const promptsResult: IPrompt[] = await useInternalApi<IPrompt[]>("data/prompts", false);
+          return convertToMap<Prompt, IPrompt>(promptsResult, (value) => value.name);
+        }, prompts),
 
-      await fetchIfNeeded(async () => useInternalApi<string[]>("data/licenses", false), licenses);
-
-      await fetchIfNeeded(async () => useInternalApi<AnnouncementObject[]>("data/announcements", false), announcements);
-
-      await fetchIfNeeded(async () => useInternalApi<IVisibility[]>("data/visibilities", false), visibilities);
-
-      await fetchIfNeeded(async () => useInternalApi("data/validations", false), validations);
-
-      await fetchIfNeeded(async () => useInternalApi("data/orgRoles", false), orgRoles);
-
-      await fetchIfNeeded(async () => useInternalApi("data/channelColors", false), channelColors);
-
-      await fetchIfNeeded(async () => useInternalApi("data/projectRoles", false), projectRoles);
+        fetchIfNeeded(async () => useInternalApi<string[]>("data/licenses", false), licenses),
+        fetchIfNeeded(async () => useInternalApi<AnnouncementObject[]>("data/announcements", false), announcements),
+        fetchIfNeeded(async () => useInternalApi<IVisibility[]>("data/visibilities", false), visibilities),
+        fetchIfNeeded(async () => useInternalApi("data/validations", false), validations),
+        fetchIfNeeded(async () => useInternalApi("data/orgRoles", false), orgRoles),
+        fetchIfNeeded(async () => useInternalApi("data/channelColors", false), channelColors),
+        fetchIfNeeded(async () => useInternalApi("data/projectRoles", false), projectRoles),
+      ]);
     } catch (e) {
       console.error("ERROR FETCHING BACKEND DATA");
       console.error(e);

@@ -136,7 +136,7 @@ function getNonChannelTags(version: Version): ApiTag[] {
                   <div class="flex flex-wrap">
                     <span class="basis-full inline-flex items-center">
                       <IconMdiAccountArrowRight class="mr-1" />
-                      <Link :to="'/' + version.author">{{ version.author }}</Link>
+                      {{ version.author }}
                     </span>
                     <span class="basis-full inline-flex items-center">
                       <IconMdiFile class="mr-1" />

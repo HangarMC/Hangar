@@ -216,9 +216,9 @@ useHead(
             <InputTag
               v-model="form.settings.keywords"
               counter
-              :maxlength="backendData.validations.project.keywords.max"
+              :maxlength="backendData.validations?.project.keywords.max"
               :label="i18n.t('project.new.step3.keywords')"
-              :rules="[required(), maxLength()(backendData.validations.project.keywords.max)]"
+              :rules="[required(), maxLength()(backendData.validations?.project.keywords.max)]"
             />
           </ProjectSettingsSection>
           <ProjectSettingsSection>

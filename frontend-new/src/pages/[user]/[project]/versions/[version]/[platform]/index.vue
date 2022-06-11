@@ -9,7 +9,7 @@ import { useBackendDataStore } from "~/store/backendData";
 import { lastUpdated } from "~/composables/useTime";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { Tag } from "hangar-api";
+import { Tag, User } from "hangar-api";
 import { useErrorRedirect } from "~/composables/useErrorRedirect";
 import TagComponent from "~/components/Tag.vue";
 import { hasPerms } from "~/composables/usePerm";
@@ -25,7 +25,6 @@ import { useNotificationStore } from "~/store/notification";
 import DropdownButton from "~/components/design/DropdownButton.vue";
 import DropdownItem from "~/components/design/DropdownItem.vue";
 import PlatformVersionEditModal from "~/components/modals/PlatformVersionEditModal.vue";
-import Tooltip from "~/components/design/Tooltip.vue";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -38,6 +37,9 @@ const props = defineProps<{
   versions: Map<Platform, HangarVersion>;
   project: HangarProject;
   versionPlatforms: Set<Platform>;
+  user: User;
+  platform: string;
+  version: string;
 }>();
 
 const p: Platform = ((route.params.platform as string) || "").toUpperCase() as Platform;

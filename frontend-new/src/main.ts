@@ -12,6 +12,8 @@ import devalue from "@nuxt/devalue";
 import { settingsLog } from "~/composables/useLog";
 import * as domain from "~/composables/useDomain";
 
+import "regenerator-runtime/runtime"; // popper needs this?
+
 const routes = setupLayouts(generatedRoutes);
 // we need to override the path on the error route to have the patch math
 const errorRoute = routes.find((r) => r.path === "/error");
