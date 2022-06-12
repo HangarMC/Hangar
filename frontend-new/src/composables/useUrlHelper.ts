@@ -3,7 +3,7 @@ export function projectIconUrl(owner: string, projectName: string) {
 }
 
 export function avatarUrl(name: string) {
-  return `/avatar/user/${name}`;
+  return `${import.meta.env.HANGAR_AUTH_HOST}/avatar/user/${name}`;
 }
 
 export function authUrl(user: string) {
