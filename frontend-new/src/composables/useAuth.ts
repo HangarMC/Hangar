@@ -9,6 +9,9 @@ import { useRequest } from "~/composables/useResReq";
 
 class Auth {
   loginUrl(redirectUrl: string): string {
+    if (redirectUrl.endsWith("?loggedOut")) {
+      redirectUrl = redirectUrl.replace("?loggedOut", "");
+    }
     return `/login?returnUrl=${import.meta.env.HANGAR_PUBLIC_HOST}${redirectUrl}`;
   }
 

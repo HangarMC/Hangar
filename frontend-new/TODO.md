@@ -22,7 +22,7 @@ Stuff that needs to be done before I consider this a successful POC
 - [ ] validation of forms/inputs etc (mostly done)
 - [ ] check that we have loading states everywhere, on like buttons and whatever (mostly done)
 - [x] add header calls to all pages
-- [ ] notifications needs to be visible in header and in the dropdown
+- [x] notifications needs to be visible in header and in the dropdown
 
 ## Big list of pages!
 
