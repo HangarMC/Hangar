@@ -57,8 +57,6 @@ export async function useProjectPage(
   async function deletePage() {
     if (!page) return;
     await useInternalApi(`pages/delete/${project.id}/${page.value?.id}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n, "page.new.error.save"));
-    // todo page deleting
-    //this.$refs.editor.loading.delete = false;
     await router.replace(`/${route.params.user}/${route.params.project}`);
   }
   return { editingPage, open, page, savePage, deletePage };

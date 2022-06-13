@@ -47,7 +47,7 @@ spring:
 # Fake User #
 #############
 fake-user:
-  enabled: true
+  enabled: false
   name: paper
   username: paper
   email: paper@papermc.io
@@ -109,6 +109,7 @@ hangar:
     init-load: 25
     init-version-load: 10
     max-desc-len: 120
+    content-max-len: 1000000
     file-validate: true
     stale-age: 28d
     check-interval: 1h

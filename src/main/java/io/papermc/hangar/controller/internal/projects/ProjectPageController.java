@@ -54,7 +54,7 @@ public class ProjectPageController extends HangarComponent {
     @RateLimit(overdraft = 10, refillTokens = 2, refillSeconds = 5)
     @PostMapping(path = "/render", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> renderMarkdown(@RequestBody @Valid StringContent content) {
-        if (content.getContent().length() > 1_000_000) { //TODO
+        if (content.getContent().length() > config.projects.getContentMaxLen()) {
             throw new HangarApiException("page.new.error.name.maxLength");
         }
         return ResponseEntity.ok(markdownService.render(content.getContent()));

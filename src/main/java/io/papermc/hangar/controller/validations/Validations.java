@@ -13,14 +13,8 @@ public class Validations {
 
     private final Map<String, Pattern> regexCache = new HashMap<>();
 
-    public boolean optionalRegex(String value, String regex) {
-        if (isEmpty(value)) return true;
-        Pattern pattern = regexCache.computeIfAbsent(regex, Pattern::compile);
-        return pattern.matcher(value).matches();
-    }
-
     public boolean regex(String value, String regex) {
-        if (isEmpty(value)) return false;
+        if (isEmpty(value)) return true;
         Pattern pattern = regexCache.computeIfAbsent(regex, Pattern::compile);
         return pattern.matcher(value).matches();
     }
@@ -33,21 +27,21 @@ public class Validations {
         if (value != null) {
             return value.size() <= max;
         }
-        return false;
+        return true;
     }
 
     public boolean max(String value, int max) {
         if (value != null) {
             return value.length() <= max;
         }
-        return false;
+        return true;
     }
 
     public boolean min(String value, int min) {
         if (value != null) {
             return value.length() >= min;
         }
-        return false;
+        return true;
     }
 
     private boolean isEmpty(String value) {

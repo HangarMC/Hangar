@@ -30,6 +30,7 @@ public class ProjectsConfig {
     private int maxDescLen = 120;
     private int maxSponsorsLen = 500;
     private int maxKeywords = 5;
+    private int contentMaxLen = 1_000_000;
     private boolean fileValidate = true;
     @DurationUnit(ChronoUnit.DAYS)
     private Duration staleAge = Duration.ofDays(28);
@@ -211,5 +212,13 @@ public class ProjectsConfig {
 
     public void setUnsafeDownloadMaxAge(Duration unsafeDownloadMaxAage) {
         this.unsafeDownloadMaxAge = unsafeDownloadMaxAage;
+    }
+
+    public int getContentMaxLen() {
+        return contentMaxLen;
+    }
+
+    public void setContentMaxLen(int contentMaxLen) {
+        this.contentMaxLen = contentMaxLen;
     }
 }

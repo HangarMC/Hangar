@@ -8,9 +8,10 @@ import javax.validation.constraints.NotBlank;
 public class NewProjectPage {
 
     @NotBlank
-    @Validate(SpEL = "#root.length() ge @hangarConfig.pages.minNameLen", message = "page.new.error.name.minLength")
-    @Validate(SpEL = "#root.length() le @hangarConfig.pages.maxNameLen", message = "page.new.error.name.maxLength")
+    @Validate(SpEL = "@validate.min(#root, @hangarConfig.pages.minNameLen)", message = "page.new.error.name.minLength")
+    @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxNameLen)", message = "page.new.error.name.maxLength")
     @Validate(SpEL = "#root matches @hangarConfig.pages.nameRegex", message = "page.new.error.name.invalidChars")
+    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.pages.nameRegex)", message = "page.new.error.name.invalidChars")
     private final String name;
     private final Long parentId;
 
