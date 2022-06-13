@@ -32,7 +32,7 @@
     "chartist-plugin-legend": "^0.6.2",
     "debug": "^4.3.4",
     "diff-match-patch": "^1.0.5",
-    "filesize": "^8.0.7",
+    "filesize": "^9.0.2",
     "jwt-decode": "^3.1.2",
     "lodash-es": "^4.17.21",
     "nprogress": "^0.2.0",
