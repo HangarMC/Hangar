@@ -59,7 +59,8 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
           if (retry) {
             // we failed on a retry, let's invalidate
             authLog("failed retry -> invalidate");
-            return useAuth.invalidate(!import.meta.env.SSR);
+            await useAuth.invalidate();
+            return reject(error);
           }
           // do we have a refresh token we could use?
           const result = await useAuth.refreshToken();
@@ -68,13 +69,14 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
             authLog("Retrying request...");
             try {
               const response = await request<T>(url, method, data, headers, true);
-              resolve(response);
+              return resolve(response);
             } catch (e) {
-              reject(e);
+              return reject(e);
             }
           } else {
             authLog("Not retrying since refresh failed");
-            return useAuth.invalidate(!import.meta.env.SSR);
+            await useAuth.invalidate();
+            return reject(error);
           }
         }
         reject(error);

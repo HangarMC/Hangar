@@ -47,7 +47,7 @@ class Auth {
     return this.refreshPromise;
   }
 
-  async invalidate(shouldRedirect = true) {
+  async invalidate() {
     useAuthStore(this.usePiniaIfPresent()).$patch({
       user: null,
       token: null,
@@ -59,17 +59,12 @@ class Auth {
       useCookies().remove("HangarAuth", { path: "/" });
       authLog("Invalidated auth cookies");
     }
-    if (shouldRedirect) {
-      useContext().redirect("/logged-out");
-    }
   }
 
   async updateUser(): Promise<void> {
     const user = await useInternalApi<HangarUser>("users/@me").catch(async (err) => {
-      const { trace, ...data } = err.response.data;
-      console.log(data);
-      console.log("LOGGING OUT ON updateUser");
-      return this.invalidate(!import.meta.env.SSR);
+      authLog("no user");
+      return this.invalidate();
     });
     if (user) {
       authLog("patching " + user.name);
