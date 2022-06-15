@@ -13,6 +13,7 @@ import { useContext } from "vite-ssr/vue";
 import Tooltip from "~/components/design/Tooltip.vue";
 import { useAuthStore } from "~/store/auth";
 import { useNotificationStore } from "~/store/notification";
+import FlagModal from "~/components/modals/FlagModal.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -111,6 +112,8 @@ function toggleWatch() {
               <span class="ml-2">{{ watchingCount }}</span>
             </Button>
           </Tooltip>
+          <div class="px-1"></div>
+          <FlagModal :project="project" />
         </div>
       </div>
     </div>

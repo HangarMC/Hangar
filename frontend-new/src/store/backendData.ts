@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-import { IPlatform, IProjectCategory, IPrompt, IVisibility, Color } from "hangar-internal";
+import { IPlatform, IProjectCategory, IPrompt, IVisibility, Color, FlagReason } from "hangar-internal";
 import { NamedPermission, Platform, ProjectCategory, Prompt } from "~/types/enums";
 
 import { Announcement as AnnouncementObject, Announcement, IPermission, Role } from "hangar-api";
@@ -45,6 +45,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
   const orgRoles = ref<Role[]>([]);
   const projectRoles = ref<Role[]>([]);
   const channelColors = ref<Color[]>([]);
+  const flagReasons = ref<FlagReason[]>([]);
 
   async function initBackendData() {
     try {
@@ -85,6 +86,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
         fetchIfNeeded(async () => useInternalApi("data/orgRoles", false), orgRoles),
         fetchIfNeeded(async () => useInternalApi("data/channelColors", false), channelColors),
         fetchIfNeeded(async () => useInternalApi("data/projectRoles", false), projectRoles),
+        fetchIfNeeded(async () => useInternalApi("data/flagReasons", false), flagReasons),
       ]);
     } catch (e) {
       console.error("ERROR FETCHING BACKEND DATA");
@@ -112,6 +114,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
     orgRoles,
     projectRoles,
     channelColors,
+    flagReasons,
     initBackendData,
     visibleCategories,
     visiblePlatforms,
