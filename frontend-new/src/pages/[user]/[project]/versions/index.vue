@@ -21,6 +21,7 @@ import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import Alert from "~/components/design/Alert.vue";
+import Pagination from "~/components/Pagination.vue";
 
 const i18n = useI18n();
 const ctx = useContext();
@@ -117,52 +118,55 @@ function getNonChannelTags(version: Version): ApiTag[] {
 <template>
   <div class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-9/12 flex-grow">
-      <!-- todo pagination -->
       <ul>
-        <li v-for="version in versions.result" :key="version.name" class="mb-4">
-          <Card>
-            <router-link :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${version.name}`">
-              <div class="flex flex-wrap">
-                <div class="basis-3/12 <sm:basis-4/12">
+        <Pagination :items="versions.result">
+          <template #default="{ item }">
+            <li class="mb-4">
+              <Card>
+                <router-link :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${item.name}`">
                   <div class="flex flex-wrap">
-                    <span class="basis-full text-xl">{{ version.name }}</span>
-                    <span class="basis-full"><Tag :tag="getChannelTag(version)" /></span>
+                    <div class="basis-3/12 <sm:basis-4/12">
+                      <div class="flex flex-wrap">
+                        <span class="basis-full text-xl">{{ item.name }}</span>
+                        <span class="basis-full"><Tag :tag="getChannelTag(item)" /></span>
+                      </div>
+                    </div>
+                    <div class="basis-4/12 <sm:1/12">
+                      <Tag v-for="(tag, index) in getNonChannelTags(item)" :key="index" :tag="tag" class="w-full" />
+                    </div>
+                    <div class="basis-2/12 <sm:hidden">
+                      <div class="flex flex-wrap">
+                        <span class="basis-full inline-flex items-center">
+                          <IconMdiAccountArrowRight class="mr-1" />
+                          {{ item.author }}
+                        </span>
+                        <span class="basis-full inline-flex items-center">
+                          <IconMdiFile class="mr-1" />
+                          <template v-if="item.fileInfo.sizeBytes">
+                            {{ filesize(item.fileInfo.sizeBytes) }}
+                          </template>
+                          <template v-else> (external) </template>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="basis-3/12 <sm:basis-4/12">
+                      <div class="flex flex-wrap">
+                        <span class="basis-full inline-flex items-center">
+                          <IconMdiCalendar class="mr-1" />
+                          {{ i18n.d(item.createdAt, "date") }}
+                        </span>
+                        <span class="basis-full inline-flex items-center">
+                          <IconMdiDownload class="mr-1" />
+                          {{ item.stats.downloads }}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div class="basis-4/12 <sm:1/12">
-                  <Tag v-for="(tag, index) in getNonChannelTags(version)" :key="index" :tag="tag" class="w-full" />
-                </div>
-                <div class="basis-2/12 <sm:hidden">
-                  <div class="flex flex-wrap">
-                    <span class="basis-full inline-flex items-center">
-                      <IconMdiAccountArrowRight class="mr-1" />
-                      {{ version.author }}
-                    </span>
-                    <span class="basis-full inline-flex items-center">
-                      <IconMdiFile class="mr-1" />
-                      <template v-if="version.fileInfo.sizeBytes">
-                        {{ filesize(version.fileInfo.sizeBytes) }}
-                      </template>
-                      <template v-else> (external) </template>
-                    </span>
-                  </div>
-                </div>
-                <div class="basis-3/12 <sm:basis-4/12">
-                  <div class="flex flex-wrap">
-                    <span class="basis-full inline-flex items-center">
-                      <IconMdiCalendar class="mr-1" />
-                      {{ i18n.d(version.createdAt, "date") }}
-                    </span>
-                    <span class="basis-full inline-flex items-center">
-                      <IconMdiDownload class="mr-1" />
-                      {{ version.stats.downloads }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </router-link>
-          </Card>
-        </li>
+                </router-link>
+              </Card>
+            </li>
+          </template>
+        </Pagination>
         <Alert v-if="!versions.result || versions.result.length === 0" type="warning"> {{ i18n.t("version.page.noVersions") }} </Alert>
       </ul>
     </section>

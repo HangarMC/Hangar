@@ -2,6 +2,9 @@
 import { hasSlotContent } from "~/composables/useSlot";
 import Table from "~/components/design/Table.vue";
 import { computed, reactive, ref } from "vue";
+import Button from "~/components/design/Button.vue";
+import PaginationButtons from "~/components/PaginationButtons.vue";
+import Pagination from "~/components/Pagination.vue";
 
 export interface Header {
   name: string;
@@ -19,6 +22,8 @@ const props = defineProps<{
 const expanded = ref<Record<number, boolean>>({});
 const sorter = reactive<Record<string, number>>({});
 const sorted = ref<any[]>(props.items);
+
+const page = ref(0);
 
 function sort() {
   sorted.value = [...props.items].sort((a, b) => {
@@ -60,22 +65,31 @@ function click(header: Header) {
       </tr>
     </thead>
     <tbody>
-      <template v-for="(item, idx) in sorted" :key="idx">
-        <tr>
-          <td v-for="header in headers" :key="header.name" :style="header.width ? 'width: ' + header.width : ''" @click="expanded[idx] = !expanded[idx]">
-            <template v-if="hasSlotContent($slots['item_' + header.name], { item: item })">
-              <slot :name="'item_' + header.name" :item="item"></slot>
-            </template>
-            <template v-else>
-              {{ item[header.name] }}
-            </template>
-          </td>
-        </tr>
+      <Pagination :items="sorted">
+        <template #default="{ item, idx }">
+          <tr>
+            <td v-for="header in headers" :key="header.name" :style="header.width ? 'width: ' + header.width : ''" @click="expanded[idx] = !expanded[idx]">
+              <template v-if="hasSlotContent($slots['item_' + header.name], { item: item })">
+                <slot :name="'item_' + header.name" :item="item"></slot>
+              </template>
+              <template v-else>
+                {{ item[header.name] }}
+              </template>
+            </td>
+          </tr>
 
-        <tr v-if="expandable && expanded[idx]" class="!border-dashed">
-          <slot name="expanded-item" :item="item" :headers="headers"></slot>
-        </tr>
-      </template>
+          <tr v-if="expandable && expanded[idx]" class="!border-dashed">
+            <slot name="expanded-item" :item="item" :headers="headers"></slot>
+          </tr>
+        </template>
+        <template #pagination="{ page, pages, updatePage }">
+          <tr>
+            <td :colspan="headers.length">
+              <PaginationButtons :page="page" :pages="pages" @update:page="updatePage" />
+            </td>
+          </tr>
+        </template>
+      </Pagination>
       <tr v-if="!items || items.length === 0">
         <td :colspan="headers.length">
           <slot name="empty"></slot>
