@@ -102,7 +102,7 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
 
           <ul>
             <li v-for="(orgRole, orgName) in organizations" :key="orgName">
-              <router-link :to="'/' + orgName" class="flex">
+              <router-link :to="'/' + orgName" class="flex items-center mb-2">
                 <UserAvatar :username="orgName" :avatar-url="avatarUrl(orgName)" size="xs" :disable-link="true" />
                 &nbsp;
                 {{ orgName }}
