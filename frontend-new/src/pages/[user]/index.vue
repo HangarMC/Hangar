@@ -25,6 +25,7 @@ import IconMdiWrench from "~icons/mdi/wrench";
 import IconMdiKey from "~icons/mdi/key";
 import IconMdiCalendar from "~icons/mdi/calendar";
 import OrgVisibilityModal from "~/components/modals/OrgVisibilityModal.vue";
+import LockUserModal from "~/components/modals/LockUserModal.vue";
 
 const props = defineProps<{
   user: User;
@@ -40,6 +41,7 @@ if (props.user.name === useAuthStore().user?.name) {
   organizationVisibility = await useOrgVisibility(props.user.name);
 }
 const orgRoles = useBackendDataStore().orgRoles;
+const authStore = useAuthStore();
 
 interface UserButton {
   icon: FunctionalComponent;
@@ -68,6 +70,8 @@ const buttons = computed<UserButton[]>(() => {
   return list;
 });
 
+const isCurrentUser = computed<boolean>(() => authStore.user != null && authStore.user.name === props.user.name);
+
 useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.name)));
 </script>
 
@@ -89,6 +93,8 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
             <Button size="small" class="mr-1 inline-flex"><component :is="btn.icon" /></Button>
           </Link>
         </Tooltip>
+
+        <LockUserModal v-if="!isCurrentUser && !user.isOrganization && hasPerms(NamedPermission.IS_STAFF)" :user="user" />
       </Card>
 
       <template v-if="!user.isOrganization">

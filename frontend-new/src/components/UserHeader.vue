@@ -32,7 +32,7 @@ const canEditCurrentUser = computed<boolean>(() => {
 
 <template>
   <Card accent>
-    <div class="flex mb-4">
+    <div class="flex mb-4 md:mb-0">
       <div class="relative">
         <UserAvatar :username="user.name" :avatar-url="avatarUrl(user.name)" />
         <AvatarChangeModal v-if="user.isOrganization && hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" :user="user" />
@@ -41,9 +41,12 @@ const canEditCurrentUser = computed<boolean>(() => {
       <div class="ml-2 overflow-clip">
         <h1 class="text-2xl text-strong inline-flex items-center">
           {{ user.name }}
-          <a v-if="!user.isOrganization" class="inline-flex mx-1" :href="forumUserUrl(user.name)" :title="i18n.t('author.viewOnForums')"
-            ><IconMdiOpenInNew
-          /></a>
+          <a v-if="!user.isOrganization" class="inline-flex mx-1" :href="forumUserUrl(user.name)" :title="i18n.t('author.viewOnForums')">
+            <IconMdiOpenInNew />
+          </a>
+          <span v-if="user.locked">
+            <IconMdiLockOutline />
+          </span>
         </h1>
 
         <div>
@@ -55,8 +58,6 @@ const canEditCurrentUser = computed<boolean>(() => {
             :action="`${user.isOrganization ? 'organizations/org' : 'users'}/${user.name}/settings/tagline`"
           />
         </div>
-
-        <!-- todo lock user modal -->
       </div>
       <div class="flex-grow" />
       <div class="<md:hidden flex flex-col space-y-1 items-end flex-shrink-0">
