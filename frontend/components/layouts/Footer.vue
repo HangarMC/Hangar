@@ -19,7 +19,7 @@
                 <v-col cols="12" sm="2" class="d-flex justify-center">
                     <div>
                         <h5 class="d-flex justify-center pb-2">Help Needed?</h5>
-                        <v-btn color="primary" href="https://papermc.io/forums"> Forum </v-btn>
+                        <v-btn color="primary" href="https://forums.papermc.io"> Forum </v-btn>
                     </div>
                 </v-col>
 
