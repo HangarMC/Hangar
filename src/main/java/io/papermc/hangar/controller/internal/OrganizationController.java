@@ -42,9 +42,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -151,15 +154,9 @@ public class OrganizationController extends HangarComponent {
     @Unlocked
     @ResponseBody
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
-    @GetMapping(value = "/org/{name}/settings/avatar", produces = MediaType.TEXT_PLAIN_VALUE)
-    public String getUpdateAvatarUri(@PathVariable String name) {
-        try {
-            URI uri = authenticationService.changeAvatarUri(getHangarPrincipal().getName(), name);
-            return uri.toString();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @PostMapping(value = "/org/{name}/settings/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void changeAvatar(@PathVariable String name, @RequestParam MultipartFile avatar) throws IOException {
+        authenticationService.changeAvatar(name, avatar);
     }
 
     @Anyone

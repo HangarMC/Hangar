@@ -1,27 +1,36 @@
 package io.papermc.hangar.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.model.common.roles.GlobalRole;
-import io.papermc.hangar.model.db.UserTable;
-import io.papermc.hangar.model.internal.ChangeAvatarToken;
-import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
-import io.papermc.hangar.service.internal.users.UserService;
+
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
+
+import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.model.common.roles.GlobalRole;
+import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
+import io.papermc.hangar.service.internal.users.UserService;
 
 @Service
 public class AuthenticationService extends HangarComponent {
@@ -61,23 +70,42 @@ public class AuthenticationService extends HangarComponent {
         return userTable;
     }
 
-    public URI changeAvatarUri(String requester, String organization) throws JsonProcessingException {
-        ChangeAvatarToken token = getChangeAvatarToken(requester, organization);
-        UriComponentsBuilder uriComponents = UriComponentsBuilder.fromHttpUrl(config.sso.getAuthUrl());
-        uriComponents.path("/accounts/user/{organization}/change-avatar/").queryParam("key", token.getSignedData());
-        return uriComponents.build(organization);
+    public void changeAvatar(String org, MultipartFile avatar) throws IOException {
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("avatar", new MultipartInputStreamFileResource(avatar.getInputStream(), avatar.getOriginalFilename()));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+        try {
+            ResponseEntity<Void> response = restTemplate.postForEntity(config.security.api.getUrl() + "/avatar/org/" + org + "?apiKey=" + config.sso.getApiKey(), requestEntity, Void.class);
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new ResponseStatusException(response.getStatusCode(), "Error from auth api");
+            }
+        } catch (HttpStatusCodeException ex) {
+            throw new ResponseStatusException(ex.getStatusCode(), "Error from auth api: " + ex.getMessage(), ex);
+        }
     }
 
-    public ChangeAvatarToken getChangeAvatarToken(String requester, String organization) throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        MultiValueMap<String, String> bodyMap = new LinkedMultiValueMap<>();
-        // TODO allow changing org avatars in SSO
-        if (true) throw new RuntimeException("disabled");
-//        bodyMap.add("api-key", config.sso.getApiKey());
-        bodyMap.add("request_username", requester);
-        ChangeAvatarToken token;
-        token = mapper.treeToValue(restTemplate.postForObject(config.security.api.getUrl() + "/api/users/" + organization + "/change-avatar-token/", new HttpEntity<>(bodyMap, headers), ObjectNode.class), ChangeAvatarToken.class);
-        return token;
+    static class MultipartInputStreamFileResource extends InputStreamResource {
+
+        private final String filename;
+
+        MultipartInputStreamFileResource(InputStream inputStream, String filename) {
+            super(inputStream);
+            this.filename = filename;
+        }
+
+        @Override
+        public String getFilename() {
+            return this.filename;
+        }
+
+        @Override
+        public long contentLength() throws IOException {
+            return -1; // we do not want to generally read the whole stream into memory ...
+        }
     }
 }

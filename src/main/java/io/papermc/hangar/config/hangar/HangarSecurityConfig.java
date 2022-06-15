@@ -38,8 +38,8 @@ public class HangarSecurityConfig {
     @ConfigurationProperties(prefix = "hangar.security.api")
     public static class SecurityApiConfig {
 
-        private String url = "http://localhost:8000";
-        private String avatarUrl = "http://localhost:8000/avatar/%s?size=120x120";
+        private String url = "http://localhost:8081";
+        private String avatarUrl = "http://localhost:8081/avatar/%s";
         private long timeout = 10000;
 
         public String getUrl() {

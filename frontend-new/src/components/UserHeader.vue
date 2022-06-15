@@ -6,11 +6,12 @@ import { avatarUrl, forumUserUrl } from "~/composables/useUrlHelper";
 import { useI18n } from "vue-i18n";
 import Card from "~/components/design/Card.vue";
 import TaglineModal from "~/components/modals/TaglineModal.vue";
-import { computed, FunctionalComponent } from "vue";
+import { computed } from "vue";
 import { NamedPermission } from "~/types/enums";
 import { hasPerms } from "~/composables/usePerm";
 import { useAuthStore } from "~/store/auth";
 import Tag from "~/components/Tag.vue";
+import AvatarChangeModal from "~/components/modals/AvatarChangeModal.vue";
 
 const props = defineProps<{
   user: User;
@@ -32,9 +33,9 @@ const canEditCurrentUser = computed<boolean>(() => {
 <template>
   <Card accent>
     <div class="flex mb-4">
-      <div>
+      <div class="relative">
         <UserAvatar :username="user.name" :avatar-url="avatarUrl(user.name)" />
-        <!-- todo org avatar changing -->
+        <AvatarChangeModal v-if="user.isOrganization && hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" :user="user" />
       </div>
 
       <div class="ml-2 overflow-clip">

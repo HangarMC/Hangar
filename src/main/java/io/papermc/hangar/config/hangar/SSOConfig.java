@@ -16,6 +16,7 @@ public class SSOConfig {
 
     private String authUrl = "http://localhost:3001";
     private String signupUrl = "/account/signup";
+    private String apiKey = "secret";
 
     public boolean isEnabled() {
         return enabled;
@@ -79,5 +80,13 @@ public class SSOConfig {
 
     public void setOauthUrl(String oauthUrl) {
         this.oauthUrl = oauthUrl;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 }
