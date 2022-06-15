@@ -1,11 +1,14 @@
 import { useAuthStore } from "~/store/auth";
 import { useCookies } from "~/composables/useCookies";
-import { useContext } from "vite-ssr";
-import { useInternalApi } from "~/composables/useApi";
+import { processAuthStuff, useInternalApi } from "~/composables/useApi";
 import { useAxios } from "~/composables/useAxios";
 import { authLog } from "~/composables/useLog";
 import { HangarUser } from "hangar-internal";
-import { useRequest } from "~/composables/useResReq";
+import * as domain from "~/composables/useDomain";
+import { Pinia } from "pinia";
+import { AxiosError, AxiosRequestHeaders } from "axios";
+import { useResponse } from "~/composables/useResReq";
+import Cookies from "universal-cookie";
 
 class Auth {
   loginUrl(redirectUrl: string): string {
@@ -20,7 +23,7 @@ class Auth {
   }
 
   // TODO do we need to scope this to the user?
-  refreshPromise: Promise<boolean> | null = null;
+  refreshPromise: Promise<boolean | string> | null = null;
 
   async refreshToken() {
     authLog("refresh token");
@@ -32,16 +35,40 @@ class Auth {
     }
 
     // eslint-disable-next-line no-async-promise-executor
-    this.refreshPromise = new Promise<boolean>(async (resolve) => {
+    this.refreshPromise = new Promise<boolean | string>(async (resolve) => {
       try {
         authLog("do request");
-        await useAxios.get("/refresh");
-        authLog("done");
-        resolve(true);
+        const headers: AxiosRequestHeaders = {};
+        if (import.meta.env.SSR) {
+          headers.cookie = "HangarAuth_REFRESH=" + useCookies().get("HangarAuth_REFRESH");
+          authLog("pass refresh cookie");
+        }
+        const response = await useAxios.get("/refresh", { headers });
+        if (import.meta.env.SSR) {
+          if (response.headers["set-cookie"]) {
+            useResponse()?.setHeader("set-cookie", response.headers["set-cookie"]!);
+            const token = new Cookies(response.headers["set-cookie"]?.join("; ")).get("HangarAuth");
+            if (token) {
+              authLog("got token");
+              resolve(token);
+            } else {
+              authLog("got no token in cookie header", response.headers["set-cookie"]);
+              resolve(false);
+            }
+          } else {
+            authLog("got no cookie header back");
+            resolve(false);
+          }
+        } else {
+          authLog("done");
+          resolve(true);
+        }
         this.refreshPromise = null;
       } catch (e) {
-        authLog("Refresh failed", e);
+        const { trace, ...err } = (e as AxiosError).response?.data as object;
+        authLog("Refresh failed", err);
         resolve(false);
+        this.refreshPromise = null;
       }
     });
     return this.refreshPromise;
@@ -62,7 +89,7 @@ class Auth {
   }
 
   async updateUser(): Promise<void> {
-    const user = await useInternalApi<HangarUser>("users/@me").catch(async (err) => {
+    const user = await useInternalApi<HangarUser>("users/@me", false).catch(async (err) => {
       authLog("no user");
       return this.invalidate();
     });
@@ -76,7 +103,7 @@ class Auth {
   }
 
   usePiniaIfPresent() {
-    return import.meta.env.SSR ? useRequest()?.pinia : null;
+    return import.meta.env.SSR ? domain.get<Pinia>("pinia") : null;
   }
 }
 

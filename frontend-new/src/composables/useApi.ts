@@ -8,6 +8,7 @@ import { Ref } from "vue";
 import { authLog, fetchLog } from "~/composables/useLog";
 import { isEmpty } from "lodash-es";
 import { useAuth } from "~/composables/useAuth";
+import { useResponse } from "~/composables/useResReq";
 
 interface StatCookie {
   // eslint-disable-next-line camelcase
@@ -53,7 +54,8 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
         resolve(data);
       })
       .catch(async (error: AxiosError) => {
-        authLog("failed", error);
+        const { trace, ...err } = error.response?.data as object;
+        authLog("failed", err);
         // do we have an expired token?
         if (error.response?.status === 403) {
           if (retry) {
@@ -67,6 +69,10 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
           if (result) {
             // retry
             authLog("Retrying request...");
+            if (typeof result === "string") {
+              headers = { ...headers, Authorization: `HangarAuth ${result}` };
+              authLog("using new token");
+            }
             try {
               const response = await request<T>(url, method, data, headers, true);
               return resolve(response);
@@ -106,10 +112,17 @@ export async function useInternalApi<T>(
   return processAuthStuff(headers, authed, (headers) => request(`internal/${url}`, method, data, headers));
 }
 
-function processAuthStuff<T>(headers: Record<string, string>, authRequired: boolean, handler: (headers: Record<string, string>) => Promise<T>) {
+export function processAuthStuff<T>(headers: Record<string, string>, authRequired: boolean, handler: (headers: Record<string, string>) => Promise<T>) {
   if (import.meta.env.SSR) {
     // forward cookies I guess?
-    const token = useCookies().get("HangarAuth");
+    let token = useCookies().get("HangarAuth");
+    if (!token) {
+      const header = useResponse()?.getHeader("set-cookie") as string[];
+      if (header) {
+        token = new Cookies(header.join("; ")).get("HangarAuth");
+        authLog("found token in set-cookie header");
+      }
+    }
     if (token) {
       authLog("forward token from cookie");
       headers = { ...headers, Authorization: `HangarAuth ${token}` };

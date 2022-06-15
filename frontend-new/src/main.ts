@@ -43,6 +43,7 @@ export default viteSSR(App, options, async (ctx) => {
   const head = createHead();
   const pinia = createPinia();
   app.use(pinia).use(head);
+  domain.set("pinia", pinia);
 
   // install all modules under `modules/`
   for (const module of Object.values(import.meta.globEager("./modules/*.ts"))) {
