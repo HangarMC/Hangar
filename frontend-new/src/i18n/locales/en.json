@@ -189,6 +189,7 @@
       },
       "step2": {
         "title": "Basic Settings",
+        "description": "Please provide the basic settings for this project",
         "continue": "Continue",
         "back": "Back",
         "userSelect": "Create as...",
@@ -198,6 +199,7 @@
       },
       "step3": {
         "title": "Additional Settings",
+        "description": "You can provide these (optional) additional settings. You can change them in your project settings at any time.",
         "continue": "Continue",
         "back": "Back",
         "optional": "Optional",
@@ -215,6 +217,7 @@
       },
       "step4": {
         "title": "Import from Spigot",
+        "description": "You can optionally use this step to convert your existing description for your project from spigot. If you safely skip this and design your description from scratch once you got your project created.",
         "continue": "Create",
         "back": "Back",
         "optional": "Optional",

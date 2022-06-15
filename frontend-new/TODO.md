@@ -57,7 +57,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
 - index
   - [x] fetch
   - [x] layout
-  - [ ] functionality (search without reloading the page, sorting, licence and version filter)
+  - [ ] functionality (sorting, licence and version filter)
   - [x] design
   - [ ] qa
 - linkout
@@ -70,7 +70,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
   - [x] fetch
   - [x] layout
   - [x] functionality
-  - [ ] design
+  - [x] design
   - [ ] qa
 - notifications
   - [x] fetch

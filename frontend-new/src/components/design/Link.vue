@@ -1,17 +1,21 @@
 <script lang="ts" setup>
+import { computed } from "vue";
+
 const props = withDefaults(
   defineProps<{
     to?: string | object;
     href?: string;
     activeUnderline?: boolean;
+    disabled?: boolean;
   }>(),
   {
     activeUnderline: false,
     to: undefined,
     href: undefined,
+    disabled: false,
   }
 );
-const classes = "color-primary font-bold hover:(underline)";
+const classes = computed<string>(() => "font-bold " + (props.disabled ? "color-gray-400 cursor-not-allowed" : "color-primary hover:(underline)"));
 </script>
 
 <template>

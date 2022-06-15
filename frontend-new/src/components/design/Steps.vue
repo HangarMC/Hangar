@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ComputedRef, Ref, ref } from "vue";
+import { computed, Ref } from "vue";
 import Link from "~/components/design/Link.vue";
 import Card from "~/components/design/Card.vue";
 import { useSettingsStore } from "~/store/settings";
@@ -101,12 +101,12 @@ export interface Step {
         <div v-for="step in steps" :key="step.value">
           <slot v-if="internalValue === step.value" :name="step.value" />
         </div>
-        <Button v-if="showBack" :disabled="disableBack" size="medium" class="mt-6 mr-2" @click="back">{{
-          i18n.t(buttonLangKey + activeStepIndex + ".back")
-        }}</Button>
-        <Button v-if="showNext" :disabled="disableNext" size="medium" class="mt-6" @click="next">{{
-          i18n.t(buttonLangKey + activeStepIndex + ".continue")
-        }}</Button>
+        <Button v-if="showBack" :disabled="disableBack" size="medium" class="mt-6 mr-2" @click="back">
+          {{ i18n.t(buttonLangKey + activeStepIndex + ".back") }}
+        </Button>
+        <Button v-if="showNext" :disabled="disableNext" size="medium" class="mt-6" @click="next">
+          {{ i18n.t(buttonLangKey + activeStepIndex + ".continue") }}
+        </Button>
       </Card>
     </div>
   </div>

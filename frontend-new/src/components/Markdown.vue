@@ -16,9 +16,10 @@ const dum = computed(() => props);
 watch(dum, fetch, { deep: true });
 
 const renderedMarkdown = ref<string>("");
-const loading = ref<boolean>(true);
+const loading = ref<boolean>(false);
 async function fetch() {
   if (!props.raw) return;
+  loading.value = true;
   renderedMarkdown.value = await useInternalApi<string>("pages/render", false, "post", {
     content: props.raw,
   }).catch<any>((e) => handleRequestError(e, ctx, i18n));

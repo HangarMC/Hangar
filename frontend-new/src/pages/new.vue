@@ -68,19 +68,24 @@ const isCustomLicense = computed(() => form.value.settings.license.type === "(cu
 
 const selectedStep = ref("tos");
 const steps: Step[] = [
-  { value: "tos", header: i18n.t("project.new.step1.title") },
+  { value: "tos", header: i18n.t("project.new.step1.title"), showBack: () => false },
   { value: "basic", header: i18n.t("project.new.step2.title") },
   { value: "additional", header: i18n.t("project.new.step3.title") },
-  { value: "import", header: i18n.t("project.new.step4.title") },
-  // TODO buttons need to be disabled here
-  { value: "finishing", header: i18n.t("project.new.step5.title") },
+  {
+    value: "import",
+    header: i18n.t("project.new.step4.title"),
+    beforeNext: () => {
+      createProject();
+      return true;
+    },
+  },
+  { value: "finishing", header: i18n.t("project.new.step5.title"), showNext: () => false, showBack: () => false },
 ];
 
 const selectBBCodeTab = ref("convert");
 const bbCodeTabs: Tab[] = [
   { value: "convert", header: i18n.t("project.new.step4.convert") },
-  // TODO tab needs to be disabled if no markdown was entered
-  { value: "preview", header: i18n.t("project.new.step4.preview") },
+  { value: "preview", header: i18n.t("project.new.step4.preview"), disable: () => !converter.value.markdown },
   { value: "tutorial", header: i18n.t("project.new.step4.tutorial") },
 ];
 
@@ -126,7 +131,6 @@ function createProject() {
 }
 </script>
 
-<!-- todo: icon -->
 <template>
   <Steps v-model="selectedStep" :steps="steps" button-lang-key="project.new.step">
     <template #tos>
@@ -135,8 +139,7 @@ function createProject() {
     </template>
     <template #basic>
       <div class="flex flex-wrap">
-        <!-- todo i18n -->
-        <p class="basis-full mb-4">Please provide the basic settings for this project</p>
+        <p class="basis-full mb-4">{{ i18n.t("project.new.step2.description") }}</p>
         <div class="basis-full md:basis-6/12">
           <InputSelect
             v-model="form.ownerId"
@@ -173,9 +176,8 @@ function createProject() {
       </div>
     </template>
     <template #additional>
-      <!-- todo i18n -->
-      <p>You can provide these additional settings. You can change them in your project settings at any time.</p>
-      <div class="text-lg mt-4">
+      <p>{{ i18n.t("project.new.step3.description") }}</p>
+      <div class="text-lg mt-4 flex gap-2 items-center">
         <IconMdiLink />
         {{ i18n.t("project.new.step3.links") }}
         <hr />
@@ -186,7 +188,7 @@ function createProject() {
         <div class="basis-full mt-4"><InputText v-model.trim="form.settings.source" :label="i18n.t('project.new.step3.source')" :rules="[url()]" /></div>
         <div class="basis-full mt-4"><InputText v-model.trim="form.settings.support" :label="i18n.t('project.new.step3.support')" :rules="[url()]" /></div>
       </div>
-      <div class="text-lg mt-6">
+      <div class="text-lg mt-6 flex gap-2 items-center">
         <IconMdiLicense />
         {{ i18n.t("project.new.step3.license") }}
         <hr />
@@ -207,7 +209,7 @@ function createProject() {
           <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" :rules="[url()]" />
         </div>
       </div>
-      <div class="text-lg mt-6">
+      <div class="text-lg mt-6 flex gap-2 items-center">
         <IconMdiCloudSearch />
         {{ i18n.t("project.new.step3.seo") }}
         <hr />
@@ -224,12 +226,8 @@ function createProject() {
       </div>
     </template>
     <template #import>
-      <p class="mb-4">
-        You can optionally use this step to convert your existing description for your project form spigot. If you savely skip this and desing you rdescription
-        from scratch once you got your project created.
-      </p>
-      <!-- todo vertical tabs -->
-      <Tabs v-model="selectBBCodeTab" :tabs="bbCodeTabs">
+      <p class="mb-4">{{ i18n.t("project.new.step4.description") }}</p>
+      <Tabs v-model="selectBBCodeTab" :tabs="bbCodeTabs" :vertical="false">
         <template #convert>
           <div class="flex flex-wrap">
             <div class="basis-full"><InputTextarea v-model="converter.bbCode" :rows="6" :label="i18n.t('project.new.step4.convertLabels.bbCode')" /></div>
@@ -263,7 +261,6 @@ function createProject() {
     <template #finishing>
       <div class="flex flex-col">
         <div v-if="projectLoading" class="text-center my-8"><Spinner class="stroke-red-500" :diameter="90" :stroke="6" /></div>
-        <div v-if="projectLoading" class="text-center"><Button @click="createProject">button go brrrr</Button></div>
         <template v-else-if="projectCreationErrors && projectCreationErrors.length > 0">
           <div class="text-lg mt-2">
             {{ i18n.t("project.new.error.create") }}
