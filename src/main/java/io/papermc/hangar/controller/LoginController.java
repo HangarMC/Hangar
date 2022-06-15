@@ -2,11 +2,9 @@ package io.papermc.hangar.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,16 +16,17 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.Optional;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.api.auth.RefreshResponse;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.sso.SsoSyncData;
 import io.papermc.hangar.model.internal.sso.URLWithNonce;
-import io.papermc.hangar.security.annotations.LoggedIn;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
+import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.service.TokenService;
@@ -103,7 +102,13 @@ public class LoginController extends HangarComponent {
             return new RedirectView("/fake-logout");
         } else {
             response.addCookie(new Cookie("url", returnUrl));
-            return redirectToSso(ssoService.getLogoutUrl(config.getBaseUrl() + "/handle-logout", getHangarPrincipal()));
+            Optional<HangarPrincipal> principal = getOptionalHangarPrincipal();
+            if (principal.isPresent()) {
+                return redirectToSso(ssoService.getLogoutUrl(config.getBaseUrl() + "/handle-logout", principal.get()));
+            } else {
+                tokenService.invalidateToken(null);
+                return new RedirectView(returnUrl);
+            }
         }
     }
 

@@ -303,10 +303,10 @@ function isRecent(date: string): boolean {
             <icon-mdi-key-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.login") }}
           </a>
-          <router-link class="flex items-center rounded-md p-2" to="/signup" hover="text-primary-400 bg-primary-0">
+          <a class="flex items-center rounded-md p-2" href="/signup" hover="text-primary-400 bg-primary-0">
             <icon-mdi-clipboard-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.signup") }}
-          </router-link>
+          </a>
         </div>
       </div>
     </nav>
