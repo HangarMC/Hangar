@@ -16,6 +16,8 @@ import { useRoute, useRouter } from "vue-router";
 import { useApi } from "~/composables/useApi";
 import { PaginatedResult, Project } from "hangar-api";
 import Alert from "~/components/design/Alert.vue";
+import { Platform } from "~/types/enums";
+import { toNumber } from "lodash-es";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -31,19 +33,12 @@ const sorters = [
   { id: "updated", label: i18n.t("project.sorting.recentlyUpdated") },
 ];
 
-// todo versions need to be extracted from the platforms
-const versions = [
-  { version: "1.18.1" },
-  { version: "1.18" },
-  { version: "1.17.1" },
-  { version: "1.17" },
-  { version: "1.16.5" },
-  { version: "1.16.4" },
-  { version: "1.16.3" },
-  { version: "1.16.2" },
-  { version: "1.16.1" },
-  { version: "1.16" },
-];
+const versions = backendData.platforms
+  ?.get(Platform.PAPER)
+  ?.possibleVersions.sort((a, b) => toNumber(b.substring(2)) - toNumber(a.substring(2)))
+  .map((k) => {
+    return { version: k };
+  });
 
 const filters = ref({
   versions: [],
