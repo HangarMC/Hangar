@@ -35,6 +35,11 @@ if (!project || !project.value) {
   <div v-if="project">
     <ProjectHeader :project="project"></ProjectHeader>
     <ProjectNav :project="project"></ProjectNav>
-    <router-view :user="user" :project="project"></router-view>
+    <router-view v-slot="{ Component }">
+      <Suspense>
+        <component :is="Component" :user="user" :project="project" />
+        <template #fallback> Loading... </template>
+      </Suspense>
+    </router-view>
   </div>
 </template>

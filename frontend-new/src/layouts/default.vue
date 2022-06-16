@@ -18,6 +18,7 @@ import Notifications from "~/components/Notifications.vue";
             </div>
           </transition>
         </router-view>
+        <template #fallback> Loading... </template>
       </Suspense>
     </Container>
     <Notifications />

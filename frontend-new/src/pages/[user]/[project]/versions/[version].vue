@@ -58,5 +58,10 @@ useHead(
 </script>
 
 <template>
-  <router-view :project="project" :versions="versionMap" :version-platforms="versionPlatforms"></router-view>
+  <router-view v-slot="{ Component }">
+    <Suspense>
+      <component :is="Component" :project="project" :versions="versionMap" :version-platforms="versionPlatforms" />
+      <template #fallback> Loading... </template>
+    </Suspense>
+  </router-view>
 </template>

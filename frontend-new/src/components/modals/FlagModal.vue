@@ -4,7 +4,6 @@ import Button from "~/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import Tooltip from "~/components/design/Tooltip.vue";
 import { useContext } from "vite-ssr/vue";
-import { Project } from "hangar-api";
 import { useRouter } from "vue-router";
 import InputRadio from "~/components/ui/InputRadio.vue";
 import { useBackendDataStore } from "~/store/backendData";
@@ -19,6 +18,7 @@ import { useNotificationStore } from "~/store/notification";
 
 const props = defineProps<{
   project: HangarProject;
+  disabled?: boolean;
 }>();
 
 const i18n = useI18n();
@@ -58,7 +58,7 @@ async function submit(close: () => void) {
     <template #activator="{ on }">
       <Tooltip>
         <template #content> Flag </template>
-        <Button button-type="secondary" size="small" :disabled="project.userActions.flagged" v-on="on">
+        <Button button-type="secondary" size="small" :disabled="project.userActions.flagged || disabled" v-on="on">
           <IconMdiFlag />
           <span class="w-0 overflow-hidden !m-0">0</span>
         </Button>

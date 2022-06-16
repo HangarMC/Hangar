@@ -332,7 +332,7 @@ useHead(
         </template>
       </Tabs>
     </Card>
-    <MemberList :model-value="project.members" :author="project.owner.name" :slug="project.name" class="basis-full md:basis-3/12 h-max" />
+    <MemberList :members="project.members" :author="project.owner.name" :slug="project.name" class="basis-full md:basis-3/12 h-max" />
   </div>
 </template>
 

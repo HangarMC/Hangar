@@ -20,6 +20,9 @@ if (!user || !user.value) {
 
 <template>
   <router-view v-if="user" v-slot="{ Component }">
-    <component :is="Component" :user="user" :organization="organization" />
+    <Suspense>
+      <component :is="Component" :user="user" :organization="organization" />
+      <template #fallback> Loading... </template>
+    </Suspense>
   </router-view>
 </template>

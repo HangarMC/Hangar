@@ -21,7 +21,8 @@ const props = defineProps<{
   rules?: ValidationRule<string | undefined>[];
 }>();
 
-const { v, errors, hasError } = useValidation(props.label, props.rules, file, props.errorMessages);
+const errorMessages = computed(() => props.errorMessages);
+const { v, errors, hasError } = useValidation(props.label, props.rules, file, errorMessages);
 
 function onFileChange(e: InputEvent) {
   const files = (e.target as HTMLInputElement).files || e.dataTransfer?.files;

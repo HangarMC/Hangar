@@ -158,7 +158,7 @@ function createProject() {
               required(),
               maxLength()(backendData.validations.project.name.max),
               pattern()(backendData.validations.project.name.regex),
-              validProjectName()(form.ownerId),
+              validProjectName()(() => form.ownerId),
             ]"
           />
         </div>

@@ -30,20 +30,18 @@ public class OrganizationFactory extends HangarComponent {
     private final OrganizationDAO organizationDAO;
     private final OrganizationService organizationService;
     private final OrganizationMemberService organizationMemberService;
-    private final OrganizationInviteService organizationInviteService;
     private final GlobalRoleService globalRoleService;
 
     @Autowired
-    public OrganizationFactory(UserDAO userDAO, OrganizationDAO organizationDAO, OrganizationService organizationService, OrganizationMemberService organizationMemberService, OrganizationInviteService organizationInviteService, GlobalRoleService globalRoleService) {
+    public OrganizationFactory(UserDAO userDAO, OrganizationDAO organizationDAO, OrganizationService organizationService, OrganizationMemberService organizationMemberService, GlobalRoleService globalRoleService) {
         this.userDAO = userDAO;
         this.organizationDAO = organizationDAO;
         this.organizationService = organizationService;
         this.organizationMemberService = organizationMemberService;
-        this.organizationInviteService = organizationInviteService;
         this.globalRoleService = globalRoleService;
     }
 
-    public void createOrganization(String name, List<Member<OrganizationRole>> members) {
+    public void createOrganization(String name) {
         if (!config.org.isEnabled()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "organization.new.error.notEnabled");
         }
@@ -56,12 +54,5 @@ public class OrganizationFactory extends HangarComponent {
         OrganizationTable organizationTable = organizationDAO.insert(new OrganizationTable(userTable.getId(), name, getHangarPrincipal().getId(), userTable.getId()));
         globalRoleService.addRole(GlobalRole.ORGANIZATION.create(null, userTable.getId(), false));
         organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_OWNER.create(organizationTable.getId(), getHangarPrincipal().getId(), true));
-
-        List<HangarApiException> errors = new ArrayList<>();
-        organizationInviteService.sendInvites(errors, members, organizationTable);
-
-        if (!errors.isEmpty()) {
-            throw new MultiHangarApiException(errors);
-        }
     }
 }

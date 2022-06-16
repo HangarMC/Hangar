@@ -25,6 +25,7 @@ import { useNotificationStore } from "~/store/notification";
 import DropdownButton from "~/components/design/DropdownButton.vue";
 import DropdownItem from "~/components/design/DropdownItem.vue";
 import PlatformVersionEditModal from "~/components/modals/PlatformVersionEditModal.vue";
+import { AxiosError } from "axios";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -79,7 +80,7 @@ async function savePage(content: string) {
     editingPage.value = false;
   } catch (err) {
     // this.$refs.editor.loading.save = false; // TODO
-    handleRequestError(err, ctx, i18n, "page.new.error.save");
+    handleRequestError(err as AxiosError, ctx, i18n, "page.new.error.save");
   }
 }
 
@@ -88,9 +89,9 @@ async function setRecommended() {
   try {
     await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/${platform.value?.enumName}/recommend`, true, "post");
     notification.success(i18n.t("version.success.recommended", [platform.value?.name]));
-    // this.$nuxt.refresh(); // TODO
+    router.go(0);
   } catch (e) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e as AxiosError, ctx, i18n);
   }
   // this.loading.recommend = false;
 }
@@ -101,9 +102,9 @@ async function deleteVersion(comment: string) {
       content: comment,
     });
     notification.success(i18n.t("version.success.softDelete"));
-    // this.$nuxt.refresh();  // TODO
+    router.go(0);
   } catch (e) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e as AxiosError, ctx, i18n);
   }
 }
 
@@ -120,7 +121,7 @@ async function hardDeleteVersion(comment: string) {
       },
     });
   } catch (e) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e as AxiosError, ctx, i18n);
   }
 }
 
@@ -128,9 +129,9 @@ async function restoreVersion() {
   try {
     await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/restore`, true, "post");
     notification.success(i18n.t("version.success.restore"));
-    // this.$nuxt.refresh(); // TODO
+    router.go(0);
   } catch (e) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e as AxiosError, ctx, i18n);
   }
 }
 </script>
@@ -183,7 +184,7 @@ async function restoreVersion() {
 
   <div v-if="projectVersion" class="flex flex-wrap md:flex-nowrap gap-4 mt-4">
     <section class="basis-full md:basis-8/12 flex-grow">
-      <Card>
+      <Card class="relative">
         <MarkdownEditor
           v-if="hasPerms(NamedPermission.EDIT_VERSION)"
           ref="editor"

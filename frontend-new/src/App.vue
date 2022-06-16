@@ -5,7 +5,10 @@ useSettingsStore().loadSettingsClient();
 </script>
 
 <template>
-  <router-view v-slot="{ Component, route }">
-    <component :is="Component" :key="route" />
+  <router-view v-slot="{ Component }">
+    <Suspense>
+      <component :is="Component" />
+      <template #fallback> Loading... </template>
+    </Suspense>
   </router-view>
 </template>

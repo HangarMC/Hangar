@@ -31,7 +31,7 @@ const canEditCurrentUser = computed<boolean>(() => {
 </script>
 
 <template>
-  <Card accent>
+  <Card accent class="overflow-y-hidden">
     <div class="flex mb-4 md:mb-0">
       <div class="relative">
         <UserAvatar :username="user.name" :avatar-url="avatarUrl(user.name)" />

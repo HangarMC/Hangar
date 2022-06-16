@@ -11,10 +11,8 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import { computed, ref } from "vue";
 import InputText from "~/components/ui/InputText.vue";
-import MemberList from "~/components/projects/MemberList.vue";
 import Button from "~/components/design/Button.vue";
 import Alert from "~/components/design/Alert.vue";
-import { JoinableMember } from "hangar-internal";
 import { maxLength, minLength, pattern, required, validOrgName } from "~/composables/useValidationHelpers";
 import { useVuelidate } from "@vuelidate/core";
 
@@ -28,7 +26,6 @@ const v = useVuelidate();
 const currentUser = useAuthStore().user;
 
 const name = ref<string>("");
-const members = ref<JoinableMember[]>([]);
 
 const canCreate = computed<boolean>(() => !v.value.$invalid && !v.value.$pending);
 
@@ -38,7 +35,6 @@ async function create() {
   try {
     await useInternalApi("organizations/create", true, "post", {
       name: name.value,
-      members: members.value,
     });
     await router.push("/" + name.value);
   } catch (e) {
@@ -66,8 +62,6 @@ async function create() {
           validOrgName(),
         ]"
       />
-
-      <MemberList v-model="members" :author="name" organization disable-saving class="mt-4 shadow-0"></MemberList>
 
       <Button class="mt-4" :disabled="!canCreate" @click="create">
         <IconMdiCheck class="float-left" />

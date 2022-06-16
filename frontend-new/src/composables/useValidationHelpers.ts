@@ -17,15 +17,15 @@ export function useValidation<T>(
   name: string | undefined,
   rules: ValidationRule<T | undefined>[] | undefined,
   state: Ref,
-  errorMessages?: string[] | undefined,
+  errorMessages: Ref<string[] | undefined>,
   silentErrors = false
 ) {
   const n = name || "val";
   const v = useVuelidate(constructValidators(rules, n), { [n]: state });
   const errors = computed(() => {
     const e = [];
-    if (errorMessages) {
-      e.push(...errorMessages);
+    if (errorMessages.value) {
+      e.push(...errorMessages.value);
     }
     if (silentErrors) {
       if (v.value.$silentErrors) {
@@ -38,7 +38,7 @@ export function useValidation<T>(
     }
     return e;
   });
-  const hasError = computed(() => (errorMessages && errorMessages.length > 0) || v.value.$error);
+  const hasError = computed(() => (errorMessages.value && errorMessages.value.length > 0) || v.value.$error);
 
   return { v, errors, hasError };
 }
@@ -75,7 +75,7 @@ export const url = withOverrideMessage(validators.url);
 
 // custom
 export const validProjectName = withOverrideMessage(
-  (ownerId: string) =>
+  (ownerId: () => string) =>
     helpers.withParams(
       { ownerId, type: "validProjectName" },
       helpers.withAsync(async (value: string) => {
@@ -84,7 +84,7 @@ export const validProjectName = withOverrideMessage(
         }
         try {
           await useInternalApi("projects/validateName", false, "get", {
-            userId: ownerId,
+            userId: ownerId(),
             value: value,
           });
           return { $valid: true };

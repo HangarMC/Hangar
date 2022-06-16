@@ -118,7 +118,7 @@ export function processAuthStuff<T>(headers: Record<string, string>, authRequire
     let token = useCookies().get("HangarAuth");
     if (!token) {
       const header = useResponse()?.getHeader("set-cookie") as string[];
-      if (header) {
+      if (header && header.join) {
         token = new Cookies(header.join("; ")).get("HangarAuth");
         authLog("found token in set-cookie header");
       }

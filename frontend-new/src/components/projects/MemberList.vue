@@ -21,7 +21,7 @@ import InputText from "~/components/ui/InputText.vue";
 
 const props = withDefaults(
   defineProps<{
-    modelValue: JoinableMember[];
+    members: JoinableMember[];
     disableSaving?: boolean;
     class?: string;
     organization?: boolean;
@@ -36,19 +36,12 @@ const props = withDefaults(
   }
 );
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: JoinableMember[]): void;
-}>();
-const value = computed({
-  get: () => props.modelValue,
-  set: (v) => emit("update:modelValue", v),
-});
 const i18n = useI18n();
 const store = useBackendDataStore();
 const route = useRoute();
 const router = useRouter();
 const ctx = useContext();
-const roles: Role[] = store.projectRoles;
+const roles: Role[] = props.organization ? store.orgRoles : store.projectRoles;
 
 const canEdit = computed<boolean>(() => {
   return hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS);
@@ -123,7 +116,7 @@ interface EditableMember {
     </template>
 
     <div
-      v-for="member in modelValue"
+      v-for="member in members"
       :key="member.user.name"
       class="p-2 w-full border border-gray-100 dark:border-gray-800 rounded inline-flex flex-row space-x-4"
     >
@@ -132,12 +125,13 @@ interface EditableMember {
         <p class="font-semibold">
           <Link :to="'/' + member.user.name">{{ member.user.name }}</Link>
         </p>
-        <Tooltip v-if="member.role.accepted">
+        <Tooltip v-if="!member.role.accepted">
           <template #content>
             {{ i18n.t("form.memberList.invitedAs", [member.role.role.title]) }}
           </template>
-          <span class="items-center inline-flex"> {{ member.role.role.title }} <IconMdiClock v-if="!member.role.accepted" class="ml-1" /> </span>
+          <span class="items-center inline-flex"> {{ member.role.role.title }} <IconMdiClock class="ml-1" /> </span>
         </Tooltip>
+        <span v-else class="items-center inline-flex"> {{ member.role.role.title }}</span>
       </div>
       <!-- todo confirmation modal -->
       <DropdownButton v-if="canEdit && member.role.role.assignable" :name="i18n.t('general.edit')">

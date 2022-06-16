@@ -88,7 +88,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
   - new
     - [x] fetch
     - [x] layout
-    - [ ] functionality (member editing doesn't work)
+    - [x] functionality
     - [x] design
     - [ ] qa
 - tools (empty)
@@ -182,13 +182,13 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
       - index
         - [x] fetch
         - [x] layout
-        - [ ] functionality (pagination)
-        - [ ] design (don't like the version li yet)
+        - [x] functionality
+        - [x] design
         - [ ] qa
       - new
         - [x] fetch
         - [x] layout
-        - [ ] functionality (dependency editing is missing)
+        - [x] functionality
         - [x] design
         - [ ] qa
       - [version]
@@ -208,7 +208,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
             - [x] fetch
             - [x] layout
             - [x] functionality
-            - [ ] design
+            - [x] design
             - [ ] qa
 - admin (empty)
   - flags
@@ -226,7 +226,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
   - log
     - [x] fetch
     - [x] layout
-    - [ ] functionality (pagination)
+    - [x] functionality
     - [x] design
     - [ ] qa
   - stats

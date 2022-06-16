@@ -16,3 +16,10 @@ Nothing crazy here:
 * Always use braces for single line ifs, for loops, etc.
 
 Other than that, we follow [Oracle's standard code conventions](https://www.oracle.com/java/technologies/javase/codeconventions-contents.html) (e.g. IntelliJ's auto formatting).
+
+## Frontend
+* we use [windi.css](https://windicss.org/). that means we try to avoid writing css as much as possible. there are edge cases where it might be needed, sometimes they can be solved by adding stuff to the windi config, sometimes not, that can be handled on a case by case basis.
+* all colors should come from our palette, defined in the windi config. no generic colors and no hex classes, please.
+* always test both the dark and the white theme
+* make sure ssr works, load the page with a breakpoint in main and it should still render. watch out for hydration warnings in the console.
+* try to divide the code into multiple components where applicable, to avoid giant template blocks. similarly, use composables to split out code where applicable.

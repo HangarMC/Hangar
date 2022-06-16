@@ -21,7 +21,7 @@ const props = withDefaults(
   defineProps<{
     modelValue: string;
     tabs: Tab[];
-    vertical: boolean;
+    vertical?: boolean;
   }>(),
   {
     vertical: true,

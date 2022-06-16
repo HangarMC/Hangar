@@ -33,7 +33,7 @@ const watching = ref(props.project.userActions.watching);
 const starredCount = ref(props.project.stats.stars);
 const watchingCount = ref(props.project.stats.watchers);
 
-const cannotStarOrWatch = computed(() => !user || user.name === props.project.namespace.owner);
+const isOwn = computed(() => !user || user.name === props.project.namespace.owner);
 
 function toggleState(route: string, completedKey: string, revokedKey: string, value: Ref<boolean>, count: Ref<number>) {
   useInternalApi(`projects/project/${props.project.id}/${route}/${!value.value}`, true, "post")
@@ -88,11 +88,11 @@ function toggleWatch() {
         <div class="flex">
           <Tooltip>
             <template #content>
-              <span v-if="cannotStarOrWatch">{{ i18n.t("project.info.stars", 0) }}</span>
+              <span v-if="isOwn">{{ i18n.t("project.info.stars", 0) }}</span>
               <span v-else-if="starred">{{ i18n.t("project.actions.unstar") }}</span>
               <span v-else>{{ i18n.t("project.actions.star") }}</span>
             </template>
-            <Button button-type="secondary" size="small" :disabled="cannotStarOrWatch" @click="toggleStar">
+            <Button button-type="secondary" size="small" :disabled="isOwn" @click="toggleStar">
               <IconMdiStar v-if="starred" />
               <IconMdiStarOutline v-else />
               <span class="ml-2">{{ starredCount }}</span>
@@ -102,18 +102,18 @@ function toggleWatch() {
           <div class="px-1"></div>
           <Tooltip>
             <template #content>
-              <span v-if="cannotStarOrWatch">{{ i18n.t("project.info.watchers", 0) }}</span>
+              <span v-if="isOwn">{{ i18n.t("project.info.watchers", 0) }}</span>
               <span v-else-if="starred">{{ i18n.t("project.actions.unwatch") }}</span>
               <span v-else>{{ i18n.t("project.actions.watch") }}</span>
             </template>
-            <Button button-type="secondary" size="small" :disabled="cannotStarOrWatch" @click="toggleWatch">
+            <Button button-type="secondary" size="small" :disabled="isOwn" @click="toggleWatch">
               <IconMdiBell v-if="watching" />
               <IconMdiBellOutline v-else />
               <span class="ml-2">{{ watchingCount }}</span>
             </Button>
           </Tooltip>
           <div class="px-1"></div>
-          <FlagModal :project="project" />
+          <FlagModal :project="project" :disabled="isOwn" />
         </div>
       </div>
     </div>
