@@ -10,7 +10,7 @@ const notificationStore = useNotificationStore();
       <div
         v-for="(notification, idx) in notificationStore.notifications"
         :key="idx"
-        class="rounded p-4 px-5 mb-2 pointer-events-auto text-right border-2px bg-gray-300 dark:bg-slate-700"
+        class="rounded p-4 px-5 mb-2 pointer-events-auto text-right border-left-5px bg-gray-300 dark:bg-slate-700"
         :style="{ 'border-color': notification.color }"
       >
         <span class="inline-flex items-center">
