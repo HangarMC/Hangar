@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { useSettingsStore } from "~/store/settings";
+import { useHead } from "@vueuse/head";
 
-useSettingsStore().loadSettingsClient();
+const settingsStore = useSettingsStore();
+settingsStore.loadSettingsClient();
+useHead({
+  htmlAttrs: {
+    class: settingsStore.darkMode ? "dark" : "light",
+  },
+});
 </script>
 
 <template>

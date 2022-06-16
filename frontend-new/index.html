@@ -16,11 +16,6 @@
   <body class="background-body text-[#262626] dark:text-[#E0E6f0]">
     <div id="app"></div>
     <script>
-      (function () {
-        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const setting = localStorage.getItem("color-schema") || "auto";
-        if (setting === "dark" || (prefersDark && setting !== "light")) document.documentElement.classList.toggle("dark", true);
-      })();
       window.global = window;
     </script>
     <script type="module" src="/src/main.ts"></script>

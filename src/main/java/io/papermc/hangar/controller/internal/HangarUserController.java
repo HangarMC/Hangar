@@ -10,6 +10,7 @@ import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
+import io.papermc.hangar.model.internal.api.requests.UserSettings;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.model.internal.user.HangarUser;
@@ -115,6 +116,21 @@ public class HangarUserController extends HangarComponent {
         userTable.setTagline(null);
         userService.updateUser(userTable);
         actionLogger.user(LogAction.USER_TAGLINE_CHANGED.create(UserContext.of(userTable.getId()), "", oldTagline));
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
+    @PostMapping("/users/{userName}/settings/")
+    public void saveSettings(@PathVariable String userName, @RequestBody UserSettings settings) {
+        UserTable userTable = userService.getUserTable(userName);
+        if (userTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+        // TODO do we need to sync these back to sso?
+        userTable.setLanguage(settings.getLanguage());
+        userTable.setTheme(settings.getTheme());
+        userService.updateUser(userTable);
     }
 
     @GetMapping("/notifications")

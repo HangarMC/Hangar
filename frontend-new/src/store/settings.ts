@@ -6,6 +6,8 @@ import { useAuthStore } from "~/store/auth";
 import { settingsLog } from "~/composables/useLog";
 import localeParser from "accept-language-parser";
 import { SUPPORTED_LOCALES } from "~/i18n";
+import { useInternalApi } from "~/composables/useApi";
+import { useHead } from "@vueuse/head";
 
 export const useSettingsStore = defineStore("settings", () => {
   const darkMode: Ref<boolean> = ref(false);
@@ -16,14 +18,17 @@ export const useSettingsStore = defineStore("settings", () => {
 
   function toggleDarkMode() {
     darkMode.value = !unref(darkMode);
+    settingsLog("darkmode", darkMode.value);
   }
 
   function enableDarkMode() {
     darkMode.value = true;
+    settingsLog("darkmode", darkMode.value);
   }
 
   function disableDarkMode() {
     darkMode.value = false;
+    settingsLog("darkmode", darkMode.value);
   }
 
   function toggleMobile() {
@@ -38,7 +43,7 @@ export const useSettingsStore = defineStore("settings", () => {
     mobile.value = false;
   }
 
-  async function loadSettingsServer(request: Context["request"], response: Context["response"]) {
+  async function loadSettingsServer(request: Context["request"], response: Context["response"], head) {
     if (!import.meta.env.SSR) return;
     const authStore = useAuthStore();
     let newLocale;
@@ -80,31 +85,44 @@ export const useSettingsStore = defineStore("settings", () => {
     } else {
       enableDarkMode();
     }
+    // the result is persisted in head in App.vue
   }
 
-  watch(
-    darkMode,
-    (newMode) => {
-      if (import.meta.env.SSR) return;
-      if (newMode) {
-        localStorage.theme = "dark";
-        document.documentElement.classList.add("dark");
-        document.documentElement.classList.remove("light");
-      } else {
-        localStorage.theme = "light";
-        document.documentElement.classList.add("light");
-        document.documentElement.classList.remove("dark");
-      }
-      // TODO guess we also need to save this to the db?
-    },
-    { immediate: true }
-  );
+  watch(darkMode, async (newMode) => {
+    if (import.meta.env.SSR) return;
+    if (newMode) {
+      settingsLog("set dark");
+      localStorage.theme = "dark";
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+    } else {
+      settingsLog("set light");
+      localStorage.theme = "light";
+      document.documentElement.classList.add("light");
+      document.documentElement.classList.remove("dark");
+    }
+    const user = useAuthStore().user;
+    if (!user) return;
+    try {
+      await useInternalApi("users/" + user.name + "/settings/", true, "post", {
+        theme: darkMode.value ? "dark" : "light",
+        language: locale.value,
+      });
+    } catch (e) {
+      settingsLog("cant save settings", e);
+    }
+  });
 
   async function loadSettingsClient() {
     if (import.meta.env.SSR) return;
 
-    // todo need better logic to sync with server here, consider logged in user
-    if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    let darkMode = localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    const user = useAuthStore().user;
+    if (user && user.theme) {
+      darkMode = user.theme === "dark";
+    }
+
+    if (darkMode) {
       enableDarkMode();
     } else {
       disableDarkMode();
