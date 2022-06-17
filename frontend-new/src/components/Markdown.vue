@@ -8,9 +8,15 @@ import Spinner from "~/components/design/Spinner.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
-const props = defineProps<{
-  raw: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    raw: string;
+    inline?: boolean;
+  }>(),
+  {
+    inline: false,
+  }
+);
 
 const dum = computed(() => props);
 watch(dum, fetch, { deep: true });
@@ -86,7 +92,7 @@ function setupAdmonition() {
 </script>
 
 <template>
-  <div class="prose max-w-full rounded p-4 markdown">
+  <div :class="{ 'prose max-w-full rounded markdown': true, 'p-4': !inline, inline: inline }">
     <!-- eslint-disable-next-line vue/no-v-html -->
     <div v-if="!loading" v-bind="$attrs" v-html="renderedMarkdown" />
     <div v-else><Spinner class="stroke-gray-400" /></div>

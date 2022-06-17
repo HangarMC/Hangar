@@ -25,7 +25,7 @@ const props = defineProps<{
             </Link>
           </div>
           <div class="flex-shrink">
-            <VisibilityChangerModal :prop-visibility="project.visibility" small-btn type="project" :post-url="`projects/visibility/${project.projectId}`" />
+            <VisibilityChangerModal :prop-visibility="project.visibility" type="project" :post-url="`projects/visibility/${project.projectId}`" />
           </div>
           <div class="basis-full">
             <Markdown :raw="project.comment" class="mb-3" />

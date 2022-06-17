@@ -54,14 +54,14 @@ public class TokenService extends HangarComponent {
 
     public void issueRefreshAndAccessToken(UserTable userTable) {
         UserRefreshToken userRefreshToken = userRefreshTokenDAO.insert(new UserRefreshToken(userTable.getId(), UUID.randomUUID(), UUID.randomUUID()));
-        addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), config.security.getRefreshTokenExpiry().toSeconds());
+        addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), config.security.getRefreshTokenExpiry().toSeconds(), true);
         String accessToken = newToken0(userTable);
         // let the access token cookie be around for longer, so we can more nicely detect expired tokens via the response code
-        addCookie(SecurityConfig.AUTH_NAME, accessToken, config.security.getTokenExpiry().toSeconds() * 2);
+        addCookie(SecurityConfig.AUTH_NAME, accessToken, config.security.getTokenExpiry().toSeconds() * 2, false);
     }
 
-    private void addCookie(String name, String value, long maxAge) {
-        response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, value).path("/").secure(config.security.isSecure()).maxAge(maxAge).sameSite("Strict").httpOnly(true).build().toString());
+    private void addCookie(String name, String value, long maxAge, boolean httpOnly) {
+        response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, value).path("/").secure(config.security.isSecure()).maxAge(maxAge).sameSite("Strict").httpOnly(httpOnly).build().toString());
     }
 
     public void refreshAccessToken(String refreshToken) {
@@ -88,18 +88,18 @@ public class TokenService extends HangarComponent {
         // we gotta update the refresh token
         userRefreshToken.setToken(UUID.randomUUID());
         userRefreshToken = userRefreshTokenDAO.update(userRefreshToken);
-        addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), config.security.getRefreshTokenExpiry().toSeconds());
+        addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), config.security.getRefreshTokenExpiry().toSeconds(), true);
         // then issue a new access token
         String accessToken = newToken0(userTable);
-        addCookie(SecurityConfig.AUTH_NAME, accessToken, config.security.getTokenExpiry().toSeconds());
+        addCookie(SecurityConfig.AUTH_NAME, accessToken, config.security.getTokenExpiry().toSeconds(), false);
     }
 
     public void invalidateToken(String refreshToken) {
         if (refreshToken != null) {
             userRefreshTokenDAO.delete(UUID.fromString(refreshToken));
         }
-        addCookie(SecurityConfig.REFRESH_COOKIE_NAME, null, 0);
-        addCookie(SecurityConfig.AUTH_NAME, null, 0);
+        addCookie(SecurityConfig.REFRESH_COOKIE_NAME, null, 0, true);
+        addCookie(SecurityConfig.AUTH_NAME, null, 0, false);
     }
 
     private String newToken0(UserTable userTable) {

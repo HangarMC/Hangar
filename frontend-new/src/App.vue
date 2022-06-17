@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { useSettingsStore } from "~/store/settings";
 import { useHead } from "@vueuse/head";
+import { settingsLog } from "~/composables/useLog";
+import { useAuthStore } from "~/store/auth";
 
+const authStore = useAuthStore();
 const settingsStore = useSettingsStore();
 settingsStore.loadSettingsClient();
+settingsLog("render for user", authStore.user?.name, "with darkmode", settingsStore.darkMode);
 useHead({
   htmlAttrs: {
     class: settingsStore.darkMode ? "dark" : "light",

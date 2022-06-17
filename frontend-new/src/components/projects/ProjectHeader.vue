@@ -6,7 +6,6 @@ import Button from "~/components/design/Button.vue";
 import Card from "~/components/design/Card.vue";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { HangarProject } from "hangar-internal";
-import { UserActions } from "hangar-api";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
@@ -14,10 +13,17 @@ import Tooltip from "~/components/design/Tooltip.vue";
 import { useAuthStore } from "~/store/auth";
 import { useNotificationStore } from "~/store/notification";
 import FlagModal from "~/components/modals/FlagModal.vue";
+import Alert from "~/components/design/Alert.vue";
+import { hasPerms } from "~/composables/usePerm";
+import { NamedPermission, Visibility } from "~/types/enums";
+import Markdown from "~/components/Markdown.vue";
+import { AxiosError } from "axios";
+import { useRouter } from "vue-router";
 
 const ctx = useContext();
 const i18n = useI18n();
-const notfication = useNotificationStore();
+const router = useRouter();
+const notification = useNotificationStore();
 const props = defineProps<{
   project: HangarProject;
 }>();
@@ -45,7 +51,7 @@ function toggleState(route: string, completedKey: string, revokedKey: string, va
         count.value--;
       }
 
-      notfication.success(i18n.t("project.actions." + (value.value ? completedKey : revokedKey)));
+      notification.success(i18n.t("project.actions." + (value.value ? completedKey : revokedKey)));
     })
     .catch((err) => handleRequestError(err, ctx, i18n, i18n.t(`project.error.${route}`)));
 }
@@ -57,9 +63,37 @@ function toggleStar() {
 function toggleWatch() {
   toggleState("watch", "watched", "unwatched", watching, watchingCount);
 }
+
+async function sendForApproval() {
+  try {
+    await useInternalApi(`projects/visibility/${props.project.id}/sendforapproval`, true, "post");
+    notification.success(i18n.t("projectApproval.sendForApproval"));
+    await router.go(0);
+  } catch (e) {
+    handleRequestError(e as AxiosError, ctx, i18n);
+  }
+}
 </script>
 
 <template>
+  <div v-if="project.visibility !== Visibility.PUBLIC" class="mb-4">
+    <Alert v-if="project.visibility === Visibility.NEEDS_CHANGES" type="danger">
+      <div class="flex">
+        <div class="flex-grow text-bold">{{ i18n.t("visibility.notice." + project.visibility) }}</div>
+        <div v-if="hasPerms(NamedPermission.EDIT_PAGE)" class="flex-shrink">
+          <Button @click="sendForApproval">{{ i18n.t("project.sendForApproval") }}</Button>
+        </div>
+      </div>
+      <Markdown :raw="project.lastVisibilityChangeComment || 'Unknown'" class="mt-2" inline />
+    </Alert>
+    <Alert v-else-if="project.visibility === Visibility.SOFT_DELETE" type="danger">
+      {{ i18n.t("visibility.notice." + project.visibility, [project.lastVisibilityChangeUserName]) }}
+    </Alert>
+    <Alert v-else type="danger">
+      {{ i18n.t("visibility.notice." + project.visibility) }}
+      <Markdown v-if="project.lastVisibilityChangeComment" :raw="project.lastVisibilityChangeComment" inline />
+    </Alert>
+  </div>
   <Card accent>
     <div class="flex <sm:flex-col">
       <UserAvatar

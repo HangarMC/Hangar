@@ -30,12 +30,12 @@ const showTextarea = computed(() => currentIVis.value?.showModal && props.propVi
 const currentIVis = computed(() => backendData.visibilities.find((v) => v.name === visibility.value));
 
 async function submit(closeModal: () => void): Promise<void> {
-  await useInternalApi(props.postUrl, true, "post", {
+  const result = await useInternalApi(props.postUrl, true, "post", {
     visibility: visibility.value,
     comment: currentIVis.value?.showModal ? reason.value : null,
   }).catch((e) => handleRequestError(e, ctx, i18n));
   reason.value = "";
-  if (currentIVis.value) {
+  if (currentIVis.value && result) {
     notification.success(i18n.t("visibility.modal.success", [props.type, i18n.t(currentIVis.value?.title)]));
   }
   closeModal();

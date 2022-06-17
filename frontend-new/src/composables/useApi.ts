@@ -165,7 +165,32 @@ export async function processAuthStuff<T>(headers: Record<string, string>, authR
       }
     }
   } else {
-    // don't need to do anything, cookies are handled by the browser, we can't even access it to validate it
+    // validate and refresh
+    const token = useCookies().get("HangarAuth");
+    if (!useAuth.validateToken(token)) {
+      authLog("token no longer valid, lets refresh");
+      const result = await useAuth.refreshToken();
+      if (result) {
+        authLog("refreshed");
+      } else {
+        authLog("could not refresh, invalidate");
+        await useAuth.invalidate();
+        if (authRequired) {
+          throw {
+            isAxiosError: true,
+            response: {
+              data: {
+                isHangarApiException: true,
+                httpError: {
+                  statusCode: 401,
+                },
+                message: "You must be logged in",
+              } as HangarApiException,
+            },
+          };
+        }
+      }
+    }
   }
   return handler(headers);
 }

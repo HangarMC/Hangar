@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted } from "vue";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { forumUrl } from "~/composables/useUrlHelper";
 import Card from "~/components/design/Card.vue";
@@ -10,13 +10,14 @@ import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import { HangarProject } from "hangar-internal";
 import DonationModal from "~/components/donation/DonationModal.vue";
+import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
+import { MenuItem } from "@headlessui/vue";
 
 const props = defineProps<{
   project: HangarProject;
 }>();
 const i18n = useI18n();
 const slug = computed(() => props.project.namespace.owner + "/" + props.project.name);
-const publicHost = import.meta.env.HANGAR_PUBLIC_HOST;
 </script>
 
 <template>
@@ -75,6 +76,7 @@ const publicHost = import.meta.env.HANGAR_PUBLIC_HOST;
           {{ i18n.t("project.actions.forum") }}
         </DropdownItem>
       </DropdownButton>
+      <VisibilityChangerModal type="project" :prop-visibility="project.visibility" :post-url="`projects/visibility/${project.projectId}`" />
       <DonationModal
         v-if="project.settings.donation.enable"
         :donation-subject="project.settings.donation.subject"

@@ -7,7 +7,6 @@ import { settingsLog } from "~/composables/useLog";
 import localeParser from "accept-language-parser";
 import { SUPPORTED_LOCALES } from "~/i18n";
 import { useInternalApi } from "~/composables/useApi";
-import { useHead } from "@vueuse/head";
 
 export const useSettingsStore = defineStore("settings", () => {
   const darkMode: Ref<boolean> = ref(false);
