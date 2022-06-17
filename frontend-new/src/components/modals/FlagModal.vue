@@ -57,7 +57,7 @@ async function submit(close: () => void) {
     </template>
     <template #activator="{ on }">
       <Tooltip>
-        <template #content> Flag </template>
+        <template #content> {{ i18n.t("project.actions.flag") }} </template>
         <Button button-type="secondary" size="small" :disabled="project.userActions.flagged || disabled" v-on="on">
           <IconMdiFlag />
           <span class="w-0 overflow-hidden !m-0">0</span>

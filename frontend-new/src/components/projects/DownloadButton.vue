@@ -59,8 +59,13 @@ function copyDownloadUrl() {
   if (url) {
     navigator.clipboard.writeText(url);
     copySuccessful.value = true;
-    setTimeout(() => (copySuccessful.value = false), 1000);
+    setTimeout(() => (copySuccessful.value = false), 2000);
   }
+}
+
+async function checkAndDownloadPlatform(platform: any) {
+  selectedPlatform.value = platform;
+  await checkAndDownload();
 }
 
 async function checkAndDownload() {
@@ -89,6 +94,7 @@ function download(): Promise<any> {
 
 async function requiresConfirmation() {
   if (token.value != null) {
+    console.log("FUCK");
     return true;
   }
   if (external.value) {
@@ -120,15 +126,19 @@ async function requiresConfirmation() {
 <template>
   <!-- todo make this actually look nice -->
   <div class="flex">
-    <DropdownButton v-if="platformSelection" :button-size="small ? 'small' : 'large'">
-      <template #button-label> <IconMdiAlertOutline /><!-- todo platform icons --> </template>
-      <DropdownItem v-for="(pl, i) in Object.keys(project.recommendedVersions)" :key="i" class="flex items-center" @click="selectedPlatform = pl">
-        <IconMdiAlertOutline class="mr-1" /><!-- todo platform icons -->
+    <DropdownButton v-if="platformSelection && Object.keys(project.recommendedVersions).length !== 1" :button-size="small ? 'small' : 'large'">
+      <template #button-label>
+        <span class="items-center inline-flex"
+          ><IconMdiDownloadOutline /> {{ external ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}</span
+        ></template
+      >
+      <DropdownItem v-for="(pl, i) in Object.keys(project.recommendedVersions)" :key="i" class="flex items-center" @click="checkAndDownloadPlatform(pl)">
+        <IconMdiDownloadOutline class="mr-1" /><!-- todo platform icons -->
         {{ backendData.platforms.get(pl).name }}
       </DropdownItem>
     </DropdownButton>
 
-    <Button :size="small ? 'small' : 'large'" :loading="loading" @click="checkAndDownload">
+    <Button v-else :size="small ? 'small' : 'large'" :loading="loading" @click="checkAndDownload">
       <IconMdiDownloadOutline />
       {{ external ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}
     </Button>
@@ -140,8 +150,8 @@ async function requiresConfirmation() {
       <em>{{ i18n.t("version.page.confirmation.disclaimer") }}</em>
 
       <div class="mt-2 flex flex-wrap gap-2">
-        <Button button-type="secondary" @click="confirmModal?.close()">{{ i18n.t("version.page.confirmation.deny") }}</Button>
         <Button button-type="red" @click="download">{{ i18n.t("version.page.confirmation.agree") }}</Button>
+        <Button button-type="secondary" @click="confirmModal?.close()">{{ i18n.t("version.page.confirmation.deny") }}</Button>
       </div>
     </Modal>
 
@@ -149,9 +159,11 @@ async function requiresConfirmation() {
       <template #content>
         <span>{{ i18n.t("version.page.downloadUrlCopied") }}</span>
       </template>
-      <Button :size="small ? 'small' : 'large'" @click="copyDownloadUrl">
-        <IconMdiContentCopy />
-      </Button>
+      <Tooltip :content="i18n.t('version.page.downloadUrlHover')">
+        <Button :size="small ? 'small' : 'large'" class="ml-1" @click="copyDownloadUrl">
+          <IconMdiContentCopy />
+        </Button>
+      </Tooltip>
     </Tooltip>
   </div>
 </template>

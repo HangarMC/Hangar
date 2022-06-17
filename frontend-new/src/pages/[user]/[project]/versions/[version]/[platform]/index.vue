@@ -159,8 +159,6 @@ async function restoreVersion() {
     </div>
     <div class="flex-grow"></div>
     <div class="inline-flex items-center">
-      <DownloadButton :small="true" :version="projectVersion" :project="project" :platform="platform" class="mr-2" />
-
       <Tooltip
         v-if="
           hasPerms(NamedPermission.EDIT_VERSION) &&
@@ -196,6 +194,8 @@ async function restoreVersion() {
       <DropdownButton v-if="versionPlatforms.size > 1" class="text-xl inline ml-2" :name="platform?.name">
         <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()">{{ backendData.platforms?.get(plat)?.name }}</DropdownItem>
       </DropdownButton>
+
+      <DownloadButton :small="true" :version="projectVersion" :project="project" :platform="platform" class="ml-2" />
     </div>
   </div>
 

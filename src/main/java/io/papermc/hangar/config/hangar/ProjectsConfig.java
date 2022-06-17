@@ -39,6 +39,7 @@ public class ProjectsConfig {
     private int userGridPageSize = 30;
     @DurationUnit(ChronoUnit.MINUTES)
     private Duration unsafeDownloadMaxAge = Duration.ofMinutes(10);
+    private boolean showUnreviewedDownloadWarning;
 
     public String getNameRegex() {
         return nameRegex;
@@ -212,6 +213,14 @@ public class ProjectsConfig {
 
     public void setUnsafeDownloadMaxAge(Duration unsafeDownloadMaxAage) {
         this.unsafeDownloadMaxAge = unsafeDownloadMaxAage;
+    }
+
+    public boolean showUnreviewedDownloadWarning() {
+        return showUnreviewedDownloadWarning;
+    }
+
+    public void setShowUnreviewedDownloadWarning(boolean showUnreviewedDownloadWarning) {
+        this.showUnreviewedDownloadWarning = showUnreviewedDownloadWarning;
     }
 
     public int getContentMaxLen() {

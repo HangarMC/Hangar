@@ -76,7 +76,12 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
           {{ i18n.t("project.actions.forum") }}
         </DropdownItem>
       </DropdownButton>
-      <VisibilityChangerModal type="project" :prop-visibility="project.visibility" :post-url="`projects/visibility/${project.projectId}`" />
+      <VisibilityChangerModal
+        v-if="hasPerms(NamedPermission.SEE_HIDDEN)"
+        type="project"
+        :prop-visibility="project.visibility"
+        :post-url="`projects/visibility/${project.projectId}`"
+      />
       <DonationModal
         v-if="project.settings.donation.enable"
         :donation-subject="project.settings.donation.subject"

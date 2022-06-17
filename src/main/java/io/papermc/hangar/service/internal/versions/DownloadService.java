@@ -8,6 +8,7 @@ import io.papermc.hangar.db.dao.internal.table.versions.downloads.ProjectVersion
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.ReviewState;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadWarningTable;
@@ -118,6 +119,9 @@ public class DownloadService extends HangarComponent {
     }
 
     private boolean requiresConfirmation(ProjectVersionTable pvt) {
+        if (pvt.getVisibility() == Visibility.PUBLIC && !config.projects.showUnreviewedDownloadWarning()) {
+            return false;
+        }
         return pvt.getReviewState() != ReviewState.REVIEWED && (pvt.getExternalUrl() == null || !config.security.checkSafe(pvt.getExternalUrl()));
     }
 

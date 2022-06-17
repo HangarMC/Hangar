@@ -117,6 +117,7 @@ hangar:
     user-grid-page-size: 30
     max-keywords: 5
     unsafe-download-max-age: 10
+    show-unreviewed-download-warning: false
     name-regex: "^[a-zA-Z0-9-_]{3,}$"
     version-name-regex: "^[a-zA-Z0-9-_.+]+$"
 

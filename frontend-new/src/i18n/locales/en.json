@@ -143,21 +143,21 @@
       "watch": "Watch",
       "watched": "You are now watching the resource",
       "unwatched": "You are no longer watching the resource",
-      "flag": "Flag",
+      "flag": "Report",
       "star": "Star",
       "unstar": "Unstar",
       "starred": "You starred the resource",
       "unstarred": "You unstarred the resource",
       "adminActions": "Admin Actions",
-      "flagHistory": "Flag history ({0})",
+      "flagHistory": "Report history ({0})",
       "staffNotes": "Staff notes ({0})",
       "userActionLogs": "User Action Logs",
       "forum": "Forum"
     },
     "flag": {
-      "flagProject": "Flag {0}?",
-      "flagSend": "Successfully flagged, thanks for making this community a better place!",
-      "flagSent": "Flag submitted for review",
+      "flagProject": "Report {0}?",
+      "flagSend": "Successfully reported, thanks for making this community a better place!",
+      "flagSent": "Report submitted for review",
       "flags": {
         "inappropriateContent": "Inappropriate Content",
         "impersonation": "Impersonation or Deception",
@@ -166,8 +166,8 @@
         "other": "Other"
       },
       "error": {
-        "alreadyOpen": "You can only have 1 unresolved flag on a project",
-        "alreadyResolved": "This flag is already resolved"
+        "alreadyOpen": "You can only have 1 unresolved report on a project",
+        "alreadyResolved": "This report is already resolved"
       }
     },
     "tabs": {
@@ -473,6 +473,7 @@
       "userAdminLogs": "User Admin Logs",
       "unsafeWarning": "This version has not been reviewed by our moderation staff and may not be safe for download.",
       "downloadUrlCopied": "Copied!",
+      "downloadUrlHover": "Click to copy download URL",
       "noVersions": "There are no versions yet!",
       "confirmation": {
         "title": "Warning - {0} {1} by {2}",
