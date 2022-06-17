@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map.Entry;
 
+import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.VisibilityDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.model.db.projects.ProjectTable;
@@ -14,7 +15,6 @@ import io.papermc.hangar.model.internal.job.UpdateDiscourseProjectTopicJob;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.service.internal.JobService;
-import io.papermc.hangar.service.internal.projects.HomeProjectService;
 
 @Service
 public class ProjectVisibilityService extends VisibilityService<ProjectContext, ProjectTable, ProjectVisibilityChangeTable> {
@@ -22,15 +22,15 @@ public class ProjectVisibilityService extends VisibilityService<ProjectContext, 
     private final ProjectsDAO projectsDAO;
     private final VisibilityDAO visibilityDAO;
     private final JobService jobService;
-    private final HomeProjectService homeProjectService;
+    private final HangarProjectsDAO hangarProjectsDAO;
 
     @Autowired
-    public ProjectVisibilityService(VisibilityDAO visibilityDAO, ProjectsDAO projectsDAO, JobService jobService, HomeProjectService homeProjectService) {
+    public ProjectVisibilityService(VisibilityDAO visibilityDAO, ProjectsDAO projectsDAO, JobService jobService, HangarProjectsDAO hangarProjectsDAO) {
         super(ProjectVisibilityChangeTable::new, LogAction.PROJECT_VISIBILITY_CHANGED);
         this.projectsDAO = projectsDAO;
         this.visibilityDAO = visibilityDAO;
         this.jobService = jobService;
-        this.homeProjectService = homeProjectService;
+        this.hangarProjectsDAO = hangarProjectsDAO;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ProjectVisibilityService extends VisibilityService<ProjectContext, 
         if (model != null) {
             jobService.save(new UpdateDiscourseProjectTopicJob(model.getId()));
         }
-        homeProjectService.refreshHomeProjects();
+        hangarProjectsDAO.refreshHomeProjects();
     }
 
     @Override

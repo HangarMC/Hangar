@@ -23,6 +23,8 @@ import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDepend
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.service.internal.projects.ChannelService;
+import io.papermc.hangar.service.internal.projects.ProjectService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -45,9 +47,10 @@ public class VersionDependencyService extends HangarComponent {
     private final PlatformVersionDAO platformVersionDAO;
     private final ChannelService channelService;
     private final VersionTagService versionTagService;
+    private final ProjectService projectService;
 
     @Autowired
-    public VersionDependencyService(ProjectVersionDependenciesDAO projectVersionDependencyDAO, VersionsApiDAO versionsApiDAO, ProjectsDAO projectsDAO, ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, PlatformVersionDAO platformVersionDAO, ChannelService channelService, VersionTagService versionTagService) {
+    public VersionDependencyService(ProjectVersionDependenciesDAO projectVersionDependencyDAO, VersionsApiDAO versionsApiDAO, ProjectsDAO projectsDAO, ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, PlatformVersionDAO platformVersionDAO, ChannelService channelService, VersionTagService versionTagService, ProjectService projectService) {
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.versionsApiDAO = versionsApiDAO;
         this.projectsDAO = projectsDAO;
@@ -55,6 +58,7 @@ public class VersionDependencyService extends HangarComponent {
         this.platformVersionDAO = platformVersionDAO;
         this.channelService = channelService;
         this.versionTagService = versionTagService;
+        this.projectService = projectService;
     }
 
     public List<ProjectVersionDependencyTable> getProjectVersionDependencyTables(long versionId) {
@@ -114,6 +118,7 @@ public class VersionDependencyService extends HangarComponent {
         }
         projectVersionTagTable.setData(form.getVersions());
         versionTagService.updateTag(projectVersionTagTable);
+        projectService.refreshHomeProjects();
     }
 
     @Transactional

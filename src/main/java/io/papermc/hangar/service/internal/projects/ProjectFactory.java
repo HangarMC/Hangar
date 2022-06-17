@@ -1,5 +1,11 @@
 package io.papermc.hangar.service.internal.projects;
 
+import org.jdbi.v3.core.enums.EnumByName;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -20,11 +26,6 @@ import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
-import org.jdbi.v3.core.enums.EnumByName;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProjectFactory extends HangarComponent {
@@ -39,10 +40,9 @@ public class ProjectFactory extends HangarComponent {
     private final JobService jobService;
     private final ProjectFiles projectFiles;
     private final ValidationService validationService;
-    private final HomeProjectService homeProjectService;
 
     @Autowired
-    public ProjectFactory(ProjectsDAO projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, ProjectMemberService projectMemberService, ProjectVisibilityService projectVisibilityService, UsersApiService usersApiService, JobService jobService, ProjectFiles projectFiles, ValidationService validationService, HomeProjectService homeProjectService) {
+    public ProjectFactory(ProjectsDAO projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, ProjectMemberService projectMemberService, ProjectVisibilityService projectVisibilityService, UsersApiService usersApiService, JobService jobService, ProjectFiles projectFiles, ValidationService validationService) {
         this.projectsDAO = projectDAO;
         this.projectService = projectService;
         this.channelService = channelService;
@@ -53,7 +53,6 @@ public class ProjectFactory extends HangarComponent {
         this.jobService = jobService;
         this.projectFiles = projectFiles;
         this.validationService = validationService;
-        this.homeProjectService = homeProjectService;
     }
 
     @Transactional
@@ -96,7 +95,7 @@ public class ProjectFactory extends HangarComponent {
         projectsDAO.update(projectTable);
         actionLogger.project(LogAction.PROJECT_RENAMED.create(ProjectContext.of(projectTable.getId()), author + "/" + compactNewName, author + "/" + oldName));
         jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
-        homeProjectService.refreshHomeProjects();
+        projectService.refreshHomeProjects();
         return StringUtils.slugify(compactNewName);
     }
 
@@ -133,7 +132,7 @@ public class ProjectFactory extends HangarComponent {
         } else {
             jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
             projectVisibilityService.changeVisibility(projectTable, Visibility.SOFTDELETE, comment);
-            homeProjectService.refreshHomeProjects();
+            projectService.refreshHomeProjects();
         }
     }
 
@@ -142,6 +141,6 @@ public class ProjectFactory extends HangarComponent {
         FileUtils.deleteDirectory(projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getName()));
         jobService.save(new DeleteDiscourseTopicJob(projectTable.getId()));
         projectsDAO.delete(projectTable);
-        homeProjectService.refreshHomeProjects();
+        projectService.refreshHomeProjects();
     }
 }

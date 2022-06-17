@@ -1,5 +1,25 @@
 package io.papermc.hangar.service.internal.projects;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
@@ -28,25 +48,6 @@ import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.versions.RecommendedVersionService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 @Service
 public class ProjectService extends HangarComponent {
@@ -60,10 +61,9 @@ public class ProjectService extends HangarComponent {
     private final ProjectFiles projectFiles;
     private final PermissionService permissionService;
     private final RecommendedVersionService recommendedVersionService;
-    private final HomeProjectService homeProjectService;
 
     @Autowired
-    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, PermissionService permissionService, RecommendedVersionService recommendedVersionService, HomeProjectService homeProjectService) {
+    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, PermissionService permissionService, RecommendedVersionService recommendedVersionService) {
         this.projectsDAO = projectDAO;
         this.hangarUsersDAO = hangarUsersDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
@@ -73,7 +73,6 @@ public class ProjectService extends HangarComponent {
         this.projectFiles = projectFiles;
         this.permissionService = permissionService;
         this.recommendedVersionService = recommendedVersionService;
-        this.homeProjectService = homeProjectService;
     }
 
     @Nullable
@@ -139,7 +138,7 @@ public class ProjectService extends HangarComponent {
         projectTable.setDonationEnabled(settingsForm.getSettings().getDonation().isEnable());
         projectTable.setDonationSubject(settingsForm.getSettings().getDonation().getSubject());
         projectsDAO.update(projectTable);
-        homeProjectService.refreshHomeProjects();
+        refreshHomeProjects();
         // TODO what settings changed
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
     }
@@ -205,6 +204,10 @@ public class ProjectService extends HangarComponent {
 
     public List<UserTable> getProjectWatchers(long projectId) {
         return projectsDAO.getProjectWatchers(projectId);
+    }
+
+    public void refreshHomeProjects() {
+        hangarProjectsDAO.refreshHomeProjects();
     }
 
     @Nullable

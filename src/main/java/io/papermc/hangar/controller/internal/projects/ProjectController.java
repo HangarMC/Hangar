@@ -1,5 +1,24 @@
 package io.papermc.hangar.controller.internal.projects;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.exceptions.InternalHangarException;
@@ -24,30 +43,11 @@ import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type
 import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
-import io.papermc.hangar.service.internal.projects.HomeProjectService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.uploads.ImageService;
 import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.view.RedirectView;
-
-import javax.validation.Valid;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RateLimit(path = "project")
@@ -62,10 +62,9 @@ public class ProjectController extends HangarComponent {
     private final OrganizationService organizationService;
     private final ImageService imageService;
     private final StatService statService;
-    private final HomeProjectService homeProjectService;
 
     @Autowired
-    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService, ProjectMemberService projectMemberService, ProjectInviteService projectInviteService, ImageService imageService, StatService statService, HomeProjectService homeProjectService) {
+    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService, ProjectMemberService projectMemberService, ProjectInviteService projectInviteService, ImageService imageService, StatService statService) {
         this.projectFactory = projectFactory;
         this.projectService = projectService;
         this.userService = userService;
@@ -74,7 +73,6 @@ public class ProjectController extends HangarComponent {
         this.projectInviteService = projectInviteService;
         this.imageService = imageService;
         this.statService = statService;
-        this.homeProjectService = homeProjectService;
     }
 
     @LoggedIn
@@ -98,7 +96,7 @@ public class ProjectController extends HangarComponent {
     public ResponseEntity<String> createProject(@RequestBody @Valid NewProjectForm newProject) {
         ProjectTable projectTable = projectFactory.createProject(newProject);
         // need to do this here, outside of the transactional
-        homeProjectService.refreshHomeProjects();
+        projectService.refreshHomeProjects();
         return ResponseEntity.ok(projectTable.getUrl());
     }
 

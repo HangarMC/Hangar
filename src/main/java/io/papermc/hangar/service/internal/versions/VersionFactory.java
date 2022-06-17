@@ -1,5 +1,25 @@
 package io.papermc.hangar.service.internal.versions;
 
+import org.spongepowered.configurate.ConfigurateException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
@@ -28,7 +48,6 @@ import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.projects.ChannelService;
-import io.papermc.hangar.service.internal.projects.HomeProjectService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.users.NotificationService;
@@ -37,25 +56,6 @@ import io.papermc.hangar.service.internal.versions.plugindata.PluginFileWithData
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.CryptoUtils;
 import io.papermc.hangar.util.StringUtils;
-import org.spongepowered.configurate.ConfigurateException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedSet;
 
 @Service
 public class VersionFactory extends HangarComponent {
@@ -77,10 +77,9 @@ public class VersionFactory extends HangarComponent {
     private final UsersApiService usersApiService;
     private final JobService jobService;
     private final ValidationService validationService;
-    private final HomeProjectService homeProjectService;
 
     @Autowired
-    public VersionFactory(ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, ProjectVersionDependenciesDAO projectVersionDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectVersionsDAO projectVersionDAO, VersionsApiDAO versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionTagService versionTagService, PlatformService platformService, UsersApiService usersApiService, JobService jobService, ValidationService validationService, HomeProjectService homeProjectService) {
+    public VersionFactory(ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, ProjectVersionDependenciesDAO projectVersionDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectVersionsDAO projectVersionDAO, VersionsApiDAO versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionTagService versionTagService, PlatformService platformService, UsersApiService usersApiService, JobService jobService, ValidationService validationService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.platformVersionDAO = platformVersionDAO;
@@ -98,7 +97,6 @@ public class VersionFactory extends HangarComponent {
         this.usersApiService = usersApiService;
         this.jobService = jobService;
         this.validationService = validationService;
-        this.homeProjectService = homeProjectService;
     }
 
     public PendingVersion createPendingVersion(long projectId, MultipartFile file) {
@@ -301,7 +299,7 @@ public class VersionFactory extends HangarComponent {
                 jobService.save(new UpdateDiscourseVersionPostJob(projectVersionTable.getId()));
             }
 
-            homeProjectService.refreshHomeProjects();
+            projectService.refreshHomeProjects();
             usersApiService.clearAuthorsCache();
         } catch (IOException e) {
             logger.error("Unable to create version {} for {}", pendingVersion.getVersionString(), getHangarPrincipal().getName(), e);
