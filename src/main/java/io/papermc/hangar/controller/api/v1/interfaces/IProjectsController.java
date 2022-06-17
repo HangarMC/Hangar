@@ -79,7 +79,6 @@ public interface IProjectsController {
     @GetMapping("/projects")
     ResponseEntity<PaginatedResult<Project>> getProjects(
             @ApiParam("The query to use when searching") @RequestParam(required = false) String q,
-            @ApiParam("How to sort the projects") @RequestParam(defaultValue = "updated") ProjectSortingStrategy sort,
             @ApiParam("If how relevant the project is to the given query should be used when sorting the projects") @RequestParam(defaultValue = "true") boolean relevance,
             @ApiParam("Pagination information") @NotNull RequestPagination pagination
     );
