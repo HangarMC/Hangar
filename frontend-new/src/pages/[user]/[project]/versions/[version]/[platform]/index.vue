@@ -28,6 +28,7 @@ import PlatformVersionEditModal from "~/components/modals/PlatformVersionEditMod
 import { AxiosError } from "axios";
 import Tooltip from "~/components/design/Tooltip.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
+import PlatformLogo from "~/components/logos/PlatformLogo.vue";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -225,9 +226,11 @@ async function restoreVersion() {
           </div>
         </template>
 
-        <!-- todo platform icon -->
-        {{ platform?.name }}
-        {{ platformTag?.data }}
+        <div class="flex items-center">
+          <PlatformLogo :platform="platform.enumName" size="24" class="mr-1" />
+          {{ platform?.name }}
+          {{ platformTag?.data }}
+        </div>
       </Card>
 
       <Card>

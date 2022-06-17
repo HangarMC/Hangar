@@ -11,6 +11,7 @@ import DropdownItem from "~/components/design/DropdownItem.vue";
 import { useInternalApi } from "~/composables/useApi";
 import Modal from "~/components/modals/Modal.vue";
 import Alert from "~/components/design/Alert.vue";
+import PlatformLogo from "~/components/logos/PlatformLogo.vue";
 
 const i18n = useI18n();
 const backendData = useBackendDataStore();
@@ -126,14 +127,16 @@ async function requiresConfirmation() {
 <template>
   <!-- todo make this actually look nice -->
   <div class="flex">
-    <DropdownButton v-if="platformSelection && Object.keys(project.recommendedVersions).length !== 1" :button-size="small ? 'small' : 'large'">
+    <!--  && Object.keys(project.recommendedVersions).length !== 1 -->
+    <DropdownButton v-if="platformSelection" :button-size="small ? 'small' : 'large'">
       <template #button-label>
-        <span class="items-center inline-flex"
-          ><IconMdiDownloadOutline /> {{ external ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}</span
-        ></template
-      >
+        <span class="items-center inline-flex">
+          <IconMdiDownloadOutline class="mr-1" />
+          {{ external ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}
+        </span>
+      </template>
       <DropdownItem v-for="(pl, i) in Object.keys(project.recommendedVersions)" :key="i" class="flex items-center" @click="checkAndDownloadPlatform(pl)">
-        <IconMdiDownloadOutline class="mr-1" /><!-- todo platform icons -->
+        <PlatformLogo :platform="pl" :size="24" class="mr-1" />
         {{ backendData.platforms.get(pl).name }}
       </DropdownItem>
     </DropdownButton>
@@ -159,7 +162,10 @@ async function requiresConfirmation() {
       <template #content>
         <span>{{ i18n.t("version.page.downloadUrlCopied") }}</span>
       </template>
-      <Tooltip :content="i18n.t('version.page.downloadUrlHover')">
+      <Tooltip>
+        <template #content>
+          {{ i18n.t("version.page.downloadUrlHover") }}
+        </template>
         <Button :size="small ? 'small' : 'large'" class="ml-1" @click="copyDownloadUrl">
           <IconMdiContentCopy />
         </Button>

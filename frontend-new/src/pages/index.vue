@@ -18,6 +18,7 @@ import { PaginatedResult, Project } from "hangar-api";
 import Alert from "~/components/design/Alert.vue";
 import { Platform } from "~/types/enums";
 import { toNumber } from "lodash-es";
+import PlatformLogo from "~/components/logos/PlatformLogo.vue";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -163,13 +164,12 @@ useHead(meta);
       <div class="platforms">
         <h3 class="font-bold mb-1">Platforms</h3>
         <div class="flex flex-col gap-1">
-          <InputCheckbox
-            v-for="platform in backendData.visiblePlatforms"
-            :key="platform.enumName"
-            v-model="filters.platforms"
-            :value="platform.enumName"
-            :label="platform.name"
-          />
+          <InputCheckbox v-for="platform in backendData.visiblePlatforms" :key="platform.enumName" v-model="filters.platforms" :value="platform.enumName">
+            <template #label>
+              <PlatformLogo :platform="platform.enumName" size="24" class="mr-1" />
+              {{ platform.name }}
+            </template>
+          </InputCheckbox>
         </div>
       </div>
       <div class="licenses">
