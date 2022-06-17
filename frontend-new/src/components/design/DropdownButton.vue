@@ -8,14 +8,16 @@ const props = withDefaults(
   defineProps<{
     name?: string;
     buttonSize?: "small" | "medium" | "large";
-    buttonType?: "primary" | "gray" | "red" | "transparent";
+    buttonType?: "primary" | "red" | "transparent";
     buttonArrow?: boolean;
+    menuPosition?: string;
   }>(),
   {
     name: "Dropdown",
     buttonSize: "medium",
     buttonType: "primary",
     buttonArrow: true,
+    menuPosition: "",
   }
 );
 </script>
@@ -34,7 +36,7 @@ const props = withDefaults(
           </template>
         </Button>
       </MenuButton>
-      <MenuItems class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 background-default shadow-lg">
+      <MenuItems :class="`absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 background-default shadow-lg ${props.menuPosition}`">
         <slot></slot>
       </MenuItems>
     </div>

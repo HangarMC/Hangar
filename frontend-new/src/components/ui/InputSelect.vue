@@ -45,7 +45,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
 
 <template>
   <InputWrapper v-slot="slotProps" :errors="errors" :has-error="hasError" :loading="loading || v.$pending" :label="label" :value="internalVal">
-    <select v-model="internalVal" :disabled="disabled" :class="slotProps.class" @blur="v.$touch()">
+    <select v-model="internalVal" :disabled="disabled" :class="slotProps.class" class="appearance-none" @blur="v.$touch()">
       <option v-for="val in values" :key="val[itemValue] || val" :value="val[itemValue] || val" class="dark:bg-[#191e28]">
         {{ val[itemText] || val }}
       </option>

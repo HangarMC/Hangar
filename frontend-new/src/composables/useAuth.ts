@@ -59,7 +59,7 @@ class Auth {
         const response = await useAxios.get("/refresh", { headers });
         if (import.meta.env.SSR) {
           if (response.headers["set-cookie"]) {
-            useResponse()?.setHeader("set-cookie", response.headers["set-cookie"]!);
+            useResponse()?.setHeader("set-cookie", response.headers["set-cookie"]);
             const token = new Cookies(response.headers["set-cookie"]?.join("; ")).get("HangarAuth");
             if (token) {
               authLog("got token");
@@ -78,7 +78,7 @@ class Auth {
         }
         this.refreshPromise = null;
       } catch (e) {
-        const { trace, ...err } = (e as AxiosError).response?.data as object;
+        const { trace, ...err } = (e as AxiosError).response?.data as { trace: any };
         authLog("Refresh failed", err);
         resolve(false);
         this.refreshPromise = null;

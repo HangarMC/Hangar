@@ -148,7 +148,7 @@ interface EditableMember {
     <div v-if="canEdit" class="items-center inline-flex mt-3 w-full">
       <!-- todo fancy search completion -->
       <InputText v-model="search" :label="i18n.t('form.memberList.addUser')" :error-messages="addErrors" />
-      <DropdownButton :name="i18n.t('general.add')" class="ml-2">
+      <DropdownButton :name="i18n.t('general.add')" class="ml-2 relative" menu-position="right-0">
         <template #button-label>
           <IconMdiAccountPlus class="ml-1" />
         </template>
