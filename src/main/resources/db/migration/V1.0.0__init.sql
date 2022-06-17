@@ -1,5 +1,3 @@
-SET serial_normalization=sql_sequence;
-
 CREATE TYPE role_category AS ENUM ('global', 'project', 'organization');
 
 CREATE TYPE logged_action_type AS ENUM(
@@ -66,7 +64,8 @@ CREATE TABLE users
     join_date timestamp with time zone,
     read_prompts integer[] DEFAULT '{}'::integer[] NOT NULL,
     locked boolean DEFAULT FALSE NOT NULL,
-    language varchar(16)
+    language varchar(16),
+    theme varchar(16)
 );
 
 CREATE TABLE projects
@@ -100,10 +99,8 @@ CREATE TABLE projects
     license_url varchar(255),
     forum_sync boolean DEFAULT TRUE NOT NULL,
     donation_enabled boolean default false,
-    donation_default_amount int default 5,
-    donation_email varchar(255),
-    donation_onetime_amounts integer[] default ARRAY[]::integer[],
-    donation_monthly_amounts integer[] default ARRAY[]::integer[],
+    donation_subject varchar(255),
+    sponsors text default ''::text NOT NULL,
     CONSTRAINT projects_owner_name_name_key
         UNIQUE (owner_name, name),
     CONSTRAINT projects_owner_name_slug_key
@@ -450,6 +447,7 @@ CREATE TABLE organization_members
         CONSTRAINT organization_members_organization_id_fkey
             REFERENCES organizations
             ON DELETE CASCADE,
+    hidden bool default false,
     CONSTRAINT organization_members_pkey
         PRIMARY KEY (user_id, organization_id)
 );
@@ -963,13 +961,12 @@ SELECT p.id,
        p.name,
        p.created_at,
        max(lv.created_at)                        AS last_updated,
-       -- no clue if the cast to text works here -->
        to_jsonb(ARRAY(SELECT jsonb_build_object('version_string', tags.version_string, 'tag_name', tags.tag_name,
-                                                'tag_version', tags.tag_version, 'tag_color',
-                                                tags.tag_color)::text AS jsonb_build_object
-                      FROM tags
-                      WHERE tags.project_id = p.id
-                      LIMIT 5))                  AS promoted_versions,
+                                         'tag_version', tags.tag_version, 'tag_color',
+                                         tags.tag_color) AS jsonb_build_object
+               FROM tags
+               WHERE tags.project_id = p.id
+               LIMIT 5))                  AS promoted_versions,
        --TODO fix homepage view--
 --        ((setweight((to_tsvector('english'::regconfig, p.name::text) ||
 --                     to_tsvector('english'::regconfig, regexp_replace(p.name::text, '([a-z])([A-Z]+)'::text,

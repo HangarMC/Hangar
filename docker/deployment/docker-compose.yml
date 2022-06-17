@@ -63,7 +63,7 @@ services:
       TOKEN_SECRET: "${TOKEN_SECRET}"
       SSO_API_KEY: "changeme"
     depends_on:
-      - 'db'
+      - 'postgres'
       - 'mail'
     stdin_open: true
     labels:
@@ -72,16 +72,17 @@ services:
       - hangar_data:/hangar/uploads
     networks:
       - web
-  db:
-    image: cockroachdb/cockroach:latest-v21.2
+  postgres:
+    build: ./postgres
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: hydra,kratos
+      POSTGRES_DB: hangar
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     ports:
-      - "26257:26257"
-      - "26000:8080"
+      - "3456:5432"
     volumes:
-      - cockroach_data:/cockroach/cockroach-data
-    command:
-      - "start-single-node"
-      - "--insecure"
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - web
     labels:
@@ -107,5 +108,5 @@ networks:
     external: true
 
 volumes:
-  cockroach_data:
+  postgres_data:
   hangar_data:

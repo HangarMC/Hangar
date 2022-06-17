@@ -12,9 +12,9 @@ spring:
     init:
       platform: postgres
   datasource:
-    url: jdbc:postgresql://localhost:26257/postgres
-    username: root
-    password:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: hangar
+    password: hangar
   security:
     filter:
       order: 1000

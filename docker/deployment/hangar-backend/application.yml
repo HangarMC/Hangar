@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://db:26257/hangar
+    url: jdbc:postgresql://postgres:5432/hangar
     username: "${POSTGRES_USER}"
     password: "${POSTGRES_PASSWORD}"
 

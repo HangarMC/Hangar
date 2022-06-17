@@ -19,6 +19,7 @@ import { projectIconUrl } from "~/composables/useUrlHelper";
 import { ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
+import Tag from "~/components/Tag.vue";
 
 const props = defineProps<{
   user: User;
@@ -80,11 +81,15 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
       </Card>
     </section>
     <section class="basis-full md:basis-3/12 space-y-4 min-w-280px">
-      <ProjectInfo :project="project"></ProjectInfo>
+      <ProjectInfo :project="project" />
       <Card>
         <template #header>{{ i18n.t("project.promotedVersions") }}</template>
-        <!-- todo promoted versions go here -->
-        <template #default>Promoted versions go here</template>
+        <ul>
+          <li v-for="(version, index) in project.promotedVersions" :key="`${index}-${version.version}`">
+            <router-link :to="'/' + project.namespace.owner + '/' + project.namespace.slug + '/versions/' + version.version">{{ version.version }}</router-link>
+            <Tag v-for="(tag, idx) in version.tags" :key="idx" :color="tag.color" :data="tag.displayData" :name="tag.name" />
+          </li>
+        </ul>
       </Card>
       <ProjectPageList :project="project" :open="open" />
       <MemberList :members="project.members" :author="project.owner.name" :slug="project.name" />
