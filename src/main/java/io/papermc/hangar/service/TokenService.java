@@ -56,7 +56,8 @@ public class TokenService extends HangarComponent {
         UserRefreshToken userRefreshToken = userRefreshTokenDAO.insert(new UserRefreshToken(userTable.getId(), UUID.randomUUID(), UUID.randomUUID()));
         addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), config.security.getRefreshTokenExpiry().toSeconds());
         String accessToken = newToken0(userTable);
-        addCookie(SecurityConfig.AUTH_NAME, accessToken, config.security.getTokenExpiry().toSeconds());
+        // let the access token cookie be around for longer, so we can more nicely detect expired tokens via the response code
+        addCookie(SecurityConfig.AUTH_NAME, accessToken, config.security.getTokenExpiry().toSeconds() * 2);
     }
 
     private void addCookie(String name, String value, long maxAge) {
@@ -67,12 +68,18 @@ public class TokenService extends HangarComponent {
         if (refreshToken == null) {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "No refresh token found");
         }
-        UserRefreshToken userRefreshToken = userRefreshTokenDAO.getByToken(UUID.fromString(refreshToken));
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(refreshToken);
+        } catch (IllegalArgumentException ex) {
+            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Invalid refresh token " + refreshToken);
+        }
+        UserRefreshToken userRefreshToken = userRefreshTokenDAO.getByToken(uuid);
         if (userRefreshToken == null) {
-            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Unrecognized refresh token");
+            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Unrecognized refresh token " + uuid);
         }
         if (userRefreshToken.getLastUpdated().isBefore(OffsetDateTime.now().minus(config.security.getRefreshTokenExpiry()))) {
-            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Expired refresh token");
+            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Expired refresh token" + uuid);
         }
         UserTable userTable = userService.getUserTable(userRefreshToken.getUserId());
         if (userTable == null) {

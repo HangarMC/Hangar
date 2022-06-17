@@ -6,7 +6,6 @@ import { authLog } from "~/composables/useLog";
 export const useAuthStore = defineStore("auth", () => {
   const authenticated = ref<boolean>(false);
   const user = ref<HangarUser | null>(null);
-  const token = ref<string | null>(null);
   const routePermissions = ref<string | null>(null);
 
   authLog("create authStore");
@@ -19,5 +18,5 @@ export const useAuthStore = defineStore("auth", () => {
     routePermissions.value = routePerms;
   }
 
-  return { authenticated, user, token, routePermissions, setUser, setRoutePerms };
+  return { authenticated, user, routePermissions, setUser, setRoutePerms };
 });

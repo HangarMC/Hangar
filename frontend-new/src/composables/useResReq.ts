@@ -29,7 +29,12 @@ export const useResponse = () => {
     if (ctx) {
       return ctx.response;
     }
+    console.error("response null!");
+    console.trace();
+    return null;
   }
 
+  console.error("useResponse called on client?!");
+  console.trace();
   return null;
 };

@@ -16,11 +16,11 @@ export const useCookies = () => {
         return;
       }
 
-      if (change.value === undefined) {
-        res.setHeader("Set-Cookie", change.name + "=");
-      } else {
-        res.setHeader("Set-Cookie", cookie.serialize(change.name, change.value, change.options));
-      }
+      const old = res.getHeader("set-cookie");
+      const newCookie = change.value === undefined ? change.name + "=" : cookie.serialize(change.name, change.value, change.options);
+      const val = old ? old + "; " + newCookie : newCookie;
+      console.log("setting cookie header to " + val);
+      res.setHeader("set-cookie", val);
     });
     return cookies;
   } else {

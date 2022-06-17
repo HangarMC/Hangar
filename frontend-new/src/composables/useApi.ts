@@ -41,14 +41,9 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
         if (headers["set-cookie"]) {
           const statString = headers["set-cookie"].find((c: string) => c.startsWith("hangar_stats"));
           if (statString) {
-            const statCookie: StatCookie = new Cookies("statString") as unknown as StatCookie;
-
-            cookies.set("hangar_stats", statCookie.hangar_stats, {
-              path: statCookie.Path,
-              expires: new Date(statCookie.Expires),
-              sameSite: "strict",
-              secure: statCookie.Secure,
-            });
+            const parsedCookies = new Cookies(statString);
+            const statCookie = parsedCookies.get("hangar_stats");
+            cookies.set("hangar_stats", statCookie); // TODO verify that this all works
           }
         }
         resolve(data);
@@ -112,7 +107,7 @@ export async function useInternalApi<T>(
   return processAuthStuff(headers, authed, (headers) => request(`internal/${url}`, method, data, headers));
 }
 
-export function processAuthStuff<T>(headers: Record<string, string>, authRequired: boolean, handler: (headers: Record<string, string>) => Promise<T>) {
+export async function processAuthStuff<T>(headers: Record<string, string>, authRequired: boolean, handler: (headers: Record<string, string>) => Promise<T>) {
   if (import.meta.env.SSR) {
     // forward cookies I guess?
     let token = useCookies().get("HangarAuth");
@@ -125,11 +120,37 @@ export function processAuthStuff<T>(headers: Record<string, string>, authRequire
     }
     if (token) {
       authLog("forward token from cookie");
+
+      // make sure our token is still valid, else refresh
+      if (!useAuth.validateToken(token)) {
+        authLog("token no longer valid, lets refresh");
+        const result = await useAuth.refreshToken();
+        if (result) {
+          authLog("refreshed");
+          token = result;
+        } else {
+          authLog("could not refresh, invalidate");
+          await useAuth.invalidate();
+          throw {
+            isAxiosError: true,
+            response: {
+              data: {
+                isHangarApiException: true,
+                httpError: {
+                  statusCode: 401,
+                },
+                message: "You must be logged in",
+              } as HangarApiException,
+            },
+          };
+        }
+      }
+
       headers = { ...headers, Authorization: `HangarAuth ${token}` };
     } else {
       authLog("can't forward token, no cookie");
       if (authRequired) {
-        return Promise.reject({
+        throw {
           isAxiosError: true,
           response: {
             data: {
@@ -140,11 +161,11 @@ export function processAuthStuff<T>(headers: Record<string, string>, authRequire
               message: "You must be logged in",
             } as HangarApiException,
           },
-        });
+        };
       }
     }
   } else {
-    // don't need to do anything, cookies are handled by the browser
+    // don't need to do anything, cookies are handled by the browser, we can't even access it to validate it
   }
   return handler(headers);
 }

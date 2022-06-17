@@ -1,6 +1,6 @@
 import { useAuthStore } from "~/store/auth";
 import { useCookies } from "~/composables/useCookies";
-import { processAuthStuff, useInternalApi } from "~/composables/useApi";
+import { useInternalApi } from "~/composables/useApi";
 import { useAxios } from "~/composables/useAxios";
 import { authLog } from "~/composables/useLog";
 import { HangarUser } from "hangar-internal";
@@ -9,6 +9,7 @@ import { Pinia } from "pinia";
 import { AxiosError, AxiosRequestHeaders } from "axios";
 import { useResponse } from "~/composables/useResReq";
 import Cookies from "universal-cookie";
+import jwtDecode, { JwtPayload } from "jwt-decode";
 
 class Auth {
   loginUrl(redirectUrl: string): string {
@@ -20,6 +21,17 @@ class Auth {
 
   async logout() {
     location.replace(`/logout?returnUrl=${import.meta.env.HANGAR_PUBLIC_HOST}?loggedOut`);
+  }
+
+  validateToken(token: string) {
+    if (!token) {
+      return false;
+    }
+    const decoded = jwtDecode<JwtPayload>(token);
+    if (!decoded.exp) {
+      return false;
+    }
+    return decoded.exp * 1000 > Date.now() - 10 * 1000; // check against 10 seconds earlier to mitigate tokens expiring mid-request
   }
 
   // TODO do we need to scope this to the user?
@@ -40,8 +52,9 @@ class Auth {
         authLog("do request");
         const headers: AxiosRequestHeaders = {};
         if (import.meta.env.SSR) {
-          headers.cookie = "HangarAuth_REFRESH=" + useCookies().get("HangarAuth_REFRESH");
-          authLog("pass refresh cookie");
+          const refreshToken = useCookies().get("HangarAuth_REFRESH");
+          headers.cookie = "HangarAuth_REFRESH=" + refreshToken;
+          authLog("pass refresh cookie", refreshToken);
         }
         const response = await useAxios.get("/refresh", { headers });
         if (import.meta.env.SSR) {
@@ -77,7 +90,6 @@ class Auth {
   async invalidate() {
     useAuthStore(this.usePiniaIfPresent()).$patch({
       user: null,
-      token: null,
       authenticated: false,
     });
     await useAxios.get("/invalidate").catch(() => console.log("invalidate failed"));

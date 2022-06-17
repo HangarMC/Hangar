@@ -27,7 +27,6 @@ onMounted(() => {
     layout: "BaseLayout",
     requestInterceptor: (req) => {
       if (!req.loadSpec) {
-        req.headers.authorization = "HangarAuth " + authStore.token;
         if (req.url.startsWith("http://localhost:8080")) {
           req.url = req.url.replace("http://localhost:8080", "http://localhost:3333");
         }

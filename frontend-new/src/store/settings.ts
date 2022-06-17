@@ -43,7 +43,7 @@ export const useSettingsStore = defineStore("settings", () => {
     mobile.value = false;
   }
 
-  async function loadSettingsServer(request: Context["request"], response: Context["response"], head) {
+  async function loadSettingsServer(request: Context["request"], response: Context["response"]) {
     if (!import.meta.env.SSR) return;
     const authStore = useAuthStore();
     let newLocale;

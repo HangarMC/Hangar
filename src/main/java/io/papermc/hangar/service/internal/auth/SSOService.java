@@ -136,8 +136,13 @@ public class SSOService {
             user.setFullName(traits.getName().getFirst() + " " + traits.getName().getLast());
             user.setName(traits.getUsername());
             user.setEmail(traits.getEmail());
-            user.setLanguage(traits.getLanguage());
-            user.setTheme(traits.getTheme());
+            // only sync if set
+            if (traits.getLanguage() != null) {
+                user.setLanguage(traits.getLanguage());
+            }
+            if (traits.getTheme() != null) {
+                user.setTheme(traits.getTheme());
+            }
             userDAO.update(user);
         }
 
