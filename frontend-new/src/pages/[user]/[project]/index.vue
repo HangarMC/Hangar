@@ -92,7 +92,7 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
         </ul>
       </Card>
       <ProjectPageList :project="project" :open="open" />
-      <MemberList :members="project.members" :author="project.owner.name" :slug="project.name" />
+      <MemberList :members="project.members" :author="project.owner.name" :slug="project.name" class="overflow-visible" />
     </section>
   </div>
 </template>
