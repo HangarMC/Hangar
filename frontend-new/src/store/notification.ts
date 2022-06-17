@@ -6,13 +6,14 @@ export interface Notification {
   timeout?: number;
   message: string;
   clearable: boolean;
+  addedAt: number;
 }
 
 function waitTimeout(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-const defaultTimeout = 4000;
+const defaultTimeout = 7_000;
 export const useNotificationStore = defineStore("notification", () => {
   const notifications = ref<Set<Notification>>(new Set<Notification>());
 
@@ -26,11 +27,11 @@ export const useNotificationStore = defineStore("notification", () => {
   }
 
   async function success(message: string, clearable = true, timeout = defaultTimeout) {
-    await show({ message, color: "green", clearable, timeout });
+    await show({ message, color: "green", clearable, timeout, addedAt: Date.now() });
   }
 
   async function error(message: string, clearable = true, timeout = defaultTimeout) {
-    await show({ message, color: "red", clearable, timeout });
+    await show({ message, color: "red", clearable, timeout, addedAt: Date.now() });
   }
 
   function remove(notification: Notification) {
