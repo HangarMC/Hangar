@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { NamedPermission, Platform, ReviewState } from "~/types/enums";
+import { NamedPermission, Platform, ReviewState, Visibility } from "~/types/enums";
 import { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -26,6 +26,8 @@ import DropdownButton from "~/components/design/DropdownButton.vue";
 import DropdownItem from "~/components/design/DropdownItem.vue";
 import PlatformVersionEditModal from "~/components/modals/PlatformVersionEditModal.vue";
 import { AxiosError } from "axios";
+import Tooltip from "~/components/design/Tooltip.vue";
+import DownloadButton from "~/components/projects/DownloadButton.vue";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -85,7 +87,6 @@ async function savePage(content: string) {
 }
 
 async function setRecommended() {
-  //this.loading.recommend = true;
   try {
     await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/${platform.value?.enumName}/recommend`, true, "post");
     notification.success(i18n.t("version.success.recommended", [platform.value?.name]));
@@ -93,7 +94,6 @@ async function setRecommended() {
   } catch (e) {
     handleRequestError(e as AxiosError, ctx, i18n);
   }
-  // this.loading.recommend = false;
 }
 
 async function deleteVersion(comment: string) {
@@ -153,13 +153,30 @@ async function restoreVersion() {
       <em v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy" class="ml-2 text-lg">
         {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
       </em>
-      <!-- todo set recommended -->
+
       <!-- todo delete -->
-      <!-- todo download -->
       <!-- todo admin actions -->
     </div>
     <div class="flex-grow"></div>
     <div class="inline-flex items-center">
+      <DownloadButton :small="true" :version="projectVersion" :project="project" :platform="platform" class="mr-2" />
+
+      <Tooltip
+        v-if="
+          hasPerms(NamedPermission.EDIT_VERSION) &&
+          projectVersion.visibility !== Visibility.SOFT_DELETE &&
+          !projectVersion.recommended.includes(platform?.enumName)
+        "
+      >
+        <template #content>
+          <span>{{ i18n.t("version.page.setRecommendedTooltip", [platform?.name]) }}</span>
+        </template>
+        <Button size="small" class="mr-2" @click="setRecommended">
+          <IconMdiDiamond />
+          {{ i18n.t("version.page.setRecommended") }}
+        </Button>
+      </Tooltip>
+
       <!-- todo Make these nicer/put somewhere else -->
       <template v-if="hasPerms(NamedPermission.REVIEWER)">
         <Button v-if="isReviewStateChecked" color="success" :to="route.path + '/reviews'">

@@ -2,6 +2,17 @@
 import Popper from "vue3-popper";
 import { defineComponent, onMounted, ref } from "vue";
 
+const props = withDefaults(
+  defineProps<{
+    hover?: boolean;
+    show?: boolean | null;
+  }>(),
+  {
+    hover: true,
+    show: null,
+  }
+);
+
 const ServerOnly = defineComponent({
   name: "ServerOnly",
   setup(_, { slots }) {
@@ -16,7 +27,7 @@ const ServerOnly = defineComponent({
 
 <template>
   <ClientOnly>
-    <Popper v-bind="$attrs" hover open-delay="200" close-delay="100">
+    <Popper v-bind="$attrs" :hover="hover" open-delay="200" close-delay="100" :show="show">
       <slot />
       <template #content="props">
         <slot name="content" v-bind="props" />

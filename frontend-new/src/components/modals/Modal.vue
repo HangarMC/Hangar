@@ -16,6 +16,11 @@ function open() {
 function close() {
   isOpen.value = false;
 }
+
+defineExpose({
+  open: open,
+  close: close,
+});
 </script>
 
 <template>

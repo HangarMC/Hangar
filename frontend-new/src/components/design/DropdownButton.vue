@@ -3,7 +3,6 @@ import { Menu, MenuButton, MenuItems } from "@headlessui/vue";
 import IconMdiMenuDown from "~icons/mdi/menu-down";
 import IconMdiMenuUp from "~icons/mdi/menu-up";
 import Button from "~/components/design/Button.vue";
-import ServerOnly from "~/components/design/Tooltip.vue";
 
 const props = withDefaults(
   defineProps<{

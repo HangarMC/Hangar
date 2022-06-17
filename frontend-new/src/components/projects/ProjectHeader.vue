@@ -19,6 +19,7 @@ import { NamedPermission, Visibility } from "~/types/enums";
 import Markdown from "~/components/Markdown.vue";
 import { AxiosError } from "axios";
 import { useRouter } from "vue-router";
+import DownloadButton from "~/components/projects/DownloadButton.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -117,8 +118,12 @@ async function sendForApproval() {
         <p>{{ project.description }}</p>
       </div>
       <div class="flex sm:flex-col space-y-2 items-end justify-between sm:justify-around flex-shrink-0">
-        <!-- TODO: download button component with functionality -->
-        <Button size="large">Download latest</Button>
+        <DownloadButton
+          v-if="project.recommendedVersions && Object.keys(project.recommendedVersions).length > 0"
+          :project="project"
+          :platform-selection="true"
+          :small="false"
+        />
         <div class="flex">
           <Tooltip>
             <template #content>
