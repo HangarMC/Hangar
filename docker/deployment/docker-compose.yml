@@ -1,31 +1,6 @@
 version: '3.7'
 
 services:
-  frontend_old:
-    image: "ghcr.io/papermc/hangar_frontend_old"
-    build:
-      context: ../..
-      dockerfile: docker/deployment/hangar-frontend-old/Dockerfile
-    depends_on:
-      - 'backend'
-    environment:
-      # keep these in sync with gh-action!
-      proxyHost: "http://hangar_new_backend:8080"
-      authHost: "https://hangar-auth.benndorf.dev"
-      host: "0.0.0.0"
-      PUBLIC_HOST: "https://hangar-old.benndorf.dev"
-    stdin_open: true
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.hangar-old.loadbalancer.server.port=3000"
-      - "traefik.http.routers.hangar-old.rule=Host(`hangar-old.benndorf.dev`) || Host(`staging-old.hangarmc.dev`)"
-      - "traefik.http.routers.hangar-old.entrypoints=web-secure"
-      - "traefik.http.routers.hangar-old.tls=true"
-      - "traefik.http.routers.hangar-old.tls.certresolver=default"
-      - "traefik.http.routers.hangar-old.tls.domains[0].main=benndorf.dev"
-      - "traefik.http.routers.hangar-old.tls.domains[0].sans=*.benndorf.dev"
-    networks:
-      - web
   frontend:
     image: "ghcr.io/papermc/hangar_frontend"
     build:
@@ -73,6 +48,7 @@ services:
     networks:
       - web
   postgres:
+    image: "ghcr.io/papermc/hangar_postgres"
     build: ./postgres
     environment:
       POSTGRES_MULTIPLE_DATABASES: hydra,kratos

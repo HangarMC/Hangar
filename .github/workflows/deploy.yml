@@ -67,20 +67,10 @@ jobs:
           CI: true
         run: (cd frontend-new && pnpm install --frozen-lockfile && cd server && pnpm install --frozen-lockfile)
 
-      - name: Install frontend deps old
-        env:
-          CI: true
-        run: (cd frontend && yarn install --frozen-lockfile --cache-folder ~/.cache/yarn)
-
       - name: Lint frontend
         env:
           CI: true
         run: (cd frontend-new && pnpm lint:eslint)
-
-      - name: Lint frontend old
-        env:
-          CI: true
-        run: (cd frontend && yarn lint)
 
       - name: Sync forth and back with crowdin
         uses: crowdin/github-action@1.4.0
@@ -104,16 +94,6 @@ jobs:
           host: "0.0.0.0"
           PUBLIC_HOST: "https://hangar.benndorf.dev"
         run: (cd frontend-new && pnpm build && cd server && pnpm build)
-
-      - name: Build frontend old
-        env:
-          CI: true
-          # keep these in sync with compose!
-          proxyHost: "http://hangar_new_backend:8080"
-          authHost: "https://hangar-auth.benndorf.dev"
-          host: "0.0.0.0"
-          PUBLIC_HOST: "https://hangar-old.benndorf.dev"
-        run: (cd frontend && yarn build)
 
       - name: SSH
         uses: webfactory/ssh-agent@v0.5.2
