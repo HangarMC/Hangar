@@ -1,7 +1,6 @@
 package io.papermc.hangar.model.api.requests;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.papermc.hangar.controller.extras.ApiUtils;
 import io.papermc.hangar.controller.extras.pagination.Filter.FilterInstance;
 import io.swagger.annotations.ApiModelProperty;
 

@@ -48,7 +48,7 @@ public class ProjectPlatformFilter implements Filter<ProjectPlatformFilter.Proje
 
         @Override
         public void createSql(StringBuilder sb, SqlStatement<?> q) {
-            sb.append("AND v.platform").append(" IN (");
+            sb.append(" AND v.platform").append(" IN (");
             for (int i = 0; i < platforms.length; i++) {
                 sb.append(":__platform__").append(i);
                 if (i + 1 != platforms.length) {

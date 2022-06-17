@@ -2,7 +2,9 @@ package io.papermc.hangar.controller.api.v1;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.api.v1.interfaces.IProjectsController;
+import io.papermc.hangar.controller.extras.pagination.SorterRegistry;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
+import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
 import io.papermc.hangar.controller.extras.pagination.filters.projects.*;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.User;
@@ -52,9 +54,10 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
     }
 
     @Override
-    @ApplicableFilters({ProjectCategoryFilter.class, ProjectPlatformFilter.class, ProjectAuthorFilter.class, ProjectQueryFilter.class, ProjectTagFilter.class})
-    public ResponseEntity<PaginatedResult<Project>> getProjects(String q, ProjectSortingStrategy sort, boolean orderWithRelevance, @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(projectsApiService.getProjects(q, sort, orderWithRelevance, pagination));
+    @ApplicableFilters({ProjectCategoryFilter.class, ProjectPlatformFilter.class, ProjectAuthorFilter.class, ProjectQueryFilter.class, ProjectTagFilter.class, ProjectLicenseFilter.class})
+    @ApplicableSorters({SorterRegistry.VIEWS, SorterRegistry.DOWNLOADS, SorterRegistry.NEWEST, SorterRegistry.STARS, SorterRegistry.UPDATED, SorterRegistry.RECENT_DOWNLOADS, SorterRegistry.RECENT_VIEWS})
+    public ResponseEntity<PaginatedResult<Project>> getProjects(String q, boolean orderWithRelevance, @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(projectsApiService.getProjects(q, orderWithRelevance, pagination));
     }
 
     @Override

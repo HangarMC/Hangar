@@ -32,6 +32,8 @@ const sorters = [
   { id: "views", label: i18n.t("project.sorting.mostViews") },
   { id: "newest", label: i18n.t("project.sorting.newest") },
   { id: "updated", label: i18n.t("project.sorting.recentlyUpdated") },
+  { id: "recent_views", label: i18n.t("project.sorting.recentViews") },
+  { id: "recent_downloads", label: i18n.t("project.sorting.recentDownloads") },
 ];
 
 const versions = backendData.platforms
@@ -45,19 +47,28 @@ const filters = ref({
   versions: [],
   categories: [],
   platforms: [],
-  licences: [],
+  licenses: [],
 });
 
 const query = ref<string>((route.query.q as string) || "");
 const loggedOut = ref<boolean>("loggedOut" in route.query);
 const projects = ref<PaginatedResult<Project> | null>();
+const activeSorter = ref<string>("updated");
 
 const requestParams = computed(() => {
-  // TODO add filters for licence and version
-  // TODO implement sorting, see https://github.com/HangarMC/Hangar/pull/597
-  const params: Record<string, any> = { limit: 25, offset: 0, category: filters.value.categories, platform: filters.value.platforms };
-  if (query.value && query.value) {
+  // TODO add filter for mc version
+  const params: Record<string, any> = {
+    limit: 25,
+    offset: 0,
+    category: filters.value.categories,
+    platform: filters.value.platforms,
+    license: filters.value.licenses,
+  };
+  if (query.value) {
     params.q = query.value;
+  }
+  if (activeSorter.value) {
+    params.sort = activeSorter.value;
   }
   return params;
 });
@@ -67,9 +78,8 @@ if (p && p.value) {
 }
 
 watch(filters, async () => updateProjects(), { deep: true });
-watch(query, async () => {
-  await updateProjects();
-});
+watch(query, async () => updateProjects());
+watch(activeSorter, async () => updateProjects());
 
 async function updateProjects() {
   projects.value = await useApi<PaginatedResult<Project>>("projects", false, "get", requestParams.value);
@@ -127,7 +137,7 @@ useHead(meta);
         >
           <MenuItems class="absolute right-0 top-16 flex flex-col z-10 background-default drop-shadow-md rounded-md border-top-primary">
             <MenuItem v-for="sorter in sorters" :key="sorter.id" v-slot="{ active }">
-              <button :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': active }" class="p-2 text-left">
+              <button :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': active }" class="p-2 text-left" @click="activeSorter = sorter.id">
                 {{ sorter.label }}
               </button>
             </MenuItem>
@@ -175,7 +185,7 @@ useHead(meta);
       <div class="licenses">
         <h3 class="font-bold mb-1">Licenses</h3>
         <div class="flex flex-col gap-1">
-          <InputCheckbox v-for="license in backendData.licenses" :key="license" v-model="filters.licences" :value="license" :label="license" />
+          <InputCheckbox v-for="license in backendData.licenses" :key="license" v-model="filters.licenses" :value="license" :label="license" />
         </div>
       </div>
     </Card>

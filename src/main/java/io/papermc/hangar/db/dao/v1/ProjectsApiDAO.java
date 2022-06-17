@@ -86,6 +86,7 @@ public interface ProjectsApiDAO {
             COALESCE(hp.last_updated, hp.created_at) AS last_updated,
             ((EXTRACT(EPOCH FROM COALESCE(hp.last_updated, hp.created_at)) - 1609459200) / 604800) *1 AS last_updated_double, --- We can order with this. That "dum" does not work. It only orders it with this.
             hp.visibility,
+            <relevance>
             exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred,
             exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching,
             exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) as flagged,
@@ -94,6 +95,7 @@ public interface ProjectsApiDAO {
             p.source,
             p.support,
             p.license_name,
+            p.license_type,
             p.license_url,
             p.keywords,
             p.forum_sync,
@@ -109,12 +111,12 @@ public interface ProjectsApiDAO {
             LEFT JOIN platform_versions v on pvpd.platform_version_id = v.id
             WHERE true <filters> -- Not sure how else to get here a single Where
             <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif>
-            ORDER BY <orderBy>
+            <sorters>
             <offsetLimit>""")
     @RegisterColumnMapper(PromotedVersionMapper.class)
     @DefineNamedBindings
-    List<Project> getProjects(@Define boolean seeHidden, Long requesterId, @Define String orderBy,
-                              @BindPagination RequestPagination pagination);
+    List<Project> getProjects(@Define boolean seeHidden, Long requesterId,
+                              @BindPagination RequestPagination pagination, @Define String relevance);
 
     // This query can be shorter because it doesnt need all those column values as above does, just a single column for the amount of rows to be counted
     @UseStringTemplateEngine

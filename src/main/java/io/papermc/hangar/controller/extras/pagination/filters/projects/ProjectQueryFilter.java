@@ -38,14 +38,12 @@ public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance> {
 
         @Override
         public void createSql(StringBuilder sb, SqlStatement<?> q) {
-            /*sb.append(" AND (hp.search_words @@ websearch_to_tsquery");
+            sb.append(" AND (hp.search_words @@ websearch_to_tsquery");
             if (!query.endsWith(" ")) {
                 sb.append("_postfix");
             }
             sb.append("('english', :query)").append(")");
-            q.bind("query", query.trim());*/
-            // TODO broken. Full-text search is not implemented in cockroachdb yet. See: https://go.crdb.dev/issue-v/7821/v21.2. Until it's done, we'll just do simple search
-            sb.append(" AND (hp.name ILIKE '%" + query + "%')");
+            q.bind("query", query.trim());
         }
 
         @Override

@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.controller.extras.pagination.SorterRegistry;
 import io.papermc.hangar.db.dao.v1.ProjectsApiDAO;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
@@ -16,8 +17,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectsApiService extends HangarComponent {
@@ -53,37 +57,20 @@ public class ProjectsApiService extends HangarComponent {
         return new PaginatedResult<>(new Pagination(projectsApiDAO.getProjectWatchersCount(author, slug), pagination), watchers);
     }
 
-    public PaginatedResult<Project> getProjects(String query, ProjectSortingStrategy sort, boolean orderWithRelevance, RequestPagination pagination) {
-
-        String ordering = sort.getSql();
+    public PaginatedResult<Project> getProjects(String query, boolean orderWithRelevance, RequestPagination pagination) {
+        String relevance = "";
         if (orderWithRelevance && query != null && !query.isEmpty()) {
-            String relevance = "ts_rank(hp.search_words, websearch_to_tsquery_postfix('english', :query)) DESC";
             if(query.endsWith(" ")) {
-                relevance = "ts_rank(hp.search_words, websearch_to_tsquery('english', :query)) DESC";
+                relevance = "ts_rank(hp.search_words, websearch_to_tsquery('english', :query)) AS relevance,";
+            } else {
+                relevance = "ts_rank(hp.search_words, websearch_to_tsquery_postfix('english', :query)) AS relevance,";
             }
-            relevance = "ASC";
-            String orderingFirstHalf;
-            // 1609459200 is the hangar epoch
-            // 86400 seconds to days
-            // 604800‬ seconds to weeks
-            switch(sort){
-                case STARS: orderingFirstHalf = "hp.stars * "; break;
-                case DOWNLOADS: orderingFirstHalf ="(hp.downloads / 100) * "; break;
-                case VIEWS: orderingFirstHalf ="(hp.views / 200) *"; break;
-                case NEWEST: orderingFirstHalf ="((EXTRACT(EPOCH FROM hp.created_at) - 1609459200) / 86400) *"; break;
-                case UPDATED: orderingFirstHalf ="last_updated_double "; break;
-                case ONLY_RELEVANCE: orderingFirstHalf = ""; break;
-                case RECENT_DOWNLOADS : orderingFirstHalf ="hp.recent_views *"; break;
-                case RECENT_VIEWS: orderingFirstHalf ="hp.recent_downloads *"; break;
-                default:
-                    orderingFirstHalf = " "; // Just in case and so that the ide doesn't complain
-            }
-            ordering = orderingFirstHalf + relevance;
+            pagination.getSorters().put("relevance", sb -> sb.append(" relevance DESC"));
         }
 
         boolean seeHidden = getGlobalPermissions().has(Permission.SeeHidden);
 
-        List<Project> projects = projectsApiDAO.getProjects(seeHidden, getHangarUserId(), ordering, pagination);
+        List<Project> projects = projectsApiDAO.getProjects(seeHidden, getHangarUserId(), pagination, relevance);
         return new PaginatedResult<>(new Pagination(projectsApiDAO.countProjects(seeHidden, getHangarUserId(), pagination), pagination), projects);
     }
 }
