@@ -5,14 +5,13 @@ import { ref } from "vue";
 const notificationStore = useNotificationStore();
 const notifications = ref(notificationStore.notifications);
 
-//TODO make more responsive: stop removal timer and progress bar on hover, dynamic time
-//TODO also unbreak this first
+//TODO make more responsive: stop removal timer and progress bar on hover
 </script>
 
 <template>
   <div class="fixed h-screen flex bottom-15 right-10 items-end pointer-events-none z-60 text-right">
     <div>
-      <div v-for="(notification, idx) in notificationStore.notifications" :key="idx" class="mb-3">
+      <div v-for="notification in notificationStore.notifications" :key="notification.addedAt" class="mb-3">
         <div
           class="rounded-t p-4 pb-2 px-3 pointer-events-auto text-right border-left-5px bg-gray-300 dark:bg-slate-700"
           :style="{ 'border-color': notification.color }"
@@ -27,8 +26,7 @@ const notifications = ref(notificationStore.notifications);
           </div>
         </div>
         <div class="bar">
-          <div class="progress"></div>
-          <!--:style="'animation-delay: ' + (notification.addedAt - Date.now()) + 'ms'"-->
+          <div class="progress" :style="'animation-duration: ' + notification.timeout + 'ms'"></div>
         </div>
       </div>
     </div>
