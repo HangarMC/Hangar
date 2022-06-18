@@ -1,17 +1,8 @@
 {
-  "tabWidth": 4,
+  "tabWidth": 2,
   "semi": true,
-  "singleQuote": true,
+  "singleQuote": false,
   "printWidth": 160,
   "arrowParens": "always",
-  "overrides": [
-    {
-      "files": "locales/*.ts",
-      "options": {
-        "tabWidth": 2,
-        "trailingComma": "none",
-        "printWidth": 9999
-      }
-    }
-  ]
+  "trailingComma": "es5"
 }
