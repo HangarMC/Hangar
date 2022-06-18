@@ -153,7 +153,7 @@ function isRecent(date: string): boolean {
             <!-- dummy diff to make the transition work on pages where template root has multiple elements -->
             <div id="#page">
               <PopoverPanel
-                class="fixed z-10 w-9/10 background-default top-1/14 left-1/20 drop-shadow-md rounded-md border-top-primary text-xs p-[20px]"
+                class="fixed z-10 w-9/10 background-default top-1/14 left-1/20 filter drop-shadow-md rounded-md border-top-primary text-xs p-[20px]"
                 md="absolute w-max top-10 rounded-none rounded-bl-md rounded-r-md"
               >
                 <p class="text-base font-semibold color-primary mb-4">Hangar</p>

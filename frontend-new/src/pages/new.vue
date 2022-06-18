@@ -258,11 +258,11 @@ function createProject() {
               <IconMdiContentSave />
               {{ i18n.t("project.new.step4.saveAsHomePage") }}
             </Button>
-            <Transition>
+            <transition>
               <span v-if="form.pageContent === converter.markdown" class="inline-flex items-center"
                 >{{ i18n.t("project.new.step4.saved") }} <IconMdiCheck
               /></span>
-            </Transition>
+            </transition>
           </div>
         </template>
         <template #preview>
@@ -272,11 +272,11 @@ function createProject() {
               <IconMdiContentSave />
               {{ i18n.t("project.new.step4.saveAsHomePage") }}
             </Button>
-            <Transition>
+            <transition>
               <span v-if="form.pageContent === converter.markdown" class="inline-flex items-center"
                 >{{ i18n.t("project.new.step4.saved") }} <IconMdiCheck
               /></span>
-            </Transition>
+            </transition>
           </div>
         </template>
         <template #tutorial>
