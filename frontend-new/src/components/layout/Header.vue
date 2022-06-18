@@ -150,38 +150,41 @@ function isRecent(date: string): boolean {
             leave-from-class="translate-y-0 opacity-100"
             leave-to-class="translate-y-1 opacity-0"
           >
-            <PopoverPanel
-              class="fixed z-10 w-9/10 background-default top-1/14 left-1/20 drop-shadow-md rounded-md border-top-primary text-xs p-[20px]"
-              md="absolute w-max top-10 rounded-none rounded-bl-md rounded-r-md"
-            >
-              <p class="text-base font-semibold color-primary mb-4">Hangar</p>
-              <div class="grid grid-cols-2">
-                <router-link
-                  v-for="link in navBarMenuLinksHangar"
-                  :key="link.label"
-                  :to="{ name: link.link }"
-                  class="flex items-center rounded-md px-6 py-2"
-                  hover="text-primary-400 bg-primary-0"
-                >
-                  <component :is="link.icon" class="mr-3 text-[1.2em]" />
-                  {{ link.label }}
-                </router-link>
-              </div>
+            <!-- dummy diff to make the transition work on pages where template root has multiple elements -->
+            <div id="#page">
+              <PopoverPanel
+                class="fixed z-10 w-9/10 background-default top-1/14 left-1/20 drop-shadow-md rounded-md border-top-primary text-xs p-[20px]"
+                md="absolute w-max top-10 rounded-none rounded-bl-md rounded-r-md"
+              >
+                <p class="text-base font-semibold color-primary mb-4">Hangar</p>
+                <div class="grid grid-cols-2">
+                  <router-link
+                    v-for="link in navBarMenuLinksHangar"
+                    :key="link.label"
+                    :to="{ name: link.link }"
+                    class="flex items-center rounded-md px-6 py-2"
+                    hover="text-primary-400 bg-primary-0"
+                  >
+                    <component :is="link.icon" class="mr-3 text-[1.2em]" />
+                    {{ link.label }}
+                  </router-link>
+                </div>
 
-              <p class="text-base font-semibold color-primary mb-4 mt-10">More from Paper</p>
-              <div class="grid grid-cols-2">
-                <a
-                  v-for="link in navBarMenuLinksMoreFromPaper"
-                  :key="link.label"
-                  class="flex items-center rounded-md px-6 py-2"
-                  :href="link.link"
-                  hover="text-primary-400 bg-primary-0"
-                >
-                  <component :is="link.icon" class="mr-3 text-[1.2em]" />
-                  {{ link.label }}
-                </a>
-              </div>
-            </PopoverPanel>
+                <p class="text-base font-semibold color-primary mb-4 mt-10">More from Paper</p>
+                <div class="grid grid-cols-2">
+                  <a
+                    v-for="link in navBarMenuLinksMoreFromPaper"
+                    :key="link.label"
+                    class="flex items-center rounded-md px-6 py-2"
+                    :href="link.link"
+                    hover="text-primary-400 bg-primary-0"
+                  >
+                    <component :is="link.icon" class="mr-3 text-[1.2em]" />
+                    {{ link.label }}
+                  </a>
+                </div>
+              </PopoverPanel>
+            </div>
           </transition>
         </Popover>
 
