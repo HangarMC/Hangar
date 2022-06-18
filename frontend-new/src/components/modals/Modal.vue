@@ -3,9 +3,15 @@ import { ref } from "vue";
 import { Dialog, DialogOverlay } from "@headlessui/vue";
 import { TranslateResult } from "vue-i18n";
 
-const props = defineProps<{
-  title: string | TranslateResult;
-}>();
+const props = withDefaults(
+  defineProps<{
+    title: string | TranslateResult;
+    small?: boolean;
+  }>(),
+  {
+    small: true,
+  }
+);
 
 const isOpen = ref<boolean>(false);
 
@@ -20,6 +26,7 @@ function close() {
 defineExpose({
   open: open,
   close: close,
+  isOpen: isOpen,
 });
 </script>
 
@@ -29,7 +36,7 @@ defineExpose({
       <div class="flex items-center justify-center min-h-screen">
         <DialogOverlay class="fixed inset-0 bg-black opacity-30" />
 
-        <div class="relative max-w-sm mx-auto background-default rounded p-4">
+        <div class="relative mx-auto background-default rounded p-4" :class="small ? 'max-w-sm' : 'max-w-lg'">
           <h2 class="font-bold text-xl mb-2">{{ props.title }}</h2>
           <slot :on="{ click: close }"></slot>
         </div>

@@ -7,7 +7,7 @@ import Button from "~/components/design/Button.vue";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import InputText from "~/components/ui/InputText.vue";
 import { required } from "~/composables/useValidationHelpers";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 const i18n = useI18n();
 const t = i18n.t;
@@ -28,6 +28,53 @@ const props = withDefaults(
 const results = ref<Record<string, ProjectNamespace[]>>({});
 const newDepResults = ref<ProjectNamespace[][]>([]);
 const newDeps = ref<PluginDependency[]>([]);
+const deletedDeps = ref<string[]>([]);
+
+function addNewDep() {
+  newDeps.value.push({
+    name: "",
+    required: false,
+    namespace: null,
+    externalUrl: null,
+  });
+  newDepResults.value.push([]);
+}
+
+function getNamespace(namespace: ProjectNamespace) {
+  return `${namespace.owner}/${namespace.slug}`;
+}
+
+function deleteDep(index: number) {
+  deletedDeps.value.push(props.version.pluginDependencies[props.platform][index].name);
+  delete newDepResults.value[index];
+}
+
+function deleteNewDep(index: number) {
+  delete newDeps.value[index];
+  delete newDepResults.value[index];
+}
+
+function reset() {
+  newDeps.value.splice(0);
+  newDepResults.value.splice(0);
+  deletedDeps.value.splice(0);
+  results.value = {};
+  if (props.version.pluginDependencies[props.platform]) {
+    for (const dep of props.version.pluginDependencies[props.platform]) {
+      if (dep.namespace) {
+        results.value[dep.name] = [dep.namespace];
+      } else {
+        results.value[dep.name] = [];
+      }
+    }
+  }
+}
+
+const filteredDeps = computed(() => {
+  return props.version.pluginDependencies[props.platform]?.filter((d) => !deletedDeps.value.includes(d.name)) || [];
+});
+
+defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
 </script>
 
 <template>
@@ -44,7 +91,7 @@ const newDeps = ref<PluginDependency[]>([]);
     </thead>
     <tbody>
       <template v-if="!isNew">
-        <tr v-for="(dep, index) in version.pluginDependencies[platform]" :key="`${platform}-${dep.name}`">
+        <tr v-for="(dep, index) in filteredDeps" :key="`${platform}-${dep.name}`">
           <td>{{ dep.name }}</td>
           <td><InputCheckbox v-model="dep.required" /></td>
           <td>
@@ -55,6 +102,7 @@ const newDeps = ref<PluginDependency[]>([]);
               :rules="dep.namespace !== null && Object.keys(dep.namespace).length !== 0 ? [] : [required(t('version.new.form.externalUrl'))]"
               clearable
             />
+            <!-- todo fix autocomplete -->
             <v-autocomplete
               v-model="dep.namespace"
               dense
@@ -103,6 +151,7 @@ const newDeps = ref<PluginDependency[]>([]);
               :rules="newDep.namespace !== null && Object.keys(newDep.namespace).length !== 0 ? [] : [required(t('version.new.form.externalUrl'))]"
               clearable
             />
+            <!-- todo fix autocomplete -->
             <v-autocomplete
               v-model="newDep.namespace"
               dense

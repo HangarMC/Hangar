@@ -29,6 +29,8 @@ import { AxiosError } from "axios";
 import Tooltip from "~/components/design/Tooltip.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
 import PlatformLogo from "~/components/logos/PlatformLogo.vue";
+import TextAreaModal from "~/components/modals/TextAreaModal.vue";
+import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -82,7 +84,6 @@ async function savePage(content: string) {
     }
     editingPage.value = false;
   } catch (err) {
-    // this.$refs.editor.loading.save = false; // TODO
     handleRequestError(err as AxiosError, ctx, i18n, "page.new.error.save");
   }
 }
@@ -154,9 +155,6 @@ async function restoreVersion() {
       <em v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy" class="ml-2 text-lg">
         {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
       </em>
-
-      <!-- todo delete -->
-      <!-- todo admin actions -->
     </div>
     <div class="flex-grow"></div>
     <div class="inline-flex items-center">
@@ -175,22 +173,6 @@ async function restoreVersion() {
           {{ i18n.t("version.page.setRecommended") }}
         </Button>
       </Tooltip>
-
-      <!-- todo Make these nicer/put somewhere else -->
-      <template v-if="hasPerms(NamedPermission.REVIEWER)">
-        <Button v-if="isReviewStateChecked" color="success" :to="route.path + '/reviews'">
-          <IconMdiListStatus />
-          {{ i18n.t("version.page.reviewLogs") }}
-        </Button>
-        <Button v-else-if="isUnderReview" color="info" :to="route.path + '/reviews'">
-          <IconMdiListStatus />
-          {{ i18n.t("version.page.reviewLogs") }}
-        </Button>
-        <Button v-else color="success" :to="route.path + '/reviews'">
-          <IconMdiPlay />
-          {{ i18n.t("version.page.reviewStart") }}
-        </Button>
-      </template>
 
       <DropdownButton v-if="versionPlatforms.size > 1" class="text-xl inline ml-2" :name="platform?.name">
         <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()">{{ backendData.platforms?.get(plat)?.name }}</DropdownItem>
@@ -218,10 +200,61 @@ async function restoreVersion() {
     </section>
 
     <section class="basis-full md:basis-4/12 flex-grow space-y-4">
+      <Card v-if="hasPerms(NamedPermission.DELETE_VERSION)">
+        <template #header>{{ i18n.t("version.page.adminActions") }}</template>
+
+        <span> Visibility: {{ projectVersion.visibility }} </span>
+
+        <div class="flex gap-2 flex-wrap mt-2">
+          <!--todo route for user action log, with filtering-->
+          <Button v-if="hasPerms(NamedPermission.VIEW_LOGS)" @click="router.push('/admin/log')">
+            {{ i18n.t("version.page.userAdminLogs") }}
+          </Button>
+          <TextAreaModal
+            v-if="hasPerms(NamedPermission.DELETE_VERSION) && projectVersion.visibility !== Visibility.SOFT_DELETE"
+            :title="i18n.t('version.page.delete')"
+            :label="i18n.t('general.comment')"
+            :submit="deleteVersion"
+          >
+            <template #activator="{ on }">
+              <Button button-type="red" v-on="on">{{ i18n.t("version.page.delete") }}</Button>
+            </template>
+          </TextAreaModal>
+          <Button v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.visibility === Visibility.SOFT_DELETE" @click="restoreVersion">
+            {{ i18n.t("version.page.restore") }}
+          </Button>
+          <TextAreaModal
+            v-if="hasPerms(NamedPermission.HARD_DELETE_VERSION)"
+            :title="i18n.t('version.page.hardDelete')"
+            :label="i18n.t('general.comment')"
+            :submit="hardDeleteVersion"
+          >
+            <template #activator="{ on }">
+              <Button button-type="red" v-on="on">{{ i18n.t("version.page.hardDelete") }}</Button>
+            </template>
+          </TextAreaModal>
+
+          <template v-if="hasPerms(NamedPermission.REVIEWER)">
+            <Button v-if="isReviewStateChecked" color="success" :to="route.path + '/reviews'">
+              <IconMdiListStatus />
+              {{ i18n.t("version.page.reviewLogs") }}
+            </Button>
+            <Button v-else-if="isUnderReview" color="info" :to="route.path + '/reviews'">
+              <IconMdiListStatus />
+              {{ i18n.t("version.page.reviewLogs") }}
+            </Button>
+            <Button v-else color="success" :to="route.path + '/reviews'">
+              <IconMdiPlay />
+              {{ i18n.t("version.page.reviewStart") }}
+            </Button>
+          </template>
+        </div>
+      </Card>
+
       <Card>
         <template #header>
           <div class="inline-flex w-full">
-            <span class="flex-grow"> {{ i18n.t("version.page.platform") }}</span>
+            <span class="flex-grow">{{ i18n.t("version.page.platform") }}</span>
             <PlatformVersionEditModal v-if="hasPerms(NamedPermission.EDIT_VERSION)" :project="project" :versions="versions" />
           </div>
         </template>
@@ -235,9 +268,10 @@ async function restoreVersion() {
 
       <Card>
         <template #header>
-          {{ i18n.t("version.page.dependencies") }}
-          <!-- todo DependencyEditModal -->
-          <!-- <DependencyEditModal :project="project" :versions="versions" /> -->
+          <div class="inline-flex w-full">
+            <span class="flex-grow">{{ i18n.t("version.page.dependencies") }}</span>
+            <DependencyEditModal :project="project" :versions="versions" />
+          </div>
         </template>
 
         <ul>

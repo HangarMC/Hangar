@@ -57,7 +57,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
 - index
   - [x] fetch
   - [x] layout
-  - [ ] functionality (sorting, licence and version filter)
+  - [ ] functionality (mc version filter)
   - [x] design
   - [ ] qa
 - linkout
@@ -144,7 +144,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
     * index
       - [x] fetch
       - [x] layout
-      - [ ] functionality (promoted versions, download latest)
+      - [x] functionality
       - [x] design
       - [ ] qa
     * notes
@@ -201,8 +201,8 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
           - index
             - [x] fetch
             - [x] layout
-            - [ ] functionality (misses deleting, admin actions and other buttons)
-            - [ ] design
+            - [x] functionality
+            - [x] design
             - [ ] qa
           - reviews
             - [x] fetch
