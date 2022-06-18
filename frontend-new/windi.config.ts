@@ -48,9 +48,7 @@ export default defineConfig({
       blue: colors.blue,
       lime: colors.lime,
       slate: colors.slate,
-      red: {
-        500: "#ff544b",
-      },
+      red: colors.red,
       gray: colors.zinc,
       secondary: colors.slate,
       white: colors.zinc[50],
@@ -103,6 +101,11 @@ export default defineConfig({
               marginBottom: "0.2em",
             },
           },
+        },
+      },
+      colors: {
+        red: {
+          500: "#ff544b",
         },
       },
     },
