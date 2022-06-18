@@ -54,46 +54,38 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
-      - name: Cache Yarn
-        uses: actions/cache@v2
-        with:
-          path: "~/.cache/yarn"
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
       - name: Install frontend deps
         env:
           CI: true
-        run: (cd frontend-new && pnpm install --frozen-lockfile && cd server && pnpm install --frozen-lockfile)
+        run: (cd frontend && pnpm install --frozen-lockfile && cd server && pnpm install --frozen-lockfile)
 
       - name: Lint frontend
         env:
           CI: true
-        run: (cd frontend-new && pnpm lint:eslint)
+        run: (cd frontend && pnpm lint:eslint)
 
-      - name: Sync forth and back with crowdin
-        uses: crowdin/github-action@1.4.0
-        with:
-          upload_sources: true
-          download_translations: true
-          push_translations: false
-          create_pull_request: false
-          skip_untranslated_strings: true
-          config: 'crowdin.yml'
-          crowdin_branch_name: master
-        env:
-          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+      # - name: Sync forth and back with crowdin
+      #   uses: crowdin/github-action@1.4.0
+      #   with:
+      #     upload_sources: true
+      #     download_translations: true
+      #     push_translations: false
+      #     create_pull_request: false
+      #     skip_untranslated_strings: true
+      #     config: 'crowdin.yml'
+      #     crowdin_branch_name: master
+      #   env:
+      #     CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
       - name: Build frontend
         env:
           CI: true
           # keep these in sync with compose!
-          proxyHost: "http://hangar_new_backend:8080"
+          proxyHost: "http://hangar_backend:8080"
           authHost: "https://hangar-auth.benndorf.dev"
           host: "0.0.0.0"
           PUBLIC_HOST: "https://hangar.benndorf.dev"
-        run: (cd frontend-new && pnpm build && cd server && pnpm build)
+        run: (cd frontend && pnpm build && cd server && pnpm build)
 
       - name: SSH
         uses: webfactory/ssh-agent@v0.5.2
@@ -123,4 +115,4 @@ jobs:
           echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ secrets.CR_USER }} --password-stdin
           docker-compose build
           docker-compose push
-          DOCKER_HOST="${{ secrets.DOCKER_HOST }}" docker stack deploy --with-registry-auth --compose-file=docker-compose.yml hangar_new
+          DOCKER_HOST="${{ secrets.DOCKER_HOST }}" docker stack deploy --with-registry-auth --compose-file=docker-compose.yml hangar

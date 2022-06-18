@@ -183,7 +183,7 @@ hangar:
 logging:
   level:
     root: INFO
-    org.springframework: INFO
+    org.springframework: DEBUG
     org.springframework.context.support.PostProcessorRegistrationDelegate: WARN
     io.papermc.hangar.service.internal.JobService: DEBUG
     io.papermc.hangar.config.WebConfig.LoggingInterceptor: DEBUG
