@@ -11,6 +11,7 @@ import { useRoute, useRouter } from "vue-router";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
+import InputTag from "~/components/ui/InputTag.vue";
 
 const props = defineProps<{
   project: HangarProject;
@@ -52,11 +53,7 @@ async function save() {
 <template>
   <Modal :title="i18n.t('version.edit.platformVersions', [platform?.name])">
     <template #default="{ on }">
-      <ul>
-        <li v-for="version in platform?.possibleVersions" :key="version">
-          <InputCheckbox v-model="selectedVersions" :label="version" :value="version" />
-        </li>
-      </ul>
+      <InputTag v-model="selectedVersions" :options="platform?.possibleVersions" />
 
       <Button button-type="primary" class="mt-2" :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
       <Button button-type="secondary" class="mt-2 ml-2" v-on="on">{{ i18n.t("general.close") }}</Button>

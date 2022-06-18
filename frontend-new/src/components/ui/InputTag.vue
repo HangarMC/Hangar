@@ -12,17 +12,24 @@ const tags = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
 });
-const props = defineProps<{
-  modelValue: string[];
-  label?: string;
-  counter?: boolean;
-  maxlength?: number;
-  loading?: boolean;
-  errorMessages?: string[];
-  rules?: ValidationRule<string | undefined>[];
-}>();
+const props = withDefaults(
+  defineProps<{
+    modelValue: string[];
+    label?: string;
+    counter?: boolean;
+    maxlength?: number;
+    loading?: boolean;
+    errorMessages?: string[];
+    rules?: ValidationRule<string | undefined>[];
+    tagMaxlength?: number;
+    options?: string[];
+  }>(),
+  {
+    tagMaxlength: 20,
+  }
+);
 
-const tagMaxlength = 20;
+const id = Math.random();
 
 const errorMessages = computed(() => props.errorMessages);
 const { v, errors, hasError } = useValidation(props.label, props.rules, tags, errorMessages);
@@ -30,7 +37,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, tags, er
 if (!tags.value) tags.value = [];
 
 watch(tag, (t) => {
-  tag.value = t.replace(" ", "").substring(0, tagMaxlength);
+  tag.value = t.replace(" ", "").substring(0, props.tagMaxlength);
 });
 
 function remove(t: string) {
@@ -40,10 +47,22 @@ function remove(t: string) {
 
 function add() {
   if (tag.value && (!props.maxlength || tags.value.length < props.maxlength)) {
+    if (props.options) {
+      if (!filteredOptions.value?.includes(tag.value)) {
+        return;
+      }
+    }
     tags.value.push(tag.value);
     tag.value = "";
   }
 }
+
+const filteredOptions = computed(() => {
+  if (props.options) {
+    return props.options.filter((o) => !tags.value.includes(o));
+  }
+  return props.options;
+});
 </script>
 
 <template>
@@ -64,7 +83,28 @@ function add() {
           <icon-mdi-close-circle />
         </span>
       </span>
+      <template v-if="options">
+        <input
+          v-model="tag"
+          type="text"
+          v-bind="$attrs"
+          :class="slotProps.class"
+          :list="id"
+          :maxlength="tagMaxlength"
+          class="pointer-events-auto flex-grow !bg-gray-100 rounded-xl px-2"
+          dark="!bg-gray-500 text-white"
+          @blur="v.$touch()"
+          @keydown.enter="add"
+          @change="add"
+        />
+        <datalist :id="id">
+          <option v-for="val in filteredOptions" :key="val" :value="val">
+            {{ val }}
+          </option>
+        </datalist>
+      </template>
       <input
+        v-else
         v-model="tag"
         type="text"
         class="pointer-events-auto flex-grow !bg-gray-100 rounded-xl px-2"

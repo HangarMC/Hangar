@@ -24,6 +24,7 @@ import ChannelModal from "~/components/modals/ChannelModal.vue";
 import { remove } from "lodash-es";
 import { useBackendDataStore } from "~/store/backendData";
 import DependencyTable from "~/components/projects/DependencyTable.vue";
+import InputTag from "~/components/ui/InputTag.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -248,20 +249,11 @@ useHead(
       <h2 class="text-xl mt-2 mb-2">{{ t("version.new.form.platformVersions") }}</h2>
 
       <!-- todo: preload platforms and dependencies from previous version in same channel -->
-      <!-- todo: better version selector (dropdown with search input, tags-like) -->
       <div class="flex flex-wrap gap-y-3 mb-5">
         <div v-for="platform in selectedPlatformsData" :key="platform.name" class="basis-full">
           <div>{{ platform.name }}</div>
-          <div class="flex flex-wrap">
-            <div v-for="version in platform.possibleVersions" :key="`${platform.name}-${version}`" class="ml-2 py-1">
-              <InputCheckbox
-                :v-model="pendingVersion.platformDependencies[platform.enumName]"
-                :rules="platformVersionRules"
-                :label="version"
-                :value="version"
-                @change="togglePlatformVersion(version, platform.enumName)"
-              />
-            </div>
+          <div class="mt-2">
+            <InputTag v-model="pendingVersion.platformDependencies[platform.enumName]" :options="platform?.possibleVersions" :rules="platformVersionRules" />
           </div>
         </div>
       </div>
@@ -299,5 +291,5 @@ useHead(
 
 <route lang="yaml">
 meta:
-requireProjectPerm: ["CREATE_VERSION"]
+  requireProjectPerm: ["CREATE_VERSION"]
 </route>
