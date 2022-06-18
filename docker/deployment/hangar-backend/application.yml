@@ -14,7 +14,7 @@ hangar:
 
   announcements:
     -
-      text: "This is a staging server for testing purposes. Data could be deleted at any time. email confirmations are disabled. If you wanna help test, sneak into #hangar-dev"
+      text: "This is a staging server for testing purposes. Data could be deleted at any time. That said, signups are open, please test stuff and report and feedback on github or discord!"
       color: "#ff544b"
 
   sso:
