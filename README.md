@@ -2,7 +2,7 @@
 
 This is the repository for Hangar, a plugin repository used for Paper plugins and similar software.
 
-Hangar is loosely based off of [Ore](https://github.com/SpongePowered/Ore), created by the Sponge project, 
+Hangar is loosely based off of [Ore](https://github.com/SpongePowered/Ore), created by the Sponge project,
 but rebuilt from the ground up using the Spring Boot Framework in Java for the backend and nuxt (and vuetify) for the frontend (which is partially server rendered).
 We would like to thank all Ore contributors. Without them, this project would never have been possible.
 
@@ -26,7 +26,7 @@ Fork the project and pull it in your IDE.
 
 * Docker is required in order to run the PostgreSQL database.
 * Java 17 or higher.
-* [Yarn]
+* [pnpm]
 ### Setting up
 To get the project running locally, you need to follow a few steps:
 1. To get the dummy database up and running, move to the docker folder `cd docker` then run `docker-compose -f dev-db.yml up -d` (`-d` as an optional parameter to run the containers in the background).
@@ -52,13 +52,13 @@ Projects/
 
 ### Prerequisites
 * Docker is required for all parts of this environment except the frontend
-* [Yarn]
+* [pnpm]
 ### Setting up
 To get both Hangar and HangarAuth running locally:
 1. Setup HangarAuth
-   1. See [HangarAuth README](https://github.com/HangarMC/HangarAuth/blob/master/README.md)
-   2. Start HangarAuth's docker services
-   3. Create HangarAuth's hydra client
+    1. See [HangarAuth README](https://github.com/HangarMC/HangarAuth/blob/master/README.md)
+    2. Start HangarAuth's docker services
+    3. Create HangarAuth's hydra client
 2. Move to Hangar's frontend directory `Hangar/frontend`. In that directory, run `pnpm install` followed by `pnpm run dev`.
 3. Set up the hangar client in hydra (see [HangarAuth README](https://github.com/HangarMC/HangarAuth/blob/master/README.md))
 4. Navigate to http://localhost:3000 and login.
@@ -78,7 +78,7 @@ Deployment happens via Docker, checkout the stack in the docker folder. The Spri
 
 ## Translations [![Crowdin](https://badges.crowdin.net/e/b13e6a1c05002365ee9031712112bd63/localized.svg)](https://hangar.crowdin.com/hangar)
 
-Hangar uses Crowdin for translations. The easiest way to help to translate is sign up to Crowdin at https://hangar.crowdin.com/hangar, 
+Hangar uses Crowdin for translations. The easiest way to help to translate is sign up to Crowdin at https://hangar.crowdin.com/hangar,
 joining the project and just add new translations or comment on or up/down-vote existing translations.  
 You can learn more about navigating the Crowdin UI here: https://support.crowdin.com/online-editor/
 
@@ -90,7 +90,7 @@ You might want to set the env var `TRANSLATION_MODE` to true, in order to get wa
 
 ## Contributing
 
-There is a bunch of stuff to do, some of that is noted in the [**Roadmap Project**](https://github.com/PaperMC/Hangar/projects/1). 
+There is a bunch of stuff to do, some of that is noted in the [**Roadmap Project**](https://github.com/PaperMC/Hangar/projects/1).
 Your best bet is joining #development on the [Hangar Discord](https://discord.gg/zvrAEbvJ4a) and just discussing with us.
 All contributions are very welcome, we will not be able to finish this alone!
 
@@ -98,8 +98,8 @@ Updating the frontend dependencies can be done best by running `npx npm-check -u
 
 ## License
 
-Most of the frontend is a fork of Ore, licensed under MIT [here](https://github.com/SpongePowered/Ore/blob/staging/LICENSE.txt). 
+Most of the frontend is a fork of Ore, licensed under MIT [here](https://github.com/SpongePowered/Ore/blob/staging/LICENSE.txt).
 The rest is new code (but created in reference of Ore) and is licensed under the MIT license too.
 
-[Yarn]: https://yarnpkg.com/
+[pnpm]: https://pnpm.io/installation
 [HangarAuth]: https://github.com/HangarMC/HangarAuth
