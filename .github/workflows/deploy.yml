@@ -64,18 +64,18 @@ jobs:
           CI: true
         run: (cd frontend && pnpm lint:eslint)
 
-      - name: Sync forth and back with crowdin
-        uses: crowdin/github-action@1.4.0
-        with:
-          upload_sources: true
-          download_translations: true
-          push_translations: false
-          create_pull_request: false
-          skip_untranslated_strings: true
-          config: 'crowdin.yml'
-          crowdin_branch_name: master
-        env:
-          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+      # - name: Sync forth and back with crowdin
+      #   uses: crowdin/github-action@1.4.0
+      #   with:
+      #     upload_sources: true
+      #     download_translations: true
+      #     push_translations: false
+      #     create_pull_request: false
+      #     skip_untranslated_strings: true
+      #     config: 'crowdin.yml'
+      #     crowdin_branch_name: master
+      #   env:
+      #     CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
       - name: Build frontend
         env:
