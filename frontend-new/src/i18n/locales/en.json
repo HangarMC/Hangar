@@ -855,7 +855,7 @@
       "VersionVisibilityChanged": "The version's visibility state was changed",
       "VersionDeleted": "The version was deleted",
       "VersionCreated": "A new version was uploaded",
-      "VersionDescriptionEdited": "The version description was edited",
+      "VersionDescriptionChanged": "The version description was changed",
       "VersionReviewStateChanged": "The version's review state was changed",
       "VersionPluginDependencyAdded": "A plugin dependency was added",
       "VersionPluginDependencyEdited": "A plugin dependency was edited",

@@ -45,7 +45,7 @@ public class LogAction<LC extends LogContext<? extends LoggedActionTable, LC>> {
     public static final LogAction<VersionContext> VERSION_VISIBILITY_CHANGED = new LogAction<>(PGLoggedAction.VERSION_VISIBILITY_CHANGED, "Version Visibility Changed");
     public static final LogAction<VersionContext> VERSION_DELETED = new LogAction<>(PGLoggedAction.VERSION_DELETED, "Version Deleted");
     public static final LogAction<VersionContext> VERSION_CREATED = new LogAction<>(PGLoggedAction.VERSION_CREATED, "Version Created");
-    public static final LogAction<VersionContext> VERSION_DESCRIPTION_EDITED = new LogAction<>(PGLoggedAction.VERSION_DESCRIPTION_EDITED, "Version Description Edited");
+    public static final LogAction<VersionContext> VERSION_DESCRIPTION_CHANGED = new LogAction<>(PGLoggedAction.VERSION_DESCRIPTION_CHANGED, "Version Description Changed");
     public static final LogAction<VersionContext> VERSION_REVIEW_STATE_CHANGED = new LogAction<>(PGLoggedAction.VERSION_REVIEW_STATE_CHANGED, "Version Review State Changed");
 
     public static final LogAction<VersionContext> VERSION_PLUGIN_DEPENDENCIES_ADDED = new LogAction<>(PGLoggedAction.VERSION_PLUGIN_DEPENDENCIES_ADDED, "Version Plugin Dependency Added");

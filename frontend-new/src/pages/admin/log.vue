@@ -65,7 +65,7 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
         </template>
       </template>
       <template #item_oldState="{ item }">
-        <template v-if="item.contextType === 'PAGE' && item.oldState">
+        <template v-if="(item.contextType === 'PAGE' || item.action.pgLoggedAction === 'version_description_changed') && item.oldState">
           <MarkdownModal :markdown="item.oldState" :title="i18n.t('userActionLog.markdownView')">
             <template #activator="{ on }">
               <Button size="small" v-on="on">
@@ -83,21 +83,23 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
         </template>
       </template>
       <template #item_newState="{ item }">
-        <template v-if="item.contextType === 'PAGE'">
-          <MarkdownModal :markdown="item.newState" :title="i18n.t('userActionLog.markdownView')">
-            <template #activator="{ on }">
-              <Button size="small" v-on="on">
-                {{ i18n.t("userActionLog.markdownView") }}
-              </Button>
-            </template>
-          </MarkdownModal>
-          <DiffModal :left="item.oldState" :right="item.newState" :title="i18n.t('userActionLog.diffView')">
-            <template #activator="{ on }">
-              <Button size="small" class="ml-2" v-on="on">
-                {{ i18n.t("userActionLog.diffView") }}
-              </Button>
-            </template>
-          </DiffModal>
+        <template v-if="item.contextType === 'PAGE' || item.action.pgLoggedAction === 'version_description_changed'">
+          <div class="flex gap-2">
+            <MarkdownModal :markdown="item.newState" :title="i18n.t('userActionLog.markdownView')">
+              <template #activator="{ on }">
+                <Button size="small" v-on="on">
+                  {{ i18n.t("userActionLog.markdownView") }}
+                </Button>
+              </template>
+            </MarkdownModal>
+            <DiffModal :left="item.oldState" :right="item.newState" :title="i18n.t('userActionLog.diffView')">
+              <template #activator="{ on }">
+                <Button size="small" v-on="on">
+                  {{ i18n.t("userActionLog.diffView") }}
+                </Button>
+              </template>
+            </DiffModal>
+          </div>
         </template>
         <template v-else-if="item.action.pgLoggedAction === 'project_icon_changed'">
           <span v-if="item.newState === '#empty'">default</span>

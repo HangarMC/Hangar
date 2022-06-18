@@ -35,7 +35,7 @@ public class PGLoggedAction extends PGobject {
     public static final PGLoggedAction VERSION_VISIBILITY_CHANGED = new PGLoggedAction("version_visibility_changed");
     public static final PGLoggedAction VERSION_DELETED = new PGLoggedAction("version_deleted");
     public static final PGLoggedAction VERSION_CREATED = new PGLoggedAction("version_created");
-    public static final PGLoggedAction VERSION_DESCRIPTION_EDITED = new PGLoggedAction("version_description_edited");
+    public static final PGLoggedAction VERSION_DESCRIPTION_CHANGED = new PGLoggedAction("version_description_changed");
     public static final PGLoggedAction VERSION_REVIEW_STATE_CHANGED = new PGLoggedAction("version_review_state_changed");
 
     public static final PGLoggedAction VERSION_PLUGIN_DEPENDENCIES_ADDED = new PGLoggedAction("version_plugin_dependencies_added");

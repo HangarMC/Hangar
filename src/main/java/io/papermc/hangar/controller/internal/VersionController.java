@@ -121,7 +121,7 @@ public class VersionController extends HangarComponent {
         String newDesc = stringContent.getContent().trim();
         projectVersionTable.setDescription(newDesc);
         versionService.updateProjectVersionTable(projectVersionTable);
-        actionLogger.version(LogAction.VERSION_DESCRIPTION_EDITED.create(VersionContext.of(projectId, versionId), newDesc, oldDesc));
+        actionLogger.version(LogAction.VERSION_DESCRIPTION_CHANGED.create(VersionContext.of(projectId, versionId), newDesc, oldDesc));
     }
 
     @Unlocked
