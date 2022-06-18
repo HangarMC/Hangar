@@ -6,7 +6,7 @@ import { HangarProject, IPlatform, PendingVersion, ProjectChannel } from "hangar
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import Steps, { Step } from "~/components/design/Steps.vue";
-import { computed, reactive, Ref, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import Alert from "~/components/design/Alert.vue";
 import InputFile from "~/components/ui/InputFile.vue";
 import InputText from "~/components/ui/InputText.vue";
@@ -72,28 +72,14 @@ const isFile = computed(() => pendingVersion.value?.isFile);
 const currentChannel = computed(() => channels.value.find((c) => c.name === pendingVersion.value?.channelName));
 
 const platforms = computed<IPlatform[]>(() => {
-  if (pendingVersion.value?.isFile) {
-    const result: IPlatform[] = [];
-    for (const platformDependenciesKey in pendingVersion.value.platformDependencies) {
-      result.push(backendData.platforms!.get(platformDependenciesKey as Platform)!);
-    }
-    return result;
-  }
   return [...backendData.platforms!.values()];
 });
-
-const platformsForPluginDeps = computed<Platform[]>(() => {
-  const platforms: Platform[] = [];
-  if (pendingVersion.value?.isFile) {
-    for (const key of Object.keys(pendingVersion.value!.pluginDependencies)) {
-      if (pendingVersion.value?.pluginDependencies[key as Platform].length) {
-        platforms.push(key as Platform);
-      }
-    }
-  } else {
-    platforms.push(...selectedPlatforms.value);
+const selectedPlatformsData = computed<IPlatform[]>(() => {
+  const result: IPlatform[] = [];
+  for (const platformName of selectedPlatforms.value) {
+    result.push(backendData.platforms!.get(platformName as Platform)!);
   }
-  return platforms;
+  return result;
 });
 
 const platformVersionRules = computed(() => {
@@ -165,14 +151,23 @@ function addChannel(channel: ProjectChannel) {
   }
 }
 
-function togglePlatformVersion(value: string[], platform: Platform) {
-  if (value.length === 0 && selectedPlatforms.value.includes(platform)) {
-    delete selectedPlatforms.value[selectedPlatforms.value.indexOf(platform)];
-  } else if (!selectedPlatforms.value.includes(platform)) {
+function togglePlatform(platform: Platform) {
+  if (selectedPlatforms.value.includes(platform)) {
+    selectedPlatforms.value = selectedPlatforms.value.filter((p) => p !== platform);
+  } else {
     selectedPlatforms.value.push(platform);
   }
 }
 
+function togglePlatformVersion(version: string, platform: Platform) {
+  const versions = pendingVersion.value!.platformDependencies[platform];
+  const index = version.indexOf(version);
+  if (index !== -1) {
+    versions.push(version);
+  } else {
+    versions.splice(index, 1);
+  }
+}
 useHead(
   useSeo(
     i18n.t("version.new.title") + " | " + props.project.name,
@@ -183,12 +178,11 @@ useHead(
 );
 </script>
 
-<!-- todo functionality, design, i18n, validation, all the things -->
 <template>
   <Steps v-model="selectedStep" :steps="steps" button-lang-key="version.new.steps.">
     <template #artifact>
-      <p>Please specify the artifact. You can either upload a jar or a zip file, or you can link to an external site.</p>
-      <Alert class="my-4 text-white" type="info">An external link needs to be a direct download link!</Alert>
+      <p>{{ t("version.new.form.artifactTitle") }}</p>
+      <Alert class="my-4 text-white" type="info">{{ t("version.new.form.externalLinkAlert") }}</Alert>
       <div class="flex flex-wrap">
         <InputFile v-model="file" accept=".jar,.zip" />
         <span class="basis-full my-3">or</span>
@@ -196,7 +190,6 @@ useHead(
       </div>
     </template>
     <template #basic>
-      <p>We detected the following settings based on the artifact you provided. Please fill out the remaining fields.</p>
       <div class="flex flex-wrap">
         <!-- TODO validate version string against existing versions. complex because they only have to be unique per-platform -->
         <div :class="'basis-full mt-2 ' + (isFile ? 'md:basis-4/12' : 'md:basis-6/12')">
@@ -212,7 +205,7 @@ useHead(
           <InputText v-model="pendingVersion.externalUrl" :label="t('version.new.form.externalUrl')" />
         </div>
 
-        <div class="basis-8/12 mt-2">
+        <div class="basis-6/12 mt-2">
           <InputSelect v-model="pendingVersion.channelName" :values="channels" item-text="name" item-value="name" :label="t('version.new.form.channel')" />
         </div>
         <div class="basis-4/12 mt-2">
@@ -225,54 +218,71 @@ useHead(
             </template>
           </ChannelModal>
         </div>
+        <!-- todo: forum integration -->
+        <!--<div class="basis-4/12 mt-2">
+          <InputCheckbox v-model="pendingVersion.forumPost" :label="t('version.new.form.forumPost')" />
+        </div>-->
+      </div>
 
+      <h2 class="mt-5 text-xl">{{ t("version.new.form.tags") }}</h2>
+      <div class="flex flex-wrap">
         <div class="basis-4/12 mt-2">
           <InputCheckbox v-model="pendingVersion.unstable" :label="t('version.new.form.unstable')" />
         </div>
         <div class="basis-4/12 mt-2">
           <InputCheckbox v-model="pendingVersion.recommended" :label="t('version.new.form.recommended')" />
         </div>
-        <div class="basis-4/12 mt-2">
-          <InputCheckbox v-model="pendingVersion.forumPost" :label="t('version.new.form.forumPost')" />
-        </div>
+      </div>
+
+      <h2 class="mt-5 mb-2 text-xl">{{ t("version.new.form.platforms") }}</h2>
+      <div v-for="platform in platforms" :key="platform.name" class="ml-2">
+        <InputCheckbox
+          :v-model="selectedPlatforms.includes(platform.enumName)"
+          :rules="platformVersionRules"
+          :label="platform.name"
+          @change="togglePlatform(platform.enumName)"
+        />
       </div>
     </template>
     <template #dependencies>
-      <p>We detected the following dependencies based on the artifact you provided. Please fill out the remaining fields.</p>
-      <h2 class="text-xl mt-2">{{ t("version.new.form.platforms") }}</h2>
+      <h2 class="text-xl mt-2 mb-2">{{ t("version.new.form.platformVersions") }}</h2>
 
-      <div class="flex flex-wrap">
-        <div v-for="platform in platforms" :key="platform.name" class="basis-full">
+      <!-- todo: preload platforms and dependencies from previous version in same channel -->
+      <!-- todo: better version selector (dropdown with search input, tags-like) -->
+      <div class="flex flex-wrap gap-y-3 mb-5">
+        <div v-for="platform in selectedPlatformsData" :key="platform.name" class="basis-full">
           <div>{{ platform.name }}</div>
           <div class="flex flex-wrap">
-            <div v-for="version in platform.possibleVersions" :key="`${platform.name}-${version}`" class="ml-2">
+            <div v-for="version in platform.possibleVersions" :key="`${platform.name}-${version}`" class="ml-2 py-1">
               <InputCheckbox
-                v-model="pendingVersion.platformDependencies[platform.enumName]"
+                :v-model="pendingVersion.platformDependencies[platform.enumName]"
                 :rules="platformVersionRules"
                 :label="version"
                 :value="version"
-                @change="togglePlatformVersion($event, platform.enumName)"
+                @change="togglePlatformVersion(version, platform.enumName)"
               />
             </div>
           </div>
         </div>
       </div>
 
-      <h2 class="text-xl mt-4">{{ t("version.new.form.dependencies") }}</h2>
-      <div v-for="platform in platformsForPluginDeps" :key="platform" class="basis-full">
-        <div>{{ backendData.platforms.get(platform).name }}</div>
-        <DependencyTable
-          :key="`${platform}-deps-table`"
-          :platform="platform"
-          :version="pendingVersion"
-          :no-editing="pendingVersion.isFile"
-          :new-deps-prop="pendingVersion.pluginDependencies[platform]"
-          :is-new="!pendingVersion.isFile"
-        />
+      <h2 class="text-xl mb-2">{{ t("version.new.form.dependencies") }}</h2>
+      <div class="flex flex-wrap gap-y-3">
+        <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
+          <div>{{ platform.name }}</div>
+          <DependencyTable
+            :key="`${platform}-deps-table`"
+            :platform="platform.enumName"
+            :version="pendingVersion"
+            :no-editing="pendingVersion.isFile"
+            :new-deps-prop="pendingVersion.pluginDependencies[platform.enumName]"
+            :is-new="!pendingVersion.isFile"
+          />
+        </div>
       </div>
     </template>
     <template #changelog>
-      <p>Whats new?</p>
+      <h2 class="text-xl mt-2">{{ t("version.new.form.changelogTitle") }}</h2>
       <MarkdownEditor
         ref="descriptionEditor"
         class="mt-2"
@@ -289,5 +299,5 @@ useHead(
 
 <route lang="yaml">
 meta:
-  requireProjectPerm: ["CREATE_VERSION"]
+requireProjectPerm: ["CREATE_VERSION"]
 </route>

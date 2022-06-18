@@ -29,11 +29,11 @@ public class VersionChannelFilter implements Filter<VersionChannelFilterInstance
         return new VersionChannelFilterInstance(webRequest.getParameterValues(getSingleQueryParam()));
     }
 
-    static class VersionChannelFilterInstance implements FilterInstance {
+    public static class VersionChannelFilterInstance implements FilterInstance {
 
         private final String[] channels;
 
-        VersionChannelFilterInstance(String[] channels) {
+        public VersionChannelFilterInstance(String[] channels) {
             this.channels = channels;
         }
 

@@ -119,7 +119,8 @@ function getNonChannelTags(version: Version): ApiTag[] {
   <div class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-9/12 flex-grow">
       <ul>
-        <Pagination :items="versions.result">
+        <Alert v-if="!versions.result || versions.result.length === 0" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
+        <Pagination v-else :items="versions.result">
           <template #default="{ item }">
             <li class="mb-4">
               <Card>
@@ -167,7 +168,6 @@ function getNonChannelTags(version: Version): ApiTag[] {
             </li>
           </template>
         </Pagination>
-        <Alert v-if="!versions.result || versions.result.length === 0" type="warning"> {{ i18n.t("version.page.noVersions") }} </Alert>
       </ul>
     </section>
 

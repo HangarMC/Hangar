@@ -397,7 +397,12 @@
           "desc": "What's new in this release?"
         },
         "platforms": "Platforms",
-        "dependencies": "Plugin Dependencies"
+        "platformVersions": "Platform Versions",
+        "tags": "Version Tags",
+        "dependencies": "Dependencies",
+        "changelogTitle": "What's new?",
+        "artifactTitle": "You can either upload a jar file or link to an external site.",
+        "externalLinkAlert": "An external link needs to be a direct download link!"
       },
       "steps": {
         "1": {

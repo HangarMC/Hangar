@@ -54,7 +54,7 @@ function selectTab(tab: Tab) {
           </Link>
         </li>
       </ul>
-      <hr class="mb-2" />
+      <hr v-if="!vertical" class="mb-2" />
     </div>
     <div class="flex-grow">
       <template v-for="tab in tabs" :key="tab.value">

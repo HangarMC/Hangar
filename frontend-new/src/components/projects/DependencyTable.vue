@@ -50,12 +50,12 @@ function getNamespace(namespace: ProjectNamespace) {
 
 function deleteDep(index: number) {
   deletedDeps.value.push(props.version.pluginDependencies[props.platform][index].name);
-  delete newDepResults.value[index];
+  newDepResults.value.splice(index, 1);
 }
 
 function deleteNewDep(index: number) {
-  delete newDeps.value[index];
-  delete newDepResults.value[index];
+  newDepResults.value.splice(index, 1);
+  newDeps.value.splice(index, 1);
 }
 
 function reset() {
