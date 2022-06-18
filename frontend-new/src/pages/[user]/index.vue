@@ -24,6 +24,7 @@ import Tooltip from "~/components/design/Tooltip.vue";
 import IconMdiWrench from "~icons/mdi/wrench";
 import IconMdiKey from "~icons/mdi/key";
 import IconMdiCalendar from "~icons/mdi/calendar";
+import IconMdiEyeOffOutline from "~icons/mdi/eye-off-outline";
 import OrgVisibilityModal from "~/components/modals/OrgVisibilityModal.vue";
 import LockUserModal from "~/components/modals/LockUserModal.vue";
 
@@ -109,11 +110,12 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
           <ul>
             <li v-for="(orgRole, orgName) in organizations" :key="orgName">
               <router-link :to="'/' + orgName" class="flex items-center mb-2">
-                <UserAvatar :username="orgName" :avatar-url="avatarUrl(orgName)" size="xs" :disable-link="true" />
+                <UserAvatar :username="orgName" :avatar-url="avatarUrl(orgName)" size="xs" :disable-link="true" class="flex-shrink-0" />
                 &nbsp;
                 {{ orgName }}
                 &nbsp; ({{ orgRole.role.title }}) &nbsp;
-                <span v-if="organizationVisibility && organizationVisibility[orgName]"> Hidden </span>
+                <span class="flex-grow"></span>
+                <IconMdiEyeOffOutline v-if="organizationVisibility && organizationVisibility[orgName]"></IconMdiEyeOffOutline>
               </router-link>
             </li>
           </ul>

@@ -62,11 +62,12 @@ hangar:
   ga-code: "UA-38006759-9"
 
   licenses:
+    - "Unspecified"
     - "MIT"
     - "Apache 2.0"
     - "GPL"
     - "LPGL"
-    - "(custom)"
+    - "Other"
 
   announcements:
       -

@@ -22,6 +22,7 @@ import InputTextarea from "~/components/ui/InputTextarea.vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, maxLength, validProjectName, pattern, url, requiredIf } from "~/composables/useValidationHelpers";
 import Spinner from "~/components/design/Spinner.vue";
+import Link from "~/components/design/Link.vue";
 
 interface NewProjectForm extends ProjectSettingsForm {
   ownerId: ProjectOwner["userId"];
@@ -64,7 +65,10 @@ const rules = {
 };
 const v = useVuelidate(rules, form);
 
-const isCustomLicense = computed(() => form.value.settings.license.type === "(custom)");
+const unspecifiedLicenseName = "Unspecified";
+form.value.settings.license.type = unspecifiedLicenseName;
+const isCustomLicense = computed(() => form.value.settings.license.type === "Other");
+const licenseUnset = computed(() => form.value.settings.license.type === unspecifiedLicenseName);
 
 const selectedStep = ref("tos");
 const steps: Step[] = [
@@ -88,6 +92,9 @@ const bbCodeTabs: Tab[] = [
   { value: "preview", header: i18n.t("project.new.step4.preview"), disable: () => !converter.value.markdown },
   { value: "tutorial", header: i18n.t("project.new.step4.tutorial") },
 ];
+function saveButtonDisabled() {
+  return form.value.pageContent === converter.value.markdown || (!form.value.pageContent && converter.value.markdown.length === 0);
+}
 
 useHead(useSeo("New Project", null, route, null));
 
@@ -135,7 +142,8 @@ function createProject() {
   <Steps v-model="selectedStep" :steps="steps" button-lang-key="project.new.step">
     <template #tos>
       <!-- eslint-disable-next-line vue/no-v-html -->
-      <p v-html="i18n.t('project.new.step1.text')" />
+      <p v-html="i18n.t('project.new.step1.text1')" />
+      <Link to="/guidelines"><p v-html="i18n.t('project.new.step1.text2')" /></Link>
     </template>
     <template #basic>
       <div class="flex flex-wrap">
@@ -200,12 +208,13 @@ function createProject() {
             :values="backendData.licenseOptions"
             :label="i18n.t('project.new.step3.type')"
             :rules="[required()]"
+            :model-value="unspecifiedLicenseName"
           />
         </div>
         <div v-if="isCustomLicense" class="basis-full md:basis-8/12 mt-4">
           <InputText v-model.trim="form.settings.license.name" :label="i18n.t('project.new.step3.customName')" :rules="[requiredIf()(isCustomLicense)]" />
         </div>
-        <div class="basis-full mt-4" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
+        <div v-if="!licenseUnset" class="basis-full mt-4" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
           <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" :rules="[url()]" />
         </div>
       </div>
@@ -240,13 +249,32 @@ function createProject() {
             </div>
             <div class="basis-full"><InputTextarea v-model="converter.markdown" :rows="6" :label="i18n.t('project.new.step4.convertLabels.output')" /></div>
           </div>
+
+          <div class="inline-flex items-center gap-2">
+            <Button block class="my-2" :disabled="saveButtonDisabled()" @click="form.pageContent = converter.markdown">
+              <IconMdiContentSave />
+              {{ i18n.t("project.new.step4.saveAsHomePage") }}
+            </Button>
+            <Transition>
+              <span v-if="form.pageContent === converter.markdown" class="inline-flex items-center"
+                >{{ i18n.t("project.new.step4.saved") }} <IconMdiCheck
+              /></span>
+            </Transition>
+          </div>
         </template>
         <template #preview>
-          <Button block color="primary" class="my-2" :disabled="form.pageContent === converter.markdown" @click="form.pageContent = converter.markdown">
-            <IconMdiContentSave />
-            {{ i18n.t("project.new.step4.saveAsHomePage") }}
-          </Button>
           <Markdown :raw="converter.markdown" />
+          <div class="inline-flex items-center gap-2">
+            <Button block class="my-2" :disabled="saveButtonDisabled()" @click="form.pageContent = converter.markdown">
+              <IconMdiContentSave />
+              {{ i18n.t("project.new.step4.saveAsHomePage") }}
+            </Button>
+            <Transition>
+              <span v-if="form.pageContent === converter.markdown" class="inline-flex items-center"
+                >{{ i18n.t("project.new.step4.saved") }} <IconMdiCheck
+              /></span>
+            </Transition>
+          </div>
         </template>
         <template #tutorial>
           {{ i18n.t("project.new.step4.tutorialInstructions.line1") }}<br />
@@ -280,3 +308,14 @@ function createProject() {
 meta:
   requireLoggedIn: true
 </route>
+
+<style lang="scss" scoped>
+.v-enter-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>

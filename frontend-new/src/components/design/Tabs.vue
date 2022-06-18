@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed } from "vue";
+import Button from "~/components/design/Button.vue";
 import Link from "~/components/design/Link.vue";
 
 const emit = defineEmits<{
@@ -38,23 +39,22 @@ function selectTab(tab: Tab) {
 <template>
   <div :class="{ 'flex flex-col <md:space-y-2 md:(flex-row space-x-2)': vertical, 'flex flex-row flex-wrap': !vertical }">
     <div :class="{ 'min-w-13ch': vertical, 'basis-full': !vertical }">
-      <ul :class="{ 'flex flex-row <md:space-x-2 md:(flex-col space-y-2)': vertical, 'flex flex-row gap-2 mb-2': !vertical }">
-        <li
-          v-for="tab in tabs"
-          :key="tab.value"
-          :class="'rounded p-2 ' + (internalValue === tab.value ? 'bg-gray-200 dark:(bg-black)' : 'bg-gray-300 dark:(bg-gray-600)')"
-        >
-          <Link
-            v-if="!tab.show || tab.show()"
-            :disabled="tab.disable && tab.disable()"
-            :class="internalValue === tab.value ? 'underline' : '!font-semibold'"
-            :href="'#' + tab.value"
-            @click.prevent="selectTab(tab)"
-          >
-            {{ tab.header }}
+      <ul :class="{ 'flex flex-row <md:space-x-2 md:(flex-col space-y-2)': vertical, 'flex flex-row gap-1': !vertical }">
+        <li v-for="tab in tabs" :key="tab.value">
+          <Link v-if="!tab.show || tab.show()" :disabled="tab.disable && tab.disable()" :href="'#' + tab.value" @click.prevent="selectTab(tab)">
+            <Button
+              v-if="!tab.show || tab.show()"
+              :disabled="tab.disable && tab.disable()"
+              :class="internalValue === tab.value ? 'underline' : '!font-semibold'"
+              size="medium"
+              button-type="transparent"
+            >
+              {{ tab.header }}
+            </Button>
           </Link>
         </li>
       </ul>
+      <hr class="mb-2" />
     </div>
     <div class="flex-grow">
       <template v-for="tab in tabs" :key="tab.value">

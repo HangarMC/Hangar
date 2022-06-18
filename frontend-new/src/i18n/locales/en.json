@@ -185,13 +185,14 @@
     "new": {
       "step1": {
         "title": "User Agreement",
-        "text": "A project contains your downloads and the documentation for your plugin.<br>Before continuing, please review the <a href=\"#\">Hangar Submission Guidelines.</a>",
+        "text1": "A project contains your downloads and the documentation for your plugin.",
+        "text2": "Before continuing, please review the Hangar Submission Guideline.",
         "continue": "Agree",
         "back": "Abort"
       },
       "step2": {
         "title": "Basic Settings",
-        "description": "Please provide the basic settings for this project",
+        "description": "Provide the basic settings for this project.",
         "continue": "Continue",
         "back": "Back",
         "userSelect": "Create as...",
@@ -201,7 +202,7 @@
       },
       "step3": {
         "title": "Additional Settings",
-        "description": "You can provide these (optional) additional settings. You can change them in your project settings at any time.",
+        "description": "Optional: You can provide these additional settings, or change them in your project settings at any time after the project creation.",
         "continue": "Continue",
         "back": "Back",
         "optional": "Optional",
@@ -219,12 +220,13 @@
       },
       "step4": {
         "title": "Import from Spigot",
-        "description": "You can optionally use this step to convert your existing description for your project from spigot. If you safely skip this and design your description from scratch once you got your project created.",
+        "description": "Optional: You can convert an existing description for your project from the Spigot resource forums. You can safely skip this and design your description from scratch once you created the project.",
         "continue": "Create",
         "back": "Back",
         "optional": "Optional",
         "convert": "Convert",
         "saveAsHomePage": "Save as Home Page",
+        "saved": "Saved",
         "convertLabels": {
           "bbCode": "Paste your BBCode here",
           "output": "Markdown Output"
@@ -612,7 +614,7 @@
   },
   "visibility": {
     "notice": {
-      "new": "This project is new, and will not be shown to others until a version has been uploaded. If a version is not uploaded over a longer time the project will be deleted.",
+      "new": "This project will not be shown to others until a version has been uploaded. If no version is uploaded over a longer period of time, the project will be deleted.",
       "needsChanges": "This project requires changes",
       "needsApproval": "You have sent the project for review",
       "softDelete": "Project deleted by {0}"
