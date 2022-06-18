@@ -39,11 +39,11 @@ public class VersionPlatformFilter implements Filter<VersionPlatformFilterInstan
         return new VersionPlatformFilterInstance(conversionService.convert(webRequest.getParameterValues(getSingleQueryParam()), Platform[].class));
     }
 
-    static class VersionPlatformFilterInstance implements FilterInstance {
+    public static class VersionPlatformFilterInstance implements FilterInstance {
 
         private final Platform[] platforms;
 
-        VersionPlatformFilterInstance(Platform[] platforms) {
+        public VersionPlatformFilterInstance(Platform[] platforms) {
             this.platforms = platforms;
         }
 

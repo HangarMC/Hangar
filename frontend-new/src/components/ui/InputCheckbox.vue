@@ -30,10 +30,10 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
       class="appearance-none h-4 w-4 bg-gray-300 mr-2 rounded-sm group-hover:bg-gray-400 !checked:bg-primary-400"
       dark="bg-gray-600 group-hover:bg-gray-500"
       :cursor="disabled ? 'auto' : 'pointer'"
-      v-bind="$attrs"
       :disabled="disabled"
       @blur="v.$touch()"
     />
+    <!-- v-bind="$attrs" hope this wasn't actually needed anywhere -->
     <icon-mdi-check-bold class="absolute h-4 w-4 opacity-0 text-white" />
     <slot name="label">
       <template v-if="props.label">{{ props.label }}</template>

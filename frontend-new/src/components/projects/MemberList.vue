@@ -165,7 +165,7 @@ interface EditableMember {
         :error-messages="addErrors"
         @search="doSearch"
       />
-      <DropdownButton :name="i18n.t('general.add')" class="ml-2 relative">
+      <DropdownButton :name="i18n.t('general.add')" class="ml-2">
         <template #button-label>
           <IconMdiAccountPlus class="ml-1" />
         </template>

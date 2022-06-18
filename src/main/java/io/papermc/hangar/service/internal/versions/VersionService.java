@@ -1,9 +1,14 @@
 package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
+import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.api.project.version.PluginDependency;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
@@ -22,13 +27,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class VersionService extends HangarComponent {
 
     private final ProjectVersionsDAO projectVersionsDAO;
+    private final VersionsApiDAO versionsApiDAO;
     private final HangarVersionsDAO hangarVersionsDAO;
     private final ProjectVisibilityService projectVisibilityService;
     private final ProjectVersionVisibilityService projectVersionVisibilityService;
@@ -36,8 +44,9 @@ public class VersionService extends HangarComponent {
     private final ProjectFiles projectFiles;
 
     @Autowired
-    public VersionService(ProjectVersionsDAO projectVersionDAO, HangarVersionsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, ProjectVersionVisibilityService projectVersionVisibilityService, VersionDependencyService versionDependencyService, ProjectFiles projectFiles) {
+    public VersionService(ProjectVersionsDAO projectVersionDAO, VersionsApiDAO versionsApiDAO, HangarVersionsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, ProjectVersionVisibilityService projectVersionVisibilityService, VersionDependencyService versionDependencyService, ProjectFiles projectFiles) {
         this.projectVersionsDAO = projectVersionDAO;
+        this.versionsApiDAO = versionsApiDAO;
         this.hangarVersionsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
         this.projectVersionVisibilityService = projectVersionVisibilityService;
@@ -77,6 +86,25 @@ public class VersionService extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         return versions.stream().map(v -> versionDependencyService.addDependenciesAndTags(v.getId(), v)).collect(Collectors.toList());
+    }
+
+    public List<PluginDependency> getLastVersionDependencies(String author, String slug, @Nullable String channel, String platformName) {
+        Platform platform = Platform.valueOf(platformName.toUpperCase());
+
+        RequestPagination pagination = new RequestPagination(1L, 0L);
+        pagination.getFilters().add(new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
+        if (channel != null) {
+            // Find the last version with the specified channel
+            pagination.getFilters().add(new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
+        }
+
+        Long versionId = versionsApiDAO.getVersions(author, slug, false, getHangarUserId(), pagination).entrySet().stream().map(Map.Entry::getKey).findAny().orElse(null);
+        if (versionId != null) {
+            return new ArrayList<>(versionsApiDAO.getPluginDependencies(versionId, platform));
+        }
+
+        // Try again with any channel, else empty
+        return channel != null ? getLastVersionDependencies(author, slug, null, platformName) : List.of();
     }
 
     @Transactional

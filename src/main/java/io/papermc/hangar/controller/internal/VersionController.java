@@ -2,6 +2,7 @@ package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.common.Platform;
@@ -195,5 +196,12 @@ public class VersionController extends HangarComponent {
             return ResponseEntity.status(HttpStatus.PRECONDITION_REQUIRED).body(token);
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
+    @GetMapping(path = "/version/{author}/{slug}/lastdependencies")
+    public ResponseEntity<List<PluginDependency>> getLastVersionDependencies(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String channel, @RequestParam String platform) {
+        return ResponseEntity.ok(versionService.getLastVersionDependencies(author, slug, channel, platform));
     }
 }
