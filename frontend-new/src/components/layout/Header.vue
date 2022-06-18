@@ -229,7 +229,7 @@ function isRecent(date: string): boolean {
             </MenuButton>
             <!-- todo: fix hard position change on smaller displays -->
             <MenuItems
-              class="absolute flex flex-col mt-1 z-10 rounded border-t-2 border-primary-400 background-default drop-shadow-xl overflow-auto shadow-md <2xl:right-0 max-w-115"
+              class="absolute flex flex-col mt-1 z-10 rounded border-t-2 border-primary-400 background-default filter drop-shadow-md overflow-auto <2xl:right-0 max-w-115"
             >
               <div v-if="notifications.length === 0">
                 <span class="flex shadow-0 p-2 mt-2 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
@@ -279,7 +279,7 @@ function isRecent(date: string): boolean {
                 {{ authStore.user.name }}
               </div>
             </MenuButton>
-            <MenuItems class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 background-default drop-shadow-xl">
+            <MenuItems class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 background-default filter drop-shadow-md">
               <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
               <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
               <DropdownItem :href="'/' + authStore.user.name + '/settings/api-keys'">{{ t("nav.user.apiKeys") }}</DropdownItem>
