@@ -126,7 +126,7 @@ async function requiresConfirmation() {
 
 <template>
   <!-- todo make this actually look nice -->
-  <div class="flex">
+  <div class="flex items-center">
     <!--  && Object.keys(project.recommendedVersions).length !== 1 -->
     <DropdownButton v-if="platformSelection" :button-size="small ? 'small' : 'large'">
       <template #button-label>
