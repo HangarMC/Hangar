@@ -11,13 +11,13 @@ import DropdownItem from "~/components/design/DropdownItem.vue";
 import { avatarUrl } from "~/composables/useUrlHelper";
 import { hasPerms } from "~/composables/usePerm";
 import { useBackendDataStore } from "~/store/backendData";
-import { Role } from "hangar-api";
+import { PaginatedResult, Role, User } from "hangar-api";
 import { useRoute, useRouter } from "vue-router";
-import { useInternalApi } from "~/composables/useApi";
+import { useApi, useInternalApi } from "~/composables/useApi";
 import { useContext } from "vite-ssr/vue";
 import IconMdiClock from "~icons/mdi/clock";
 import Tooltip from "~/components/design/Tooltip.vue";
-import InputText from "~/components/ui/InputText.vue";
+import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -49,6 +49,7 @@ const canEdit = computed<boolean>(() => {
 const saving = ref<boolean>(false);
 const search = ref<string>("");
 const addErrors = ref<string[]>([]);
+const result = ref<string[]>([]);
 
 watch(search, () => {
   addErrors.value = [];
@@ -101,6 +102,16 @@ function convertMember(member: JoinableMember): EditableMember {
   };
 }
 
+async function doSearch(val: string) {
+  result.value = ["Dum", "Dum2"];
+  const users = await useApi<PaginatedResult<User>>("users", false, "get", {
+    query: val,
+    limit: 25,
+    offset: 0,
+  });
+  result.value = users.result.filter((u) => !props.members.some((m) => m.user.name === u.name)).map((u) => u.name);
+}
+
 interface EditableMember {
   name: string;
   roleId: number;
@@ -146,8 +157,14 @@ interface EditableMember {
       </DropdownButton>
     </div>
     <div v-if="canEdit" class="items-center inline-flex mt-3 w-full">
-      <!-- todo fancy search completion -->
-      <InputText v-model="search" :label="i18n.t('form.memberList.addUser')" :error-messages="addErrors" />
+      <InputAutocomplete
+        id="membersearch"
+        v-model="search"
+        :values="result"
+        :label="i18n.t('form.memberList.addUser')"
+        :error-messages="addErrors"
+        @search="doSearch"
+      />
       <DropdownButton :name="i18n.t('general.add')" class="ml-2 relative">
         <template #button-label>
           <IconMdiAccountPlus class="ml-1" />

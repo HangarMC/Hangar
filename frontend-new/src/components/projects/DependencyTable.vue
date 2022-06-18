@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { DependencyVersion, PluginDependency, ProjectNamespace } from "hangar-api";
+import { DependencyVersion, PaginatedResult, PluginDependency, Project, ProjectNamespace } from "hangar-api";
 import { Platform } from "~/types/enums";
 import Table from "~/components/design/Table.vue";
 import { useI18n } from "vue-i18n";
@@ -8,7 +8,11 @@ import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import InputText from "~/components/ui/InputText.vue";
 import { required } from "~/composables/useValidationHelpers";
 import { computed, ref } from "vue";
+import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
+import { useApi } from "~/composables/useApi";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const i18n = useI18n();
 const t = i18n.t;
 
@@ -70,6 +74,24 @@ function reset() {
   }
 }
 
+async function onSearch(val: string, name: string) {
+  if (val) {
+    const projects = await useApi<PaginatedResult<Project>>(`projects?relevance=true&limit=25&offset=0&q=${val.replace("/", " ")}`);
+    results.value[name] = projects.result
+      .filter((p) => p.namespace.owner !== route.params.user || p.namespace.slug !== route.params.project)
+      .map((p) => p.namespace);
+  }
+}
+
+async function onNewDepSearch(val: string, index: number) {
+  if (val) {
+    const projects = await useApi<PaginatedResult<Project>>(`projects?relevance=true&limit=25&offset=0&q=${val.replace("/", " ")}`);
+    newDepResults.value[index] = projects.result
+      .filter((p) => p.namespace.owner !== route.params.user || p.namespace.slug !== route.params.project)
+      .map((p) => p.namespace);
+  }
+}
+
 const filteredDeps = computed(() => {
   return props.version.pluginDependencies[props.platform]?.filter((d) => !deletedDeps.value.includes(d.name)) || [];
 });
@@ -94,7 +116,7 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
         <tr v-for="(dep, index) in filteredDeps" :key="`${platform}-${dep.name}`">
           <td>{{ dep.name }}</td>
           <td><InputCheckbox v-model="dep.required" /></td>
-          <td>
+          <td class="flex flex-wrap gap-2">
             <InputText
               v-model.trim="dep.externalUrl"
               :placeholder="t('version.new.form.externalUrl')"
@@ -102,23 +124,16 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
               :rules="dep.namespace !== null && Object.keys(dep.namespace).length !== 0 ? [] : [required(t('version.new.form.externalUrl'))]"
               clearable
             />
-            <!-- todo fix autocomplete -->
-            <v-autocomplete
+            <InputAutocomplete
+              :id="dep.name"
               v-model="dep.namespace"
-              dense
-              hide-details
-              hide-no-data
               :placeholder="t('version.new.form.hangarProject')"
-              class="mb-2"
-              :items="results[dep.name]"
+              :values="results[dep.name]"
               :item-text="getNamespace"
               :item-value="getNamespace"
-              return-object
-              clearable
-              auto-select-first
               :disabled="!!dep.externalUrl"
               :rules="!!dep.externalUrl ? [] : [required(t('version.new.form.hangarProject'))]"
-              @update:search-input="onSearch($event, dep.name)"
+              @search="onSearch($event, dep.name)"
             />
           </td>
           <td v-if="!noEditing">
@@ -143,7 +158,7 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
             />
           </td>
           <td><InputCheckbox v-model="newDep.required" :ripple="false" /></td>
-          <td>
+          <td class="flex flex-wrap gap-2">
             <InputText
               v-model.trim="newDep.externalUrl"
               :placeholder="t('version.new.form.externalUrl')"
@@ -151,23 +166,16 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
               :rules="newDep.namespace !== null && Object.keys(newDep.namespace).length !== 0 ? [] : [required(t('version.new.form.externalUrl'))]"
               clearable
             />
-            <!-- todo fix autocomplete -->
-            <v-autocomplete
+            <InputAutocomplete
+              :id="newDep.name"
               v-model="newDep.namespace"
-              dense
-              hide-details
-              hide-no-data
               :placeholder="t('version.new.form.hangarProject')"
-              class="mb-2"
-              :items="newDepResults[index]"
+              :values="newDepResults[index]"
               :item-text="getNamespace"
               :item-value="getNamespace"
-              return-object
-              clearable
-              auto-select-first
               :disabled="!!newDep.externalUrl"
               :rules="!!newDep.externalUrl ? [] : [required(t('version.new.form.hangarProject'))]"
-              @update:search-input="onNewDepSearch($event, index)"
+              @search="onNewDepSearch($event, index)"
             />
           </td>
           <td v-if="!noEditing">

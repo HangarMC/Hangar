@@ -35,6 +35,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, value, e
     :loading="loading || v.$pending"
     :label="label"
     :value="value"
+    :disabled="disabled"
   >
     <textarea v-model="value" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" @blur="v.$touch()" />
   </InputWrapper>

@@ -32,7 +32,7 @@ function onFileChange(e: InputEvent) {
 </script>
 
 <template>
-  <InputWrapper v-slot="slotProps" :errors="errors" :has-error="hasError" :loading="loading || v.$pending" :label="label" :value="file">
+  <InputWrapper v-slot="slotProps" :errors="errors" :has-error="hasError" :loading="loading || v.$pending" :label="label" :value="file" :disabled="disabled">
     <!-- todo make button fancy -->
     <input type="file" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" @change="onFileChange" />
   </InputWrapper>

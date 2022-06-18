@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { useValidation } from "~/composables/useValidationHelpers";
 import { ValidationRule } from "@vuelidate/core";
 import InputWrapper from "~/components/ui/InputWrapper.vue";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: object | string | boolean | number | null | undefined): void;
+  (e: "search", value: object | string | boolean | number | null | undefined): void;
 }>();
 const internalVal = computed({
   get: () => props.modelValue,
@@ -19,10 +20,11 @@ export interface Option {
 
 const props = withDefaults(
   defineProps<{
+    id: string;
     modelValue: object | string | boolean | number | null;
     values: Option[] | Record<string, any> | string[];
-    itemValue?: string;
-    itemText?: string;
+    itemValue?: string | ((object: object) => string);
+    itemText?: string | ((object: object) => string);
     disabled?: boolean;
     label?: string;
     loading?: boolean;
@@ -39,6 +41,29 @@ const props = withDefaults(
     rules: () => [],
   }
 );
+
+function getValue(val: Record<string, string>) {
+  if (typeof props.itemValue === "function") {
+    return props.itemValue(val);
+  } else if (val[props.itemValue]) {
+    return val[props.itemValue];
+  } else {
+    return val;
+  }
+}
+
+function getText(val: Record<string, string>) {
+  if (typeof props.itemText === "function") {
+    return props.itemText(val);
+  } else if (val[props.itemText]) {
+    return val[props.itemText];
+  } else {
+    return val;
+  }
+}
+
+watch(internalVal, (val) => emit("search", val));
+
 const errorMessages = computed(() => props.errorMessages);
 const { v, errors, hasError } = useValidation(props.label, props.rules, internalVal, errorMessages);
 </script>
@@ -53,10 +78,11 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
     :value="internalVal"
     :disabled="disabled"
   >
-    <select v-model="internalVal" :disabled="disabled" :class="slotProps.class" class="appearance-none" @blur="v.$touch()">
-      <option v-for="val in values" :key="val[itemValue] || val" :value="val[itemValue] || val" class="dark:bg-[#191e28]">
-        {{ val[itemText] || val }}
+    <input v-model="internalVal" type="text" v-bind="$attrs" :class="slotProps.class" :list="id" @blur="v.$touch()" />
+    <datalist :id="id">
+      <option v-for="val in values" :key="getValue(val)" :value="getValue(val)">
+        {{ getText(val) }}
       </option>
-    </select>
+    </datalist>
   </InputWrapper>
 </template>

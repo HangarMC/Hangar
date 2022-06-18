@@ -49,17 +49,16 @@ async function save() {
   deps.push(...depTable.value.newDeps);
   deps = deps.filter((d) => !depTable.value.deletedDeps.includes(d.name));
 
-  useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/savePluginDependencies`, true, "post", {
-    platform: platform.value?.name?.toUpperCase(),
-    pluginDependencies: deps,
-  })
-    .catch((e) => handleRequestError(e, ctx, i18n))
-    .then(async () => {
-      await router.go(0);
-    })
-    .finally(() => {
-      loading.value = false;
+  try {
+    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/savePluginDependencies`, true, "post", {
+      platform: platform.value?.name?.toUpperCase(),
+      pluginDependencies: deps,
     });
+    await router.go(0);
+  } catch (e) {
+    handleRequestError(e, ctx, i18n);
+  }
+  loading.value = false;
 }
 
 onMounted(() =>

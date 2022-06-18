@@ -5,6 +5,7 @@ import Spinner from "~/components/design/Spinner.vue";
 const props = defineProps<{
   errors?: string[];
   hasError: boolean;
+  disabled?: boolean;
   label?: string;
   counter?: boolean;
   maxlength?: number;
@@ -14,7 +15,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <ErrorTooltip :error-messages="errors" class="w-full" :class="{ filled: value, error: hasError }">
+  <ErrorTooltip :error-messages="disabled ? null : errors" class="w-full" :class="{ filled: value, error: hasError && !disabled }">
     <label
       :class="[
         'relative flex w-full outline-none p-2 border-1px rounded',

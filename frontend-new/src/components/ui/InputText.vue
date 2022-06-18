@@ -18,6 +18,7 @@ const props = defineProps<{
   maxlength?: number;
   loading?: boolean;
   errorMessages?: string[];
+  disabled?: boolean;
   rules?: ValidationRule<string | undefined>[];
 }>();
 
@@ -37,6 +38,7 @@ defineExpose({ v });
     :loading="loading || v.$pending"
     :label="label"
     :value="value"
+    :disabled="disabled"
   >
     <input v-model="value" type="text" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" @blur="v.$touch()" />
   </InputWrapper>
