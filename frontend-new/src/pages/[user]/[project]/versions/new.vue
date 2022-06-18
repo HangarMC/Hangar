@@ -238,7 +238,7 @@ useHead(
       <h2 class="mt-5 mb-2 text-xl">{{ t("version.new.form.platforms") }}</h2>
       <div v-for="platform in platforms" :key="platform.name" class="ml-2">
         <InputCheckbox
-          :v-model="selectedPlatforms.includes(platform.enumName)"
+          :model-value="selectedPlatforms.includes(platform.enumName)"
           :rules="platformVersionRules"
           :label="platform.name"
           @change="togglePlatform(platform.enumName)"
