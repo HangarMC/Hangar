@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import Popper from "vue3-popper";
-import { defineComponent, onMounted, ref } from "vue";
 
 const props = withDefaults(
   defineProps<{
@@ -12,31 +11,15 @@ const props = withDefaults(
     show: null,
   }
 );
-
-const ServerOnly = defineComponent({
-  name: "ServerOnly",
-  setup(_, { slots }) {
-    const show = ref(true);
-    onMounted(() => {
-      show.value = false;
-    });
-    return () => (show.value && slots.default ? slots.default() : null);
-  },
-});
 </script>
 
 <template>
-  <ClientOnly>
-    <Popper v-bind="$attrs" :hover="hover" open-delay="200" close-delay="100" :show="show">
-      <slot />
-      <template #content="props">
-        <slot name="content" v-bind="props" />
-      </template>
-    </Popper>
-  </ClientOnly>
-  <ServerOnly>
+  <Popper :hover="hover" open-delay="200" close-delay="100" :show="show">
     <slot />
-  </ServerOnly>
+    <template #content>
+      <slot name="content" />
+    </template>
+  </Popper>
 </template>
 
 <style>

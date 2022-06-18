@@ -23,6 +23,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, maxLength, validProjectName, pattern, url, requiredIf } from "~/composables/useValidationHelpers";
 import Spinner from "~/components/design/Spinner.vue";
 import Link from "~/components/design/Link.vue";
+import { usePossibleOwners } from "~/composables/useApiHelper";
 
 interface NewProjectForm extends ProjectSettingsForm {
   ownerId: ProjectOwner["userId"];
@@ -37,8 +38,7 @@ const router = useRouter();
 const route = useRoute();
 const settings = useSettingsStore();
 
-// TODO move to useApi
-const projectOwners = await useInternalApi<ProjectOwner[]>("projects/possibleOwners");
+const projectOwners = await usePossibleOwners();
 const projectCreationErrors: Ref<string[]> = ref([]);
 const projectLoading = ref(true);
 const form = ref<NewProjectForm>({
@@ -50,7 +50,9 @@ const form = ref<NewProjectForm>({
   } as unknown as ProjectSettingsForm["settings"],
 } as NewProjectForm);
 
-form.value.ownerId = projectOwners[0].userId;
+if (projectOwners.value) {
+  form.value.ownerId = projectOwners.value[0].userId;
+}
 
 const converter = ref({
   bbCode: "",
@@ -119,8 +121,8 @@ function createProject() {
     form.value.pageContent = "# " + form.value.name + "  \nWelcome to your new project!";
   }
   useInternalApi<string>("projects/create", true, "post", form.value)
-    .then((url) => {
-      router.push(url);
+    .then((u) => {
+      router.push(u);
     })
     .catch((err) => {
       projectCreationErrors.value = [];
@@ -143,6 +145,7 @@ function createProject() {
     <template #tos>
       <!-- eslint-disable-next-line vue/no-v-html -->
       <p v-html="i18n.t('project.new.step1.text1')" />
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <Link to="/guidelines"><p v-html="i18n.t('project.new.step1.text2')" /></Link>
     </template>
     <template #basic>

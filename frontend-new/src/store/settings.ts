@@ -9,6 +9,7 @@ import { SUPPORTED_LOCALES } from "~/i18n";
 import { useInternalApi } from "~/composables/useApi";
 
 export const useSettingsStore = defineStore("settings", () => {
+  settingsLog("defineSettingsStore");
   const darkMode: Ref<boolean> = ref(false);
   const locale: Ref<string> = ref("en");
 

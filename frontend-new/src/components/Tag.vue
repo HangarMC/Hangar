@@ -63,11 +63,11 @@ const ccColor = computed(() => {
         background: ccColor?.background,
         'border-color': ccColor?.background,
       }"
-      class="tag flex rounded px-2 py-1"
+      class="tag flex rounded px-2 py-1 text-0.8em"
     >
       {{ shortForm && cData ? cData : cName }}
     </span>
-    <span v-if="cData && !shortForm" class="tag flex bg-gray-100 rounded px-2 py-1 text-black">{{ cData }}</span>
+    <span v-if="cData && !shortForm" class="tag flex bg-gray-100 rounded px-2 py-1 text-black text-0.8em">{{ cData }}</span>
   </div>
 </template>
 
@@ -88,8 +88,6 @@ const ccColor = computed(() => {
 
   .tag {
     border: 1px solid #dcdcdc;
-    font-size: 0.8em;
-    line-height: 1;
   }
 }
 </style>

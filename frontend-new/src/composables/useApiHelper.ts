@@ -12,6 +12,7 @@ import {
   Note,
   Organization,
   ProjectChannel,
+  ProjectOwner,
   ProjectPage,
   ReviewQueueEntry,
   RoleTable,
@@ -111,6 +112,10 @@ export async function useVersionApprovals(blocking = true) {
     () => useInternalApi<{ underReview: ReviewQueueEntry[]; notStarted: ReviewQueueEntry[] }>("admin/approval/versions", false),
     blocking
   );
+}
+
+export async function usePossibleOwners(blocking = true) {
+  return useInitialState("usePossibleOwners", () => useInternalApi<ProjectOwner[]>("projects/possibleOwners"), blocking);
 }
 
 export async function useOrgVisibility(user: string, blocking = true) {

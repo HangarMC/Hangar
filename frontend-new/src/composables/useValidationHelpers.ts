@@ -54,7 +54,6 @@ export const withI18nMessage = <T extends ValidationRule | ValidatorWrapper>(val
       if (overrideMsg) {
         msg = overrideMsg;
       }
-      console.log("translate", msg, overrideMsg, params);
       return I18n.value.global.t(msg, params);
     },
   })(validator, { withArguments: true });

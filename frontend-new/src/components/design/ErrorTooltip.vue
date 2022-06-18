@@ -21,9 +21,11 @@ const hasError = computed<boolean>(() => {
 </script>
 
 <template>
-  <!-- todo this throws hydration errors -->
-  <Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" :content="formattedError" class="text-center">
+  <Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" class="text-center">
     <slot />
+    <template #content>
+      {{ formattedError || "error" }}
+    </template>
   </Popper>
 </template>
 
@@ -34,6 +36,7 @@ const hasError = computed<boolean>(() => {
   border-radius: 0.375rem;
   color: #fff;
 }
+
 :deep(.popper #arrow::before),
 :deep(.popper:hover),
 :deep(.popper:hover > #arrow::before) {
