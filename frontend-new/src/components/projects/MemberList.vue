@@ -120,8 +120,8 @@ interface EditableMember {
       :key="member.user.name"
       class="p-2 w-full border border-gray-100 dark:border-gray-800 rounded inline-flex flex-row space-x-4"
     >
-      <UserAvatar :username="member.user.name" :avatar-url="avatarUrl(member.user.name)" size="sm" />
-      <div class="flex-grow">
+      <UserAvatar :username="member.user.name" :avatar-url="avatarUrl(member.user.name)" size="sm" class="flex-shrink-0" />
+      <div class="flex-grow truncate">
         <p class="font-semibold">
           <Link :to="'/' + member.user.name">{{ member.user.name }}</Link>
         </p>
@@ -148,7 +148,7 @@ interface EditableMember {
     <div v-if="canEdit" class="items-center inline-flex mt-3 w-full">
       <!-- todo fancy search completion -->
       <InputText v-model="search" :label="i18n.t('form.memberList.addUser')" :error-messages="addErrors" />
-      <DropdownButton :name="i18n.t('general.add')" class="ml-2 relative" menu-position="right-0">
+      <DropdownButton :name="i18n.t('general.add')" class="ml-2 relative">
         <template #button-label>
           <IconMdiAccountPlus class="ml-1" />
         </template>
