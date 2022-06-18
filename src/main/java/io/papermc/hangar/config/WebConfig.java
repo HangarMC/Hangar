@@ -82,7 +82,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     protected void addCorsMappings(CorsRegistry registry) {
         CorsRegistration corsRegistration = registry.addMapping("/api/internal/**");
         if (hangarConfig.isDev()) {
-            corsRegistration.allowedOrigins("http://localhost:3000", "http://localhost:3333");
+            corsRegistration.allowedOrigins("http://localhost:3333");
         } else {
             corsRegistration.allowedOrigins(hangarConfig.getBaseUrl());
         }

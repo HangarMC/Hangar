@@ -10,20 +10,20 @@ services:
       - 'backend'
     environment:
       # keep these in sync with gh-action!
-      proxyHost: "http://hangar_new_backend:8080"
+      proxyHost: "http://hangar_backend:8080"
       authHost: "https://hangar-auth.benndorf.dev"
       host: "0.0.0.0"
       PUBLIC_HOST: "https://hangar.benndorf.dev"
     stdin_open: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.hangar-new.loadbalancer.server.port=1337"
-      - "traefik.http.routers.hangar-new.rule=Host(`hangar.benndorf.dev`) || Host(`staging.hangarmc.dev`)"
-      - "traefik.http.routers.hangar-new.entrypoints=web-secure"
-      - "traefik.http.routers.hangar-new.tls=true"
-      - "traefik.http.routers.hangar-new.tls.certresolver=default"
-      - "traefik.http.routers.hangar-new.tls.domains[0].main=benndorf.dev"
-      - "traefik.http.routers.hangar-new.tls.domains[0].sans=*.benndorf.dev"
+      - "traefik.http.services.hangar.loadbalancer.server.port=1337"
+      - "traefik.http.routers.hangar.rule=Host(`hangar.benndorf.dev`) || Host(`staging.hangarmc.dev`)"
+      - "traefik.http.routers.hangar.entrypoints=web-secure"
+      - "traefik.http.routers.hangar.tls=true"
+      - "traefik.http.routers.hangar.tls.certresolver=default"
+      - "traefik.http.routers.hangar.tls.domains[0].main=benndorf.dev"
+      - "traefik.http.routers.hangar.tls.domains[0].sans=*.benndorf.dev"
     networks:
       - web
   backend:
@@ -67,14 +67,14 @@ services:
     image: mailhog/mailhog:latest
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.hangar-new-mail.loadbalancer.server.port=8025"
-      - "traefik.http.routers.hangar-new-mail.middlewares=basicauth@file"
-      - "traefik.http.routers.hangar-new-mail.rule=Host(`hangar-new-mail.minidigger.me`) || Host(`hangar-mail.benndorf.dev`)"
-      - "traefik.http.routers.hangar-new-mail.entrypoints=web-secure"
-      - "traefik.http.routers.hangar-new-mail.tls=true"
-      - "traefik.http.routers.hangar-new-mail.tls.certresolver=default"
-      - "traefik.http.routers.hangar-new-mail.tls.domains[0].main=minidigger.me"
-      - "traefik.http.routers.hangar-new-mail.tls.domains[0].sans=*.minidigger.me"
+      - "traefik.http.services.hangar-mail.loadbalancer.server.port=8025"
+      - "traefik.http.routers.hangar-mail.middlewares=basicauth@file"
+      - "traefik.http.routers.hangar-mail.rule=Host(`hangar-mail.minidigger.me`) || Host(`hangar-mail.benndorf.dev`)"
+      - "traefik.http.routers.hangar-mail.entrypoints=web-secure"
+      - "traefik.http.routers.hangar-mail.tls=true"
+      - "traefik.http.routers.hangar-mail.tls.certresolver=default"
+      - "traefik.http.routers.hangar-mail.tls.domains[0].main=minidigger.me"
+      - "traefik.http.routers.hangar-mail.tls.domains[0].sans=*.minidigger.me"
     networks:
       - web
 

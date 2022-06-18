@@ -34,7 +34,7 @@ To get the project running locally, you need to follow a few steps:
 2. Run the Spring Boot application. You can do it in the CLI with `mvn spring-boot:run` or if you're using IntelliJ, it's included in the run configurations.
 3. Move to the `frontend` directory: `cd ../frontend`. In that directory, run `pnpm install`. This will install all the needed Node modules.
 5. After the installation, run `pnpm run dev` in the frontend directory to initiate the build and launch. Changes you do to the frontend will be reloaded automatically.
-6. After that browse to http://localhost:3000 and if all went well, Hangar should be up and running.
+6. After that browse to http://localhost:333 and if all went well, Hangar should be up and running.
 
 ### Notes
 * The Spring Boot configuration file that is used by this environment is located at `Hangar/src/main/resources/application.yml`
@@ -61,7 +61,7 @@ To get both Hangar and HangarAuth running locally:
    3. Create HangarAuth's hydra client
 2. Move to Hangar's frontend directory `Hangar/frontend`. In that directory, run `pnpm install` followed by `pnpm run dev`.
 3. Set up the hangar client in hydra (see [HangarAuth README](https://github.com/HangarMC/HangarAuth/blob/master/README.md))
-4. Navigate to http://localhost:3000 and login.
+4. Navigate to http://localhost:3333 and login.
 
 
 ### Notes

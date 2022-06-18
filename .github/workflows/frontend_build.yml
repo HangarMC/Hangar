@@ -7,7 +7,6 @@ on:
   pull_request:
     paths:
       - 'frontend/**'
-      - 'frontend-new/**'
 
 concurrency:
   group: ${{ github.ref }}
@@ -39,50 +38,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
-      - name: Cache Yarn
-        uses: actions/cache@v2
-        with:
-          path: "~/.cache/yarn"
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
       - name: Install frontend deps
         env:
           CI: true
-        run: (cd frontend-new && pnpm install --frozen-lockfile && cd server && pnpm install --frozen-lockfile)
-
-      - name: Install frontend deps old
-        env:
-          CI: true
-        run: (cd frontend && yarn install --frozen-lockfile --cache-folder ~/.cache/yarn)
+        run: (cd frontend && pnpm install --frozen-lockfile && cd server && pnpm install --frozen-lockfile)
 
       - name: Lint frontend
         env:
           CI: true
-        run: (cd frontend-new && pnpm lint:eslint)
-
-      - name: Lint frontend old
-        env:
-          CI: true
-        run: (cd frontend && yarn lint)
+        run: (cd frontend && pnpm lint:eslint)
 
       - name: Build frontend
         env:
           CI: true
           # keep these in sync with compose!
-          proxyHost: "http://hangar_new_backend:8080"
+          proxyHost: "http://hangar_backend:8080"
           authHost: "https://hangar-auth.benndorf.dev"
           host: "0.0.0.0"
           PUBLIC_HOST: "https://hangar.benndorf.dev"
-        run: (cd frontend-new && pnpm build && cd server && pnpm build)
+        run: (cd frontend && pnpm build && cd server && pnpm build)
 
-      - name: Build frontend old
-        env:
-          CI: true
-          # keep these in sync with compose!
-          proxyHost: "http://hangar_new_backend:8080"
-          authHost: "https://hangar-auth.benndorf.dev"
-          host: "0.0.0.0"
-          PUBLIC_HOST: "https://hangar-old.benndorf.dev"
-        run: (cd frontend && yarn build)
