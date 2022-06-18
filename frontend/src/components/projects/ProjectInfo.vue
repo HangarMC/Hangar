@@ -81,6 +81,7 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
         type="project"
         :prop-visibility="project.visibility"
         :post-url="`projects/visibility/${project.projectId}`"
+        class="min-h-10"
       />
       <DonationModal
         v-if="project.settings.donation.enable"

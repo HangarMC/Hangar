@@ -12,7 +12,7 @@ watch(
   props.open,
   (val) => {
     if (val) {
-      for (let item of val) {
+      for (const item of val) {
         expanded.value[item] = true;
       }
     }

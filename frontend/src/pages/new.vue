@@ -127,7 +127,7 @@ function createProject() {
     .catch((err) => {
       projectCreationErrors.value = [];
       if (err.response?.data.fieldErrors != null) {
-        for (let e of err.response.data.fieldErrors) {
+        for (const e of err.response.data.fieldErrors) {
           projectCreationErrors.value.push(i18n.t(e.errorMsg));
         }
       }
@@ -258,11 +258,11 @@ function createProject() {
               <IconMdiContentSave />
               {{ i18n.t("project.new.step4.saveAsHomePage") }}
             </Button>
-            <Transition>
+            <transition>
               <span v-if="form.pageContent === converter.markdown" class="inline-flex items-center"
                 >{{ i18n.t("project.new.step4.saved") }} <IconMdiCheck
               /></span>
-            </Transition>
+            </transition>
           </div>
         </template>
         <template #preview>
@@ -272,11 +272,11 @@ function createProject() {
               <IconMdiContentSave />
               {{ i18n.t("project.new.step4.saveAsHomePage") }}
             </Button>
-            <Transition>
+            <transition>
               <span v-if="form.pageContent === converter.markdown" class="inline-flex items-center"
                 >{{ i18n.t("project.new.step4.saved") }} <IconMdiCheck
               /></span>
-            </Transition>
+            </transition>
           </div>
         </template>
         <template #tutorial>

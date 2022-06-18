@@ -4,6 +4,9 @@ import { useHead } from "@vueuse/head";
 import { settingsLog } from "~/composables/useLog";
 import { useAuthStore } from "~/store/auth";
 
+// eslint-disable-next-line import/no-unresolved
+import "virtual:windi-devtools";
+
 const authStore = useAuthStore();
 const settingsStore = useSettingsStore();
 settingsStore.loadSettingsClient();

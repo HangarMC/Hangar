@@ -22,7 +22,7 @@
   width: 100px;
   height: 100%;
   box-shadow: 0 0 10px var(--loading-color), 0 0 5px var(--loading-color);
-  opacity: 1.0;
+  opacity: 1;
 
   transform: rotate(3deg) translate(0px, -4px);
 }
@@ -50,6 +50,10 @@
 }
 
 @keyframes nprogress-spinner {
-  0%   { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

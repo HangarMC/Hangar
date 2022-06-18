@@ -8,7 +8,7 @@ defineProps<{
 if (!import.meta.env.SSR) {
   onMounted(() => {
     if (document.querySelector("[data-lottie-loaded=true]")) return;
-    let script = document.createElement("script");
+    const script = document.createElement("script");
     script.setAttribute("src", "https://unpkg.com/@lottiefiles/lottie-player@1.5.7/dist/lottie-player.js");
     script.setAttribute("data-lottie-loaded", "true");
     document.head.append(script);

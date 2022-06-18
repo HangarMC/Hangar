@@ -150,38 +150,41 @@ function isRecent(date: string): boolean {
             leave-from-class="translate-y-0 opacity-100"
             leave-to-class="translate-y-1 opacity-0"
           >
-            <PopoverPanel
-              class="fixed z-10 w-9/10 background-default top-1/14 left-1/20 drop-shadow-md rounded-md border-top-primary text-xs p-[20px]"
-              md="absolute w-max top-10 rounded-none rounded-bl-md rounded-r-md"
-            >
-              <p class="text-base font-semibold color-primary mb-4">Hangar</p>
-              <div class="grid grid-cols-2">
-                <router-link
-                  v-for="link in navBarMenuLinksHangar"
-                  :key="link.label"
-                  :to="{ name: link.link }"
-                  class="flex items-center rounded-md px-6 py-2"
-                  hover="text-primary-400 bg-primary-0"
-                >
-                  <component :is="link.icon" class="mr-3 text-[1.2em]" />
-                  {{ link.label }}
-                </router-link>
-              </div>
+            <!-- dummy diff to make the transition work on pages where template root has multiple elements -->
+            <div id="#navbarMenuLinks">
+              <PopoverPanel
+                class="fixed z-10 w-9/10 background-default top-1/14 left-1/20 filter drop-shadow-md rounded-md border-top-primary text-xs p-[20px]"
+                md="absolute w-max top-10 rounded-none rounded-bl-md rounded-r-md"
+              >
+                <p class="text-base font-semibold color-primary mb-4">Hangar</p>
+                <div class="grid grid-cols-2">
+                  <router-link
+                    v-for="link in navBarMenuLinksHangar"
+                    :key="link.label"
+                    :to="{ name: link.link }"
+                    class="flex items-center rounded-md px-6 py-2"
+                    hover="text-primary-400 bg-primary-0"
+                  >
+                    <component :is="link.icon" class="mr-3 text-[1.2em]" />
+                    {{ link.label }}
+                  </router-link>
+                </div>
 
-              <p class="text-base font-semibold color-primary mb-4 mt-10">More from Paper</p>
-              <div class="grid grid-cols-2">
-                <a
-                  v-for="link in navBarMenuLinksMoreFromPaper"
-                  :key="link.label"
-                  class="flex items-center rounded-md px-6 py-2"
-                  :href="link.link"
-                  hover="text-primary-400 bg-primary-0"
-                >
-                  <component :is="link.icon" class="mr-3 text-[1.2em]" />
-                  {{ link.label }}
-                </a>
-              </div>
-            </PopoverPanel>
+                <p class="text-base font-semibold color-primary mb-4 mt-10">More from Paper</p>
+                <div class="grid grid-cols-2">
+                  <a
+                    v-for="link in navBarMenuLinksMoreFromPaper"
+                    :key="link.label"
+                    class="flex items-center rounded-md px-6 py-2"
+                    :href="link.link"
+                    hover="text-primary-400 bg-primary-0"
+                  >
+                    <component :is="link.icon" class="mr-3 text-[1.2em]" />
+                    {{ link.label }}
+                  </a>
+                </div>
+              </PopoverPanel>
+            </div>
           </transition>
         </Popover>
 
@@ -226,7 +229,7 @@ function isRecent(date: string): boolean {
             </MenuButton>
             <!-- todo: fix hard position change on smaller displays -->
             <MenuItems
-              class="absolute flex flex-col mt-1 z-10 rounded border-t-2 border-primary-400 background-default drop-shadow-xl overflow-auto shadow-md <2xl:right-0 max-w-115"
+              class="absolute flex flex-col mt-1 z-10 rounded border-t-2 border-primary-400 background-default filter drop-shadow-md overflow-auto <2xl:right-0 max-w-115"
             >
               <div v-if="notifications.length === 0">
                 <span class="flex shadow-0 p-2 mt-2 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
@@ -276,7 +279,7 @@ function isRecent(date: string): boolean {
                 {{ authStore.user.name }}
               </div>
             </MenuButton>
-            <MenuItems class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 background-default drop-shadow-xl">
+            <MenuItems class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 background-default filter drop-shadow-md">
               <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
               <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
               <DropdownItem :href="'/' + authStore.user.name + '/settings/api-keys'">{{ t("nav.user.apiKeys") }}</DropdownItem>

@@ -103,6 +103,11 @@ export default defineConfig({
           },
         },
       },
+      colors: {
+        red: {
+          500: "#ff544b",
+        },
+      },
     },
   },
   shortcuts: {

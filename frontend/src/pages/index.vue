@@ -135,7 +135,7 @@ useHead(meta);
           leave-from-class="transform scale-100 opacity-100"
           leave-to-class="transform scale-95 opacity-0"
         >
-          <MenuItems class="absolute right-0 top-16 flex flex-col z-10 background-default drop-shadow-md rounded-md border-top-primary">
+          <MenuItems class="absolute right-0 top-16 flex flex-col z-10 background-default filter drop-shadow-md rounded-md border-top-primary">
             <MenuItem v-for="sorter in sorters" :key="sorter.id" v-slot="{ active }">
               <button :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': active }" class="p-2 text-left" @click="activeSorter = sorter.id">
                 {{ sorter.label }}

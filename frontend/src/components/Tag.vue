@@ -23,7 +23,7 @@ const ccColor = computed(() => {
     return cColor.value;
   } else {
     // https://stackoverflow.com/a/3943023
-    let background = cColor.value?.background;
+    const background = cColor.value?.background;
     let colors: number[] = [];
     if (background?.startsWith("rgb")) {
       colors = background

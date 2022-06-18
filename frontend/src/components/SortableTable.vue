@@ -27,7 +27,7 @@ const page = ref(0);
 
 function sort() {
   sorted.value = [...props.items].sort((a, b) => {
-    for (let field of Object.keys(sorter)) {
+    for (const field of Object.keys(sorter)) {
       if (sorter[field] === 0) continue;
       if (a[field] > b[field]) return sorter[field];
       if (a[field] < b[field]) return -sorter[field];
