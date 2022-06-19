@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
+import { hasPerms } from "~/composables/usePerm";
 import Button from "~/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { HangarProject, HangarVersion } from "hangar-internal";
 import { useContext } from "vite-ssr/vue";
 import { computed, onMounted, ref, watch } from "vue";
-import { Platform } from "~/types/enums";
+import { NamedPermission, Platform } from "~/types/enums";
 import { useBackendDataStore } from "~/store/backendData";
 import { useRoute, useRouter } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -84,7 +85,7 @@ onMounted(() =>
       <Button button-type="secondary" class="mt-2 ml-2" v-on="on">{{ i18n.t("general.close") }}</Button>
     </template>
     <template #activator="{ on }">
-      <Button class="text-sm" v-on="on"><IconMdiPencil /></Button>
+      <Button v-if="hasPerms(NamedPermission.EDIT_VERSION)" class="text-sm" v-on="on"><IconMdiPencil /></Button>
     </template>
   </Modal>
 </template>

@@ -469,6 +469,8 @@
       "reviewLogs": "Review logs",
       "reviewStart": "Start review",
       "setRecommended": "Set as Recommended",
+      "manage": "Management",
+      "visibility": "Visibility: {0}",
       "setRecommendedTooltip": "Set this version as recommended for {0} platform",
       "delete": "Delete",
       "hardDelete": "Delete (forever)",

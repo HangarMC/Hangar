@@ -63,6 +63,7 @@ const approvalTooltip = computed<string>(() =>
   projectVersion.value?.reviewState === ReviewState.PARTIALLY_REVIEWED ? i18n.t("version.page.partiallyApproved") : i18n.t("version.page.approved")
 );
 const platformTag = computed<Tag | null>(() => projectVersion.value?.tags.find((t) => t?.name === platform.value?.name) || null);
+const currentVisibility = computed(() => backendData.visibilities.find((v) => v.name === projectVersion.value?.visibility));
 const editingPage = ref(false);
 
 useHead(
@@ -141,40 +142,26 @@ async function restoreVersion() {
 <template>
   <div v-if="projectVersion" class="flex">
     <div>
-      <h1 class="text-3xl">
+      <h1 class="text-3xl inline-flex items-center">
         {{ projectVersion.name }}
-        <TagComponent :tag="channel" :short-form="true" />
+        <TagComponent class="ml-1" :tag="channel" :short-form="true" />
+        <span class="text-2xl">
+          <IconMdiDiamondStone v-if="projectVersion.recommended.includes(platform?.enumName)" :title="i18n.t('version.page.recommended')" />
+          <IconMdiCheckCircleOutline v-if="isReviewStateChecked" :title="approvalTooltip" />
+        </span>
       </h1>
       <h2>
         {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
       </h2>
     </div>
     <div class="mt-2 text-2xl ml-1 flex">
-      <IconMdiDiamondStone v-if="projectVersion.recommended.includes(platform?.enumName)" :title="i18n.t('version.page.recommended')" />
-      <IconMdiCheckCircleOutline v-if="isReviewStateChecked" :title="approvalTooltip" />
       <em v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy" class="ml-2 text-lg">
         {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
       </em>
     </div>
     <div class="flex-grow"></div>
     <div class="inline-flex items-center">
-      <Tooltip
-        v-if="
-          hasPerms(NamedPermission.EDIT_VERSION) &&
-          projectVersion.visibility !== Visibility.SOFT_DELETE &&
-          !projectVersion.recommended.includes(platform?.enumName)
-        "
-      >
-        <template #content>
-          <span>{{ i18n.t("version.page.setRecommendedTooltip", [platform?.name]) }}</span>
-        </template>
-        <Button size="small" class="mr-2" @click="setRecommended">
-          <IconMdiDiamond />
-          {{ i18n.t("version.page.setRecommended") }}
-        </Button>
-      </Tooltip>
-
-      <DropdownButton v-if="versionPlatforms.size > 1" class="text-xl inline ml-2" :name="platform?.name">
+      <DropdownButton v-if="versionPlatforms.size > 1" class="inline" :name="platform?.name" button-size="medium">
         <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()">{{ backendData.platforms?.get(plat)?.name }}</DropdownItem>
       </DropdownButton>
 
@@ -201,11 +188,30 @@ async function restoreVersion() {
 
     <section class="basis-full md:basis-4/12 flex-grow space-y-4">
       <Card v-if="hasPerms(NamedPermission.DELETE_VERSION)">
-        <template #header>{{ i18n.t("version.page.adminActions") }}</template>
+        <template #header>{{ i18n.t("version.page.manage") }}</template>
 
-        <span> Visibility: {{ projectVersion.visibility }} </span>
+        <span class="inline-flex items-center">
+          <IconMdiInformation class="mr-1" />
+          {{ i18n.t("version.page.visibility", [i18n.t(currentVisibility.title)]) }}
+        </span>
 
         <div class="flex gap-2 flex-wrap mt-2">
+          <Tooltip
+            v-if="
+              hasPerms(NamedPermission.EDIT_VERSION) &&
+              projectVersion.visibility !== Visibility.SOFT_DELETE &&
+              !projectVersion.recommended.includes(platform?.enumName)
+            "
+          >
+            <template #content>
+              <span>{{ i18n.t("version.page.setRecommendedTooltip", [platform?.name]) }}</span>
+            </template>
+            <Button size="small" @click="setRecommended">
+              <IconMdiDiamond class="mr-1" />
+              {{ i18n.t("version.page.setRecommended") }}
+            </Button>
+          </Tooltip>
+
           <!--todo route for user action log, with filtering-->
           <Button v-if="hasPerms(NamedPermission.VIEW_LOGS)" @click="router.push('/admin/log')">
             {{ i18n.t("version.page.userAdminLogs") }}
@@ -266,7 +272,7 @@ async function restoreVersion() {
         </div>
       </Card>
 
-      <Card>
+      <Card v-if="projectVersion.pluginDependencies[platform?.name.toUpperCase()]">
         <template #header>
           <div class="inline-flex w-full">
             <span class="flex-grow">{{ i18n.t("version.page.dependencies") }}</span>

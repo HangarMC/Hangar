@@ -152,7 +152,7 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
             </li>
 
             <span v-if="!watching || watching.result.length === 0">
-              {{ i18n.t("author.noStarred", [props.user.name]) }}
+              {{ i18n.t("author.noWatching", [props.user.name]) }}
             </span>
           </ul>
         </Card>

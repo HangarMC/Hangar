@@ -32,11 +32,21 @@ const props = withDefaults(
   }
 );
 
+const downloadNow = true;
 const loading = ref<boolean>(false);
 const selectedPlatform = ref<Platform | null>(null);
 const copySuccessful = ref<boolean>(false);
 const token = ref<string | null>(null);
 const confirmModal = ref<Modal>(null);
+const downloadLink = computed(() => {
+  if (external.value) {
+    return externalUrl.value;
+  }
+
+  const versionString = props.platformSelection ? "recommended" : props.version!.name;
+  const platform = props.platformSelection ? selectedPlatform.value : props.platform!.name;
+  return `${window.location.protocol}//${window.location.host}/api/v1/projects/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${versionString}/${platform}/download`;
+});
 
 if (props.platformSelection) {
   const keys = props.project.recommendedVersions ? Object.keys(props.project.recommendedVersions) : [];
@@ -49,14 +59,7 @@ const external = computed(() =>
 const externalUrl = computed(() => (props.platformSelection ? props.project.recommendedVersions[selectedPlatform.value!] : props.version!.externalUrl));
 
 function copyDownloadUrl() {
-  let url;
-  if (external.value) {
-    url = externalUrl.value;
-  } else {
-    const versionString = props.platformSelection ? "recommended" : props.version!.name;
-    const platform = props.platformSelection ? selectedPlatform.value : props.platform!.name;
-    url = `${window.location.protocol}//${window.location.host}/api/v1/projects/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${versionString}/${platform}/download`;
-  }
+  const url = downloadLink.value;
   if (url) {
     navigator.clipboard.writeText(url);
     copySuccessful.value = true;
@@ -70,6 +73,9 @@ async function checkAndDownloadPlatform(platform: any) {
 }
 
 async function checkAndDownload() {
+  if (downloadNow) {
+    return;
+  }
   if (await requiresConfirmation()) {
     confirmModal.value?.open();
     return;
@@ -95,7 +101,6 @@ function download(): Promise<any> {
 
 async function requiresConfirmation() {
   if (token.value != null) {
-    console.log("FUCK");
     return true;
   }
   if (external.value) {
@@ -128,23 +133,33 @@ async function requiresConfirmation() {
   <!-- todo make this actually look nice -->
   <div class="flex items-center">
     <!--  && Object.keys(project.recommendedVersions).length !== 1 -->
-    <DropdownButton v-if="platformSelection" :button-size="small ? 'small' : 'large'">
+    <DropdownButton v-if="platformSelection" :button-size="small ? 'medium' : 'large'">
       <template #button-label>
         <span class="items-center inline-flex">
           <IconMdiDownloadOutline class="mr-1" />
           {{ external ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}
         </span>
       </template>
-      <DropdownItem v-for="(pl, i) in Object.keys(project.recommendedVersions)" :key="i" class="flex items-center" @click="checkAndDownloadPlatform(pl)">
+      <DropdownItem
+        v-for="(pl, i) in Object.keys(project.recommendedVersions)"
+        :key="i"
+        class="flex items-center"
+        :href="downloadNow ? downloadLink : undefined"
+        target="_blank"
+        rel="noopener noreferrer"
+        @click="checkAndDownloadPlatform(pl)"
+      >
         <PlatformLogo :platform="pl" :size="24" class="mr-1" />
         {{ backendData.platforms.get(pl).name }}
       </DropdownItem>
     </DropdownButton>
 
-    <Button v-else :size="small ? 'small' : 'large'" :loading="loading" @click="checkAndDownload">
-      <IconMdiDownloadOutline />
-      {{ external ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}
-    </Button>
+    <a v-else :href="downloadNow ? downloadLink : undefined" target="_blank" rel="noopener noreferrer">
+      <Button :size="small ? 'medium' : 'large'" :loading="loading" @click="checkAndDownload">
+        <IconMdiDownloadOutline class="mr-1" />
+        {{ external ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}
+      </Button>
+    </a>
 
     <Modal ref="confirmModal" :title="i18n.t('version.page.confirmation.title', [project.name, version ? version.name : '', project.owner.name])">
       <Alert type="danger" class="my-2">
@@ -158,7 +173,7 @@ async function requiresConfirmation() {
       </div>
     </Modal>
 
-    <Tooltip v-if="copyButton" :hover="false" :show="copySuccessful">
+    <Tooltip v-if="copyButton && !downloadNow" :hover="false" :show="copySuccessful">
       <template #content>
         <span>{{ i18n.t("version.page.downloadUrlCopied") }}</span>
       </template>
@@ -166,7 +181,7 @@ async function requiresConfirmation() {
         <template #content>
           {{ i18n.t("version.page.downloadUrlHover") }}
         </template>
-        <Button :size="small ? 'small' : 'large'" class="ml-1" @click="copyDownloadUrl">
+        <Button :size="small ? 'medium' : 'large'" class="ml-1" @click="copyDownloadUrl">
           <IconMdiContentCopy />
         </Button>
       </Tooltip>
