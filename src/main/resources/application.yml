@@ -126,6 +126,7 @@ hangar:
     create-limit: 5
     dummy-email-domain: "org.papermc.io"
     enabled: true
+    max-name-len: 20
 
   users:
     max-tagline-len: 100

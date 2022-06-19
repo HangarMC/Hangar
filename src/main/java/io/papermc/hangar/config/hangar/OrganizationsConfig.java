@@ -13,7 +13,7 @@ public class OrganizationsConfig {
     private String dummyEmailDomain = "org.papermc.io";
     private int createLimit = 5;
     private int minNameLen = 3;
-    private int maxNameLen = 24;
+    private int maxNameLen = 20;
     private String nameRegex = "[a-zA-Z0-9-_]*";
     private final Predicate<String> namePredicate = Pattern.compile(nameRegex).asMatchPredicate();
 

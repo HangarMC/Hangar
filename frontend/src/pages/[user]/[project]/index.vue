@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { User } from "hangar-api";
+import { PromotedVersion, Tag as ApiTag, User, Version } from "hangar-api";
 import Card from "~/components/design/Card.vue";
 import { useI18n } from "vue-i18n";
 import ProjectInfo from "~/components/projects/ProjectInfo.vue";
@@ -84,10 +84,14 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
       <ProjectInfo :project="project" />
       <Card>
         <template #header>{{ i18n.t("project.promotedVersions") }}</template>
-        <ul>
+        <ul class="divide-y divide-blue-500/50">
           <li v-for="(version, index) in project.promotedVersions" :key="`${index}-${version.version}`">
-            <router-link :to="'/' + project.namespace.owner + '/' + project.namespace.slug + '/versions/' + version.version">{{ version.version }}</router-link>
-            <Tag v-for="(tag, idx) in version.tags" :key="idx" :color="tag.color" :data="tag.displayData" :name="tag.name" />
+            <router-link :to="'/' + project.namespace.owner + '/' + project.namespace.slug + '/versions/' + version.version">
+              <div class="p-1 py-2">
+                {{ version.version }}
+                <Tag v-for="(tag, idx) in version.tags" :key="idx" :color="tag.color" :data="tag.displayData" :name="tag.name" />
+              </div>
+            </router-link>
           </li>
         </ul>
       </Card>
