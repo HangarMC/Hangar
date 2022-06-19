@@ -7,9 +7,11 @@ const props = withDefaults(
   defineProps<{
     title: string | TranslateResult;
     small?: boolean;
+    big?: boolean;
   }>(),
   {
     small: true,
+    big: false,
   }
 );
 
@@ -36,7 +38,7 @@ defineExpose({
       <div class="flex items-center justify-center min-h-screen">
         <DialogOverlay class="fixed inset-0 bg-black opacity-30" />
 
-        <div class="relative mx-auto background-default rounded p-4" :class="small ? 'max-w-sm' : 'max-w-lg'">
+        <div class="relative mx-auto background-default rounded p-4" :class="big ? 'max-w-80vw' : small ? 'max-w-sm' : 'max-w-lg'">
           <h2 class="font-bold text-xl mb-2">{{ props.title }}</h2>
           <slot :on="{ click: close }"></slot>
         </div>

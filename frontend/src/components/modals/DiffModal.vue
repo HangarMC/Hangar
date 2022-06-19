@@ -49,7 +49,7 @@ const prettyDiff = computed(() => {
 </script>
 
 <template>
-  <Modal :title="props.title">
+  <Modal :title="props.title" big>
     <template #default="{ on }">
       <!-- eslint-disable-next-line vue/no-v-html -->
       <div v-html="prettyDiff"></div>
