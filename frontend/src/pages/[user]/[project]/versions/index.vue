@@ -172,7 +172,7 @@ function getNonChannelTags(version: Version): ApiTag[] {
     </section>
 
     <section class="basis-full md:basis-3/12 flex-grow">
-      <div class="flex flex-wrap space-y-4">
+      <div class="flex flex-col flex-wrap space-y-4">
         <div v-if="hasPerms(NamedPermission.CREATE_VERSION)" class="basis-full flex-grow">
           <router-link :to="route.path + '/new'">
             <Button size="large" class="w-full">{{ i18n.t("version.new.uploadNew") }}</Button>
