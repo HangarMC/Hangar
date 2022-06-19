@@ -127,6 +127,7 @@ public class ProjectService extends HangarComponent {
         projectTable.setIssues(settingsForm.getSettings().getIssues());
         projectTable.setSource(settingsForm.getSettings().getSource());
         projectTable.setSupport(settingsForm.getSettings().getSupport());
+        projectTable.setWiki(settingsForm.getSettings().getWiki());
         String licenseName = org.apache.commons.lang3.StringUtils.stripToNull(settingsForm.getSettings().getLicense().getName());
         if (licenseName == null) {
             licenseName = settingsForm.getSettings().getLicense().getType();

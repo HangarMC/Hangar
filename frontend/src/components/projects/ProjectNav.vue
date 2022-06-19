@@ -48,5 +48,8 @@ function childRoute(route = ""): string {
     <ProjectNavItem v-if="props.project.settings.support" :href="linkout(props.project.settings.support)">
       {{ i18n.t("project.tabs.support") }}
     </ProjectNavItem>
+    <ProjectNavItem v-if="props.project.settings.wiki" :href="linkout(props.project.settings.wiki)">
+      {{ i18n.t("project.tabs.wiki") }}
+    </ProjectNavItem>
   </nav>
 </template>

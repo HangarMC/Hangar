@@ -198,6 +198,7 @@ function createProject() {
         <div class="basis-full mt-4"><InputText v-model.trim="form.settings.issues" :label="i18n.t('project.new.step3.issues')" :rules="[url()]" /></div>
         <div class="basis-full mt-4"><InputText v-model.trim="form.settings.source" :label="i18n.t('project.new.step3.source')" :rules="[url()]" /></div>
         <div class="basis-full mt-4"><InputText v-model.trim="form.settings.support" :label="i18n.t('project.new.step3.support')" :rules="[url()]" /></div>
+        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.wiki" :label="i18n.t('project.new.step3.wiki')" :rules="[url()]" /></div>
       </div>
       <div class="text-lg mt-6 flex gap-2 items-center">
         <IconMdiLicense />

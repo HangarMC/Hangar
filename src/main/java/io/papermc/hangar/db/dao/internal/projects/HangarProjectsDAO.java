@@ -48,6 +48,7 @@ public interface HangarProjectsDAO {
             "       ps.issues," +
             "       ps.source," +
             "       ps.support," +
+            "       ps.wiki," +
             "       ps.license_name," +
             "       ps.license_type," +
             "       ps.license_url," +

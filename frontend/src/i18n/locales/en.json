@@ -182,7 +182,8 @@
       "homepage": "Homepage",
       "issues": "Issues",
       "source": "Source",
-      "support": "Support"
+      "support": "Support",
+      "wiki": "Wiki"
     },
     "new": {
       "step1": {
@@ -213,6 +214,7 @@
         "issues": "Issue Tracker",
         "source": "Source Code",
         "support": "External Support",
+        "wiki": "External Wiki",
         "license": "License",
         "type": "Type",
         "customName": "Name",
@@ -291,8 +293,10 @@
       "issuesSub": "Providing an issue tracker helps your users get support more easily and provides you with an easy way to track bugs.",
       "source": "Source code",
       "sourceSub": "Support the community of developers by making your project open source!",
-      "support": "External support",
+      "support": "External wiki",
       "supportSub": "An external place where you can offer support to your users. Could be a forum, a Discord server, or somewhere else.",
+      "wiki": "External Wiki",
+      "wikiSub": "An external place where you can offer additional documentation to your users.",
       "license": "License",
       "licenseSub": "What can people do (and not do) with your project?",
       "forum": "Create posts on the forums",

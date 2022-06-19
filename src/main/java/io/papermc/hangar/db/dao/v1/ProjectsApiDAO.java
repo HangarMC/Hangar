@@ -50,6 +50,7 @@ public interface ProjectsApiDAO {
         "       p.issues," +
         "       p.source," +
         "       p.support," +
+        "       p.wiki," +
         "       p.license_name," +
         "       p.license_url," +
         "       p.keywords," +
@@ -94,6 +95,7 @@ public interface ProjectsApiDAO {
             p.issues,
             p.source,
             p.support,
+            p.wiki,
             p.license_name,
             p.license_type,
             p.license_url,

@@ -19,6 +19,8 @@ public class ProjectSettings {
     private final String source;
     @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
     private final String support;
+    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
+    private final String wiki;
     @Valid
     private final ProjectLicense license;
     @Valid
@@ -31,11 +33,12 @@ public class ProjectSettings {
     private final String sponsors;
 
     @JsonCreator
-    public ProjectSettings(@Nullable String homepage, @Nullable String issues, @Nullable String source, @Nullable String support, @Nested("license") ProjectLicense license, @Nested("donation") ProjectDonationSettings donation, Collection<String> keywords, boolean forumSync, String sponsors) {
+    public ProjectSettings(@Nullable String homepage, @Nullable String issues, @Nullable String source, @Nullable String support, @Nullable String wiki, @Nested("license") ProjectLicense license, @Nested("donation") ProjectDonationSettings donation, Collection<String> keywords, boolean forumSync, String sponsors) {
         this.homepage = homepage;
         this.issues = issues;
         this.source = source;
         this.support = support;
+        this.wiki = wiki;
         this.license = license;
         this.donation = donation;
         this.keywords = keywords;
@@ -57,6 +60,10 @@ public class ProjectSettings {
 
     public String getSupport() {
         return support;
+    }
+
+    public String getWiki() {
+        return wiki;
     }
 
     public ProjectLicense getLicense() {
@@ -86,6 +93,7 @@ public class ProjectSettings {
                 ", issues='" + issues + '\'' +
                 ", source='" + source + '\'' +
                 ", support='" + support + '\'' +
+               ", support='" + wiki + '\'' +
                 ", license=" + license +
                 ", donation=" + donation +
                 ", keywords=" + keywords +

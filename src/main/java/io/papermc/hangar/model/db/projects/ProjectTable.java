@@ -31,6 +31,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     private String issues;
     private String source;
     private String support;
+    private String wiki;
     private String licenseType;
     private String licenseName;
     private String licenseUrl;
@@ -54,6 +55,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.issues = form.getSettings().getIssues();
         this.source = form.getSettings().getSource();
         this.support = form.getSettings().getSupport();
+        this.wiki = form.getSettings().getWiki();
         this.keywords = form.getSettings().getKeywords();
         this.licenseType = form.getSettings().getLicense().getType();
         this.licenseName = form.getSettings().getLicense().getName();
@@ -78,6 +80,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.issues = other.issues;
         this.source = other.source;
         this.support = other.support;
+        this.wiki = other.wiki;
         this.licenseType = other.licenseType;
         this.licenseName = other.licenseName;
         this.licenseUrl = other.licenseUrl;
@@ -90,7 +93,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     @JdbiConstructor
     public ProjectTable(OffsetDateTime createdAt, long id, String name, String slug, String ownerName, long ownerId, Long topicId,
                         Long postId, @EnumByOrdinal Category category, String description, @EnumByOrdinal Visibility visibility, Collection<String> keywords,
-                        String homepage, String issues, String source, String support, String licenseType, String licenseName, String licenseUrl, boolean forumSync,
+                        String homepage, String issues, String source, String support, String wiki, String licenseType, String licenseName, String licenseUrl, boolean forumSync,
                         boolean donationEnabled, String donationSubject, String sponsors) {
         super(createdAt, id);
         this.name = name;
@@ -107,6 +110,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.issues = issues;
         this.source = source;
         this.support = support;
+        this.wiki = wiki;
         this.licenseType = licenseType;
         this.licenseName = licenseName;
         this.licenseUrl = licenseUrl;
@@ -235,6 +239,14 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.support = support;
     }
 
+    public String getWiki() {
+        return wiki;
+    }
+
+    public void setWiki(String wiki) {
+        this.wiki = wiki;
+    }
+
     public String getLicenseType() {
         return licenseType;
     }
@@ -318,6 +330,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
                ", issues='" + issues + '\'' +
                ", source='" + source + '\'' +
                ", support='" + support + '\'' +
+               ", wiki='" + wiki + '\'' +
                ", licenseType='" + licenseType + '\'' +
                ", licenseName='" + licenseName + '\'' +
                ", licenseUrl='" + licenseUrl + '\'' +

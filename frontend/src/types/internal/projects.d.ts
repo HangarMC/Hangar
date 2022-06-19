@@ -69,6 +69,7 @@ declare module "hangar-internal" {
       issues: string | null;
       source: string | null;
       support: string | null;
+      wiki: string | null;
       keywords: string[];
       license: {
         type?: string | null;
