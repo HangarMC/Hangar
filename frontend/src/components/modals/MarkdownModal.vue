@@ -13,7 +13,7 @@ const i18n = useI18n();
 </script>
 
 <template>
-  <Modal :title="props.title">
+  <Modal :title="props.title" big>
     <template #default="{ on }">
       <Markdown :raw="markdown"></Markdown>
 
