@@ -27,13 +27,11 @@ const ctx = useContext();
 
 const backendData = useBackendDataStore();
 const sorters = [
-  { id: "stars", label: i18n.t("project.sorting.mostStars") },
-  { id: "downloads", label: i18n.t("project.sorting.mostDownloads") },
-  { id: "views", label: i18n.t("project.sorting.mostViews") },
+  { id: "-stars", label: i18n.t("project.sorting.mostStars") },
+  { id: "-downloads", label: i18n.t("project.sorting.mostDownloads") },
   { id: "-newest", label: i18n.t("project.sorting.newest") },
   { id: "-updated", label: i18n.t("project.sorting.recentlyUpdated") },
-  { id: "recent_views", label: i18n.t("project.sorting.recentViews") },
-  { id: "recent_downloads", label: i18n.t("project.sorting.recentDownloads") },
+  { id: "-recent_downloads", label: i18n.t("project.sorting.recentDownloads") },
 ];
 
 const versions = backendData.platforms
