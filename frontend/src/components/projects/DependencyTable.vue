@@ -121,9 +121,12 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
               v-model.trim="dep.externalUrl"
               :placeholder="t('version.new.form.externalUrl')"
               :disabled="dep.namespace !== null && Object.keys(dep.namespace).length !== 0"
-              :rules="dep.namespace !== null && Object.keys(dep.namespace).length !== 0 ? [] : [required(t('version.new.form.externalUrl'))]"
               clearable
+              @change="dep.namespace = null"
             />
+            <!-- :rules="dep.namespace !== null && Object.keys(dep.namespace).length !== 0 ? [] : [required(t('version.new.form.externalUrl'))]" -->
+            <!-- todo fix validation of dependency table -->
+            <!-- :rules="!!dep.externalUrl ? [] : [required(t('version.new.form.hangarProject'))]" -->
             <InputAutocomplete
               :id="dep.name"
               v-model="dep.namespace"
@@ -132,8 +135,8 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
               :item-text="getNamespace"
               :item-value="getNamespace"
               :disabled="!!dep.externalUrl"
-              :rules="!!dep.externalUrl ? [] : [required(t('version.new.form.hangarProject'))]"
               @search="onSearch($event, dep.name)"
+              @change="dep.externalUrl = null"
             />
           </td>
           <td v-if="!noEditing">
@@ -165,6 +168,7 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
               :disabled="newDep.namespace !== null && Object.keys(newDep.namespace).length !== 0"
               :rules="newDep.namespace !== null && Object.keys(newDep.namespace).length !== 0 ? [] : [required(t('version.new.form.externalUrl'))]"
               clearable
+              @change="newDep.namespace = null"
             />
             <InputAutocomplete
               :id="newDep.name"
@@ -176,6 +180,7 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
               :disabled="!!newDep.externalUrl"
               :rules="!!newDep.externalUrl ? [] : [required(t('version.new.form.hangarProject'))]"
               @search="onNewDepSearch($event, index)"
+              @change="newDep.externalUrl = null"
             />
           </td>
           <td v-if="!noEditing">
