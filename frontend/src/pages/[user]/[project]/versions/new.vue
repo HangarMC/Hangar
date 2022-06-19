@@ -262,7 +262,7 @@ useHead(
           :model-value="selectedPlatforms.includes(platform.enumName)"
           :rules="platformVersionRules"
           :label="platform.name"
-          @change="togglePlatform(platform.enumName)"
+          @update:modelValue="togglePlatform(platform.enumName)"
         />
       </div>
     </template>
