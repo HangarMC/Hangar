@@ -32,7 +32,7 @@ const props = defineProps({
             size="md"
           />
         </div>
-        <div class="overflow-clip min-w-0">
+        <div class="overflow-clip overflow-hidden min-w-0">
           <p>
             <Link :to="'/' + item.namespace.owner + '/' + item.namespace.slug">{{ item.name }}</Link>
             by
