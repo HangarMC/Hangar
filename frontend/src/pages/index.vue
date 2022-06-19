@@ -30,8 +30,8 @@ const sorters = [
   { id: "stars", label: i18n.t("project.sorting.mostStars") },
   { id: "downloads", label: i18n.t("project.sorting.mostDownloads") },
   { id: "views", label: i18n.t("project.sorting.mostViews") },
-  { id: "newest", label: i18n.t("project.sorting.newest") },
-  { id: "updated", label: i18n.t("project.sorting.recentlyUpdated") },
+  { id: "-newest", label: i18n.t("project.sorting.newest") },
+  { id: "-updated", label: i18n.t("project.sorting.recentlyUpdated") },
   { id: "recent_views", label: i18n.t("project.sorting.recentViews") },
   { id: "recent_downloads", label: i18n.t("project.sorting.recentDownloads") },
 ];
@@ -53,7 +53,7 @@ const filters = ref({
 const query = ref<string>((route.query.q as string) || "");
 const loggedOut = ref<boolean>("loggedOut" in route.query);
 const projects = ref<PaginatedResult<Project> | null>();
-const activeSorter = ref<string>("updated");
+const activeSorter = ref<string>("-updated");
 
 const requestParams = computed(() => {
   // TODO add filter for mc version

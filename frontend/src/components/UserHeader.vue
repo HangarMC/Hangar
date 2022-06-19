@@ -38,7 +38,7 @@ const canEditCurrentUser = computed<boolean>(() => {
         <AvatarChangeModal v-if="user.isOrganization && hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" :user="user" />
       </div>
 
-      <div class="ml-2 overflow-clip">
+      <div class="ml-2 overflow-clip overflow-hidden">
         <h1 class="text-2xl text-strong inline-flex items-center">
           {{ user.name }}
           <a v-if="!user.isOrganization" class="inline-flex mx-1" :href="forumUserUrl(user.name)" :title="i18n.t('author.viewOnForums')">
