@@ -77,7 +77,10 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
           class="pt-0"
           @save="saveSponsors"
         />
-        <Markdown v-else :raw="sponsors" class="pt-0" />
+        <template v-else>
+          <h1 class="mt-3 ml-5 text-xl">{{ i18n.t("project.sponsors") }}</h1>
+          <Markdown :raw="sponsors" class="pt-0" />
+        </template>
       </Card>
     </section>
     <section class="basis-full md:basis-3/12 space-y-4 min-w-280px">
