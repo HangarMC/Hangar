@@ -549,7 +549,8 @@
         "notEnabled": "Organizations are not enabled!",
         "jsonError": "Error parsing the JSON response from HangarAuth",
         "hangarAuthValidationError": "Validation Error: {0}",
-        "unknownError": "Unknown error while creating organization"
+        "unknownError": "Unknown error while creating organization",
+        "noSpaces": "The organization name cannot contain any spaces"
       }
     },
     "settings": {

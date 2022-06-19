@@ -99,6 +99,11 @@ export const validOrgName = withOverrideMessage(
     if (!helpers.req(value)) {
       return { $valid: true };
     }
+
+    if (value.includes(" ")) {
+      return { $valid: false, $message: "organization.new.error.noSpaces" };
+    }
+
     try {
       await useInternalApi("organizations/validate", false, "get", {
         name: value,
@@ -187,7 +192,6 @@ export const pattern = withOverrideMessage(
 export const dum = withOverrideMessage(
   helpers.withAsync(async (value: any) => {
     console.log("validate", value, value.length);
-    return false;
-    //return { $valid: false, $message: "dum2" };
+    return { $valid: false, $message: "organization.new.error.jsonError" };
   })
 );
