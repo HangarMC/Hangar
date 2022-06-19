@@ -19,7 +19,7 @@ public class ProjectNamespace {
     public ProjectNamespace(String namespace) {
         String[] split = namespace.split("/");
         if (split.length != 2) {
-            throw new IllegalArgumentException("Namespace must be <owner>/<slug>");
+            throw new IllegalArgumentException("Namespace must be <owner>/<slug> but was '" + namespace + "'");
         }
         this.owner = split[0];
         this.slug = split[1];
@@ -36,9 +36,9 @@ public class ProjectNamespace {
     @Override
     public String toString() {
         return "ProjectNamespace{" +
-                "owner='" + owner + '\'' +
-                ", slug='" + slug + '\'' +
-                '}';
+               "owner='" + owner + '\'' +
+               ", slug='" + slug + '\'' +
+               '}';
     }
 
     @Override
