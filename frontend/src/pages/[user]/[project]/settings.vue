@@ -52,6 +52,10 @@ const form = reactive({
   description: props.project.description,
   category: props.project.category,
 });
+if (!form.settings.license.type) {
+  form.settings.license.type = "Unspecified";
+}
+
 const projectIcon = ref<File | null>(null);
 const newName = ref<string | null>("");
 const newNameField = ref<InstanceType<typeof InputText> | null>(null);
@@ -62,7 +66,8 @@ const loading = reactive({
   rename: false,
 });
 
-const isCustomLicense = computed(() => form.settings.license.type === "(custom)");
+const isCustomLicense = computed(() => form.settings.license.type === "Other");
+const isUnspecifiedLicense = computed(() => form.settings.license.type === "Unspecified");
 
 watch(route, (val) => (selectedTab.value = val.hash.replace("#", "")), { deep: true });
 watch(selectedTab, (val) => history.replaceState({}, "", route.path + "#" + val));
@@ -177,15 +182,9 @@ useHead(
   <div class="flex gap-4 flex-col md:flex-row">
     <Card class="basis-full md:basis-9/12">
       <template #header>
-        <div class="flex justify-between">
+        <div class="flex justify-between <sm:items-center">
           {{ i18n.t("project.settings.title") }}
           <div class="text-lg">
-            <VisibilityChangerModal
-              v-if="hasPerms(NamedPermission.SEE_HIDDEN)"
-              type="project"
-              :prop-visibility="project.visibility"
-              :post-url="`projects/visibility/${project.id}`"
-            ></VisibilityChangerModal>
             <Button class="ml-2" :disabled="v.$invalid" :loading="loading.save" @click="save">
               <IconMdiCheck />
               {{ i18n.t("project.settings.save") }}
@@ -218,7 +217,7 @@ useHead(
               counter
               :maxlength="backendData.validations?.project.keywords.max"
               :label="i18n.t('project.new.step3.keywords')"
-              :rules="[required(), maxLength()(backendData.validations?.project.keywords.max)]"
+              :rules="[maxLength()(backendData.validations?.project.keywords.max)]"
             />
           </ProjectSettingsSection>
           <ProjectSettingsSection>
@@ -265,14 +264,13 @@ useHead(
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
             <div class="flex">
-              <!-- todo is licence required? -->
               <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
                 <InputSelect v-model="form.settings.license.type" :values="backendData.licenseOptions" :label="i18n.t('project.settings.licenseType')" />
               </div>
               <div v-if="isCustomLicense" class="basis-full md:basis-8/12">
                 <InputText v-model.trim="form.settings.license.name" :label="i18n.t('project.settings.licenseCustom')" />
               </div>
-              <div class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
+              <div v-if="!isUnspecifiedLicense" class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
                 <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[url()]" />
               </div>
             </div>

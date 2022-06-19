@@ -140,7 +140,7 @@ async function restoreVersion() {
 </script>
 
 <template>
-  <div v-if="projectVersion" class="flex">
+  <div v-if="projectVersion" class="flex <sm:flex-col">
     <div>
       <h1 class="text-3xl inline-flex items-center">
         {{ projectVersion.name }}

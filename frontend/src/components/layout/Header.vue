@@ -98,7 +98,6 @@ const navBarMenuLinksMoreFromPaper = [
   { link: "https://github.com/PaperMC", label: t("nav.hangar.code"), icon: IconMdiCodeBraces },
   { link: "https://docs.papermc.io/", label: t("nav.hangar.docs"), icon: IconMdiBookOpen },
   { link: "https://papermc.io/javadocs", label: t("nav.hangar.javadocs"), icon: IconMdiLanguageJava },
-  { link: "/", label: t("nav.hangar.hangar"), icon: IconMdiPuzzle },
   { link: "https://papermc.io/downloads", label: t("nav.hangar.downloads"), icon: IconMdiDownloadCircle },
   { link: "https://papermc.io/community", label: t("nav.hangar.community"), icon: IconMdiAccountGroup },
   { link: "https://hangar-auth.benndorf.dev/", label: t("nav.hangar.auth"), icon: IconMdiKey },
@@ -170,7 +169,7 @@ function isRecent(date: string): boolean {
                   </router-link>
                 </div>
 
-                <p class="text-base font-semibold color-primary mb-4 mt-10">More from Paper</p>
+                <p class="text-base font-semibold color-primary mb-4 mt-10">{{ t("nav.hangar.title") }}</p>
                 <div class="grid grid-cols-2">
                   <a
                     v-for="link in navBarMenuLinksMoreFromPaper"
