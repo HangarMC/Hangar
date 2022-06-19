@@ -76,7 +76,7 @@ function reset() {
 
 async function onSearch(val: string, name: string) {
   if (val) {
-    const projects = await useApi<PaginatedResult<Project>>(`projects?relevance=true&limit=25&offset=0&q=${val.replace("/", " ")}`);
+    const projects = await useApi<PaginatedResult<Project>>(`projects?relevance=true&limit=25&offset=0&q=${val ? val.replace("/", " ") : ""}`);
     results.value[name] = projects.result
       .filter((p) => p.namespace.owner !== route.params.user || p.namespace.slug !== route.params.project)
       .map((p) => p.namespace);
@@ -95,6 +95,22 @@ async function onNewDepSearch(val: string, index: number) {
 const filteredDeps = computed(() => {
   return props.version.pluginDependencies[props.platform]?.filter((d) => !deletedDeps.value.includes(d.name)) || [];
 });
+
+function toString(namespace: ProjectNamespace | string) {
+  if (!namespace) return "";
+  if (typeof namespace === "string") return namespace;
+  return namespace.owner + "/" + namespace.slug;
+}
+
+function fromString(string: string): ProjectNamespace | string | null {
+  const split = string.split("/");
+  return split.length !== 2
+    ? string
+    : {
+        owner: split[0],
+        slug: split[1],
+      };
+}
 
 defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
 </script>
@@ -129,7 +145,7 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
             <!-- :rules="!!dep.externalUrl ? [] : [required(t('version.new.form.hangarProject'))]" -->
             <InputAutocomplete
               :id="dep.name"
-              v-model="dep.namespace"
+              :model-value="toString(dep.namespace)"
               :placeholder="t('version.new.form.hangarProject')"
               :values="results[dep.name]"
               :item-text="getNamespace"
@@ -137,6 +153,7 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
               :disabled="!!dep.externalUrl"
               @search="onSearch($event, dep.name)"
               @change="dep.externalUrl = null"
+              @update:modelValue="dep.namespace = fromString($event)"
             />
           </td>
           <td v-if="!noEditing">
@@ -172,7 +189,7 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
             />
             <InputAutocomplete
               :id="newDep.name"
-              v-model="newDep.namespace"
+              :model-value="toString(newDep.namespace)"
               :placeholder="t('version.new.form.hangarProject')"
               :values="newDepResults[index]"
               :item-text="getNamespace"
@@ -181,6 +198,7 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
               :rules="!!newDep.externalUrl ? [] : [required(t('version.new.form.hangarProject'))]"
               @search="onNewDepSearch($event, index)"
               @change="newDep.externalUrl = null"
+              @update:modelValue="newDep.namespace = fromString($event)"
             />
           </td>
           <td v-if="!noEditing">

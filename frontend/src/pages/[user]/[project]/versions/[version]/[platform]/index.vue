@@ -266,7 +266,7 @@ async function restoreVersion() {
         </template>
 
         <div class="flex items-center">
-          <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
+          <PlatformLogo :platform="platform?.enumName" :size="24" class="mr-1" />
           {{ platform?.name }}
           {{ platformTag?.data }}
         </div>

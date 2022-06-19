@@ -25,7 +25,7 @@ import { remove } from "lodash-es";
 import { useBackendDataStore } from "~/store/backendData";
 import DependencyTable from "~/components/projects/DependencyTable.vue";
 import InputTag from "~/components/ui/InputTag.vue";
-import {LastDependencies} from "hangar-api";
+import { LastDependencies } from "hangar-api";
 
 const route = useRoute();
 const router = useRouter();
@@ -47,7 +47,14 @@ const steps: Step[] = [
     },
     disableNext: computed(() => file.value == null && url.value == null),
   },
-  { value: "basic", header: t("version.new.steps.2.header") },
+  {
+    value: "basic",
+    header: t("version.new.steps.2.header"),
+    beforeNext: async () => {
+      await preload();
+      return true;
+    },
+  },
   { value: "dependencies", header: t("version.new.steps.3.header") },
   {
     value: "changelog",
@@ -95,21 +102,19 @@ async function preload() {
 
   for (const platform in pendingVersion.value.platformDependencies) {
     // Get last platform and plugin dependency data for the last version of the same channel/any other channel if not found
-    useInternalApi<LastDependencies>(`versions/version/${props.project.namespace.owner}/${props.project.namespace.slug}/lastdependencies`, true)
-      .then(v => {
-        if (!v) {
-          return
+    useInternalApi<LastDependencies>(`versions/version/${props.project.namespace.owner}/${props.project.namespace.slug}/lastdependencies`, true, "get", {
+      channel: pendingVersion.value?.channelName,
+      platform: platform,
+    })
+      .then((v) => {
+        if (!v || !pendingVersion.value) {
+          return;
         }
 
-        for (const platformVersion of v.platformDependencies) {
-          //TODO list of strings (e.g. "1.18", "1.19")
-        }
-        for (const pluginDependency of v.pluginDependencies) {
-          //TODO
-        }
-      }).catch<any>((e) =>
-      handleRequestError(e, ctx, i18n)
-    );
+        pendingVersion.value.platformDependencies[platform as Platform] = v.platformDependencies;
+        pendingVersion.value.pluginDependencies[platform as Platform] = v.pluginDependencies;
+      })
+      .catch<any>((e) => handleRequestError(e, ctx, i18n));
   }
 }
 
@@ -183,16 +188,6 @@ function togglePlatform(platform: Platform) {
     selectedPlatforms.value = selectedPlatforms.value.filter((p) => p !== platform);
   } else {
     selectedPlatforms.value.push(platform);
-  }
-}
-
-function togglePlatformVersion(version: string, platform: Platform) {
-  const versions = pendingVersion.value!.platformDependencies[platform];
-  const index = version.indexOf(version);
-  if (index !== -1) {
-    versions.push(version);
-  } else {
-    versions.splice(index, 1);
   }
 }
 useHead(
@@ -274,7 +269,6 @@ useHead(
     <template #dependencies>
       <h2 class="text-xl mt-2 mb-2">{{ t("version.new.form.platformVersions") }}</h2>
 
-      <!-- todo: preload platforms and dependencies from previous version in same channel -->
       <div class="flex flex-wrap gap-y-3 mb-5">
         <div v-for="platform in selectedPlatformsData" :key="platform.name" class="basis-full">
           <div>{{ platform.name }}</div>
@@ -289,11 +283,10 @@ useHead(
         <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
           <div>{{ platform.name }}</div>
           <DependencyTable
-            :key="`${platform}-deps-table`"
+            :key="`${platform.name}-deps-table`"
             :platform="platform.enumName"
             :version="pendingVersion"
             :no-editing="pendingVersion.isFile"
-            :new-deps-prop="pendingVersion.pluginDependencies[platform.enumName]"
             :is-new="!pendingVersion.isFile"
           />
         </div>

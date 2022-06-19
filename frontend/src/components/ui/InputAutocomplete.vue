@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, watch } from "vue";
 import { useValidation } from "~/composables/useValidationHelpers";
 import { ValidationRule } from "@vuelidate/core";
 import InputWrapper from "~/components/ui/InputWrapper.vue";
@@ -21,8 +21,8 @@ export interface Option {
 const props = withDefaults(
   defineProps<{
     id: string;
-    modelValue: object | string | boolean | number | null;
-    values: Option[] | Record<string, any> | string[];
+    modelValue?: object | string | boolean | number | null;
+    values?: Option[] | Record<string, any> | string[];
     itemValue?: string | ((object: object) => string);
     itemText?: string | ((object: object) => string);
     disabled?: boolean;

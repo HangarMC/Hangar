@@ -43,9 +43,10 @@ const downloadLink = computed(() => {
     return externalUrl.value;
   }
 
-  const versionString = props.platformSelection ? "recommended" : props.version!.name;
-  const platform = props.platformSelection ? selectedPlatform.value : props.platform!.name;
-  return `${window.location.protocol}//${window.location.host}/api/v1/projects/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${versionString}/${platform}/download`;
+  const versionString = props.platformSelection ? "recommended" : props.version?.name;
+  const platform = props.platformSelection ? selectedPlatform.value : props.platform?.name;
+  const path = `/api/v1/projects/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${versionString}/${platform}/download`;
+  return import.meta.env.SSR ? path : `${window.location.protocol}//${window.location.host}${path}`;
 });
 
 if (props.platformSelection) {
