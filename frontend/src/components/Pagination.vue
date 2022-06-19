@@ -20,6 +20,6 @@ const slicedItems = computed(() => props.items.slice(page.value * props.itemsPer
 <template>
   <slot v-for="(item, idx) in slicedItems" :key="idx" :item="item" :idx="idx" />
   <slot name="pagination" :page="page" :update-page="(p) => (page = p)" :pages="Math.ceil(items.length / itemsPerPage)">
-    <PaginationButtons :page="page" :pages="Math.ceil(items.length / itemsPerPage)" @update:page="page = p" />
+    <PaginationButtons :page="page" :pages="Math.ceil(items.length / itemsPerPage)" @update:page="(p) => (page = p)" />
   </slot>
 </template>
