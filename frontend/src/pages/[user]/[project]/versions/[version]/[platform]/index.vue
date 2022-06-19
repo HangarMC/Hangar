@@ -288,7 +288,7 @@ async function restoreVersion() {
               :to="!!dep.namespace ? { name: 'user-project', params: { user: dep.namespace.owner, project: dep.namespace.slug } } : undefined"
             >
               {{ dep.name }}
-              <small v-if="dep.required">({{ i18n.t("general.required") }})</small>
+              <small v-if="!dep.required">({{ i18n.t("general.optional") }})</small>
             </Link>
           </li>
         </ul>

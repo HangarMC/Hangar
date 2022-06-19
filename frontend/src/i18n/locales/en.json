@@ -19,6 +19,7 @@
     "reset": "Reset",
     "edit": "Edit",
     "required": "Required",
+    "optional": "Optional",
     "add": "Add",
     "name": "Name",
     "link": "Link",
@@ -603,7 +604,7 @@
       "recent": "You have no recent notifications!",
       "read": "You have no read notifications.",
       "all": "You have no notifications.",
-      "invites": "You have no invites"
+      "invites": "You have no invites."
     },
     "project": {
       "reviewed": "{0} {1} has been reviewed and is approved",
