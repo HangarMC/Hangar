@@ -7,7 +7,6 @@ import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
@@ -17,6 +16,7 @@ import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
+import io.papermc.hangar.model.internal.versions.LastDependencies;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilityService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,7 +89,7 @@ public class VersionService extends HangarComponent {
         return versions.stream().map(v -> versionDependencyService.addDependenciesAndTags(v.getId(), v)).collect(Collectors.toList());
     }
 
-    public List<PluginDependency> getLastVersionDependencies(String author, String slug, @Nullable String channel, String platformName) {
+    public LastDependencies getLastVersionDependencies(String author, String slug, @Nullable String channel, String platformName) {
         Platform platform = Platform.valueOf(platformName.toUpperCase());
 
         RequestPagination pagination = new RequestPagination(1L, 0L);
@@ -100,11 +101,15 @@ public class VersionService extends HangarComponent {
 
         Long versionId = versionsApiDAO.getVersions(author, slug, false, getHangarUserId(), pagination).entrySet().stream().map(Map.Entry::getKey).findAny().orElse(null);
         if (versionId != null) {
-            return new ArrayList<>(versionsApiDAO.getPluginDependencies(versionId, platform));
+            SortedSet<String> platformDependency = versionsApiDAO.getPlatformDependencies(versionId).get(platform);
+            if (platformDependency != null) {
+                return new LastDependencies(new ArrayList<>(platformDependency), new ArrayList<>(versionsApiDAO.getPluginDependencies(versionId, platform)));
+            }
+            return LastDependencies.EMPTY;
         }
 
         // Try again with any channel, else empty
-        return channel != null ? getLastVersionDependencies(author, slug, null, platformName) : List.of();
+        return channel != null ? getLastVersionDependencies(author, slug, null, platformName) : LastDependencies.EMPTY;
     }
 
     @Transactional

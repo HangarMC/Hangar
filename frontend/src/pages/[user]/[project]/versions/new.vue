@@ -25,6 +25,7 @@ import { remove } from "lodash-es";
 import { useBackendDataStore } from "~/store/backendData";
 import DependencyTable from "~/components/projects/DependencyTable.vue";
 import InputTag from "~/components/ui/InputTag.vue";
+import {LastDependencies} from "hangar-api";
 
 const route = useRoute();
 const router = useRouter();
@@ -86,6 +87,31 @@ const selectedPlatformsData = computed<IPlatform[]>(() => {
 const platformVersionRules = computed(() => {
   return !pendingVersion.value?.isFile ? [] : [(v: string[]) => !!v.length || "Error"];
 });
+
+async function preload() {
+  if (!pendingVersion.value) {
+    return;
+  }
+
+  for (const platform in pendingVersion.value.platformDependencies) {
+    // Get last platform and plugin dependency data for the last version of the same channel/any other channel if not found
+    useInternalApi<LastDependencies>(`versions/version/${props.project.namespace.owner}/${props.project.namespace.slug}/lastdependencies`, true)
+      .then(v => {
+        if (!v) {
+          return
+        }
+
+        for (const platformVersion of v.platformDependencies) {
+          //TODO list of strings (e.g. "1.18", "1.19")
+        }
+        for (const pluginDependency of v.pluginDependencies) {
+          //TODO
+        }
+      }).catch<any>((e) =>
+      handleRequestError(e, ctx, i18n)
+    );
+  }
+}
 
 async function createPendingVersion() {
   loading.create = true;

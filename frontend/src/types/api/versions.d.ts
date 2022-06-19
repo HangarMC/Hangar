@@ -8,6 +8,11 @@ declare module "hangar-api" {
     externalUrl: string | null;
   }
 
+  interface LastDependencies {
+    pluginDependencies: PluginDependency[];
+    platformDependencies: string[];
+  }
+
   interface VersionStats {
     downloads: number;
   }
