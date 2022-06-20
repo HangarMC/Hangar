@@ -145,10 +145,10 @@ async function restoreVersion() {
       <h1 class="text-3xl inline-flex items-center">
         {{ projectVersion.name }}
         <TagComponent class="ml-1" :tag="channel" :short-form="true" />
-        <span class="text-2xl">
-          <IconMdiDiamondStone v-if="projectVersion.recommended.includes(platform?.enumName)" :title="i18n.t('version.page.recommended')" />
-          <IconMdiCheckCircleOutline v-if="isReviewStateChecked" :title="approvalTooltip" />
-        </span>
+        <Tooltip v-if="projectVersion.recommended.includes(platform?.enumName)" :content="i18n.t('version.page.recommended')" class="text-base">
+          <IconMdiDiamondStone :title="i18n.t('version.page.recommended')" class="text-2xl" />
+        </Tooltip>
+        <IconMdiCheckCircleOutline v-if="isReviewStateChecked" :title="approvalTooltip" class="text-2xl" />
       </h1>
       <h2>
         {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
@@ -187,7 +187,7 @@ async function restoreVersion() {
     </section>
 
     <section class="basis-full md:basis-3/12 flex-grow space-y-4">
-      <Card v-if="hasPerms(NamedPermission.DELETE_VERSION)">
+      <Card v-if="hasPerms(NamedPermission.DELETE_VERSION) || hasPerms(NamedPermission.VIEW_LOGS) || hasPerms(NamedPermission.REVIEWER)">
         <template #header>{{ i18n.t("version.page.manage") }}</template>
 
         <span class="inline-flex items-center">
@@ -216,29 +216,9 @@ async function restoreVersion() {
           <Button v-if="hasPerms(NamedPermission.VIEW_LOGS)" @click="router.push('/admin/log')">
             {{ i18n.t("version.page.userAdminLogs") }}
           </Button>
-          <TextAreaModal
-            v-if="hasPerms(NamedPermission.DELETE_VERSION) && projectVersion.visibility !== Visibility.SOFT_DELETE"
-            :title="i18n.t('version.page.delete')"
-            :label="i18n.t('general.comment')"
-            :submit="deleteVersion"
-          >
-            <template #activator="{ on }">
-              <Button button-type="red" v-on="on">{{ i18n.t("version.page.delete") }}</Button>
-            </template>
-          </TextAreaModal>
           <Button v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.visibility === Visibility.SOFT_DELETE" @click="restoreVersion">
             {{ i18n.t("version.page.restore") }}
           </Button>
-          <TextAreaModal
-            v-if="hasPerms(NamedPermission.HARD_DELETE_VERSION)"
-            :title="i18n.t('version.page.hardDelete')"
-            :label="i18n.t('general.comment')"
-            :submit="hardDeleteVersion"
-          >
-            <template #activator="{ on }">
-              <Button button-type="red" v-on="on">{{ i18n.t("version.page.hardDelete") }}</Button>
-            </template>
-          </TextAreaModal>
 
           <template v-if="hasPerms(NamedPermission.REVIEWER)">
             <Button v-if="isReviewStateChecked" color="success" :to="route.path + '/reviews'">
@@ -253,6 +233,27 @@ async function restoreVersion() {
               <IconMdiPlay />
               {{ i18n.t("version.page.reviewStart") }}
             </Button>
+
+            <TextAreaModal
+              v-if="hasPerms(NamedPermission.DELETE_VERSION) && projectVersion.visibility !== Visibility.SOFT_DELETE"
+              :title="i18n.t('version.page.delete')"
+              :label="i18n.t('general.comment')"
+              :submit="deleteVersion"
+            >
+              <template #activator="{ on }">
+                <Button button-type="red" v-on="on">{{ i18n.t("version.page.delete") }}</Button>
+              </template>
+            </TextAreaModal>
+            <TextAreaModal
+              v-if="hasPerms(NamedPermission.HARD_DELETE_VERSION)"
+              :title="i18n.t('version.page.hardDelete')"
+              :label="i18n.t('general.comment')"
+              :submit="hardDeleteVersion"
+            >
+              <template #activator="{ on }">
+                <Button button-type="red" v-on="on">{{ i18n.t("version.page.hardDelete") }}</Button>
+              </template>
+            </TextAreaModal>
           </template>
         </div>
       </Card>
@@ -272,7 +273,7 @@ async function restoreVersion() {
         </div>
       </Card>
 
-      <Card v-if="projectVersion.pluginDependencies[platform?.name.toUpperCase()]">
+      <Card v-if="projectVersion.pluginDependencies[platform?.name.toUpperCase()] || hasPerms(NamedPermission.EDIT_VERSION)">
         <template #header>
           <div class="inline-flex w-full">
             <span class="flex-grow">{{ i18n.t("version.page.dependencies") }}</span>

@@ -123,7 +123,7 @@ async function updateInvite(invite: Invite, status: "accept" | "decline" | "unac
         </div>
         <Button v-if="!notification.read" class="ml-2" @click="markNotificationRead(notification)"><IconMdiCheck /></Button>
       </Card>
-      <div v-if="!filteredNotifications.length" class="text-red-500 text-lg mt-4">
+      <div v-if="!filteredNotifications.length" class="text-red-500 text-lg">
         {{ i18n.t(`notifications.empty.${filters.notification}`) }}
       </div>
     </Card>
@@ -131,7 +131,9 @@ async function updateInvite(invite: Invite, status: "accept" | "decline" | "unac
       <template #header>
         <h1>{{ i18n.t("notifications.invites") }}</h1>
       </template>
-      <InputSelect v-model="filters.invite" :values="inviteFilter" class="mb-4" />
+      <div class="mb-4">
+        <InputSelect v-model="filters.invite" :values="inviteFilter" />
+      </div>
       <Card v-for="(invite, index) in filteredInvites" :key="index">
         {{ i18n.t(!invite.accepted ? "notifications.invited" : "notifications.inviteAccepted", [invite.type]) }}:
         <router-link :to="invite.url" exact>{{ invite.name }}</router-link>
@@ -143,7 +145,7 @@ async function updateInvite(invite: Invite, status: "accept" | "decline" | "unac
           <Button @click="updateInvite(invite, 'decline')">{{ i18n.t("notifications.invite.btns.decline") }}</Button>
         </template>
       </Card>
-      <div v-if="!filteredInvites.length" class="text-red-500 text-lg mt-4">
+      <div v-if="!filteredInvites.length" class="text-red-500 text-lg">
         {{ i18n.t("notifications.empty.invites") }}
       </div>
     </Card>
