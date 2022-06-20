@@ -18,6 +18,7 @@ const props = defineProps<{
   maxlength?: number;
   loading?: boolean;
   errorMessages?: string[];
+  disabled?: boolean;
   rules?: ValidationRule<string | undefined>[];
 }>();
 

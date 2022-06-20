@@ -44,7 +44,7 @@ if (!route.params.platform) {
     path = path.substring(0, path.length - 1);
   }
   const entry = versionMap.keys().next();
-  await (entry.value ? useRouter().push({ path: `${path}/${entry.value.toLowerCase()}` }) : useRouter().push(useErrorRedirect(route, 404, "Not found")));
+  await (entry.value ? useRouter().replace({ path: `${path}/${entry.value.toLowerCase()}` }) : useRouter().push(useErrorRedirect(route, 404, "Not found")));
 }
 
 useHead(

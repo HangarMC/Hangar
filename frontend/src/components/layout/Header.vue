@@ -92,6 +92,10 @@ const navBarMenuLinksHangar = [
   { link: "staff", label: "Team", icon: IconMdiAccountGroup },
 ];
 
+const auth = useAuth;
+const authHost = import.meta.env.HANGAR_AUTH_HOST;
+authLog("render with user " + authStore.user?.name);
+
 const navBarMenuLinksMoreFromPaper = [
   { link: "https://papermc.io/", label: t("nav.hangar.home"), icon: IconMdiHome },
   { link: "https://forums.papermc.io/", label: t("nav.hangar.forums"), icon: IconMdiForum },
@@ -100,12 +104,8 @@ const navBarMenuLinksMoreFromPaper = [
   { link: "https://papermc.io/javadocs", label: t("nav.hangar.javadocs"), icon: IconMdiLanguageJava },
   { link: "https://papermc.io/downloads", label: t("nav.hangar.downloads"), icon: IconMdiDownloadCircle },
   { link: "https://papermc.io/community", label: t("nav.hangar.community"), icon: IconMdiAccountGroup },
-  { link: "https://hangar-auth.benndorf.dev/", label: t("nav.hangar.auth"), icon: IconMdiKey },
+  { link: authHost, label: t("nav.hangar.auth"), icon: IconMdiKey },
 ];
-
-const auth = useAuth;
-const authHost = import.meta.env.HANGAR_AUTH_HOST;
-authLog("render with user " + authStore.user?.name);
 
 function markNotificationsRead() {
   for (const notification of notifications.value) {

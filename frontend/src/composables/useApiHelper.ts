@@ -88,7 +88,7 @@ export async function useProjectVersions(user: string, project: string, blocking
 
 export async function useProjectVersionsInternal(user: string, project: string, version: string, blocking = true) {
   return useInitialState(
-    "useProjectVersions",
+    "useProjectVersionsInternal",
     () => useInternalApi<HangarVersion[]>(`versions/version/${user}/${project}/versions/${version}`, false),
     blocking
   );
