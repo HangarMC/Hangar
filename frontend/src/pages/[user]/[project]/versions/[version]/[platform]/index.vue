@@ -175,11 +175,11 @@ async function restoreVersion() {
     </div>
     <div class="flex-grow"></div>
     <div class="inline-flex items-center">
-      <DropdownButton v-if="versionPlatforms.size > 1" class="inline" :name="platform?.name" button-size="medium">
+      <DropdownButton v-if="versionPlatforms.size > 1" class="inline" :name="platform?.name" button-size="large">
         <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()">{{ backendData.platforms?.get(plat)?.name }}</DropdownItem>
       </DropdownButton>
 
-      <DownloadButton :small="true" :version="projectVersion" :project="project" :platform="platform" class="ml-2" />
+      <DownloadButton :small="false" :version="projectVersion" :project="project" :platform="platform" class="ml-2" />
     </div>
   </div>
 

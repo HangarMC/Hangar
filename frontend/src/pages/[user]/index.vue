@@ -103,7 +103,7 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
           <template #header>
             <div class="inline-flex w-full">
               <span class="flex-grow">{{ i18n.t("author.orgs") }}</span>
-              <OrgVisibilityModal v-if="organizationVisibility" v-model="organizationVisibility" />
+              <OrgVisibilityModal v-if="organizationVisibility && organizations && Object.keys(organizations).length !== 0" v-model="organizationVisibility" />
             </div>
           </template>
 

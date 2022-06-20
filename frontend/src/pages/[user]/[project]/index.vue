@@ -19,7 +19,6 @@ import { projectIconUrl } from "~/composables/useUrlHelper";
 import { ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import Tag from "~/components/Tag.vue";
 import PlatformLogo from "~/components/logos/PlatformLogo.vue";
 
 const props = defineProps<{
@@ -92,7 +91,9 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
           <li v-for="(version, index) in project.promotedVersions" :key="`${index}-${version.version}`">
             <router-link :to="'/' + project.namespace.owner + '/' + project.namespace.slug + '/versions/' + version.version">
               <div class="p-1 py-2 flex flex-wrap">
-                <span class="truncate">{{ version.version }}</span>
+                <span class="truncate">
+                  {{ version.version }}
+                </span>
                 <div v-for="(tag, idx) in version.tags" :key="idx" :color="tag.color" :data="tag.displayData" class="inline-flex basis-full p-1">
                   <PlatformLogo :platform="tag.name.toUpperCase()" :size="24" class="mr-1" />
                   <span class="mr-3">{{ tag.data }}</span>

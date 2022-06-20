@@ -65,7 +65,7 @@ watch(
   filter,
   async () => {
     if (import.meta.env.SSR) return;
-    if (!versions) return;
+    if (!versions || !versions.value) return;
     if (filter.channels.length === 0 || filter.platforms.length === 0) {
       versions.value.pagination.count = 0;
       versions.value.result = [];
