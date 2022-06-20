@@ -259,7 +259,8 @@
         "tooLongSponsors": "Project sponsor box is too long",
         "tooManyKeywords": "Project has too many keywords",
         "noCategory": "Project must have a category",
-        "noDescription": "Project must have a description"
+        "noDescription": "Project must have a description",
+        "tooManyDependencies": "Too many dependencies"
       }
     },
     "sendForApproval": "Send for approval",

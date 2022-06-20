@@ -216,9 +216,6 @@ async function restoreVersion() {
           <Button v-if="hasPerms(NamedPermission.VIEW_LOGS)" @click="router.push('/admin/log')">
             {{ i18n.t("version.page.userAdminLogs") }}
           </Button>
-          <Button v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.visibility === Visibility.SOFT_DELETE" @click="restoreVersion">
-            {{ i18n.t("version.page.restore") }}
-          </Button>
 
           <template v-if="hasPerms(NamedPermission.REVIEWER)">
             <Button v-if="isReviewStateChecked" color="success" :to="route.path + '/reviews'">
@@ -233,28 +230,31 @@ async function restoreVersion() {
               <IconMdiPlay />
               {{ i18n.t("version.page.reviewStart") }}
             </Button>
-
-            <TextAreaModal
-              v-if="hasPerms(NamedPermission.DELETE_VERSION) && projectVersion.visibility !== Visibility.SOFT_DELETE"
-              :title="i18n.t('version.page.delete')"
-              :label="i18n.t('general.comment')"
-              :submit="deleteVersion"
-            >
-              <template #activator="{ on }">
-                <Button button-type="red" v-on="on">{{ i18n.t("version.page.delete") }}</Button>
-              </template>
-            </TextAreaModal>
-            <TextAreaModal
-              v-if="hasPerms(NamedPermission.HARD_DELETE_VERSION)"
-              :title="i18n.t('version.page.hardDelete')"
-              :label="i18n.t('general.comment')"
-              :submit="hardDeleteVersion"
-            >
-              <template #activator="{ on }">
-                <Button button-type="red" v-on="on">{{ i18n.t("version.page.hardDelete") }}</Button>
-              </template>
-            </TextAreaModal>
           </template>
+
+          <Button v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.visibility === Visibility.SOFT_DELETE" @click="restoreVersion">
+            {{ i18n.t("version.page.restore") }}
+          </Button>
+          <TextAreaModal
+            v-if="hasPerms(NamedPermission.DELETE_VERSION) && projectVersion.visibility !== Visibility.SOFT_DELETE"
+            :title="i18n.t('version.page.delete')"
+            :label="i18n.t('general.comment')"
+            :submit="deleteVersion"
+          >
+            <template #activator="{ on }">
+              <Button button-type="red" v-on="on">{{ i18n.t("version.page.delete") }}</Button>
+            </template>
+          </TextAreaModal>
+          <TextAreaModal
+            v-if="hasPerms(NamedPermission.HARD_DELETE_VERSION)"
+            :title="i18n.t('version.page.hardDelete')"
+            :label="i18n.t('general.comment')"
+            :submit="hardDeleteVersion"
+          >
+            <template #activator="{ on }">
+              <Button button-type="red" v-on="on">{{ i18n.t("version.page.hardDelete") }}</Button>
+            </template>
+          </TextAreaModal>
         </div>
       </Card>
 

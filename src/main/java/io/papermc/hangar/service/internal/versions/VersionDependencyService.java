@@ -24,7 +24,6 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.service.internal.projects.ChannelService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -123,6 +122,10 @@ public class VersionDependencyService extends HangarComponent {
 
     @Transactional
     public void updateVersionPluginDependencies(long projectId, long versionId, UpdatePluginDependencies form) {
+        if (form.getPluginDependencies().size() > config.projects.getMaxDependencies()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.tooManyDependencies");
+        }
+
         Map<String, ProjectVersionDependencyTable> projectVersionDependencies = projectVersionDependenciesDAO.getForVersionAndPlatform(versionId, form.getPlatform());
         final Set<ProjectVersionDependencyTable> toBeRemoved = new HashSet<>();
         final Set<ProjectVersionDependencyTable> toBeUpdated = new HashSet<>();

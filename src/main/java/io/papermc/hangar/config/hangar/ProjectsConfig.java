@@ -20,7 +20,8 @@ public class ProjectsConfig {
     private Pattern versionNamePattern = Pattern.compile(this.versionNameRegex);
     private Pattern pageNamePattern = Pattern.compile(this.versionNameRegex);
     private int maxNameLen = 25;
-    private int maxVersionNameLen = 25;
+    private int maxVersionNameLen = 30;
+    private int maxDependencies = 100;
     private int maxPageNameLen = 25;
     private int maxPages = 50;
     private int maxChannels = 5;
@@ -89,6 +90,14 @@ public class ProjectsConfig {
 
     public int getMaxVersionNameLen() {
         return maxVersionNameLen;
+    }
+
+    public int getMaxDependencies() {
+        return maxDependencies;
+    }
+
+    public void setMaxDependencies(final int maxDependencies) {
+        this.maxDependencies = maxDependencies;
     }
 
     public void setMaxVersionNameLen(int maxVersionNameLen) {

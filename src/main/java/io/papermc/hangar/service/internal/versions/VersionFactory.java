@@ -177,6 +177,9 @@ public class VersionFactory extends HangarComponent {
         if (!validationService.isValidVersionName(pendingVersion.getVersionString())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidName");
         }
+        if (pendingVersion.getPluginDependencies().values().stream().anyMatch(pluginDependencies -> pluginDependencies.size() > config.projects.getMaxDependencies())) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.tooManyDependencies");
+        }
 
         final ProjectTable projectTable = projectService.getProjectTable(projectId);
         assert projectTable != null;

@@ -103,6 +103,8 @@ hangar:
 
   projects:
     max-name-len: 25
+    max-version-name-len: 30
+    max-dependencies: 100
     max-pages: 50
     max-bbcode-len: 20000
     max-sponsors-len: 500
