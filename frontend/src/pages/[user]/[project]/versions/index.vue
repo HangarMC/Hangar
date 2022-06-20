@@ -22,6 +22,7 @@ import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import Alert from "~/components/design/Alert.vue";
 import Pagination from "~/components/Pagination.vue";
+import PlatformLogo from "~/components/logos/PlatformLogo.vue";
 
 const i18n = useI18n();
 const ctx = useContext();
@@ -126,31 +127,21 @@ function getNonChannelTags(version: Version): ApiTag[] {
               <Card>
                 <router-link :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${item.name}`">
                   <div class="flex flex-wrap">
-                    <div class="basis-3/12 <sm:basis-4/12">
+                    <div class="basis-full md:basis-6/12 truncate">
                       <div class="flex flex-wrap">
-                        <span class="basis-full text-xl">{{ item.name }}</span>
-                        <span class="basis-full"><Tag :tag="getChannelTag(item)" /></span>
+                        <span class="text-xl md:basis-full">{{ item.name }}</span>
+                        <Tag :tag="getChannelTag(item)" />
                       </div>
                     </div>
-                    <div class="basis-4/12 <sm:1/12">
-                      <Tag v-for="(tag, index) in getNonChannelTags(item)" :key="index" :tag="tag" class="w-full" />
-                    </div>
-                    <div class="basis-2/12 <sm:hidden">
-                      <div class="flex flex-wrap">
-                        <span class="basis-full inline-flex items-center">
-                          <IconMdiAccountArrowRight class="mr-1" />
-                          {{ item.author }}
-                        </span>
-                        <span class="basis-full inline-flex items-center">
-                          <IconMdiFile class="mr-1" />
-                          <template v-if="item.fileInfo.sizeBytes">
-                            {{ filesize(item.fileInfo.sizeBytes) }}
-                          </template>
-                          <template v-else> (external) </template>
-                        </span>
+                    <div class="basis-3/12 <md:(mt-2 basis-6/12)">
+                      <div v-for="(tag, index) in getNonChannelTags(item)" :key="index" class="basis-full">
+                        <div class="inline-flex">
+                          <PlatformLogo :platform="tag.name.toUpperCase()" :size="24" class="mr-1" />
+                          <span class="mr-3">{{ tag.data }}</span>
+                        </div>
                       </div>
                     </div>
-                    <div class="basis-3/12 <sm:basis-4/12">
+                    <div class="basis-3/12 <md:(mt-2 basis-6/12)">
                       <div class="flex flex-wrap">
                         <span class="basis-full inline-flex items-center">
                           <IconMdiCalendar class="mr-1" />
@@ -209,7 +200,8 @@ function getNonChannelTags(version: Version): ApiTag[] {
           <ul>
             <li v-for="platform in platforms" :key="platform.name" class="inline-flex w-full">
               <InputCheckbox v-model="filter.platforms" :value="platform.enumName" @change="updatePlatformCheckAll" />
-              <Tag :name="platform.name" :color="platform.tagColor" />
+              <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
+              {{ platform.name }}
             </li>
           </ul>
         </Card>

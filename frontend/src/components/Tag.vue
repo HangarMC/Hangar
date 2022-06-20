@@ -4,10 +4,8 @@ import { computed } from "vue";
 
 const props = defineProps<{
   name?: string;
-  data?: string;
   color?: Color;
   tag?: Tag;
-  shortForm?: boolean;
 }>();
 
 interface Color {
@@ -15,8 +13,7 @@ interface Color {
   background?: string;
 }
 
-const cName = computed(() => (props.tag ? props.tag.name : props.name));
-const cData = computed(() => (props.tag ? props.tag.data : props.data));
+const cName = computed(() => (props.tag ? props.tag.data : props.name));
 const cColor = computed(() => (props.tag ? props.tag.color : props.color));
 const ccColor = computed(() => {
   if (cColor.value?.foreground) {
@@ -56,7 +53,7 @@ const ccColor = computed(() => {
 </script>
 
 <template>
-  <div class="tags inline-flex flex-wrap items-center justify-start p-1" :class="{ 'has-addons': cData && !shortForm }">
+  <div class="tags inline-flex flex-wrap items-center justify-start p-1">
     <span
       :style="{
         color: ccColor?.foreground,
@@ -65,9 +62,8 @@ const ccColor = computed(() => {
       }"
       class="tag flex rounded px-2 py-1 text-0.8em"
     >
-      {{ shortForm && cData ? cData : cName }}
+      {{ cName }}
     </span>
-    <span v-if="cData && !shortForm" class="tag flex bg-gray-100 rounded px-2 py-1 text-black text-0.8em">{{ cData }}</span>
   </div>
 </template>
 
