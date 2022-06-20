@@ -199,7 +199,7 @@ public class VersionController extends HangarComponent {
     }
 
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
-    @RateLimit(overdraft = 5, refillTokens = 2, refillSeconds = 10)
+    @RateLimit(overdraft = 5, refillTokens = 3, greedy = true)
     @GetMapping(path = "/version/{author}/{slug}/lastdependencies")
     public ResponseEntity<LastDependencies> getLastVersionDependencies(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String channel, @RequestParam String platform) {
         return ResponseEntity.ok(versionService.getLastVersionDependencies(author, slug, channel, platform));
