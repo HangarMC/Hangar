@@ -16,7 +16,6 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import { useRoute } from "vue-router";
 import { useApi } from "~/composables/useApi";
 import { HangarProject } from "hangar-internal";
-import filesize from "filesize";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";

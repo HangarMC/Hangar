@@ -31,6 +31,7 @@ import DownloadButton from "~/components/projects/DownloadButton.vue";
 import PlatformLogo from "~/components/logos/PlatformLogo.vue";
 import TextAreaModal from "~/components/modals/TextAreaModal.vue";
 import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
+import filesize from "filesize";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -151,7 +152,13 @@ async function restoreVersion() {
         <IconMdiCheckCircleOutline v-if="isReviewStateChecked" :title="approvalTooltip" class="text-2xl" />
       </h1>
       <h2>
-        {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
+        <span class="inline-flex">
+          {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
+          <span v-if="projectVersion.fileInfo.sizeBytes" class="inline-flex items-center ml-3">
+            <IconMdiFile class="mr-1" />
+            {{ filesize(projectVersion.fileInfo.sizeBytes) }}
+          </span>
+        </span>
       </h2>
     </div>
     <div class="mt-2 text-2xl ml-1 flex">
