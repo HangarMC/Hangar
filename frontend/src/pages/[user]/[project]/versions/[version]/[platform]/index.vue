@@ -67,6 +67,13 @@ const platformTag = computed<Tag | null>(() => projectVersion.value?.tags.find((
 const currentVisibility = computed(() => backendData.visibilities.find((v) => v.name === projectVersion.value?.visibility));
 const editingPage = ref(false);
 
+const sortedDependencies = computed(() => {
+  if (platform.value && projectVersion.value) {
+    return projectVersion.value.pluginDependencies[platform.value.name.toUpperCase() as Platform].sort((a, b) => Number(b.required) - Number(a.required));
+  }
+  return [];
+});
+
 useHead(
   useSeo(
     props.project?.name + " " + projectVersion.value?.name,
@@ -289,7 +296,7 @@ async function restoreVersion() {
         </template>
 
         <ul>
-          <li v-for="dep in projectVersion.pluginDependencies[platform?.name.toUpperCase()]" :key="dep.name">
+          <li v-for="dep in sortedDependencies" :key="dep.name">
             <Link
               :href="dep.externalUrl || undefined"
               :target="dep.externalUrl ? '_blank' : undefined"
