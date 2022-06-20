@@ -69,7 +69,7 @@ const editingPage = ref(false);
 
 const sortedDependencies = computed(() => {
   if (platform.value && projectVersion.value) {
-    return projectVersion.value.pluginDependencies[platform.value.name.toUpperCase() as Platform].sort((a, b) => Number(b.required) - Number(a.required));
+    return [...projectVersion.value.pluginDependencies[platform.value.name.toUpperCase() as Platform]].sort((a, b) => Number(b.required) - Number(a.required));
   }
   return [];
 });
