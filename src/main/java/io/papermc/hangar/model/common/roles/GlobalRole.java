@@ -1,10 +1,12 @@
 package io.papermc.hangar.model.common.roles;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,10 +32,10 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
     ADVISOR("Advisor", 13, Permission.None, "Advisor", Color.AQUA),
 
     STONE_DONOR("Stone_Donor", 14, Permission.None, "Stone Donor", Color.GRAY, 5),
-    QUARTZ_DONOR("Quartz_Donor",15, Permission.None, "Quartz Donor", Color.QUARTZ, 4),
-    IRON_DONOR("Iron_Donor",16, Permission.None, "Iron Donor", Color.SILVER, 3),
-    GOLD_DONOR("Gold_Donor",17, Permission.None, "Gold Donor", Color.GOLD, 2),
-    DIAMOND_DONOR("Diamond_Donor",18, Permission.None, "Diamond Donor", Color.LIGHTBLUE, 1),
+    QUARTZ_DONOR("Quartz_Donor", 15, Permission.None, "Quartz Donor", Color.QUARTZ, 4),
+    IRON_DONOR("Iron_Donor", 16, Permission.None, "Iron Donor", Color.SILVER, 3),
+    GOLD_DONOR("Gold_Donor", 17, Permission.None, "Gold Donor", Color.GOLD, 2),
+    DIAMOND_DONOR("Diamond_Donor", 18, Permission.None, "Diamond Donor", Color.LIGHTBLUE, 1),
 
     ORGANIZATION("Organization", 23, OrganizationRole.ORGANIZATION_OWNER.getPermissions(), "Organization", Color.PURPLE);
 
@@ -107,5 +109,14 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
     @Override
     public GlobalRoleTable create(@Nullable Long ignored, long userId, boolean ignoredToo) {
         return new GlobalRoleTable(userId, this);
+    }
+
+    public static GlobalRole byApiValue(String apiValue) {
+        for (GlobalRole value : values()) {
+            if (value.value.endsWith(apiValue)) {
+                return value;
+            }
+        }
+        throw new IllegalArgumentException("No GlobalRole '" + apiValue + "'");
     }
 }

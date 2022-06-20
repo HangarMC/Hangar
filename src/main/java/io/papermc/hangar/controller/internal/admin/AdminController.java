@@ -14,8 +14,10 @@ import io.papermc.hangar.controller.extras.pagination.filters.log.LogVersionFilt
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.NamedPermission;
+import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.JobTable;
 import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.db.roles.GlobalRoleTable;
 import io.papermc.hangar.model.internal.admin.health.MissingFileCheck;
 import io.papermc.hangar.model.internal.admin.health.UnhealthyProject;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
@@ -28,6 +30,7 @@ import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.admin.HealthService;
 import io.papermc.hangar.service.internal.admin.StatService;
+import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.users.UserService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,7 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,15 +64,17 @@ public class AdminController extends HangarComponent {
     private final JobService jobService;
     private final UserService userService;
     private final ObjectMapper mapper;
+    private final GlobalRoleService globalRoleService;
 
     @Autowired
-    public AdminController(PlatformService platformService, StatService statService, HealthService healthService, JobService jobService, UserService userService, ObjectMapper mapper) {
+    public AdminController(PlatformService platformService, StatService statService, HealthService healthService, JobService jobService, UserService userService, ObjectMapper mapper, GlobalRoleService globalRoleService) {
         this.platformService = platformService;
         this.statService = statService;
         this.healthService = healthService;
         this.jobService = jobService;
         this.userService = userService;
         this.mapper = mapper;
+        this.globalRoleService = globalRoleService;
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -120,5 +126,19 @@ public class AdminController extends HangarComponent {
     // TODO add sorters
     public PaginatedResult<HangarLoggedAction> getActionLog(@NotNull @ConfigurePagination(maxLimit = 50) RequestPagination pagination) {
         return actionLogger.getLogs(pagination);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(NamedPermission.EDIT_ALL_USER_SETTINGS)
+    @PostMapping(value = "/user/{user}/{role}")
+    public void addRole(@PathVariable UserTable user, @PathVariable String role) {
+        globalRoleService.addRole(new GlobalRoleTable(user.getUserId(), GlobalRole.byApiValue(role)));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(NamedPermission.EDIT_ALL_USER_SETTINGS)
+    @DeleteMapping(value = "/user/{user}/{role}")
+    public void removeRole(@PathVariable UserTable user, @PathVariable String role) {
+        globalRoleService.deleteRole(new GlobalRoleTable(user.getUserId(), GlobalRole.byApiValue(role)));
     }
 }

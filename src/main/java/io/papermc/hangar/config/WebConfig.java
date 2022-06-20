@@ -86,6 +86,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
         } else {
             corsRegistration.allowedOrigins(hangarConfig.getBaseUrl());
         }
+        corsRegistration.allowedMethods("GET", "HEAD", "POST", "DELETE");
     }
 
     @Bean

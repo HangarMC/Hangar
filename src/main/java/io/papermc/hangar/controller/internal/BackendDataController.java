@@ -17,6 +17,7 @@ import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.common.projects.Visibility;
+import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.security.annotations.Anyone;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -130,6 +132,11 @@ public class BackendDataController {
     @GetMapping("/projectRoles")
     public ResponseEntity<List<ProjectRole>> getAssignableProjectRoles() {
         return ResponseEntity.ok(ProjectRole.getAssignableRoles());
+    }
+
+    @GetMapping("/globalRoles")
+    public ResponseEntity<List<GlobalRole>> getGlobalRoles() {
+        return ResponseEntity.ok(Arrays.stream(GlobalRole.values()).toList());
     }
 
     @GetMapping("/orgRoles")

@@ -44,6 +44,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
   const licenses = ref<string[]>([]);
   const orgRoles = ref<Role[]>([]);
   const projectRoles = ref<Role[]>([]);
+  const globalRoles = ref<Role[]>([]);
   const channelColors = ref<Color[]>([]);
   const flagReasons = ref<FlagReason[]>([]);
 
@@ -86,6 +87,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
         fetchIfNeeded(async () => useInternalApi("data/orgRoles", false), orgRoles),
         fetchIfNeeded(async () => useInternalApi("data/channelColors", false), channelColors),
         fetchIfNeeded(async () => useInternalApi("data/projectRoles", false), projectRoles),
+        fetchIfNeeded(async () => useInternalApi("data/globalRoles", false), globalRoles),
         fetchIfNeeded(async () => useInternalApi("data/flagReasons", false), flagReasons),
       ]);
     } catch (e) {
@@ -113,6 +115,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
     visibilities,
     orgRoles,
     projectRoles,
+    globalRoles,
     channelColors,
     flagReasons,
     initBackendData,
