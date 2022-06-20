@@ -170,8 +170,8 @@ async function restoreVersion() {
   </div>
 
   <div v-if="projectVersion" class="flex flex-wrap md:flex-nowrap gap-4 mt-4">
-    <section class="basis-full md:basis-8/12 flex-grow">
-      <Card class="relative">
+    <section class="basis-full md:basis-9/12 flex-grow truncate">
+      <Card class="relative overflow-clip overflow-hidden">
         <MarkdownEditor
           v-if="hasPerms(NamedPermission.EDIT_VERSION)"
           ref="editor"
@@ -186,7 +186,7 @@ async function restoreVersion() {
       </Card>
     </section>
 
-    <section class="basis-full md:basis-4/12 flex-grow space-y-4">
+    <section class="basis-full md:basis-3/12 flex-grow space-y-4">
       <Card v-if="hasPerms(NamedPermission.DELETE_VERSION)">
         <template #header>{{ i18n.t("version.page.manage") }}</template>
 
