@@ -68,8 +68,8 @@ const currentVisibility = computed(() => backendData.visibilities.find((v) => v.
 const editingPage = ref(false);
 
 const sortedDependencies = computed(() => {
-  if (platform.value && projectVersion.value) {
-    return [...projectVersion.value.pluginDependencies[platform.value.name.toUpperCase() as Platform]].sort((a, b) => Number(b.required) - Number(a.required));
+  if (platform.value && projectVersion.value && projectVersion.value.pluginDependencies[p]) {
+    return [...projectVersion.value.pluginDependencies[p]].sort((a, b) => Number(b.required) - Number(a.required));
   }
   return [];
 });
