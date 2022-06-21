@@ -99,17 +99,17 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
         <template #header>{{ i18n.t("project.pinnedVersions") }}</template>
         <ul class="divide-y divide-blue-500/50">
           <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.name}`" class="p-1 py-2 flex">
-            <!-- todo: why is the color the enum id -->
-            <div class="">
+            <div class="flex-grow">
               <router-link :to="createPinnedVersionUrl(version)">
                 {{ version.name }}
+                <br />
                 <div class="inline-flex items-center">
                   <Tag :name="version.channel.name" :color="{ background: version.channel.color }"></Tag>
                   <PlatformLogo v-for="(platform, idx) in version.platforms" :key="`${idx}-${platform}`" :platform="platform" :size="24" class="mr-1" />
                 </div>
               </router-link>
             </div>
-            <div class="items-end items-center inline-flex">
+            <div class="items-center inline-flex">
               <DownloadButton :project="project" :pinned-version="version" small></DownloadButton>
             </div>
           </li>
