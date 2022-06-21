@@ -56,7 +56,7 @@ public interface HangarVersionsDAO {
             "           AND" +
             "       <endif>" +
             "       pv.id = :versionId" +
-            "   ORDERED BY pv.created_at DESC"
+            "   ORDER BY pv.created_at DESC"
     )
     HangarVersion getVersion(long versionId, @Define boolean canSeeHidden, @Define Long userId);
 
