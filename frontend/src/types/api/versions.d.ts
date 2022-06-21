@@ -42,7 +42,7 @@ declare module "hangar-api" {
   interface VersionCompact extends Model, Named, Visible {
     description: string;
     stats: VersionStats;
-    fileInfo: FileInfo;
+    fileInfo: FileInfo | null;
     externalUrl: string | null;
     author: string;
     reviewState: ReviewState;

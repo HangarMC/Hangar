@@ -193,14 +193,14 @@ public class VersionController extends HangarComponent {
     @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public FileSystemResource download(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString, @PathVariable Platform platform, @RequestParam(required = false) String token) {
-        versionString = recommendedVersionService.fixVersionString(author, slug, versionString, platform);
+        versionString = recommendedVersionService.fixVersionString(author, slug, versionString, platform); // TODO remove recommended special casing
         return downloadService.getVersionFile(author, slug, versionString, platform, true, token);
     }
 
     @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/downloadCheck")
     public ResponseEntity<String> downloadCheck(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString, @PathVariable Platform platform) {
-        versionString = recommendedVersionService.fixVersionString(author, slug, versionString, platform);
+        versionString = recommendedVersionService.fixVersionString(author, slug, versionString, platform); // TODO remove recommended special casing
         boolean requiresConfirmation = downloadService.requiresConfirmation(author, slug, versionString, platform);
         if (requiresConfirmation) {
             String token = downloadService.createConfirmationToken(author, slug, versionString, platform);

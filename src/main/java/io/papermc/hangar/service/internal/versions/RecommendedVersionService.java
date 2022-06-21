@@ -34,6 +34,7 @@ public class RecommendedVersionService extends HangarComponent {
         return recommendedProjectVersionsDAO.getRecommendedVersions(owner, slug);
     }
 
+    // TODO we shouldn't have a recommended endpoint, the url should direct on the frontend
     public String fixVersionString(String author, String slug, String versionString, Platform platform) {
         if (!"recommended".equals(versionString)) {
             return versionString;

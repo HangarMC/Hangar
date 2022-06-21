@@ -5,6 +5,7 @@ import io.papermc.hangar.config.jackson.RequiresPermission;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectChannel;
+import io.papermc.hangar.model.api.project.version.FileInfo;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.mapper.Nested;
+import org.jetbrains.annotations.Nullable;
 
 public class HangarProject extends Project implements Joinable<ProjectRoleTable>, ProjectIdentified {
 
@@ -158,7 +160,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     }
 
 
-    public record PinnedVersion(Type type, String versionString, Set<Platform> platforms, @Nested("pc") ProjectChannel channel) {
+    public record PinnedVersion(Type type, String name, Set<Platform> platforms, @Nested("pc") ProjectChannel channel, @Nested("fi") @Nullable FileInfo fileInfo, @Nullable String externalUrl) {
 
         @EnumByName
         @JsonFormat(shape = JsonFormat.Shape.STRING)

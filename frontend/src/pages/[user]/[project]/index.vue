@@ -52,31 +52,10 @@ function saveSponsors(content: string) {
 }
 
 function createPinnedVersionUrl(version: PinnedVersion): string {
-  return `/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${version.versionString}`;
+  return `/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${version.name}`;
 }
 
 //TODO decide what to show or remove, move needed data to pinned version
-//TODO PinnedVersion platforms are wrong
-function getHangarVersions(version: PinnedVersion): Record<any, HangarVersion> {
-  const versions: Record<any, HangarVersion> = {};
-  if (!backendData.platforms) {
-    return {};
-  }
-
-  for (const platform of version.platforms) {
-    useInternalApi<HangarVersion>(
-      `versions/version/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${version.versionString}/${platform}`,
-      false
-    )
-      .then((v) => {
-        if (v) {
-          versions[platform as Platform] = v as HangarVersion;
-        }
-      })
-      .catch((e) => handleRequestError(e, ctx, i18n));
-  }
-  return versions;
-}
 useHead(useSeo(props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
 </script>
 
@@ -118,20 +97,20 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
       <ProjectInfo :project="project" />
       <Card>
         <template #header>{{ i18n.t("project.pinnedVersions") }}</template>
-        <ul v-if="backendData.channelColors" class="divide-y divide-blue-500/50">
-          <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.versionString}`" class="p-1 py-2 flex">
+        <ul class="divide-y divide-blue-500/50">
+          <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.name}`" class="p-1 py-2 flex">
             <!-- todo: why is the color the enum id -->
             <div class="">
               <router-link :to="createPinnedVersionUrl(version)">
-                {{ version.versionString }}
+                {{ version.name }}
                 <div class="inline-flex items-center">
-                  <Tag :name="version.channel.name" :color="{ background: backendData.channelColors[version.channel.color].hex }"></Tag>
+                  <Tag :name="version.channel.name" :color="{ background: version.channel.color }"></Tag>
                   <PlatformLogo v-for="(platform, idx) in version.platforms" :key="`${idx}-${platform}`" :platform="platform" :size="24" class="mr-1" />
                 </div>
               </router-link>
             </div>
             <div class="items-end items-center inline-flex">
-              <DownloadButton :project="project" :versions="getHangarVersions(version)" small></DownloadButton>
+              <DownloadButton :project="project" :pinned-version="version" small></DownloadButton>
             </div>
           </li>
         </ul>

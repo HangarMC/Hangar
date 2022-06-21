@@ -70,14 +70,14 @@ public class VersionsController implements IVersionsController {
     @Override
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#author, #slug}")
     public Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, Platform platform, @NotNull OffsetDateTime fromDate, @NotNull OffsetDateTime toDate) {
-        versionString = recommendedVersionService.fixVersionString(author, slug, versionString, platform);
+        versionString = recommendedVersionService.fixVersionString(author, slug, versionString, platform); // TODO remove recommended special casing
         return versionsApiService.getVersionStats(author, slug, versionString, platform, fromDate, toDate);
     }
 
     @Override
     @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
     public FileSystemResource downloadVersion(String author, String slug, String versionString, Platform platform) {
-        versionString = recommendedVersionService.fixVersionString(author, slug, versionString, platform);
+        versionString = recommendedVersionService.fixVersionString(author, slug, versionString, platform); // TODO remove recommended special casing
         return downloadService.getVersionFile(author, slug, versionString, platform, false, null);
     }
 }

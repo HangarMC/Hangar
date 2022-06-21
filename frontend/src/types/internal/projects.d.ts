@@ -29,9 +29,11 @@ declare module "hangar-internal" {
 
   interface PinnedVersion {
     type: 'channel' | 'version';
-    versionString: string;
+    name: string;
     platforms: Platform[];
     channel: ProjectChannel;
+    fileInfo: FileInfo | null;
+    externalUrl: string | null;
   }
 
   interface HangarProject extends Joinable, Project, Table {
@@ -40,7 +42,7 @@ declare module "hangar-internal" {
     info: HangarProjectInfo;
     pages: HangarProjectPage[];
     pinnedVersions: PinnedVersion[];
-    recommendedVersions: Record<string, string | null>;
+    recommendedVersions: Record<Platform, string | null>;
   }
 
   interface ProjectPage extends Table {

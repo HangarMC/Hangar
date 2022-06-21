@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Button from "~/components/design/Button.vue";
 import { useI18n } from "vue-i18n";
-import { HangarProject, HangarVersion } from "hangar-internal";
+import { HangarProject, HangarVersion, PinnedVersion } from "hangar-internal";
 import { computed, ref } from "vue";
 import { Platform } from "~/types/enums";
 import DropdownButton from "~/components/design/DropdownButton.vue";
@@ -12,15 +12,20 @@ import PlatformLogo from "~/components/logos/PlatformLogo.vue";
 const i18n = useI18n();
 const backendData = useBackendDataStore();
 
+interface DownloadableVersion {
+  name: string;
+  externalUrl: string | null;
+}
+
 const props = withDefaults(
   defineProps<{
     project: HangarProject;
     recommended?: boolean;
     small?: boolean;
-    // Define either version and platform or versions
+    // Define either version and platform or pinnedVersion
     platform?: Platform;
-    version?: HangarVersion;
-    versions?: Record<Platform, HangarVersion>;
+    version?: DownloadableVersion;
+    pinnedVersion?: PinnedVersion;
   }>(),
   {
     recommended: false,
@@ -28,17 +33,16 @@ const props = withDefaults(
   }
 );
 
-function downloadLink(p: Platform, v: HangarVersion) {
-  if (v && v.externalUrl) {
-    return v.externalUrl;
+function downloadLink(platform: Platform, version: DownloadableVersion) {
+  if (version && version.externalUrl) {
+    return version.externalUrl;
   }
 
-  const versionString = props.recommended ? "recommended" : v.name;
-  const path = `/api/v1/projects/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${versionString}/${p}/download`;
+  const versionString = props.recommended ? "recommended" : version.name;
+  const path = `/api/v1/projects/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${versionString}/${platform.toLowerCase()}/download`;
   return import.meta.env.SSR ? path : `${window.location.protocol}//${window.location.host}${path}`;
 }
 
-// (props.versions ? props.version?.externalUrl !== null : props.versions![0].version.externalUrl !== null)
 const external = computed(() => false);
 </script>
 
@@ -52,10 +56,10 @@ const external = computed(() => false);
         </span>
       </template>
       <DropdownItem
-        v-for="(pl, i) in Object.keys(project.recommendedVersions)"
-        :key="i"
+        v-for="(url, pl, idx) in project.recommendedVersions"
+        :key="`${pl}-${idx}`"
         class="flex items-center"
-        :href="downloadLink(pl.toUpperCase(), null)"
+        :href="url || downloadLink(pl, null)"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -64,7 +68,7 @@ const external = computed(() => false);
       </DropdownItem>
     </DropdownButton>
 
-    <DropdownButton v-else-if="versions" :button-size="small ? 'medium' : 'large'">
+    <DropdownButton v-else-if="pinnedVersion" :button-size="small ? 'medium' : 'large'">
       <template #button-label>
         <span class="items-center inline-flex">
           <IconMdiDownloadOutline />
@@ -72,10 +76,10 @@ const external = computed(() => false);
         </span>
       </template>
       <DropdownItem
-        v-for="(ver, platform) in versions"
+        v-for="platform in pinnedVersion.platforms"
         :key="platform"
         class="flex items-center"
-        :href="downloadLink(platform, ver)"
+        :href="downloadLink(platform, pinnedVersion)"
         target="_blank"
         rel="noopener noreferrer"
       >

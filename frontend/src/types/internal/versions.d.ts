@@ -15,7 +15,7 @@ declare module "hangar-internal" {
     platformDependencies: Record<Platform, string[]>;
     versionString: string | null;
     description: string | null;
-    fileInfo: FileInfo;
+    fileInfo: FileInfo | null;
     externalUrl: string | null;
     channelName: string;
     channelColor: string;
