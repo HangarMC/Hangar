@@ -31,6 +31,7 @@ declare module "hangar-internal" {
     type: 'channel' | 'version';
     versionString: string;
     platforms: Platform[];
+    channel: ProjectChannel;
   }
 
   interface HangarProject extends Joinable, Project, Table {
