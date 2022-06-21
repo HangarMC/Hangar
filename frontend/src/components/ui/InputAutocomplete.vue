@@ -78,7 +78,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
     :value="internalVal"
     :disabled="disabled"
   >
-    <input v-model="internalVal" type="text" v-bind="$attrs" :class="slotProps.class" :list="id" @blur="v.$touch()" />
+    <input v-model="internalVal" type="text" v-bind="$attrs" :class="slotProps.class" :list="id" :disabled="disabled" @blur="v.$touch()" />
     <datalist :id="id">
       <option v-for="val in values" :key="getValue(val)" :value="getValue(val)">
         {{ getText(val) }}

@@ -40,6 +40,6 @@ defineExpose({ v });
     :value="value"
     :disabled="disabled"
   >
-    <input v-model="value" type="text" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" @blur="v.$touch()" />
+    <input v-model="value" type="text" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" :disabled="disabled" @blur="v.$touch()" />
   </InputWrapper>
 </template>
