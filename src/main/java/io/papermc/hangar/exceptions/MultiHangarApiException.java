@@ -14,20 +14,20 @@ public class MultiHangarApiException extends ResponseStatusException {
 
     private final List<HangarApiException> exceptions;
 
-    public MultiHangarApiException(List<HangarApiException> exceptions) {
+    public MultiHangarApiException(final List<HangarApiException> exceptions) {
         super(HttpStatus.BAD_REQUEST);
         this.exceptions = exceptions;
     }
 
     public List<HangarApiException> getExceptions() {
-        return exceptions;
+        return this.exceptions;
     }
 
     @JsonComponent
     public static class MultiExceptionSerializer extends JsonSerializer<MultiHangarApiException> {
 
         @Override
-        public void serialize(MultiHangarApiException value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        public void serialize(final MultiHangarApiException value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
             gen.writeStartObject();
             gen.writeBooleanField("isMultiException", true);
             gen.writeBooleanField("isHangarApiException", true);

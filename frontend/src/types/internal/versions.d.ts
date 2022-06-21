@@ -2,6 +2,7 @@ declare module "hangar-internal" {
   import type { DependencyVersion, FileInfo, Named, ProjectNamespace, Version } from "hangar-api";
   import type { Table } from "hangar-internal";
   import type { Platform } from "~/types/enums";
+  import { ChannelFlag } from "~/types/enums";
 
   interface PlatformDependency {
     name: string;
@@ -18,7 +19,7 @@ declare module "hangar-internal" {
     externalUrl: string | null;
     channelName: string;
     channelColor: string;
-    channelNonReviewed: boolean;
+    channelFlags: ChannelFlag[];
     forumSync: boolean;
     unstable: boolean;
     recommended: boolean;
@@ -27,8 +28,7 @@ declare module "hangar-internal" {
 
   interface ProjectChannel extends Named, Partial<Table> {
     color: string;
-    nonReviewed: boolean;
-    editable: boolean;
+    flags: ChannelFlag[];
     temp?: boolean;
     versionCount: number;
   }

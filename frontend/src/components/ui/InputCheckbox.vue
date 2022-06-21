@@ -15,6 +15,7 @@ const props = defineProps<{
   label?: string;
   disabled?: boolean;
   errorMessages?: string[];
+  value?: string;
   rules?: ValidationRule<string | undefined>[];
 }>();
 
@@ -32,6 +33,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
       dark="bg-gray-600 group-hover:bg-gray-500"
       :cursor="disabled ? 'auto' : 'pointer'"
       :disabled="disabled"
+      :value="value"
       @blur="v.$touch()"
     />
     <!--  hope this wasn't actually needed anywhere -->

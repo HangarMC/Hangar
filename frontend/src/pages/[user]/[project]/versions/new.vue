@@ -100,7 +100,7 @@ async function preload() {
     return;
   }
 
-  for (const platform in pendingVersion.value.platformDependencies) {
+  for (const platform in pendingVersion.value!.platformDependencies) {
     // Get last platform and plugin dependency data for the last version of the same channel/any other channel if not found
     useInternalApi<LastDependencies>(`versions/version/${props.project.namespace.owner}/${props.project.namespace.slug}/lastdependencies`, true, "get", {
       channel: pendingVersion.value?.channelName,
@@ -111,8 +111,8 @@ async function preload() {
           return;
         }
 
-        pendingVersion.value.platformDependencies[platform as Platform] = v.platformDependencies;
-        pendingVersion.value.pluginDependencies[platform as Platform] = v.pluginDependencies;
+        pendingVersion.value!.platformDependencies[platform as Platform] = v.platformDependencies;
+        pendingVersion.value!.pluginDependencies[platform as Platform] = v.pluginDependencies;
       })
       .catch<any>((e) => handleRequestError(e, ctx, i18n));
   }
@@ -146,18 +146,18 @@ async function createPendingVersion() {
 async function createVersion() {
   if (!pendingVersion.value) return false;
   loading.submit = true;
-  pendingVersion.value.description = descriptionEditor.value.rawEdited;
-  pendingVersion.value.channelColor = currentChannel.value!.color;
-  pendingVersion.value.channelNonReviewed = currentChannel.value!.nonReviewed;
+  pendingVersion.value!.description = descriptionEditor.value.rawEdited;
+  pendingVersion.value!.channelColor = currentChannel.value!.color;
+  pendingVersion.value!.channelFlags = currentChannel.value!.flags;
   // played around trying to get this to happen in jackson's deserialization, but couldn't figure it out.
   for (const platform in pendingVersion.value.platformDependencies) {
-    if (pendingVersion.value.platformDependencies[platform as Platform].length < 1) {
-      delete pendingVersion.value.platformDependencies[platform as Platform];
+    if (pendingVersion.value!.platformDependencies[platform as Platform].length < 1) {
+      delete pendingVersion.value!.platformDependencies[platform as Platform];
     }
   }
   for (const platform in pendingVersion.value.pluginDependencies) {
-    if (pendingVersion.value.pluginDependencies[platform as Platform].length < 1) {
-      delete pendingVersion.value.pluginDependencies[platform as Platform];
+    if (pendingVersion.value!.pluginDependencies[platform as Platform].length < 1) {
+      delete pendingVersion.value!.pluginDependencies[platform as Platform];
     }
   }
   console.log("pending", pendingVersion.value);
@@ -178,7 +178,7 @@ async function createVersion() {
 function addChannel(channel: ProjectChannel) {
   if (pendingVersion.value) {
     remove(channels.value, (c) => c.temp);
-    channels.value.push(Object.assign({}, channel));
+    channels.value.push(Object.assign({ temp: true }, channel));
     pendingVersion.value.channelName = channel.name;
   }
 }
@@ -248,9 +248,6 @@ useHead(
 
       <h2 class="mt-5 text-xl">{{ t("version.new.form.tags") }}</h2>
       <div class="flex flex-wrap">
-        <div class="basis-4/12 mt-2">
-          <InputCheckbox v-model="pendingVersion.unstable" :label="t('version.new.form.unstable')" />
-        </div>
         <div class="basis-4/12 mt-2">
           <InputCheckbox v-model="pendingVersion.recommended" :label="t('version.new.form.recommended')" />
         </div>

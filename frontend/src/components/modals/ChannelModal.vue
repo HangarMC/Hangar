@@ -9,6 +9,10 @@ import { useContext } from "vite-ssr/vue";
 import InputText from "~/components/ui/InputText.vue";
 import { required, validChannelColor, validChannelName } from "~/composables/useValidationHelpers";
 import { useVuelidate } from "@vuelidate/core";
+import InputCheckbox from "~/components/ui/InputCheckbox.vue";
+import { ChannelFlag } from "~/types/enums";
+
+const possibleFlags = [ChannelFlag.UNSTABLE, ChannelFlag.SKIP_REVIEW_QUEUE]; // TODO maybe load from backend? unsure if needed
 
 const props = defineProps<{
   projectId: number;
@@ -26,12 +30,12 @@ const v = useVuelidate();
 const form = reactive<ProjectChannel>({
   name: "",
   color: "",
-  nonReviewed: true, //TODO only do automated name validation
-  editable: true,
+  flags: [], // TODO only do automated name validation
   versionCount: 0,
 });
 const name = ref<string>(props.channel ? props.channel.name : "");
 const color = ref<string>(props.channel ? props.channel.color : "");
+const flags = ref<ChannelFlag[]>(props.channel ? props.channel.flags : []);
 const swatches = computed<string[][]>(() => {
   const result: string[][] = [];
   const backendColors = useBackendDataStore().channelColors;
@@ -53,12 +57,27 @@ async function create(close: () => void) {
   close();
   form.name = name.value;
   form.color = color.value;
+  form.flags = flags.value;
   emit("create", form);
+}
+
+function open({ click }: { click: () => void }) {
+  return {
+    click: () => {
+      reset();
+      console.log("reset");
+      click();
+    },
+  };
 }
 
 function reset() {
   if (props.channel) {
     Object.assign(form, props.channel);
+  } else {
+    name.value = "";
+    color.value = "";
+    flags.value = [];
   }
 }
 reset();
@@ -90,6 +109,7 @@ reset();
         readonly
       />
       <br />
+      <InputCheckbox v-for="f in possibleFlags" :key="f" v-model="flags" :label="i18n.t(`channel.modal.flags.${f.toLowerCase()}`)" :value="f" />
 
       <Button button-type="primary" class="mt-2" :disabled="v.$invalid" @click="create(on.click)">{{
         edit ? i18n.t("general.save") : i18n.t("general.create")
@@ -97,7 +117,7 @@ reset();
       <Button button-type="secondary" class="mt-2 ml-2" v-on="on">{{ i18n.t("general.close") }}</Button>
     </template>
     <template #activator="{ on }">
-      <slot name="activator" :on="on"></slot>
+      <slot name="activator" :on="open(on)"></slot>
     </template>
   </Modal>
 </template>

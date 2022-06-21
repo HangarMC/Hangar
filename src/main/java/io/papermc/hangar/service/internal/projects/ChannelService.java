@@ -4,6 +4,7 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectChannelsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.LongFunction;
 import java.util.stream.Collectors;
 
@@ -49,64 +51,60 @@ public class ChannelService extends HangarComponent {
         }
     }
 
-    private void validateChannel(String name, Color color, long projectId, boolean nonReviewed, List<ProjectChannelTable> existingChannels) {
-        if (!config.channels.isValidChannelName(name)) {
+    private void validateChannel(final String name, final Color color, final long projectId, final List<ProjectChannelTable> existingChannels) {
+        if (!this.config.channels.isValidChannelName(name)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.invalidName");
         }
 
-        if (existingChannels.size() >= config.projects.getMaxChannels()) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.maxChannels", config.projects.getMaxChannels());
+        if (existingChannels.size() >= this.config.projects.getMaxChannels()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.maxChannels", this.config.projects.getMaxChannels());
         }
 
-        checkName(projectId, name, null, ignored -> existingChannels);
-        checkColor(projectId, color, null, ignored -> existingChannels);
+        this.checkName(projectId, name, null, ignored -> existingChannels);
+        this.checkColor(projectId, color, null, ignored -> existingChannels);
     }
 
     @Transactional
-    public ProjectChannelTable createProjectChannel(String name, Color color, long projectId, boolean nonReviewed, boolean editable) {
-        validateChannel(name, color, projectId, nonReviewed, projectChannelsDAO.getProjectChannels(projectId));
-        ProjectChannelTable channelTable = projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, nonReviewed, editable));
-        actionLogger.project(LogAction.PROJECT_CHANNEL_CREATED.create(ProjectContext.of(projectId), formatChannelChange(channelTable), ""));
+    public ProjectChannelTable createProjectChannel(final String name, final Color color, final long projectId, final Set<ChannelFlag> flags) {
+        this.validateChannel(name, color, projectId, this.projectChannelsDAO.getProjectChannels(projectId));
+        ProjectChannelTable channelTable = this.projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, flags));
+        this.actionLogger.project(LogAction.PROJECT_CHANNEL_CREATED.create(ProjectContext.of(projectId), formatChannelChange(channelTable), ""));
         return channelTable;
     }
 
     @Transactional
-    public void editProjectChannel(long channelId, String name, Color color, long projectId, boolean nonReviewed) {
-        ProjectChannelTable projectChannelTable = getProjectChannel(channelId);
+    public void editProjectChannel(final long channelId, final String name, final Color color, final long projectId, final Set<ChannelFlag> flags) {
+        ProjectChannelTable projectChannelTable = this.getProjectChannel(channelId);
         if (projectChannelTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        if (!projectChannelTable.isEditable()) {
+        if (projectChannelTable.getFlags().contains(ChannelFlag.FROZEN)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.cannotEdit");
         }
-        validateChannel(name, color, projectId, nonReviewed, projectChannelsDAO.getProjectChannels(projectId).stream().filter(ch -> ch.getId() != channelId).collect(Collectors.toList()));
+        this.validateChannel(name, color, projectId, this.projectChannelsDAO.getProjectChannels(projectId).stream().filter(ch -> ch.getId() != channelId).collect(Collectors.toList()));
         String old = formatChannelChange(projectChannelTable);
         projectChannelTable.setName(name);
         projectChannelTable.setColor(color);
-        projectChannelTable.setNonReviewed(nonReviewed);
-        projectChannelsDAO.update(projectChannelTable);
-        actionLogger.project(LogAction.PROJECT_CHANNEL_EDITED.create(ProjectContext.of(projectId), formatChannelChange(projectChannelTable), old));
+        projectChannelTable.setFlags(flags);
+        this.projectChannelsDAO.update(projectChannelTable);
+        this.actionLogger.project(LogAction.PROJECT_CHANNEL_EDITED.create(ProjectContext.of(projectId), formatChannelChange(projectChannelTable), old));
     }
 
     @Transactional
-    public void deleteProjectChannel(long projectId, long channelId) {
-        HangarChannel hangarChannel = hangarProjectsDAO.getHangarChannel(channelId);
+    public void deleteProjectChannel(final long projectId, final long channelId) {
+        HangarChannel hangarChannel = this.hangarProjectsDAO.getHangarChannel(channelId);
         if (hangarChannel == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        if (!hangarChannel.isEditable()) {
+        if (hangarChannel.getFlags().contains(ChannelFlag.FROZEN)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.cannotDelete");
         }
-        if (hangarChannel.getVersionCount() != 0 || getProjectChannels(projectId).size() == 1) {
+        if (hangarChannel.getVersionCount() != 0 || this.getProjectChannels(projectId).size() == 1) {
             // Cannot delete channels with versions or if its the last channel
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.cannotDelete");
         }
-        projectChannelsDAO.delete(hangarChannel);
-        actionLogger.project(LogAction.PROJECT_CHANNEL_DELETED.create(ProjectContext.of(projectId), "<i>Deleted</i>", formatChannelChange(hangarChannel)));
-    }
-
-    private String formatChannelChange(ProjectChannelTable channelTable) {
-        return "Name: " + channelTable.getName() + " Color: " + channelTable.getColor().getHex() + " NonReviewed: " + channelTable.isNonReviewed();
+        this.projectChannelsDAO.delete(hangarChannel);
+        this.actionLogger.project(LogAction.PROJECT_CHANNEL_DELETED.create(ProjectContext.of(projectId), "<i>Deleted</i>", formatChannelChange(hangarChannel)));
     }
 
     public List<HangarChannel> getProjectChannels(long projectId) {
@@ -127,5 +125,9 @@ public class ChannelService extends HangarComponent {
 
     public ProjectChannelTable getFirstChannel(long projectId) {
         return projectChannelsDAO.getFirstChannel(projectId);
+    }
+
+    private static String formatChannelChange(final ProjectChannelTable channelTable) {
+        return "Name: " + channelTable.getName() + " Color: " + channelTable.getColor().getHex() + " Flags: " + channelTable.getFlags();
     }
 }

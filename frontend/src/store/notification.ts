@@ -34,9 +34,13 @@ export const useNotificationStore = defineStore("notification", () => {
     await show({ message, color: "red", clearable, timeout, addedAt: Date.now() });
   }
 
+  async function warn(message: string, clearable = true, timeout = defaultTimeout) {
+    await show({ message, color: "orange", clearable, timeout, addedAt: Date.now() });
+  }
+
   function remove(notification: Notification) {
     notifications.value.delete(notification);
   }
 
-  return { notifications, show, remove, success, error };
+  return { notifications, show, remove, success, error, warn };
 });

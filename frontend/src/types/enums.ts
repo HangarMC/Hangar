@@ -105,3 +105,9 @@ export enum LogContext {
 export enum Prompt {
   CHANGE_AVATAR = "CHANGE_AVATAR",
 }
+
+export enum ChannelFlag {
+  FROZEN = "FROZEN",
+  UNSTABLE = "UNSTABLE",
+  SKIP_REVIEW_QUEUE = "SKIP_REVIEW_QUEUE",
+}

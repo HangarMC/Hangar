@@ -73,8 +73,8 @@ public class ChannelController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 15)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
     @PostMapping(path = "/{projectId}/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createChannel(@PathVariable long projectId, @Valid @RequestBody ChannelForm channelForm) {
-        channelService.createProjectChannel(channelForm.getName(), channelForm.getColor(), projectId, channelForm.isNonReviewed(), true);
+    public void createChannel(@PathVariable final long projectId, @Valid @RequestBody final ChannelForm channelForm) {
+        this.channelService.createProjectChannel(channelForm.getName(), channelForm.getColor(), projectId, channelForm.getFlags());
     }
 
     @Unlocked
@@ -82,8 +82,8 @@ public class ChannelController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 15)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
     @PostMapping(path = "/{projectId}/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void editChannel(@PathVariable long projectId, @Valid @RequestBody EditChannelForm channelForm) {
-        channelService.editProjectChannel(channelForm.getId(), channelForm.getName(), channelForm.getColor(), projectId, channelForm.isNonReviewed());
+    public void editChannel(@PathVariable final long projectId, @Valid @RequestBody final EditChannelForm channelForm) {
+        this.channelService.editProjectChannel(channelForm.getId(), channelForm.getName(), channelForm.getColor(), projectId, channelForm.getFlags());
     }
 
     @Unlocked

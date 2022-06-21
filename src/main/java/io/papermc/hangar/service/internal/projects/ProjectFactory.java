@@ -1,14 +1,9 @@
 package io.papermc.hangar.service.internal.projects;
 
-import org.jdbi.v3.core.enums.EnumByName;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
@@ -26,6 +21,13 @@ import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
+import org.jdbi.v3.core.enums.EnumByName;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
 
 @Service
 public class ProjectFactory extends HangarComponent {
@@ -42,7 +44,7 @@ public class ProjectFactory extends HangarComponent {
     private final ValidationService validationService;
 
     @Autowired
-    public ProjectFactory(ProjectsDAO projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, ProjectMemberService projectMemberService, ProjectVisibilityService projectVisibilityService, UsersApiService usersApiService, JobService jobService, ProjectFiles projectFiles, ValidationService validationService) {
+    public ProjectFactory(final ProjectsDAO projectDAO, final ProjectService projectService, final ChannelService channelService, final ProjectPageService projectPageService, final ProjectMemberService projectMemberService, final ProjectVisibilityService projectVisibilityService, final UsersApiService usersApiService, final JobService jobService, final ProjectFiles projectFiles, final ValidationService validationService) {
         this.projectsDAO = projectDAO;
         this.projectService = projectService;
         this.channelService = channelService;
@@ -56,53 +58,53 @@ public class ProjectFactory extends HangarComponent {
     }
 
     @Transactional
-    public ProjectTable createProject(NewProjectForm newProject) {
-        ProjectOwner projectOwner = projectService.getProjectOwner(newProject.getOwnerId());
+    public ProjectTable createProject(final NewProjectForm newProject) {
+        ProjectOwner projectOwner = this.projectService.getProjectOwner(newProject.getOwnerId());
         if (projectOwner == null) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "error.project.ownerNotFound");
         }
-        checkProjectAvailability(projectOwner.getUserId(), newProject.getName());
+        this.checkProjectAvailability(projectOwner.getUserId(), newProject.getName());
         ProjectTable projectTable = null;
         try {
-            projectTable = projectsDAO.insert(new ProjectTable(projectOwner, newProject));
-            channelService.createProjectChannel(config.channels.getNameDefault(), config.channels.getColorDefault(), projectTable.getId(), false, false);
-            projectMemberService.addNewAcceptedByDefaultMember(ProjectRole.PROJECT_OWNER.create(projectTable.getId(), projectOwner.getUserId(), true));
+            projectTable = this.projectsDAO.insert(new ProjectTable(projectOwner, newProject));
+            this.channelService.createProjectChannel(this.config.channels.getNameDefault(), this.config.channels.getColorDefault(), projectTable.getId(), Set.of(ChannelFlag.FROZEN));
+            this.projectMemberService.addNewAcceptedByDefaultMember(ProjectRole.PROJECT_OWNER.create(projectTable.getId(), projectOwner.getUserId(), true));
             String newPageContent = newProject.getPageContent();
             if (newPageContent == null) {
-                newPageContent = "# " + projectTable.getName() + "\n\n" + config.pages.home.getMessage();
+                newPageContent = "# " + projectTable.getName() + "\n\n" + this.config.pages.home.getMessage();
             }
-            projectPageService.createPage(projectTable.getId(), config.pages.home.getName(), StringUtils.slugify(config.pages.home.getName()), newPageContent, false, null, true);
-            jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
+            this.projectPageService.createPage(projectTable.getId(), this.config.pages.home.getName(), StringUtils.slugify(this.config.pages.home.getName()), newPageContent, false, null, true);
+            this.jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
         } catch (Exception exception) {
             if (projectTable != null) {
-                projectsDAO.delete(projectTable);
+                this.projectsDAO.delete(projectTable);
             }
             throw exception;
         }
 
-        usersApiService.clearAuthorsCache();
+        this.usersApiService.clearAuthorsCache();
         return projectTable;
     }
 
 
-    public String renameProject(String author, String slug, String newName) {
+    public String renameProject(final String author, final String slug, final String newName) {
         String compactNewName = StringUtils.compact(newName);
-        ProjectTable projectTable = projectService.getProjectTable(author, slug);
+        ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
         String oldName = projectTable.getName();
-        checkProjectAvailability(projectTable.getOwnerId(), compactNewName);
+        this.checkProjectAvailability(projectTable.getOwnerId(), compactNewName);
         projectTable.setName(compactNewName);
         projectTable.setSlug(StringUtils.slugify(compactNewName));
-        projectsDAO.update(projectTable);
-        actionLogger.project(LogAction.PROJECT_RENAMED.create(ProjectContext.of(projectTable.getId()), author + "/" + compactNewName, author + "/" + oldName));
-        jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
-        projectService.refreshHomeProjects();
+        this.projectsDAO.update(projectTable);
+        this.actionLogger.project(LogAction.PROJECT_RENAMED.create(ProjectContext.of(projectTable.getId()), author + "/" + compactNewName, author + "/" + oldName));
+        this.jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
+        this.projectService.refreshHomeProjects();
         return StringUtils.slugify(compactNewName);
     }
 
-    public void checkProjectAvailability(long userId, String name) {
-        String errorKey = validationService.isValidProjectName(name);
+    public void checkProjectAvailability(final long userId, final String name) {
+        String errorKey = this.validationService.isValidProjectName(name);
         if (errorKey == null) {
-            var reason = projectsDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));
+            var reason = this.projectsDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));
             if (reason != null) {
                 errorKey = reason.key;
             }
@@ -110,6 +112,24 @@ public class ProjectFactory extends HangarComponent {
         if (errorKey != null) {
             throw new HangarApiException(HttpStatus.CONFLICT, errorKey);
         }
+    }
+
+    public void softDelete(final ProjectTable projectTable, final String comment) {
+        if (projectTable.getVisibility() == Visibility.NEW) {
+            this.hardDelete(projectTable, comment);
+        } else {
+            this.jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
+            this.projectVisibilityService.changeVisibility(projectTable, Visibility.SOFTDELETE, comment);
+            this.projectService.refreshHomeProjects();
+        }
+    }
+
+    public void hardDelete(final ProjectTable projectTable, final String comment) {
+        this.actionLogger.project(LogAction.PROJECT_VISIBILITY_CHANGED.create(ProjectContext.of(projectTable.getId()), "Deleted: " + comment, projectTable.getVisibility().getTitle()));
+        FileUtils.deleteDirectory(this.projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getName()));
+        this.jobService.save(new DeleteDiscourseTopicJob(projectTable.getId()));
+        this.projectsDAO.delete(projectTable);
+        this.projectService.refreshHomeProjects();
     }
 
     @EnumByName
@@ -121,26 +141,8 @@ public class ProjectFactory extends HangarComponent {
 
         private final String key;
 
-        InvalidProjectReason(String key) {
+        InvalidProjectReason(final String key) {
             this.key = key;
         }
-    }
-
-    public void softDelete(ProjectTable projectTable, String comment) {
-        if (projectTable.getVisibility() == Visibility.NEW) {
-            hardDelete(projectTable, comment);
-        } else {
-            jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
-            projectVisibilityService.changeVisibility(projectTable, Visibility.SOFTDELETE, comment);
-            projectService.refreshHomeProjects();
-        }
-    }
-
-    public void hardDelete(ProjectTable projectTable, String comment) {
-        actionLogger.project(LogAction.PROJECT_VISIBILITY_CHANGED.create(ProjectContext.of(projectTable.getId()), "Deleted: " + comment, projectTable.getVisibility().getTitle()));
-        FileUtils.deleteDirectory(projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getName()));
-        jobService.save(new DeleteDiscourseTopicJob(projectTable.getId()));
-        projectsDAO.delete(projectTable);
-        projectService.refreshHomeProjects();
     }
 }

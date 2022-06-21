@@ -20,59 +20,75 @@ public class HangarApiException extends ResponseStatusException {
         this(HttpStatus.BAD_REQUEST);
     }
 
-    public HangarApiException(String reason) {
+    public HangarApiException(final String reason) {
         this(HttpStatus.BAD_REQUEST, reason);
     }
 
-    public HangarApiException(String reason, Object...args) {
+    public HangarApiException(final String reason, final Object... args) {
         this(HttpStatus.BAD_REQUEST, reason, args);
     }
 
-    public HangarApiException(HttpStatus status) {
+    public HangarApiException(final HttpStatus status) {
         super(status);
         this.httpHeaders = HttpHeaders.EMPTY;
         this.args = new String[0];
     }
 
-    public HangarApiException(HttpStatus status, String reason) {
+    public HangarApiException(final HttpStatus status, final String reason) {
         super(status, reason);
         this.httpHeaders = HttpHeaders.EMPTY;
         this.args = new String[0];
     }
 
-    public HangarApiException(HttpStatus status, HttpHeaders httpHeaders) {
+    public HangarApiException(final HttpStatus status, final HttpHeaders httpHeaders) {
         super(status);
         this.httpHeaders = httpHeaders;
         this.args = new String[0];
     }
 
-    public HangarApiException(HttpStatus status, String reason, HttpHeaders httpHeaders) {
+    public HangarApiException(final HttpStatus status, final String reason, final HttpHeaders httpHeaders) {
         super(status, reason);
         this.httpHeaders = httpHeaders;
         this.args = new String[0];
     }
 
-    public HangarApiException(HttpStatus status, String reason, Object...args) {
+    public HangarApiException(final HttpStatus status, final String reason, final Object... args) {
         super(status, reason);
         this.httpHeaders = HttpHeaders.EMPTY;
         this.args = args;
     }
 
+    public static HangarApiException notFound() {
+        return new HangarApiException(HttpStatus.NOT_FOUND);
+    }
+
+    public static HangarApiException rateLimited() {
+        return new HangarApiException(HttpStatus.TOO_MANY_REQUESTS);
+    }
+
+    public static HangarApiException forbidden() {
+        return new HangarApiException(HttpStatus.FORBIDDEN);
+    }
+
+    public static HangarApiException unauthorized(final String msg) {
+        return new HangarApiException(HttpStatus.UNAUTHORIZED, msg);
+    }
+
     public Object[] getArgs() {
-        return args;
+        return this.args;
     }
 
     @NotNull
     @Override
     public HttpHeaders getResponseHeaders() {
-        return httpHeaders;
+        return this.httpHeaders;
     }
 
     @JsonComponent
     public static class HangarApiExceptionSerializer extends JsonSerializer<HangarApiException> {
 
         @Override
-        public void serialize(HangarApiException exception, JsonGenerator gen, SerializerProvider provider) throws IOException {
+        public void serialize(final HangarApiException exception, final JsonGenerator gen, final SerializerProvider provider) throws IOException {
             String message = exception.getReason();
             if (message == null || message.isBlank()) {
                 message = exception.getStatus().getReasonPhrase();
@@ -90,21 +106,5 @@ public class HangarApiException extends ResponseStatusException {
             gen.writeStringField("statusPhrase", exception.getStatus().getReasonPhrase());
             gen.writeEndObject();
         }
-    }
-
-    public static HangarApiException notFound() {
-        return new HangarApiException(HttpStatus.NOT_FOUND);
-    }
-
-    public static HangarApiException rateLimited() {
-        return new HangarApiException(HttpStatus.TOO_MANY_REQUESTS);
-    }
-
-    public static HangarApiException forbidden() {
-        return new HangarApiException(HttpStatus.FORBIDDEN);
-    }
-
-    public static HangarApiException unauthorized(String msg) {
-        return new HangarApiException(HttpStatus.UNAUTHORIZED, msg);
     }
 }

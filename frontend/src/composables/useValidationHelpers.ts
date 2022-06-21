@@ -135,48 +135,46 @@ export const validApiKeyName = withOverrideMessage(
     ) as ValidationRule<{ ownerId: string }>
 );
 
-export const validChannelName = withOverrideMessage(
-  (projectId: string, existingName: string) =>
-    helpers.withParams(
-      { projectId, type: "validChannelName" },
-      helpers.withAsync(async (value: string) => {
-        if (!helpers.req(value)) {
-          return { $valid: true };
-        }
-        try {
-          await useInternalApi("channels/checkName", true, "get", {
-            projectId: projectId,
-            name: value,
-            existingName: existingName,
-          });
-          return { $valid: true };
-        } catch (e: any) {
-          return !e.response?.data.isHangarApiException ? { $valid: false } : { $valid: false, $message: e.response?.data.message };
-        }
-      })
-    ) as ValidationRule<{ ownerId: string }>
+export const validChannelName = withOverrideMessage((projectId: string, existingName: string) =>
+  helpers.withParams(
+    { projectId, type: "validChannelName" },
+    helpers.withAsync(async (value: string) => {
+      if (!helpers.req(value)) {
+        return { $valid: true };
+      }
+      try {
+        await useInternalApi("channels/checkName", true, "get", {
+          projectId: projectId,
+          name: value,
+          existingName: existingName,
+        });
+        return { $valid: true };
+      } catch (e: any) {
+        return !e.response?.data.isHangarApiException ? { $valid: false } : { $valid: false, $message: e.response?.data.message };
+      }
+    })
+  )
 );
 
-export const validChannelColor = withOverrideMessage(
-  (projectId: string, existingColor: string) =>
-    helpers.withParams(
-      { projectId, type: "validChannelColor" },
-      helpers.withAsync(async (value: string) => {
-        if (!helpers.req(value)) {
-          return { $valid: true };
-        }
-        try {
-          await useInternalApi("channels/checkColor", true, "get", {
-            projectId: projectId,
-            color: value,
-            existingColor: existingColor,
-          });
-          return { $valid: true };
-        } catch (e: any) {
-          return !e.response?.data.isHangarApiException ? { $valid: false } : { $valid: false, $message: e.response?.data.message };
-        }
-      })
-    ) as ValidationRule<{ ownerId: string }>
+export const validChannelColor = withOverrideMessage((projectId: string, existingColor: string) =>
+  helpers.withParams(
+    { projectId, type: "validChannelColor" },
+    helpers.withAsync(async (value: string) => {
+      if (!helpers.req(value)) {
+        return { $valid: true };
+      }
+      try {
+        await useInternalApi("channels/checkColor", true, "get", {
+          projectId: projectId,
+          color: value,
+          existingColor: existingColor,
+        });
+        return { $valid: true };
+      } catch (e: any) {
+        return !e.response?.data.isHangarApiException ? { $valid: false } : { $valid: false, $message: e.response?.data.message };
+      }
+    })
+  )
 );
 
 export const pattern = withOverrideMessage(

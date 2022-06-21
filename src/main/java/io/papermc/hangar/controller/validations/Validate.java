@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
 
 @Documented
 @Constraint(validatedBy = Validate.ValidateConstraintValidator.class)
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(Validate.List.class)
 public @interface Validate {

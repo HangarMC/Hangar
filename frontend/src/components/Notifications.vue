@@ -20,6 +20,7 @@ const notifications = ref(notificationStore.notifications);
             <span class="text-lg mr-2">
               <IconMdiAlertOutline v-if="notification.color === 'red'" class="text-red-600" />
               <IconMdiCheck v-else-if="notification.color === 'green'" class="text-lime-600" />
+              <IconMdiInformation v-else-if="notification.color === 'orange'" class="text-red-400" />
             </span>
             {{ notification.message }}
             <IconMdiClose v-if="notification.clearable" class="ml-2 cursor-pointer" @click="notificationStore.remove(notification)" />

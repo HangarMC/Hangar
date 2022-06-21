@@ -10,6 +10,7 @@ import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
+@Deprecated(forRemoval = true)
 public class ProjectVersionTagTable extends Table implements Named {
 
     private final long versionId;

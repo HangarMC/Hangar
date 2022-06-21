@@ -209,7 +209,7 @@ public class VersionFactory extends HangarComponent {
         try {
             ProjectChannelTable projectChannelTable = channelService.getProjectChannel(projectId, pendingVersion.getChannelName(), pendingVersion.getChannelColor());
             if (projectChannelTable == null) {
-                projectChannelTable = channelService.createProjectChannel(pendingVersion.getChannelName(), pendingVersion.getChannelColor(), projectId, pendingVersion.isChannelNonReviewed(), true);
+                projectChannelTable = this.channelService.createProjectChannel(pendingVersion.getChannelName(), pendingVersion.getChannelColor(), projectId, pendingVersion.getChannelFlags());
             }
 
             Long fileSize = null;
@@ -262,10 +262,6 @@ public class VersionFactory extends HangarComponent {
             }
             projectVersionDependenciesDAO.insertAll(pluginDependencyTables);
 
-
-            if (pendingVersion.isUnstable()) {
-                versionTagService.addUnstableTag(projectVersionTable.getId());
-            }
 
             notificationService.notifyUsersNewVersion(projectTable, projectVersionTable, projectService.getProjectWatchers(projectTable.getId()));
 

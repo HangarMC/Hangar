@@ -11,6 +11,7 @@ import { useAuth } from "~/composables/useAuth";
 import { useResponse } from "~/composables/useResReq";
 
 interface StatCookie {
+  // TODO use or remove
   // eslint-disable-next-line camelcase
   hangar_stats: string;
   Path: string;
@@ -49,7 +50,7 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
         resolve(data);
       })
       .catch(async (error: AxiosError) => {
-        const { trace, ...err } = error.response?.data as object;
+        const { trace, ...err } = error.response?.data as { trace: any };
         authLog("failed", err);
         // do we have an expired token?
         if (error.response?.status === 403) {
@@ -96,7 +97,7 @@ export async function useApi<T>(
   return processAuthStuff(headers, authed, (headers) => request(`v1/${url}`, method, data, headers));
 }
 
-export async function useInternalApi<T>(
+export async function useInternalApi<T = void>(
   url: string,
   authed = true,
   method: AxiosRequestConfig["method"] = "get",

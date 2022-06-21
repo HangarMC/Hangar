@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 
 @Service
+@Deprecated(forRemoval = true)
 public class VersionTagService extends HangarComponent {
 
     private final ProjectVersionTagsDAO projectVersionTagsDAO;
@@ -25,15 +26,7 @@ public class VersionTagService extends HangarComponent {
         projectVersionTagsDAO.insertTags(projectVersionTagTables);
     }
 
-    public void addTags(ProjectVersionTagTable...projectVersionTagTables) {
-        projectVersionTagsDAO.insertTags(projectVersionTagTables);
-    }
-
     public void updateTag(ProjectVersionTagTable projectVersionTagTable) {
         projectVersionTagsDAO.updateTag(projectVersionTagTable);
-    }
-
-    public void addUnstableTag(long versionId) {
-        addTags(new ProjectVersionTagTable(versionId, "Unstable", TagColor.UNSTABLE));
     }
 }

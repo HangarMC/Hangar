@@ -18,13 +18,13 @@ export function handleRequestError(
   if (!err.isAxiosError) {
     // everything should be an AxiosError
     console.log(err);
-  } else if (err.response) {
-    if (err.response.data.isHangarApiException) {
-      for (const errorMsg of collectErrors(err.response.data, i18n)) {
+  } else if (err.response && typeof err.response.data === "object" && err.response.data) {
+    if ("isHangarApiException" in err.response.data) {
+      for (const errorMsg of collectErrors(err.response.data as HangarApiException, i18n)) {
         notfication.error(msg ? `${i18n.t(msg)}: ${errorMsg}` : errorMsg);
       }
-    } else if (err.response.data.isHangarValidationException) {
-      const data: HangarValidationException = err.response.data;
+    } else if ("isHangarValidationException" in err.response.data) {
+      const data = err.response.data as HangarValidationException;
       for (const fieldError of data.fieldErrors) {
         notfication.error(i18n.te(fieldError.errorMsg) ? i18n.t(fieldError.errorMsg) : fieldError.errorMsg);
       }
@@ -47,15 +47,16 @@ function _handleRequestError(err: AxiosError, writeResponse: Context["writeRespo
       status: 500,
     });
     console.log(err);
-  } else if (err.response) {
-    if (err.response.data.isHangarApiException) {
-      const data: HangarApiException = err.response.data.isMultiException ? err.response.data.exceptions[0] : err.response.data;
+  } else if (err.response && typeof err.response.data === "object" && err.response.data) {
+    if ("isHangarApiException" in err.response.data) {
+      const data =
+        "isMultiException" in err.response.data ? (err.response.data as MultiHangarApiException).exceptions[0] : (err.response.data as HangarApiException);
       writeResponse({
         status: data.httpError.statusCode,
         statusText: i18n.te(data.message) ? i18n.t(data.message) : data.message,
       });
-    } else if (err.response.data.isHangarValidationException) {
-      const data: HangarValidationException = err.response.data;
+    } else if ("isHangarValidationException" in err.response.data) {
+      const data = err.response.data as HangarValidationException;
       writeResponse({
         status: data.httpError.statusCode,
         statusText: data.fieldErrors.map((f) => f.errorMsg).join(", "),

@@ -3,6 +3,7 @@ import Card from "~/components/design/Card.vue";
 import { User } from "hangar-api";
 import { useI18n } from "vue-i18n";
 import { Header } from "~/components/SortableTable.vue";
+import { ChannelFlag } from "~/types/enums";
 import { useContext } from "vite-ssr/vue";
 import { useProjectChannels } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -18,6 +19,7 @@ import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useRoute } from "vue-router";
 import Tooltip from "~/components/design/Tooltip.vue";
+import { useNotificationStore } from "~/store/notification";
 
 const props = defineProps<{
   user: User;
@@ -28,6 +30,7 @@ const ctx = useContext();
 const route = useRoute();
 const channels = await useProjectChannels(props.project.namespace.owner, props.project.namespace.slug).catch((e) => handleRequestError(e, ctx, i18n));
 const validations = useBackendDataStore().validations;
+const notifications = useNotificationStore();
 
 useHead(
   useSeo("Channels | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug))
@@ -43,7 +46,9 @@ async function refreshChannels() {
 }
 
 async function deleteChannel(channel: ProjectChannel) {
-  await useInternalApi(`channels/${props.project.id}/delete/${channel.id}`, true, "post");
+  await useInternalApi(`channels/${props.project.id}/delete/${channel.id}`, true, "post")
+    .then(() => notifications.warn(i18n.t("channel.modal.success.deletedChannel", [channel.name])))
+    .catch((e) => handleRequestError(e, ctx, i18n));
   await refreshChannels();
 }
 
@@ -51,8 +56,10 @@ async function addChannel(channel: ProjectChannel) {
   await useInternalApi(`channels/${props.project.id}/create`, true, "post", {
     name: channel.name,
     color: channel.color,
-    nonReviewed: channel.nonReviewed,
-  }).catch((e) => handleRequestError(e, ctx, i18n));
+    flags: channel.flags,
+  })
+    .then(() => notifications.success(i18n.t("channel.modal.success.addedChannel", [channel.name])))
+    .catch((e) => handleRequestError(e, ctx, i18n));
   await refreshChannels();
 }
 
@@ -62,8 +69,10 @@ async function editChannel(channel: ProjectChannel) {
     id: channel.id,
     name: channel.name,
     color: channel.color,
-    nonReviewed: channel.nonReviewed,
-  }).catch((e) => handleRequestError(e, ctx, i18n));
+    flags: channel.flags,
+  })
+    .then(() => notifications.success(i18n.t("channel.modal.success.editedChannel", [channel.name])))
+    .catch((e) => handleRequestError(e, ctx, i18n));
   await refreshChannels();
 }
 </script>
@@ -93,20 +102,20 @@ async function editChannel(channel: ProjectChannel) {
           <td><Tag :name="channel.name" :color="{ background: channel.color }" /></td>
           <td>{{ channel.versionCount }}</td>
           <td>
-            <IconMdiCheckboxBlankCircleOutline v-if="channel.nonReviewed" />
+            <IconMdiCheckboxBlankCircleOutline v-if="channel.flags.indexOf(ChannelFlag.SKIP_REVIEW_QUEUE) > -1" />
             <IconMdiCheckCircle v-else />
           </td>
           <td>
             <ChannelModal :project-id="props.project.id" edit :channel="channel" @create="editChannel">
               <template #activator="{ on, attrs }">
-                <Button v-bind="attrs" :disabled="!channel.editable" v-on="on">
+                <Button v-bind="attrs" :disabled="channel.flags.indexOf(ChannelFlag.FROZEN) > -1" v-on="on">
                   {{ i18n.t("channel.manage.editButton") }}
                 </Button>
               </template>
             </ChannelModal>
           </td>
           <td v-if="channels.length !== 1">
-            <Button v-if="channel.versionCount === 0" :disabled="!channel.editable" @click="deleteChannel(channel)">
+            <Button v-if="channel.versionCount === 0" :disabled="channel.flags.indexOf(ChannelFlag.FROZEN) > -1" @click="deleteChannel(channel)">
               {{ i18n.t("channel.manage.deleteButton") }}
             </Button>
           </td>

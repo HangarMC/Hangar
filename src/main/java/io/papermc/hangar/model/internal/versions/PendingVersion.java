@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.model.api.project.version.FileInfo;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
+import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
@@ -41,14 +42,13 @@ public class PendingVersion {
     private final String channelName;
     @NotNull(message = "version.new.error.channel.noColor")
     private final Color channelColor;
-    private final boolean channelNonReviewed;
+    private final Set<@Validate(SpEL = "#root.isEditable", message = "channel.modal.error.invalidFlag") ChannelFlag> channelFlags;
     private final boolean forumSync;
-    private final boolean unstable;
     private final boolean recommended;
     private final boolean isFile;
 
     @JsonCreator(mode = Mode.PROPERTIES)
-    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, EnumMap<Platform, SortedSet<String>> platformDependencies, String description, FileInfo fileInfo, String externalUrl, String channelName, Color channelColor, boolean channelNonReviewed, boolean forumSync, boolean unstable, boolean recommended, boolean isFile) {
+    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, EnumMap<Platform, SortedSet<String>> platformDependencies, String description, FileInfo fileInfo, String externalUrl, String channelName, Color channelColor, Set<ChannelFlag> channelFlags, boolean forumSync, boolean recommended, boolean isFile) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
@@ -57,9 +57,8 @@ public class PendingVersion {
         this.externalUrl = externalUrl;
         this.channelName = channelName;
         this.channelColor = channelColor;
-        this.channelNonReviewed = channelNonReviewed;
+        this.channelFlags = channelFlags;
         this.forumSync = forumSync;
-        this.unstable = unstable;
         this.recommended = recommended;
         this.isFile = isFile;
     }
@@ -74,8 +73,7 @@ public class PendingVersion {
         this.externalUrl = null;
         this.channelName = projectChannelTable.getName();
         this.channelColor = projectChannelTable.getColor();
-        this.channelNonReviewed = projectChannelTable.isNonReviewed();
-        this.unstable = false;
+        this.channelFlags = projectChannelTable.getFlags();
         this.recommended = false;
         this.isFile = true;
     }
@@ -94,8 +92,7 @@ public class PendingVersion {
         this.externalUrl = externalUrl;
         this.channelName = projectChannelTable.getName();
         this.channelColor = projectChannelTable.getColor();
-        this.channelNonReviewed = projectChannelTable.isNonReviewed();
-        this.unstable = false;
+        this.channelFlags = projectChannelTable.getFlags();
         this.recommended = false;
         this.isFile = false;
     }
@@ -133,16 +130,12 @@ public class PendingVersion {
         return channelColor;
     }
 
-    public boolean isChannelNonReviewed() {
-        return channelNonReviewed;
+    public Set<ChannelFlag> getChannelFlags() {
+        return channelFlags;
     }
 
     public boolean isForumSync() {
         return forumSync;
-    }
-
-    public boolean isUnstable() {
-        return unstable;
     }
 
     public boolean isRecommended() {
@@ -165,9 +158,8 @@ public class PendingVersion {
                 ", externalUrl='" + externalUrl + '\'' +
                 ", channelName='" + channelName + '\'' +
                 ", channelColor=" + channelColor +
-                ", channelNonReviewed=" + channelNonReviewed +
+                ", channelFlags=" + channelFlags +
                 ", forumSync=" + forumSync +
-                ", unstable=" + unstable +
                 ", recommended=" + recommended +
                 ", isFile=" + isFile +
                 '}';
