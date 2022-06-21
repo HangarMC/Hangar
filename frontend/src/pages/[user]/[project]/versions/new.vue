@@ -279,13 +279,7 @@ useHead(
       <div class="flex flex-wrap gap-y-3">
         <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
           <div>{{ platform.name }}</div>
-          <DependencyTable
-            :key="`${platform.name}-deps-table`"
-            :platform="platform.enumName"
-            :version="pendingVersion"
-            :no-editing="pendingVersion.isFile"
-            :is-new="!pendingVersion.isFile"
-          />
+          <DependencyTable :key="`${platform.name}-deps-table`" :platform="platform.enumName" :version="pendingVersion" :is-new="!pendingVersion.isFile" />
         </div>
       </div>
     </template>

@@ -99,7 +99,7 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
         <template #header>{{ i18n.t("project.pinnedVersions") }}</template>
         <ul class="divide-y divide-blue-500/50">
           <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.name}`" class="p-1 py-2 flex">
-            <div class="flex-grow">
+            <div class="flex-grow truncate">
               <router-link :to="createPinnedVersionUrl(version)">
                 {{ version.name }}
                 <br />
