@@ -92,7 +92,7 @@ function setupAdmonition() {
 </script>
 
 <template>
-  <div :class="{ 'prose max-w-full rounded markdown': true, 'p-4': !inline, inline: inline }">
+  <div :class="{ 'prose max-w-full rounded markdown hyphens-auto break-all': true, 'p-4': !inline, inline: inline }">
     <!-- eslint-disable-next-line vue/no-v-html -->
     <div v-if="!loading" v-bind="$attrs" v-html="renderedMarkdown" />
     <div v-else><Spinner class="stroke-gray-400" /></div>

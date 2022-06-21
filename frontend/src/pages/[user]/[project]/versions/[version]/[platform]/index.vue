@@ -158,44 +158,44 @@ async function restoreVersion() {
 </script>
 
 <template>
-  <div v-if="projectVersion" class="flex <sm:flex-col">
-    <div>
-      <h1 class="text-3xl inline-flex items-center">
-        <TagComponent class="mr-1" :tag="channel" :short-form="true" />
-        {{ projectVersion.name }}
-        <Tooltip v-if="projectVersion.recommended.includes(platform?.enumName)" :content="i18n.t('version.page.recommended')" class="text-base">
-          <IconMdiDiamondStone :title="i18n.t('version.page.recommended')" class="text-2xl" />
-        </Tooltip>
-        <IconMdiCheckCircleOutline v-if="isReviewStateChecked" :title="approvalTooltip" class="text-2xl" />
-      </h1>
-      <h2>
-        <span class="inline-flex">
-          {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
-          <span v-if="projectVersion.fileInfo?.sizeBytes" class="inline-flex items-center ml-3">
-            <IconMdiFile class="mr-1" />
-            {{ filesize(projectVersion.fileInfo.sizeBytes) }}
-          </span>
-        </span>
-      </h2>
-    </div>
-    <div class="mt-2 text-2xl ml-1 flex">
-      <em v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy" class="ml-2 text-lg">
-        {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
-      </em>
-    </div>
-    <div class="flex-grow"></div>
-    <div class="inline-flex items-center">
-      <DropdownButton v-if="versionPlatforms.size > 1" class="inline" :name="platform?.name" button-size="large">
-        <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()">{{ backendData.platforms?.get(plat)?.name }}</DropdownItem>
-      </DropdownButton>
+  <div v-if="projectVersion" class="flex <sm:flex-col flex-wrap md:flex-nowrap gap-4">
+    <section class="basis-full md:basis-9/12 flex-grow">
+      <div class="flex flex-wrap gap-2 justify-between">
+        <div>
+          <h1 class="text-3xl inline-flex items-center">
+            <TagComponent class="mr-1" :tag="channel" :short-form="true" />
+            {{ projectVersion.name }}
+            <Tooltip v-if="projectVersion.recommended.includes(platform?.enumName)" :content="i18n.t('version.page.recommended')" class="text-base">
+              <IconMdiDiamondStone :title="i18n.t('version.page.recommended')" class="text-2xl ml-1" />
+            </Tooltip>
+            <Tooltip v-if="isReviewStateChecked" :content="approvalTooltip" class="text-base">
+              <IconMdiCheckCircleOutline class="text-2xl ml-1" />
+            </Tooltip>
+          </h1>
+          <h2>
+            <span class="inline-flex ml-1">
+              {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
+              <span v-if="projectVersion.fileInfo?.sizeBytes" class="inline-flex items-center ml-3">
+                <IconMdiFile class="mr-1" />
+                {{ filesize(projectVersion.fileInfo.sizeBytes) }}
+              </span>
+            </span>
+          </h2>
+          <em v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy" class="text-lg ml-1">
+            {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
+          </em>
+        </div>
+        <div class="inline-flex items-center flex-grow">
+          <div class="flex-grow"></div>
+          <DropdownButton v-if="versionPlatforms.size > 1" class="inline" :name="platform?.name" button-size="large">
+            <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()">{{ backendData.platforms?.get(plat)?.name }}</DropdownItem>
+          </DropdownButton>
 
-      <DownloadButton :version="projectVersion" :project="project" :platform="p" class="ml-2" />
-    </div>
-  </div>
+          <DownloadButton :version="projectVersion" :project="project" :platform="p" class="ml-2" />
+        </div>
+      </div>
 
-  <div v-if="projectVersion" class="flex flex-wrap md:flex-nowrap gap-4 mt-4">
-    <section class="basis-full md:basis-9/12 flex-grow truncate">
-      <Card class="relative overflow-clip overflow-hidden">
+      <Card class="relative mt-4">
         <MarkdownEditor
           v-if="hasPerms(NamedPermission.EDIT_VERSION)"
           ref="editor"
@@ -209,7 +209,6 @@ async function restoreVersion() {
         <Markdown v-else :raw="projectVersion.description" />
       </Card>
     </section>
-
     <section class="basis-full md:basis-3/12 flex-grow space-y-4">
       <Card v-if="hasPerms(NamedPermission.DELETE_VERSION) || hasPerms(NamedPermission.VIEW_LOGS) || hasPerms(NamedPermission.REVIEWER)">
         <template #header>{{ i18n.t("version.page.manage") }}</template>
