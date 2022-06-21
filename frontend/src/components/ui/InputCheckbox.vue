@@ -36,7 +36,6 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
       :value="value"
       @blur="v.$touch()"
     />
-    <!--  hope this wasn't actually needed anywhere -->
     <icon-mdi-check-bold class="absolute h-4 w-4 opacity-0 text-white" />
     <slot name="label">
       <template v-if="props.label">{{ props.label }}</template>

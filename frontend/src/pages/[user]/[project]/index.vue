@@ -3,11 +3,11 @@ import { User } from "hangar-api";
 import Card from "~/components/design/Card.vue";
 import { useI18n } from "vue-i18n";
 import ProjectInfo from "~/components/projects/ProjectInfo.vue";
-import { HangarProject, PinnedVersion } from "hangar-internal";
+import { HangarProject, HangarVersion, PinnedVersion } from "hangar-internal";
 import MemberList from "~/components/projects/MemberList.vue";
 import MarkdownEditor from "~/components/MarkdownEditor.vue";
 import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission } from "~/types/enums";
+import { NamedPermission, Platform } from "~/types/enums";
 import { useRoute, useRouter } from "vue-router";
 import { useContext } from "vite-ssr/vue";
 import Markdown from "~/components/Markdown.vue";
@@ -20,6 +20,9 @@ import { ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useBackendDataStore } from "~/store/backendData";
+import Tag from "~/components/Tag.vue";
+import PlatformLogo from "~/components/logos/PlatformLogo.vue";
+import DownloadButton from "~/components/projects/DownloadButton.vue";
 
 const props = defineProps<{
   user: User;
@@ -48,10 +51,32 @@ function saveSponsors(content: string) {
     .catch((e) => handleRequestError(e, ctx, i18n, "page.new.error.save"));
 }
 
-function createPinnedVersionUrl(version: PinnedVersion, platformIdx: number): string {
-  return `${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${version.versionString}/${version.platforms[platformIdx].toLowerCase()}`;
+function createPinnedVersionUrl(version: PinnedVersion): string {
+  return `/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${version.versionString}`;
 }
 
+//TODO decide what to show or remove, move needed data to pinned version
+//TODO PinnedVersion platforms are wrong
+function getHangarVersions(version: PinnedVersion): Record<any, HangarVersion> {
+  const versions: Record<any, HangarVersion> = {};
+  if (!backendData.platforms) {
+    return {};
+  }
+
+  for (const platform of version.platforms) {
+    useInternalApi<HangarVersion>(
+      `versions/version/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${version.versionString}/${platform}`,
+      false
+    )
+      .then((v) => {
+        if (v) {
+          versions[platform as Platform] = v as HangarVersion;
+        }
+      })
+      .catch((e) => handleRequestError(e, ctx, i18n));
+  }
+  return versions;
+}
 useHead(useSeo(props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
 </script>
 
@@ -93,19 +118,21 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
       <ProjectInfo :project="project" />
       <Card>
         <template #header>{{ i18n.t("project.pinnedVersions") }}</template>
-        <ul v-if="backendData.platforms" class="divide-y divide-blue-500/50">
-          <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.versionString}`">
-            <template v-if="version.platforms.length === 1">
-              <router-link :to="createPinnedVersionUrl(version, 0)">
-                {{ `${version.versionString} for ${backendData.platforms.get(version.platforms[0]).name}` }}
+        <ul v-if="backendData.channelColors" class="divide-y divide-blue-500/50">
+          <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.versionString}`" class="p-1 py-2 flex">
+            <!-- todo: why is the color the enum id -->
+            <div class="">
+              <router-link :to="createPinnedVersionUrl(version)">
+                {{ version.versionString }}
+                <div class="inline-flex items-center">
+                  <Tag :name="version.channel.name" :color="{ background: backendData.channelColors[version.channel.color].hex }"></Tag>
+                  <PlatformLogo v-for="(platform, idx) in version.platforms" :key="`${idx}-${platform}`" :platform="platform" :size="24" class="mr-1" />
+                </div>
               </router-link>
-            </template>
-            <template v-else>
-              {{ `${version.versionString} for ` }}
-              <router-link v-for="(platform, idx) in version.platforms" :key="`${idx}-${platform}`" :to="createPinnedVersionUrl(version, idx)">
-                {{ `${backendData.platforms.get(platform).name},` }}
-              </router-link>
-            </template>
+            </div>
+            <div class="items-end items-center inline-flex">
+              <DownloadButton :project="project" :versions="getHangarVersions(version)" small></DownloadButton>
+            </div>
           </li>
         </ul>
       </Card>

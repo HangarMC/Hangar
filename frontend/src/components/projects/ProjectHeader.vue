@@ -118,12 +118,7 @@ async function sendForApproval() {
         <p>{{ project.description }}</p>
       </div>
       <div class="flex flex-col justify-around <sm:items-center space-y-2 items-end justify-between flex-shrink-0">
-        <DownloadButton
-          v-if="project.recommendedVersions && Object.keys(project.recommendedVersions).length > 0"
-          :project="project"
-          :platform-selection="true"
-          :small="false"
-        />
+        <DownloadButton v-if="project.recommendedVersions && Object.keys(project.recommendedVersions).length > 0" :project="project" recommended />
         <div class="flex">
           <Tooltip>
             <template #content>

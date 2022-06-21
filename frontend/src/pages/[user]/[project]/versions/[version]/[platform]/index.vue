@@ -45,7 +45,7 @@ const props = defineProps<{
   project: HangarProject;
   versionPlatforms: Set<Platform>;
   user: User;
-  platform: string;
+  //platform: string;
   version: string;
 }>();
 
@@ -161,8 +161,8 @@ async function restoreVersion() {
   <div v-if="projectVersion" class="flex <sm:flex-col">
     <div>
       <h1 class="text-3xl inline-flex items-center">
+        <TagComponent class="mr-1" :tag="channel" :short-form="true" />
         {{ projectVersion.name }}
-        <TagComponent class="ml-1" :tag="channel" :short-form="true" />
         <Tooltip v-if="projectVersion.recommended.includes(platform?.enumName)" :content="i18n.t('version.page.recommended')" class="text-base">
           <IconMdiDiamondStone :title="i18n.t('version.page.recommended')" class="text-2xl" />
         </Tooltip>
@@ -189,7 +189,7 @@ async function restoreVersion() {
         <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()">{{ backendData.platforms?.get(plat)?.name }}</DropdownItem>
       </DropdownButton>
 
-      <DownloadButton :small="false" :version="projectVersion" :project="project" :platform="platform" class="ml-2" />
+      <DownloadButton :version="projectVersion" :project="project" :platform="p" class="ml-2" />
     </div>
   </div>
 
