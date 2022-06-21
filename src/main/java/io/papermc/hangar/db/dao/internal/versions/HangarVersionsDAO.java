@@ -35,7 +35,11 @@ public interface HangarVersionsDAO {
             "       pc.name pc_name," +
             "       pc.color pc_color," +
             "       pc.flags pc_flags," +
-            "       exists(SELECT ppv.id FROM pinned_project_versions ppv WHERE ppv.version_id = pv.id) as pinned," +
+            "       CASE" +
+            "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'" +
+            "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
+            "           ELSE 'NONE'" +
+            "       END AS pinnedStatus," +
             "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended," +
             "       ru.name approved_by" +
             "   FROM project_versions pv" +
@@ -73,7 +77,11 @@ public interface HangarVersionsDAO {
             "       pc.name pc_name," +
             "       pc.color pc_color," +
             "       pc.flags pc_flags," +
-            "       exists(SELECT ppv.id FROM pinned_project_versions ppv WHERE ppv.version_id = pv.id) as pinned," +
+            "       CASE" +
+            "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'" +
+            "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
+            "           ELSE 'NONE'" +
+            "       END AS pinnedStatus," +
             "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended," +
             "       ru.name approved_by" +
             "   FROM project_versions pv" +

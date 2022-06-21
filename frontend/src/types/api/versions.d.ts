@@ -1,4 +1,4 @@
-import { ChannelFlag } from "~/types/enums";
+import { ChannelFlag, PinnedStatus } from "~/types/enums";
 
 declare module "hangar-api" {
   import type { Model, Named, ProjectNamespace, TagColor, Visible } from "hangar-api";
@@ -49,6 +49,7 @@ declare module "hangar-api" {
     tags: Tag[];
     channel: ProjectChannel;
     pinned: boolean;
+    pinnedStatus: PinnedStatus;
     recommended: Platform[];
   }
 

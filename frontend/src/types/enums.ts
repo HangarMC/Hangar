@@ -112,3 +112,9 @@ export enum ChannelFlag {
   SKIP_REVIEW_QUEUE = "SKIP_REVIEW_QUEUE",
   PINNED = "PINNED",
 }
+
+export enum PinnedStatus {
+  CHANNEL = "CHANNEL",
+  RELEASE = "RELEASE",
+  NONE = "NONE",
+}

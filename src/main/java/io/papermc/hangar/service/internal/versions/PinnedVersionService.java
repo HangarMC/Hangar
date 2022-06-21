@@ -24,6 +24,7 @@ public class PinnedVersionService extends HangarComponent {
     }
 
     public void addPinnedVersion(final long projectId, final long versionId) {
+        // TODO check if already pinned via channel
         this.pinnedProjectVersionsDAO.insert(new PinnedProjectVersionTable(projectId, versionId));
     }
 

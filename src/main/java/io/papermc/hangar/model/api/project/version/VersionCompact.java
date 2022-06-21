@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.api.project.version;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.Visible;
@@ -11,6 +12,7 @@ import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
@@ -27,11 +29,11 @@ public class VersionCompact extends Model implements Named, Visible {
     private final ReviewState reviewState;
     private final Set<Tag> tags;
     private final ProjectChannel channel;
-    private final boolean pinned;
+    private final PinnedStatus pinnedStatus;
     private final List<Platform> recommended;
     private final Long postId;
 
-    protected VersionCompact(final OffsetDateTime createdAt, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, @Nested("fi") final FileInfo fileInfo, final String externalUrl, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final boolean pinned, final List<Platform> recommended, final Long postId) {
+    protected VersionCompact(final OffsetDateTime createdAt, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, @Nested("fi") final FileInfo fileInfo, final String externalUrl, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final PinnedStatus pinnedStatus, final List<Platform> recommended, final Long postId) {
         super(createdAt);
         this.name = name;
         this.visibility = visibility;
@@ -42,7 +44,7 @@ public class VersionCompact extends Model implements Named, Visible {
         this.author = author;
         this.reviewState = reviewState;
         this.channel = channel;
-        this.pinned = pinned;
+        this.pinnedStatus = pinnedStatus;
         this.tags = new HashSet<>();
         this.recommended = recommended;
         this.postId = postId;
@@ -90,8 +92,8 @@ public class VersionCompact extends Model implements Named, Visible {
         return this.channel;
     }
 
-    public boolean isPinned() {
-        return this.pinned;
+    public PinnedStatus getPinnedStatus() {
+        return this.pinnedStatus;
     }
 
     public List<Platform> getRecommended() {
@@ -100,5 +102,13 @@ public class VersionCompact extends Model implements Named, Visible {
 
     public Long getPostId() {
         return this.postId;
+    }
+
+    @EnumByName
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    public enum PinnedStatus {
+        NONE,
+        VERSION,
+        CHANNEL
     }
 }

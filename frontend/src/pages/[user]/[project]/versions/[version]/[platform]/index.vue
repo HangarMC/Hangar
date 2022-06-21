@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { NamedPermission, Platform, ReviewState, Visibility, ChannelFlag } from "~/types/enums";
+import { NamedPermission, Platform, ReviewState, Visibility, ChannelFlag, PinnedStatus } from "~/types/enums";
 import { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -237,19 +237,17 @@ async function restoreVersion() {
           </Tooltip>
           <Tooltip>
             <template #content>
-              <span v-if="!projectVersion.pinned && projectVersion.channel.flags.indexOf(ChannelFlag.PINNED) > -1">{{
-                i18n.t("version.page.pinned.tooltip.channel")
-              }}</span>
-              <span v-else>{{ i18n.t(`version.page.pinned.tooltip.${projectVersion.pinned}`) }}</span>
+              <span v-if="projectVersion.pinnedStatus === PinnedStatus.CHANNEL">{{ i18n.t("version.page.pinned.tooltip.channel") }}</span>
+              <span v-else>{{ i18n.t(`version.page.pinned.tooltip.${projectVersion.pinnedStatus.toLowerCase()}`) }}</span>
             </template>
             <Button
               size="small"
-              :disabled="!projectVersion.pinned && projectVersion.channel.flags.indexOf(ChannelFlag.PINNED) > -1"
-              @click="setPinned(!projectVersion.pinned)"
+              :disabled="projectVersion.pinnedStatus === PinnedStatus.CHANNEL"
+              @click="setPinned(projectVersion.pinnedStatus === PinnedStatus.NONE)"
             >
-              <IconMdiPinOff v-if="projectVersion.pinned" class="mr-1" />
+              <IconMdiPinOff v-if="projectVersion.pinnedStatus !== PinnedStatus.NONE" class="mr-1" />
               <IconMdiPin v-else class="mr-1" />
-              {{ i18n.t(`version.page.pinned.button.${projectVersion.pinned}`) }}
+              {{ i18n.t(`version.page.pinned.button.${projectVersion.pinnedStatus.toLowerCase()}`) }}
             </Button>
           </Tooltip>
 
