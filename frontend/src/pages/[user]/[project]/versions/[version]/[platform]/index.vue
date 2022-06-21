@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { NamedPermission, Platform, ReviewState, Visibility } from "~/types/enums";
+import { NamedPermission, Platform, ReviewState, Visibility, ChannelFlag } from "~/types/enums";
 import { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -101,6 +101,16 @@ async function setRecommended() {
   try {
     await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/${platform.value?.enumName}/recommend`, true, "post");
     notification.success(i18n.t("version.success.recommended", [platform.value?.name]));
+    router.go(0);
+  } catch (e) {
+    handleRequestError(e as AxiosError, ctx, i18n);
+  }
+}
+
+async function setPinned(value: boolean) {
+  try {
+    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/pinned?value=${value}`, true, "post");
+    notification.success(i18n.t(`version.page.pinned.request.${value}`));
     router.go(0);
   } catch (e) {
     handleRequestError(e as AxiosError, ctx, i18n);
@@ -223,6 +233,23 @@ async function restoreVersion() {
             <Button size="small" @click="setRecommended">
               <IconMdiDiamond class="mr-1" />
               {{ i18n.t("version.page.setRecommended") }}
+            </Button>
+          </Tooltip>
+          <Tooltip>
+            <template #content>
+              <span v-if="!projectVersion.pinned && projectVersion.channel.flags.indexOf(ChannelFlag.PINNED) > -1">{{
+                i18n.t("version.page.pinned.tooltip.channel")
+              }}</span>
+              <span v-else>{{ i18n.t(`version.page.pinned.tooltip.${projectVersion.pinned}`) }}</span>
+            </template>
+            <Button
+              size="small"
+              :disabled="!projectVersion.pinned && projectVersion.channel.flags.indexOf(ChannelFlag.PINNED) > -1"
+              @click="setPinned(!projectVersion.pinned)"
+            >
+              <IconMdiPinOff v-if="projectVersion.pinned" class="mr-1" />
+              <IconMdiPin v-else class="mr-1" />
+              {{ i18n.t(`version.page.pinned.button.${projectVersion.pinned}`) }}
             </Button>
           </Tooltip>
 

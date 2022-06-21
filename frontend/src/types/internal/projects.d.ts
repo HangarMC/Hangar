@@ -2,6 +2,7 @@ declare module "hangar-internal" {
   import type { Joinable, Table } from "hangar-internal";
   import type { Project, ProjectNamespace } from "hangar-api";
   import type { ProjectCategory, Visibility } from "~/types/enums";
+  import { Platform } from "~/types/enums";
 
   interface ProjectOwner {
     id: number;
@@ -26,11 +27,18 @@ declare module "hangar-internal" {
     children: HangarProjectPage[];
   }
 
+  interface PinnedVersion {
+    type: 'channel' | 'version';
+    versionString: string;
+    platforms: Platform[];
+  }
+
   interface HangarProject extends Joinable, Project, Table {
     lastVisibilityChangeComment: string;
     lastVisibilityChangeUserName: string;
     info: HangarProjectInfo;
     pages: HangarProjectPage[];
+    pinnedVersions: PinnedVersion[];
     recommendedVersions: Record<string, string | null>;
   }
 

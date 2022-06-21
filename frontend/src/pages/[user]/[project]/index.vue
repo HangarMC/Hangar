@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { PromotedVersion, Tag as ApiTag, User, Version } from "hangar-api";
+import { User } from "hangar-api";
 import Card from "~/components/design/Card.vue";
 import { useI18n } from "vue-i18n";
 import ProjectInfo from "~/components/projects/ProjectInfo.vue";
-import { HangarProject } from "hangar-internal";
+import { HangarProject, PinnedVersion } from "hangar-internal";
 import MemberList from "~/components/projects/MemberList.vue";
 import MarkdownEditor from "~/components/MarkdownEditor.vue";
 import { hasPerms } from "~/composables/usePerm";
@@ -19,13 +19,14 @@ import { projectIconUrl } from "~/composables/useUrlHelper";
 import { ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import PlatformLogo from "~/components/logos/PlatformLogo.vue";
+import { useBackendDataStore } from "~/store/backendData";
 
 const props = defineProps<{
   user: User;
   project: HangarProject;
 }>();
 const i18n = useI18n();
+const backendData = useBackendDataStore();
 const ctx = useContext();
 const route = useRoute();
 const context = useContext();
@@ -46,6 +47,11 @@ function saveSponsors(content: string) {
     })
     .catch((e) => handleRequestError(e, ctx, i18n, "page.new.error.save"));
 }
+
+function createPinnedVersionUrl(version: PinnedVersion, platformIdx: number): string {
+  return `${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${version.versionString}/${version.platforms[platformIdx].toLowerCase()}`;
+}
+
 useHead(useSeo(props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
 </script>
 
@@ -86,20 +92,20 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
     <section class="basis-full md:basis-3/12 space-y-4 min-w-280px">
       <ProjectInfo :project="project" />
       <Card>
-        <template #header>{{ i18n.t("project.promotedVersions") }}</template>
-        <ul class="divide-y divide-blue-500/50">
-          <li v-for="(version, index) in project.promotedVersions" :key="`${index}-${version.version}`">
-            <router-link :to="'/' + project.namespace.owner + '/' + project.namespace.slug + '/versions/' + version.version">
-              <div class="p-1 py-2 flex flex-wrap">
-                <span class="truncate">
-                  {{ version.version }}
-                </span>
-                <div v-for="(tag, idx) in version.tags" :key="idx" :color="tag.color" :data="tag.displayData" class="inline-flex basis-full p-1">
-                  <PlatformLogo :platform="tag.name.toUpperCase()" :size="24" class="mr-1" />
-                  <span class="mr-3">{{ tag.data }}</span>
-                </div>
-              </div>
-            </router-link>
+        <template #header>{{ i18n.t("project.pinnedVersions") }}</template>
+        <ul v-if="backendData.platforms" class="divide-y divide-blue-500/50">
+          <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.versionString}`">
+            <template v-if="version.platforms.length === 1">
+              <router-link :to="createPinnedVersionUrl(version, 0)">
+                {{ `${version.versionString} for ${backendData.platforms.get(version.platforms[0]).name}` }}
+              </router-link>
+            </template>
+            <template v-else>
+              {{ `${version.versionString} for ` }}
+              <router-link v-for="(platform, idx) in version.platforms" :key="`${idx}-${platform}`" :to="createPinnedVersionUrl(version, idx)">
+                {{ `${backendData.platforms.get(platform).name},` }}
+              </router-link>
+            </template>
           </li>
         </ul>
       </Card>

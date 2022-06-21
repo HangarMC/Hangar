@@ -1,5 +1,7 @@
 package io.papermc.hangar.service.internal.versions;
 
+import io.papermc.hangar.model.common.ChannelFlag;
+import java.util.stream.Collectors;
 import org.spongepowered.configurate.ConfigurateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -209,7 +211,7 @@ public class VersionFactory extends HangarComponent {
         try {
             ProjectChannelTable projectChannelTable = channelService.getProjectChannel(projectId, pendingVersion.getChannelName(), pendingVersion.getChannelColor());
             if (projectChannelTable == null) {
-                projectChannelTable = this.channelService.createProjectChannel(pendingVersion.getChannelName(), pendingVersion.getChannelColor(), projectId, pendingVersion.getChannelFlags());
+                projectChannelTable = this.channelService.createProjectChannel(pendingVersion.getChannelName(), pendingVersion.getChannelColor(), projectId, pendingVersion.getChannelFlags().stream().filter(ChannelFlag::isEditable).collect(Collectors.toSet()));
             }
 
             Long fileSize = null;

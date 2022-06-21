@@ -21,6 +21,7 @@ import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.internal.versions.DownloadService;
+import io.papermc.hangar.service.internal.versions.PinnedVersionService;
 import io.papermc.hangar.service.internal.versions.RecommendedVersionService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.versions.VersionFactory;
@@ -56,14 +57,16 @@ public class VersionController extends HangarComponent {
     private final VersionDependencyService versionDependencyService;
     private final RecommendedVersionService recommendedVersionService;
     private final DownloadService downloadService;
+    private final PinnedVersionService pinnedVersionService;
 
     @Autowired
-    public VersionController(VersionFactory versionFactory, VersionService versionService, VersionDependencyService versionDependencyService, RecommendedVersionService recommendedVersionService, DownloadService downloadService) {
+    public VersionController(VersionFactory versionFactory, VersionService versionService, VersionDependencyService versionDependencyService, RecommendedVersionService recommendedVersionService, DownloadService downloadService, final PinnedVersionService pinnedVersionService) {
         this.versionFactory = versionFactory;
         this.versionService = versionService;
         this.versionDependencyService = versionDependencyService;
         this.recommendedVersionService = recommendedVersionService;
         this.downloadService = downloadService;
+        this.pinnedVersionService = pinnedVersionService;
     }
 
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
@@ -147,6 +150,18 @@ public class VersionController extends HangarComponent {
     @PostMapping("/version/{projectId}/{versionId}/{platform}/recommend")
     public void setRecommended(@PathVariable long projectId, @PathVariable long versionId, @PathVariable Platform platform) {
         recommendedVersionService.setRecommendedVersion(projectId, versionId, platform);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#projectId}")
+    @PostMapping(path = "/version/{projectId}/{versionId}/pinned")
+    public void setPinnedStatus(@PathVariable final long projectId, @PathVariable final long versionId, @RequestParam final boolean value) {
+        if (value) {
+            this.pinnedVersionService.addPinnedVersion(projectId, versionId);
+        } else {
+            this.pinnedVersionService.deletePinnedVersion(projectId, versionId);
+        }
     }
 
     @Unlocked

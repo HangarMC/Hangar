@@ -46,8 +46,14 @@ public interface VersionsApiDAO {
             "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
+            "       pc.created_at pc_created_at," +
+            "       pc.name pc_name," +
+            "       pc.color pc_color," +
+            "       pc.flags pc_flags," +
+            "       exists(SELECT ppv.id FROM pinned_project_versions ppv WHERE ppv.version_id = pv.id) as pinned," +
             "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended" +
             "   FROM project_versions pv" +
+            "       JOIN project_channels pc ON pv.channel_id = pc.id" +
             "       JOIN projects p ON pv.project_id = p.id" +
             "       LEFT JOIN users u ON pv.author_id = u.id" +
             "   WHERE " +
@@ -76,8 +82,14 @@ public interface VersionsApiDAO {
             "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
+            "       pc.created_at pc_created_at," +
+            "       pc.name pc_name," +
+            "       pc.color pc_color," +
+            "       pc.flags pc_flags," +
+            "       exists(SELECT ppv.id FROM pinned_project_versions ppv WHERE ppv.version_id = pv.id) as pinned," +
             "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended" +
             "   FROM project_versions pv" +
+            "       JOIN project_channels pc ON pv.channel_id = pc.id" +
             "       JOIN projects p ON pv.project_id = p.id" +
             "       LEFT JOIN users u ON pv.author_id = u.id" +
             "   WHERE " +
@@ -109,6 +121,11 @@ public interface VersionsApiDAO {
             "       u.name author," +
             "       pv.review_state," +
             "       pv.post_id," +
+            "       pc.created_at pc_created_at," +
+            "       pc.name pc_name," +
+            "       pc.color pc_color," +
+            "       pc.flags pc_flags," +
+            "       exists(SELECT ppv.id FROM pinned_project_versions ppv WHERE ppv.version_id = pv.id) as pinned," +
             "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended" +
             "   FROM project_versions pv" +
             "       JOIN projects p ON pv.project_id = p.id" +
@@ -129,7 +146,7 @@ public interface VersionsApiDAO {
             "       <endif>" +
             "       AND lower(p.owner_name) = lower(:author) AND" +
             "       lower(p.slug) = lower(:slug) " +
-            " GROUP BY pv.id, p.id, u.name, pv.created_at ORDER BY pv.created_at DESC <offsetLimit>")
+            " GROUP BY pv.id, p.id, u.name, pc.id, pv.created_at ORDER BY pv.created_at DESC <offsetLimit>")
     SortedMap<Long, Version> getVersions(String author, String slug, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
     @SqlQuery("SELECT COUNT(DISTINCT pv.id)" +

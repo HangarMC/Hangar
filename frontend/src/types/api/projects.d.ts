@@ -44,18 +44,6 @@ declare module "hangar-api" {
     };
   }
 
-  interface PromotedVersionTag extends Named {
-    data: string;
-    displayData: string;
-    minecraftVersion: string;
-    color: TagColor;
-  }
-
-  interface PromotedVersion {
-    version: string;
-    tags: PromotedVersionTag[];
-  }
-
   interface ProjectCompact extends Model, Named, Visible {
     namespace: ProjectNamespace;
     stats: ProjectStats;
@@ -69,6 +57,5 @@ declare module "hangar-api" {
     settings: ProjectSettings;
     postId: number;
     topicId: number;
-    promotedVersions: PromotedVersion[];
   }
 }

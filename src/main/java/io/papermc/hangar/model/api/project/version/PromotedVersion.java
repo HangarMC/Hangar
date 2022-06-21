@@ -2,6 +2,7 @@ package io.papermc.hangar.model.api.project.version;
 
 import java.util.List;
 
+@Deprecated(forRemoval = true)
 public class PromotedVersion {
 
     private final String version;

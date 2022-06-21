@@ -1,5 +1,6 @@
 package io.papermc.hangar.db.dao.internal.versions;
 
+import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import org.jdbi.v3.core.enums.EnumStrategy;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
@@ -30,9 +31,15 @@ public interface HangarVersionsDAO {
             "       u.name author," +
             "       pv.review_state," +
             "       pv.post_id," +
+            "       pc.created_at pc_created_at," +
+            "       pc.name pc_name," +
+            "       pc.color pc_color," +
+            "       pc.flags pc_flags," +
+            "       exists(SELECT ppv.id FROM pinned_project_versions ppv WHERE ppv.version_id = pv.id) as pinned," +
             "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended," +
             "       ru.name approved_by" +
             "   FROM project_versions pv" +
+            "       JOIN project_channels pc ON pv.channel_id = pc.id" +
             "       JOIN projects p ON pv.project_id = p.id" +
             "       LEFT JOIN users u ON pv.author_id = u.id" +
             "       LEFT JOIN users ru ON pv.reviewer_id = ru.id" +
@@ -62,9 +69,15 @@ public interface HangarVersionsDAO {
             "       u.name author," +
             "       pv.review_state," +
             "       pv.post_id," +
+            "       pc.created_at pc_created_at," +
+            "       pc.name pc_name," +
+            "       pc.color pc_color," +
+            "       pc.flags pc_flags," +
+            "       exists(SELECT ppv.id FROM pinned_project_versions ppv WHERE ppv.version_id = pv.id) as pinned," +
             "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended," +
             "       ru.name approved_by" +
             "   FROM project_versions pv" +
+            "       JOIN project_channels pc ON pv.channel_id = pc.id" +
             "       JOIN projects p ON pv.project_id = p.id" +
             "       LEFT JOIN users u ON pv.author_id = u.id" +
             "       LEFT JOIN users ru ON pv.reviewer_id = ru.id" +
@@ -82,4 +95,14 @@ public interface HangarVersionsDAO {
             "   ORDER BY pv.created_at DESC"
     )
     List<HangarVersion> getVersionsWithVersionString(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
+
+    @SqlQuery("""
+        SELECT "type",
+               version_string,
+               platforms
+        FROM pinned_versions
+        WHERE project_id = :projectId
+        """)
+    @RegisterConstructorMapper(HangarProject.PinnedVersion.class)
+    List<HangarProject.PinnedVersion> getPinnedVersions(long projectId);
 }

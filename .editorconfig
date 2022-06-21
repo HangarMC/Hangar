@@ -20,6 +20,7 @@ ij_java_insert_inner_class_imports = false
 ij_java_use_fq_class_names = false
 ij_java_class_count_to_use_import_on_demand = 99999
 ij_java_names_count_to_use_import_on_demand = 99999
+ij_java_imports_layout = *,|,$*
 
 [*.yml]
 indent_size = 2

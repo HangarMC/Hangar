@@ -13,7 +13,7 @@ public class ProjectVersionTableResolver extends HangarModelPathVarResolver<Proj
     private final VersionService versionService;
 
     @Autowired
-    public ProjectVersionTableResolver(VersionService versionService) {
+    public ProjectVersionTableResolver(final VersionService versionService) {
         this.versionService = versionService;
     }
 
@@ -23,11 +23,11 @@ public class ProjectVersionTableResolver extends HangarModelPathVarResolver<Proj
     }
 
     @Override
-    protected ProjectVersionTable resolveParameter(@NotNull String param) {
+    protected ProjectVersionTable resolveParameter(@NotNull final String param) {
         Long versionId = NumberUtils.createLong(param);
         if (versionId == null) {
             return null;
         }
-        return versionService.getProjectVersionTable(versionId);
+        return this.versionService.getProjectVersionTable(versionId);
     }
 }

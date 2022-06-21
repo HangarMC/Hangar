@@ -12,7 +12,7 @@ import { useVuelidate } from "@vuelidate/core";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import { ChannelFlag } from "~/types/enums";
 
-const possibleFlags = [ChannelFlag.UNSTABLE, ChannelFlag.SKIP_REVIEW_QUEUE]; // TODO maybe load from backend? unsure if needed
+const possibleFlags = [ChannelFlag.UNSTABLE, ChannelFlag.SKIP_REVIEW_QUEUE, ChannelFlag.PINNED]; // TODO maybe load from backend? unsure if needed
 
 const props = defineProps<{
   projectId: number;

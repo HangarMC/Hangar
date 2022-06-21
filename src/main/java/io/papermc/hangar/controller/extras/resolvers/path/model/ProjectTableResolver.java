@@ -15,7 +15,7 @@ public class ProjectTableResolver extends HangarModelPathVarResolver<ProjectTabl
     private final ProjectService projectService;
 
     @Autowired
-    public ProjectTableResolver(ProjectService projectService) {
+    public ProjectTableResolver(final ProjectService projectService) {
         this.projectService = projectService;
     }
 
@@ -25,11 +25,11 @@ public class ProjectTableResolver extends HangarModelPathVarResolver<ProjectTabl
     }
 
     @Override
-    protected ProjectTable resolveParameter(@NotNull String param) {
+    protected ProjectTable resolveParameter(@NotNull final String param) {
         Long projectId = NumberUtils.createLong(param);
         if (projectId == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        return projectService.getProjectTable(projectId);
+        return this.projectService.getProjectTable(projectId);
     }
 }

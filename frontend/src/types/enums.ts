@@ -110,4 +110,5 @@ export enum ChannelFlag {
   FROZEN = "FROZEN",
   UNSTABLE = "UNSTABLE",
   SKIP_REVIEW_QUEUE = "SKIP_REVIEW_QUEUE",
+  PINNED = "PINNED",
 }

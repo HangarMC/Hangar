@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.internal.projects;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.papermc.hangar.config.jackson.RequiresPermission;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.api.project.Project;
@@ -10,10 +11,11 @@ import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.identified.ProjectIdentified;
 import io.papermc.hangar.model.internal.Joinable;
 import io.papermc.hangar.model.internal.user.JoinableMember;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import org.jdbi.v3.core.enums.EnumByName;
 
 public class HangarProject extends Project implements Joinable<ProjectRoleTable>, ProjectIdentified {
 
@@ -24,9 +26,10 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     private final String lastVisibilityChangeUserName;
     private final HangarProjectInfo info;
     private final Collection<HangarProjectPage> pages;
+    private final List<PinnedVersion> pinnedVersions;
     private final Map<Platform, String> recommendedVersions;
 
-    public HangarProject(Project project, long id, ProjectOwner owner, List<JoinableMember<ProjectRoleTable>> members, String lastVisibilityChangeComment, String lastVisibilityChangeUserName, HangarProjectInfo info, Collection<HangarProjectPage> pages, Map<Platform, String> recommendedVersions) {
+    public HangarProject(final Project project, final long id, final ProjectOwner owner, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, String> recommendedVersions) {
         super(project);
         this.id = id;
         this.owner = owner;
@@ -35,6 +38,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         this.lastVisibilityChangeUserName = lastVisibilityChangeUserName;
         this.info = info;
         this.pages = pages;
+        this.pinnedVersions = pinnedVersions;
         this.recommendedVersions = recommendedVersions;
     }
 
@@ -78,6 +82,10 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         return pages;
     }
 
+    public List<PinnedVersion> getPinnedVersions() {
+        return this.pinnedVersions;
+    }
+
     public Map<Platform, String> getRecommendedVersions() {
         return recommendedVersions;
     }
@@ -85,14 +93,16 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     @Override
     public String toString() {
         return "HangarProject{" +
-                "id=" + id +
-                ", owner=" + owner +
-                ", members=" + members +
-                ", lastVisibilityChangeComment='" + lastVisibilityChangeComment + '\'' +
-                ", lastVisibilityChangeUserName='" + lastVisibilityChangeUserName + '\'' +
-                ", info=" + info +
-                ", pages=" + pages +
-                "} " + super.toString();
+            "id=" + this.id +
+            ", owner=" + this.owner +
+            ", members=" + this.members +
+            ", lastVisibilityChangeComment='" + this.lastVisibilityChangeComment + '\'' +
+            ", lastVisibilityChangeUserName='" + this.lastVisibilityChangeUserName + '\'' +
+            ", info=" + this.info +
+            ", pages=" + this.pages +
+            ", pinnedVersions=" + this.pinnedVersions +
+            ", recommendedVersions=" + this.recommendedVersions +
+            "} " + super.toString();
     }
 
     public static class HangarProjectInfo {
@@ -142,6 +152,17 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
                     ", starCount=" + starCount +
                     ", watcherCount=" + watcherCount +
                     '}';
+        }
+    }
+
+
+    public record PinnedVersion(Type type, String versionString, Set<Platform> platforms) {
+
+        @EnumByName
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public enum Type {
+            CHANNEL,
+            VERSION
         }
     }
 }

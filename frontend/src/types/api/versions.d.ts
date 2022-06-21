@@ -1,3 +1,5 @@
+import { ChannelFlag } from "~/types/enums";
+
 declare module "hangar-api" {
   import type { Model, Named, ProjectNamespace, TagColor, Visible } from "hangar-api";
   import type { Platform, ReviewState } from "~/types/enums";
@@ -28,12 +30,16 @@ declare module "hangar-api" {
     color: TagColor;
   }
 
+  interface ProjectChannel extends Model, Named {
+    color: string;
+    flags: ChannelFlag[];
+  }
+
   interface DependencyVersion {
     pluginDependencies: Record<Platform, PluginDependency[]>;
   }
 
-  interface Version extends Model, Named, DependencyVersion, Visible {
-    platformDependencies: Record<Platform, string[]>;
+  interface VersionCompact extends Model, Named, Visible {
     description: string;
     stats: VersionStats;
     fileInfo: FileInfo;
@@ -41,6 +47,12 @@ declare module "hangar-api" {
     author: string;
     reviewState: ReviewState;
     tags: Tag[];
+    channel: ProjectChannel;
+    pinned: boolean;
     recommended: Platform[];
+  }
+
+  interface Version extends VersionCompact, DependencyVersion {
+    platformDependencies: Record<Platform, string[]>;
   }
 }

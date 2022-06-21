@@ -26,13 +26,11 @@ import java.util.Map;
 public interface ProjectsApiDAO {
 
     @UseStringTemplateEngine
-    @RegisterColumnMapper(PromotedVersionMapper.class)
     @SqlQuery("SELECT hp.id," +
         "       hp.created_at," +
         "       hp.name," +
         "       hp.owner_name \"owner\"," +
         "       hp.slug," +
-        "       hp.promoted_versions," +
         "       hp.views," +
         "       hp.downloads," +
         "       hp.recent_views," +
@@ -74,7 +72,6 @@ public interface ProjectsApiDAO {
             hp.name,
             hp.owner_name "owner",
             hp.slug,
-            hp.promoted_versions,
             hp.views,
             hp.downloads,
             hp.recent_views,
@@ -115,7 +112,6 @@ public interface ProjectsApiDAO {
             <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif>
             <sorters>
             <offsetLimit>""")
-    @RegisterColumnMapper(PromotedVersionMapper.class)
     @DefineNamedBindings
     List<Project> getProjects(@Define boolean seeHidden, Long requesterId,
                               @BindPagination RequestPagination pagination, @Define String relevance);

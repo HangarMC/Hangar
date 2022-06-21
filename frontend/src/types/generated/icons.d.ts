@@ -52,6 +52,8 @@ declare module '@vue/runtime-core' {
     IconMdiMenuDown: typeof import('~icons/mdi/menu-down')['default']
     IconMdiOpenInNew: typeof import('~icons/mdi/open-in-new')['default']
     IconMdiPencil: typeof import('~icons/mdi/pencil')['default']
+    IconMdiPin: typeof import('~icons/mdi/pin')['default']
+    IconMdiPinOff: typeof import('~icons/mdi/pin-off')['default']
     IconMdiPlay: typeof import('~icons/mdi/play')['default']
     IconMdiPlus: typeof import('~icons/mdi/plus')['default']
     IconMdiRefresh: typeof import('~icons/mdi/refresh')['default']

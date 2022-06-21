@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated(forRemoval = true)
 public class PromotedVersionMapper implements ColumnMapper<List<PromotedVersion>> {
 
     @Override

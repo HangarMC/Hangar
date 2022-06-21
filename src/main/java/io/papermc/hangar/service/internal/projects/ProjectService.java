@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.projects;
 
+import io.papermc.hangar.service.internal.versions.PinnedVersionService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -60,10 +61,11 @@ public class ProjectService extends HangarComponent {
     private final ProjectPageService projectPageService;
     private final ProjectFiles projectFiles;
     private final PermissionService permissionService;
+    private final PinnedVersionService pinnedVersionService;
     private final RecommendedVersionService recommendedVersionService;
 
     @Autowired
-    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, PermissionService permissionService, RecommendedVersionService recommendedVersionService) {
+    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, PermissionService permissionService, final PinnedVersionService pinnedVersionService, RecommendedVersionService recommendedVersionService) {
         this.projectsDAO = projectDAO;
         this.hangarUsersDAO = hangarUsersDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
@@ -72,6 +74,7 @@ public class ProjectService extends HangarComponent {
         this.projectPageService = projectPageService;
         this.projectFiles = projectFiles;
         this.permissionService = permissionService;
+        this.pinnedVersionService = pinnedVersionService;
         this.recommendedVersionService = recommendedVersionService;
     }
 
@@ -115,8 +118,9 @@ public class ProjectService extends HangarComponent {
         }
         HangarProjectInfo info = hangarProjectsDAO.getHangarProjectInfo(project.getLeft());
         Map<Long, HangarProjectPage> pages = projectPageService.getProjectPages(project.getLeft());
+        final List<HangarProject.PinnedVersion> pinnedVersions = this.pinnedVersionService.getPinnedVersions(project.getLeft());
         Map<Platform, String> recommendedVersions = recommendedVersionService.getRecommendedVersions(project.getLeft());
-        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), recommendedVersions);
+        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, recommendedVersions);
     }
 
     public void saveSettings(String author, String slug, ProjectSettingsForm settingsForm) {

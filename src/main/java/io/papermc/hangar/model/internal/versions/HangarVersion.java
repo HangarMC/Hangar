@@ -2,6 +2,7 @@ package io.papermc.hangar.model.internal.versions;
 
 import io.papermc.hangar.config.jackson.RequiresPermission;
 import io.papermc.hangar.model.Identified;
+import io.papermc.hangar.model.api.project.ProjectChannel;
 import io.papermc.hangar.model.api.project.version.FileInfo;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
@@ -9,39 +10,38 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
+import java.time.OffsetDateTime;
+import java.util.List;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
-
-import java.time.OffsetDateTime;
-import java.util.List;
 
 public class HangarVersion extends Version implements Identified {
 
     private final long id;
     private final String approvedBy;
 
-    public HangarVersion(OffsetDateTime createdAt, @ColumnName("version_string") String name, Visibility visibility, String description, @Nested("vs") VersionStats stats, @Nested("fi") FileInfo fileInfo, String externalUrl, String author, @EnumByOrdinal ReviewState reviewState, List<Platform> recommended, long id, String approvedBy, long postId) {
-        super(createdAt, name, visibility, description, stats, fileInfo, externalUrl, author, reviewState, recommended, postId);
+    public HangarVersion(final OffsetDateTime createdAt, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, @Nested("fi") final FileInfo fileInfo, final String externalUrl, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final boolean pinned, final List<Platform> recommended, final long id, final String approvedBy, final long postId) {
+        super(createdAt, name, visibility, description, stats, fileInfo, externalUrl, author, reviewState, channel, pinned, recommended, postId);
         this.id = id;
         this.approvedBy = approvedBy;
     }
 
     @Override
     public long getId() {
-        return id;
+        return this.id;
     }
 
     @RequiresPermission(NamedPermission.REVIEWER)
     public String getApprovedBy() {
-        return approvedBy;
+        return this.approvedBy;
     }
 
     @Override
     public String toString() {
         return "HangarVersion{" +
-                "id=" + id +
-                ", approvedBy='" + approvedBy + '\'' +
-                "} " + super.toString();
+            "id=" + this.id +
+            ", approvedBy='" + this.approvedBy + '\'' +
+            "} " + super.toString();
     }
 }

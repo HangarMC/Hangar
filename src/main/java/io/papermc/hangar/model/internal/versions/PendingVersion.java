@@ -42,7 +42,7 @@ public class PendingVersion {
     private final String channelName;
     @NotNull(message = "version.new.error.channel.noColor")
     private final Color channelColor;
-    private final Set<@Validate(SpEL = "#root.isEditable", message = "channel.modal.error.invalidFlag") ChannelFlag> channelFlags;
+    private final Set<ChannelFlag> channelFlags;
     private final boolean forumSync;
     private final boolean recommended;
     private final boolean isFile;

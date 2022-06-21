@@ -273,7 +273,7 @@
       "watchers": "Watchers | Watcher | Watchers",
       "lastUpdatedTooltip": "Last updated {0}"
     },
-    "promotedVersions": "Promoted Versions",
+    "pinnedVersions": "Pinned Versions",
     "sponsors": "Sponsors",
     "license": {
       "link": "Licensed under "
@@ -479,6 +479,21 @@
       "manage": "Management",
       "visibility": "Visibility: {0}",
       "setRecommendedTooltip": "Set this version as recommended for {0} platform",
+      "pinned": {
+        "tooltip": {
+          "false": "Pin this version to the main project page",
+          "true": "Remove this pinned version from the main project page",
+          "channel": "This version is pinned via its channel"
+        },
+        "button": {
+          "false": "Pin",
+          "true": "Unpin"
+        },
+        "request": {
+          "true": "Successfully pinned this version",
+          "false": "Successfully unpinned this version"
+        }
+      },
       "delete": "Delete",
       "hardDelete": "Delete (forever)",
       "restore": "Restore",
@@ -522,7 +537,8 @@
       "color": "Channel Color",
       "flags": {
         "skip_review_queue": "Exclude from moderation review queue?",
-        "unstable": "Versions are to be considered unstable"
+        "unstable": "Versions are to be considered unstable",
+        "pinned": "Latest version is highlighted on main project page"
       },
       "error": {
         "invalidName": "Invalid channel name",

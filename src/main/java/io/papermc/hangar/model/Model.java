@@ -7,31 +7,31 @@ public abstract class Model {
 
     protected OffsetDateTime createdAt;
 
-    protected Model(OffsetDateTime createdAt) {
+    protected Model(final OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
     public OffsetDateTime getCreatedAt() {
-        return createdAt;
+        return this.createdAt;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
         Model model = (Model) o;
-        return createdAt.equals(model.createdAt);
+        return this.createdAt.equals(model.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(createdAt);
+        return Objects.hash(this.createdAt);
     }
 
     @Override
     public String toString() {
         return "Model{" +
-                "createdAt=" + createdAt +
-                '}';
+            "createdAt=" + this.createdAt +
+            '}';
     }
 }
