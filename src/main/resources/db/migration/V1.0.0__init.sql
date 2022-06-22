@@ -95,6 +95,7 @@ CREATE TABLE projects
     issues varchar(255),
     source varchar(255),
     support varchar(255),
+    wiki varchar(255),
     license_type varchar(255),
     license_name varchar(255),
     license_url varchar(255),
@@ -198,8 +199,7 @@ CREATE TABLE project_channels
         CONSTRAINT channels_project_id_fkey
             REFERENCES projects
             ON DELETE CASCADE,
-    non_reviewed boolean DEFAULT FALSE NOT NULL,
-    editable boolean DEFAULT FALSE NOT NULL,
+    flags int[] NOT NULL DEFAULT '{}',
     CONSTRAINT channels_project_id_name_key
         UNIQUE (project_id, name),
     CONSTRAINT channels_project_id_color_id_key
@@ -897,6 +897,24 @@ CREATE TABLE user_oauth_token(
 
 CREATE INDEX user_refresh_tokens_token_idx ON user_refresh_tokens (token);
 
+CREATE TABLE pinned_project_versions
+(
+    id bigserial NOT NULL
+        CONSTRAINT project_pinned_versions_pkey
+            PRIMARY KEY,
+    created_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL
+        CONSTRAINT project_pinned_versions_project_id_fkey
+            REFERENCES projects
+            ON DELETE CASCADE,
+    version_id bigint NOT NULL
+        CONSTRAINT project_pinned_versions_version_id_fkey
+            REFERENCES project_versions
+            ON DELETE CASCADE,
+    CONSTRAINT pinned_project_versions_project_version_key
+        UNIQUE (project_id, version_id)
+);
+
 CREATE VIEW project_members_all(id, user_id) AS
 SELECT p.id,
        pm.user_id
@@ -908,6 +926,49 @@ SELECT p.id,
 FROM projects p
          LEFT JOIN organization_members om ON p.owner_id = om.organization_id
 WHERE om.user_id IS NOT NULL;
+
+CREATE OR REPLACE VIEW pinned_versions AS
+    SELECT * FROM (
+        SELECT DISTINCT ON (version_id) version_id,
+                                        id,
+                                        created_at,
+                                        type,
+                                        version_string,
+                                        platforms,
+                                        project_id
+        FROM (
+            SELECT ppv.id,
+                   ppv.version_id,
+                   pv.created_at,
+                   pv.version_string,
+                   array(SELECT DISTINCT plv.platform FROM project_version_platform_dependencies pvpd
+                                                          JOIN platform_versions plv ON plv.id = pvpd.platform_version_id
+                   WHERE pvpd.version_id = pv.id
+                   ORDER BY plv.platform
+                   ) AS platforms,
+                   'version' AS type,
+                   pv.project_id
+            FROM pinned_project_versions ppv
+                JOIN project_versions pv ON pv.id = ppv.version_id
+            UNION ALL
+            (SELECT pc.id,
+                    pv.id AS version_id,
+                    pv.created_at,
+                    pv.version_string,
+                    array(SELECT DISTINCT plv.platform FROM project_version_platform_dependencies pvpd
+                                                        JOIN platform_versions plv ON plv.id = pvpd.platform_version_id
+                          WHERE pvpd.version_id = pv.id
+                          ORDER BY plv.platform
+                    ) AS platforms,
+                    'channel' as type,
+                    pv.project_id
+            FROM project_channels pc
+                JOIN project_versions pv ON pc.id = pv.channel_id
+            WHERE 3 = ANY(pc.flags)
+            ORDER BY pv.created_at DESC
+            LIMIT 1)
+        ) AS pvs
+    ) AS t ORDER BY t.created_at DESC;
 
 CREATE MATERIALIZED VIEW home_projects AS
 WITH tags AS (
