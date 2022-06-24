@@ -54,7 +54,7 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
     }
 
     @Override
-    @ApplicableFilters({ProjectCategoryFilter.class, ProjectPlatformFilter.class, ProjectAuthorFilter.class, ProjectQueryFilter.class, ProjectTagFilter.class, ProjectLicenseFilter.class})
+    @ApplicableFilters({ProjectCategoryFilter.class, ProjectPlatformFilter.class, ProjectAuthorFilter.class, ProjectQueryFilter.class, ProjectLicenseFilter.class})
     @ApplicableSorters({SorterRegistry.VIEWS, SorterRegistry.DOWNLOADS, SorterRegistry.NEWEST, SorterRegistry.STARS, SorterRegistry.UPDATED, SorterRegistry.RECENT_DOWNLOADS, SorterRegistry.RECENT_VIEWS})
     public ResponseEntity<PaginatedResult<Project>> getProjects(String q, boolean orderWithRelevance, @NotNull RequestPagination pagination) {
         return ResponseEntity.ok(projectsApiService.getProjects(q, orderWithRelevance, pagination));

@@ -1,7 +1,7 @@
 import { ChannelFlag, PinnedStatus } from "~/types/enums";
 
 declare module "hangar-api" {
-  import type { Model, Named, ProjectNamespace, TagColor, Visible } from "hangar-api";
+  import type { Model, Named, ProjectNamespace, Visible } from "hangar-api";
   import type { Platform, ReviewState } from "~/types/enums";
 
   interface PluginDependency extends Named {
@@ -25,11 +25,6 @@ declare module "hangar-api" {
     md5Hash: string;
   }
 
-  interface Tag extends Named {
-    data: string;
-    color: TagColor;
-  }
-
   interface ProjectChannel extends Model, Named {
     color: string;
     flags: ChannelFlag[];
@@ -46,7 +41,6 @@ declare module "hangar-api" {
     externalUrl: string | null;
     author: string;
     reviewState: ReviewState;
-    tags: Tag[];
     channel: ProjectChannel;
     pinned: boolean;
     pinnedStatus: PinnedStatus;

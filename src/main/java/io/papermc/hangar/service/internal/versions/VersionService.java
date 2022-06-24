@@ -78,7 +78,7 @@ public class VersionService extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         HangarVersion hangarVersion = hangarVersionsDAO.getVersion(projectVersionTable.getId(), getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
-        return versionDependencyService.addDependenciesAndTags(hangarVersion.getId(), hangarVersion);
+        return versionDependencyService.addDependencies(hangarVersion.getId(), hangarVersion);
     }
 
     public List<HangarVersion> getHangarVersions(String author, String slug, String versionString) {
@@ -86,7 +86,7 @@ public class VersionService extends HangarComponent {
         if (versions.isEmpty()) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        return versions.stream().map(v -> versionDependencyService.addDependenciesAndTags(v.getId(), v)).collect(Collectors.toList());
+        return versions.stream().map(v -> versionDependencyService.addDependencies(v.getId(), v)).collect(Collectors.toList());
     }
 
     public LastDependencies getLastVersionDependencies(String author, String slug, @Nullable String channel, String platformName) {

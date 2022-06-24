@@ -87,7 +87,6 @@ public class BackendDataController {
         ArrayNode arrayNode = noJsonValueMapper.createArrayNode();
         for (Platform platform : Platform.getValues()) {
             ObjectNode objectNode = noJsonValueMapper.valueToTree(platform);
-            objectNode.set("tagColor", noJsonValueMapper.valueToTree(platform.getTagColor()));
             objectNode.set("possibleVersions", noJsonValueMapper.valueToTree(platformService.getVersionsForPlatform(platform)));
             arrayNode.add(objectNode);
         }

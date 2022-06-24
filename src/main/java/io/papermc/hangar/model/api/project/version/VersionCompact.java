@@ -9,9 +9,7 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
 import java.time.OffsetDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
@@ -27,7 +25,6 @@ public class VersionCompact extends Model implements Named, Visible {
     private final String externalUrl;
     private final String author;
     private final ReviewState reviewState;
-    private final Set<Tag> tags;
     private final ProjectChannel channel;
     private final PinnedStatus pinnedStatus;
     private final List<Platform> recommended;
@@ -45,7 +42,6 @@ public class VersionCompact extends Model implements Named, Visible {
         this.reviewState = reviewState;
         this.channel = channel;
         this.pinnedStatus = pinnedStatus;
-        this.tags = new HashSet<>();
         this.recommended = recommended;
         this.postId = postId;
     }
@@ -82,10 +78,6 @@ public class VersionCompact extends Model implements Named, Visible {
 
     public ReviewState getReviewState() {
         return this.reviewState;
-    }
-
-    public Set<Tag> getTags() {
-        return this.tags;
     }
 
     public ProjectChannel getChannel() {

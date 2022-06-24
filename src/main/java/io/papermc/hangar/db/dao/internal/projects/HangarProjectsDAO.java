@@ -1,6 +1,5 @@
 package io.papermc.hangar.db.dao.internal.projects;
 
-import io.papermc.hangar.db.mappers.PromotedVersionMapper;
 import io.papermc.hangar.db.mappers.factories.JoinableRowMapperFactory;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.db.UserTable;
@@ -9,7 +8,6 @@ import io.papermc.hangar.model.internal.projects.HangarChannel;
 import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapperFactory;
 import org.jdbi.v3.sqlobject.customizer.Define;
@@ -24,13 +22,11 @@ import java.util.List;
 public interface HangarProjectsDAO {
 
     @RegisterConstructorMapper(Project.class)
-    @RegisterColumnMapper(PromotedVersionMapper.class)
     @SqlQuery("SELECT p.id," +
             "       p.created_at," +
             "       p.name," +
             "       p.owner_name AS owner," +
             "       p.slug," +
-            "       p.promoted_versions," +
             "       p.views," +
             "       p.downloads," +
             "       p.recent_views," +

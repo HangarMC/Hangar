@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { NamedPermission, Platform, ReviewState, Visibility, ChannelFlag, PinnedStatus } from "~/types/enums";
+import { NamedPermission, Platform, ReviewState, Visibility, PinnedStatus } from "~/types/enums";
 import { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -9,7 +9,7 @@ import { useBackendDataStore } from "~/store/backendData";
 import { lastUpdated } from "~/composables/useTime";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { Tag, User } from "hangar-api";
+import { User } from "hangar-api";
 import { useErrorRedirect } from "~/composables/useErrorRedirect";
 import TagComponent from "~/components/Tag.vue";
 import { hasPerms } from "~/composables/usePerm";
@@ -59,11 +59,9 @@ const isReviewStateChecked = computed<boolean>(
   () => projectVersion.value?.reviewState === ReviewState.PARTIALLY_REVIEWED || projectVersion.value?.reviewState === ReviewState.REVIEWED
 );
 const isUnderReview = computed<boolean>(() => projectVersion.value?.reviewState === ReviewState.UNDER_REVIEW);
-const channel = computed<Tag | null>(() => projectVersion.value?.tags?.find((t) => t?.name === "Channel") || null);
 const approvalTooltip = computed<string>(() =>
   projectVersion.value?.reviewState === ReviewState.PARTIALLY_REVIEWED ? i18n.t("version.page.partiallyApproved") : i18n.t("version.page.approved")
 );
-const platformTag = computed<Tag | null>(() => projectVersion.value?.tags.find((t) => t?.name === platform.value?.name) || null);
 const currentVisibility = computed(() => backendData.visibilities.find((v) => v.name === projectVersion.value?.visibility));
 const editingPage = ref(false);
 
@@ -163,7 +161,7 @@ async function restoreVersion() {
       <div class="flex flex-wrap gap-2 justify-between">
         <div>
           <h1 class="text-3xl sm:inline-flex items-center">
-            <TagComponent class="mr-1" :tag="channel" :short-form="true" />
+            <TagComponent class="mr-1" :name="projectVersion.channel.name" :color="{ background: projectVersion.channel.color }" :short-form="true" />
             {{ projectVersion.name }}
             <Tooltip v-if="projectVersion.recommended.includes(platform?.enumName)" :content="i18n.t('version.page.recommended')" class="text-base">
               <IconMdiDiamondStone :title="i18n.t('version.page.recommended')" class="text-2xl ml-1" />
@@ -307,7 +305,8 @@ async function restoreVersion() {
         <div class="flex items-center">
           <PlatformLogo :platform="platform?.enumName" :size="24" class="mr-1" />
           {{ platform?.name }}
-          {{ platformTag?.data }}
+          <!-- todo format -->
+          {{ projectVersion.platformDependencies[platform?.enumName] }}
         </div>
       </Card>
 

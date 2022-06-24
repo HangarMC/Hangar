@@ -37,7 +37,6 @@ import io.papermc.hangar.model.db.PlatformVersionTable;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
-import io.papermc.hangar.model.db.versions.ProjectVersionTagTable;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionDependencyTable;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionPlatformDependencyTable;
 import io.papermc.hangar.model.internal.job.UpdateDiscourseProjectTopicJob;
@@ -74,14 +73,13 @@ public class VersionFactory extends HangarComponent {
     private final RecommendedVersionService recommendedVersionService;
     private final ProjectService projectService;
     private final NotificationService notificationService;
-    private final VersionTagService versionTagService;
     private final PlatformService platformService;
     private final UsersApiService usersApiService;
     private final JobService jobService;
     private final ValidationService validationService;
 
     @Autowired
-    public VersionFactory(ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, ProjectVersionDependenciesDAO projectVersionDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectVersionsDAO projectVersionDAO, VersionsApiDAO versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionTagService versionTagService, PlatformService platformService, UsersApiService usersApiService, JobService jobService, ValidationService validationService) {
+    public VersionFactory(ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, ProjectVersionDependenciesDAO projectVersionDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectVersionsDAO projectVersionDAO, VersionsApiDAO versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, PlatformService platformService, UsersApiService usersApiService, JobService jobService, ValidationService validationService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.platformVersionDAO = platformVersionDAO;
@@ -94,7 +92,6 @@ public class VersionFactory extends HangarComponent {
         this.recommendedVersionService = recommendedVersionService;
         this.projectService = projectService;
         this.notificationService = notificationService;
-        this.versionTagService = versionTagService;
         this.platformService = platformService;
         this.usersApiService = usersApiService;
         this.jobService = jobService;
@@ -236,16 +233,13 @@ public class VersionFactory extends HangarComponent {
                     pendingVersion.getExternalUrl()
             ));
 
-            List<ProjectVersionTagTable> projectVersionTagTables = new ArrayList<>();
             List<ProjectVersionPlatformDependencyTable> platformDependencyTables = new ArrayList<>();
             for (Map.Entry<Platform, SortedSet<String>> entry : pendingVersion.getPlatformDependencies().entrySet()) {
-                projectVersionTagTables.add(new ProjectVersionTagTable(projectVersionTable.getId(), entry.getKey(), entry.getValue()));
                 for (String version : entry.getValue()) {
                     PlatformVersionTable platformVersionTable = platformVersionDAO.getByPlatformAndVersion(entry.getKey(), version);
                     platformDependencyTables.add(new ProjectVersionPlatformDependencyTable(projectVersionTable.getId(), platformVersionTable.getId()));
                 }
             }
-            versionTagService.addTags(projectVersionTagTables);
             projectVersionPlatformDependenciesDAO.insertAll(platformDependencyTables);
 
             List<ProjectVersionDependencyTable> pluginDependencyTables = new ArrayList<>();

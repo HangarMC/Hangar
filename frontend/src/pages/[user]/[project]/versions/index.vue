@@ -7,7 +7,7 @@ import Card from "~/components/design/Card.vue";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import Tag from "~/components/Tag.vue";
 import Button from "~/components/design/Button.vue";
-import { PaginatedResult, Tag as ApiTag, Version } from "hangar-api";
+import { PaginatedResult, Version } from "hangar-api";
 import { computed, reactive, watch } from "vue";
 import { useBackendDataStore } from "~/store/backendData";
 import { useProjectChannels, useProjectVersions } from "~/composables/useApiHelper";
@@ -101,18 +101,6 @@ function updateChannelCheckAll() {
 function updatePlatformCheckAll() {
   filter.allChecked.platforms = filter.platforms.length === platforms.value.length;
 }
-
-function getChannelTag(version: Version): ApiTag {
-  const channelTag = version.tags.find((t) => t.name === "Channel");
-  if (typeof channelTag === "undefined") {
-    throw new TypeError("Version missing a channel tag");
-  }
-  return channelTag;
-}
-
-function getNonChannelTags(version: Version): ApiTag[] {
-  return version.tags.filter((t) => t.name !== "Channel");
-}
 </script>
 
 <template>
@@ -129,14 +117,15 @@ function getNonChannelTags(version: Version): ApiTag[] {
                     <div class="basis-full md:basis-6/12 truncate">
                       <div class="flex flex-wrap">
                         <span class="text-xl md:basis-full">{{ item.name }}</span>
-                        <Tag :tag="getChannelTag(item)" />
+                        <Tag :name="item.channel.name" :color="{ background: item.channel.color }" />
                       </div>
                     </div>
                     <div class="basis-3/12 <md:(mt-2 basis-6/12)">
-                      <div v-for="(tag, index) in getNonChannelTags(item)" :key="index" class="basis-full">
+                      <div v-for="(v, p) in item.platformDependencies" :key="p" class="basis-full">
                         <div class="inline-flex">
-                          <PlatformLogo :platform="tag.name.toUpperCase()" :size="24" class="mr-1" />
-                          <span class="mr-3">{{ tag.data }}</span>
+                          <PlatformLogo :platform="p" :size="24" class="mr-1" />
+                          <!-- todo format -->
+                          <span class="mr-3">{{ v }}</span>
                         </div>
                       </div>
                     </div>

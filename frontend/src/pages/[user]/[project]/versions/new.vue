@@ -246,6 +246,7 @@ useHead(
         </div>-->
       </div>
 
+      <!-- todo: remove -->
       <h2 class="mt-5 text-xl">{{ t("version.new.form.tags") }}</h2>
       <div class="flex flex-wrap">
         <div class="basis-4/12 mt-2">

@@ -9,11 +9,6 @@ declare module "hangar-api" {
     name: string;
   }
 
-  interface TagColor {
-    background: string;
-    foreground: string;
-  }
-
   interface Pagination {
     limit: number;
     offset: number;

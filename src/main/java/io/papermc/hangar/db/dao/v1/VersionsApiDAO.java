@@ -1,9 +1,7 @@
 package io.papermc.hangar.db.dao.v1;
 
 import io.papermc.hangar.db.extras.BindPagination;
-import io.papermc.hangar.db.mappers.TagMapper;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
-import io.papermc.hangar.model.api.project.version.Tag;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.api.requests.RequestPagination;
@@ -12,7 +10,6 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.enums.EnumStrategy;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
-import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.config.UseEnumStrategy;
 import org.jdbi.v3.sqlobject.config.ValueColumn;
 import org.jdbi.v3.sqlobject.customizer.Define;
@@ -148,7 +145,6 @@ public interface VersionsApiDAO {
             "               JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
             "           GROUP BY pvpd.version_id" +
             "       ) sq ON pv.id = sq.version_id" +
-            "       INNER JOIN (SELECT pvt.name, pvt.data, pvt.version_id FROM project_version_tags pvt) vtsq ON pv.id = vtsq.version_id" +
             "   WHERE TRUE <filters>" +
             "       <if(!canSeeHidden)>" +
             "           AND (pv.visibility = 0 " +
@@ -170,7 +166,6 @@ public interface VersionsApiDAO {
             "               JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
             "           GROUP BY pvpd.version_id" +
             "       ) sq ON pv.id = sq.version_id" +
-            "       INNER JOIN (SELECT pvt.name, pvt.data, pvt.version_id FROM project_version_tags pvt) vtsq ON pv.id = vtsq.version_id" +
             "   WHERE TRUE <filters> " +
             "       <if(!canSeeHidden)>" +
             "           AND (pv.visibility = 0 " +
@@ -204,10 +199,6 @@ public interface VersionsApiDAO {
             "   WHERE pvpd.version_id = :versionId" +
             "   GROUP BY pv.platform")
     Map<Platform, SortedSet<String>> getPlatformDependencies(long versionId);
-
-    @SqlQuery("SELECT pvt.name, pvt.data, pvt.color FROM project_version_tags pvt WHERE pvt.version_id = :versionId")
-    @RegisterRowMapper(TagMapper.class)
-    Set<Tag> getVersionTags(long versionId);
 
     // TODO this might be totally screwed up by adding the platform check
     @KeyColumn("date")

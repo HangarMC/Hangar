@@ -1,5 +1,5 @@
 declare module "hangar-api" {
-  import type { Model, Named, TagColor, Visible } from "hangar-api";
+  import type { Model, Named, Visible } from "hangar-api";
   import type { ProjectCategory } from "~/types/enums";
 
   interface ProjectNamespace {

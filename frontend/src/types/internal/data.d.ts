@@ -1,5 +1,5 @@
 declare module "hangar-internal" {
-  import type { Model, TagColor } from "hangar-api";
+  import type { Model } from "hangar-api";
   import type { Platform, ProjectCategory, Prompt, Visibility } from "~/types/enums";
 
   interface Table extends Model {
@@ -28,7 +28,6 @@ declare module "hangar-internal" {
     enumName: Platform;
     category: "Server" | "Proxy";
     url: string;
-    tagColor: TagColor;
     possibleVersions: string[];
     visible: boolean;
   }

@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { Tag } from "hangar-api";
 import { computed } from "vue";
 
 const props = defineProps<{
   name?: string;
   color?: Color;
-  tag?: Tag;
 }>();
 
 interface Color {
@@ -13,14 +11,12 @@ interface Color {
   background?: string;
 }
 
-const cName = computed(() => (props.tag ? props.tag.data : props.name));
-const cColor = computed(() => (props.tag ? props.tag.color : props.color));
 const ccColor = computed(() => {
-  if (cColor.value?.foreground) {
-    return cColor.value;
+  if (props.color?.foreground) {
+    return props.color;
   } else {
     // https://stackoverflow.com/a/3943023
-    const background = cColor.value?.background;
+    const background = props.color?.background;
     let colors: number[] = [];
     if (background?.startsWith("rgb")) {
       colors = background
@@ -33,7 +29,7 @@ const ccColor = computed(() => {
       colors = [parseInt(bg?.substring(0, 2), 16), parseInt(bg?.substring(2, 4), 16), parseInt(bg?.substring(4, 6), 16)];
     } else {
       console.error("Can't figure out color value for", background);
-      return cColor.value;
+      return props.color;
     }
     colors = colors
       .map((col) => col / 255)
@@ -46,7 +42,7 @@ const ccColor = computed(() => {
     const L = 0.2126 * colors[0] + 0.7152 * colors[1] + 0.0722 * colors[2];
     return {
       foreground: L > 0.179 ? "black" : "white",
-      background: cColor.value?.background,
+      background: props.color?.background,
     } as Color;
   }
 });
@@ -62,7 +58,7 @@ const ccColor = computed(() => {
       }"
       class="tag flex rounded px-2 py-1 text-0.8em"
     >
-      {{ cName }}
+      {{ name }}
     </span>
   </div>
 </template>

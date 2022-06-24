@@ -7,22 +7,17 @@ import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVers
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionPlatformDependenciesDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.api.color.TagColor;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
-import io.papermc.hangar.model.api.project.version.Tag;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.PlatformVersionTable;
-import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
-import io.papermc.hangar.model.db.versions.ProjectVersionTagTable;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionDependencyTable;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionPlatformDependencyTable;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePlatformVersions;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDependencies;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
-import io.papermc.hangar.service.internal.projects.ChannelService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,19 +39,15 @@ public class VersionDependencyService extends HangarComponent {
     private final ProjectsDAO projectsDAO;
     private final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependenciesDAO;
     private final PlatformVersionDAO platformVersionDAO;
-    private final ChannelService channelService;
-    private final VersionTagService versionTagService;
     private final ProjectService projectService;
 
     @Autowired
-    public VersionDependencyService(ProjectVersionDependenciesDAO projectVersionDependencyDAO, VersionsApiDAO versionsApiDAO, ProjectsDAO projectsDAO, ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, PlatformVersionDAO platformVersionDAO, ChannelService channelService, VersionTagService versionTagService, ProjectService projectService) {
+    public VersionDependencyService(ProjectVersionDependenciesDAO projectVersionDependencyDAO, VersionsApiDAO versionsApiDAO, ProjectsDAO projectsDAO, ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectService projectService) {
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.versionsApiDAO = versionsApiDAO;
         this.projectsDAO = projectsDAO;
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.platformVersionDAO = platformVersionDAO;
-        this.channelService = channelService;
-        this.versionTagService = versionTagService;
         this.projectService = projectService;
     }
 
@@ -68,7 +59,7 @@ public class VersionDependencyService extends HangarComponent {
         return projectVersionPlatformDependenciesDAO.getForVersion(versionId);
     }
 
-    public <T extends Version> T addDependenciesAndTags(Long versionId, T version) {
+    public <T extends Version> T addDependencies(Long versionId, T version) {
         version.getPlatformDependencies().putAll(versionsApiDAO.getPlatformDependencies(versionId));
         for (Platform platform : Platform.getValues()) {
             Set<PluginDependency> pluginDependencySet = versionsApiDAO.getPluginDependencies(versionId, platform);
@@ -76,9 +67,6 @@ public class VersionDependencyService extends HangarComponent {
                 version.getPluginDependencies().put(platform, pluginDependencySet);
             }
         }
-        version.getTags().addAll(versionsApiDAO.getVersionTags(versionId));
-        ProjectChannelTable projectChannelTable = channelService.getProjectChannelForVersion(versionId);
-        version.getTags().add(new Tag("Channel", projectChannelTable.getName(), new TagColor(null, projectChannelTable.getColor().getHex())));
         return version;
     }
 
@@ -111,12 +99,6 @@ public class VersionDependencyService extends HangarComponent {
             actionLogger.version(LogAction.VERSION_PLATFORM_DEPENDENCIES_REMOVED.create(VersionContext.of(projectId, versionId), "Removed: " + String.join(", ", toBeRemoved.keySet()), String.join(", ", platformDependencyTables.keySet())));
         }
 
-        ProjectVersionTagTable projectVersionTagTable = versionTagService.getTag(versionId, form.getPlatform().getName());
-        if (projectVersionTagTable == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
-        projectVersionTagTable.setData(form.getVersions());
-        versionTagService.updateTag(projectVersionTagTable);
         projectService.refreshHomeProjects();
     }
 

@@ -13,22 +13,20 @@ import java.util.stream.Collectors;
 public enum Platform {
 
     // NOTE: The order here should always be the order they are displayed whenever there is a list somewhere on the frontend
-    PAPER("Paper", Category.SERVER, TagColor.PAPER, "https://papermc.io/downloads", true),
-    WATERFALL("Waterfall", Category.PROXY, TagColor.WATERFALL, "https://papermc.io/downloads#Waterfall", true),
-    VELOCITY("Velocity", Category.PROXY, TagColor.VELOCITY, "https://www.velocitypowered.com/downloads", true);
+    PAPER("Paper", Category.SERVER, "https://papermc.io/downloads", true),
+    WATERFALL("Waterfall", Category.PROXY, "https://papermc.io/downloads#Waterfall", true),
+    VELOCITY("Velocity", Category.PROXY, "https://www.velocitypowered.com/downloads", true);
 
     private static final Platform[] VALUES = values();
 
     private final String name;
     private final Category category;
-    private final TagColor tagColor;
     private final boolean isVisible;
     private final String url;
 
-    Platform(String name, Category category, TagColor tagColor, String url, boolean isVisible) {
+    Platform(String name, Category category, String url, boolean isVisible) {
         this.name = name;
         this.category = category;
-        this.tagColor = tagColor;
         this.url = url;
         this.isVisible = isVisible;
     }
@@ -38,7 +36,9 @@ public enum Platform {
     }
 
     @JsonValue
-    public String getEnumName() { return name(); }
+    public String getEnumName() {
+        return name();
+    }
 
     public Category getCategory() {
         return category;
@@ -46,10 +46,6 @@ public enum Platform {
 
     public boolean isVisible() {
         return isVisible;
-    }
-
-    public TagColor getTagColor() {
-        return tagColor;
     }
 
     public String getUrl() {

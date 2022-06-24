@@ -42,11 +42,11 @@ public class VersionsApiService extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         var entry = versionsApiDAO.getVersion(projectVersionTable.getId(), getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
-        return versionDependencyService.addDependenciesAndTags(entry.getKey(), entry.getValue());
+        return versionDependencyService.addDependencies(entry.getKey(), entry.getValue());
     }
 
     public List<Version> getVersions(String author, String slug, String versionString) {
-        List<Version> versions = versionsApiDAO.getVersionsWithVersionString(author, slug, versionString, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId()).entrySet().stream().map(entry -> versionDependencyService.addDependenciesAndTags(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+        List<Version> versions = versionsApiDAO.getVersionsWithVersionString(author, slug, versionString, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId()).entrySet().stream().map(entry -> versionDependencyService.addDependencies(entry.getKey(), entry.getValue())).collect(Collectors.toList());
         if (versions.isEmpty()) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
@@ -55,7 +55,7 @@ public class VersionsApiService extends HangarComponent {
 
     public PaginatedResult<Version> getVersions(String author, String slug, RequestPagination pagination) {
         boolean canSeeHidden = getGlobalPermissions().has(Permission.SeeHidden);
-        List<Version> versions = versionsApiDAO.getVersions(author, slug, canSeeHidden, getHangarUserId(), pagination).entrySet().stream().map(entry -> versionDependencyService.addDependenciesAndTags(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+        List<Version> versions = versionsApiDAO.getVersions(author, slug, canSeeHidden, getHangarUserId(), pagination).entrySet().stream().map(entry -> versionDependencyService.addDependencies(entry.getKey(), entry.getValue())).collect(Collectors.toList());
         Long versionCount = versionsApiDAO.getVersionCount(author, slug, canSeeHidden, getHangarUserId(), pagination);
         return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount, pagination), versions);
     }
