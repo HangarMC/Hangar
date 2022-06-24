@@ -162,7 +162,7 @@ async function restoreVersion() {
     <section class="basis-full md:basis-9/12 flex-grow">
       <div class="flex flex-wrap gap-2 justify-between">
         <div>
-          <h1 class="text-3xl inline-flex items-center">
+          <h1 class="text-3xl sm:inline-flex items-center">
             <TagComponent class="mr-1" :tag="channel" :short-form="true" />
             {{ projectVersion.name }}
             <Tooltip v-if="projectVersion.recommended.includes(platform?.enumName)" :content="i18n.t('version.page.recommended')" class="text-base">
@@ -173,9 +173,9 @@ async function restoreVersion() {
             </Tooltip>
           </h1>
           <h2>
-            <span class="inline-flex ml-1">
+            <span class="inline-flex <sm:flex-wrap ml-1">
               {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
-              <span v-if="projectVersion.fileInfo?.sizeBytes" class="inline-flex items-center ml-3">
+              <span v-if="projectVersion.fileInfo?.sizeBytes" class="inline-flex items-center sm:ml-3">
                 <IconMdiFile class="mr-1" />
                 {{ filesize(projectVersion.fileInfo.sizeBytes) }}
               </span>

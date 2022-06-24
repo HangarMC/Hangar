@@ -36,19 +36,16 @@ async function changeOrgVisibility(org: string) {
 }
 </script>
 
+<!-- todo: save on save button, not immediately when ticking -->
 <template>
   <Modal :title="i18n.t('author.editOrgVisibility')">
-    <template #default="{ on }">
-      <p>{{ i18n.t("author.orgVisibilityModal") }}</p>
+    <p>{{ i18n.t("author.orgVisibilityModal") }}</p>
 
-      <ul>
-        <li v-for="(hidden, org) in internalVisibility" :key="org">
-          <InputCheckbox v-model="internalVisibility[org]" :label="org" :disabled="loading" @change="changeOrgVisibility(org)"></InputCheckbox>
-        </li>
-      </ul>
-
-      <Button button-type="secondary" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
-    </template>
+    <ul class="p-2">
+      <li v-for="(hidden, org) in internalVisibility" :key="org">
+        <InputCheckbox v-model="internalVisibility[org]" :label="org" :disabled="loading" @change="changeOrgVisibility(org)"></InputCheckbox>
+      </li>
+    </ul>
     <template #activator="{ on }">
       <Button class="text-sm" v-on="on"><IconMdiPencil /></Button>
     </template>

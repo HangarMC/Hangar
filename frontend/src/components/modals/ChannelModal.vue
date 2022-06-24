@@ -107,14 +107,12 @@ reset();
         :label="i18n.t('channel.modal.color')"
         :rules="[required(), validChannelColor()(props.projectId, props.channel?.color)]"
         readonly
+        disabled
       />
-      <br />
+      <div class="mb-4" />
       <InputCheckbox v-for="f in possibleFlags" :key="f" v-model="flags" :label="i18n.t(`channel.modal.flags.${f.toLowerCase()}`)" :value="f" />
 
-      <Button button-type="primary" class="mt-2" :disabled="v.$invalid" @click="create(on.click)">{{
-        edit ? i18n.t("general.save") : i18n.t("general.create")
-      }}</Button>
-      <Button button-type="secondary" class="mt-2 ml-2" v-on="on">{{ i18n.t("general.close") }}</Button>
+      <Button class="mt-3" :disabled="v.$invalid" @click="create(on.click)">{{ edit ? i18n.t("general.save") : i18n.t("general.create") }}</Button>
     </template>
     <template #activator="{ on }">
       <slot name="activator" :on="open(on)"></slot>

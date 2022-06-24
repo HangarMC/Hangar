@@ -104,12 +104,12 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
                 {{ version.name }}
                 <br />
                 <div class="inline-flex items-center">
-                  <Tag :name="version.channel.name" :color="{ background: version.channel.color }"></Tag>
-                  <PlatformLogo v-for="(platform, idx) in version.platforms" :key="`${idx}-${platform}`" :platform="platform" :size="24" class="mr-1" />
+                  <Tag :name="version.channel.name" :color="{ background: version.channel.color }" />
+                  <PlatformLogo v-for="(platform, idx) in version.platforms" :key="`${idx}-${platform}`" :platform="platform" :size="24" class="ml-1" />
                 </div>
               </router-link>
             </div>
-            <div class="items-center inline-flex">
+            <div class="items-center inline-flex ml-1">
               <DownloadButton :project="project" :pinned-version="version" small></DownloadButton>
             </div>
           </li>

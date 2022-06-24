@@ -78,12 +78,9 @@ onMounted(() =>
 
 <template>
   <Modal ref="modal" :title="i18n.t('version.edit.platformVersions', [platform?.name])" :small="false">
-    <template #default="{ on }">
-      <DependencyTable ref="depTable" :platform="platform?.name?.toUpperCase()" :version="formVersion" />
+    <DependencyTable ref="depTable" :platform="platform?.name?.toUpperCase()" :version="formVersion" />
 
-      <Button button-type="primary" class="mt-2" :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
-      <Button button-type="secondary" class="mt-2 ml-2" v-on="on">{{ i18n.t("general.close") }}</Button>
-    </template>
+    <Button button-type="primary" class="mt-3" :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
     <template #activator="{ on }">
       <Button v-if="hasPerms(NamedPermission.EDIT_VERSION)" class="text-sm" v-on="on"><IconMdiPencil /></Button>
     </template>

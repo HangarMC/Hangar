@@ -50,12 +50,8 @@ const prettyDiff = computed(() => {
 
 <template>
   <Modal :title="props.title" big>
-    <template #default="{ on }">
       <!-- eslint-disable-next-line vue/no-v-html -->
       <div v-html="prettyDiff"></div>
-
-      <Button button-type="secondary" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
-    </template>
     <template #activator="{ on }">
       <slot name="activator" :on="on"></slot>
     </template>

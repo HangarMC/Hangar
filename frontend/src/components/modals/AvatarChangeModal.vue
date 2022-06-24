@@ -44,12 +44,9 @@ async function changeOrgAvatar() {
 
 <template>
   <Modal :title="i18n.t('author.org.editAvatar')">
-    <template #default="{ on }">
-      <InputFile v-model="file"></InputFile>
+    <InputFile v-model="file"></InputFile>
 
-      <Button button-type="secondary" class="mt-2" @click="on.click">{{ i18n.t("general.close") }}</Button>
-      <Button button-type="primary" class="mt-2 ml-2" @click="changeOrgAvatar()">{{ i18n.t("general.submit") }}</Button>
-    </template>
+    <Button class="mt-3" @click="changeOrgAvatar()">{{ i18n.t("general.submit") }}</Button>
     <template #activator="{ on }">
       <Tooltip class="absolute -bottom-3 -right-3">
         <template #content>

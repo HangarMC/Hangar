@@ -14,11 +14,7 @@ const i18n = useI18n();
 
 <template>
   <Modal :title="props.title" big>
-    <template #default="{ on }">
       <Markdown :raw="markdown"></Markdown>
-
-      <Button button-type="secondary" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
-    </template>
     <template #activator="{ on }">
       <slot name="activator" :on="on"></slot>
     </template>

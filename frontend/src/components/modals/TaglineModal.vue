@@ -38,12 +38,9 @@ async function save() {
 
 <template>
   <Modal :title="i18n.t('author.editTagline')">
-    <template #default="{ on }">
-      <InputText v-model.trim="newTagline" :label="i18n.t('author.taglineLabel')" counter :maxlength="backendData.validations.userTagline.max" />
-      <br />
-      <Button size="medium" class="mt-2" @click="save">{{ i18n.t("general.change") }}</Button>
-      <Button button-type="secondary" size="medium" class="mt-2 ml-2" v-on="on">{{ i18n.t("general.close") }}</Button>
-    </template>
+    <InputText v-model.trim="newTagline" :label="i18n.t('author.taglineLabel')" counter :maxlength="backendData.validations.userTagline.max" />
+    <br />
+    <Button class="mt-3" @click="save">{{ i18n.t("general.change") }}</Button>
     <template #activator="{ on }">
       <Button size="small" class="ml-2 inline-flex" v-on="on">
         <IconMdiPencil />

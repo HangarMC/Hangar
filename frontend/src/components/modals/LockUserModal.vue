@@ -43,8 +43,7 @@ async function confirm(close: () => void) {
     <template #default="{ on }">
       <InputTextarea v-model="comment" />
 
-      <Button button-type="secondary" class="mt-2" @click="on.click">{{ i18n.t("general.close") }}</Button>
-      <Button button-type="primary" class="mt-2 ml-2" @click="confirm(on.click)">{{ i18n.t("general.confirm") }}</Button>
+      <Button button-type="primary" class="mt-3" @click="confirm(on.click)">{{ i18n.t("general.confirm") }}</Button>
     </template>
     <template #activator="{ on }">
       <Tooltip>

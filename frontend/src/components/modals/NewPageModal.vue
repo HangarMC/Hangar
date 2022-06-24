@@ -79,23 +79,20 @@ async function createPage() {
 
 <template>
   <Modal :title="i18n.t('page.new.title')">
-    <template #default="{ on }">
-      <div class="flex flex-col">
-        <InputText
-          v-model.trim="name"
-          :label="i18n.t('page.new.name')"
-          :error-messages="nameErrorMessages"
-          counter
-          :maxlength="backendData.validations.project.pageName.max"
-          :minlength="backendData.validations.project.pageName.min"
-        />
-        <InputSelect v-model="parent" :values="pageRoots" :label="i18n.t('page.new.parent')" class="pt-2 pb-1" />
-      </div>
-      <div>
-        <Button class="mt-2" :disabled="validateLoading || loading" @click="createPage">{{ i18n.t("general.create") }}</Button>
-        <Button button-type="secondary" class="mt-2 ml-2" v-on="on">{{ i18n.t("general.close") }}</Button>
-      </div>
-    </template>
+    <div class="flex flex-col">
+      <InputText
+        v-model.trim="name"
+        :label="i18n.t('page.new.name')"
+        :error-messages="nameErrorMessages"
+        counter
+        :maxlength="backendData.validations.project.pageName.max"
+        :minlength="backendData.validations.project.pageName.min"
+      />
+      <InputSelect v-model="parent" :values="pageRoots" :label="i18n.t('page.new.parent')" class="pt-2 pb-1" />
+    </div>
+    <div>
+      <Button class="mt-3" :disabled="validateLoading || loading" @click="createPage">{{ i18n.t("general.create") }}</Button>
+    </div>
     <template #activator="{ on }">
       <Button v-bind="$attrs" class="mr-1 h-[32px]" size="small" v-on="on">
         <IconMdiPlus />
