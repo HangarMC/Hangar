@@ -31,6 +31,7 @@ import DownloadButton from "~/components/projects/DownloadButton.vue";
 import PlatformLogo from "~/components/logos/PlatformLogo.vue";
 import TextAreaModal from "~/components/modals/TextAreaModal.vue";
 import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
+import { formatVersionNumbers } from "~/composables/useVersionHelper";
 import filesize from "filesize";
 
 const route = useRoute();
@@ -305,8 +306,7 @@ async function restoreVersion() {
         <div class="flex items-center">
           <PlatformLogo :platform="platform?.enumName" :size="24" class="mr-1" />
           {{ platform?.name }}
-          <!-- todo format -->
-          {{ projectVersion.platformDependencies[platform?.enumName] }}
+          {{ formatVersionNumbers(projectVersion?.platformDependencies[platform?.enumName]) }}
         </div>
       </Card>
 

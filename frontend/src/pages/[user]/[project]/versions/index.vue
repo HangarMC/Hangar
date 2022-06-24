@@ -11,6 +11,7 @@ import { PaginatedResult, Version } from "hangar-api";
 import { computed, reactive, watch } from "vue";
 import { useBackendDataStore } from "~/store/backendData";
 import { useProjectChannels, useProjectVersions } from "~/composables/useApiHelper";
+import { formatVersionNumbers } from "~/composables/useVersionHelper";
 import { useContext } from "vite-ssr/vue";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useRoute } from "vue-router";
@@ -124,8 +125,7 @@ function updatePlatformCheckAll() {
                       <div v-for="(v, p) in item.platformDependencies" :key="p" class="basis-full">
                         <div class="inline-flex">
                           <PlatformLogo :platform="p" :size="24" class="mr-1" />
-                          <!-- todo format -->
-                          <span class="mr-3">{{ v }}</span>
+                          <span class="mr-3">{{ formatVersionNumbers(v) }}</span>
                         </div>
                       </div>
                     </div>
