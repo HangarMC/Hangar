@@ -397,7 +397,6 @@
         "channel": "Channel",
         "addChannel": "Add Channel",
         "unstable": "Unstable",
-        "recommended": "Recommended",
         "forumPost": "Forum Post",
         "release": {
           "bulletin": "Release Bulletin",
@@ -475,10 +474,8 @@
       "adminMsg": "Approved by {0} {1}",
       "reviewLogs": "Review logs",
       "reviewStart": "Start review",
-      "setRecommended": "Set as Recommended",
       "manage": "Management",
       "visibility": "Visibility: {0}",
-      "setRecommendedTooltip": "Set this version as recommended for {0} platform",
       "pinned": {
         "tooltip": {
           "none": "Pin this version to the main project page",
@@ -501,7 +498,6 @@
       "download": "Download",
       "downloadExternal": "Download External",
       "adminActions": "Admin actions",
-      "recommended": "Recommended version",
       "partiallyApproved": "Partially approved",
       "approved": "Approved",
       "userAdminLogs": "User Admin Logs",
@@ -526,8 +522,7 @@
     "success": {
       "softDelete": "You have deleted this version",
       "hardDelete": "You have fully deleted this version",
-      "restore": "You have restored this version",
-      "recommended": "You have marked this version as recommended for {0} platform"
+      "restore": "You have restored this version"
     }
   },
   "channel": {
@@ -537,7 +532,6 @@
       "name": "Channel Name",
       "color": "Channel Color",
       "flags": {
-        "skip_review_queue": "Exclude from moderation review queue?",
         "unstable": "Versions are to be considered unstable",
         "pinned": "Latest version is highlighted on main project page"
       },
@@ -557,6 +551,8 @@
       }
     },
     "manage": {
+      "mainTitle": "Main stable channel",
+      "mainSubtitle": "The most recent builds on the main stable channel will be provided in the download button in the project's header.",
       "title": "Release channels",
       "reviewInfo": "Channel names may automatically be flagged for review and will only be published after",
       "subtitle": "Release channels represent the state of a plugin release. A project may have up to five release channels.",

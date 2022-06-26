@@ -19,8 +19,6 @@ import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.api.VersionsApiService;
 import io.papermc.hangar.service.internal.versions.DownloadService;
-import io.papermc.hangar.service.internal.versions.RecommendedVersionService;
-
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -39,13 +37,11 @@ public class VersionsController implements IVersionsController {
 
     private final DownloadService downloadService;
     private final VersionsApiService versionsApiService;
-    private final RecommendedVersionService recommendedVersionService;
 
     @Autowired
-    public VersionsController(DownloadService downloadService, VersionsApiService versionsApiService, RecommendedVersionService recommendedVersionService) {
+    public VersionsController(DownloadService downloadService, VersionsApiService versionsApiService) {
         this.downloadService = downloadService;
         this.versionsApiService = versionsApiService;
-        this.recommendedVersionService = recommendedVersionService;
     }
 
     @Override
@@ -70,14 +66,12 @@ public class VersionsController implements IVersionsController {
     @Override
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#author, #slug}")
     public Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, Platform platform, @NotNull OffsetDateTime fromDate, @NotNull OffsetDateTime toDate) {
-        versionString = recommendedVersionService.fixVersionString(author, slug, versionString, platform); // TODO remove recommended special casing
         return versionsApiService.getVersionStats(author, slug, versionString, platform, fromDate, toDate);
     }
 
     @Override
     @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
     public FileSystemResource downloadVersion(String author, String slug, String versionString, Platform platform) {
-        versionString = recommendedVersionService.fixVersionString(author, slug, versionString, platform); // TODO remove recommended special casing
         return downloadService.getVersionFile(author, slug, versionString, platform, false, null);
     }
 }

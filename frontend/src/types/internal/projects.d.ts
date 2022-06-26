@@ -42,7 +42,7 @@ declare module "hangar-internal" {
     info: HangarProjectInfo;
     pages: HangarProjectPage[];
     pinnedVersions: PinnedVersion[];
-    recommendedVersions: Record<Platform, string | null>;
+    mainChannelVersions: Record<Platform, HangarVersion>;
   }
 
   interface ProjectPage extends Table {

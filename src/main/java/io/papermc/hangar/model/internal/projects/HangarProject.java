@@ -13,13 +13,15 @@ import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.identified.ProjectIdentified;
 import io.papermc.hangar.model.internal.Joinable;
 import io.papermc.hangar.model.internal.user.JoinableMember;
+import io.papermc.hangar.model.internal.versions.HangarVersion;
+import org.jdbi.v3.core.enums.EnumByName;
+import org.jdbi.v3.core.mapper.Nested;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.jdbi.v3.core.enums.EnumByName;
-import org.jdbi.v3.core.mapper.Nested;
-import org.jetbrains.annotations.Nullable;
 
 public class HangarProject extends Project implements Joinable<ProjectRoleTable>, ProjectIdentified {
 
@@ -31,9 +33,9 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     private final HangarProjectInfo info;
     private final Collection<HangarProjectPage> pages;
     private final List<PinnedVersion> pinnedVersions;
-    private final Map<Platform, String> recommendedVersions;
+    private final Map<Platform, HangarVersion> mainChannelVersions;
 
-    public HangarProject(final Project project, final long id, final ProjectOwner owner, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, String> recommendedVersions) {
+    public HangarProject(final Project project, final long id, final ProjectOwner owner, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, HangarVersion> mainChannelVersions) {
         super(project);
         this.id = id;
         this.owner = owner;
@@ -43,7 +45,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         this.info = info;
         this.pages = pages;
         this.pinnedVersions = pinnedVersions;
-        this.recommendedVersions = recommendedVersions;
+        this.mainChannelVersions = mainChannelVersions;
     }
 
     public long getId() {
@@ -90,8 +92,8 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         return this.pinnedVersions;
     }
 
-    public Map<Platform, String> getRecommendedVersions() {
-        return recommendedVersions;
+    public Map<Platform, HangarVersion> getMainChannelVersions() {
+        return mainChannelVersions;
     }
 
     @Override
@@ -105,7 +107,6 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
             ", info=" + this.info +
             ", pages=" + this.pages +
             ", pinnedVersions=" + this.pinnedVersions +
-            ", recommendedVersions=" + this.recommendedVersions +
             "} " + super.toString();
     }
 
@@ -150,17 +151,18 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         @Override
         public String toString() {
             return "HangarProjectInfo{" +
-                    "publicVersions=" + publicVersions +
-                    ", flagCount=" + flagCount +
-                    ", noteCount=" + noteCount +
-                    ", starCount=" + starCount +
-                    ", watcherCount=" + watcherCount +
-                    '}';
+                "publicVersions=" + publicVersions +
+                ", flagCount=" + flagCount +
+                ", noteCount=" + noteCount +
+                ", starCount=" + starCount +
+                ", watcherCount=" + watcherCount +
+                '}';
         }
     }
 
 
-    public record PinnedVersion(Type type, String name, Set<Platform> platforms, @Nested("pc") ProjectChannel channel, @Nested("fi") @Nullable FileInfo fileInfo, @Nullable String externalUrl) {
+    public record PinnedVersion(Type type, String name, Set<Platform> platforms, @Nested("pc") ProjectChannel channel,
+                                @Nested("fi") @Nullable FileInfo fileInfo, @Nullable String externalUrl) {
 
         @EnumByName
         @JsonFormat(shape = JsonFormat.Shape.STRING)

@@ -44,7 +44,6 @@ declare module "hangar-api" {
     channel: ProjectChannel;
     pinned: boolean;
     pinnedStatus: PinnedStatus;
-    recommended: Platform[];
   }
 
   interface Version extends VersionCompact, DependencyVersion {

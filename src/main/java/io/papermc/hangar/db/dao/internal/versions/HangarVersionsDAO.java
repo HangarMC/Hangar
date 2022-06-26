@@ -40,7 +40,6 @@ public interface HangarVersionsDAO {
             "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
             "           ELSE 'NONE'" +
             "       END AS pinnedStatus," +
-            "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended," +
             "       ru.name approved_by" +
             "   FROM project_versions pv" +
             "       JOIN project_channels pc ON pv.channel_id = pc.id" +
@@ -82,7 +81,6 @@ public interface HangarVersionsDAO {
             "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
             "           ELSE 'NONE'" +
             "       END AS pinnedStatus," +
-            "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended," +
             "       ru.name approved_by" +
             "   FROM project_versions pv" +
             "       JOIN project_channels pc ON pv.channel_id = pc.id" +

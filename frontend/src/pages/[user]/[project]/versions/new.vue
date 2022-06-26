@@ -246,14 +246,6 @@ useHead(
         </div>-->
       </div>
 
-      <!-- todo: remove -->
-      <h2 class="mt-5 text-xl">{{ t("version.new.form.tags") }}</h2>
-      <div class="flex flex-wrap">
-        <div class="basis-4/12 mt-2">
-          <InputCheckbox v-model="pendingVersion.recommended" :label="t('version.new.form.recommended')" />
-        </div>
-      </div>
-
       <h2 class="mt-5 mb-2 text-xl">{{ t("version.new.form.platforms") }}</h2>
       <div v-for="platform in platforms" :key="platform.name" class="ml-2">
         <InputCheckbox

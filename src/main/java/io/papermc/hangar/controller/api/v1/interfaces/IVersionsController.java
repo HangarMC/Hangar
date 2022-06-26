@@ -111,7 +111,7 @@ public interface IVersionsController {
     @GetMapping("/projects/{author}/{slug}/versions/{name}/{platform}/stats")
     Map<String, VersionStats> getVersionStats(@ApiParam("The author of the version to return the stats for") @PathVariable String author,
                                               @ApiParam("The slug of the project to return stats for") @PathVariable String slug,
-                                              @ApiParam("The version to return the stats for. Can be 'recommended'.") @PathVariable("name") String versionString,
+                                              @ApiParam("The version to return the stats for.") @PathVariable("name") String versionString,
                                               @ApiParam("The platform of the version to return") @PathVariable Platform platform,
                                               @ApiParam(value = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
                                               @ApiParam(value = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate);
@@ -133,6 +133,6 @@ public interface IVersionsController {
     @GetMapping(value = "/projects/{author}/{slug}/versions/{name}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     FileSystemResource downloadVersion(@ApiParam("The author of the project to return the version for") @PathVariable String author,
                                        @ApiParam("The slug of the project to return") @PathVariable String slug,
-                                       @ApiParam("The name of the version to return. Can be 'recommended'.") @PathVariable("name") String versionString,
+                                       @ApiParam("The name of the version to return.") @PathVariable("name") String versionString,
                                        @ApiParam("The platform of the version to return") @PathVariable Platform platform);
 }

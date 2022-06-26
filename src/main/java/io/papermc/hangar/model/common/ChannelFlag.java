@@ -5,11 +5,11 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 @EnumByOrdinal
 @JsonFormat(shape = JsonFormat.Shape.STRING)
-// remember never to delete or re-order these, just deprecate it
 public enum ChannelFlag {
     FROZEN(false),
     UNSTABLE(true),
-    SKIP_REVIEW_QUEUE(true),
+    @Deprecated(forRemoval = true)
+    SKIP_REVIEW_QUEUE(true), //TODO remove and add id migration
     PINNED(true),
     ;
 

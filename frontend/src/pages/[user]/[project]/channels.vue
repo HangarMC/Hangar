@@ -20,6 +20,8 @@ import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useRoute } from "vue-router";
 import Tooltip from "~/components/design/Tooltip.vue";
 import { useNotificationStore } from "~/store/notification";
+import InputRadio from "~/components/ui/InputRadio.vue";
+import { ref } from "vue";
 
 const props = defineProps<{
   user: User;
@@ -31,6 +33,7 @@ const route = useRoute();
 const channels = await useProjectChannels(props.project.namespace.owner, props.project.namespace.slug).catch((e) => handleRequestError(e, ctx, i18n));
 const validations = useBackendDataStore().validations;
 const notifications = useNotificationStore();
+//const mainChannel = ref(null); //TODO set
 
 useHead(
   useSeo("Channels | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug))
@@ -78,6 +81,16 @@ async function editChannel(channel: ProjectChannel) {
 </script>
 
 <template>
+  <!--<Card class="mb-4">
+    <template #header>{{ i18n.t("channel.manage.mainTitle") }}</template>
+    <p class="mb-2">{{ i18n.t("channel.manage.mainSubtitle") }}</p>
+    <ul>
+      <li v-for="channel in channels" :key="channel.name" class="inline-flex w-full">
+        <InputRadio v-model="mainChannel" :value="channel.name" />
+        <Tag :name="channel.name" :color="{ background: channel.color }"></Tag>
+      </li>
+    </ul>
+  </Card>-->
   <Card>
     <template #header>{{ i18n.t("channel.manage.title") }}</template>
     <p class="mb-2">{{ i18n.t("channel.manage.subtitle") }}</p>
@@ -87,12 +100,6 @@ async function editChannel(channel: ProjectChannel) {
         <tr>
           <th><IconMdiTag />{{ i18n.t("channel.manage.channelName") }}</th>
           <th><IconMdiFormatListNumbered />{{ i18n.t("channel.manage.versionCount") }}</th>
-          <Tooltip>
-            <template #content>
-              {{ i18n.t("channel.manage.reviewInfo") }}
-            </template>
-            <th><IconMdiFileFind />{{ i18n.t("channel.manage.reviewed") }}</th>
-          </Tooltip>
           <th><IconMdiPencil />{{ i18n.t("channel.manage.edit") }}</th>
           <th v-if="channels.length !== 1"><IconMdiDelete />{{ i18n.t("channel.manage.trash") }}</th>
         </tr>
@@ -101,10 +108,6 @@ async function editChannel(channel: ProjectChannel) {
         <tr v-for="channel in channels" :key="channel.name">
           <td><Tag :name="channel.name" :color="{ background: channel.color }" /></td>
           <td>{{ channel.versionCount }}</td>
-          <td>
-            <IconMdiCheckboxBlankCircleOutline v-if="channel.flags.indexOf(ChannelFlag.SKIP_REVIEW_QUEUE) > -1" />
-            <IconMdiCheckCircle v-else />
-          </td>
           <td>
             <ChannelModal :project-id="props.project.id" edit :channel="channel" @create="editChannel">
               <template #activator="{ on, attrs }">

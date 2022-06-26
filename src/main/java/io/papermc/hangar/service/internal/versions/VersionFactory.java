@@ -1,27 +1,5 @@
 package io.papermc.hangar.service.internal.versions;
 
-import io.papermc.hangar.model.common.ChannelFlag;
-import java.util.stream.Collectors;
-import org.spongepowered.configurate.ConfigurateException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedSet;
-
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
@@ -31,6 +9,7 @@ import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.version.FileInfo;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
+import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.PlatformVersionTable;
@@ -57,6 +36,25 @@ import io.papermc.hangar.service.internal.versions.plugindata.PluginFileWithData
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.CryptoUtils;
 import io.papermc.hangar.util.StringUtils;
+import org.spongepowered.configurate.ConfigurateException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 @Service
 public class VersionFactory extends HangarComponent {
@@ -70,7 +68,6 @@ public class VersionFactory extends HangarComponent {
     private final PluginDataService pluginDataService;
     private final ChannelService channelService;
     private final ProjectVisibilityService projectVisibilityService;
-    private final RecommendedVersionService recommendedVersionService;
     private final ProjectService projectService;
     private final NotificationService notificationService;
     private final PlatformService platformService;
@@ -79,7 +76,7 @@ public class VersionFactory extends HangarComponent {
     private final ValidationService validationService;
 
     @Autowired
-    public VersionFactory(ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, ProjectVersionDependenciesDAO projectVersionDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectVersionsDAO projectVersionDAO, VersionsApiDAO versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, PlatformService platformService, UsersApiService usersApiService, JobService jobService, ValidationService validationService) {
+    public VersionFactory(ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, ProjectVersionDependenciesDAO projectVersionDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectVersionsDAO projectVersionDAO, VersionsApiDAO versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, ProjectService projectService, NotificationService notificationService, PlatformService platformService, UsersApiService usersApiService, JobService jobService, ValidationService validationService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.platformVersionDAO = platformVersionDAO;
@@ -89,7 +86,6 @@ public class VersionFactory extends HangarComponent {
         this.pluginDataService = pluginDataService;
         this.channelService = channelService;
         this.projectVisibilityService = projectVisibilityService;
-        this.recommendedVersionService = recommendedVersionService;
         this.projectService = projectService;
         this.notificationService = notificationService;
         this.platformService = platformService;
@@ -135,13 +131,13 @@ public class VersionFactory extends HangarComponent {
 
         ProjectChannelTable projectChannelTable = channelService.getFirstChannel(projectId);
         PendingVersion pendingVersion = new PendingVersion(
-                StringUtils.slugify(pluginDataFile.getData().getVersion()),
-                pluginDataFile.getData().getDependencies(),
-                pluginDataFile.getData().getPlatformDependencies(),
-                pluginDataFile.getData().getDescription(),
-                new FileInfo(pluginDataFile.getPath().getFileName().toString(), pluginDataFile.getPath().toFile().length(), pluginDataFile.getMd5()),
-                projectChannelTable,
-                projectTable.isForumSync()
+            StringUtils.slugify(pluginDataFile.getData().getVersion()),
+            pluginDataFile.getData().getDependencies(),
+            pluginDataFile.getData().getPlatformDependencies(),
+            pluginDataFile.getData().getDescription(),
+            new FileInfo(pluginDataFile.getPath().getFileName().toString(), pluginDataFile.getPath().toFile().length(), pluginDataFile.getMd5()),
+            projectChannelTable,
+            projectTable.isForumSync()
         );
 
         if (!validationService.isValidVersionName(pendingVersion.getVersionString())) {
@@ -221,16 +217,16 @@ public class VersionFactory extends HangarComponent {
             }
             //TODO automatic checks for malicious code or files => set visibility to NEEDSAPPROVAL
             projectVersionTable = projectVersionsDAO.insert(new ProjectVersionTable(
-                    pendingVersion.getVersionString(),
-                    pendingVersion.getDescription(),
-                    projectId,
-                    projectChannelTable.getId(),
-                    fileSize,
-                    fileHash,
-                    fileName,
-                    getHangarPrincipal().getUserId(),
-                    pendingVersion.isForumSync(),
-                    pendingVersion.getExternalUrl()
+                pendingVersion.getVersionString(),
+                pendingVersion.getDescription(),
+                projectId,
+                projectChannelTable.getId(),
+                fileSize,
+                fileHash,
+                fileName,
+                getHangarPrincipal().getUserId(),
+                pendingVersion.isForumSync(),
+                pendingVersion.getExternalUrl()
             ));
 
             List<ProjectVersionPlatformDependencyTable> platformDependencyTables = new ArrayList<>();
@@ -280,12 +276,6 @@ public class VersionFactory extends HangarComponent {
             if (projectTable.getVisibility() == Visibility.NEW) {
                 projectVisibilityService.changeVisibility(projectTable, Visibility.PUBLIC, "First version");
                 jobService.save(new UpdateDiscourseProjectTopicJob(projectId));
-            }
-
-            if (pendingVersion.isRecommended()) {
-                for (Platform platform : pendingVersion.getPlatformDependencies().keySet()) {
-                    recommendedVersionService.setRecommendedVersion(projectId, projectVersionTable.getId(), platform);
-                }
             }
 
             actionLogger.version(LogAction.VERSION_CREATED.create(VersionContext.of(projectId, projectVersionTable.getId()), "published", ""));

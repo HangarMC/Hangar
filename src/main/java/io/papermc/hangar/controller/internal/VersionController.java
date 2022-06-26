@@ -13,8 +13,8 @@ import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDepend
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
-import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.model.internal.versions.LastDependencies;
+import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -22,7 +22,6 @@ import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.internal.versions.DownloadService;
 import io.papermc.hangar.service.internal.versions.PinnedVersionService;
-import io.papermc.hangar.service.internal.versions.RecommendedVersionService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.versions.VersionFactory;
 import io.papermc.hangar.service.internal.versions.VersionService;
@@ -42,7 +41,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.validation.Valid;
 import java.util.List;
 
@@ -55,16 +53,14 @@ public class VersionController extends HangarComponent {
     private final VersionFactory versionFactory;
     private final VersionService versionService;
     private final VersionDependencyService versionDependencyService;
-    private final RecommendedVersionService recommendedVersionService;
     private final DownloadService downloadService;
     private final PinnedVersionService pinnedVersionService;
 
     @Autowired
-    public VersionController(VersionFactory versionFactory, VersionService versionService, VersionDependencyService versionDependencyService, RecommendedVersionService recommendedVersionService, DownloadService downloadService, final PinnedVersionService pinnedVersionService) {
+    public VersionController(VersionFactory versionFactory, VersionService versionService, VersionDependencyService versionDependencyService, DownloadService downloadService, final PinnedVersionService pinnedVersionService) {
         this.versionFactory = versionFactory;
         this.versionService = versionService;
         this.versionDependencyService = versionDependencyService;
-        this.recommendedVersionService = recommendedVersionService;
         this.downloadService = downloadService;
         this.pinnedVersionService = pinnedVersionService;
     }
@@ -146,14 +142,6 @@ public class VersionController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
-    @PostMapping("/version/{projectId}/{versionId}/{platform}/recommend")
-    public void setRecommended(@PathVariable long projectId, @PathVariable long versionId, @PathVariable Platform platform) {
-        recommendedVersionService.setRecommendedVersion(projectId, versionId, platform);
-    }
-
-    @Unlocked
-    @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#projectId}")
     @PostMapping(path = "/version/{projectId}/{versionId}/pinned")
     public void setPinnedStatus(@PathVariable final long projectId, @PathVariable final long versionId, @RequestParam final boolean value) {
@@ -193,14 +181,12 @@ public class VersionController extends HangarComponent {
     @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public FileSystemResource download(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString, @PathVariable Platform platform, @RequestParam(required = false) String token) {
-        versionString = recommendedVersionService.fixVersionString(author, slug, versionString, platform); // TODO remove recommended special casing
         return downloadService.getVersionFile(author, slug, versionString, platform, true, token);
     }
 
     @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/downloadCheck")
     public ResponseEntity<String> downloadCheck(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString, @PathVariable Platform platform) {
-        versionString = recommendedVersionService.fixVersionString(author, slug, versionString, platform); // TODO remove recommended special casing
         boolean requiresConfirmation = downloadService.requiresConfirmation(author, slug, versionString, platform);
         if (requiresConfirmation) {
             String token = downloadService.createConfirmationToken(author, slug, versionString, platform);

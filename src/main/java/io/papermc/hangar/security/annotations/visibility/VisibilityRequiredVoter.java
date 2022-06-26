@@ -5,7 +5,6 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.security.annotations.HangarDecisionVoter;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequiredMetadataExtractor.VisibilityRequiredAttribute;
 import io.papermc.hangar.service.internal.projects.ProjectService;
-import io.papermc.hangar.service.internal.versions.RecommendedVersionService;
 import io.papermc.hangar.service.internal.versions.VersionService;
 import org.aopalliance.intercept.MethodInvocation;
 import org.jetbrains.annotations.NotNull;
@@ -20,14 +19,12 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
 
     private final ProjectService projectService;
     private final VersionService versionService;
-    private final RecommendedVersionService recommendedVersionService;
 
     @Autowired
-    public VisibilityRequiredVoter(ProjectService projectService, VersionService versionService, RecommendedVersionService recommendedVersionService) {
+    public VisibilityRequiredVoter(ProjectService projectService, VersionService versionService) {
         super(VisibilityRequiredAttribute.class);
         this.projectService = projectService;
         this.versionService = versionService;
-        this.recommendedVersionService = recommendedVersionService;
     }
 
     @Override
@@ -50,8 +47,7 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
                 if (arguments.length == 1 && versionService.getProjectVersionTable((long) arguments[0]) != null) {
                     return ACCESS_GRANTED;
                 } else {
-                    String versionId = recommendedVersionService.fixVersionString((String) arguments[0], (String) arguments[1], (String) arguments[2], (Platform) arguments[3]); // TODO remove recommended special casing
-                    if (versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1], versionId, (Platform) arguments[3]) != null) {
+                    if (versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1], (String) arguments[2], (Platform) arguments[3]) != null) {
                         return ACCESS_GRANTED;
                     } else {
                         return ACCESS_DENIED;

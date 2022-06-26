@@ -1,32 +1,16 @@
 package io.papermc.hangar.service.internal.projects;
 
-import io.papermc.hangar.service.internal.versions.PinnedVersionService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
+import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
+import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.Project;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
@@ -43,12 +27,32 @@ import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.model.internal.user.JoinableMember;
+import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
-import io.papermc.hangar.service.internal.versions.RecommendedVersionService;
+import io.papermc.hangar.service.internal.versions.PinnedVersionService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ProjectService extends HangarComponent {
@@ -62,10 +66,11 @@ public class ProjectService extends HangarComponent {
     private final ProjectFiles projectFiles;
     private final PermissionService permissionService;
     private final PinnedVersionService pinnedVersionService;
-    private final RecommendedVersionService recommendedVersionService;
+    private final VersionsApiDAO versionsApiDAO;
+    private final HangarVersionsDAO hangarVersionsDAO;
 
     @Autowired
-    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, PermissionService permissionService, final PinnedVersionService pinnedVersionService, RecommendedVersionService recommendedVersionService) {
+    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO) {
         this.projectsDAO = projectDAO;
         this.hangarUsersDAO = hangarUsersDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
@@ -75,7 +80,8 @@ public class ProjectService extends HangarComponent {
         this.projectFiles = projectFiles;
         this.permissionService = permissionService;
         this.pinnedVersionService = pinnedVersionService;
-        this.recommendedVersionService = recommendedVersionService;
+        this.versionsApiDAO = versionsApiDAO;
+        this.hangarVersionsDAO = hangarVersionsDAO;
     }
 
     @Nullable
@@ -119,8 +125,33 @@ public class ProjectService extends HangarComponent {
         HangarProjectInfo info = hangarProjectsDAO.getHangarProjectInfo(project.getLeft());
         Map<Long, HangarProjectPage> pages = projectPageService.getProjectPages(project.getLeft());
         final List<HangarProject.PinnedVersion> pinnedVersions = this.pinnedVersionService.getPinnedVersions(project.getLeft());
-        Map<Platform, String> recommendedVersions = recommendedVersionService.getRecommendedVersions(project.getLeft());
-        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, recommendedVersions);
+
+        final Map<Platform, HangarVersion> mainChannelVersions = new EnumMap<>(Platform.class);
+        for (final Platform platform : Platform.getValues()) {
+            final HangarVersion version = getLastVersion(author, slug, platform,  config.channels.getNameDefault());
+            if (version != null) {
+                mainChannelVersions.put(platform, version);
+            }
+        }
+
+        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, mainChannelVersions);
+    }
+
+    public @Nullable HangarVersion getLastVersion(String author, String slug, Platform platform, @Nullable String channel) {
+        RequestPagination pagination = new RequestPagination(1L, 0L);
+        pagination.getFilters().add(new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
+        if (channel != null) {
+            // Find the last version with the specified channel
+            pagination.getFilters().add(new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
+        }
+
+        Long versionId = versionsApiDAO.getVersions(author, slug, false, getHangarUserId(), pagination).entrySet().stream().map(Map.Entry::getKey).findAny().orElse(null);
+        if (versionId != null) {
+            return hangarVersionsDAO.getVersion(versionId, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+        }
+
+        // Try again with any channel, else empty
+        return channel != null ? getLastVersion(author, slug, platform, null) : null;
     }
 
     public void saveSettings(String author, String slug, ProjectSettingsForm settingsForm) {

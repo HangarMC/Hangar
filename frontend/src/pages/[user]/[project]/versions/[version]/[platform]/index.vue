@@ -96,16 +96,6 @@ async function savePage(content: string) {
   }
 }
 
-async function setRecommended() {
-  try {
-    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/${platform.value?.enumName}/recommend`, true, "post");
-    notification.success(i18n.t("version.success.recommended", [platform.value?.name]));
-    router.go(0);
-  } catch (e) {
-    handleRequestError(e as AxiosError, ctx, i18n);
-  }
-}
-
 async function setPinned(value: boolean) {
   try {
     await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/pinned?value=${value}`, true, "post");
@@ -164,9 +154,6 @@ async function restoreVersion() {
           <h1 class="text-3xl sm:inline-flex items-center">
             <TagComponent class="mr-1" :name="projectVersion.channel.name" :color="{ background: projectVersion.channel.color }" :short-form="true" />
             {{ projectVersion.name }}
-            <Tooltip v-if="projectVersion.recommended.includes(platform?.enumName)" :content="i18n.t('version.page.recommended')" class="text-base">
-              <IconMdiDiamondStone :title="i18n.t('version.page.recommended')" class="text-2xl ml-1" />
-            </Tooltip>
             <Tooltip v-if="isReviewStateChecked" :content="approvalTooltip" class="text-base">
               <IconMdiCheckCircleOutline class="text-2xl ml-1" />
             </Tooltip>
@@ -218,21 +205,6 @@ async function restoreVersion() {
         </span>
 
         <div class="flex gap-2 flex-wrap mt-2">
-          <Tooltip
-            v-if="
-              hasPerms(NamedPermission.EDIT_VERSION) &&
-              projectVersion.visibility !== Visibility.SOFT_DELETE &&
-              !projectVersion.recommended.includes(platform?.enumName)
-            "
-          >
-            <template #content>
-              <span>{{ i18n.t("version.page.setRecommendedTooltip", [platform?.name]) }}</span>
-            </template>
-            <Button size="small" @click="setRecommended">
-              <IconMdiDiamond class="mr-1" />
-              {{ i18n.t("version.page.setRecommended") }}
-            </Button>
-          </Tooltip>
           <Tooltip>
             <template #content>
               <span v-if="projectVersion.pinnedStatus === PinnedStatus.CHANNEL">{{ i18n.t("version.page.pinned.tooltip.channel") }}</span>

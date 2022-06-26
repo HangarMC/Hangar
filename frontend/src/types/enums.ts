@@ -109,7 +109,7 @@ export enum Prompt {
 export enum ChannelFlag {
   FROZEN = "FROZEN",
   UNSTABLE = "UNSTABLE",
-  SKIP_REVIEW_QUEUE = "SKIP_REVIEW_QUEUE",
+  SKIP_REVIEW_QUEUE = "SKIP_REVIEW_QUEUE", //TODO remove
   PINNED = "PINNED",
 }
 

@@ -44,11 +44,10 @@ public class PendingVersion {
     private final Color channelColor;
     private final Set<ChannelFlag> channelFlags;
     private final boolean forumSync;
-    private final boolean recommended;
     private final boolean isFile;
 
     @JsonCreator(mode = Mode.PROPERTIES)
-    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, EnumMap<Platform, SortedSet<String>> platformDependencies, String description, FileInfo fileInfo, String externalUrl, String channelName, Color channelColor, Set<ChannelFlag> channelFlags, boolean forumSync, boolean recommended, boolean isFile) {
+    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, EnumMap<Platform, SortedSet<String>> platformDependencies, String description, FileInfo fileInfo, String externalUrl, String channelName, Color channelColor, Set<ChannelFlag> channelFlags, boolean forumSync, boolean isFile) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
@@ -59,7 +58,6 @@ public class PendingVersion {
         this.channelColor = channelColor;
         this.channelFlags = channelFlags;
         this.forumSync = forumSync;
-        this.recommended = recommended;
         this.isFile = isFile;
     }
 
@@ -74,7 +72,6 @@ public class PendingVersion {
         this.channelName = projectChannelTable.getName();
         this.channelColor = projectChannelTable.getColor();
         this.channelFlags = projectChannelTable.getFlags();
-        this.recommended = false;
         this.isFile = true;
     }
 
@@ -93,7 +90,6 @@ public class PendingVersion {
         this.channelName = projectChannelTable.getName();
         this.channelColor = projectChannelTable.getColor();
         this.channelFlags = projectChannelTable.getFlags();
-        this.recommended = false;
         this.isFile = false;
     }
 
@@ -138,10 +134,6 @@ public class PendingVersion {
         return forumSync;
     }
 
-    public boolean isRecommended() {
-        return recommended;
-    }
-
     @JsonProperty("isFile")
     public boolean isFile() {
         return isFile;
@@ -160,7 +152,6 @@ public class PendingVersion {
                 ", channelColor=" + channelColor +
                 ", channelFlags=" + channelFlags +
                 ", forumSync=" + forumSync +
-                ", recommended=" + recommended +
                 ", isFile=" + isFile +
                 '}';
     }
