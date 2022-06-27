@@ -37,6 +37,7 @@
     }
   },
   "hangar": {
+    "loggedOut": "You have been logged out!",
     "footer": {
       "api": "API",
       "resourceGuidelines": "Resource Guidelines",
@@ -49,7 +50,11 @@
       "relevanceSort": "Sort by relevance",
       "noProjects": "There are no projects. 😢",
       "noProjectsFound": "Found 0 projects. 😢",
-      "title": "Find your favorite plugins"
+      "title": "Find your favorite plugins",
+      "categories": "Categories",
+      "licenses": "Licenses",
+      "versions": "Minecraft versions",
+      "platforms": "Platforms"
     },
     "subtitle": "A Minecraft package repository",
     "sponsoredBy": "Sponsored by"

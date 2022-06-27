@@ -19,6 +19,7 @@ import Alert from "~/components/design/Alert.vue";
 import { Platform } from "~/types/enums";
 import { toNumber } from "lodash-es";
 import PlatformLogo from "~/components/logos/PlatformLogo.vue";
+import InputRadio from "~/components/ui/InputRadio.vue";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -34,17 +35,10 @@ const sorters = [
   { id: "-recent_downloads", label: i18n.t("project.sorting.recentDownloads") },
 ];
 
-const versions = backendData.platforms
-  ?.get(Platform.PAPER)
-  ?.possibleVersions.sort((a, b) => toNumber(b.substring(2)) - toNumber(a.substring(2)))
-  .map((k) => {
-    return { version: k };
-  });
-
 const filters = ref({
   versions: [],
   categories: [],
-  platforms: [],
+  platform: null,
   licenses: [],
 });
 
@@ -59,7 +53,7 @@ const requestParams = computed(() => {
     offset: 0,
     version: filters.value.versions,
     category: filters.value.categories,
-    platform: filters.value.platforms,
+    platform: filters.value.platform !== null ? [filters.value.platform] : [],
     license: filters.value.licenses,
   };
   if (query.value) {
@@ -81,6 +75,15 @@ watch(activeSorter, async () => updateProjects());
 
 async function updateProjects() {
   projects.value = await useApi<PaginatedResult<Project>>("projects", false, "get", requestParams.value);
+}
+
+function versions(platform: Platform) {
+  return backendData.platforms
+    ?.get(platform)
+    ?.possibleVersions.sort((a, b) => toNumber(b.substring(2)) - toNumber(a.substring(2)))
+    .map((k) => {
+      return { version: k };
+    });
 }
 
 const meta = useSeo("Home", null, route, null);
@@ -108,7 +111,7 @@ useHead(meta);
 
 <template>
   <Container class="flex flex-col items-center gap-4">
-    <Alert v-if="loggedOut" type="success">You have been logged out!</Alert>
+    <Alert v-if="loggedOut" type="success">{{ i18n.t("hangar.loggedOut") }}</Alert>
     <h2 class="text-3xl font-bold uppercase text-center my-4">{{ i18n.t("hangar.projectSearch.title") }}</h2>
     <!-- Search Bar -->
     <div class="relative rounded-md flex shadow-md w-full max-w-screen-md">
@@ -151,14 +154,32 @@ useHead(meta);
     </div>
     <!-- Sidebar -->
     <Card accent class="min-w-300px flex flex-col gap-4">
-      <div class="versions">
-        <h3 class="font-bold mb-1">Minecraft versions</h3>
+      <div class="platforms">
+        <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.platforms") }}</h3>
+        <div class="flex flex-col gap-1">
+          <ul>
+            <li v-for="platform in backendData.visiblePlatforms" :key="platform.enumName" class="inline-flex w-full">
+              <InputRadio v-model="filters.platform" :value="platform.enumName" />
+              <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
+              {{ platform.name }}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div v-if="filters.platform" class="versions">
+        <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions") }}</h3>
         <div class="flex flex-col gap-1 max-h-30 overflow-auto">
-          <InputCheckbox v-for="version in versions" :key="version.version" v-model="filters.versions" :value="version.version" :label="version.version" />
+          <InputCheckbox
+            v-for="version in versions(filters.platform)"
+            :key="version.version"
+            v-model="filters.versions"
+            :value="version.version"
+            :label="version.version"
+          />
         </div>
       </div>
       <div class="categories">
-        <h3 class="font-bold mb-1">Categories</h3>
+        <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.categories") }}</h3>
         <div class="flex flex-col gap-1">
           <InputCheckbox
             v-for="category in backendData.visibleCategories"
@@ -169,19 +190,8 @@ useHead(meta);
           />
         </div>
       </div>
-      <div class="platforms">
-        <h3 class="font-bold mb-1">Platforms</h3>
-        <div class="flex flex-col gap-1">
-          <InputCheckbox v-for="platform in backendData.visiblePlatforms" :key="platform.enumName" v-model="filters.platforms" :value="platform.enumName">
-            <template #label>
-              <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
-              {{ platform.name }}
-            </template>
-          </InputCheckbox>
-        </div>
-      </div>
       <div class="licenses">
-        <h3 class="font-bold mb-1">Licenses</h3>
+        <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.licenses") }}</h3>
         <div class="flex flex-col gap-1">
           <InputCheckbox v-for="license in backendData.licenses" :key="license" v-model="filters.licenses" :value="license" :label="license" />
         </div>
