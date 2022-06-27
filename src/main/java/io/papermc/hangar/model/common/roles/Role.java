@@ -41,10 +41,7 @@ public interface Role<T extends IRoleTable<? extends Role<T>>> {
 
     boolean isAssignable();
 
-    @Nullable
-    default Integer getRank() {
-        return null;
-    }
+    @Nullable Integer getRank();
 
     @NotNull
     T create(@Nullable Long principalId, long userId, boolean isAccepted);

@@ -13,29 +13,20 @@ import org.jetbrains.annotations.Nullable;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum GlobalRole implements Role<GlobalRoleTable> {
 
-    HANGAR_ADMIN("Hangar_Admin", 1, Permission.All, "Hangar Admin", Color.RED),
-    HANGAR_MOD("Hangar_Mod", 2, Permission.IsStaff.add(Permission.Reviewer).add(Permission.ModNotesAndFlags).add(Permission.SeeHidden), "Hangar Moderator", Color.AQUA),
+    HANGAR_ADMIN("Hangar_Admin", 1, Permission.All, "Hangar Admin", Color.RED, 20),
+    HANGAR_DEV("Hangar_Dev", 8, Permission.ViewStats.add(Permission.ViewLogs).add(Permission.ViewHealth).add(Permission.ManualValueChanges), "Hangar Developer", Color.ORANGE, 30),
+    HANGAR_MOD("Hangar_Mod", 2, Permission.IsStaff.add(Permission.Reviewer).add(Permission.ModNotesAndFlags).add(Permission.SeeHidden), "Hangar Moderator", Color.AQUA, 40),
 
-    PAPER_LEADER("Paper_Leader", 3, Permission.None, "Paper Leader", Color.AMBER),
-    TEAM_LEADER("Team_Leader", 4, Permission.None, "Team Leader", Color.AMBER),
-    COMMUNITY_LEADER("Community_Leader", 5, Permission.None, "Community Leader", Color.AMBER),
+    PAPERMC_CORE("PaperMC_Core", 3, Permission.All, "PaperMC Core", Color.AMBER, 10),
+    PAPERMC_STAFF("PaperMC_Staff", 6, Permission.IsStaff, "Paper Staff", Color.AMBER, 50),
 
-    PAPER_STAFF("Paper_Staff", 6, Permission.None, "Paper Staff", Color.AMBER),
-    PAPER_DEV("Paper_Developer", 7, Permission.None, "Paper Developer", Color.GREEN),
+    CONTRIBUTOR("Contributor", 12, Permission.None, "Contributor", Color.GREEN, 60),
 
-    HANGAR_DEV("Hangar_Dev", 8, Permission.ViewStats.add(Permission.ViewLogs).add(Permission.ViewHealth).add(Permission.ManualValueChanges), "Hangar Developer", Color.ORANGE),
-    WEB_DEV("Web_Dev", 9, Permission.ViewLogs.add(Permission.ViewHealth), "Web Developer", Color.BLUE),
-
-    DOCUMENTER("Documenter", 10, Permission.None, "Documenter", Color.AQUA),
-    SUPPORT("Support", 11, Permission.None, "Support", Color.AQUA),
-    CONTRIBUTOR("Contributor", 12, Permission.None, "Contributor", Color.GREEN),
-    ADVISOR("Advisor", 13, Permission.None, "Advisor", Color.AQUA),
-
-    STONE_DONOR("Stone_Donor", 14, Permission.None, "Stone Donor", Color.GRAY, 5),
-    QUARTZ_DONOR("Quartz_Donor", 15, Permission.None, "Quartz Donor", Color.QUARTZ, 4),
-    IRON_DONOR("Iron_Donor", 16, Permission.None, "Iron Donor", Color.SILVER, 3),
-    GOLD_DONOR("Gold_Donor", 17, Permission.None, "Gold Donor", Color.GOLD, 2),
-    DIAMOND_DONOR("Diamond_Donor", 18, Permission.None, "Diamond Donor", Color.LIGHTBLUE, 1),
+    STONE_DONOR("Stone_Donor", 14, Permission.None, "Stone Donor", Color.GRAY, 110),
+    QUARTZ_DONOR("Quartz_Donor", 15, Permission.None, "Quartz Donor", Color.QUARTZ, 100),
+    IRON_DONOR("Iron_Donor", 16, Permission.None, "Iron Donor", Color.SILVER, 90),
+    GOLD_DONOR("Gold_Donor", 17, Permission.None, "Gold Donor", Color.GOLD, 80),
+    DIAMOND_DONOR("Diamond_Donor", 18, Permission.None, "Diamond Donor", Color.LIGHTBLUE, 70),
 
     ORGANIZATION("Organization", 23, OrganizationRole.ORGANIZATION_OWNER.getPermissions(), "Organization", Color.PURPLE);
 
@@ -101,7 +92,7 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
     }
 
     @Override
-    public Integer getRank() {
+    public @Nullable Integer getRank() {
         return rank;
     }
 

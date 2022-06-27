@@ -1,26 +1,24 @@
 package io.papermc.hangar.model.common.roles;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ProjectRole implements Role<ProjectRoleTable> {
 
-    PROJECT_SUPPORT("Project_Support", 22, Permission.IsProjectMember, "Support", Color.TRANSPARENT),
-    PROJECT_EDITOR("Project_Editor", 21, Permission.EditPage.add(PROJECT_SUPPORT.getPermissions()), "Editor", Color.TRANSPARENT),
-    PROJECT_DEVELOPER("Project_Developer", 20, Permission.CreateVersion.add(Permission.EditVersion).add(Permission.EditTags).add(PROJECT_EDITOR.getPermissions()), "Developer", Color.TRANSPARENT),
-    PROJECT_OWNER("Project_Owner", 19, Permission.IsProjectOwner.add(Permission.EditApiKeys).add(Permission.DeleteProject).add(Permission.DeleteVersion).add(PROJECT_DEVELOPER.getPermissions()), "Owner", Color.TRANSPARENT, false);
+    PROJECT_SUPPORT("Project_Support", 22, Permission.IsProjectMember, "Support", Color.TRANSPARENT, 50),
+    PROJECT_EDITOR("Project_Editor", 21, Permission.EditPage.add(PROJECT_SUPPORT.getPermissions()), "Editor", Color.TRANSPARENT, 40),
+    PROJECT_DEVELOPER("Project_Developer", 30, Permission.EditPage.add(PROJECT_SUPPORT.getPermissions()), "Developer", Color.TRANSPARENT, 30),
+    PROJECT_MAINTAINER("Project_Maintainer", 20, Permission.CreateVersion.add(Permission.EditVersion).add(Permission.EditTags).add(PROJECT_EDITOR.getPermissions()), "Maintainer", Color.TRANSPARENT, 20),
+    PROJECT_OWNER("Project_Owner", 19, Permission.IsProjectOwner.add(Permission.EditApiKeys).add(Permission.DeleteProject).add(Permission.DeleteVersion).add(PROJECT_MAINTAINER.getPermissions()), "Owner", Color.TRANSPARENT, 10, false);
 
     private final String value;
     private final long roleId;
@@ -28,6 +26,7 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
     private final String title;
     private final Color color;
     private final boolean isAssignable;
+    private final int rank;
 
     private static final ProjectRole[] VALUES = values();
     private static final List<ProjectRole> ASSIGNABLE_ROLES = Arrays.stream(VALUES).filter(ProjectRole::isAssignable).toList();
@@ -40,16 +39,17 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
         return ASSIGNABLE_ROLES;
     }
 
-    ProjectRole(String value, long roleId, Permission permissions, String title, Color color) {
-        this(value, roleId, permissions, title, color, true);
+    ProjectRole(String value, long roleId, Permission permissions, String title, Color color, int rank) {
+        this(value, roleId, permissions, title, color, rank, true);
     }
 
-    ProjectRole(String value, long roleId, Permission permissions, String title, Color color, boolean isAssignable) {
+    ProjectRole(String value, long roleId, Permission permissions, String title, Color color, int rank, boolean isAssignable) {
         this.value = value;
         this.roleId = roleId;
         this.permissions = permissions;
         this.title = title;
         this.color = color;
+        this.rank = rank;
         this.isAssignable = isAssignable;
         Role.registerRole(this);
     }
@@ -94,13 +94,10 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
         return isAssignable;
     }
 
-    @Nullable
     @Override
-    @JsonIgnore
     public Integer getRank() {
-        return Role.super.getRank();
+        return rank;
     }
-
 
     @NotNull
     @Override

@@ -36,6 +36,16 @@ const props = withDefaults(
   }
 );
 
+const sortedMembers = [...props.members].sort((r1, r2) => {
+  if (r1.role.role.rank) {
+    if (r2.role.role.rank) {
+      return r1.role.role.rank - r2.role.role.rank;
+    }
+    return 1;
+  }
+  return r2.role.role.rank ? -1 : 1;
+});
+
 const i18n = useI18n();
 const store = useBackendDataStore();
 const route = useRoute();
@@ -127,7 +137,7 @@ interface EditableMember {
     </template>
 
     <div
-      v-for="member in members"
+      v-for="member in sortedMembers"
       :key="member.user.name"
       class="p-2 w-full border border-gray-100 dark:border-gray-800 rounded inline-flex flex-row space-x-4"
     >

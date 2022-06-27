@@ -39,7 +39,6 @@ public class PopulationService {
         populatePlatformVersions();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void populateRoles() {
         RoleTable admin = rolesDAO.getById(1);
         if (admin != null && admin.getPermission().has(Permission.All)) {

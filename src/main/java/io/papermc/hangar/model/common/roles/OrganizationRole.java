@@ -1,27 +1,24 @@
 package io.papermc.hangar.model.common.roles;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum OrganizationRole implements Role<OrganizationRoleTable> {
 
-    ORGANIZATION_SUPPORT("Organization_Support", 28, Permission.PostAsOrganization.add(Permission.IsOrganizationMember), "Support", Color.TRANSPARENT),
-    ORGANIZATION_EDITOR("Organization_Editor", 27, ProjectRole.PROJECT_EDITOR.getPermissions().add(ORGANIZATION_SUPPORT.permissions), "Editor", Color.TRANSPARENT),
-    ORGANIZATION_DEVELOPER("Organization_Developer", 26, Permission.CreateProject.add(Permission.EditProjectSettings).add(ProjectRole.PROJECT_DEVELOPER.getPermissions()).add(ORGANIZATION_EDITOR.permissions), "Developer", Color.TRANSPARENT),
-    ORGANIZATION_ADMIN("Organization_Admin", 25, Permission.EditApiKeys.add(Permission.ManageProjectMembers).add(Permission.EditOwnUserSettings).add(Permission.DeleteProject).add(Permission.DeleteVersion).add(ORGANIZATION_DEVELOPER.permissions), "Admin", Color.TRANSPARENT),
-    ORGANIZATION_OWNER("Organization_Owner", 24, Permission.IsOrganizationOwner.add(ProjectRole.PROJECT_OWNER.getPermissions()).add(ORGANIZATION_ADMIN.permissions), "Owner", Color.PURPLE, false);
+    ORGANIZATION_SUPPORT("Organization_Support", 28, Permission.PostAsOrganization.add(Permission.IsOrganizationMember), "Support", Color.TRANSPARENT, 60),
+    ORGANIZATION_EDITOR("Organization_Editor", 27, ProjectRole.PROJECT_EDITOR.getPermissions().add(ORGANIZATION_SUPPORT.permissions), "Editor", Color.TRANSPARENT, 50),
+    ORGANIZATION_DEVELOPER("Organization_Developer", 29, Permission.CreateProject.add(Permission.EditProjectSettings).add(ProjectRole.PROJECT_DEVELOPER.getPermissions()).add(ORGANIZATION_EDITOR.permissions), "Developer", Color.TRANSPARENT, 40),
+    ORGANIZATION_MAINTAINER("Organization_Maintainer", 26, Permission.CreateProject.add(Permission.EditProjectSettings).add(ProjectRole.PROJECT_MAINTAINER.getPermissions()).add(ORGANIZATION_EDITOR.permissions), "Maintainer", Color.TRANSPARENT, 30),
+    ORGANIZATION_ADMIN("Organization_Admin", 25, Permission.EditApiKeys.add(Permission.ManageProjectMembers).add(Permission.EditOwnUserSettings).add(Permission.DeleteProject).add(Permission.DeleteVersion).add(ORGANIZATION_DEVELOPER.permissions), "Admin", Color.TRANSPARENT, 20),
+    ORGANIZATION_OWNER("Organization_Owner", 24, Permission.IsOrganizationOwner.add(ProjectRole.PROJECT_OWNER.getPermissions()).add(ORGANIZATION_ADMIN.permissions), "Owner", Color.PURPLE, 10, false);
 
     private final String value;
     private final long roleId;
@@ -29,23 +26,30 @@ public enum OrganizationRole implements Role<OrganizationRoleTable> {
     private final String title;
     private final Color color;
     private final boolean isAssignable;
+    private final int rank;
 
     private static final OrganizationRole[] VALUES = values();
     private static final List<OrganizationRole> ASSIGNABLE_ROLES = Arrays.stream(VALUES).filter(OrganizationRole::isAssignable).toList();
 
-    public static OrganizationRole[] getValues() { return VALUES; }
-    public static List<OrganizationRole> getAssignableRoles() { return ASSIGNABLE_ROLES; }
-
-    OrganizationRole(String value, long roleId, Permission permissions, String title, Color color) {
-        this(value, roleId, permissions, title, color, true);
+    public static OrganizationRole[] getValues() {
+        return VALUES;
     }
 
-    OrganizationRole(String value, long roleId, Permission permissions, String title, Color color, boolean isAssignable) {
+    public static List<OrganizationRole> getAssignableRoles() {
+        return ASSIGNABLE_ROLES;
+    }
+
+    OrganizationRole(String value, long roleId, Permission permissions, String title, Color color, int rank) {
+        this(value, roleId, permissions, title, color, rank, true);
+    }
+
+    OrganizationRole(String value, long roleId, Permission permissions, String title, Color color, int rank, boolean isAssignable) {
         this.value = value;
         this.roleId = roleId;
         this.permissions = permissions;
         this.title = title;
         this.color = color;
+        this.rank = rank;
         this.isAssignable = isAssignable;
         Role.registerRole(this);
     }
@@ -90,11 +94,9 @@ public enum OrganizationRole implements Role<OrganizationRoleTable> {
         return isAssignable;
     }
 
-    @Nullable
     @Override
-    @JsonIgnore
     public Integer getRank() {
-        return Role.super.getRank();
+        return rank;
     }
 
     @Override
