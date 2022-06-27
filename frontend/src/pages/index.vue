@@ -54,10 +54,10 @@ const projects = ref<PaginatedResult<Project> | null>();
 const activeSorter = ref<string>("-updated");
 
 const requestParams = computed(() => {
-  // TODO add filter for mc version
   const params: Record<string, any> = {
     limit: 25,
     offset: 0,
+    version: filters.value.versions,
     category: filters.value.categories,
     platform: filters.value.platforms,
     license: filters.value.licenses,
