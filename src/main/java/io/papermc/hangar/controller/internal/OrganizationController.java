@@ -107,6 +107,7 @@ public class OrganizationController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 5, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
     @PostMapping(path = "/org/{name}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void editProjectMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
@@ -116,6 +117,7 @@ public class OrganizationController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
     @PostMapping(path = "/org/{name}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void removeProjectMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
@@ -153,6 +155,7 @@ public class OrganizationController extends HangarComponent {
 
     @Unlocked
     @ResponseBody
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
     @PostMapping(value = "/org/{name}/settings/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void changeAvatar(@PathVariable String name, @RequestParam MultipartFile avatar) throws IOException {

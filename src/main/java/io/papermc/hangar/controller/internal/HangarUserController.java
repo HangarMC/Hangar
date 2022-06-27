@@ -120,6 +120,7 @@ public class HangarUserController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 5, refillTokens = 2)
     @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
     @PostMapping("/users/{userName}/settings/")
     public void saveSettings(@PathVariable String userName, @RequestBody UserSettings settings) {

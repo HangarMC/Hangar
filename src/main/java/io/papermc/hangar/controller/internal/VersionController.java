@@ -104,7 +104,7 @@ public class VersionController extends HangarComponent {
     }
 
     @Unlocked
-    @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 30)
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{projectId}/{versionId}/saveDescription", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -127,6 +127,7 @@ public class VersionController extends HangarComponent {
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping(path = "/version/{projectId}/{versionId}/savePlatformVersions", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void savePlatformVersions(@PathVariable long projectId, @PathVariable long versionId, @Valid @RequestBody UpdatePlatformVersions updatePlatformVersions) {
         versionDependencyService.updateVersionPlatformVersions(projectId, versionId, updatePlatformVersions);
@@ -135,6 +136,7 @@ public class VersionController extends HangarComponent {
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping(path = "/version/{projectId}/{versionId}/savePluginDependencies", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void savePluginDependencies(@PathVariable long projectId, @PathVariable long versionId, @Valid @RequestBody UpdatePluginDependencies updatePluginDependencies) {
         versionDependencyService.updateVersionPluginDependencies(projectId, versionId, updatePluginDependencies);
@@ -142,6 +144,7 @@ public class VersionController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#projectId}")
     @PostMapping(path = "/version/{projectId}/{versionId}/pinned")
     public void setPinnedStatus(@PathVariable final long projectId, @PathVariable final long versionId, @RequestParam final boolean value) {
@@ -200,7 +203,7 @@ public class VersionController extends HangarComponent {
     }
 
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
-    @RateLimit(overdraft = 5, refillTokens = 3, greedy = true)
+    @RateLimit(overdraft = 7, refillTokens = 3, greedy = true)
     @GetMapping(path = "/version/{author}/{slug}/lastdependencies")
     public ResponseEntity<LastDependencies> getLastVersionDependencies(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String channel, @RequestParam String platform) {
         return ResponseEntity.ok(versionService.getLastVersionDependencies(author, slug, channel, platform));

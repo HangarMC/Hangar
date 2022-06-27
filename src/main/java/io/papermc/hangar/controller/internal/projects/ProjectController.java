@@ -132,7 +132,7 @@ public class ProjectController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
-    @RateLimit(overdraft = 10, refillTokens = 2, refillSeconds = 30)
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/saveIcon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void saveProjectIcon(@PathVariable String author, @PathVariable String slug, @RequestParam MultipartFile projectIcon) {
@@ -167,6 +167,7 @@ public class ProjectController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void editProjectMember(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody EditMembersForm.Member<ProjectRole> member) {

@@ -70,6 +70,7 @@ public class VersionsController implements IVersionsController {
     }
 
     @Override
+    @RateLimit(overdraft = 10, refillTokens = 2)
     @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
     public FileSystemResource downloadVersion(String author, String slug, String versionString, Platform platform) {
         return downloadService.getVersionFile(author, slug, versionString, platform, false, null);

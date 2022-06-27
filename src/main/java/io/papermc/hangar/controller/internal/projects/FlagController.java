@@ -35,6 +35,7 @@ public class FlagController extends HangarComponent {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void flag(@RequestBody @Valid FlagForm form) {
         flagService.createFlag(form.getProjectId(), form.getReason(), form.getComment());
