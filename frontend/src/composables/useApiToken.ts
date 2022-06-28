@@ -3,7 +3,7 @@ import jwtDecode from "jwt-decode";
 import { useAuthStore } from "~/store/auth";
 import { useAxios } from "~/composables/useAxios";
 import { useCookies } from "~/composables/useCookies";
-import { authLog } from "~/composables/useLog";
+import { authLog } from "~/lib/composables/useLog";
 
 async function refreshToken(): Promise<string | null> {
   const cookie = useCookies().get("HangarAuth_REFRESH");

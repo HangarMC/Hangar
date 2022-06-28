@@ -5,11 +5,11 @@ import { useRoute } from "vue-router";
 import { useAuthors } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import SortableTable, { Header } from "~/components/SortableTable.vue";
-import PageTitle from "~/components/design/PageTitle.vue";
+import PageTitle from "~/lib/components/design/PageTitle.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
-import Link from "~/components/design/Link.vue";
+import Link from "~/lib/components/design/Link.vue";
 
 const ctx = useContext();
 const i18n = useI18n();

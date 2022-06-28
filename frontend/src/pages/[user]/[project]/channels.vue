@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Card from "~/components/design/Card.vue";
+import Card from "~/lib/components/design/Card.vue";
 import { User } from "hangar-api";
 import { useI18n } from "vue-i18n";
 import { Header } from "~/components/SortableTable.vue";
@@ -9,18 +9,18 @@ import { useProjectChannels } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { HangarProject, ProjectChannel } from "hangar-internal";
 import { useInternalApi } from "~/composables/useApi";
-import Table from "~/components/design/Table.vue";
+import Table from "~/lib/components/design/Table.vue";
 import Tag from "~/components/Tag.vue";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import ChannelModal from "~/components/modals/ChannelModal.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useRoute } from "vue-router";
-import Tooltip from "~/components/design/Tooltip.vue";
+import Tooltip from "~/lib/components/design/Tooltip.vue";
 import { useNotificationStore } from "~/store/notification";
-import InputRadio from "~/components/ui/InputRadio.vue";
+import InputRadio from "~/lib/components/ui/InputRadio.vue";
 import { ref } from "vue";
 
 const props = defineProps<{

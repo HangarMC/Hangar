@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
+import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import ProjectList from "~/components/projects/ProjectList.vue";
 import { useProjects } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
-import Card from "~/components/design/Card.vue";
-import Container from "~/components/design/Container.vue";
+import Card from "~/lib/components/design/Card.vue";
+import Container from "~/lib/components/design/Container.vue";
 import { computed, isRef, ref, watch } from "vue";
 import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
 import { useRoute, useRouter } from "vue-router";
 import { useApi } from "~/composables/useApi";
 import { PaginatedResult, Project } from "hangar-api";
-import Alert from "~/components/design/Alert.vue";
+import Alert from "~/lib/components/design/Alert.vue";
 import { Platform } from "~/types/enums";
 import { toNumber } from "lodash-es";
 import PlatformLogo from "~/components/logos/PlatformLogo.vue";

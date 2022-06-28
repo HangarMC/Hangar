@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import PaginationButtons from "~/components/PaginationButtons.vue";
+import PaginationButtons from "~/lib/components/design/PaginationButtons.vue";
 
 const props = withDefaults(
   defineProps<{

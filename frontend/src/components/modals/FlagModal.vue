@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
-import Tooltip from "~/components/design/Tooltip.vue";
+import Tooltip from "~/lib/components/design/Tooltip.vue";
 import { useContext } from "vite-ssr/vue";
 import { useRouter } from "vue-router";
-import InputRadio from "~/components/ui/InputRadio.vue";
+import InputRadio from "~/lib/components/ui/InputRadio.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import { ref } from "vue";
-import InputTextarea from "~/components/ui/InputTextarea.vue";
-import { required } from "~/composables/useValidationHelpers";
+import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
+import { required } from "~/lib/composables/useValidationHelpers";
 import { useInternalApi } from "~/composables/useApi";
 import { HangarProject } from "hangar-internal";
 import { handleRequestError } from "~/composables/useErrorHandling";

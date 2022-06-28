@@ -5,7 +5,7 @@ import Cookies from "universal-cookie";
 import { useAxios } from "~/composables/useAxios";
 import { useCookies } from "~/composables/useCookies";
 import { Ref } from "vue";
-import { authLog, fetchLog } from "~/composables/useLog";
+import { authLog, fetchLog } from "~/lib/composables/useLog";
 import { isEmpty } from "lodash-es";
 import { useAuth } from "~/composables/useAuth";
 import { useResponse } from "~/composables/useResReq";

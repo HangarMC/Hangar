@@ -3,8 +3,8 @@ import { Menu, MenuButton, MenuItems, Popover, PopoverButton, PopoverPanel } fro
 import { useI18n } from "vue-i18n";
 import { useSettingsStore } from "~/store/settings";
 import Announcement from "~/components/Announcement.vue";
-import DropdownButton from "~/components/design/DropdownButton.vue";
-import DropdownItem from "~/components/design/DropdownItem.vue";
+import DropdownButton from "~/lib/components/design/DropdownButton.vue";
+import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 
 import hangarLogo from "~/assets/logo.svg";
 
@@ -28,18 +28,18 @@ import IconMdiCheck from "~icons/mdi/check";
 import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
 import { useBackendDataStore } from "~/store/backendData";
-import { authLog } from "~/composables/useLog";
-import { lastUpdated } from "~/composables/useTime";
+import { authLog } from "~/lib/composables/useLog";
+import { lastUpdated } from "~/lib/composables/useTime";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import UserAvatar from "~/components/UserAvatar.vue";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import { useNotificationsAmount, useUnreadNotifications } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { HangarNotification } from "hangar-internal";
 import { useContext } from "vite-ssr/vue";
 import { ref } from "vue";
-import Link from "~/components/design/Link.vue";
+import Link from "~/lib/components/design/Link.vue";
 import { useInternalApi } from "~/composables/useApi";
 
 const settings = useSettingsStore();

@@ -2,10 +2,10 @@
 import { useRoute } from "vue-router";
 import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
-import Card from "~/components/design/Card.vue";
+import Card from "~/lib/components/design/Card.vue";
 import { useI18n } from "vue-i18n";
-import Button from "~/components/design/Button.vue";
-import Link from "~/components/design/Link.vue";
+import Button from "~/lib/components/design/Button.vue";
+import Link from "~/lib/components/design/Link.vue";
 
 const route = useRoute();
 const remoteUrl = route.query.remoteUrl;

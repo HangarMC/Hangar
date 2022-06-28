@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ValidationRule } from "@vuelidate/core";
-import { useValidation } from "~/composables/useValidationHelpers";
-import ErrorTooltip from "~/components/design/ErrorTooltip.vue";
+import { useValidation } from "~/lib/composables/useValidationHelpers";
+import ErrorTooltip from "~/lib/components/design/ErrorTooltip.vue";
 import { computed } from "vue";
 
 const emit = defineEmits<{

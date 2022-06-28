@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from "vue";
-import InputTextarea from "~/components/ui/InputTextarea.vue";
+import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 import Markdown from "~/components/Markdown.vue";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import DeletePageModal from "~/components/modals/DeletePageModal.vue";
 
 const props = withDefaults(

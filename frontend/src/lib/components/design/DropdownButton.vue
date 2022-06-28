@@ -2,7 +2,7 @@
 import { Menu, MenuButton, MenuItems } from "@headlessui/vue";
 import IconMdiMenuDown from "~icons/mdi/menu-down";
 import IconMdiMenuUp from "~icons/mdi/menu-up";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 
 const props = withDefaults(
   defineProps<{

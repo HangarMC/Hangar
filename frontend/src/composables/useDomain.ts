@@ -1,6 +1,6 @@
 import * as domain from "domain";
 import { Context } from "vite-ssr/vue";
-import { domainLog } from "~/composables/useLog";
+import { domainLog } from "~/lib/composables/useLog";
 
 export function create(request: Context["request"], response: Context["response"]) {
   if (!import.meta.env.SSR) return null;

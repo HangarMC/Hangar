@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import Markdown from "~/components/Markdown.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
-import PageTitle from "~/components/design/PageTitle.vue";
+import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { useRoute } from "vue-router";
-import InputTextarea from "~/components/ui/InputTextarea.vue";
+import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 
 const ctx = useContext();
 const i18n = useI18n();

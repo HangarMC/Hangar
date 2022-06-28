@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useValidation } from "~/composables/useValidationHelpers";
+import { useValidation } from "~/lib/composables/useValidationHelpers";
 import { ValidationRule } from "@vuelidate/core";
 
 const emit = defineEmits<{

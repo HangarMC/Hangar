@@ -6,7 +6,7 @@ import { useI18n } from "vue-i18n";
 import { useProject } from "~/composables/useApiHelper";
 import { useRoute, useRouter } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useErrorRedirect } from "~/composables/useErrorRedirect";
+import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 import ProjectHeader from "~/components/projects/ProjectHeader.vue";
 import ProjectNav from "~/components/projects/ProjectNav.vue";
 import { useHead } from "@vueuse/head";

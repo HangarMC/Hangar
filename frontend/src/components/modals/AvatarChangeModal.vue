@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { AxiosError } from "axios";
-import Tooltip from "~/components/design/Tooltip.vue";
+import Tooltip from "~/lib/components/design/Tooltip.vue";
 import { useContext } from "vite-ssr/vue";
-import InputFile from "~/components/ui/InputFile.vue";
+import InputFile from "~/lib/components/ui/InputFile.vue";
 import { User } from "hangar-api";
 import { ref } from "vue";
 import { useRouter } from "vue-router";

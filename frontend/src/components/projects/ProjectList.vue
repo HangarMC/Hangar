@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { PaginatedResult, Project } from "hangar-api";
 import { PropType } from "vue";
-import Card from "~/components/design/Card.vue";
-import Link from "~/components/design/Link.vue";
+import Card from "~/lib/components/design/Card.vue";
+import Link from "~/lib/components/design/Link.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import { projectIconUrl } from "~/composables/useUrlHelper";
-import { lastUpdated } from "~/composables/useTime";
+import { lastUpdated } from "~/lib/composables/useTime";
 import { useI18n } from "vue-i18n";
-import Tooltip from "~/components/design/Tooltip.vue";
-import Pagination from "~/components/Pagination.vue";
+import Tooltip from "~/lib/components/design/Tooltip.vue";
+import Pagination from "~/lib/components/design/Pagination.vue";
 
 const i18n = useI18n();
 

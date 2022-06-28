@@ -2,7 +2,7 @@
 import Popper from "vue3-popper";
 import { ErrorObject } from "@vuelidate/core";
 import { computed, Ref } from "vue";
-import { isErrorObject } from "~/composables/useValidationHelpers";
+import { isErrorObject } from "~/lib/composables/useValidationHelpers";
 
 const props = defineProps<{
   errorMessages?: string[] | ErrorObject[];
@@ -21,12 +21,15 @@ const hasError = computed<boolean>(() => {
 </script>
 
 <template>
-  <Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" class="text-center">
+  <!--<Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" class="text-center">
     <slot />
     <template #content>
       {{ formattedError || "error" }}
     </template>
-  </Popper>
+  </Popper>-->
+  <div v-bind="$attrs">
+    <slot />
+  </div>
 </template>
 
 <style scoped>

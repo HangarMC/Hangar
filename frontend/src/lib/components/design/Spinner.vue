@@ -92,9 +92,9 @@ function attachCircleStyle() {
 </template>
 
 <style lang="scss">
-$md-transition-stand-timing: cubic-bezier(0.25, 0.8, 0.25, 1);
-$md-transition-stand-duration: 0.4s;
-$md-transition-stand: $md-transition-stand-duration $md-transition-stand-timing;
+:root {
+  --md-transition-stand-timing: cubic-bezier(0.25, 0.8, 0.25, 1);
+}
 
 @keyframes md-progress-spinner-rotate {
   0% {
@@ -201,7 +201,7 @@ $md-transition-stand: $md-transition-stand-duration $md-transition-stand-timing;
       animation: none;
     }
     .md-progress-spinner-circle {
-      animation: 4s infinite $md-transition-stand-timing;
+      animation: 4s infinite var(--md-transition-stand-timing);
       animation-name: md-progress-spinner-stroke-rotate;
     }
   }
@@ -209,13 +209,13 @@ $md-transition-stand: $md-transition-stand-duration $md-transition-stand-timing;
     &.md-progress-spinner-enter-active {
       transition-duration: 2s;
       .md-progress-spinner-draw {
-        animation: md-progress-spinner-initial-rotate 1.98s $md-transition-stand-timing forwards;
+        animation: md-progress-spinner-initial-rotate 1.98s var(--md-transition-stand-timing) forwards;
       }
     }
     &.md-progress-spinner-leave-active {
       transition-duration: 2s;
       .md-progress-spinner-draw {
-        animation: md-progress-spinner-initial-rotate reverse 1.98s $md-transition-stand-timing forwards;
+        animation: md-progress-spinner-initial-rotate reverse 1.98s var(--md-transition-stand-timing) forwards;
       }
     }
     .md-progress-spinner-draw {
@@ -227,13 +227,13 @@ $md-transition-stand: $md-transition-stand-duration $md-transition-stand-timing;
   overflow: visible;
   transform: scale(1) rotate(-90deg);
   transform-origin: center;
-  transition: 0.4s $md-transition-stand-timing;
+  transition: 0.4s var(--md-transition-stand-timing);
   will-change: opacity, transform;
 }
 .md-progress-spinner-circle {
   fill: none;
   transform-origin: center;
-  transition: stroke-dashoffset 0.25s $md-transition-stand-timing;
+  transition: stroke-dashoffset 0.25s var(--md-transition-stand-timing);
   will-change: stroke-dashoffset, stroke-dasharray, stroke-width, animation-name, r;
 }
 </style>

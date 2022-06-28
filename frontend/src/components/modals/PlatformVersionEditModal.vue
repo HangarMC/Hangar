@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { HangarProject, HangarVersion } from "hangar-internal";
 import { useContext } from "vite-ssr/vue";
@@ -8,10 +8,10 @@ import { computed, ref } from "vue";
 import { Platform } from "~/types/enums";
 import { useBackendDataStore } from "~/store/backendData";
 import { useRoute, useRouter } from "vue-router";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
+import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
-import InputTag from "~/components/ui/InputTag.vue";
+import InputTag from "~/lib/components/ui/InputTag.vue";
 
 const props = defineProps<{
   project: HangarProject;

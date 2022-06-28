@@ -1,25 +1,26 @@
 <script lang="ts" setup>
-import PageTitle from "~/components/design/PageTitle.vue";
+import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useI18n } from "vue-i18n";
-import InputText from "~/components/ui/InputText.vue";
-import Button from "~/components/design/Button.vue";
+import InputText from "~/lib/components/ui/InputText.vue";
+import Button from "~/lib/components/design/Button.vue";
 import { reactive, ref } from "vue";
 import { useContext } from "vite-ssr/vue";
 import { useInternalApi } from "~/composables/useApi";
 import { ApiKey, IPermission, User } from "hangar-api";
 import { useRoute } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import Table from "~/components/design/Table.vue";
-import Alert from "~/components/design/Alert.vue";
-import Card from "~/components/design/Card.vue";
+import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
+import Table from "~/lib/components/design/Table.vue";
+import Alert from "~/lib/components/design/Alert.vue";
+import Card from "~/lib/components/design/Card.vue";
 import { useSeo } from "~/composables/useSeo";
 import { avatarUrl } from "~/composables/useUrlHelper";
 import { useHead } from "@vueuse/head";
 import { useNotificationStore } from "~/store/notification";
-import { maxLength, minLength, required, validApiKeyName, dum } from "~/composables/useValidationHelpers";
+import { maxLength, minLength, required } from "~/lib/composables/useValidationHelpers";
+import { validApiKeyName } from "~/composables/useHangarValidations";
 import { useVuelidate } from "@vuelidate/core";
-import InputGroup from "~/components/ui/InputGroup.vue";
+import InputGroup from "~/lib/components/ui/InputGroup.vue";
 
 const ctx = useContext();
 const i18n = useI18n();

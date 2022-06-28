@@ -9,7 +9,7 @@ import { installI18n } from "~/i18n";
 import "./styles/main.css";
 import { useBackendDataStore } from "~/store/backendData";
 import devalue from "@nuxt/devalue";
-import { settingsLog } from "~/composables/useLog";
+import { settingsLog } from "~/lib/composables/useLog";
 import * as domain from "~/composables/useDomain";
 
 import "regenerator-runtime/runtime"; // popper needs this?

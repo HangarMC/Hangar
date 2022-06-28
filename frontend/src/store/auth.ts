@@ -1,7 +1,7 @@
 import type { HangarUser } from "hangar-internal";
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { authLog } from "~/composables/useLog";
+import { authLog } from "~/lib/composables/useLog";
 
 export const useAuthStore = defineStore("auth", () => {
   const authenticated = ref<boolean>(false);

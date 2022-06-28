@@ -6,11 +6,11 @@ import { useRoute, useRouter } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { HangarProject, HangarVersion } from "hangar-internal";
 import { Platform } from "~/types/enums";
-import { useErrorRedirect } from "~/composables/useErrorRedirect";
+import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
-import Link from "~/components/design/Link.vue";
+import Link from "~/lib/components/design/Link.vue";
 
 const ctx = useContext();
 const i18n = useI18n();

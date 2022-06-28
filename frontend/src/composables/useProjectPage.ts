@@ -6,7 +6,7 @@ import { Context } from "vite-ssr/vue";
 import { Composer, VueMessageType } from "vue-i18n";
 import { HangarProject } from "hangar-internal";
 import { usePage } from "~/composables/useApiHelper";
-import { useErrorRedirect } from "~/composables/useErrorRedirect";
+import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 
 export async function useProjectPage(
   route: RouteLocationNormalizedLoaded,

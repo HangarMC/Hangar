@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
-import PageTitle from "~/components/design/PageTitle.vue";
+import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
 import Markdown from "~/components/Markdown.vue";

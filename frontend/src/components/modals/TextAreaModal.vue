@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { TranslateResult, useI18n } from "vue-i18n";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { ref } from "vue";
-import InputTextarea from "~/components/ui/InputTextarea.vue";
+import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 
 const props = defineProps<{
   title: string | TranslateResult;

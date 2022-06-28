@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-import Card from "~/components/design/Card.vue";
-import Link from "~/components/design/Link.vue";
+import Card from "~/lib/components/design/Card.vue";
+import Link from "~/lib/components/design/Link.vue";
 import { User } from "hangar-api";
 import { useI18n } from "vue-i18n";
 import SortableTable, { Header } from "~/components/SortableTable.vue";
-import Alert from "~/components/design/Alert.vue";
+import Alert from "~/lib/components/design/Alert.vue";
 import { useContext } from "vite-ssr/vue";
 import { useProjectNotes } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { HangarProject, Note } from "hangar-internal";
 import { ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
-import InputText from "~/components/ui/InputText.vue";
-import Button from "~/components/design/Button.vue";
+import InputText from "~/lib/components/ui/InputText.vue";
+import Button from "~/lib/components/design/Button.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";

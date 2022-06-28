@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useValidation } from "~/composables/useValidationHelpers";
+import { useValidation } from "~/lib/composables/useValidationHelpers";
 import { ValidationRule } from "@vuelidate/core";
-import InputWrapper from "~/components/ui/InputWrapper.vue";
+import InputWrapper from "~/lib/components/ui/InputWrapper.vue";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: object | string | boolean | number | null | undefined): void;

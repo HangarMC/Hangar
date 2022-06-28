@@ -1,12 +1,12 @@
 import type { UserModule } from "~/types";
 import { useAuth } from "~/composables/useAuth";
-import { routePermLog } from "~/composables/useLog";
+import { routePermLog } from "~/lib/composables/useLog";
 import { useAuthStore } from "~/store/auth";
 import { RouteLocationNormalized, RouteLocationRaw } from "vue-router";
 import { useContext } from "vite-ssr/vue";
 import { useApi } from "~/composables/useApi";
 import { PermissionCheck, UserPermissions } from "hangar-api";
-import { useErrorRedirect } from "~/composables/useErrorRedirect";
+import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 import { hasPerms, toNamedPermission } from "~/composables/usePerm";
 import { NamedPermission, PermissionType } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";

@@ -1,15 +1,16 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { ProjectChannel } from "hangar-internal";
 import { computed, reactive, ref } from "vue";
 import { useBackendDataStore } from "~/store/backendData";
 import { useContext } from "vite-ssr/vue";
-import InputText from "~/components/ui/InputText.vue";
-import { required, validChannelColor, validChannelName } from "~/composables/useValidationHelpers";
+import InputText from "~/lib/components/ui/InputText.vue";
+import { required } from "~/lib/composables/useValidationHelpers";
+import { validChannelName, validChannelColor } from "~/composables/useHangarValidations";
 import { useVuelidate } from "@vuelidate/core";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
+import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { ChannelFlag } from "~/types/enums";
 
 const possibleFlags = [ChannelFlag.UNSTABLE, ChannelFlag.PINNED]; // TODO maybe load from backend? unsure if needed

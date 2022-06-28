@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { hasPerms } from "~/composables/usePerm";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { HangarProject, HangarVersion } from "hangar-internal";
 import { useContext } from "vite-ssr/vue";

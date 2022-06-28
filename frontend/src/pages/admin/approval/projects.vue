@@ -4,7 +4,7 @@ import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
-import Card from "~/components/design/Card.vue";
+import Card from "~/lib/components/design/Card.vue";
 import AdminProjectList from "~/components/projects/AdminProjectList.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";

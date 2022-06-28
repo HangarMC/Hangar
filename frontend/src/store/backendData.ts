@@ -6,7 +6,7 @@ import { NamedPermission, Platform, ProjectCategory, Prompt } from "~/types/enum
 
 import { Announcement as AnnouncementObject, Announcement, IPermission, Role } from "hangar-api";
 import { fetchIfNeeded, useInternalApi } from "~/composables/useApi";
-import { Option } from "~/components/ui/InputSelect.vue";
+import { Option } from "~/lib/components/ui/InputSelect.vue";
 import { useI18n } from "vue-i18n";
 
 interface Validation {

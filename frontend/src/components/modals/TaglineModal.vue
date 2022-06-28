@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { ref } from "vue";
 import { useNotificationStore } from "~/store/notification";
-import InputText from "~/components/ui/InputText.vue";
+import InputText from "~/lib/components/ui/InputText.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";

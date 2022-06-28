@@ -4,13 +4,13 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { ref, watch } from "vue";
-import { fromISOString, toISODateString } from "~/composables/useDate";
+import { fromISOString, toISODateString } from "~/lib/composables/useDate";
 import { useInternalApi } from "~/composables/useApi";
 import Chart from "~/components/Chart.vue";
 import Chartist, { IChartistSeriesData, ILineChartOptions } from "chartist";
-import PageTitle from "~/components/design/PageTitle.vue";
-import Card from "~/components/design/Card.vue";
-import InputDate from "~/components/ui/InputDate.vue";
+import PageTitle from "~/lib/components/design/PageTitle.vue";
+import Card from "~/lib/components/design/Card.vue";
+import InputDate from "~/lib/components/ui/InputDate.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 

@@ -3,11 +3,11 @@ import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { JoinableMember } from "hangar-internal";
 import { NamedPermission } from "~/types/enums";
-import Card from "~/components/design/Card.vue";
+import Card from "~/lib/components/design/Card.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
-import Link from "~/components/design/Link.vue";
-import DropdownButton from "~/components/design/DropdownButton.vue";
-import DropdownItem from "~/components/design/DropdownItem.vue";
+import Link from "~/lib/components/design/Link.vue";
+import DropdownButton from "~/lib/components/design/DropdownButton.vue";
+import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import { avatarUrl } from "~/composables/useUrlHelper";
 import { hasPerms } from "~/composables/usePerm";
 import { useBackendDataStore } from "~/store/backendData";
@@ -16,8 +16,8 @@ import { useRoute, useRouter } from "vue-router";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { useContext } from "vite-ssr/vue";
 import IconMdiClock from "~icons/mdi/clock";
-import Tooltip from "~/components/design/Tooltip.vue";
-import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
+import Tooltip from "~/lib/components/design/Tooltip.vue";
+import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 
 const props = withDefaults(
   defineProps<{

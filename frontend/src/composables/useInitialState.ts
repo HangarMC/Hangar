@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { onDeactivated, onMounted, onUnmounted, ref } from "vue";
 import { useContext } from "vite-ssr/vue";
-import { initalStateLog } from "~/composables/useLog";
+import { initalStateLog } from "~/lib/composables/useLog";
 
 export async function useInitialState<T>(key: string, handler: (type: "server" | "client") => Promise<T>, blocking = false): Promise<Ref<T | null>> {
   const { initialState } = useContext();

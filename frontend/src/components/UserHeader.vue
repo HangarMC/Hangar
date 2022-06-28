@@ -4,7 +4,7 @@ import { User } from "hangar-api";
 import UserAvatar from "~/components/UserAvatar.vue";
 import { avatarUrl, forumUserUrl } from "~/composables/useUrlHelper";
 import { useI18n } from "vue-i18n";
-import Card from "~/components/design/Card.vue";
+import Card from "~/lib/components/design/Card.vue";
 import TaglineModal from "~/components/modals/TaglineModal.vue";
 import { computed } from "vue";
 import { NamedPermission } from "~/types/enums";

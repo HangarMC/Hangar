@@ -11,7 +11,7 @@ import { VitePWA } from "vite-plugin-pwa";
 import Layouts from "vite-plugin-vue-layouts";
 import WindiCSS from "vite-plugin-windicss";
 import viteSSR from "vite-ssr/plugin";
-import prettier from "./src/plugins/prettier";
+import prettier from "./src/lib/plugins/prettier";
 // seriously? just shit up, lol
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

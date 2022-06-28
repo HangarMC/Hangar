@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { User } from "hangar-api";
-import Card from "~/components/design/Card.vue";
+import Card from "~/lib/components/design/Card.vue";
 import { useI18n } from "vue-i18n";
 import ProjectInfo from "~/components/projects/ProjectInfo.vue";
 import { HangarProject, HangarVersion, PinnedVersion } from "hangar-internal";

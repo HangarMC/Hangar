@@ -4,7 +4,7 @@ import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
-import Spinner from "~/components/design/Spinner.vue";
+import Spinner from "~/lib/components/design/Spinner.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -100,6 +100,6 @@ function setupAdmonition() {
 </template>
 
 <style lang="scss">
-@import "/src/assets/css/admonition.css";
-@import "/src/assets/css/markdown.scss";
+@import "/src/lib/assets/css/admonition.css";
+@import "/src/lib/assets/css/markdown.scss";
 </style>

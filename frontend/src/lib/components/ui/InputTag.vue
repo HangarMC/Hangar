@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
-import { useValidation } from "~/composables/useValidationHelpers";
+import { useValidation } from "~/lib/composables/useValidationHelpers";
 import { ValidationRule } from "@vuelidate/core";
-import InputWrapper from "~/components/ui/InputWrapper.vue";
+import InputWrapper from "~/lib/components/ui/InputWrapper.vue";
 
 const tag = ref<string>("");
 const emit = defineEmits<{

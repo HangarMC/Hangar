@@ -10,7 +10,7 @@
     "preview": "vite-ssr --port 1337 --open",
     "lint:eslint": "eslint --ext \".js,.vue,.ts,.json,.html\" --ignore-path .gitignore --ignore-pattern 'server/**' --fix .",
     "lint:prettier": "prettier -w .",
-    "prepare": "cd .. && husky install frontend-new/.husky"
+    "prepare": "cd .. && husky install frontend/.husky"
   },
   "lint-staged": {
     "*.{ts,js,vue,json,html}": [

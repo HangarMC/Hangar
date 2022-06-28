@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
-import { useErrorRedirect } from "~/composables/useErrorRedirect";
+import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 
 const ctx = useContext();
 const i18n = useI18n();

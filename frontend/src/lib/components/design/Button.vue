@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from "vue";
-import Spinner from "~/components/design/Spinner.vue";
+import Spinner from "~/lib/components/design/Spinner.vue";
 import { RouteLocationRaw } from "vue-router";
 
 const emit = defineEmits<{

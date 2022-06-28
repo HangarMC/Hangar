@@ -4,9 +4,9 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { useHealthReport } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import Card from "~/components/design/Card.vue";
-import Link from "~/components/design/Link.vue";
-import PageTitle from "~/components/design/PageTitle.vue";
+import Card from "~/lib/components/design/Card.vue";
+import Link from "~/lib/components/design/Link.vue";
+import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 

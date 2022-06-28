@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { hasSlotContent } from "~/composables/useSlot";
-import Table from "~/components/design/Table.vue";
+import { hasSlotContent } from "~/lib/composables/useSlot";
+import Table from "~/lib/components/design/Table.vue";
 import { computed, reactive, ref } from "vue";
-import Button from "~/components/design/Button.vue";
-import PaginationButtons from "~/components/PaginationButtons.vue";
-import Pagination from "~/components/Pagination.vue";
+import Button from "~/lib/components/design/Button.vue";
+import PaginationButtons from "~/lib/components/design/PaginationButtons.vue";
+import Pagination from "~/lib/components/design/Pagination.vue";
 
 export interface Header {
   name: string;

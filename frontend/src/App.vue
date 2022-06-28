@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useSettingsStore } from "~/store/settings";
 import { useHead } from "@vueuse/head";
-import { settingsLog } from "~/composables/useLog";
+import { settingsLog } from "~/lib/composables/useLog";
 import { useAuthStore } from "~/store/auth";
 
 // eslint-disable-next-line import/no-unresolved

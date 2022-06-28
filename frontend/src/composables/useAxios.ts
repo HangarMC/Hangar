@@ -1,6 +1,6 @@
 import type { AxiosInstance } from "axios";
 import axios from "axios";
-import { axiosLog } from "~/composables/useLog";
+import { axiosLog } from "~/lib/composables/useLog";
 
 const options = {
   baseURL: import.meta.env.SSR ? import.meta.env.HANGAR_PROXY_HOST : import.meta.env.HANGAR_PUBLIC_HOST,

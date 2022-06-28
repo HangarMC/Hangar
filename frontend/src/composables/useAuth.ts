@@ -2,7 +2,7 @@ import { useAuthStore } from "~/store/auth";
 import { useCookies } from "~/composables/useCookies";
 import { useInternalApi } from "~/composables/useApi";
 import { useAxios } from "~/composables/useAxios";
-import { authLog } from "~/composables/useLog";
+import { authLog } from "~/lib/composables/useLog";
 import { HangarUser } from "hangar-internal";
 import * as domain from "~/composables/useDomain";
 import { Pinia } from "pinia";

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { User } from "hangar-api";
 import ProjectList from "~/components/projects/ProjectList.vue";
-import Card from "~/components/design/Card.vue";
+import Card from "~/lib/components/design/Card.vue";
 import { useI18n } from "vue-i18n";
 import { avatarUrl } from "~/composables/useUrlHelper";
 import UserAvatar from "~/components/UserAvatar.vue";
-import Link from "~/components/design/Link.vue";
+import Link from "~/lib/components/design/Link.vue";
 import MemberList from "~/components/projects/MemberList.vue";
 import { useContext } from "vite-ssr/vue";
 import { useOrgVisibility, useUserData } from "~/composables/useApiHelper";
@@ -19,8 +19,8 @@ import UserHeader from "~/components/UserHeader.vue";
 import { computed, FunctionalComponent } from "vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
-import Button from "~/components/design/Button.vue";
-import Tooltip from "~/components/design/Tooltip.vue";
+import Button from "~/lib/components/design/Button.vue";
+import Tooltip from "~/lib/components/design/Tooltip.vue";
 import IconMdiWrench from "~icons/mdi/wrench";
 import IconMdiKey from "~icons/mdi/key";
 import IconMdiCalendar from "~icons/mdi/calendar";

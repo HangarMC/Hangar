@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import { useContext } from "vite-ssr/vue";
 import { HangarProjectPage } from "hangar-internal";
 import { computed, ref, watch } from "vue";
-import InputText from "~/components/ui/InputText.vue";
-import InputSelect, { Option } from "~/components/ui/InputSelect.vue";
+import InputText from "~/lib/components/ui/InputText.vue";
+import InputSelect, { Option } from "~/lib/components/ui/InputSelect.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { AxiosError } from "axios";

@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { DependencyVersion, PaginatedResult, PluginDependency, Project, ProjectNamespace } from "hangar-api";
 import { Platform } from "~/types/enums";
-import Table from "~/components/design/Table.vue";
+import Table from "~/lib/components/design/Table.vue";
 import { useI18n } from "vue-i18n";
-import Button from "~/components/design/Button.vue";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import InputText from "~/components/ui/InputText.vue";
-import { required } from "~/composables/useValidationHelpers";
+import Button from "~/lib/components/design/Button.vue";
+import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
+import InputText from "~/lib/components/ui/InputText.vue";
+import { required } from "~/lib/composables/useValidationHelpers";
 import { computed, ref } from "vue";
-import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
+import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 import { useApi } from "~/composables/useApi";
 import { useRoute } from "vue-router";
 

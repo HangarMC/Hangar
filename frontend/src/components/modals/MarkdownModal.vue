@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { TranslateResult, useI18n } from "vue-i18n";
 import Markdown from "~/components/Markdown.vue";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 
 const props = defineProps<{

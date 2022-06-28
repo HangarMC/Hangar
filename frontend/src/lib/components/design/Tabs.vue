@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
-import Button from "~/components/design/Button.vue";
-import Link from "~/components/design/Link.vue";
+import Button from "~/lib/components/design/Button.vue";
+import Link from "~/lib/components/design/Link.vue";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;

@@ -3,7 +3,7 @@ import type { Ref } from "vue";
 import { ref, unref, watch } from "vue";
 import { Context } from "vite-ssr/vue";
 import { useAuthStore } from "~/store/auth";
-import { settingsLog } from "~/composables/useLog";
+import { settingsLog } from "~/lib/composables/useLog";
 import localeParser from "accept-language-parser";
 import { SUPPORTED_LOCALES } from "~/i18n";
 import { useInternalApi } from "~/composables/useApi";

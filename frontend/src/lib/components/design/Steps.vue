@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed, Ref } from "vue";
-import Link from "~/components/design/Link.vue";
-import Card from "~/components/design/Card.vue";
+import Link from "~/lib/components/design/Link.vue";
+import Card from "~/lib/components/design/Card.vue";
 import { useSettingsStore } from "~/store/settings";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import { useI18n } from "vue-i18n";
 import { useVuelidate } from "@vuelidate/core";
 

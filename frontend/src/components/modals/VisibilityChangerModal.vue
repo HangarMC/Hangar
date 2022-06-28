@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { Visibility } from "~/types/enums";
-import InputRadio from "~/components/ui/InputRadio.vue";
+import InputRadio from "~/lib/components/ui/InputRadio.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import { computed, ref } from "vue";
-import InputTextarea from "~/components/ui/InputTextarea.vue";
+import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";

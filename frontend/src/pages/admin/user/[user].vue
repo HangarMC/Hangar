@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import PageTitle from "~/components/design/PageTitle.vue";
+import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useI18n } from "vue-i18n";
-import Link from "~/components/design/Link.vue";
-import Card from "~/components/design/Card.vue";
+import Link from "~/lib/components/design/Link.vue";
+import Card from "~/lib/components/design/Card.vue";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { PaginatedResult, Project, User } from "hangar-api";
 import { useRoute, useRouter } from "vue-router";
@@ -11,15 +11,15 @@ import { useContext } from "vite-ssr/vue";
 import { OrganizationRoleTable } from "hangar-internal";
 import { computed, ref } from "vue";
 import SortableTable, { Header } from "~/components/SortableTable.vue";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
+import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { authUrl, forumUserUrl } from "~/composables/useUrlHelper";
 import { useUser } from "~/composables/useApiHelper";
 import Tag from "~/components/Tag.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
+import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import { useBackendDataStore } from "~/store/backendData";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import { AxiosError } from "axios";
 
 const i18n = useI18n();

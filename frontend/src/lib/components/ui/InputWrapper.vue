@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import ErrorTooltip from "~/components/design/ErrorTooltip.vue";
-import Spinner from "~/components/design/Spinner.vue";
+import ErrorTooltip from "~/lib/components/design/ErrorTooltip.vue";
+import Spinner from "~/lib/components/design/Spinner.vue";
 
 const props = defineProps<{
   errors?: string[];

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import Link from "~/components/design/Link.vue";
+import Link from "~/lib/components/design/Link.vue";
 import { useI18n } from "vue-i18n";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission, Platform } from "~/types/enums";
-import Card from "~/components/design/Card.vue";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
+import Card from "~/lib/components/design/Card.vue";
+import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import Tag from "~/components/Tag.vue";
-import Button from "~/components/design/Button.vue";
+import Button from "~/lib/components/design/Button.vue";
 import { PaginatedResult, Version } from "hangar-api";
 import { computed, reactive, watch } from "vue";
 import { useBackendDataStore } from "~/store/backendData";
@@ -20,8 +20,8 @@ import { HangarProject } from "hangar-internal";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
-import Alert from "~/components/design/Alert.vue";
-import Pagination from "~/components/Pagination.vue";
+import Alert from "~/lib/components/design/Alert.vue";
+import Pagination from "~/lib/components/design/Pagination.vue";
 import PlatformLogo from "~/components/logos/PlatformLogo.vue";
 
 const i18n = useI18n();

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import PageTitle from "~/components/design/PageTitle.vue";
+import PageTitle from "~/lib/components/design/PageTitle.vue";
 </script>
 
 <template>
