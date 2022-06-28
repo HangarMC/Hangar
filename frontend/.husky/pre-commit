@@ -1,7 +1,7 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-cd frontend-new
+cd frontend
 pnpm prettier --write src/types/generated/**.*
 pnpm lint-staged
 
