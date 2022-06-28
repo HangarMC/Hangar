@@ -21,15 +21,12 @@ const hasError = computed<boolean>(() => {
 </script>
 
 <template>
-  <!--<Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" class="text-center">
+  <Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" class="text-center">
     <slot />
     <template #content>
       {{ formattedError || "error" }}
     </template>
-  </Popper>-->
-  <div v-bind="$attrs">
-    <slot />
-  </div>
+  </Popper>
 </template>
 
 <style scoped>

@@ -19,7 +19,7 @@ import Alert from "~/lib/components/design/Alert.vue";
 import { Platform } from "~/types/enums";
 import { toNumber } from "lodash-es";
 import PlatformLogo from "~/components/logos/PlatformLogo.vue";
-import InputRadio from "~/components/ui/InputRadio.vue";
+import InputRadio from "~/lib/components/ui/InputRadio.vue";
 
 const i18n = useI18n();
 const route = useRoute();
