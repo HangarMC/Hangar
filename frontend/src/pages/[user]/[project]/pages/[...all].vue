@@ -33,7 +33,7 @@ if (page) {
 <template>
   <div class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-9/12 flex-grow overflow-auto">
-      <Card class="p-0 overflow-clip overflow-hidden">
+      <Card v-if="page" class="p-0 overflow-clip overflow-hidden">
         <MarkdownEditor
           v-if="hasPerms(NamedPermission.EDIT_PAGE)"
           ref="editor"
