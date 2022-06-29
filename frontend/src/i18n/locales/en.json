@@ -45,6 +45,7 @@
       "tos": "Terms of Service"
     },
     "projectSearch": {
+      "clear": "(clear)",
       "query": "Search in {0} projects...",
       "sortBy": "Sort by",
       "relevanceSort": "Sort by relevance",

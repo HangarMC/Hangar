@@ -157,7 +157,12 @@ useHead(meta);
     <!-- Sidebar -->
     <Card accent class="min-w-300px flex flex-col gap-4">
       <div class="platforms">
-        <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.platforms") }}</h3>
+        <h3 class="font-bold mb-1">
+          {{ i18n.t("hangar.projectSearch.platforms") }}
+          <span v-if="filters.platform" class="font-normal text-sm hover:(underline) text-gray-600 dark:text-gray-400" @click="filters.platform = null">{{
+            i18n.t("hangar.projectSearch.clear")
+          }}</span>
+        </h3>
         <div class="flex flex-col gap-1">
           <ul>
             <li v-for="platform in backendData.visiblePlatforms" :key="platform.enumName" class="inline-flex w-full">

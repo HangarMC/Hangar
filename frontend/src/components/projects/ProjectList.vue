@@ -23,37 +23,45 @@ const props = defineProps({
 <template>
   <Pagination :items="projects?.result">
     <template #default="{ item }">
-      <Card class="flex space-x-4">
-        <div>
-          <UserAvatar
-            :username="item.namespace.owner"
-            :to="'/' + item.namespace.owner + '/' + item.name"
-            :img-src="projectIconUrl(item.namespace.owner, item.name)"
-            size="md"
-          />
+      <Card>
+        <div class="flex space-x-4">
+          <div>
+            <UserAvatar
+              :username="item.namespace.owner"
+              :to="'/' + item.namespace.owner + '/' + item.name"
+              :img-src="projectIconUrl(item.namespace.owner, item.name)"
+              size="md"
+            />
+          </div>
+          <div class="overflow-clip overflow-hidden min-w-0">
+            <p>
+              <Link :to="'/' + item.namespace.owner + '/' + item.namespace.slug">{{ item.name }}</Link>
+              by
+              <Link :to="'/' + item.namespace.owner">{{ item.namespace.owner }}</Link>
+            </p>
+            <p class="mb-1">{{ item.description }}</p>
+            <span class="<sm:hidden text-gray-500 dark:text-gray-400"> {{ i18n.t("project.category." + item.category) }} </span>
+          </div>
+          <div class="flex-grow"></div>
+          <div class="<sm:hidden flex flex-col flex-shrink-0 min-w-40">
+            <span class="inline-flex items-center">
+              <IconMdiStar class="mx-1" /> {{ item.stats.stars }} {{ i18n.t("project.info.stars", item.stats.stars) }}
+            </span>
+            <span class="inline-flex items-center">
+              <IconMdiDownload class="mx-1" /> {{ item.stats.downloads }} {{ i18n.t("project.info.totalDownloads", item.stats.downloads) }}
+            </span>
+            <Tooltip>
+              <template #content>
+                {{ i18n.t("project.info.lastUpdatedTooltip", [i18n.d(item.lastUpdated, "datetime")]) }}
+              </template>
+              <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" />{{ lastUpdated(item.lastUpdated) }}</span>
+            </Tooltip>
+          </div>
         </div>
-        <div class="overflow-clip overflow-hidden min-w-0">
-          <p>
-            <Link :to="'/' + item.namespace.owner + '/' + item.namespace.slug">{{ item.name }}</Link>
-            by
-            <Link :to="'/' + item.namespace.owner">{{ item.namespace.owner }}</Link>
-          </p>
-          <p>{{ item.description }}</p>
-        </div>
-        <div class="flex-grow"></div>
-        <div class="<sm:hidden flex flex-col flex-shrink-0 min-w-40">
-          <span class="inline-flex items-center">
-            <IconMdiStar class="mx-1" /> {{ item.stats.stars }} {{ i18n.t("project.info.stars", item.stats.stars) }}
-          </span>
-          <span class="inline-flex items-center">
-            <IconMdiDownload class="mx-1" /> {{ item.stats.downloads }} {{ i18n.t("project.info.totalDownloads", item.stats.downloads) }}
-          </span>
-          <Tooltip>
-            <template #content>
-              {{ i18n.t("project.info.lastUpdatedTooltip", [i18n.d(item.lastUpdated, "datetime")]) }}
-            </template>
-            <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" />{{ lastUpdated(item.lastUpdated) }}</span>
-          </Tooltip>
+        <div class="sm:hidden space-x-1 text-center mt-2">
+          <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" />{{ lastUpdated(item.lastUpdated) }}</span>
+          <span class="inline-flex items-center"> <IconMdiStar class="mx-1" /> {{ item.stats.stars }} </span>
+          <span class="inline-flex items-center"> <IconMdiDownload class="mx-1" /> {{ item.stats.downloads }} </span>
         </div>
       </Card>
     </template>
