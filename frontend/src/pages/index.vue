@@ -78,12 +78,14 @@ async function updateProjects() {
 }
 
 function versions(platform: Platform) {
-  return backendData.platforms
-    ?.get(platform)
-    ?.possibleVersions.sort((a, b) => toNumber(b.substring(2)) - toNumber(a.substring(2)))
-    .map((k) => {
-      return { version: k };
-    });
+  const platformData = backendData.platforms?.get(platform);
+  if (!platformData) {
+    return [];
+  }
+
+  return [...platformData.possibleVersions].reverse().map((k) => {
+    return { version: k };
+  });
 }
 
 const meta = useSeo("Home", null, route, null);
