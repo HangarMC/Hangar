@@ -21,10 +21,11 @@ const newTagline = ref(props.tagline);
 const ctx = useContext();
 const router = useRouter();
 const i18n = useI18n();
-const notification = useNotificationStore();
 const backendData = useBackendDataStore();
+const loading = ref(false);
 
 async function save() {
+  loading.value = true;
   try {
     await useInternalApi(props.action, true, "post", {
       content: newTagline.value,
@@ -33,13 +34,13 @@ async function save() {
   } catch (e) {
     handleRequestError(e, ctx, i18n);
   }
+  loading.value = false;
 }
 </script>
 
 <template>
   <Modal :title="i18n.t('author.editTagline')">
     <InputText v-model.trim="newTagline" :label="i18n.t('author.taglineLabel')" counter :maxlength="backendData.validations.userTagline.max" />
-    <br />
     <Button class="mt-3" @click="save">{{ i18n.t("general.change") }}</Button>
     <template #activator="{ on }">
       <Button size="small" class="ml-2 inline-flex" v-on="on">
