@@ -36,6 +36,7 @@ const i18n = useI18n();
 const ctx = useContext();
 const backendData = useBackendDataStore();
 const v = useVuelidate();
+const notificationStore = useNotificationStore();
 const props = defineProps<{
   project: HangarProject;
 }>();
@@ -94,7 +95,7 @@ async function rename() {
     const newSlug = await useInternalApi<string>(`projects/project/${route.params.user}/${route.params.project}/rename`, true, "post", {
       content: newName.value,
     });
-    useNotificationStore().success(i18n.t("project.settings.success.rename", [newName.value]));
+    notificationStore.success(i18n.t("project.settings.success.rename", [newName.value]));
     await router.push("/" + route.params.user + "/" + newSlug);
   } catch (e) {
     handleRequestError(e, ctx, i18n);
@@ -119,7 +120,7 @@ async function hardDelete(comment: string) {
     await useInternalApi(`projects/project/${props.project.id}/manage/hardDelete`, true, "post", {
       content: comment,
     });
-    useNotificationStore().success(i18n.t("project.settings.success.hardDelete"));
+    notificationStore.success(i18n.t("project.settings.success.hardDelete"));
     await router.push("/");
   } catch (e) {
     handleRequestError(e, ctx, i18n);
@@ -136,6 +137,8 @@ async function uploadIcon() {
   loading.uploadIcon = true;
   try {
     await useInternalApi(`projects/project/${route.params.user}/${route.params.project}/saveIcon`, true, "post", data);
+    projectIcon.value = null;
+    notificationStore.success(i18n.t("project.settings.success.changedIcon"));
   } catch (e) {
     handleRequestError(e, ctx, i18n);
   }
