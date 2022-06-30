@@ -148,7 +148,7 @@ async function restoreVersion() {
 
 <template>
   <div v-if="projectVersion" class="flex <sm:flex-col flex-wrap md:flex-nowrap gap-4">
-    <section class="basis-full md:basis-9/12 flex-grow">
+    <section class="basis-full md:basis-9/12 flex-grow overflow-auto">
       <div class="flex flex-wrap gap-2 justify-between">
         <div>
           <h1 class="text-3xl sm:inline-flex items-center">
@@ -181,7 +181,7 @@ async function restoreVersion() {
         </div>
       </div>
 
-      <Card class="relative mt-4">
+      <Card class="relative mt-4 erflow-clip overflow-hidden">
         <MarkdownEditor
           v-if="hasPerms(NamedPermission.EDIT_VERSION)"
           ref="editor"

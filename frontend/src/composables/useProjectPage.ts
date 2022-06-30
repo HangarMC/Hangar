@@ -1,7 +1,7 @@
 import { ref, watch } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { RouteLocationNormalizedLoaded, Router, useRoute, useRouter } from "vue-router";
+import { RouteLocationNormalizedLoaded, Router } from "vue-router";
 import { Context } from "vite-ssr/vue";
 import { Composer, VueMessageType } from "vue-i18n";
 import { HangarProject } from "hangar-internal";
@@ -19,7 +19,7 @@ export async function useProjectPage(
     handleRequestError(e, ctx, i18n)
   );
   if (!page) {
-    await useRouter().push(useErrorRedirect(useRoute(), 404, "Not found"));
+    await router.push(useErrorRedirect(route, 404, "Not found"));
   }
 
   const editingPage = ref<boolean>(false);
