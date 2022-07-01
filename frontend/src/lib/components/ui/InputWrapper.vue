@@ -27,9 +27,9 @@ const props = defineProps<{
     >
       <slot class="outline-none flex-grow bg-transparent w-full"></slot>
       <span class="flex pl-2">
+        <span v-if="loading" class="w-[24px] h-[24px]"><Spinner class="stroke-gray-400" /></span>
         <span v-if="counter && maxlength" class="inline-flex items-center ml-2">{{ value?.length || 0 }}/{{ maxlength }}</span>
         <span v-else-if="counter">{{ value?.length || 0 }}</span>
-        <span v-if="loading" class="w-[24px] h-[24px]"><Spinner class="stroke-gray-400" /></span>
       </span>
       <span
         v-if="label"
