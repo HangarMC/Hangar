@@ -23,9 +23,11 @@ const props = withDefaults(
     modelValue: string;
     tabs: Tab[];
     vertical?: boolean;
+    compact?: boolean;
   }>(),
   {
     vertical: true,
+    compact: false,
   }
 );
 
@@ -37,9 +39,9 @@ function selectTab(tab: Tab) {
 </script>
 
 <template>
-  <div :class="{ 'flex flex-col <md:space-y-2 md:(flex-row space-x-2)': vertical, 'flex flex-row flex-wrap': !vertical }">
+  <div :class="{ 'flex flex-col <md:space-y-2 md:flex-row': vertical, 'md:space-x-2': !compact && vertical, 'flex flex-row flex-wrap': !vertical }">
     <div :class="{ 'min-w-13ch': vertical, 'basis-full': !vertical }">
-      <ul :class="{ 'flex flex-row flex-wrap <md:gap-2 md:(flex-col space-y-2)': vertical, 'flex flex-row gap-1': !vertical }">
+      <ul :class="{ 'flex flex-row flex-wrap <md:gap-2 md:flex-col': vertical, 'md:space-y-2': !compact && vertical, 'flex flex-row gap-1': !vertical }">
         <li v-for="tab in tabs" :key="tab.value">
           <Link v-if="!tab.show || tab.show()" :disabled="tab.disable && tab.disable()" :href="'#' + tab.value" @click.prevent="selectTab(tab)">
             <Button
