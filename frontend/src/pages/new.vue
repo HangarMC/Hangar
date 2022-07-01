@@ -150,9 +150,9 @@ function createProject() {
       <Link to="/guidelines"><p v-html="i18n.t('project.new.step1.text2')" /></Link>
     </template>
     <template #basic>
-      <div class="flex flex-wrap">
+      <div class="flex flex-wrap gap-x-2">
         <p class="basis-full mb-4">{{ i18n.t("project.new.step2.description") }}</p>
-        <div class="basis-full md:basis-6/12">
+        <div class="basis-full md:basis-4/12">
           <InputSelect
             v-model="form.ownerId"
             :values="projectOwners"
@@ -162,10 +162,13 @@ function createProject() {
             :rules="[required()]"
           />
         </div>
-        <div class="basis-full md:basis-6/12 mt-4 md:mt-0">
+        <span class="text-3xl <md:hidden">/</span>
+        <div class="basis-full md:basis-4/12 <md:mt-4">
           <InputText
             v-model.trim="form.name"
             :label="i18n.t('project.new.step2.projectName')"
+            :maxlength="backendData.validations.project.name.max"
+            counter
             :rules="[
               required(),
               maxLength()(backendData.validations.project.name.max),
@@ -174,8 +177,14 @@ function createProject() {
             ]"
           />
         </div>
-        <div class="basis-full md:basis-8/12 mt-4">
-          <InputText v-model.trim="form.description" :label="i18n.t('project.new.step2.projectSummary')" :rules="[required()]" />
+        <div class="basis-full mt-4">
+          <InputText
+            v-model.trim="form.description"
+            :label="i18n.t('project.new.step2.projectSummary')"
+            :rules="[required()]"
+            :maxlength="backendData.validations.project.desc.max"
+            counter
+          />
         </div>
         <div class="basis-full md:basis-4/12 mt-4">
           <InputSelect

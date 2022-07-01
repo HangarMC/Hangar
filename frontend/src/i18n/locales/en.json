@@ -395,6 +395,8 @@
       "uploadNew": "Upload a new Version",
       "url": "Enter a URL",
       "form": {
+        "file": "Upload a file",
+        "url": "Provide a URL",
         "versionString": "Version",
         "fileName": "File name",
         "fileSize": "File size",

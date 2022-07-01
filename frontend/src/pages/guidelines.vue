@@ -9,7 +9,7 @@ import Markdown from "~/components/Markdown.vue";
 const i18n = useI18n();
 const route = useRoute();
 
-// TODO Discuss and write proper guideliness, move to docs site
+// TODO Link to docs https://github.com/PaperMC/docs/pull/72
 const text = `
 Remember that these are just guidelines and that the Hangar team may choose to allow or disallow an action that is not
 explicitly listed here at our own discretion.
@@ -120,6 +120,5 @@ useHead(useSeo(i18n.t("pages.guidelinesTitle"), null, route, null));
 
 <template>
   <PageTitle>{{ i18n.t("guidelines.title") }}</PageTitle>
-  <h2 class="text-2xl font-bold uppercase">!!! NONE OF THIS IS FINAL !!!</h2>
   <Markdown :raw="text"></Markdown>
 </template>

@@ -182,7 +182,7 @@ public class BackendDataController {
         projectValidations.put("maxChannelCount", config.projects.getMaxChannels());
         validations.set("project", projectValidations);
         validations.set("userTagline", noJsonValueMapper.valueToTree(new Validation(null, config.user.getMaxTaglineLen(), null)));
-        validations.set("version", noJsonValueMapper.valueToTree(new Validation(config.projects.getVersionNameRegex(), null, null)));
+        validations.set("version", noJsonValueMapper.valueToTree(new Validation(config.projects.getVersionNameRegex(), config.projects.getMaxVersionNameLen(), null)));
         validations.set("org", noJsonValueMapper.valueToTree(new Validation(config.org.getNameRegex(), config.org.getMaxNameLen(), config.org.getMinNameLen())));
         validations.put("maxOrgCount", config.org.getCreateLimit());
         validations.put("urlRegex", config.getUrlRegex());

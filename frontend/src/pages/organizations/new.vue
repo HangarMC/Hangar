@@ -47,13 +47,14 @@ async function create() {
 <template>
   <Card>
     <template #header>{{ i18n.t("organization.new.title") }}</template>
-    <p class="mb-2">{{ i18n.t("organization.new.text") }}</p>
+    <p class="mb-3">{{ i18n.t("organization.new.text") }}</p>
 
     <template v-if="currentUser.headerData.organizationCount < backendData.validations.maxOrgCount">
       <InputText
         v-model="name"
-        class="mt-2"
+        class="mt-2 max-w-100"
         :label="i18n.t('organization.new.name')"
+        counter
         :maxlength="backendData.validations.org.max"
         :rules="[
           required(),
@@ -64,8 +65,7 @@ async function create() {
         ]"
       />
 
-      <Button class="mt-4" :disabled="!canCreate" @click="create">
-        <IconMdiCheck class="float-left" />
+      <Button class="mt-4" size="medium" :disabled="!canCreate" @click="create">
         {{ i18n.t("form.memberList.create") }}
       </Button>
     </template>

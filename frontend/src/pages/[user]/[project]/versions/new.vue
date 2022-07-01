@@ -26,6 +26,7 @@ import { useBackendDataStore } from "~/store/backendData";
 import DependencyTable from "~/components/projects/DependencyTable.vue";
 import InputTag from "~/lib/components/ui/InputTag.vue";
 import { LastDependencies } from "hangar-api";
+import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -190,6 +191,13 @@ function togglePlatform(platform: Platform) {
     selectedPlatforms.value.push(platform);
   }
 }
+
+const selectedUploadTab = ref("file");
+const selectedUploadTabs: Tab[] = [
+  { value: "file", header: i18n.t("version.new.form.file") },
+  { value: "url", header: i18n.t("version.new.form.url") },
+];
+
 useHead(
   useSeo(
     i18n.t("version.new.title") + " | " + props.project.name,
@@ -205,36 +213,47 @@ useHead(
     <template #artifact>
       <p>{{ t("version.new.form.artifactTitle") }}</p>
       <!--<Alert class="my-4 text-white" type="info">{{ t("version.new.form.externalLinkAlert") }}</Alert>-->
-      <div class="flex flex-wrap mt-2">
-        <InputFile v-model="file" accept=".jar,.zip" />
-        <span class="basis-full my-3">or</span>
-        <InputText v-model="url" :label="t('version.new.form.externalUrl')" :rules="[validUrl()]" />
-      </div>
+
+      <Tabs v-model="selectedUploadTab" :tabs="selectedUploadTabs" :vertical="false" class="mt-2 max-w-150">
+        <template #file>
+          <InputFile v-model="file" accept=".jar,.zip" />
+        </template>
+        <template #url>
+          <InputText v-model="url" :label="t('version.new.form.externalUrl')" :rules="[validUrl()]" />
+        </template>
+      </Tabs>
     </template>
     <template #basic>
-      <div class="flex flex-wrap space-x-2">
+      <div class="flex flex-wrap gap-x-2">
         <!-- TODO validate version string against existing versions. complex because they only have to be unique per-platform -->
         <div class="basis-full mt-2 md:basis-4/12">
-          <InputText v-model="pendingVersion.versionString" :label="t('version.new.form.versionString')" :rules="[required()]" :disabled="isFile" />
+          <InputText
+            v-model="pendingVersion.versionString"
+            :label="t('version.new.form.versionString')"
+            :rules="[required()]"
+            :disabled="isFile"
+            :maxlength="backendData.validations.version.max"
+            counter
+          />
         </div>
-        <div v-if="isFile" class="basis-full mt-2 md:basis-4/12">
+        <div v-if="isFile" class="basis-full mt-2 <md:mt-4 md:basis-4/12">
           <InputText :model-value="pendingVersion.fileInfo.name" :label="t('version.new.form.fileName')" disabled />
         </div>
-        <div v-if="isFile" class="basis-full mt-2 md:basis-2/12">
+        <div v-if="isFile" class="basis-full mt-2 <md:mt-4 md:basis-2/12">
           <InputText :model-value="formatSize(pendingVersion.fileInfo.sizeBytes)" :label="t('version.new.form.fileSize')" disabled />
         </div>
-        <div v-else class="basis-full mt-2 md:basis-6/12">
+        <div v-else class="basis-full mt-2 <md:mt-4 md:basis-6/12">
           <InputText v-model="pendingVersion.externalUrl" :label="t('version.new.form.externalUrl')" />
         </div>
       </div>
-      <div class="flex flex-wrap space-x-2 items-center">
-        <div class="basis-4/12 mt-2">
+      <div class="flex flex-wrap space-x-2 items-center mt-4">
+        <div class="basis-4/12">
           <InputSelect v-model="pendingVersion.channelName" :values="channels" item-text="name" item-value="name" :label="t('version.new.form.channel')" />
         </div>
         <div class="basis-4/12">
           <ChannelModal :project-id="project.id" @create="addChannel">
             <template #activator="{ on, attrs }">
-              <Button class="basis-4/12 mt-2" v-bind="attrs" size="medium" v-on="on">
+              <Button class="basis-4/12" v-bind="attrs" size="medium" v-on="on">
                 {{ t("version.new.form.addChannel") }}
                 <IconMdiPlus />
               </Button>
