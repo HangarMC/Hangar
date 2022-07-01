@@ -11,6 +11,7 @@ import { computed, ref } from "vue";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 import { useApi } from "~/composables/useApi";
 import { useRoute } from "vue-router";
+import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -112,6 +113,12 @@ function fromString(string: string): ProjectNamespace | string | null {
       };
 }
 
+const selectedUploadTab = ref("file");
+const selectedUploadTabs: Tab[] = [
+  { value: "file", header: "Hangar" },
+  { value: "url", header: "URL" },
+];
+
 defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
 </script>
 
@@ -131,30 +138,36 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
       <template v-if="!isNew">
         <tr v-for="(dep, index) in filteredDeps" :key="`${platform}-${dep.name}`">
           <td>{{ dep.name }}</td>
-          <td><InputCheckbox v-model="dep.required" /></td>
+          <td><InputCheckbox v-model="dep.required" />asdas</td>
           <td class="flex flex-wrap gap-2">
-            <InputText
-              v-model.trim="dep.externalUrl"
-              :placeholder="t('version.new.form.externalUrl')"
-              :disabled="dep.namespace !== null && Object.keys(dep.namespace).length !== 0"
-              clearable
-              @change="dep.namespace = null"
-            />
+            <Tabs v-model="selectedUploadTab" :tabs="selectedUploadTabs" class="items-center" compact>
+              <template #file>
+                <InputAutocomplete
+                  :id="dep.name"
+                  :model-value="toString(dep.namespace)"
+                  :placeholder="t('version.new.form.hangarProject')"
+                  :values="results[dep.name]"
+                  :item-text="getNamespace"
+                  :item-value="getNamespace"
+                  :disabled="!!dep.externalUrl"
+                  @search="onSearch($event, dep.name)"
+                  @change="dep.externalUrl = null"
+                  @update:model-value="dep.namespace = fromString($event)"
+                />
+              </template>
+              <template #url>
+                <InputText
+                  v-model.trim="dep.externalUrl"
+                  :placeholder="t('version.new.form.externalUrl')"
+                  :disabled="dep.namespace !== null && Object.keys(dep.namespace).length !== 0"
+                  clearable
+                  @change="dep.namespace = null"
+                />
+              </template>
+            </Tabs>
             <!-- :rules="dep.namespace !== null && Object.keys(dep.namespace).length !== 0 ? [] : [required(t('version.new.form.externalUrl'))]" -->
             <!-- todo fix validation of dependency table -->
             <!-- :rules="!!dep.externalUrl ? [] : [required(t('version.new.form.hangarProject'))]" -->
-            <InputAutocomplete
-              :id="dep.name"
-              :model-value="toString(dep.namespace)"
-              :placeholder="t('version.new.form.hangarProject')"
-              :values="results[dep.name]"
-              :item-text="getNamespace"
-              :item-value="getNamespace"
-              :disabled="!!dep.externalUrl"
-              @search="onSearch($event, dep.name)"
-              @change="dep.externalUrl = null"
-              @update:modelValue="dep.namespace = fromString($event)"
-            />
           </td>
           <td v-if="!noEditing">
             <Button icon color="error" @click="deleteDep(index)">
@@ -178,28 +191,34 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
             />
           </td>
           <td><InputCheckbox v-model="newDep.required" :ripple="false" /></td>
-          <td class="flex flex-wrap gap-2">
-            <InputText
-              v-model.trim="newDep.externalUrl"
-              :placeholder="t('version.new.form.externalUrl')"
-              :disabled="newDep.namespace !== null && Object.keys(newDep.namespace).length !== 0"
-              :rules="newDep.namespace !== null && Object.keys(newDep.namespace).length !== 0 ? [] : [required(t('version.new.form.externalUrl'))]"
-              clearable
-              @change="newDep.namespace = null"
-            />
-            <InputAutocomplete
-              :id="newDep.name"
-              :model-value="toString(newDep.namespace)"
-              :placeholder="t('version.new.form.hangarProject')"
-              :values="newDepResults[index]"
-              :item-text="getNamespace"
-              :item-value="getNamespace"
-              :disabled="!!newDep.externalUrl"
-              :rules="!!newDep.externalUrl ? [] : [required(t('version.new.form.hangarProject'))]"
-              @search="onNewDepSearch($event, index)"
-              @change="newDep.externalUrl = null"
-              @update:modelValue="newDep.namespace = fromString($event)"
-            />
+          <td class="flex flex-wrap gap-2 items-center">
+            <Tabs v-model="selectedUploadTab" :tabs="selectedUploadTabs" class="items-center" compact>
+              <template #file>
+                <InputAutocomplete
+                  :id="newDep.name"
+                  :model-value="toString(newDep.namespace)"
+                  :placeholder="t('version.new.form.hangarProject')"
+                  :values="newDepResults[index]"
+                  :item-text="getNamespace"
+                  :item-value="getNamespace"
+                  :disabled="!!newDep.externalUrl"
+                  :rules="!!newDep.externalUrl ? [] : [required(t('version.new.form.hangarProject'))]"
+                  @search="onNewDepSearch($event, index)"
+                  @change="newDep.externalUrl = null"
+                  @update:modelValue="newDep.namespace = fromString($event)"
+                />
+              </template>
+              <template #url>
+                <InputText
+                  v-model.trim="newDep.externalUrl"
+                  :placeholder="t('version.new.form.externalUrl')"
+                  :disabled="newDep.namespace !== null && Object.keys(newDep.namespace).length !== 0"
+                  :rules="newDep.namespace !== null && Object.keys(newDep.namespace).length !== 0 ? [] : [required(t('version.new.form.externalUrl'))]"
+                  clearable
+                  @change="newDep.namespace = null"
+                />
+              </template>
+            </Tabs>
           </td>
           <td v-if="!noEditing">
             <Button button-type="red" @click="deleteNewDep(index)">
