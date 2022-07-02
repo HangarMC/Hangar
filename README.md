@@ -27,14 +27,16 @@ Fork the project and pull it in your IDE.
 * Docker is required in order to run the PostgreSQL database.
 * Java 17 or higher.
 * [pnpm]
+* git
 ### Setting up
 To get the project running locally, you need to follow a few steps:
-1. To get the dummy database up and running, move to the docker folder `cd docker` then run `docker-compose -f dev-db.yml up -d` (`-d` as an optional parameter to run the containers in the background).
+1. Run `git submodule update --init` to initialize the [HangarLib](https://github.com/HangarMC/HangarLib) submodule. If you want to commit code to the lib repository (found in `frontend/src/lib`) without cloning the repo separately, you also need to checkout a branch using `cd frontend/src/lib && git switch master`.
+2. To get the dummy database up and running, move to the docker folder `cd docker` then run `docker-compose -f dev-db.yml up -d` (`-d` as an optional parameter to run the containers in the background).
    Alternatively, if you are using IntelliJ you can press the green arrow in the `docker/dev-db.yml` file.
-2. Run the Spring Boot application. You can do it in the CLI with `mvn spring-boot:run` or if you're using IntelliJ, it's included in the run configurations.
-3. Move to the `frontend` directory: `cd ../frontend`. In that directory, run `pnpm install`. This will install all the needed Node modules.
+3. Run the Spring Boot application. You can do it in the CLI with `mvn spring-boot:run` or if you're using IntelliJ, it's included in the run configurations.
+4. Move to the `frontend` directory: `cd ../frontend`. In that directory, run `pnpm install`. This will install all the needed Node modules.
 5. After the installation, run `pnpm run dev` in the frontend directory to initiate the build and launch. Changes you do to the frontend will be reloaded automatically.
-6. After that browse to http://localhost:333 and if all went well, Hangar should be up and running.
+6. After that browse to http://localhost:3333 and if all went well, Hangar should be up and running.
 
 ### Notes
 * The Spring Boot configuration file that is used by this environment is located at `Hangar/src/main/resources/application.yml`

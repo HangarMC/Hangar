@@ -1,3 +1,4 @@
 [submodule "frontend/src/lib"]
 	path = frontend/src/lib
 	url = https://github.com/HangarMC/HangarLib.git
+	branch = master
