@@ -5,7 +5,7 @@ import generatedRoutes from "virtual:generated-pages";
 import viteSSR, { ClientOnly } from "vite-ssr";
 import "windi.css";
 import App from "~/App.vue";
-import { installI18n } from "~/i18n";
+import { installI18n } from "~/lib/i18n";
 import "./styles/main.css";
 import { useBackendDataStore } from "~/store/backendData";
 import devalue from "@nuxt/devalue";

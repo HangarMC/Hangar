@@ -5,7 +5,7 @@ import { Context } from "vite-ssr/vue";
 import { useAuthStore } from "~/store/auth";
 import { settingsLog } from "~/lib/composables/useLog";
 import localeParser from "accept-language-parser";
-import { SUPPORTED_LOCALES } from "~/i18n";
+import { SUPPORTED_LOCALES } from "~/lib/i18n";
 import { useInternalApi } from "~/composables/useApi";
 
 export const useSettingsStore = defineStore("settings", () => {
