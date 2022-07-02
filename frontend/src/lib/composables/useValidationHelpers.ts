@@ -29,10 +29,8 @@ export function useValidation<T>(
       if (v.value.$silentErrors) {
         e.push(...v.value.$silentErrors);
       }
-    } else {
-      if (v.value.$errors) {
-        e.push(...v.value.$errors);
-      }
+    } else if (v.value.$errors) {
+      e.push(...v.value.$errors);
     }
     return e;
   });
@@ -52,7 +50,7 @@ export const withI18nMessage = <T extends ValidationRule | ValidatorWrapper>(val
       if (overrideMsg) {
         msg = overrideMsg;
       }
-      //return I18n.value.global.t(msg, params);
+      // return I18n.value.global.t(msg, params);
       return msg; // TODO fix i18n for validations
     },
   })(validator, { withArguments: true });

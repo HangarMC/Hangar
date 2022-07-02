@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { hasSlotContent } from "~/lib/composables/useSlot";
 import { computed } from "vue";
+import { hasSlotContent } from "~/lib/composables/useSlot";
 
 const props = withDefaults(
   defineProps<{
