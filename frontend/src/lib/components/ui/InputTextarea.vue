@@ -17,6 +17,7 @@ const props = defineProps<{
   counter?: boolean;
   maxlength?: number;
   loading?: boolean;
+  messages?: string[];
   errorMessages?: string[];
   disabled?: boolean;
   rules?: ValidationRule<string | undefined>[];
@@ -30,6 +31,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, value, e
   <InputWrapper
     v-slot="slotProps"
     :errors="errors"
+    :messages="messages"
     :has-error="hasError"
     :counter="counter"
     :maxlength="maxlength"

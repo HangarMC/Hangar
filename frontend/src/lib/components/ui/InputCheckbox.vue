@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useValidation } from "~/lib/composables/useValidationHelpers";
 import { ValidationRule } from "@vuelidate/core";
+import { useValidation } from "~/lib/composables/useValidationHelpers";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean | boolean[]): void;

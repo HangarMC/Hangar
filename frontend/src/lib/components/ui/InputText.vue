@@ -17,6 +17,7 @@ const props = defineProps<{
   counter?: boolean;
   maxlength?: number;
   loading?: boolean;
+  messages?: string[];
   errorMessages?: string[];
   disabled?: boolean;
   rules?: ValidationRule<string | undefined>[];
@@ -32,6 +33,7 @@ defineExpose({ v });
   <InputWrapper
     v-slot="slotProps"
     :errors="errors"
+    :messages="messages"
     :has-error="hasError"
     :counter="counter"
     :maxlength="maxlength"

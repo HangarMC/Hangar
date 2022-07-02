@@ -16,6 +16,7 @@ const props = defineProps<{
   label?: string;
   disabled?: boolean;
   loading?: boolean;
+  messages?: string[];
   errorMessages?: string[];
   rules?: ValidationRule<string | undefined>[];
 }>();
@@ -25,7 +26,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, date, er
 </script>
 
 <template>
-  <InputWrapper v-slot="slotProps" :errors="errors" :has-error="hasError" :loading="loading || v.$pending" :label="label" :value="date" :disabled="disabled">
+  <InputWrapper v-slot="slotProps" :errors="errors" :messages="messages" :has-error="hasError" :loading="loading || v.$pending" :label="label" :value="date" :disabled="disabled">
     <!-- todo make fancy -->
     <input v-model="date" type="date" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" />
   </InputWrapper>

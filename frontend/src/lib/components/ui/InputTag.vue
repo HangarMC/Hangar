@@ -19,6 +19,7 @@ const props = withDefaults(
     counter?: boolean;
     maxlength?: number;
     loading?: boolean;
+    messages?: string[];
     errorMessages?: string[];
     rules?: ValidationRule<string | undefined>[];
     tagMaxlength?: number;
@@ -69,6 +70,7 @@ const filteredOptions = computed(() => {
   <InputWrapper
     v-slot="slotProps"
     :errors="errors"
+    :messages="messages"
     :has-error="hasError"
     :counter="counter"
     :maxlength="maxlength"

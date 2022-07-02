@@ -26,6 +26,7 @@ const props = withDefaults(
     disabled?: boolean;
     label?: string;
     loading?: boolean;
+    messages?: string[];
     errorMessages?: string[];
     rules?: ValidationRule<string | undefined>[];
   }>(),
@@ -35,6 +36,7 @@ const props = withDefaults(
     itemText: "text",
     label: "",
     loading: false,
+    messages: () => [],
     errorMessages: () => [],
     rules: () => [],
   }
@@ -47,6 +49,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
   <InputWrapper
     v-slot="slotProps"
     :errors="errors"
+    :messages="messages"
     :has-error="hasError"
     :loading="loading || v.$pending"
     :label="label"

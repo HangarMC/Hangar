@@ -4,6 +4,7 @@ import Spinner from "~/lib/components/design/Spinner.vue";
 
 const props = defineProps<{
   errors?: string[];
+  messages?: string[];
   hasError: boolean;
   disabled?: boolean;
   label?: string;
@@ -42,6 +43,11 @@ const props = defineProps<{
         ]"
       >
         {{ label }}
+      </span>
+      <span v-if="messages" class="text-small">
+        <template v-for="message in messages">
+          {{ message }}
+        </template>
       </span>
     </label>
   </ErrorTooltip>
