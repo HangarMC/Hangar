@@ -10,6 +10,7 @@ import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.Project;
+import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
@@ -42,6 +43,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.apache.commons.lang3.StringUtils;
@@ -128,8 +130,12 @@ public class ProjectService extends HangarComponent {
 
         final Map<Platform, HangarVersion> mainChannelVersions = new EnumMap<>(Platform.class);
         for (final Platform platform : Platform.getValues()) {
-            final HangarVersion version = getLastVersion(author, slug, platform,  config.channels.getNameDefault());
+            final HangarVersion version = getLastVersion(author, slug, platform, config.channels.getNameDefault());
             if (version != null) {
+                if (version.getPlatformDependencies().isEmpty()) {
+                    version.getPlatformDependencies().putAll(versionsApiDAO.getPlatformDependencies(version.getId()));
+                }
+
                 mainChannelVersions.put(platform, version);
             }
         }

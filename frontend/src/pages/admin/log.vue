@@ -54,7 +54,7 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
         </template>
         <template v-else-if="item.version">
           <Link :to="'/' + item.project.owner + '/' + item.project.slug + '/versions/' + item.version.versionString">
-            {{ `${item.project.owner}/${item.project.slug}/${item.version.versionString}/${item.version.platforms[0].toLowerCase()}` }}
+            {{ `${item.project.owner}/${item.project.slug}/${item.version.versionString}` }}
           </Link>
         </template>
         <template v-else-if="item.project && item.project.owner">

@@ -103,9 +103,9 @@ public interface HangarVersionsDAO {
     List<HangarVersion> getVersionsWithVersionString(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
 
     @SqlQuery("""
-        SELECT pv."type",
+        SELECT pv.version_id,
+               pv."type",
                pv.version_string AS name,
-               pv.platforms,
                pc.name pc_name,
                pc.created_at pc_created_at,
                pc.color pc_color,
