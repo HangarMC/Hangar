@@ -10,8 +10,8 @@ export { DEFAULT_LOCALE, SUPPORTED_LOCALES, SUPPORTED_LANGUAGES, extractLocaleFr
 let messageImports = import.meta.glob("/src/locales/*.json");
 // todo hack for nuxt since glob doesn't seem to work?
 if (!messageImports || Object.keys(messageImports).length === 0) {
-  // eslint-disable-next-line import/no-unresolved
-  messageImports = { "/src/locales/en.json": async () => await import("@/locales/en.json") };
+  const s = "@/locales/en.json";
+  messageImports = { "/src/locales/en.json": async () => await import(s) };
 }
 
 function importLocale(locale: string) {
