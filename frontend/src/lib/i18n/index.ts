@@ -7,11 +7,14 @@ import { ref } from "vue";
 export { DEFAULT_LOCALE, SUPPORTED_LOCALES, SUPPORTED_LANGUAGES, extractLocaleFromPath } from "./locales";
 
 // This is a dynamic import so not all languages are bundled in frontend.
-const messageImports = import.meta.glob("/src/locales/*.json");
+let messageImports = import.meta.glob("/src/locales/*.json");
+// todo hack for nuxt since glob doesn't seem to work?
+if (!messageImports || Object.keys(messageImports).length === 0) {
+  // eslint-disable-next-line import/no-unresolved
+  messageImports = { "/src/locales/en.json": async () => await import("@/locales/en.json") };
+}
 
 function importLocale(locale: string) {
-  console.log("import", locale);
-  console.log("imports", messageImports);
   const [, importLoc] = Object.entries(messageImports).find(([key]) => key.includes(`/${locale}.`)) || [];
 
   return importLoc && importLoc();
