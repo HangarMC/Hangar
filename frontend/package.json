@@ -71,7 +71,7 @@
     "eslint-import-resolver-alias": "^1.1.2",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-unicorn": "^42.0.0",
+    "eslint-plugin-unicorn": "^43.0.0",
     "eslint-plugin-vue": "^8.7.1",
     "husky": "^8.0.0",
     "lint-staged": "^12.4.1",
