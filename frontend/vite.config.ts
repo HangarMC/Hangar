@@ -96,7 +96,8 @@ export default defineConfig({
 
     // https://github.com/intlify/bundle-tools/tree/main/packages/vite-plugin-vue-i18n
     VueI18n({
-      include: [path.resolve(__dirname, "src/i18n/locales/*.json")],
+      runtimeOnly: false,
+      include: [path.resolve(__dirname, "src/locales/*.json")],
     }),
 
     EslintPlugin({
