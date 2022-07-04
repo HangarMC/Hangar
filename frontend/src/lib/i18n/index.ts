@@ -1,35 +1,26 @@
 import type { App } from "vue";
 import { createI18n } from "vue-i18n";
+import { ref } from "vue";
+import { langLog } from "~/lib/composables/useLog";
 import { DATE_FORMATS } from "./date-formats";
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from "./locales";
-import { ref } from "vue";
 
 export { DEFAULT_LOCALE, SUPPORTED_LOCALES, SUPPORTED_LANGUAGES, extractLocaleFromPath } from "./locales";
 
 // This is a dynamic import so not all languages are bundled in frontend.
-const messageImports = import.meta.glob("/src/locales/*.json");
+let messageImports = import.meta.glob("/src/locales/*.json");
 // todo hack for nuxt since glob doesn't seem to work?
-/*if (!messageImports || Object.keys(messageImports).length === 0) {
-  const s = "@/locales/en.json";
-  messageImports = { "/src/locales/en.json": async () => await import(s) };
-}*/
-
-function importLocale(locale: string) {
-  const [, importLoc] = Object.entries(messageImports).find(([key]) => key.includes(`/${locale}.`)) || [];
-
-  return importLoc && importLoc();
+langLog("loaded message imports", messageImports);
+if (!messageImports || Object.keys(messageImports).length === 0) {
+  messageImports = { "/src/locales/en.json": async () => await import("../../locales/en.json") };
+  langLog("fallback to fake english import");
 }
 
-export async function loadAsyncLanguage(i18n: any, locale = DEFAULT_LOCALE) {
-  try {
-    const result = await importLocale(locale);
-    if (result) {
-      i18n.setLocaleMessage(locale, result.default || result);
-      i18n.locale.value = locale;
-    }
-  } catch (error) {
-    console.error("loadAsyncLanguage error", error);
-  }
+function importLocale(locale: string) {
+  langLog("import locale", locale);
+  const [, importLoc] = Object.entries(messageImports).find(([key]) => key.includes(`/${locale}.`)) || [];
+  langLog("found", importLoc);
+  return importLoc && importLoc();
 }
 
 export const I18n = ref();
@@ -40,6 +31,7 @@ export async function installI18n(app: App, locale = "") {
     const defaultMessages = await importLocale(DEFAULT_LOCALE);
     const messages = await importLocale(locale);
 
+    langLog("create i18n");
     const i18n = createI18n({
       legacy: false,
       locale,

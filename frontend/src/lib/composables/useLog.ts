@@ -7,3 +7,4 @@ export const routePermLog = debug("hangar:routePerm");
 export const axiosLog = debug("hangar:axios");
 export const settingsLog = debug("hangar:settings");
 export const domainLog = debug("hangar:domain");
+export const langLog = debug("hangar:lang");
