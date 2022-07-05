@@ -7,16 +7,24 @@ import { lastUpdated } from "~/lib/composables/useTime";
 import { useI18n } from "vue-i18n";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import { Project } from "hangar-api";
+import { Visibility } from "~/types/enums";
 
 const i18n = useI18n();
 
 const props = defineProps<{
   project: Project;
 }>();
+
+function getBorderClasses(): string {
+  if (props.project.visibility === Visibility.SOFT_DELETE) {
+    return "!border-red-500 border-2px";
+  }
+  return props.project.visibility === Visibility.PUBLIC ? "" : "!border-gray-500 border-2px";
+}
 </script>
 
 <template>
-  <Card>
+  <Card :class="getBorderClasses()">
     <div class="flex space-x-4">
       <div>
         <UserAvatar
@@ -27,11 +35,16 @@ const props = defineProps<{
         />
       </div>
       <div class="overflow-clip overflow-hidden min-w-0">
-        <p>
-          <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">{{ project.name }}</Link>
-          by
-          <Link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</Link>
-        </p>
+        <span class="inline-flex items-center gap-x-1">
+          <p>
+            <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">{{ project.name }}</Link>
+            by
+            <Link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</Link>
+          </p>
+          <IconMdiCancel v-if="project.visibility === Visibility.SOFT_DELETE"></IconMdiCancel>
+          <IconMdiEyeOff v-else-if="project.visibility !== Visibility.PUBLIC"></IconMdiEyeOff>
+        </span>
+
         <p v-if="project.description" class="mb-1">{{ project.description }}</p>
         <span class="<sm:hidden text-gray-500 dark:text-gray-400"> {{ i18n.t("project.category." + project.category) }} </span>
       </div>

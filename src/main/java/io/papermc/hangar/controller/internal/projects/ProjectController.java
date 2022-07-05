@@ -204,6 +204,7 @@ public class ProjectController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 45)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.DELETE_PROJECT, args = "{#project}")
     @PostMapping(path = "/project/{projectId}/manage/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void softDeleteProject(@PathVariable("projectId") ProjectTable project, @RequestBody @Valid StringContent commentContent) {

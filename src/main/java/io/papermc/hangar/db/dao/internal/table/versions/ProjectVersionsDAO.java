@@ -28,8 +28,8 @@ public interface ProjectVersionsDAO {
     ProjectVersionTable insert(@BindBean ProjectVersionTable projectVersionTable);
 
     @GetGeneratedKeys
-    @SqlUpdate("UPDATE project_versions SET visibility = :visibility, reviewer_id = :reviewerId, approved_at = :approvedAt, description = :description, " +
-            "review_state = :reviewState, external_url = :externalUrl, post_id = :postId " +
+    @SqlUpdate("UPDATE project_versions SET version_string = :versionString, visibility = :visibility, reviewer_id = :reviewerId, approved_at = :approvedAt, " +
+            "description = :description, review_state = :reviewState, external_url = :externalUrl, post_id = :postId " +
             "WHERE id = :id")
     ProjectVersionTable update(@BindBean ProjectVersionTable projectVersionsTable);
 
@@ -41,6 +41,9 @@ public interface ProjectVersionsDAO {
 
     @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId")
     List<ProjectVersionTable> getProjectVersions(long projectId);
+
+    @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId AND version_string = :versionString")
+    List<ProjectVersionTable> getProjectVersions(long projectId, String versionString);
 
     @SqlQuery("SELECT pv.*" +
             "   FROM project_versions pv" +

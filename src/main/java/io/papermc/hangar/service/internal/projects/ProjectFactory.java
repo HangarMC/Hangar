@@ -21,17 +21,17 @@ import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
+import java.util.Set;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-
 @Service
 public class ProjectFactory extends HangarComponent {
 
+    public static final String SOFT_DELETION_SUFFIX = "-del.";
     private final ProjectsDAO projectsDAO;
     private final ProjectService projectService;
     private final ChannelService channelService;
@@ -104,7 +104,7 @@ public class ProjectFactory extends HangarComponent {
     public void checkProjectAvailability(final long userId, final String name) {
         String errorKey = this.validationService.isValidProjectName(name);
         if (errorKey == null) {
-            var reason = this.projectsDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));
+            InvalidProjectReason reason = this.projectsDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));
             if (reason != null) {
                 errorKey = reason.key;
             }
@@ -117,10 +117,22 @@ public class ProjectFactory extends HangarComponent {
     public void softDelete(final ProjectTable projectTable, final String comment) {
         if (projectTable.getVisibility() == Visibility.NEW) {
             this.hardDelete(projectTable, comment);
-        } else {
-            this.jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
+        } else if (projectTable.getVisibility() != Visibility.SOFTDELETE) {
+            // Append deletion suffix to allow creation of new projects under the old namespace
+            int deletedId = -1;
+            for (int i = 0; i < 10; i++) {
+                if (this.projectsDAO.getBySlug(projectTable.getOwnerName(), projectTable.getSlug() + SOFT_DELETION_SUFFIX + i) == null) {
+                    deletedId = i;
+                    break;
+                }
+            }
+
+            if (deletedId == -1) {
+                throw new HangarApiException(HttpStatus.BAD_REQUEST, "Project has been deleted too often");
+            }
+
             this.projectVisibilityService.changeVisibility(projectTable, Visibility.SOFTDELETE, comment);
-            this.projectService.refreshHomeProjects();
+            this.renameProject(projectTable.getOwnerName(), projectTable.getSlug(), projectTable.getSlug() + SOFT_DELETION_SUFFIX + deletedId);
         }
     }
 

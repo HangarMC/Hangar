@@ -158,6 +158,7 @@ public class VersionController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 30)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.DELETE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{projectId}/{versionId}/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void softDeleteVersion(@PathVariable long projectId, @PathVariable("versionId") ProjectVersionTable version, @RequestBody @Valid StringContent commentContent) {

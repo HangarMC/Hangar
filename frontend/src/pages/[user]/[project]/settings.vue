@@ -7,9 +7,8 @@ import { HangarProject } from "hangar-internal";
 import { useI18n } from "vue-i18n";
 import Card from "~/lib/components/design/Card.vue";
 import MemberList from "~/components/projects/MemberList.vue";
-import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
 import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission } from "~/types/enums";
+import { NamedPermission, Visibility } from "~/types/enums";
 import Button from "~/lib/components/design/Button.vue";
 import Tabs from "~/lib/components/design/Tabs.vue";
 import { computed, reactive, ref, watch } from "vue";
@@ -299,7 +298,7 @@ useHead(
             </div>
           </ProjectSettingsSection>
           <ProjectSettingsSection
-            v-if="hasPerms(NamedPermission.DELETE_PROJECT)"
+            v-if="hasPerms(NamedPermission.DELETE_PROJECT) && project.visibility !== Visibility.SOFT_DELETE"
             title="project.settings.delete"
             description="project.settings.deleteSub"
             class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"

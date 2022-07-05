@@ -112,7 +112,7 @@ async function deleteVersion(comment: string) {
       content: comment,
     });
     notification.success(i18n.t("version.success.softDelete"));
-    router.go(0);
+    await router.replace(`/${route.params.user}/${route.params.project}/versions`);
   } catch (e) {
     handleRequestError(e as AxiosError, ctx, i18n);
   }

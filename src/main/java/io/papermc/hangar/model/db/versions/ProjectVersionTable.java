@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 
 public class ProjectVersionTable extends Table implements Named, ModelVisible, ProjectIdentified, VersionIdentified, Loggable<VersionContext> {
 
-    private final String versionString;
+    private String versionString;
     private String description;
     private final long projectId;
     private long channelId;
@@ -70,6 +70,10 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
 
     public String getVersionString() {
         return versionString;
+    }
+
+    public void setVersionString(final String versionString) {
+        this.versionString = versionString;
     }
 
     public String getDescription() {

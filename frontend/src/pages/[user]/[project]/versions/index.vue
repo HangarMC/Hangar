@@ -2,7 +2,7 @@
 import Link from "~/lib/components/design/Link.vue";
 import { useI18n } from "vue-i18n";
 import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission, Platform } from "~/types/enums";
+import { NamedPermission, Platform, Visibility } from "~/types/enums";
 import Card from "~/lib/components/design/Card.vue";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import Tag from "~/components/Tag.vue";
@@ -102,6 +102,13 @@ function updateChannelCheckAll() {
 function updatePlatformCheckAll() {
   filter.allChecked.platforms = filter.platforms.length === platforms.value.length;
 }
+
+function getBorderClasses(version: Version): string {
+  if (version.visibility === Visibility.SOFT_DELETE) {
+    return "!border-red-500 border-2px";
+  }
+  return version.visibility === Visibility.PUBLIC ? "" : "!border-gray-500 border-2px";
+}
 </script>
 
 <template>
@@ -112,13 +119,15 @@ function updatePlatformCheckAll() {
         <Pagination v-else :items="versions.result">
           <template #default="{ item }">
             <li class="mb-4">
-              <Card>
+              <Card :class="getBorderClasses(item)">
                 <router-link :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${item.name}`">
                   <div class="flex flex-wrap">
                     <div class="basis-full md:basis-6/12 truncate">
-                      <div class="flex flex-wrap">
+                      <div class="flex flex-wrap items-center">
                         <span class="text-xl md:basis-full">{{ item.name }}</span>
                         <Tag :name="item.channel.name" :color="{ background: item.channel.color }" />
+                        <IconMdiCancel v-if="item.visibility === Visibility.SOFT_DELETE"></IconMdiCancel>
+                        <IconMdiEyeOff v-else-if="item.visibility !== Visibility.PUBLIC"></IconMdiEyeOff>
                       </div>
                     </div>
                     <div class="basis-3/12 <md:(mt-2 basis-6/12)">

@@ -17,10 +17,12 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.model.internal.versions.LastDependencies;
+import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilityService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
+import io.papermc.hangar.util.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -115,17 +117,38 @@ public class VersionService extends HangarComponent {
 
     @Transactional
     public void softDeleteVersion(long projectId, ProjectVersionTable pvt, String comment) {
-        if (pvt.getVisibility() != Visibility.SOFTDELETE) {
-            List<ProjectVersionTable> projectVersionTables = projectVersionsDAO.getProjectVersions(projectId);
-            // TODO should this disallow? or just reset project visibility to NEW
-            if (projectVersionTables.stream().filter(pv -> pv.getVisibility() == Visibility.PUBLIC).count() <= 1 && pvt.getVisibility() == Visibility.PUBLIC) {
-                throw new HangarApiException("version.error.onlyOnePublic");
-            }
-
-            Visibility oldVisibility = pvt.getVisibility();
-            projectVersionVisibilityService.changeVisibility(pvt, Visibility.SOFTDELETE, comment);
-            actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Soft Delete: " + comment, oldVisibility.getTitle()));
+        if (pvt.getVisibility() == Visibility.SOFTDELETE) {
+            return;
         }
+
+        List<ProjectVersionTable> projectVersionTables = projectVersionsDAO.getProjectVersions(projectId);
+        // TODO should this disallow? or just reset project visibility to NEW
+        if (projectVersionTables.stream().filter(pv -> pv.getVisibility() == Visibility.PUBLIC).count() <= 1 && pvt.getVisibility() == Visibility.PUBLIC) {
+            throw new HangarApiException("version.error.onlyOnePublic");
+        }
+
+        // Append deletion suffix to allow creation of a new version under the same name
+        int deletedId = -1;
+        for (int i = 0; i < 10; i++) {
+            if (this.projectVersionsDAO.getProjectVersions(pvt.getProjectId(), pvt.getVersionString() + ProjectFactory.SOFT_DELETION_SUFFIX + i).isEmpty()) {
+                deletedId = i;
+                break;
+            }
+        }
+        if (deletedId == -1) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "Version has been deleted too often");
+        }
+
+        Visibility oldVisibility = pvt.getVisibility();
+        renameVersion(pvt, pvt.getVersionString() + ProjectFactory.SOFT_DELETION_SUFFIX + deletedId);
+        projectVersionVisibilityService.changeVisibility(pvt, Visibility.SOFTDELETE, comment);
+        actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Soft Delete: " + comment, oldVisibility.getTitle()));
+    }
+
+    private void renameVersion(final ProjectVersionTable projectVersionTable, final String newName) {
+        final String compactNewName = StringUtils.compact(newName);
+        projectVersionTable.setVersionString(compactNewName);
+        this.projectVersionsDAO.update(projectVersionTable);
     }
 
     @Transactional

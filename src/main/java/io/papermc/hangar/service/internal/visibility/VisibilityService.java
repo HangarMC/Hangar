@@ -41,7 +41,9 @@ abstract class VisibilityService<LC extends LogContext<?, LC>, M extends Table &
         if (model == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        if (model.getVisibility() == newVisibility) return model;
+        if (model.getVisibility() == newVisibility) {
+            return model;
+        }
 
         updateLastVisChange(getHangarPrincipal().getUserId(), model.getId());
 
