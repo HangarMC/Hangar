@@ -39,7 +39,7 @@ public class ProjectVisibilityService extends VisibilityService<ProjectContext, 
     }
 
     @Override
-    ProjectTable getModel(long id) {
+    public ProjectTable getModel(long id) {
         return projectsDAO.getById(id);
     }
 

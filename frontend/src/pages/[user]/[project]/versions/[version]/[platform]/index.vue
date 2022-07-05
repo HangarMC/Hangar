@@ -139,7 +139,7 @@ async function restoreVersion() {
   try {
     await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/restore`, true, "post");
     notification.success(i18n.t("version.success.restore"));
-    router.go(0);
+    await router.replace(`/${route.params.user}/${route.params.project}/versions`);
   } catch (e) {
     handleRequestError(e as AxiosError, ctx, i18n);
   }

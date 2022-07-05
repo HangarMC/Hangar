@@ -23,17 +23,18 @@ import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilitySer
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
+
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class VersionService extends HangarComponent {
@@ -169,10 +170,23 @@ public class VersionService extends HangarComponent {
 
     @Transactional
     public void restoreVersion(long projectId, ProjectVersionTable pvt) {
-        if (pvt.getVisibility() == Visibility.SOFTDELETE) {
-            projectVersionVisibilityService.changeVisibility(pvt, Visibility.PUBLIC, "Version Restored");
-            actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Version Restored", Visibility.SOFTDELETE.getTitle()));
+        if (pvt.getVisibility() != Visibility.SOFTDELETE) {
+            return;
         }
+
+        final int suffixIndex = pvt.getVersionString().indexOf(ProjectFactory.SOFT_DELETION_SUFFIX);
+        if (suffixIndex != -1) {
+            final String newName = pvt.getVersionString().substring(0, suffixIndex);
+            if (!this.projectVersionsDAO.getProjectVersions(pvt.getProjectId(), newName).isEmpty()) {
+                // Can't automatically rename
+                //TODO take platforms into account
+                throw new HangarApiException("version.error.oldNameTaken");
+            }
+
+            renameVersion(pvt, newName);
+        }
+        projectVersionVisibilityService.changeVisibility(pvt, Visibility.PUBLIC, "Version Restored");
+        actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Version Restored", Visibility.SOFTDELETE.getTitle()));
     }
 
     public void saveDiscourseData(ProjectVersionTable version, long postId) {

@@ -21,17 +21,17 @@ import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
-import java.util.Set;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Set;
 
 @Service
 public class ProjectFactory extends HangarComponent {
 
-    public static final String SOFT_DELETION_SUFFIX = "-del.";
+    public static final String SOFT_DELETION_SUFFIX = "-del_";
     private final ProjectsDAO projectsDAO;
     private final ProjectService projectService;
     private final ChannelService channelService;
@@ -86,12 +86,16 @@ public class ProjectFactory extends HangarComponent {
         return projectTable;
     }
 
-
     public String renameProject(final String author, final String slug, final String newName) {
+        return renameProject(author, slug, newName, false);
+    }
+
+    @Transactional
+    public String renameProject(final String author, final String slug, final String newName, final boolean skipNameCheck) {
         String compactNewName = StringUtils.compact(newName);
         ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
         String oldName = projectTable.getName();
-        this.checkProjectAvailability(projectTable.getOwnerId(), compactNewName);
+        this.checkProjectAvailability(projectTable.getOwnerId(), compactNewName, skipNameCheck);
         projectTable.setName(compactNewName);
         projectTable.setSlug(StringUtils.slugify(compactNewName));
         this.projectsDAO.update(projectTable);
@@ -102,7 +106,14 @@ public class ProjectFactory extends HangarComponent {
     }
 
     public void checkProjectAvailability(final long userId, final String name) {
-        String errorKey = this.validationService.isValidProjectName(name);
+        checkProjectAvailability(userId, name, false);
+    }
+
+    public void checkProjectAvailability(final long userId, final String name, final boolean skipNameChecking) {
+        String errorKey = null;
+        if (!skipNameChecking) {
+            errorKey = this.validationService.isValidProjectName(name);
+        }
         if (errorKey == null) {
             InvalidProjectReason reason = this.projectsDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));
             if (reason != null) {
@@ -114,6 +125,7 @@ public class ProjectFactory extends HangarComponent {
         }
     }
 
+    @Transactional
     public void softDelete(final ProjectTable projectTable, final String comment) {
         if (projectTable.getVisibility() == Visibility.NEW) {
             this.hardDelete(projectTable, comment);
@@ -131,11 +143,15 @@ public class ProjectFactory extends HangarComponent {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "Project has been deleted too often");
             }
 
+            final String newName = projectTable.getName() + SOFT_DELETION_SUFFIX + deletedId;
+            this.renameProject(projectTable.getOwnerName(), projectTable.getSlug(), newName, true);
+            projectTable.setName(newName);
+            projectTable.setSlug(StringUtils.slugify(newName));
             this.projectVisibilityService.changeVisibility(projectTable, Visibility.SOFTDELETE, comment);
-            this.renameProject(projectTable.getOwnerName(), projectTable.getSlug(), projectTable.getSlug() + SOFT_DELETION_SUFFIX + deletedId);
         }
     }
 
+    @Transactional
     public void hardDelete(final ProjectTable projectTable, final String comment) {
         this.actionLogger.project(LogAction.PROJECT_VISIBILITY_CHANGED.create(ProjectContext.of(projectTable.getId()), "Deleted: " + comment, projectTable.getVisibility().getTitle()));
         FileUtils.deleteDirectory(this.projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getName()));

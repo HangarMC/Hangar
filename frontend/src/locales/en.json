@@ -525,7 +525,8 @@
     "editChannels": "Edit Channels",
     "platforms": "Platforms",
     "error": {
-      "onlyOnePublic": "You only have 1 public version left"
+      "onlyOnePublic": "You only have 1 public version left",
+      "oldNameTaken": "Cannot automatically remove the deletion suffix - rename the version manually before restoring"
     },
     "success": {
       "softDelete": "You have deleted this version",
@@ -659,7 +660,7 @@
   },
   "visibility": {
     "notice": {
-      "new": "This project will not be shown to others until a version has been uploaded. If no version is uploaded over a longer period of time, the project will be deleted.",
+      "new": "This project will not be shown to others until a version has been uploaded.",
       "needsChanges": "This project requires changes",
       "needsApproval": "You have sent the project for review",
       "softDelete": "Project deleted by {0}"

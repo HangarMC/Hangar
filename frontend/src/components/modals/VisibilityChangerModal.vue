@@ -11,6 +11,7 @@ import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import { useNotificationStore } from "~/store/notification";
+import { useRouter } from "vue-router";
 
 const props = defineProps<{
   type: "project" | "version";
@@ -22,6 +23,7 @@ const i18n = useI18n();
 const ctx = useContext();
 const backendData = useBackendDataStore();
 const notification = useNotificationStore();
+const router = useRouter();
 
 const visibility = ref<Visibility>();
 const reason = ref<string>("");
@@ -30,16 +32,20 @@ const showTextarea = computed(() => setVisibility.value?.showModal && props.prop
 const setVisibility = computed(() => backendData.visibilities.find((v) => v.name === visibility.value));
 const currentVisibility = computed(() => backendData.visibilities.find((v) => v.name === props.propVisibility));
 
-async function submit(closeModal: () => void): Promise<void> {
-  const result = await useInternalApi(props.postUrl, true, "post", {
+async function submit(): Promise<void> {
+  await useInternalApi(props.postUrl, true, "post", {
     visibility: visibility.value,
     comment: setVisibility.value?.showModal ? reason.value : null,
   }).catch((e) => handleRequestError(e, ctx, i18n));
   reason.value = "";
-  if (setVisibility.value && result) {
+  if (setVisibility.value) {
     notification.success(i18n.t("visibility.modal.success", [props.type, i18n.t(setVisibility.value?.title)]));
   }
-  closeModal();
+  if (visibility.value === Visibility.SOFT_DELETE) {
+    await router.push("/");
+  } else {
+    router.go(0);
+  }
 }
 </script>
 

@@ -12,7 +12,6 @@ import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.projects.ProjectAdminService;
 import io.papermc.hangar.service.internal.projects.ProjectNoteService;
-import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,13 +35,11 @@ public class ProjectAdminController extends HangarComponent {
 
     private final ProjectAdminService projectAdminService;
     private final ProjectNoteService projectNoteService;
-    private final ProjectVisibilityService projectVisibilityService;
 
     @Autowired
-    public ProjectAdminController(ProjectAdminService projectAdminService, ProjectNoteService projectNoteService, ProjectVisibilityService projectVisibilityService) {
+    public ProjectAdminController(ProjectAdminService projectAdminService, ProjectNoteService projectNoteService) {
         this.projectAdminService = projectAdminService;
         this.projectNoteService = projectNoteService;
-        this.projectVisibilityService = projectVisibilityService;
     }
 
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
@@ -64,7 +61,7 @@ public class ProjectAdminController extends HangarComponent {
     @PermissionRequired(NamedPermission.REVIEWER)
     @PostMapping(path = "/visibility/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void changeProjectVisibility(@PathVariable long projectId, @Valid @RequestBody VisibilityChangeForm visibilityChangeForm) {
-        projectVisibilityService.changeVisibility(projectId, visibilityChangeForm.getVisibility(), visibilityChangeForm.getComment());
+        projectAdminService.changeVisibility(projectId, visibilityChangeForm.getVisibility(), visibilityChangeForm.getComment());
     }
 
     @Unlocked

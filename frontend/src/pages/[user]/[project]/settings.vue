@@ -108,7 +108,11 @@ async function softDelete(comment: string) {
       content: comment,
     });
     useNotificationStore().success(i18n.t("project.settings.success.softDelete"));
-    await router.go(0);
+    if (hasPerms(NamedPermission.HARD_DELETE_PROJECT)) {
+      router.go(0);
+    } else {
+      await router.push("/");
+    }
   } catch (e) {
     handleRequestError(e, ctx, i18n);
   }
@@ -289,7 +293,7 @@ useHead(
                 ref="newNameField"
                 v-model.trim="newName"
                 :label="i18n.t('project.settings.newName')"
-                :rules="[validProjectName()(project.owner.userId)]"
+                :rules="[validProjectName()(() => project.owner.userId)]"
               />
               <Button :disabled="!newName || newNameField.v.$invalid" :loading="loading.rename" class="ml-2" @click="rename">
                 <IconMdiRenameBox class="mr-2" />
