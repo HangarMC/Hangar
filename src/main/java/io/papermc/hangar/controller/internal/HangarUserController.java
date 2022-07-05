@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.model.common.roles.Role;
@@ -26,6 +27,7 @@ import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.perms.roles.OrganizationRoleService;
 import io.papermc.hangar.service.internal.perms.roles.ProjectRoleService;
 import io.papermc.hangar.service.internal.perms.roles.RoleService;
+import io.papermc.hangar.service.internal.projects.PinnedProjectService;
 import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.service.internal.users.invites.InviteService;
@@ -44,14 +46,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
 import javax.validation.Valid;
 import java.util.List;
 
 @Controller
 @LoggedIn
 @RateLimit(path = "hangaruser")
-@RequestMapping(path = "/api/internal", produces = MediaType.APPLICATION_JSON_VALUE, method = { RequestMethod.GET, RequestMethod.POST })
+@RequestMapping(path = "/api/internal", produces = MediaType.APPLICATION_JSON_VALUE, method = {RequestMethod.GET, RequestMethod.POST})
 public class HangarUserController extends HangarComponent {
 
     private final ObjectMapper mapper;
@@ -62,9 +63,10 @@ public class HangarUserController extends HangarComponent {
     private final OrganizationRoleService organizationRoleService;
     private final ProjectInviteService projectInviteService;
     private final OrganizationInviteService organizationInviteService;
+    private final PinnedProjectService pinnedProjectService;
 
     @Autowired
-    public HangarUserController(ObjectMapper mapper, UsersApiService usersApiService, UserService userService, NotificationService notificationService, ProjectRoleService projectRoleService, OrganizationRoleService organizationRoleService, ProjectInviteService projectInviteService, OrganizationInviteService organizationInviteService) {
+    public HangarUserController(ObjectMapper mapper, UsersApiService usersApiService, UserService userService, NotificationService notificationService, ProjectRoleService projectRoleService, OrganizationRoleService organizationRoleService, ProjectInviteService projectInviteService, OrganizationInviteService organizationInviteService, final PinnedProjectService pinnedProjectService) {
         this.mapper = mapper;
         this.usersApiService = usersApiService;
         this.userService = userService;
@@ -73,6 +75,7 @@ public class HangarUserController extends HangarComponent {
         this.organizationRoleService = organizationRoleService;
         this.projectInviteService = projectInviteService;
         this.organizationInviteService = organizationInviteService;
+        this.pinnedProjectService = pinnedProjectService;
     }
 
     @GetMapping("/users/@me")
@@ -180,6 +183,32 @@ public class HangarUserController extends HangarComponent {
     @PostMapping("/invites/organization/{id}/{status}")
     public void updateOrganizationInviteStatus(@PathVariable long id, @PathVariable InviteStatus status) {
         updateRole(organizationRoleService, organizationInviteService, id, status);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 10, refillTokens = 3, refillSeconds = 10)
+    @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
+    @PostMapping(path = "/users/{user}/setpinned")
+    public void setPinnedStatus(@PathVariable final String user, @PathVariable final long projectId, @RequestParam final boolean value) {
+        final UserTable userTable = userService.getUserTable(user);
+        if (userTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+        if (value) {
+            pinnedProjectService.addPinnedProject(userTable.getId(), projectId);
+        } else {
+            pinnedProjectService.removePinnedProject(userTable.getId(), projectId);
+        }
+    }
+
+    @PostMapping(path = "/users/{user}/pinned")
+    public ResponseEntity<List<ProjectCompact>> getPinnedProjects(@PathVariable final String user) {
+        final UserTable userTable = userService.getUserTable(user);
+        if (userTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(this.pinnedProjectService.getPinnedVersions(userTable.getId()));
     }
 
     private <RT extends ExtendedRoleTable<? extends Role<RT>, ?>, RS extends RoleService<RT, ?, ?>, IS extends InviteService<?, ?, RT, ?>> void updateRole(RS roleService, IS inviteService, long id, InviteStatus status) {

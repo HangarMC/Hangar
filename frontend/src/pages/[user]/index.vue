@@ -27,6 +27,7 @@ import IconMdiCalendar from "~icons/mdi/calendar";
 import IconMdiEyeOffOutline from "~icons/mdi/eye-off-outline";
 import OrgVisibilityModal from "~/components/modals/OrgVisibilityModal.vue";
 import LockUserModal from "~/components/modals/LockUserModal.vue";
+import ProjectCard from "~/components/projects/ProjectCard.vue";
 
 const props = defineProps<{
   user: User;
@@ -36,7 +37,7 @@ const i18n = useI18n();
 const ctx = useContext();
 
 const route = useRoute();
-const { starred, watching, projects, organizations } = (await useUserData(props.user.name)).value || {};
+const { starred, watching, projects, organizations, pinned } = (await useUserData(props.user.name)).value || {};
 let organizationVisibility = null;
 if (props.user.name === useAuthStore().user?.name) {
   organizationVisibility = await useOrgVisibility(props.user.name);
@@ -78,6 +79,12 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
 
 <template>
   <UserHeader :user="user" :organization="organization" />
+  <div class="flex-basis-full flex flex-col gap-2 flex-grow md:max-w-2/3 md:min-w-1/3">
+    <div v-for="project in pinned" :key="project.namespace">
+      <ProjectCard :project="project"></ProjectCard>
+    </div>
+  </div>
+
   <div class="flex gap-4 flex-basis-full flex-col md:flex-row">
     <div class="flex-basis-full flex flex-col gap-2 flex-grow md:max-w-2/3 md:min-w-1/3">
       <ProjectList :projects="projects"></ProjectList>
