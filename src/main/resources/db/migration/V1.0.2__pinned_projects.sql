@@ -1,4 +1,4 @@
-CREATE TABLE pinned_projects
+CREATE TABLE pinned_user_projects
 (
     id         bigserial                NOT NULL
         CONSTRAINT project_pinned_pkey
