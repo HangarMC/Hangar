@@ -1,0 +1,32 @@
+name: Error or Problem
+description: Report issues with Hangar's website or backend
+body:
+  - type: textarea
+    attributes:
+      label: Observed/problematic behavior
+      description: What you saw.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: What you expected to see.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: This may include a video, link to a broken Hangar page, or detailed instructions to help reconstruct the issue.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Other
+      description: |
+        Please include other helpful information below.
+        The more information we receive, the quicker and more effective we can be at finding the solution to the issue.
+    validations:
+      required: false
