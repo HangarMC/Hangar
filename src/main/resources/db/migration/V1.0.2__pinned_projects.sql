@@ -3,7 +3,6 @@ CREATE TABLE pinned_projects
     id         bigserial                NOT NULL
         CONSTRAINT project_pinned_pkey
             PRIMARY KEY,
-    created_at timestamp with time zone NOT NULL,
     user_id    bigint                   NOT NULL
         CONSTRAINT project_pinned_user_id_fkey
             REFERENCES users
