@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import org.jetbrains.annotations.NotNull;
@@ -128,9 +129,15 @@ public class LoginController extends HangarComponent {
 
     @GetMapping(path = "/handle-logout", params = "state")
     public RedirectView loggedOut(@RequestParam String state, @CookieValue(value = "url", defaultValue = "/logged-out") String returnUrl, @CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) String refreshToken) {
-        // get username
-        DecodedJWT decodedJWT = tokenService.verify(state);
-        String username = decodedJWT.getSubject();
+        String username;
+        try {
+            // get username
+            DecodedJWT decodedJWT = tokenService.verify(state);
+            username = decodedJWT.getSubject();
+        } catch (JWTVerificationException e) {
+            throw new HangarApiException("nav.user.error.logoutFailed", e.getMessage());
+        }
+
         // invalidate id token
         ssoService.logout(username);
         // invalidate refresh token

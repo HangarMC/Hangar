@@ -6,7 +6,7 @@ import Announcement from "~/components/Announcement.vue";
 import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 
-import hangarLogo from "~/assets/logo.svg";
+import hangarLogo from "~/lib/assets/hangar-logo.svg";
 
 import IconMdiHome from "~icons/mdi/home";
 import IconMdiAccountGroup from "~icons/mdi/account-group";
