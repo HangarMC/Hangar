@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { Dialog, DialogOverlay } from "@headlessui/vue";
 
 const props = withDefaults(
@@ -24,10 +24,23 @@ function close() {
   isOpen.value = false;
 }
 
+const emit = defineEmits<{
+  (e: "open"): void;
+  (e: "close"): void;
+}>();
+
+watch(isOpen, (newVal) => {
+  if (newVal) {
+    emit("open");
+  } else {
+    emit("close");
+  }
+});
+
 defineExpose({
-  open: open,
-  close: close,
-  isOpen: isOpen,
+  open,
+  close,
+  isOpen,
 });
 </script>
 
