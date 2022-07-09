@@ -32,6 +32,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
       @blur="v.$touch()"
     />
     <icon-mdi-circle class="absolute h-4 w-4 p-1 opacity-0 text-white" />
+    <slot></slot>
     <template v-if="props.label">{{ props.label }}</template>
   </label>
 </template>
