@@ -39,14 +39,15 @@
     border: 1px solid #e0e0e0;
   }
 
-  code::before, code::after {
-    content: ''
+  code::before,
+  code::after {
+    content: "";
   }
 
   code {
     background-color: #d5d5d5;
     color: black;
-    padding: .1em .3em;
+    padding: 0.1em 0.3em;
     font-size: 80%;
     border-radius: 3px;
   }
