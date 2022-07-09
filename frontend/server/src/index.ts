@@ -1,7 +1,7 @@
 import path from "path";
 import express, { Request, Response } from "express";
 import compression from "compression";
-import { createProxyMiddleware } from "http-proxy-middleware";
+import { createProxyMiddleware, Options } from "http-proxy-middleware";
 
 const dist = `../../dist`;
 
@@ -33,7 +33,7 @@ for (const asset of ssr.assets || []) {
 
 // proxy
 for (const proxy of Object.keys(proxyConfig)) {
-  server.use(createProxyMiddleware(proxy, {target: proxyConfig[proxy] }))
+  server.use(createProxyMiddleware(proxy, {target: proxyConfig[proxy] } as Options))
 }
 
 // main
