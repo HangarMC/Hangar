@@ -166,9 +166,9 @@ useHead(meta);
         <div class="flex flex-col gap-1">
           <ul>
             <li v-for="platform in backendData.visiblePlatforms" :key="platform.enumName" class="inline-flex w-full">
-              <InputRadio v-model="filters.platform" :value="platform.enumName" />
-              <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
-              {{ platform.name }}
+              <InputRadio v-model="filters.platform" :value="platform.enumName" :label="platform.name">
+                <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
+              </InputRadio>
             </li>
           </ul>
         </div>
