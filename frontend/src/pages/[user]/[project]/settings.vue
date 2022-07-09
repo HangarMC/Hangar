@@ -23,7 +23,7 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import { useNotificationStore } from "~/store/notification";
 import InputTag from "~/lib/components/ui/InputTag.vue";
-import TextAreaModal from "~/components/modals/TextAreaModal.vue";
+import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 import ProjectSettingsSection from "~/components/projects/ProjectSettingsSection.vue";
 import { maxLength, required, requiredIf, url } from "~/lib/composables/useValidationHelpers";
 import { validProjectName } from "~/composables/useHangarValidations";

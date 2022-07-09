@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { TranslateResult, useI18n } from "vue-i18n";
 import { DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diff_match_patch as Diff } from "diff-match-patch";
-import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
+import Modal from "~/lib/components/modals/Modal.vue";
 import { computed } from "vue";
 
 const props = defineProps<{
@@ -50,8 +49,8 @@ const prettyDiff = computed(() => {
 
 <template>
   <Modal :title="props.title" big>
-      <!-- eslint-disable-next-line vue/no-v-html -->
-      <div v-html="prettyDiff"></div>
+    <!-- eslint-disable-next-line vue/no-v-html -->
+    <div v-html="prettyDiff"></div>
     <template #activator="{ on }">
       <slot name="activator" :on="on"></slot>
     </template>

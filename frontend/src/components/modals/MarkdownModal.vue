@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { TranslateResult, useI18n } from "vue-i18n";
 import Markdown from "~/components/Markdown.vue";
-import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
+import Modal from "~/lib/components/modals/Modal.vue";
 
 const props = defineProps<{
   title: string | TranslateResult;
@@ -14,7 +13,7 @@ const i18n = useI18n();
 
 <template>
   <Modal :title="props.title" big>
-      <Markdown :raw="markdown"></Markdown>
+    <Markdown :raw="markdown" />
     <template #activator="{ on }">
       <slot name="activator" :on="on"></slot>
     </template>

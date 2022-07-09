@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
+import Modal from "~/lib/components/modals/Modal.vue";
 import { Visibility } from "~/types/enums";
 import InputRadio from "~/lib/components/ui/InputRadio.vue";
 import { useBackendDataStore } from "~/store/backendData";

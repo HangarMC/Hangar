@@ -2,7 +2,7 @@
 import { useI18n } from "vue-i18n";
 import { hasPerms } from "~/composables/usePerm";
 import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
+import Modal from "~/lib/components/modals/Modal.vue";
 import { HangarProject, HangarVersion } from "hangar-internal";
 import { useContext } from "vite-ssr/vue";
 import { computed, onMounted, ref, watch } from "vue";
