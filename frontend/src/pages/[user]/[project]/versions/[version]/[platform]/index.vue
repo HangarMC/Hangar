@@ -29,7 +29,7 @@ import { AxiosError } from "axios";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
 import PlatformLogo from "~/components/logos/PlatformLogo.vue";
-import TextAreaModal from "~/components/modals/TextAreaModal.vue";
+import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
 import { formatVersionNumbers } from "~/composables/useVersionHelper";
 import filesize from "filesize";

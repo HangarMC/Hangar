@@ -21,7 +21,7 @@ import { required } from "~/lib/composables/useValidationHelpers";
 import { useVuelidate } from "@vuelidate/core";
 import Tag from "~/components/Tag.vue";
 import Accordeon from "~/lib/components/design/Accordeon.vue";
-import TextAreaModal from "~/components/modals/TextAreaModal.vue";
+import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 
 const route = useRoute();
 const authStore = useAuthStore();

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
+import Modal from "~/lib/components/modals/Modal.vue";
 import { ref } from "vue";
 import { useNotificationStore } from "~/store/notification";
 import InputText from "~/lib/components/ui/InputText.vue";

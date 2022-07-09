@@ -1,8 +1,8 @@
 declare module "hangar-internal" {
-  import type {Joinable, Table} from "hangar-internal";
-  import type {Project, ProjectNamespace} from "hangar-api";
-  import type {ProjectCategory, Visibility} from "~/types/enums";
-  import {Platform} from "~/types/enums";
+  import type { Joinable, Table } from "hangar-internal";
+  import type { Project, ProjectNamespace } from "hangar-api";
+  import type { ProjectCategory, Visibility } from "~/types/enums";
+  import { Platform } from "~/types/enums";
 
   interface ProjectOwner {
     id: number;
@@ -28,7 +28,7 @@ declare module "hangar-internal" {
   }
 
   interface PinnedVersion {
-    type: 'channel' | 'version';
+    type: "channel" | "version";
     name: string;
     platformDependencies: Record<Platform, string[]>;
     channel: ProjectChannel;

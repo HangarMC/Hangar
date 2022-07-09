@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
+import Modal from "~/lib/components/modals/Modal.vue";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import { useContext } from "vite-ssr/vue";
 import { useRouter } from "vue-router";
