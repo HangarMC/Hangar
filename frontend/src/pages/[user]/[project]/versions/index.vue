@@ -22,7 +22,7 @@ import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import Alert from "~/lib/components/design/Alert.vue";
 import Pagination from "~/lib/components/design/Pagination.vue";
-import PlatformLogo from "~/components/logos/PlatformLogo.vue";
+import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 
 const i18n = useI18n();
 const ctx = useContext();

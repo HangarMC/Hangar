@@ -21,7 +21,7 @@ import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useBackendDataStore } from "~/store/backendData";
 import Tag from "~/components/Tag.vue";
-import PlatformLogo from "~/components/logos/PlatformLogo.vue";
+import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
 
 const props = defineProps<{
