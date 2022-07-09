@@ -28,7 +28,7 @@ import PlatformVersionEditModal from "~/components/modals/PlatformVersionEditMod
 import { AxiosError } from "axios";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
-import PlatformLogo from "~/components/logos/PlatformLogo.vue";
+import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import TextAreaModal from "~/components/modals/TextAreaModal.vue";
 import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
 import { formatVersionNumbers } from "~/composables/useVersionHelper";

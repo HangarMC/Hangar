@@ -17,9 +17,9 @@ import { useApi } from "~/composables/useApi";
 import { PaginatedResult, Project } from "hangar-api";
 import Alert from "~/lib/components/design/Alert.vue";
 import { Platform } from "~/types/enums";
-import { toNumber } from "lodash-es";
-import PlatformLogo from "~/components/logos/PlatformLogo.vue";
 import InputRadio from "~/lib/components/ui/InputRadio.vue";
+import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
+import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -194,7 +194,9 @@ useHead(meta);
             v-model="filters.categories"
             :value="category.apiName"
             :label="i18n.t(category.title)"
-          />
+          >
+            <CategoryLogo :category="category.apiName" :size="22" class="mr-1" />
+          </InputCheckbox>
         </div>
       </div>
       <div class="licenses">

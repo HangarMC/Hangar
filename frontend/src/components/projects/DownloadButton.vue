@@ -8,7 +8,7 @@ import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import { formatVersionNumbers } from "~/composables/useVersionHelper";
 import { useBackendDataStore } from "~/store/backendData";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
-import PlatformLogo from "~/components/logos/PlatformLogo.vue";
+import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 
 const i18n = useI18n();
 const backendData = useBackendDataStore();
