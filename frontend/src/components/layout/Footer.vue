@@ -22,7 +22,7 @@ const i18n = useI18n();
             >{{ i18n.t("hangar.footer.tos") }}
           </router-link>
         </div>
-        <p class="font-bold">© 2022 <a href="https://papermc.io/">PaperMC</a></p>
+        <p class="font-bold">© {{ new Date().getFullYear() }} <a href="https://papermc.io/">PaperMC</a></p>
       </div>
     </div>
   </footer>
