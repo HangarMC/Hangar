@@ -36,10 +36,14 @@ function getBorderClasses(): string {
       </div>
       <div class="overflow-clip overflow-hidden min-w-0">
         <span class="inline-flex items-center gap-x-1">
-          <p>
-            <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">{{ project.name }}</Link>
-            by
-            <Link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</Link>
+          <p class="text-2xl">
+            <router-link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
+              <span class="font-bold">{{ project.name }}</span>
+            </router-link>
+            <span class="ml-1 text-sm">
+              by
+              <Link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</Link>
+            </span>
           </p>
           <IconMdiCancel v-if="project.visibility === Visibility.SOFT_DELETE"></IconMdiCancel>
           <IconMdiEyeOff v-else-if="project.visibility !== Visibility.PUBLIC"></IconMdiEyeOff>
