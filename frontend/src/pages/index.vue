@@ -20,6 +20,7 @@ import { Platform } from "~/types/enums";
 import InputRadio from "~/lib/components/ui/InputRadio.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
+import LicenseLogo from "~/components/logos/licenses/LicenseLogo.vue";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -202,7 +203,9 @@ useHead(meta);
       <div class="licenses">
         <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.licenses") }}</h3>
         <div class="flex flex-col gap-1">
-          <InputCheckbox v-for="license in backendData.licenses" :key="license" v-model="filters.licenses" :value="license" :label="license" />
+          <InputCheckbox v-for="license in backendData.licenses" :key="license" v-model="filters.licenses" :value="license" :label="license">
+            <LicenseLogo :license="license" :size="22" class="mr-1" />
+          </InputCheckbox>
         </div>
       </div>
     </Card>
