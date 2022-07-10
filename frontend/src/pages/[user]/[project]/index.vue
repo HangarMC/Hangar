@@ -109,7 +109,7 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
                   <div class="flex flex-col">
                     <div v-for="(v, p) in version.platformDependencies" :key="p" class="flex flex-row items-center">
                       <PlatformLogo :key="p" :platform="p" :size="24" class="ml-1" />
-                      <span :key="v" class="text-sm text-gray-600">{{ formatVersionNumbers(v) }}</span>
+                      <span :key="v" class="text-sm light:text-gray-600">{{ formatVersionNumbers(v) }}</span>
                     </div>
                   </div>
                 </div>
