@@ -180,8 +180,9 @@ function getBorderClasses(version: Version): string {
 
           <ul>
             <li v-for="channel in channels" :key="channel.name" class="inline-flex w-full">
-              <InputCheckbox v-model="filter.channels" :value="channel.name" @change="updateChannelCheckAll" />
-              <Tag :name="channel.name" :color="{ background: channel.color }"></Tag>
+              <InputCheckbox v-model="filter.channels" :value="channel.name" @change="updateChannelCheckAll">
+                <Tag :name="channel.name" :color="{ background: channel.color }"></Tag>
+              </InputCheckbox>
             </li>
           </ul>
         </Card>
