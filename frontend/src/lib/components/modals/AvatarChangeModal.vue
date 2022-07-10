@@ -35,10 +35,10 @@ import { Cropper, CropperResult } from "vue-advanced-cropper";
 import Button from "~/lib/components/design/Button.vue";
 import InputFile from "~/lib/components/ui/InputFile.vue";
 import { required } from "~/lib/composables/useValidationHelpers";
-
-import "vue-advanced-cropper/dist/style.css";
 import { onMounted, ref, watch } from "vue";
 import Modal from "~/lib/components/modals/Modal.vue";
+
+import "vue-advanced-cropper/dist/style.css";
 
 const { t } = useI18n();
 
@@ -58,7 +58,6 @@ onMounted(() => {
   reader.addEventListener(
     "load",
     () => {
-      console.log("loaded");
       cropperInput.value = reader?.result;
     },
     false

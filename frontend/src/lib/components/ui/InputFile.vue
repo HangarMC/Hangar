@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { ValidationRule } from "@vuelidate/core";
 import { useValidation } from "~/lib/composables/useValidationHelpers";
 import InputWrapper from "~/lib/components/ui/InputWrapper.vue";
@@ -30,6 +30,14 @@ function onFileChange(e: InputEvent) {
   if (!files?.length) return;
   file.value = files[0];
 }
+
+// check if we got reset from the outside
+const input = ref();
+watch(file, (newVal) => {
+  if (!newVal) {
+    input.value.value = null;
+  }
+});
 </script>
 
 <template>
@@ -44,6 +52,6 @@ function onFileChange(e: InputEvent) {
     :disabled="disabled"
   >
     <!-- todo make button fancy -->
-    <input type="file" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" @change="onFileChange" />
+    <input ref="input" type="file" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" @change="onFileChange" />
   </InputWrapper>
 </template>
