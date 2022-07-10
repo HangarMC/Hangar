@@ -8,6 +8,7 @@ import { useI18n } from "vue-i18n";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import { Project } from "hangar-api";
 import { Visibility } from "~/types/enums";
+import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
 
 const i18n = useI18n();
 
@@ -46,7 +47,10 @@ function getBorderClasses(): string {
         </span>
 
         <p v-if="project.description" class="mb-1">{{ project.description }}</p>
-        <span class="<sm:hidden text-gray-500 dark:text-gray-400"> {{ i18n.t("project.category." + project.category) }} </span>
+        <span class="<sm:hidden text-gray-500 dark:text-gray-400 flex flex-row items-center">
+          <CategoryLogo :category="project.category" :size="16" class="mr-1" />
+          {{ i18n.t("project.category." + project.category) }}
+        </span>
       </div>
       <div class="flex-grow"></div>
       <div class="<sm:hidden flex flex-col flex-shrink-0 min-w-40">
