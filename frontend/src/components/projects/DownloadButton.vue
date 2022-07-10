@@ -22,6 +22,7 @@ const props = withDefaults(
   defineProps<{
     project: HangarProject;
     small?: boolean;
+    showVersions?: boolean;
     // Define either version and platform or pinnedVersion, or neither to use main channel versions
     platform?: Platform;
     version?: DownloadableVersion;
@@ -29,6 +30,7 @@ const props = withDefaults(
   }>(),
   {
     small: false,
+    showVersions: true,
   }
 );
 
@@ -64,7 +66,7 @@ const external = computed(() => false);
       >
         <PlatformLogo :platform="platform" :size="24" class="mr-1" />
         {{ backendData.platforms?.get(platform).name }}
-        <span class="ml-1">({{ formatVersionNumbers(v) }})</span>
+        <span v-if="showVersions" class="ml-1">({{ formatVersionNumbers(v) }})</span>
       </DropdownItem>
     </DropdownButton>
 
@@ -92,7 +94,7 @@ const external = computed(() => false);
       >
         <PlatformLogo :platform="p" :size="24" class="mr-1" />
         {{ backendData.platforms?.get(p).name }}
-        <span v-if="v.platformDependencies" class="ml-1">({{ formatVersionNumbers(v.platformDependencies[p]) }})</span>
+        <span v-if="v.platformDependencies && showVersions" class="ml-1">({{ formatVersionNumbers(v.platformDependencies[p]) }})</span>
       </DropdownItem>
     </DropdownButton>
   </div>
