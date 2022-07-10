@@ -107,7 +107,7 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
                 <div class="inline-flex items-center">
                   <Tag :name="version.channel.name" :color="{ background: version.channel.color }" />
                   <div class="flex flex-col">
-                    <div v-for="(v, p) in version.platformDependencies" :key="p" class="flex flex-row">
+                    <div v-for="(v, p) in version.platformDependencies" :key="p" class="flex flex-row items-center">
                       <PlatformLogo :key="p" :platform="p" :size="24" class="ml-1" />
                       <span :key="v" class="text-sm text-gray-600">{{ formatVersionNumbers(v) }}</span>
                     </div>
@@ -115,7 +115,7 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
                 </div>
               </router-link>
             </div>
-            <div class="items-center inline-flex ml-1">
+            <div class="items-end inline-flex ml-1">
               <DownloadButton :project="project" :pinned-version="version" small></DownloadButton>
             </div>
           </li>
