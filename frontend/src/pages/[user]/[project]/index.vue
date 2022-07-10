@@ -104,19 +104,19 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
               <router-link :to="createPinnedVersionUrl(version)">
                 <span class="font-semibold">{{ version.name }}</span>
                 <br />
-                <div class="inline-flex items-center">
-                  <Tag :name="version.channel.name" :color="{ background: version.channel.color }" />
+                <div class="inline-flex items-center mt-1">
                   <div class="flex flex-col">
                     <div v-for="(v, p) in version.platformDependencies" :key="p" class="flex flex-row items-center">
-                      <PlatformLogo :key="p" :platform="p" :size="24" class="ml-1" />
+                      <PlatformLogo :key="p" :platform="p" :size="20" class="mr-1" />
                       <span :key="v" class="text-sm light:text-gray-600">{{ formatVersionNumbers(v) }}</span>
                     </div>
                   </div>
                 </div>
               </router-link>
             </div>
-            <div class="items-top inline-flex ml-1">
-              <DownloadButton :project="project" :pinned-version="version" small></DownloadButton>
+            <div class="ml-1 space-y-2 flex flex-col">
+              <Tag :name="version.channel.name" :color="{ background: version.channel.color }" />
+              <DownloadButton :project="project" :pinned-version="version" small class="self-end"></DownloadButton>
             </div>
           </li>
         </ul>

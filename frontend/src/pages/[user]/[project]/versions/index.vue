@@ -133,7 +133,7 @@ function getBorderClasses(version: Version): string {
                     <div class="basis-3/12 <md:(mt-2 basis-6/12)">
                       <div v-for="(v, p) in item.platformDependencies" :key="p" class="basis-full">
                         <div class="inline-flex">
-                          <PlatformLogo :platform="p" :size="24" class="mr-1" />
+                          <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
                           <span class="mr-3">{{ formatVersionNumbers(v) }}</span>
                         </div>
                       </div>
