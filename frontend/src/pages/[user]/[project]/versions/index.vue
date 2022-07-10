@@ -180,8 +180,9 @@ function getBorderClasses(version: Version): string {
 
           <ul>
             <li v-for="channel in channels" :key="channel.name" class="inline-flex w-full">
-              <InputCheckbox v-model="filter.channels" :value="channel.name" @change="updateChannelCheckAll" />
-              <Tag :name="channel.name" :color="{ background: channel.color }"></Tag>
+              <InputCheckbox v-model="filter.channels" :value="channel.name" @change="updateChannelCheckAll">
+                <Tag :name="channel.name" :color="{ background: channel.color }"></Tag>
+              </InputCheckbox>
             </li>
           </ul>
         </Card>
@@ -196,9 +197,9 @@ function getBorderClasses(version: Version): string {
 
           <ul>
             <li v-for="platform in platforms" :key="platform.name" class="inline-flex w-full">
-              <InputCheckbox v-model="filter.platforms" :value="platform.enumName" @change="updatePlatformCheckAll" />
-              <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
-              {{ platform.name }}
+              <InputCheckbox v-model="filter.platforms" :value="platform.enumName" :label="platform.name" @change="updatePlatformCheckAll">
+                <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
+              </InputCheckbox>
             </li>
           </ul>
         </Card>
