@@ -27,6 +27,7 @@ import DependencyTable from "~/components/projects/DependencyTable.vue";
 import InputTag from "~/lib/components/ui/InputTag.vue";
 import { LastDependencies } from "hangar-api";
 import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
+import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -273,7 +274,9 @@ useHead(
           :rules="platformVersionRules"
           :label="platform.name"
           @update:modelValue="togglePlatform(platform.enumName)"
-        />
+        >
+          <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
+        </InputCheckbox>
       </div>
     </template>
     <template #dependencies>
