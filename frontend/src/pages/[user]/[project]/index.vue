@@ -99,24 +99,31 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
       <Card>
         <template #header>{{ i18n.t("project.pinnedVersions") }}</template>
         <ul class="divide-y divide-blue-500/50">
-          <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.name}`" class="p-1 py-2 flex">
-            <div class="flex-grow truncate">
-              <router-link :to="createPinnedVersionUrl(version)">
-                <span class="font-semibold">{{ version.name }}</span>
-                <br />
+          <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.name}`" class="p-1 py-2">
+            <div class="flex">
+              <router-link :to="createPinnedVersionUrl(version)" class="flex-grow truncate">
+                <div class="truncate">
+                  <span class="font-semibold truncate">{{ version.name }}</span>
+                </div>
+              </router-link>
+              <div class="ml-1 space-y-2 flex flex-col">
+                <Tag :name="version.channel.name" :color="{ background: version.channel.color }" />
+              </div>
+            </div>
+            <div class="flex pt-1">
+              <router-link :to="createPinnedVersionUrl(version)" class="flex-grow">
                 <div class="inline-flex items-center mt-1">
                   <div class="flex flex-col">
                     <div v-for="(v, p) in version.platformDependencies" :key="p" class="flex flex-row items-center">
-                      <PlatformLogo :key="p" :platform="p" :size="20" class="mr-1" />
+                      <PlatformLogo :key="p" :platform="p" :size="20" class="mr-1 flex-shrink-0" />
                       <span :key="v" class="text-sm light:text-gray-600">{{ formatVersionNumbers(v) }}</span>
                     </div>
                   </div>
                 </div>
               </router-link>
-            </div>
-            <div class="ml-1 space-y-2 flex flex-col">
-              <Tag :name="version.channel.name" :color="{ background: version.channel.color }" />
-              <DownloadButton :project="project" :pinned-version="version" small class="self-end"></DownloadButton>
+              <div class="ml-1 space-y-2 flex flex-col">
+                <DownloadButton :project="project" :pinned-version="version" small class="self-end"></DownloadButton>
+              </div>
             </div>
           </li>
         </ul>
