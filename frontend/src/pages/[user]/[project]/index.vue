@@ -106,8 +106,12 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
                 <br />
                 <div class="inline-flex items-center">
                   <Tag :name="version.channel.name" :color="{ background: version.channel.color }" />
-                  <PlatformLogo v-for="(v, p) in version.platformDependencies" :key="p" :platform="p" :size="24" class="ml-1" />
-                  <span v-for="v in version.platformDependencies" :key="v" class="text-sm text-gray-600">{{ formatVersionNumbers(v) }}</span>
+                  <div class="flex flex-col">
+                    <div v-for="(v, p) in version.platformDependencies" :key="p" class="flex flex-row">
+                      <PlatformLogo :key="p" :platform="p" :size="24" class="ml-1" />
+                      <span :key="v" class="text-sm text-gray-600">{{ formatVersionNumbers(v) }}</span>
+                    </div>
+                  </div>
                 </div>
               </router-link>
             </div>
