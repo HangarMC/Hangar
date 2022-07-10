@@ -126,8 +126,8 @@ function getBorderClasses(version: Version): string {
                       <div class="flex flex-wrap items-center">
                         <span class="text-xl md:basis-full">{{ item.name }}</span>
                         <Tag :name="item.channel.name" :color="{ background: item.channel.color }" />
-                        <IconMdiCancel v-if="item.visibility === Visibility.SOFT_DELETE"></IconMdiCancel>
-                        <IconMdiEyeOff v-else-if="item.visibility !== Visibility.PUBLIC"></IconMdiEyeOff>
+                        <IconMdiCancel v-if="item.visibility === Visibility.SOFT_DELETE" class="ml-1"></IconMdiCancel>
+                        <IconMdiEyeOff v-else-if="item.visibility !== Visibility.PUBLIC" class="ml-1"></IconMdiEyeOff>
                       </div>
                     </div>
                     <div class="basis-3/12 <md:(mt-2 basis-6/12)">

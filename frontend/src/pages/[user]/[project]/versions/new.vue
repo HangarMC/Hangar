@@ -146,11 +146,15 @@ async function createPendingVersion() {
 }
 
 async function createVersion() {
-  if (!pendingVersion.value) return false;
+  if (!pendingVersion.value) {
+    return false;
+  }
+
   loading.submit = true;
   pendingVersion.value!.description = descriptionEditor.value.rawEdited;
   pendingVersion.value!.channelColor = currentChannel.value!.color;
   pendingVersion.value!.channelFlags = currentChannel.value!.flags;
+
   // played around trying to get this to happen in jackson's deserialization, but couldn't figure it out.
   for (const platform in pendingVersion.value.platformDependencies) {
     if (pendingVersion.value!.platformDependencies[platform as Platform].length < 1) {
@@ -162,9 +166,14 @@ async function createVersion() {
       delete pendingVersion.value!.pluginDependencies[platform as Platform];
     }
   }
-  console.log("pending", pendingVersion.value);
-  console.log("editor", descriptionEditor.value);
-  console.log("rawEdited", descriptionEditor.value.rawEdited);
+
+  for (const platform in pendingVersion.value.platformDependencies) {
+    if (!selectedPlatforms.value.includes(platform as Platform)) {
+      delete pendingVersion.value.platformDependencies[platform as Platform];
+      delete pendingVersion.value.pluginDependencies[platform as Platform];
+    }
+  }
+
   try {
     await useInternalApi(`versions/version/${props.project.id}/create`, true, "post", pendingVersion.value);
     await router.push(`/${route.params.user}/${route.params.project}/versions`);
