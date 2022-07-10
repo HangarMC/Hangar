@@ -197,9 +197,9 @@ function getBorderClasses(version: Version): string {
 
           <ul>
             <li v-for="platform in platforms" :key="platform.name" class="inline-flex w-full">
-              <InputCheckbox v-model="filter.platforms" :value="platform.enumName" @change="updatePlatformCheckAll" />
-              <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
-              {{ platform.name }}
+              <InputCheckbox v-model="filter.platforms" :value="platform.enumName" :label="platform.name" @change="updatePlatformCheckAll">
+                <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
+              </InputCheckbox>
             </li>
           </ul>
         </Card>
