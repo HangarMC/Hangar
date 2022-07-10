@@ -46,16 +46,15 @@ const props = defineProps<{
   project: HangarProject;
   versionPlatforms: Set<Platform>;
   user: User;
-  //platform: string;
   version: string;
 }>();
 
-const p: Platform = ((route.params.platform as string) || "").toUpperCase() as Platform;
-const projectVersion = computed<HangarVersion | undefined>(() => props.versions.get(p));
+const p = ref<Platform>(((route.params.platform as string) || "").toUpperCase() as Platform);
+const projectVersion = computed<HangarVersion | undefined>(() => props.versions.get(p.value));
 if (!projectVersion.value) {
   await useRouter().push(useErrorRedirect(route, 404, "Not found"));
 }
-const platform = computed<IPlatform | undefined>(() => backendData.platforms?.get(p));
+const platform = ref<IPlatform | undefined>(backendData.platforms?.get(p.value));
 const isReviewStateChecked = computed<boolean>(
   () => projectVersion.value?.reviewState === ReviewState.PARTIALLY_REVIEWED || projectVersion.value?.reviewState === ReviewState.REVIEWED
 );
@@ -67,8 +66,8 @@ const currentVisibility = computed(() => backendData.visibilities.find((v) => v.
 const editingPage = ref(false);
 
 const sortedDependencies = computed(() => {
-  if (platform.value && projectVersion.value && projectVersion.value.pluginDependencies[p]) {
-    return [...projectVersion.value.pluginDependencies[p]].sort((a, b) => Number(b.required) - Number(a.required));
+  if (platform.value && projectVersion.value && projectVersion.value.pluginDependencies[p.value]) {
+    return [...projectVersion.value.pluginDependencies[p.value]].sort((a, b) => Number(b.required) - Number(a.required));
   }
   return [];
 });
@@ -81,6 +80,12 @@ useHead(
     projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)
   )
 );
+
+function setPlatform(plat: Platform) {
+  //TODO apparently the to is broken
+  p.value = plat;
+  platform.value = backendData.platforms?.get(plat);
+}
 
 async function savePage(content: string) {
   try {
@@ -151,7 +156,7 @@ async function restoreVersion() {
     <section class="basis-full md:basis-9/12 flex-grow overflow-auto">
       <div class="flex flex-wrap gap-2 justify-between">
         <div>
-          <h1 class="text-3xl sm:inline-flex items-center">
+          <h1 class="text-3xl sm:inline-flex items-center gap-x-1">
             <TagComponent class="mr-1" :name="projectVersion.channel.name" :color="{ background: projectVersion.channel.color }" :short-form="true" />
             {{ projectVersion.name }}
             <Tooltip v-if="isReviewStateChecked" :content="approvalTooltip" class="text-base">
@@ -174,7 +179,9 @@ async function restoreVersion() {
         <div class="inline-flex items-center flex-grow">
           <div class="flex-grow"></div>
           <DropdownButton v-if="versionPlatforms.size > 1" class="inline" :name="platform?.name" button-size="large">
-            <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()">{{ backendData.platforms?.get(plat)?.name }}</DropdownItem>
+            <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()" @click="setPlatform(plat)">{{
+              backendData.platforms?.get(plat)?.name
+            }}</DropdownItem>
           </DropdownButton>
 
           <DownloadButton :version="projectVersion" :project="project" :platform="p" class="ml-2" />

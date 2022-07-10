@@ -121,7 +121,7 @@ useHead(meta);
       <!-- Text Input -->
       <input
         v-model="query"
-        class="rounded-l-md p-4 basis-full min-w-0"
+        class="rounded-l-md p-4 basis-full min-w-0 dark:bg-gray-700"
         type="text"
         :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
       />
