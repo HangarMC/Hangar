@@ -1,5 +1,6 @@
-export function projectIconUrl(owner: string, projectName: string) {
-  return `/api/internal/projects/project/${owner}/${projectName}/icon`;
+export function projectIconUrl(owner: string, projectName: string, proxy = true) {
+  const url = `/api/internal/projects/project/${owner}/${projectName}/icon`;
+  return proxy ? import.meta.env.HANGAR_AUTH_HOST + "/image/" + import.meta.env.HANGAR_PUBLIC_HOST + url : url;
 }
 
 export function avatarUrl(name: string) {

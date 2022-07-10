@@ -11,7 +11,7 @@ import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission, Visibility } from "~/types/enums";
 import Button from "~/lib/components/design/Button.vue";
 import Tabs from "~/lib/components/design/Tabs.vue";
-import { computed, reactive, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import InputText from "~/lib/components/ui/InputText.vue";
@@ -28,6 +28,9 @@ import ProjectSettingsSection from "~/components/projects/ProjectSettingsSection
 import { maxLength, required, requiredIf, url } from "~/lib/composables/useValidationHelpers";
 import { validProjectName } from "~/composables/useHangarValidations";
 import { useVuelidate } from "@vuelidate/core";
+import { Cropper, CropperResult } from "vue-advanced-cropper";
+
+import "vue-advanced-cropper/dist/style.css";
 
 const route = useRoute();
 const router = useRouter();
@@ -58,6 +61,43 @@ if (!form.settings.license.type) {
 }
 
 const projectIcon = ref<File | null>(null);
+const cropperInput = ref();
+const cropperResult = ref();
+let reader: FileReader | null = null;
+onMounted(async () => {
+  reader = new FileReader();
+  reader.addEventListener(
+    "load",
+    () => {
+      cropperInput.value = reader?.result;
+    },
+    false
+  );
+  await loadIconIntoCropper();
+});
+
+watch(projectIcon, (newValue) => {
+  if (!newValue) return null;
+  cropperResult.value = newValue;
+  reader?.readAsDataURL(newValue);
+});
+
+function changeImage({ canvas }: CropperResult) {
+  canvas?.toBlob((blob) => {
+    cropperResult.value = blob;
+  });
+}
+
+async function loadIconIntoCropper() {
+  const response = await fetch(projectIconUrl(props.project.namespace.owner, props.project.namespace.slug, false), {
+    headers: {
+      "Cache-Control": "no-cache",
+    },
+  });
+  const data = await response.blob();
+  reader?.readAsDataURL(data);
+}
+
 const newName = ref<string | null>("");
 const newNameField = ref<InstanceType<typeof InputText> | null>(null);
 const loading = reactive({
@@ -131,16 +171,17 @@ async function hardDelete(comment: string) {
 }
 
 async function uploadIcon() {
-  if (!projectIcon.value) {
+  if (!cropperResult.value) {
     return;
   }
 
   const data = new FormData();
-  data.append("projectIcon", projectIcon.value);
+  data.append("projectIcon", cropperResult.value);
   loading.uploadIcon = true;
   try {
     await useInternalApi(`projects/project/${route.params.user}/${route.params.project}/saveIcon`, true, "post", data);
-    projectIcon.value = null;
+    cropperResult.value = null;
+    await loadIconIntoCropper();
     notificationStore.success(i18n.t("project.settings.success.changedIcon"));
   } catch (e) {
     handleRequestError(e, ctx, i18n);
@@ -153,26 +194,12 @@ async function resetIcon() {
   try {
     await useInternalApi(`projects/project/${route.params.user}/${route.params.project}/resetIcon`, true, "post");
     useNotificationStore().success(i18n.t("project.settings.success.resetIcon"));
-    document
-      .getElementById("project-icon-preview")
-      ?.setAttribute("src", `${projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)}?noCache=${Math.random()}`);
-    await router.go(0);
+    projectIcon.value = null;
+    await loadIconIntoCropper();
   } catch (e) {
     handleRequestError(e, ctx, i18n);
   }
   loading.resetIcon = false;
-}
-
-function onFileChange() {
-  if (projectIcon.value) {
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      document.getElementById("project-icon-preview")?.setAttribute("src", ev.target?.result as string);
-    };
-    reader.readAsDataURL(projectIcon.value);
-  } else {
-    document.getElementById("project-icon-preview")?.setAttribute("src", projectIconUrl(props.project.namespace.owner, props.project.namespace.slug));
-  }
 }
 
 useHead(
@@ -234,9 +261,9 @@ useHead(
                 <p>{{ i18n.t("project.settings.iconSub") }}</p>
               </div>
               <div class="col-span-2">
-                <InputFile v-model="projectIcon" accept="image/png, image/jpeg" show-size @change="onFileChange" />
+                <InputFile v-model="projectIcon" accept="image/png, image/jpeg" show-size />
               </div>
-              <Button :disabled="!projectIcon" :loading="loading.uploadIcon" @click="uploadIcon">
+              <Button :disabled="!cropperResult" :loading="loading.uploadIcon" @click="uploadIcon">
                 <IconMdiUpload />
                 {{ i18n.t("project.settings.iconUpload") }}
               </Button>
@@ -245,7 +272,25 @@ useHead(
                 {{ i18n.t("project.settings.iconReset") }}
               </Button>
               <div class="col-span-1 col-start-3 row-start-1 row-span-3">
+                <cropper
+                  v-if="cropperInput"
+                  :src="cropperInput"
+                  class="h-150px"
+                  :min-height="150"
+                  :stencil-props="{
+                    handlers: {},
+                    movable: false,
+                    scalable: false,
+                    aspectRatio: 1,
+                  }"
+                  :resize-image="{
+                    adjustStencil: false,
+                  }"
+                  image-restriction="stencil"
+                  @change="changeImage"
+                />
                 <img
+                  v-else
                   id="project-icon-preview"
                   width="150"
                   height="150"
