@@ -121,7 +121,7 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
                   </div>
                 </div>
               </router-link>
-              <div class="ml-1 space-y-2 flex flex-col">
+              <div class="ml-1 space-y-2 flex flex-col mt-1">
                 <DownloadButton :project="project" :pinned-version="version" small :show-versions="false" class="self-end"></DownloadButton>
               </div>
             </div>

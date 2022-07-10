@@ -67,7 +67,7 @@ public class ProjectFactory extends HangarComponent {
         ProjectTable projectTable = null;
         try {
             projectTable = this.projectsDAO.insert(new ProjectTable(projectOwner, newProject));
-            this.channelService.createProjectChannel(this.config.channels.getNameDefault(), this.config.channels.getColorDefault(), projectTable.getId(), Set.of(ChannelFlag.FROZEN));
+            this.channelService.createProjectChannel(this.config.channels.getNameDefault(), this.config.channels.getColorDefault(), projectTable.getId(), Set.of(ChannelFlag.FROZEN, ChannelFlag.PINNED));
             this.projectMemberService.addNewAcceptedByDefaultMember(ProjectRole.PROJECT_OWNER.create(projectTable.getId(), projectOwner.getUserId(), true));
             String newPageContent = newProject.getPageContent();
             if (newPageContent == null) {

@@ -14,7 +14,6 @@ import IconMdiForum from "~icons/mdi/forum";
 import IconMdiCodeBraces from "~icons/mdi/code-braces";
 import IconMdiBookOpen from "~icons/mdi/book-open";
 import IconMdiLanguageJava from "~icons/mdi/language-java";
-import IconMdiPuzzle from "~icons/mdi/puzzle";
 import IconMdiDownloadCircle from "~icons/mdi/download-circle";
 import IconMdiKey from "~icons/mdi/key";
 import IconMdiFileCodumentAlert from "~icons/mdi/file-document-alert";
