@@ -49,7 +49,7 @@ const ccColor = computed(() => {
 </script>
 
 <template>
-  <div class="tags inline-flex flex-wrap items-center justify-start p-1">
+  <div class="tags inline-flex flex-wrap items-center justify-start">
     <span
       :style="{
         color: ccColor?.foreground,
