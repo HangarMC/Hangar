@@ -23,6 +23,7 @@ import { useBackendDataStore } from "~/store/backendData";
 import Tag from "~/components/Tag.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
+import { formatVersionNumbers } from "~/composables/useVersionHelper";
 
 const props = defineProps<{
   user: User;
@@ -101,15 +102,20 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
           <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.name}`" class="p-1 py-2 flex">
             <div class="flex-grow truncate">
               <router-link :to="createPinnedVersionUrl(version)">
-                {{ version.name }}
+                <span class="font-semibold">{{ version.name }}</span>
                 <br />
                 <div class="inline-flex items-center">
                   <Tag :name="version.channel.name" :color="{ background: version.channel.color }" />
-                  <PlatformLogo v-for="(v, p) in version.platformDependencies" :key="p" :platform="p" :size="24" class="ml-1" />
+                  <div class="flex flex-col">
+                    <div v-for="(v, p) in version.platformDependencies" :key="p" class="flex flex-row items-center">
+                      <PlatformLogo :key="p" :platform="p" :size="24" class="ml-1" />
+                      <span :key="v" class="text-sm light:text-gray-600">{{ formatVersionNumbers(v) }}</span>
+                    </div>
+                  </div>
                 </div>
               </router-link>
             </div>
-            <div class="items-center inline-flex ml-1">
+            <div class="items-top inline-flex ml-1">
               <DownloadButton :project="project" :pinned-version="version" small></DownloadButton>
             </div>
           </li>
