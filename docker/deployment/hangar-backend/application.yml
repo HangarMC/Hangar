@@ -21,7 +21,7 @@ hangar:
     auth-url: "https://hangar-auth.benndorf.dev"
     oauth-url: "https://hangar-auth.benndorf.dev/hydra"
     client-id: "${SSO_CLIENT_ID}"
-    api-key: "${SSO_API_KEY"
+    api-key: "${SSO_SECRET}"
 
   security:
     api:
