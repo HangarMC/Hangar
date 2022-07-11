@@ -22,6 +22,7 @@ import { useVuelidate } from "@vuelidate/core";
 import Tag from "~/components/Tag.vue";
 import Accordeon from "~/lib/components/design/Accordeon.vue";
 import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
+import DownloadButton from "~/components/projects/DownloadButton.vue";
 
 const route = useRoute();
 const authStore = useAuthStore();
@@ -304,16 +305,13 @@ useHead(
     <div class="float-left">
       {{ t("reviews.headline", [projectVersion.author, prettyDate(projectVersion.createdAt)]) }}
     </div>
-    <div class="float-right">
+    <div class="float-right inline-flex">
       <template v-if="!isReviewStateChecked">
-        <Button size="small" :to="{ name: 'user-project', params: route.params }" exact>
+        <Button size="large" :to="{ name: 'user-project', params: route.params }" exact>
           <IconMdiHome />
           {{ t("reviews.projectPage") }}
         </Button>
-        <Button size="small" :to="'/' + route.params.user + '/' + route.params.project + '/versions/' + route.params.version + '/jar'" class="ml-4">
-          <IconMdiDownload />
-          {{ t("reviews.downloadFile") }}
-        </Button>
+        <DownloadButton :project="project" :version="projectVersion" class="ml-2" />
       </template>
     </div>
     <div style="clear: both" class="mb-4" />

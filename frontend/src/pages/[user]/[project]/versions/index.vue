@@ -27,6 +27,7 @@ import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 const i18n = useI18n();
 const ctx = useContext();
 const route = useRoute();
+const backendData = useBackendDataStore();
 
 const filter = reactive({
   channels: [] as string[],
@@ -40,7 +41,7 @@ const props = defineProps<{
   project: HangarProject;
 }>();
 const options = reactive({ page: 1, itemsPerPage: 10 });
-const platforms = computed(() => [...(useBackendDataStore().platforms?.values() || [])]);
+const platforms = computed(() => [...(backendData.platforms?.values() || [])]);
 const requestOptions = computed(() => {
   return {
     limit: options.itemsPerPage,
@@ -109,6 +110,11 @@ function getBorderClasses(version: Version): string {
   }
   return version.visibility === Visibility.PUBLIC ? "" : "!border-gray-500 border-2px";
 }
+
+function getVisibilityTitle(visibility: Visibility) {
+  const value = backendData.visibilities.find((v) => v.name === visibility);
+  return value ? i18n.t(value.title) : null;
+}
 </script>
 
 <template>
@@ -124,10 +130,15 @@ function getBorderClasses(version: Version): string {
                   <div class="flex flex-wrap">
                     <div class="basis-full md:basis-6/12 truncate">
                       <div class="flex flex-wrap items-center">
-                        <span class="text-xl md:basis-full">{{ item.name }}</span>
+                        <span class="text-xl md:basis-full <md:mr-1">{{ item.name }}</span>
                         <Tag :name="item.channel.name" :color="{ background: item.channel.color }" />
                         <IconMdiCancel v-if="item.visibility === Visibility.SOFT_DELETE" class="ml-1"></IconMdiCancel>
-                        <IconMdiEyeOff v-else-if="item.visibility !== Visibility.PUBLIC" class="ml-1"></IconMdiEyeOff>
+                        <span v-else-if="item.visibility !== Visibility.PUBLIC" class="ml-1 inline-flex items-center">
+                          <span class="text-gray-600 dark:text-gray-300 text-sm">
+                            {{ getVisibilityTitle(item.visibility) }}
+                          </span>
+                          <IconMdiEyeOff class="ml-1" />
+                        </span>
                       </div>
                     </div>
                     <div class="basis-3/12 <md:(mt-2 basis-6/12)">
