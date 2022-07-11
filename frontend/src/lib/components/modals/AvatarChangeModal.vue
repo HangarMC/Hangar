@@ -1,7 +1,9 @@
 <template>
   <Modal title="Change avatar" @open="openModal">
     <template #activator="{ on }">
-      <Button button-type="primary" @click="on.click">Change avatar</Button>
+      <slot name="activator" :on="on">
+        <Button button-type="primary" @click="on.click">Change avatar</Button>
+      </slot>
     </template>
 
     <div class="mb-2">
