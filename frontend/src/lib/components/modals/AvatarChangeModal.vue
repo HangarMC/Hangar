@@ -99,6 +99,7 @@ async function save() {
   await $fetch(props.action, {
     method: "POST",
     body: form,
+    credentials: "include"
   });
 
   window.location.reload();
