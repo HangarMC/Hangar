@@ -29,6 +29,7 @@ const props = withDefaults(
     messages?: string[];
     errorMessages?: string[];
     rules?: ValidationRule<string | undefined>[];
+    noErrorTooltip?: boolean;
   }>(),
   {
     modelValue: "",
@@ -55,6 +56,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
     :label="label"
     :value="internalVal"
     :disabled="disabled"
+    :no-error-tooltip="noErrorTooltip"
   >
     <select v-model="internalVal" :disabled="disabled" :class="slotProps.class" class="appearance-none" @blur="v.$touch()">
       <option v-for="val in values" :key="val[itemValue] || val" :value="val[itemValue] || val" class="dark:bg-[#191e28]">

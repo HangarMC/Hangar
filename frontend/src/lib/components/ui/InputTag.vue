@@ -24,6 +24,7 @@ const props = withDefaults(
     rules?: ValidationRule<string | undefined>[];
     tagMaxlength?: number;
     options?: string[];
+    noErrorTooltip?: boolean;
   }>(),
   {
     tagMaxlength: 20,
@@ -77,6 +78,7 @@ const filteredOptions = computed(() => {
     :loading="loading || v.$pending"
     :label="label"
     :value="tags"
+    :no-error-tooltip="noErrorTooltip"
   >
     <div class="flex flex-wrap flex-grow gap-2 mt-2">
       <span v-for="t in tags" :key="t" class="bg-primary-light-400 rounded-4xl px-1 py-1 h-30px inline-flex items-center" dark="bg-gray-600">

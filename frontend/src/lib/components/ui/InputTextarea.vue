@@ -21,6 +21,7 @@ const props = defineProps<{
   errorMessages?: string[];
   disabled?: boolean;
   rules?: ValidationRule<string | undefined>[];
+  noErrorTooltip?: boolean;
 }>();
 
 const errorMessages = computed(() => props.errorMessages);
@@ -39,6 +40,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, value, e
     :label="label"
     :value="value"
     :disabled="disabled"
+    :no-error-tooltip="noErrorTooltip"
   >
     <textarea v-model="value" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" :disabled="disabled" @blur="v.$touch()" />
   </InputWrapper>

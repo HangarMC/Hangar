@@ -21,6 +21,7 @@ const props = defineProps<{
   errorMessages?: string[];
   disabled?: boolean;
   rules?: ValidationRule<string | undefined>[];
+  noErrorTooltip?: boolean;
 }>();
 
 const errorMessages = computed(() => props.errorMessages);
@@ -41,6 +42,7 @@ defineExpose({ v });
     :label="label"
     :value="value"
     :disabled="disabled"
+    :no-error-tooltip="noErrorTooltip"
   >
     <input v-model="value" type="text" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" :disabled="disabled" @blur="v.$touch()" />
   </InputWrapper>

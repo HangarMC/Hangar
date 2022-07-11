@@ -2,6 +2,7 @@ import { ErrorObject, useVuelidate, ValidationRule } from "@vuelidate/core";
 import { computed, Ref } from "vue";
 import * as validators from "@vuelidate/validators";
 import { createI18nMessage, helpers, ValidatorWrapper } from "@vuelidate/validators";
+import { I18n } from "~/lib/i18n";
 
 export function isErrorObject(errorObject: string | ErrorObject): errorObject is ErrorObject {
   return (<ErrorObject>errorObject).$message !== undefined;
@@ -50,8 +51,7 @@ export const withI18nMessage = <T extends ValidationRule | ValidatorWrapper>(val
       if (overrideMsg) {
         msg = overrideMsg;
       }
-      // return I18n.value.global.t(msg, params);
-      return msg; // TODO fix i18n for validations
+      return I18n.value.global.t(msg, params);
     },
   })(validator, { withArguments: true });
 };

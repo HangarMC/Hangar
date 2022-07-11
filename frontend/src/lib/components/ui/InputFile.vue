@@ -20,6 +20,7 @@ const props = defineProps<{
   messages?: string[];
   errorMessages?: string[];
   rules?: ValidationRule<string | undefined>[];
+  noErrorTooltip?: boolean;
 }>();
 
 const errorMessages = computed(() => props.errorMessages);
@@ -50,6 +51,7 @@ watch(file, (newVal) => {
     :label="label"
     :value="file"
     :disabled="disabled"
+    :no-error-tooltip="noErrorTooltip"
   >
     <!-- todo make button fancy -->
     <input ref="input" type="file" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" @change="onFileChange" />

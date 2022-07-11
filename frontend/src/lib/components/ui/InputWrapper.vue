@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import ErrorTooltip from "~/lib/components/design/ErrorTooltip.vue";
 import Spinner from "~/lib/components/design/Spinner.vue";
+import { isErrorObject } from "~/lib/composables/useValidationHelpers";
 
 const props = defineProps<{
   errors?: string[];
@@ -12,11 +13,12 @@ const props = defineProps<{
   maxlength?: number;
   loading?: boolean;
   value: unknown;
+  noErrorTooltip?: boolean;
 }>();
 </script>
 
 <template>
-  <ErrorTooltip :error-messages="disabled ? null : errors" class="w-full" :class="{ filled: value, error: hasError && !disabled }">
+  <ErrorTooltip :error-messages="disabled || noErrorTooltip ? null : errors" class="w-full" :class="{ filled: value, error: hasError && !disabled }">
     <label
       :class="[
         'relative flex w-full outline-none p-2 border-1px rounded',
@@ -44,11 +46,12 @@ const props = defineProps<{
       >
         {{ label }}
       </span>
-      <span v-if="messages" class="text-small">
-        <template v-for="message in messages">
-          {{ message }}
-        </template>
-      </span>
     </label>
+    <span v-if="messages" class="text-small">
+      <span v-for="message in messages" :key="message"> {{ message }}<br /> </span>
+    </span>
+    <span v-if="errors && noErrorTooltip" class="text-small text-red-400">
+      <span v-for="message in errors" :key="message"> {{ isErrorObject(message) ? message.$message : message }}<br /> </span>
+    </span>
   </ErrorTooltip>
 </template>

@@ -19,6 +19,7 @@ const props = defineProps<{
   messages?: string[];
   errorMessages?: string[];
   rules?: ValidationRule<string | undefined>[];
+  noErrorTooltip?: boolean;
 }>();
 
 const errorMessages = computed(() => props.errorMessages);
@@ -35,6 +36,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, date, er
     :label="label"
     :value="date"
     :disabled="disabled"
+    :no-error-tooltip="noErrorTooltip"
   >
     <!-- todo make fancy -->
     <input v-model="date" type="date" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" />
