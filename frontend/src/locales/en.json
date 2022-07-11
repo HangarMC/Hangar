@@ -510,7 +510,7 @@
       "partiallyApproved": "Partially approved",
       "approved": "Approved",
       "userAdminLogs": "User Admin Logs",
-      "unsafeWarning": "This version has not been reviewed by our moderation staff and may not be safe for download.",
+      "unsafeWarning": "This version has not been reviewed by our staff and may not be safe to download",
       "downloadUrlCopied": "Copied!",
       "downloadUrlHover": "Click to copy download URL",
       "noVersions": "There are no versions yet!",

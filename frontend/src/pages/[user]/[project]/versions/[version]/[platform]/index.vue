@@ -156,7 +156,6 @@ async function restoreVersion() {
 <template>
   <div v-if="projectVersion" class="flex <sm:flex-col flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-9/12 flex-grow overflow-auto">
-      <Alert v-if="requiresConfirmation" class="mb-3" type="info">{{ i18n.t("version.page.unsafeWarning") }}</Alert>
       <div class="flex flex-wrap gap-2 justify-between">
         <div>
           <h1 class="text-3xl sm:inline-flex items-center gap-x-1">
@@ -187,6 +186,9 @@ async function restoreVersion() {
             }}</DropdownItem>
           </DropdownButton>
 
+          <Tooltip v-if="requiresConfirmation" :content="i18n.t('version.page.unsafeWarning')">
+            <IconMdiAlertCircleOutline class="text-2xl" />
+          </Tooltip>
           <DownloadButton :version="projectVersion" :project="project" :platform="p" class="ml-2" />
         </div>
       </div>

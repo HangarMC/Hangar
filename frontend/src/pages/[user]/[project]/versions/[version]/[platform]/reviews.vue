@@ -13,11 +13,10 @@ import Alert from "~/lib/components/design/Alert.vue";
 import { computed, reactive, ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useAuthStore } from "~/store/auth";
-import { prettyDateTime, prettyDate } from "~/lib/composables/useDate";
+import { prettyDate, prettyDateTime } from "~/lib/composables/useDate";
 import { useBackendDataStore } from "~/store/backendData";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
-import { required } from "~/lib/composables/useValidationHelpers";
 import { useVuelidate } from "@vuelidate/core";
 import Tag from "~/components/Tag.vue";
 import Accordeon from "~/lib/components/design/Accordeon.vue";
@@ -186,7 +185,10 @@ function startReview() {
 }
 
 function sendMessage() {
-  if (!isCurrentReviewOpen.value) return;
+  if (!isCurrentReviewOpen.value || message.value.length === 0) {
+    return;
+  }
+
   loadingValues.send = true;
   sendReviewRequest(
     "message",
@@ -206,9 +208,12 @@ function sendMessage() {
 }
 
 function stopReview(userMsg: string) {
-  if (!isCurrentReviewOpen.value || currentUserReview.value) return;
+  if (!isCurrentReviewOpen.value || !currentUserReview.value) {
+    return;
+  }
+
   const args = {
-    name: currentUserReview.value!.userName,
+    name: currentUserReview.value.userName,
     msg: userMsg,
   };
   return sendReviewRequest("stop", args, ReviewAction.STOP, () => {
@@ -341,52 +346,54 @@ useHead(
     <Accordeon :values="filteredReviews" class="mt-4">
       <template #header="{ entry: review }">
         <div class="flex">
-          <div class="flex-grow">
+          <div class="flex-grow items-center inline-flex">
             {{ t("reviews.presets.reviewTitle", { name: review.userName }) }}
-            <Tag :name="t(`reviews.state.${getReviewStateString(review)}`)" :color="{ background: getReviewStateColor(review) }" />
-            <span class="text-xs ml-4 text-gray-400">
+            <Tag :name="t(`reviews.state.${getReviewStateString(review)}`)" :color="{ background: getReviewStateColor(review) }" class="ml-2" />
+            <span class="text-xs ml-2 text-gray-400">
               {{ t("reviews.state.lastUpdate", [getLastUpdateDate(review)]) }}
             </span>
           </div>
-          <div v-if="isCurrentReviewOpen && currentUserReview === review">
-            <TextAreaModal :title="t('reviews.stopReview')" :label="t('general.message')" :submit="stopReview">
-              <template #activator="slotProps">
-                <Button size="small" color="error" v-bind="slotProps.attrs" v-on="slotProps.on">
-                  <IconMdiStop />
-                  {{ t("reviews.stopReview") }}
-                </Button>
-              </template>
-            </TextAreaModal>
+        </div>
+      </template>
+      <template #plainHeader="{ entry: review }">
+        <div v-if="isCurrentReviewOpen && currentUserReview === review" class="space-x-1">
+          <TextAreaModal :title="t('reviews.stopReview')" :label="t('general.message')" :submit="stopReview">
+            <template #activator="slotProps">
+              <Button size="small" color="error" v-bind="slotProps.attrs" v-on="slotProps.on">
+                <IconMdiStop />
+                {{ t("reviews.stopReview") }}
+              </Button>
+            </template>
+          </TextAreaModal>
 
-            <Button size="small" class="ml-2" :loading="loadingValues.approvePartial" @click="approvePartial">
-              <IconMdiCheckDecagramOutline />
-              {{ t("reviews.approvePartial") }}
-            </Button>
-            <Button size="small" class="ml-2" :loading="loadingValues.approve" @click="approve">
-              <IconMdiCheckDecagram />
-              {{ t("reviews.approve") }}
-            </Button>
-          </div>
-          <div v-else-if="currentUserReview === review" class="text-right">
-            <Button v-if="currentReviewLastAction === 'STOP'" size="small" button-type="secondary" :loading="loadingValues.reopen" @click="reopenReview">
-              <IconMdiRefresh />
-              {{ t("reviews.reopenReview") }}
-            </Button>
-            <Button
-              v-else-if="currentReviewLastAction === 'APPROVE' || currentReviewLastAction === 'PARTIALLY_APPROVE'"
-              size="small"
-              color="error"
-              :loading="loadingValues.undoApproval"
-              @click="undoApproval"
-            >
-              <IconMdiUndo />
-              {{ t("reviews.undoApproval") }}
-            </Button>
-          </div>
+          <Button size="small" :loading="loadingValues.approvePartial" @click="approvePartial">
+            <IconMdiCheckDecagramOutline />
+            {{ t("reviews.approvePartial") }}
+          </Button>
+          <Button size="small" :loading="loadingValues.approve" @click="approve">
+            <IconMdiCheckDecagram />
+            {{ t("reviews.approve") }}
+          </Button>
+        </div>
+        <div v-else-if="currentUserReview === review" class="text-right">
+          <Button v-if="currentReviewLastAction === 'STOP'" size="small" button-type="secondary" :loading="loadingValues.reopen" @click="reopenReview">
+            <IconMdiRefresh />
+            {{ t("reviews.reopenReview") }}
+          </Button>
+          <Button
+            v-else-if="currentReviewLastAction === 'APPROVE' || currentReviewLastAction === 'PARTIALLY_APPROVE'"
+            size="small"
+            color="error"
+            :loading="loadingValues.undoApproval"
+            @click="undoApproval"
+          >
+            <IconMdiUndo />
+            {{ t("reviews.undoApproval") }}
+          </Button>
         </div>
       </template>
       <template #entry="{ entry: review, index }">
-        <ul>
+        <ul class="py-1">
           <li v-for="(msg, mIndex) in review.messages" :key="`review-${index}-msg-${mIndex}`">
             <div :style="'color: ' + getReviewMessageColor(msg)" :class="{ 'ml-4': msg.action === ReviewAction.MESSAGE }">
               <span>{{ t(msg.message, msg.args) }}</span>
@@ -394,18 +401,19 @@ useHead(
             </div>
           </li>
           <li v-if="isCurrentReviewOpen && currentUserReview === review">
-            <div class="w-full">
-              <InputTextarea
-                v-model.trim="message"
-                class="mt-2"
-                :label="t('reviews.reviewMessage')"
-                :rows="3"
-                :rules="[required(t('general.message'))]"
-                @keydown.enter.prevent=""
-              />
-              <Button color="primary" :loading="loadingValues.send" class="mt-2 block w-full" :disabled="v.$invalid" @click="sendMessage">
-                <IconMdiSend />
-                {{ t("general.send") }}
+            <div class="w-full mt-1">
+              <InputTextarea v-model.trim="message" class="mt-2" :label="t('reviews.reviewMessage')" :rows="3" @keydown.enter.prevent="" />
+              <Button
+                color="primary"
+                :loading="loadingValues.send"
+                class="mt-2 block w-full"
+                :disabled="message.length === 0 || v.$invalid"
+                @click="sendMessage"
+              >
+                <span class="inline-flex items-center gap-1 text-white">
+                  <IconMdiSend />
+                  {{ t("general.send") }}
+                </span>
               </Button>
             </div>
           </li>
