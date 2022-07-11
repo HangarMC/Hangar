@@ -277,7 +277,8 @@
       "totalDownloads": "Downloads | Download | Downloads",
       "stars": "Stars | Star | Stars",
       "watchers": "Watchers | Watcher | Watchers",
-      "lastUpdatedTooltip": "Last updated {0}"
+      "lastUpdatedTooltip": "Last updated {0}",
+      "lastVersionUnreviewed": "The latest release version has not been reviewed by our staff yet"
     },
     "pinnedVersions": "Pinned Versions",
     "sponsors": "Sponsors",

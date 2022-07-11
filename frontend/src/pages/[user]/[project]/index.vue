@@ -3,11 +3,11 @@ import { User } from "hangar-api";
 import Card from "~/lib/components/design/Card.vue";
 import { useI18n } from "vue-i18n";
 import ProjectInfo from "~/components/projects/ProjectInfo.vue";
-import { HangarProject, HangarVersion, PinnedVersion } from "hangar-internal";
+import { HangarProject, PinnedVersion } from "hangar-internal";
 import MemberList from "~/components/projects/MemberList.vue";
 import MarkdownEditor from "~/components/MarkdownEditor.vue";
 import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission, Platform } from "~/types/enums";
+import { NamedPermission } from "~/types/enums";
 import { useRoute, useRouter } from "vue-router";
 import { useContext } from "vite-ssr/vue";
 import Markdown from "~/components/Markdown.vue";
@@ -56,7 +56,6 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
   return `/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${version.name}`;
 }
 
-//TODO decide what to show or remove, move needed data to pinned version
 useHead(useSeo(props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
 </script>
 

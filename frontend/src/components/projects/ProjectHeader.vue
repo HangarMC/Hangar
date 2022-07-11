@@ -15,7 +15,7 @@ import { useNotificationStore } from "~/store/notification";
 import FlagModal from "~/components/modals/FlagModal.vue";
 import Alert from "~/lib/components/design/Alert.vue";
 import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission, Visibility } from "~/types/enums";
+import { NamedPermission, Platform, ReviewState, Visibility } from "~/types/enums";
 import Markdown from "~/components/Markdown.vue";
 import { AxiosError } from "axios";
 import { useRouter } from "vue-router";
@@ -74,6 +74,16 @@ async function sendForApproval() {
     handleRequestError(e as AxiosError, ctx, i18n);
   }
 }
+
+function requiresConfirmation(): boolean {
+  for (const platform in props.project.mainChannelVersions) {
+    const version = props.project.mainChannelVersions[platform as Platform];
+    if (version.externalUrl !== null || version.reviewState !== ReviewState.REVIEWED) {
+      return true;
+    }
+  }
+  return false;
+}
 </script>
 
 <template>
@@ -118,7 +128,12 @@ async function sendForApproval() {
         <p>{{ project.description }}</p>
       </div>
       <div class="flex flex-col justify-around <sm:items-center space-y-2 items-end justify-between flex-shrink-0">
-        <DownloadButton v-if="Object.keys(project.mainChannelVersions).length !== 0" :project="project" />
+        <span v-if="Object.keys(project.mainChannelVersions).length !== 0" class="inline-flex items-center">
+          <Tooltip v-if="requiresConfirmation()" :content="i18n.t('project.info.lastVersionUnreviewed')">
+            <IconMdiAlertCircleOutline class="mr-2 text-2xl" />
+          </Tooltip>
+          <DownloadButton :project="project" />
+        </span>
         <div class="flex">
           <Tooltip>
             <template #content>

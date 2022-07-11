@@ -33,6 +33,7 @@ import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
 import { formatVersionNumbers } from "~/composables/useVersionHelper";
 import filesize from "filesize";
+import Alert from "~/lib/components/design/Alert.vue";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -64,6 +65,7 @@ const approvalTooltip = computed<string>(() =>
 );
 const currentVisibility = computed(() => backendData.visibilities.find((v) => v.name === projectVersion.value?.visibility));
 const editingPage = ref(false);
+const requiresConfirmation = computed<boolean>(() => projectVersion.value?.externalUrl !== null || projectVersion.value?.reviewState !== ReviewState.REVIEWED);
 
 const sortedDependencies = computed(() => {
   if (platform.value && projectVersion.value && projectVersion.value.pluginDependencies[p.value]) {
@@ -154,6 +156,7 @@ async function restoreVersion() {
 <template>
   <div v-if="projectVersion" class="flex <sm:flex-col flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-9/12 flex-grow overflow-auto">
+      <Alert v-if="requiresConfirmation" class="mb-3" type="info">{{ i18n.t("version.page.unsafeWarning") }}</Alert>
       <div class="flex flex-wrap gap-2 justify-between">
         <div>
           <h1 class="text-3xl sm:inline-flex items-center gap-x-1">
