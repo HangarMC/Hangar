@@ -11,7 +11,9 @@ import { NamedPermission } from "~/types/enums";
 import { hasPerms } from "~/composables/usePerm";
 import { useAuthStore } from "~/store/auth";
 import Tag from "~/components/Tag.vue";
-import AvatarChangeModal from "~/components/modals/AvatarChangeModal.vue";
+import AvatarChangeModal from "~/lib/components/modals/AvatarChangeModal.vue";
+import Tooltip from "~/lib/components/design/Tooltip.vue";
+import Button from "~/lib/components/design/Button.vue";
 
 const props = defineProps<{
   user: User;
@@ -35,7 +37,20 @@ const canEditCurrentUser = computed<boolean>(() => {
     <div class="flex mb-4 md:mb-0">
       <div class="relative">
         <UserAvatar :username="user.name" :avatar-url="avatarUrl(user.name)" />
-        <AvatarChangeModal v-if="user.isOrganization && hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" :user="user" />
+        <AvatarChangeModal
+          v-if="user.isOrganization && hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)"
+          :avatar="avatarUrl(user.name)"
+          :action="`/api/internal/organizations/org/${props.user.name}/settings/avatar`"
+        >
+          <template #activator="{ on }">
+            <Tooltip class="absolute -bottom-3 -right-3">
+              <template #content>
+                {{ i18n.t("author.org.editAvatar") }}
+              </template>
+              <Button v-on="on"><IconMdiPencil /></Button>
+            </Tooltip>
+          </template>
+        </AvatarChangeModal>
       </div>
 
       <div class="ml-2 overflow-clip overflow-hidden">
