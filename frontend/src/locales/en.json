@@ -561,8 +561,6 @@
       }
     },
     "manage": {
-      "mainTitle": "Main stable channel",
-      "mainSubtitle": "The most recent builds on the main stable channel will be provided in the download button in the project's header.",
       "title": "Release channels",
       "reviewInfo": "Channel names may automatically be flagged for review and will only be published after",
       "subtitle": "Release channels represent the state of a plugin release. A project may have up to five release channels.",

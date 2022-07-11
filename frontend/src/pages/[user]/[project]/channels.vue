@@ -33,7 +33,6 @@ const route = useRoute();
 const channels = await useProjectChannels(props.project.namespace.owner, props.project.namespace.slug).catch((e) => handleRequestError(e, ctx, i18n));
 const validations = useBackendDataStore().validations;
 const notifications = useNotificationStore();
-//const mainChannel = ref(null); //TODO set
 
 useHead(
   useSeo("Channels | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug))
@@ -50,9 +49,11 @@ async function refreshChannels() {
 
 async function deleteChannel(channel: ProjectChannel) {
   await useInternalApi(`channels/${props.project.id}/delete/${channel.id}`, true, "post")
-    .then(() => notifications.warn(i18n.t("channel.modal.success.deletedChannel", [channel.name])))
+    .then(() => {
+      refreshChannels();
+      notifications.warn(i18n.t("channel.modal.success.deletedChannel", [channel.name]));
+    })
     .catch((e) => handleRequestError(e, ctx, i18n));
-  await refreshChannels();
 }
 
 async function addChannel(channel: ProjectChannel) {
@@ -61,9 +62,11 @@ async function addChannel(channel: ProjectChannel) {
     color: channel.color,
     flags: channel.flags,
   })
-    .then(() => notifications.success(i18n.t("channel.modal.success.addedChannel", [channel.name])))
+    .then(() => {
+      refreshChannels();
+      notifications.success(i18n.t("channel.modal.success.addedChannel", [channel.name]));
+    })
     .catch((e) => handleRequestError(e, ctx, i18n));
-  await refreshChannels();
 }
 
 async function editChannel(channel: ProjectChannel) {
@@ -74,23 +77,15 @@ async function editChannel(channel: ProjectChannel) {
     color: channel.color,
     flags: channel.flags,
   })
-    .then(() => notifications.success(i18n.t("channel.modal.success.editedChannel", [channel.name])))
+    .then(() => {
+      refreshChannels();
+      notifications.success(i18n.t("channel.modal.success.editedChannel", [channel.name]));
+    })
     .catch((e) => handleRequestError(e, ctx, i18n));
-  await refreshChannels();
 }
 </script>
 
 <template>
-  <!--<Card class="mb-4">
-    <template #header>{{ i18n.t("channel.manage.mainTitle") }}</template>
-    <p class="mb-2">{{ i18n.t("channel.manage.mainSubtitle") }}</p>
-    <ul>
-      <li v-for="channel in channels" :key="channel.name" class="inline-flex w-full">
-        <InputRadio v-model="mainChannel" :value="channel.name" />
-        <Tag :name="channel.name" :color="{ background: channel.color }"></Tag>
-      </li>
-    </ul>
-  </Card>-->
   <Card>
     <template #header>{{ i18n.t("channel.manage.title") }}</template>
     <p class="mb-2">{{ i18n.t("channel.manage.subtitle") }}</p>
