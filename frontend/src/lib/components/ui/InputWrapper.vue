@@ -18,7 +18,12 @@ const props = defineProps<{
 </script>
 
 <template>
-  <ErrorTooltip :error-messages="disabled || noErrorTooltip ? null : errors" class="w-full" :class="{ filled: value, error: hasError && !disabled }">
+  <component
+    :is="noErrorTooltip ? 'div' : ErrorTooltip"
+    :error-messages="disabled || noErrorTooltip ? null : errors"
+    class="w-full"
+    :class="{ filled: value, error: hasError && !disabled }"
+  >
     <label
       :class="[
         'relative flex w-full outline-none p-2 border-1px rounded',
@@ -53,5 +58,5 @@ const props = defineProps<{
     <span v-if="errors && noErrorTooltip" class="text-small text-red-400">
       <span v-for="message in errors" :key="message"> {{ isErrorObject(message) ? message.$message : message }}<br /> </span>
     </span>
-  </ErrorTooltip>
+  </component>
 </template>
