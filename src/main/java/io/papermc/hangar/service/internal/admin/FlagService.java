@@ -64,16 +64,17 @@ public class FlagService extends HangarComponent {
         hangarProjectFlag.logAction(actionLogger, LogAction.PROJECT_FLAG_RESOLVED, "Flag resolved by " + getHangarPrincipal().getName(), "Flag reported by " + hangarProjectFlag.getReportedByName());
     }
 
+    @Transactional
     public void notifyParty(final long flagId, final boolean warning, final boolean toReporter, final String notification) {
         final HangarProjectFlag flag = hangarProjectFlagsDAO.getById(flagId);
         final String[] message = {"notifications.project.manualReportComment", flag.getProjectNamespace().getSlug(), notification};
         if (toReporter) {
-            final long id = notificationService.notify(flag.getUserId(), null, flag.getProjectId(), warning ? NotificationType.WARNING : NotificationType.INFO, message).getId();
-            flagNotificationsDAO.insert(new ProjectFlagNotificationTable(flag.getId(), id, getHangarUserId()));
+            final long id = notificationService.notify(flag.getUserId(), null, getHangarUserId(), warning ? NotificationType.WARNING : NotificationType.INFO, message).getId();
+            flagNotificationsDAO.insert(new ProjectFlagNotificationTable(flag.getId(), id));
         } else {
-            final List<ProjectFlagNotificationTable> tables = notificationService.notifyProjectMembers(flag.getProjectId(), flag.getProjectNamespace().getOwner(),
+            final List<ProjectFlagNotificationTable> tables = notificationService.notifyProjectMembers(flag.getProjectId(), getHangarUserId(), flag.getProjectNamespace().getOwner(),
                     flag.getProjectNamespace().getSlug(), warning ? NotificationType.WARNING : NotificationType.INFO, message).stream()
-                .map(table -> new ProjectFlagNotificationTable(flag.getId(), table.getId(), getHangarUserId())).collect(Collectors.toList());
+                .map(table -> new ProjectFlagNotificationTable(flag.getId(), table.getId())).collect(Collectors.toList());
             flagNotificationsDAO.insert(tables);
         }
     }

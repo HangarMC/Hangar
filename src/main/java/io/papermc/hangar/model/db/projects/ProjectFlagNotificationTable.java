@@ -7,20 +7,17 @@ public class ProjectFlagNotificationTable extends Table {
 
     private final long flagId;
     private final long notificationId;
-    private final long userId;
 
     @JdbiConstructor
-    public ProjectFlagNotificationTable(final long id, final long flagId, final long notificationId, final long userId) {
+    public ProjectFlagNotificationTable(final long id, final long flagId, final long notificationId) {
         super(id);
         this.flagId = flagId;
         this.notificationId = notificationId;
-        this.userId = userId;
     }
 
-    public ProjectFlagNotificationTable(final long flagId, final long notificationId, final long userId) {
+    public ProjectFlagNotificationTable(final long flagId, final long notificationId) {
         this.flagId = flagId;
         this.notificationId = notificationId;
-        this.userId = userId;
     }
 
     public long getFlagId() {
@@ -29,15 +26,6 @@ public class ProjectFlagNotificationTable extends Table {
 
     public long getNotificationId() {
         return notificationId;
-    }
-
-    /**
-     * Returns the user id of the staff initiating the notification.
-     *
-     * @return user id of the staff initiating the notification
-     */
-    public long getUserId() {
-        return userId;
     }
 
     @Override

@@ -56,21 +56,22 @@ public class NotificationService extends HangarComponent {
         final String[] message = comment != null && !comment.isBlank()
             ? new String[]{"notifications.project.visibilityChangedComment", projectTable.getName(), visibility.name(), comment}
             : new String[]{"notifications.project.visibilityChanged", projectTable.getName(), visibility.name()};
-        notifyProjectMembers(projectTable.getProjectId(), projectTable.getOwnerName(), projectTable.getSlug(), notificationType, message);
+        notifyProjectMembers(projectTable.getProjectId(), getHangarUserId(), projectTable.getOwnerName(), projectTable.getSlug(), notificationType, message);
     }
 
     public NotificationTable notify(final long userId, @Nullable final String action, @Nullable final Long originId, final NotificationType notificationType, final String[] message) {
         return notificationsDAO.insert(new NotificationTable(userId, action, originId, message, notificationType));
     }
 
-    public List<NotificationTable> notifyProjectMembers(final long projectId, final String owner, final String slug, final NotificationType notificationType, final String[] message) {
+    public List<NotificationTable> notifyProjectMembers(final long projectId, @Nullable final Long originId,
+                                                        final String owner, final String slug, final NotificationType notificationType, final String[] message) {
         final List<NotificationTable> notifications = new ArrayList<>();
         final List<JoinableMember<ProjectRoleTable>> members = hangarProjectsDAO.getProjectMembers(projectId, null, false);
         for (final JoinableMember<ProjectRoleTable> member : members) {
             notifications.add(new NotificationTable(
                 member.getUser().getUserId(),
                 owner + "/" + slug,
-                projectId,
+                originId,
                 message, notificationType)
             );
         }
