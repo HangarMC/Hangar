@@ -67,6 +67,13 @@ declare module "hangar-internal" {
     projectVisibility: Visibility;
   }
 
+  interface HangarFlagNotification extends Table {
+    userId: number;
+    message: string[];
+    originUserName: string;
+    type: "info" | "warning";
+  }
+
   interface Note extends Table {
     projectId: number;
     message: string;

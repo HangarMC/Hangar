@@ -36,6 +36,7 @@ public interface HangarProjectFlagsDAO {
               "   JOIN users fu ON pf.user_id = fu.id " +
               "   LEFT OUTER JOIN users ru ON ru.id = pf.resolved_by " +
               "WHERE NOT pf.resolved " +
-              "GROUP BY pf.id, fu.id, ru.id, p.id")
+              "GROUP BY pf.id, fu.id, ru.id, p.id " +
+              "LIMIT 20") //TODO paginate
     List<HangarProjectFlag> getFlags();
 }

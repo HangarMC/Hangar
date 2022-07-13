@@ -5,6 +5,7 @@ import io.papermc.hangar.model.api.requests.FlagForm;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.internal.api.requests.admin.ReportNotificationForm;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
+import io.papermc.hangar.model.internal.projects.HangarProjectFlagNotification;
 import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
@@ -64,6 +65,13 @@ public class FlagController extends HangarComponent {
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     public List<HangarProjectFlag> getFlags() {
         return flagService.getFlags();
+    }
+
+    @ResponseBody
+    @GetMapping(path = "/{id}/notifications", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
+    public List<HangarProjectFlagNotification> getNotifications(@PathVariable long id) {
+        return flagService.getFlagNotifications(id);
     }
 
     @Unlocked

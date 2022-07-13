@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.internal.admin;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.db.dao.internal.projects.HangarProjectFlagNofiticationsDAO;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectFlagsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectFlagNotificationsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectFlagsDAO;
@@ -11,16 +12,16 @@ import io.papermc.hangar.model.db.projects.ProjectFlagTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
+import io.papermc.hangar.model.internal.projects.HangarProjectFlagNotification;
 import io.papermc.hangar.model.internal.user.notifications.NotificationType;
 import io.papermc.hangar.service.internal.users.NotificationService;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FlagService extends HangarComponent {
@@ -28,13 +29,15 @@ public class FlagService extends HangarComponent {
     private final ProjectFlagsDAO projectFlagsDAO;
     private final HangarProjectFlagsDAO hangarProjectFlagsDAO;
     private final ProjectFlagNotificationsDAO flagNotificationsDAO;
+    private final HangarProjectFlagNofiticationsDAO hangarProjectFlagNofiticationsDAO;
     private final NotificationService notificationService;
 
     @Autowired
-    public FlagService(ProjectFlagsDAO projectFlagsDAO, HangarProjectFlagsDAO hangarProjectFlagsDAO, final ProjectFlagNotificationsDAO flagNotificationsDAO, final NotificationService notificationService) {
+    public FlagService(ProjectFlagsDAO projectFlagsDAO, HangarProjectFlagsDAO hangarProjectFlagsDAO, final ProjectFlagNotificationsDAO flagNotificationsDAO, final HangarProjectFlagNofiticationsDAO hangarProjectFlagNofiticationsDAO, final NotificationService notificationService) {
         this.projectFlagsDAO = projectFlagsDAO;
         this.hangarProjectFlagsDAO = hangarProjectFlagsDAO;
         this.flagNotificationsDAO = flagNotificationsDAO;
+        this.hangarProjectFlagNofiticationsDAO = hangarProjectFlagNofiticationsDAO;
         this.notificationService = notificationService;
     }
 
@@ -77,6 +80,10 @@ public class FlagService extends HangarComponent {
                 .map(table -> new ProjectFlagNotificationTable(flag.getId(), table.getId())).collect(Collectors.toList());
             flagNotificationsDAO.insert(tables);
         }
+    }
+
+    public List<HangarProjectFlagNotification> getFlagNotifications(final long flagId) {
+        return hangarProjectFlagNofiticationsDAO.getNotifications(flagId);
     }
 
     public List<HangarProjectFlag> getFlags(long projectId) {
