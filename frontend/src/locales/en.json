@@ -642,8 +642,9 @@
       "invites": "You have no invites."
     },
     "project": {
-      "visibilityChanged": "{0} has been changed to {1}",
-      "visibilityChangedComment": "{0} has been changed to {1}. Reason: {2}",
+      "visibilityChanged": "The visibility of {0} has been changed to {1}",
+      "visibilityChangedComment": "The visibility of {0} has been changed to {1}. Reason: {2}",
+      "manualReportComment": "You received a comment regarding a report on {0}: {1}",
       "reviewed": "{0} {1} has been reviewed and is approved",
       "reviewedPartial": "{0} {1} has been reviewed and is partially approved",
       "newVersion": "A new version has been released for {0}: {1}",
@@ -837,6 +838,14 @@
     "success": "Updated platform versions"
   },
   "flagReview": {
+    "notification": {
+      "projectTitle": "Send notification to members of {0}",
+      "reporterTitle": "Send notification to {0}",
+      "asWarning": "Send as warning",
+      "button": "Notify project's members",
+      "reporterButton": "Notify reporter",
+      "prompt": "Notification content"
+    },
     "title": "Reports",
     "noFlags": "There are no reports to review.",
     "markResolved": "Mark resolved",

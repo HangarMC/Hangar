@@ -11,6 +11,7 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.List;
 
 @Repository
 @RegisterConstructorMapper(NotificationTable.class)
@@ -22,8 +23,9 @@ public interface NotificationsDAO {
     NotificationTable insert(@BindBean NotificationTable notificationTable);
 
     @Timestamped
+    @GetGeneratedKeys
     @SqlBatch("INSERT INTO notifications (created_at, user_id, type, action, origin_id, message_args) VALUES (:now, :userId, :type, :action, :originId, :messageArgs)")
-    void insert(@BindBean Collection<NotificationTable> notificationTables);
+    List<NotificationTable> insert(@BindBean Collection<NotificationTable> notificationTables);
 
     @SqlUpdate("UPDATE notifications SET read = TRUE WHERE id = :notificationId AND user_id = :userId")
     boolean markAsRead(long notificationId, long userId);

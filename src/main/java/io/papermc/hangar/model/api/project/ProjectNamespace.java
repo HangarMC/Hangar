@@ -35,10 +35,7 @@ public class ProjectNamespace {
 
     @Override
     public String toString() {
-        return "ProjectNamespace{" +
-               "owner='" + owner + '\'' +
-               ", slug='" + slug + '\'' +
-               '}';
+        return owner + "/" + slug;
     }
 
     @Override

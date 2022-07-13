@@ -2,6 +2,7 @@ package io.papermc.hangar.service.internal.users;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.HangarNotificationsDAO;
+import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.NotificationsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.model.common.Permission;
@@ -11,33 +12,30 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
-import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.model.internal.user.notifications.HangarNotification;
 import io.papermc.hangar.model.internal.user.notifications.NotificationType;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.internal.projects.ProjectService;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.springframework.stereotype.Service;
 
 @Service
 public class NotificationService extends HangarComponent {
 
     private final NotificationsDAO notificationsDAO;
     private final HangarNotificationsDAO hangarNotificationsDAO;
+    private final HangarProjectsDAO hangarProjectsDAO;
     private final ProjectsDAO projectsDAO;
     private final PermissionService permissionService;
-    private final ProjectService projectService;
 
-    public NotificationService(NotificationsDAO notificationsDAO, HangarNotificationsDAO hangarNotificationsDAO, ProjectsDAO projectsDAO, PermissionService permissionService, final ProjectService projectService) {
+    public NotificationService(NotificationsDAO notificationsDAO, HangarNotificationsDAO hangarNotificationsDAO, final HangarProjectsDAO hangarProjectsDAO, ProjectsDAO projectsDAO, PermissionService permissionService) {
         this.notificationsDAO = notificationsDAO;
         this.hangarNotificationsDAO = hangarNotificationsDAO;
+        this.hangarProjectsDAO = hangarProjectsDAO;
         this.projectsDAO = projectsDAO;
         this.permissionService = permissionService;
-        this.projectService = projectService;
     }
 
     public List<HangarNotification> getUsersNotifications(int amount) {
@@ -53,21 +51,30 @@ public class NotificationService extends HangarComponent {
     }
 
     public void notifyVisibilityChange(final ProjectTable projectTable, final Visibility visibility, @Nullable final String comment) {
-        final List<NotificationTable> notifications = new ArrayList<>();
-        final HangarProject hangarProject = projectService.getHangarProject(projectTable.getOwnerName(), projectTable.getSlug());
         final NotificationType notificationType = visibility == Visibility.SOFTDELETE || visibility == Visibility.NEEDSCHANGES
             || visibility == Visibility.NEEDSAPPROVAL ? NotificationType.WARNING : NotificationType.SUCCESS;
         final String[] message = comment != null && !comment.isBlank()
             ? new String[]{"notifications.project.visibilityChangedComment", projectTable.getName(), visibility.name(), comment}
             : new String[]{"notifications.project.visibilityChanged", projectTable.getName(), visibility.name()};
-        for (final JoinableMember<ProjectRoleTable> member : hangarProject.getMembers()) {
+        notifyProjectMembers(projectTable.getProjectId(), projectTable.getOwnerName(), projectTable.getSlug(), notificationType, message);
+    }
+
+    public NotificationTable notify(final long userId, @Nullable final String action, @Nullable final Long originId, final NotificationType notificationType, final String[] message) {
+        return notificationsDAO.insert(new NotificationTable(userId, action, originId, message, notificationType));
+    }
+
+    public List<NotificationTable> notifyProjectMembers(final long projectId, final String owner, final String slug, final NotificationType notificationType, final String[] message) {
+        final List<NotificationTable> notifications = new ArrayList<>();
+        final List<JoinableMember<ProjectRoleTable>> members = hangarProjectsDAO.getProjectMembers(projectId, null, false);
+        for (final JoinableMember<ProjectRoleTable> member : members) {
             notifications.add(new NotificationTable(
                 member.getUser().getUserId(),
-                projectTable.getOwnerName() + "/" + projectTable.getSlug(),
-                projectTable.getId(),
+                owner + "/" + slug,
+                projectId,
                 message, notificationType)
             );
         }
+        return notificationsDAO.insert(notifications);
     }
 
     public void notifyUsersNewVersion(ProjectTable projectTable, ProjectVersionTable projectVersionTable, List<UserTable> projectWatchers) {

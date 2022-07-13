@@ -15,6 +15,7 @@ import Button from "~/lib/components/design/Button.vue";
 import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
+import ReportNotificationModal from "~/components/modals/ReportNotificationModal.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -65,10 +66,14 @@ function resolve(flag: Flag) {
           <small>{{ i18n.t("flagReview.line2", [i18n.t(flag.reason)]) }}</small>
           <small>{{ i18n.t("flagReview.line3", [flag.comment]) }}</small>
         </div>
-        <!-- todo: send notification to repository owner when visibility is changed -->
+
+        <div class="flex flex-col space-y-1">
+          <ReportNotificationModal :flag="flag" :send-to-reporter="false" />
+          <ReportNotificationModal :flag="flag" :send-to-reporter="true" />
+        </div>
         <VisibilityChangerModal :prop-visibility="flag.projectVisibility" type="project" :post-url="`projects/visibility/${flag.projectId}`" />
-        <!-- todo: add ability to send custom notification to reporter when resolved -->
-        <Button :disabled="loading[flag.id]" @click="resolve(flag)">{{ i18n.t("flagReview.markResolved") }}</Button>
+        <Button :disabled="loading[flag.id]" @click="resolve(flag)"><IconMdiCheck class="mr-1" /> {{ i18n.t("flagReview.markResolved") }}</Button>
+        <!-- todo: display sent out notifications (see notificationsForFlag in the DAO) -->
       </Card>
     </div>
   </template>

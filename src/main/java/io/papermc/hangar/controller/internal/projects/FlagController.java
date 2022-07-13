@@ -3,10 +3,12 @@ package io.papermc.hangar.controller.internal.projects;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.model.api.requests.FlagForm;
 import io.papermc.hangar.model.common.NamedPermission;
+import io.papermc.hangar.model.internal.api.requests.admin.ReportNotificationForm;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
+import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.admin.FlagService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -30,10 +33,11 @@ public class FlagController extends HangarComponent {
 
     private final FlagService flagService;
 
-    public FlagController(FlagService flagService) {
+    public FlagController(final FlagService flagService) {
         this.flagService = flagService;
     }
 
+    @Unlocked
     @ResponseStatus(HttpStatus.CREATED)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -41,6 +45,7 @@ public class FlagController extends HangarComponent {
         flagService.createFlag(form.getProjectId(), form.getReason(), form.getComment());
     }
 
+    @Unlocked
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/{id}/resolve/{resolve}")
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
@@ -60,5 +65,13 @@ public class FlagController extends HangarComponent {
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     public List<HangarProjectFlag> getFlags() {
         return flagService.getFlags();
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(NamedPermission.REVIEWER)
+    @PostMapping(path = "/{id}/notify", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void notifyReportParty(@PathVariable long id, @RequestBody ReportNotificationForm form) {
+        flagService.notifyParty(id, form.toReporter(), form.warning(), form.content());
     }
 }
