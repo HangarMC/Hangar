@@ -41,6 +41,7 @@ async function submit(): Promise<void> {
   if (setVisibility.value) {
     notification.success(i18n.t("visibility.modal.success", [props.type, i18n.t(setVisibility.value?.title)]));
   }
+
   if (visibility.value === Visibility.SOFT_DELETE) {
     await router.push("/");
   } else {
@@ -55,7 +56,11 @@ async function submit(): Promise<void> {
       Currently: {{ i18n.t(currentVisibility.title) }}
       <InputRadio v-for="vis in backendData.visibilities" :key="vis.name" v-model="visibility" :value="vis.name" :label="i18n.t(vis.title)" class="block" />
 
-      <InputTextarea v-if="showTextarea" v-model.trim="reason" rows="2" :label="i18n.t('visibility.modal.reason')" class="pt-3" />
+      <div v-if="showTextarea">
+        <InputTextarea v-model.trim="reason" rows="2" :label="i18n.t('visibility.modal.reason')" class="pt-3" />
+        <span class="text-sm">This will send the project owner a notification with the provided reason!</span>
+        <br />
+      </div>
 
       <Button class="mt-3" @click="submit(on.click)">{{ i18n.t("general.submit") }}</Button>
     </template>

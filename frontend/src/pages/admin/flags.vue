@@ -52,7 +52,7 @@ function resolve(flag: Flag) {
   <template v-if="flags.length > 0">
     <div class="space-y-2">
       <Card v-for="flag in flags" :key="flag.id" class="flex space-x-1 items-center">
-        <UserAvatar :username="flag.reportedByName" size="sm"></UserAvatar>
+        <UserAvatar :username="flag.reportedByName" size="sm" class="flex-shrink-0"></UserAvatar>
         <div class="flex flex-col flex-grow">
           <h2>
             {{

@@ -642,6 +642,8 @@
       "invites": "You have no invites."
     },
     "project": {
+      "visibilityChanged": "{0} has been changed to {1}",
+      "visibilityChangedComment": "{0} has been changed to {1}. Reason: {2}",
       "reviewed": "{0} {1} has been reviewed and is approved",
       "reviewedPartial": "{0} {1} has been reviewed and is partially approved",
       "newVersion": "A new version has been released for {0}: {1}",

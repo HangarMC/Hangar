@@ -178,18 +178,17 @@ async function restoreVersion() {
             {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
           </em>
         </div>
-        <div class="inline-flex items-center flex-grow">
-          <div class="flex-grow"></div>
+        <div class="inline-flex items-center flex-grow space-x-2">
+          <div class="flex-grow" />
+          <Tooltip v-if="requiresConfirmation" :content="i18n.t('version.page.unsafeWarning')">
+            <IconMdiAlertCircleOutline class="text-2xl" />
+          </Tooltip>
           <DropdownButton v-if="versionPlatforms.size > 1" class="inline" :name="platform?.name" button-size="large">
             <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()" @click="setPlatform(plat)">{{
               backendData.platforms?.get(plat)?.name
             }}</DropdownItem>
           </DropdownButton>
-
-          <Tooltip v-if="requiresConfirmation" :content="i18n.t('version.page.unsafeWarning')">
-            <IconMdiAlertCircleOutline class="text-2xl" />
-          </Tooltip>
-          <DownloadButton :version="projectVersion" :project="project" :platform="p" class="ml-2" />
+          <DownloadButton :version="projectVersion" :project="project" :platform="p" />
         </div>
       </div>
 

@@ -7,6 +7,7 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.projects.HangarProjectApproval;
+import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +23,15 @@ public class ProjectAdminService extends HangarComponent {
     private final HangarProjectsAdminDAO hangarProjectsAdminDAO;
     private final ProjectVisibilityService projectVisibilityService;
     private final ProjectFactory projectFactory;
+    private final NotificationService notificationService;
 
     @Autowired
-    public ProjectAdminService(ProjectsDAO projectsDAO, HangarProjectsAdminDAO hangarProjectsAdminDAO, ProjectVisibilityService projectVisibilityService, final ProjectFactory projectFactory) {
+    public ProjectAdminService(ProjectsDAO projectsDAO, HangarProjectsAdminDAO hangarProjectsAdminDAO, ProjectVisibilityService projectVisibilityService, final ProjectFactory projectFactory, final NotificationService notificationService) {
         this.projectsDAO = projectsDAO;
         this.hangarProjectsAdminDAO = hangarProjectsAdminDAO;
         this.projectVisibilityService = projectVisibilityService;
         this.projectFactory = projectFactory;
+        this.notificationService = notificationService;
     }
 
     public void sendProjectForApproval(long projectId) {
@@ -44,7 +47,8 @@ public class ProjectAdminService extends HangarComponent {
 
     public void changeVisibility(final long projectId, final Visibility visibility, final String comment) {
         final ProjectTable projectTable = projectVisibilityService.getModel(projectId);
-        if (projectTable.getVisibility() == Visibility.SOFTDELETE && visibility != Visibility.SOFTDELETE) {
+        final Visibility oldVisibility = projectTable.getVisibility();
+        if (oldVisibility == Visibility.SOFTDELETE && visibility != Visibility.SOFTDELETE) {
             final int suffixIndex = projectTable.getName().indexOf(ProjectFactory.SOFT_DELETION_SUFFIX);
             if (suffixIndex != -1) {
                 final String newName = projectTable.getName().substring(0, suffixIndex);
@@ -57,6 +61,10 @@ public class ProjectAdminService extends HangarComponent {
             projectFactory.softDelete(projectTable, comment);
         } else {
             projectVisibilityService.changeVisibility(projectId, visibility, comment);
+        }
+
+        if (oldVisibility != visibility) {
+            notificationService.notifyVisibilityChange(projectTable, visibility, comment);
         }
     }
 
