@@ -15,26 +15,26 @@ const props = defineProps<{
 <template>
   <ul v-if="projects.length">
     <template v-for="project in projects" :key="project.projectId">
-      <hr class="mb-3" />
+      <hr />
       <li>
-        <div class="flex">
-          <div class="flex-grow">
+        <div class="flex <md:flex-col items-center">
+          <div class="basis-full md:basis-3/12">
             {{ i18n.t("projectApproval.description", [project.changeRequester, `${project.namespace.owner}/${project.namespace.slug}`]) }}
             <Link :to="`/${project.namespace.owner}/${project.namespace.slug}`" target="_blank">
               <IconMdiOpenInNew />
             </Link>
           </div>
-          <div class="flex-shrink">
-            <VisibilityChangerModal :prop-visibility="project.visibility" type="project" :post-url="`projects/visibility/${project.projectId}`" />
+          <div class="basis-full md:basis-6/12 flex-grow">
+            <Markdown :raw="project.comment" />
           </div>
-          <div class="basis-full">
-            <Markdown :raw="project.comment" class="mb-3" />
+          <div class="">
+            <VisibilityChangerModal :prop-visibility="project.visibility" type="project" :post-url="`projects/visibility/${project.projectId}`" />
           </div>
         </div>
       </li>
     </template>
   </ul>
-  <Alert v-else type="danger">
+  <Alert v-else type="info">
     {{ i18n.t("projectApproval.noProjects") }}
   </Alert>
 </template>

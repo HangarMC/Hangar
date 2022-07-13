@@ -89,13 +89,13 @@ function requiresConfirmation(): boolean {
 <template>
   <div v-if="project.visibility !== Visibility.PUBLIC" class="mb-4">
     <Alert v-if="project.visibility === Visibility.NEEDS_CHANGES" type="danger">
-      <div class="flex">
-        <div class="flex-grow text-bold">{{ i18n.t("visibility.notice." + project.visibility) }}</div>
-        <div v-if="hasPerms(NamedPermission.EDIT_PAGE)" class="flex-shrink">
+      <div>
+        <div class="text-bold">{{ i18n.t("visibility.notice." + project.visibility) }}</div>
+        <Markdown :raw="project.lastVisibilityChangeComment || 'Unknown'" class="mt-2" inline />
+        <div v-if="hasPerms(NamedPermission.EDIT_PAGE)">
           <Button @click="sendForApproval">{{ i18n.t("project.sendForApproval") }}</Button>
         </div>
       </div>
-      <Markdown :raw="project.lastVisibilityChangeComment || 'Unknown'" class="mt-2" inline />
     </Alert>
     <Alert v-else-if="project.visibility === Visibility.SOFT_DELETE" type="danger">
       {{ i18n.t("visibility.notice." + project.visibility, [project.lastVisibilityChangeUserName]) }}

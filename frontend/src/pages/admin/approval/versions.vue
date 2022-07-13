@@ -13,6 +13,7 @@ import Tag from "~/components/Tag.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { useRoute } from "vue-router";
+import Button from "~/lib/components/design/Button.vue";
 
 const i18n = useI18n();
 const ctx = useContext();
@@ -113,8 +114,10 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
       </template>
       <template #item_startBtn="{ item }">
         <Link :to="{ name: 'user-project-versions-version-platform-reviews', params: getRouteParams(item) }" nuxt>
-          <IconMdiPlay></IconMdiPlay>
-          {{ i18n.t("version.page.reviewStart") }}
+          <Button>
+            <IconMdiPlay />
+            {{ i18n.t("version.page.reviewStart") }}
+          </Button>
         </Link>
       </template>
     </SortableTable>

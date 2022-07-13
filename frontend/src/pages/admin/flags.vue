@@ -50,25 +50,27 @@ function resolve(flag: Flag) {
 <template>
   <PageTitle>{{ i18n.t("flagReview.title") }}</PageTitle>
   <template v-if="flags.length > 0">
-    <Card v-for="flag in flags" :key="flag.id" class="flex gap-2 items-center">
-      <UserAvatar :username="flag.reportedByName"></UserAvatar>
-      <div class="flex flex-col flex-grow">
-        <h2>
-          {{
-            i18n.t("flagReview.line1", [flag.reportedByName, `${flag.projectNamespace.owner}/${flag.projectNamespace.slug}`, i18n.d(flag.createdAt, "time")])
-          }}
-          <router-link :to="`/${flag.projectNamespace.owner}/${flag.projectNamespace.slug}`" target="_blank">
-            <icon-mdi-open-in-new class="inline ml-1"></icon-mdi-open-in-new>
-          </router-link>
-        </h2>
-        <small>{{ i18n.t("flagReview.line2", [i18n.t(flag.reason)]) }}</small>
-        <small>{{ i18n.t("flagReview.line3", [flag.comment]) }}</small>
-      </div>
-      <Link fix-href="$util.forumUrl(flag.reportedByName)">{{ i18n.t("flagReview.msgUser") }}</Link>
-      <Link fix-href="$util.forumUrl(flag.projectNamespace.owner)">{{ i18n.t("flagReview.msgProjectOwner") }}</Link>
-      <VisibilityChangerModal :prop-visibility="flag.projectVisibility" type="project" :post-url="`projects/visibility/${flag.projectId}`" />
-      <Button :disabled="loading[flag.id]" @click="resolve(flag)">{{ i18n.t("flagReview.markResolved") }}</Button>
-    </Card>
+    <div class="space-y-2">
+      <Card v-for="flag in flags" :key="flag.id" class="flex space-x-1 items-center">
+        <UserAvatar :username="flag.reportedByName" size="sm"></UserAvatar>
+        <div class="flex flex-col flex-grow">
+          <h2>
+            {{
+              i18n.t("flagReview.line1", [flag.reportedByName, `${flag.projectNamespace.owner}/${flag.projectNamespace.slug}`, i18n.d(flag.createdAt, "time")])
+            }}
+            <router-link :to="`/${flag.projectNamespace.owner}/${flag.projectNamespace.slug}`" target="_blank">
+              <icon-mdi-open-in-new class="inline ml-1"></icon-mdi-open-in-new>
+            </router-link>
+          </h2>
+          <small>{{ i18n.t("flagReview.line2", [i18n.t(flag.reason)]) }}</small>
+          <small>{{ i18n.t("flagReview.line3", [flag.comment]) }}</small>
+        </div>
+        <!-- todo: send notification to repository owner when visibility is changed -->
+        <VisibilityChangerModal :prop-visibility="flag.projectVisibility" type="project" :post-url="`projects/visibility/${flag.projectId}`" />
+        <!-- todo: add ability to send custom notification to reporter when resolved -->
+        <Button :disabled="loading[flag.id]" @click="resolve(flag)">{{ i18n.t("flagReview.markResolved") }}</Button>
+      </Card>
+    </div>
   </template>
   <div v-else>
     {{ i18n.t("flagReview.noFlags") }}

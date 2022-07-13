@@ -10,27 +10,30 @@ import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { useRoute } from "vue-router";
 
+interface ApprovalProjects {
+  needsApproval: ProjectApproval[];
+  waitingProjects: ProjectApproval[];
+}
+
 const ctx = useContext();
 const i18n = useI18n();
 const route = useRoute();
-const data = await useInternalApi<{ needsApproval: ProjectApproval[]; waitingProjects: ProjectApproval[] }>("admin/approval/projects").catch((e) =>
+const data: ApprovalProjects = (await useInternalApi<ApprovalProjects>("admin/approval/projects").catch((e) =>
   handleRequestError(e, ctx, i18n)
-);
+)) as ApprovalProjects;
 
 useHead(useSeo(i18n.t("projectApproval.title"), null, route, null));
 </script>
 
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <Card>
-      <template #header>{{ i18n.t("projectApproval.awaitingChanges") }}</template>
-
-      <AdminProjectList :projects="data.waitingProjects" />
-    </Card>
+  <div class="space-y-3">
     <Card>
       <template #header>{{ i18n.t("projectApproval.needsApproval") }}</template>
-
       <AdminProjectList :projects="data.needsApproval" />
+    </Card>
+    <Card>
+      <template #header>{{ i18n.t("projectApproval.awaitingChanges") }}</template>
+      <AdminProjectList :projects="data.waitingProjects" />
     </Card>
   </div>
 </template>

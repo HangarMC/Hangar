@@ -77,7 +77,7 @@
     "user": {
       "profile": "Profile",
       "notifications": "Notifications",
-      "flags": "Flags",
+      "flags": "Reports",
       "settings": "Account settings",
       "apiKeys": "API keys",
       "projectApprovals": "Project approvals",
@@ -660,7 +660,7 @@
   "visibility": {
     "notice": {
       "new": "This project will not be shown to others until a version has been uploaded.",
-      "needsChanges": "This project requires changes",
+      "needsChanges": "This project requires changes:",
       "needsApproval": "You have sent the project for review",
       "softDelete": "Project deleted by {0}"
     },
@@ -727,8 +727,8 @@
     "continue": "Continue"
   },
   "flags": {
-    "header": "Flags for",
-    "noFlags": "No flags found",
+    "header": "Reports for",
+    "noFlags": "No reports found",
     "resolved": "Yes, by {0} on {1}",
     "notResolved": "No"
   },
@@ -747,9 +747,9 @@
     "downloads": "Downloads",
     "totalDownloads": "Total Downloads",
     "unsafeDownloads": "Unsafe Downloads",
-    "flags": "Flags",
-    "openedFlags": "Opened Flags",
-    "closedFlags": "Closed Flags"
+    "flags": "Reports",
+    "openedFlags": "Opened Reports",
+    "closedFlags": "Closed Reports"
   },
   "health": {
     "title": "Hangar Health Report",
@@ -835,10 +835,8 @@
     "success": "Updated platform versions"
   },
   "flagReview": {
-    "title": "Flags",
-    "noFlags": "There are no flags to review.",
-    "msgUser": "Message user",
-    "msgProjectOwner": "Message owner",
+    "title": "Reports",
+    "noFlags": "There are no reports to review.",
     "markResolved": "Mark resolved",
     "line1": "{0} reported {1} on {2}",
     "line2": "Reason: {0}",
@@ -847,7 +845,7 @@
   "userActivity": {
     "title": "{0}'s Activity",
     "reviews": "Reviews",
-    "flags": "Flags",
+    "flags": "Reports",
     "reviewApproved": "Review Approved",
     "flagResolved": "Flag Resolved",
     "error": {
