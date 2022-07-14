@@ -8,7 +8,7 @@ import java.util.Map;
 public enum SorterRegistry implements Sorter {
 
     USER_JOIN_DATE("joinDate", simpleSorter("u.join_date")),
-    USER_NAME("username", simpleSorter("username")),
+    USER_NAME("username", simpleSorter("lower(username)")),
     USER_PROJECT_COUNT("projectCount", simpleSorter("project_count")),
 
     // For Projects
