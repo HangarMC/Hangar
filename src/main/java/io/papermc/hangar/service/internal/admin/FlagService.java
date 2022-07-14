@@ -6,6 +6,9 @@ import io.papermc.hangar.db.dao.internal.projects.HangarProjectFlagsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectFlagNotificationsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectFlagsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.api.PaginatedResult;
+import io.papermc.hangar.model.api.Pagination;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.db.projects.ProjectFlagNotificationTable;
 import io.papermc.hangar.model.db.projects.ProjectFlagTable;
@@ -15,13 +18,14 @@ import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlagNotification;
 import io.papermc.hangar.model.internal.user.notifications.NotificationType;
 import io.papermc.hangar.service.internal.users.NotificationService;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FlagService extends HangarComponent {
@@ -58,7 +62,7 @@ public class FlagService extends HangarComponent {
         if (hangarProjectFlag == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        if (hangarProjectFlag.isResolved()) {
+        if (resolved == hangarProjectFlag.isResolved()) {
             throw new HangarApiException("project.flag.error.alreadyResolved");
         }
         Long resolvedBy = resolved ? getHangarPrincipal().getId() : null;
@@ -90,7 +94,9 @@ public class FlagService extends HangarComponent {
         return hangarProjectFlagsDAO.getFlags(projectId);
     }
 
-    public List<HangarProjectFlag> getFlags() {
-        return hangarProjectFlagsDAO.getFlags();
+    public PaginatedResult<HangarProjectFlag> getFlags(@NotNull final RequestPagination pagination, final boolean resolved) {
+        final List<HangarProjectFlag> flags = hangarProjectFlagsDAO.getFlags(pagination, resolved);
+        final long count = hangarProjectFlagsDAO.getFlagsCount(resolved);
+        return new PaginatedResult<>(new Pagination(count, pagination), flags);
     }
 }

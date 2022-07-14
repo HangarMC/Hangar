@@ -847,8 +847,11 @@
       "prompt": "Notification content"
     },
     "title": "Reports",
+    "resolved": "Resolved reports",
+    "unresolved": "Unresolved reports",
     "noFlags": "There are no reports to review.",
     "markResolved": "Mark resolved",
+    "markUnresolved": "Mark unresolved",
     "line1": "{0} reported {1} on {2}",
     "line2": "Reason: {0}",
     "line3": "Comment: {0}"

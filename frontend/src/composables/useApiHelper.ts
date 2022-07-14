@@ -66,8 +66,12 @@ export async function useUnreadNotifications(blocking = true) {
   return useInitialState("useUnreadNotifications", () => useInternalApi<number>("unread", false), blocking);
 }
 
-export async function useFlags(blocking = true) {
-  return useInitialState("useFlags", () => useInternalApi<Flag[]>("flags/", false), blocking);
+export async function useResolvedFlags(blocking = true) {
+  return useInitialState("useResolvedFlags", () => useInternalApi<PaginatedResult<Flag>>("flags/resolved", false), blocking);
+}
+
+export async function useUnresolvedFlags(blocking = true) {
+  return useInitialState("useUnresolvedFlags", () => useInternalApi<PaginatedResult<Flag>>("flags/unresolved", false), blocking);
 }
 
 export async function useProjectFlags(projectId: number, blocking = true) {

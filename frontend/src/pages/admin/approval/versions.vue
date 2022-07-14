@@ -6,7 +6,6 @@ import { ReviewAction } from "~/types/enums";
 import { useContext } from "vite-ssr/vue";
 import { useVersionApprovals } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { ref } from "vue";
 import Card from "~/lib/components/design/Card.vue";
 import Link from "~/lib/components/design/Link.vue";
 import Tag from "~/components/Tag.vue";
@@ -19,7 +18,6 @@ const i18n = useI18n();
 const ctx = useContext();
 const route = useRoute();
 const data = await useVersionApprovals().catch((e) => handleRequestError(e, ctx, i18n));
-const underReviewExpanded = ref([]);
 
 const actions = {
   ongoing: [ReviewAction.START, ReviewAction.MESSAGE, ReviewAction.UNDO_APPROVAL, ReviewAction.REOPEN],

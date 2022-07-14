@@ -1,5 +1,7 @@
 package io.papermc.hangar.db.dao.internal.projects;
 
+import io.papermc.hangar.db.extras.BindPagination;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -35,8 +37,10 @@ public interface HangarProjectFlagsDAO {
               "   JOIN projects p ON pf.project_id = p.id " +
               "   JOIN users fu ON pf.user_id = fu.id " +
               "   LEFT OUTER JOIN users ru ON ru.id = pf.resolved_by " +
-              "WHERE NOT pf.resolved " +
-              "GROUP BY pf.id, fu.id, ru.id, p.id " +
-              "LIMIT 20") //TODO paginate
-    List<HangarProjectFlag> getFlags();
+              "WHERE pf.resolved = :resolved " +
+              "GROUP BY pf.id, fu.id, ru.id, p.id <offsetLimit>")
+    List<HangarProjectFlag> getFlags(@BindPagination RequestPagination pagination, boolean resolved);
+
+    @SqlQuery("SELECT count(id) FROM project_flags WHERE resolved = :resolved")
+    long getFlagsCount(boolean resolved);
 }
