@@ -11,7 +11,7 @@ public final class HtmlSanitizerUtil {
         .allowAttributes("alt", "src").onElements("img").allowAttributes("border", "height", "width")
         .matching(integerPolicy()).onElements("img").toFactory();
     public static final PolicyFactory SANITIZER = Sanitizers.FORMATTING.and(Sanitizers.BLOCKS).and(IMAGES).and(Sanitizers.TABLES).and(Sanitizers.STYLES)
-        .and(new HtmlPolicyBuilder().allowElements("details").toFactory());
+        .and(new HtmlPolicyBuilder().allowElements("details", "summary").toFactory());
 
     private static AttributePolicy integerPolicy() {
         return (elementName, attributeName, value) -> {
