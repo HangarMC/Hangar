@@ -7,7 +7,6 @@ import io.papermc.hangar.model.common.Color;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Collections;
 import java.util.Set;
 
 public class ChannelForm {
@@ -18,7 +17,7 @@ public class ChannelForm {
     private final String name;
     @NotNull
     private final Color color;
-    private final Set<@Validate(SpEL = "#root.isEditable", message = "channel.modal.error.invalidFlag") ChannelFlag> flags;
+    private final Set<ChannelFlag> flags;
 
     @JsonCreator
     public ChannelForm(final String name, final Color color, final Set<ChannelFlag> flags) {
@@ -36,7 +35,7 @@ public class ChannelForm {
     }
 
     public Set<ChannelFlag> getFlags() {
-        return Collections.unmodifiableSet(this.flags);
+        return this.flags;
     }
 
     @Override

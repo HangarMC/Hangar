@@ -78,9 +78,36 @@ public class ChannelService extends HangarComponent {
         if (projectChannelTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
+
         if (projectChannelTable.getFlags().contains(ChannelFlag.FROZEN)) {
+            // Allow changing of certain flags
+            boolean updated = false;
+            final String old = formatChannelChange(projectChannelTable);
+            for (final ChannelFlag flag : ChannelFlag.values()) {
+                if (!flag.isAlwaysEditable()) {
+                    continue;
+                }
+
+                final boolean added = flags.contains(flag);
+                if (added != projectChannelTable.getFlags().contains(flag)) {
+                    updated = true;
+                    if (added) {
+                        projectChannelTable.getFlags().add(flag);
+                    } else {
+                        projectChannelTable.getFlags().remove(flag);
+                    }
+                }
+            }
+
+            if (updated) {
+                this.projectChannelsDAO.update(projectChannelTable);
+                this.actionLogger.project(LogAction.PROJECT_CHANNEL_EDITED.create(ProjectContext.of(projectId), formatChannelChange(projectChannelTable), old));
+                return;
+            }
+
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.cannotEdit");
         }
+
         this.validateChannel(name, color, projectId, this.projectChannelsDAO.getProjectChannels(projectId).stream().filter(ch -> ch.getId() != channelId).collect(Collectors.toList()));
         String old = formatChannelChange(projectChannelTable);
         projectChannelTable.setName(name);

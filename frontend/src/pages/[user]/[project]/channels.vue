@@ -106,7 +106,7 @@ async function editChannel(channel: ProjectChannel) {
           <td>
             <ChannelModal :project-id="props.project.id" edit :channel="channel" @create="editChannel">
               <template #activator="{ on, attrs }">
-                <Button v-bind="attrs" :disabled="channel.flags.indexOf(ChannelFlag.FROZEN) > -1" v-on="on">
+                <Button v-bind="attrs" v-on="on">
                   {{ i18n.t("channel.manage.editButton") }}
                 </Button>
               </template>

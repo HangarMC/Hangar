@@ -184,6 +184,7 @@
       "docs": "Docs",
       "versions": "Versions",
       "discuss": "Discuss",
+      "channels": "Channels",
       "settings": "Settings",
       "homepage": "Homepage",
       "issues": "Issues",
@@ -541,9 +542,10 @@
       "titleEdit": "Edit channel",
       "name": "Channel Name",
       "color": "Channel Color",
+      "pickedColor": "Picked channel color (must be unique)",
       "flags": {
         "unstable": "Versions are to be considered unstable",
-        "pinned": "Latest version is highlighted on main project page"
+        "pinned": "Latest version is pinned on main project page"
       },
       "error": {
         "invalidName": "Invalid channel name",

@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
@@ -31,6 +32,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RateLimit(path = "channel")
@@ -74,7 +77,9 @@ public class ChannelController extends HangarComponent {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
     @PostMapping(path = "/{projectId}/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createChannel(@PathVariable final long projectId, @Valid @RequestBody final ChannelForm channelForm) {
-        this.channelService.createProjectChannel(channelForm.getName(), channelForm.getColor(), projectId, channelForm.getFlags());
+        final Set<ChannelFlag> flags = channelForm.getFlags();
+        flags.retainAll(flags.stream().filter(ChannelFlag::isEditable).collect(Collectors.toSet()));
+        this.channelService.createProjectChannel(channelForm.getName(), channelForm.getColor(), projectId, flags);
     }
 
     @Unlocked
@@ -83,7 +88,9 @@ public class ChannelController extends HangarComponent {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
     @PostMapping(path = "/{projectId}/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void editChannel(@PathVariable final long projectId, @Valid @RequestBody final EditChannelForm channelForm) {
-        this.channelService.editProjectChannel(channelForm.getId(), channelForm.getName(), channelForm.getColor(), projectId, channelForm.getFlags());
+        final Set<ChannelFlag> flags = channelForm.getFlags();
+        flags.retainAll(flags.stream().filter(ChannelFlag::isEditable).collect(Collectors.toSet()));
+        this.channelService.editProjectChannel(channelForm.getId(), channelForm.getName(), channelForm.getColor(), projectId, flags);
     }
 
     @Unlocked

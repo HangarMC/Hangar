@@ -6,20 +6,31 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 @EnumByOrdinal
 @JsonFormat(shape = JsonFormat.Shape.STRING)
 public enum ChannelFlag {
-    FROZEN(false),
-    UNSTABLE(true),
+    FROZEN(false, false),
+    UNSTABLE(true, false),
     @Deprecated(forRemoval = true)
-    SKIP_REVIEW_QUEUE(true), //TODO remove and add id migration
-    PINNED(true),
+    SKIP_REVIEW_QUEUE(true, false), //TODO remove and add id migration
+    PINNED(true, true),
     ;
 
     private final boolean editable;
+    private final boolean alwaysEditable;
 
-    ChannelFlag(final boolean editable) {
+    ChannelFlag(final boolean editable, final boolean alwaysEditable) {
         this.editable = editable;
+        this.alwaysEditable = alwaysEditable;
     }
 
     public boolean isEditable() {
         return this.editable;
+    }
+
+    /**
+     * Returns whether the flag is editable even if the channel is frozen.
+     *
+     * @return whether the flag is editable even if the channel is frozen
+     */
+    public boolean isAlwaysEditable() {
+        return alwaysEditable;
     }
 }

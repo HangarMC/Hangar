@@ -13,8 +13,6 @@ import { useVuelidate } from "@vuelidate/core";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { ChannelFlag } from "~/types/enums";
 
-const possibleFlags = [ChannelFlag.UNSTABLE, ChannelFlag.PINNED]; // TODO maybe load from backend? unsure if needed
-
 const props = defineProps<{
   projectId: number;
   edit?: boolean;
@@ -27,6 +25,9 @@ const emit = defineEmits<{
 const i18n = useI18n();
 const ctx = useContext();
 const v = useVuelidate();
+
+const frozen = props.channel && props.channel.flags.includes(ChannelFlag.FROZEN);
+const possibleFlags = frozen ? [ChannelFlag.PINNED] : [ChannelFlag.UNSTABLE, ChannelFlag.PINNED];
 
 const form = reactive<ProjectChannel>({
   name: "",
@@ -87,30 +88,32 @@ reset();
 <template>
   <Modal :title="edit ? i18n.t('channel.modal.titleEdit') : i18n.t('channel.modal.titleNew')">
     <template #default="{ on }">
-      <InputText v-model.trim="name" :label="i18n.t('channel.modal.name')" :rules="[required(), validChannelName()(props.projectId, props.channel?.name)]" />
-      <p class="text-lg font-bold mt-3 mb-1">{{ i18n.t("channel.modal.color") }}</p>
-      <div v-for="(arr, arrIndex) in swatches" :key="arrIndex" class="flex">
-        <div v-for="(c, n) in arr" :key="n" class="flex-grow-0 flex-shrink-1 pa-2 pr-1 mb-1">
-          <div
-            :style="`background-color: ${c}`"
-            class="w-27px h-25px cursor-pointer inline-flex justify-center items-center rounded-lg border-black border-1"
-            @click="color = c"
-          >
-            <IconMdiCheckboxMarkedCircle
-              class="ma-auto transition-all ease-in-out duration-100"
-              :class="color === c ? 'visible opacity-100' : 'invisible opacity-0'"
-            />
+      <div v-if="!frozen">
+        <InputText v-model.trim="name" :label="i18n.t('channel.modal.name')" :rules="[required(), validChannelName()(props.projectId, props.channel?.name)]" />
+        <p class="text-lg font-bold mt-3 mb-1">{{ i18n.t("channel.modal.color") }}</p>
+        <div v-for="(arr, arrIndex) in swatches" :key="arrIndex" class="flex">
+          <div v-for="(c, n) in arr" :key="n" class="flex-grow-0 flex-shrink-1 pa-2 pr-1 mb-1">
+            <div
+              :style="`background-color: ${c}`"
+              class="w-27px h-25px cursor-pointer inline-flex justify-center items-center rounded-lg border-black border-1"
+              @click="color = c"
+            >
+              <IconMdiCheckboxMarkedCircle
+                class="ma-auto transition-all ease-in-out duration-100"
+                :class="color === c ? 'visible opacity-100' : 'invisible opacity-0'"
+              />
+            </div>
           </div>
         </div>
+        <InputText
+          v-model="color"
+          :label="i18n.t('channel.modal.pickedColor')"
+          :rules="[required(), validChannelColor()(props.projectId, props.channel?.color)]"
+          readonly
+          disabled
+        />
+        <div class="mb-4" />
       </div>
-      <InputText
-        v-model="color"
-        :label="i18n.t('channel.modal.color')"
-        :rules="[required(), validChannelColor()(props.projectId, props.channel?.color)]"
-        readonly
-        disabled
-      />
-      <div class="mb-4" />
       <InputCheckbox v-for="f in possibleFlags" :key="f" v-model="flags" :label="i18n.t(`channel.modal.flags.${f.toLowerCase()}`)" :value="f" />
 
       <Button class="mt-3" :disabled="v.$invalid" @click="create(on.click)">{{ edit ? i18n.t("general.save") : i18n.t("general.create") }}</Button>
