@@ -26,21 +26,17 @@ import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.util.HtmlSanitizerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.owasp.html.HtmlPolicyBuilder;
-import org.owasp.html.PolicyFactory;
-import org.owasp.html.Sanitizers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.Arrays;
 import java.util.Set;
 
 @Service
 public class MarkdownService {
-
-    private static final PolicyFactory SANITIZER = Sanitizers.FORMATTING.and(Sanitizers.BLOCKS).and(Sanitizers.TABLES).and(Sanitizers.STYLES)
-        .and(new HtmlPolicyBuilder().allowElements("details").toFactory());
     private final Parser markdownParser;
     private final MutableDataSet options;
     private final HangarConfig config;
@@ -90,7 +86,7 @@ public class MarkdownService {
     }
 
     public String render(String input, RenderSettings settings) {
-        input = SANITIZER.sanitize(input);
+        input = HtmlSanitizerUtil.SANITIZER.sanitize(input);
         MutableDataSet localOptions = new MutableDataSet(this.options);
 
         if (settings.linkEscapeChars != null) {
