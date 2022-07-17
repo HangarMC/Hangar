@@ -18,14 +18,14 @@ import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlagNotification;
 import io.papermc.hangar.model.internal.user.notifications.NotificationType;
 import io.papermc.hangar.service.internal.users.NotificationService;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FlagService extends HangarComponent {
@@ -98,5 +98,9 @@ public class FlagService extends HangarComponent {
         final List<HangarProjectFlag> flags = hangarProjectFlagsDAO.getFlags(pagination, resolved);
         final long count = hangarProjectFlagsDAO.getFlagsCount(resolved);
         return new PaginatedResult<>(new Pagination(count, pagination), flags);
+    }
+
+    public long getFlagsQueueSize(final boolean resolved) {
+        return hangarProjectFlagsDAO.getFlagsCount(resolved);
     }
 }

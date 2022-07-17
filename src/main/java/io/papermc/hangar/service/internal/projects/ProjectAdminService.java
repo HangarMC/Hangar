@@ -10,11 +10,10 @@ import io.papermc.hangar.model.internal.projects.HangarProjectApproval;
 import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.StringUtils;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProjectAdminService extends HangarComponent {
@@ -70,6 +69,10 @@ public class ProjectAdminService extends HangarComponent {
 
     public List<HangarProjectApproval> getProjectsNeedingApproval() {
         return hangarProjectsAdminDAO.getVisibilityNeedsApproval();
+    }
+
+    public int getApprovalQueueSize() {
+        return hangarProjectsAdminDAO.getProjectsNeedingApprovalSize();
     }
 
     public List<HangarProjectApproval> getProjectsWaitingForChanges() {

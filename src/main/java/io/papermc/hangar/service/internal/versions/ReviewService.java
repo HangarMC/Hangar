@@ -146,4 +146,8 @@ public class ReviewService extends HangarComponent {
     public List<HangarReviewQueueEntry> getReviewQueue(ReviewState reviewState) {
         return hangarReviewsDAO.getReviewQueue(reviewState);
     }
+
+    public int getApprovalQueueSize() {
+        return hangarReviewsDAO.getReviewQueueSize(ReviewState.UNREVIEWED);
+    }
 }

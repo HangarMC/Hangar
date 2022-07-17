@@ -307,9 +307,6 @@ useHead(
 
 <template>
   <div v-if="projectVersion" class="mt-4">
-    <div class="float-left">
-      {{ t("reviews.headline", [projectVersion.author, prettyDate(projectVersion.createdAt)]) }}
-    </div>
     <div class="float-right inline-flex">
       <template v-if="!isReviewStateChecked">
         <Button size="large" :to="{ name: 'user-project', params: route.params }" exact>
@@ -319,26 +316,27 @@ useHead(
         <DownloadButton :project="project" :version="projectVersion" class="ml-2" />
       </template>
     </div>
-    <div style="clear: both" class="mb-4" />
-    <hr />
 
     <h2 class="my-3 text-2xl">
       {{ t("reviews.title") }}
+      <span class="text-base">
+        {{ t("reviews.headline", [projectVersion.author, projectVersion.name, prettyDate(projectVersion.createdAt)]) }}
+      </span>
     </h2>
-    <div class="my-1 flex">
+    <div class="my-1 flex space-x-2">
+      <div v-if="!currentUserReview" class="flex-grow-0">
+        <Button color="success" :loading="loadingValues.start" @click="startReview">
+          <IconMdiPlay />
+          {{ t("reviews.startReview") }}
+        </Button>
+      </div>
       <div class="flex-grow-0">
         <Button button-type="primary" @click="refresh">
           <IconMdiRefresh />
           {{ t("general.refresh") }}
         </Button>
       </div>
-      <div v-if="!currentUserReview" class="flex-grow-0 ml-2">
-        <Button color="success" :loading="loadingValues.start" @click="startReview">
-          <IconMdiPlay />
-          {{ t("reviews.startReview") }}
-        </Button>
-      </div>
-      <div class="flex items-center ml-2">
+      <div class="flex items-center">
         <InputCheckbox v-model="hideClosed" :label="t('reviews.hideClosed')" />
       </div>
     </div>

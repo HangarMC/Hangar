@@ -51,6 +51,9 @@ const authStore = useAuthStore();
 const notifications = ref<HangarNotification[]>([]);
 const unreadNotifications = ref<number>(0);
 const loadedUnreadNotifications = ref<number>(0);
+const projectApprovalQueue = ref<number>(0);
+const versionApprovalQueue = ref<number>(0);
+const reportQueue = ref<number>(0);
 if (authStore.user) {
   useUnreadNotifications().then((v) => {
     if (v && v.value) {
@@ -76,6 +79,30 @@ if (authStore.user) {
       }
     })
     .catch((e) => handleRequestError(e, ctx, i18n));
+
+  if (hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)) {
+    useInternalApi<number>("admin/approval/projectneedingapproval", false)
+      .then((v) => {
+        if (v) {
+          projectApprovalQueue.value = v;
+        }
+      })
+      .catch((e) => handleRequestError(e, ctx, i18n));
+    useInternalApi<number>("admin/approval/versionsneedingapproval", false)
+      .then((v) => {
+        if (v) {
+          versionApprovalQueue.value = v;
+        }
+      })
+      .catch((e) => handleRequestError(e, ctx, i18n));
+    useInternalApi<number>("flags/unresolvedamount", false)
+      .then((v) => {
+        if (v) {
+          reportQueue.value = v;
+        }
+      })
+      .catch((e) => handleRequestError(e, ctx, i18n));
+  }
 }
 
 const navBarLinks = [
@@ -283,11 +310,18 @@ function isRecent(date: string): boolean {
               <DropdownItem :href="'/' + authStore.user.name + '/settings/api-keys'">{{ t("nav.user.apiKeys") }}</DropdownItem>
               <DropdownItem :href="authHost + '/account/settings'">{{ t("nav.user.settings") }}</DropdownItem>
               <hr />
-              <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/flags">{{ t("nav.user.flags") }}</DropdownItem>
-              <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/approval/projects">{{
-                t("nav.user.projectApprovals")
-              }}</DropdownItem>
-              <DropdownItem v-if="hasPerms(NamedPermission.REVIEWER)" to="/admin/approval/versions">{{ t("nav.user.versionApprovals") }}</DropdownItem>
+              <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/flags">
+                {{ t("nav.user.flags") }}
+                <span v-if="reportQueue !== 0">{{ "(" + reportQueue + ")" }}</span>
+              </DropdownItem>
+              <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/approval/projects">
+                {{ t("nav.user.projectApprovals") }}
+                <span v-if="projectApprovalQueue !== 0">{{ "(" + projectApprovalQueue + ")" }}</span>
+              </DropdownItem>
+              <DropdownItem v-if="hasPerms(NamedPermission.REVIEWER)" to="/admin/approval/versions">
+                {{ t("nav.user.versionApprovals") }}
+                <span v-if="versionApprovalQueue !== 0">{{ "(" + versionApprovalQueue + ")" }}</span>
+              </DropdownItem>
               <DropdownItem v-if="hasPerms(NamedPermission.VIEW_STATS)" to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
               <DropdownItem v-if="hasPerms(NamedPermission.VIEW_HEALTH)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>
               <DropdownItem v-if="hasPerms(NamedPermission.VIEW_LOGS)" to="/admin/log">{{ t("nav.user.log") }}</DropdownItem>

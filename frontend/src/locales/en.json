@@ -768,7 +768,7 @@
     "empty": "Empty! All good!"
   },
   "reviews": {
-    "headline": "{0} released this version on {1}",
+    "headline": "{0} released {1} on {2}",
     "title": "Review logs",
     "projectPage": "Project Page",
     "downloadFile": "Download File",
