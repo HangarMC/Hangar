@@ -30,6 +30,7 @@
         <configurate.version>4.1.2</configurate.version>
 
         <!-- dependencies -->
+        <owasp-html-sanitizer>20220608.1</owasp-html-sanitizer>
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
         <flexmark-all.version>0.64.0</flexmark-all.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
@@ -192,6 +193,13 @@
             <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark-all</artifactId>
             <version>${flexmark-all.version}</version>
+        </dependency>
+
+        <!-- html sanitization-->
+        <dependency>
+            <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+            <artifactId>owasp-java-html-sanitizer</artifactId>
+            <version>${owasp-html-sanitizer}</version>
         </dependency>
 
         <!-- sitemap -->

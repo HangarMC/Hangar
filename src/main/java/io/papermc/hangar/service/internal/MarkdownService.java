@@ -28,15 +28,19 @@ import com.vladsch.flexmark.util.data.MutableDataSet;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
+import org.owasp.html.Sanitizers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Arrays;
 import java.util.Set;
 
 @Service
 public class MarkdownService {
 
+    private static final PolicyFactory SANITIZER = Sanitizers.FORMATTING.and(Sanitizers.BLOCKS).and(Sanitizers.TABLES).and(Sanitizers.STYLES)
+        .and(new HtmlPolicyBuilder().allowElements("details").toFactory());
     private final Parser markdownParser;
     private final MutableDataSet options;
     private final HangarConfig config;
@@ -46,45 +50,47 @@ public class MarkdownService {
         this.config = config;
 
         options = new MutableDataSet()
-                .set(HtmlRenderer.ESCAPE_HTML, true)
-                .set(AnchorLinkExtension.ANCHORLINKS_TEXT_SUFFIX, "<svg class=\"ml-2 text-xl\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 24 24\" width=\"1.2em\" height=\"1.2em\"><path fill=\"currentColor\" d=\"M10.59 13.41c.41.39.41 1.03 0 1.42c-.39.39-1.03.39-1.42 0a5.003 5.003 0 0 1 0-7.07l3.54-3.54a5.003 5.003 0 0 1 7.07 0a5.003 5.003 0 0 1 0 7.07l-1.49 1.49c.01-.82-.12-1.64-.4-2.42l.47-.48a2.982 2.982 0 0 0 0-4.24a2.982 2.982 0 0 0-4.24 0l-3.53 3.53a2.982 2.982 0 0 0 0 4.24m2.82-4.24c.39-.39 1.03-.39 1.42 0a5.003 5.003 0 0 1 0 7.07l-3.54 3.54a5.003 5.003 0 0 1-7.07 0a5.003 5.003 0 0 1 0-7.07l1.49-1.49c-.01.82.12 1.64.4 2.43l-.47.47a2.982 2.982 0 0 0 0 4.24a2.982 2.982 0 0 0 4.24 0l3.53-3.53a2.982 2.982 0 0 0 0-4.24a.973.973 0 0 1 0-1.42Z\"></path></svg>")
-                .set(AnchorLinkExtension.ANCHORLINKS_ANCHOR_CLASS, "headeranchor inline-flex items-center order-last")
-                .set(AnchorLinkExtension.ANCHORLINKS_WRAP_TEXT, false)
-                // GFM table compatibility
-                .set(TablesExtension.COLUMN_SPANS, false)
-                .set(TablesExtension.APPEND_MISSING_COLUMNS, true)
-                .set(TablesExtension.DISCARD_EXTRA_COLUMNS, true)
-                .set(TablesExtension.HEADER_SEPARATOR_COLUMN_MATCH, true)
-                // extensions
-                .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY)
-                .set(
-                        Parser.EXTENSIONS,
-                        Arrays.asList(
-                                AutolinkExtension.create(),
-                                AnchorLinkExtension.create(),
-                                StrikethroughExtension.create(),
-                                TaskListExtension.create(),
-                                TablesExtension.create(),
-                                TypographicExtension.create(),
-                                WikiLinkExtension.create(),
-                                EmojiExtension.create(),
-                                FootnoteExtension.create(),
-                                AdmonitionExtension.create(),
-                                GitLabExtension.create(),
-                                YouTubeLinkExtension.create(),
-                                ResizableImageExtension.create()
-                        )
-                );
+            .set(AnchorLinkExtension.ANCHORLINKS_TEXT_SUFFIX, "<svg class=\"ml-2 text-xl\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 24 24\" width=\"1.2em\" height=\"1.2em\"><path fill=\"currentColor\" d=\"M10.59 13.41c.41.39.41 1.03 0 1.42c-.39.39-1.03.39-1.42 0a5.003 5.003 0 0 1 0-7.07l3.54-3.54a5.003 5.003 0 0 1 7.07 0a5.003 5.003 0 0 1 0 7.07l-1.49 1.49c.01-.82-.12-1.64-.4-2.42l.47-.48a2.982 2.982 0 0 0 0-4.24a2.982 2.982 0 0 0-4.24 0l-3.53 3.53a2.982 2.982 0 0 0 0 4.24m2.82-4.24c.39-.39 1.03-.39 1.42 0a5.003 5.003 0 0 1 0 7.07l-3.54 3.54a5.003 5.003 0 0 1-7.07 0a5.003 5.003 0 0 1 0-7.07l1.49-1.49c-.01.82.12 1.64.4 2.43l-.47.47a2.982 2.982 0 0 0 0 4.24a2.982 2.982 0 0 0 4.24 0l3.53-3.53a2.982 2.982 0 0 0 0-4.24a.973.973 0 0 1 0-1.42Z\"></path></svg>")
+            .set(AnchorLinkExtension.ANCHORLINKS_ANCHOR_CLASS, "headeranchor inline-flex items-center order-last")
+            .set(AnchorLinkExtension.ANCHORLINKS_WRAP_TEXT, false)
+            // GFM table compatibility
+            .set(TablesExtension.COLUMN_SPANS, false)
+            .set(TablesExtension.APPEND_MISSING_COLUMNS, true)
+            .set(TablesExtension.DISCARD_EXTRA_COLUMNS, true)
+            .set(TablesExtension.HEADER_SEPARATOR_COLUMN_MATCH, true)
+            // extensions
+            .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY)
+            .set(
+                Parser.EXTENSIONS,
+                Arrays.asList(
+                    AutolinkExtension.create(),
+                    AnchorLinkExtension.create(),
+                    StrikethroughExtension.create(),
+                    TaskListExtension.create(),
+                    TablesExtension.create(),
+                    TypographicExtension.create(),
+                    WikiLinkExtension.create(),
+                    EmojiExtension.create(),
+                    FootnoteExtension.create(),
+                    AdmonitionExtension.create(),
+                    GitLabExtension.create(),
+                    YouTubeLinkExtension.create(),
+                    ResizableImageExtension.create()
+                )
+            );
 
         markdownParser = Parser.builder(options).build();
     }
 
     public String render(String input) {
-        if (input == null) return "";
+        if (input == null) {
+            return "";
+        }
         return this.render(input, RenderSettings.defaultSettings);
     }
 
     public String render(String input, RenderSettings settings) {
+        input = SANITIZER.sanitize(input);
         MutableDataSet localOptions = new MutableDataSet(this.options);
 
         if (settings.linkEscapeChars != null) {
@@ -95,9 +101,9 @@ public class MarkdownService {
         }
 
         HtmlRenderer htmlRenderer = HtmlRenderer
-                .builder(localOptions)
-                .linkResolverFactory(new ExternalLinkResolverFactory(config))
-                .build();
+            .builder(localOptions)
+            .linkResolverFactory(new ExternalLinkResolverFactory(config))
+            .build();
 
         return htmlRenderer.render(markdownParser.parse(input));
     }
