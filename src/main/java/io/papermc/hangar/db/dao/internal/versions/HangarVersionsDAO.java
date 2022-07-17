@@ -102,8 +102,9 @@ public interface HangarVersionsDAO {
     )
     List<HangarVersion> getVersionsWithVersionString(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
 
+    //TODO fixup view and this
     @SqlQuery("""
-        SELECT pv.version_id,
+        (SELECT pv.version_id,
                pv."type",
                pv.version_string AS name,
                pc.name pc_name,
@@ -117,7 +118,23 @@ public interface HangarVersionsDAO {
         FROM pinned_versions pv
             JOIN project_versions p ON pv.version_id = p.id
             JOIN project_channels pc on pc.id = p.channel_id
-        WHERE pv.project_id = :projectId
+        WHERE pv.project_id = :projectId AND pv.type = 'version' LIMIT 5)
+        UNION ALL
+        (SELECT pv.version_id,
+               pv."type",
+               pv.version_string AS name,
+               pc.name pc_name,
+               pc.created_at pc_created_at,
+               pc.color pc_color,
+               pc.flags pc_flags,
+               p.file_name fi_name,
+               p.file_size fi_size_bytes,
+               p.hash fi_md5_hash,
+               p.external_url
+        FROM pinned_versions pv
+            JOIN project_versions p ON pv.version_id = p.id
+            JOIN project_channels pc on pc.id = p.channel_id
+        WHERE pv.project_id = :projectId AND pv.type = 'channel' LIMIT 1)
         """)
     @RegisterConstructorMapper(HangarProject.PinnedVersion.class)
     List<HangarProject.PinnedVersion> getPinnedVersions(long projectId);
