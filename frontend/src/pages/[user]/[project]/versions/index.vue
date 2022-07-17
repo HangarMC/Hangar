@@ -53,9 +53,6 @@ const requestOptions = computed(() => {
 
 const channels = await useProjectChannels(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, ctx, i18n));
 const versions = await useProjectVersions(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, ctx, i18n));
-if (versions && versions.value) {
-  versions.value.result.reverse();
-}
 
 if (channels) {
   filter.channels.push(...(channels.value?.map((c) => c.name) || []));
@@ -84,7 +81,6 @@ watch(
     ).catch((e) => handleRequestError(e, ctx, i18n));
     if (newVersions) {
       versions.value = newVersions;
-      versions.value.result.reverse();
     }
   },
   { deep: true }

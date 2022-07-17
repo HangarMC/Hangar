@@ -55,7 +55,10 @@ public class VersionsApiService extends HangarComponent {
 
     public PaginatedResult<Version> getVersions(String author, String slug, RequestPagination pagination) {
         boolean canSeeHidden = getGlobalPermissions().has(Permission.SeeHidden);
-        List<Version> versions = versionsApiDAO.getVersions(author, slug, canSeeHidden, getHangarUserId(), pagination).entrySet().stream().map(entry -> versionDependencyService.addDependencies(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+        List<Version> versions = versionsApiDAO.getVersions(author, slug, canSeeHidden, getHangarUserId(), pagination).entrySet().stream()
+            .map(entry -> versionDependencyService.addDependencies(entry.getKey(), entry.getValue()))
+            .sorted((v1, v2) -> v2.getCreatedAt().compareTo(v1.getCreatedAt()))
+            .collect(Collectors.toList());
         Long versionCount = versionsApiDAO.getVersionCount(author, slug, canSeeHidden, getHangarUserId(), pagination);
         return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount, pagination), versions);
     }
