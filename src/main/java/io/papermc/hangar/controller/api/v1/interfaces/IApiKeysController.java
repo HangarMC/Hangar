@@ -36,7 +36,7 @@ public interface IApiKeysController {
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")})
     @PostMapping(path = "/keys", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    String createKey(@ApiParam(required = true) @Valid @RequestBody CreateAPIKeyForm apiKeyForm);
+    String createKey(@ApiParam(value = "Data about the key to create", required = true) @Valid @RequestBody CreateAPIKeyForm apiKeyForm);
 
     @ApiOperation(
             value = "Fetches a list of API Keys",
@@ -54,9 +54,9 @@ public interface IApiKeysController {
     List<ApiKey> getKeys();
 
     @ApiOperation(
-            value = "Delete an API key",
+            value = "Deletes an API key",
             nickname = "deleteKey",
-            notes = "Delete an API key. Requires the `edit_api_keys` permission.",
+            notes = "Deletes an API key. Requires the `edit_api_keys` permission.",
             authorizations = @Authorization("Session"),
             tags = "API Keys"
     )

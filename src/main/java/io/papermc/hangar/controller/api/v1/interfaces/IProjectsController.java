@@ -60,7 +60,7 @@ public interface IProjectsController {
     @GetMapping("/projects/{author}/{slug}/members")
     ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(
             @ApiParam("The author of the project to return members for") @PathVariable("author") String author,
-            @ApiParam("The slug of the project to return") @PathVariable("slug") String slug,
+            @ApiParam("The slug of the project to return members for") @PathVariable("slug") String slug,
             @ApiParam("Pagination information") @NotNull RequestPagination pagination
     );
 
@@ -79,14 +79,14 @@ public interface IProjectsController {
     @GetMapping("/projects")
     ResponseEntity<PaginatedResult<Project>> getProjects(
             @ApiParam("The query to use when searching") @RequestParam(required = false) String q,
-            @ApiParam("If how relevant the project is to the given query should be used when sorting the projects") @RequestParam(defaultValue = "true") boolean relevance,
+            @ApiParam("Whether projects should be sorted by the relevance to the given query") @RequestParam(defaultValue = "true") boolean relevance,
             @ApiParam("Pagination information") @NotNull RequestPagination pagination
     );
 
     @ApiOperation(
             value = "Returns the stats for a project",
             nickname = "showProjectStats",
-            notes = "Returns the stats(downloads, views) for a project per day for a certain date range. Requires the `is_subject_member` permission.",
+            notes = "Returns the stats (downloads and views) for a project per day for a certain date range. Requires the `is_subject_member` permission.",
             authorizations = @Authorization("Session"),
             tags = "Projects"
     )
@@ -96,8 +96,8 @@ public interface IProjectsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/projects/{author}/{slug}/stats")
-    ResponseEntity<Map<String, DayProjectStats>> getProjectStats(@ApiParam("The author of the project to return the stats for") @PathVariable String author,
-                                                                 @ApiParam("The slug of the project to return") @PathVariable String slug,
+    ResponseEntity<Map<String, DayProjectStats>> getProjectStats(@ApiParam("The author of the project to return stats for") @PathVariable String author,
+                                                                 @ApiParam("The slug of the project to return stats for") @PathVariable String slug,
                                                                  @NotNull @ApiParam(value = "The first date to include in the result", required = true) @RequestParam OffsetDateTime fromDate,
                                                                  @NotNull @ApiParam(value = "The last date to include in the result", required = true) @RequestParam OffsetDateTime toDate
     );
@@ -117,7 +117,7 @@ public interface IProjectsController {
     @GetMapping("/projects/{author}/{slug}/stargazers")
     ResponseEntity<PaginatedResult<User>> getProjectStargazers(
             @ApiParam("The author of the project to return stargazers for") @PathVariable("author") String author,
-            @ApiParam("The slug of the project to return") @PathVariable("slug") String slug,
+            @ApiParam("The slug of the project to return stargazers for") @PathVariable("slug") String slug,
             @ApiParam("Pagination information") @NotNull RequestPagination pagination
     );
 
@@ -136,7 +136,7 @@ public interface IProjectsController {
     @GetMapping("/projects/{author}/{slug}/watchers")
     ResponseEntity<PaginatedResult<User>> getProjectWatchers(
             @ApiParam("The author of the project to return watchers for") @PathVariable("author") String author,
-            @ApiParam("The slug of the project to return") @PathVariable("slug") String slug,
+            @ApiParam("The slug of the project to return watchers for") @PathVariable("slug") String slug,
             @ApiParam("Pagination information") @NotNull RequestPagination pagination
     );
 }

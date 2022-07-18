@@ -26,9 +26,9 @@ import java.util.List;
 public interface IUsersController {
 
     @ApiOperation(
-            value = "Gets a specific user",
+            value = "Returns a specific user",
             nickname = "getUser",
-            notes = "Gets a specific user. Requires the `view_public_info` permission.",
+            notes = "Returns a specific user. Requires the `view_public_info` permission.",
             authorizations = @Authorization("Session"),
             tags = "Users"
     )
@@ -38,12 +38,12 @@ public interface IUsersController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/users/{user}")
-    ResponseEntity<User> getUser(@ApiParam("The user to return") @PathVariable("user") String userName);
+    ResponseEntity<User> getUser(@ApiParam("The name of the user to return") @PathVariable("user") String userName);
 
     @ApiOperation(
             value = "Searches for users",
             nickname = "showUsers",
-            notes = "Gets a list of users based on a search query",
+            notes = "Returns a list of users based on a search query",
             authorizations = @Authorization("Session"),
             tags = "Users"
     )
@@ -57,9 +57,9 @@ public interface IUsersController {
                                                    @ApiParam("Pagination information") @NotNull RequestPagination pagination);
 
     @ApiOperation(
-            value = "Gets the starred projects for a specific user",
+            value = "Returns the starred projects for a specific user",
             nickname = "showStarred",
-            notes = "Gets the starred projects for a specific user. Requires the `view_public_info` permission.",
+            notes = "Returns the starred projects for a specific user. Requires the `view_public_info` permission.",
             authorizations = @Authorization("Session"),
             tags = "Users"
     )
@@ -69,14 +69,14 @@ public interface IUsersController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/users/{user}/starred")
-    ResponseEntity<PaginatedResult<ProjectCompact>> getUserStarred(@ApiParam("The user to return for") @PathVariable("user") String userName,
+    ResponseEntity<PaginatedResult<ProjectCompact>> getUserStarred(@ApiParam("The user to return starred projects for") @PathVariable("user") String userName,
                                                                    @ApiParam("How to sort the projects") @RequestParam(defaultValue = "updated") ProjectSortingStrategy sort,
                                                                    @ApiParam("Pagination information") @NotNull RequestPagination pagination);
 
     @ApiOperation(
-            value = "Gets the watched projects for a specific user",
+            value = "Returns the watched projects for a specific user",
             nickname = "getUserWatching",
-            notes = "Gets the watched projects for a specific user. Requires the `view_public_info` permission.",
+            notes = "Returns the watched projects for a specific user. Requires the `view_public_info` permission.",
             authorizations = @Authorization("Session"),
             tags = "Users"
     )
@@ -86,14 +86,14 @@ public interface IUsersController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/users/{user}/watching")
-    ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(@ApiParam("The user to return for") @PathVariable("user") String userName,
+    ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(@ApiParam("The user to return watched projects for") @PathVariable("user") String userName,
                                                                     @ApiParam("How to sort the projects") @RequestParam(defaultValue = "updated") ProjectSortingStrategy sort,
                                                                     @ApiParam("Pagination information") @NotNull RequestPagination pagination);
 
     @ApiOperation(
-        value = "Gets the pinned projects for a specific user",
+        value = "Returns the pinned projects for a specific user",
         nickname = "getUserPinnedProjects",
-        notes = "Gets the pinned projects for a specific user. Requires the `view_public_info` permission.",
+        notes = "Returns the pinned projects for a specific user. Requires the `view_public_info` permission.",
         authorizations = @Authorization("Session"),
         tags = "Users"
     )
@@ -103,12 +103,12 @@ public interface IUsersController {
         @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/users/{user}/pinned")
-    ResponseEntity<List<ProjectCompact>> getUserPinnedProjects(@ApiParam("The user to return for") @PathVariable("user") String userName);
+    ResponseEntity<List<ProjectCompact>> getUserPinnedProjects(@ApiParam("The user to return pinned projects for") @PathVariable("user") String userName);
 
     @ApiOperation(
-            value = "Gets all authors on the platform",
+            value = "Returns all users with at least one public project",
             nickname = "getAuthors",
-            notes = "Gets all authors on the platform. Only shows authors with at least one public project. Requires the `view_public_info` permission.",
+            notes = "Returns all users that have at least one public project. Requires the `view_public_info` permission.",
             authorizations = @Authorization("Session"),
             tags = "Users"
     )
@@ -121,9 +121,9 @@ public interface IUsersController {
     ResponseEntity<PaginatedResult<User>> getAuthors(@ApiParam("Pagination information") @NotNull RequestPagination pagination);
 
     @ApiOperation(
-            value = "Gets all staff on the platform",
+            value = "Returns Hangar staff",
             nickname = "getStaff",
-            notes = "Gets all staff on the platform. Requires the `view_public_info` permission.",
+            notes = "Returns Hanagr staff. Requires the `view_public_info` permission.",
             authorizations = @Authorization("Session"),
             tags = "Users"
     )

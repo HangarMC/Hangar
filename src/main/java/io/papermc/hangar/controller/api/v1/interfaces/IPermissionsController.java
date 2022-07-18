@@ -24,9 +24,9 @@ import java.util.List;
 public interface IPermissionsController {
 
     @ApiOperation(
-            value = "Do an AND permission check",
+            value = "Checks whether you have all the provided permissions",
             nickname = "hasAll",
-            notes = "Checks that you have all the permissions passed in with a given session in a given context",
+            notes = "Checks whether you have all the provided permissions in the given context",
             response = PermissionCheck.class,
             authorizations = @Authorization("Session"),
             tags = "Permissions"
@@ -44,9 +44,9 @@ public interface IPermissionsController {
     );
 
     @ApiOperation(
-            value = "Do an OR permission check",
+            value = "Checks whether you have at least one of the provided permissions",
             nickname = "hasAny",
-            notes = "Checks that you have any of the permissions passed in with a given session in a given context",
+            notes = "Checks whether you have at least one of the provided permissions in the given context",
             authorizations = @Authorization("Session"),
             tags = "Permissions"
     )
@@ -58,14 +58,14 @@ public interface IPermissionsController {
     @GetMapping("/permissions/hasAny")
     ResponseEntity<PermissionCheck> hasAny(@ApiParam(value = "The permissions to check", required = true) @RequestParam List<NamedPermission> permissions,
                                            @ApiParam("The owner of the project to check permissions in. Must not be used together with `organizationName") @RequestParam(required = false) String author,
-                                           @ApiParam("The project slug of the project to check permissions in. Must not be used together with `organizationName`") @RequestParam(required = false) String slug,
+                                           @ApiParam("The slug of the project to check permissions in. Must not be used together with `organizationName`") @RequestParam(required = false) String slug,
                                            @ApiParam("The organization to check permissions in. Must not be used together with `projectOwner` and `projectSlug`") @RequestParam(required = false) String organization
     );
 
     @ApiOperation(
-            value = "Checks your permissions",
+            value = "Returns your permissions",
             nickname = "showPermissions",
-            notes = "Checks your permissions with a given session in a given context",
+            notes = "Returns a list of permissions you have in the given context",
             authorizations = @Authorization("Session"),
             tags = "Permissions"
     )
@@ -78,7 +78,7 @@ public interface IPermissionsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<UserPermissions> showPermissions(
             @ApiParam("The owner of the project to get the permissions for. Must not be used together with `organizationName`") @RequestParam(required = false) String author,
-            @ApiParam("The project slug of the project get the permissions for. Must not be used together with `organizationName`") @RequestParam(required = false) String slug,
+            @ApiParam("The slug of the project get the permissions for. Must not be used together with `organizationName`") @RequestParam(required = false) String slug,
             @ApiParam("The organization to check permissions in. Must not be used together with `projectOwner` and `projectSlug`") @RequestParam(required = false) String organization
     );
 }

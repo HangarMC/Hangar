@@ -20,8 +20,8 @@ public interface IAuthenticationController {
     @ApiOperation(
             value = "Creates an API JWT",
             nickname = "authenticate",
-            notes = "`Log-in` with your API key, in order to be able to call other endpoints authenticated. The returned JWT should be specified in all following request as a header like this `Authorization: HangarAuth your.jwt`.",
-            authorizations = @Authorization(value = "Key"),
+            notes = "`Log-in` with your API key in order to be able to call other endpoints authenticated. The returned JWT should be specified as a header in all following requests: `Authorization: HangarAuth your.jwt`",
+            authorizations = @Authorization("Key"),
             tags = "Authentication"
     )
     @ApiResponses({

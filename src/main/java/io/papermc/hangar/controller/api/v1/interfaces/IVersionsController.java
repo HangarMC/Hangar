@@ -28,7 +28,7 @@ import java.util.Map;
 public interface IVersionsController {
 
     // TODO implement version creation via API
-/*    @ApiOperation(
+    /*@ApiOperation(
             value = "Creates a new version",
             nickname = "deployVersion",
             notes = "Creates a new version for a project. Requires the `create_version` permission in the project or owning organization.",
@@ -74,14 +74,14 @@ public interface IVersionsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/projects/{author}/{slug}/versions/{name}")
-    List<Version> getVersions(@ApiParam("The author of the project to return the versions for") @PathVariable String author,
-                              @ApiParam("The slug of the project to return") @PathVariable String slug,
+    List<Version> getVersions(@ApiParam("The author of the project to return versions for") @PathVariable String author,
+                              @ApiParam("The slug of the project to return versions for") @PathVariable String slug,
                               @ApiParam("The name of the versions to return") @PathVariable("name") String versionString);
 
     @ApiOperation(
-            value = "Returns the versions of a project",
+            value = "Returns all versions of a project",
             nickname = "listVersions",
-            notes = "Returns the versions of a project. Requires the `view_public_info` permission in the project or owning organization.",
+            notes = "Returns all versions of a project. Requires the `view_public_info` permission in the project or owning organization.",
             authorizations = @Authorization("Session"),
             tags = "Versions"
     )
@@ -98,7 +98,7 @@ public interface IVersionsController {
     @ApiOperation(
             value = "Returns the stats for a version",
             nickname = "showVersionStats",
-            notes = "Returns the stats(downloads) for a version per day for a certain date range. Requires the `is_subject_member` permission.",
+            notes = "Returns the stats (downloads) for a version per day for a certain date range. Requires the `is_subject_member` permission.",
             responseContainer = "Map",
             authorizations = @Authorization("Session"),
             tags = "Versions"
@@ -111,8 +111,8 @@ public interface IVersionsController {
     @GetMapping("/projects/{author}/{slug}/versions/{name}/{platform}/stats")
     Map<String, VersionStats> getVersionStats(@ApiParam("The author of the version to return the stats for") @PathVariable String author,
                                               @ApiParam("The slug of the project to return stats for") @PathVariable String slug,
-                                              @ApiParam("The version to return the stats for.") @PathVariable("name") String versionString,
-                                              @ApiParam("The platform of the version to return") @PathVariable Platform platform,
+                                              @ApiParam("The version to return the stats for") @PathVariable("name") String versionString,
+                                              @ApiParam("The platform of the version to return stats for") @PathVariable Platform platform,
                                               @ApiParam(value = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
                                               @ApiParam(value = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate);
 
@@ -131,8 +131,8 @@ public interface IVersionsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping(value = "/projects/{author}/{slug}/versions/{name}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    FileSystemResource downloadVersion(@ApiParam("The author of the project to return the version for") @PathVariable String author,
-                                       @ApiParam("The slug of the project to return") @PathVariable String slug,
-                                       @ApiParam("The name of the version to return.") @PathVariable("name") String versionString,
-                                       @ApiParam("The platform of the version to return") @PathVariable Platform platform);
+    FileSystemResource downloadVersion(@ApiParam("The author of the project to download the version from") @PathVariable String author,
+                                       @ApiParam("The slug of the project to download the version from") @PathVariable String slug,
+                                       @ApiParam("The name of the version to download") @PathVariable("name") String versionString,
+                                       @ApiParam("The platform of the version to download") @PathVariable Platform platform);
 }
