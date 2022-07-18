@@ -51,7 +51,7 @@ async function submit(): Promise<void> {
 </script>
 
 <template>
-  <Modal :title="i18n.t('visibility.modal.title', [type])">
+  <Modal :title="i18n.t('visibility.modal.title', [type])" window-classes="w-150">
     <template #default="{ on }">
       Currently: {{ i18n.t(currentVisibility.title) }}
       <InputRadio v-for="vis in backendData.visibilities" :key="vis.name" v-model="visibility" :value="vis.name" :label="i18n.t(vis.title)" class="block" />

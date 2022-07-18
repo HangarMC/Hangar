@@ -39,7 +39,7 @@ async function save() {
 </script>
 
 <template>
-  <Modal :title="i18n.t('author.editTagline')">
+  <Modal :title="i18n.t('author.editTagline')" window-classes="w-200">
     <InputText v-model.trim="newTagline" :label="i18n.t('author.taglineLabel')" counter :maxlength="backendData.validations.userTagline.max" />
     <Button class="mt-3" @click="save">{{ i18n.t("general.change") }}</Button>
     <template #activator="{ on }">

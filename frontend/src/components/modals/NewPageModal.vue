@@ -78,7 +78,7 @@ async function createPage() {
 </script>
 
 <template>
-  <Modal :title="i18n.t('page.new.title')">
+  <Modal :title="i18n.t('page.new.title')" window-classes="w-120">
     <div class="flex flex-col">
       <InputText
         v-model.trim="name"

@@ -48,6 +48,7 @@ async function submit() {
         ? i18n.t('flagReview.notification.reporterTitle', [flag.reportedByName])
         : i18n.t('flagReview.notification.projectTitle', [flag.projectNamespace.slug])
     "
+    window-classes="w-150"
   >
     <template #default="{ on }">
       <span v-if="!sendToReporter">Note that changing the visibility already sends a notification to the project's members.</span>

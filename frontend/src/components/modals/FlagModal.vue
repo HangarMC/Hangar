@@ -46,7 +46,7 @@ async function submit(close: () => void) {
 </script>
 
 <template>
-  <Modal :title="i18n.t('project.flag.flagProject', [project.name])">
+  <Modal :title="i18n.t('project.flag.flagProject', [project.name])" window-classes="w-150">
     <template #default="{ on }">
       <InputRadio v-for="(reason, index) in backendData.flagReasons" :key="index" v-model="flagReason" :label="i18n.t(reason.title)" :value="reason.type" />
       <div class="py-2"></div>

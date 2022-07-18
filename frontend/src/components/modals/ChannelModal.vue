@@ -86,7 +86,7 @@ reset();
 </script>
 
 <template>
-  <Modal :title="edit ? i18n.t('channel.modal.titleEdit') : i18n.t('channel.modal.titleNew')">
+  <Modal :title="edit ? i18n.t('channel.modal.titleEdit') : i18n.t('channel.modal.titleNew')" window-classes="w-150">
     <template #default="{ on }">
       <div v-if="!frozen">
         <InputText v-model.trim="name" :label="i18n.t('channel.modal.name')" :rules="[required(), validChannelName()(props.projectId, props.channel?.name)]" />

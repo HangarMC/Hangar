@@ -51,7 +51,7 @@ async function save() {
 </script>
 
 <template>
-  <Modal :title="i18n.t('version.edit.platformVersions', [platform?.name])">
+  <Modal :title="i18n.t('version.edit.platformVersions', [platform?.name])" window-classes="w-200">
     <InputTag v-model="selectedVersions" :options="platform?.possibleVersions" />
 
     <Button class="mt-3" :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>

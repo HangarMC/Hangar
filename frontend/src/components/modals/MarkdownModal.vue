@@ -12,7 +12,7 @@ const i18n = useI18n();
 </script>
 
 <template>
-  <Modal :title="props.title" big>
+  <Modal :title="props.title" window-classes="w-250">
     <Markdown :raw="markdown" />
     <template #activator="{ on }">
       <slot name="activator" :on="on"></slot>

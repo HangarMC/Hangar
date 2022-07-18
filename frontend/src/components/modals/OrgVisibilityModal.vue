@@ -38,7 +38,7 @@ async function changeOrgVisibility(org: string) {
 
 <!-- todo: save on save button, not immediately when ticking -->
 <template>
-  <Modal :title="i18n.t('author.editOrgVisibility')">
+  <Modal :title="i18n.t('author.editOrgVisibility')" window-classes="w-120">
     <p>{{ i18n.t("author.orgVisibilityModal") }}</p>
 
     <ul class="p-2">

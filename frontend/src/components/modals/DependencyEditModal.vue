@@ -77,7 +77,7 @@ onMounted(() =>
 </script>
 
 <template>
-  <Modal ref="modal" :title="i18n.t('version.edit.platformVersions', [platform?.name])" :small="false">
+  <Modal ref="modal" :title="i18n.t('version.edit.platformVersions', [platform?.name])" window-classes="w-200">
     <DependencyTable ref="depTable" :platform="platform?.name?.toUpperCase()" :version="formVersion" />
 
     <Button button-type="primary" class="mt-3" :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
