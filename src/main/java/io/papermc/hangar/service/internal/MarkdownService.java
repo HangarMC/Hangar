@@ -86,7 +86,6 @@ public class MarkdownService {
     }
 
     public String render(String input, RenderSettings settings) {
-        input = HtmlSanitizerUtil.SANITIZER.sanitize(input);
         MutableDataSet localOptions = new MutableDataSet(this.options);
 
         if (settings.linkEscapeChars != null) {
@@ -101,7 +100,9 @@ public class MarkdownService {
             .linkResolverFactory(new ExternalLinkResolverFactory(config))
             .build();
 
-        return htmlRenderer.render(markdownParser.parse(input));
+        // Render markdown and then sanitize html
+        input = htmlRenderer.render(markdownParser.parse(input));
+        return HtmlSanitizerUtil.sanitize(input);
     }
 
     static class RenderSettings {
