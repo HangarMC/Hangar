@@ -118,7 +118,7 @@ public interface HangarVersionsDAO {
         FROM pinned_versions pv
             JOIN project_versions p ON pv.version_id = p.id
             JOIN project_channels pc on pc.id = p.channel_id
-        WHERE pv.project_id = :projectId AND pv.type = 'version' LIMIT 5)
+        WHERE pv.project_id = :projectId AND pv.type = 'version' AND p.visibility = 0 LIMIT 5)
         UNION ALL
         (SELECT pv.version_id,
                pv."type",
@@ -134,7 +134,7 @@ public interface HangarVersionsDAO {
         FROM pinned_versions pv
             JOIN project_versions p ON pv.version_id = p.id
             JOIN project_channels pc on pc.id = p.channel_id
-        WHERE pv.project_id = :projectId AND pv.type = 'channel' LIMIT 1)
+        WHERE pv.project_id = :projectId AND pv.type = 'channel' AND p.visibility = 0 LIMIT 1)
         """)
     @RegisterConstructorMapper(HangarProject.PinnedVersion.class)
     List<HangarProject.PinnedVersion> getPinnedVersions(long projectId);
