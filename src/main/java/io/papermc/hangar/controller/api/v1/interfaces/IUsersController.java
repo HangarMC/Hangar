@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import java.util.List;
 
 @Api(tags = "Users", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
@@ -88,6 +89,21 @@ public interface IUsersController {
     ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(@ApiParam("The user to return for") @PathVariable("user") String userName,
                                                                     @ApiParam("How to sort the projects") @RequestParam(defaultValue = "updated") ProjectSortingStrategy sort,
                                                                     @ApiParam("Pagination information") @NotNull RequestPagination pagination);
+
+    @ApiOperation(
+        value = "Gets the pinned projects for a specific user",
+        nickname = "getUserPinnedProjects",
+        notes = "Gets the pinned projects for a specific user. Requires the `view_public_info` permission.",
+        authorizations = @Authorization("Session"),
+        tags = "Users"
+    )
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Ok"),
+        @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
+        @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
+    })
+    @GetMapping("/users/{user}/pinned")
+    ResponseEntity<List<ProjectCompact>> getUserPinnedProjects(@ApiParam("The user to return for") @PathVariable("user") String userName);
 
     @ApiOperation(
             value = "Gets all authors on the platform",

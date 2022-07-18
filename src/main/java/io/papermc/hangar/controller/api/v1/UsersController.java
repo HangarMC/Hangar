@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+
 @Anyone
 @Controller
 @RateLimit(path = "apiusers", overdraft = 200, refillTokens = 50, greedy = true)
@@ -50,14 +52,19 @@ public class UsersController extends HangarComponent implements IUsersController
     }
 
     @Override
+    public ResponseEntity<List<ProjectCompact>> getUserPinnedProjects(final String userName) {
+        return ResponseEntity.ok(usersApiService.getUserPinned(userName));
+    }
+
+    @Override
     @ApplicableSorters({SorterRegistry.USER_NAME, SorterRegistry.USER_JOIN_DATE, SorterRegistry.USER_PROJECT_COUNT})
     public ResponseEntity<PaginatedResult<User>> getAuthors(@NotNull RequestPagination pagination) {
         return ResponseEntity.ok(usersApiService.getAuthors(pagination));
     }
 
     @Override
-    @ApplicableSorters({ SorterRegistry.USER_NAME, SorterRegistry.USER_JOIN_DATE })
+    @ApplicableSorters({SorterRegistry.USER_NAME, SorterRegistry.USER_JOIN_DATE})
     public ResponseEntity<PaginatedResult<User>> getStaff(@NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(usersApiService.getStaff( pagination));
+        return ResponseEntity.ok(usersApiService.getStaff(pagination));
     }
 }

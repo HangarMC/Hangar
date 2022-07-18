@@ -17,6 +17,7 @@ import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.model.internal.user.HangarUser.HeaderData;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
+import io.papermc.hangar.service.internal.projects.PinnedProjectService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +37,16 @@ public class UsersApiService extends HangarComponent {
     private final NotificationsDAO notificationsDAO;
     private final PermissionService permissionService;
     private final OrganizationService organizationService;
+    private final PinnedProjectService pinnedProjectService;
 
     @Autowired
-    public UsersApiService(UsersDAO usersDAO, UsersApiDAO usersApiDAO, NotificationsDAO notificationsDAO, PermissionService permissionService, OrganizationService organizationService) {
+    public UsersApiService(UsersDAO usersDAO, UsersApiDAO usersApiDAO, NotificationsDAO notificationsDAO, PermissionService permissionService, OrganizationService organizationService, final PinnedProjectService pinnedProjectService) {
         this.usersDAO = usersDAO;
         this.usersApiDAO = usersApiDAO;
         this.notificationsDAO = notificationsDAO;
         this.permissionService = permissionService;
         this.organizationService = organizationService;
+        this.pinnedProjectService = pinnedProjectService;
     }
 
     public <T extends User> T getUser(String name, Class<T> type) {
@@ -72,7 +75,7 @@ public class UsersApiService extends HangarComponent {
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
 
-    @CacheEvict(value = CacheConfig.AUTHORS_CACHE,  allEntries = true)
+    @CacheEvict(value = CacheConfig.AUTHORS_CACHE, allEntries = true)
     public void clearAuthorsCache() {
         // Clears a cache
     }
@@ -84,7 +87,7 @@ public class UsersApiService extends HangarComponent {
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
 
-    @CacheEvict(value = CacheConfig.STAFF_CACHE,  allEntries = true)
+    @CacheEvict(value = CacheConfig.STAFF_CACHE, allEntries = true)
     public void clearStaffCache() {
         // Clears a cache
     }
@@ -117,13 +120,17 @@ public class UsersApiService extends HangarComponent {
         long reviewQueueCount = globalPermission.has(Permission.Reviewer) ? notificationsDAO.getReviewQueueCount() : 0;
         long organizationCount = organizationService.getUserOrganizationCount(hangarUser.getId());
         hangarUser.setHeaderData(new HeaderData(
-                globalPermission,
-                unreadNotifs,
-                unansweredInvites,
-                unresolvedFlags,
-                projectApprovals,
-                reviewQueueCount,
-                organizationCount));
+            globalPermission,
+            unreadNotifs,
+            unansweredInvites,
+            unresolvedFlags,
+            projectApprovals,
+            reviewQueueCount,
+            organizationCount));
         return hangarUser;
+    }
+
+    public List<ProjectCompact> getUserPinned(String userName) {
+        return pinnedProjectService.getPinnedVersions(getUserRequired(userName, usersDAO::getUser, HangarUser.class).getId());
     }
 }

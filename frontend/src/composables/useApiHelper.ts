@@ -142,7 +142,7 @@ export async function useUserData(user: string, blocking = true) {
           owner: user,
         }),
         useInternalApi<{ [key: string]: RoleTable }>(`organizations/${user}/userOrganizations`, false),
-        useInternalApi<ProjectCompact[]>(`users/${user}/pinned`, false),
+        useApi<ProjectCompact[]>(`users/${user}/pinned`, false),
       ] as Promise<any>[]);
       return {
         starred: data[0] as PaginatedResult<ProjectCompact>,
