@@ -25,7 +25,7 @@ async function _submit(close: () => void) {
 </script>
 
 <template>
-  <Modal :title="props.title">
+  <Modal :title="props.title" window-classes="w-150">
     <template #default="{ on }">
       <InputTextarea v-model.trim="message" :label="label" :rows="2" @keydown.enter.prevent="" />
 
