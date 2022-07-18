@@ -50,7 +50,7 @@
     "vue3-popper": "1.5.0"
   },
   "devDependencies": {
-    "@iconify/json": "2.1.75",
+    "@iconify/json": "2.1.79",
     "@intlify/vite-plugin-vue-i18n": "3.4.0",
     "@types/accept-language-parser": "1.5.3",
     "@types/chartist": "0.11.1",
