@@ -47,6 +47,10 @@ const steps: Step[] = [
     beforeNext: async () => {
       return createPendingVersion();
     },
+    beforeBack: async () => {
+      router.back();
+      return false; // Prevent routing by returning false.
+    },
     disableNext: computed(() => file.value == null && url.value == null),
   },
   {
