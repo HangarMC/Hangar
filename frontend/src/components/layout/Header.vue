@@ -163,7 +163,7 @@ function isRecent(date: string): boolean {
     <nav class="max-w-screen-xl mx-auto flex justify-between px-4 py-2">
       <!-- Left side items -->
       <div class="flex items-center gap-4">
-        <Popover class="relative">
+        <Popover v-slot="{ close }" class="relative">
           <PopoverButton v-slot="{ open }" class="flex">
             <icon-mdi-menu class="transition-transform text-[1.2em]" :class="open ? 'transform rotate-90' : ''" />
           </PopoverButton>
@@ -189,6 +189,7 @@ function isRecent(date: string): boolean {
                     :to="{ name: link.link }"
                     class="flex items-center rounded-md px-6 py-2"
                     hover="text-primary-400 bg-primary-0"
+                    @click="close()"
                   >
                     <component :is="link.icon" class="mr-3 text-[1.2em]" />
                     {{ link.label }}
