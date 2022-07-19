@@ -131,28 +131,28 @@ class BBCodeConverterTest {
        Assertions.assertEquals("""
                ```kt
 
-               E
+               TEXT
 
                ```""",
            converter.convertToMarkdown("""
                [code=Kotlin]
-               E
+               TEXT
                [/code]"""));
 
         Assertions.assertEquals("""
                ```java
-               E
+               TEXT
 
                ```""",
             converter.convertToMarkdown("""
-               [code=Java]E
+               [code=Java]TEXT
                [/code]"""));
 
         Assertions.assertEquals("""
-               ```java
-               E
-               ```""",
-            converter.convertToMarkdown("[code=Java]E[/code]"));
+              ```java
+              TEXT
+              ```""",
+            converter.convertToMarkdown("[code=Java]TEXT[/code]"));
     }
 
     @Test
