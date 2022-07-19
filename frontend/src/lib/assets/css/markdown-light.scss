@@ -1,0 +1,40 @@
+.light {
+  .markdown {
+
+    table tr:nth-child(2n) {
+      background-color: #f5f5f5;
+    }
+
+    table tr > td, .page-rendered table tr > th {
+      border-color: #e0e0e0;
+    }
+
+    blockquote {
+      color: #57606a;
+    }
+
+    code {
+      background-color: #dfe0e1;
+    }
+
+    pre {
+      background-color: #dfe0e1;
+      code {
+        background-color: transparent;
+      }
+    }
+
+    code {
+      color: black // Specific colour override for code, tailwind does not properly theme pre's and their content.
+    }
+
+    a code {
+      color: #42a5f5;
+    }
+
+    h1,
+    h2 {
+      border-bottom-color: #e0e0e0;
+    }
+  }
+}
