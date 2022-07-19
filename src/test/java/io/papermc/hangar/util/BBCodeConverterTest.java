@@ -45,7 +45,7 @@ class BBCodeConverterTest {
     @Test
     void testCode() {
         String result = converter.convertToMarkdown("[code]Codeblock![/code]");
-        Assertions.assertEquals("```Codeblock!```", result);
+        Assertions.assertEquals("```\nCodeblock!\n```", result);
     }
 
     @Test
@@ -70,6 +70,86 @@ class BBCodeConverterTest {
     void testMediaUnsupportedPlatform() {
         String result = converter.convertToMarkdown("[MEDIA=vimeo]163721649[/MEDIA]");
         Assertions.assertEquals("[MEDIA=vimeo]163721649[/MEDIA]", result);
+    }
+
+    @Test
+    void testCodeBlocksSameLine() {
+        String result = converter.convertToMarkdown("""
+            [code]{
+              "key": "minecraft:plains",
+              "override": {},
+              "condition": {
+                "type": "",
+              }
+            }[/code]""");
+        Assertions.assertEquals("""
+            ```
+            {
+              "key": "minecraft:plains",
+              "override": {},
+              "condition": {
+                "type": "",
+              }
+            }
+            ```""", result);
+    }
+
+    @Test
+    void testCodeBlocksDiffLine() {
+        Assertions.assertEquals("""
+            ```
+
+            MARKDOWN
+
+            ```""",
+            converter.convertToMarkdown("""
+            [code]
+            MARKDOWN
+            [/code]"""));
+
+        Assertions.assertEquals("""
+            ```
+            MARKDOWN
+            ```""",
+            converter.convertToMarkdown("[code]MARKDOWN[/code]"));
+    }
+
+    @Test
+    void testCodeBlocksDiffLineLang() {
+       Assertions.assertEquals("""
+               ```kt
+
+               E
+
+               ```""",
+           converter.convertToMarkdown("""
+               [code=Kotlin]
+               E
+               [/code]"""));
+
+        Assertions.assertEquals("""
+               ```java
+               E
+
+               ```""",
+            converter.convertToMarkdown("""
+               [code=Java]E
+               [/code]"""));
+
+        Assertions.assertEquals("""
+               ```java
+               E
+               ```""",
+            converter.convertToMarkdown("[code=Java]E[/code]"));
+    }
+
+    @Test
+    void testEscaping() {
+        Assertions.assertEquals("`hi[B]bold[/B]`", converter.convertToMarkdown("[icode]hi[B]bold[/B][/icode]"));
+        Assertions.assertEquals("""
+            ```
+            hi[B]bold[/B]
+            ```""", converter.convertToMarkdown("[code]hi[B]bold[/B][/code]"));
     }
 
     @Test

@@ -46,8 +46,36 @@ public class BBCodeConverter {
             }
             return "[" + content + "](" + url + ")";
         });
-        REPLACERS.put("code", (tag, tagArg, content) -> "```" + content + "```");
-        REPLACERS.put("icode", (tag, tagArg, content) -> "`" + content + "`");
+        REPLACERS.put("code", new TagReplacer() {
+            @Override
+            public String process(String tag, String tagArg, String content) {
+                String lang = tagArg == null ? "" : switch (tagArg) {
+                    case "kotlin" -> "kt";
+                    default -> tagArg;
+                };
+
+                return "```" + lang
+                    + "\n"
+                    + content
+                    + "\n```";
+            }
+
+            @Override
+            public boolean skipContents() {
+                return true;
+            }
+        });
+        REPLACERS.put("icode", new TagReplacer() {
+            @Override
+            public String process(String tag, String tagArg, String content) {
+                return "`" + content + "`";
+            }
+
+            @Override
+            public boolean skipContents() {
+                return true;
+            }
+        });
         REPLACERS.put("attach", ((tag, tagArg, content) -> {
             String imageUrl = "https://www.spigotmc.org/attachments/" + content;
             return "![" + imageUrl + "](" + imageUrl + ")";
@@ -111,6 +139,9 @@ public class BBCodeConverter {
                 index++;
             } else {
                 s = s.substring(0, index) + processed + s.substring(closingIndex);
+                if (replacer.skipContents()) {
+                    index += processed.length();
+                }
             }
         }
         return s;
@@ -215,5 +246,9 @@ public class BBCodeConverter {
          * @param content content between opening and closing tag
          */
         String process(String tag, String tagArg, String content);
+
+        default boolean skipContents() {
+            return false;
+        }
     }
 }
