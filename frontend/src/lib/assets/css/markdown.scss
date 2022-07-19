@@ -81,6 +81,14 @@
   blockquote {
     margin: 0;
   }
+
+  ul, ol {
+    padding-inline-start: 1rem;
+  }
+
+  p + ul, p + ol {
+    margin-top: -10px;
+  }
 }
 
 // Active tailwind overrides specific to markdown.
