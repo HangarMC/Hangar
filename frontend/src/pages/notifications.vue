@@ -12,7 +12,7 @@ import { useHead } from "@vueuse/head";
 import { useNotificationStore } from "~/store/notification";
 import Card from "~/lib/components/design/Card.vue";
 import Button from "~/lib/components/design/Button.vue";
-import InputSelect from "~/lib/components/ui/InputSelect.vue";
+import { lastUpdated } from "~/lib/composables/useTime";
 import IconMdiAlertOutline from "~icons/mdi/alert-outline";
 import IconMdiInformationOutline from "~icons/mdi/information-outline";
 import IconMdiMessageOutline from "~icons/mdi/message-outline";
@@ -125,8 +125,13 @@ function updateSelectedNotifications() {
                 <IconMdiAlertOutline v-else-if="item.type === 'warning'" class="text-red-600" />
                 <IconMdiMessageOutline v-else-if="item.type === 'neutral'" />
               </span>
-              <span class="flex-grow">
+              <router-link v-if="item.action" :to="'/' + item.action" active-class="">
                 {{ i18n.t(item.message[0], item.message.slice(1)) }}
+                <div class="text-xs mt-1">{{ lastUpdated(new Date(item.createdAt)) }}</div>
+              </router-link>
+              <span v-else>
+                {{ i18n.t(item.message[0], item.message.slice(1)) }}
+                <div class="text-xs mt-1">{{ lastUpdated(new Date(item.createdAt)) }}</div>
               </span>
             </div>
             <Button v-if="!item.read" class="ml-2" @click="markNotificationRead(item)"><IconMdiCheck /></Button>
