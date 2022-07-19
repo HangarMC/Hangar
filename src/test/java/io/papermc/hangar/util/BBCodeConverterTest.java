@@ -76,20 +76,10 @@ class BBCodeConverterTest {
     void testCodeBlocksSameLine() {
         String result = converter.convertToMarkdown("""
             [code]{
-              "key": "minecraft:plains",
-              "override": {},
-              "condition": {
-                "type": "",
-              }
             }[/code]""");
         Assertions.assertEquals("""
             ```
             {
-              "key": "minecraft:plains",
-              "override": {},
-              "condition": {
-                "type": "",
-              }
             }
             ```""", result);
     }
