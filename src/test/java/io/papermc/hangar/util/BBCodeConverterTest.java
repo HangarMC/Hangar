@@ -44,8 +44,14 @@ class BBCodeConverterTest {
 
     @Test
     void testCode() {
-        String result = converter.convertToMarkdown("[code]Codeblock![/code]");
-        Assertions.assertEquals("```\nCodeblock!\n```", result);
+        {
+            String result = converter.convertToMarkdown("[code]Codeblock![/code][code]Codeblock![/code]");
+            Assertions.assertEquals("```\nCodeblock!\n```\n```\nCodeblock!\n```", result);
+        }
+        {
+            String result = converter.convertToMarkdown("[code]Codeblock![/code]");
+            Assertions.assertEquals("```\nCodeblock!\n```", result);
+        }
     }
 
     @Test
@@ -82,6 +88,22 @@ class BBCodeConverterTest {
             {
             }
             ```""", result);
+    }
+
+    @Test
+    void testCodeBlocksSameLineTextAfter() {
+        String result = converter.convertToMarkdown("[code]this is a newline[/code]NEWLINE");
+        Assertions.assertEquals("""
+            ```
+            this is a newline
+            ```
+            NEWLINE""", result);
+    }
+
+    @Test
+    void testCodeblockWhitespace() {
+        String result = converter.convertToMarkdown("[code]NEWLINE  [/code]NEWLINE");
+        Assertions.assertEquals("```\nNEWLINE  \n```\nNEWLINE", result);
     }
 
     @Test

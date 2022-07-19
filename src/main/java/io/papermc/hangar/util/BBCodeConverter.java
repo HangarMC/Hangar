@@ -54,14 +54,18 @@ public class BBCodeConverter {
                     default -> tagArg;
                 };
 
-                return "```" + lang
-                    + "\n"
+                return "```" + lang + "\n"
                     + content
                     + "\n```";
             }
 
             @Override
-            public boolean convertContents() {
+            public boolean hasRawContents() {
+                return true;
+            }
+
+            @Override
+            public boolean appendNewline() {
                 return true;
             }
         });
@@ -72,7 +76,7 @@ public class BBCodeConverter {
             }
 
             @Override
-            public boolean convertContents() {
+            public boolean hasRawContents() {
                 return true;
             }
         });
@@ -138,12 +142,28 @@ public class BBCodeConverter {
             if (processed == null) {
                 index++;
             } else {
+                if (replacer.appendNewline()) {
+                    processed += "\n";
+                }
+
                 s = s.substring(0, index) + processed + s.substring(closingIndex);
-                if (replacer.convertContents()) {
+                if (replacer.hasRawContents()) {
                     index += processed.length();
                 }
             }
         }
+
+        // Removes newlines from the end of the last tag adds newlines
+        TagReplacer replacer = REPLACERS.get(currentTag);
+        if (replacer != null) {
+            if (replacer.appendNewline()) {
+                int lastChar = s.length() - 1;
+                if (s.lastIndexOf("\n") == lastChar) {
+                    return s.substring(0, lastChar);
+                }
+            }
+        }
+
         return s;
     }
 
@@ -154,6 +174,11 @@ public class BBCodeConverter {
         while ((index = s.indexOf(TAG_PREFIX, index)) != -1) {
             int closingIndex = process(s, index, false);
             if (closingIndex == -1 || currentContent == null) {
+                index++;
+                continue;
+            }
+            TagReplacer replacer = REPLACERS.get(currentTag);
+            if (replacer != null && replacer.hasRawContents()) {
                 index++;
                 continue;
             }
@@ -250,7 +275,11 @@ public class BBCodeConverter {
         /**
          * @return If the contents should be converted from bbcode as well.
          */
-        default boolean convertContents() {
+        default boolean hasRawContents() {
+            return false;
+        }
+
+        default boolean appendNewline() {
             return false;
         }
     }
