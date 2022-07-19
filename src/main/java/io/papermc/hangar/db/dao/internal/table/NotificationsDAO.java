@@ -30,6 +30,9 @@ public interface NotificationsDAO {
     @SqlUpdate("UPDATE notifications SET read = TRUE WHERE id = :notificationId AND user_id = :userId")
     boolean markAsRead(long notificationId, long userId);
 
+    @SqlUpdate("UPDATE notifications SET read = TRUE WHERE read = false AND user_id = :userId")
+    void markAllAsRead(long userId);
+
     @SqlQuery("SELECT count(*)" +
             "   FROM notifications n" +
             "   WHERE n.user_id = :userId" +

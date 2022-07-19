@@ -33,7 +33,7 @@ import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Button from "~/lib/components/design/Button.vue";
-import { useNotificationsAmount, useUnreadNotifications } from "~/composables/useApiHelper";
+import { useRecentNotifications, useUnreadNotificationsCount } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { HangarNotification } from "hangar-internal";
 import { useContext } from "vite-ssr/vue";
@@ -55,12 +55,12 @@ const projectApprovalQueue = ref<number>(0);
 const versionApprovalQueue = ref<number>(0);
 const reportQueue = ref<number>(0);
 if (authStore.user) {
-  useUnreadNotifications().then((v) => {
+  useUnreadNotificationsCount().then((v) => {
     if (v && v.value) {
       unreadNotifications.value = v.value;
     }
   });
-  useNotificationsAmount(true, 30)
+  useRecentNotifications(true, 30)
     .then((v) => {
       if (v && v.value) {
         // Only show notifications that are recent or unread (from the last 30 notifications)

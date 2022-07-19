@@ -55,15 +55,23 @@ export async function useInvites(blocking = true) {
 }
 
 export async function useNotifications(blocking = true) {
-  return useInitialState("useNotifications", () => useInternalApi<HangarNotification[]>("notifications", false), blocking);
-}
-
-export async function useNotificationsAmount(blocking = true, amount: number) {
-  return useInitialState("useNotificationsAmount", () => useInternalApi<HangarNotification[]>("notifications?amount=" + amount, false), blocking);
+  return useInitialState("useNotifications", () => useInternalApi<PaginatedResult<HangarNotification>>("notifications", false), blocking);
 }
 
 export async function useUnreadNotifications(blocking = true) {
-  return useInitialState("useUnreadNotifications", () => useInternalApi<number>("unread", false), blocking);
+  return useInitialState("useUnreadNotifications", () => useInternalApi<PaginatedResult<HangarNotification>>("unreadnotifications", false), blocking);
+}
+
+export async function useReadNotifications(blocking = true) {
+  return useInitialState("useReadNotifications", () => useInternalApi<PaginatedResult<HangarNotification>>("readnotifications", false), blocking);
+}
+
+export async function useRecentNotifications(blocking = true, amount: number) {
+  return useInitialState("useRecentNotifications", () => useInternalApi<HangarNotification[]>("recentnotifications?amount=" + amount, false), blocking);
+}
+
+export async function useUnreadNotificationsCount(blocking = true) {
+  return useInitialState("useUnreadNotificationsCount", () => useInternalApi<number>("unreadcount", false), blocking);
 }
 
 export async function useResolvedFlags(blocking = true) {

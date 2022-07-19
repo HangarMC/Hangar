@@ -5,6 +5,9 @@ import io.papermc.hangar.db.dao.internal.HangarNotificationsDAO;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.NotificationsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
+import io.papermc.hangar.model.api.PaginatedResult;
+import io.papermc.hangar.model.api.Pagination;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.NotificationTable;
@@ -16,10 +19,11 @@ import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.model.internal.user.notifications.HangarNotification;
 import io.papermc.hangar.model.internal.user.notifications.NotificationType;
 import io.papermc.hangar.service.PermissionService;
-import java.util.ArrayList;
-import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class NotificationService extends HangarComponent {
@@ -38,16 +42,25 @@ public class NotificationService extends HangarComponent {
         this.permissionService = permissionService;
     }
 
-    public List<HangarNotification> getUsersNotifications(int amount) {
-        return hangarNotificationsDAO.getNotifications(getHangarPrincipal().getId(), amount);
+    public List<HangarNotification> getRecentNotifications(final int amount) {
+        return hangarNotificationsDAO.getNotifications(getHangarUserId(), amount);
+    }
+
+    public PaginatedResult<HangarNotification> getNotifications(final RequestPagination pagination, @Nullable final Boolean read) {
+        final List<HangarNotification> notifications = read != null ? hangarNotificationsDAO.getNotifications(getHangarUserId(), read, pagination) : hangarNotificationsDAO.getNotifications(getHangarUserId(), pagination);
+        return new PaginatedResult<>(new Pagination(getUnreadNotifications(), pagination), notifications);
     }
 
     public long getUnreadNotifications() {
-        return notificationsDAO.getUnreadNotificationCount(getHangarPrincipal().getId());
+        return notificationsDAO.getUnreadNotificationCount(getHangarUserId());
     }
 
     public boolean markNotificationAsRead(long notificationId) {
-        return notificationsDAO.markAsRead(notificationId, getHangarPrincipal().getId());
+        return notificationsDAO.markAsRead(notificationId, getHangarUserId());
+    }
+
+    public void markNotificationsAsRead() {
+        notificationsDAO.markAllAsRead(getHangarUserId());
     }
 
     public void notifyVisibilityChange(final ProjectTable projectTable, final Visibility visibility, @Nullable final String comment) {

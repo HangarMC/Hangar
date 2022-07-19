@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.api.PaginatedResult;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.model.common.roles.Role;
@@ -31,6 +33,7 @@ import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.service.internal.users.invites.InviteService;
 import io.papermc.hangar.service.internal.users.invites.OrganizationInviteService;
 import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,6 +47,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
 import javax.validation.Valid;
 import java.util.List;
 
@@ -133,14 +137,36 @@ public class HangarUserController extends HangarComponent {
         userService.updateUser(userTable);
     }
 
-    @GetMapping("/notifications")
-    public ResponseEntity<List<HangarNotification>> getUserNotifications(@RequestParam(required = false) Integer amount) {
-        return ResponseEntity.ok(notificationService.getUsersNotifications(amount != null ? amount : Integer.MAX_VALUE));
+    @GetMapping("/recentnotifications")
+    public ResponseEntity<List<HangarNotification>> getRecentNotifications(@RequestParam int amount) {
+        return ResponseEntity.ok(notificationService.getRecentNotifications(amount));
     }
 
-    @GetMapping("/unread")
+    @GetMapping(path = "/notifications", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PaginatedResult<HangarNotification>> getNotifications(@NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(notificationService.getNotifications(pagination, null));
+    }
+
+    @GetMapping(path = "/readnotifications", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PaginatedResult<HangarNotification>> getReadNotifications(@NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(notificationService.getNotifications(pagination, true));
+    }
+
+    @GetMapping(path = "/unreadnotifications", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PaginatedResult<HangarNotification>> getUnreadNotifications(@NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(notificationService.getNotifications(pagination, false));
+    }
+
+    @GetMapping("/unreadcount")
     public ResponseEntity<Long> getUnreadNotifications() {
         return ResponseEntity.ok(notificationService.getUnreadNotifications());
+    }
+
+    @Unlocked
+    @PostMapping("/markallread")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void markNotificationAsRead() {
+        notificationService.markNotificationsAsRead();
     }
 
     @Unlocked

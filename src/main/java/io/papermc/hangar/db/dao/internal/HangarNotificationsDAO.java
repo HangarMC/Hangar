@@ -1,5 +1,7 @@
 package io.papermc.hangar.db.dao.internal;
 
+import io.papermc.hangar.db.extras.BindPagination;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.internal.user.notifications.HangarInvite;
 import io.papermc.hangar.model.internal.user.notifications.HangarNotification;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
@@ -9,9 +11,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
+@RegisterConstructorMapper(HangarNotification.class)
 public interface HangarNotificationsDAO {
 
-    @RegisterConstructorMapper(HangarNotification.class)
     @SqlQuery("SELECT n.created_at, n.id, n.type, n.action, n.message_args message, n.read, u.name as origin_user_name" +
             "   FROM notifications n" +
             "   LEFT OUTER JOIN users u ON u.id = n.origin_id" +
@@ -19,6 +21,22 @@ public interface HangarNotificationsDAO {
             "   ORDER BY n.created_at DESC" +
             "   LIMIT :amount")
     List<HangarNotification> getNotifications(long userId, int amount);
+
+    @SqlQuery("SELECT n.created_at, n.id, n.type, n.action, n.message_args message, n.read, u.name as origin_user_name" +
+        "   FROM notifications n" +
+        "   LEFT OUTER JOIN users u ON u.id = n.origin_id" +
+        "   WHERE n.user_id = :userId" +
+        "   ORDER BY n.created_at DESC" +
+        "   <offsetLimit>")
+    List<HangarNotification> getNotifications(long userId, @BindPagination RequestPagination pagination);
+
+    @SqlQuery("SELECT n.created_at, n.id, n.type, n.action, n.message_args message, n.read, u.name as origin_user_name" +
+        "   FROM notifications n" +
+        "   LEFT OUTER JOIN users u ON u.id = n.origin_id" +
+        "   WHERE n.user_id = :userId AND n.read = :read" +
+        "   ORDER BY n.created_at DESC" +
+        "   <offsetLimit>")
+    List<HangarNotification> getNotifications(long userId, boolean read, @BindPagination RequestPagination pagination);
 
     @RegisterConstructorMapper(HangarInvite.HangarProjectInvite.class)
     @SqlQuery("SELECT upr.id roleTableId," +
