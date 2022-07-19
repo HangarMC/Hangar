@@ -49,10 +49,14 @@ public class BBCodeConverter {
         REPLACERS.put("code", new TagReplacer() {
             @Override
             public String process(String tag, String tagArg, String content) {
-                String lang = tagArg == null ? "" : switch (tagArg) {
-                    case "kotlin" -> "kt";
-                    default -> tagArg;
-                };
+                String lang;
+                if (tagArg == null) {
+                    lang = "";
+                } else if (tagArg.equals("kotlin")) {
+                    lang = "kt";
+                } else {
+                    lang = tagArg;
+                }
 
                 return "```" + lang + "\n"
                     + content
@@ -155,12 +159,10 @@ public class BBCodeConverter {
 
         // Removes newlines from the end of the last tag adds newlines
         TagReplacer replacer = REPLACERS.get(currentTag);
-        if (replacer != null) {
-            if (replacer.appendNewline()) {
-                int lastChar = s.length() - 1;
-                if (s.lastIndexOf("\n") == lastChar) {
-                    return s.substring(0, lastChar);
-                }
+        if (replacer != null && replacer.appendNewline()) {
+            int lastChar = s.length() - 1;
+            if (s.lastIndexOf("\n") == lastChar) {
+                return s.substring(0, lastChar);
             }
         }
 
@@ -273,12 +275,15 @@ public class BBCodeConverter {
         String process(String tag, String tagArg, String content);
 
         /**
-         * @return If the contents should be converted from bbcode as well.
+         * @return if the contents should be converted from bbcode as well
          */
         default boolean hasRawContents() {
             return false;
         }
 
+        /**
+         * @return if a newline should be appended to the end of the converted bbcode
+         */
         default boolean appendNewline() {
             return false;
         }
