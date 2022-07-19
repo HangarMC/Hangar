@@ -1,28 +1,15 @@
 package io.papermc.hangar.util;
 
-import io.papermc.hangar.config.hangar.HangarConfig;
-
-import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.validation.constraints.NotNull;
 
 public class StringUtils {
 
     private StringUtils() {
-    }
-
-    private static HangarConfig hangarConfig;
-
-    static {
-        // doesn't work in unit test: but we can ignore that
-        try {
-            hangarConfig = StaticContextAccessor.getBean(HangarConfig.class);
-        } catch (IllegalStateException ex) {
-            hangarConfig = null;
-        }
     }
 
     /**

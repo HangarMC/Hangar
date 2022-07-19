@@ -1,17 +1,15 @@
 package io.papermc.hangar.config.hangar;
 
-import io.papermc.hangar.util.Routes;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.boot.convert.DurationUnit;
-import org.springframework.stereotype.Component;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.boot.convert.DurationUnit;
+import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "hangar.security")
@@ -137,23 +135,17 @@ public class HangarSecurityConfig {
 
     public String makeSafe(String urlString) {
         try {
-            URI uri  = new URI(urlString);
+            URI uri = new URI(urlString);
             String host = uri.getHost();
             if (uri.getScheme() != null && host == null) {
                 if (uri.getScheme().equals("mailto")) {
                     return urlString;
-                } else {
-                    return Routes.LINK_OUT.getRouteUrl(urlString);
                 }
-            } else {
-                if (host == null || this.safeDownloadHosts.contains(host) || this.safeDownloadHosts.stream().anyMatch(host::endsWith)) {
-                    return urlString;
-                } else {
-                    return Routes.LINK_OUT.getRouteUrl(urlString);
-                }
+            } else if (host == null || this.safeDownloadHosts.contains(host) || this.safeDownloadHosts.stream().anyMatch(host::endsWith)) {
+                return urlString;
             }
-        } catch (URISyntaxException ex) {
-            return Routes.LINK_OUT.getRouteUrl(urlString);
+        } catch (URISyntaxException ignored) {
         }
+        return "/linkout?remoteUrl=" + urlString;
     }
 }
