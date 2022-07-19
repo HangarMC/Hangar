@@ -61,7 +61,7 @@ public class BBCodeConverter {
             }
 
             @Override
-            public boolean skipContents() {
+            public boolean convertContents() {
                 return true;
             }
         });
@@ -72,7 +72,7 @@ public class BBCodeConverter {
             }
 
             @Override
-            public boolean skipContents() {
+            public boolean convertContents() {
                 return true;
             }
         });
@@ -139,7 +139,7 @@ public class BBCodeConverter {
                 index++;
             } else {
                 s = s.substring(0, index) + processed + s.substring(closingIndex);
-                if (replacer.skipContents()) {
+                if (replacer.convertContents()) {
                     index += processed.length();
                 }
             }
@@ -247,7 +247,10 @@ public class BBCodeConverter {
          */
         String process(String tag, String tagArg, String content);
 
-        default boolean skipContents() {
+        /**
+         * @return If the contents should be converted from bbcode as well.
+         */
+        default boolean convertContents() {
             return false;
         }
     }
