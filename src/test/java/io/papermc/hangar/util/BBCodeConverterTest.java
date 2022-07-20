@@ -45,7 +45,7 @@ class BBCodeConverterTest {
     @Test
     void testCode() {
         String result = converter.convertToMarkdown("[code]Codeblock![/code]");
-        Assertions.assertEquals("```Codeblock!```", result);
+        Assertions.assertEquals("```\nCodeblock!\n```", result);
     }
 
     @Test
@@ -70,6 +70,101 @@ class BBCodeConverterTest {
     void testMediaUnsupportedPlatform() {
         String result = converter.convertToMarkdown("[MEDIA=vimeo]163721649[/MEDIA]");
         Assertions.assertEquals("[MEDIA=vimeo]163721649[/MEDIA]", result);
+    }
+
+    @Test
+    void testCodeBlocksSameLine() {
+        String result = converter.convertToMarkdown("""
+            [code]{
+            }[/code]""");
+        Assertions.assertEquals("""
+            ```
+            {
+            }
+            ```""", result);
+    }
+
+    @Test
+    void testCodeBlocksSameLineTextAfter() {
+        String result = converter.convertToMarkdown("[code]this is a newline[/code]NEWLINE");
+        Assertions.assertEquals("""
+            ```
+            this is a newline
+            ```
+            NEWLINE""", result);
+    }
+
+    @Test
+    void testCodeblockWhitespace() {
+        String result = converter.convertToMarkdown("[code]NEWLINE  [/code]NEWLINE");
+        Assertions.assertEquals("```\nNEWLINE  \n```\nNEWLINE", result);
+    }
+
+    @Test
+    void testCodeBlocksDiffLine() {
+        Assertions.assertEquals("""
+            ```
+
+            MARKDOWN
+
+            ```""",
+            converter.convertToMarkdown("""
+            [code]
+            MARKDOWN
+            [/code]"""));
+
+        Assertions.assertEquals("""
+            ```
+            MARKDOWN
+            ```""",
+            converter.convertToMarkdown("[code]MARKDOWN[/code]"));
+
+        Assertions.assertEquals("""
+                ```
+                Codeblock!
+                ```
+                ```
+                Codeblock!
+                ```""",
+            converter.convertToMarkdown("[code]Codeblock![/code][code]Codeblock![/code]"));
+    }
+
+    @Test
+    void testCodeBlocksDiffLineLang() {
+       Assertions.assertEquals("""
+               ```kt
+
+               TEXT
+
+               ```""",
+           converter.convertToMarkdown("""
+               [code=Kotlin]
+               TEXT
+               [/code]"""));
+
+        Assertions.assertEquals("""
+               ```java
+               TEXT
+
+               ```""",
+            converter.convertToMarkdown("""
+               [code=Java]TEXT
+               [/code]"""));
+
+        Assertions.assertEquals("""
+              ```java
+              TEXT
+              ```""",
+            converter.convertToMarkdown("[code=Java]TEXT[/code]"));
+    }
+
+    @Test
+    void testEscaping() {
+        Assertions.assertEquals("`hi[B]bold[/B]`", converter.convertToMarkdown("[icode]hi[B]bold[/B][/icode]"));
+        Assertions.assertEquals("""
+            ```
+            hi[B]bold[/B]
+            ```""", converter.convertToMarkdown("[code]hi[B]bold[/B][/code]"));
     }
 
     @Test

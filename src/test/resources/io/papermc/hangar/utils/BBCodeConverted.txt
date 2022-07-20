@@ -65,14 +65,20 @@ For the Bungee version you don't need to have any other plugins installed.
 *proxied-maintenance-servers*, *fallback* and *mysql* section are only for the Bungee version.
 
 ```
+
 # Used for autoupdating the config, do not change this value.
 config-version: 4
 ...
+
 ```
-```noPermission: "&cYou do not have the permission to execute that command."
+
+```
+noPermission: "&cYou do not have the permission to execute that command."
 kickmessage: "&cThe server is currently under maintenance!%NEWLINE%&cTry again later!"
 ...
+
 ```
+
 
 ![https://www.spigotmc.org/attachments/401278](https://www.spigotmc.org/attachments/401278)
 If you have the ServerListPlus plugin on your BungeeCord/Spigot server, Maintenance will toggle its status. If you enable maintenance, the ServerListPlus motd will be disabled and then reenabled, when you disable maintenance to prevent any issues with them overriding each other.

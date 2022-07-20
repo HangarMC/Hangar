@@ -46,8 +46,44 @@ public class BBCodeConverter {
             }
             return "[" + content + "](" + url + ")";
         });
-        REPLACERS.put("code", (tag, tagArg, content) -> "```" + content + "```");
-        REPLACERS.put("icode", (tag, tagArg, content) -> "`" + content + "`");
+        REPLACERS.put("code", new TagReplacer() {
+            @Override
+            public String process(String tag, String tagArg, String content) {
+                String lang;
+                if (tagArg == null) {
+                    lang = "";
+                } else if (tagArg.equals("kotlin")) {
+                    lang = "kt";
+                } else {
+                    lang = tagArg;
+                }
+
+                return "```" + lang + "\n"
+                    + content
+                    + "\n```";
+            }
+
+            @Override
+            public boolean hasRawContents() {
+                return true;
+            }
+
+            @Override
+            public boolean appendNewline() {
+                return true;
+            }
+        });
+        REPLACERS.put("icode", new TagReplacer() {
+            @Override
+            public String process(String tag, String tagArg, String content) {
+                return "`" + content + "`";
+            }
+
+            @Override
+            public boolean hasRawContents() {
+                return true;
+            }
+        });
         REPLACERS.put("attach", ((tag, tagArg, content) -> {
             String imageUrl = "https://www.spigotmc.org/attachments/" + content;
             return "![" + imageUrl + "](" + imageUrl + ")";
@@ -110,9 +146,26 @@ public class BBCodeConverter {
             if (processed == null) {
                 index++;
             } else {
+                if (replacer.appendNewline()) {
+                    processed += "\n";
+                }
+
                 s = s.substring(0, index) + processed + s.substring(closingIndex);
+                if (replacer.hasRawContents()) {
+                    index += processed.length();
+                }
             }
         }
+
+        // Removes newlines from the end of the last tag adds newlines
+        TagReplacer replacer = REPLACERS.get(currentTag);
+        if (replacer != null && replacer.appendNewline()) {
+            int lastChar = s.length() - 1;
+            if (s.lastIndexOf("\n") == lastChar) {
+                return s.substring(0, lastChar);
+            }
+        }
+
         return s;
     }
 
@@ -123,6 +176,11 @@ public class BBCodeConverter {
         while ((index = s.indexOf(TAG_PREFIX, index)) != -1) {
             int closingIndex = process(s, index, false);
             if (closingIndex == -1 || currentContent == null) {
+                index++;
+                continue;
+            }
+            TagReplacer replacer = REPLACERS.get(currentTag);
+            if (replacer != null && replacer.hasRawContents()) {
                 index++;
                 continue;
             }
@@ -215,5 +273,19 @@ public class BBCodeConverter {
          * @param content content between opening and closing tag
          */
         String process(String tag, String tagArg, String content);
+
+        /**
+         * @return if the contents should be converted from bbcode as well
+         */
+        default boolean hasRawContents() {
+            return false;
+        }
+
+        /**
+         * @return if a newline should be appended to the end of the converted bbcode
+         */
+        default boolean appendNewline() {
+            return false;
+        }
     }
 }
