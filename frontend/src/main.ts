@@ -13,6 +13,7 @@ import { settingsLog } from "~/lib/composables/useLog";
 import * as domain from "~/composables/useDomain";
 
 import "regenerator-runtime/runtime"; // popper needs this?
+import { RouterScrollBehavior } from "vue-router";
 
 const routes = setupLayouts(generatedRoutes);
 // we need to override the path on the error route to have the patch math
@@ -23,10 +24,17 @@ if (errorRoute) {
   console.error("No error route?!");
 }
 
+const scrollBehavior: RouterScrollBehavior = (to, from, savedPosition) => {
+  return savedPosition ? savedPosition : { top: 0 };
+};
+
 const options: Parameters<typeof viteSSR>["1"] = {
   routes,
   pageProps: {
     passToPage: false,
+  },
+  routerOptions: {
+    scrollBehavior,
   },
   transformState(state) {
     return import.meta.env.SSR ? devalue(state) : state;
