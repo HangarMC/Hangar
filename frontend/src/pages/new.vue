@@ -150,7 +150,7 @@ function createProject() {
       <Link to="/guidelines"><p v-html="i18n.t('project.new.step1.text2')" /></Link>
     </template>
     <template #basic>
-      <div class="flex flex-wrap gap-x-2">
+      <div class="flex flex-wrap">
         <p class="basis-full mb-4">{{ i18n.t("project.new.step2.description") }}</p>
         <div class="basis-full md:basis-4/12">
           <InputSelect
@@ -162,7 +162,7 @@ function createProject() {
             :rules="[required()]"
           />
         </div>
-        <span class="text-3xl <md:hidden">/</span>
+        <span class="text-3xl <md:hidden mr-2 -ml-4">/</span>
         <div class="basis-full md:basis-4/12 <md:mt-4">
           <InputText
             v-model.trim="form.name"

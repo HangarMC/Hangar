@@ -49,10 +49,10 @@ async function create() {
     <template #header>{{ i18n.t("organization.new.title") }}</template>
     <p class="mb-3">{{ i18n.t("organization.new.text") }}</p>
 
-    <template v-if="currentUser.headerData.organizationCount < backendData.validations.maxOrgCount">
+    <div v-if="currentUser.headerData.organizationCount < backendData.validations.maxOrgCount" class="mt-2">
       <InputText
         v-model="name"
-        class="mt-2 max-w-100"
+        class="max-w-100 pr-2"
         :label="i18n.t('organization.new.name')"
         counter
         :maxlength="backendData.validations.org.max"
@@ -65,10 +65,10 @@ async function create() {
         ]"
       />
 
-      <Button class="mt-4" size="medium" :disabled="!canCreate" @click="create">
+      <Button size="medium" :disabled="!canCreate" @click="create">
         {{ i18n.t("form.memberList.create") }}
       </Button>
-    </template>
+    </div>
 
     <Alert v-else type="danger">
       {{ i18n.t("organization.new.error.tooManyOrgs", [backendData.validations.maxOrgCount]) }}
