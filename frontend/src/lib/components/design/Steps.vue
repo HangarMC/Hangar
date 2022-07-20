@@ -6,7 +6,9 @@ import { useSettingsStore } from "~/store/settings";
 import Button from "~/lib/components/design/Button.vue";
 import { useI18n } from "vue-i18n";
 import { useVuelidate } from "@vuelidate/core";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const settings = useSettingsStore();
 const i18n = useI18n();
 
@@ -37,6 +39,11 @@ const showNext = computed(() => (activeStep.value?.showNext ? activeStep.value?.
 async function back() {
   if (disableBack.value) return;
   if (activeStep.value?.beforeBack && !(await activeStep.value?.beforeBack())) return;
+
+  if (activeStepIndex.value === 1) {
+    router.back();
+    return;
+  }
 
   internalValue.value = props.steps[activeStepIndex.value - 2].value;
 }
