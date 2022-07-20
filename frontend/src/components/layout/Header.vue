@@ -23,6 +23,7 @@ import IconMdiAlertOutline from "~icons/mdi/alert-outline";
 import IconMdiInformationOutline from "~icons/mdi/information-outline";
 import IconMdiMessageOutline from "~icons/mdi/message-outline";
 import IconMdiCheck from "~icons/mdi/check";
+import IconMdiFolderPlusOutline from "~icons/mdi/folder-plus-outline";
 
 import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
@@ -114,6 +115,8 @@ const navBarLinks = [
 const navBarMenuLinksHangar = [
   { link: "index", label: "Home", icon: IconMdiHome },
   { link: "guidelines", label: "Resource Guidelines", icon: IconMdiFileCodumentAlert },
+  { link: "new", label: "Create Project", icon: IconMdiFolderPlusOutline },
+  { link: "neworganization", label: "Create Organization", icon: IconMdiFolderPlusOutline },
   { link: "authors", label: "Authors", icon: IconMdiAccountGroup },
   { link: "staff", label: "Team", icon: IconMdiAccountGroup },
 ];
@@ -215,7 +218,7 @@ function isRecent(date: string): boolean {
         </Popover>
 
         <!-- Site logo -->
-        <router-link to="/">
+        <router-link to="/" class="flex-shrink-0">
           <img alt="Hangar Logo" :src="hangarLogo" class="h-8" />
         </router-link>
 
@@ -235,17 +238,17 @@ function isRecent(date: string): boolean {
 
       <!-- Right side items -->
       <div class="flex items-center gap-2">
-        <div v-if="authStore.user" class="flex items-center">
+        <div v-if="authStore.user" class="flex items-center <sm:hidden">
           <DropdownButton name="Create">
             <DropdownItem to="/new">{{ t("nav.new.project") }}</DropdownItem>
-            <DropdownItem to="/organizations/new">{{ t("nav.new.organization") }}</DropdownItem>
+            <DropdownItem to="/neworganization">{{ t("nav.new.organization") }}</DropdownItem>
           </DropdownButton>
         </div>
         <button class="flex rounded-md p-2" hover="text-primary-400 bg-primary-0" @click="settings.toggleDarkMode()">
           <icon-mdi-weather-night v-if="settings.darkMode" class="text-[1.2em]"></icon-mdi-weather-night>
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
-        <div v-if="authStore.user">
+        <div v-if="authStore.user" class="">
           <Menu>
             <MenuButton>
               <div class="flex items-center gap-2 rounded-md p-2" hover="text-primary-400 bg-primary-0">
@@ -253,7 +256,6 @@ function isRecent(date: string): boolean {
                 <IconMdiBellBadge v-if="unreadNotifications !== 0" class="text-[1.2em]" />
               </div>
             </MenuButton>
-            <!-- todo: fix hard position change on smaller displays -->
             <MenuItems
               class="absolute flex flex-col mt-1 z-10 rounded border-t-2 border-primary-400 background-default filter drop-shadow-md overflow-auto <2xl:right-0 max-w-115"
             >
@@ -282,16 +284,18 @@ function isRecent(date: string): boolean {
                 </div>
               </div>
               <div class="p-2 mb-1 ml-2 space-x-3 text-sm">
-                <Link to="/notifications"
-                  ><span :class="loadedUnreadNotifications >= unreadNotifications ? 'font-normal' : ''">{{
-                    loadedUnreadNotifications >= unreadNotifications
-                      ? i18n.t("notifications.viewAll")
-                      : i18n.t("notifications.viewMoreUnread", [unreadNotifications - loadedUnreadNotifications])
-                  }}</span></Link
-                >
-                <span v-if="loadedUnreadNotifications !== 0" class="color-primary hover:(underline)" @click="markNotificationsRead">{{
-                  i18n.t("notifications.markAsRead")
-                }}</span>
+                <Link to="/notifications">
+                  <span :class="loadedUnreadNotifications >= unreadNotifications ? 'font-normal' : ''">
+                    {{
+                      loadedUnreadNotifications >= unreadNotifications
+                        ? i18n.t("notifications.viewAll")
+                        : i18n.t("notifications.viewMoreUnread", [unreadNotifications - loadedUnreadNotifications])
+                    }}
+                  </span>
+                </Link>
+                <span v-if="loadedUnreadNotifications !== 0" class="color-primary hover:(underline)" @click="markNotificationsRead">
+                  {{ i18n.t("notifications.markAsRead") }}
+                </span>
               </div>
             </MenuItems>
           </Menu>
@@ -308,7 +312,7 @@ function isRecent(date: string): boolean {
             <MenuItems class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 background-default filter drop-shadow-md">
               <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
               <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
-              <DropdownItem :href="'/' + authStore.user.name + '/settings/api-keys'">{{ t("nav.user.apiKeys") }}</DropdownItem>
+              <DropdownItem :to="'/' + authStore.user.name + '/settings/api-keys'">{{ t("nav.user.apiKeys") }}</DropdownItem>
               <DropdownItem :href="authHost + '/account/settings'">{{ t("nav.user.settings") }}</DropdownItem>
               <hr />
               <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/flags">
@@ -326,7 +330,9 @@ function isRecent(date: string): boolean {
               <DropdownItem v-if="hasPerms(NamedPermission.VIEW_STATS)" to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
               <DropdownItem v-if="hasPerms(NamedPermission.VIEW_HEALTH)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>
               <DropdownItem v-if="hasPerms(NamedPermission.VIEW_LOGS)" to="/admin/log">{{ t("nav.user.log") }}</DropdownItem>
-              <DropdownItem v-if="hasPerms(NamedPermission.MANUAL_VALUE_CHANGES)" to="/admin/versions">{{ t("nav.user.platformVersions") }}</DropdownItem>
+              <DropdownItem v-if="hasPerms(NamedPermission.MANUAL_VALUE_CHANGES)" to="/admin/versions">
+                {{ t("nav.user.platformVersions") }}
+              </DropdownItem>
               <hr />
               <DropdownItem @click="auth.logout()">{{ t("nav.user.logout") }}</DropdownItem>
             </MenuItems>

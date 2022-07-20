@@ -117,12 +117,10 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
           <ul>
             <li v-for="(orgRole, orgName) in organizations" :key="orgName">
               <router-link :to="'/' + orgName" class="flex items-center mb-2">
-                <UserAvatar :username="orgName" :avatar-url="avatarUrl(orgName)" size="xs" :disable-link="true" class="flex-shrink-0" />
-                &nbsp;
-                {{ orgName }}
-                &nbsp; ({{ orgRole.role.title }}) &nbsp;
+                <UserAvatar :username="orgName" :avatar-url="avatarUrl(orgName)" size="xs" :disable-link="true" class="flex-shrink-0 mr-2" />
+                {{ orgName }} ({{ orgRole.role.title }})
                 <span class="flex-grow"></span>
-                <IconMdiEyeOffOutline v-if="organizationVisibility && organizationVisibility[orgName]"></IconMdiEyeOffOutline>
+                <IconMdiEyeOffOutline v-if="organizationVisibility && organizationVisibility[orgName]" class="ml-1" />
               </router-link>
             </li>
           </ul>

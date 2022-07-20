@@ -818,7 +818,7 @@
     "delete": "Delete",
     "deleteKey": "Delete Key",
     "createKey": "Create key",
-    "noKeys": "There are no api keys yet. You can create one on the right side",
+    "noKeys": "You haven't created any api keys yet",
     "success": {
       "delete": "You have deleted the key: {0}",
       "create": "You have created the key: {0}"

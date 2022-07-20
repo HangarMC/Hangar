@@ -81,13 +81,15 @@ async function deleteKey(key: ApiKey) {
       <template #header>
         <PageTitle>{{ i18n.t("apiKeys.createNew") }}</PageTitle>
       </template>
-      <div class="flex">
+      <div class="flex items-center">
         <div class="flex-grow">
           <InputText v-model="name" :label="i18n.t('apiKeys.name')" :rules="[required(), minLength()(5), maxLength()(255), validApiKeyName()(user.name)]" />
         </div>
-        <Button class="ml-2 w-max" :loading="loadingCreate || v.$pending" :disabled="v.$invalid" @click="create">{{ i18n.t("apiKeys.createKey") }}</Button>
+        <Button size="medium" class="w-max" :disabled="v.$invalid || loadingCreate || v.$pending || selectedPerms.length === 0" @click="create">
+          {{ i18n.t("apiKeys.createKey") }}
+        </Button>
       </div>
-      <InputGroup v-model="selectedPerms" :label="i18n.t('apiKeys.permissions')" :rules="[required(), minLength()(1)]" class="w-full mt-2">
+      <InputGroup v-model="selectedPerms" :label="i18n.t('apiKeys.permissions')" class="w-full mt-2">
         <div class="grid autofix mt-2">
           <InputCheckbox v-for="perm in possiblePerms" :key="perm" v-model="selectedPerms" :label="perm" :value="perm" />
         </div>
