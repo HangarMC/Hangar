@@ -47,7 +47,10 @@ const steps: Step[] = [
     beforeNext: async () => {
       return createPendingVersion();
     },
-    disableNext: computed(() => file.value == null && url.value == null),
+    disableNext: computed(() => {
+      const currentNonNullURLValue = url.value ?? "";
+      return file.value == null && (currentNonNullURLValue === "" || !validUrl().$validator(currentNonNullURLValue, undefined, undefined));
+    }),
   },
   {
     value: "basic",
@@ -56,6 +59,7 @@ const steps: Step[] = [
       await preload();
       return true;
     },
+    disableNext: computed(() => (selectedPlatforms.value?.length ?? 0) < 1),
   },
   { value: "dependencies", header: t("version.new.steps.3.header") },
   {
@@ -313,7 +317,7 @@ useHead(
       <MarkdownEditor
         ref="descriptionEditor"
         class="mt-2"
-        :raw="pendingVersion.description"
+        :raw="pendingVersion?.description ?? ''"
         editing
         :deletable="false"
         :cancellable="false"
