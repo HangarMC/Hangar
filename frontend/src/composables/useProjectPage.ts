@@ -1,4 +1,4 @@
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { RouteLocationNormalizedLoaded, Router } from "vue-router";
@@ -23,25 +23,11 @@ export async function useProjectPage(
   }
 
   const editingPage = ref<boolean>(false);
-  const open = ref<string[]>([]);
 
-  watch(
-    route,
-    () => {
-      const slugs = route.fullPath.split("/").slice(4);
-      if (slugs.length) {
-        for (let i = 0; i < slugs.length; i++) {
-          const slug = slugs.slice(0, i + 1).join("/");
-          if (!open.value.includes(slug)) {
-            open.value.push(slug);
-          }
-        }
-      } else if (project.pages.length === 1) {
-        open.value.push(project.pages[0].slug);
-      }
-    },
-    { immediate: true }
-  );
+  // Helper setter function, v-model cannot directly edit from inside a slot.
+  function changeEditingPage(newValue: boolean) {
+    editingPage.value = newValue;
+  }
 
   async function savePage(content: string) {
     if (!page) return;
@@ -59,5 +45,6 @@ export async function useProjectPage(
     await useInternalApi(`pages/delete/${project.id}/${page.value?.id}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n, "page.new.error.save"));
     await router.replace(`/${route.params.user}/${route.params.project}`);
   }
-  return { editingPage, open, page, savePage, deletePage };
+
+  return { editingPage, changeEditingPage, page, savePage, deletePage };
 }

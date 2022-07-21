@@ -13,6 +13,8 @@ import Card from "~/lib/components/design/Card.vue";
 import { useProjectPage } from "~/composables/useProjectPage";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
+import ProjectPageMarkdown from "~/components/projects/ProjectPageMarkdown.vue";
+import { useOpenProjectPages } from "~/composables/useOpenProjectPages";
 
 const props = defineProps<{
   user: User;
@@ -24,29 +26,30 @@ const ctx = useContext();
 const route = useRoute();
 const router = useRouter();
 
-const { editingPage, open, savePage, deletePage, page } = await useProjectPage(route, router, ctx, i18n, props.project);
-if (page) {
-  useHead(useSeo(page.value?.name, props.project.description, route, null));
-}
+const open = await useOpenProjectPages(route, props.project);
 </script>
 
 <template>
   <div class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-9/12 flex-grow overflow-auto">
-      <Card v-if="page" class="p-0 overflow-clip overflow-hidden">
-        <MarkdownEditor
-          v-if="hasPerms(NamedPermission.EDIT_PAGE)"
-          ref="editor"
-          v-model:editing="editingPage"
-          :raw="page.contents"
-          :deletable="page.deletable"
-          :saveable="true"
-          :cancellable="true"
-          @save="savePage"
-          @delete="deletePage"
-        />
-        <Markdown v-else :raw="page.contents" />
-      </Card>
+      <ProjectPageMarkdown :key="route.fullPath" v-slot="{ page, editingPage, changeEditingPage, savePage, deletePage }" :project="props.project">
+        <Card v-if="page" class="p-0 overflow-clip overflow-hidden">
+          <MarkdownEditor
+            v-if="hasPerms(NamedPermission.EDIT_PAGE)"
+            ref="editor"
+            :editing="editingPage"
+            :raw="page.contents"
+            :deletable="page.deletable"
+            :saveable="true"
+            :cancellable="true"
+            @update:editing="changeEditingPage"
+            @save="savePage"
+            @delete="deletePage"
+          />
+          <Markdown v-else :raw="page.contents" />
+        </Card>
+      </ProjectPageMarkdown>
+      <!--We have to blow up v-model:editing into :editing and @update:editing as we are inside a scope--->
     </section>
     <section class="basis-full md:basis-3/12 flex-grow">
       <ProjectPageList :project="project" :open="open" />
