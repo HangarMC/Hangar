@@ -12,7 +12,6 @@ import { useRoute, useRouter } from "vue-router";
 import { useContext } from "vite-ssr/vue";
 import Markdown from "~/components/Markdown.vue";
 import ProjectPageList from "~/components/projects/ProjectPageList.vue";
-import { useProjectPage } from "~/composables/useProjectPage";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
@@ -24,6 +23,8 @@ import Tag from "~/components/Tag.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
 import { formatVersionNumbers } from "~/composables/useVersionHelper";
+import { useOpenProjectPages } from "~/composables/useOpenProjectPages";
+import ProjectPageMarkdown from "~/components/projects/ProjectPageMarkdown.vue";
 
 const props = defineProps<{
   user: User;
@@ -35,7 +36,7 @@ const ctx = useContext();
 const route = useRoute();
 const context = useContext();
 const router = useRouter();
-const { editingPage, open, savePage, page } = await useProjectPage(route, router, context, i18n, props.project);
+const openProjectPages = await useOpenProjectPages(route, props.project);
 
 const sponsors = ref(props.project.settings.sponsors);
 const editingSponsors = ref(false);
@@ -62,18 +63,22 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
 <template>
   <div class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-9/12 flex-grow overflow-auto">
-      <Card v-if="page?.contents" class="p-0 pb-6 overflow-clip overflow-hidden">
-        <MarkdownEditor
-          v-if="hasPerms(NamedPermission.EDIT_PAGE)"
-          v-model:editing="editingPage"
-          :raw="page.contents"
-          :deletable="false"
-          :saveable="true"
-          :cancellable="true"
-          @save="savePage"
-        />
-        <Markdown v-else :raw="page.contents" />
-      </Card>
+      <ProjectPageMarkdown v-slot="{ page, editingPage, changeEditingPage, savePage }" :project="props.project">
+        <Card v-if="page?.contents" class="p-0 pb-6 overflow-clip overflow-hidden">
+          <MarkdownEditor
+            v-if="hasPerms(NamedPermission.EDIT_PAGE)"
+            :editing="editingPage"
+            :raw="page.contents"
+            :deletable="false"
+            :saveable="true"
+            :cancellable="true"
+            @update:editing="changeEditingPage"
+            @save="savePage"
+          />
+          <!--We have to blow up v-model:editing into :editing and @update:editing as we are inside a scope--->
+          <Markdown v-else :raw="page.contents" />
+        </Card>
+      </ProjectPageMarkdown>
       <Card v-if="sponsors || hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" class="mt-2 p-0 pb-6 overflow-clip overflow-hidden">
         <MarkdownEditor
           v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)"
@@ -127,7 +132,7 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
           </li>
         </ul>
       </Card>
-      <ProjectPageList :project="project" :open="open" />
+      <ProjectPageList :project="project" :open="openProjectPages" />
       <MemberList :members="project.members" :author="project.owner.name" :slug="project.name" class="overflow-visible" />
     </section>
   </div>
