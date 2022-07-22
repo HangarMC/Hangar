@@ -62,7 +62,8 @@ const steps: Step[] = [
     value: "changelog",
     header: t("version.new.steps.4.header"),
     beforeNext: async () => {
-      return createVersion();
+      await createVersion();
+      return false; // createVersion already hijacks the beforeNext logic, cannot move next on final step.
     },
   },
 ];
@@ -147,7 +148,7 @@ async function createPendingVersion() {
 
 async function createVersion() {
   if (!pendingVersion.value) {
-    return false;
+    return;
   }
 
   loading.submit = true;
@@ -177,10 +178,8 @@ async function createVersion() {
   try {
     await useInternalApi(`versions/version/${props.project.id}/create`, true, "post", pendingVersion.value);
     await router.push(`/${route.params.user}/${route.params.project}/versions`);
-    return true;
   } catch (e: any) {
     handleRequestError(e, ctx, i18n);
-    return false;
   } finally {
     loading.submit = false;
   }
