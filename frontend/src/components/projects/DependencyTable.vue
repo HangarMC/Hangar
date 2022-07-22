@@ -138,7 +138,7 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
       <template v-if="!isNew">
         <tr v-for="(dep, index) in filteredDeps" :key="`${platform}-${dep.name}`">
           <td>{{ dep.name }}</td>
-          <td><InputCheckbox v-model="dep.required" />asdas</td>
+          <td><InputCheckbox v-model="dep.required" /></td>
           <td class="flex flex-wrap gap-2">
             <Tabs v-model="selectedUploadTab" :tabs="selectedUploadTabs" class="items-center" compact>
               <template #file>
