@@ -31,6 +31,9 @@ const props = withDefaults(
   {
     small: false,
     showVersions: true,
+    platform: undefined,
+    version: undefined,
+    pinnedVersion: undefined,
   }
 );
 
@@ -57,14 +60,14 @@ const external = computed(() => false);
         </span>
       </template>
       <DropdownItem
-        v-for="(v, platform) in pinnedVersion.platformDependencies"
-        :key="platform"
+        v-for="(v, p) in pinnedVersion.platformDependencies"
+        :key="p"
         class="flex items-center"
-        :href="downloadLink(platform, pinnedVersion)"
+        :href="downloadLink(p, pinnedVersion)"
         target="_blank"
         rel="noopener noreferrer"
       >
-        <PlatformLogo :platform="platform" :size="24" class="mr-1" />
+        <PlatformLogo :platform="p" :size="24" class="mr-1" />
         {{ backendData.platforms?.get(platform).name }}
         <span v-if="showVersions" class="ml-1">({{ formatVersionNumbers(v) }})</span>
       </DropdownItem>

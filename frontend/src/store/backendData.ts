@@ -34,11 +34,11 @@ interface Validations {
 }
 
 export const useBackendDataStore = defineStore("backendData", () => {
-  const projectCategories = ref<Map<ProjectCategory, IProjectCategory> | null>(null);
-  const permissions = ref<Map<NamedPermission, IPermission> | null>(null);
-  const platforms = ref<Map<Platform, IPlatform> | null>(null);
+  const projectCategories = ref<Map<ProjectCategory, IProjectCategory>>(new Map());
+  const permissions = ref<Map<NamedPermission, IPermission>>(new Map());
+  const platforms = ref<Map<Platform, IPlatform>>(new Map());
   const validations = ref<Validations | null>(null);
-  const prompts = ref<Map<Prompt, IPrompt> | null>(null);
+  const prompts = ref<Map<Prompt, IPrompt>>(new Map());
   const announcements = ref<Announcement[]>([]);
   const visibilities = ref<IVisibility[]>([]);
   const licenses = ref<string[]>([]);

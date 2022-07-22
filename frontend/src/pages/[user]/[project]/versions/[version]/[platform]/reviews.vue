@@ -96,8 +96,11 @@ async function refresh() {
 
 function getReviewStateString(review: HangarReview): string {
   if (!review.messages) return "error";
+
   const lastMsg = review.messages.at(-1);
-  switch (lastMsg!.action) {
+  if (!lastMsg) return "error";
+
+  switch (lastMsg.action) {
     case ReviewAction.START:
     case ReviewAction.MESSAGE:
     case ReviewAction.REOPEN:
@@ -114,8 +117,11 @@ function getReviewStateString(review: HangarReview): string {
 
 function getReviewStateColor(review: HangarReview): string {
   if (!review.messages) return "#D50000";
+
   const lastMsg = review.messages.at(-1);
-  switch (lastMsg!.action) {
+  if (!lastMsg) return "#D50000";
+
+  switch (lastMsg.action) {
     case ReviewAction.START:
     case ReviewAction.MESSAGE:
     case ReviewAction.REOPEN:
@@ -149,8 +155,11 @@ function getReviewMessageColor(msg: HangarReviewMessage): string {
 
 function getLastUpdateDate(review: HangarReview): string {
   if (!review.messages) return "error";
+
   const lastMsg = review.messages.at(-1);
-  return prettyDateTime(lastMsg!.createdAt);
+  if (!lastMsg) return "error";
+
+  return prettyDateTime(lastMsg.createdAt);
 }
 
 function startReview() {
@@ -212,57 +221,67 @@ function stopReview(userMsg: string) {
     return;
   }
 
+  const review = currentUserReview.value;
   const args = {
     name: currentUserReview.value.userName,
     msg: userMsg,
   };
-  return sendReviewRequest("stop", args, ReviewAction.STOP, () => {
-    currentUserReview.value!.endedAt = new Date().toISOString();
-  });
+  return sendReviewRequest("stop", args, ReviewAction.STOP, () => (review.endedAt = new Date().toISOString()));
 }
 
 function reopenReview() {
-  if (isCurrentReviewOpen.value) return;
+  if (isCurrentReviewOpen.value || !currentUserReview.value) {
+    return;
+  }
+
+  const review = currentUserReview.value;
   loadingValues.reopen = true;
   sendReviewRequest(
     "reopen",
-    { name: currentUserReview.value!.userName },
+    { name: review.userName },
     ReviewAction.REOPEN,
-    () => {
-      currentUserReview.value!.endedAt = null;
-    },
-    () => {
-      loadingValues.reopen = false;
-    }
+    () => (review.endedAt = null),
+    () => (loadingValues.reopen = false)
   );
 }
 
 function approve() {
-  if (!isCurrentReviewOpen.value) return;
+  if (!isCurrentReviewOpen.value || !currentUserReview.value) {
+    return;
+  }
+
+  const review = currentUserReview.value;
   loadingValues.approve = true;
   sendReviewRequest(
     "approve",
-    { name: currentUserReview.value!.userName },
+    { name: review.userName },
     ReviewAction.APPROVE,
-    () => (currentUserReview.value!.endedAt = new Date().toISOString()),
+    () => (review.endedAt = new Date().toISOString()),
     () => (loadingValues.approve = false)
   );
 }
 
 function approvePartial() {
-  if (!isCurrentReviewOpen.value) return;
+  if (!isCurrentReviewOpen.value || !currentUserReview.value) {
+    return;
+  }
+
+  const review = currentUserReview.value;
   loadingValues.approvePartial = true;
   sendReviewRequest(
     "approvePartial",
-    { name: currentUserReview.value!.userName },
+    { name: review.userName },
     ReviewAction.PARTIALLY_APPROVE,
-    () => (currentUserReview.value!.endedAt = new Date().toISOString()),
+    () => (review.endedAt = new Date().toISOString()),
     () => (loadingValues.approvePartial = false)
   );
 }
 
 function undoApproval() {
-  if (isCurrentReviewOpen.value) return;
+  if (isCurrentReviewOpen.value) {
+    return;
+  }
+
   loadingValues.undoApproval = true;
   sendReviewRequest(
     "undoApproval",

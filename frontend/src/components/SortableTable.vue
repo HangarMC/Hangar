@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { hasSlotContent } from "~/lib/composables/useSlot";
 import Table from "~/lib/components/design/Table.vue";
-import { computed, reactive, ref } from "vue";
-import Button from "~/lib/components/design/Button.vue";
+import { reactive, ref } from "vue";
 import PaginationButtons from "~/lib/components/design/PaginationButtons.vue";
 import Pagination from "~/lib/components/design/Pagination.vue";
 
@@ -65,7 +64,7 @@ function click(header: Header) {
       </tr>
     </thead>
     <tbody>
-      <Pagination :items="sorted">
+      <Pagination v-if="sorted.length !== 0" :items="sorted">
         <template #default="{ item, idx }">
           <tr>
             <td v-for="header in headers" :key="header.name" :style="header.width ? 'width: ' + header.width : ''" @click="expanded[idx] = !expanded[idx]">
@@ -82,10 +81,10 @@ function click(header: Header) {
             <slot name="expanded-item" :item="item" :headers="headers"></slot>
           </tr>
         </template>
-        <template #pagination="{ page, pages, updatePage }">
+        <template #pagination="{ p, pages, updatePage }">
           <tr>
             <td :colspan="headers.length">
-              <PaginationButtons :page="page" :pages="pages" @update:page="updatePage" />
+              <PaginationButtons :page="p" :pages="pages" @update:page="updatePage" />
             </td>
           </tr>
         </template>

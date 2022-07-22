@@ -7,7 +7,7 @@ export function create(request: Context["request"], response: Context["response"
   domainLog("enter");
   const d = domain.create();
   d.add(request);
-  d.add(response!);
+  d.add(response);
   d.on("error", (err) => {
     domainLog("domain error!", err);
   });

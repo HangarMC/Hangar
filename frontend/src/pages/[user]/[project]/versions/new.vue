@@ -112,12 +112,12 @@ const isFile = computed(() => pendingVersion.value?.isFile);
 const currentChannel = computed(() => channels.value.find((c) => c.name === pendingVersion.value?.channelName));
 
 const platforms = computed<IPlatform[]>(() => {
-  return [...backendData.platforms!.values()];
+  return [...backendData.platforms.values()];
 });
 const selectedPlatformsData = computed<IPlatform[]>(() => {
   const result: IPlatform[] = [];
   for (const platformName of selectedPlatforms.value) {
-    result.push(backendData.platforms!.get(platformName as Platform)!);
+    result.push(backendData.platforms.get(platformName as Platform)!);
   }
   return result;
 });
@@ -134,7 +134,7 @@ async function preload() {
     return;
   }
 
-  for (const platform in pendingVersion.value!.platformDependencies) {
+  for (const platform in pendingVersion.value.platformDependencies) {
     // Get last platform and plugin dependency data for the last version of the same channel/any other channel if not found
     useInternalApi<LastDependencies>(`versions/version/${props.project.namespace.owner}/${props.project.namespace.slug}/lastdependencies`, true, "get", {
       channel: pendingVersion.value?.channelName,
@@ -145,8 +145,8 @@ async function preload() {
           return;
         }
 
-        pendingVersion.value!.platformDependencies[platform as Platform] = v.platformDependencies;
-        pendingVersion.value!.pluginDependencies[platform as Platform] = v.pluginDependencies;
+        pendingVersion.value.platformDependencies[platform as Platform] = v.platformDependencies;
+        pendingVersion.value.pluginDependencies[platform as Platform] = v.pluginDependencies;
       })
       .catch<any>((e) => handleRequestError(e, ctx, i18n));
   }
@@ -178,24 +178,24 @@ async function createPendingVersion() {
 }
 
 async function createVersion() {
-  if (!pendingVersion.value) {
+  if (!pendingVersion.value || !currentChannel.value) {
     return;
   }
 
   loading.submit = true;
-  pendingVersion.value!.description = descriptionEditor.value.rawEdited;
-  pendingVersion.value!.channelColor = currentChannel.value!.color;
-  pendingVersion.value!.channelFlags = currentChannel.value!.flags;
+  pendingVersion.value.description = descriptionEditor.value.rawEdited;
+  pendingVersion.value.channelColor = currentChannel.value.color;
+  pendingVersion.value.channelFlags = currentChannel.value.flags;
 
   // played around trying to get this to happen in jackson's deserialization, but couldn't figure it out.
   for (const platform in pendingVersion.value.platformDependencies) {
-    if (pendingVersion.value!.platformDependencies[platform as Platform].length < 1) {
-      delete pendingVersion.value!.platformDependencies[platform as Platform];
+    if (pendingVersion.value.platformDependencies[platform as Platform].length < 1) {
+      delete pendingVersion.value.platformDependencies[platform as Platform];
     }
   }
   for (const platform in pendingVersion.value.pluginDependencies) {
-    if (pendingVersion.value!.pluginDependencies[platform as Platform].length < 1) {
-      delete pendingVersion.value!.pluginDependencies[platform as Platform];
+    if (pendingVersion.value.pluginDependencies[platform as Platform].length < 1) {
+      delete pendingVersion.value.pluginDependencies[platform as Platform];
     }
   }
 
@@ -264,7 +264,7 @@ useHead(
       </Tabs>
     </template>
     <template #basic>
-      <div class="flex flex-wrap gap-x-2">
+      <div class="flex flex-wrap">
         <!-- TODO validate version string against existing versions. complex because they only have to be unique per-platform -->
         <div class="basis-full mt-2 md:basis-4/12">
           <InputText
@@ -286,7 +286,7 @@ useHead(
           <InputText v-model="pendingVersion.externalUrl" :label="t('version.new.form.externalUrl')" />
         </div>
       </div>
-      <div class="flex flex-wrap space-x-2 items-center mt-4">
+      <div class="flex flex-wrap items-center mt-4">
         <div class="basis-4/12">
           <InputSelect v-model="pendingVersion.channelName" :values="channels" item-text="name" item-value="name" :label="t('version.new.form.channel')" />
         </div>

@@ -52,8 +52,8 @@ export function formatVersionNumbers(versionNumbers: string[]): string {
       }
 
       const previousWholeVersion = splitVersionNumber(prevVersionMatcher[0]);
-      if (previousWholeVersion.length == versionArr.length) {
-        if (versionArr.at(-1)! - 1 == prevVersion) {
+      if (previousWholeVersion.length === versionArr.length) {
+        if (versionArr.at(-1)! - 1 === prevVersion) {
           verString = verString.replace(new RegExp("-[0-9.]+$"), "-" + version);
         } else {
           verString += ", " + version;
@@ -63,8 +63,8 @@ export function formatVersionNumbers(versionNumbers: string[]): string {
       }
     } else if (comma && comma.length !== 0) {
       const prevVersion = splitVersionNumber(comma[0]);
-      if (prevVersion.length == versionArr.length) {
-        verString += versionArr.at(-1)! - 1 == prevVersion.at(-1) ? "-" + version : ", " + version;
+      if (prevVersion.length === versionArr.length) {
+        verString += versionArr.at(-1)! - 1 === prevVersion.at(-1) ? "-" + version : ", " + version;
       } else {
         verString += ", " + version;
       }

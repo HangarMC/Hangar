@@ -205,7 +205,7 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
                   :rules="!!newDep.externalUrl ? [] : [required(t('version.new.form.hangarProject'))]"
                   @search="onNewDepSearch($event, index)"
                   @change="newDep.externalUrl = null"
-                  @update:modelValue="newDep.namespace = fromString($event)"
+                  @update:model-value="newDep.namespace = fromString($event)"
                 />
               </template>
               <template #url>

@@ -8,7 +8,7 @@ import Alert from "~/lib/components/design/Alert.vue";
 import { useContext } from "vite-ssr/vue";
 import { useProjectFlags } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { HangarProject } from "hangar-internal";
+import { Flag, HangarProject } from "hangar-internal";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
