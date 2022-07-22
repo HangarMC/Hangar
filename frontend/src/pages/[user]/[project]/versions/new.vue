@@ -48,8 +48,14 @@ const steps: Step[] = [
       return createPendingVersion();
     },
     disableNext: computed(() => {
-      const currentNonNullURLValue = url.value ?? "";
-      return file.value == null && (currentNonNullURLValue === "" || !validUrl().$validator(currentNonNullURLValue, undefined, undefined));
+      const currentNonNullURLValue = url?.value ?? "";
+      return (
+        file.value == null &&
+        (currentNonNullURLValue === "" ||
+          artifactURLRules.some((v) => {
+            return !v.$validator(currentNonNullURLValue, undefined, undefined);
+          }))
+      );
     }),
   },
   {
@@ -59,9 +65,22 @@ const steps: Step[] = [
       await preload();
       return true;
     },
-    disableNext: computed(() => (selectedPlatforms.value?.length ?? 0) < 1),
+    disableNext: computed(() => {
+      return (
+        (selectedPlatforms.value?.length ?? 0) < 1 ||
+        versionRules.some((v) => {
+          return !v.$validator(pendingVersion.value?.versionString, undefined, undefined);
+        })
+      );
+    }),
   },
-  { value: "dependencies", header: t("version.new.steps.3.header") },
+  {
+    value: "dependencies",
+    header: t("version.new.steps.3.header"),
+    disableNext: computed(() => {
+      return selectedPlatformsData.value.some((p) => (pendingVersion.value?.platformDependencies[p.enumName].length ?? 0) < 1);
+    }),
+  },
   {
     value: "changelog",
     header: t("version.new.steps.4.header"),
@@ -97,9 +116,12 @@ const selectedPlatformsData = computed<IPlatform[]>(() => {
   return result;
 });
 
+const artifactURLRules = [validUrl()];
+const versionRules = [required()];
 const platformVersionRules = computed(() => {
   return !pendingVersion.value?.isFile ? [] : [(v: string[]) => !!v.length || "Error"];
 });
+const changelogRules = [required(t("version.new.form.release.bulletin"))];
 
 async function preload() {
   if (!pendingVersion.value) {
@@ -233,7 +255,7 @@ useHead(
           <InputFile v-model="file" accept=".jar,.zip" />
         </template>
         <template #url>
-          <InputText v-model="url" :label="t('version.new.form.externalUrl')" :rules="[validUrl()]" />
+          <InputText v-model="url" :label="t('version.new.form.externalUrl')" :rules="artifactURLRules" />
         </template>
       </Tabs>
     </template>
@@ -244,7 +266,7 @@ useHead(
           <InputText
             v-model="pendingVersion.versionString"
             :label="t('version.new.form.versionString')"
-            :rules="[required()]"
+            :rules="versionRules"
             :disabled="isFile"
             :maxlength="backendData.validations.version.max"
             counter
@@ -322,7 +344,7 @@ useHead(
         :deletable="false"
         :cancellable="false"
         :saveable="false"
-        :rules="[required(t('version.new.form.release.bulletin'))]"
+        :rules="changelogRules"
       />
     </template>
   </Steps>
