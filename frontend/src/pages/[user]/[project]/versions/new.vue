@@ -145,8 +145,13 @@ async function preload() {
           return;
         }
 
-        pendingVersion.value.platformDependencies[platform as Platform] = v.platformDependencies;
-        pendingVersion.value.pluginDependencies[platform as Platform] = v.pluginDependencies;
+        const p: Platform = platform as Platform;
+        if (v.platformDependencies.length !== 0) {
+          pendingVersion.value.platformDependencies[p] = v.platformDependencies;
+        }
+        if (v.pluginDependencies.length !== 0) {
+          pendingVersion.value.pluginDependencies[p] = v.pluginDependencies;
+        }
       })
       .catch<any>((e) => handleRequestError(e, ctx, i18n));
   }
@@ -312,7 +317,7 @@ useHead(
           :model-value="selectedPlatforms.includes(platform.enumName)"
           :rules="platformVersionRules"
           :label="platform.name"
-          @update:modelValue="togglePlatform(platform.enumName)"
+          @update:model-value="togglePlatform(platform.enumName)"
         >
           <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
         </InputCheckbox>
