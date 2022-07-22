@@ -87,6 +87,11 @@ const steps: Step[] = [
     beforeNext: async () => {
       return createVersion();
     },
+    disableNext: computed(() => {
+      return changelogRules.some((v) => {
+        return !v.$validator(descriptionEditor.value?.rawEdited ?? "", undefined, undefined);
+      });
+    }),
   },
 ];
 
