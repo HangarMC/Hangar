@@ -28,6 +28,12 @@ const props = withDefaults(
   }>(),
   {
     tagMaxlength: 20,
+    options: undefined,
+    label: undefined,
+    maxlength: undefined,
+    messages: undefined,
+    errorMessages: undefined,
+    rules: undefined,
   }
 );
 
@@ -81,9 +87,9 @@ const filteredOptions = computed(() => {
     :no-error-tooltip="noErrorTooltip"
   >
     <div class="flex flex-wrap flex-grow gap-2 mt-2">
-      <span v-for="t in tags" :key="t" class="bg-primary-light-400 rounded-4xl px-1 py-1 h-30px inline-flex items-center" dark="bg-gray-600">
+      <span v-for="t in tags" :key="t" class="bg-primary-light-400 rounded-4xl px-1 py-1 h-30px inline-flex items-center dark:bg-gray-600">
         {{ t }}
-        <span class="text-gray-400 ml-1 inline-flex pointer-events-auto cursor-pointer" hover="text-gray-500" @click="remove(t)">
+        <span class="text-gray-400 ml-1 inline-flex pointer-events-auto cursor-pointer hover:text-gray-500" @click="remove(t)">
           <icon-mdi-close-circle />
         </span>
       </span>
@@ -95,8 +101,7 @@ const filteredOptions = computed(() => {
           :class="slotProps.class"
           :list="id"
           :maxlength="tagMaxlength"
-          class="pointer-events-auto flex-grow !bg-gray-100 rounded-xl px-2"
-          dark="!bg-gray-500 text-white"
+          class="pointer-events-auto flex-grow !bg-gray-100 rounded-xl px-2 dark:(!bg-gray-500 text-white)"
           @blur="v.$touch()"
           @keydown.enter="add"
           @change="add"
@@ -111,8 +116,7 @@ const filteredOptions = computed(() => {
         v-else
         v-model="tag"
         type="text"
-        class="pointer-events-auto flex-grow !bg-gray-100 rounded-xl px-2"
-        dark="!bg-gray-500 text-white"
+        class="pointer-events-auto flex-grow !bg-gray-100 rounded-xl px-2 dark:(!bg-gray-500 text-white)"
         :class="slotProps.class"
         :maxlength="tagMaxlength"
         @keydown.enter="add"

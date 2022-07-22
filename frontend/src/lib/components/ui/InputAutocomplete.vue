@@ -22,7 +22,7 @@ const props = withDefaults(
   defineProps<{
     id: string;
     modelValue?: object | string | boolean | number | null;
-    values?: Option[] | Record<string, any> | string[];
+    values: Option[] | Record<string, any> | string[];
     itemValue?: string | ((object: object) => string);
     itemText?: string | ((object: object) => string);
     disabled?: boolean;
