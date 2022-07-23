@@ -61,7 +61,7 @@ public class TokenService extends HangarComponent {
     }
 
     private void addCookie(String name, String value, long maxAge, boolean httpOnly) {
-        response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, value).path("/").secure(config.security.isSecure()).maxAge(maxAge).sameSite("Strict").httpOnly(httpOnly).build().toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, value).path("/").secure(config.security.isSecure()).maxAge(maxAge).sameSite("Lax").httpOnly(httpOnly).build().toString());
     }
 
     public void refreshAccessToken(String refreshToken) {
