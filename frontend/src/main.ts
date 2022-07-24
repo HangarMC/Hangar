@@ -25,7 +25,13 @@ if (errorRoute) {
 }
 
 const scrollBehavior: RouterScrollBehavior = (to, from, savedPosition) => {
-  return savedPosition ? savedPosition : { top: 0 };
+  if (savedPosition) {
+    return savedPosition;
+  } else if (to.hash) {
+    return { el: to.hash };
+  } else {
+    return { top: 0 };
+  }
 };
 
 const options: Parameters<typeof viteSSR>["1"] = {
