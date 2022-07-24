@@ -51,7 +51,7 @@ public class ProjectPageController extends HangarComponent {
     }
 
     @Anyone
-    @RateLimit(overdraft = 10, refillTokens = 2, refillSeconds = 5)
+    @RateLimit(overdraft = 10, refillTokens = 3, refillSeconds = 5, greedy = true)
     @PostMapping(path = "/render", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> renderMarkdown(@RequestBody @Valid StringContent content) {
         if (content.getContent().length() > config.projects.getContentMaxLen()) {
@@ -61,7 +61,7 @@ public class ProjectPageController extends HangarComponent {
     }
 
     @Anyone
-    @RateLimit(overdraft = 10, refillTokens = 2, refillSeconds = 5)
+    @RateLimit(overdraft = 10, refillTokens = 3, refillSeconds = 5)
     @ResponseBody
     @PostMapping(path = "/convert-bbcode", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     public String convertBBCode(@RequestBody @Valid StringContent bbCodeContent) {

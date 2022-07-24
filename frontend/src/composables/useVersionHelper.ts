@@ -44,6 +44,7 @@ export function formatVersionNumbers(versionNumbers: string[]): string {
     const comma = prevHasCommaOrFirst.exec(verString);
     if (hyphen && hyphen.length !== 0) {
       const group: string[] = hyphen[0].split(".");
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const prevVersion: number = +group.at(-1)!;
       const prevVersionMatcher = lastWholeVersion.exec(verString);
       if (!prevVersionMatcher || prevVersionMatcher.length === 0) {
@@ -53,6 +54,7 @@ export function formatVersionNumbers(versionNumbers: string[]): string {
 
       const previousWholeVersion = splitVersionNumber(prevVersionMatcher[0]);
       if (previousWholeVersion.length === versionArr.length) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         if (versionArr.at(-1)! - 1 === prevVersion) {
           verString = verString.replace(new RegExp("-[0-9.]+$"), "-" + version);
         } else {
@@ -64,6 +66,7 @@ export function formatVersionNumbers(versionNumbers: string[]): string {
     } else if (comma && comma.length !== 0) {
       const prevVersion = splitVersionNumber(comma[0]);
       if (prevVersion.length === versionArr.length) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         verString += versionArr.at(-1)! - 1 === prevVersion.at(-1) ? "-" + version : ", " + version;
       } else {
         verString += ", " + version;
