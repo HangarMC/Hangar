@@ -26,7 +26,7 @@ import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.util.HtmlSanitizerUtil;
+import io.papermc.hangar.util.HtmlSanitizer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +40,12 @@ public class MarkdownService {
     private final Parser markdownParser;
     private final MutableDataSet options;
     private final HangarConfig config;
+    private final HtmlSanitizer sanitizer;
 
     @Autowired
-    public MarkdownService(HangarConfig config) {
+    public MarkdownService(HangarConfig config, final HtmlSanitizer sanitizer) {
         this.config = config;
+        this.sanitizer = sanitizer;
 
         options = new MutableDataSet()
             .set(AnchorLinkExtension.ANCHORLINKS_TEXT_SUFFIX, "<svg class=\"ml-2 text-xl\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 24 24\" width=\"1.2em\" height=\"1.2em\"><path fill=\"currentColor\" d=\"M10.59 13.41c.41.39.41 1.03 0 1.42c-.39.39-1.03.39-1.42 0a5.003 5.003 0 0 1 0-7.07l3.54-3.54a5.003 5.003 0 0 1 7.07 0a5.003 5.003 0 0 1 0 7.07l-1.49 1.49c.01-.82-.12-1.64-.4-2.42l.47-.48a2.982 2.982 0 0 0 0-4.24a2.982 2.982 0 0 0-4.24 0l-3.53 3.53a2.982 2.982 0 0 0 0 4.24m2.82-4.24c.39-.39 1.03-.39 1.42 0a5.003 5.003 0 0 1 0 7.07l-3.54 3.54a5.003 5.003 0 0 1-7.07 0a5.003 5.003 0 0 1 0-7.07l1.49-1.49c-.01.82.12 1.64.4 2.43l-.47.47a2.982 2.982 0 0 0 0 4.24a2.982 2.982 0 0 0 4.24 0l3.53-3.53a2.982 2.982 0 0 0 0-4.24a.973.973 0 0 1 0-1.42Z\"></path></svg>")
@@ -62,12 +64,13 @@ public class MarkdownService {
                     AutolinkExtension.create(),
                     AnchorLinkExtension.create(),
                     StrikethroughExtension.create(),
-                    TaskListExtension.create(),
                     TablesExtension.create(),
                     TypographicExtension.create(),
                     WikiLinkExtension.create(),
                     EmojiExtension.create(),
-                    FootnoteExtension.create(),
+                    //TODO readd after sanitization is fixed
+                    //TaskListExtension.create(),
+                    //FootnoteExtension.create(),
                     AdmonitionExtension.create(),
                     GitLabExtension.create(),
                     YouTubeLinkExtension.create(),
@@ -102,7 +105,7 @@ public class MarkdownService {
 
         // Render markdown and then sanitize html
         input = htmlRenderer.render(markdownParser.parse(input));
-        return HtmlSanitizerUtil.sanitize(input);
+        return sanitizer.sanitize(input);
     }
 
     static class RenderSettings {

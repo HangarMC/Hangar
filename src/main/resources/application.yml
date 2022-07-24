@@ -165,6 +165,10 @@ hangar:
     safe-download-hosts:
       - "github.com"
       - "youtu.be"
+      - "youtube.com"
+      - "papermc.io"
+      - "discord.gg"
+      - "markdownguide.org"
 
   discourse:
     enabled: false

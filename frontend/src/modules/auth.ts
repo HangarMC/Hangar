@@ -130,16 +130,16 @@ async function requireGlobalPerm(authStore: ReturnType<typeof useAuthStore>, to:
     permissions: toNamedPermission(to.meta.requireGlobalPerm as string[]),
   }).catch((e) => {
     try {
-      console.log("erro!", e);
+      console.log("error!", e);
       handleRequestError(e, useContext(), useI18n());
     } catch (e2) {
       console.log("error while checking perm", e);
       console.log("encountered additional error while error handling", e2);
     }
   });
-  console.log("result", check);
+  console.debug("result", check);
   if (check && (check.type !== PermissionType.GLOBAL || !check.result)) {
-    console.log("404?");
+    console.debug("404?");
     return useErrorRedirect(to, 404, "Not found");
   }
 }
