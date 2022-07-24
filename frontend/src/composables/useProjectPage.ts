@@ -15,7 +15,8 @@ export async function useProjectPage(
   i18n: Composer<unknown, unknown, unknown, VueMessageType>,
   project: HangarProject
 ) {
-  const page = await usePage(route.params.user as string, route.params.project as string, route.params.all as string).catch((e) =>
+  const sanitizedProjectPageSlug = (route.params.all as string).replace(/\/+$/, "");
+  const page = await usePage(route.params.user as string, route.params.project as string, sanitizedProjectPageSlug).catch((e) =>
     handleRequestError(e, ctx, i18n)
   );
   if (!page) {
