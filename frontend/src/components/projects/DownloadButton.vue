@@ -68,7 +68,7 @@ const external = computed(() => false);
         rel="noopener noreferrer"
       >
         <PlatformLogo :platform="p" :size="24" class="mr-1" />
-        {{ backendData.platforms?.get(platform).name }}
+        {{ backendData.platforms?.get(p).name }}
         <span v-if="showVersions" class="ml-1">({{ formatVersionNumbers(v) }})</span>
       </DropdownItem>
     </DropdownButton>
