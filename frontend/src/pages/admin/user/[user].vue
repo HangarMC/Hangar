@@ -139,10 +139,10 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
           <InputSelect v-model="selectedRole" :values="backendData.globalRoles" item-text="title" item-value="value"></InputSelect>
         </div>
         <div>
-          <Button size="medium" @click="processRole(true)">{{ i18n.t("general.add") }}</Button>
+          <Button size="medium" :disabled="!selectedRole" @click="processRole(true)">{{ i18n.t("general.add") }}</Button>
         </div>
         <div class="ml-4">
-          <Button size="medium" @click="processRole(false)">{{ i18n.t("general.delete") }}</Button>
+          <Button size="medium" :disabled="!selectedRole" @click="processRole(false)">{{ i18n.t("general.delete") }}</Button>
         </div>
       </div>
     </Card>
