@@ -41,7 +41,7 @@ public class VersionsApiService extends HangarComponent {
         if (projectVersionTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        var entry = versionsApiDAO.getVersion(projectVersionTable.getId(), getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+        Map.Entry<Long, Version> entry = versionsApiDAO.getVersion(projectVersionTable.getId(), getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
         return versionDependencyService.addDependencies(entry.getKey(), entry.getValue());
     }
 

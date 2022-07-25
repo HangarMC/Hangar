@@ -19,16 +19,19 @@ import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDepend
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.service.internal.projects.ProjectService;
+import io.papermc.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,7 +63,12 @@ public class VersionDependencyService extends HangarComponent {
     }
 
     public <T extends Version> T addDependencies(Long versionId, T version) {
-        version.getPlatformDependencies().putAll(versionsApiDAO.getPlatformDependencies(versionId));
+        final Map<Platform, SortedSet<String>> platformDependencies = versionsApiDAO.getPlatformDependencies(versionId);
+        version.getPlatformDependencies().putAll(platformDependencies);
+        for (final Map.Entry<Platform, SortedSet<String>> entry : platformDependencies.entrySet()) {
+            version.getPlatformDependenciesFormatted().put(entry.getKey(), StringUtils.formatVersionNumbers(new ArrayList<>(entry.getValue())));
+        }
+
         for (Platform platform : Platform.getValues()) {
             Set<PluginDependency> pluginDependencySet = versionsApiDAO.getPluginDependencies(versionId, platform);
             if (!pluginDependencySet.isEmpty()) {

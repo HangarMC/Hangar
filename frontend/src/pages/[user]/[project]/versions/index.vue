@@ -11,7 +11,6 @@ import { PaginatedResult, Version } from "hangar-api";
 import { computed, reactive, watch } from "vue";
 import { useBackendDataStore } from "~/store/backendData";
 import { useProjectChannels, useProjectVersions } from "~/composables/useApiHelper";
-import { formatVersionNumbers } from "~/composables/useVersionHelper";
 import { useContext } from "vite-ssr/vue";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useRoute } from "vue-router";
@@ -142,10 +141,10 @@ function getVisibilityTitle(visibility: Visibility) {
                       </div>
                     </div>
                     <div class="basis-3/12 <md:(mt-2 basis-6/12)">
-                      <div v-for="(v, p) in item.platformDependencies" :key="p" class="basis-full">
+                      <div v-for="(v, p) in item.platformDependenciesFormatted" :key="p" class="basis-full">
                         <div class="inline-flex">
                           <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
-                          <span class="mr-3">{{ formatVersionNumbers(v) }}</span>
+                          <span class="mr-3">{{ v }}</span>
                         </div>
                       </div>
                     </div>

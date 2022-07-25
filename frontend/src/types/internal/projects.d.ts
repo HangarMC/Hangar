@@ -30,7 +30,7 @@ declare module "hangar-internal" {
   interface PinnedVersion {
     type: "channel" | "version";
     name: string;
-    platformDependencies: Record<Platform, string[]>;
+    platformDependenciesFormatted: Record<Platform, string>;
     channel: ProjectChannel;
     fileInfo: FileInfo | null;
     externalUrl: string | null;

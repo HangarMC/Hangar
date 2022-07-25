@@ -48,5 +48,6 @@ declare module "hangar-api" {
 
   interface Version extends VersionCompact, DependencyVersion {
     platformDependencies: Record<Platform, string[]>;
+    platformDependenciesFormatted: Record<Platform, string>;
   }
 }

@@ -22,7 +22,6 @@ import { useBackendDataStore } from "~/store/backendData";
 import Tag from "~/components/Tag.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
-import { formatVersionNumbers } from "~/composables/useVersionHelper";
 import { useOpenProjectPages } from "~/composables/useOpenProjectPages";
 import ProjectPageMarkdown from "~/components/projects/ProjectPageMarkdown.vue";
 
@@ -118,9 +117,9 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
               <router-link :to="createPinnedVersionUrl(version)" class="flex-grow">
                 <div class="inline-flex items-center mt-1">
                   <div class="flex flex-col">
-                    <div v-for="(v, p) in version.platformDependencies" :key="p" class="flex flex-row items-center">
+                    <div v-for="(v, p) in version.platformDependenciesFormatted" :key="p" class="flex flex-row items-center">
                       <PlatformLogo :key="p" :platform="p" :size="20" class="mr-1 flex-shrink-0" />
-                      <span :key="v" class="text-sm light:text-gray-600">{{ formatVersionNumbers(v) }}</span>
+                      <span :key="p" class="text-sm light:text-gray-600">{{ v }}</span>
                     </div>
                   </div>
                 </div>

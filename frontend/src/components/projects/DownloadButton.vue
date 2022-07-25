@@ -5,7 +5,6 @@ import { HangarProject, PinnedVersion } from "hangar-internal";
 import { computed } from "vue";
 import { Platform } from "~/types/enums";
 import DropdownButton from "~/lib/components/design/DropdownButton.vue";
-import { formatVersionNumbers } from "~/composables/useVersionHelper";
 import { useBackendDataStore } from "~/store/backendData";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
@@ -60,7 +59,7 @@ const external = computed(() => false);
         </span>
       </template>
       <DropdownItem
-        v-for="(v, p) in pinnedVersion.platformDependencies"
+        v-for="(v, p) in pinnedVersion.platformDependenciesFormatted"
         :key="p"
         class="flex items-center"
         :href="downloadLink(p, pinnedVersion)"
@@ -68,8 +67,8 @@ const external = computed(() => false);
         rel="noopener noreferrer"
       >
         <PlatformLogo :platform="p" :size="24" class="mr-1" />
-        {{ backendData.platforms?.get(p).name }}
-        <span v-if="showVersions" class="ml-1">({{ formatVersionNumbers(v) }})</span>
+        {{ backendData.platforms.get(p).name }}
+        <span v-if="showVersions" class="ml-1">({{ v }})</span>
       </DropdownItem>
     </DropdownButton>
 
@@ -96,8 +95,8 @@ const external = computed(() => false);
         rel="noopener noreferrer"
       >
         <PlatformLogo :platform="p" :size="24" class="mr-1" />
-        {{ backendData.platforms?.get(p).name }}
-        <span v-if="v.platformDependencies && showVersions" class="ml-1">({{ formatVersionNumbers(v.platformDependencies[p]) }})</span>
+        {{ backendData.platforms.get(p).name }}
+        <span v-if="v.platformDependencies && showVersions" class="ml-1">({{ v.platformDependenciesFormatted[p] }})</span>
       </DropdownItem>
     </DropdownButton>
   </div>

@@ -4,13 +4,17 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.versions.PinnedProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.PinnedProjectVersionTable;
 import io.papermc.hangar.model.internal.projects.HangarProject;
+import io.papermc.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
 
 @Service
 @Transactional
@@ -39,7 +43,10 @@ public class PinnedVersionService extends HangarComponent {
     public List<HangarProject.PinnedVersion> getPinnedVersions(final long projectId) {
         final List<HangarProject.PinnedVersion> versions = this.hangarVersionsDAO.getPinnedVersions(projectId);
         for (final HangarProject.PinnedVersion version : versions) {
-            version.getPlatformDependencies().putAll(versionsApiDAO.getPlatformDependencies(version.getVersionId()));
+            final Map<Platform, SortedSet<String>> platformDependencies = versionsApiDAO.getPlatformDependencies(version.getVersionId());
+            for (final Map.Entry<Platform, SortedSet<String>> entry : platformDependencies.entrySet()) {
+                version.getPlatformDependenciesFormatted().put(entry.getKey(), StringUtils.formatVersionNumbers(new ArrayList<>(entry.getValue())));
+            }
         }
         return versions;
     }

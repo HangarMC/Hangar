@@ -14,13 +14,10 @@ import io.papermc.hangar.model.identified.ProjectIdentified;
 import io.papermc.hangar.model.internal.Joinable;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
-
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jetbrains.annotations.Nullable;
@@ -170,7 +167,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         private final ProjectChannel channel;
         private final FileInfo fileInfo;
         private final String externalUrl;
-        private final Map<Platform, Set<String>> platformDependencies;
+        private final Map<Platform, String> platformDependenciesFormatted;
 
         public PinnedVersion(long versionId, Type type, String name, @Nested("pc") ProjectChannel channel,
                              @Nested("fi") @Nullable FileInfo fileInfo, @Nullable String externalUrl) {
@@ -180,7 +177,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
             this.channel = channel;
             this.fileInfo = fileInfo;
             this.externalUrl = externalUrl;
-            this.platformDependencies = new EnumMap<>(Platform.class);
+            this.platformDependenciesFormatted = new EnumMap<>(Platform.class);
         }
 
         public long getVersionId() {
@@ -195,8 +192,8 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
             return name;
         }
 
-        public Map<Platform, Set<String>> getPlatformDependencies() {
-            return platformDependencies;
+        public Map<Platform, String> getPlatformDependenciesFormatted() {
+            return platformDependenciesFormatted;
         }
 
         public ProjectChannel getChannel() {
@@ -217,7 +214,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
                 "versionId=" + versionId + ", " +
                 "type=" + type + ", " +
                 "name=" + name + ", " +
-                "platforms=" + platformDependencies + ", " +
+                "platformDependenciesFormatted=" + platformDependenciesFormatted + ", " +
                 "channel=" + channel + ", " +
                 "fileInfo=" + fileInfo + ", " +
                 "externalUrl=" + externalUrl + ']';
