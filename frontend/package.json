@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "@iconify/json": "2.1.75",
-    "@intlify/vite-plugin-vue-i18n": "3.4.0",
+    "@intlify/vite-plugin-vue-i18n": "5.0.1",
     "@types/accept-language-parser": "1.5.3",
     "@types/chartist": "0.11.1",
     "@types/debug": "4.1.7",
