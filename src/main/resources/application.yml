@@ -167,8 +167,11 @@ hangar:
       - "youtu.be"
       - "youtube.com"
       - "papermc.io"
+      - "papermc.dev"
       - "discord.gg"
       - "markdownguide.org"
+      - "spongepowered.org"
+      - "bugs.mojang.com"
 
   discourse:
     enabled: false

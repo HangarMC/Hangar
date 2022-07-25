@@ -133,19 +133,29 @@ public class HangarSecurityConfig {
         return safeDownloadHosts.contains(URI.create(url).getHost());
     }
 
-    public String makeSafe(String urlString) {
+    public String makeSafe(final String urlString) {
         try {
-            URI uri = new URI(urlString);
-            String host = uri.getHost();
+            final URI uri = new URI(urlString);
+            final String host = uri.getHost();
             if (uri.getScheme() != null && host == null) {
                 if (uri.getScheme().equals("mailto")) {
                     return urlString;
                 }
-            } else if (host == null || this.safeDownloadHosts.contains(host) || this.safeDownloadHosts.stream().anyMatch(host::endsWith)) {
+            } else if (host == null || isSafeHost(host)) {
                 return urlString;
             }
         } catch (URISyntaxException ignored) {
         }
         return "/linkout?remoteUrl=" + urlString;
+    }
+
+    public boolean isSafeHost(final String host) {
+        for (final String safeHost : this.safeDownloadHosts) {
+            // Make sure it's the full host or a subdomain
+            if (host.equals(safeHost) || host.endsWith("." + safeHost)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
