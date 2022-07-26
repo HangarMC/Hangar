@@ -62,6 +62,7 @@ function selectTab(tab: Tab) {
       <template v-for="tab in tabs" :key="tab.value">
         <slot v-if="internalValue === tab.value" :name="tab.value" />
       </template>
+      <slot name="catchall" />
     </div>
   </div>
 </template>
