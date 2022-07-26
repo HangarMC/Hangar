@@ -8,6 +8,7 @@ import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
+import Popper from "~/lib/components/design/Popper.vue";
 
 const i18n = useI18n();
 const backendData = useBackendDataStore();
@@ -66,7 +67,7 @@ const external = computed(() => false);
         target="_blank"
         rel="noopener noreferrer"
       >
-        <PlatformLogo :platform="p" :size="24" class="mr-1" />
+        <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
         {{ backendData.platforms.get(p).name }}
         <span v-if="showVersions" class="ml-1">({{ v }})</span>
       </DropdownItem>
@@ -94,7 +95,7 @@ const external = computed(() => false);
         target="_blank"
         rel="noopener noreferrer"
       >
-        <PlatformLogo :platform="p" :size="24" class="mr-1" />
+        <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
         {{ backendData.platforms.get(p).name }}
         <span v-if="v.platformDependencies && showVersions" class="ml-1">({{ v.platformDependenciesFormatted[p] }})</span>
       </DropdownItem>
