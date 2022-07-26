@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Menu, MenuButton, MenuItems, MenuItem, Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
 import { useSettingsStore } from "~/store/settings";
 import Announcement from "~/components/Announcement.vue";
 import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
+import PopoverItem from "~/lib/components/design/PopoverItem.vue";
 
 import hangarLogo from "~/lib/assets/hangar-logo.svg";
 
@@ -251,23 +252,25 @@ function isRecent(date: string): boolean {
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
         <div v-if="authStore.user">
-          <Menu>
-            <MenuButton>
+          <Popover v-slot="{ close }" class="relative inline-block text-left">
+            <PopoverButton>
               <div class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)">
                 <IconMdiBellOutline v-if="unreadNotifications === 0" class="text-[1.2em]" />
                 <IconMdiBellBadge v-if="unreadNotifications !== 0" class="text-[1.2em]" />
               </div>
-            </MenuButton>
-            <MenuItems
-              class="absolute flex flex-col mt-1 z-10 rounded border-t-2 border-primary-400 background-default filter drop-shadow-md overflow-auto <2xl:right-0 max-w-115"
+            </PopoverButton>
+            <PopoverPanel
+              class="absolute flex flex-col mt-1 z-10 rounded border-t-2 border-primary-400 background-default filter drop-shadow-md overflow-auto right-0 w-135 max-w-72vw"
             >
               <div v-if="notifications.length === 0">
                 <span class="flex shadow-0 p-2 mt-2 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
               </div>
               <div
                 v-for="notification in notifications"
+                v-else
                 :key="notification.id"
                 :class="'text-sm flex shadow-0 p-3 pt-2 pr-4 inline-flex items-center ' + (!notification.read ? 'bg-blue-100 dark:bg-slate-700' : '')"
+                @click="close()"
               >
                 <span class="text-lg mr-2">
                   <IconMdiInformationOutline v-if="notification.type === 'info'" class="text-sky-600" />
@@ -286,7 +289,7 @@ function isRecent(date: string): boolean {
                 </div>
               </div>
               <div class="p-2 mb-1 ml-2 space-x-3 text-sm">
-                <Link to="/notifications">
+                <Link to="/notifications" @click="close()">
                   <span :class="loadedUnreadNotifications >= unreadNotifications ? 'font-normal' : ''">
                     {{
                       loadedUnreadNotifications >= unreadNotifications
@@ -299,46 +302,48 @@ function isRecent(date: string): boolean {
                   {{ i18n.t("notifications.markAsRead") }}
                 </span>
               </div>
-            </MenuItems>
-          </Menu>
+            </PopoverPanel>
+          </Popover>
         </div>
         <!-- Profile dropdown -->
         <div v-if="authStore.user">
-          <Menu>
-            <MenuButton>
+          <Popover v-slot="{ close }" class="relative inline-block text-left">
+            <PopoverButton>
               <div class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)">
                 <UserAvatar :username="authStore.user.name" size="xs" :background="false" :disable-link="true" />
                 {{ authStore.user.name }}
               </div>
-            </MenuButton>
-            <MenuItems class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 background-default filter drop-shadow-md">
-              <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
-              <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
-              <DropdownItem :to="'/' + authStore.user.name + '/settings/api-keys'">{{ t("nav.user.apiKeys") }}</DropdownItem>
-              <DropdownItem :href="authHost + '/account/settings'">{{ t("nav.user.settings") }}</DropdownItem>
-              <hr />
-              <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/flags">
-                {{ t("nav.user.flags") }}
-                <span v-if="reportQueue !== 0">{{ "(" + reportQueue + ")" }}</span>
-              </DropdownItem>
-              <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/approval/projects">
-                {{ t("nav.user.projectApprovals") }}
-                <span v-if="projectApprovalQueue !== 0">{{ "(" + projectApprovalQueue + ")" }}</span>
-              </DropdownItem>
-              <DropdownItem v-if="hasPerms(NamedPermission.REVIEWER)" to="/admin/approval/versions">
-                {{ t("nav.user.versionApprovals") }}
-                <span v-if="versionApprovalQueue !== 0">{{ "(" + versionApprovalQueue + ")" }}</span>
-              </DropdownItem>
-              <DropdownItem v-if="hasPerms(NamedPermission.VIEW_STATS)" to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
-              <DropdownItem v-if="hasPerms(NamedPermission.VIEW_HEALTH)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>
-              <DropdownItem v-if="hasPerms(NamedPermission.VIEW_LOGS)" to="/admin/log">{{ t("nav.user.log") }}</DropdownItem>
-              <DropdownItem v-if="hasPerms(NamedPermission.MANUAL_VALUE_CHANGES)" to="/admin/versions">
-                {{ t("nav.user.platformVersions") }}
-              </DropdownItem>
-              <hr />
-              <DropdownItem @click="auth.logout()">{{ t("nav.user.logout") }}</DropdownItem>
-            </MenuItems>
-          </Menu>
+            </PopoverButton>
+            <PopoverPanel class="absolute mt-1 z-10 right-0 w-48">
+              <div class="py-1 rounded border-t-2 border-primary-400 background-default filter drop-shadow-md flex flex-col" @click="close()">
+                <PopoverItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</PopoverItem>
+                <PopoverItem to="/notifications">{{ t("nav.user.notifications") }}</PopoverItem>
+                <PopoverItem :to="'/' + authStore.user.name + '/settings/api-keys'">{{ t("nav.user.apiKeys") }}</PopoverItem>
+                <PopoverItem :href="authHost + '/account/settings'">{{ t("nav.user.settings") }}</PopoverItem>
+                <hr />
+                <PopoverItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/flags">
+                  {{ t("nav.user.flags") }}
+                  <span v-if="reportQueue !== 0">{{ "(" + reportQueue + ")" }}</span>
+                </PopoverItem>
+                <PopoverItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/approval/projects">
+                  {{ t("nav.user.projectApprovals") }}
+                  <span v-if="projectApprovalQueue !== 0">{{ "(" + projectApprovalQueue + ")" }}</span>
+                </PopoverItem>
+                <PopoverItem v-if="hasPerms(NamedPermission.REVIEWER)" to="/admin/approval/versions">
+                  {{ t("nav.user.versionApprovals") }}
+                  <span v-if="versionApprovalQueue !== 0">{{ "(" + versionApprovalQueue + ")" }}</span>
+                </PopoverItem>
+                <PopoverItem v-if="hasPerms(NamedPermission.VIEW_STATS)" to="/admin/stats">{{ t("nav.user.stats") }}</PopoverItem>
+                <PopoverItem v-if="hasPerms(NamedPermission.VIEW_HEALTH)" to="/admin/health">{{ t("nav.user.health") }}</PopoverItem>
+                <PopoverItem v-if="hasPerms(NamedPermission.VIEW_LOGS)" to="/admin/log">{{ t("nav.user.log") }}</PopoverItem>
+                <PopoverItem v-if="hasPerms(NamedPermission.MANUAL_VALUE_CHANGES)" to="/admin/versions">
+                  {{ t("nav.user.platformVersions") }}
+                </PopoverItem>
+                <hr />
+                <PopoverItem @click="auth.logout()">{{ t("nav.user.logout") }}</PopoverItem>
+              </div>
+            </PopoverPanel>
+          </Popover>
         </div>
 
         <!-- Login/register buttons -->
