@@ -124,24 +124,24 @@ public class SSOService {
         if (!isNonceValid(nonce)) {
             return null;
         }
-        saveIdToken(token, traits.getUsername());
+        saveIdToken(token, traits.username());
         return userTable;
     }
 
     public UserTable sync(UUID uuid, Traits traits) {
-        UserTable user = userDAO.getUserTable(traits.getUsername());
+        UserTable user = userDAO.getUserTable(traits.username());
         if (user == null) {
-            user = userDAO.create(uuid, traits.getUsername(), traits.getEmail(), traits.getName().getFirst() + " " + traits.getName().getLast(), "", traits.getLanguage(), List.of(), false, traits.getTheme());
+            user = userDAO.create(uuid, traits.username(), traits.email(), traits.name().first() + " " + traits.name().last(), "", traits.language(), List.of(), false, traits.theme());
         } else {
-            user.setFullName(traits.getName().getFirst() + " " + traits.getName().getLast());
-            user.setName(traits.getUsername());
-            user.setEmail(traits.getEmail());
+            user.setFullName(traits.name().last() + " " + traits.name().last());
+            user.setName(traits.username());
+            user.setEmail(traits.email());
             // only sync if set
-            if (traits.getLanguage() != null) {
-                user.setLanguage(traits.getLanguage());
+            if (traits.language() != null) {
+                user.setLanguage(traits.language());
             }
-            if (traits.getTheme() != null) {
-                user.setTheme(traits.getTheme());
+            if (traits.theme() != null) {
+                user.setTheme(traits.theme());
             }
             userDAO.update(user);
         }

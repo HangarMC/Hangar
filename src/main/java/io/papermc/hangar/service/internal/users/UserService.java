@@ -8,12 +8,22 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.LoggedAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
+import io.papermc.hangar.model.internal.sso.Traits;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -21,11 +31,13 @@ public class UserService extends HangarComponent {
 
     private final UserDAO userDAO;
     private final HangarUsersDAO hangarUsersDAO;
+    private final RestTemplate restTemplate;
 
     @Autowired
-    public UserService(UserDAO userDAO, HangarUsersDAO hangarUsersDAO) {
+    public UserService(UserDAO userDAO, HangarUsersDAO hangarUsersDAO, @Lazy RestTemplate restTemplate) {
         this.userDAO = userDAO;
         this.hangarUsersDAO = hangarUsersDAO;
+        this.restTemplate = restTemplate;
     }
 
     public UserTable insertUser(UserTable userTable) {
@@ -92,5 +104,21 @@ public class UserService extends HangarComponent {
             return null;
         }
         return userTableFunction.apply(identifier);
+    }
+
+    public void updateSSO(UUID uuid, Traits traits) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Traits> requestEntity = new HttpEntity<>(traits, headers);
+
+        try {
+            ResponseEntity<Void> response = restTemplate.postForEntity(config.security.api.getUrl() + "/sync/user/" + uuid.toString() + "?apiKey=" + config.sso.getApiKey(), requestEntity, Void.class);
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new ResponseStatusException(response.getStatusCode(), "Error from auth api");
+            }
+        } catch (HttpStatusCodeException ex) {
+            throw new ResponseStatusException(ex.getStatusCode(), "Error from auth api: " + ex.getMessage(), ex);
+        }
     }
 }

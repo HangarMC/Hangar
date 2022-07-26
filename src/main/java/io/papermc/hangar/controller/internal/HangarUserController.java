@@ -15,6 +15,7 @@ import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.UserSettings;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
+import io.papermc.hangar.model.internal.sso.Traits;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.model.internal.user.notifications.HangarInvite.InviteType;
 import io.papermc.hangar.model.internal.user.notifications.HangarNotification;
@@ -131,10 +132,15 @@ public class HangarUserController extends HangarComponent {
         if (userTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        // TODO do we need to sync these back to sso?
         userTable.setLanguage(settings.getLanguage());
         userTable.setTheme(settings.getTheme());
+        // TODO user action logging
         userService.updateUser(userTable);
+        try {
+            userService.updateSSO(userTable.getUuid(), new Traits(null, userTable.getEmail(), null, null, settings.getLanguage(), userTable.getName(), null, settings.getTheme()));
+        } catch (Exception ex) {
+            logger.warn("SSO Sync failed", ex);
+        }
     }
 
     @GetMapping("/recentnotifications")

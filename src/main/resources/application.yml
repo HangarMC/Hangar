@@ -47,7 +47,7 @@ spring:
 # Fake User #
 #############
 fake-user:
-  enabled: true
+  enabled: false
   name: paper
   username: paper
   email: paper@papermc.io
