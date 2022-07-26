@@ -27,7 +27,7 @@ const router = useRouter();
 const backendData = useBackendDataStore();
 
 const platform = computed(() => {
-  return backendData.platforms?.get((route.params.platform as string).toUpperCase() as Platform);
+  return backendData.platforms.get((route.params.platform as string).toUpperCase() as Platform);
 });
 const projectVersion = computed(() => {
   return props.versions.get((route.params.platform as string).toUpperCase() as Platform);
@@ -40,12 +40,38 @@ const formVersion = ref<DependencyVersion>({
   pluginDependencies: {} as Record<Platform, PluginDependency[]>,
 });
 
+const validInput = computed(() => {
+  if (depTable.value && hasInvalidDependency(depTable.value.newDeps)) {
+    return false;
+  }
+  for (const platform in formVersion.value.pluginDependencies) {
+    if (hasInvalidDependency(formVersion.value.pluginDependencies[platform as Platform])) {
+      return false;
+    }
+  }
+  return true;
+});
+
+function hasInvalidDependency(dependencies: PluginDependency[]) {
+  return dependencies.some((dependency) => {
+    if (depTable.value && depTable.value.deletedDeps.includes(dependency.name)) {
+      return false;
+    }
+    // noinspection SuspiciousTypeOfGuard
+    if (dependency.namespace && typeof dependency.namespace === "string") {
+      // TODO: should get proper validation checks on input
+      return true;
+    }
+    return !dependency.name || (!dependency.externalUrl && !dependency.namespace);
+  });
+}
+
 async function save() {
   loading.value = true;
 
   let deps: PluginDependency[] = [];
-  if (formVersion.value.pluginDependencies[platform.value?.name?.toUpperCase() as Platform]) {
-    deps.push(...formVersion.value.pluginDependencies[platform.value?.name?.toUpperCase() as Platform]);
+  if (formVersion.value.pluginDependencies[platform.value?.enumName as Platform]) {
+    deps.push(...formVersion.value.pluginDependencies[platform.value?.enumName as Platform]);
   }
   deps.push(...depTable.value.newDeps);
   deps = deps.filter((d) => !depTable.value.deletedDeps.includes(d.name));
@@ -78,9 +104,9 @@ onMounted(() =>
 
 <template>
   <Modal ref="modal" :title="i18n.t('version.edit.platformVersions', [platform?.name])" window-classes="w-200">
-    <DependencyTable ref="depTable" :platform="platform?.name?.toUpperCase()" :version="formVersion" />
+    <DependencyTable ref="depTable" :platform="platform?.enumName" :version="formVersion" />
 
-    <Button button-type="primary" class="mt-3" :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
+    <Button button-type="primary" class="mt-3" :disabled="loading || !validInput" @click="save">{{ i18n.t("general.save") }}</Button>
     <template #activator="{ on }">
       <Button v-if="hasPerms(NamedPermission.EDIT_VERSION)" class="text-sm" v-on="on"><IconMdiPencil /></Button>
     </template>

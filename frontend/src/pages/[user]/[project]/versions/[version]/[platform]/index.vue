@@ -58,9 +58,6 @@ const isReviewStateChecked = computed<boolean>(
   () => projectVersion.value?.reviewState === ReviewState.PARTIALLY_REVIEWED || projectVersion.value?.reviewState === ReviewState.REVIEWED
 );
 const isUnderReview = computed<boolean>(() => projectVersion.value?.reviewState === ReviewState.UNDER_REVIEW);
-const approvalTooltip = computed<string>(() =>
-  projectVersion.value?.reviewState === ReviewState.PARTIALLY_REVIEWED ? i18n.t("version.page.partiallyApproved") : i18n.t("version.page.approved")
-);
 const currentVisibility = computed(() => backendData.visibilities.find((v) => v.name === projectVersion.value?.visibility));
 const editingPage = ref(false);
 const requiresConfirmation = computed<boolean>(() => projectVersion.value?.externalUrl !== null || projectVersion.value?.reviewState !== ReviewState.REVIEWED);
@@ -82,9 +79,8 @@ useHead(
 );
 
 function setPlatform(plat: Platform) {
-  //TODO apparently the to is broken
   p.value = plat;
-  platform.value = backendData.platforms?.get(plat);
+  platform.value = backendData.platforms.get(plat);
 }
 
 async function savePage(content: string) {
@@ -159,9 +155,6 @@ async function restoreVersion() {
           <h1 class="text-3xl sm:inline-flex items-center gap-x-1">
             <TagComponent class="mr-1" :name="projectVersion.channel.name" :color="{ background: projectVersion.channel.color }" :short-form="true" />
             {{ projectVersion.name }}
-            <Tooltip v-if="isReviewStateChecked" :content="approvalTooltip" class="text-base">
-              <IconMdiCheckCircleOutline class="text-2xl ml-1" />
-            </Tooltip>
           </h1>
           <h2>
             <span class="inline-flex <sm:flex-wrap ml-1">

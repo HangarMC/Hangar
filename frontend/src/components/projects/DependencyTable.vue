@@ -221,7 +221,7 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
             </Tabs>
           </td>
           <td v-if="!noEditing">
-            <Button button-type="red" @click="deleteNewDep(index)">
+            <Button @click="deleteNewDep(index)">
               <IconMdiDelete />
             </Button>
           </td>
