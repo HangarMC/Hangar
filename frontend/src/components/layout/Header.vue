@@ -252,11 +252,11 @@ function isRecent(date: string): boolean {
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
         <div v-if="authStore.user">
-          <Popper>
-            <div class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)">
+          <Popper placement="bottom-end">
+            <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)">
               <IconMdiBellOutline v-if="unreadNotifications === 0" class="text-[1.2em]" />
               <IconMdiBellBadge v-if="unreadNotifications !== 0" class="text-[1.2em]" />
-            </div>
+            </button>
             <template #content="{ close }">
               <div class="flex flex-col rounded border-t-2 border-primary-400 background-default filter drop-shadow-md overflow-auto max-w-150">
                 <div v-if="notifications.length === 0">
@@ -305,11 +305,11 @@ function isRecent(date: string): boolean {
         </div>
         <!-- Profile dropdown -->
         <div v-if="authStore.user">
-          <Popper>
-            <div class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)">
+          <Popper placement="bottom-end">
+            <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)">
               <UserAvatar :username="authStore.user.name" size="xs" :background="false" :disable-link="true" />
               {{ authStore.user.name }}
-            </div>
+            </button>
             <template #content="{ close }">
               <div class="py-1 rounded border-t-2 border-primary-400 background-default filter drop-shadow-md flex flex-col" @click="close()">
                 <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
