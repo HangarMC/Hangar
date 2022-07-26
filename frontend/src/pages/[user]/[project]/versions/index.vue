@@ -105,9 +105,9 @@ function updatePlatformCheckAll() {
 
 function getBorderClasses(version: Version): string {
   if (version.visibility === Visibility.SOFT_DELETE) {
-    return "!border-red-500 border-2px";
+    return "!border-red-500 border-1px";
   }
-  return version.visibility === Visibility.PUBLIC ? "" : "!border-gray-500 border-2px";
+  return version.visibility === Visibility.PUBLIC ? "!border-gray-300 !dark:border-gray-700 border-1px" : "";
 }
 
 function getVisibilityTitle(visibility: Visibility) {
@@ -123,13 +123,14 @@ function getVisibilityTitle(visibility: Visibility) {
         <Alert v-if="!versions.result || versions.result.length === 0" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
         <Pagination v-else :items="versions.result">
           <template #default="{ item }">
-            <li class="mb-4">
+            <li class="mb-2">
               <Card :class="getBorderClasses(item)">
                 <router-link :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${item.name}`">
                   <div class="flex flex-wrap">
-                    <div class="basis-full md:basis-6/12 truncate">
+                    <div class="basis-full md:basis-5/12 truncate">
                       <div class="flex flex-wrap items-center">
-                        <span class="text-xl md:basis-full <md:mr-1">{{ item.name }}</span>
+                        <span class="md:basis-full <md:mr-1 text-1.15rem leading-relaxed">{{ item.name }}</span>
+                        <span class="md:hidden flex-grow"></span>
                         <Tag :name="item.channel.name" :color="{ background: item.channel.color }" />
                         <IconMdiCancel v-if="item.visibility === Visibility.SOFT_DELETE" class="ml-1"></IconMdiCancel>
                         <span v-else-if="item.visibility !== Visibility.PUBLIC" class="ml-1 inline-flex items-center">
@@ -140,15 +141,16 @@ function getVisibilityTitle(visibility: Visibility) {
                         </span>
                       </div>
                     </div>
-                    <div class="basis-3/12 <md:(mt-2 basis-6/12)">
+                    <hr class="md:hidden basis-full mt-1 border-gray-400 dark:border-gray-500" />
+                    <div class="basis-5/12 <md:(mt-2 basis-6/12)">
                       <div v-for="(v, p) in item.platformDependenciesFormatted" :key="p" class="basis-full">
-                        <div class="inline-flex">
-                          <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
-                          <span class="mr-3">{{ v }}</span>
+                        <div class="inline-flex items-center">
+                          <PlatformLogo :platform="p" :size="22" class="mr-1 flex-shrink-0" />
+                          <span class="mr-3 text-0.95rem">{{ v }}</span>
                         </div>
                       </div>
                     </div>
-                    <div class="basis-3/12 <md:(mt-2 basis-6/12)">
+                    <div class="basis-2/12 <md:(mt-2 basis-6/12) text-0.95rem leading-normal">
                       <div class="flex flex-wrap">
                         <span class="basis-full inline-flex items-center">
                           <IconMdiCalendar class="mr-1" />
