@@ -83,72 +83,31 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
       {{ $route.params.user }}
     </Link>
   </PageTitle>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <Card md="col-start-1">
-      <template #header>{{ i18n.t("userAdmin.organizations") }}</template>
-
-      <SortableTable :items="orgList" :headers="orgConfig">
-        <template #item_name="{ item }">
-          <Link :to="'/' + item.name">
-            {{ item.name }}
-          </Link>
-        </template>
-        <template #item_owner="{ item }">
-          <Link :to="'/' + orgs[item.name].ownerName">
-            {{ orgs[item.name].ownerName }}
-          </Link>
-        </template>
-        <template #item_role="{ item }">
-          {{ orgs[item.name].role.title }}
-        </template>
-        <template #item_accepted="{ item }">
-          <InputCheckbox v-model="orgs[item.name].accepted" :disabled="true" />
-        </template>
-      </SortableTable>
-    </Card>
-    <Card md="col-start-1">
-      <template #header>{{ i18n.t("userAdmin.projects") }}</template>
-
-      <SortableTable :items="projects.result" :headers="projectsConfig">
-        <template #item_name="{ item }">
-          <Link :to="'/' + item.namespace.owner + '/' + item.name">
-            {{ item.name }}
-          </Link>
-        </template>
-        <template #item_owner="{ item }">
-          <Link :to="'/' + item.namespace.owner">
-            {{ item.namespace.owner }}
-          </Link>
-        </template>
-        <template #item_role="{ item }">
-          <!-- todo add role -->
-          &lt;{{ item.name }}'s role&gt;
-        </template>
-        <template #item_accepted="{ item }">
-          <InputCheckbox :model-value="item.visibility === 'public'" :disabled="true" />
-        </template>
-      </SortableTable>
-    </Card>
-    <Card md="col-start-2 row-start-1">
+  <div class="flex <md:flex-col mb-2 gap-2">
+    <Card class="basis-full md:basis-8/12">
       <template #header>{{ i18n.t("userAdmin.roles") }}</template>
-
-      <Tag v-for="role in user.roles" :key="role.value" :color="{ background: role.color }" :name="role.title" />
+      <div class="space-x-1">
+        <Tag v-for="role in user.roles" :key="role.value" :color="{ background: role.color }" :name="role.title" />
+      </div>
 
       <div class="flex mt-2">
         <div class="flex-grow">
           <InputSelect v-model="selectedRole" :values="backendData.globalRoles" item-text="title" item-value="value"></InputSelect>
         </div>
         <div>
-          <Button size="medium" :disabled="!selectedRole" @click="processRole(true)">{{ i18n.t("general.add") }}</Button>
+          <Button size="medium" :disabled="!selectedRole || user.roles.some((r) => r.value === selectedRole)" @click="processRole(true)">
+            {{ i18n.t("general.add") }}
+          </Button>
         </div>
-        <div class="ml-4">
-          <Button size="medium" :disabled="!selectedRole" @click="processRole(false)">{{ i18n.t("general.delete") }}</Button>
+        <div class="ml-2">
+          <Button size="medium" :disabled="!selectedRole || !user.roles.some((r) => r.value === selectedRole)" @click="processRole(false)">
+            {{ i18n.t("general.delete") }}
+          </Button>
         </div>
       </div>
     </Card>
-    <Card md="col-start-2 row-start-2">
+    <Card class="basis-full md:basis-4/12">
       <template #header>{{ i18n.t("userAdmin.sidebar") }}</template>
-
       <ul>
         <li>
           <Link :href="_authUrl">{{ i18n.t("userAdmin.hangarAuth") }}</Link>
@@ -159,6 +118,52 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
       </ul>
     </Card>
   </div>
+
+  <Card md="mb-2">
+    <template #header>{{ i18n.t("userAdmin.organizations") }}</template>
+
+    <SortableTable :items="orgList" :headers="orgConfig">
+      <template #item_name="{ item }">
+        <Link :to="'/' + item.name">
+          {{ item.name }}
+        </Link>
+      </template>
+      <template #item_owner="{ item }">
+        <Link :to="'/' + orgs[item.name].ownerName">
+          {{ orgs[item.name].ownerName }}
+        </Link>
+      </template>
+      <template #item_role="{ item }">
+        {{ orgs[item.name].role.title }}
+      </template>
+      <template #item_accepted="{ item }">
+        <InputCheckbox v-model="orgs[item.name].accepted" :disabled="true" />
+      </template>
+    </SortableTable>
+  </Card>
+  <Card md="col-start-1">
+    <template #header>{{ i18n.t("userAdmin.projects") }}</template>
+
+    <SortableTable :items="projects.result" :headers="projectsConfig">
+      <template #item_name="{ item }">
+        <Link :to="'/' + item.namespace.owner + '/' + item.name">
+          {{ item.name }}
+        </Link>
+      </template>
+      <template #item_owner="{ item }">
+        <Link :to="'/' + item.namespace.owner">
+          {{ item.namespace.owner }}
+        </Link>
+      </template>
+      <template #item_role="{ item }">
+        <!-- todo add role -->
+        &lt;{{ item.name }}'s role&gt;
+      </template>
+      <template #item_accepted="{ item }">
+        <InputCheckbox :model-value="item.visibility === 'public'" :disabled="true" />
+      </template>
+    </SortableTable>
+  </Card>
 </template>
 
 <route lang="yaml">

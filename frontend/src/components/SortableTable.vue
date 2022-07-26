@@ -81,10 +81,10 @@ function click(header: Header) {
             <slot name="expanded-item" :item="item" :headers="headers"></slot>
           </tr>
         </template>
-        <template #pagination="{ p, pages, updatePage }">
+        <template #pagination="{ page, pages, updatePage }">
           <tr>
             <td :colspan="headers.length">
-              <PaginationButtons :page="p" :pages="pages" @update:page="updatePage" />
+              <PaginationButtons :page="page" :pages="pages" @update:page="updatePage" />
             </td>
           </tr>
         </template>

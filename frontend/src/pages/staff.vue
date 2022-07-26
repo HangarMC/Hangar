@@ -33,7 +33,9 @@ useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));
     <template #item_pic="{ item }"><UserAvatar :username="item.name" size="xs"></UserAvatar></template>
     <template #item_joinDate="{ item }">{{ i18n.d(item.joinDate, "date") }}</template>
     <template #item_roles="{ item }">
-      <Tag v-for="role in item.roles" :key="role.roleId" :color="{ background: role.color }" :name="role.title" />
+      <div class="space-x-1">
+        <Tag v-for="role in item.roles" :key="role.roleId" :color="{ background: role.color }" :name="role.title" />
+      </div>
     </template>
     <template #item_name="{ item }">
       <Link :to="'/' + item.name">{{ item.name }}</Link>
