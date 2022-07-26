@@ -175,9 +175,11 @@ async function restoreVersion() {
             <IconMdiAlertCircleOutline class="text-2xl" />
           </Tooltip>
           <DropdownButton v-if="versionPlatforms.size > 1" class="inline" :name="platform?.name" button-size="large">
-            <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()" @click="setPlatform(plat)">
-              {{ backendData.platforms?.get(plat)?.name }}
-            </DropdownItem>
+            <template #default="{ close }">
+              <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()" @click="setPlatform(plat) || close()">
+                {{ backendData.platforms?.get(plat)?.name }}
+              </DropdownItem>
+            </template>
           </DropdownButton>
           <DownloadButton :version="projectVersion" :project="project" :platform="p" />
         </div>

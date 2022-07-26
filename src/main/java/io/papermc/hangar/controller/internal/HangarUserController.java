@@ -136,10 +136,9 @@ public class HangarUserController extends HangarComponent {
         userTable.setTheme(settings.getTheme());
         // TODO user action logging
         userService.updateUser(userTable);
-        try {
+
+        if (config.sso.isEnabled()) {
             userService.updateSSO(userTable.getUuid(), new Traits(null, userTable.getEmail(), null, null, settings.getLanguage(), userTable.getName(), null, settings.getTheme()));
-        } catch (Exception ex) {
-            logger.warn("SSO Sync failed", ex);
         }
     }
 

@@ -8,7 +8,6 @@ import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
-import Popper from "~/lib/components/design/Popper.vue";
 
 const i18n = useI18n();
 const backendData = useBackendDataStore();
