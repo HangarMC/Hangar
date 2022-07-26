@@ -35,7 +35,7 @@ public interface UsersApiDAO {
             "     JOIN project_stars ps ON u.id = ps.user_id" +
             "     JOIN home_projects hp ON ps.project_id = hp.id" +
             " WHERE " +
-            "     <if(!canSeeHidden)> (hp.visibility = 0 OR hp.visibility = 1" +
+            "     <if(!canSeeHidden)> (hp.visibility = 0" +
             "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND<endif>" +
             "     u.name = :user" +
             " ORDER BY <sortOrder> LIMIT :limit OFFSET :offset")
@@ -47,7 +47,7 @@ public interface UsersApiDAO {
             "     JOIN project_stars ps ON u.id = ps.user_id" +
             "     JOIN home_projects hp ON ps.project_id = hp.id" +
             " WHERE " +
-            "     <if(!canSeeHidden)> (hp.visibility = 0 OR hp.visibility = 1" +
+            "     <if(!canSeeHidden)> (hp.visibility = 0" +
             "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND<endif>" +
             "     u.name = :user")
     long getUserStarredCount(String user, @Define boolean canSeeHidden, @Define Long userId);
@@ -71,7 +71,7 @@ public interface UsersApiDAO {
             "     JOIN project_watchers pw ON u.id = pw.user_id" +
             "     JOIN home_projects hp ON pw.project_id = hp.id" +
             " WHERE " +
-            "     <if(!canSeeHidden)> (hp.visibility = 0 OR hp.visibility = 1" +
+            "     <if(!canSeeHidden)> (hp.visibility = 0" +
             "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND<endif>" +
             "     u.name = :user" +
             " ORDER BY <sortOrder> LIMIT :limit OFFSET :offset")
@@ -83,7 +83,7 @@ public interface UsersApiDAO {
             "     JOIN project_watchers pw ON u.id = pw.user_id" +
             "     JOIN home_projects hp ON pw.project_id = hp.id" +
             " WHERE " +
-            "     <if(!canSeeHidden)> (hp.visibility = 0 OR hp.visibility = 1" +
+            "     <if(!canSeeHidden)> (hp.visibility = 0" +
             "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND<endif>" +
             "     u.name = :user")
     long getUserWatchingCount(String user, @Define boolean canSeeHidden, @Define Long userId);
