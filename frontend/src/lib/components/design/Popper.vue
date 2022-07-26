@@ -21,12 +21,12 @@ defineExpose({ close });
 
 <style scoped>
 :deep(.popper) {
-  padding: unset;
-  border-radius: unset;
-  border-width: unset;
-  box-shadow: unset;
-  background: unset;
-  transition: unset;
-  color: unset;
+  padding: unset !important;
+  border-radius: unset !important;
+  border-width: unset !important;
+  box-shadow: unset !important;
+  background: unset !important;
+  transition: unset !important;
+  color: unset !important;
 }
 </style>
