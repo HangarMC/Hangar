@@ -120,6 +120,9 @@ const navBarMenuLinksHangar = [
   { link: "authors", label: "Authors", icon: IconMdiAccountGroup },
   { link: "staff", label: "Team", icon: IconMdiAccountGroup },
 ];
+if (!authStore.user) {
+  navBarMenuLinksHangar.splice(2, 2);
+}
 
 const auth = useAuth;
 const authHost = import.meta.env.HANGAR_AUTH_HOST;
