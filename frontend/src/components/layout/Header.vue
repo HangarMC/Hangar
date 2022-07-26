@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Menu, MenuButton, MenuItems, Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
+import { Menu, MenuButton, MenuItems, MenuItem, Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
 import { useSettingsStore } from "~/store/settings";
 import Announcement from "~/components/Announcement.vue";
@@ -204,9 +204,8 @@ function isRecent(date: string): boolean {
                   <a
                     v-for="link in navBarMenuLinksMoreFromPaper"
                     :key="link.label"
-                    class="flex items-center rounded-md px-6 py-2"
+                    class="flex items-center rounded-md px-6 py-2 hover:(text-primary-400 bg-primary-0)"
                     :href="link.link"
-                    hover="text-primary-400 bg-primary-0"
                   >
                     <component :is="link.icon" class="mr-3 text-[1.2em]" />
                     {{ link.label }}
@@ -251,7 +250,7 @@ function isRecent(date: string): boolean {
         <div v-if="authStore.user">
           <Menu>
             <MenuButton>
-              <div class="flex items-center gap-2 rounded-md p-2" hover="text-primary-400 bg-primary-0">
+              <div class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)">
                 <IconMdiBellOutline v-if="unreadNotifications === 0" class="text-[1.2em]" />
                 <IconMdiBellBadge v-if="unreadNotifications !== 0" class="text-[1.2em]" />
               </div>
@@ -304,7 +303,7 @@ function isRecent(date: string): boolean {
         <div v-if="authStore.user">
           <Menu>
             <MenuButton>
-              <div class="flex items-center gap-2 rounded-md p-2" hover="text-primary-400 bg-primary-0">
+              <div class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)">
                 <UserAvatar :username="authStore.user.name" size="xs" :background="false" :disable-link="true" />
                 {{ authStore.user.name }}
               </div>
@@ -341,11 +340,11 @@ function isRecent(date: string): boolean {
 
         <!-- Login/register buttons -->
         <div v-else class="flex gap-2">
-          <a class="flex items-center rounded-md p-2" :href="auth.loginUrl($route.fullPath)" hover="text-primary-400 bg-primary-0">
+          <a class="flex items-center rounded-md p-2 hover:(text-primary-400 bg-primary-0)" :href="auth.loginUrl($route.fullPath)">
             <icon-mdi-key-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.login") }}
           </a>
-          <a class="flex items-center rounded-md p-2" href="/signup" hover="text-primary-400 bg-primary-0">
+          <a class="flex items-center rounded-md p-2 hover:(text-primary-400 bg-primary-0)" href="/signup">
             <icon-mdi-clipboard-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.signup") }}
           </a>

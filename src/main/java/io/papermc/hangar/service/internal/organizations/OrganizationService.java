@@ -66,12 +66,7 @@ public class OrganizationService extends HangarComponent {
         Map<String, OrganizationRoleTable> roles = organizationRolesDAO.getUserOrganizationRoles(user, getHangarUserId());
         if (!includeHidden) {
             Map<String, Boolean> visibility = organizationMemberService.getUserOrganizationMembershipVisibility(user);
-            for (String org : roles.keySet()) {
-                // should always be in the visibility set, but default to hiding in case stuff is wrong
-                if (Boolean.TRUE.equals(visibility.getOrDefault(org, true))) {
-                    roles.remove(org);
-                }
-            }
+            roles.keySet().removeIf(org -> Boolean.TRUE.equals(visibility.getOrDefault(org, true)));
         }
         return roles;
     }
