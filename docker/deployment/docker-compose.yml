@@ -36,7 +36,7 @@ services:
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
       SSO_CLIENT_ID: "${SSO_CLIENT_ID}"
       TOKEN_SECRET: "${TOKEN_SECRET}"
-      SSO_API_KEY: "changeme"
+      SSO_SECRET: "changeme"
     depends_on:
       - 'postgres'
       - 'mail'
