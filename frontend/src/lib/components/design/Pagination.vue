@@ -16,10 +16,10 @@ const page = ref(0);
 
 function recalcPage() {
   const minPage = 0;
-  const maxPage = Math.ceil(props.items.length / props.itemsPerPage);
+  const maxPage = Math.ceil(props.items.length / props.itemsPerPage) - 1;
 
   if (page.value > maxPage) {
-    page.value = maxPage - 1;
+    page.value = maxPage;
   }
   if (page.value < minPage) {
     page.value = minPage;
