@@ -7,6 +7,7 @@ export const useAuthStore = defineStore("auth", () => {
   const authenticated = ref<boolean>(false);
   const user = ref<HangarUser | null>(null);
   const routePermissions = ref<string | null>(null);
+  const invalidated = ref<boolean>(false);
 
   authLog("create authStore");
 
@@ -18,5 +19,5 @@ export const useAuthStore = defineStore("auth", () => {
     routePermissions.value = routePerms;
   }
 
-  return { authenticated, user, routePermissions, setUser, setRoutePerms };
+  return { authenticated, user, routePermissions, invalidated, setUser, setRoutePerms };
 });

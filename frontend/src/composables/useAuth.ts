@@ -48,11 +48,18 @@ class Auth {
 
     // eslint-disable-next-line no-async-promise-executor
     this.refreshPromise = new Promise<boolean | string>(async (resolve) => {
+      const refreshToken = useCookies().get("HangarAuth_REFRESH");
+      if (!refreshToken) {
+        authLog("no cookie, no point in refreshing");
+        resolve(false);
+        this.refreshPromise = null;
+        return;
+      }
+
       try {
         authLog("do request");
         const headers: AxiosRequestHeaders = {};
         if (import.meta.env.SSR) {
-          const refreshToken = useCookies().get("HangarAuth_REFRESH");
           headers.cookie = "HangarAuth_REFRESH=" + refreshToken;
           authLog("pass refresh cookie", refreshToken);
         }
@@ -88,16 +95,20 @@ class Auth {
   }
 
   async invalidate() {
-    useAuthStore(this.usePiniaIfPresent()).$patch({
+    const store = useAuthStore(this.usePiniaIfPresent());
+    store.$patch({
       user: null,
       authenticated: false,
     });
-    await useAxios.get("/invalidate").catch(() => console.log("invalidate failed"));
+    if (!store.invalidated) {
+      await useAxios.get("/invalidate").catch((e) => authLog("Invalidate failed", e.message));
+    }
     if (!import.meta.env.SSR) {
       useCookies().remove("HangarAuth_REFRESH", { path: "/" });
       useCookies().remove("HangarAuth", { path: "/" });
       authLog("Invalidated auth cookies");
     }
+    store.invalidated = true;
   }
 
   async updateUser(): Promise<void> {
