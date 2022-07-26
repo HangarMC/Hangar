@@ -107,7 +107,7 @@ export default defineConfig({
   ],
 
   optimizeDeps: {
-    include: ["vue", "vue-router", "@vueuse/core", "@vueuse/head"],
+    include: ["vue", "vue-router", "@vueuse/core", "@vueuse/head", "swagger-ui-dist"],
     exclude: ["vue-demi"],
   },
 
