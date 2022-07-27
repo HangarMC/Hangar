@@ -171,7 +171,7 @@ function isRecent(date: string): boolean {
       <!-- Left side items -->
       <div class="flex items-center gap-4">
         <Popover v-slot="{ close }" class="relative">
-          <PopoverButton v-slot="{ open }" class="flex">
+          <PopoverButton v-slot="{ open }" class="flex" aria-label="Menu">
             <icon-mdi-menu class="transition-transform text-[1.2em]" :class="open ? 'transform rotate-90' : ''" />
           </PopoverButton>
           <transition
@@ -247,13 +247,13 @@ function isRecent(date: string): boolean {
             <DropdownItem to="/neworganization">{{ t("nav.new.organization") }}</DropdownItem>
           </DropdownButton>
         </div>
-        <button class="flex rounded-md p-2" hover="text-primary-400 bg-primary-0" @click="settings.toggleDarkMode()">
+        <button class="flex rounded-md p-2" hover="text-primary-400 bg-primary-0" aria-label="Toogle dark mode" @click="settings.toggleDarkMode()">
           <icon-mdi-weather-night v-if="settings.darkMode" class="text-[1.2em]"></icon-mdi-weather-night>
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
         <div v-if="authStore.user">
           <Popper placement="bottom-end">
-            <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)">
+            <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)" aria-label="Notifications">
               <IconMdiBellOutline v-if="unreadNotifications === 0" class="text-[1.2em]" />
               <IconMdiBellBadge v-if="unreadNotifications !== 0" class="text-[1.2em]" />
             </button>
