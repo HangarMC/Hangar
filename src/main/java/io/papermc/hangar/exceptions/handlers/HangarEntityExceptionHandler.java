@@ -27,12 +27,12 @@ public class HangarEntityExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(HangarApiException.class)
     public ResponseEntity<HangarApiException> handleException(HangarApiException exception) {
-        return new ResponseEntity<>(exception, exception.getResponseHeaders(), exception.getStatus());
+        return new ResponseEntity<>(exception, exception.getResponseHeaders(), exception.getRawStatusCode());
     }
 
     @ExceptionHandler(MultiHangarApiException.class)
     public ResponseEntity<MultiHangarApiException> handleException(MultiHangarApiException exception) {
-        return new ResponseEntity<>(exception, exception.getResponseHeaders(), exception.getStatus());
+        return new ResponseEntity<>(exception, exception.getResponseHeaders(), exception.getRawStatusCode());
     }
 
     @Override

@@ -40,6 +40,12 @@ public class HangarApiException extends ResponseStatusException {
         this.args = new String[0];
     }
 
+    public HangarApiException(final int status, final String reason) {
+        super(status, reason, null);
+        this.httpHeaders = HttpHeaders.EMPTY;
+        this.args = new String[0];
+    }
+
     public HangarApiException(final HttpStatus status, final HttpHeaders httpHeaders) {
         super(status);
         this.httpHeaders = httpHeaders;
@@ -90,8 +96,17 @@ public class HangarApiException extends ResponseStatusException {
         @Override
         public void serialize(final HangarApiException exception, final JsonGenerator gen, final SerializerProvider provider) throws IOException {
             String message = exception.getReason();
+            HttpStatus status = null;
+            try {
+                status = exception.getStatus();
+            } catch (IllegalArgumentException ignored) {
+            }
             if (message == null || message.isBlank()) {
-                message = exception.getStatus().getReasonPhrase();
+                if (status != null) {
+                    message = status.getReasonPhrase();
+                } else {
+                    message = "UNKNOWN";
+                }
             }
             gen.writeStartObject();
             gen.writeStringField("message", message);
@@ -102,8 +117,13 @@ public class HangarApiException extends ResponseStatusException {
             gen.writeEndArray();
             gen.writeBooleanField("isHangarApiException", true);
             gen.writeObjectFieldStart("httpError");
-            gen.writeNumberField("statusCode", exception.getStatus().value());
-            gen.writeStringField("statusPhrase", exception.getStatus().getReasonPhrase());
+            if (status != null) {
+                gen.writeNumberField("statusCode", status.value());
+                gen.writeStringField("statusPhrase", status.getReasonPhrase());
+            } else {
+                gen.writeNumberField("statusCode", exception.getRawStatusCode());
+                gen.writeStringField("statusPhrase", "UNKNOWN");
+            }
             gen.writeEndObject();
         }
     }

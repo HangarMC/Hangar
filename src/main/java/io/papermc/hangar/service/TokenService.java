@@ -66,7 +66,7 @@ public class TokenService extends HangarComponent {
 
     public void refreshAccessToken(String refreshToken) {
         if (refreshToken == null) {
-            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "No refresh token found");
+            throw new HangarApiException(299, "No refresh token found");
         }
         UUID uuid;
         try {

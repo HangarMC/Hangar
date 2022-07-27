@@ -82,8 +82,12 @@ public class HangarUserController extends HangarComponent {
         this.organizationInviteService = organizationInviteService;
     }
 
+    @Anyone
     @GetMapping("/users/@me")
-    public ResponseEntity<HangarUser> getCurrentUser(HangarAuthenticationToken hangarAuthenticationToken) {
+    public ResponseEntity<?> getCurrentUser(HangarAuthenticationToken hangarAuthenticationToken) {
+        if (hangarAuthenticationToken == null) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(usersApiService.getUser(hangarAuthenticationToken.getName(), HangarUser.class));
     }
 

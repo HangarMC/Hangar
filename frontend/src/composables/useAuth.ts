@@ -64,7 +64,10 @@ class Auth {
           authLog("pass refresh cookie", refreshToken);
         }
         const response = await useAxios.get("/refresh", { headers });
-        if (import.meta.env.SSR) {
+        if (response.status === 299) {
+          authLog("had no cookie");
+          resolve(false);
+        } else if (import.meta.env.SSR) {
           if (response.headers["set-cookie"]) {
             useResponse()?.setHeader("set-cookie", response.headers["set-cookie"]);
             const token = new Cookies(response.headers["set-cookie"]?.join("; ")).get("HangarAuth");
@@ -112,15 +115,19 @@ class Auth {
   }
 
   async updateUser(): Promise<void> {
+    const authStore = useAuthStore(this.usePiniaIfPresent());
+    if (authStore.invalidated) {
+      authLog("no point in updating if we just invalidated");
+      return;
+    }
     const user = await useInternalApi<HangarUser>("users/@me", false).catch(async (err) => {
       authLog("no user");
       return this.invalidate();
     });
     if (user) {
       authLog("patching " + user.name);
-      const authStore = useAuthStore(this.usePiniaIfPresent());
       authStore.setUser(user);
-      authStore.$patch({ authenticated: true });
+      authStore.$patch({ authenticated: true, invalidated: false });
       authLog("user is now " + authStore.user?.name);
     }
   }
