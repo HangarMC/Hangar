@@ -46,10 +46,10 @@ function gotoPage(pageNo: number) {
 
 <template>
   <div class="flex gap-2 justify-center">
-    <Button :disabled="page <= 0" @click="gotoPage(0)">&lt;&lt;</Button>
-    <Button :disabled="page <= 0" @click="gotoPage(page - 1)">&lt;</Button>
-    <Button v-for="index in options" :key="index" :disabled="page === index - 1" @click="gotoPage(index - 1)">{{ index }}</Button>
-    <Button :disabled="page >= pages - 1" @click="gotoPage(page + 1)">&gt;</Button>
-    <Button :disabled="page >= pages - 1" @click="gotoPage(pages - 1)">&gt;&gt;</Button>
+    <Button :disabled="page <= 0" aria-label="First page" @click="gotoPage(0)">&lt;&lt;</Button>
+    <Button :disabled="page <= 0" aria-label="Prev page" @click="gotoPage(page - 1)">&lt;</Button>
+    <Button v-for="index in options" :key="index" :disabled="page === index - 1" :aria-label="'Page ' + index" @click="gotoPage(index - 1)">{{ index }}</Button>
+    <Button :disabled="page >= pages - 1" aria-label="Next page" @click="gotoPage(page + 1)">&gt;</Button>
+    <Button :disabled="page >= pages - 1" aria-label="Last page" @click="gotoPage(pages - 1)">&gt;&gt;</Button>
   </div>
 </template>
