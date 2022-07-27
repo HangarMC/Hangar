@@ -59,7 +59,7 @@ export const useSettingsStore = defineStore("settings", () => {
     };
     try {
       await (store.user?.id
-        ? useInternalApi("users/" + store.user?.id + "/settings/", true, "post", data)
+        ? useInternalApi("users/" + store.user?.name + "/settings/", true, "post", data)
         : useInternalApi("users/anon/settings/", false, "post", data));
     } catch (e) {
       settingsLog("cant save settings", e);
