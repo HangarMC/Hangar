@@ -49,7 +49,7 @@ class Auth {
     // eslint-disable-next-line no-async-promise-executor
     this.refreshPromise = new Promise<boolean | string>(async (resolve) => {
       const refreshToken = useCookies().get("HangarAuth_REFRESH");
-      if (!refreshToken) {
+      if (import.meta.env.SSR && !refreshToken) {
         authLog("no cookie, no point in refreshing");
         resolve(false);
         this.refreshPromise = null;
