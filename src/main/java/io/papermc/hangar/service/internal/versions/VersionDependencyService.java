@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,15 +42,17 @@ public class VersionDependencyService extends HangarComponent {
     private final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependenciesDAO;
     private final PlatformVersionDAO platformVersionDAO;
     private final ProjectService projectService;
+    private final DownloadService downloadService;
 
     @Autowired
-    public VersionDependencyService(ProjectVersionDependenciesDAO projectVersionDependencyDAO, VersionsApiDAO versionsApiDAO, ProjectsDAO projectsDAO, ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectService projectService) {
+    public VersionDependencyService(ProjectVersionDependenciesDAO projectVersionDependencyDAO, VersionsApiDAO versionsApiDAO, ProjectsDAO projectsDAO, ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectService projectService, final DownloadService downloadService) {
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.versionsApiDAO = versionsApiDAO;
         this.projectsDAO = projectsDAO;
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.platformVersionDAO = platformVersionDAO;
         this.projectService = projectService;
+        this.downloadService = downloadService;
     }
 
     public List<ProjectVersionDependencyTable> getProjectVersionDependencyTables(long versionId) {
@@ -62,19 +63,22 @@ public class VersionDependencyService extends HangarComponent {
         return projectVersionPlatformDependenciesDAO.getForVersion(versionId);
     }
 
-    public <T extends Version> T addDependencies(Long versionId, T version) {
+    public <T extends Version> T addDownloadsAndDependencies(final long versionId, final T version) {
         final Map<Platform, SortedSet<String>> platformDependencies = versionsApiDAO.getPlatformDependencies(versionId);
         version.getPlatformDependencies().putAll(platformDependencies);
         for (final Map.Entry<Platform, SortedSet<String>> entry : platformDependencies.entrySet()) {
             version.getPlatformDependenciesFormatted().put(entry.getKey(), StringUtils.formatVersionNumbers(new ArrayList<>(entry.getValue())));
         }
 
-        for (Platform platform : Platform.getValues()) {
-            Set<PluginDependency> pluginDependencySet = versionsApiDAO.getPluginDependencies(versionId, platform);
+        //TODO into one query
+        for (final Platform platform : Platform.getValues()) {
+            final Set<PluginDependency> pluginDependencySet = versionsApiDAO.getPluginDependencies(versionId, platform);
             if (!pluginDependencySet.isEmpty()) {
                 version.getPluginDependencies().put(platform, pluginDependencySet);
             }
         }
+
+        downloadService.addDownloads(versionId, version.getDownloads());
         return version;
     }
 

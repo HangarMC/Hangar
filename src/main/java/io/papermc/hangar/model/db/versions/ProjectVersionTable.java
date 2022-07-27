@@ -11,11 +11,10 @@ import io.papermc.hangar.model.internal.logs.LoggedAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.loggable.Loggable;
 import io.papermc.hangar.service.internal.UserActionLogService;
-import org.jdbi.v3.core.enums.EnumByOrdinal;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
 import java.util.function.Consumer;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectVersionTable extends Table implements Named, ModelVisible, ProjectIdentified, VersionIdentified, Loggable<VersionContext> {
 
@@ -23,9 +22,6 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
     private String description;
     private final long projectId;
     private long channelId;
-    private final Long fileSize;
-    private final String hash;
-    private final String fileName;
     private Long reviewerId;
     private OffsetDateTime approvedAt;
     private final long authorId;
@@ -33,18 +29,14 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
     private ReviewState reviewState = ReviewState.UNREVIEWED;
     private boolean createForumPost;
     private Long postId;
-    private String externalUrl;
 
     @JdbiConstructor
-    public ProjectVersionTable(OffsetDateTime createdAt, long id, String versionString, String description, long projectId, long channelId, Long fileSize, String hash, String fileName, Long reviewerId, OffsetDateTime approvedAt, long authorId, @EnumByOrdinal Visibility visibility, @EnumByOrdinal ReviewState reviewState, boolean createForumPost, Long postId, String externalUrl) {
+    public ProjectVersionTable(OffsetDateTime createdAt, long id, String versionString, String description, long projectId, long channelId, Long reviewerId, OffsetDateTime approvedAt, long authorId, @EnumByOrdinal Visibility visibility, @EnumByOrdinal ReviewState reviewState, boolean createForumPost, Long postId) {
         super(createdAt, id);
         this.versionString = versionString;
         this.description = description;
         this.projectId = projectId;
         this.channelId = channelId;
-        this.fileSize = fileSize;
-        this.hash = hash;
-        this.fileName = fileName;
         this.reviewerId = reviewerId;
         this.approvedAt = approvedAt;
         this.authorId = authorId;
@@ -52,20 +44,15 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
         this.reviewState = reviewState;
         this.createForumPost = createForumPost;
         this.postId = postId;
-        this.externalUrl = externalUrl;
     }
 
-    public ProjectVersionTable(String versionString, String description, long projectId, long channelId, Long fileSize, String hash, String fileName, long authorId, boolean createForumPost, String externalUrl) {
+    public ProjectVersionTable(String versionString, String description, long projectId, long channelId, long authorId, boolean createForumPost) {
         this.versionString = versionString;
         this.description = description;
         this.projectId = projectId;
         this.channelId = channelId;
-        this.fileSize = fileSize;
-        this.hash = hash;
-        this.fileName = fileName;
         this.authorId = authorId;
         this.createForumPost = createForumPost;
-        this.externalUrl = externalUrl;
     }
 
     public String getVersionString() {
@@ -95,18 +82,6 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
 
     public void setChannelId(long channelId) {
         this.channelId = channelId;
-    }
-
-    public Long getFileSize() {
-        return fileSize;
-    }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public String getFileName() {
-        return fileName;
     }
 
     public Long getReviewerId() {
@@ -165,14 +140,6 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
         this.postId = postId;
     }
 
-    public String getExternalUrl() {
-        return externalUrl;
-    }
-
-    public void setExternalUrl(String externalUrl) {
-        this.externalUrl = externalUrl;
-    }
-
     @Override
     public String getName() {
         return this.versionString;
@@ -196,21 +163,17 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
     @Override
     public String toString() {
         return "ProjectVersionTable{" +
-                "versionString='" + versionString + '\'' +
-                ", description='" + description + '\'' +
-                ", projectId=" + projectId +
-                ", channelId=" + channelId +
-                ", fileSize=" + fileSize +
-                ", hash='" + hash + '\'' +
-                ", fileName='" + fileName + '\'' +
-                ", reviewerId=" + reviewerId +
-                ", approvedAt=" + approvedAt +
-                ", authorId=" + authorId +
-                ", visibility=" + visibility +
-                ", reviewState=" + reviewState +
-                ", createForumPost=" + createForumPost +
-                ", postId=" + postId +
-                ", externalUrl='" + externalUrl + '\'' +
-                "} " + super.toString();
+            "versionString='" + versionString + '\'' +
+            ", description='" + description + '\'' +
+            ", projectId=" + projectId +
+            ", channelId=" + channelId +
+            ", reviewerId=" + reviewerId +
+            ", approvedAt=" + approvedAt +
+            ", authorId=" + authorId +
+            ", visibility=" + visibility +
+            ", reviewState=" + reviewState +
+            ", createForumPost=" + createForumPost +
+            ", postId=" + postId +
+            "} " + super.toString();
     }
 }

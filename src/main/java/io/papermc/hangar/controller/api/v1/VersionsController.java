@@ -19,15 +19,13 @@ import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.api.VersionsApiService;
 import io.papermc.hangar.service.internal.versions.DownloadService;
+import java.time.OffsetDateTime;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Map;
 
 @Anyone
 @Controller
@@ -45,15 +43,9 @@ public class VersionsController implements IVersionsController {
     }
 
     @Override
-    @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
-    public Version getVersion(String author, String slug, String versionString, Platform platform) {
-        return versionsApiService.getVersion(author, slug, versionString, platform);
-    }
-
-    @Override
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
-    public List<Version> getVersions(String author, String slug, String name) {
-        return versionsApiService.getVersions(author, slug, name);
+    public Version getVersion(String author, String slug, String name) {
+        return versionsApiService.getVersion(author, slug, name);
     }
 
     @Override

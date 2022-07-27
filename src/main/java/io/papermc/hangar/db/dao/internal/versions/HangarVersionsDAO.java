@@ -24,10 +24,6 @@ public interface HangarVersionsDAO {
             "       pv.visibility," +
             "       pv.description," +
             "       coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_downloads," +
-            "       pv.file_name fi_name," +
-            "       pv.file_size fi_size_bytes," +
-            "       pv.hash fi_md5_hash," +
-            "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
             "       pv.post_id," +
@@ -65,10 +61,6 @@ public interface HangarVersionsDAO {
             "       pv.visibility," +
             "       pv.description," +
             "       coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_downloads," +
-            "       pv.file_name fi_name," +
-            "       pv.file_size fi_size_bytes," +
-            "       pv.hash fi_md5_hash," +
-            "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
             "       pv.post_id," +
@@ -97,10 +89,9 @@ public interface HangarVersionsDAO {
             "       <endif>" +
             "       lower(p.owner_name) = lower(:author) AND" +
             "       lower(p.slug) = lower(:slug) AND" +
-            "       pv.version_string = :versionString" +
-            "   ORDER BY pv.created_at DESC"
+            "       pv.version_string = :versionString"
     )
-    List<HangarVersion> getVersionsWithVersionString(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
+    HangarVersion getVersionWithVersionString(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
 
     //TODO fixup view and this
     @SqlQuery("""
@@ -110,11 +101,7 @@ public interface HangarVersionsDAO {
                pc.name pc_name,
                pc.created_at pc_created_at,
                pc.color pc_color,
-               pc.flags pc_flags,
-               p.file_name fi_name,
-               p.file_size fi_size_bytes,
-               p.hash fi_md5_hash,
-               p.external_url
+               pc.flags pc_flags
         FROM pinned_versions pv
             JOIN project_versions p ON pv.version_id = p.id
             JOIN project_channels pc on pc.id = p.channel_id
@@ -126,11 +113,7 @@ public interface HangarVersionsDAO {
                pc.name pc_name,
                pc.created_at pc_created_at,
                pc.color pc_color,
-               pc.flags pc_flags,
-               p.file_name fi_name,
-               p.file_size fi_size_bytes,
-               p.hash fi_md5_hash,
-               p.external_url
+               pc.flags pc_flags
         FROM pinned_versions pv
             JOIN project_versions p ON pv.version_id = p.id
             JOIN project_channels pc on pc.id = p.channel_id

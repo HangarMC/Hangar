@@ -8,13 +8,13 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.PinnedProjectVersionTable;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -23,12 +23,14 @@ public class PinnedVersionService extends HangarComponent {
     private final HangarVersionsDAO hangarVersionsDAO;
     private final VersionsApiDAO versionsApiDAO;
     private final PinnedProjectVersionsDAO pinnedProjectVersionsDAO;
+    private final DownloadService downloadService;
 
     @Autowired
-    public PinnedVersionService(final HangarVersionsDAO hangarVersionsDAO, final VersionsApiDAO versionsApiDAO, final PinnedProjectVersionsDAO pinnedProjectVersionsDAO) {
+    public PinnedVersionService(final HangarVersionsDAO hangarVersionsDAO, final VersionsApiDAO versionsApiDAO, final PinnedProjectVersionsDAO pinnedProjectVersionsDAO, final DownloadService downloadService) {
         this.hangarVersionsDAO = hangarVersionsDAO;
         this.versionsApiDAO = versionsApiDAO;
         this.pinnedProjectVersionsDAO = pinnedProjectVersionsDAO;
+        this.downloadService = downloadService;
     }
 
     public void addPinnedVersion(final long projectId, final long versionId) {
@@ -47,6 +49,7 @@ public class PinnedVersionService extends HangarComponent {
             for (final Map.Entry<Platform, SortedSet<String>> entry : platformDependencies.entrySet()) {
                 version.getPlatformDependenciesFormatted().put(entry.getKey(), StringUtils.formatVersionNumbers(new ArrayList<>(entry.getValue())));
             }
+            downloadService.addDownloads(version.getVersionId(), version.getDownloads());
         }
         return versions;
     }

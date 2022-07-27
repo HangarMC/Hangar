@@ -15,6 +15,7 @@ import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.model.internal.versions.LastDependencies;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
+import io.papermc.hangar.model.internal.versions.MultipartFileOrUrl;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -25,6 +26,10 @@ import io.papermc.hangar.service.internal.versions.PinnedVersionService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.versions.VersionFactory;
 import io.papermc.hangar.service.internal.versions.VersionService;
+import java.util.List;
+import java.util.Map;
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
@@ -40,10 +45,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @Secured("ROLE_USER")
@@ -68,31 +69,16 @@ public class VersionController extends HangarComponent {
 
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<HangarVersion>> getVersions(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString) {
-        return ResponseEntity.ok(versionService.getHangarVersions(author, slug, versionString));
-    }
-
-    @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
-    @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HangarVersion> getVersion(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString, @PathVariable Platform platform) {
-        return ResponseEntity.ok(versionService.getHangarVersion(author, slug, versionString, platform));
+    public ResponseEntity<HangarVersion> getVersion(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString) {
+        return ResponseEntity.ok(versionService.getHangarVersion(author, slug, versionString));
     }
 
     @Unlocked
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PendingVersion> createFromFile(@PathVariable("id") long projectId, @RequestParam MultipartFile pluginFile) {
-        return ResponseEntity.ok(versionFactory.createPendingVersion(projectId, pluginFile));
-    }
-
-    @Unlocked
-    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#projectId}")
-    @PostMapping(path = "/version/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE, params = "url")
-    public ResponseEntity<PendingVersion> createFromUrl(@PathVariable("id") long projectId, @RequestParam String url) {
-        PendingVersion pendingVersion = versionFactory.createPendingVersion(projectId, url);
-        return ResponseEntity.ok(pendingVersion);
+    public ResponseEntity<PendingVersion> create(@PathVariable("id") long projectId, @RequestBody @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFileOrUrl> files) {
+        return ResponseEntity.ok(versionFactory.createPendingVersion(projectId, files));
     }
 
     @Unlocked
@@ -194,7 +180,7 @@ public class VersionController extends HangarComponent {
     public ResponseEntity<String> downloadCheck(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString, @PathVariable Platform platform) {
         boolean requiresConfirmation = downloadService.requiresConfirmation(author, slug, versionString, platform);
         if (requiresConfirmation) {
-            String token = downloadService.createConfirmationToken(author, slug, versionString, platform);
+            String token = downloadService.createConfirmationToken(author, slug, versionString);
             if (token == null) {
                 // null means we already had confirmed, no reason to confirm again
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

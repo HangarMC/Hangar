@@ -1,3 +1,5 @@
+import { PlatformVersionDownload } from "hangar-api";
+
 declare module "hangar-internal" {
   import type { Joinable, Table } from "hangar-internal";
   import type { Project, ProjectNamespace } from "hangar-api";
@@ -31,9 +33,8 @@ declare module "hangar-internal" {
     type: "channel" | "version";
     name: string;
     platformDependenciesFormatted: Record<Platform, string>;
+    downloads: Record<Platform, PlatformVersionDownload>
     channel: ProjectChannel;
-    fileInfo: FileInfo | null;
-    externalUrl: string | null;
   }
 
   interface HangarProject extends Joinable, Project, Table {

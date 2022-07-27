@@ -159,7 +159,7 @@ public class ProjectService extends HangarComponent {
             pagination.getFilters().add(new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
         }
 
-        Long versionId = versionsApiDAO.getVersions(author, slug, false, getHangarUserId(), pagination).entrySet().stream().map(Map.Entry::getKey).findAny().orElse(null);
+        Long versionId = versionsApiDAO.getVersions(author, slug, false, getHangarUserId(), pagination).keySet().stream().findAny().orElse(null);
         if (versionId != null) {
             return hangarVersionsDAO.getVersion(versionId, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
         }

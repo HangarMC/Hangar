@@ -8,13 +8,14 @@ import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
+import { PlatformVersionDownload } from "hangar-api";
 
 const i18n = useI18n();
 const backendData = useBackendDataStore();
 
 interface DownloadableVersion {
   name: string;
-  externalUrl: string | null;
+  downloads: Record<Platform, PlatformVersionDownload>;
 }
 
 const props = withDefaults(
@@ -37,11 +38,12 @@ const props = withDefaults(
 );
 
 function downloadLink(platform: Platform, version: DownloadableVersion) {
-  if (version && version.externalUrl) {
-    return version.externalUrl;
+  if (version && version.downloads[platform]?.externalUrl) {
+    return version.downloads[platform].externalUrl;
   }
 
   const versionString = version.name;
+  //TODO as normal path then using the api
   const path = `/api/v1/projects/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${versionString}/${platform.toLowerCase()}/download`;
   return import.meta.env.SSR ? path : `${window.location.protocol}//${window.location.host}${path}`;
 }

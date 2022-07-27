@@ -41,26 +41,35 @@ const backendData = useBackendDataStore();
 const notification = useNotificationStore();
 
 const props = defineProps<{
-  versions: Map<Platform, HangarVersion>;
+  version: HangarVersion;
   project: HangarProject;
   versionPlatforms: Set<Platform>;
   user: User;
-  version: string;
 }>();
 
 const p = ref<Platform>(((route.params.platform as string) || "").toUpperCase() as Platform);
-const projectVersion = computed<HangarVersion | undefined>(() => props.versions.get(p.value));
+const projectVersion = computed<HangarVersion | undefined>(() => props.version);
 if (!projectVersion.value) {
   await useRouter().replace(useErrorRedirect(route, 404, "Not found"));
 }
-const platform = ref<IPlatform | undefined>(backendData.platforms?.get(p.value));
+const platform = ref<IPlatform | undefined>(backendData.platforms.get(p.value));
 const isReviewStateChecked = computed<boolean>(
   () => projectVersion.value?.reviewState === ReviewState.PARTIALLY_REVIEWED || projectVersion.value?.reviewState === ReviewState.REVIEWED
 );
 const isUnderReview = computed<boolean>(() => projectVersion.value?.reviewState === ReviewState.UNDER_REVIEW);
 const currentVisibility = computed(() => backendData.visibilities.find((v) => v.name === projectVersion.value?.visibility));
 const editingPage = ref(false);
-const requiresConfirmation = computed<boolean>(() => projectVersion.value?.externalUrl !== null || projectVersion.value?.reviewState !== ReviewState.REVIEWED);
+const requiresConfirmation = computed<boolean>(() => {
+  if (projectVersion.value?.reviewState !== ReviewState.REVIEWED) {
+    return true;
+  }
+  for (const platform in projectVersion.value?.downloads) {
+    if (projectVersion.value.downloads[platform as Platform].externalUrl !== null) {
+      return true;
+    }
+  }
+  return false;
+});
 
 const sortedDependencies = computed(() => {
   if (platform.value && projectVersion.value && projectVersion.value.pluginDependencies[p.value]) {
@@ -159,9 +168,9 @@ async function restoreVersion() {
           <h3>
             <span class="inline-flex <sm:flex-wrap ml-1">
               {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
-              <span v-if="projectVersion.fileInfo?.sizeBytes" class="inline-flex items-center sm:ml-3">
+              <span v-if="projectVersion.downloads[platform.enumName].fileInfo?.sizeBytes" class="inline-flex items-center sm:ml-3">
                 <IconMdiFile class="mr-1" />
-                {{ filesize(projectVersion.fileInfo.sizeBytes) }}
+                {{ filesize(projectVersion.downloads[platform.enumName].sizeBytes) }}
               </span>
             </span>
           </h3>
@@ -277,7 +286,7 @@ async function restoreVersion() {
         <template #header>
           <div class="inline-flex w-full">
             <h3 class="flex-grow">{{ i18n.t("version.page.platform") }}</h3>
-            <PlatformVersionEditModal v-if="hasPerms(NamedPermission.EDIT_VERSION)" :project="project" :versions="versions" />
+            <PlatformVersionEditModal v-if="hasPerms(NamedPermission.EDIT_VERSION)" :project="project" :version="version" />
           </div>
         </template>
 
@@ -292,7 +301,7 @@ async function restoreVersion() {
         <template #header>
           <div class="inline-flex w-full">
             <h3 class="flex-grow">{{ i18n.t("version.page.dependencies") }}</h3>
-            <DependencyEditModal :project="project" :versions="versions" />
+            <DependencyEditModal :project="project" :version="version" />
           </div>
         </template>
 

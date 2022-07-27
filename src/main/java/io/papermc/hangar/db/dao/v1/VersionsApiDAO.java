@@ -37,10 +37,6 @@ public interface VersionsApiDAO {
             "       pv.visibility," +
             "       pv.description," +
             "       coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_downloads," +
-            "       pv.file_name fi_name," +
-            "       pv.file_size fi_size_bytes," +
-            "       pv.hash fi_md5_hash," +
-            "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
             "       pv.post_id," +
@@ -77,10 +73,6 @@ public interface VersionsApiDAO {
             "       pv.visibility," +
             "       pv.description," +
             "       coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_downloads," +
-            "       pv.file_name fi_name," +
-            "       pv.file_size fi_size_bytes," +
-            "       pv.hash fi_md5_hash," +
-            "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
             "       pv.post_id," +
@@ -107,10 +99,9 @@ public interface VersionsApiDAO {
             "       <endif>" +
             "       lower(p.owner_name) = lower(:author) AND" +
             "       lower(p.slug) = lower(:slug) AND" +
-            "       pv.version_string = :versionString" +
-            "   ORDER BY pv.created_at DESC"
+            "       pv.version_string = :versionString"
     )
-    SortedMap<Long, Version> getVersionsWithVersionString(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
+    Entry<Long, Version> getVersionWithVersionString(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
 
     @KeyColumn("id")
     @SqlQuery("SELECT pv.id," +
@@ -119,10 +110,6 @@ public interface VersionsApiDAO {
             "       pv.visibility," +
             "       pv.description," +
             "       coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_downloads," +
-            "       pv.file_name fi_name," +
-            "       pv.file_size fi_size_bytes," +
-            "       pv.hash fi_md5_hash," +
-            "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
             "       pv.post_id," +
@@ -186,7 +173,7 @@ public interface VersionsApiDAO {
             "       LEFT JOIN projects p ON pvd.project_id = p.id" +
             "   WHERE pvd.version_id = :versionId AND pvd.platform = :platform")
     @RegisterConstructorMapper(PluginDependency.class)
-    Set<PluginDependency> getPluginDependencies(long versionId, @EnumByOrdinal Platform platform);
+    Set<PluginDependency> getPluginDependencies(long versionId, @EnumByOrdinal Platform platform); //TODO make into one db call for all platforms?
 
     @KeyColumn("platform")
     @ValueColumn("versions")
