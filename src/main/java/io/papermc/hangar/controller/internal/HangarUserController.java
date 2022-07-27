@@ -19,6 +19,7 @@ import io.papermc.hangar.model.internal.sso.Traits;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.model.internal.user.notifications.HangarInvite.InviteType;
 import io.papermc.hangar.model.internal.user.notifications.HangarNotification;
+import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.currentuser.CurrentUser;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
@@ -49,6 +50,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -127,7 +130,7 @@ public class HangarUserController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 2)
     @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
     @PostMapping("/users/{userName}/settings/")
-    public void saveSettings(@PathVariable String userName, @RequestBody UserSettings settings) {
+    public void saveSettings(@PathVariable String userName, @RequestBody UserSettings settings, HttpServletResponse response) {
         UserTable userTable = userService.getUserTable(userName);
         if (userTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
@@ -140,6 +143,24 @@ public class HangarUserController extends HangarComponent {
         if (config.sso.isEnabled()) {
             userService.updateSSO(userTable.getUuid(), new Traits(null, userTable.getEmail(), null, null, settings.getLanguage(), userTable.getName(), null, settings.getTheme()));
         }
+
+        setThemeCookie(settings, response);
+    }
+
+    @Anyone
+    @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 5, refillTokens = 2)
+    @PostMapping("/users/anon/settings/")
+    public void saveSettings(@RequestBody UserSettings settings, HttpServletResponse response) {
+        setThemeCookie(settings, response);
+    }
+
+    private static void setThemeCookie(UserSettings settings, HttpServletResponse response) {
+        Cookie cookie = new Cookie("HANGAR_theme", settings.getTheme());
+        cookie.setPath("/");
+        cookie.setMaxAge((int) (60 * 60 * 24 * 356.24 * 1000));
+        // TODO make sure this cookie is cross hangar and auth
+        response.addCookie(cookie);
     }
 
     @GetMapping("/recentnotifications")

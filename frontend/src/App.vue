@@ -10,6 +10,7 @@ import "virtual:windi-devtools";
 const authStore = useAuthStore();
 const settingsStore = useSettingsStore();
 settingsStore.loadSettingsClient();
+settingsStore.setupMobile();
 settingsLog("render for user", authStore.user?.name, "with darkmode", settingsStore.darkMode);
 useHead({
   htmlAttrs: {
