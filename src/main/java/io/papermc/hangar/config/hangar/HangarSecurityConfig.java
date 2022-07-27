@@ -18,6 +18,7 @@ public class HangarSecurityConfig {
     private boolean secure = false;
     private long unsafeDownloadMaxAge = 600000;
     private List<String> safeDownloadHosts = List.of();
+    private String imageProxyUrl = "http://localhost:3001/image/%s";
     private String tokenIssuer;
     private String tokenSecret;
     @DurationUnit(ChronoUnit.SECONDS)
@@ -121,6 +122,14 @@ public class HangarSecurityConfig {
         this.safeDownloadHosts = safeDownloadHosts;
     }
 
+    public String getImageProxyUrl() {
+        return imageProxyUrl;
+    }
+
+    public void setImageProxyUrl(String imageProxyUrl) {
+        this.imageProxyUrl = imageProxyUrl;
+    }
+
     public SecurityApiConfig getApi() {
         return api;
     }
@@ -133,22 +142,6 @@ public class HangarSecurityConfig {
         return safeDownloadHosts.contains(URI.create(url).getHost());
     }
 
-    public String makeSafe(final String urlString) {
-        try {
-            final URI uri = new URI(urlString);
-            final String host = uri.getHost();
-            if (uri.getScheme() != null && host == null) {
-                if (uri.getScheme().equals("mailto")) {
-                    return urlString;
-                }
-            } else if (host == null || isSafeHost(host)) {
-                return urlString;
-            }
-        } catch (URISyntaxException ignored) {
-        }
-        return "/linkout?remoteUrl=" + urlString;
-    }
-
     public boolean isSafeHost(final String host) {
         for (final String safeHost : this.safeDownloadHosts) {
             // Make sure it's the full host or a subdomain
@@ -157,5 +150,35 @@ public class HangarSecurityConfig {
             }
         }
         return false;
+    }
+
+    private boolean isSafe(final String urlString) {
+        try {
+            final URI uri = new URI(urlString);
+            final String host = uri.getHost();
+            if (uri.getScheme() != null && host == null) {
+                if (uri.getScheme().equals("mailto")) {
+                    return true;
+                }
+            } else if (host == null || isSafeHost(host)) {
+                return true;
+            }
+        } catch (URISyntaxException ignored) {
+        }
+        return false;
+    }
+
+    public String makeSafe(final String urlString) {
+        if (isSafe(urlString)) {
+            return urlString;
+        }
+        return "/linkout?remoteUrl=" + urlString;
+    }
+
+    public String proxyImage(String urlString) {
+        if (isSafe(urlString)) {
+            return urlString;
+        }
+        return String.format(imageProxyUrl, urlString);
     }
 }

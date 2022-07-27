@@ -159,8 +159,10 @@ public class MarkdownService {
 
         @Override
         public @NotNull ResolvedLink resolveLink(@NotNull Node node, @NotNull LinkResolverBasicContext context, @NotNull ResolvedLink link) {
-            if (link.getLinkType() == LinkType.IMAGE || node instanceof MailLink) {
+            if (node instanceof MailLink) {
                 return link;
+            } else if (link.getLinkType() == LinkType.IMAGE) {
+                return link.withStatus(LinkStatus.VALID).withUrl(config.security.proxyImage(link.getUrl()));
             } else {
                 return link.withStatus(LinkStatus.VALID).withUrl(config.security.makeSafe(link.getUrl()));
             }
