@@ -2,26 +2,22 @@ package io.papermc.hangar.model.internal.versions;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.controller.validations.Validate;
-import io.papermc.hangar.model.api.project.version.FileInfo;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
-import org.jetbrains.annotations.Nullable;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.EnumMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 public class PendingVersion {
 
@@ -34,9 +30,8 @@ public class PendingVersion {
     @NotBlank(message = "version.new.error.noDescription")
     @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxLen)", message = "page.new.error.maxLength")
     private final String description;
-    private final FileInfo fileInfo;
-    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
-    private final String externalUrl;
+    @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
+    private final List<@Valid PendingVersionFile> files;
     @NotBlank(message = "version.new.error.channel.noName")
     @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName")
     private final String channelName;
@@ -44,53 +39,30 @@ public class PendingVersion {
     private final Color channelColor;
     private final Set<ChannelFlag> channelFlags;
     private final boolean forumSync;
-    private final boolean isFile;
 
     @JsonCreator(mode = Mode.PROPERTIES)
-    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, EnumMap<Platform, SortedSet<String>> platformDependencies, String description, FileInfo fileInfo, String externalUrl, String channelName, Color channelColor, Set<ChannelFlag> channelFlags, boolean forumSync, boolean isFile) {
+    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, EnumMap<Platform, SortedSet<String>> platformDependencies, String description, List<PendingVersionFile> files, String channelName, Color channelColor, Set<ChannelFlag> channelFlags, boolean forumSync) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
         this.description = description;
-        this.fileInfo = fileInfo;
-        this.externalUrl = externalUrl;
+        this.files = files;
         this.channelName = channelName;
         this.channelColor = channelColor;
         this.channelFlags = channelFlags;
         this.forumSync = forumSync;
-        this.isFile = isFile;
     }
 
-    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, Map<Platform, SortedSet<String>> platformDependencies, String description, FileInfo fileInfo, ProjectChannelTable projectChannelTable, boolean forumSync) {
+    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, Map<Platform, SortedSet<String>> platformDependencies, List<PendingVersionFile> files, ProjectChannelTable projectChannelTable, boolean forumSync) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
-        this.description = "## " + this.versionString + (description != null ? "\n\n" + description : "");
-        this.fileInfo = fileInfo;
-        this.forumSync = forumSync;
-        this.externalUrl = null;
-        this.channelName = projectChannelTable.getName();
-        this.channelColor = projectChannelTable.getColor();
-        this.channelFlags = projectChannelTable.getFlags();
-        this.isFile = true;
-    }
-
-    public PendingVersion(Map<Platform, Set<PluginDependency>> pluginDependencies, Map<Platform, SortedSet<String>> platformDependencies, String externalUrl, ProjectChannelTable projectChannelTable, boolean forumSync) {
-        this.forumSync = forumSync;
-        this.versionString = null;
-        this.pluginDependencies = pluginDependencies;
-        this.platformDependencies = platformDependencies;
-        for (Platform platform : Platform.getValues()) {
-            this.pluginDependencies.put(platform, new HashSet<>());
-            this.platformDependencies.put(platform, new TreeSet<>());
-        }
         this.description = null;
-        this.fileInfo = null;
-        this.externalUrl = externalUrl;
+        this.forumSync = forumSync;
+        this.files = files;
         this.channelName = projectChannelTable.getName();
         this.channelColor = projectChannelTable.getColor();
         this.channelFlags = projectChannelTable.getFlags();
-        this.isFile = false;
     }
 
     public String getVersionString() {
@@ -109,13 +81,8 @@ public class PendingVersion {
         return description;
     }
 
-    @Nullable
-    public FileInfo getFileInfo() {
-        return fileInfo;
-    }
-
-    public String getExternalUrl() {
-        return externalUrl;
+    public List<PendingVersionFile> getFiles() {
+        return files;
     }
 
     public String getChannelName() {
@@ -134,25 +101,18 @@ public class PendingVersion {
         return forumSync;
     }
 
-    @JsonProperty("isFile")
-    public boolean isFile() {
-        return isFile;
-    }
-
     @Override
     public String toString() {
         return "PendingVersion{" +
-                "versionString='" + versionString + '\'' +
-                ", pluginDependencies=" + pluginDependencies +
-                ", platformDependencies=" + platformDependencies +
-                ", description='" + description + '\'' +
-                ", fileInfo=" + fileInfo +
-                ", externalUrl='" + externalUrl + '\'' +
-                ", channelName='" + channelName + '\'' +
-                ", channelColor=" + channelColor +
-                ", channelFlags=" + channelFlags +
-                ", forumSync=" + forumSync +
-                ", isFile=" + isFile +
-                '}';
+            "versionString='" + versionString + '\'' +
+            ", pluginDependencies=" + pluginDependencies +
+            ", platformDependencies=" + platformDependencies +
+            ", description='" + description + '\'' +
+            ", files=" + files +
+            ", channelName='" + channelName + '\'' +
+            ", channelColor=" + channelColor +
+            ", channelFlags=" + channelFlags +
+            ", forumSync=" + forumSync +
+            '}';
     }
 }

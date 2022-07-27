@@ -10,53 +10,40 @@ import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
-import io.papermc.hangar.service.internal.versions.VersionService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 @Service
 public class VersionsApiService extends HangarComponent {
 
     private final VersionsApiDAO versionsApiDAO;
-    private final VersionService versionService;
     private final VersionDependencyService versionDependencyService;
 
     @Autowired
-    public VersionsApiService(VersionsApiDAO versionsApiDAO, VersionService versionService, VersionDependencyService versionDependencyService) {
+    public VersionsApiService(VersionsApiDAO versionsApiDAO, VersionDependencyService versionDependencyService) {
         this.versionsApiDAO = versionsApiDAO;
-        this.versionService = versionService;
         this.versionDependencyService = versionDependencyService;
     }
 
-    public Version getVersion(String author, String slug, String versionString, Platform platform) {
-        ProjectVersionTable projectVersionTable = versionService.getProjectVersionTable(author, slug, versionString, platform);
-        if (projectVersionTable == null) {
+    public Version getVersion(String author, String slug, String versionString) {
+        final Map.Entry<Long, Version> version = versionsApiDAO.getVersionWithVersionString(author, slug, versionString, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+        if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        Map.Entry<Long, Version> entry = versionsApiDAO.getVersion(projectVersionTable.getId(), getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
-        return versionDependencyService.addDependencies(entry.getKey(), entry.getValue());
-    }
-
-    public List<Version> getVersions(String author, String slug, String versionString) {
-        List<Version> versions = versionsApiDAO.getVersionsWithVersionString(author, slug, versionString, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId()).entrySet().stream().map(entry -> versionDependencyService.addDependencies(entry.getKey(), entry.getValue())).collect(Collectors.toList());
-        if (versions.isEmpty()) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
-        return versions;
+        versionDependencyService.addDownloadsAndDependencies(version.getKey(), version.getValue());
+        return version.getValue();
     }
 
     public PaginatedResult<Version> getVersions(String author, String slug, RequestPagination pagination) {
         boolean canSeeHidden = getGlobalPermissions().has(Permission.SeeHidden);
         List<Version> versions = versionsApiDAO.getVersions(author, slug, canSeeHidden, getHangarUserId(), pagination).entrySet().stream()
-            .map(entry -> versionDependencyService.addDependencies(entry.getKey(), entry.getValue()))
+            .map(entry -> versionDependencyService.addDownloadsAndDependencies(entry.getKey(), entry.getValue()))
             .sorted((v1, v2) -> v2.getCreatedAt().compareTo(v1.getCreatedAt()))
             .collect(Collectors.toList());
         Long versionCount = versionsApiDAO.getVersionCount(author, slug, canSeeHidden, getHangarUserId(), pagination);

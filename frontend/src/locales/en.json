@@ -419,7 +419,8 @@
         "dependencies": "Dependencies",
         "changelogTitle": "What's new?",
         "artifactTitle": "You can either upload a jar file or link to an external site.",
-        "externalLinkAlert": "An external link needs to be a direct download link!"
+        "externalLinkAlert": "An external link needs to be a direct download link!",
+        "addedArtifacts": "Provided Artifacts"
       },
       "steps": {
         "1": {

@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 @RegisterConstructorMapper(ProjectVersionDownloadIndividualTable.class)
-public interface ProjectVersionDownloadsDAO {
+public interface ProjectVersionDownloadStatsDAO {
 
     @Timestamped
     @SqlUpdate("INSERT INTO project_versions_downloads_individual (created_at, project_id, version_id, address, cookie, user_id) VALUES (:now, :projectId, :versionId, :address, :cookie, :userId)")

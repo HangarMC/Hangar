@@ -5,7 +5,7 @@ import io.papermc.hangar.config.jackson.RequiresPermission;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectChannel;
-import io.papermc.hangar.model.api.project.version.FileInfo;
+import io.papermc.hangar.model.api.project.version.PlatformVersionDownload;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.mapper.Nested;
-import org.jetbrains.annotations.Nullable;
 
 public class HangarProject extends Project implements Joinable<ProjectRoleTable>, ProjectIdentified {
 
@@ -165,19 +164,16 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         private final Type type;
         private final String name;
         private final ProjectChannel channel;
-        private final FileInfo fileInfo;
-        private final String externalUrl;
         private final Map<Platform, String> platformDependenciesFormatted;
+        private final Map<Platform, PlatformVersionDownload> downloads;
 
-        public PinnedVersion(long versionId, Type type, String name, @Nested("pc") ProjectChannel channel,
-                             @Nested("fi") @Nullable FileInfo fileInfo, @Nullable String externalUrl) {
+        public PinnedVersion(long versionId, Type type, String name, @Nested("pc") ProjectChannel channel) {
             this.versionId = versionId;
             this.type = type;
             this.name = name;
             this.channel = channel;
-            this.fileInfo = fileInfo;
-            this.externalUrl = externalUrl;
             this.platformDependenciesFormatted = new EnumMap<>(Platform.class);
+            this.downloads = new EnumMap<>(Platform.class);
         }
 
         public long getVersionId() {
@@ -200,26 +196,21 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
             return channel;
         }
 
-        public FileInfo getFileInfo() {
-            return fileInfo;
-        }
-
-        public String getExternalUrl() {
-            return externalUrl;
+        public Map<Platform, PlatformVersionDownload> getDownloads() {
+            return downloads;
         }
 
         @Override
         public String toString() {
-            return "PinnedVersion[" +
-                "versionId=" + versionId + ", " +
-                "type=" + type + ", " +
-                "name=" + name + ", " +
-                "platformDependenciesFormatted=" + platformDependenciesFormatted + ", " +
-                "channel=" + channel + ", " +
-                "fileInfo=" + fileInfo + ", " +
-                "externalUrl=" + externalUrl + ']';
+            return "PinnedVersion{" +
+                "versionId=" + versionId +
+                ", type=" + type +
+                ", name='" + name + '\'' +
+                ", channel=" + channel +
+                ", platformDependenciesFormatted=" + platformDependenciesFormatted +
+                ", downloads=" + downloads +
+                '}';
         }
-
 
         @EnumByName
         @JsonFormat(shape = JsonFormat.Shape.STRING)

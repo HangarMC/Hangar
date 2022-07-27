@@ -15,15 +15,17 @@ declare module "hangar-internal" {
     platformDependencies: Record<Platform, string[]>;
     versionString: string | null;
     description: string | null;
-    fileInfo: FileInfo | null;
-    externalUrl: string | null;
+    files: PendingVersionFile[];
     channelName: string;
     channelColor: string;
     channelFlags: ChannelFlag[];
     forumSync: boolean;
-    unstable: boolean;
-    recommended: boolean;
-    isFile: boolean;
+  }
+
+  interface PendingVersionFile {
+    platforms: Platform[];
+    file: FileInfo | null;
+    externalUrl: string | null;
   }
 
   interface ProjectChannel extends Named, Partial<Table> {

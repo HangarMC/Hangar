@@ -47,7 +47,7 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
                 if (arguments.length == 1 && versionService.getProjectVersionTable((long) arguments[0]) != null) {
                     return ACCESS_GRANTED;
                 } else {
-                    if (versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1], (String) arguments[2], (Platform) arguments[3]) != null) {
+                    if (versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1], (String) arguments[2]) != null) {
                         return ACCESS_GRANTED;
                     } else {
                         return ACCESS_DENIED;

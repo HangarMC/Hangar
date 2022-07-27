@@ -78,7 +78,8 @@ async function sendForApproval() {
 function requiresConfirmation(): boolean {
   for (const platform in props.project.mainChannelVersions) {
     const version = props.project.mainChannelVersions[platform as Platform];
-    if (version.externalUrl !== null || version.reviewState !== ReviewState.REVIEWED) {
+    const download = version.downloads[platform as Platform];
+    if (download.externalUrl !== null || version.reviewState !== ReviewState.REVIEWED) {
       return true;
     }
   }

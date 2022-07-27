@@ -6,8 +6,7 @@ import { HangarProject, IPlatform, PendingVersion, ProjectChannel } from "hangar
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import Steps, { Step } from "~/lib/components/design/Steps.vue";
-import { computed, reactive, ref } from "vue";
-import Alert from "~/lib/components/design/Alert.vue";
+import { computed, reactive, Ref, ref } from "vue";
 import InputFile from "~/lib/components/ui/InputFile.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
@@ -48,14 +47,27 @@ const steps: Step[] = [
       return createPendingVersion();
     },
     disableNext: computed(() => {
-      const currentNonNullURLValue = url?.value ?? "";
-      return (
-        file.value == null &&
-        (currentNonNullURLValue === "" ||
-          artifactURLRules.some((v) => {
-            return !v.$validator(currentNonNullURLValue, undefined, undefined);
-          }))
-      );
+      const selectedPlatforms = new Set();
+      for (const platformFile of platformFiles.value) {
+        // Make sure it has at least one platform
+        if (platformFile.platforms.length === 0) {
+          return true;
+        }
+
+        // Make sure there's either a file or a (valid) URL
+        if (!platformFile.file && (!platformFile.url || artifactURLRules.some((v) => !v.$validator(platformFile.url, undefined, undefined)))) {
+          return true;
+        }
+
+        // Check for duplicated platforms
+        for (const platform of platformFile.platforms) {
+          if (selectedPlatforms.has(platform)) {
+            return true;
+          }
+          selectedPlatforms.add(platform);
+        }
+      }
+      return false;
     }),
   },
   {
@@ -96,9 +108,29 @@ const steps: Step[] = [
   },
 ];
 
-const file = ref<File | null>();
-const url = ref<string | null>();
-const pendingVersion = ref<PendingVersion>();
+interface PlatformFile {
+  platforms: Platform[];
+  //TODO refs?
+  selectedTab: string;
+  file?: File;
+  url?: string;
+}
+
+const platformFiles: Ref<PlatformFile[]> = ref([{ platforms: [], selectedTab: "file" }]);
+const selectedUploadTabs: Tab[] = [
+  { value: "file", header: i18n.t("version.new.form.file") },
+  { value: "url", header: i18n.t("version.new.form.url") },
+];
+
+function addPlatformFile() {
+  platformFiles.value.push({ platforms: [], selectedTab: "file" });
+}
+
+function removePlatformFile(id: number) {
+  platformFiles.value.splice(id, 1);
+}
+
+const pendingVersion: Ref<PendingVersion | undefined> = ref<PendingVersion>();
 const channels = ref<ProjectChannel[]>([]);
 const selectedPlatforms = ref<Platform[]>([]);
 const descriptionEditor = ref();
@@ -106,8 +138,6 @@ const loading = reactive({
   create: false,
   submit: false,
 });
-
-const isFile = computed(() => pendingVersion.value?.isFile);
 
 const currentChannel = computed(() => channels.value.find((c) => c.name === pendingVersion.value?.channelName));
 
@@ -125,7 +155,7 @@ const selectedPlatformsData = computed<IPlatform[]>(() => {
 const artifactURLRules = [validUrl()];
 const versionRules = [required()];
 const platformVersionRules = computed(() => {
-  return !pendingVersion.value?.isFile ? [] : [(v: string[]) => !!v.length || "Error"];
+  return [(v: string[]) => !!v.length || "Error"];
 });
 const changelogRules = [required(t("version.new.form.release.bulletin"))];
 
@@ -159,25 +189,20 @@ async function preload() {
 
 async function createPendingVersion() {
   loading.create = true;
-  const data: FormData = new FormData();
-  if (url.value) {
-    data.append("url", url.value);
-  } else if (file.value) {
-    data.append("pluginFile", file.value);
-  } else {
-    return false;
+  const files = [];
+  for (const platformFile of platformFiles.value) {
+    files.push({ platforms: platformFile.platforms, file: platformFile.file, externalUrl: platformFile.url });
+    for (const platform of platformFile.platforms) {
+      selectedPlatforms.value.push(platform);
+    }
   }
+
   channels.value = await useInternalApi<ProjectChannel[]>(`channels/${route.params.user}/${route.params.project}`, false).catch<any>((e) =>
     handleRequestError(e, ctx, i18n)
   );
-  pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project.id}/upload`, true, "post", data).catch<any>((e) =>
+  pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project.id}/upload`, true, "post", files).catch<any>((e) =>
     handleRequestError(e, ctx, i18n)
   );
-  for (const platformDependenciesKey in pendingVersion.value?.platformDependencies) {
-    if (pendingVersion.value?.platformDependencies[platformDependenciesKey as Platform].length) {
-      selectedPlatforms.value.push(platformDependenciesKey as Platform);
-    }
-  }
   loading.create = false;
   return pendingVersion.value !== undefined;
 }
@@ -229,19 +254,13 @@ function addChannel(channel: ProjectChannel) {
   }
 }
 
-function togglePlatform(platform: Platform) {
-  if (selectedPlatforms.value.includes(platform)) {
-    selectedPlatforms.value = selectedPlatforms.value.filter((p) => p !== platform);
+function togglePlatform(platformFile: PlatformFile, platform: Platform) {
+  if (platformFile.platforms.includes(platform)) {
+    platformFile.platforms = platformFile.platforms.filter((p) => p !== platform);
   } else {
-    selectedPlatforms.value.push(platform);
+    platformFile.platforms.push(platform);
   }
 }
-
-const selectedUploadTab = ref("file");
-const selectedUploadTabs: Tab[] = [
-  { value: "file", header: i18n.t("version.new.form.file") },
-  { value: "url", header: i18n.t("version.new.form.url") },
-];
 
 useHead(
   useSeo(
@@ -256,46 +275,55 @@ useHead(
 <template>
   <Steps v-model="selectedStep" :steps="steps" button-lang-key="version.new.steps.">
     <template #artifact>
-      <p>{{ t("version.new.form.artifactTitle") }}</p>
-      <!--<Alert class="my-4 text-white" type="info">{{ t("version.new.form.externalLinkAlert") }}</Alert>-->
+      <p class="mb-2">{{ t("version.new.form.artifactTitle") }}</p>
 
-      <Tabs v-model="selectedUploadTab" :tabs="selectedUploadTabs" :vertical="false" class="mt-2 max-w-150">
-        <template #file>
-          <InputFile v-model="file" accept=".jar,.zip" />
-        </template>
-        <template #url>
-          <InputText v-model="url" :label="t('version.new.form.externalUrl')" :rules="artifactURLRules" />
-        </template>
-      </Tabs>
+      <!-- todo: make prettier, translations -->
+      <div v-for="(platformFile, idx) in platformFiles" :key="idx" class="mb-8">
+        <span class="text-xl">File #{{ idx + 1 }}</span>
+        <div class="flex flex-row items-center">
+          <Tabs v-model="platformFile.selectedTab" :tabs="selectedUploadTabs" :vertical="false" class="max-w-150">
+            <template #file>
+              <InputFile v-model="platformFile.file" accept=".jar,.zip" />
+            </template>
+            <template #url>
+              <InputText v-model="platformFile.url" :label="t('version.new.form.externalUrl')" :rules="artifactURLRules" />
+            </template>
+          </Tabs>
+          <div class="mt-4 ml-8">
+            <div v-for="platform in platforms" :key="platform.name">
+              <InputCheckbox
+                :model-value="platformFile.platforms.includes(platform.enumName)"
+                :label="platform.name"
+                @update:model-value="togglePlatform(platformFile, platform.enumName)"
+              >
+                <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
+              </InputCheckbox>
+            </div>
+          </div>
+          <Button v-if="platformFiles.length !== 1" class="ml-4 mt-4" @click="removePlatformFile(idx)"><IconMdiDelete /></Button>
+        </div>
+        <div></div>
+      </div>
+      <Button :disabled="platformFiles.length >= backendData.platforms.size" class="mt-4" @click="addPlatformFile()">
+        <IconMdiPlus /> Add file/url for another platform
+      </Button>
     </template>
     <template #basic>
-      <div class="flex flex-wrap">
-        <!-- TODO validate version string against existing versions. complex because they only have to be unique per-platform -->
-        <div class="basis-full mt-2 md:basis-4/12">
+      <div class="flex flex-wrap mt-2 md:-space-x-2 <md:space-y-2">
+        <!-- TODO validate version string against existing versions - now super easy! -->
+        <div class="basis-full md:basis-4/12 items-center">
           <InputText
             v-model="pendingVersion.versionString"
             :label="t('version.new.form.versionString')"
             :rules="versionRules"
-            :disabled="isFile"
             :maxlength="backendData.validations.version.max"
             counter
           />
         </div>
-        <div v-if="isFile" class="basis-full mt-2 <md:mt-4 md:basis-4/12">
-          <InputText :model-value="pendingVersion.fileInfo.name" :label="t('version.new.form.fileName')" disabled />
-        </div>
-        <div v-if="isFile" class="basis-full mt-2 <md:mt-4 md:basis-2/12">
-          <InputText :model-value="formatSize(pendingVersion.fileInfo.sizeBytes)" :label="t('version.new.form.fileSize')" disabled />
-        </div>
-        <div v-else class="basis-full mt-2 <md:mt-4 md:basis-6/12">
-          <InputText v-model="pendingVersion.externalUrl" :label="t('version.new.form.externalUrl')" />
-        </div>
-      </div>
-      <div class="flex flex-wrap items-center mt-4">
-        <div class="basis-4/12">
+        <div class="basis-full md:basis-4/12">
           <InputSelect v-model="pendingVersion.channelName" :values="channels" item-text="name" item-value="name" :label="t('version.new.form.channel')" />
         </div>
-        <div class="basis-4/12">
+        <div class="basis-full md:basis-4/12">
           <ChannelModal :project-id="project.id" @create="addChannel">
             <template #activator="{ on, attrs }">
               <Button class="basis-4/12" v-bind="attrs" size="medium" v-on="on">
@@ -305,22 +333,24 @@ useHead(
             </template>
           </ChannelModal>
         </div>
-        <!-- todo: forum integration -->
-        <!--<div class="basis-4/12 mt-2">
-          <InputCheckbox v-model="pendingVersion.forumPost" :label="t('version.new.form.forumPost')" />
-        </div>-->
       </div>
 
-      <h2 class="mt-5 mb-2 text-xl">{{ t("version.new.form.platforms") }}</h2>
-      <div v-for="platform in platforms" :key="platform.name" class="ml-2">
-        <InputCheckbox
-          :model-value="selectedPlatforms.includes(platform.enumName)"
-          :rules="platformVersionRules"
-          :label="platform.name"
-          @update:model-value="togglePlatform(platform.enumName)"
-        >
-          <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
-        </InputCheckbox>
+      <p class="mt-8 text-xl">{{ t("version.new.form.addedArtifacts") }}</p>
+      <div v-for="(pendingFile, idx) in pendingVersion.files" :key="idx" class="mb-2">
+        <div class="flex flex-wrap items-center mt-4">
+          <div v-if="pendingFile.file" class="basis-full <md:mt-4 md:basis-4/12">
+            <InputText :model-value="pendingFile.file.name" :label="t('version.new.form.fileName')" disabled />
+          </div>
+          <div v-if="pendingFile.file" class="basis-full <md:mt-4 md:basis-2/12">
+            <InputText :model-value="formatSize(pendingFile.file.sizeBytes)" :label="t('version.new.form.fileSize')" disabled />
+          </div>
+          <div v-else class="basis-full <md:mt-4 md:basis-6/12">
+            <InputText v-model="pendingFile.externalUrl" :label="t('version.new.form.externalUrl')" disabled />
+          </div>
+          <div v-for="platform in pendingFile.platforms" :key="platform">
+            <PlatformLogo :platform="platform" size="30" class="mr-1" />
+          </div>
+        </div>
       </div>
     </template>
     <template #dependencies>

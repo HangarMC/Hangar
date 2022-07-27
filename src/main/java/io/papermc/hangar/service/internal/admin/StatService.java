@@ -2,7 +2,7 @@ package io.papermc.hangar.service.internal.admin;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.HangarStatsDAO;
-import io.papermc.hangar.db.dao.internal.table.stats.ProjectVersionDownloadsDAO;
+import io.papermc.hangar.db.dao.internal.table.stats.ProjectVersionDownloadStatsDAO;
 import io.papermc.hangar.db.dao.internal.table.stats.ProjectViewsDAO;
 import io.papermc.hangar.model.db.stats.ProjectVersionDownloadIndividualTable;
 import io.papermc.hangar.model.db.stats.ProjectViewIndividualTable;
@@ -30,13 +30,13 @@ public class StatService extends HangarComponent {
 
     private final HangarStatsDAO hangarStatsDAO;
     private final ProjectViewsDAO projectViewsDAO;
-    private final ProjectVersionDownloadsDAO projectVersionDownloadsDAO;
+    private final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO;
 
     @Autowired
-    public StatService(HangarStatsDAO hangarStatsDAO, ProjectViewsDAO projectViewsDAO, ProjectVersionDownloadsDAO projectVersionDownloadsDAO) {
+    public StatService(HangarStatsDAO hangarStatsDAO, ProjectViewsDAO projectViewsDAO, ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO) {
         this.hangarStatsDAO = hangarStatsDAO;
         this.projectViewsDAO = projectViewsDAO;
-        this.projectVersionDownloadsDAO = projectVersionDownloadsDAO;
+        this.projectVersionDownloadStatsDAO = projectVersionDownloadStatsDAO;
     }
 
     public List<DayStats> getStats(LocalDate from, LocalDate to) {
@@ -55,9 +55,9 @@ public class StatService extends HangarComponent {
     public <T extends VersionIdentified & ProjectIdentified> void addVersionDownload(T versionIdentified) {
         Long userId = getHangarUserId();
         InetAddress address = RequestUtil.getRemoteInetAddress(request);
-        Optional<String> existingCookie = projectVersionDownloadsDAO.getIndividualView(userId, address).map(ProjectVersionDownloadIndividualTable::getCookie);
+        Optional<String> existingCookie = projectVersionDownloadStatsDAO.getIndividualView(userId, address).map(ProjectVersionDownloadIndividualTable::getCookie);
         String cookie = existingCookie.orElse(Optional.ofNullable(WebUtils.getCookie(request, STAT_TRACKING_COOKIE)).map(Cookie::getValue).orElse(UUID.randomUUID().toString()));
-        projectVersionDownloadsDAO.insert(new ProjectVersionDownloadIndividualTable(address, cookie, userId, versionIdentified.getProjectId(), versionIdentified.getVersionId()));
+        projectVersionDownloadStatsDAO.insert(new ProjectVersionDownloadIndividualTable(address, cookie, userId, versionIdentified.getProjectId(), versionIdentified.getVersionId()));
         setCookie(cookie);
     }
 

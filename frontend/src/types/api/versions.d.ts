@@ -37,13 +37,17 @@ declare module "hangar-api" {
   interface VersionCompact extends Model, Named, Visible {
     description: string;
     stats: VersionStats;
-    fileInfo: FileInfo | null;
-    externalUrl: string | null;
+    downloads: Record<Platform, PlatformVersionDownload>
     author: string;
     reviewState: ReviewState;
     channel: ProjectChannel;
     pinned: boolean;
     pinnedStatus: PinnedStatus;
+  }
+
+  interface PlatformVersionDownload {
+    fileInfo: FileInfo | null;
+    externalUrl: string | null;
   }
 
   interface Version extends VersionCompact, DependencyVersion {

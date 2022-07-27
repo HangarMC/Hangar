@@ -15,7 +15,7 @@ import InputTag from "~/lib/components/ui/InputTag.vue";
 
 const props = defineProps<{
   project: HangarProject;
-  versions: Map<Platform, HangarVersion>;
+  version: HangarVersion;
 }>();
 
 const i18n = useI18n();
@@ -28,7 +28,7 @@ const platform = computed(() => {
   return backendData.platforms?.get((route.params.platform as string).toUpperCase() as Platform);
 });
 const projectVersion = computed(() => {
-  return props.versions.get((route.params.platform as string).toUpperCase() as Platform);
+  return props.version;
 });
 
 const loading = ref(false);

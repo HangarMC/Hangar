@@ -5,11 +5,12 @@ import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.Visible;
 import io.papermc.hangar.model.api.project.ProjectChannel;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
-
 import java.time.OffsetDateTime;
-
+import java.util.EnumMap;
+import java.util.Map;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
@@ -21,22 +22,19 @@ public class VersionCompact extends Model implements Named, Visible {
     private final Visibility visibility;
     private final String description;
     private final VersionStats stats;
-    private final FileInfo fileInfo;
-    private final String externalUrl;
     private final String author;
     private final ReviewState reviewState;
     private final ProjectChannel channel;
     private final PinnedStatus pinnedStatus;
+    private final Map<Platform, PlatformVersionDownload> downloads = new EnumMap<>(Platform.class);
     private final Long postId;
 
-    protected VersionCompact(final OffsetDateTime createdAt, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, @Nested("fi") final FileInfo fileInfo, final String externalUrl, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final PinnedStatus pinnedStatus, final Long postId) {
+    protected VersionCompact(final OffsetDateTime createdAt, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final PinnedStatus pinnedStatus, final Long postId) {
         super(createdAt);
         this.name = name;
         this.visibility = visibility;
         this.description = description;
         this.stats = stats;
-        this.fileInfo = fileInfo;
-        this.externalUrl = externalUrl;
         this.author = author;
         this.reviewState = reviewState;
         this.channel = channel;
@@ -62,12 +60,8 @@ public class VersionCompact extends Model implements Named, Visible {
         return this.stats;
     }
 
-    public FileInfo getFileInfo() {
-        return this.fileInfo;
-    }
-
-    public String getExternalUrl() {
-        return this.externalUrl;
+    public Map<Platform, PlatformVersionDownload> getDownloads() {
+        return downloads;
     }
 
     public String getAuthor() {

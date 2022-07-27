@@ -23,8 +23,8 @@ public interface ProjectVersionsDAO {
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("INSERT INTO project_versions " +
-            "(created_at, version_string, description, project_id, channel_id, file_size, hash, file_name, external_url, author_id, visibility, create_forum_post) VALUES " +
-            "(:now, :versionString, :description, :projectId, :channelId, :fileSize, :hash, :fileName, :externalUrl, :authorId, :visibility, :createForumPost)")
+            "(created_at, version_string, description, project_id, channel_id, author_id, visibility, create_forum_post) VALUES " +
+            "(:now, :versionString, :description, :projectId, :channelId, :authorId, :visibility, :createForumPost)")
     ProjectVersionTable insert(@BindBean ProjectVersionTable projectVersionTable);
 
     @GetGeneratedKeys
@@ -59,13 +59,9 @@ public interface ProjectVersionsDAO {
             "   WHERE" +
             "       lower(p.owner_name) = lower(:author) AND" +
             "       lower(p.slug) = lower(:slug) AND" +
-            "       pv.version_string = :versionString AND" +
-            "       v.platform = :platform" +
+            "       pv.version_string = :versionString" +
             "   LIMIT 1")
-    ProjectVersionTable getProjectVersionTable(String author, String slug, String versionString, @EnumByOrdinal Platform platform);
-
-    @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId AND hash = :hash AND version_string = :versionString")
-    ProjectVersionTable getProjectVersionTableFromHashAndName(long projectId, String hash, String versionString);
+    ProjectVersionTable getProjectVersionTable(String author, String slug, String versionString);
 
     @SingleValue
     @UseEnumStrategy(EnumStrategy.BY_ORDINAL)

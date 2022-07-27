@@ -23,13 +23,9 @@ import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilitySer
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedSet;
-import java.util.stream.Collectors;
-
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -67,29 +63,22 @@ public class VersionService extends HangarComponent {
     }
 
     @Nullable
-    public ProjectVersionTable getProjectVersionTable(String author, String slug, String versionString, Platform platform) {
-        return projectVersionVisibilityService.checkVisibility(projectVersionsDAO.getProjectVersionTable(author, slug, versionString, platform));
+    public ProjectVersionTable getProjectVersionTable(String author, String slug, String versionString) {
+        return projectVersionVisibilityService.checkVisibility(projectVersionsDAO.getProjectVersionTable(author, slug, versionString));
     }
 
     public void updateProjectVersionTable(ProjectVersionTable projectVersionTable) {
         projectVersionsDAO.update(projectVersionTable);
     }
 
-    public HangarVersion getHangarVersion(String author, String slug, String versionString, Platform platform) {
-        ProjectVersionTable projectVersionTable = getProjectVersionTable(author, slug, versionString, platform);
-        if (projectVersionTable == null) {
+    public HangarVersion getHangarVersion(String author, String slug, String versionString) {
+        final HangarVersion version = hangarVersionsDAO.getVersionWithVersionString(author, slug, versionString, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+        if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        HangarVersion hangarVersion = hangarVersionsDAO.getVersion(projectVersionTable.getId(), getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
-        return versionDependencyService.addDependencies(hangarVersion.getId(), hangarVersion);
-    }
 
-    public List<HangarVersion> getHangarVersions(String author, String slug, String versionString) {
-        List<HangarVersion> versions = hangarVersionsDAO.getVersionsWithVersionString(author, slug, versionString, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
-        if (versions.isEmpty()) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
-        return versions.stream().map(v -> versionDependencyService.addDependencies(v.getId(), v)).collect(Collectors.toList());
+        versionDependencyService.addDownloadsAndDependencies(version.getId(), version);
+        return version;
     }
 
     public LastDependencies getLastVersionDependencies(String author, String slug, @Nullable String channel, String platformName) {
@@ -103,7 +92,7 @@ public class VersionService extends HangarComponent {
             pagination.getFilters().add(new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
         }
 
-        Long versionId = versionsApiDAO.getVersions(author, slug, false, getHangarUserId(), pagination).entrySet().stream().map(Map.Entry::getKey).findAny().orElse(null);
+        Long versionId = versionsApiDAO.getVersions(author, slug, false, getHangarUserId(), pagination).keySet().stream().findAny().orElse(null);
         if (versionId != null) {
             SortedSet<String> platformDependency = versionsApiDAO.getPlatformDependencies(versionId).get(platform);
             if (platformDependency != null) {

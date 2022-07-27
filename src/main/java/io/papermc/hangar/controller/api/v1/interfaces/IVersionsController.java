@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Map;
 
 @Api(tags = "Versions", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,25 +47,7 @@ public interface IVersionsController {
             nickname = "showVersion",
             notes = "Returns a specific version of a project. Requires the `view_public_info` permission in the project or owning organization.",
             authorizations = @Authorization("Session"),
-            tags = "Versions"
-    )
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Ok"),
-            @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
-            @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
-    })
-    @GetMapping("/projects/{author}/{slug}/versions/{name}/{platform}/")
-    Version getVersion(@ApiParam("The author of the project to return the version for") @PathVariable String author,
-                       @ApiParam("The slug of the project to return") @PathVariable String slug,
-                       @ApiParam("The name of the version to return") @PathVariable("name") String versionString,
-                       @ApiParam("The platform of the version to return") @PathVariable Platform platform);
-
-    @ApiOperation(
-            value = "Returns versions of a project with the specified version string",
-            nickname = "showVersion",
-            notes = "Returns versions of a project with the specified version string. Requires the `view_public_info` permission in the project or owning organization.",
-            authorizations = @Authorization("Session"),
-            tags = "Versions"
+            tags = "Version"
     )
     @ApiResponses({
             @ApiResponse(code = 200, message = "Ok"),
@@ -74,9 +55,9 @@ public interface IVersionsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/projects/{author}/{slug}/versions/{name}")
-    List<Version> getVersions(@ApiParam("The author of the project to return versions for") @PathVariable String author,
-                              @ApiParam("The slug of the project to return versions for") @PathVariable String slug,
-                              @ApiParam("The name of the versions to return") @PathVariable("name") String versionString);
+    Version getVersion(@ApiParam("The author of the project to return the version for") @PathVariable String author,
+                       @ApiParam("The slug of the project to return the version for") @PathVariable String slug,
+                       @ApiParam("The name of the version to return") @PathVariable("name") String versionString);
 
     @ApiOperation(
             value = "Returns all versions of a project",
