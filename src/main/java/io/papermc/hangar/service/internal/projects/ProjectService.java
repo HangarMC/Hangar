@@ -51,9 +51,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -70,9 +72,10 @@ public class ProjectService extends HangarComponent {
     private final PinnedVersionService pinnedVersionService;
     private final VersionsApiDAO versionsApiDAO;
     private final HangarVersionsDAO hangarVersionsDAO;
+    private final RestTemplate restTemplate;
 
     @Autowired
-    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO) {
+    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, @Lazy RestTemplate restTemplate) {
         this.projectsDAO = projectDAO;
         this.hangarUsersDAO = hangarUsersDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
@@ -84,6 +87,7 @@ public class ProjectService extends HangarComponent {
         this.pinnedVersionService = pinnedVersionService;
         this.versionsApiDAO = versionsApiDAO;
         this.hangarVersionsDAO = hangarVersionsDAO;
+        this.restTemplate = restTemplate;
     }
 
     @Nullable
@@ -226,6 +230,7 @@ public class ProjectService extends HangarComponent {
             e.printStackTrace();
             throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        evictIconCache(author, slug);
     }
 
     public void resetIcon(String author, String slug) {
@@ -234,6 +239,12 @@ public class ProjectService extends HangarComponent {
         if (FileUtils.delete(projectFiles.getIconPath(author, slug))) {
             actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), "#empty", base64));
         }
+        evictIconCache(author, slug);
+    }
+
+    private void evictIconCache(String author, String slug) {
+        String url = config.getBaseUrl() + "/api/internal/projects/project/" + author + "/" + slug + "/icon";
+        restTemplate.delete(config.security.api.getUrl() + "/image/" + url + "?apiKey=" + config.sso.getApiKey());
     }
 
     private String getBase64(String author, String slug, String old, Path path) {
