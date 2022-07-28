@@ -52,6 +52,7 @@ public class ReviewService extends HangarComponent {
         return hangarReviewsDAO.getReviews(versionId);
     }
 
+    @Transactional
     public void startReview(long versionId, ReviewMessage msg) {
         ProjectVersionReviewTable possibleUserVersion = projectVersionReviewsDAO.getUsersReview(versionId, getHangarPrincipal().getUserId());
         if (possibleUserVersion != null) {
@@ -67,6 +68,7 @@ public class ReviewService extends HangarComponent {
         projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(latestUnfinishedReview.getId(), msg.getMessage(), new JSONB(msg.getArgs()), ReviewAction.MESSAGE));
     }
 
+    @Transactional
     public void stopReview(long versionId, ReviewMessage msg) {
         ProjectVersionReviewTable latestUnfinishedReview = getLatestUnfinishedReviewAndValidate(versionId);
         latestUnfinishedReview.setEndedAt(OffsetDateTime.now());
@@ -77,6 +79,7 @@ public class ReviewService extends HangarComponent {
         projectVersionReviewsDAO.update(latestUnfinishedReview);
     }
 
+    @Transactional
     public void reopenReview(long versionId, ReviewMessage msg, ReviewAction reviewAction) {
         ProjectVersionReviewTable projectVersionReviewTable = projectVersionReviewsDAO.getUsersReview(versionId, getHangarPrincipal().getUserId());
         if (projectVersionReviewTable == null) {
@@ -91,6 +94,7 @@ public class ReviewService extends HangarComponent {
         projectVersionReviewsDAO.update(projectVersionReviewTable);
     }
 
+    @Transactional
     public void approveReview(long versionId, ReviewMessage msg, ReviewState reviewState, ReviewAction reviewAction) {
         ProjectVersionReviewTable latestUnfinishedReview = getLatestUnfinishedReviewAndValidate(versionId);
         latestUnfinishedReview.setEndedAt(OffsetDateTime.now());
@@ -106,6 +110,7 @@ public class ReviewService extends HangarComponent {
         }
     }
 
+    @Transactional
     public void undoApproval(long versionId, ReviewMessage msg) {
         ProjectVersionReviewMessageTable reviewMessageTable = projectVersionReviewsDAO.getLatestMessage(versionId, getHangarPrincipal().getUserId());
         if (!reviewMessageTable.getAction().isApproval()) {

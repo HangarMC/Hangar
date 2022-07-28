@@ -32,7 +32,7 @@ const ctx = useContext();
 const v = useVuelidate();
 
 const props = defineProps<{
-  versions: Map<Platform, HangarVersion>;
+  version: HangarVersion;
   project: HangarProject;
   versionPlatforms: Set<Platform>;
 }>();
@@ -75,7 +75,7 @@ const filteredReviews = computed<HangarReview[]>(() => {
 const platformEnum = computed<Platform>(() => ((route.params.platform as string) || "").toUpperCase() as Platform);
 
 const projectVersion = computed<HangarVersion>(() => {
-  return props.versions.get(platformEnum.value)!;
+  return props.version;
 });
 
 const platform = computed<IPlatform | undefined>(() => {
