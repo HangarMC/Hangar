@@ -222,7 +222,7 @@ function isRecent(date: string): boolean {
 
         <!-- Site logo -->
         <router-link to="/" class="flex-shrink-0">
-          <img alt="Hangar Logo" :src="hangarLogo" height="34px" width="32px" />
+          <img alt="Hangar Logo" :src="hangarLogo" height="34" width="32" />
         </router-link>
 
         <!-- Desktop links -->
