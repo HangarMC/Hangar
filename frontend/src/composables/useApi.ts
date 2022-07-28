@@ -112,14 +112,17 @@ export async function processAuthStuff<T>(headers: Record<string, string>, authR
   if (import.meta.env.SSR) {
     // forward cookies I guess?
     let token = useCookies().get("HangarAuth");
+    let refreshToken = useCookies().get("HangarAuth_REFRESH");
     if (!token) {
       const header = useResponse()?.getHeader("set-cookie") as string[];
       if (header && header.join) {
-        token = new Cookies(header.join("; ")).get("HangarAuth");
+        const cookies = new Cookies(header.join("; "));
+        token = cookies.get("HangarAuth");
+        refreshToken = cookies.get("HangarAuth_REFRESH");
         authLog("found token in set-cookie header");
       }
     }
-    if (token) {
+    if (token || refreshToken) {
       authLog("forward token from cookie");
 
       // make sure our token is still valid, else refresh

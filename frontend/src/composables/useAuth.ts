@@ -120,7 +120,7 @@ class Auth {
       authLog("no point in updating if we just invalidated");
       return;
     }
-    const user = await useInternalApi<HangarUser>("users/@me", false).catch(async (err) => {
+    const user = await useInternalApi<HangarUser>("users/@me", true).catch(async (err) => {
       authLog("no user");
       return this.invalidate();
     });
