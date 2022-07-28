@@ -40,21 +40,12 @@ import io.papermc.hangar.service.internal.versions.plugindata.PluginFileWithData
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.CryptoUtils;
 import io.papermc.hangar.util.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.spongepowered.configurate.ConfigurateException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -65,6 +56,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.spongepowered.configurate.ConfigurateException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class VersionFactory extends HangarComponent {
@@ -104,26 +103,26 @@ public class VersionFactory extends HangarComponent {
         this.downloadsDAO = downloadsDAO;
     }
 
-    public PendingVersion createPendingVersion(final long projectId, List<MultipartFileOrUrl> files) {
+    public PendingVersion createPendingVersion(final long projectId, final List<MultipartFileOrUrl> data, final List<MultipartFile> files) {
         final ProjectChannelTable projectChannelTable = channelService.getFirstChannel(projectId);
         final Map<Platform, Set<PluginDependency>> pluginDependencies = new EnumMap<>(Platform.class);
         final Map<Platform, SortedSet<String>> platformDependencies = new EnumMap<>(Platform.class);
         final List<PendingVersionFile> pendingFiles = new ArrayList<>();
         String versionString = null;
         final Set<Platform> processedPlatforms = EnumSet.noneOf(Platform.class);
-        for (final MultipartFileOrUrl fileOrUrl : files) {
+        for (final MultipartFileOrUrl fileOrUrl : data) {
             // Make sure each platform only has one corresponding file/url
             if (!processedPlatforms.addAll(fileOrUrl.platforms())) {
                 throw new IllegalArgumentException();
             }
 
-            if (!fileOrUrl.isFile()) {
+            if (fileOrUrl.isUrl()) {
                 // Handle external url
                 pendingFiles.add(new PendingVersionFile(fileOrUrl.platforms(), null, fileOrUrl.externalUrl()));
                 continue;
             }
 
-            final MultipartFile file = fileOrUrl.file();
+            final MultipartFile file = files.remove(0);
             final String pluginFileName = file.getOriginalFilename();
             if (pluginFileName == null || (!pluginFileName.endsWith(".zip") && !pluginFileName.endsWith(".jar"))) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.fileExtension");
@@ -132,7 +131,7 @@ public class VersionFactory extends HangarComponent {
             final PluginFileWithData pluginDataFile;
             try {
                 final Platform platform = fileOrUrl.platforms().get(0); // Just save it by the first platform
-                final Path tmpDir = projectFiles.getTempDir(getHangarPrincipal().getName()).resolve(platform.name()).resolve(platform.name());
+                final Path tmpDir = projectFiles.getTempDir(getHangarPrincipal().getName()).resolve(platform.name());
                 if (!Files.isDirectory(tmpDir)) {
                     Files.createDirectories(tmpDir);
                 }
@@ -148,7 +147,7 @@ public class VersionFactory extends HangarComponent {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.unexpected");
             }
 
-            if (versionString == null) {
+            if (versionString == null && pluginDataFile.getData().getVersion() != null) {
                 versionString = StringUtils.slugify(pluginDataFile.getData().getVersion());
             }
 
@@ -156,14 +155,26 @@ public class VersionFactory extends HangarComponent {
             pendingFiles.add(new PendingVersionFile(fileOrUrl.platforms(), fileInfo, null));
             for (final Platform platform : fileOrUrl.platforms()) {
                 //TODO add last version data if present, if not present the file data
-                pluginDependencies.put(platform, pluginDataFile.getData().getDependencies().get(platform));
-                platformDependencies.put(platform, pluginDataFile.getData().getPlatformDependencies().get(platform));
+                final Set<PluginDependency> loadedPluginDependencies = pluginDataFile.getData().getDependencies().get(platform);
+                if (loadedPluginDependencies != null) {
+                    pluginDependencies.put(platform, loadedPluginDependencies);
+                }
+
+                final SortedSet<String> loadedPlatformDependencies = pluginDataFile.getData().getPlatformDependencies().get(platform);
+                if (loadedPlatformDependencies != null) {
+                    platformDependencies.put(platform, loadedPlatformDependencies);
+                }
             }
         }
 
         final ProjectTable projectTable = projectService.getProjectTable(projectId);
         if (projectTable == null) {
             throw new IllegalArgumentException();
+        }
+
+        for (final Platform platform : processedPlatforms) {
+            platformDependencies.putIfAbsent(platform, Collections.emptySortedSet());
+            pluginDependencies.putIfAbsent(platform, Collections.emptySet());
         }
         return new PendingVersion(versionString, pluginDependencies, platformDependencies, pendingFiles, projectChannelTable, projectTable.isForumSync());
     }
@@ -175,6 +186,11 @@ public class VersionFactory extends HangarComponent {
         }
         if (pendingVersion.getPluginDependencies().values().stream().anyMatch(pluginDependencies -> pluginDependencies.size() > config.projects.getMaxDependencies())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.tooManyDependencies");
+        }
+        System.out.println(projectVersionsDAO.getProjectVersion(projectId, pendingVersion.getVersionString()) != null);
+        System.out.println(projectVersionsDAO.getProjectVersionTable("paper", "asdas", pendingVersion.getVersionString()) != null);
+        if (exists(projectId, pendingVersion.getVersionString())) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.duplicateNameAndPlatform");
         }
 
         final ProjectTable projectTable = projectService.getProjectTable(projectId);
@@ -201,8 +217,6 @@ public class VersionFactory extends HangarComponent {
                 } catch (final IOException e) {
                     logger.error("Could not publish version for {}", getHangarPrincipal().getName(), e);
                 }
-            } else if (exists(projectId, pendingVersion.getVersionString(), pendingVersion.getPlatformDependencies().keySet())) {
-                throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.duplicateNameAndPlatform");
             }
 
             if (pendingVersion.getPlatformDependencies().entrySet().stream().anyMatch(en -> !new HashSet<>(platformService.getVersionsForPlatform(en.getKey())).containsAll(en.getValue()))) {
@@ -327,8 +341,7 @@ public class VersionFactory extends HangarComponent {
         }
     }
 
-    private boolean exists(long projectId, String versionString, Collection<Platform> platforms) {
-        List<PlatformVersionTable> platformTables = platformVersionDAO.getPlatformsForVersionString(projectId, versionString);
-        return platformTables.stream().anyMatch(pt -> platforms.contains(pt.getPlatform()));
+    private boolean exists(long projectId, String versionString) {
+        return projectVersionsDAO.getProjectVersion(projectId, versionString) != null;
     }
 }

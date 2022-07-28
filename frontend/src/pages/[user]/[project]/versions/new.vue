@@ -24,7 +24,6 @@ import { remove } from "lodash-es";
 import { useBackendDataStore } from "~/store/backendData";
 import DependencyTable from "~/components/projects/DependencyTable.vue";
 import InputTag from "~/lib/components/ui/InputTag.vue";
-import { LastDependencies } from "hangar-api";
 import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 
@@ -73,22 +72,27 @@ const steps: Step[] = [
   {
     value: "basic",
     header: t("version.new.steps.2.header"),
-    beforeNext: async () => {
-      await preload();
-      return true;
-    },
     disableNext: computed(() => {
-      return (
-        (selectedPlatforms.value?.length ?? 0) < 1 ||
-        versionRules.some((v) => {
-          return !v.$validator(pendingVersion.value?.versionString, undefined, undefined);
-        })
-      );
+      return versionRules.some((v) => !v.$validator(pendingVersion.value?.versionString, undefined, undefined));
     }),
   },
   {
     value: "dependencies",
     header: t("version.new.steps.3.header"),
+    beforeNext: () => {
+      if (!pendingVersion.value || !dependencyTables.value) {
+        return false;
+      }
+
+      for (let i = 0; i < selectedPlatforms.value.length; i++) {
+        const platform = selectedPlatforms.value[i];
+        const dependencyTable = dependencyTables.value[i];
+        const dependencies = pendingVersion.value.pluginDependencies[platform as Platform];
+        pendingVersion.value.pluginDependencies[platform as Platform] = dependencies.filter((d) => !dependencyTable.deletedDeps.includes(d.name));
+      }
+
+      return true;
+    },
     disableNext: computed(() => {
       return selectedPlatformsData.value.some((p) => (pendingVersion.value?.platformDependencies[p.enumName].length ?? 0) < 1);
     }),
@@ -110,7 +114,6 @@ const steps: Step[] = [
 
 interface PlatformFile {
   platforms: Platform[];
-  //TODO refs?
   selectedTab: string;
   file?: File;
   url?: string;
@@ -130,6 +133,7 @@ function removePlatformFile(id: number) {
   platformFiles.value.splice(id, 1);
 }
 
+const dependencyTables = ref();
 const pendingVersion: Ref<PendingVersion | undefined> = ref<PendingVersion>();
 const channels = ref<ProjectChannel[]>([]);
 const selectedPlatforms = ref<Platform[]>([]);
@@ -159,51 +163,37 @@ const platformVersionRules = computed(() => {
 });
 const changelogRules = [required(t("version.new.form.release.bulletin"))];
 
-async function preload() {
-  if (!pendingVersion.value) {
-    return;
-  }
-
-  for (const platform in pendingVersion.value.platformDependencies) {
-    // Get last platform and plugin dependency data for the last version of the same channel/any other channel if not found
-    useInternalApi<LastDependencies>(`versions/version/${props.project.namespace.owner}/${props.project.namespace.slug}/lastdependencies`, true, "get", {
-      channel: pendingVersion.value?.channelName,
-      platform: platform,
-    })
-      .then((v) => {
-        if (!v || !pendingVersion.value) {
-          return;
-        }
-
-        const p: Platform = platform as Platform;
-        if (v.platformDependencies.length !== 0) {
-          pendingVersion.value.platformDependencies[p] = v.platformDependencies;
-        }
-        if (v.pluginDependencies.length !== 0) {
-          pendingVersion.value.pluginDependencies[p] = v.pluginDependencies;
-        }
-      })
-      .catch<any>((e) => handleRequestError(e, ctx, i18n));
-  }
-}
-
 async function createPendingVersion() {
+  selectedPlatforms.value.splice(0);
+
   loading.create = true;
-  const files = [];
+  const formData: FormData = new FormData();
+  const data = [];
   for (const platformFile of platformFiles.value) {
-    files.push({ platforms: platformFile.platforms, file: platformFile.file, externalUrl: platformFile.url });
+    data.push({ platforms: platformFile.platforms, externalUrl: platformFile.url });
     for (const platform of platformFile.platforms) {
       selectedPlatforms.value.push(platform);
     }
+    if (platformFile.file) {
+      formData.append("files", platformFile.file);
+    }
   }
+
+  formData.append(
+    "data",
+    new Blob([JSON.stringify(data)], {
+      type: "application/json",
+    })
+  );
 
   channels.value = await useInternalApi<ProjectChannel[]>(`channels/${route.params.user}/${route.params.project}`, false).catch<any>((e) =>
     handleRequestError(e, ctx, i18n)
   );
-  pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project.id}/upload`, true, "post", files).catch<any>((e) =>
+  pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project.id}/upload`, true, "post", formData).catch<any>((e) =>
     handleRequestError(e, ctx, i18n)
   );
   loading.create = false;
+
   return pendingVersion.value !== undefined;
 }
 
@@ -338,11 +328,11 @@ useHead(
       <p class="mt-8 text-xl">{{ t("version.new.form.addedArtifacts") }}</p>
       <div v-for="(pendingFile, idx) in pendingVersion.files" :key="idx" class="mb-2">
         <div class="flex flex-wrap items-center mt-4">
-          <div v-if="pendingFile.file" class="basis-full <md:mt-4 md:basis-4/12">
-            <InputText :model-value="pendingFile.file.name" :label="t('version.new.form.fileName')" disabled />
+          <div v-if="pendingFile.fileInfo" class="basis-full <md:mt-4 md:basis-4/12">
+            <InputText :model-value="pendingFile.fileInfo.name" :label="t('version.new.form.fileName')" disabled />
           </div>
-          <div v-if="pendingFile.file" class="basis-full <md:mt-4 md:basis-2/12">
-            <InputText :model-value="formatSize(pendingFile.file.sizeBytes)" :label="t('version.new.form.fileSize')" disabled />
+          <div v-if="pendingFile.fileInfo" class="basis-full <md:mt-4 md:basis-2/12">
+            <InputText :model-value="formatSize(pendingFile.fileInfo.sizeBytes)" :label="t('version.new.form.fileSize')" disabled />
           </div>
           <div v-else class="basis-full <md:mt-4 md:basis-6/12">
             <InputText v-model="pendingFile.externalUrl" :label="t('version.new.form.externalUrl')" disabled />
@@ -355,12 +345,11 @@ useHead(
     </template>
     <template #dependencies>
       <h2 class="text-xl mt-2 mb-2">{{ t("version.new.form.platformVersions") }}</h2>
-
       <div class="flex flex-wrap gap-y-3 mb-5">
-        <div v-for="platform in selectedPlatformsData" :key="platform.name" class="basis-full">
+        <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
           <div>{{ platform.name }}</div>
           <div class="mt-2">
-            <InputTag v-model="pendingVersion.platformDependencies[platform.enumName]" :options="platform?.possibleVersions" :rules="platformVersionRules" />
+            <InputTag v-model="pendingVersion.platformDependencies[platform.enumName]" :options="platform.possibleVersions" :rules="platformVersionRules" />
           </div>
         </div>
       </div>
@@ -369,7 +358,7 @@ useHead(
       <div class="flex flex-wrap gap-y-3">
         <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
           <div>{{ platform.name }}</div>
-          <DependencyTable :key="`${platform.name}-deps-table`" :platform="platform.enumName" :version="pendingVersion" :is-new="!pendingVersion.isFile" />
+          <DependencyTable ref="dependencyTables" :key="`${platform.name}-deps-table`" :platform="platform.enumName" :version="pendingVersion" is-new />
         </div>
       </div>
     </template>

@@ -120,7 +120,7 @@ public class VersionService extends HangarComponent {
         // Append deletion suffix to allow creation of a new version under the same name
         int deletedId = -1;
         for (int i = 0; i < 10; i++) {
-            if (this.projectVersionsDAO.getProjectVersions(pvt.getProjectId(), pvt.getVersionString() + ProjectFactory.SOFT_DELETION_SUFFIX + i).isEmpty()) {
+            if (this.projectVersionsDAO.getProjectVersion(pvt.getProjectId(), pvt.getVersionString() + ProjectFactory.SOFT_DELETION_SUFFIX + i) != null) {
                 deletedId = i;
                 break;
             }
@@ -166,7 +166,7 @@ public class VersionService extends HangarComponent {
         final int suffixIndex = pvt.getVersionString().indexOf(ProjectFactory.SOFT_DELETION_SUFFIX);
         if (suffixIndex != -1) {
             final String newName = pvt.getVersionString().substring(0, suffixIndex);
-            if (!this.projectVersionsDAO.getProjectVersions(pvt.getProjectId(), newName).isEmpty()) {
+            if (this.projectVersionsDAO.getProjectVersion(pvt.getProjectId(), newName) != null) {
                 // Can't automatically rename
                 //TODO take platforms into account
                 throw new HangarApiException("version.error.oldNameTaken");
