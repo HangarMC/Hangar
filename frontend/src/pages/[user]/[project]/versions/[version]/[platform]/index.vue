@@ -168,9 +168,9 @@ async function restoreVersion() {
           <h3>
             <span class="inline-flex <sm:flex-wrap ml-1">
               {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
-              <span v-if="projectVersion.downloads[platform.enumName].fileInfo?.sizeBytes" class="inline-flex items-center sm:ml-3">
+              <span v-if="projectVersion.downloads[platform?.enumName]?.fileInfo?.sizeBytes" class="inline-flex items-center sm:ml-3">
                 <IconMdiFile class="mr-1" />
-                {{ filesize(projectVersion.downloads[platform.enumName].sizeBytes) }}
+                {{ filesize(projectVersion.downloads[platform.enumName].fileInfo.sizeBytes) }}
               </span>
             </span>
           </h3>

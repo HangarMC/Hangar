@@ -176,7 +176,7 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
       </tr>
 
       <template v-if="!noEditing">
-        <tr v-for="(newDep, index) in newDeps" :key="`newDep-${index}`">
+        <tr v-for="(newDep, index) in newDeps" :key="`newDep-${newDep.name}`">
           <td>
             <InputText
               v-model.trim="newDep.name"

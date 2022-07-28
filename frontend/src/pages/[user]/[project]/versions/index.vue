@@ -124,10 +124,10 @@ function getVisibilityTitle(visibility: Visibility) {
         <Pagination v-else :items="versions.result">
           <template #default="{ item }">
             <li class="mb-2">
-              <Card :class="getBorderClasses(item)">
+              <Card :class="getBorderClasses(item)" class="pb-1">
                 <router-link :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${item.name}`">
                   <div class="flex flex-wrap">
-                    <div class="basis-full md:basis-5/12 truncate">
+                    <div class="basis-full md:(basis-5/12 pb-4) truncate">
                       <div class="flex flex-wrap items-center">
                         <h2 class="md:basis-full <md:mr-1 text-1.15rem leading-relaxed">{{ item.name }}</h2>
                         <span class="md:hidden flex-grow"></span>

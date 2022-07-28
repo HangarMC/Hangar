@@ -31,6 +31,7 @@ import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
+import io.papermc.hangar.service.internal.versions.DownloadService;
 import io.papermc.hangar.service.internal.versions.PinnedVersionService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
@@ -73,9 +74,10 @@ public class ProjectService extends HangarComponent {
     private final VersionsApiDAO versionsApiDAO;
     private final HangarVersionsDAO hangarVersionsDAO;
     private final RestTemplate restTemplate;
+    private final DownloadService downloadService;
 
     @Autowired
-    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, @Lazy RestTemplate restTemplate) {
+    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, @Lazy RestTemplate restTemplate, final DownloadService downloadService) {
         this.projectsDAO = projectDAO;
         this.hangarUsersDAO = hangarUsersDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
@@ -88,6 +90,7 @@ public class ProjectService extends HangarComponent {
         this.versionsApiDAO = versionsApiDAO;
         this.hangarVersionsDAO = hangarVersionsDAO;
         this.restTemplate = restTemplate;
+        this.downloadService = downloadService;
     }
 
     @Nullable
@@ -142,6 +145,7 @@ public class ProjectService extends HangarComponent {
                     for (final Map.Entry<Platform, SortedSet<String>> entry : platformDependencies.entrySet()) {
                         version.getPlatformDependenciesFormatted().put(entry.getKey(), io.papermc.hangar.util.StringUtils.formatVersionNumbers(new ArrayList<>(entry.getValue())));
                     }
+                    downloadService.addDownloads(version.getId(), version.getDownloads());
                 }
 
                 mainChannelVersions.put(platform, version);

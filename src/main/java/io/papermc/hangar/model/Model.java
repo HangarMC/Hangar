@@ -20,7 +20,7 @@ public abstract class Model {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
         Model model = (Model) o;
-        return this.createdAt.equals(model.createdAt);
+        return Objects.equals(this.createdAt, model.createdAt);
     }
 
     @Override

@@ -38,8 +38,8 @@ if (!route.params.platform) {
   if (path.endsWith("/")) {
     path = path.substring(0, path.length - 1);
   }
-  const entry = versionPlatforms.entries().next();
-  await (entry.value ? useRouter().replace({ path: `${path}/${entry.value.toLowerCase()}` }) : useRouter().replace(useErrorRedirect(route, 404, "Not found")));
+  const [entry] = versionPlatforms;
+  await (entry ? useRouter().replace({ path: `${path}/${entry.toLowerCase()}` }) : useRouter().replace(useErrorRedirect(route, 404, "Not found")));
 }
 </script>
 

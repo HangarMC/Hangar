@@ -79,7 +79,7 @@ function requiresConfirmation(): boolean {
   for (const platform in props.project.mainChannelVersions) {
     const version = props.project.mainChannelVersions[platform as Platform];
     const download = version.downloads[platform as Platform];
-    if (download.externalUrl !== null || version.reviewState !== ReviewState.REVIEWED) {
+    if ((download && download.externalUrl !== null) || version.reviewState !== ReviewState.REVIEWED) {
       return true;
     }
   }
