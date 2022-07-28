@@ -10,9 +10,8 @@ services:
       - 'backend'
     environment:
       # keep these in sync with gh-action!
-      proxyHost: "http://hangar_backend:8080"
-      authHost: "https://hangar-auth.benndorf.dev"
-      host: "0.0.0.0"
+      BACKEND_HOST: "http://hangar_backend:8080"
+      AUTH_HOST: "https://hangar-auth.benndorf.dev"
       PUBLIC_HOST: "https://hangar.benndorf.dev"
     stdin_open: true
     labels:
@@ -36,7 +35,7 @@ services:
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
       SSO_CLIENT_ID: "${SSO_CLIENT_ID}"
       TOKEN_SECRET: "${TOKEN_SECRET}"
-      SSO_SECRET: "supersecret"
+      SSO_API_SECRET: "supersecret"
     depends_on:
       - 'postgres'
       - 'mail'

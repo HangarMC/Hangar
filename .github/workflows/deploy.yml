@@ -83,9 +83,8 @@ jobs:
         env:
           CI: true
           # keep these in sync with compose!
-          proxyHost: "http://hangar_backend:8080"
-          authHost: "https://hangar-auth.benndorf.dev"
-          host: "0.0.0.0"
+          BACKEND_HOST: "http://hangar_backend:8080"
+          AUTH_HOST: "https://hangar-auth.benndorf.dev"
           PUBLIC_HOST: "https://hangar.benndorf.dev"
         run: (cd frontend && pnpm build && cd server && pnpm build)
 
@@ -102,14 +101,10 @@ jobs:
 
       - name: Docker
         env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
-          EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
           SSO_CLIENT_ID: ${{ secrets.SSO_CLIENT_ID }}
-          SSO_SECRET: ${{ secrets.SSO_SECRET }}
-          API_KEY: ${{ secrets.API_KEY }}
+          SSO_API_KEY: ${{ secrets.SSO_API_KEY }}
           TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
         run: |
           echo ${{ secrets.DOCKER_HOST_SSH_SIG }} > ~/.ssh/known_hosts

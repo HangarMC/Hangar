@@ -95,7 +95,7 @@ const external = computed(() => false);
         rel="noopener noreferrer"
       >
         <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
-        {{ backendData.platforms.get(p).name }}
+        {{ backendData.platforms.get(p)?.name }}
         <span v-if="v.platformDependencies && showVersions" class="ml-1">({{ v.platformDependenciesFormatted[p] }})</span>
       </DropdownItem>
     </DropdownButton>

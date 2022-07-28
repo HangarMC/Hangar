@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://postgres:5432/hangar
+    url: "jdbc:postgresql://postgres:5432/hangar"
     username: "${POSTGRES_USER}"
     password: "${POSTGRES_PASSWORD}"
 
@@ -21,7 +21,7 @@ hangar:
     auth-url: "https://hangar-auth.benndorf.dev"
     oauth-url: "https://hangar-auth.benndorf.dev/hydra"
     client-id: "${SSO_CLIENT_ID}"
-    api-key: "${SSO_SECRET}"
+    api-key: "${SSO_API_KEY}"
 
   security:
     api:
