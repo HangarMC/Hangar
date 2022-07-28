@@ -23,23 +23,31 @@ export async function useProjects(params: Record<string, any> = { limit: 25, off
 }
 
 export async function useUser(user: string, blocking = true) {
-  return useInitialState("useUser", () => useApi<User>("users/" + user, false), blocking);
+  return useInitialState("useUser:" + user, () => useApi<User>("users/" + user, false), blocking);
 }
 
 export async function useOrganization(user: string, blocking = true) {
-  return useInitialState("useOrganization", () => useInternalApi<Organization>(`organizations/org/${user}`, false), blocking);
+  return useInitialState("useOrganization:" + user, () => useInternalApi<Organization>(`organizations/org/${user}`, false), blocking);
 }
 
 export async function useProject(user: string, project: string, blocking = true) {
-  return useInitialState("useProject", () => useInternalApi<HangarProject>("projects/project/" + user + "/" + project, false), blocking);
+  return useInitialState(
+    "useProject:" + user + ":" + project,
+    () => useInternalApi<HangarProject>("projects/project/" + user + "/" + project, false),
+    blocking
+  );
 }
 
 export async function useStargazers(user: string, project: string, blocking = true) {
-  return useInitialState("useStargazers", () => useApi<PaginatedResult<User>>(`projects/${user}/${project}/stargazers`, false), blocking);
+  return useInitialState(
+    "useStargazers:" + user + ":" + project,
+    () => useApi<PaginatedResult<User>>(`projects/${user}/${project}/stargazers`, false),
+    blocking
+  );
 }
 
 export async function useWatchers(user: string, project: string, blocking = true) {
-  return useInitialState("useWatchers", () => useApi<PaginatedResult<User>>(`projects/${user}/${project}/watchers`, false), blocking);
+  return useInitialState("useWatchers:" + user + ":" + project, () => useApi<PaginatedResult<User>>(`projects/${user}/${project}/watchers`, false), blocking);
 }
 
 export async function useStaff(blocking = true) {
@@ -67,7 +75,11 @@ export async function useReadNotifications(blocking = true) {
 }
 
 export async function useRecentNotifications(blocking = true, amount: number) {
-  return useInitialState("useRecentNotifications", () => useInternalApi<HangarNotification[]>("recentnotifications?amount=" + amount, false), blocking);
+  return useInitialState(
+    "useRecentNotifications:" + amount,
+    () => useInternalApi<HangarNotification[]>("recentnotifications?amount=" + amount, false),
+    blocking
+  );
 }
 
 export async function useUnreadNotificationsCount(blocking = true) {
@@ -83,31 +95,39 @@ export async function useUnresolvedFlags(blocking = true) {
 }
 
 export async function useProjectFlags(projectId: number, blocking = true) {
-  return useInitialState("useProjectFlags", () => useInternalApi<Flag[]>("flags/" + projectId, false), blocking);
+  return useInitialState("useProjectFlags:" + projectId, () => useInternalApi<Flag[]>("flags/" + projectId, false), blocking);
 }
 
 export async function useProjectNotes(projectId: number, blocking = true) {
-  return useInitialState("useProjectNotes", () => useInternalApi<Note[]>("projects/notes/" + projectId, false), blocking);
+  return useInitialState("useProjectNotes:" + projectId, () => useInternalApi<Note[]>("projects/notes/" + projectId, false), blocking);
 }
 
 export async function useProjectChannels(user: string, project: string, blocking = true) {
-  return useInitialState("useProjectChannels", () => useInternalApi<ProjectChannel[]>(`channels/${user}/${project}`, false), blocking);
+  return useInitialState("useProjectChannels:" + user + ":" + project, () => useInternalApi<ProjectChannel[]>(`channels/${user}/${project}`, false), blocking);
 }
 
 export async function useProjectVersions(user: string, project: string, blocking = true) {
-  return useInitialState("useProjectVersions", () => useApi<PaginatedResult<Version>>(`projects/${user}/${project}/versions`, false), blocking);
+  return useInitialState(
+    "useProjectVersions:" + user + ":" + project,
+    () => useApi<PaginatedResult<Version>>(`projects/${user}/${project}/versions`, false),
+    blocking
+  );
 }
 
 export async function useProjectVersionsInternal(user: string, project: string, version: string, blocking = true) {
   return useInitialState(
-    "useProjectVersionsInternal",
+    "useProjectVersionsInternal:" + user + ":" + project + ":" + version,
     () => useInternalApi<HangarVersion[]>(`versions/version/${user}/${project}/versions/${version}`, false),
     blocking
   );
 }
 
 export async function usePage(user: string, project: string, path?: string, blocking = true) {
-  return useInitialState("usePage", () => useInternalApi<ProjectPage>(`pages/page/${user}/${project}` + (path ? "/" + path : ""), false), blocking);
+  return useInitialState(
+    "usePage:" + user + ":" + project + ":" + path,
+    () => useInternalApi<ProjectPage>(`pages/page/${user}/${project}` + (path ? "/" + path : ""), false),
+    blocking
+  );
 }
 
 export async function useHealthReport(blocking = true) {
@@ -132,7 +152,7 @@ export async function usePossibleOwners(blocking = true) {
 
 export async function useOrgVisibility(user: string, blocking = true) {
   return useInitialState(
-    "useOrgVisibility",
+    "useOrgVisibility:" + user,
     () => useInternalApi<{ [key: string]: boolean }>(`organizations/${user}/userOrganizationsVisibility`, true),
     blocking
   );
@@ -140,7 +160,7 @@ export async function useOrgVisibility(user: string, blocking = true) {
 
 export async function useUserData(user: string, blocking = true) {
   return useInitialState(
-    "useUserData",
+    "useUserData:" + user,
     async () => {
       // noinspection ES6MissingAwait
       const data = await Promise.all([
