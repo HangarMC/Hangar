@@ -277,6 +277,11 @@ useHead(
                   :src="cropperInput"
                   class="h-150px"
                   :min-height="150"
+                  :canvas="{
+                    imageSmoothingQuality: 'high',
+                    maxWidth: 256,
+                    maxHeight: 256,
+                  }"
                   :stencil-props="{
                     handlers: {},
                     movable: false,
