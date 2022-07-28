@@ -43,7 +43,6 @@ watch(file, (newVal) => {
 
 <template>
   <InputWrapper
-    v-slot="slotProps"
     :errors="errors"
     :messages="messages"
     :has-error="hasError"
@@ -53,7 +52,12 @@ watch(file, (newVal) => {
     :disabled="disabled"
     :no-error-tooltip="noErrorTooltip"
   >
-    <!-- todo make button fancy -->
-    <input ref="input" type="file" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" @change="onFileChange" />
+    <template #default="slotProps">
+      <!-- todo make button fancy -->
+      <input ref="input" type="file" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" @change="onFileChange" />
+    </template>
+    <template v-for="(_, name) in $slots" #[name]="slotData">
+      <slot :name="name" v-bind="slotData || {}" />
+    </template>
   </InputWrapper>
 </template>

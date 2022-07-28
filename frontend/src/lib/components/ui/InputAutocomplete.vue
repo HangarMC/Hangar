@@ -73,7 +73,6 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
 
 <template>
   <InputWrapper
-    v-slot="slotProps"
     :errors="errors"
     :messages="messages"
     :has-error="hasError"
@@ -83,11 +82,16 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
     :disabled="disabled"
     :no-error-tooltip="noErrorTooltip"
   >
-    <input v-model="internalVal" type="text" v-bind="$attrs" :class="slotProps.class" :list="id" :disabled="disabled" @blur="v.$touch()" />
-    <datalist :id="id">
-      <option v-for="val in values" :key="getValue(val)" :value="getValue(val)">
-        {{ getText(val) }}
-      </option>
-    </datalist>
+    <template #default="slotProps">
+      <input v-model="internalVal" type="text" v-bind="$attrs" :class="slotProps.class" :list="id" :disabled="disabled" @blur="v.$touch()" />
+      <datalist :id="id">
+        <option v-for="val in values" :key="getValue(val)" :value="getValue(val)">
+          {{ getText(val) }}
+        </option>
+      </datalist>
+    </template>
+    <template v-for="(_, name) in $slots" #[name]="slotData">
+      <slot :name="name" v-bind="slotData || {}" />
+    </template>
   </InputWrapper>
 </template>

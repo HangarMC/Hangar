@@ -28,7 +28,6 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, date, er
 
 <template>
   <InputWrapper
-    v-slot="slotProps"
     :errors="errors"
     :messages="messages"
     :has-error="hasError"
@@ -38,7 +37,12 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, date, er
     :disabled="disabled"
     :no-error-tooltip="noErrorTooltip"
   >
-    <!-- todo make fancy -->
-    <input v-model="date" type="date" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" />
+    <template #default="slotProps">
+      <!-- todo make fancy -->
+      <input v-model="date" type="date" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" />
+    </template>
+    <template v-for="(_, name) in $slots" #[name]="slotData">
+      <slot :name="name" v-bind="slotData || {}" />
+    </template>
   </InputWrapper>
 </template>

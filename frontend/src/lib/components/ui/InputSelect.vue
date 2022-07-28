@@ -48,7 +48,6 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
 
 <template>
   <InputWrapper
-    v-slot="slotProps"
     :errors="errors"
     :messages="messages"
     :has-error="hasError"
@@ -58,10 +57,15 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
     :disabled="disabled"
     :no-error-tooltip="noErrorTooltip"
   >
-    <select v-model="internalVal" :disabled="disabled" :class="slotProps.class" class="appearance-none" @blur="v.$touch()">
-      <option v-for="val in values" :key="val[itemValue] || val" :value="val[itemValue] || val" class="dark:bg-[#191e28]">
-        {{ val[itemText] || val }}
-      </option>
-    </select>
+    <template #default="slotProps">
+      <select v-model="internalVal" :disabled="disabled" :class="slotProps.class" class="appearance-none" @blur="v.$touch()">
+        <option v-for="val in values" :key="val[itemValue] || val" :value="val[itemValue] || val" class="dark:bg-[#191e28]">
+          {{ val[itemText] || val }}
+        </option>
+      </select>
+    </template>
+    <template v-for="(_, name) in $slots" #[name]="slotData">
+      <slot :name="name" v-bind="slotData || {}" />
+    </template>
   </InputWrapper>
 </template>

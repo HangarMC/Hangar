@@ -38,6 +38,7 @@ const props = defineProps<{
         <span v-if="loading" class="w-[24px] h-[24px]"><Spinner class="stroke-gray-400" /></span>
         <span v-if="counter && maxlength" class="inline-flex items-center ml-2">{{ value?.length || 0 }}/{{ maxlength }}</span>
         <span v-else-if="counter">{{ value?.length || 0 }}</span>
+        <slot name="append"></slot>
       </span>
       <span
         v-if="label"
@@ -60,3 +61,10 @@ const props = defineProps<{
     </span>
   </component>
 </template>
+
+<style>
+/* we have our own one */
+input[type="password" i]::-ms-reveal {
+  display: none;
+}
+</style>

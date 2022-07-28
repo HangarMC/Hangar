@@ -32,7 +32,6 @@ defineExpose({ v });
 
 <template>
   <InputWrapper
-    v-slot="slotProps"
     :errors="errors"
     :messages="messages"
     :has-error="hasError"
@@ -44,6 +43,11 @@ defineExpose({ v });
     :disabled="disabled"
     :no-error-tooltip="noErrorTooltip"
   >
-    <input v-model="value" type="text" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" :disabled="disabled" @blur="v.$touch()" />
+    <template #default="slotProps">
+      <input v-model="value" type="text" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" :disabled="disabled" @blur="v.$touch()" />
+    </template>
+    <template v-for="(_, name) in $slots" #[name]="slotData">
+      <slot :name="name" v-bind="slotData || {}" />
+    </template>
   </InputWrapper>
 </template>

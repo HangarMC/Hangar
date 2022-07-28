@@ -30,7 +30,6 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, value, e
 
 <template>
   <InputWrapper
-    v-slot="slotProps"
     :errors="errors"
     :messages="messages"
     :has-error="hasError"
@@ -42,7 +41,12 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, value, e
     :disabled="disabled"
     :no-error-tooltip="noErrorTooltip"
   >
-    <textarea v-model="value" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" :disabled="disabled" @blur="v.$touch()" />
+    <template #default="slotProps">
+      <textarea v-model="value" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" :disabled="disabled" @blur="v.$touch()" />
+    </template>
+    <template v-for="(_, name) in $slots" #[name]="slotData">
+      <slot :name="name" v-bind="slotData || {}" />
+    </template>
   </InputWrapper>
 </template>
 
