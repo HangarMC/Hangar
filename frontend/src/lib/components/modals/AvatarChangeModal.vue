@@ -14,6 +14,11 @@
       :src="cropperInput"
       class="h-200px"
       :min-height="150"
+      :canvas="{
+        imageSmoothingQuality: 'high',
+        maxWidth: 256,
+        maxHeight: 256,
+      }"
       :stencil-props="{
         handlers: {},
         movable: false,
