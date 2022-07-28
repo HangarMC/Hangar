@@ -24,7 +24,7 @@ const versions = await useProjectVersionsInternal(route.params.user as string, r
   handleRequestError(e, ctx, i18n)
 );
 if (!versions || !versions.value) {
-  await useRouter().push(useErrorRedirect(route, 404, "Not found"));
+  await useRouter().replace(useErrorRedirect(route, 404, "Not found"));
 }
 
 const versionMap: Map<Platform, HangarVersion> = new Map<Platform, HangarVersion>();
@@ -44,7 +44,7 @@ if (!route.params.platform) {
     path = path.substring(0, path.length - 1);
   }
   const entry = versionMap.keys().next();
-  await (entry.value ? useRouter().replace({ path: `${path}/${entry.value.toLowerCase()}` }) : useRouter().push(useErrorRedirect(route, 404, "Not found")));
+  await (entry.value ? useRouter().replace({ path: `${path}/${entry.value.toLowerCase()}` }) : useRouter().replace(useErrorRedirect(route, 404, "Not found")));
 }
 
 useHead(

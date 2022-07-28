@@ -19,7 +19,7 @@ export async function useProjectPage(
     handleRequestError(e, ctx, i18n)
   );
   if (!page) {
-    await router.push(useErrorRedirect(route, 404, "Not found"));
+    await router.replace(useErrorRedirect(route, 404, "Not found"));
   }
 
   const editingPage = ref<boolean>(false);

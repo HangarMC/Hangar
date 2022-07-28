@@ -51,7 +51,7 @@ const props = defineProps<{
 const p = ref<Platform>(((route.params.platform as string) || "").toUpperCase() as Platform);
 const projectVersion = computed<HangarVersion | undefined>(() => props.versions.get(p.value));
 if (!projectVersion.value) {
-  await useRouter().push(useErrorRedirect(route, 404, "Not found"));
+  await useRouter().replace(useErrorRedirect(route, 404, "Not found"));
 }
 const platform = ref<IPlatform | undefined>(backendData.platforms?.get(p.value));
 const isReviewStateChecked = computed<boolean>(

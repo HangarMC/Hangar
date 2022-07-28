@@ -25,7 +25,7 @@ const i18n = useI18n();
 const route = useRoute();
 const project = await useProject(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, ctx, i18n));
 if (!project || !project.value) {
-  await useRouter().push(useErrorRedirect(route, 404, "Not found"));
+  await useRouter().replace(useErrorRedirect(route, 404, "Not found"));
 } else {
   useHead(useSeo(project.value.name, project.value.description, route, projectIconUrl(project.value.namespace.owner, project.value.namespace.slug)));
 }
