@@ -110,8 +110,9 @@ public class WebConfig extends WebMvcConfigurationSupport {
     public Filter identifyFilter() {
         return new OncePerRequestFilter() {
             @Override
-            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
+            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
                 response.setHeader("Server", "Hangar");
+                filterChain.doFilter(request, response);
             }
         };
     }
