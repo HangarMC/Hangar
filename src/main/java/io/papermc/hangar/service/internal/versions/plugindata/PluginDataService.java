@@ -4,10 +4,6 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.FileTypeHandler;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.FileTypeHandler.FileData;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,6 +18,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class PluginDataService {
@@ -38,7 +37,6 @@ public class PluginDataService {
     @NotNull
     public PluginFileWithData loadMeta(Path file, long userId) throws IOException {
         try (JarInputStream jarInputStream = openJar(file)) {
-
             Map<Platform, FileData> fileDataMap = new EnumMap<>(Platform.class);
 
             JarEntry jarEntry;
@@ -51,19 +49,14 @@ public class PluginDataService {
                 }
             }
 
-            if (fileDataMap.isEmpty() ) {
-                throw new HangarApiException("version.new.error.metaNotFound");
-            }
-            else {
-                fileDataMap.forEach((platform, fileData) -> {
-                    if (fileData.getVersion() == null && fileData.getName() == null && fileData.getPluginDependencies().isEmpty()) {
-                        throw new HangarApiException("version.new.error.metaNotFound");
-                    }
-                });
-                PluginFileWithData fileData = new PluginFileWithData(file, new PluginFileData(fileDataMap), userId);
-                fileData.getData().validate();
-                return fileData;
-            }
+            fileDataMap.forEach((platform, fileData) -> {
+                if (fileData.getVersion() == null && fileData.getName() == null && fileData.getPluginDependencies().isEmpty()) {
+                    throw new HangarApiException("version.new.error.metaNotFound");
+                }
+            });
+            PluginFileWithData fileData = new PluginFileWithData(file, new PluginFileData(fileDataMap), userId);
+            //fileData.getData().validate(); // Accept files without metadata
+            return fileData;
         }
     }
 

@@ -2,6 +2,10 @@ package io.papermc.hangar.db.dao.internal.table;
 
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.PlatformVersionTable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.enums.EnumStrategy;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
@@ -13,11 +17,6 @@ import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.SqlBatch;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.springframework.stereotype.Repository;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 @Repository
 @RegisterConstructorMapper(PlatformVersionTable.class)
@@ -41,13 +40,6 @@ public interface PlatformVersionDAO {
 
     @SqlQuery("SELECT version FROM platform_versions WHERE platform = :platform ORDER BY string_to_array(version, '.')::INT[]")
     List<String> getVersionsForPlatform(@EnumByOrdinal Platform platform);
-
-    @SqlQuery("SELECT pv.*" +
-            "   FROM project_version_platform_dependencies pvpd" +
-            "   JOIN platform_versions pv ON pvpd.platform_version_id = pv.id" +
-            "   JOIN project_versions p ON pvpd.version_id = p.id" +
-            "   WHERE p.version_string = :versionString AND p.project_id = :projectId")
-    List<PlatformVersionTable> getPlatformsForVersionString(long projectId, String versionString);
 
     @KeyColumn("version")
     @SqlQuery("SELECT * FROM platform_versions WHERE platform = :platform")

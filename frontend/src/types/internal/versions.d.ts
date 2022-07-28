@@ -1,15 +1,8 @@
 declare module "hangar-internal" {
-  import type { DependencyVersion, FileInfo, Named, ProjectNamespace, Version } from "hangar-api";
+  import type { DependencyVersion, FileInfo, Named, Version } from "hangar-api";
   import type { Table } from "hangar-internal";
   import type { Platform } from "~/types/enums";
   import { ChannelFlag } from "~/types/enums";
-
-  interface PlatformDependency {
-    name: string;
-    required: boolean;
-    namespace: ProjectNamespace | null;
-    externalUrl: string | null;
-  }
 
   interface PendingVersion extends DependencyVersion {
     platformDependencies: Record<Platform, string[]>;
@@ -24,7 +17,7 @@ declare module "hangar-internal" {
 
   interface PendingVersionFile {
     platforms: Platform[];
-    file: FileInfo | null;
+    fileInfo: FileInfo | null;
     externalUrl: string | null;
   }
 

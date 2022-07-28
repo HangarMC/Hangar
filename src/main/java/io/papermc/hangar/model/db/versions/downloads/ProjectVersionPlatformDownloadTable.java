@@ -29,6 +29,7 @@ public final class ProjectVersionPlatformDownloadTable extends Table {
         return versionId;
     }
 
+    @EnumByOrdinal
     public Platform getPlatform() {
         return platform;
     }

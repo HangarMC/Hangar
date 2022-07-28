@@ -2,7 +2,6 @@ package io.papermc.hangar.db.dao.internal.table.versions;
 
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
-import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.enums.EnumStrategy;
 import org.jdbi.v3.sqlobject.SingleValue;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
@@ -43,7 +42,7 @@ public interface ProjectVersionsDAO {
     List<ProjectVersionTable> getProjectVersions(long projectId);
 
     @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId AND version_string = :versionString")
-    List<ProjectVersionTable> getProjectVersions(long projectId, String versionString);
+    ProjectVersionTable getProjectVersion(long projectId, String versionString);
 
     @SqlQuery("SELECT pv.*" +
             "   FROM project_versions pv" +

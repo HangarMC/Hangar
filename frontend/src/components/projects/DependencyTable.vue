@@ -135,49 +135,47 @@ defineExpose({ results, newDepResults, newDeps, deletedDeps, reset: reset });
       </tr>
     </thead>
     <tbody>
-      <template v-if="!isNew">
-        <tr v-for="(dep, index) in filteredDeps" :key="`${platform}-${dep.name}`">
-          <td>{{ dep.name }}</td>
-          <td><InputCheckbox v-model="dep.required" /></td>
-          <td class="flex flex-wrap gap-2">
-            <Tabs v-model="selectedUploadTab" :tabs="selectedUploadTabs" class="items-center" compact>
-              <template #file>
-                <InputAutocomplete
-                  :id="dep.name"
-                  :model-value="toString(dep.namespace)"
-                  :placeholder="t('version.new.form.hangarProject')"
-                  :values="results[dep.name]"
-                  :item-text="getNamespace"
-                  :item-value="getNamespace"
-                  :disabled="!!dep.externalUrl"
-                  @search="onSearch($event, dep.name)"
-                  @change="dep.externalUrl = null"
-                  @update:model-value="dep.namespace = fromString($event)"
-                />
-              </template>
-              <template #url>
-                <InputText
-                  v-model.trim="dep.externalUrl"
-                  :placeholder="t('version.new.form.externalUrl')"
-                  :disabled="dep.namespace !== null && Object.keys(dep.namespace).length !== 0"
-                  clearable
-                  @change="dep.namespace = null"
-                />
-              </template>
-            </Tabs>
-            <!-- :rules="dep.namespace !== null && Object.keys(dep.namespace).length !== 0 ? [] : [required(t('version.new.form.externalUrl'))]" -->
-            <!-- todo fix validation of dependency table -->
-            <!-- :rules="!!dep.externalUrl ? [] : [required(t('version.new.form.hangarProject'))]" -->
-          </td>
-          <td v-if="!noEditing">
-            <Button icon color="error" @click="deleteDep(index)">
-              <IconMdiDelete />
-            </Button>
-          </td>
-        </tr>
-      </template>
+      <tr v-for="(dep, index) in filteredDeps" :key="`${platform}-${dep.name}`">
+        <td>{{ dep.name }}</td>
+        <td><InputCheckbox v-model="dep.required" /></td>
+        <td class="flex flex-wrap gap-2">
+          <Tabs v-model="selectedUploadTab" :tabs="selectedUploadTabs" class="items-center" compact>
+            <template #file>
+              <InputAutocomplete
+                :id="dep.name"
+                :model-value="toString(dep.namespace)"
+                :placeholder="t('version.new.form.hangarProject')"
+                :values="results[dep.name]"
+                :item-text="getNamespace"
+                :item-value="getNamespace"
+                :disabled="!!dep.externalUrl"
+                @search="onSearch($event, dep.name)"
+                @change="dep.externalUrl = null"
+                @update:model-value="dep.namespace = fromString($event)"
+              />
+            </template>
+            <template #url>
+              <InputText
+                v-model.trim="dep.externalUrl"
+                :placeholder="t('version.new.form.externalUrl')"
+                :disabled="dep.namespace !== null && Object.keys(dep.namespace).length !== 0"
+                clearable
+                @change="dep.namespace = null"
+              />
+            </template>
+          </Tabs>
+          <!-- :rules="dep.namespace !== null && Object.keys(dep.namespace).length !== 0 ? [] : [required(t('version.new.form.externalUrl'))]" -->
+          <!-- todo fix validation of dependency table -->
+          <!-- :rules="!!dep.externalUrl ? [] : [required(t('version.new.form.hangarProject'))]" -->
+        </td>
+        <td v-if="!noEditing">
+          <Button icon color="error" @click="deleteDep(index)">
+            <IconMdiDelete />
+          </Button>
+        </td>
+      </tr>
 
-      <template v-if="!noEditing || isNew">
+      <template v-if="!noEditing">
         <tr v-for="(newDep, index) in newDeps" :key="`newDep-${index}`">
           <td>
             <InputText

@@ -18,18 +18,11 @@ import org.springframework.stereotype.Repository;
 @RegisterConstructorMapper(ProjectVersionDownloadTable.class)
 public interface ProjectVersionDownloadsDAO {
 
-    /*
-                "       pv.file_name fi_name," +
-            "       pv.file_size fi_size_bytes," +
-            "       pv.hash fi_md5_hash," +
-            "       pv.external_url," +
-     */
-
     @SqlBatch("INSERT INTO project_version_platform_downloads (version_id, platform, download_id) VALUES (:versionId, :platform, :downloadId)")
     void insertPlatformDownloads(@BindBean Collection<ProjectVersionPlatformDownloadTable> projectVersionPlatformDownloadTables);
 
     @GetGeneratedKeys
-    @SqlBatch("INSERT INTO project_version_downloads (version_id, file_size, external_url) VALUES (:versionId, :platform, :downloadId)")
+    @SqlBatch("INSERT INTO project_version_downloads (version_id, file_size, hash, file_name, external_url) VALUES (:versionId, :fileSize, :hash, :fileName, :externalUrl)")
     List<ProjectVersionDownloadTable> insertDownloads(@BindBean Collection<ProjectVersionDownloadTable> projectVersionDownloadTables);
 
     @SqlQuery("SELECT * FROM project_version_downloads WHERE version_id = :versionId")
