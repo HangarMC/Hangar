@@ -68,6 +68,7 @@ export const requiredIf = withOverrideMessage(validators.requiredIf);
 export const minLength = withOverrideMessage(validators.minLength);
 export const maxLength = withOverrideMessage(validators.maxLength);
 export const url = withOverrideMessage(validators.url);
+export const email = withOverrideMessage(validators.email);
 
 // custom
 export const pattern = withOverrideMessage(
