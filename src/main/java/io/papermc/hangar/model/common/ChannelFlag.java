@@ -8,8 +8,6 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 public enum ChannelFlag {
     FROZEN(false, false),
     UNSTABLE(true, false),
-    @Deprecated(forRemoval = true)
-    SKIP_REVIEW_QUEUE(true, false), //TODO remove and add id migration
     PINNED(true, true),
     ;
 
