@@ -43,11 +43,11 @@ public interface VersionsApiDAO {
             "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
+            "       pv.post_id," +
             "       pc.created_at pc_created_at," +
             "       pc.name pc_name," +
             "       pc.color pc_color," +
             "       pc.flags pc_flags," +
-            "       pv.post_id," +
             "       CASE" +
             "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'" +
             "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
@@ -83,11 +83,11 @@ public interface VersionsApiDAO {
             "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
+            "       pv.post_id," +
             "       pc.created_at pc_created_at," +
             "       pc.name pc_name," +
             "       pc.color pc_color," +
             "       pc.flags pc_flags," +
-            "       pv.post_id," +
             "       CASE" +
             "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'" +
             "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
@@ -130,7 +130,6 @@ public interface VersionsApiDAO {
             "       pc.name pc_name," +
             "       pc.color pc_color," +
             "       pc.flags pc_flags," +
-            "       pv.post_id," +
             "       CASE" +
             "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'" +
             "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
