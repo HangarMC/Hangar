@@ -251,7 +251,7 @@ public class VersionFactory extends HangarComponent {
         }
 
         ProjectVersionTable projectVersionTable = null;
-        final Path versionDir = projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getName(), pendingVersion.getVersionString());
+        final Path versionDir = projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getSlug(), pendingVersion.getVersionString());
         try {
             ProjectChannelTable projectChannelTable = channelService.getProjectChannel(projectId, pendingVersion.getChannelName(), pendingVersion.getChannelColor());
             if (projectChannelTable == null) {

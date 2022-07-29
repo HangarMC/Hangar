@@ -3,6 +3,7 @@ package io.papermc.hangar.service.internal.versions;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
+import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
@@ -23,16 +24,15 @@ import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilitySer
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
 
 @Service
 public class VersionService extends HangarComponent {
@@ -44,9 +44,10 @@ public class VersionService extends HangarComponent {
     private final ProjectVersionVisibilityService projectVersionVisibilityService;
     private final VersionDependencyService versionDependencyService;
     private final ProjectFiles projectFiles;
+    private final ProjectsDAO projectsDAO;
 
     @Autowired
-    public VersionService(ProjectVersionsDAO projectVersionDAO, VersionsApiDAO versionsApiDAO, HangarVersionsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, ProjectVersionVisibilityService projectVersionVisibilityService, VersionDependencyService versionDependencyService, ProjectFiles projectFiles) {
+    public VersionService(ProjectVersionsDAO projectVersionDAO, VersionsApiDAO versionsApiDAO, HangarVersionsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, ProjectVersionVisibilityService projectVersionVisibilityService, VersionDependencyService versionDependencyService, ProjectFiles projectFiles, final ProjectsDAO projectsDAO) {
         this.projectVersionsDAO = projectVersionDAO;
         this.versionsApiDAO = versionsApiDAO;
         this.hangarVersionsDAO = hangarProjectsDAO;
@@ -54,6 +55,7 @@ public class VersionService extends HangarComponent {
         this.projectVersionVisibilityService = projectVersionVisibilityService;
         this.versionDependencyService = versionDependencyService;
         this.projectFiles = projectFiles;
+        this.projectsDAO = projectsDAO;
     }
 
     @Nullable
@@ -131,16 +133,19 @@ public class VersionService extends HangarComponent {
         }
 
         Visibility oldVisibility = pvt.getVisibility();
-        renameVersion(pvt, pvt.getVersionString() + ProjectFactory.SOFT_DELETION_SUFFIX + deletedId);
         projectVersionVisibilityService.changeVisibility(pvt, Visibility.SOFTDELETE, comment);
         actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Soft Delete: " + comment, oldVisibility.getTitle()));
+        renameVersion(pvt, pvt.getVersionString() + ProjectFactory.SOFT_DELETION_SUFFIX + deletedId);
     }
 
     private void renameVersion(final ProjectVersionTable projectVersionTable, final String newName) {
         final String compactNewName = StringUtils.compact(newName);
         projectVersionTable.setVersionString(compactNewName);
         this.projectVersionsDAO.update(projectVersionTable);
-        //projectFiles.renameVersion(); //TODO rename version files
+
+        final ProjectTable project = projectsDAO.getById(projectVersionTable.getProjectId());
+        //TODO bork?
+        projectFiles.renameVersion(project.getOwnerName(), project.getSlug(), projectVersionTable.getVersionString(), compactNewName);
     }
 
     @Transactional
@@ -153,7 +158,7 @@ public class VersionService extends HangarComponent {
 
         actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(pt.getId(), pvt.getId()), "Deleted: " + comment, pvt.getVisibility().getTitle()));
         projectVersionsDAO.delete(pvt);
-        FileUtils.deleteDirectory(projectFiles.getVersionDir(pt.getOwnerName(), pt.getName(), pvt.getVersionString()));
+        FileUtils.deleteDirectory(projectFiles.getVersionDir(pt.getOwnerName(), pt.getSlug(), pvt.getVersionString()));
     }
 
     @Transactional

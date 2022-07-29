@@ -96,13 +96,13 @@ public class DownloadService extends HangarComponent {
         final ProjectVersionPlatformDownloadTable platformDownload = downloadsDAO.getPlatformDownload(pvt.getVersionId(), platform);
         final ProjectVersionDownloadTable download = downloadsDAO.getDownload(platformDownload.getVersionId(), platformDownload.getDownloadId());
         if (download.getFileName() == null) {
-            throw new HangarApiException("Couldn't find a file for that version");
+            throw new HangarApiException("Couldn't find a file for version " + versionString);
         }
 
         ProjectTable project = projectsDAO.getById(pvt.getProjectId());
-        Path path = projectFiles.getVersionDir(project.getOwnerName(), project.getName(), versionString, platform).resolve(download.getFileName());
+        Path path = projectFiles.getVersionDir(project.getOwnerName(), project.getSlug(), versionString, platform).resolve(download.getFileName());
         if (Files.notExists(path)) {
-            throw new HangarApiException("Couldn't find a file for that version");
+            throw new HangarApiException("Couldn't find a file for version " + versionString);
         }
 
         if (requiresConfirmation(pvt, download)) {
