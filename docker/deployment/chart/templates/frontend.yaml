@@ -39,6 +39,7 @@ spec:
               value: {{ $value }}
             {{- end }}
           stdin: true
+          # todo better probes
           readinessProbe:
             httpGet:
               path: /
