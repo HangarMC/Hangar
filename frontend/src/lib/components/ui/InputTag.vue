@@ -112,16 +112,14 @@ const filteredOptions = computed(() => {
           </option>
         </datalist>
       </template>
-      <input
+      <div
         v-else
-        v-model="tag"
-        type="text"
-        class="pointer-events-auto flex-grow !bg-gray-100 rounded-xl px-2 dark:(!bg-gray-500 text-white)"
+        class="pointer-events-auto relative flex flex-column items-center flex-grow !bg-gray-100 rounded-xl px-2 dark:(!bg-gray-500 text-white)"
         :class="slotProps.class"
-        :maxlength="tagMaxlength"
-        @keydown.enter="add"
-        @blur="v.$touch()"
-      />
+      >
+        <IconMdiSubdirectoryArrowLeft class="absolute right-2"> </IconMdiSubdirectoryArrowLeft>
+        <input v-model="tag" type="text" :class="slotProps.class" :maxlength="tagMaxlength" @keydown.enter="add" @blur="v.$touch()" />
+      </div>
     </div>
   </InputWrapper>
 </template>
