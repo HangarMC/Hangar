@@ -89,6 +89,15 @@ function versions(platform: Platform) {
   });
 }
 
+function updatePlatform(platform: any) {
+  filters.value.platform = platform;
+
+  const allowedVersion = versions(platform);
+  filters.value.versions = filters.value.versions.filter((existingVersion) => {
+    return allowedVersion.find((allowedNewVersion) => allowedNewVersion.version === existingVersion);
+  });
+}
+
 const meta = useSeo("Home", null, route, null);
 const script = {
   type: "application/ld+json",
@@ -167,7 +176,7 @@ useHead(meta);
         <div class="flex flex-col gap-1">
           <ul>
             <li v-for="platform in backendData.visiblePlatforms" :key="platform.enumName" class="inline-flex w-full">
-              <InputRadio v-model="filters.platform" :value="platform.enumName" :label="platform.name">
+              <InputRadio :label="platform.name" :model-value="filters.platform" :value="platform.enumName" @update:modelValue="updatePlatform">
                 <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
               </InputRadio>
             </li>
