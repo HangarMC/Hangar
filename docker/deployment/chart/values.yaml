@@ -1,0 +1,13 @@
+ingressHost: hangar.benndorf.dev
+env:
+  backend:
+    POSTGRES_USER: "hangar"
+    POSTGRES_PASSWORD: "hangar"
+    SSO_CLIENT_ID: "hangar"
+    SSO_API_KEY: "changeme"
+    TOKEN_SECRET: "supersecuresupersecure"
+  frontend:
+    BACKEND_HOST: "http://hangar_backend:8080"
+    AUTH_HOST: "https://hangar-auth.benndorf.dev"
+    PUBLIC_HOST: "https://hangar.benndorf.dev"
+    DEBUG: "hangar:*"

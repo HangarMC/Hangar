@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hangar
+  namespace: hangar
+spec:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              hangar-network: "true"
+  podSelector:
+    matchLabels:
+      hangar-network: "true"
