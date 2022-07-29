@@ -1,5 +1,8 @@
 package io.papermc.hangar.service.internal.versions;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.RemovalCause;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
@@ -39,11 +42,23 @@ import io.papermc.hangar.service.internal.versions.plugindata.PluginDataService;
 import io.papermc.hangar.service.internal.versions.plugindata.PluginFileWithData;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.CryptoUtils;
+import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.configurate.ConfigurateException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -56,18 +71,17 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.spongepowered.configurate.ConfigurateException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class VersionFactory extends HangarComponent {
 
+    private static final Object DUMMY = new Object();
+    private final Cache<Path, Object> tempDirCache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMinutes(30)).evictionListener((@Nullable Path path, @Nullable Object o, @NonNull RemovalCause cause) -> {
+        // Clean up temp user dirs
+        if (path != null && Files.exists(path)) {
+            FileUtils.deleteDirectory(path);
+        }
+    }).build();
     private final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependenciesDAO;
     private final ProjectVersionDependenciesDAO projectVersionDependenciesDAO;
     private final PlatformVersionDAO platformVersionDAO;
@@ -110,9 +124,17 @@ public class VersionFactory extends HangarComponent {
         final List<PendingVersionFile> pendingFiles = new ArrayList<>();
         String versionString = null;
         final Set<Platform> processedPlatforms = EnumSet.noneOf(Platform.class);
+
+        // Delete old temp data
+        final Path userTempDir = projectFiles.getTempDir(getHangarPrincipal().getName());
+        if (Files.exists(userTempDir)) {
+            FileUtils.deleteDirectory(userTempDir);
+        }
+
         for (final MultipartFileOrUrl fileOrUrl : data) {
             // Make sure each platform only has one corresponding file/url
             if (!processedPlatforms.addAll(fileOrUrl.platforms())) {
+                FileUtils.deleteDirectory(userTempDir);
                 throw new IllegalArgumentException();
             }
 
@@ -125,13 +147,14 @@ public class VersionFactory extends HangarComponent {
             final MultipartFile file = files.remove(0);
             final String pluginFileName = file.getOriginalFilename();
             if (pluginFileName == null || (!pluginFileName.endsWith(".zip") && !pluginFileName.endsWith(".jar"))) {
+                FileUtils.deleteDirectory(userTempDir);
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.fileExtension");
             }
 
             final PluginFileWithData pluginDataFile;
+            final Platform platformToResolve = fileOrUrl.platforms().get(0); // Just save it by the first platform
+            final Path tmpDir = userTempDir.resolve(platformToResolve.name());
             try {
-                final Platform platform = fileOrUrl.platforms().get(0); // Just save it by the first platform
-                final Path tmpDir = projectFiles.getTempDir(getHangarPrincipal().getName()).resolve(platform.name());
                 if (!Files.isDirectory(tmpDir)) {
                     Files.createDirectories(tmpDir);
                 }
@@ -139,11 +162,13 @@ public class VersionFactory extends HangarComponent {
                 final Path tmpPluginFile = tmpDir.resolve(pluginFileName);
                 file.transferTo(tmpPluginFile);
                 pluginDataFile = pluginDataService.loadMeta(tmpPluginFile, getHangarPrincipal().getUserId());
-            } catch (ConfigurateException configurateException) {
+            } catch (final ConfigurateException configurateException) {
                 logger.error("Error while reading file metadata while uploading {} for {}", pluginFileName, getHangarPrincipal().getName(), configurateException);
+                FileUtils.deleteDirectory(userTempDir);
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.metaNotFound");
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 logger.error("Error while uploading {} for {}", pluginFileName, getHangarPrincipal().getName(), e);
+                FileUtils.deleteDirectory(userTempDir);
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.unexpected");
             }
 
@@ -167,6 +192,8 @@ public class VersionFactory extends HangarComponent {
             }
         }
 
+        tempDirCache.put(userTempDir, DUMMY);
+
         final ProjectTable projectTable = projectService.getProjectTable(projectId);
         if (projectTable == null) {
             throw new IllegalArgumentException();
@@ -187,8 +214,6 @@ public class VersionFactory extends HangarComponent {
         if (pendingVersion.getPluginDependencies().values().stream().anyMatch(pluginDependencies -> pluginDependencies.size() > config.projects.getMaxDependencies())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.tooManyDependencies");
         }
-        System.out.println(projectVersionsDAO.getProjectVersion(projectId, pendingVersion.getVersionString()) != null);
-        System.out.println(projectVersionsDAO.getProjectVersionTable("paper", "asdas", pendingVersion.getVersionString()) != null);
         if (exists(projectId, pendingVersion.getVersionString())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.duplicateNameAndPlatform");
         }
@@ -197,6 +222,7 @@ public class VersionFactory extends HangarComponent {
         assert projectTable != null;
 
         final Set<Platform> processedPlatforms = EnumSet.noneOf(Platform.class);
+        final Path userTempDir = projectFiles.getTempDir(getHangarPrincipal().getName());
         for (final PendingVersionFile pendingVersionFile : pendingVersion.getFiles()) {
             if (!processedPlatforms.addAll(pendingVersionFile.platforms())) {
                 throw new IllegalArgumentException();
@@ -205,7 +231,7 @@ public class VersionFactory extends HangarComponent {
             final FileInfo fileInfo = pendingVersionFile.fileInfo();
             if (fileInfo != null) { // verify file
                 final Platform platform = pendingVersionFile.platforms().get(0); // Use the first platform to resolve
-                final Path tmpVersionJar = projectFiles.getTempDir(getHangarPrincipal().getName()).resolve(platform.name()).resolve(fileInfo.getName());
+                final Path tmpVersionJar = userTempDir.resolve(platform.name()).resolve(fileInfo.getName());
                 try {
                     if (Files.notExists(tmpVersionJar)) {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.noFile");
@@ -225,6 +251,7 @@ public class VersionFactory extends HangarComponent {
         }
 
         ProjectVersionTable projectVersionTable = null;
+        final Path versionDir = projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getName(), pendingVersion.getVersionString());
         try {
             ProjectChannelTable projectChannelTable = channelService.getProjectChannel(projectId, pendingVersion.getChannelName(), pendingVersion.getChannelColor());
             if (projectChannelTable == null) {
@@ -277,31 +304,35 @@ public class VersionFactory extends HangarComponent {
                     continue;
                 }
 
+                // Move file for first platform
                 final Platform platformToResolve = pendingVersionFile.platforms().get(0);
-                final Path tmpVersionJar = projectFiles.getTempDir(getHangarPrincipal().getName()).resolve(platformToResolve.name()).resolve(fileInfo.getName());
-                for (final Platform platform : pendingVersionFile.platforms()) {
-                    // TODO Don't store a file multiple times
+                final Path tmpVersionJar = userTempDir.resolve(platformToResolve.name()).resolve(fileInfo.getName());
+
+                final Path newVersionJarPath = versionDir.resolve(platformToResolve.name()).resolve(tmpVersionJar.getFileName());
+                if (Files.notExists(newVersionJarPath)) {
+                    Files.createDirectories(newVersionJarPath.getParent());
+                }
+
+                Files.copy(tmpVersionJar, newVersionJarPath, StandardCopyOption.REPLACE_EXISTING);
+                Files.deleteIfExists(tmpVersionJar);
+                if (Files.notExists(newVersionJarPath)) {
+                    throw new IOException("Didn't successfully move the jar");
+                }
+
+                // Create symbolic links for the other platforms
+                for (int i = 1; i < pendingVersionFile.platforms().size(); i++) {
+                    final Platform platform = pendingVersionFile.platforms().get(i);
                     if (pendingVersion.getPlatformDependencies().get(platform).isEmpty()) {
                         continue;
                     }
 
-                    final Path newVersionJarPath = projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getName(), pendingVersion.getVersionString(), platform).resolve(tmpVersionJar.getFileName());
-                    if (Files.notExists(newVersionJarPath)) {
-                        Files.createDirectories(newVersionJarPath.getParent());
-                    }
-
-                    Files.copy(tmpVersionJar, newVersionJarPath, StandardCopyOption.REPLACE_EXISTING);
-                    if (Files.notExists(newVersionJarPath)) {
-                        Files.deleteIfExists(tmpVersionJar);
-                        throw new IOException("Didn't successfully move the jar");
-                    }
+                    final Path platformJarPath = versionDir.resolve(platform.name()).resolve(tmpVersionJar.getFileName());
+                    Files.createSymbolicLink(newVersionJarPath, platformJarPath);
                 }
 
                 final ProjectVersionDownloadTable table = new ProjectVersionDownloadTable(projectVersionTable.getVersionId(), fileInfo.getSizeBytes(), fileInfo.getMd5Hash(), fileInfo.getName(), null);
                 downloadsTables.add(ImmutablePair.of(table, pendingVersionFile.platforms()));
 
-                // Delete old temp file
-                Files.deleteIfExists(tmpVersionJar);
             }
 
             // Insert download data
@@ -331,11 +362,17 @@ public class VersionFactory extends HangarComponent {
         } catch (IOException e) {
             logger.error("Unable to create version {} for {}", pendingVersion.getVersionString(), getHangarPrincipal().getName(), e);
             projectVersionsDAO.delete(projectVersionTable);
+            if (Files.exists(versionDir)) {
+                FileUtils.deleteDirectory(versionDir);
+            }
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.fileIOError");
         } catch (Exception throwable) {
             logger.error("Unable to create version {} for {}", pendingVersion.getVersionString(), getHangarPrincipal().getName(), throwable);
             if (projectVersionTable != null) {
                 projectVersionsDAO.delete(projectVersionTable);
+            }
+            if (Files.exists(versionDir)) {
+                FileUtils.deleteDirectory(versionDir);
             }
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.unknown");
         }
