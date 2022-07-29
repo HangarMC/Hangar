@@ -28,7 +28,6 @@ spec:
   template:
     metadata:
       labels:
-        hangar-network: "true"
         hangar-service: backend
     spec:
       containers:
