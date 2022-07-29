@@ -6,6 +6,7 @@ import { useAuthStore } from "~/store/auth";
 
 // eslint-disable-next-line import/no-unresolved
 import "virtual:windi-devtools";
+import { computed } from "vue";
 
 const authStore = useAuthStore();
 const settingsStore = useSettingsStore();
@@ -14,7 +15,7 @@ settingsStore.setupMobile();
 settingsLog("render for user", authStore.user?.name, "with darkmode", settingsStore.darkMode);
 useHead({
   htmlAttrs: {
-    class: settingsStore.darkMode ? "dark" : "light",
+    class: computed(() => (settingsStore.darkMode ? "dark" : "light")),
   },
 });
 </script>

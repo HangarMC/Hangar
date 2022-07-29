@@ -17,17 +17,17 @@ export const useSettingsStore = defineStore("settings", () => {
 
   function toggleDarkMode() {
     darkMode.value = !unref(darkMode);
-    settingsLog("darkmode", darkMode.value);
+    settingsLog("toggleDarkMode", darkMode.value);
   }
 
   function enableDarkMode() {
     darkMode.value = true;
-    settingsLog("darkmode", darkMode.value);
+    settingsLog("enableDarkMode", darkMode.value);
   }
 
   function disableDarkMode() {
     darkMode.value = false;
-    settingsLog("darkmode", darkMode.value);
+    settingsLog("disableDarkMode", darkMode.value);
   }
 
   function toggleMobile() {
