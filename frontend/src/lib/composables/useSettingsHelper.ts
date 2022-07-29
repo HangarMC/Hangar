@@ -59,15 +59,6 @@ export function useSettingsHelper(
 
   watch(darkMode, async (newMode) => {
     if (ssr) return;
-    if (newMode) {
-      settingsLog("set dark");
-      document.documentElement.classList.add("dark");
-      document.documentElement.classList.remove("light");
-    } else {
-      settingsLog("set light");
-      document.documentElement.classList.add("light");
-      document.documentElement.classList.remove("dark");
-    }
     await saveSettings();
   });
 
