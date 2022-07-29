@@ -6,6 +6,7 @@ import io.papermc.hangar.util.FileUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
@@ -49,20 +50,20 @@ public class ProjectFiles {
     }
 
     public void transferProject(String owner, String newOwner, String slug) {
-        Path newProjectDir = getProjectDir(owner, slug);
-        Path oldProjectDir = getProjectDir(newOwner, slug);
+        final Path oldProjectDir = getProjectDir(newOwner, slug);
+        final Path newProjectDir = getProjectDir(owner, slug);
         try {
-            Files.move(oldProjectDir, newProjectDir);
+            Files.move(oldProjectDir, newProjectDir, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void renameProject(String owner, String slug, String newSlug) {
-        final Path newProjectDir = getProjectDir(owner, newSlug);
         final Path oldProjectDir = getProjectDir(owner, slug);
+        final Path newProjectDir = getProjectDir(owner, newSlug);
         try {
-            Files.move(oldProjectDir, newProjectDir);
+            Files.move(oldProjectDir, newProjectDir, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,8 +73,8 @@ public class ProjectFiles {
         final Path oldVersionDir = getVersionDir(owner, slug, version);
         final Path newVersionDir = getVersionDir(owner, slug, newVersionName);
         try {
-            Files.move(oldVersionDir, newVersionDir);
-        } catch (IOException e) {
+            Files.move(oldVersionDir, newVersionDir, StandardCopyOption.REPLACE_EXISTING);
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }

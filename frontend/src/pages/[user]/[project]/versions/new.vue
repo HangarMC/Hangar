@@ -265,12 +265,11 @@ useHead(
 <template>
   <Steps v-model="selectedStep" :steps="steps" button-lang-key="version.new.steps.">
     <template #artifact>
-      <p class="mb-2">{{ t("version.new.form.artifactTitle") }}</p>
+      <p class="mb-4">{{ t("version.new.form.artifactTitle") }}</p>
 
-      <!-- todo: make prettier, translations -->
-      <div v-for="(platformFile, idx) in platformFiles" :key="idx" class="mb-8">
-        <span class="text-xl">File #{{ idx + 1 }}</span>
-        <div class="flex flex-row items-center">
+      <div v-for="(platformFile, idx) in platformFiles" :key="idx" class="mb-6">
+        <span class="text-xl">{{ t("version.new.form.artifactNumber", [idx + 1]) }}</span>
+        <div class="md:(flex flex-row) items-center">
           <Tabs v-model="platformFile.selectedTab" :tabs="selectedUploadTabs" :vertical="false" class="max-w-150">
             <template #file>
               <InputFile v-model="platformFile.file" accept=".jar,.zip" />
@@ -279,7 +278,7 @@ useHead(
               <InputText v-model="platformFile.url" :label="t('version.new.form.externalUrl')" :rules="artifactURLRules" />
             </template>
           </Tabs>
-          <div class="mt-4 ml-8">
+          <div class="mt-4 md:ml-8">
             <div v-for="platform in platforms" :key="platform.name">
               <InputCheckbox
                 :model-value="platformFile.platforms.includes(platform.enumName)"
@@ -290,7 +289,7 @@ useHead(
               </InputCheckbox>
             </div>
           </div>
-          <Button v-if="platformFiles.length !== 1" class="ml-4 mt-4" @click="removePlatformFile(idx)"><IconMdiDelete /></Button>
+          <Button v-if="platformFiles.length !== 1" class="md:ml-4 mt-4" @click="removePlatformFile(idx)"><IconMdiDelete /></Button>
         </div>
         <div></div>
       </div>
@@ -299,6 +298,7 @@ useHead(
       </Button>
     </template>
     <template #basic>
+      <p class="mb-4">{{ i18n.t("version.new.form.versionDescription") }}</p>
       <div class="flex flex-wrap mt-2 md:-space-x-2 <md:space-y-2">
         <!-- TODO validate version string against existing versions - now super easy! -->
         <div class="basis-full md:basis-4/12 items-center">
@@ -344,6 +344,7 @@ useHead(
       </div>
     </template>
     <template #dependencies>
+      <p class="mb-4">{{ i18n.t("version.new.form.platformVersionsDescription") }}</p>
       <h2 class="text-xl mt-2 mb-2">{{ t("version.new.form.platformVersions") }}</h2>
       <div class="flex flex-wrap gap-y-3 mb-5">
         <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">

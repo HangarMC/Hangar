@@ -154,7 +154,7 @@ public class ProjectFactory extends HangarComponent {
     @Transactional
     public void hardDelete(final ProjectTable projectTable, final String comment) {
         this.actionLogger.project(LogAction.PROJECT_VISIBILITY_CHANGED.create(ProjectContext.of(projectTable.getId()), "Deleted: " + comment, projectTable.getVisibility().getTitle()));
-        FileUtils.deleteDirectory(this.projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getName()));
+        FileUtils.deleteDirectory(this.projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getSlug()));
         this.jobService.save(new DeleteDiscourseTopicJob(projectTable.getId()));
         this.projectsDAO.delete(projectTable);
         this.projectService.refreshHomeProjects();
