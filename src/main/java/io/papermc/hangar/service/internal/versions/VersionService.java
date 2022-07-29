@@ -23,9 +23,11 @@ import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilitySer
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
+
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -112,15 +114,14 @@ public class VersionService extends HangarComponent {
         }
 
         List<ProjectVersionTable> projectVersionTables = projectVersionsDAO.getProjectVersions(projectId);
-        // TODO should this disallow? or just reset project visibility to NEW
         if (projectVersionTables.stream().filter(pv -> pv.getVisibility() == Visibility.PUBLIC).count() <= 1 && pvt.getVisibility() == Visibility.PUBLIC) {
-            throw new HangarApiException("version.error.onlyOnePublic");
+            projectVisibilityService.changeVisibility(projectId, Visibility.NEW, "Visibility reset to new because no public version exists");
         }
 
         // Append deletion suffix to allow creation of a new version under the same name
         int deletedId = -1;
         for (int i = 0; i < 10; i++) {
-            if (this.projectVersionsDAO.getProjectVersion(pvt.getProjectId(), pvt.getVersionString() + ProjectFactory.SOFT_DELETION_SUFFIX + i) != null) {
+            if (this.projectVersionsDAO.getProjectVersion(pvt.getProjectId(), pvt.getVersionString() + ProjectFactory.SOFT_DELETION_SUFFIX + i) == null) {
                 deletedId = i;
                 break;
             }
@@ -139,6 +140,7 @@ public class VersionService extends HangarComponent {
         final String compactNewName = StringUtils.compact(newName);
         projectVersionTable.setVersionString(compactNewName);
         this.projectVersionsDAO.update(projectVersionTable);
+        //projectFiles.renameVersion(); //TODO rename version files
     }
 
     @Transactional
@@ -146,15 +148,12 @@ public class VersionService extends HangarComponent {
         List<ProjectVersionTable> projectVersionTables = projectVersionsDAO.getProjectVersions(pt.getId());
         boolean hasOtherPublicVersion = projectVersionTables.stream().filter(pv -> pv.getId() != pvt.getId()).anyMatch(pv -> pv.getVisibility() == Visibility.PUBLIC);
         if (!hasOtherPublicVersion && pt.getVisibility() == Visibility.PUBLIC) {
-            projectVisibilityService.changeVisibility(pt, Visibility.NEW, "Visibility reset to new because no public versions exist");
+            projectVisibilityService.changeVisibility(pt, Visibility.NEW, "Visibility reset to new because no public version exists");
         }
 
         actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(pt.getId(), pvt.getId()), "Deleted: " + comment, pvt.getVisibility().getTitle()));
-        List<Platform> versionPlatforms = projectVersionsDAO.getVersionPlatforms(pvt.getId());
-        for (Platform platform : versionPlatforms) {
-            FileUtils.deleteDirectory(projectFiles.getVersionDir(pt.getOwnerName(), pt.getName(), pvt.getVersionString(), platform));
-        }
         projectVersionsDAO.delete(pvt);
+        FileUtils.deleteDirectory(projectFiles.getVersionDir(pt.getOwnerName(), pt.getName(), pvt.getVersionString()));
     }
 
     @Transactional
@@ -168,7 +167,6 @@ public class VersionService extends HangarComponent {
             final String newName = pvt.getVersionString().substring(0, suffixIndex);
             if (this.projectVersionsDAO.getProjectVersion(pvt.getProjectId(), newName) != null) {
                 // Can't automatically rename
-                //TODO take platforms into account
                 throw new HangarApiException("version.error.oldNameTaken");
             }
 
