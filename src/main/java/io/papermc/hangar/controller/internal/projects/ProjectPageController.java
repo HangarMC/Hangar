@@ -78,9 +78,7 @@ public class ProjectPageController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/checkName")
     public void checkName(@RequestParam long projectId, @RequestParam String name, @RequestParam(required = false) Long parentId) {
-        if (!validationService.isValidPageName(name)) {
-            throw new HangarApiException("page.new.error.invalidName");
-        }
+        validationService.testPageName(name);
         projectPageService.checkDuplicateName(projectId, name, parentId);
     }
 

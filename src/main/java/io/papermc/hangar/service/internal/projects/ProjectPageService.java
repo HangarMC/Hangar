@@ -12,6 +12,7 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.PageContext;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
+import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.util.StringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -29,11 +30,13 @@ public class ProjectPageService extends HangarComponent {
     private final ProjectPagesDAO projectPagesDAO;
     private final HangarProjectPagesDAO hangarProjectPagesDAO;
     private final JobService jobService;
+    private final ValidationService validationService;
 
-    public ProjectPageService(ProjectPagesDAO projectPagesDAO, HangarProjectPagesDAO hangarProjectPagesDAO, JobService jobService) {
+    public ProjectPageService(ProjectPagesDAO projectPagesDAO, HangarProjectPagesDAO hangarProjectPagesDAO, JobService jobService, final ValidationService validationService) {
         this.projectPagesDAO = projectPagesDAO;
         this.hangarProjectPagesDAO = hangarProjectPagesDAO;
         this.jobService = jobService;
+        this.validationService = validationService;
     }
 
     public void checkDuplicateName(long projectId, String name, @Nullable Long parentId) {
@@ -52,7 +55,7 @@ public class ProjectPageService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
 
-        config.pages.testPageName(name);
+        validationService.testPageName(name);
 
         checkDuplicateName(projectId, name, parentId);
 

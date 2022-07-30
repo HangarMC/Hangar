@@ -1,5 +1,6 @@
 package io.papermc.hangar.service;
 
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
@@ -57,14 +58,12 @@ public class ValidationService {
         return true;
     }
 
-    public boolean isValidPageName(String name) {
+    public void testPageName(String name) {
         name = StringUtils.compact(name);
         if (bannedRoutes.contains(name)) {
-            return false;
+            throw new HangarApiException("page.new.error.invalidName");
         }
-        if (name.length() < 1 || name.length() > config.projects.getMaxPageNameLen() || !config.projects.getPageNameMatcher().test(name)) {
-            return false;
-        }
-        return true;
+
+        config.pages.testPageName(name);
     }
 }
