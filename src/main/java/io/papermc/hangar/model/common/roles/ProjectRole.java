@@ -14,11 +14,12 @@ import java.util.List;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ProjectRole implements Role<ProjectRoleTable> {
 
-    PROJECT_SUPPORT("Project_Support", 22, Permission.IsProjectMember, "Support", Color.TRANSPARENT, 50),
-    PROJECT_EDITOR("Project_Editor", 21, Permission.EditPage.add(PROJECT_SUPPORT.getPermissions()), "Editor", Color.TRANSPARENT, 40),
-    PROJECT_DEVELOPER("Project_Developer", 30, Permission.EditPage.add(PROJECT_SUPPORT.getPermissions()), "Developer", Color.TRANSPARENT, 30),
-    PROJECT_MAINTAINER("Project_Maintainer", 20, Permission.CreateVersion.add(Permission.EditVersion).add(Permission.EditTags).add(PROJECT_EDITOR.getPermissions()), "Maintainer", Color.TRANSPARENT, 20),
-    PROJECT_OWNER("Project_Owner", 19, Permission.IsProjectOwner.add(Permission.EditApiKeys).add(Permission.DeleteProject).add(Permission.DeleteVersion).add(PROJECT_MAINTAINER.getPermissions()), "Owner", Color.TRANSPARENT, 10, false);
+    PROJECT_SUPPORT("Project_Support", 30, Permission.IsProjectMember, "Support", Color.TRANSPARENT, 60),
+    PROJECT_EDITOR("Project_Editor", 31, Permission.EditPage.add(PROJECT_SUPPORT.getPermissions()), "Editor", Color.TRANSPARENT, 50),
+    PROJECT_DEVELOPER("Project_Developer", 32, PROJECT_SUPPORT.getPermissions(), "Developer", Color.TRANSPARENT, 40),
+    PROJECT_MAINTAINER("Project_Maintainer", 33, Permission.CreateVersion.add(Permission.EditVersion).add(Permission.DeleteVersion).add(Permission.EditTags).add(PROJECT_DEVELOPER.getPermissions()), "Maintainer", Color.TRANSPARENT, 30),
+    PROJECT_ADMIN("Project_Admin", 34, Permission.IsProjectAdmin.add(Permission.EditApiKeys).add(PROJECT_MAINTAINER.getPermissions()), "Admin", Color.TRANSPARENT, 20),
+    PROJECT_OWNER("Project_Owner", 35, Permission.IsProjectOwner.add(PROJECT_ADMIN.getPermissions()), "Owner", Color.TRANSPARENT, 10, false);
 
     private final String value;
     private final long roleId;

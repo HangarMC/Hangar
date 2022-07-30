@@ -14,21 +14,13 @@ import org.jetbrains.annotations.Nullable;
 public enum GlobalRole implements Role<GlobalRoleTable> {
 
     HANGAR_ADMIN("Hangar_Admin", 1, Permission.All, "Hangar Admin", Color.RED, 20),
-    HANGAR_DEV("Hangar_Dev", 8, Permission.ViewStats.add(Permission.ViewLogs).add(Permission.ViewHealth).add(Permission.ManualValueChanges), "Hangar Developer", Color.ORANGE, 30),
-    HANGAR_MOD("Hangar_Mod", 2, Permission.IsStaff.add(Permission.Reviewer).add(Permission.ModNotesAndFlags).add(Permission.SeeHidden), "Hangar Moderator", Color.AQUA, 40),
+    HANGAR_DEV("Hangar_Dev", 2, Permission.IsStaff.add(Permission.SeeHidden).add(Permission.ViewStats).add(Permission.ViewLogs).add(Permission.ViewHealth).add(Permission.ManualValueChanges), "Hangar Developer", Color.ORANGE, 30),
+    HANGAR_MOD("Hangar_Mod", 3, Permission.IsStaff.add(Permission.Reviewer).add(Permission.ModNotesAndFlags).add(Permission.SeeHidden), "Hangar Moderator", Color.AQUA, 40),
 
-    PAPERMC_CORE("PaperMC_Core", 3, Permission.All, "PaperMC Core", Color.AMBER, 10),
-    PAPERMC_STAFF("PaperMC_Staff", 6, Permission.IsStaff, "Paper Staff", Color.AMBER, 50),
+    PAPERMC_CORE("PaperMC_Core", 4, Permission.All, "PaperMC Core", Color.AMBER, 10),
+    PAPERMC_STAFF("PaperMC_Staff", 5, Permission.IsStaff, "Paper Staff", Color.AMBER, 50),
 
-    CONTRIBUTOR("Contributor", 12, Permission.None, "Contributor", Color.GREEN, 60),
-
-    STONE_DONOR("Stone_Donor", 14, Permission.None, "Stone Donor", Color.GRAY, 110),
-    QUARTZ_DONOR("Quartz_Donor", 15, Permission.None, "Quartz Donor", Color.QUARTZ, 100),
-    IRON_DONOR("Iron_Donor", 16, Permission.None, "Iron Donor", Color.SILVER, 90),
-    GOLD_DONOR("Gold_Donor", 17, Permission.None, "Gold Donor", Color.GOLD, 80),
-    DIAMOND_DONOR("Diamond_Donor", 18, Permission.None, "Diamond Donor", Color.LIGHTBLUE, 70),
-
-    ORGANIZATION("Organization", 23, OrganizationRole.ORGANIZATION_OWNER.getPermissions(), "Organization", Color.PURPLE);
+    ORGANIZATION("Organization", 100, OrganizationRole.ORGANIZATION_OWNER.getPermissions(), "Organization", Color.PURPLE);
 
     private final String value;
     private final long roleId;
