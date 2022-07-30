@@ -44,7 +44,9 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
           if (statString) {
             const parsedCookies = new Cookies(statString);
             const statCookie = parsedCookies.get("hangar_stats");
-            cookies.set("hangar_stats", statCookie); // TODO verify that this all works
+            // keep cookie settings in sync with StatService#setCookie
+            cookies.set("hangar_stats", statCookie, { path: "/", sameSite: "strict", maxAge: 60 * 60 * 24 * 356.24 * 1000 });
+            authLog("got stats cookie from backend", statCookie);
           }
         }
         resolve(data);

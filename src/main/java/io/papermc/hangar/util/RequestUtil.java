@@ -16,7 +16,7 @@ public class RequestUtil {
         if (header == null) {
             return request.getRemoteAddr();
         } else {
-            return header; // header.split(',').headOption.map(_.trim).getOrElse(request.remoteAddress) ?
+            return header;
         }
     }
 
