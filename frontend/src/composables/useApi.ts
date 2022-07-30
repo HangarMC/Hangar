@@ -159,6 +159,7 @@ export async function processAuthStuff<T>(headers: Record<string, string>, authR
           },
         };
       }
+      headers = { ...headers, ...forwardHeader() };
     }
   } else {
     // validate and refresh
