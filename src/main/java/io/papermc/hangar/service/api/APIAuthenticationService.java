@@ -1,14 +1,12 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.config.hangar.HangarSecurityConfig;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.auth.ApiSession;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.auth.ApiKeyTable;
-import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.TokenService;
 import io.papermc.hangar.util.CryptoUtils;
 
@@ -27,14 +25,12 @@ public class APIAuthenticationService extends HangarComponent {
     private final UserDAO userDAO;
     private final ApiKeyDAO apiKeyDAO;
     private final TokenService tokenService;
-    private final PermissionService permissionService;
 
     @Autowired
-    public APIAuthenticationService(UserDAO userDAO, ApiKeyDAO apiKeyDAO, TokenService tokenService, PermissionService permissionService) {
+    public APIAuthenticationService(UserDAO userDAO, ApiKeyDAO apiKeyDAO, TokenService tokenService) {
         this.userDAO = userDAO;
         this.apiKeyDAO = apiKeyDAO;
         this.tokenService = tokenService;
-        this.permissionService = permissionService;
     }
 
     public ApiSession createJWTForApiKey(String apiKey) {
@@ -49,8 +45,7 @@ public class APIAuthenticationService extends HangarComponent {
             throw new HangarApiException("No valid API Key found");
         }
         UserTable userTable = userDAO.getUserTable(apiKeyTable.getOwnerId());
-        String jwt = tokenService.expiring(userTable, permissionService.getGlobalPermissions(userTable.getId()), identifier);
+        String jwt = tokenService.expiring(userTable, apiKeyTable.getPermissions(), identifier);
         return new ApiSession(jwt, config.security.getRefreshTokenExpiry().toSeconds());
     }
-    // 006ad884-3df9-43e8-af01-91590f92cfd7.fa31831d-097f-4d11-9031-b57b41c59fa1
 }
