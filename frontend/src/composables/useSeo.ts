@@ -71,6 +71,7 @@ export function useSeo(
           "@type": "BreadcrumbList",
           itemListElement: generateBreadcrumbs(route),
         }),
+        key: "breadcrumb",
       },
     ] as any[],
   } as HeadObject;
@@ -98,6 +99,8 @@ function generateBreadcrumbs(route: RouteLocationNormalizedLoaded) {
   const split = route.fullPath.split("/");
   let curr = "";
   for (let i = 0; i < split.length; i++) {
+    // skip trailing slash
+    if ((split[i] === "" || split[i] === "/") && curr !== "") continue;
     curr = `${curr + split[i]}/`;
     arr.push({
       "@type": "ListItem",
