@@ -8,6 +8,7 @@ import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { inject } from "vue";
 import { useInternalApi } from "~/composables/useApi";
+import {handleRequestError} from "~/composables/useErrorHandling";
 
 const props = defineProps<{
   project: HangarProject;
@@ -28,8 +29,12 @@ if (page) {
 async function deletePageAndUpdateProject() {
   await deletePage();
 
-  if (updateProjectPages) {
-    updateProjectPages(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.project.id}`, false, "get"));
+  try {
+    if (updateProjectPages) {
+      updateProjectPages(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.project.id}`, false, "get"));
+    }
+  } catch (e: any) {
+    handleRequestError(e, ctx, i18n);
   }
 }
 </script>
