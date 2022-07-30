@@ -22,29 +22,17 @@ public class RequestUtil {
             return ip;
         }
 
-        String headers = Collections.list(request.getHeaderNames())
-            .stream()
-            .collect(Collectors.toMap(
-                Function.identity(),
-                h -> Collections.list(request.getHeaders(h))
-            )).toString();
-        System.out.println("getRemoteAddress from " + headers);
-
         String header = request.getHeader("X-Forwarded-For");
         String ipHeader = request.getHeader("x-real-ip");
         String cfHeader = request.getHeader("cf-connecting-ip");
         String ip;
         if (cfHeader != null) {
-            System.out.println("found cf " + cfHeader);
             ip = cfHeader;
         } else if (ipHeader != null) {
-            System.out.println("found ip " + ipHeader);
             ip = ipHeader;
         } else if (header != null) {
-            System.out.println("found " + header);
             ip = header;
         } else {
-            System.out.println("fall back to " + request.getRemoteAddr());
             ip = request.getRemoteAddr();
         }
 
