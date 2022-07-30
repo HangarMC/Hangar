@@ -105,12 +105,15 @@ public class ProjectPageService extends HangarComponent {
     }
 
     public ExtendedProjectPage getProjectPage(String author, String slug, String requestUri) {
-        String[] path = requestUri.split("/", 8);
+        String path = requestUri.replace("/api/internal/pages/page/" + author + "/" + slug + "/", "");
         ExtendedProjectPage pageTable;
-        if (path.length < 8) {
+        if (path.equals("/")) {
             pageTable = hangarProjectPagesDAO.getHomePage(author, slug);
         } else {
-            pageTable = hangarProjectPagesDAO.getProjectPage(author, slug, path[7]);
+            if (path.endsWith("/")) {
+                path = path.substring(0, path.length() - 1);
+            }
+            pageTable = hangarProjectPagesDAO.getProjectPage(author, slug, path);
         }
         if (pageTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "Page not found");

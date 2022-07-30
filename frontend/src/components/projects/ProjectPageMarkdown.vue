@@ -8,7 +8,7 @@ import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { inject } from "vue";
 import { useInternalApi } from "~/composables/useApi";
-import {handleRequestError} from "~/composables/useErrorHandling";
+import { handleRequestError } from "~/composables/useErrorHandling";
 
 const props = defineProps<{
   project: HangarProject;
