@@ -24,12 +24,16 @@ public class RequestUtil {
         System.out.println("getRemoteAddress from " + headers);
 
         String header = request.getHeader("X-Forwarded-For");
-        if (header == null) {
-            System.out.println("fall back to " + request.getRemoteAddr());
-            return request.getRemoteAddr();
-        } else {
+        String cfHeader = request.getHeader("cf-connecting-ip");
+        if (cfHeader != null) {
+            System.out.println("found cf " + cfHeader);
+            return cfHeader;
+        } else if (header != null) {
             System.out.println("found " + header);
             return header;
+        } else {
+            System.out.println("fall back to " + request.getRemoteAddr());
+            return request.getRemoteAddr();
         }
     }
 
