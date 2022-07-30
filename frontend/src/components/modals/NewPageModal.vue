@@ -25,6 +25,7 @@ const router = useRouter();
 const backendData = useBackendDataStore();
 
 const updateProjectPagesCallback = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
+const modal = ref<any | null>(null); // Filled by vue
 
 const pageRoots = computed(() => flatDeep(props.pages, ""));
 const name = ref("");
@@ -81,11 +82,13 @@ async function createPage() {
     handleRequestError(e, ctx, i18n);
   }
   loading.value = false;
+
+  modal.value?.close();
 }
 </script>
 
 <template>
-  <Modal :title="i18n.t('page.new.title')" window-classes="w-120">
+  <Modal ref="modal" :title="i18n.t('page.new.title')" window-classes="w-120">
     <div class="flex flex-col">
       <InputText
         v-model.trim="name"
