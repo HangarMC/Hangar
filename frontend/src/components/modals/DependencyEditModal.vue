@@ -41,7 +41,7 @@ const formVersion = ref<DependencyVersion>({
 });
 
 const validInput = computed(() => {
-  if (depTable.value && hasInvalidDependency(depTable.value.newDeps)) {
+  if (depTable.value && hasInvalidDependency(depTable.value.dependencies)) {
     return false;
   }
   for (const platform in formVersion.value.pluginDependencies) {
@@ -54,9 +54,6 @@ const validInput = computed(() => {
 
 function hasInvalidDependency(dependencies: PluginDependency[]) {
   return dependencies.some((dependency) => {
-    if (depTable.value && depTable.value.deletedDeps.includes(dependency.name)) {
-      return false;
-    }
     // noinspection SuspiciousTypeOfGuard
     if (dependency.namespace && typeof dependency.namespace === "string") {
       // TODO: should get proper validation checks on input
@@ -68,18 +65,10 @@ function hasInvalidDependency(dependencies: PluginDependency[]) {
 
 async function save() {
   loading.value = true;
-
-  let deps: PluginDependency[] = [];
-  if (formVersion.value.pluginDependencies[platform.value?.enumName as Platform]) {
-    deps.push(...formVersion.value.pluginDependencies[platform.value?.enumName as Platform]);
-  }
-  deps.push(...depTable.value.newDeps);
-  deps = deps.filter((d) => !depTable.value.deletedDeps.includes(d.name));
-
   try {
     await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/savePluginDependencies`, true, "post", {
       platform: platform.value?.name?.toUpperCase(),
-      pluginDependencies: deps,
+      pluginDependencies: depTable.value.dependencies,
     });
     await router.go(0);
   } catch (e) {

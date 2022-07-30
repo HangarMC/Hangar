@@ -326,8 +326,12 @@ public class VersionFactory extends HangarComponent {
                         continue;
                     }
 
-                    final Path platformJarPath = versionDir.resolve(platform.name()).resolve(tmpVersionJar.getFileName());
-                    Files.createSymbolicLink(newVersionJarPath, platformJarPath);
+                    final Path platformPath = versionDir.resolve(platform.name());
+                    if (Files.notExists(platformPath)) {
+                        Files.createDirectories(platformPath);
+                    }
+                    final Path platformJarPath = platformPath.resolve(tmpVersionJar.getFileName());
+                    Files.createSymbolicLink(platformJarPath, newVersionJarPath);
                 }
 
                 final ProjectVersionDownloadTable table = new ProjectVersionDownloadTable(projectVersionTable.getVersionId(), fileInfo.getSizeBytes(), fileInfo.getMd5Hash(), fileInfo.getName(), null);

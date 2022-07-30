@@ -87,8 +87,7 @@ const steps: Step[] = [
       for (let i = 0; i < selectedPlatforms.value.length; i++) {
         const platform = selectedPlatforms.value[i];
         const dependencyTable = dependencyTables.value[i];
-        const dependencies = pendingVersion.value.pluginDependencies[platform as Platform];
-        pendingVersion.value.pluginDependencies[platform as Platform] = dependencies.filter((d) => !dependencyTable.deletedDeps.includes(d.name));
+        pendingVersion.value.pluginDependencies[platform as Platform] = dependencyTable.dependencies;
       }
 
       return true;
@@ -331,14 +330,16 @@ useHead(
           <div v-if="pendingFile.fileInfo" class="basis-full <md:mt-4 md:basis-4/12">
             <InputText :model-value="pendingFile.fileInfo.name" :label="t('version.new.form.fileName')" disabled />
           </div>
-          <div v-if="pendingFile.fileInfo" class="basis-full <md:mt-4 md:basis-2/12">
+          <div v-if="pendingFile.fileInfo" class="basis-full <md:mt-4 md:(basis-2/12 -ml-2)">
             <InputText :model-value="formatSize(pendingFile.fileInfo.sizeBytes)" :label="t('version.new.form.fileSize')" disabled />
           </div>
           <div v-else class="basis-full <md:mt-4 md:basis-6/12">
             <InputText v-model="pendingFile.externalUrl" :label="t('version.new.form.externalUrl')" disabled />
           </div>
-          <div v-for="platform in pendingFile.platforms" :key="platform">
-            <PlatformLogo :platform="platform" size="30" class="mr-1" />
+          <div class="-ml-2 flex flex-wrap items-center">
+            <div v-for="platform in pendingFile.platforms" :key="platform">
+              <PlatformLogo :platform="platform" size="30" class="mr-1" />
+            </div>
           </div>
         </div>
       </div>

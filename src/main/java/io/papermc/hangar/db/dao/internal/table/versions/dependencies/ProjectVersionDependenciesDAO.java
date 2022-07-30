@@ -21,9 +21,8 @@ import java.util.Map;
 public interface ProjectVersionDependenciesDAO {
 
     @Timestamped
-    @GetGeneratedKeys
     @SqlBatch("INSERT INTO project_version_dependencies (created_at, version_id, platform, name, required, project_id, external_url) VALUES (:now, :versionId, :platform, :name, :required, :projectId, :externalUrl)")
-    List<ProjectVersionDependencyTable> insertAll(@BindBean Collection<ProjectVersionDependencyTable> projectVersionDependencyTables);
+    void insertAll(@BindBean Collection<ProjectVersionDependencyTable> projectVersionDependencyTables);
 
     @SqlBatch("UPDATE project_version_dependencies SET required = :required, project_id = :projectId, external_url = :externalUrl WHERE id = :id")
     void updateAll(@BindBean Collection<ProjectVersionDependencyTable> projectVersionDependencyTables);
