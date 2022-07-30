@@ -5,7 +5,7 @@ import Modal from "~/lib/components/modals/Modal.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import { useContext } from "vite-ssr/vue";
 import { HangarProjectPage } from "hangar-internal";
-import { computed, ref, watch } from "vue";
+import { computed, inject, ref, watch } from "vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import InputSelect, { Option } from "~/lib/components/ui/InputSelect.vue";
 import { useInternalApi } from "~/composables/useApi";
@@ -23,6 +23,8 @@ const ctx = useContext();
 const route = useRoute();
 const router = useRouter();
 const backendData = useBackendDataStore();
+
+const updateProjectPagesCallback = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
 
 const pageRoots = computed(() => flatDeep(props.pages, ""));
 const name = ref("");
@@ -69,6 +71,11 @@ async function createPage() {
       name: name.value,
       parentId: parent.value,
     });
+
+    if (updateProjectPagesCallback) {
+      updateProjectPagesCallback(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.projectId}`, false, "get"));
+    }
+
     await router.push(`/${route.params.user}/${route.params.project}/pages/${slug}`);
   } catch (e) {
     handleRequestError(e, ctx, i18n);

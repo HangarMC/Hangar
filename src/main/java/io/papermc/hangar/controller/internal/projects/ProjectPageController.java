@@ -7,6 +7,7 @@ import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectPage;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
+import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
+import java.util.Collection;
 
 @Anyone
 @Controller
@@ -86,6 +88,14 @@ public class ProjectPageController extends HangarComponent {
     @GetMapping(path = "/page/{author}/{slug}/**", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ExtendedProjectPage> getProjectPage(@PathVariable String author, @PathVariable String slug) {
         return ResponseEntity.ok(projectPageService.getProjectPage(author, slug, request.getRequestURI()));
+    }
+
+    @Unlocked
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
+    @GetMapping(value = "/list/{projectId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Collection<HangarProjectPage>> listProjectPages(@PathVariable final long projectId) {
+        return ResponseEntity.ok(projectPageService.getProjectPages(projectId).values());
     }
 
     @Unlocked

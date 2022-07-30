@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { PropType } from "vue";
+import { PropType, provide } from "vue";
 import { User } from "hangar-api";
 import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
@@ -12,6 +12,7 @@ import ProjectNav from "~/components/projects/ProjectNav.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
+import { HangarProject, HangarProjectPage } from "hangar-internal";
 
 defineProps({
   user: {
@@ -29,6 +30,10 @@ if (!project || !project.value) {
 } else {
   useHead(useSeo(project.value.name, project.value.description, route, projectIconUrl(project.value.namespace.owner, project.value.namespace.slug)));
 }
+
+provide("updateProjectPages", function (pages: HangarProjectPage[]) {
+  if (project && project.value) project.value.pages = pages;
+});
 </script>
 
 <template>
@@ -37,7 +42,7 @@ if (!project || !project.value) {
     <ProjectNav :project="project"></ProjectNav>
     <router-view v-slot="{ Component }">
       <Suspense>
-        <component :is="Component" :user="user" :project="project" />
+        <component :is="Component" v-model:project="project" :user="user" />
         <template #fallback> Loading... </template>
       </Suspense>
     </router-view>
