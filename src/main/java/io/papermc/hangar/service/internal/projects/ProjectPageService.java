@@ -105,13 +105,16 @@ public class ProjectPageService extends HangarComponent {
     }
 
     public ExtendedProjectPage getProjectPage(String author, String slug, String requestUri) {
-        String path = requestUri.replace("/api/internal/pages/page/" + author + "/" + slug + "/", "");
+        String path = requestUri.replace("/api/internal/pages/page/" + author + "/" + slug, "");
         ExtendedProjectPage pageTable;
-        if (path.equals("/")) {
+        if (path.equals("") || path.equals("/")) {
             pageTable = hangarProjectPagesDAO.getHomePage(author, slug);
         } else {
             if (path.endsWith("/")) {
                 path = path.substring(0, path.length() - 1);
+            }
+            if (path.startsWith("/")) {
+                path = path.substring(1);
             }
             pageTable = hangarProjectPagesDAO.getProjectPage(author, slug, path);
         }
