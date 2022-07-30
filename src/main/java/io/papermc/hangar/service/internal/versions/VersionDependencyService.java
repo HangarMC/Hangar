@@ -120,53 +120,64 @@ public class VersionDependencyService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.tooManyDependencies");
         }
 
-        Map<String, ProjectVersionDependencyTable> projectVersionDependencies = projectVersionDependenciesDAO.getForVersionAndPlatform(versionId, form.getPlatform());
-        final Set<ProjectVersionDependencyTable> toBeRemoved = new HashSet<>();
-        final Set<ProjectVersionDependencyTable> toBeUpdated = new HashSet<>();
-        final Set<ProjectVersionDependencyTable> toBeAdded = new HashSet<>();
-        projectVersionDependencies.forEach((name, dependency) -> {
-            PluginDependency otherDep = form.getPluginDependencies().get(name);
-            if (otherDep == null) {
-                toBeRemoved.add(dependency);
-            } else {
-                boolean updated = false;
-                if (dependency.isRequired() != otherDep.isRequired()) {
-                    dependency.setRequired(otherDep.isRequired());
-                    updated = true;
-                }
+        final Map<String, ProjectVersionDependencyTable> projectVersionDependencies = projectVersionDependenciesDAO.getForVersionAndPlatform(versionId, form.getPlatform());
+        final List<ProjectVersionDependencyTable> toBeRemoved = new ArrayList<>();
+        final List<ProjectVersionDependencyTable> toBeUpdated = new ArrayList<>();
+        final List<ProjectVersionDependencyTable> toBeAdded = new ArrayList<>();
 
-                if (otherDep.getExternalUrl() != null && !dependency.getExternalUrl().equals(otherDep.getExternalUrl())) {
-                    dependency.setExternalUrl(otherDep.getExternalUrl());
-                    dependency.setProjectId(null);
-                    updated = true;
-                } else if (otherDep.getNamespace() != null) {
-                    dependency.setExternalUrl(null);
-                    ProjectTable projectTable = projectsDAO.getBySlug(otherDep.getNamespace().getOwner(), otherDep.getNamespace().getSlug());
-                    if (projectTable == null) {
-                        throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidProjectNamespace", otherDep.getNamespace().getOwner() + "/" + otherDep.getNamespace().getSlug());
-                    }
-                    if (dependency.getProjectId() != projectTable.getId()) {
-                        dependency.setProjectId(projectTable.getId());
-                        updated = true;
-                    }
-                }
-                if (updated) {
-                    toBeUpdated.add(dependency);
-                }
-                form.getPluginDependencies().remove(name);
+        // Update/remove existing dependencies
+        for (final Map.Entry<String, ProjectVersionDependencyTable> entry : projectVersionDependencies.entrySet()) {
+            final ProjectVersionDependencyTable dependencyTable = entry.getValue();
+            final PluginDependency dependency = form.getPluginDependencies().get(entry.getKey());
+            if (dependency == null) {
+                toBeRemoved.add(dependencyTable);
+                continue;
             }
-        });
-        form.getPluginDependencies().forEach((name, dependency) -> {
-            Long pdProjectId = null;
-            if (dependency.getNamespace() != null) {
-                ProjectTable projectTable = projectsDAO.getBySlug(dependency.getNamespace().getOwner(), dependency.getNamespace().getSlug());
+
+            boolean updated = false;
+            if (dependencyTable.isRequired() != dependency.isRequired()) {
+                dependencyTable.setRequired(dependency.isRequired());
+                updated = true;
+            }
+
+            if (dependency.getExternalUrl() != null && !dependency.getExternalUrl().equals(dependencyTable.getExternalUrl())) {
+                dependencyTable.setExternalUrl(dependency.getExternalUrl());
+                dependencyTable.setProjectId(null);
+                updated = true;
+            } else if (dependency.getNamespace() != null) {
+                final ProjectTable projectTable = projectsDAO.getBySlug(dependency.getNamespace().getOwner(), dependency.getNamespace().getSlug());
                 if (projectTable == null) {
                     throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidProjectNamespace", dependency.getNamespace().getOwner() + "/" + dependency.getNamespace().getSlug());
                 }
+
+                if (dependencyTable.getExternalUrl() != null || dependencyTable.getProjectId() != projectTable.getId()) {
+                    dependencyTable.setExternalUrl(null);
+                    dependencyTable.setProjectId(projectTable.getId());
+                    updated = true;
+                }
+            }
+            if (updated) {
+                toBeUpdated.add(dependencyTable);
+            }
+            form.getPluginDependencies().remove(entry.getKey());
+        }
+
+        // Add remaining new dependencies
+        for (final Map.Entry<String, PluginDependency> entry : form.getPluginDependencies().entrySet()) {
+            final PluginDependency dependency = entry.getValue();
+            Long pdProjectId = null;
+            if (dependency.getNamespace() != null) {
+                final ProjectTable projectTable = projectsDAO.getBySlug(dependency.getNamespace().getOwner(), dependency.getNamespace().getSlug());
+                if (projectTable == null) {
+                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidProjectNamespace", dependency.getNamespace().getOwner() + "/" + dependency.getNamespace().getSlug());
+                }
+
                 pdProjectId = projectTable.getId();
             }
-            toBeAdded.add(new ProjectVersionDependencyTable(versionId, form.getPlatform(), name, dependency.isRequired(), pdProjectId, dependency.getExternalUrl()));
-        });
+
+            toBeAdded.add(new ProjectVersionDependencyTable(versionId, form.getPlatform(), entry.getKey(), dependency.isRequired(), pdProjectId, dependency.getExternalUrl()));
+        }
+
         if (!toBeRemoved.isEmpty()) {
             projectVersionDependenciesDAO.deleteAll(toBeRemoved);
             actionLogger.version(LogAction.VERSION_PLUGIN_DEPENDENCIES_REMOVED.create(VersionContext.of(projectId, versionId), "Removed: " + String.join(", ", toBeRemoved.stream().map(ProjectVersionDependencyTable::toLogString).collect(Collectors.toSet())), ""));
