@@ -35,12 +35,12 @@ public class PermissionsController extends HangarComponent implements IPermissio
 
     @Override
     public ResponseEntity<PermissionCheck> hasAllPermissions(List<NamedPermission> permissions, String author, String slug, String organization) {
-        return has(permissions, author, slug, organization, (namedPerms, perm) -> namedPerms.stream().anyMatch(p -> perm.has(p.getPermission())));
+        return has(permissions, author, slug, organization, (namedPerms, perm) -> namedPerms.stream().allMatch(p -> perm.has(p.getPermission())));
     }
 
     @Override
     public ResponseEntity<PermissionCheck> hasAny(List<NamedPermission> permissions, String author, String slug, String organization) {
-        return has(permissions, author, slug, organization, (namedPerms, perm) -> namedPerms.stream().allMatch(p -> perm.has(p.getPermission())));
+        return has(permissions, author, slug, organization, (namedPerms, perm) -> namedPerms.stream().anyMatch(p -> perm.has(p.getPermission())));
     }
 
     @Override
