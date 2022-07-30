@@ -2,7 +2,7 @@ import { useContext } from "vite-ssr";
 import * as domain from "~/composables/useDomain";
 import { Context } from "vite-ssr/vue";
 
-export const useRequest = () => {
+export const useRequest: () => Context["request"] | null = () => {
   if (import.meta.env.SSR) {
     if (domain.isActive()) {
       return domain.get<Context["request"]>("req");
@@ -20,7 +20,7 @@ export const useRequest = () => {
   console.trace();
   return null;
 };
-export const useResponse = () => {
+export const useResponse: () => Context["response"] | null = () => {
   if (import.meta.env.SSR) {
     if (domain.isActive()) {
       return domain.get<Context["response"]>("res");

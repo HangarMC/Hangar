@@ -14,7 +14,14 @@ public class RequestUtil {
 
     private RequestUtil() { }
 
+    private static final String ATTR = "HangarIP";
+
     public static String getRemoteAddress(HttpServletRequest request) {
+        Object attribute = request.getAttribute(ATTR);
+        if (attribute instanceof String ip) {
+            return ip;
+        }
+
         String headers = Collections.list(request.getHeaderNames())
             .stream()
             .collect(Collectors.toMap(
@@ -24,17 +31,25 @@ public class RequestUtil {
         System.out.println("getRemoteAddress from " + headers);
 
         String header = request.getHeader("X-Forwarded-For");
+        String ipHeader = request.getHeader("x-real-ip");
         String cfHeader = request.getHeader("cf-connecting-ip");
+        String ip;
         if (cfHeader != null) {
             System.out.println("found cf " + cfHeader);
-            return cfHeader;
+            ip = cfHeader;
+        } else if (ipHeader != null) {
+            System.out.println("found ip " + ipHeader);
+            ip = ipHeader;
         } else if (header != null) {
             System.out.println("found " + header);
-            return header;
+            ip = header;
         } else {
             System.out.println("fall back to " + request.getRemoteAddr());
-            return request.getRemoteAddr();
+            ip = request.getRemoteAddr();
         }
+
+        request.setAttribute(ATTR,ip);
+        return ip;
     }
 
     public static InetAddress getRemoteInetAddress(HttpServletRequest request) {

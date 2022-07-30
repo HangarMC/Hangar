@@ -8,18 +8,8 @@ import { Ref } from "vue";
 import { authLog, fetchLog } from "~/lib/composables/useLog";
 import { isEmpty } from "lodash-es";
 import { useAuth } from "~/composables/useAuth";
-import { useResponse } from "~/composables/useResReq";
-
-interface StatCookie {
-  // TODO use or remove
-  // eslint-disable-next-line camelcase
-  hangar_stats: string;
-  Path: string;
-  "Max-Age": string;
-  Expires: string;
-  SameSite: true | false | "lax" | "strict" | "none" | undefined;
-  Secure?: boolean;
-}
+import { useRequest, useResponse } from "~/composables/useResReq";
+import { Context } from "vite-ssr/vue";
 
 function request<T>(url: string, method: AxiosRequestConfig["method"], data: object, headers: Record<string, string> = {}, retry = false): Promise<T> {
   const cookies = useCookies();
@@ -152,7 +142,7 @@ export async function processAuthStuff<T>(headers: Record<string, string>, authR
         }
       }
 
-      headers = { ...headers, Authorization: `HangarAuth ${token}` };
+      headers = { ...headers, Authorization: `HangarAuth ${token}`, ...forwardHeader() };
     } else {
       authLog("can't forward token, no cookie");
       if (authRequired) {
@@ -199,6 +189,25 @@ export async function processAuthStuff<T>(headers: Record<string, string>, authR
     }
   }
   return handler(headers);
+}
+
+function forwardHeader(): Record<string, string> {
+  const req: Context["request"] = useRequest();
+  const result: Record<string, string> = {};
+  if (!req) return result;
+
+  const forward = (header: string) => {
+    if (req.headers[header]) {
+      result[header] = req.headers[header];
+    }
+  };
+
+  forward("cf-connecting-ip");
+  forward("cf-ipcountry");
+  forward("x-forwarded-host");
+  forward("x-real-ip");
+
+  return result;
 }
 
 export async function fetchIfNeeded<T>(func: () => Promise<T>, ref: Ref<T>) {
