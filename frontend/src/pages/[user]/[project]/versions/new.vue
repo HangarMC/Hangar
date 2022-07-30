@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { PluginDependency } from "hangar-api";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
@@ -93,7 +94,24 @@ const steps: Step[] = [
       return true;
     },
     disableNext: computed(() => {
-      return selectedPlatformsData.value.some((p) => (pendingVersion.value?.platformDependencies[p.enumName].length ?? 0) < 1);
+      if (selectedPlatformsData.value.some((p) => (pendingVersion.value?.platformDependencies[p.enumName].length ?? 0) < 1)) {
+        return true;
+      }
+      if (dependencyTables.value) {
+        for (let i = 0; i < selectedPlatforms.value.length; i++) {
+          const dependencyTable = dependencyTables.value[i];
+          if (
+            dependencyTable.dependencies &&
+            dependencyTable.dependencies.some(
+              (dependency: PluginDependency) =>
+                (dependency.namespace === null && dependency.externalUrl === null) || !dependency.name.length || dependency.name.length === 0
+            )
+          ) {
+            return true;
+          }
+        }
+      }
+      return false;
     }),
   },
   {
