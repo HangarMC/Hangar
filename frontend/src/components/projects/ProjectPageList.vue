@@ -22,7 +22,7 @@ const route = useRoute();
   <Card>
     <template #header>
       <div class="inline-flex w-full flex-cols space-between">
-        <span class="flex-grow">{{ i18n.t("page.plural") }}</span>
+        <h3 class="flex-grow">{{ i18n.t("page.plural") }}</h3>
         <NewPageModal v-if="hasPerms(NamedPermission.EDIT_PAGE)" :pages="project.pages" :project-id="project.id" activator-class="mr-2" />
       </div>
     </template>

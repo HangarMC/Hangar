@@ -132,7 +132,7 @@ interface EditableMember {
   <Card :class="props.class">
     <template #header>
       <div class="inline-flex w-full flex-cols space-between">
-        <span class="flex-grow">{{ i18n.t("project.members") }}</span>
+        <h3 class="flex-grow">{{ i18n.t("project.members") }}</h3>
       </div>
     </template>
 

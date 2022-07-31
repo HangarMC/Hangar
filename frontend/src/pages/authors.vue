@@ -23,7 +23,7 @@ const headers = [
   { name: "projectCount", title: i18n.t("pages.headers.projects"), sortable: true },
 ] as Header[];
 
-useHead(useSeo(i18n.t("pages.authorsTitle"), null, route, null));
+useHead(useSeo(i18n.t("pages.authorsTitle"), "Hangar Project Authors", route, null));
 </script>
 
 <template>

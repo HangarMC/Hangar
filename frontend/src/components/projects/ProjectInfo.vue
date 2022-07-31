@@ -11,7 +11,6 @@ import { NamedPermission } from "~/types/enums";
 import { HangarProject } from "hangar-internal";
 import DonationModal from "~/components/donation/DonationModal.vue";
 import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
-import { MenuItem } from "@headlessui/vue";
 
 const props = defineProps<{
   project: HangarProject;
@@ -22,7 +21,9 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
 
 <template>
   <Card>
-    <template #header>{{ i18n.t("project.info.title") }}</template>
+    <template #header>
+      <h3>{{ i18n.t("project.info.title") }}</h3>
+    </template>
     <template #default>
       <table class="w-full">
         <tbody>

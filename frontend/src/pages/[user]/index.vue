@@ -74,7 +74,7 @@ const buttons = computed<UserButton[]>(() => {
 
 const isCurrentUser = computed<boolean>(() => authStore.user != null && authStore.user.name === props.user.name);
 
-useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.name)));
+useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + props.user.tagline, route, avatarUrl(props.user.name)));
 </script>
 
 <template>

@@ -9,7 +9,7 @@ export function useSeo(
   image: string | null
 ): HeadObject {
   description = description || "Plugin repository for Paper plugins and more!";
-  const canonical = baseUrl() + (route.fullPath.endsWith("/") ? route.fullPath : `${route.fullPath}/`);
+  const canonical = baseUrl() + (route.fullPath.endsWith("/") ? route.fullPath.substring(0, route.fullPath.length - 1) : route.fullPath);
   image = image || "https://docs.papermc.io/img/paper.png";
   image = image.startsWith("http") ? image : baseUrl() + image;
   title = title ? title + " | Hangar" : "Hangar";
@@ -17,49 +17,40 @@ export function useSeo(
     title,
     link: [{ rel: "canonical", href: canonical }],
     meta: [
-      { hid: "description", name: "description", content: description },
+      { property: "description", name: "description", content: description },
       {
         property: "og:description",
         name: "og:description",
-        vmid: "og:description",
-        hid: "og:description",
         content: description,
       },
       {
         property: "twitter:description",
         name: "twitter:description",
-        vmid: "twitter:description",
-        hid: "twitter:description",
         content: description,
       },
       {
         property: "og:title",
         name: "og:title",
-        hid: "og:title",
         content: title,
       },
       {
         property: "twitter:title",
         name: "twitter:title",
-        hid: "twitter:title",
         content: title,
       },
       {
         property: "og:url",
         name: "og:url",
-        hid: "og:url",
         content: canonical,
       },
       {
         property: "twitter:url",
         name: "twitter:url",
-        hid: "twitter:url",
         content: canonical,
       },
       {
         property: "og:image",
         name: "og:image",
-        hid: "og:image",
         content: image,
       },
     ],

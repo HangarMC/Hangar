@@ -9,10 +9,7 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 import ProjectHeader from "~/components/projects/ProjectHeader.vue";
 import ProjectNav from "~/components/projects/ProjectNav.vue";
-import { useHead } from "@vueuse/head";
-import { useSeo } from "~/composables/useSeo";
-import { projectIconUrl } from "~/composables/useUrlHelper";
-import { HangarProject, HangarProjectPage } from "hangar-internal";
+import { HangarProjectPage } from "hangar-internal";
 
 defineProps({
   user: {
@@ -27,8 +24,6 @@ const route = useRoute();
 const project = await useProject(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, ctx, i18n));
 if (!project || !project.value) {
   await useRouter().replace(useErrorRedirect(route, 404, "Not found"));
-} else {
-  useHead(useSeo(project.value.name, project.value.description, route, projectIconUrl(project.value.namespace.owner, project.value.namespace.slug)));
 }
 
 provide("updateProjectPages", function (pages: HangarProjectPage[]) {

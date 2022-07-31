@@ -123,7 +123,7 @@ function requiresConfirmation(): boolean {
           />
           <router-link class="!sm:ml-0" :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</router-link>
           <span class="text-gray-500 dark:text-gray-400"> / </span>
-          <span class="font-semibold">{{ project.name }}</span>
+          <h1 class="font-semibold">{{ project.name }}</h1>
         </div>
         <p>{{ project.description }}</p>
       </div>

@@ -46,15 +46,6 @@ if (!route.params.platform) {
   const entry = versionMap.keys().next();
   await (entry.value ? useRouter().replace({ path: `${path}/${entry.value.toLowerCase()}` }) : useRouter().replace(useErrorRedirect(route, 404, "Not found")));
 }
-
-useHead(
-  useSeo(
-    (props.project.name + " " + route.params.version) as string,
-    props.project.description,
-    route,
-    projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)
-  )
-);
 </script>
 
 <template>

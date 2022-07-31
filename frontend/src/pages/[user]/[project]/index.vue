@@ -12,9 +12,6 @@ import { useRoute, useRouter } from "vue-router";
 import { useContext } from "vite-ssr/vue";
 import Markdown from "~/components/Markdown.vue";
 import ProjectPageList from "~/components/projects/ProjectPageList.vue";
-import { useHead } from "@vueuse/head";
-import { useSeo } from "~/composables/useSeo";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import { ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -56,7 +53,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
   return `/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${version.name}`;
 }
 
-useHead(useSeo(props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
+// useSeo is in ProjectPageMarkdown
 </script>
 
 <template>
@@ -92,7 +89,7 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
           @save="saveSponsors"
         />
         <template v-else>
-          <h1 class="mt-3 ml-5 text-xl">{{ i18n.t("project.sponsors") }}</h1>
+          <h2 class="mt-3 ml-5 text-xl">{{ i18n.t("project.sponsors") }}</h2>
           <Markdown :raw="sponsors" class="pt-0" />
         </template>
       </Card>
@@ -100,7 +97,9 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
     <section class="basis-full md:basis-3/12 space-y-4 min-w-280px">
       <ProjectInfo :project="project" />
       <Card>
-        <template #header>{{ i18n.t("project.pinnedVersions") }}</template>
+        <template #header>
+          <h3>{{ i18n.t("project.pinnedVersions") }}</h3>
+        </template>
         <ul class="divide-y divide-blue-500/50">
           <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.name}`" class="p-1 py-2">
             <div class="flex">

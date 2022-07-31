@@ -47,12 +47,16 @@ onMounted(() => {
   bundle.onload = () => document.body.append(script);
 });
 
-useHead(useSeo(i18n.t("apiDocs.title"), null, route, null));
+useHead(useSeo(i18n.t("apiDocs.title"), "API Docs for the Hangar REST API", route, null));
 </script>
 
 <template>
   <div class="bg-gray-100 dark:(bg-gray-200) rounded-md my-auto mx-2 py-1" lg="w-2/3 min-w-2/3 max-w-2/3">
-    <div id="swagger-ui" />
+    <div id="swagger-ui">
+      <h1 class="text-3xl text-bold">Hangar API</h1>
+      <h2 class="text-2xl">API Docs for the Hangar REST API</h2>
+      <p>Loading...</p>
+    </div>
   </div>
 </template>
 

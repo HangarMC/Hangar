@@ -152,11 +152,11 @@ async function restoreVersion() {
     <section class="basis-full md:basis-9/12 flex-grow overflow-auto">
       <div class="flex flex-wrap gap-2 justify-between">
         <div>
-          <h1 class="text-3xl sm:inline-flex items-center gap-x-1">
+          <h2 class="text-3xl sm:inline-flex items-center gap-x-1">
             <TagComponent class="mr-1" :name="projectVersion.channel.name" :color="{ background: projectVersion.channel.color }" :short-form="true" />
             {{ projectVersion.name }}
-          </h1>
-          <h2>
+          </h2>
+          <h3>
             <span class="inline-flex <sm:flex-wrap ml-1">
               {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
               <span v-if="projectVersion.fileInfo?.sizeBytes" class="inline-flex items-center sm:ml-3">
@@ -164,7 +164,7 @@ async function restoreVersion() {
                 {{ filesize(projectVersion.fileInfo.sizeBytes) }}
               </span>
             </span>
-          </h2>
+          </h3>
           <em v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy" class="text-lg ml-1">
             {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
           </em>
@@ -201,7 +201,9 @@ async function restoreVersion() {
     </section>
     <section class="basis-full md:basis-3/12 flex-grow space-y-4">
       <Card v-if="hasPerms(NamedPermission.DELETE_VERSION) || hasPerms(NamedPermission.VIEW_LOGS) || hasPerms(NamedPermission.REVIEWER)">
-        <template #header>{{ i18n.t("version.page.manage") }}</template>
+        <template #header>
+          <h3>{{ i18n.t("version.page.manage") }}</h3>
+        </template>
 
         <span class="inline-flex items-center">
           <IconMdiInformation class="mr-1" />
@@ -274,7 +276,7 @@ async function restoreVersion() {
       <Card>
         <template #header>
           <div class="inline-flex w-full">
-            <span class="flex-grow">{{ i18n.t("version.page.platform") }}</span>
+            <h3 class="flex-grow">{{ i18n.t("version.page.platform") }}</h3>
             <PlatformVersionEditModal v-if="hasPerms(NamedPermission.EDIT_VERSION)" :project="project" :versions="versions" />
           </div>
         </template>
@@ -289,7 +291,7 @@ async function restoreVersion() {
       <Card v-if="projectVersion.pluginDependencies[platform?.name.toUpperCase()] || hasPerms(NamedPermission.EDIT_VERSION)">
         <template #header>
           <div class="inline-flex w-full">
-            <span class="flex-grow">{{ i18n.t("version.page.dependencies") }}</span>
+            <h3 class="flex-grow">{{ i18n.t("version.page.dependencies") }}</h3>
             <DependencyEditModal :project="project" :versions="versions" />
           </div>
         </template>

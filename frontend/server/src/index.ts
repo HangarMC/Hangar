@@ -48,6 +48,7 @@ server.get("*", async (request: Request, response: Response) => {
   });
 
   response.contentType("text/html");
+  response.setHeader("X-Powered-By", "HangarSSR");
   response.writeHead(status || 200, statusText || headers, headers);
   response.end(html);
 });

@@ -10,9 +10,6 @@ import MarkdownEditor from "~/components/MarkdownEditor.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import Card from "~/lib/components/design/Card.vue";
-import { useProjectPage } from "~/composables/useProjectPage";
-import { useHead } from "@vueuse/head";
-import { useSeo } from "~/composables/useSeo";
 import ProjectPageMarkdown from "~/components/projects/ProjectPageMarkdown.vue";
 import { useOpenProjectPages } from "~/composables/useOpenProjectPages";
 
@@ -27,6 +24,7 @@ const route = useRoute();
 const router = useRouter();
 
 const open = await useOpenProjectPages(route, props.project);
+// useSeo is in ProjectPageMarkdown
 </script>
 
 <template>

@@ -129,7 +129,7 @@ function getVisibilityTitle(visibility: Visibility) {
                   <div class="flex flex-wrap">
                     <div class="basis-full md:basis-5/12 truncate">
                       <div class="flex flex-wrap items-center">
-                        <span class="md:basis-full <md:mr-1 text-1.15rem leading-relaxed">{{ item.name }}</span>
+                        <h2 class="md:basis-full <md:mr-1 text-1.15rem leading-relaxed">{{ item.name }}</h2>
                         <span class="md:hidden flex-grow"></span>
                         <Tag :name="item.channel.name" :color="{ background: item.channel.color }" />
                         <IconMdiCancel v-if="item.visibility === Visibility.SOFT_DELETE" class="ml-1"></IconMdiCancel>
@@ -183,10 +183,10 @@ function getVisibilityTitle(visibility: Visibility) {
           <template #header>
             <div class="inline-flex w-full flex-cols space-between">
               <InputCheckbox v-model="filter.allChecked.channels" @change="checkAllChannels" />
-              <span class="flex-grow">{{ i18n.t("version.channels") }}</span>
+              <h3 class="flex-grow">{{ i18n.t("version.channels") }}</h3>
               <Link v-if="hasPerms(NamedPermission.EDIT_TAGS)" :to="`/${project.owner.name}/${project.name}/channels`">
-                <Button size="small" class="ml-2 text-sm"> <IconMdiPencil /> </Button
-              ></Link>
+                <Button size="small" class="ml-2 text-sm"><IconMdiPencil /></Button>
+              </Link>
             </div>
           </template>
 
@@ -203,7 +203,7 @@ function getVisibilityTitle(visibility: Visibility) {
           <template #header>
             <div class="inline-flex">
               <InputCheckbox v-model="filter.allChecked.platforms" class="flex-right" @change="checkAllPlatforms" />
-              {{ i18n.t("version.platforms") }}
+              <h3>{{ i18n.t("version.platforms") }}</h3>
             </div>
           </template>
 

@@ -124,7 +124,8 @@ useHead(meta);
 <template>
   <Container class="flex flex-col items-center gap-4">
     <Alert v-if="loggedOut" type="success">{{ i18n.t("hangar.loggedOut") }}</Alert>
-    <h2 class="text-3xl font-bold uppercase text-center my-4">{{ i18n.t("hangar.projectSearch.title") }}</h2>
+    <h1 class="text-3xl font-bold uppercase text-center mt-4">{{ i18n.t("hangar.projectSearch.title") }}</h1>
+    <h2 class="text-1xl text-center my-2">{{ i18n.t("hangar.projectSearch.subTitle") }}</h2>
     <!-- Search Bar -->
     <div class="relative rounded-md flex shadow-md w-full max-w-screen-md">
       <!-- Text Input -->
@@ -167,12 +168,12 @@ useHead(meta);
     <!-- Sidebar -->
     <Card accent class="min-w-300px flex flex-col gap-4">
       <div class="platforms">
-        <h3 class="font-bold mb-1">
+        <h4 class="font-bold mb-1">
           {{ i18n.t("hangar.projectSearch.platforms") }}
           <span v-if="filters.platform" class="font-normal text-sm hover:(underline) text-gray-600 dark:text-gray-400" @click="filters.platform = null">
             {{ i18n.t("hangar.projectSearch.clear") }}
           </span>
-        </h3>
+        </h4>
         <div class="flex flex-col gap-1">
           <ul>
             <li v-for="platform in backendData.visiblePlatforms" :key="platform.enumName" class="inline-flex w-full">
@@ -184,7 +185,7 @@ useHead(meta);
         </div>
       </div>
       <div v-if="filters.platform" class="versions">
-        <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions") }}</h3>
+        <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions") }}</h4>
         <div class="flex flex-col gap-1 max-h-30 overflow-auto">
           <InputCheckbox
             v-for="version in versions(filters.platform)"
@@ -196,7 +197,7 @@ useHead(meta);
         </div>
       </div>
       <div class="categories">
-        <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.categories") }}</h3>
+        <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.categories") }}</h4>
         <div class="flex flex-col gap-1">
           <InputCheckbox
             v-for="category in backendData.visibleCategories"
@@ -210,7 +211,7 @@ useHead(meta);
         </div>
       </div>
       <div class="licenses">
-        <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.licenses") }}</h3>
+        <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.licenses") }}</h4>
         <div class="flex flex-col gap-1">
           <InputCheckbox v-for="license in backendData.licenses" :key="license" v-model="filters.licenses" :value="license" :label="license">
             <LicenseLogo :license="license" :size="22" class="mr-1" />
