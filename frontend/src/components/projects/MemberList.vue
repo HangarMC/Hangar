@@ -18,6 +18,8 @@ import { useContext } from "vite-ssr/vue";
 import IconMdiClock from "~icons/mdi/clock";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
+import { useAuthStore } from "~/store/auth";
+import MemberLeaveModal from "~/components/modals/MemberLeaveModal.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -27,6 +29,7 @@ const props = withDefaults(
     organization?: boolean;
     author?: string;
     slug?: string;
+    owner: number;
   }>(),
   {
     organization: false,
@@ -51,8 +54,16 @@ const store = useBackendDataStore();
 const route = useRoute();
 const router = useRouter();
 const ctx = useContext();
+const authStore = useAuthStore();
 const roles: Role[] = props.organization ? store.orgRoles : store.projectRoles;
 
+const canLeave = computed<boolean>(() => {
+  if (!authStore.user) {
+    return false;
+  }
+
+  return props.members.some((member) => member.user.id === authStore.user?.id && member.user.id !== props.owner);
+});
 const canEdit = computed<boolean>(() => {
   return hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS);
 });
@@ -113,7 +124,7 @@ function convertMember(member: JoinableMember): EditableMember {
 }
 
 async function doSearch(val: string) {
-  result.value = ["Dum", "Dum2"];
+  result.value = [];
   const users = await useApi<PaginatedResult<User>>("users", false, "get", {
     query: val,
     limit: 25,
@@ -133,6 +144,7 @@ interface EditableMember {
     <template #header>
       <div class="inline-flex w-full flex-cols space-between">
         <h3 class="flex-grow">{{ i18n.t("project.members") }}</h3>
+        <MemberLeaveModal v-if="canLeave" :author="author" :organization="organization" :slug="slug" />
       </div>
     </template>
 

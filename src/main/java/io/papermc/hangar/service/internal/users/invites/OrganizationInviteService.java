@@ -37,11 +37,6 @@ public class OrganizationInviteService extends InviteService<OrganizationContext
     }
 
     @Override
-    LogAction<OrganizationContext> getInviteUnacceptAction() {
-        return LogAction.ORGANIZATION_INVITE_UNACCEPTED;
-    }
-
-    @Override
     LogAction<OrganizationContext> getInviteDeclineAction() {
         return LogAction.ORGANIZATION_INVITE_DECLINED;
     }

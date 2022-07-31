@@ -11,7 +11,6 @@ import io.papermc.hangar.service.internal.perms.roles.ProjectRoleService;
 import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService.ProjectNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -34,11 +33,6 @@ public class ProjectInviteService extends InviteService<ProjectContext, ProjectR
     @Override
     LogAction<ProjectContext> getInviteAcceptAction() {
         return LogAction.PROJECT_MEMBER_ADDED;
-    }
-
-    @Override
-    LogAction<ProjectContext> getInviteUnacceptAction() {
-        return LogAction.PROJECT_INVITE_UNACCEPTED;
     }
 
     @Override

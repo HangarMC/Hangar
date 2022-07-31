@@ -162,7 +162,7 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
           </ul>
         </Card>
       </template>
-      <MemberList v-else :members="organization.members" :roles="orgRoles" organization :author="user.name" />
+      <MemberList v-else :members="organization.members" :roles="orgRoles" organization :author="user.name" :owner="organization.owner.userId" />
     </div>
   </div>
 </template>

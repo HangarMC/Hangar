@@ -245,13 +245,11 @@ public class HangarUserController extends HangarComponent {
         switch (status) {
             case DECLINE -> inviteService.declineInvite(table);
             case ACCEPT -> inviteService.acceptInvite(table);
-            case UNACCEPT -> inviteService.unacceptInvite(table);
         }
     }
 
     public enum InviteStatus {
         ACCEPT,
-        DECLINE,
-        UNACCEPT,
+        DECLINE
     }
 }

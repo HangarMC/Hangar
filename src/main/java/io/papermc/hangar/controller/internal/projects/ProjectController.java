@@ -186,6 +186,15 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#author, #slug}")
+    @PostMapping(path = "/project/{author}/{slug}/members/leave", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void leaveProject(@PathVariable String author, @PathVariable String slug) {
+        ProjectTable projectTable = projectService.getProjectTable(author, slug);
+        projectMemberService.leave(projectTable);
+    }
+
+    @Unlocked
     @VisibilityRequired(type = Type.PROJECT, args = "{#projectId}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping("/project/{id}/star/{state}")

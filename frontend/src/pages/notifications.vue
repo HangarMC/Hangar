@@ -78,12 +78,10 @@ async function markNotificationRead(notification: HangarNotification, router = t
   }
 }
 
-async function updateInvite(invite: Invite, status: "accept" | "decline" | "unaccept") {
+async function updateInvite(invite: Invite, status: "accept" | "decline") {
   await useInternalApi(`invites/${invite.type}/${invite.roleTableId}/${status}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n));
   if (status === "accept") {
     invite.accepted = true;
-  } else if (status === "unaccept") {
-    invite.accepted = false;
   } else {
     invites.value[invite.type] = invites.value[invite.type].filter((i) => i.roleTableId !== invite.roleTableId);
   }
@@ -151,10 +149,7 @@ function updateSelectedNotifications() {
       <Card v-for="(invite, index) in filteredInvites" :key="index">
         {{ i18n.t(!invite.accepted ? "notifications.invited" : "notifications.inviteAccepted", [invite.type]) }}:
         <router-link :to="invite.url" exact>{{ invite.name }}</router-link>
-        <template v-if="invite.accepted">
-          <Button class="ml-2" @click="updateInvite(invite, 'unaccept')">{{ i18n.t("notifications.invite.btns.unaccept") }}</Button>
-        </template>
-        <template v-else>
+        <template v-if="!invite.accepted">
           <Button class="mr-2 ml-2" @click="updateInvite(invite, 'accept')">{{ i18n.t("notifications.invite.btns.accept") }}</Button>
           <Button @click="updateInvite(invite, 'decline')">{{ i18n.t("notifications.invite.btns.decline") }}</Button>
         </template>

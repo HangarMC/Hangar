@@ -1,6 +1,5 @@
 package io.papermc.hangar.controller.internal;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
@@ -46,8 +45,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -123,6 +120,15 @@ public class OrganizationController extends HangarComponent {
     public void removeProjectMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
         OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
         memberService.removeMember(member, organizationTable);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#name}")
+    @PostMapping(path = "/org/{name}/members/leave", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void leaveProject(@PathVariable String name) {
+        OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+        memberService.leave(organizationTable);
     }
 
     @Unlocked

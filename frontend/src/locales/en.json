@@ -611,7 +611,12 @@
       "addUser": "Add User...",
       "create": "Create",
       "editUser": "Edit User",
-      "invitedAs": "Pending invite as {0}"
+      "invitedAs": "Pending invite as {0}",
+      "leave": "Leave",
+      "leaveModal": {
+        "title": "Leave {0}",
+        "description": "Are you sure you want to leave {0}? After you leave, you can only rejoin after receiving a new invitation."
+      }
     }
   },
   "notifications": {
