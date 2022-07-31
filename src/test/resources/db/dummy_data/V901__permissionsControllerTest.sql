@@ -6,4 +6,4 @@ INSERT INTO api_keys (id, created_at, name, owner_id, token_identifier, token, r
 VALUES (3, '2022-07-30 18:42:24.280005 +00:00', 'seeHidden', 1, 'bcbca881-87ba-4136-880d-4b387cb6cf03', '4c903e22e01448afc8ab50becc9d15152ec5131b6d54b24b443b3453fc85e5cb', '0000000000000000000000000000000000000010000000000000000000000000');
 
 INSERT INTO projects (id, created_at, name, slug, owner_name, owner_id, topic_id, post_id, category, description, visibility, keywords, homepage, issues, source, support, license_type, license_name, license_url, forum_sync, donation_enabled, donation_subject, sponsors, wiki)
-VALUES (2, '2022-07-26 07:35:56.341943 +00:00', 'Test', 'Test', 'paper', 3, null, null, 0, 'Test', 1, '', null, null, null, null, 'Unspecified', null, null, true, false, null, '', null);
+VALUES (1, '2022-07-26 07:35:56.341943 +00:00', 'Test', 'Test', 'test', 1, null, null, 0, 'Test', 1, '{}', null, null, null, null, 'Unspecified', null, null, true, false, null, '', null);
