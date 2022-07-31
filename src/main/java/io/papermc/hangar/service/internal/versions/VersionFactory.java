@@ -313,8 +313,7 @@ public class VersionFactory extends HangarComponent {
                     Files.createDirectories(newVersionJarPath.getParent());
                 }
 
-                Files.copy(tmpVersionJar, newVersionJarPath, StandardCopyOption.REPLACE_EXISTING);
-                Files.deleteIfExists(tmpVersionJar);
+                Files.move(tmpVersionJar, newVersionJarPath, StandardCopyOption.REPLACE_EXISTING);
                 if (Files.notExists(newVersionJarPath)) {
                     throw new IOException("Didn't successfully move the jar");
                 }

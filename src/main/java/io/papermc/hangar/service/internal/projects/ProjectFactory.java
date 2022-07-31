@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Set;
 
 @Service
@@ -92,17 +93,21 @@ public class ProjectFactory extends HangarComponent {
 
     @Transactional
     public String renameProject(final String author, final String slug, final String newName, final boolean skipNameCheck) {
-        String compactNewName = StringUtils.compact(newName);
-        ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
-        String oldName = projectTable.getName();
+        final String compactNewName = StringUtils.compact(newName);
+        final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
+        final String oldName = projectTable.getName();
+        final String oldSlug = projectTable.getSlug();
         this.checkProjectAvailability(projectTable.getOwnerId(), compactNewName, skipNameCheck);
+
+        final String newSlug = StringUtils.slugify(compactNewName);
         projectTable.setName(compactNewName);
-        projectTable.setSlug(StringUtils.slugify(compactNewName));
+        projectTable.setSlug(newSlug);
         this.projectsDAO.update(projectTable);
         this.actionLogger.project(LogAction.PROJECT_RENAMED.create(ProjectContext.of(projectTable.getId()), author + "/" + compactNewName, author + "/" + oldName));
         this.jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
         this.projectService.refreshHomeProjects();
-        return StringUtils.slugify(compactNewName);
+        projectFiles.renameProject(projectTable.getOwnerName(), oldSlug, newSlug);
+        return newSlug;
     }
 
     public void checkProjectAvailability(final long userId, final String name) {
@@ -154,10 +159,10 @@ public class ProjectFactory extends HangarComponent {
     @Transactional
     public void hardDelete(final ProjectTable projectTable, final String comment) {
         this.actionLogger.project(LogAction.PROJECT_VISIBILITY_CHANGED.create(ProjectContext.of(projectTable.getId()), "Deleted: " + comment, projectTable.getVisibility().getTitle()));
-        FileUtils.deleteDirectory(this.projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getSlug()));
         this.jobService.save(new DeleteDiscourseTopicJob(projectTable.getId()));
         this.projectsDAO.delete(projectTable);
         this.projectService.refreshHomeProjects();
+        FileUtils.deleteDirectory(this.projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getSlug()));
     }
 
     @EnumByName

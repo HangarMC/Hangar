@@ -140,12 +140,12 @@ public class VersionService extends HangarComponent {
 
     private void renameVersion(final ProjectVersionTable projectVersionTable, final String newName) {
         final String compactNewName = StringUtils.compact(newName);
+        final String oldVersion = projectVersionTable.getVersionString();
         projectVersionTable.setVersionString(compactNewName);
         this.projectVersionsDAO.update(projectVersionTable);
 
         final ProjectTable project = projectsDAO.getById(projectVersionTable.getProjectId());
-        //TODO bork?
-        projectFiles.renameVersion(project.getOwnerName(), project.getSlug(), projectVersionTable.getVersionString(), compactNewName);
+        projectFiles.renameVersion(project.getOwnerName(), project.getSlug(), oldVersion, compactNewName);
     }
 
     @Transactional

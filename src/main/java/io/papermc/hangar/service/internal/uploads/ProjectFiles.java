@@ -3,16 +3,17 @@ package io.papermc.hangar.service.internal.uploads;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.util.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Component
 public class ProjectFiles {
@@ -63,8 +64,9 @@ public class ProjectFiles {
         final Path oldProjectDir = getProjectDir(owner, slug);
         final Path newProjectDir = getProjectDir(owner, newSlug);
         try {
+            Files.createDirectories(newProjectDir);
             Files.move(oldProjectDir, newProjectDir, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
