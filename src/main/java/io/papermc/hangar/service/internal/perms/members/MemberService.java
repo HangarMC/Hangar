@@ -20,7 +20,6 @@ import io.papermc.hangar.service.internal.users.notifications.JoinableNotificati
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Transactional
@@ -80,14 +79,16 @@ public abstract class MemberService<
         membersDao.insert(constructor.create(roleTable.getUserId(), roleTable.getPrincipalId()));
     }
 
-    // TODO user's removing themselves from projects/organizations
     @Transactional
-    public void removeMember(RT roleTable, String userName, boolean removeRole) {
-        membersDao.delete(roleTable.getPrincipalId(), roleTable.getUserId());
-        if (removeRole) {
-            roleService.deleteRole(roleTable);
+    public void leave(final J joinable) {
+        final RT role = roleService.getRole(joinable.getId(), getHangarUserId());
+        if (invalidRolesToChange().contains(role.getRole())) {
+            throw new HangarApiException(this.errorPrefix + "invalidRole", role.getRole().getTitle());
         }
-        logMemberRemoval(roleTable, "Removed:" + userName + " (" + roleTable.getRole().getTitle() + ")");
+
+        membersDao.delete(role.getPrincipalId(), role.getUserId());
+        roleService.deleteRole(role);
+        logMemberRemoval(role, "Left:" + getHangarPrincipal().getName() + " (" + role.getRole().getTitle() + ")");
     }
 
     @Transactional

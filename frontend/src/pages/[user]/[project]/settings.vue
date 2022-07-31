@@ -390,7 +390,13 @@ useHead(
         </template>
       </Tabs>
     </Card>
-    <MemberList :members="project.members" :author="project.owner.name" :slug="project.name" class="basis-full md:basis-3/12 h-max" />
+    <MemberList
+      :members="project.members"
+      :author="project.owner.name"
+      :slug="project.name"
+      :owner="project.owner.userId"
+      class="basis-full md:basis-3/12 h-max"
+    />
   </div>
 </template>
 

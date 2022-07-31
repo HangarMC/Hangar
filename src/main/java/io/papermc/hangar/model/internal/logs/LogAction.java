@@ -65,7 +65,6 @@ public class LogAction<LC extends LogContext<? extends LoggedActionTable, LC>> {
     // TODO create organization
     public static final LogAction<OrganizationContext> ORGANIZATION_INVITES_SENT = new LogAction<>(PGLoggedAction.ORGANIZATION_INVITES_SENT, "Organization Invites Sent");
     public static final LogAction<OrganizationContext> ORGANIZATION_INVITE_DECLINED = new LogAction<>(PGLoggedAction.ORGANIZATION_INVITE_DECLINED, "Organization Invite Declined");
-    public static final LogAction<OrganizationContext> ORGANIZATION_INVITE_UNACCEPTED = new LogAction<>(PGLoggedAction.ORGANIZATION_INVITE_UNACCEPTED, "Organization Invite Unaccepted");
     public static final LogAction<OrganizationContext> ORGANIZATION_MEMBER_ADDED = new LogAction<>(PGLoggedAction.ORGANIZATION_MEMBER_ADDED, "Organization Member Added");
     public static final LogAction<OrganizationContext> ORGANIZATION_MEMBERS_REMOVED = new LogAction<>(PGLoggedAction.ORGANIZATION_MEMBERS_REMOVED, "Organization Members Removed");
     public static final LogAction<OrganizationContext> ORGANIZATION_MEMBER_ROLES_CHANGED = new LogAction<>(PGLoggedAction.ORGANIZATION_MEMBER_ROLES_CHANGED, "Organization Member Roles Changed");

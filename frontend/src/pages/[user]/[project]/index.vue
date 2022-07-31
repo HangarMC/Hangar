@@ -131,7 +131,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
         </ul>
       </Card>
       <ProjectPageList :project="project" :open="openProjectPages" />
-      <MemberList :members="project.members" :author="project.owner.name" :slug="project.name" class="overflow-visible" />
+      <MemberList :members="project.members" :author="project.owner.name" :slug="project.name" :owner="project.owner.userId" class="overflow-visible" />
     </section>
   </div>
 </template>

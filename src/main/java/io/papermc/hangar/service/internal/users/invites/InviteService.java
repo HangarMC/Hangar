@@ -19,7 +19,6 @@ import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,22 +109,6 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
 
     protected void logInviteAccepted(RT roleTable, UserTable userTable) {
         roleTable.logAction(actionLogger, getInviteAcceptAction(), userTable.getName() + " accepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME));
-    }
-
-    public void unacceptInvite(RT roleTable) {
-        if (!roleTable.isAccepted()) {
-            throw new IllegalArgumentException("Cannot un-accept a non-accepted invite");
-        }
-        roleTable = roleService.changeAcceptance(roleTable, false);
-        UserTable userTable = userDAO.getUserTable(roleTable.getUserId());
-        memberService.removeMember(roleTable, userTable.getName(), false);
-        logInviteUnaccepted(roleTable, userTable);
-    }
-
-    abstract LogAction<LC> getInviteUnacceptAction();
-
-    protected void logInviteUnaccepted(RT roleTable, UserTable userTable) {
-        roleTable.logAction(actionLogger, getInviteUnacceptAction(), userTable.getName() + " unaccepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME));
     }
 
     public void declineInvite(RT roleTable) {
