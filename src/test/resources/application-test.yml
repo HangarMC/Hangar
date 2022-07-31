@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:12.8:///
+    username: ""
+    password: ""
+
+  flyway:
+    default-schema: public
+    schemas: public
+    locations:
+      - classpath:db/test_migrations
+      - classpath:db/migration
+      - classpath:db/dummy_data
+    baseline-version: 0.0
+
+fake-user:
+  enabled: true
+  name: test
+  username: test
+  email: test@papermc.io

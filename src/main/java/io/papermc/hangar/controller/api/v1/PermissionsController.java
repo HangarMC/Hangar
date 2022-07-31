@@ -52,12 +52,15 @@ public class PermissionsController extends HangarComponent implements IPermissio
     private Pair<PermissionType, Permission> getPermissionsInScope(String author, String slug, String organization) {
         if (author != null && slug != null && organization == null) { // author & slug
             Permission perms = permissionService.getProjectPermissions(getHangarUserId(), author, slug);
+            perms = getHangarPrincipal().getPossiblePermissions().intersect(perms);
             return new ImmutablePair<>(PermissionType.PROJECT, perms);
         } else if (author == null && slug == null && organization == null) { // current user (I don't think there's a need to see other user's global permissions)
             Permission perms = permissionService.getGlobalPermissions(getHangarUserId());
+            perms = getHangarPrincipal().getPossiblePermissions().intersect(perms);
             return new ImmutablePair<>(PermissionType.GLOBAL, perms);
         } else if (author == null && slug == null) { // just org
             Permission perms = permissionService.getOrganizationPermissions(getHangarUserId(), organization);
+            perms = getHangarPrincipal().getPossiblePermissions().intersect(perms);
             return new ImmutablePair<>(PermissionType.ORGANIZATION, perms);
         } else {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Incorrect request parameters");

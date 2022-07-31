@@ -42,7 +42,7 @@ public class JDBIConfig {
 
     @Bean
     DataSource dataSource(@Value("${spring.datasource.url}") String url, @Value("${spring.datasource.username}") String username, @Value("${spring.datasource.password}") String password) {
-        HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).url(url).username(username).password(password).driverClassName("org.postgresql.Driver").build();
+        HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).url(url).username(username).password(password).build();
         dataSource.setPoolName(UUID.randomUUID().toString());
         return dataSource;
     }
