@@ -727,9 +727,10 @@
   },
   "linkout": {
     "title": "External Link Warning",
-    "text": "You have clicked on an external link to \"{0}\". If you did not intend to visit this link, please go back. Otherwise, click continue.",
+    "text": "You have clicked on an external link to \"{0}\". If you did not intend to visit this link, please go back. Otherwise, click continue. If you trust this domain, you will not be asked again.",
     "abort": "Go Back",
-    "continue": "Continue"
+    "continue": "Continue once",
+    "trust": "Trust and continue"
   },
   "flags": {
     "header": "Reports for",
