@@ -158,6 +158,26 @@ public class ProjectController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#author, #slug}")
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
+    @PostMapping(path = "/project/{author}/{slug}/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void transferProject(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody StringContent nameContent) {
+        final ProjectTable projectTable = projectService.getProjectTable(author, slug);
+        projectInviteService.sendTransferRequest(nameContent.getContent(), projectTable);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#author, #slug}")
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
+    @PostMapping(path = "/project/{author}/{slug}/canceltransfer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void transferProject(@PathVariable String author, @PathVariable String slug) {
+        final ProjectTable projectTable = projectService.getProjectTable(author, slug);
+        projectInviteService.cancelTransferRequest(projectTable);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)

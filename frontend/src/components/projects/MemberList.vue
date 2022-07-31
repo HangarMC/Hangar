@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, handleError, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { JoinableMember } from "hangar-internal";
 import { NamedPermission } from "~/types/enums";
@@ -20,6 +20,7 @@ import Tooltip from "~/lib/components/design/Tooltip.vue";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 import { useAuthStore } from "~/store/auth";
 import MemberLeaveModal from "~/components/modals/MemberLeaveModal.vue";
+import { handleRequestError } from "~/composables/useErrorHandling";
 
 const props = withDefaults(
   defineProps<{
@@ -78,6 +79,19 @@ watch(search, () => {
 
 function removeMember(member: JoinableMember) {
   post(convertMember(member), "remove");
+}
+
+function cancelTransfer() {
+  if (saving.value) {
+    return;
+  }
+
+  saving.value = true;
+  const url = props.organization ? `organizations/org/${props.author}/canceltransfer` : `projects/project/${props.author}/${props.slug}/canceltransfer`;
+  useInternalApi(url, true, "post")
+    .then(() => router.go(0))
+    .catch((e) => handleRequestError(e, ctx, i18n))
+    .finally(() => (saving.value = false));
 }
 
 function setRole(member: JoinableMember, role: Role) {
@@ -175,7 +189,13 @@ interface EditableMember {
           {{ role.title }}
         </DropdownItem>
         <hr />
-        <DropdownItem @click="removeMember(member)">Remove</DropdownItem>
+        <DropdownItem @click="removeMember(member)">{{ i18n.t("form.memberList.remove") }}</DropdownItem>
+      </DropdownButton>
+      <DropdownButton v-if="canEdit && !member.role.role.assignable && !member.role.accepted" :name="i18n.t('general.edit')">
+        <template #button-label>
+          <IconMdiPencil />
+        </template>
+        <DropdownItem @click="cancelTransfer()">{{ i18n.t("form.memberList.cancelTransfer") }}</DropdownItem>
       </DropdownButton>
     </div>
     <div v-if="canEdit" class="items-center inline-flex mt-3 w-full">

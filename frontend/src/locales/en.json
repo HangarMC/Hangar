@@ -319,6 +319,9 @@
       "iconReset": "Reset Icon",
       "rename": "Rename",
       "renameSub": "Changing your project's name can have undesired consequences. We will not setup any redirects.",
+      "transfer": "Transfer",
+      "transferSub": "Transferring your project name can have undesired consequences. We will not setup any redirects.",
+      "transferTo": "User or organization",
       "newName": "New Name",
       "delete": "Delete",
       "deleteSub": "Once you delete a project, it cannot be recovered.",
@@ -343,13 +346,15 @@
           "invalidUser": "{0} is not a valid user",
           "alreadyInvited": "{0} is already invited to the project",
           "notMember": "{0} is not a member of the project, therefore you cannot edit their role",
-          "invalidRole": "{0} cannot be added/removed from the project"
+          "invalidRole": "{0} cannot be added/removed from the project",
+          "pendingTransfer": "You already have a pending transfer"
         }
       },
       "success": {
         "changedIcon": "Successfully changed the project icon",
         "resetIcon": "Successfully reset the project icon",
         "rename": "Successfully renamed the project to {0}",
+        "transferRequest": "Successfully sent a transfer request to {0}. You can cancel this via the member list.",
         "softDelete": "You have deleted this project",
         "hardDelete": "You have fully deleted this project"
       },
@@ -602,7 +607,8 @@
         "invalidUser": "{0} is not a valid user",
         "alreadyInvited": "{0} is already invited to the organization",
         "notMember": "{0} is not a member of the organization, therefore you cannot edit their role",
-        "invalidRole": "{0} cannot be added/removed from the organization"
+        "invalidRole": "{0} cannot be added/removed from the organization",
+        "pendingTransfer": "You already have a pending transfer"
       }
     }
   },
@@ -613,6 +619,8 @@
       "editUser": "Edit User",
       "invitedAs": "Pending invite as {0}",
       "leave": "Leave",
+      "remove": "Remove",
+      "cancelTransfer": "Revoke transfer request",
       "leaveModal": {
         "title": "Leave {0}",
         "description": "Are you sure you want to leave {0}? After you leave, you can only rejoin after receiving a new invitation."
@@ -663,13 +671,15 @@
       "invite": "You have been invited to join the group {0} on the project {1}",
       "inviteRescinded": "Your invite to you the group {0} in the project {1} has been rescinded",
       "removed": "You have been removed from the group {0} in the project {1}",
-      "roleChanged": "You have been added to the {0} group in the project {1}"
+      "roleChanged": "You have been added to the {0} group in the project {1}",
+      "transfer": "{0} would like to transfer the project {1} to you"
     },
     "organization": {
       "invite": "You have been invited to join the group {0} in the organization {1}",
       "inviteRescinded": "Your invite to you the group {0} in the organization {1} has been rescinded",
       "removed": "You have been removed from the group {0} in the organization {1}",
-      "roleChanged": "You have been added to the {0} group in the organization {1}"
+      "roleChanged": "You have been added to the {0} group in the organization {1}",
+      "transfer": "{0} would like to transfer the organization {1} to you"
     }
   },
   "visibility": {

@@ -39,6 +39,11 @@ public interface GlobalRolesDAO extends IRolesDAO<GlobalRoleTable> {
     }
 
     @Override
+    default List<GlobalRoleTable> getRoleTablesByPrincipal(long principalId, String role) {
+        throw new UnsupportedOperationException("Cannot get global roles with a principal id");
+    }
+
+    @Override
     default GlobalRoleTable getTableByPrincipal(long principalId, long userId) {
         throw new UnsupportedOperationException("Cannot get global roles with a principal id");
     }
