@@ -52,7 +52,7 @@
       "noProjects": "There are no projects. 😢",
       "noProjectsFound": "Found 0 projects. 😢",
       "title": "Find your favorite plugins",
-      "subTitle": "Hangar allows you to find the best Velocity, Waterfall or Paper plugins for your Minecraft Servers.",
+      "subTitle": "Hangar allows you to find the best Paper, Velocity, or Waterfall plugins for your Minecraft server.",
       "categories": "Categories",
       "licenses": "Licenses",
       "versions": "Minecraft versions",
@@ -609,6 +609,14 @@
         "notMember": "{0} is not a member of the organization, therefore you cannot edit their role",
         "invalidRole": "{0} cannot be added/removed from the organization",
         "pendingTransfer": "You already have a pending transfer"
+      },
+      "transferModal": {
+        "title": "Transfer {0} to another user",
+        "description": "After you click the transfer button, the selected user will receive an invitation to join {0} as the new owner. If they accept, you will be demoted to the secondary owner rank.",
+        "transferTo": "User"
+      },
+      "success": {
+        "transferRequest": "Successfully sent a transfer request to {0}. You can cancel this via the member list."
       }
     }
   },
@@ -712,6 +720,7 @@
     "watching": "Watching",
     "stars": "Stars",
     "orgs": "Organizations",
+    "management": "Management",
     "viewOnForums": "View on forums ",
     "taglineLabel": "User Tagline",
     "editTagline": "Edit Tagline",
@@ -729,7 +738,8 @@
       "unlock": "Unlock Account",
       "apiKeys": "API Keys",
       "activity": "User Activity",
-      "admin": "User Admin"
+      "admin": "User Admin",
+      "transfer": "Transfer organization to another user"
     },
     "lock": {
       "confirmLock": "Lock {0}'s account?",

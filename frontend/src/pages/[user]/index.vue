@@ -28,6 +28,7 @@ import IconMdiEyeOffOutline from "~icons/mdi/eye-off-outline";
 import OrgVisibilityModal from "~/components/modals/OrgVisibilityModal.vue";
 import LockUserModal from "~/components/modals/LockUserModal.vue";
 import ProjectCard from "~/components/projects/ProjectCard.vue";
+import OrgTransferModal from "~/components/modals/OrgTransferModal.vue";
 
 const props = defineProps<{
   user: User;
@@ -61,9 +62,9 @@ const buttons = computed<UserButton[]>(() => {
     if (hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)) {
       list.push({ icon: IconMdiKey, attr: { to: "/" + props.user.name + "/settings/api-keys" }, name: "apiKeys" });
     }
-  }
-  if ((hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS) || hasPerms(NamedPermission.REVIEWER)) && !props.user.isOrganization) {
-    list.push({ icon: IconMdiCalendar, attr: { to: `/admin/activities/${props.user.name}` }, name: "activity" });
+    if (hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS) || hasPerms(NamedPermission.REVIEWER)) {
+      list.push({ icon: IconMdiCalendar, attr: { to: `/admin/activities/${props.user.name}` }, name: "activity" });
+    }
   }
   if (hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)) {
     list.push({ icon: IconMdiWrench, attr: { to: "/admin/user/" + props.user.name }, name: "admin" });
@@ -91,7 +92,10 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
     </div>
     <div class="flex-basis-full flex-grow md:max-w-1/3 md:min-w-1/3">
       <Card v-if="buttons.length !== 0" class="mb-4 border-solid border-top-4 border-top-red-500 dark:border-top-red-500">
-        <template #header> Admin actions </template>
+        <template #header>{{ i18n.t("author.management") }}</template>
+        <Tooltip v-if="hasPerms(NamedPermission.IS_SUBJECT_OWNER)" :content="i18n.t('author.tooltips.transfer')">
+          <OrgTransferModal :organization="user.name" />
+        </Tooltip>
 
         <Tooltip v-for="btn in buttons" :key="btn.name">
           <template #content>

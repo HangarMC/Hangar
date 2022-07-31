@@ -119,7 +119,6 @@ watch(selectedTab, (val) => history.replaceState({}, "", route.path + "#" + val)
 const search = ref<string>("");
 const result = ref<string[]>([]);
 async function doSearch(val: string) {
-  //TODO also include orgs
   result.value = [];
   const users = await useApi<PaginatedResult<User>>("users", false, "get", {
     query: val,

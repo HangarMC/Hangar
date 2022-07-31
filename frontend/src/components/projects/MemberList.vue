@@ -65,9 +65,7 @@ const canLeave = computed<boolean>(() => {
 
   return props.members.some((member) => member.user.id === authStore.user?.id && member.user.id !== props.owner);
 });
-const canEdit = computed<boolean>(() => {
-  return hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS);
-});
+const canEdit = computed<boolean>(() => hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS));
 const saving = ref<boolean>(false);
 const search = ref<string>("");
 const addErrors = ref<string[]>([]);

@@ -94,7 +94,7 @@ public class OrganizationController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
     @PostMapping(path = "/org/{name}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addProjectMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
+    public void addOrganizationMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
         OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
         if (organizationTable == null) {
             throw new HangarApiException("Org " + name + " doesn't exist");
@@ -107,7 +107,7 @@ public class OrganizationController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
     @PostMapping(path = "/org/{name}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void editProjectMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
+    public void editOrganizationMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
         OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
         memberService.editMember(member, organizationTable);
     }
@@ -117,7 +117,7 @@ public class OrganizationController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
     @PostMapping(path = "/org/{name}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void removeProjectMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
+    public void removeOrganizationMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
         OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
         memberService.removeMember(member, organizationTable);
     }
@@ -126,9 +126,28 @@ public class OrganizationController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#name}")
     @PostMapping(path = "/org/{name}/members/leave", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void leaveProject(@PathVariable String name) {
+    public void leaveOrganization(@PathVariable String name) {
         OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
         memberService.leave(organizationTable);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#name}")
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
+    @PostMapping(path = "/org/{name}/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void transferProject(@PathVariable String name, @Valid @RequestBody StringContent nameContent) {
+        final OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+        inviteService.sendTransferRequest(nameContent.getContent(), organizationTable);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#name}")
+    @PostMapping(path = "/org/{name}/canceltransfer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void transferProject(@PathVariable String name) {
+        final OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+        inviteService.cancelTransferRequest(organizationTable);
     }
 
     @Unlocked
