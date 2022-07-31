@@ -28,12 +28,16 @@ public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?
         this.msgPrefix = msgPrefix;
     }
 
-    public void invited(Collection<RT> inviteeRoleTables, J joinable) {
+    public void invited(Collection<RT> inviteeRoleTables, J joinable, final long inviterId) {
         Collection<NotificationTable> notificationTables = new HashSet<>();
         for (RT rt : inviteeRoleTables) {
-            notificationTables.add(new NotificationTable(rt.getUserId(), "notifications", joinable.getId(), new String[]{this.msgPrefix + "invite", rt.getRole().getTitle(), joinable.getName()}, NotificationType.INFO));
+            notificationTables.add(new NotificationTable(rt.getUserId(), "notifications", inviterId, new String[]{this.msgPrefix + "invite", rt.getRole().getTitle(), joinable.getName()}, NotificationType.INFO));
         }
         notificationsDAO.insert(notificationTables);
+    }
+
+    public void transferRequest(final RT inviteeRoleTable, final J joinable, final long inviterId, final String inviterName) {
+        notificationsDAO.insert(new NotificationTable(inviteeRoleTable.getUserId(), "notifications", inviterId, new String[]{this.msgPrefix + "transfer", inviterName, joinable.getName()}, NotificationType.INFO));
     }
 
     public void removedFrom(RT removedFromRoleTable, J joinable) {

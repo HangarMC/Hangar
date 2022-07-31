@@ -5,6 +5,7 @@ import io.papermc.hangar.db.dao.internal.HangarNotificationsDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.Named;
+import io.papermc.hangar.model.Owned;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.db.UserTable;
@@ -19,11 +20,11 @@ import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
-public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role<RT>, RT extends ExtendedRoleTable<R, LC>, J extends Table & Named & Loggable<LC>> extends HangarComponent {
+public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role<RT>, RT extends ExtendedRoleTable<R, LC>, J extends Table & Named & Owned & Loggable<LC>> extends HangarComponent {
 
     @Autowired
     protected HangarNotificationsDAO hangarNotificationsDAO;
@@ -47,33 +48,6 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
     }
 
     @Transactional
-    public void sendInvites(List<HangarApiException> errors, List<Member<R>> invitees, J joinable) {
-        StringBuilder sb = new StringBuilder("Invited: ");
-        List<RT> toBeInvited = new ArrayList<>();
-        for (int i = 0; i < invitees.size(); i++) {
-            Member<R> invitee = invitees.get(i);
-            UserTable userTable = userDAO.getUserTable(invitee.getName());
-            if (userTable == null) {
-                errors.add(new HangarApiException(this.errorPrefix + "invalidUser", invitee.getName()));
-                continue;
-            }
-            RT rt = roleService.addRole(invitee.getRole().create(joinable.getId(), userTable.getId(), false), true);
-            if (rt == null) {
-                errors.add(new HangarApiException(this.errorPrefix + "alreadyInvited", invitee.getName()));
-                continue;
-            }
-            toBeInvited.add(rt);
-            sb.append(userTable.getName()).append(" (").append(invitee.getRole().getTitle()).append(")");
-            if (i + 1 != invitees.size()) {
-                sb.append(", ");
-            }
-        }
-        if (!invitees.isEmpty()) {
-            joinableNotificationService.invited(toBeInvited, joinable);
-            logInvitesSent(joinable, sb.toString());
-        }
-    }
-
     public void sendInvite(Member<R> invitee, J joinable) {
         UserTable userTable = userDAO.getUserTable(invitee.getName());
         if (userTable == null) {
@@ -85,9 +59,45 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
             throw new HangarApiException(this.errorPrefix + "alreadyInvited", invitee.getName());
         }
 
-        joinableNotificationService.invited(List.of(roleTable), joinable);
+        joinableNotificationService.invited(List.of(roleTable), joinable, getHangarUserId());
         logInvitesSent(joinable, "Invited: " + userTable.getName() + " (" + invitee.getRole().getTitle() + ")");
     }
+
+    @Transactional
+    public void sendTransferRequest(final String user, final J joinable) {
+        final UserTable userTable = userDAO.getUserTable(user);
+        //TODO transfer project to organization (and divert invite to owner)
+        if (userTable == null || userTable.isOrganization()) {
+            throw new HangarApiException(this.errorPrefix + "invalidUser", user);
+        }
+
+        final List<RT> ownerRoles = roleService.getRoles(joinable.getId(), getOwnerRole());
+        if (ownerRoles.stream().anyMatch(rt -> rt.getUserId() != joinable.getOwnerId())) {
+            throw new HangarApiException(this.errorPrefix + "pendingTransfer");
+        }
+
+        final RT roleTable = roleService.addRole(getOwnerRole().create(joinable.getId(), userTable.getId(), false), true);
+        if (roleTable == null) {
+            throw new HangarApiException(this.errorPrefix + "alreadyInvited", user);
+        }
+
+        joinableNotificationService.transferRequest(roleTable, joinable, getHangarPrincipal().getUserId(), getHangarPrincipal().getName());
+        logInvitesSent(joinable, "Sent transfer request: " + userTable.getName());
+    }
+
+    @Transactional
+    public void cancelTransferRequest(final J joinable) {
+        final List<RT> ownerRoles = roleService.getRoles(joinable.getId(), getOwnerRole());
+        for (final RT ownerRole : ownerRoles) {
+            if (!ownerRole.isAccepted()) {
+                roleService.deleteRole(ownerRole);
+            }
+        }
+    }
+
+    protected abstract R getOwnerRole();
+
+    protected abstract R getAdminRole();
 
     abstract LogAction<LC> getInviteSentAction();
 
@@ -95,15 +105,33 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
         loggable.logAction(actionLogger, getInviteSentAction(), log, "");
     }
 
+    @Transactional
     public void acceptInvite(RT roleTable) {
         if (roleTable.isAccepted()) {
             throw new IllegalArgumentException("Cannot accept an invite that has already been accepted");
         }
+
+        final UserTable userTable = userDAO.getUserTable(roleTable.getUserId());
         roleTable = roleService.changeAcceptance(roleTable, true);
         memberService.addMember(roleTable);
-        UserTable userTable = userDAO.getUserTable(roleTable.getUserId());
         logInviteAccepted(roleTable, userTable);
+
+        if (roleTable.getRole().getRoleId() == getOwnerRole().getRoleId()) {
+            // Set role of old owner to next highest
+            final J joinable = getJoinable(roleTable.getPrincipalId());
+            final long oldOwnerId = joinable.getOwnerId();
+            final RT oldOwnerRoleTable = roleService.getRole(joinable.getId(), oldOwnerId);
+            oldOwnerRoleTable.setRole(getAdminRole());
+            roleService.updateRole(oldOwnerRoleTable);
+
+            // Transfer of ownership and move files if needed - should always be done last
+            setNewOwner(joinable, userTable);
+        }
     }
+
+    public abstract J getJoinable(final long id);
+
+    protected abstract void setNewOwner(J joinable, UserTable newOwner);
 
     abstract LogAction<LC> getInviteAcceptAction();
 

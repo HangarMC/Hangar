@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.db;
 
+import io.papermc.hangar.model.Owned;
 import io.papermc.hangar.model.Visitable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.loggable.OrganizationLoggable;
@@ -8,7 +9,7 @@ import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;
 
-public class OrganizationTable extends Table implements Visitable, ProjectOwner, OrganizationLoggable {
+public class OrganizationTable extends Table implements Visitable, ProjectOwner, OrganizationLoggable, Owned {
 
     private final String name;
     private long ownerId;
@@ -34,6 +35,7 @@ public class OrganizationTable extends Table implements Visitable, ProjectOwner,
         return name;
     }
 
+    @Override
     public long getOwnerId() {
         return ownerId;
     }

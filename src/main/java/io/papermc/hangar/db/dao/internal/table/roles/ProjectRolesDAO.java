@@ -11,6 +11,8 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RegisterConstructorMapper(ProjectRoleTable.class)
 @RegisterColumnMapperFactory(RoleColumnMapperFactory.class)
@@ -35,6 +37,10 @@ public interface ProjectRolesDAO extends IRolesDAO<ProjectRoleTable> {
     @Override
     @SqlQuery("SELECT * FROM user_project_roles WHERE id = :id AND user_id = :userId")
     ProjectRoleTable getTable(long id, long userId);
+
+    @Override
+    @SqlQuery("SELECT * FROM user_project_roles WHERE project_id = :projectId AND role_type = :role")
+    List<ProjectRoleTable> getRoleTablesByPrincipal(long projectId, String role);
 
     @Override
     @SqlQuery("SELECT * FROM user_project_roles WHERE project_id = :projectId AND user_id = :userId")

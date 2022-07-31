@@ -12,6 +12,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -38,6 +39,10 @@ public interface OrganizationRolesDAO extends IRolesDAO<OrganizationRoleTable> {
     @Override
     @SqlQuery("SELECT * FROM user_organization_roles WHERE id = :id AND user_id = :userId")
     OrganizationRoleTable getTable(long id, long userId);
+
+    @Override
+    @SqlQuery("SELECT * FROM user_organization_roles WHERE organization_id = :organizationId AND role_type = :role")
+    List<OrganizationRoleTable> getRoleTablesByPrincipal(long organizationId, String role);
 
     @Override
     @SqlQuery("SELECT * FROM user_organization_roles WHERE organization_id = :organizationId AND user_id = :userId")

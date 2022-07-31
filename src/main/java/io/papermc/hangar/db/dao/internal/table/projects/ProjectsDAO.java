@@ -32,6 +32,9 @@ public interface ProjectsDAO {
             "sponsors = :sponsors WHERE id = :id")
     ProjectTable update(@BindBean ProjectTable project);
 
+    @SqlUpdate("UPDATE projects SET owner_name = :ownerName, owner_id = :ownerId WHERE id = :id")
+    void updateOwner(@BindBean ProjectTable project);
+
     @SqlUpdate("DELETE FROM projects WHERE id = :id")
     void delete(@BindBean ProjectTable project);
 

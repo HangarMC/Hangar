@@ -1,6 +1,7 @@
 package io.papermc.hangar.model.db.projects;
 
 import io.papermc.hangar.model.ModelVisible;
+import io.papermc.hangar.model.Owned;
 import io.papermc.hangar.model.Visitable;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
@@ -15,7 +16,7 @@ import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 
-public class ProjectTable extends Table implements Visitable, ModelVisible, ProjectIdentified, ProjectLoggable {
+public class ProjectTable extends Table implements Visitable, ModelVisible, Owned, ProjectLoggable {
 
     private String name;
     private String slug;
@@ -147,6 +148,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.ownerName = ownerName;
     }
 
+    @Override
     public long getOwnerId() {
         return ownerId;
     }

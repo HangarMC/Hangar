@@ -51,9 +51,10 @@ public class ProjectFiles {
     }
 
     public void transferProject(String owner, String newOwner, String slug) {
-        final Path oldProjectDir = getProjectDir(newOwner, slug);
-        final Path newProjectDir = getProjectDir(owner, slug);
+        final Path oldProjectDir = getProjectDir(owner, slug);
+        final Path newProjectDir = getProjectDir(newOwner, slug);
         try {
+            Files.createDirectories(newProjectDir);
             Files.move(oldProjectDir, newProjectDir, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();

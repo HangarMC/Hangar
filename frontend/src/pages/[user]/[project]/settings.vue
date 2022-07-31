@@ -18,7 +18,7 @@ import InputText from "~/lib/components/ui/InputText.vue";
 import { cloneDeep } from "lodash-es";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import InputFile from "~/lib/components/ui/InputFile.vue";
-import { useInternalApi } from "~/composables/useApi";
+import { useApi, useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import { useNotificationStore } from "~/store/notification";
@@ -31,6 +31,8 @@ import { useVuelidate } from "@vuelidate/core";
 import { Cropper, CropperResult } from "vue-advanced-cropper";
 
 import "vue-advanced-cropper/dist/style.css";
+import { PaginatedResult, User } from "hangar-api";
+import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -105,6 +107,7 @@ const loading = reactive({
   uploadIcon: false,
   resetIcon: false,
   rename: false,
+  transfer: false,
 });
 
 const isCustomLicense = computed(() => form.settings.license.type === "Other");
@@ -112,6 +115,19 @@ const isUnspecifiedLicense = computed(() => form.settings.license.type === "Unsp
 
 watch(route, (val) => (selectedTab.value = val.hash.replace("#", "")), { deep: true });
 watch(selectedTab, (val) => history.replaceState({}, "", route.path + "#" + val));
+
+const search = ref<string>("");
+const result = ref<string[]>([]);
+async function doSearch(val: string) {
+  //TODO also include orgs
+  result.value = [];
+  const users = await useApi<PaginatedResult<User>>("users", false, "get", {
+    query: val,
+    limit: 25,
+    offset: 0,
+  });
+  result.value = users.result.map((u) => u.name);
+}
 
 async function save() {
   loading.save = true;
@@ -127,9 +143,21 @@ async function save() {
   loading.save = false;
 }
 
+async function transfer() {
+  loading.transfer = true;
+  try {
+    await useInternalApi<string>(`projects/project/${route.params.user}/${route.params.project}/transfer`, true, "post", {
+      content: search.value,
+    });
+    notificationStore.success(i18n.t("project.settings.success.transferRequest", [search.value]));
+  } catch (e) {
+    handleRequestError(e, ctx, i18n);
+  }
+  loading.transfer = false;
+}
+
 async function rename() {
   loading.rename = true;
-  console.log("rename", newNameField.value, newNameField.value.v, newNameField.value.$setup);
   try {
     const newSlug = await useInternalApi<string>(`projects/project/${route.params.user}/${route.params.project}/rename`, true, "post", {
       content: newName.value,
@@ -348,6 +376,19 @@ useHead(
               <Button :disabled="!newName || newNameField.v.$invalid" :loading="loading.rename" class="ml-2" @click="rename">
                 <IconMdiRenameBox class="mr-2" />
                 {{ i18n.t("project.settings.rename") }}
+              </Button>
+            </div>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection
+            v-if="hasPerms(NamedPermission.IS_SUBJECT_OWNER)"
+            title="project.settings.transfer"
+            description="project.settings.transferSub"
+          >
+            <div class="flex items-center">
+              <InputAutocomplete id="membersearch" v-model="search" :values="result" :label="i18n.t('project.settings.transferTo')" @search="doSearch" />
+              <Button :disabled="search.length === 0" :loading="loading.transfer" class="ml-2" @click="transfer">
+                <IconMdiRenameBox class="mr-2" />
+                {{ i18n.t("project.settings.transfer") }}
               </Button>
             </div>
           </ProjectSettingsSection>

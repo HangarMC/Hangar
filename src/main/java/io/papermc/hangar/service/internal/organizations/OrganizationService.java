@@ -40,6 +40,10 @@ public class OrganizationService extends HangarComponent {
         this.organizationMemberService = organizationMemberService;
     }
 
+    public OrganizationTable getOrganizationTable(final long id) {
+        return organizationDAO.getById(id);
+    }
+
     public OrganizationTable getOrganizationTable(String name) {
         return organizationDAO.getByName(name);
     }

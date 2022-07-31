@@ -21,6 +21,9 @@ public interface OrganizationDAO {
     @GetGeneratedKeys
     OrganizationTable insert(@BindBean OrganizationTable organization);
 
+    @SqlUpdate("UPDATE organizations SET owner_id = :ownerId WHERE id = :id")
+    void update(@BindBean OrganizationTable organization);
+
     @SqlQuery("SELECT * FROM organizations WHERE id = :orgId")
     OrganizationTable getById(long orgId);
 
