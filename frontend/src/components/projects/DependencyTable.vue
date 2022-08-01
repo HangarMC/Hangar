@@ -97,7 +97,7 @@ defineExpose({ dependencies, reset: reset });
 </script>
 
 <template>
-  <Table>
+  <Table v-if="dependencies.length !== 0">
     <thead>
       <tr>
         <th>{{ t("general.name") }}</th>
@@ -152,7 +152,7 @@ defineExpose({ dependencies, reset: reset });
       </tr>
     </tbody>
   </Table>
-  <div v-if="!noEditing" class="m-2">
+  <div v-if="!noEditing" class="m-2" :class="dependencies.length !== 0 ? '-mt-2' : ''">
     <Button block @click="addDep">
       <IconMdiPlus />
       {{ t("general.add") }}

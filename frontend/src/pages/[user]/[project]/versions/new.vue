@@ -365,19 +365,19 @@ useHead(
     <template #dependencies>
       <p class="mb-4">{{ i18n.t("version.new.form.platformVersionsDescription") }}</p>
       <h2 class="text-xl mt-2 mb-2">{{ t("version.new.form.platformVersions") }}</h2>
-      <div class="flex flex-wrap gap-y-3 mb-5">
+      <div class="flex flex-wrap space-y-5 mb-8">
         <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
-          <div>{{ platform.name }}</div>
+          <span class="text-lg inline-flex items-center"><PlatformLogo :platform="platform.enumName" :size="25" class="mr-1" /> {{ platform.name }}</span>
           <div class="mt-2">
             <InputTag v-model="pendingVersion.platformDependencies[platform.enumName]" :options="platform.possibleVersions" :rules="platformVersionRules" />
           </div>
         </div>
       </div>
 
-      <h2 class="text-xl mb-2">{{ t("version.new.form.dependencies") }}</h2>
-      <div class="flex flex-wrap gap-y-3">
+      <h2 class="text-xl mb-3">{{ t("version.new.form.dependencies") }}</h2>
+      <div class="flex flex-wrap space-y-7">
         <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
-          <div>{{ platform.name }}</div>
+          <span class="text-lg inline-flex items-center"><PlatformLogo :platform="platform.enumName" :size="25" class="mr-1" /> {{ platform.name }}</span>
           <DependencyTable ref="dependencyTables" :key="`${platform.name}-deps-table`" :platform="platform.enumName" :version="pendingVersion" is-new />
         </div>
       </div>
