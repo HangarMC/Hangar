@@ -6,6 +6,7 @@ import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.roles.IRoleTable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public abstract class RoleService<RT extends IRoleTable<R>, R extends Role<RT>, D extends IRolesDAO<RT>> extends HangarComponent {
@@ -22,6 +23,7 @@ public abstract class RoleService<RT extends IRoleTable<R>, R extends Role<RT>, 
     }
 
     @Contract("_, false -> !null")
+    @Transactional
     public RT addRole(RT newRoleTable, boolean ignoreIfDuplicate) {
         RT existingRoleTable = roleDao.getTable(newRoleTable);
         if (existingRoleTable == null) {

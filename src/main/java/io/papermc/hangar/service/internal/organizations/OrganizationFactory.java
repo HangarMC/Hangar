@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@Transactional
 public class OrganizationFactory extends HangarComponent {
 
     private final UserDAO userDAO;
@@ -41,6 +40,7 @@ public class OrganizationFactory extends HangarComponent {
         this.globalRoleService = globalRoleService;
     }
 
+    @Transactional
     public void createOrganization(String name) {
         if (!config.org.isEnabled()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "organization.new.error.notEnabled");

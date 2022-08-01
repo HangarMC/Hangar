@@ -139,6 +139,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
         roleTable.logAction(actionLogger, getInviteAcceptAction(), userTable.getName() + " accepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME));
     }
 
+    @Transactional
     public void declineInvite(RT roleTable) {
         roleService.deleteRole(roleTable);
         logInviteDeclined(roleTable, userDAO.getUserTable(roleTable.getUserId()));

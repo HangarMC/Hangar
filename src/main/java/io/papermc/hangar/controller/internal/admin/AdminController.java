@@ -130,7 +130,7 @@ public class AdminController extends HangarComponent {
 
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.EDIT_ALL_USER_SETTINGS)
-    @PostMapping(value = "/user/{user}/{role}")
+    @PostMapping("/user/{user}/{role}")
     public void addRole(@PathVariable UserTable user, @PathVariable String role) {
         globalRoleService.addRole(new GlobalRoleTable(user.getUserId(), GlobalRole.byApiValue(role)));
     }

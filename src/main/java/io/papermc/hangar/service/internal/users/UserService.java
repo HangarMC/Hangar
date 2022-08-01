@@ -70,6 +70,7 @@ public class UserService extends HangarComponent {
         }
     }
 
+    @Transactional
     public void markPromptRead(Prompt prompt) {
         UserTable userTable = userDAO.getUserTable(getHangarPrincipal().getId());
         if (!userTable.getReadPrompts().contains(prompt.ordinal())) {

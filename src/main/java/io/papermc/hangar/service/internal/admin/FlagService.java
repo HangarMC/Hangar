@@ -45,6 +45,7 @@ public class FlagService extends HangarComponent {
         this.notificationService = notificationService;
     }
 
+    @Transactional
     public void createFlag(long projectId, FlagReason reason, String comment) {
         if (hasUnresolvedFlag(projectId, getHangarPrincipal().getId())) {
             throw new HangarApiException("project.flag.error.alreadyOpen");
@@ -57,6 +58,7 @@ public class FlagService extends HangarComponent {
         return projectFlagsDAO.getUnresolvedFlag(projectId, userId) != null;
     }
 
+    @Transactional
     public void markAsResolved(long flagId, boolean resolved) {
         HangarProjectFlag hangarProjectFlag = hangarProjectFlagsDAO.getById(flagId);
         if (hangarProjectFlag == null) {
@@ -94,6 +96,7 @@ public class FlagService extends HangarComponent {
         return hangarProjectFlagsDAO.getFlags(projectId);
     }
 
+    @Transactional
     public PaginatedResult<HangarProjectFlag> getFlags(@NotNull final RequestPagination pagination, final boolean resolved) {
         final List<HangarProjectFlag> flags = hangarProjectFlagsDAO.getFlags(pagination, resolved);
         final long count = hangarProjectFlagsDAO.getFlagsCount(resolved);

@@ -85,6 +85,7 @@ public class VersionService extends HangarComponent {
         return version;
     }
 
+    @Transactional
     public LastDependencies getLastVersionDependencies(String author, String slug, @Nullable String channel, String platformName) {
         //TODO optimize with specific query
         Platform platform = Platform.valueOf(platformName.toUpperCase());

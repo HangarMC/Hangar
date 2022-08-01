@@ -136,7 +136,7 @@ public class OrganizationController extends HangarComponent {
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#name}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PostMapping(path = "/org/{name}/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void transferProject(@PathVariable String name, @Valid @RequestBody StringContent nameContent) {
+    public void transferOrganization(@PathVariable String name, @Valid @RequestBody StringContent nameContent) {
         final OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
         inviteService.sendTransferRequest(nameContent.getContent(), organizationTable);
     }
@@ -145,7 +145,7 @@ public class OrganizationController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#name}")
     @PostMapping(path = "/org/{name}/canceltransfer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void transferProject(@PathVariable String name) {
+    public void cancelOrganizationTransfer(@PathVariable String name) {
         final OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
         inviteService.cancelTransferRequest(organizationTable);
     }

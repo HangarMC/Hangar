@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class VersionsApiService extends HangarComponent {
@@ -31,6 +32,7 @@ public class VersionsApiService extends HangarComponent {
         this.versionDependencyService = versionDependencyService;
     }
 
+    @Transactional
     public Version getVersion(String author, String slug, String versionString) {
         final Map.Entry<Long, Version> version = versionsApiDAO.getVersionWithVersionString(author, slug, versionString, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
         if (version == null) {
@@ -40,6 +42,7 @@ public class VersionsApiService extends HangarComponent {
         return version.getValue();
     }
 
+    @Transactional
     public PaginatedResult<Version> getVersions(String author, String slug, RequestPagination pagination) {
         boolean canSeeHidden = getGlobalPermissions().has(Permission.SeeHidden);
         List<Version> versions = versionsApiDAO.getVersions(author, slug, canSeeHidden, getHangarUserId(), pagination).entrySet().stream()
