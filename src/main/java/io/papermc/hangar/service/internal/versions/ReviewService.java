@@ -63,6 +63,7 @@ public class ReviewService extends HangarComponent {
         changeVersionReviewState(versionId, ReviewState.UNDER_REVIEW, false);
     }
 
+    @Transactional
     public void addReviewMessage(long versionId, ReviewMessage msg) {
         ProjectVersionReviewTable latestUnfinishedReview = getLatestUnfinishedReviewAndValidate(versionId);
         projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(latestUnfinishedReview.getId(), msg.getMessage(), new JSONB(msg.getArgs()), ReviewAction.MESSAGE));

@@ -38,6 +38,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
 @Service
@@ -62,6 +63,7 @@ public class DownloadService extends HangarComponent {
         this.downloadsDAO = downloadsDAO;
     }
 
+    @Transactional
     public String createConfirmationToken(String author, String slug, String versionString) {
         ProjectVersionTable pvt = projectVersionsDAO.getProjectVersionTable(author, slug, versionString);
         InetAddress remoteInetAddress = RequestUtil.getRemoteInetAddress(request);
@@ -86,6 +88,7 @@ public class DownloadService extends HangarComponent {
         return token.toString();
     }
 
+    @Transactional
     public FileSystemResource getVersionFile(String author, String slug, String versionString, Platform platform, boolean checkConfirmation, @Nullable String token) {
         ProjectVersionTable pvt = projectVersionsDAO.getProjectVersionTable(author, slug, versionString);
         if (pvt == null) {

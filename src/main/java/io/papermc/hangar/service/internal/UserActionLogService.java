@@ -60,6 +60,7 @@ public class UserActionLogService extends HangarComponent {
         inserter.accept(action.getContext().createTable(getHangarPrincipal().getUserId(), RequestUtil.getRemoteInetAddress(request), action));
     }
 
+    @Transactional
     public PaginatedResult<HangarLoggedAction> getLogs(RequestPagination pagination) {
         return new PaginatedResult<>(new Pagination(loggedActionsDAO.getLogCount(pagination), pagination), loggedActionsDAO.getLog(pagination));
     }

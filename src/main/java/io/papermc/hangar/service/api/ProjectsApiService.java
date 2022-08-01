@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProjectsApiService extends HangarComponent {
@@ -31,6 +32,7 @@ public class ProjectsApiService extends HangarComponent {
         return projectsApiDAO.getProject(author, slug, seeHidden, getHangarUserId());
     }
 
+    @Transactional
     public PaginatedResult<ProjectMember> getProjectMembers(String author, String slug, RequestPagination requestPagination) {
         List<ProjectMember> projectMembers = projectsApiDAO.getProjectMembers(author, slug, requestPagination);
         return new PaginatedResult<>(new Pagination(projectsApiDAO.getProjectMembersCount(author, slug), requestPagination), projectMembers);
@@ -40,16 +42,19 @@ public class ProjectsApiService extends HangarComponent {
         return projectsApiDAO.getProjectStats(author, slug, fromDate, toDate);
     }
 
+    @Transactional
     public PaginatedResult<User> getProjectStargazers(String author, String slug, RequestPagination pagination) {
         List<User> stargazers = projectsApiDAO.getProjectStargazers(author, slug, pagination.getLimit(), pagination.getOffset());
         return new PaginatedResult<>(new Pagination(projectsApiDAO.getProjectStargazersCount(author, slug), pagination), stargazers);
     }
 
+    @Transactional
     public PaginatedResult<User> getProjectWatchers(String author, String slug, RequestPagination pagination) {
         List<User> watchers = projectsApiDAO.getProjectWatchers(author, slug, pagination.getLimit(), pagination.getOffset());
         return new PaginatedResult<>(new Pagination(projectsApiDAO.getProjectWatchersCount(author, slug), pagination), watchers);
     }
 
+    @Transactional
     public PaginatedResult<Project> getProjects(String query, boolean orderWithRelevance, RequestPagination pagination) {
         String relevance = "";
         if (orderWithRelevance && query != null && !query.isEmpty()) {

@@ -14,6 +14,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProjectAdminService extends HangarComponent {
@@ -44,6 +45,7 @@ public class ProjectAdminService extends HangarComponent {
         projectVisibilityService.changeVisibility(projectTable, Visibility.NEEDSAPPROVAL, "");
     }
 
+    @Transactional
     public void changeVisibility(final long projectId, final Visibility visibility, final String comment) {
         final ProjectTable projectTable = projectVisibilityService.getModel(projectId);
         final Visibility oldVisibility = projectTable.getVisibility();

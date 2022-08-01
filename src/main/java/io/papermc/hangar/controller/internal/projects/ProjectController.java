@@ -170,7 +170,7 @@ public class ProjectController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/canceltransfer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void transferProject(@PathVariable String author, @PathVariable String slug) {
+    public void cancelProjectTransfer(@PathVariable String author, @PathVariable String slug) {
         final ProjectTable projectTable = projectService.getProjectTable(author, slug);
         projectInviteService.cancelTransferRequest(projectTable);
     }

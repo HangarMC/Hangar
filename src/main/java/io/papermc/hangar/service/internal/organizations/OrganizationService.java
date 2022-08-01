@@ -11,6 +11,7 @@ import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.HangarOrganization;
+import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ public class OrganizationService extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         UserTable owner = userDAO.getUserTable(organizationTable.getOwnerId());
-        var members = hangarOrganizationsDAO.getOrganizationMembers(organizationTable.getId(), getHangarUserId(), permissionService.getOrganizationPermissions(getHangarUserId(), organizationTable.getId()).has(Permission.ManageOrganizationMembers));
+        List<JoinableMember<OrganizationRoleTable>> members = hangarOrganizationsDAO.getOrganizationMembers(organizationTable.getId(), getHangarUserId(), permissionService.getOrganizationPermissions(getHangarUserId(), organizationTable.getId()).has(Permission.ManageOrganizationMembers));
         return new HangarOrganization(organizationTable.getId(), owner, members);
     }
 

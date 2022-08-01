@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
@@ -43,6 +44,7 @@ public class StatService extends HangarComponent {
         return hangarStatsDAO.getStats(from, to);
     }
 
+    @Transactional
     public void addProjectView(ProjectIdentified projectIdentified) {
         Long userId = getHangarUserId();
         InetAddress address = RequestUtil.getRemoteInetAddress(request);

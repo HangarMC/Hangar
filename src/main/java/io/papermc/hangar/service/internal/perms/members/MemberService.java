@@ -104,6 +104,7 @@ public abstract class MemberService<
         loggable.logAction(actionLogger, membersRemovedAction, logEntry, "");
     }
 
+    @Transactional
     public void editMember(Member<R> member, J joinable) {
         RT roleTable = handleEditOrRemoval(member, joinable.getId());
         if (member.getRole() == roleTable.getRole()) {

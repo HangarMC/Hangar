@@ -21,6 +21,7 @@ import io.papermc.hangar.model.internal.user.notifications.NotificationType;
 import io.papermc.hangar.service.PermissionService;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ public class NotificationService extends HangarComponent {
         return hangarNotificationsDAO.getNotifications(getHangarUserId(), amount);
     }
 
+    @Transactional
     public PaginatedResult<HangarNotification> getNotifications(final RequestPagination pagination, @Nullable final Boolean read) {
         final List<HangarNotification> notifications = read != null ? hangarNotificationsDAO.getNotifications(getHangarUserId(), read, pagination) : hangarNotificationsDAO.getNotifications(getHangarUserId(), pagination);
         return new PaginatedResult<>(new Pagination(getUnreadNotifications(), pagination), notifications);
