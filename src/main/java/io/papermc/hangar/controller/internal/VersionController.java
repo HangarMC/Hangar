@@ -13,7 +13,6 @@ import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDepend
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
-import io.papermc.hangar.model.internal.versions.LastDependencies;
 import io.papermc.hangar.model.internal.versions.MultipartFileOrUrl;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
@@ -192,12 +191,5 @@ public class VersionController extends HangarComponent {
             return ResponseEntity.status(HttpStatus.PRECONDITION_REQUIRED).body(token);
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
-    @RateLimit(overdraft = 7, refillTokens = 3, greedy = true)
-    @GetMapping(path = "/version/{author}/{slug}/lastdependencies")
-    public ResponseEntity<LastDependencies> getLastVersionDependencies(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String channel, @RequestParam String platform) {
-        return ResponseEntity.ok(versionService.getLastVersionDependencies(author, slug, channel, platform));
     }
 }

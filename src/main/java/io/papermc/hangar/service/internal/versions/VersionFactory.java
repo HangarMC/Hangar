@@ -4,14 +4,18 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionPlatformDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.downloads.ProjectVersionDownloadsDAO;
+import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.version.FileInfo;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
@@ -27,6 +31,7 @@ import io.papermc.hangar.model.internal.job.UpdateDiscourseProjectTopicJob;
 import io.papermc.hangar.model.internal.job.UpdateDiscourseVersionPostJob;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
+import io.papermc.hangar.model.internal.versions.LastDependencies;
 import io.papermc.hangar.model.internal.versions.MultipartFileOrUrl;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.model.internal.versions.PendingVersionFile;
@@ -97,9 +102,10 @@ public class VersionFactory extends HangarComponent {
     private final JobService jobService;
     private final ValidationService validationService;
     private final ProjectVersionDownloadsDAO downloadsDAO;
+    private final VersionsApiDAO versionsApiDAO;
 
     @Autowired
-    public VersionFactory(ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, ProjectVersionDependenciesDAO projectVersionDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectVersionsDAO projectVersionDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, ProjectService projectService, NotificationService notificationService, PlatformService platformService, UsersApiService usersApiService, JobService jobService, ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO) {
+    public VersionFactory(ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, ProjectVersionDependenciesDAO projectVersionDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectVersionsDAO projectVersionDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, ProjectService projectService, NotificationService notificationService, PlatformService platformService, UsersApiService usersApiService, JobService jobService, ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.platformVersionDAO = platformVersionDAO;
@@ -115,9 +121,15 @@ public class VersionFactory extends HangarComponent {
         this.jobService = jobService;
         this.validationService = validationService;
         this.downloadsDAO = downloadsDAO;
+        this.versionsApiDAO = versionsApiDAO;
     }
 
     public PendingVersion createPendingVersion(final long projectId, final List<MultipartFileOrUrl> data, final List<MultipartFile> files) {
+        final ProjectTable projectTable = projectService.getProjectTable(projectId);
+        if (projectTable == null) {
+            throw new IllegalArgumentException();
+        }
+
         final ProjectChannelTable projectChannelTable = channelService.getFirstChannel(projectId);
         final Map<Platform, Set<PluginDependency>> pluginDependencies = new EnumMap<>(Platform.class);
         final Map<Platform, SortedSet<String>> platformDependencies = new EnumMap<>(Platform.class);
@@ -141,6 +153,13 @@ public class VersionFactory extends HangarComponent {
             if (fileOrUrl.isUrl()) {
                 // Handle external url
                 pendingFiles.add(new PendingVersionFile(fileOrUrl.platforms(), null, fileOrUrl.externalUrl()));
+                for (final Platform platform : fileOrUrl.platforms()) {
+                    final LastDependencies lastDependencies = getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), null, platform);
+                    if (lastDependencies != null) {
+                        pluginDependencies.put(platform, lastDependencies.pluginDependencies());
+                        platformDependencies.put(platform, lastDependencies.platformDependencies());
+                    }
+                }
                 continue;
             }
 
@@ -179,7 +198,15 @@ public class VersionFactory extends HangarComponent {
             final FileInfo fileInfo = new FileInfo(pluginDataFile.getPath().getFileName().toString(), pluginDataFile.getPath().toFile().length(), pluginDataFile.getMd5());
             pendingFiles.add(new PendingVersionFile(fileOrUrl.platforms(), fileInfo, null));
             for (final Platform platform : fileOrUrl.platforms()) {
-                //TODO add last version data if present, if not present the file data
+                //TODO include channel in last dep search - currently only in the step after jar uploading
+                final LastDependencies lastDependencies = getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), null, platform);
+                if (lastDependencies != null) {
+                    pluginDependencies.put(platform, lastDependencies.pluginDependencies());
+                    platformDependencies.put(platform, lastDependencies.platformDependencies());
+                    continue;
+                }
+
+                // If no previous version present, use uploaded version data
                 final Set<PluginDependency> loadedPluginDependencies = pluginDataFile.getData().getDependencies().get(platform);
                 if (loadedPluginDependencies != null) {
                     pluginDependencies.put(platform, loadedPluginDependencies);
@@ -193,11 +220,6 @@ public class VersionFactory extends HangarComponent {
         }
 
         tempDirCache.put(userTempDir, DUMMY);
-
-        final ProjectTable projectTable = projectService.getProjectTable(projectId);
-        if (projectTable == null) {
-            throw new IllegalArgumentException();
-        }
 
         for (final Platform platform : processedPlatforms) {
             platformDependencies.putIfAbsent(platform, Collections.emptySortedSet());
@@ -379,6 +401,29 @@ public class VersionFactory extends HangarComponent {
             }
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.unknown");
         }
+    }
+
+    @Transactional
+    public @Nullable LastDependencies getLastVersionDependencies(final String author, final String slug, @Nullable final String channel, final Platform platform) {
+        //TODO optimize with specific query
+        final RequestPagination pagination = new RequestPagination(1L, 0L);
+        pagination.getFilters().add(new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
+        if (channel != null) {
+            // Find the last version with the specified channel
+            pagination.getFilters().add(new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
+        }
+
+        final Long versionId = versionsApiDAO.getVersions(author, slug, false, getHangarUserId(), pagination).keySet().stream().findAny().orElse(null);
+        if (versionId != null) {
+            final SortedSet<String> platformDependency = versionsApiDAO.getPlatformDependencies(versionId).get(platform);
+            if (platformDependency != null) {
+                return new LastDependencies(platformDependency, versionsApiDAO.getPluginDependencies(versionId, platform));
+            }
+            return null;
+        }
+
+        // Try again with any channel, else empty
+        return channel != null ? getLastVersionDependencies(author, slug, null, platform) : null;
     }
 
     private boolean exists(long projectId, String versionString) {
