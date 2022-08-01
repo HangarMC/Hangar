@@ -78,7 +78,7 @@
     "eslint-plugin-vue": "9.3.0",
     "husky": "8.0.1",
     "lint-staged": "13.0.3",
-    "node-fetch": "3.2.9",
+    "node-fetch": "3.2.10",
     "pnpm": "7.6.0",
     "prettier": "2.7.1",
     "regenerator-runtime": "0.13.9",
