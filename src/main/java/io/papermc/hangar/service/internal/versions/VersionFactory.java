@@ -124,13 +124,12 @@ public class VersionFactory extends HangarComponent {
         this.versionsApiDAO = versionsApiDAO;
     }
 
-    public PendingVersion createPendingVersion(final long projectId, final List<MultipartFileOrUrl> data, final List<MultipartFile> files) {
+    public PendingVersion createPendingVersion(final long projectId, final List<MultipartFileOrUrl> data, final List<MultipartFile> files, final String channel) {
         final ProjectTable projectTable = projectService.getProjectTable(projectId);
         if (projectTable == null) {
             throw new IllegalArgumentException();
         }
 
-        final ProjectChannelTable projectChannelTable = channelService.getFirstChannel(projectId);
         final Map<Platform, Set<PluginDependency>> pluginDependencies = new EnumMap<>(Platform.class);
         final Map<Platform, SortedSet<String>> platformDependencies = new EnumMap<>(Platform.class);
         final List<PendingVersionFile> pendingFiles = new ArrayList<>();
@@ -154,7 +153,7 @@ public class VersionFactory extends HangarComponent {
                 // Handle external url
                 pendingFiles.add(new PendingVersionFile(fileOrUrl.platforms(), null, fileOrUrl.externalUrl()));
                 for (final Platform platform : fileOrUrl.platforms()) {
-                    final LastDependencies lastDependencies = getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), null, platform);
+                    final LastDependencies lastDependencies = getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), channel, platform);
                     if (lastDependencies != null) {
                         pluginDependencies.put(platform, lastDependencies.pluginDependencies());
                         platformDependencies.put(platform, lastDependencies.platformDependencies());
@@ -198,8 +197,7 @@ public class VersionFactory extends HangarComponent {
             final FileInfo fileInfo = new FileInfo(pluginDataFile.getPath().getFileName().toString(), pluginDataFile.getPath().toFile().length(), pluginDataFile.getMd5());
             pendingFiles.add(new PendingVersionFile(fileOrUrl.platforms(), fileInfo, null));
             for (final Platform platform : fileOrUrl.platforms()) {
-                //TODO include channel in last dep search - currently only in the step after jar uploading
-                final LastDependencies lastDependencies = getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), null, platform);
+                final LastDependencies lastDependencies = getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), channel, platform);
                 if (lastDependencies != null) {
                     pluginDependencies.put(platform, lastDependencies.pluginDependencies());
                     platformDependencies.put(platform, lastDependencies.platformDependencies());
@@ -225,7 +223,7 @@ public class VersionFactory extends HangarComponent {
             platformDependencies.putIfAbsent(platform, Collections.emptySortedSet());
             pluginDependencies.putIfAbsent(platform, Collections.emptySet());
         }
-        return new PendingVersion(versionString, pluginDependencies, platformDependencies, pendingFiles, projectChannelTable, projectTable.isForumSync());
+        return new PendingVersion(versionString, pluginDependencies, platformDependencies, pendingFiles, projectTable.isForumSync());
     }
 
     @Transactional
@@ -340,7 +338,7 @@ public class VersionFactory extends HangarComponent {
                     throw new IOException("Didn't successfully move the jar");
                 }
 
-                // Create symbolic links for the other platforms
+                // Create links for the other platforms
                 for (int i = 1; i < pendingVersionFile.platforms().size(); i++) {
                     final Platform platform = pendingVersionFile.platforms().get(i);
                     if (pendingVersion.getPlatformDependencies().get(platform).isEmpty()) {
@@ -352,7 +350,7 @@ public class VersionFactory extends HangarComponent {
                         Files.createDirectories(platformPath);
                     }
                     final Path platformJarPath = platformPath.resolve(tmpVersionJar.getFileName());
-                    Files.createSymbolicLink(platformJarPath, newVersionJarPath);
+                    Files.createLink(newVersionJarPath, platformJarPath);
                 }
 
                 final ProjectVersionDownloadTable table = new ProjectVersionDownloadTable(projectVersionTable.getVersionId(), fileInfo.getSizeBytes(), fileInfo.getMd5Hash(), fileInfo.getName(), null);

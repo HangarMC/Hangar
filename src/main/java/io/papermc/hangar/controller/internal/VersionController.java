@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -79,9 +80,10 @@ public class VersionController extends HangarComponent {
     @PostMapping(path = "/version/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PendingVersion> create(@PathVariable("id") long projectId,
                                                  @RequestPart(required = false) @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
-                                                 @RequestPart @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFileOrUrl> data) {
+                                                 @RequestPart @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFileOrUrl> data,
+                                                 @RequestPart @NotBlank String channel) {
         // Use separate lists to hack around multipart form data limitations
-        return ResponseEntity.ok(versionFactory.createPendingVersion(projectId, data, files));
+        return ResponseEntity.ok(versionFactory.createPendingVersion(projectId, data, files, channel));
     }
 
     @Unlocked

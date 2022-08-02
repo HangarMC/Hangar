@@ -411,7 +411,7 @@
         "externalUrl": "External URL",
         "hangarProject": "Hangar Project",
         "channel": "Channel",
-        "addChannel": "Add Channel",
+        "addChannel": "Create channel",
         "unstable": "Unstable",
         "forumPost": "Forum Post",
         "release": {
@@ -421,11 +421,11 @@
         "platforms": "Platforms",
         "platformVersions": "Platform Versions",
         "platformVersionsDescription": "Please select at least one version per platform that your resource is compatible with. You can still change platform versions and dependencies after the initial version creation.",
-        "versionDescription": "Enter the name of the version as well as its channel.",
+        "versionDescription": "Enter the name of the version and double check that the uploaded artifacts are correct.",
         "tags": "Version Tags",
         "dependencies": "Dependencies",
         "changelogTitle": "What's new?",
-        "artifactTitle": "You can either upload a file or set an external download url. Each file/url needs at least one platform selected.",
+        "artifactTitle": "After setting the channel, you can either upload a file or set an external download url. Each file/url needs at least one platform selected.",
         "artifactNumber": "Download #{0}",
         "externalLinkAlert": "An external link needs to be a direct download link!",
         "addedArtifacts": "Provided Artifacts"
@@ -437,7 +437,7 @@
           "continue": "Next"
         },
         "2": {
-          "header": "Basic Info",
+          "header": "Artifact Data",
           "back": "Back",
           "continue": "Next"
         },
