@@ -7,7 +7,6 @@ import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.Valid;
@@ -54,16 +53,17 @@ public class PendingVersion {
         this.forumSync = forumSync;
     }
 
-    public PendingVersion(@Nullable String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, Map<Platform, SortedSet<String>> platformDependencies, List<PendingVersionFile> files, ProjectChannelTable projectChannelTable, boolean forumSync) {
+    public PendingVersion(@Nullable String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, Map<Platform, SortedSet<String>> platformDependencies, List<PendingVersionFile> files, boolean forumSync) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
         this.description = null;
         this.forumSync = forumSync;
         this.files = files;
-        this.channelName = projectChannelTable.getName();
-        this.channelColor = projectChannelTable.getColor();
-        this.channelFlags = projectChannelTable.getFlags();
+        // Keep data from frontend
+        this.channelName = "";
+        this.channelColor = Color.CYAN;
+        this.channelFlags = Set.of();
     }
 
     public String getVersionString() {

@@ -67,7 +67,6 @@ function open({ click }: { click: () => void }) {
   return {
     click: () => {
       reset();
-      console.log("reset");
       click();
     },
   };

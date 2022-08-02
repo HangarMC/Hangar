@@ -27,6 +27,7 @@ import DependencyTable from "~/components/projects/DependencyTable.vue";
 import InputTag from "~/lib/components/ui/InputTag.vue";
 import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
+import { useProjectChannels } from "~/composables/useApiHelper";
 
 const route = useRoute();
 const router = useRouter();
@@ -152,7 +153,7 @@ function removePlatformFile(id: number) {
 
 const dependencyTables = ref();
 const pendingVersion: Ref<PendingVersion | undefined> = ref<PendingVersion>();
-const channels = ref<ProjectChannel[]>([]);
+const channels = await useProjectChannels(route.params.user as string, route.params.project as string);
 const selectedPlatforms = ref<Platform[]>([]);
 const descriptionEditor = ref();
 const loading = reactive({
@@ -160,7 +161,8 @@ const loading = reactive({
   submit: false,
 });
 
-const currentChannel = computed(() => channels.value.find((c) => c.name === pendingVersion.value?.channelName));
+const selectedChannel = ref<string>("Release");
+const currentChannel = computed(() => channels.value?.find((c) => c.name === selectedChannel.value));
 
 const platforms = computed<IPlatform[]>(() => {
   return [...backendData.platforms.values()];
@@ -196,6 +198,7 @@ async function createPendingVersion() {
     }
   }
 
+  formData.append("channel", selectedChannel.value);
   formData.append(
     "data",
     new Blob([JSON.stringify(data)], {
@@ -203,13 +206,16 @@ async function createPendingVersion() {
     })
   );
 
-  channels.value = await useInternalApi<ProjectChannel[]>(`channels/${route.params.user}/${route.params.project}`, false).catch<any>((e) =>
-    handleRequestError(e, ctx, i18n)
-  );
   pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project.id}/upload`, true, "post", formData).catch<any>((e) =>
     handleRequestError(e, ctx, i18n)
   );
   loading.create = false;
+
+  if (pendingVersion.value && currentChannel.value) {
+    pendingVersion.value.channelName = currentChannel.value.name;
+    pendingVersion.value.channelColor = currentChannel.value.color;
+    pendingVersion.value.channelFlags = currentChannel.value.flags;
+  }
 
   return pendingVersion.value !== undefined;
 }
@@ -254,10 +260,10 @@ async function createVersion() {
 }
 
 function addChannel(channel: ProjectChannel) {
-  if (pendingVersion.value) {
+  if (channels.value) {
     remove(channels.value, (c) => c.temp);
     channels.value.push(Object.assign({ temp: true }, channel));
-    pendingVersion.value.channelName = channel.name;
+    selectedChannel.value = channel.name;
   }
 }
 
@@ -283,6 +289,21 @@ useHead(
   <Steps v-model="selectedStep" :steps="steps" button-lang-key="version.new.steps.">
     <template #artifact>
       <p class="mb-4">{{ t("version.new.form.artifactTitle") }}</p>
+      <div class="flex mb-5">
+        <div class="basis-full md:basis-4/12">
+          <InputSelect v-model="selectedChannel" :values="channels" item-text="name" item-value="name" :label="t('version.new.form.channel')" />
+        </div>
+        <div class="basis-full md:(basis-4/12 -ml-2)">
+          <ChannelModal :project-id="project.id" @create="addChannel">
+            <template #activator="{ on, attrs }">
+              <Button class="basis-4/12" v-bind="attrs" size="medium" v-on="on">
+                <IconMdiPlus />
+                {{ t("version.new.form.addChannel") }}
+              </Button>
+            </template>
+          </ChannelModal>
+        </div>
+      </div>
 
       <div v-for="(platformFile, idx) in platformFiles" :key="idx" class="mb-6">
         <span class="text-xl">{{ t("version.new.form.artifactNumber", [idx + 1]) }}</span>
@@ -295,7 +316,7 @@ useHead(
               <InputText v-model="platformFile.url" :label="t('version.new.form.externalUrl')" :rules="artifactURLRules" />
             </template>
           </Tabs>
-          <div class="mt-4 md:ml-8">
+          <div class="mt-6 md:ml-8">
             <div v-for="platform in platforms" :key="platform.name">
               <InputCheckbox
                 :model-value="platformFile.platforms.includes(platform.enumName)"
@@ -308,9 +329,8 @@ useHead(
           </div>
           <Button v-if="platformFiles.length !== 1" class="md:ml-4 mt-4" @click="removePlatformFile(idx)"><IconMdiDelete /></Button>
         </div>
-        <div></div>
       </div>
-      <Button :disabled="platformFiles.length >= backendData.platforms.size" class="mt-4" @click="addPlatformFile()">
+      <Button :disabled="backendData.platforms.size !== 0 && platformFiles.length >= backendData.platforms.size" @click="addPlatformFile()">
         <IconMdiPlus /> Add file/url for another platform
       </Button>
     </template>
@@ -327,19 +347,6 @@ useHead(
             counter
           />
         </div>
-        <div class="basis-full md:basis-4/12">
-          <InputSelect v-model="pendingVersion.channelName" :values="channels" item-text="name" item-value="name" :label="t('version.new.form.channel')" />
-        </div>
-        <div class="basis-full md:basis-4/12">
-          <ChannelModal :project-id="project.id" @create="addChannel">
-            <template #activator="{ on, attrs }">
-              <Button class="basis-4/12" v-bind="attrs" size="medium" v-on="on">
-                {{ t("version.new.form.addChannel") }}
-                <IconMdiPlus />
-              </Button>
-            </template>
-          </ChannelModal>
-        </div>
       </div>
 
       <p class="mt-8 text-xl">{{ t("version.new.form.addedArtifacts") }}</p>
@@ -348,7 +355,7 @@ useHead(
           <div v-if="pendingFile.fileInfo" class="basis-full <md:mt-4 md:basis-4/12">
             <InputText :model-value="pendingFile.fileInfo.name" :label="t('version.new.form.fileName')" disabled />
           </div>
-          <div v-if="pendingFile.fileInfo" class="basis-full <md:mt-4 md:(basis-2/12 -ml-2)">
+          <div v-if="pendingFile.fileInfo" class="basis-full <md:mt-4 md:(basis-2/12)">
             <InputText :model-value="formatSize(pendingFile.fileInfo.sizeBytes)" :label="t('version.new.form.fileSize')" disabled />
           </div>
           <div v-else class="basis-full <md:mt-4 md:basis-6/12">
