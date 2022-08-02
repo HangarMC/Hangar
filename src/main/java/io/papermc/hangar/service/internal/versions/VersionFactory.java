@@ -288,18 +288,18 @@ public class VersionFactory extends HangarComponent {
                 pendingVersion.isForumSync()
             ));
 
-            List<ProjectVersionPlatformDependencyTable> platformDependencyTables = new ArrayList<>();
-            for (Map.Entry<Platform, SortedSet<String>> entry : pendingVersion.getPlatformDependencies().entrySet()) {
-                for (String version : entry.getValue()) {
+            final List<ProjectVersionPlatformDependencyTable> platformDependencyTables = new ArrayList<>();
+            for (final Map.Entry<Platform, SortedSet<String>> entry : pendingVersion.getPlatformDependencies().entrySet()) {
+                for (final String version : entry.getValue()) {
                     PlatformVersionTable platformVersionTable = platformVersionDAO.getByPlatformAndVersion(entry.getKey(), version);
                     platformDependencyTables.add(new ProjectVersionPlatformDependencyTable(projectVersionTable.getId(), platformVersionTable.getId()));
                 }
             }
             projectVersionPlatformDependenciesDAO.insertAll(platformDependencyTables);
 
-            List<ProjectVersionDependencyTable> pluginDependencyTables = new ArrayList<>();
-            for (Map.Entry<Platform, Set<PluginDependency>> platformListEntry : pendingVersion.getPluginDependencies().entrySet()) {
-                for (PluginDependency pluginDependency : platformListEntry.getValue()) {
+            final List<ProjectVersionDependencyTable> pluginDependencyTables = new ArrayList<>();
+            for (final Map.Entry<Platform, Set<PluginDependency>> platformListEntry : pendingVersion.getPluginDependencies().entrySet()) {
+                for (final PluginDependency pluginDependency : platformListEntry.getValue()) {
                     Long depProjectId = null;
                     if (pluginDependency.getNamespace() != null) {
                         Optional<ProjectTable> depProjectTable = Optional.ofNullable(projectService.getProjectTable(pluginDependency.getNamespace().getOwner(), pluginDependency.getNamespace().getSlug()));
@@ -350,7 +350,7 @@ public class VersionFactory extends HangarComponent {
                         Files.createDirectories(platformPath);
                     }
                     final Path platformJarPath = platformPath.resolve(tmpVersionJar.getFileName());
-                    Files.createLink(newVersionJarPath, platformJarPath);
+                    Files.createLink(platformJarPath, newVersionJarPath);
                 }
 
                 final ProjectVersionDownloadTable table = new ProjectVersionDownloadTable(projectVersionTable.getVersionId(), fileInfo.getSizeBytes(), fileInfo.getMd5Hash(), fileInfo.getName(), null);
