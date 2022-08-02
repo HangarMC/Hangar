@@ -34,29 +34,33 @@ public class ProjectFiles {
         logger.info("Cleaned up tmp files and inited work dir {} ", uploadsDir);
     }
 
-    public Path getProjectDir(String owner, String name) {
-        return getUserDir(owner).resolve(name);
+    public String getProjectDir(String owner, String name) {
+        return getUserDir(owner) + "/" + name;
     }
 
-    public Path getVersionDir(String owner, String name, String version) {
-        return getProjectDir(owner, name).resolve("versions").resolve(version);
+    public String getVersionDir(String owner, String name, String version) {
+        return getProjectDir(owner, name) + "/versions/" + version;
     }
 
-    public Path getVersionDir(String owner, String name, String version, Platform platform) {
-        return getVersionDir(owner, name, version).resolve(platform.name());
+    public String getVersionDir(String owner, String name, String version, Platform platform) {
+        return getVersionDir(owner, name, version) + "/" + platform.name();
     }
 
-    public Path getUserDir(String user) {
-        return pluginsDir.resolve(user);
+    public String getVersionDir(String owner, String name, String version, Platform platform, String fileName) {
+        return getVersionDir(owner,name, version, platform) + "/" + fileName;
+    }
+
+    public String getUserDir(String user) {
+        return pluginsDir + "/" + user;
     }
 
     public void transferProject(String owner, String newOwner, String slug) {
-        final Path oldProjectDir = getProjectDir(owner, slug);
+        final String oldProjectDir = getProjectDir(owner, slug);
         if (!Files.exists(oldProjectDir)) {
             return;
         }
 
-        final Path newProjectDir = getProjectDir(newOwner, slug);
+        final String newProjectDir = getProjectDir(newOwner, slug);
         try {
             Files.createDirectories(newProjectDir);
             Files.move(oldProjectDir, newProjectDir, StandardCopyOption.REPLACE_EXISTING);
@@ -66,12 +70,12 @@ public class ProjectFiles {
     }
 
     public void renameProject(String owner, String slug, String newSlug) {
-        final Path oldProjectDir = getProjectDir(owner, slug);
+        final String oldProjectDir = getProjectDir(owner, slug);
         if (!Files.exists(oldProjectDir)) {
             return;
         }
 
-        final Path newProjectDir = getProjectDir(owner, newSlug);
+        final String newProjectDir = getProjectDir(owner, newSlug);
         try {
             Files.createDirectories(newProjectDir);
             Files.move(oldProjectDir, newProjectDir, StandardCopyOption.REPLACE_EXISTING);
@@ -81,12 +85,12 @@ public class ProjectFiles {
     }
 
     public void renameVersion(String owner, String slug, String version, String newVersionName) {
-        final Path oldVersionDir = getVersionDir(owner, slug, version);
+        final String oldVersionDir = getVersionDir(owner, slug, version);
         if (!Files.exists(oldVersionDir)) {
             return;
         }
 
-        final Path newVersionDir = getVersionDir(owner, slug, newVersionName);
+        final String newVersionDir = getVersionDir(owner, slug, newVersionName);
         try {
             Files.move(oldVersionDir, newVersionDir, StandardCopyOption.REPLACE_EXISTING);
         } catch (final IOException e) {
@@ -94,32 +98,16 @@ public class ProjectFiles {
         }
     }
 
-    public Path getIconsDir(String owner, String name) {
-        return getProjectDir(owner, name).resolve("icons");
+    public String getIconsDir(String owner, String name) {
+        return getProjectDir(owner, name) + "/icons";
     }
 
-    public Path getIconDir(String owner, String name) {
-        return getIconsDir(owner, name).resolve("icon");
-    }
-
-    public Path getIconPath(String owner, String name) {
-        return findFirstFile(getIconDir(owner, name));
+    public String getIconPath(String owner, String name) {
+        return getIconsDir(owner, name) + "/icon.png";
     }
 
     public Path getTempDir(String owner) {
         return tmpDir.resolve(owner);
     }
 
-    private Path findFirstFile(Path dir) {
-        if (!Files.exists(dir)) {
-            return null;
-        }
-
-        try (Stream<Path> pathStream = Files.list(dir)) {
-            return pathStream.filter(Predicate.not(Files::isDirectory)).findFirst().orElse(null);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }

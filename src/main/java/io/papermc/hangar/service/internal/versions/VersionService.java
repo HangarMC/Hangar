@@ -12,6 +12,7 @@ import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
+import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilityService;
@@ -36,9 +37,10 @@ public class VersionService extends HangarComponent {
     private final VersionDependencyService versionDependencyService;
     private final ProjectFiles projectFiles;
     private final ProjectsDAO projectsDAO;
+    private final FileService fileService;
 
     @Autowired
-    public VersionService(ProjectVersionsDAO projectVersionDAO, HangarVersionsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, ProjectVersionVisibilityService projectVersionVisibilityService, VersionDependencyService versionDependencyService, ProjectFiles projectFiles, final ProjectsDAO projectsDAO) {
+    public VersionService(ProjectVersionsDAO projectVersionDAO, HangarVersionsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, ProjectVersionVisibilityService projectVersionVisibilityService, VersionDependencyService versionDependencyService, ProjectFiles projectFiles, final ProjectsDAO projectsDAO, FileService fileService) {
         this.projectVersionsDAO = projectVersionDAO;
         this.hangarVersionsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
@@ -46,6 +48,7 @@ public class VersionService extends HangarComponent {
         this.versionDependencyService = versionDependencyService;
         this.projectFiles = projectFiles;
         this.projectsDAO = projectsDAO;
+        this.fileService = fileService;
     }
 
     @Nullable
@@ -124,7 +127,7 @@ public class VersionService extends HangarComponent {
 
         actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(pt.getId(), pvt.getId()), "Deleted: " + comment, pvt.getVisibility().getTitle()));
         projectVersionsDAO.delete(pvt);
-        FileUtils.deleteDirectory(projectFiles.getVersionDir(pt.getOwnerName(), pt.getSlug(), pvt.getVersionString()));
+        fileService.deleteDirectory(projectFiles.getVersionDir(pt.getOwnerName(), pt.getSlug(), pvt.getVersionString()));
     }
 
     @Transactional
