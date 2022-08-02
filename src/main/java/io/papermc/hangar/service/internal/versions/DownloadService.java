@@ -19,11 +19,10 @@ import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadWarni
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionUnsafeDownloadTable;
 import io.papermc.hangar.service.internal.admin.StatService;
+import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.util.RequestUtil;
 import java.net.InetAddress;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -51,9 +50,10 @@ public class DownloadService extends HangarComponent {
     private final ProjectVersionUnsafeDownloadsDAO projectVersionUnsafeDownloadsDAO;
     private final ProjectVersionDownloadWarningsDAO projectVersionDownloadWarningsDAO;
     private final ProjectVersionDownloadsDAO downloadsDAO;
+    private final FileService fileService;
 
     @Autowired
-    public DownloadService(StatService statService, ProjectFiles projectFiles, ProjectsDAO projectsDAO, ProjectVersionsDAO projectVersionsDAO, ProjectVersionUnsafeDownloadsDAO projectVersionUnsafeDownloadsDAO, ProjectVersionDownloadWarningsDAO projectVersionDownloadWarningsDAO, final ProjectVersionDownloadsDAO downloadsDAO) {
+    public DownloadService(StatService statService, ProjectFiles projectFiles, ProjectsDAO projectsDAO, ProjectVersionsDAO projectVersionsDAO, ProjectVersionUnsafeDownloadsDAO projectVersionUnsafeDownloadsDAO, ProjectVersionDownloadWarningsDAO projectVersionDownloadWarningsDAO, final ProjectVersionDownloadsDAO downloadsDAO, FileService fileService) {
         this.statService = statService;
         this.projectFiles = projectFiles;
         this.projectsDAO = projectsDAO;
@@ -61,6 +61,7 @@ public class DownloadService extends HangarComponent {
         this.projectVersionUnsafeDownloadsDAO = projectVersionUnsafeDownloadsDAO;
         this.projectVersionDownloadWarningsDAO = projectVersionDownloadWarningsDAO;
         this.downloadsDAO = downloadsDAO;
+        this.fileService = fileService;
     }
 
     @Transactional
@@ -103,8 +104,8 @@ public class DownloadService extends HangarComponent {
         }
 
         ProjectTable project = projectsDAO.getById(pvt.getProjectId());
-        Path path = projectFiles.getVersionDir(project.getOwnerName(), project.getSlug(), versionString, platform).resolve(download.getFileName());
-        if (Files.notExists(path)) {
+        String path = projectFiles.getVersionDir(project.getOwnerName(), project.getSlug(), versionString, platform, download.getFileName());
+        if (fileService.exists(path)) {
             throw new HangarApiException("Couldn't find a file for version " + versionString);
         }
 
@@ -123,7 +124,7 @@ public class DownloadService extends HangarComponent {
 
         statService.addVersionDownload(pvt);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + download.getFileName() + "\"");
-        return new FileSystemResource(path);
+        return fileService.getResource(path);
     }
 
     public boolean requiresConfirmation(String author, String slug, String versionString, Platform platform) {
