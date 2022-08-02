@@ -151,6 +151,7 @@ hangar:
       timeout: 10000
     safe-download-hosts:
       - "github.com"
+      - "gitlab.com"
       - "youtu.be"
       - "youtube.com"
       - "papermc.io"
@@ -159,6 +160,10 @@ hangar:
       - "markdownguide.org"
       - "spongepowered.org"
       - "bugs.mojang.com"
+      - "patreon.com"
+      - "ko-fi.com"
+      - "crowdin.com"
+      - "kyori.net"
     # image-proxy-url: "%s"
     image-proxy-url: "http://localhost:3001/image/%s" # only comment in if you run auth locally
 
