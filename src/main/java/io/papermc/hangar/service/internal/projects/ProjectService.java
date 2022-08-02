@@ -29,6 +29,7 @@ import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.service.PermissionService;
+import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.versions.DownloadService;
@@ -76,9 +77,10 @@ public class ProjectService extends HangarComponent {
     private final HangarVersionsDAO hangarVersionsDAO;
     private final RestTemplate restTemplate;
     private final DownloadService downloadService;
+    private final FileService fileService;
 
     @Autowired
-    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, @Lazy RestTemplate restTemplate, final DownloadService downloadService) {
+    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, @Lazy RestTemplate restTemplate, final DownloadService downloadService, FileService fileService) {
         this.projectsDAO = projectDAO;
         this.hangarUsersDAO = hangarUsersDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
@@ -92,6 +94,7 @@ public class ProjectService extends HangarComponent {
         this.hangarVersionsDAO = hangarVersionsDAO;
         this.restTemplate = restTemplate;
         this.downloadService = downloadService;
+        this.fileService = fileService;
     }
 
     @Nullable
@@ -223,14 +226,10 @@ public class ProjectService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.error.noFile");
         }
         try {
-            Path iconDir = projectFiles.getIconDir(author, slug);
+            String iconPath = projectFiles.getIconPath(author, slug);
             String oldBase64 = getBase64(author, slug, "old", projectFiles.getIconPath(author, slug));
-            if (Files.notExists(iconDir)) {
-                Files.createDirectories(iconDir);
-            }
-            FileUtils.deletedFiles(iconDir);
-            Files.copy(icon.getInputStream(), iconDir.resolve(icon.getOriginalFilename()));
-            String newBase64 = getBase64(author, slug, "new", iconDir.resolve(icon.getOriginalFilename()));
+            fileService.write(icon.getInputStream(), iconPath);
+            String newBase64 = getBase64(author, slug, "new", iconPath);
             actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), newBase64, oldBase64));
         } catch (IOException e) {
             e.printStackTrace();
@@ -242,7 +241,7 @@ public class ProjectService extends HangarComponent {
     public void resetIcon(String author, String slug) {
         ProjectTable projectTable = getProjectTable(author, slug);
         String base64 = getBase64(author, slug, "old", projectFiles.getIconPath(author, slug));
-        if (FileUtils.delete(projectFiles.getIconPath(author, slug))) {
+        if (fileService.delete(projectFiles.getIconPath(author, slug))) {
             actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), "#empty", base64));
         }
         evictIconCache(author, slug);
@@ -253,13 +252,13 @@ public class ProjectService extends HangarComponent {
         restTemplate.delete(config.security.api.getUrl() + "/image/" + url + "?apiKey=" + config.sso.getApiKey());
     }
 
-    private String getBase64(String author, String slug, String old, Path path) {
+    private String getBase64(String author, String slug, String old, String path) {
         String base64 = "#empty";
-        if (path == null || !Files.exists(path)) {
+        if (path == null || !fileService.exists(path)) {
             return base64;
         }
         try {
-            base64 = Base64.getEncoder().encodeToString(Files.readAllBytes(path));
+            base64 = Base64.getEncoder().encodeToString(fileService.bytes(path));
         } catch (IOException e) {
             logger.warn("Error while loading {} icon for project {}/{}: {}:{}", old, author, slug, e.getClass().getSimpleName(), e.getMessage());
         }

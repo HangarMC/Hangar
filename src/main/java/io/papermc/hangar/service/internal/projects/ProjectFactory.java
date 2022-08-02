@@ -16,6 +16,7 @@ import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.JobService;
+import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
@@ -43,9 +44,10 @@ public class ProjectFactory extends HangarComponent {
     private final JobService jobService;
     private final ProjectFiles projectFiles;
     private final ValidationService validationService;
+    private final FileService fileService;
 
     @Autowired
-    public ProjectFactory(final ProjectsDAO projectDAO, final ProjectService projectService, final ChannelService channelService, final ProjectPageService projectPageService, final ProjectMemberService projectMemberService, final ProjectVisibilityService projectVisibilityService, final UsersApiService usersApiService, final JobService jobService, final ProjectFiles projectFiles, final ValidationService validationService) {
+    public ProjectFactory(final ProjectsDAO projectDAO, final ProjectService projectService, final ChannelService channelService, final ProjectPageService projectPageService, final ProjectMemberService projectMemberService, final ProjectVisibilityService projectVisibilityService, final UsersApiService usersApiService, final JobService jobService, final ProjectFiles projectFiles, final ValidationService validationService, FileService fileService) {
         this.projectsDAO = projectDAO;
         this.projectService = projectService;
         this.channelService = channelService;
@@ -56,6 +58,7 @@ public class ProjectFactory extends HangarComponent {
         this.jobService = jobService;
         this.projectFiles = projectFiles;
         this.validationService = validationService;
+        this.fileService = fileService;
     }
 
     @Transactional
@@ -162,7 +165,7 @@ public class ProjectFactory extends HangarComponent {
         this.jobService.save(new DeleteDiscourseTopicJob(projectTable.getId()));
         this.projectsDAO.delete(projectTable);
         this.projectService.refreshHomeProjects();
-        FileUtils.deleteDirectory(this.projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getSlug()));
+        this.fileService.deleteDirectory(this.projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getSlug()));
     }
 
     @EnumByName
