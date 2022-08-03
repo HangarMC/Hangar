@@ -23,7 +23,7 @@ public enum NamedPermission {
     CREATE_VERSION("create_version", Permission.CreateVersion, "CreateVersion"),
     EDIT_VERSION("edit_version", Permission.EditVersion, "EditVersion"),
     DELETE_VERSION("delete_version", Permission.DeleteVersion, "DeleteVersion"),
-    EDIT_TAGS("edit_tags", Permission.EditTags, "EditTags"), // EDIT_CHANNELS
+    EDIT_CHANNEL("edit_channels", Permission.EditTags, "EditTags"),
 
     CREATE_ORGANIZATION("create_organization", Permission.CreateOrganization, "CreateOrganization"),
     DELETE_ORGANIZATION("delete_organization", Permission.DeleteOrganization, "DeleteOrganization"),
@@ -40,6 +40,8 @@ public enum NamedPermission {
     VIEW_LOGS("view_logs", Permission.ViewLogs, "ViewLogs"),
 
     MANUAL_VALUE_CHANGES("manual_value_changes", Permission.ManualValueChanges, "ManualValueChanges"),
+    RESTORE_VERSION("restore_version", Permission.RestoreVersion, "RestoreVersion"),
+    RESTORE_PROJECT("restore_project", Permission.DeleteVersion, "RestoreProject"),
     HARD_DELETE_PROJECT("hard_delete_project", Permission.HardDeleteProject, "HardDeleteProject"),
     HARD_DELETE_VERSION("hard_delete_version", Permission.HardDeleteVersion, "HardDeleteVersion"),
     EDIT_ALL_USER_SETTINGS("edit_all_user_settings", Permission.EditAllUserSettings, "EditAllUserSettings");

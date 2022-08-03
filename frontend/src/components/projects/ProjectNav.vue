@@ -30,7 +30,7 @@ function childRoute(route = ""): string {
     <ProjectNavItem :to="childRoute('/versions')">
       {{ i18n.t("project.tabs.versions") }}
     </ProjectNavItem>
-    <ProjectNavItem v-if="hasPerms(NamedPermission.EDIT_TAGS)" :to="childRoute('/channels')">
+    <ProjectNavItem v-if="hasPerms(NamedPermission.EDIT_CHANNELS)" :to="childRoute('/channels')">
       {{ i18n.t("project.tabs.channels") }}
     </ProjectNavItem>
     <ProjectNavItem v-if="project.topicId" :to="childRoute('/discuss')">

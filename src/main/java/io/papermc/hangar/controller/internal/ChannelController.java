@@ -51,14 +51,14 @@ public class ChannelController extends HangarComponent {
 
     @GetMapping("/checkName")
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_CHANNEL, args = "{#projectId}")
     public void checkName(@RequestParam long projectId, @RequestParam String name, @RequestParam(required = false) String existingName) {
         channelService.checkName(projectId, name, existingName);
     }
 
     @GetMapping("/checkColor")
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_CHANNEL, args = "{#projectId}")
     public void checkColor(@RequestParam long projectId, @RequestParam Color color, @RequestParam(required = false) Color existingColor) {
         channelService.checkColor(projectId, color, existingColor);
     }
@@ -74,7 +74,7 @@ public class ChannelController extends HangarComponent {
     @Unlocked
     @ResponseStatus(HttpStatus.CREATED)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 15)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_CHANNEL, args = "{#projectId}")
     @PostMapping(path = "/{projectId}/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createChannel(@PathVariable final long projectId, @Valid @RequestBody final ChannelForm channelForm) {
         final Set<ChannelFlag> flags = channelForm.getFlags();
@@ -85,7 +85,7 @@ public class ChannelController extends HangarComponent {
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 15)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_CHANNEL, args = "{#projectId}")
     @PostMapping(path = "/{projectId}/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void editChannel(@PathVariable final long projectId, @Valid @RequestBody final EditChannelForm channelForm) {
         final Set<ChannelFlag> flags = channelForm.getFlags();
@@ -95,7 +95,7 @@ public class ChannelController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_CHANNEL, args = "{#projectId}")
     @PostMapping("/{projectId}/delete/{channelId}")
     public void deleteChannel(@PathVariable long projectId, @PathVariable long channelId) {
         channelService.deleteProjectChannel(projectId, channelId);

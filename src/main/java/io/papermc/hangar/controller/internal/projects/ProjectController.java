@@ -149,7 +149,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#author, #slug}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PostMapping(path = "/project/{author}/{slug}/rename", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> renameProject(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody StringContent nameContent) {
@@ -178,7 +178,7 @@ public class ProjectController extends HangarComponent {
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addProjectMember(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody EditMembersForm.Member<ProjectRole> member) {
         ProjectTable projectTable = projectService.getProjectTable(author, slug);
@@ -188,7 +188,7 @@ public class ProjectController extends HangarComponent {
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 10)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void editProjectMember(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody EditMembersForm.Member<ProjectRole> member) {
         ProjectTable projectTable = projectService.getProjectTable(author, slug);
@@ -197,7 +197,7 @@ public class ProjectController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void removeProjectMember(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody EditMembersForm.Member<ProjectRole> member) {
         ProjectTable projectTable = projectService.getProjectTable(author, slug);

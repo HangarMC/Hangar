@@ -1,10 +1,12 @@
 package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.PlatformVersionTable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,7 @@ public class PlatformService extends HangarComponent {
     }
 
     @Transactional
+    @CacheEvict(value = CacheConfig.PLATFORMS, allEntries = true)
     public void updatePlatformVersions(Map<Platform, List<String>> platformVersions) {
         platformVersions.forEach((platform, versions) -> {
             Map<String, PlatformVersionTable> platformVersionTables = platformVersionDAO.getForPlatform(platform);

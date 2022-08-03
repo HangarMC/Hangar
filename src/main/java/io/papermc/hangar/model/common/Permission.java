@@ -47,7 +47,8 @@ public class Permission implements Comparable<Permission>, Argument {
     public static final Permission EditOrganizationSettings = new Permission(EditSubjectSettings.value);
     public static final Permission ManageOrganizationMembers = new Permission(ManageSubjectMembers.value);
     public static final Permission IsOrganizationMember = new Permission(IsProjectMember.value);
-    public static final Permission IsOrganizationOwner = new Permission(IsProjectOwner.value | DeleteOrganization.value);
+    public static final Permission IsOrganizationAdmin = new Permission(EditOrganizationSettings.value | ManageOrganizationMembers.value | IsOrganizationMember.value);
+    public static final Permission IsOrganizationOwner = new Permission(IsProjectOwner.value | DeleteOrganization.value | IsOrganizationAdmin.value);
 
     public static final Permission ModNotesAndFlags = new Permission(1L << 24);
     public static final Permission SeeHidden = new Permission(1L << 25);
@@ -63,6 +64,8 @@ public class Permission implements Comparable<Permission>, Argument {
     public static final Permission HardDeleteProject = new Permission(1L << 41);
     public static final Permission HardDeleteVersion = new Permission(1L << 42);
     public static final Permission EditAllUserSettings = new Permission(1L << 43);
+    public static final Permission RestoreVersion = new Permission(1L << 44);
+    public static final Permission RestoreProject = new Permission(1L << 45);
 
     private long value;
 
