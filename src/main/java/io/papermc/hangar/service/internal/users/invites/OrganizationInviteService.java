@@ -55,7 +55,7 @@ public class OrganizationInviteService extends InviteService<OrganizationContext
     }
 
     @Override
-    protected void setNewOwner(final OrganizationTable organization, final UserTable newOwner) {
+    protected void updateOwnerId(final OrganizationTable organization, final UserTable newOwner) {
         organization.setOwnerId(newOwner.getUserId());
         organizationDAO.update(organization);
     }

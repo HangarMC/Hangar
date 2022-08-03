@@ -29,6 +29,7 @@ import OrgVisibilityModal from "~/components/modals/OrgVisibilityModal.vue";
 import LockUserModal from "~/components/modals/LockUserModal.vue";
 import ProjectCard from "~/components/projects/ProjectCard.vue";
 import OrgTransferModal from "~/components/modals/OrgTransferModal.vue";
+import OrgDeleteModal from "~/components/modals/OrgDeleteModal.vue";
 
 const props = defineProps<{
   user: User;
@@ -93,9 +94,14 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
     <div class="flex-basis-full flex-grow md:max-w-1/3 md:min-w-1/3">
       <Card v-if="buttons.length !== 0" class="mb-4 border-solid border-top-4 border-top-red-500 dark:border-top-red-500">
         <template #header>{{ i18n.t("author.management") }}</template>
-        <Tooltip v-if="hasPerms(NamedPermission.IS_SUBJECT_OWNER)" :content="i18n.t('author.tooltips.transfer')">
-          <OrgTransferModal :organization="user.name" />
-        </Tooltip>
+        <template v-if="organization && hasPerms(NamedPermission.IS_SUBJECT_OWNER)">
+          <Tooltip :content="i18n.t('author.tooltips.transfer')">
+            <OrgTransferModal :organization="user.name" />
+          </Tooltip>
+          <Tooltip :content="i18n.t('author.tooltips.delete')">
+            <OrgDeleteModal :organization="user.name" />
+          </Tooltip>
+        </template>
 
         <Tooltip v-for="btn in buttons" :key="btn.name">
           <template #content>

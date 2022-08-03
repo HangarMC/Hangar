@@ -35,14 +35,10 @@ async function doSearch(val: string) {
 
 async function transfer() {
   loading.value = true;
-  try {
-    await useInternalApi<string>(`organizations/org/${props.organization}/transfer`, true, "post", {
-      content: search.value,
-    });
-    notificationStore.success(i18n.t("organization.settings.success.transferRequest", [search.value]));
-  } catch (e) {
-    handleRequestError(e, ctx, i18n);
-  }
+  await useInternalApi<string>(`organizations/org/${props.organization}/transfer`, true, "post", {
+    content: search.value,
+  }).catch((e) => handleRequestError(e, ctx, i18n));
+  notificationStore.success(i18n.t("organization.settings.success.transferRequest", [search.value]));
   loading.value = false;
 }
 </script>
@@ -60,7 +56,7 @@ async function transfer() {
       </div>
     </template>
     <template #activator="{ on }">
-      <Button size="small" class="mr-1" v-on="on"><IconMdiCogTransfer /></Button>
+      <Button button-type="red" size="small" class="mr-1" v-on="on"><IconMdiCogTransfer /></Button>
     </template>
   </Modal>
 </template>
