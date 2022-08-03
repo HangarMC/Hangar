@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, Ref } from "vue";
+import { computed, ref, Ref } from "vue";
 import Link from "~/lib/components/design/Link.vue";
 import Card from "~/lib/components/design/Card.vue";
 import { useSettingsStore } from "~/store/settings";
@@ -31,29 +31,46 @@ const v = useVuelidate();
 const activeStep = computed(() => props.steps.find((s) => s.value === internalValue.value));
 const activeStepIndex = computed(() => props.steps.indexOf(activeStep.value as Step) + 1);
 
-const disableBack = computed(() => (activeStep.value?.disableBack ? activeStep.value?.disableBack.value : false));
-const disableNext = computed(() => (activeStep.value?.disableNext ? activeStep.value?.disableNext.value : v.value.$invalid));
+const loading = ref(false);
+const disableBack = computed(() => loading.value || (activeStep.value?.disableBack ? activeStep.value?.disableBack.value : false));
+const disableNext = computed(() => loading.value || (activeStep.value?.disableNext ? activeStep.value?.disableNext.value : v.value.$invalid));
 const showBack = computed(() => (activeStep.value?.showBack ? activeStep.value?.showBack.value : true));
 const showNext = computed(() => (activeStep.value?.showNext ? activeStep.value?.showNext.value : true));
 
 async function back() {
   if (disableBack.value) return;
-  if (activeStep.value?.beforeBack && !(await activeStep.value?.beforeBack())) return;
 
-  if (activeStepIndex.value === 1) {
-    router.back();
-    return;
+  loading.value = true;
+  try {
+    if (activeStep.value?.beforeBack && !(await activeStep.value?.beforeBack())) {
+      return;
+    }
+
+    if (activeStepIndex.value === 1) {
+      router.back();
+      return;
+    }
+
+    internalValue.value = props.steps[activeStepIndex.value - 2].value;
+  } finally {
+    loading.value = false;
   }
-
-  internalValue.value = props.steps[activeStepIndex.value - 2].value;
 }
 
 async function next() {
   if (disableNext.value) return;
   if (!(await v.value.$validate())) return;
-  if (activeStep.value?.beforeNext && !(await activeStep.value?.beforeNext())) return;
 
-  internalValue.value = props.steps[activeStepIndex.value].value;
+  loading.value = true;
+  try {
+    if (activeStep.value?.beforeNext && !(await activeStep.value?.beforeNext())) {
+      return;
+    }
+
+    internalValue.value = props.steps[activeStepIndex.value].value;
+  } finally {
+    loading.value = false;
+  }
 }
 
 async function goto(step: Step) {
