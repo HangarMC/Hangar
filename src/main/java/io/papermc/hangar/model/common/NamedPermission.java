@@ -26,6 +26,7 @@ public enum NamedPermission {
     EDIT_TAGS("edit_tags", Permission.EditTags, "EditTags"), // EDIT_CHANNELS
 
     CREATE_ORGANIZATION("create_organization", Permission.CreateOrganization, "CreateOrganization"),
+    DELETE_ORGANIZATION("delete_organization", Permission.DeleteOrganization, "DeleteOrganization"),
     POST_AS_ORGANIZATION("post_as_organization", Permission.PostAsOrganization, "PostAsOrganization"),
 
     MOD_NOTES_AND_FLAGS("mod_notes_and_flags", Permission.ModNotesAndFlags, "ModNotesAndFlags"),

@@ -615,6 +615,10 @@
         "description": "After you click the transfer button, the selected user will receive an invitation to join {0} as the new owner. If they accept, you will be demoted to the secondary owner rank.",
         "transferTo": "User"
       },
+      "deleteModal": {
+        "title": "Delete {0}",
+        "description": "This will delete all projects of the organization and permanently delete the org. Are you sure you want to do that?"
+      },
       "success": {
         "transferRequest": "Successfully sent a transfer request to {0}. You can cancel this via the member list."
       }
@@ -739,7 +743,8 @@
       "apiKeys": "API Keys",
       "activity": "User Activity",
       "admin": "User Admin",
-      "transfer": "Transfer organization to another user"
+      "transfer": "Transfer organization to another user",
+      "delete": "Delete organization"
     },
     "lock": {
       "confirmLock": "Lock {0}'s account?",

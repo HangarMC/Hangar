@@ -29,6 +29,9 @@ public interface UserDAO {
                "VALUES (:uuid, :now, :fullName, :name, :email, :tagline, :now, :readPrompts, :locked, :language, :theme)")
     UserTable create(UUID uuid, String name, String email, String fullName, String tagline, String language, List<Integer> readPrompts, boolean locked, String theme);
 
+    @SqlUpdate("DELETE FROM users WHERE id = :id")
+    void delete(long id);
+
     @GetGeneratedKeys
     @SqlUpdate("UPDATE users SET full_name = :fullName, name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language, theme = :theme WHERE id = :id")
     UserTable update(@BindBean UserTable user);

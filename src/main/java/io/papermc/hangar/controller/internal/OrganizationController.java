@@ -160,6 +160,16 @@ public class OrganizationController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 60)
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.DELETE_ORGANIZATION, args = "{#name}")
+    @PostMapping(path = "/org/{name}/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void delete(@PathVariable String name, @RequestBody @Valid StringContent content) {
+        final OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+        organizationFactory.deleteOrganization(organizationTable, content.getContent());
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
     @PostMapping(path = "/org/{name}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)

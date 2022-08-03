@@ -52,6 +52,10 @@ public class ProjectFiles {
 
     public void transferProject(String owner, String newOwner, String slug) {
         final Path oldProjectDir = getProjectDir(owner, slug);
+        if (!Files.exists(oldProjectDir)) {
+            return;
+        }
+
         final Path newProjectDir = getProjectDir(newOwner, slug);
         try {
             Files.createDirectories(newProjectDir);
@@ -63,6 +67,10 @@ public class ProjectFiles {
 
     public void renameProject(String owner, String slug, String newSlug) {
         final Path oldProjectDir = getProjectDir(owner, slug);
+        if (!Files.exists(oldProjectDir)) {
+            return;
+        }
+
         final Path newProjectDir = getProjectDir(owner, newSlug);
         try {
             Files.createDirectories(newProjectDir);
@@ -74,6 +82,10 @@ public class ProjectFiles {
 
     public void renameVersion(String owner, String slug, String version, String newVersionName) {
         final Path oldVersionDir = getVersionDir(owner, slug, version);
+        if (!Files.exists(oldVersionDir)) {
+            return;
+        }
+
         final Path newVersionDir = getVersionDir(owner, slug, newVersionName);
         try {
             Files.move(oldVersionDir, newVersionDir, StandardCopyOption.REPLACE_EXISTING);

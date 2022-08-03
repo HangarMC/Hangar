@@ -24,6 +24,9 @@ public interface OrganizationDAO {
     @SqlUpdate("UPDATE organizations SET owner_id = :ownerId WHERE id = :id")
     void update(@BindBean OrganizationTable organization);
 
+    @SqlUpdate("DELETE from organizations WHERE id = :id")
+    void delete(long id);
+
     @SqlQuery("SELECT * FROM organizations WHERE id = :orgId")
     OrganizationTable getById(long orgId);
 

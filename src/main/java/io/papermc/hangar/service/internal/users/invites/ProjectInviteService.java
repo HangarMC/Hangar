@@ -57,12 +57,13 @@ public class ProjectInviteService extends InviteService<ProjectContext, ProjectR
     }
 
     @Override
-    protected void setNewOwner(final ProjectTable project, final UserTable newOwner) {
+    protected void updateOwnerId(final ProjectTable project, final UserTable newOwner) {
         final String oldOwnerName = project.getOwnerName();
-        project.setOwnerName(newOwner.getName());
         project.setOwnerId(newOwner.getUserId());
-        projectsDAO.update(project);
+        project.setOwnerName(newOwner.getName());
+        projectsDAO.updateOwner(project);
         projectFiles.transferProject(oldOwnerName, newOwner.getName(), project.getSlug());
+        projectService.refreshHomeProjects();
     }
 
     @Override
