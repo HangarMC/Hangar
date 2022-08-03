@@ -117,12 +117,24 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
         logInviteAccepted(roleTable, userTable);
 
         if (roleTable.getRole().getRoleId() == getOwnerRole().getRoleId()) {
-            setOwner(getJoinable(roleTable.getPrincipalId()), userTable);
+            setOwner(getJoinable(roleTable.getPrincipalId()), userTable, false);
         }
     }
 
     @Transactional
-    public void setOwner(final J joinable, final UserTable userTable) { //TODO make sure new owner doesn't have project of the same name
+    public void setOwner(final J joinable, final UserTable userTable, final boolean addRole) { //TODO make sure new owner doesn't have project of the same name
+        if (addRole) {
+            final RT oldRole = roleService.getRole(joinable.getId(), userTable.getId());
+            if (oldRole != null) {
+                oldRole.setRole(getOwnerRole());
+                oldRole.setAccepted(true);
+                roleService.updateRole(oldRole);
+            } else {
+                final RT roleTable = roleService.addRole(getOwnerRole().create(joinable.getId(), userTable.getId(), true), false);
+                memberService.addMember(roleTable);
+            }
+        }
+
         // Set role of old owner to next highest
         final long oldOwnerId = joinable.getOwnerId();
         final RT oldOwnerRoleTable = roleService.getRole(joinable.getId(), oldOwnerId);

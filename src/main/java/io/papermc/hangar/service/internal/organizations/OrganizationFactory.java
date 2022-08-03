@@ -68,8 +68,8 @@ public class OrganizationFactory extends HangarComponent {
         final UserTable ownerTable = userDAO.getUserTable(organizationTable.getOwnerId());
         final List<ProjectTable> projects = projectsDAO.getUserProjects(organizationTable.getUserId(), true);
         for (final ProjectTable project : projects) {
+            inviteService.setOwner(project, ownerTable, true);
             projectFactory.softDelete(project, comment);
-            inviteService.setOwner(project, ownerTable);
         }
 
         // Hard delete organization

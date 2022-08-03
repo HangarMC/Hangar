@@ -75,8 +75,18 @@ const licenseUnset = computed(() => form.value.settings.license.type === unspeci
 
 const selectedStep = ref("tos");
 const steps: Step[] = [
-  { value: "tos", header: i18n.t("project.new.step1.title"), showBack: () => false },
-  { value: "basic", header: i18n.t("project.new.step2.title") },
+  {
+    value: "tos",
+    header: i18n.t("project.new.step1.title"),
+    showBack: () => false,
+  },
+  {
+    value: "basic",
+    header: i18n.t("project.new.step2.title"),
+    disableNext: computed(() => {
+      return !form.value.name || !form.value.description;
+    }),
+  },
   { value: "additional", header: i18n.t("project.new.step3.title") },
   {
     value: "import",
