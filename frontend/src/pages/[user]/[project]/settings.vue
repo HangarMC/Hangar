@@ -364,7 +364,7 @@ useHead(
           </ProjectSettingsSection>
         </template>
         <template #management>
-          <ProjectSettingsSection title="project.settings.rename" description="project.settings.renameSub">
+          <ProjectSettingsSection v-if="hasPerms(NamedPermission.IS_SUBJECT_OWNER)" title="project.settings.rename" description="project.settings.renameSub">
             <div class="flex items-center">
               <InputText
                 ref="newNameField"

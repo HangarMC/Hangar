@@ -79,12 +79,12 @@ public class UsersApiService extends HangarComponent {
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
 
-    @CacheEvict(value = CacheConfig.AUTHORS_CACHE, allEntries = true)
+    @CacheEvict(value = CacheConfig.AUTHORS, allEntries = true)
     public void clearAuthorsCache() {
         // Clears a cache
     }
 
-    @Cacheable(CacheConfig.AUTHORS_CACHE)
+    @Cacheable(CacheConfig.AUTHORS)
     @Transactional
     public PaginatedResult<User> getAuthors(RequestPagination pagination) {
         List<User> users = usersApiDAO.getAuthors(pagination);
@@ -92,12 +92,12 @@ public class UsersApiService extends HangarComponent {
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
 
-    @CacheEvict(value = CacheConfig.STAFF_CACHE, allEntries = true)
+    @CacheEvict(value = CacheConfig.STAFF, allEntries = true)
     public void clearStaffCache() {
         // Clears a cache
     }
 
-    @Cacheable(CacheConfig.STAFF_CACHE)
+    @Cacheable(CacheConfig.STAFF)
     @Transactional
     public PaginatedResult<User> getStaff(RequestPagination pagination) {
         List<User> users = usersApiDAO.getStaff(config.user.getStaffRoles(), pagination);

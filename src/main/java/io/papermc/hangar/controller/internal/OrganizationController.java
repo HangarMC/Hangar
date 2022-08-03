@@ -92,7 +92,7 @@ public class OrganizationController extends HangarComponent {
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
-    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#name}")
     @PostMapping(path = "/org/{name}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addOrganizationMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
         OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
@@ -105,7 +105,7 @@ public class OrganizationController extends HangarComponent {
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 5, refillTokens = 2, refillSeconds = 10)
-    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#name}")
     @PostMapping(path = "/org/{name}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void editOrganizationMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
         OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
@@ -115,7 +115,7 @@ public class OrganizationController extends HangarComponent {
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
-    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#name}")
     @PostMapping(path = "/org/{name}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void removeOrganizationMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
         OrganizationTable organizationTable = organizationService.getOrganizationTable(name);

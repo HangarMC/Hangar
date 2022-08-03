@@ -57,7 +57,7 @@ export enum NamedPermission {
   CREATE_VERSION = "create_version",
   EDIT_VERSION = "edit_version",
   DELETE_VERSION = "delete_version",
-  EDIT_TAGS = "edit_tags",
+  EDIT_CHANNELS = "edit_channels",
 
   CREATE_ORGANIZATION = "create_organization",
   POST_AS_ORGANIZATION = "post_as_organization",

@@ -166,7 +166,7 @@ public class VersionController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.CREATED)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.DELETE_VERSION, args = "{#projectId}")
+    @PermissionRequired(NamedPermission.RESTORE_VERSION)
     @PostMapping("/version/{projectId}/{versionId}/restore")
     public void restoreVersion(@PathVariable long projectId, @PathVariable("versionId") ProjectVersionTable version) {
         versionService.restoreVersion(projectId, version);

@@ -184,7 +184,7 @@ function getVisibilityTitle(visibility: Visibility) {
             <div class="inline-flex w-full flex-cols space-between">
               <InputCheckbox v-model="filter.allChecked.channels" @change="checkAllChannels" />
               <h3 class="flex-grow">{{ i18n.t("version.channels") }}</h3>
-              <Link v-if="hasPerms(NamedPermission.EDIT_TAGS)" :to="`/${project.owner.name}/${project.name}/channels`">
+              <Link v-if="hasPerms(NamedPermission.EDIT_CHANNELS)" :to="`/${project.owner.name}/${project.name}/channels`">
                 <Button size="small" class="ml-2 text-sm"><IconMdiPencil /></Button>
               </Link>
             </div>

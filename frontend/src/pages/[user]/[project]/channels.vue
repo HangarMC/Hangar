@@ -140,5 +140,5 @@ async function editChannel(channel: ProjectChannel) {
 
 <route lang="yaml">
 meta:
-  requireProjectPerm: ["EDIT_TAGS"]
+  requireProjectPerm: ["EDIT_CHANNELS"]
 </route>

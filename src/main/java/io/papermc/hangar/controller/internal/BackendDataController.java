@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.model.Announcement;
 import io.papermc.hangar.model.common.Color;
@@ -24,6 +25,7 @@ import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.internal.PlatformService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -65,11 +67,13 @@ public class BackendDataController {
     }
 
     @GetMapping("/categories")
+    @Cacheable("categories")
     public ResponseEntity<ArrayNode> getCategories() {
         return ResponseEntity.ok(noJsonValueMapper.valueToTree(Category.getValues()));
     }
 
     @GetMapping("/permissions")
+    @Cacheable("permissions")
     public ResponseEntity<ArrayNode> getPermissions() {
         ArrayNode arrayNode = noJsonValueMapper.createArrayNode();
         for (NamedPermission namedPermission : NamedPermission.getValues()) {
@@ -83,6 +87,7 @@ public class BackendDataController {
     }
 
     @GetMapping("/platforms")
+    @Cacheable(CacheConfig.PLATFORMS)
     public ResponseEntity<ArrayNode> getPlatforms() {
         ArrayNode arrayNode = noJsonValueMapper.createArrayNode();
         for (Platform platform : Platform.getValues()) {
@@ -94,6 +99,7 @@ public class BackendDataController {
     }
 
     @GetMapping("/channelColors")
+    @Cacheable("channelColors")
     public ResponseEntity<ArrayNode> getColors() {
         ArrayNode arrayNode = noJsonValueMapper.createArrayNode();
         for (Color color : Color.getNonTransparentValues()) {
@@ -107,6 +113,7 @@ public class BackendDataController {
 
     @Secured("ROLE_USER")
     @GetMapping("/flagReasons")
+    @Cacheable("flagReasons")
     public ResponseEntity<ArrayNode> getFlagReasons() {
         ArrayNode arrayNode = noJsonValueMapper.createArrayNode();
         for (FlagReason flagReason : FlagReason.getValues()) {
@@ -119,6 +126,7 @@ public class BackendDataController {
     }
 
     @GetMapping("/sponsor")
+    @Cacheable("sponsor")
     public ResponseEntity<HangarConfig.Sponsor> getSponsor() {
         return ResponseEntity.ok(config.getSponsors().get(ThreadLocalRandom.current().nextInt(config.getSponsors().size())));
     }
@@ -129,26 +137,31 @@ public class BackendDataController {
     }
 
     @GetMapping("/projectRoles")
+    @Cacheable("projectRoles")
     public ResponseEntity<List<ProjectRole>> getAssignableProjectRoles() {
         return ResponseEntity.ok(ProjectRole.getAssignableRoles());
     }
 
     @GetMapping("/globalRoles")
+    @Cacheable("globalRoles")
     public ResponseEntity<List<GlobalRole>> getGlobalRoles() {
         return ResponseEntity.ok(Arrays.stream(GlobalRole.values()).toList());
     }
 
     @GetMapping("/orgRoles")
+    @Cacheable("orgRoles")
     public ResponseEntity<List<OrganizationRole>> getAssignableOrganizationRoles() {
         return ResponseEntity.ok(OrganizationRole.getAssignableRoles());
     }
 
     @GetMapping("/licenses")
+    @Cacheable("licenses")
     public ResponseEntity<List<String>> getLicenses() {
         return ResponseEntity.ok(config.getLicenses());
     }
 
     @GetMapping("/visibilities")
+    @Cacheable("visibilities")
     public ResponseEntity<ArrayNode> getVisibilities() {
         ArrayNode arrayNode = noJsonValueMapper.createArrayNode();
         for (Visibility value : Visibility.getValues()) {
@@ -164,11 +177,13 @@ public class BackendDataController {
 
     @ResponseBody
     @GetMapping("/prompts")
+    @Cacheable("prompts")
     public Prompt[] getPrompts() {
         return Prompt.getValues();
     }
 
     @GetMapping("/validations")
+    @Cacheable("validations")
     public ResponseEntity<ObjectNode> getValidations() {
         ObjectNode validations = noJsonValueMapper.createObjectNode();
         ObjectNode projectValidations = noJsonValueMapper.createObjectNode();
