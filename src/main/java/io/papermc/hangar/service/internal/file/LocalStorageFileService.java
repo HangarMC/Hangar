@@ -1,15 +1,17 @@
 package io.papermc.hangar.service.internal.file;
 
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.stereotype.Service;
+import io.papermc.hangar.util.FileUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import io.papermc.hangar.util.FileUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.stereotype.Service;
 
 @Service
+@ConditionalOnProperty(value = "hangar.storage.type", havingValue = "local", matchIfMissing = true)
 public class LocalStorageFileService implements FileService {
     @Override
     public FileSystemResource getResource(String path) {

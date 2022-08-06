@@ -1,11 +1,9 @@
 package io.papermc.hangar.config.hangar;
 
-import io.papermc.hangar.HangarApplication;
 import io.papermc.hangar.model.Announcement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.boot.system.ApplicationHome;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -23,7 +21,6 @@ public class HangarConfig {
     private List<Sponsor> sponsors;
 
     private boolean dev = true;
-    private String pluginUploadDir = new ApplicationHome(HangarApplication.class).getDir().toPath().resolve("work").toString();
     private String baseUrl;
     private String gaCode = "";
     private List<Announcement> announcements = new ArrayList<>();
@@ -56,6 +53,8 @@ public class HangarConfig {
     public DiscourseConfig discourse;
     @NestedConfigurationProperty
     public JobsConfig jobs;
+    @NestedConfigurationProperty
+    public StorageConfig storage;
 
     @Component
     public static class Sponsor {
@@ -89,7 +88,7 @@ public class HangarConfig {
     }
 
     @Autowired
-    public HangarConfig(FakeUserConfig fakeUser, HomepageConfig homepage, ChannelsConfig channels, PagesConfig pages, ProjectsConfig projects, UserConfig user, OrganizationsConfig org, ApiConfig api, SSOConfig sso, HangarSecurityConfig security, QueueConfig queue, DiscourseConfig discourse, JobsConfig jobs) {
+    public HangarConfig(FakeUserConfig fakeUser, HomepageConfig homepage, ChannelsConfig channels, PagesConfig pages, ProjectsConfig projects, UserConfig user, OrganizationsConfig org, ApiConfig api, SSOConfig sso, HangarSecurityConfig security, QueueConfig queue, DiscourseConfig discourse, JobsConfig jobs, StorageConfig storage) {
         this.fakeUser = fakeUser;
         this.homepage = homepage;
         this.channels = channels;
@@ -103,6 +102,7 @@ public class HangarConfig {
         this.queue = queue;
         this.discourse = discourse;
         this.jobs = jobs;
+        this.storage = storage;
     }
 
     public void checkDev() {
@@ -149,14 +149,6 @@ public class HangarConfig {
 
     public void setDev(boolean dev) {
         this.dev = dev;
-    }
-
-    public String getPluginUploadDir() {
-        return pluginUploadDir;
-    }
-
-    public void setPluginUploadDir(String pluginUploadDir) {
-        this.pluginUploadDir = pluginUploadDir;
     }
 
     public String getBaseUrl() {
