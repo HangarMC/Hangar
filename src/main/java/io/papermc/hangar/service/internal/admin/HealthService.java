@@ -41,7 +41,7 @@ public class HealthService extends HangarComponent {
         List<MissingFileCheck> missingFileChecks = healthDAO.getVersionsForMissingFiles();
         return missingFileChecks.stream().filter(mfc -> {
             String path = projectFiles.getVersionDir(mfc.getNamespace().getOwner(), mfc.getName(), mfc.getVersionString(), mfc.getPlatform());
-            return !fileService.exists(path + "/" + mfc.getFileName());
+            return !fileService.exists(fileService.resolve(path, mfc.getFileName()));
         }).toList();
     }
 }

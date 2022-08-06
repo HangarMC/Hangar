@@ -290,7 +290,7 @@ public class VersionFactory extends HangarComponent {
             }
 
             // Insert download data
-            final List<ProjectVersionDownloadTable> tables = downloadsDAO.insertDownloads(downloadsTables.stream().map(Pair::getLeft).collect(Collectors.toList()));
+            final List<ProjectVersionDownloadTable> tables = downloadsDAO.insertDownloads(downloadsTables.stream().map(Pair::getLeft).toList());
             final List<ProjectVersionPlatformDownloadTable> platformDownloadsTables = new ArrayList<>();
             for (int i = 0; i < downloadsTables.size(); i++) {
                 final ProjectVersionDownloadTable downloadTable = tables.get(i);
@@ -379,7 +379,7 @@ public class VersionFactory extends HangarComponent {
         final Platform platformToResolve = pendingVersionFile.platforms().get(0);
         final Path tmpVersionJar = userTempDir.resolve(platformToResolve.name()).resolve(fileInfo.getName());
 
-        final String newVersionJarPath = versionDir.resolve(platformToResolve.name()).resolve(tmpVersionJar.getFileName());
+        final String newVersionJarPath = fileService.resolve(fileService.resolve(versionDir, platformToResolve.name()), tmpVersionJar.getFileName().toString());
         fileService.move(tmpVersionJar.toString(), newVersionJarPath);
 
         // Create links for the other platforms
@@ -389,8 +389,8 @@ public class VersionFactory extends HangarComponent {
                 continue;
             }
 
-            final String platformPath = versionDir.resolve(platform.name());
-            final String platformJarPath = platformPath.resolve(tmpVersionJar.getFileName());
+            final String platformPath = fileService.resolve(versionDir, platform.name());
+            final String platformJarPath = fileService.resolve(platformPath, tmpVersionJar.getFileName().toString());
             fileService.link(platformJarPath, newVersionJarPath);
         }
 

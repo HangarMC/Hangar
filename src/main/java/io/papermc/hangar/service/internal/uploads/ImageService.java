@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -30,7 +28,7 @@ public class ImageService extends HangarComponent {
 
     public ResponseEntity<byte[]> getProjectIcon(String author, String slug) {
         String iconPath = projectFiles.getIconPath(author, slug);
-        if (iconPath == null) {
+        if (iconPath == null || !fileService.exists(iconPath)) {
             throw new InternalHangarException("Default to avatar url");
         }
         try {
@@ -46,6 +44,4 @@ public class ImageService extends HangarComponent {
     public String getUserIcon(String author) {
         return String.format(config.security.api.getAvatarUrl(), author);
     }
-
-
 }

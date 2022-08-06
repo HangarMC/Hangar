@@ -21,4 +21,6 @@ public interface FileService {
     void move(String oldPath, String newPath) throws IOException;
 
     void link(String existingPath, String newPath) throws IOException;
+
+    String resolve(String path, String fileName);
 }
