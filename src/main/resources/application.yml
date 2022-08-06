@@ -180,6 +180,9 @@ hangar:
     not-available-timeout: 2m
     max-concurrent-jobs: 32
 
+  storage:
+    type: "object"
+
 #################
 # Debug Logging #
 #################
