@@ -105,7 +105,7 @@ public class DownloadService extends HangarComponent {
 
         ProjectTable project = projectsDAO.getById(pvt.getProjectId());
         String path = projectFiles.getVersionDir(project.getOwnerName(), project.getSlug(), versionString, platform, download.getFileName());
-        if (fileService.exists(path)) {
+        if (!fileService.exists(path)) {
             throw new HangarApiException("Couldn't find a file for version " + versionString);
         }
 
