@@ -1,6 +1,6 @@
 package io.papermc.hangar.service.internal.uploads;
 
-import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.config.hangar.StorageConfig;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.util.FileUtils;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 
 @Component
 public class ProjectFiles {
@@ -24,9 +23,9 @@ public class ProjectFiles {
     private final FileService fileService;
 
     @Autowired
-    public ProjectFiles(HangarConfig hangarConfig, FileService fileService) {
+    public ProjectFiles(StorageConfig storageConfig, FileService fileService) {
         this.fileService = fileService;
-        Path uploadsDir = Path.of(hangarConfig.getPluginUploadDir());
+        Path uploadsDir = Path.of(storageConfig.getPluginUploadDir());
         pluginsDir = uploadsDir.resolve("plugins");
         tmpDir = uploadsDir.resolve("tmp");
         if (Files.exists(tmpDir)) {
