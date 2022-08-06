@@ -36,23 +36,23 @@ public class ProjectFiles {
     }
 
     public String getProjectDir(String owner, String name) {
-        return getUserDir(owner) + "/" + name;
+        return fileService.resolve(getUserDir(owner), name);
     }
 
     public String getVersionDir(String owner, String name, String version) {
-        return getProjectDir(owner, name) + "/versions/" + version;
+        return fileService.resolve(fileService.resolve(getProjectDir(owner, name), "versions"), version);
     }
 
     public String getVersionDir(String owner, String name, String version, Platform platform) {
-        return getVersionDir(owner, name, version) + "/" + platform.name();
+        return fileService.resolve(getVersionDir(owner, name, version), platform.name());
     }
 
     public String getVersionDir(String owner, String name, String version, Platform platform, String fileName) {
-        return getVersionDir(owner,name, version, platform) + "/" + fileName;
+        return fileService.resolve(getVersionDir(owner, name, version, platform), fileName);
     }
 
     public String getUserDir(String user) {
-        return pluginsDir + "/" + user;
+        return pluginsDir.resolve(user).toString();
     }
 
     public void transferProject(String owner, String newOwner, String slug) {
@@ -98,11 +98,11 @@ public class ProjectFiles {
     }
 
     public String getIconsDir(String owner, String name) {
-        return getProjectDir(owner, name) + "/icons";
+        return fileService.resolve(getProjectDir(owner, name), "icons");
     }
 
     public String getIconPath(String owner, String name) {
-        return getIconsDir(owner, name) + "/icon.png";
+        return fileService.resolve(getIconsDir(owner, name), "icon.png");
     }
 
     public Path getTempDir(String owner) {

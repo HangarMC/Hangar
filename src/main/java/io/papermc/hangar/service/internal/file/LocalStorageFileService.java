@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.internal.file;
 
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -8,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import io.papermc.hangar.util.FileUtils;
 
+@Service
 public class LocalStorageFileService implements FileService {
     @Override
     public FileSystemResource getResource(String path) {
@@ -36,7 +38,11 @@ public class LocalStorageFileService implements FileService {
 
     @Override
     public void write(InputStream inputStream, String path) throws IOException {
-        Files.copy(inputStream, Path.of(path));
+        Path p = Path.of(path);
+        if (Files.notExists(p)) {
+            Files.createDirectories(p.getParent());
+        }
+        Files.copy(inputStream, p);
     }
 
     @Override
@@ -61,5 +67,10 @@ public class LocalStorageFileService implements FileService {
             Files.createDirectories(newPath.getParent());
         }
         Files.createLink(newPath, existingPath);
+    }
+
+    @Override
+    public String resolve(String path, String fileName) {
+        return Path.of(path).resolve(fileName).toString();
     }
 }
