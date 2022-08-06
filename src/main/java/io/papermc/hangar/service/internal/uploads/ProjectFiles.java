@@ -2,6 +2,7 @@ package io.papermc.hangar.service.internal.uploads;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +13,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 @Component
 public class ProjectFiles {
@@ -22,9 +21,11 @@ public class ProjectFiles {
 
     private final Path pluginsDir;
     private final Path tmpDir;
+    private final FileService fileService;
 
     @Autowired
-    public ProjectFiles(HangarConfig hangarConfig) {
+    public ProjectFiles(HangarConfig hangarConfig, FileService fileService) {
+        this.fileService = fileService;
         Path uploadsDir = Path.of(hangarConfig.getPluginUploadDir());
         pluginsDir = uploadsDir.resolve("plugins");
         tmpDir = uploadsDir.resolve("tmp");
@@ -62,8 +63,7 @@ public class ProjectFiles {
 
         final String newProjectDir = getProjectDir(newOwner, slug);
         try {
-            Files.createDirectories(newProjectDir);
-            Files.move(oldProjectDir, newProjectDir, StandardCopyOption.REPLACE_EXISTING);
+            fileService.move(oldProjectDir, newProjectDir);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,8 +77,7 @@ public class ProjectFiles {
 
         final String newProjectDir = getProjectDir(owner, newSlug);
         try {
-            Files.createDirectories(newProjectDir);
-            Files.move(oldProjectDir, newProjectDir, StandardCopyOption.REPLACE_EXISTING);
+            fileService.move(oldProjectDir, newProjectDir);
         } catch (final IOException e) {
             e.printStackTrace();
         }
@@ -92,7 +91,7 @@ public class ProjectFiles {
 
         final String newVersionDir = getVersionDir(owner, slug, newVersionName);
         try {
-            Files.move(oldVersionDir, newVersionDir, StandardCopyOption.REPLACE_EXISTING);
+            fileService.move(oldVersionDir, newVersionDir);
         } catch (final IOException e) {
             e.printStackTrace();
         }
