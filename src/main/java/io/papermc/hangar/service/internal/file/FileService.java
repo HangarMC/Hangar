@@ -17,4 +17,8 @@ public interface FileService {
     byte[] bytes(String path) throws IOException;
 
     void write(InputStream inputStream, String path) throws IOException;
+
+    void move(String oldPath, String newPath) throws IOException;
+
+    void link(String existingPath, String newPath) throws IOException;
 }

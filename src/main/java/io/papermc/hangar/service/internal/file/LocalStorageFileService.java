@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import io.papermc.hangar.util.FileUtils;
 
 public class LocalStorageFileService implements FileService {
@@ -36,5 +37,29 @@ public class LocalStorageFileService implements FileService {
     @Override
     public void write(InputStream inputStream, String path) throws IOException {
         Files.copy(inputStream, Path.of(path));
+    }
+
+    @Override
+    public void move(String oldPathString, String newPathString) throws IOException {
+        Path oldPath = Path.of(oldPathString);
+        Path newPath = Path.of(newPathString);
+        if (Files.notExists(newPath)) {
+            Files.createDirectories(newPath.getParent());
+        }
+
+        Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
+        if (Files.notExists(newPath)) {
+            throw new IOException("Didn't successfully move");
+        }
+    }
+
+    @Override
+    public void link(String existingPathString, String newPathString) throws IOException {
+        Path existingPath = Path.of(existingPathString);
+        Path newPath = Path.of(newPathString);
+        if (Files.notExists(newPath)) {
+            Files.createDirectories(newPath.getParent());
+        }
+        Files.createLink(newPath, existingPath);
     }
 }
