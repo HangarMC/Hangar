@@ -28,6 +28,7 @@
         <!-- dependency management -->
         <jdbi3-bom.version>3.32.0</jdbi3-bom.version>
         <configurate.version>4.1.2</configurate.version>
+        <aws.version>2.16.60</aws.version>
 
         <!-- dependencies -->
         <owasp-html-sanitizer>20220608.1</owasp-html-sanitizer>
@@ -60,6 +61,13 @@
                 <artifactId>configurate-bom</artifactId>
                 <type>pom</type>
                 <version>${configurate.version}</version>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>${aws.version}</version>
+                <type>pom</type>
                 <scope>import</scope>
             </dependency>
         </dependencies>
@@ -216,6 +224,11 @@
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>${jwt.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
         </dependency>
 
         <!-- runtime -->

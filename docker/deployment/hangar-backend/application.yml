@@ -10,7 +10,6 @@ fake-user:
 hangar:
   dev: false
   base-url: "https://hangar.benndorf.dev"
-  plugin-upload-dir: "/hangar/uploads"
 
   announcements:
     -
@@ -29,6 +28,14 @@ hangar:
       avatar-url: "https://hangar-auth.benndorf.dev/avatar/%s"
     token-secret: "${TOKEN_SECRET}"
     image-proxy-url: "https://hangar-auth.benndorf.dev/image/%s"
+
+  storage:
+    plugin-upload-dir: "/hangar/uploads"
+    type: "object"
+    access-key: "todo" # todo object storage creds
+    secret-key: "todo"
+    bucket: "todo"
+    object-storage-endpoint: "todo"
 
 logging:
   level:

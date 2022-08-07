@@ -9,8 +9,15 @@ import io.papermc.hangar.HangarApplication;
 @ConfigurationProperties(prefix = "hangar.storage")
 public class StorageConfig {
 
-    private String pluginUploadDir = new ApplicationHome(HangarApplication.class).getDir().toPath().resolve("work").toString();
+    // type = local or object
     private String type = "local";
+    // local
+    private String pluginUploadDir = new ApplicationHome(HangarApplication.class).getDir().toPath().resolve("work").toString();
+    // object
+    private String accessKey;
+    private String secretKey;
+    private String bucket;
+    private String objectStorageEndpoint;
 
     public String getPluginUploadDir() {
         return pluginUploadDir;
@@ -26,5 +33,37 @@ public class StorageConfig {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getAccessKey() {
+        return accessKey;
+    }
+
+    public void setAccessKey(String accessKey) {
+        this.accessKey = accessKey;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
+    }
+
+    public String getObjectStorageEndpoint() {
+        return objectStorageEndpoint;
+    }
+
+    public void setObjectStorageEndpoint(String objectStorageEndpoint) {
+        this.objectStorageEndpoint = objectStorageEndpoint;
+    }
+
+    public String getBucket() {
+        return bucket;
+    }
+
+    public void setBucket(String bucket) {
+        this.bucket = bucket;
     }
 }
