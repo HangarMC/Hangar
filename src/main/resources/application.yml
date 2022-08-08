@@ -30,6 +30,12 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
     date-format: com.fasterxml.jackson.databind.util.StdDateFormat
 
+
+  cloud:
+    aws:
+      s3:
+        endpoint: "${hangar.storage.object-storage-endpoint}"
+
 #############
 # Fake User #
 #############
@@ -199,3 +205,4 @@ logging:
     io.papermc.hangar.config.WebConfig.LoggingInterceptor: DEBUG
 #    io.papermc.hangar.security: TRACE
 #    org.postgresql: TRACE
+

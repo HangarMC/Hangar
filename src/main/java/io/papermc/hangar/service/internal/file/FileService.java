@@ -1,12 +1,12 @@
 package io.papermc.hangar.service.internal.file;
 
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 
 public interface FileService {
 
-    FileSystemResource getResource(String path);
+    Resource getResource(String path);
 
     boolean exists(String path);
 
@@ -23,4 +23,6 @@ public interface FileService {
     void link(String existingPath, String newPath) throws IOException;
 
     String resolve(String path, String fileName);
+
+    String getRoot();
 }

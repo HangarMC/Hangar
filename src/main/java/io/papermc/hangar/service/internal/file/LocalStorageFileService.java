@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.file;
 
+import io.papermc.hangar.config.hangar.StorageConfig;
 import io.papermc.hangar.util.FileUtils;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,13 +9,21 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 @Service
 @ConditionalOnProperty(value = "hangar.storage.type", havingValue = "local", matchIfMissing = true)
 public class LocalStorageFileService implements FileService {
+
+    private final StorageConfig config;
+
+    public LocalStorageFileService(StorageConfig config) {
+        this.config = config;
+    }
+
     @Override
-    public FileSystemResource getResource(String path) {
+    public Resource getResource(String path) {
         return new FileSystemResource(path);
     }
 
@@ -74,5 +83,10 @@ public class LocalStorageFileService implements FileService {
     @Override
     public String resolve(String path, String fileName) {
         return Path.of(path).resolve(fileName).toString();
+    }
+
+    @Override
+    public String getRoot() {
+        return config.getPluginUploadDir();
     }
 }
