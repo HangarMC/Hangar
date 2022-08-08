@@ -23,7 +23,7 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -64,7 +64,7 @@ public class VersionsController implements IVersionsController {
     @Override
     @RateLimit(overdraft = 10, refillTokens = 2)
     @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
-    public FileSystemResource downloadVersion(String author, String slug, String versionString, Platform platform) {
+    public Resource downloadVersion(String author, String slug, String versionString, Platform platform) {
         return downloadService.getVersionFile(author, slug, versionString, platform, false, null);
     }
 }

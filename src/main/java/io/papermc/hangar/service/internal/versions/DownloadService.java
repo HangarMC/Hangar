@@ -33,7 +33,7 @@ import java.util.UUID;
 import javax.servlet.http.Cookie;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -90,7 +90,7 @@ public class DownloadService extends HangarComponent {
     }
 
     @Transactional
-    public FileSystemResource getVersionFile(String author, String slug, String versionString, Platform platform, boolean checkConfirmation, @Nullable String token) {
+    public Resource getVersionFile(String author, String slug, String versionString, Platform platform, boolean checkConfirmation, @Nullable String token) {
         ProjectVersionTable pvt = projectVersionsDAO.getProjectVersionTable(author, slug, versionString);
         if (pvt == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);

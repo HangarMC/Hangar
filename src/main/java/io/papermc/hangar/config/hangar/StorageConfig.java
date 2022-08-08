@@ -1,9 +1,14 @@
 package io.papermc.hangar.config.hangar;
 
+import io.papermc.hangar.HangarApplication;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.regions.providers.AwsRegionProvider;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.system.ApplicationHome;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import io.papermc.hangar.HangarApplication;
 
 @Component
 @ConfigurationProperties(prefix = "hangar.storage")
@@ -18,6 +23,16 @@ public class StorageConfig {
     private String secretKey;
     private String bucket;
     private String objectStorageEndpoint;
+
+    @Bean
+    public StaticCredentialsProvider credProvider() {
+        return StaticCredentialsProvider.create(AwsBasicCredentials.create(getAccessKey(), getSecretKey()));
+    }
+
+    @Bean
+    public AwsRegionProvider regionProvider() {
+        return () -> Region.of("hangar");
+    }
 
     public String getPluginUploadDir() {
         return pluginUploadDir;

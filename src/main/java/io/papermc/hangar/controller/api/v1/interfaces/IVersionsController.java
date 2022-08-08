@@ -12,7 +12,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -112,7 +112,7 @@ public interface IVersionsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping(value = "/projects/{author}/{slug}/versions/{name}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    FileSystemResource downloadVersion(@ApiParam("The author of the project to download the version from") @PathVariable String author,
+    Resource downloadVersion(@ApiParam("The author of the project to download the version from") @PathVariable String author,
                                        @ApiParam("The slug of the project to download the version from") @PathVariable String slug,
                                        @ApiParam("The name of the version to download") @PathVariable("name") String versionString,
                                        @ApiParam("The platform of the version to download") @PathVariable Platform platform);
