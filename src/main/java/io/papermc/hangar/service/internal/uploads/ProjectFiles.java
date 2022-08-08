@@ -18,7 +18,7 @@ public class ProjectFiles {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectFiles.class);
 
-    private final Path pluginsDir;
+    private final String pluginsDir;
     private final Path tmpDir;
     private final FileService fileService;
 
@@ -26,7 +26,7 @@ public class ProjectFiles {
     public ProjectFiles(StorageConfig storageConfig, FileService fileService) {
         this.fileService = fileService;
         Path uploadsDir = Path.of(storageConfig.getPluginUploadDir());
-        pluginsDir = uploadsDir.resolve("plugins");
+        pluginsDir = fileService.resolve(fileService.getRoot(), "plugins");
         tmpDir = uploadsDir.resolve("tmp");
         if (Files.exists(tmpDir)) {
             FileUtils.deleteDirectory(tmpDir);
@@ -51,7 +51,7 @@ public class ProjectFiles {
     }
 
     public String getUserDir(String user) {
-        return pluginsDir.resolve(user).toString();
+        return fileService.resolve(pluginsDir, user);
     }
 
     public void transferProject(String owner, String newOwner, String slug) {

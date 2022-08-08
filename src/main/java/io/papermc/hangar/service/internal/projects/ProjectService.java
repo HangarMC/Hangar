@@ -227,7 +227,7 @@ public class ProjectService extends HangarComponent {
         }
         try {
             String iconPath = projectFiles.getIconPath(author, slug);
-            String oldBase64 = getBase64(author, slug, "old", projectFiles.getIconPath(author, slug));
+            String oldBase64 = getBase64(author, slug, "old", iconPath);
             fileService.write(icon.getInputStream(), iconPath);
             String newBase64 = getBase64(author, slug, "new", iconPath);
             actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), newBase64, oldBase64));
