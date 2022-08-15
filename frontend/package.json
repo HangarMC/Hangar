@@ -82,7 +82,7 @@
     "pnpm": "7.8.0",
     "prettier": "2.7.1",
     "regenerator-runtime": "0.13.9",
-    "sass": "1.54.0",
+    "sass": "1.54.4",
     "typescript": "4.7.4",
     "unplugin-auto-import": "0.10.3",
     "unplugin-icons": "0.14.8",
