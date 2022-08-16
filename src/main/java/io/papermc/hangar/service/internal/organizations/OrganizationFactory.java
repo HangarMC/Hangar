@@ -56,7 +56,7 @@ public class OrganizationFactory extends HangarComponent {
         }
 
         String dummyEmail = name.replaceAll("[^a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]", "") + '@' + config.org.getDummyEmailDomain();
-        UserTable userTable = userDAO.create(UUID.randomUUID(), name, dummyEmail, "", "", "", List.of(), false, null);
+        UserTable userTable = userDAO.create(UUID.randomUUID(), name, dummyEmail, "", "", List.of(), false, null);
         OrganizationTable organizationTable = organizationDAO.insert(new OrganizationTable(userTable.getId(), name, getHangarPrincipal().getId(), userTable.getId()));
         globalRoleService.addRole(GlobalRole.ORGANIZATION.create(null, userTable.getId(), false));
         organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_OWNER.create(organizationTable.getId(), getHangarPrincipal().getId(), true));

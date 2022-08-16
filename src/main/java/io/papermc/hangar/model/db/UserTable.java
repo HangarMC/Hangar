@@ -13,7 +13,6 @@ import java.util.UUID;
 public class UserTable extends Table implements ProjectOwner {
 
     private UUID uuid;
-    private String fullName;
     private String name;
     private String email;
     private String tagline;
@@ -24,10 +23,9 @@ public class UserTable extends Table implements ProjectOwner {
     private String theme;
 
     @JdbiConstructor
-    public UserTable(OffsetDateTime createdAt, @PropagateNull long id, UUID uuid, String fullName, String name, String email, String tagline, OffsetDateTime joinDate, List<Integer> readPrompts, boolean locked, String language, String theme) {
+    public UserTable(OffsetDateTime createdAt, @PropagateNull long id, UUID uuid, String name, String email, String tagline, OffsetDateTime joinDate, List<Integer> readPrompts, boolean locked, String language, String theme) {
         super(createdAt, id);
         this.uuid = uuid;
-        this.fullName = fullName;
         this.name = name;
         this.email = email;
         this.tagline = tagline;
@@ -38,10 +36,9 @@ public class UserTable extends Table implements ProjectOwner {
         this.theme = theme;
     }
 
-    public UserTable(long id, UUID uuid, String fullName, String name, String email, List<Integer> readPrompts, boolean locked, String language, String theme) {
+    public UserTable(long id, UUID uuid, String name, String email, List<Integer> readPrompts, boolean locked, String language, String theme) {
         super(id);
         this.uuid = uuid;
-        this.fullName = fullName;
         this.name = name;
         this.email = email;
         this.readPrompts = readPrompts;
@@ -56,15 +53,6 @@ public class UserTable extends Table implements ProjectOwner {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
-    }
-
-    @JsonIgnore
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
     }
 
     @Override
@@ -142,7 +130,6 @@ public class UserTable extends Table implements ProjectOwner {
     @Override
     public String toString() {
         return "UserTable{" +
-                "fullName='" + fullName + '\'' +
                 ", uuid='" + uuid + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +

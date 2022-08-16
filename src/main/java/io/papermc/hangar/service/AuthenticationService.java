@@ -1,13 +1,9 @@
 package io.papermc.hangar.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -19,11 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.UUID;
 
 import io.papermc.hangar.HangarComponent;
@@ -38,13 +31,11 @@ public class AuthenticationService extends HangarComponent {
     private final UserService userService;
     private final GlobalRoleService globalRoleService;
     private final RestTemplate restTemplate;
-    private final ObjectMapper mapper;
 
-    public AuthenticationService(UserService userService, GlobalRoleService globalRoleService, RestTemplate restTemplate, ObjectMapper mapper) {
+    public AuthenticationService(UserService userService, GlobalRoleService globalRoleService, RestTemplate restTemplate) {
         this.userService = userService;
         this.globalRoleService = globalRoleService;
         this.restTemplate = restTemplate;
-        this.mapper = mapper;
     }
 
     public UserTable loginAsFakeUser() {
@@ -54,7 +45,6 @@ public class AuthenticationService extends HangarComponent {
             userTable = new UserTable(
                     -1, // we can pass -1 here since it's not actually inserted in the DB in the DAO
                     UUID.randomUUID(),
-                    config.fakeUser.getName(),
                     userName,
                     config.fakeUser.getEmail(),
                     List.of(),
