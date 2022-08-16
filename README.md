@@ -41,6 +41,7 @@ To get the project running locally, you need to follow a few steps:
 ### Notes
 * The Spring Boot configuration file that is used by this environment is located at `Hangar/src/main/resources/application.yml`
 * The fake user settings are located in the application.yml file under `fake-user`.
+* Without HangarAuth, you should also disable sso under `use-sso`.
 
 ## Hangar Auth (not recommended, complicated, requires like 6 more docker containers)
 Fork this project and fork/clone [HangarAuth]. Ensure they are sibling directories in your file system.
