@@ -15,6 +15,5 @@ spring:
 
 fake-user:
   enabled: true
-  name: test
   username: test
   email: test@papermc.io

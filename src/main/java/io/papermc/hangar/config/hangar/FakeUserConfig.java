@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 public class FakeUserConfig {
 
     private boolean enabled = true;
-    private String name = "paper";
     private String username = "paper";
     private String email = "paper@papermc.io";
 
@@ -18,14 +17,6 @@ public class FakeUserConfig {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getUsername() {

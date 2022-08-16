@@ -145,7 +145,7 @@ public class HangarUserController extends HangarComponent {
         userService.updateUser(userTable);
 
         if (config.sso.isEnabled()) {
-            userService.updateSSO(userTable.getUuid(), new Traits(null, userTable.getEmail(), null, null, settings.getLanguage(), userTable.getName(), null, settings.getTheme()));
+            userService.updateSSO(userTable.getUuid(), new Traits(userTable.getEmail(), null, null, settings.getLanguage(), userTable.getName(), settings.getTheme()));
         }
 
         setThemeCookie(settings, response);
