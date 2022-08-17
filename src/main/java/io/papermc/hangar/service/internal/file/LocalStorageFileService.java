@@ -1,6 +1,8 @@
 package io.papermc.hangar.service.internal.file;
 
+import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.config.hangar.StorageConfig;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.util.FileUtils;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,9 +19,11 @@ import org.springframework.stereotype.Service;
 public class LocalStorageFileService implements FileService {
 
     private final StorageConfig config;
+    private final HangarConfig hangarConfig;
 
-    public LocalStorageFileService(StorageConfig config) {
+    public LocalStorageFileService(StorageConfig config, HangarConfig hangarConfig) {
         this.config = config;
+        this.hangarConfig = hangarConfig;
     }
 
     @Override
@@ -88,5 +92,10 @@ public class LocalStorageFileService implements FileService {
     @Override
     public String getRoot() {
         return config.getPluginUploadDir();
+    }
+
+    @Override
+    public String getDownloadUrl(String user, String project, String version, Platform platform, String fileName) {
+        return hangarConfig.getBaseUrl() + "/api/v1/projects/" + user + "/" + project + "/versions/" + version + "/" + platform.name() + "/download";
     }
 }

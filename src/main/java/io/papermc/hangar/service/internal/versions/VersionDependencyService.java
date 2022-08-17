@@ -63,7 +63,7 @@ public class VersionDependencyService extends HangarComponent {
         return projectVersionPlatformDependenciesDAO.getForVersion(versionId);
     }
 
-    public <T extends Version> T addDownloadsAndDependencies(final long versionId, final T version) {
+    public <T extends Version> T addDownloadsAndDependencies(final String user, final String project, final String versionName, final long versionId, final T version) {
         final Map<Platform, SortedSet<String>> platformDependencies = versionsApiDAO.getPlatformDependencies(versionId);
         version.getPlatformDependencies().putAll(platformDependencies);
         for (final Map.Entry<Platform, SortedSet<String>> entry : platformDependencies.entrySet()) {
@@ -78,7 +78,7 @@ public class VersionDependencyService extends HangarComponent {
             }
         }
 
-        downloadService.addDownloads(versionId, version.getDownloads());
+        downloadService.addDownloads(user, project, versionName, versionId, version.getDownloads());
         return version;
     }
 
