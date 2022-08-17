@@ -74,7 +74,7 @@ public class VersionService extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
-        versionDependencyService.addDownloadsAndDependencies(version.getId(), version);
+        versionDependencyService.addDownloadsAndDependencies(author, slug, versionString, version.getId(), version);
         return version;
     }
 

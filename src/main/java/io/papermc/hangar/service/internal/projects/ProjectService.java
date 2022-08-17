@@ -137,7 +137,7 @@ public class ProjectService extends HangarComponent {
         }
         HangarProjectInfo info = hangarProjectsDAO.getHangarProjectInfo(project.getLeft());
         Map<Long, HangarProjectPage> pages = projectPageService.getProjectPages(project.getLeft());
-        final List<HangarProject.PinnedVersion> pinnedVersions = this.pinnedVersionService.getPinnedVersions(project.getLeft());
+        final List<HangarProject.PinnedVersion> pinnedVersions = this.pinnedVersionService.getPinnedVersions(project.getRight().getNamespace().getOwner(), project.getRight().getNamespace().getSlug(), project.getLeft());
 
         final Map<Platform, HangarVersion> mainChannelVersions = new EnumMap<>(Platform.class);
         for (final Platform platform : Platform.getValues()) {
@@ -149,7 +149,7 @@ public class ProjectService extends HangarComponent {
                     for (final Map.Entry<Platform, SortedSet<String>> entry : platformDependencies.entrySet()) {
                         version.getPlatformDependenciesFormatted().put(entry.getKey(), io.papermc.hangar.util.StringUtils.formatVersionNumbers(new ArrayList<>(entry.getValue())));
                     }
-                    downloadService.addDownloads(version.getId(), version.getDownloads());
+                    downloadService.addDownloads(project.getRight().getNamespace().getOwner(), project.getRight().getNamespace().getSlug(), version.getName(), version.getId(), version.getDownloads());
                 }
 
                 mainChannelVersions.put(platform, version);

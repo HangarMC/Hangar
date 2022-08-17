@@ -38,14 +38,7 @@ const props = withDefaults(
 );
 
 function downloadLink(platform: Platform, version: DownloadableVersion) {
-  if (version && version.downloads[platform]?.externalUrl) {
-    return version.downloads[platform].externalUrl;
-  }
-
-  const versionString = version.name;
-  //TODO as normal path then using the api
-  const path = `/api/v1/projects/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${versionString}/${platform.toLowerCase()}/download`;
-  return import.meta.env.SSR ? path : `${window.location.protocol}//${window.location.host}${path}`;
+  return version && version.downloads[platform]?.externalUrl ? version.downloads[platform].externalUrl : version.downloads[platform].downloadUrl;
 }
 
 const external = computed(() => false);

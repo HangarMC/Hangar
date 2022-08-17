@@ -174,7 +174,7 @@ public class DownloadService extends HangarComponent {
         return true;
     }
 
-    public void addDownloads(long versionId, Map<Platform, PlatformVersionDownload> versionDownloadsMap) {
+    public void addDownloads(String user, String project, String version, long versionId, Map<Platform, PlatformVersionDownload> versionDownloadsMap) {
         // TODO into one query
         final List<ProjectVersionDownloadTable> versionDownloads = downloadsDAO.getDownloads(versionId);
         final List<ProjectVersionPlatformDownloadTable> platformDownloads = downloadsDAO.getPlatformDownloads(versionId);
@@ -188,7 +188,7 @@ public class DownloadService extends HangarComponent {
 
             final ProjectVersionDownloadTable downloadTable = versionDownloads.stream().filter(table -> table.getId() == platformDownload.getDownloadId()).findAny().orElseThrow(NullPointerException::new);
             final FileInfo fileInfo = downloadTable.getFileName() != null ? new FileInfo(downloadTable.getFileName(), downloadTable.getFileSize(), downloadTable.getHash()) : null;
-            download = new PlatformVersionDownload(fileInfo, downloadTable.getExternalUrl());
+            download = new PlatformVersionDownload(fileInfo, downloadTable.getExternalUrl(), fileService.getDownloadUrl(user, project, version, platformDownload.getPlatform(), fileInfo != null ? fileInfo.getName() : null));
             downloads.put(platformDownload.getDownloadId(), download);
             versionDownloadsMap.put(platformDownload.getPlatform(), download);
         }

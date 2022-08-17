@@ -23,6 +23,7 @@ public class StorageConfig {
     private String secretKey;
     private String bucket;
     private String objectStorageEndpoint;
+    private String cdnEndpoint;
 
     @Bean
     public StaticCredentialsProvider credProvider() {
@@ -80,5 +81,13 @@ public class StorageConfig {
 
     public void setBucket(String bucket) {
         this.bucket = bucket;
+    }
+
+    public String getCdnEndpoint() {
+        return cdnEndpoint;
+    }
+
+    public void setCdnEndpoint(String cdnEndpoint) {
+        this.cdnEndpoint = cdnEndpoint;
     }
 }
