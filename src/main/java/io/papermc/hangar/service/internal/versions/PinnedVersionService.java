@@ -42,14 +42,14 @@ public class PinnedVersionService extends HangarComponent {
         this.pinnedProjectVersionsDAO.deleteVersion(projectId, versionId);
     }
 
-    public List<HangarProject.PinnedVersion> getPinnedVersions(final long projectId) {
+    public List<HangarProject.PinnedVersion> getPinnedVersions(final String user, final String project, final long projectId) {
         final List<HangarProject.PinnedVersion> versions = this.hangarVersionsDAO.getPinnedVersions(projectId);
         for (final HangarProject.PinnedVersion version : versions) {
             final Map<Platform, SortedSet<String>> platformDependencies = versionsApiDAO.getPlatformDependencies(version.getVersionId());
             for (final Map.Entry<Platform, SortedSet<String>> entry : platformDependencies.entrySet()) {
                 version.getPlatformDependenciesFormatted().put(entry.getKey(), StringUtils.formatVersionNumbers(new ArrayList<>(entry.getValue())));
             }
-            downloadService.addDownloads(version.getVersionId(), version.getDownloads());
+            downloadService.addDownloads(user, project, version.getName(), version.getVersionId(), version.getDownloads());
         }
         return versions;
     }

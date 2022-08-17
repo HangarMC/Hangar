@@ -192,6 +192,7 @@ hangar:
     secret-key: "toOBAwlz3ZC6c4dvbFh7Ywk8Y2J4b3kS"
     bucket: "test"
     object-storage-endpoint: "http://127.0.0.1:9000"
+    cdn-endpoint: "http://127.0.0.1:9000"
 
 #################
 # Debug Logging #

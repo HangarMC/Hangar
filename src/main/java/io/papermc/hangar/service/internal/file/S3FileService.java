@@ -3,6 +3,7 @@ package io.papermc.hangar.service.internal.file;
 import io.awspring.cloud.s3.S3Resource;
 import io.awspring.cloud.s3.S3Template;
 import io.papermc.hangar.config.hangar.StorageConfig;
+import io.papermc.hangar.model.common.Platform;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -87,5 +88,10 @@ public class S3FileService implements FileService {
     @Override
     public String getRoot() {
         return "s3://" + config.getBucket() + "/";
+    }
+
+    @Override
+    public String getDownloadUrl(String user, String project, String version, Platform platform, String fileName) {
+        return config.getCdnEndpoint() + "/" + config.getBucket() + "/plugins/" + user + "/" + project + "/versions/" + version + "/" + platform.name() + "/" + fileName;
     }
 }
