@@ -4,7 +4,7 @@ export function projectIconUrl(owner: string, projectName: string, proxy = true)
 }
 
 export function avatarUrl(name: string) {
-  return `${import.meta.env.HANGAR_AUTH_HOST}/avatar/user/${name}`;
+  return `${import.meta.env.HANGAR_AUTH_HOST}/avatar/${name}`;
 }
 
 export function authUrl(user: string) {
