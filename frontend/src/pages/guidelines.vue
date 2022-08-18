@@ -83,7 +83,7 @@ posts, and/or links suspected of violating the EULA may be removed at the discre
 Projects that explicitly state they are designed for such uses are not allowed. Some projects, such as authentication
 systems, may have functionality that can be useful for servers regardless of the server's use of Mojang authentication,
 but they may not promote this additional usage or be specifically designed for servers avoiding Mojang auth. Projects
-designed for proxies requiring \`offline-mode=false\` are allowed, provided they are not written to facilitate
+designed for proxies requiring \`online-mode=false\` are allowed, provided they are not written to facilitate
 circumvention of Minecraft account ownership.
 
 ## Forks of Exisiting Projects
