@@ -1,5 +1,6 @@
 package io.papermc.hangar.config.hangar;
 
+import io.awspring.cloud.autoconfigure.core.AwsProperties;
 import io.papermc.hangar.HangarApplication;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -9,6 +10,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Component
 @ConfigurationProperties(prefix = "hangar.storage")
@@ -33,6 +36,13 @@ public class StorageConfig {
     @Bean
     public AwsRegionProvider regionProvider() {
         return () -> Region.of("hangar");
+    }
+
+    @Bean
+    public AwsProperties awsProperties() throws URISyntaxException {
+        AwsProperties awsProperties = new AwsProperties();
+        awsProperties.setEndpoint(new URI(objectStorageEndpoint));
+        return awsProperties;
     }
 
     public String getPluginUploadDir() {
