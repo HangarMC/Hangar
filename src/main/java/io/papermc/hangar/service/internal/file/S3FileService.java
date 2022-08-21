@@ -26,7 +26,6 @@ public class S3FileService implements FileService {
         this.config = config;
         this.resourceLoader = resourceLoader;
         this.s3Template = s3Template;
-        System.setProperty("spring.cloud.aws.s3.endpoint", config.getObjectStorageEndpoint());
     }
 
     @Override
