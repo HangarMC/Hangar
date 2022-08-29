@@ -18,6 +18,6 @@
     "@types/http-proxy": "1.17.9",
     "@types/node": "18.6.3",
     "http-proxy": "1.18.1",
-    "typescript": "4.7.4"
+    "typescript": "4.8.2"
   }
 }
