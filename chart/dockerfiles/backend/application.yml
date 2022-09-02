@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: hangar-backend
   datasource:
     url: "jdbc:postgresql://postgres:5432/hangar"
     username: "${POSTGRES_USER}"
