@@ -32,7 +32,7 @@ declare module "hangar-api" {
   interface VersionCompact extends Model, Named, Visible {
     description: string;
     stats: VersionStats;
-    downloads: Record<Platform, PlatformVersionDownload>
+    downloads: Record<Platform, PlatformVersionDownload>;
     author: string;
     reviewState: ReviewState;
     channel: ProjectChannel;
