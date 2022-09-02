@@ -1,4 +1,0 @@
-name: hangar
-description: A Helm Chart for Hangar
-version: 0.0.1
-apiVersion: v1
