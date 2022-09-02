@@ -54,9 +54,7 @@ public class PluginDataService {
                     throw new HangarApiException("version.new.error.metaNotFound");
                 }
             });
-            PluginFileWithData fileData = new PluginFileWithData(file, new PluginFileData(fileDataMap), userId);
-            //fileData.getData().validate(); // Accept files without metadata
-            return fileData;
+            return new PluginFileWithData(file, new PluginFileData(fileDataMap), userId);
         }
     }
 

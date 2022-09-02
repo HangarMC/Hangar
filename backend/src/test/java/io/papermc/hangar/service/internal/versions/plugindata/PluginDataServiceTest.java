@@ -103,8 +103,6 @@ class PluginDataServiceTest {
     @ParameterizedTest
     @CsvSource({
             "EmptyMeta.jar,version.new.error.metaNotFound",
-            "Empty.jar,version.new.error.metaNotFound",
-            "IncompleteMeta.jar,version.new.error.incomplete",
             "Empty.zip,version.new.error.jarNotFound"
     })
     void testLoadMetaShouldFail(String jarName, String expectedMsg) {
