@@ -20,7 +20,7 @@ specifiers:
   '@types/prettier': 2.7.0
   '@types/qs': 6.9.7
   '@types/swagger-ui-dist': 3.30.1
-  '@vitejs/plugin-vue': 2.3.3
+  '@vitejs/plugin-vue': 2.3.4
   '@vue/compiler-sfc': 3.2.38
   '@vue/eslint-config-typescript': 11.0.0
   '@vue/server-renderer': 3.2.38
@@ -103,7 +103,7 @@ dependencies:
   qs: 6.11.0
   swagger-ui-dist: 4.14.0
   universal-cookie: 4.0.4
-  vite-ssr: 0.16.0_ianf6absaeibedfvyoi4zsqske
+  vite-ssr: 0.16.0_7oyibbaptmojvfolc3aqheszrq
   vue: 3.2.38
   vue-advanced-cropper: 2.8.3_vue@3.2.38
   vue-i18n: 9.2.2_vue@3.2.38
@@ -124,7 +124,7 @@ devDependencies:
   '@types/prettier': 2.7.0
   '@types/qs': 6.9.7
   '@types/swagger-ui-dist': 3.30.1
-  '@vitejs/plugin-vue': 2.3.3_vite@2.9.14+vue@3.2.38
+  '@vitejs/plugin-vue': 2.3.4_vite@2.9.14+vue@3.2.38
   '@vue/compiler-sfc': 3.2.38
   '@vue/eslint-config-typescript': 11.0.0_eigtonit5c3q5td2tbopyi5r7e
   '@vue/server-renderer': 3.2.38_vue@3.2.38
@@ -1881,8 +1881,8 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
-  /@vitejs/plugin-vue/2.3.3_vite@2.9.14+vue@3.2.38:
-    resolution: {integrity: sha512-SmQLDyhz+6lGJhPELsBdzXGc+AcaT8stgkbiTFGpXPe8Tl1tJaBw1A6pxDqDuRsVkD8uscrkx3hA7QDOoKYtyw==}
+  /@vitejs/plugin-vue/2.3.4_vite@2.9.14+vue@3.2.38:
+    resolution: {integrity: sha512-IfFNbtkbIm36O9KB8QodlwwYvTEsJb4Lll4c2IwB3VHc2gie2mSPtSzL0eYay7X2jd/2WX02FjSGTWR6OPr/zg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       vite: ^2.5.10
@@ -5686,7 +5686,7 @@ packages:
       - supports-color
     dev: true
 
-  /vite-ssr/0.16.0_ianf6absaeibedfvyoi4zsqske:
+  /vite-ssr/0.16.0_7oyibbaptmojvfolc3aqheszrq:
     resolution: {integrity: sha512-Yo6dO1gT019+aeTSEGV0ggiL06wy8VHMcM9nkv58upfMWLBsaIyr5zJufuEtDsaNyMS7r30IACuTmbpk7IPReg==}
     hasBin: true
     peerDependencies:
@@ -5720,7 +5720,7 @@ packages:
         optional: true
     dependencies:
       '@rollup/plugin-replace': 3.1.0
-      '@vitejs/plugin-vue': 2.3.3_vite@2.9.14+vue@3.2.38
+      '@vitejs/plugin-vue': 2.3.4_vite@2.9.14+vue@3.2.38
       '@vue/server-renderer': 3.2.38_vue@3.2.38
       '@vueuse/head': 0.7.9_vue@3.2.38
       chalk: 4.1.2
