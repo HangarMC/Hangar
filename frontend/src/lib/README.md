@@ -11,4 +11,5 @@ directory, switch to or create a branch (`git switch master`), add your GitHub f
 remote (`git remote add fork <fork url>`) and push your code changes to it.
 
 ## License
+
 This project is licensed under the permissive [MIT License](LICENSE).

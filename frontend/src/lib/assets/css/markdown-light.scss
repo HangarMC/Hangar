@@ -1,11 +1,11 @@
 .light {
   .markdown {
-
     table tr:nth-child(2n) {
       background-color: #f5f5f5;
     }
 
-    table tr > td, .page-rendered table tr > th {
+    table tr > td,
+    .page-rendered table tr > th {
       border-color: #e0e0e0;
     }
 
@@ -25,7 +25,7 @@
     }
 
     code {
-      color: black // Specific colour override for code, tailwind does not properly theme pre's and their content.
+      color: black; // Specific colour override for code, tailwind does not properly theme pre's and their content.
     }
 
     a code {

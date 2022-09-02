@@ -82,11 +82,13 @@
     margin: 0;
   }
 
-  ul, ol {
+  ul,
+  ol {
     padding-inline-start: 1rem;
   }
 
-  p + ul, p + ol {
+  p + ul,
+  p + ol {
     margin-top: -10px;
   }
 }
