@@ -5,8 +5,9 @@ on:
   workflow_dispatch:
   # run on PRs
   pull_request:
-    paths-ignore:
-      - 'frontend/**'
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend_build.yml'
 
 concurrency:
   group: ${{ github.ref }}
@@ -15,6 +16,13 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      CI: true
+
+    defaults:
+      run:
+        working-directory: api
 
     steps:
       - name: Checkout

@@ -33,7 +33,7 @@ declare module "hangar-internal" {
     type: "channel" | "version";
     name: string;
     platformDependenciesFormatted: Record<Platform, string>;
-    downloads: Record<Platform, PlatformVersionDownload>
+    downloads: Record<Platform, PlatformVersionDownload>;
     channel: ProjectChannel;
   }
 
