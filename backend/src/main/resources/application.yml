@@ -35,6 +35,9 @@ spring:
     aws:
       s3:
         endpoint: "${hangar.storage.object-storage-endpoint}"
+    kubernetes:
+      secrets:
+        enableApi: true
 
 #############
 # Fake User #
