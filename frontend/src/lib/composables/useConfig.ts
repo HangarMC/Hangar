@@ -26,7 +26,7 @@ const configs: Record<string, Config> = {
 };
 
 export function useConfig(): Config {
-  const key = import.meta.env.SSR ? import.meta.env.HANGAR_CONFIG_ENV || "localhost" : location.hostname.replace("auth.", "");
+  const key = import.meta.env.SSR ? process.env.HANGAR_CONFIG_ENV || "localhost" : location.hostname.replace("auth.", "");
   configLog("useConfig", key);
   return configs[key];
 }
