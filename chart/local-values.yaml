@@ -1,0 +1,7 @@
+frontend:
+  enabled: true
+  hosts:
+    - host: hangar.test
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
