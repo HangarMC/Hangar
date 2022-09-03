@@ -29,6 +29,10 @@ spec:
       serviceAccountName: {{ include "hangar.backend.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.backend.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: {{ include "hangar.fullname" . }}-backend-config-volume
+          secret:
+            secretName: {{ include "hangar.fullname" . }}-backend
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -42,6 +46,13 @@ spec:
             - name: management
               containerPort: 8081
               protocol: TCP
+          env:
+            - name: spring.config.location
+              value: "classpath:/application.yml,/hangar/config/application.yaml"
+          volumeMounts:
+            - name: {{ include "hangar.fullname" . }}-backend-config-volume
+              mountPath: /hangar/config
+              readOnly: true
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
