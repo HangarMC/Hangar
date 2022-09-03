@@ -2,6 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+base:
+  host: "https://hangar.test"
+  authHost: "https://auth.hangar.test"
+  sso:
+    clientId: "my-client"
+    apiKey: "some-id"
+
 frontend:
   replicaCount: 1
 
@@ -83,7 +90,8 @@ frontend:
   affinity: {}
 
   config:
-  # todo config
+    configEnv: "hangar.test"
+    backendHost: "http://hangar-backend:8080"
 
 backend:
   replicaCount: 1
@@ -150,7 +158,6 @@ backend:
   affinity: {}
 
   config:
-    #todo abstract out more config stuff, find comon values between backend and frontend, etc
     postgresql:
       hostname: "hangarauth-postgresql"
       port: 5432
@@ -158,3 +165,10 @@ backend:
       password: "hangarauth" # TODO: secret
       database: "hangarauth"
       options: "?currentSchema=hangar"
+    tokenSecret: "secret" # todo secret
+    storage:
+      type: "local" # todo storage stuff
+      accessKey: "todo"
+      secretKey: "todo"
+      bucket: "todo"
+      objectStorageEndpoint: "http://localhost:9000"
