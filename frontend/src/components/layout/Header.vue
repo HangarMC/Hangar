@@ -42,6 +42,7 @@ import { useContext } from "vite-ssr/vue";
 import { ref } from "vue";
 import Link from "~/lib/components/design/Link.vue";
 import { useInternalApi } from "~/composables/useApi";
+import { useConfig } from "~/lib/composables/useConfig";
 
 const settings = useSettingsStore();
 const { t } = useI18n();
@@ -126,7 +127,7 @@ if (!authStore.user) {
 }
 
 const auth = useAuth;
-const authHost = import.meta.env.HANGAR_AUTH_HOST;
+const authHost = useConfig().authHost;
 authLog("render with user " + authStore.user?.name);
 
 const navBarMenuLinksMoreFromPaper = [

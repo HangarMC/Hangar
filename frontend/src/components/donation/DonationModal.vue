@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import { useNotificationStore } from "~/store/notification";
 import { useAuthStore } from "~/store/auth";
 import Button from "~/lib/components/design/Button.vue";
+import { useConfig } from "~/lib/composables/useConfig";
 
 const i18n = useI18n();
 const notifications = useNotificationStore();
@@ -21,12 +22,13 @@ onMounted(() => {
     // load script
     const script = document.createElement("script");
     script.setAttribute("src", "https://www.paypalobjects.com/donate/sdk/donate-sdk.js");
+    const config = useConfig();
     script.onload = () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       // eslint-disable-next-line no-undef
       PayPal.Donation.Button({
-        env: import.meta.env.HANGAR_PAYPAL_ENV,
+        env: config.paypalEnv,
         business: props.donationSubject,
         image: {
           src: "https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif",
@@ -39,7 +41,7 @@ onMounted(() => {
         },
         item_name: "Hangar: Donation to " + props.donationTarget,
         bn: "Hangar_Donate_" + props.donationTarget + "US",
-        notify_url: import.meta.env.HANGAR_PAYPAL_IPN,
+        notify_url: config.paypalIpn,
         custom: authStore.user?.id || "anonymous",
       }).render("#paypal-donate-button-container");
 

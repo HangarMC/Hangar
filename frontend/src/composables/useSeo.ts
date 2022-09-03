@@ -1,6 +1,7 @@
 import type { HeadObject } from "@vueuse/head";
 import type { TranslateResult } from "vue-i18n";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
+import { useConfig } from "~/lib/composables/useConfig";
 
 export function useSeo(
   title: string | TranslateResult | null | undefined,
@@ -9,9 +10,10 @@ export function useSeo(
   image: string | null
 ): HeadObject {
   description = description || "Plugin repository for Paper plugins and more!";
-  const canonical = baseUrl() + (route.fullPath.endsWith("/") ? route.fullPath.substring(0, route.fullPath.length - 1) : route.fullPath);
+  const config = useConfig();
+  const canonical = config.publicHost + (route.fullPath.endsWith("/") ? route.fullPath.substring(0, route.fullPath.length - 1) : route.fullPath);
   image = image || "https://docs.papermc.io/img/paper.png";
-  image = image.startsWith("http") ? image : baseUrl() + image;
+  image = image.startsWith("http") ? image : config.publicHost + image;
   title = title ? title + " | Hangar" : "Hangar";
   const seo = {
     title,
@@ -89,6 +91,7 @@ function generateBreadcrumbs(route: RouteLocationNormalizedLoaded) {
   const arr = [];
   const split = route.fullPath.split("/");
   let curr = "";
+  const config = useConfig();
   for (let i = 0; i < split.length; i++) {
     // skip trailing slash
     if ((split[i] === "" || split[i] === "/") && curr !== "") continue;
@@ -97,7 +100,7 @@ function generateBreadcrumbs(route: RouteLocationNormalizedLoaded) {
       "@type": "ListItem",
       position: i,
       name: guessTitle(split[i]),
-      item: baseUrl() + curr,
+      item: config.publicHost + curr,
     });
   }
 
@@ -106,8 +109,4 @@ function generateBreadcrumbs(route: RouteLocationNormalizedLoaded) {
 
 function guessTitle(segment: string): string {
   return segment === "/" || segment === "" ? "Hangar" : segment;
-}
-
-function baseUrl(): string {
-  return import.meta.env.HANGAR_PUBLIC_HOST;
 }

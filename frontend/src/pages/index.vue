@@ -21,6 +21,7 @@ import InputRadio from "~/lib/components/ui/InputRadio.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
 import LicenseLogo from "~/components/logos/licenses/LicenseLogo.vue";
+import { useConfig } from "~/lib/composables/useConfig";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -99,15 +100,16 @@ function updatePlatform(platform: any) {
 }
 
 const meta = useSeo("Home", null, route, null);
+const config = useConfig();
 const script = {
   type: "application/ld+json",
   children: JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebSite",
-    url: import.meta.env.HANGAR_PUBLIC_HOST,
+    url: config.publicHost,
     potentialAction: {
       "@type": "SearchAction",
-      target: import.meta.env.HANGAR_PUBLIC_HOST + "/?q={search_term_string}",
+      target: config.publicHost + "/?q={search_term_string}",
       "query-input": "required name=search_term_string",
     },
   }),

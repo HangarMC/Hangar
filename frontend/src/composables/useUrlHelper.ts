@@ -1,14 +1,17 @@
+import { useConfig } from "~/lib/composables/useConfig";
+
 export function projectIconUrl(owner: string, projectName: string, proxy = true) {
   const url = `/api/internal/projects/project/${owner}/${projectName}/icon`;
-  return proxy ? import.meta.env.HANGAR_AUTH_HOST + "/image/" + import.meta.env.HANGAR_PUBLIC_HOST + url : url;
+  const config = useConfig();
+  return proxy ? config.authHost + "/image/" + config.publicHost + url : url;
 }
 
 export function avatarUrl(name: string) {
-  return `${import.meta.env.HANGAR_AUTH_HOST}/avatar/user/${name}`;
+  return `${useConfig().authHost}/avatar/user/${name}`;
 }
 
 export function authUrl(user: string) {
-  return import.meta.env.HANGAR_AUTH_HOST + "/" + user;
+  return useConfig().authHost + "/" + user;
 }
 
 export function forumUrl(topicId: number) {

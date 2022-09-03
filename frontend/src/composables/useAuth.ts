@@ -10,17 +10,18 @@ import { AxiosError, AxiosRequestHeaders } from "axios";
 import { useResponse } from "~/composables/useResReq";
 import Cookies from "universal-cookie";
 import jwtDecode, { JwtPayload } from "jwt-decode";
+import { useConfig } from "~/lib/composables/useConfig";
 
 class Auth {
   loginUrl(redirectUrl: string): string {
     if (redirectUrl.endsWith("?loggedOut")) {
       redirectUrl = redirectUrl.replace("?loggedOut", "");
     }
-    return `/login?returnUrl=${import.meta.env.HANGAR_PUBLIC_HOST}${redirectUrl}`;
+    return `/login?returnUrl=${useConfig().publicHost}${redirectUrl}`;
   }
 
   async logout() {
-    location.replace(`/logout?returnUrl=${import.meta.env.HANGAR_PUBLIC_HOST}?loggedOut`);
+    location.replace(`/logout?returnUrl=${useConfig().publicHost}?loggedOut`);
   }
 
   validateToken(token: string) {
