@@ -9,3 +9,4 @@ export const settingsLog = debug("hangar:settings");
 export const domainLog = debug("hangar:domain");
 export const langLog = debug("hangar:lang");
 export const kratosLog = debug("hangar:kratos");
+export const configLog = debug("hangar:config");
