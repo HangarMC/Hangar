@@ -14,8 +14,9 @@ spec:
       app.kubernetes.io/component: "backend"
   template:
     metadata:
-      {{- with .Values.backend.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secret-hangar-backend.yaml") . | sha256sum }}
+      {{- with .Values.backend.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
