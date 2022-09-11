@@ -160,7 +160,7 @@ public class SSOService {
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
-        ResponseEntity<TokenResponse> tokenResponse = restTemplate.exchange(hangarConfig.sso.getOauthUrl() + hangarConfig.sso.getTokenUrl(), HttpMethod.POST, entity, TokenResponse.class);
+        ResponseEntity<TokenResponse> tokenResponse = restTemplate.exchange(hangarConfig.sso.getBackendOauthUrl() + hangarConfig.sso.getTokenUrl(), HttpMethod.POST, entity, TokenResponse.class);
 
         return tokenResponse.getBody().getIdToken();
     }

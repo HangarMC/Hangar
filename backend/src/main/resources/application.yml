@@ -136,6 +136,7 @@ hangar:
   sso:
     enabled: true
     oauth-url: "http://localhost:4444"
+    backend-oauth-url: "http://localhost:4444"
     login-url: "/oauth2/auth"
     token-url: "/oauth2/token"
     logout-url: "/oauth2/sessions/logout"

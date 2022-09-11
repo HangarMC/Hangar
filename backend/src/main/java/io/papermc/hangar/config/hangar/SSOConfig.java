@@ -9,6 +9,7 @@ public class SSOConfig {
 
     private boolean enabled = true;
     private String oauthUrl = "http://localhost:4444";
+    private String backendOauthUrl = "http://localhost:4444";
     private String loginUrl = "/oauth2/auth/";
     private String tokenUrl = "/oauth2/token";
     private String logoutUrl = "/oauth2/sessions/logout";
@@ -80,6 +81,14 @@ public class SSOConfig {
 
     public void setOauthUrl(String oauthUrl) {
         this.oauthUrl = oauthUrl;
+    }
+
+    public String getBackendOauthUrl() {
+        return backendOauthUrl;
+    }
+
+    public void setBackendOauthUrl(String backendOauthUrl) {
+        this.backendOauthUrl = backendOauthUrl;
     }
 
     public String getApiKey() {
