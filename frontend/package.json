@@ -26,7 +26,7 @@
     "@vueuse/components": "9.1.1",
     "@vueuse/core": "9.1.1",
     "@vueuse/head": "0.7.9",
-    "@vueuse/integrations": "9.1.1",
+    "@vueuse/integrations": "9.2.0",
     "accept-language-parser": "1.5.0",
     "axios": "0.27.2",
     "chartist": "0.11.4",
