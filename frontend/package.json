@@ -23,7 +23,7 @@
     "@nuxt/devalue": "2.0.0",
     "@vuelidate/core": "2.0.0-alpha.44",
     "@vuelidate/validators": "2.0.0-alpha.31",
-    "@vueuse/components": "9.1.1",
+    "@vueuse/components": "9.2.0",
     "@vueuse/core": "9.1.1",
     "@vueuse/head": "0.7.9",
     "@vueuse/integrations": "9.1.1",
