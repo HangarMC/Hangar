@@ -25,7 +25,7 @@
     "@vuelidate/validators": "2.0.0-alpha.31",
     "@vueuse/components": "9.1.1",
     "@vueuse/core": "9.1.1",
-    "@vueuse/head": "0.7.9",
+    "@vueuse/head": "0.7.10",
     "@vueuse/integrations": "9.1.1",
     "accept-language-parser": "1.5.0",
     "axios": "0.27.2",
