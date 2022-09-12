@@ -65,7 +65,7 @@
     "@types/qs": "6.9.7",
     "@types/swagger-ui-dist": "3.30.1",
     "@vitejs/plugin-vue": "2.3.4",
-    "@vue/compiler-sfc": "3.2.38",
+    "@vue/compiler-sfc": "3.2.39",
     "@vue/eslint-config-typescript": "11.0.0",
     "@vue/server-renderer": "3.2.38",
     "cross-env": "7.0.3",
