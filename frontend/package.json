@@ -75,7 +75,7 @@
     "eslint-plugin-eslint-comments": "3.2.0",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-unicorn": "43.0.2",
-    "eslint-plugin-vue": "9.4.0",
+    "eslint-plugin-vue": "9.5.1",
     "husky": "8.0.1",
     "lint-staged": "13.0.3",
     "node-fetch": "3.2.10",
