@@ -89,10 +89,14 @@ class Auth {
         }
         this.refreshPromise = null;
       } catch (e) {
-        const { trace, ...err } = (e as AxiosError).response?.data as { trace: any };
-        authLog("Refresh failed", err);
-        resolve(false);
         this.refreshPromise = null;
+        if ((e as AxiosError).response?.data) {
+          const { trace, ...err } = (e as AxiosError).response?.data as { trace: any };
+          authLog("Refresh failed", err);
+        } else {
+          authLog("Refresh failed");
+        }
+        resolve(false);
       }
     });
     return this.refreshPromise;
