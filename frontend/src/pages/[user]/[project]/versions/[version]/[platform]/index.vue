@@ -31,7 +31,7 @@ import DownloadButton from "~/components/projects/DownloadButton.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
-import filesize from "filesize";
+import { filesize } from "filesize";
 
 const route = useRoute();
 const i18n = useI18n();
