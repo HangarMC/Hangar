@@ -41,7 +41,7 @@
         <apache-commons-lang.version>3.12.0</apache-commons-lang.version>
         <jwt.version>4.0.0</jwt.version>
         <!-- test -->
-        <pg.version>1.17.3</pg.version>
+        <pg.version>1.17.4</pg.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
