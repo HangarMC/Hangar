@@ -173,3 +173,4 @@ backend:
       secretKey: "todo"
       bucket: "todo"
       objectStorageEndpoint: "http://localhost:9000"
+      cdnEndpoint: ""
