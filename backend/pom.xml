@@ -26,7 +26,7 @@
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
         <!-- dependency management -->
-        <jdbi3-bom.version>3.33.0</jdbi3-bom.version>
+        <jdbi3-bom.version>3.34.0</jdbi3-bom.version>
         <configurate.version>4.1.2</configurate.version>
         <spring-cloud-aws.version>3.0.0-M2</spring-cloud-aws.version>
 
