@@ -29,7 +29,7 @@
     "@vueuse/integrations": "9.3.0",
     "accept-language-parser": "1.5.0",
     "axios": "0.27.2",
-    "chartist": "0.11.4",
+    "chartist": "1.2.1",
     "chartist-plugin-legend": "0.6.2",
     "debug": "4.3.4",
     "diff-match-patch": "1.0.5",
