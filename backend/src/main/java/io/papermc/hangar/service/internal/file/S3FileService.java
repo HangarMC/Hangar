@@ -91,6 +91,6 @@ public class S3FileService implements FileService {
 
     @Override
     public String getDownloadUrl(String user, String project, String version, Platform platform, String fileName) {
-        return config.getCdnEndpoint() + "/" + config.getBucket() + "/plugins/" + user + "/" + project + "/versions/" + version + "/" + platform.name() + "/" + fileName;
+        return config.getCdnEndpoint() + (config.isCdnIncludeBucket() ? "/" + config.getBucket() : "") + "/plugins/" + user + "/" + project + "/versions/" + version + "/" + platform.name() + "/" + fileName;
     }
 }
