@@ -1,0 +1,11 @@
+# Frontend - ignore everything, except:
+frontend/
+!frontend/package.json
+!frontend/proxy.config.ts
+!frontend/pnpm-lock.yaml
+!frontend/dist/
+!frontend/node_modules/
+!frontend/server/package.json
+!frontend/server/pnpm-lock.yaml
+!frontend/server/dist/
+!frontend/server/node_modules/
