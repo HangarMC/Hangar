@@ -34,6 +34,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
+          distribution: temurin
 
       - name: Cache Maven Deps
         uses: actions/cache@v2
