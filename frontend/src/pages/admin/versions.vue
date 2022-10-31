@@ -14,7 +14,7 @@ import Card from "~/lib/components/design/Card.vue";
 import Table from "~/lib/components/design/Table.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
-import { useNotificationStore } from "~/store/notification";
+import { useNotificationStore } from "~/lib/store/notification";
 
 const ctx = useContext();
 const i18n = useI18n();

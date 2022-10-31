@@ -3,7 +3,7 @@ import { useI18n } from "vue-i18n";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import { ref } from "vue";
-import { useNotificationStore } from "~/store/notification";
+import { useNotificationStore } from "~/lib/store/notification";
 import InputText from "~/lib/components/ui/InputText.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";

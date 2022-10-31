@@ -16,7 +16,7 @@ import Card from "~/lib/components/design/Card.vue";
 import { useSeo } from "~/composables/useSeo";
 import { avatarUrl } from "~/composables/useUrlHelper";
 import { useHead } from "@vueuse/head";
-import { useNotificationStore } from "~/store/notification";
+import { useNotificationStore } from "~/lib/store/notification";
 import { maxLength, minLength, required } from "~/lib/composables/useValidationHelpers";
 import { validApiKeyName } from "~/composables/useHangarValidations";
 import { useVuelidate } from "@vuelidate/core";

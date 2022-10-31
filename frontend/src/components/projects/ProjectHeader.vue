@@ -11,7 +11,7 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import { useAuthStore } from "~/store/auth";
-import { useNotificationStore } from "~/store/notification";
+import { useNotificationStore } from "~/lib/store/notification";
 import FlagModal from "~/components/modals/FlagModal.vue";
 import Alert from "~/lib/components/design/Alert.vue";
 import { hasPerms } from "~/composables/usePerm";

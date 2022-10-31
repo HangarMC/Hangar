@@ -21,7 +21,7 @@ import Link from "~/lib/components/design/Link.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
-import { useNotificationStore } from "~/store/notification";
+import { useNotificationStore } from "~/lib/store/notification";
 import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import PlatformVersionEditModal from "~/components/modals/PlatformVersionEditModal.vue";

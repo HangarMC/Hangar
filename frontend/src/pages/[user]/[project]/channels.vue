@@ -19,7 +19,7 @@ import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useRoute } from "vue-router";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
-import { useNotificationStore } from "~/store/notification";
+import { useNotificationStore } from "~/lib/store/notification";
 import InputRadio from "~/lib/components/ui/InputRadio.vue";
 import { ref } from "vue";
 

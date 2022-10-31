@@ -14,7 +14,7 @@ import { useInternalApi } from "~/composables/useApi";
 import { HangarProject } from "hangar-internal";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { AxiosError } from "axios";
-import { useNotificationStore } from "~/store/notification";
+import { useNotificationStore } from "~/lib/store/notification";
 
 const props = defineProps<{
   project: HangarProject;

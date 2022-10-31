@@ -21,7 +21,7 @@ import InputFile from "~/lib/components/ui/InputFile.vue";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
-import { useNotificationStore } from "~/store/notification";
+import { useNotificationStore } from "~/lib/store/notification";
 import InputTag from "~/lib/components/ui/InputTag.vue";
 import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 import ProjectSettingsSection from "~/components/projects/ProjectSettingsSection.vue";

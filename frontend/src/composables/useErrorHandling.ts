@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { HangarApiException, HangarValidationException, MultiHangarApiException } from "hangar-api";
 import { Composer, VueMessageType } from "vue-i18n";
 import { Context } from "vite-ssr/vue";
-import { useNotificationStore } from "~/store/notification";
+import { useNotificationStore } from "~/lib/store/notification";
 
 export function handleRequestError(
   err: AxiosError,

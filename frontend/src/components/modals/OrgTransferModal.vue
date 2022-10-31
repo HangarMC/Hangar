@@ -9,7 +9,7 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 import { ref } from "vue";
 import { PaginatedResult, User } from "hangar-api";
-import { useNotificationStore } from "~/store/notification";
+import { useNotificationStore } from "~/lib/store/notification";
 
 const props = defineProps<{
   organization: string;

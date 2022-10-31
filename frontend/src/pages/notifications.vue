@@ -9,7 +9,7 @@ import { computed, ref, Ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
-import { useNotificationStore } from "~/store/notification";
+import { useNotificationStore } from "~/lib/store/notification";
 import Card from "~/lib/components/design/Card.vue";
 import Button from "~/lib/components/design/Button.vue";
 import { lastUpdated } from "~/lib/composables/useTime";

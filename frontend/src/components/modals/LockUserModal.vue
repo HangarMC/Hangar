@@ -11,7 +11,7 @@ import { User } from "hangar-api";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
-import { useNotificationStore } from "~/store/notification";
+import { useNotificationStore } from "~/lib/store/notification";
 
 const props = defineProps<{
   user: User;

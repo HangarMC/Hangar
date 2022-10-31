@@ -10,7 +10,7 @@ import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
-import { useNotificationStore } from "~/store/notification";
+import { useNotificationStore } from "~/lib/store/notification";
 import { useRouter } from "vue-router";
 
 const props = defineProps<{
