@@ -2,7 +2,7 @@ package io.papermc.hangar.model.db.roles;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.jdbi.v3.core.annotation.Unmappable;
+import org.jdbi.v3.core.annotation.JdbiProperty;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.springframework.lang.Nullable;
@@ -40,7 +40,7 @@ public class OrganizationRoleTable extends ExtendedRoleTable<OrganizationRole, O
     }
 
     @Override
-    @Unmappable
+    @JdbiProperty(map=false)
     public long getPrincipalId() {
         return organizationId;
     }
