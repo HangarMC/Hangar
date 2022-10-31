@@ -1,5 +1,5 @@
 <template>
-  <Modal title="Change avatar" window-classes="w-125" @open="openModal">
+  <Modal title="Change avatar" window-classes="w-125" ref="modal" @open="openModal">
     <template #activator="{ on }">
       <slot name="activator" :on="on">
         <Button button-type="primary" @click="on.click">Change avatar</Button>
@@ -39,15 +39,17 @@
 import { $fetch } from "ohmyfetch";
 import { useI18n } from "vue-i18n";
 import { Cropper, CropperResult } from "vue-advanced-cropper";
+import { onMounted, ref, watch } from "vue";
 import Button from "~/lib/components/design/Button.vue";
 import InputFile from "~/lib/components/ui/InputFile.vue";
 import { required } from "~/lib/composables/useValidationHelpers";
-import { onMounted, ref, watch } from "vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 
 import "vue-advanced-cropper/dist/style.css";
+import { useNotificationStore } from "~/lib/store/notification";
 
 const { t } = useI18n();
+const notifications = useNotificationStore();
 
 const props = defineProps<{
   avatar: string;
@@ -58,6 +60,7 @@ const props = defineProps<{
 const selectedFile = ref();
 const cropperInput = ref();
 const cropperResult = ref();
+const modal = ref();
 
 let reader: FileReader | null = null;
 onMounted(() => {
@@ -84,6 +87,7 @@ async function openModal() {
     const data = await response.blob();
     reader?.readAsDataURL(data);
   } catch (e) {
+    notifications.error("Error while fetching existing avatar");
     console.log("error while fetching existing avatar", e);
   }
 }
@@ -101,12 +105,18 @@ async function save() {
     form.append("csrf_token", props.csrfToken);
   }
 
-  await $fetch(props.action, {
-    method: "POST",
-    body: form,
-    credentials: "include",
-  });
+  try {
+    await $fetch(props.action, {
+      method: "POST",
+      body: form,
+      credentials: "include",
+    });
 
-  window.location.reload();
+    window.location.reload();
+  } catch (e) {
+    notifications.error("Error while saving avatar");
+    console.log("Error while saving avatar", e);
+    modal.value.close();
+  }
 }
 </script>
