@@ -22,7 +22,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: api
+        working-directory: backend
 
     steps:
       - name: Checkout
