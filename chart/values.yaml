@@ -34,7 +34,9 @@ frontend:
   podAnnotations: {}
 
   podSecurityContext:
+    fsGroup: 1000
     runAsNonRoot: true
+    runAsUser: 1000
 
   securityContext:
     allowPrivilegeEscalation: false
@@ -116,7 +118,9 @@ backend:
   podAnnotations: {}
 
   podSecurityContext:
+    fsGroup: 1000
     runAsNonRoot: true
+    runAsUser: 1000
 
   securityContext:
     allowPrivilegeEscalation: false
