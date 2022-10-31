@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:19-alpine
 
 USER node
 WORKDIR hangar-frontend
