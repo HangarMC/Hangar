@@ -1,0 +1,56 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "packageRules": [
+    {
+      "matchManagers": ["docker-compose", "dockerfile", "helmv3", "helm-values"],
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "infra non-major dependencies",
+      "groupSlug": "infra-minor-patch"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "gh-actions non-major dependencies",
+      "groupSlug": "actions-minor-patch"
+    },
+    {
+      "matchManagers": ["maven", "gradle"],
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "backend non-major dependencies",
+      "groupSlug": "backend-minor-patch"
+    },
+    {
+      "matchManagers": ["npm"],
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "frontend non-major dependencies",
+      "groupSlug": "frontend-minor-patch"
+    }
+  ]
+}
