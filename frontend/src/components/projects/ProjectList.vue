@@ -7,16 +7,20 @@ import ProjectCard from "~/components/projects/ProjectCard.vue";
 
 const i18n = useI18n();
 
-const props = defineProps({
-  projects: {
-    type: Object as PropType<PaginatedResult<Project>>,
-    required: true,
-  },
-});
+const props = defineProps<{
+  projects: PaginatedResult<Project>;
+}>();
+
+const emit = defineEmits<{
+  (e: "update:page", value: number): void;
+}>();
+function updatePage(newPage: number) {
+  emit("update:page", newPage);
+}
 </script>
 
 <template>
-  <Pagination :items="projects?.result">
+  <Pagination v-if="projects?.result" :items="projects.result" :server-pagination="projects.pagination" @update:page="updatePage">
     <template #default="{ item }">
       <ProjectCard :project="item"></ProjectCard>
     </template>

@@ -37,22 +37,26 @@ const sorters = [
   { id: "-recent_downloads", label: i18n.t("project.sorting.recentDownloads") },
 ];
 
+const toArray = (input: unknown) => (Array.isArray(input) ? input : input ? [input] : []);
 const filters = ref({
-  versions: [],
-  categories: [],
-  platform: null,
-  licenses: [],
+  versions: toArray(route.query.version),
+  categories: toArray(route.query.category),
+  platform: route.query.platform || null,
+  licenses: toArray(route.query.license),
 });
 
+const activeSorter = ref<string>((route.query.sort as string) || "-updated");
+const page = ref(route.query.page ? Number(route.query.page) : 0);
 const query = ref<string>((route.query.q as string) || "");
 const loggedOut = ref<boolean>("loggedOut" in route.query);
 const projects = ref<PaginatedResult<Project> | null>();
-const activeSorter = ref<string>("-updated");
 
 const requestParams = computed(() => {
+  // TODO change the limit back to something larger
+  const limit = 4;
   const params: Record<string, any> = {
-    limit: 25,
-    offset: 0,
+    limit: limit,
+    offset: page.value * limit,
     version: filters.value.versions,
     category: filters.value.categories,
     platform: filters.value.platform !== null ? [filters.value.platform] : [],
@@ -64,19 +68,43 @@ const requestParams = computed(() => {
   if (activeSorter.value) {
     params.sort = activeSorter.value;
   }
+
   return params;
 });
 const p = await useProjects(requestParams.value).catch((e) => handleRequestError(e, ctx, i18n));
 if (p && p.value) {
   projects.value = p.value;
+  await checkOffsetLargerCount();
 }
 
-watch(filters, async () => updateProjects(), { deep: true });
-watch(query, async () => updateProjects());
-watch(activeSorter, async () => updateProjects());
+watch(filters, () => (page.value = 0), { deep: true });
+watch(query, () => (page.value = 0));
+watch(activeSorter, () => (page.value = 0));
+watch(
+  requestParams,
+  async () => {
+    // dont want limit in url, its hardcoded in frontend
+    // offset we dont want, we set page instead
+    const { limit, offset, ...paramsWithoutLimit } = requestParams.value;
+    // set the request params
+    await router.replace({ query: { page: page.value, ...paramsWithoutLimit } });
+    // do the update
+    return updateProjects();
+  },
+  { deep: true }
+);
 
 async function updateProjects() {
   projects.value = await useApi<PaginatedResult<Project>>("projects", false, "get", requestParams.value);
+  await checkOffsetLargerCount();
+}
+
+// if somebody set page too high, lets reset it back
+async function checkOffsetLargerCount() {
+  if (projects.value && projects.value.pagination.offset != 0 && projects.value.pagination.offset > projects.value.pagination.count) {
+    page.value = 0;
+    await updateProjects();
+  }
 }
 
 function versions(platform: Platform) {
@@ -165,7 +193,7 @@ useHead(meta);
   <Container class="mt-5" lg="flex items-start gap-6">
     <!-- Projects -->
     <div class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
-      <ProjectList :projects="projects" />
+      <ProjectList :projects="projects" @update:page="(newPage) => (page = newPage)" />
     </div>
     <!-- Sidebar -->
     <Card accent class="min-w-300px flex flex-col gap-4">
