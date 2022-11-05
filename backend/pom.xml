@@ -319,7 +319,7 @@
                     <verbose>false</verbose>
                     <dateFormat>yyyy-MM-dd-HH:mm:ss</dateFormat>
                     <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-                    <generateGitPropertiesFile>false</generateGitPropertiesFile>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
                 </configuration>
             </plugin>
         </plugins>

@@ -17,7 +17,6 @@ import java.util.List;
 public class HangarConfig {
 
     private String logo = "https://docs.papermc.io/img/paper.png";
-    private String service = "Hangar";
     private List<Sponsor> sponsors;
 
     private boolean dev = true;
@@ -117,14 +116,6 @@ public class HangarConfig {
 
     public void setLogo(String logo) {
         this.logo = logo;
-    }
-
-    public String getService() {
-        return service;
-    }
-
-    public void setService(String service) {
-        this.service = service;
     }
 
     public List<Sponsor> getSponsors() {

@@ -15,6 +15,17 @@ interface Validation {
   min?: number;
 }
 
+interface VersionInfo {
+  time: string;
+  commit: string;
+  commitShort: string;
+  version: string;
+  committer: string;
+  message: string;
+  tag: string;
+  behind: string;
+}
+
 interface Validations {
   project: {
     name: Validation;
@@ -47,6 +58,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
   const globalRoles = ref<Role[]>([]);
   const channelColors = ref<Color[]>([]);
   const flagReasons = ref<FlagReason[]>([]);
+  const versionInfo = ref<VersionInfo>();
 
   async function initBackendData() {
     try {
@@ -89,6 +101,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
         fetchIfNeeded(async () => useInternalApi("data/projectRoles", false), projectRoles),
         fetchIfNeeded(async () => useInternalApi("data/globalRoles", false), globalRoles),
         fetchIfNeeded(async () => useInternalApi("data/flagReasons", false), flagReasons),
+        fetchIfNeeded(async () => useInternalApi("data/version-info", false), versionInfo),
       ]);
     } catch (e) {
       console.error("ERROR FETCHING BACKEND DATA");
@@ -123,6 +136,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
     visiblePlatforms,
     licenseOptions,
     categoryOptions,
+    versionInfo,
   };
 });
 

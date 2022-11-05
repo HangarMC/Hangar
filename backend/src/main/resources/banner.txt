@@ -14,4 +14,4 @@
 
 Hangar version @project.version@, running commit @git.commit.id.abbrev@, committed on @git.commit.time@
 @git.commit.user.name@ <@git.commit.user.email@>: @git.commit.message.short@
-Running Spring Boot @spring-boot.version@
+Running Spring Boot ${spring-boot.version}

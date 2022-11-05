@@ -25,6 +25,7 @@ import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.internal.PlatformService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.info.GitProperties;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Controller
@@ -49,12 +52,14 @@ public class BackendDataController {
     private final ObjectMapper noJsonValueMapper;
     private final HangarConfig config;
     private final PlatformService platformService;
+    private final GitProperties gitProperties;
 
     @Autowired
-    public BackendDataController(ObjectMapper mapper, HangarConfig config, PlatformService platformService) {
+    public BackendDataController(ObjectMapper mapper, HangarConfig config, PlatformService platformService, GitProperties gitProperties) {
         this.config = config;
         this.noJsonValueMapper = mapper.copy();
         this.platformService = platformService;
+        this.gitProperties = gitProperties;
         this.noJsonValueMapper.setAnnotationIntrospector(new JacksonAnnotationIntrospector() {
             @Override
             protected <A extends Annotation> A _findAnnotation(Annotated annotated, Class<A> annoClass) {
@@ -180,6 +185,21 @@ public class BackendDataController {
     @Cacheable("prompts")
     public Prompt[] getPrompts() {
         return Prompt.getValues();
+    }
+
+    @ResponseBody
+    @GetMapping("/version-info")
+    public Map<String, String> info() {
+        return Map.of(
+                "version", gitProperties.get("build.version"),
+                "committer", gitProperties.get("commit.user.name"),
+                "time", gitProperties.get("commit.time"),
+                "commit", gitProperties.getCommitId(),
+                "commitShort", gitProperties.getShortCommitId(),
+                "message", gitProperties.get("commit.message.short"),
+                "tag", Optional.of(gitProperties.get("tags")).orElse(gitProperties.get("closest.tag.name")),
+                "behind", gitProperties.get("closest.tag.commit.count")
+        );
     }
 
     @GetMapping("/validations")
