@@ -1,5 +1,5 @@
 <template>
-  <Modal title="Change avatar" window-classes="w-125" ref="modal" @open="openModal">
+  <Modal ref="modal" title="Change avatar" window-classes="w-125" @open="openModal">
     <template #activator="{ on }">
       <slot name="activator" :on="on">
         <Button button-type="primary" @click="on.click">Change avatar</Button>
