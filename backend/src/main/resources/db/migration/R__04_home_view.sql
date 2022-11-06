@@ -1,6 +1,4 @@
-DROP MATERIALIZED VIEW home_projects;
-DROP TABLE recommended_project_versions;
-DROP TABLE project_version_tags;
+DROP MATERIALIZED VIEW IF EXISTS home_projects CASCADE;
 
 CREATE MATERIALIZED VIEW home_projects AS
 SELECT p.id,

@@ -222,12 +222,6 @@ CREATE TABLE project_versions
         CONSTRAINT versions_channel_id_fkey
             REFERENCES project_channels
             ON DELETE CASCADE,
-    file_size bigint default 1
-        CONSTRAINT versions_file_size_check
-            CHECK (file_size > 0),
-    hash varchar(32),
-    file_name varchar(255),
-    external_url varchar(255),
     reviewer_id bigint
         CONSTRAINT project_versions_reviewer_id_fkey
             REFERENCES users
@@ -240,30 +234,13 @@ CREATE TABLE project_versions
     visibility integer DEFAULT 1 NOT NULL,
     review_state integer DEFAULT 0 NOT NULL,
     create_forum_post boolean NOT NULL,
-    post_id integer
+    post_id integer,
+    CONSTRAINT version_string_unique
+        UNIQUE(project_id, version_string)
 );
 
 CREATE INDEX project_version_version_string_idx
     ON project_versions (version_string);
-
-CREATE TABLE recommended_project_versions
-(
-    id bigserial NOT NULL
-        CONSTRAINT recommended_project_versions_pkey
-            PRIMARY KEY,
-    created_at timestamp with time zone NOT NULL,
-    version_id bigint NOT NULL
-        CONSTRAINT recommended_project_versions_version_id_fkey
-            REFERENCES project_versions
-            ON DELETE CASCADE,
-    project_id bigint NOT NULL
-        CONSTRAINT recommended_project_versions_project_id_fkey
-            REFERENCES projects
-            ON DELETE CASCADE,
-    platform bigint NOT NULL,
-    CONSTRAINT recommended_project_versions_unique
-        UNIQUE (project_id, platform)
-);
 
 CREATE TABLE platform_versions
 (
@@ -314,6 +291,40 @@ CREATE TABLE project_version_platform_dependencies
             ON DELETE CASCADE,
     CONSTRAINT project_version_platform_dependencies_unique
         UNIQUE (version_id, platform_version_id)
+);
+
+CREATE TABLE project_version_downloads
+(
+    id bigserial NOT NULL PRIMARY KEY,
+    version_id bigint NOT NULL,
+    file_size bigint default 1
+        CONSTRAINT versions_file_size_check
+            CHECK (file_size > 0),
+    hash varchar(32),
+    file_name varchar(255),
+    external_url varchar(255),
+    CONSTRAINT project_version_downloads_version_id_fkey
+        FOREIGN KEY (version_id)
+            REFERENCES project_versions
+            ON DELETE CASCADE
+);
+
+CREATE TABLE project_version_platform_downloads
+(
+    id bigserial NOT NULL PRIMARY KEY,
+    version_id bigint NOT NULL,
+    platform bigint NOT NULL,
+    download_id bigint NOT NULL,
+    CONSTRAINT project_version_platform_downloads_version_id_fkey
+        FOREIGN KEY (version_id)
+            REFERENCES project_versions
+            ON DELETE CASCADE,
+    CONSTRAINT project_version_platform_downloads_download_id_fkey
+        FOREIGN KEY (download_id)
+            REFERENCES project_version_downloads
+            ON DELETE CASCADE,
+    CONSTRAINT project_version_platform_downloads_unique
+        UNIQUE (version_id, platform)
 );
 
 CREATE TABLE roles
@@ -398,6 +409,23 @@ CREATE TABLE notifications
             REFERENCES users
             ON DELETE SET NULL,
     message_args varchar(255) [] NOT NULL
+);
+
+CREATE TABLE project_flag_notifications
+(
+    id bigserial NOT NULL
+        CONSTRAINT project_flag_notifications_pkey
+            PRIMARY KEY,
+    flag_id         bigint NOT NULL
+        CONSTRAINT project_flag_notifications_flag_id_fkey
+            REFERENCES project_flags
+            ON DELETE CASCADE,
+    notification_id bigint NOT NULL
+        CONSTRAINT project_flag_notifications_notification_id_fkey
+            REFERENCES notifications
+            ON DELETE CASCADE,
+    CONSTRAINT project_flag_notifications_notification_key
+        UNIQUE (notification_id)
 );
 
 CREATE TABLE project_watchers
@@ -615,28 +643,6 @@ CREATE TABLE project_version_visibility_changes
             ON DELETE SET NULL,
     visibility integer NOT NULL
 );
-
-CREATE TABLE project_version_tags
-(
-    id bigserial NOT NULL
-        CONSTRAINT project_version_tags_pkey
-            PRIMARY KEY,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    version_id bigint NOT NULL
-        CONSTRAINT project_version_tags_version_id_fkey
-            REFERENCES project_versions
-            ON DELETE CASCADE,
-    name varchar(255) NOT NULL,
-    data varchar(255)[],
-    color integer NOT NULL,
-    CONSTRAINT project_version_tags_unique UNIQUE (version_id, name)
-);
-
-CREATE INDEX projects_versions_tags_version_id
-    ON project_version_tags (version_id);
-
--- CREATE INDEX project_version_tags_name_data_idx
---     ON project_version_tags (name, data);
 
 CREATE TABLE user_global_roles
 (
@@ -913,4 +919,21 @@ CREATE TABLE pinned_project_versions
             ON DELETE CASCADE,
     CONSTRAINT pinned_project_versions_project_version_key
         UNIQUE (project_id, version_id)
+);
+
+CREATE TABLE pinned_user_projects
+(
+    id         bigserial                NOT NULL
+        CONSTRAINT project_pinned_pkey
+            PRIMARY KEY,
+    user_id    bigint                   NOT NULL
+        CONSTRAINT project_pinned_user_id_fkey
+            REFERENCES users
+            ON DELETE CASCADE,
+    project_id bigint                   NOT NULL
+        CONSTRAINT project_pinned_project_id_fkey
+            REFERENCES projects
+            ON DELETE CASCADE,
+    CONSTRAINT pinned_projects_project_user_key
+        UNIQUE (project_id, user_id)
 );

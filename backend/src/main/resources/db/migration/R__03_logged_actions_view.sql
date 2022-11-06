@@ -1,4 +1,4 @@
-CREATE VIEW v_logged_actions(id, created_at, user_id, user_name, address, action, context_type, new_state, old_state, p_id, p_slug, p_owner_name, pv_id, pv_version_string, pv_platforms, pp_id, pp_name, pp_slug, s_id, s_name) AS
+CREATE OR REPLACE VIEW v_logged_actions(id, created_at, user_id, user_name, address, action, context_type, new_state, old_state, p_id, p_slug, p_owner_name, pv_id, pv_version_string, pv_platforms, pp_id, pp_name, pp_slug, s_id, s_name) AS
 SELECT a.id,
        a.created_at,
        a.user_id,
