@@ -52,10 +52,10 @@ public class BackendDataController {
     private final ObjectMapper noJsonValueMapper;
     private final HangarConfig config;
     private final PlatformService platformService;
-    private final GitProperties gitProperties;
+    private final Optional<GitProperties> gitProperties;
 
     @Autowired
-    public BackendDataController(ObjectMapper mapper, HangarConfig config, PlatformService platformService, GitProperties gitProperties) {
+    public BackendDataController(ObjectMapper mapper, HangarConfig config, PlatformService platformService, Optional<GitProperties> gitProperties) {
         this.config = config;
         this.noJsonValueMapper = mapper.copy();
         this.platformService = platformService;
@@ -191,15 +191,19 @@ public class BackendDataController {
     @GetMapping("/version-info")
     public Map<String, String> info() {
         return Map.of(
-                "version", gitProperties.get("build.version"),
-                "committer", gitProperties.get("commit.user.name"),
-                "time", gitProperties.get("commit.time"),
-                "commit", gitProperties.getCommitId(),
-                "commitShort", gitProperties.getShortCommitId(),
-                "message", gitProperties.get("commit.message.short"),
-                "tag", Optional.of(gitProperties.get("tags")).orElse(gitProperties.get("closest.tag.name")),
-                "behind", gitProperties.get("closest.tag.commit.count")
+            "version", this.get("build.version", -1),
+            "committer", this.get("commit.user.name", "dummy"),
+            "time", this.get("commit.time", -1),
+            "commit", this.gitProperties.map(GitProperties::getCommitId).orElse("0"),
+            "commitShort", this.gitProperties.map(GitProperties::getShortCommitId).orElse("0"),
+            "message", this.get("commit.message.short", "dummy"),
+            "tag", this.gitProperties.map(gp -> gp.get("tags")).or(() -> this.gitProperties.map(gp -> gp.get("closest.tag.name"))).orElse("dummy"),
+            "behind", this.get("closest.tag.commit.count", 0)
         );
+    }
+
+    private String get(final String propName, final Object fallback) {
+        return this.gitProperties.map(gp -> gp.get(propName)).orElse(fallback.toString());
     }
 
     @GetMapping("/validations")
