@@ -52,8 +52,7 @@ const loggedOut = ref<boolean>("loggedOut" in route.query);
 const projects = ref<PaginatedResult<Project> | null>();
 
 const requestParams = computed(() => {
-  // TODO change the limit back to something larger
-  const limit = 4;
+  const limit = 10;
   const params: Record<string, any> = {
     limit: limit,
     offset: page.value * limit,

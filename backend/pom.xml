@@ -37,9 +37,10 @@
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20220924</org-json.version>
         <bucket4j.version>7.6.0</bucket4j.version>
-
+        <datafaker.version>1.6.0</datafaker.version>
         <apache-commons-lang.version>3.12.0</apache-commons-lang.version>
         <jwt.version>4.2.1</jwt.version>
+
         <!-- test -->
         <pg.version>1.17.5</pg.version>
 
@@ -224,6 +225,13 @@
             <groupId>io.awspring.cloud</groupId>
             <artifactId>spring-cloud-aws-starter-s3</artifactId>
             <version>${spring-cloud-aws.version}</version>
+        </dependency>
+
+        <!-- datafaker -->
+        <dependency>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+            <version>${datafaker.version}</version>
         </dependency>
 
         <!-- runtime -->

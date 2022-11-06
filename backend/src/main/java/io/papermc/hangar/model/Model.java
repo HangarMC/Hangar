@@ -15,6 +15,10 @@ public abstract class Model {
         return this.createdAt;
     }
 
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;

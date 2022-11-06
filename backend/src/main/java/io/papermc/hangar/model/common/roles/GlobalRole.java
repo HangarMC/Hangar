@@ -20,6 +20,8 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
     PAPERMC_CORE("PaperMC_Core", 4, Permission.All, "PaperMC Core", Color.AMBER, 10),
     PAPERMC_STAFF("PaperMC_Staff", 5, Permission.IsStaff, "Paper Staff", Color.AMBER, 50),
 
+    DUMMY("Dummy", 42, Permission.ViewPublicInfo, "Dummy", Color.CHARTREUSE, 42),
+
     ORGANIZATION("Organization", 100, OrganizationRole.ORGANIZATION_OWNER.getPermissions(), "Organization", Color.PURPLE);
 
     private final String value;
