@@ -35,10 +35,7 @@ import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.versions.DownloadService;
 import io.papermc.hangar.service.internal.versions.PinnedVersionService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
-import io.papermc.hangar.util.FileUtils;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.EnumMap;
@@ -249,7 +246,7 @@ public class ProjectService extends HangarComponent {
 
     private void evictIconCache(String author, String slug) {
         String url = config.getBaseUrl() + "/api/internal/projects/project/" + author + "/" + slug + "/icon";
-        restTemplate.delete(config.security.api.getUrl() + "/image/" + url + "?apiKey=" + config.sso.getApiKey());
+        restTemplate.delete(config.security.api.getUrl() + "/image/" + url + "?apiKey=" + config.sso.apiKey());
     }
 
     private String getBase64(String author, String slug, String old, String path) {

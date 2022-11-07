@@ -2,7 +2,21 @@ package io.papermc.hangar.controller;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-
+import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.internal.sso.SsoSyncData;
+import io.papermc.hangar.model.internal.sso.URLWithNonce;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
+import io.papermc.hangar.security.authentication.HangarPrincipal;
+import io.papermc.hangar.security.configs.SecurityConfig;
+import io.papermc.hangar.service.AuthenticationService;
+import io.papermc.hangar.service.TokenService;
+import io.papermc.hangar.service.ValidationService;
+import io.papermc.hangar.service.internal.auth.SSOService;
+import java.util.Optional;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpSession;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,23 +30,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
-
-import java.util.Optional;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpSession;
-
-import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.db.UserTable;
-import io.papermc.hangar.model.internal.sso.SsoSyncData;
-import io.papermc.hangar.model.internal.sso.URLWithNonce;
-import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
-import io.papermc.hangar.security.authentication.HangarPrincipal;
-import io.papermc.hangar.security.configs.SecurityConfig;
-import io.papermc.hangar.service.AuthenticationService;
-import io.papermc.hangar.service.TokenService;
-import io.papermc.hangar.service.ValidationService;
-import io.papermc.hangar.service.internal.auth.SSOService;
 
 @Controller
 @RateLimit(path = "login")
@@ -188,7 +185,7 @@ public class LoginController extends HangarComponent {
     }
 
     private RedirectView redirectToSso(URLWithNonce urlWithNonce) {
-        if (!config.sso.isEnabled()) {
+        if (!config.sso.enabled()) {
             throw new HangarApiException("nav.user.error.loginDisabled");
         }
         ssoService.insert(urlWithNonce.getNonce());

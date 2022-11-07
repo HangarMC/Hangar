@@ -2,7 +2,24 @@ package io.papermc.hangar.service.internal.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-
+import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.dao.internal.table.UserDAO;
+import io.papermc.hangar.db.dao.internal.table.auth.UserOauthTokenDAO;
+import io.papermc.hangar.db.dao.internal.table.auth.UserSignOnDAO;
+import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.db.auth.UserOauthTokenTable;
+import io.papermc.hangar.model.db.auth.UserSignOnTable;
+import io.papermc.hangar.model.internal.sso.TokenResponse;
+import io.papermc.hangar.model.internal.sso.Traits;
+import io.papermc.hangar.model.internal.sso.URLWithNonce;
+import io.papermc.hangar.security.authentication.HangarPrincipal;
+import io.papermc.hangar.service.TokenService;
+import java.math.BigInteger;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,26 +33,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.math.BigInteger;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
-
-import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.db.dao.internal.table.UserDAO;
-import io.papermc.hangar.db.dao.internal.table.auth.UserOauthTokenDAO;
-import io.papermc.hangar.db.dao.internal.table.auth.UserSignOnDAO;
-import io.papermc.hangar.model.db.UserTable;
-import io.papermc.hangar.model.db.auth.UserOauthTokenTable;
-import io.papermc.hangar.model.db.auth.UserSignOnTable;
-import io.papermc.hangar.model.internal.sso.TokenResponse;
-import io.papermc.hangar.model.internal.sso.Traits;
-import io.papermc.hangar.model.internal.sso.URLWithNonce;
-import io.papermc.hangar.security.authentication.HangarPrincipal;
-import io.papermc.hangar.service.TokenService;
 
 @Service
 public class SSOService {
@@ -70,8 +67,8 @@ public class SSOService {
 
     public URLWithNonce getLoginUrl(String returnUrl) {
         String generatedNonce = nonce();
-        String url = UriComponentsBuilder.fromUriString(hangarConfig.sso.getOauthUrl() + hangarConfig.sso.getLoginUrl())
-                .queryParam("client_id", hangarConfig.sso.getClientId())
+        String url = UriComponentsBuilder.fromUriString(hangarConfig.sso.oauthUrl() + hangarConfig.sso.loginUrl())
+                .queryParam("client_id", hangarConfig.sso.clientId())
                 .queryParam("scope", "openid email profile")
                 .queryParam("response_type", "code")
                 .queryParam("redirect_uri", returnUrl)
@@ -93,7 +90,7 @@ public class SSOService {
     public URLWithNonce getLogoutUrl(String returnUrl, HangarPrincipal user) {
         String idToken = idToken(user.getName());
         String generatedNonce = nonce();
-        String url = UriComponentsBuilder.fromUriString(hangarConfig.sso.getOauthUrl() + hangarConfig.sso.getLogoutUrl())
+        String url = UriComponentsBuilder.fromUriString(hangarConfig.sso.oauthUrl() + hangarConfig.sso.logoutUrl())
                 .queryParam("post_logout_redirect_uri", returnUrl)
                 .queryParam("id_token_hint", idToken)
                 .queryParam("state", tokenService.simple(user.getName()))
@@ -103,7 +100,7 @@ public class SSOService {
 
     public String getSignupUrl(String returnUrl) {
         // TODO figure out what we wanna do here
-        return hangarConfig.sso.getAuthUrl() + hangarConfig.sso.getSignupUrl();
+        return hangarConfig.sso.authUrl() + hangarConfig.sso.signupUrl();
     }
 
     private String nonce() {
@@ -155,12 +152,12 @@ public class SSOService {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("code", code);
         map.add("grant_type", "authorization_code");
-        map.add("client_id", hangarConfig.sso.getClientId());
+        map.add("client_id", hangarConfig.sso.clientId());
         map.add("redirect_uri", redirect);
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
-        ResponseEntity<TokenResponse> tokenResponse = restTemplate.exchange(hangarConfig.sso.getBackendOauthUrl() + hangarConfig.sso.getTokenUrl(), HttpMethod.POST, entity, TokenResponse.class);
+        ResponseEntity<TokenResponse> tokenResponse = restTemplate.exchange(hangarConfig.sso.backendOauthUrl() + hangarConfig.sso.tokenUrl(), HttpMethod.POST, entity, TokenResponse.class);
 
         return tokenResponse.getBody().getIdToken();
     }

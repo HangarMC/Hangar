@@ -1,5 +1,15 @@
 package io.papermc.hangar.service;
 
+import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.model.common.roles.GlobalRole;
+import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
+import io.papermc.hangar.service.internal.users.UserService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,18 +22,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
-
-import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.model.common.roles.GlobalRole;
-import io.papermc.hangar.model.db.UserTable;
-import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
-import io.papermc.hangar.service.internal.users.UserService;
 
 @Service
 public class AuthenticationService extends HangarComponent {
@@ -70,7 +68,7 @@ public class AuthenticationService extends HangarComponent {
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         try {
-            ResponseEntity<Void> response = restTemplate.postForEntity(config.security.api.getUrl() + "/avatar/org/" + org + "?apiKey=" + config.sso.getApiKey(), requestEntity, Void.class);
+            ResponseEntity<Void> response = restTemplate.postForEntity(config.security.api.getUrl() + "/avatar/org/" + org + "?apiKey=" + config.sso.apiKey(), requestEntity, Void.class);
             if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new ResponseStatusException(response.getStatusCode(), "Error from auth api");
             }

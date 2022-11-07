@@ -35,6 +35,10 @@ import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.service.internal.users.invites.InviteService;
 import io.papermc.hangar.service.internal.users.invites.OrganizationInviteService;
 import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
+import java.util.List;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,11 +53,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @LoggedIn
@@ -102,7 +101,7 @@ public class HangarUserController extends HangarComponent {
         if (userTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        if (content.getContent().length() > config.user.getMaxTaglineLen()) {
+        if (content.getContent().length() > config.user.maxTaglineLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "author.error.invalidTagline");
         }
         String oldTagline = userTable.getTagline() == null ? "" : userTable.getTagline();
@@ -144,7 +143,7 @@ public class HangarUserController extends HangarComponent {
         // TODO user action logging
         userService.updateUser(userTable);
 
-        if (config.sso.isEnabled()) {
+        if (config.sso.enabled()) {
             userService.updateSSO(userTable.getUuid(), new Traits(userTable.getEmail(), null, null, settings.getLanguage(), userTable.getName(), settings.getTheme()));
         }
 

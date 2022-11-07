@@ -1,101 +1,19 @@
 package io.papermc.hangar.config.hangar;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
-@Component
 @ConfigurationProperties(prefix = "hangar.sso")
-public class SSOConfig {
-
-    private boolean enabled = true;
-    private String oauthUrl = "http://localhost:4444";
-    private String backendOauthUrl = "http://localhost:4444";
-    private String loginUrl = "/oauth2/auth/";
-    private String tokenUrl = "/oauth2/token";
-    private String logoutUrl = "/oauth2/sessions/logout";
-    private String clientId = "my-client";
-
-    private String authUrl = "http://localhost:3001";
-    private String signupUrl = "/account/signup";
-    private String apiKey = "secret";
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getLoginUrl() {
-        return loginUrl;
-    }
-
-    public void setLoginUrl(String loginUrl) {
-        this.loginUrl = loginUrl;
-    }
-
-    public String getSignupUrl() {
-        return signupUrl;
-    }
-
-    public void setSignupUrl(String signupUrl) {
-        this.signupUrl = signupUrl;
-    }
-
-    public String getLogoutUrl() {
-        return logoutUrl;
-    }
-
-    public void setLogoutUrl(String logoutUrl) {
-        this.logoutUrl = logoutUrl;
-    }
-
-    public String getTokenUrl() {
-        return tokenUrl;
-    }
-
-    public void setTokenUrl(String tokenUrl) {
-        this.tokenUrl = tokenUrl;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
-
-    public String getAuthUrl() {
-        return authUrl;
-    }
-
-    public void setAuthUrl(String authUrl) {
-        this.authUrl = authUrl;
-    }
-
-    public String getOauthUrl() {
-        return oauthUrl;
-    }
-
-    public void setOauthUrl(String oauthUrl) {
-        this.oauthUrl = oauthUrl;
-    }
-
-    public String getBackendOauthUrl() {
-        return backendOauthUrl;
-    }
-
-    public void setBackendOauthUrl(String backendOauthUrl) {
-        this.backendOauthUrl = backendOauthUrl;
-    }
-
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
+public record SSOConfig(
+    @DefaultValue("true") boolean enabled,
+    @DefaultValue("http://localhost:4444") String oauthUrl,
+    @DefaultValue("http://localhost:4444") String backendOauthUrl,
+    @DefaultValue("/oauth2/auth/") String loginUrl,
+    @DefaultValue("/oauth2/token") String tokenUrl,
+    @DefaultValue("/oauth2/sessions/logout") String logoutUrl,
+    @DefaultValue("my-client") String clientId,
+    @DefaultValue("http://localhost:3001") String authUrl,
+    @DefaultValue("/account/signup") String signupUrl,
+    @DefaultValue("secret") String apiKey
+) {
 }

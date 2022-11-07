@@ -15,14 +15,13 @@ import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.util.StringUtils;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class ProjectPageService extends HangarComponent {
@@ -47,11 +46,11 @@ public class ProjectPageService extends HangarComponent {
 
     @Transactional
     public ProjectPageTable createPage(long projectId, String name, String slug, String contents, boolean deletable, @Nullable Long parentId, boolean isHome) {
-        if (!isHome && contents.length() < config.pages.getMinLen()) {
+        if (!isHome && contents.length() < config.pages.minLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.minLength");
         }
 
-        if (contents.length() > config.pages.getMaxLen()) {
+        if (contents.length() > config.pages.maxLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
 
@@ -143,7 +142,7 @@ public class ProjectPageService extends HangarComponent {
 
     @Transactional
     public void saveProjectPage(long projectId, long pageId, String newContents) {
-        if (newContents.length() > config.pages.getMaxLen()) {
+        if (newContents.length() > config.pages.maxLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
 

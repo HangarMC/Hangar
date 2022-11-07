@@ -24,6 +24,12 @@ import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.internal.PlatformService;
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.cache.annotation.Cacheable;
@@ -35,13 +41,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Controller
 @Anyone
@@ -215,12 +214,12 @@ public class BackendDataController {
         projectValidations.set("desc", noJsonValueMapper.valueToTree(new Validation(null, config.projects.getMaxDescLen(), null)));
         projectValidations.set("keywords", noJsonValueMapper.valueToTree(new Validation(null, config.projects.getMaxKeywords(), null)));
         projectValidations.set("channels", noJsonValueMapper.valueToTree(new Validation(config.channels.getNameRegex(), config.channels.getMaxNameLen(), null)));
-        projectValidations.set("pageName", noJsonValueMapper.valueToTree(new Validation(config.pages.getNameRegex(), config.pages.getMaxNameLen(), config.pages.getMinNameLen())));
-        projectValidations.set("pageContent", noJsonValueMapper.valueToTree(new Validation(null, config.pages.getMaxLen(), config.pages.getMinLen())));
+        projectValidations.set("pageName", noJsonValueMapper.valueToTree(new Validation(config.pages.nameRegex(), config.pages.maxNameLen(), config.pages.minNameLen())));
+        projectValidations.set("pageContent", noJsonValueMapper.valueToTree(new Validation(null, config.pages.maxLen(), config.pages.minLen())));
         projectValidations.put("maxPageCount", config.projects.getMaxPages());
         projectValidations.put("maxChannelCount", config.projects.getMaxChannels());
         validations.set("project", projectValidations);
-        validations.set("userTagline", noJsonValueMapper.valueToTree(new Validation(null, config.user.getMaxTaglineLen(), null)));
+        validations.set("userTagline", noJsonValueMapper.valueToTree(new Validation(null, config.user.maxTaglineLen(), null)));
         validations.set("version", noJsonValueMapper.valueToTree(new Validation(config.projects.getVersionNameRegex(), config.projects.getMaxVersionNameLen(), null)));
         validations.set("org", noJsonValueMapper.valueToTree(new Validation(config.org.getNameRegex(), config.org.getMaxNameLen(), config.org.getMinNameLen())));
         validations.put("maxOrgCount", config.org.getCreateLimit());

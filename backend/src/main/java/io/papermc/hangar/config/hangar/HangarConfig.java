@@ -1,19 +1,16 @@
 package io.papermc.hangar.config.hangar;
 
 import io.papermc.hangar.model.Announcement;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Configuration
 @ConfigurationProperties(prefix = "hangar")
-@ComponentScan("io.papermc.hangar")
 public class HangarConfig {
 
     private String logo = "https://docs.papermc.io/img/paper.png";

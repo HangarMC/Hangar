@@ -18,6 +18,8 @@ import io.papermc.hangar.model.internal.user.HangarUser.HeaderData;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.projects.PinnedProjectService;
+import java.util.List;
+import java.util.function.BiFunction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +28,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.function.BiFunction;
 
 @Service
 public class UsersApiService extends HangarComponent {
@@ -100,8 +99,8 @@ public class UsersApiService extends HangarComponent {
     @Cacheable(CacheConfig.STAFF)
     @Transactional
     public PaginatedResult<User> getStaff(RequestPagination pagination) {
-        List<User> users = usersApiDAO.getStaff(config.user.getStaffRoles(), pagination);
-        long count = usersApiDAO.getStaffCount(config.user.getStaffRoles());
+        List<User> users = usersApiDAO.getStaff(config.user.staffRoles(), pagination);
+        long count = usersApiDAO.getStaffCount(config.user.staffRoles());
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
 

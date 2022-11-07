@@ -20,15 +20,13 @@ import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
-import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
+import java.util.Set;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Set;
 
 @Service
 public class ProjectFactory extends HangarComponent {
@@ -75,9 +73,9 @@ public class ProjectFactory extends HangarComponent {
             this.projectMemberService.addNewAcceptedByDefaultMember(ProjectRole.PROJECT_OWNER.create(projectTable.getId(), projectOwner.getUserId(), true));
             String newPageContent = newProject.getPageContent();
             if (newPageContent == null) {
-                newPageContent = "# " + projectTable.getName() + "\n\n" + this.config.pages.home.getMessage();
+                newPageContent = "# " + projectTable.getName() + "\n\n" + this.config.pages.home().message();
             }
-            this.projectPageService.createPage(projectTable.getId(), this.config.pages.home.getName(), StringUtils.slugify(this.config.pages.home.getName()), newPageContent, false, null, true);
+            this.projectPageService.createPage(projectTable.getId(), this.config.pages.home().name(), StringUtils.slugify(this.config.pages.home().name()), newPageContent, false, null, true);
             this.jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
         } catch (Exception exception) {
             if (projectTable != null) {

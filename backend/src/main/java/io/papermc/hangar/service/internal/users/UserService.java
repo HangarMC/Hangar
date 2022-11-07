@@ -9,6 +9,8 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.LoggedAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.model.internal.sso.Traits;
+import java.util.UUID;
+import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.UUID;
-import java.util.function.Function;
 
 @Service
 public class UserService extends HangarComponent {
@@ -114,7 +113,7 @@ public class UserService extends HangarComponent {
         HttpEntity<Traits> requestEntity = new HttpEntity<>(traits, headers);
 
         try {
-            ResponseEntity<Void> response = restTemplate.postForEntity(config.security.api.getUrl() + "/sync/user/" + uuid.toString() + "?apiKey=" + config.sso.getApiKey(), requestEntity, Void.class);
+            ResponseEntity<Void> response = restTemplate.postForEntity(config.security.api.getUrl() + "/sync/user/" + uuid.toString() + "?apiKey=" + config.sso.apiKey(), requestEntity, Void.class);
             if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new ResponseStatusException(response.getStatusCode(), "Error from auth api");
             }
