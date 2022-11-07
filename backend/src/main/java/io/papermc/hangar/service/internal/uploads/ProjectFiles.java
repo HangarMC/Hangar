@@ -25,7 +25,7 @@ public class ProjectFiles {
     @Autowired
     public ProjectFiles(StorageConfig storageConfig, FileService fileService) {
         this.fileService = fileService;
-        Path uploadsDir = Path.of(storageConfig.getPluginUploadDir());
+        Path uploadsDir = Path.of(storageConfig.workDir());
         pluginsDir = fileService.resolve(fileService.getRoot(), "plugins");
         tmpDir = uploadsDir.resolve("tmp");
         if (Files.exists(tmpDir)) {

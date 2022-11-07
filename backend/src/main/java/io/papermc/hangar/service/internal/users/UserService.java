@@ -113,7 +113,7 @@ public class UserService extends HangarComponent {
         HttpEntity<Traits> requestEntity = new HttpEntity<>(traits, headers);
 
         try {
-            ResponseEntity<Void> response = restTemplate.postForEntity(config.security.api.getUrl() + "/sync/user/" + uuid.toString() + "?apiKey=" + config.sso.apiKey(), requestEntity, Void.class);
+            ResponseEntity<Void> response = restTemplate.postForEntity(config.security.api().url() + "/sync/user/" + uuid.toString() + "?apiKey=" + config.sso.apiKey(), requestEntity, Void.class);
             if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new ResponseStatusException(response.getStatusCode(), "Error from auth api");
             }

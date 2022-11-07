@@ -18,7 +18,7 @@ public class ApiUtils {
      * @return actual limit
      */
     public static long limitOrDefault(@Nullable Long limit) {
-        return limitOrDefault(limit, hangarConfig.projects.getInitLoad());
+        return limitOrDefault(limit, hangarConfig.projects.initLoad());
     }
 
     public static long limitOrDefault(@Nullable Long limit, long maxLimit) {

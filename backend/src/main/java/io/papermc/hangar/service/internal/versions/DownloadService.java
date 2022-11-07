@@ -79,7 +79,7 @@ public class DownloadService extends HangarComponent {
 
         // create new token
         UUID token = UUID.randomUUID();
-        OffsetDateTime expiresAt = OffsetDateTime.now().plus(config.projects.getUnsafeDownloadMaxAge().toMillis(), ChronoUnit.MILLIS);
+        OffsetDateTime expiresAt = OffsetDateTime.now().plus(config.projects.unsafeDownloadMaxAge().toMillis(), ChronoUnit.MILLIS);
         projectVersionDownloadWarningsDAO.insert(new ProjectVersionDownloadWarningTable(
             expiresAt,
             token,

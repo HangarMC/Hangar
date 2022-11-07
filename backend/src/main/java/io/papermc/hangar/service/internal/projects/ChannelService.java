@@ -56,8 +56,8 @@ public class ChannelService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.invalidName");
         }
 
-        if (existingChannels.size() >= this.config.projects.getMaxChannels()) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.maxChannels", this.config.projects.getMaxChannels());
+        if (existingChannels.size() >= this.config.projects.maxChannels()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.maxChannels", this.config.projects.maxChannels());
         }
 
         this.checkName(projectId, name, null, ignored -> existingChannels);

@@ -69,7 +69,7 @@ public class DiscourseService {
         String title = discourseFormatter.formatProjectTitle(project);
         String content = discourseFormatter.formatProjectTopic(project, getHomepageContent(project));
 
-        DiscoursePost post = api.createTopic(project.getOwnerName(), title, content, config.getCategory());
+        DiscoursePost post = api.createTopic(project.getOwnerName(), title, content, config.category());
         if (post == null) {
             throw new JobException("project post wasn't created " + project.getProjectId(), "sanity_check");
         }
@@ -87,7 +87,7 @@ public class DiscourseService {
         String title = discourseFormatter.formatProjectTitle(project);
         String content = discourseFormatter.formatProjectTopic(project, getHomepageContent(project));
 
-        api.updateTopic(project.getOwnerName(), project.getTopicId(), title, project.getVisibility() == Visibility.PUBLIC ? config.getCategory() : config.getCategoryDeleted());
+        api.updateTopic(project.getOwnerName(), project.getTopicId(), title, project.getVisibility() == Visibility.PUBLIC ? config.category() : config.categoryDeleted());
         api.updatePost(project.getOwnerName(), project.getPostId(), content);
     }
 
@@ -124,6 +124,6 @@ public class DiscourseService {
     }
 
     public void deleteTopic(long topicId) {
-        api.deleteTopic(config.getAdminUser(), topicId);
+        api.deleteTopic(config.adminUser(), topicId);
     }
 }

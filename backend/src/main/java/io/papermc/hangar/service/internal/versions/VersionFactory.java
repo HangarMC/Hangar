@@ -246,7 +246,7 @@ public class VersionFactory extends HangarComponent {
         if (!validationService.isValidVersionName(pendingVersion.getVersionString())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidName");
         }
-        if (pendingVersion.getPluginDependencies().values().stream().anyMatch(pluginDependencies -> pluginDependencies.size() > config.projects.getMaxDependencies())) {
+        if (pendingVersion.getPluginDependencies().values().stream().anyMatch(pluginDependencies -> pluginDependencies.size() > config.projects.maxDependencies())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.tooManyDependencies");
         }
         if (exists(projectId, pendingVersion.getVersionString())) {

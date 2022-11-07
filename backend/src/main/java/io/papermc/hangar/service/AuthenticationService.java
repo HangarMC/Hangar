@@ -37,14 +37,14 @@ public class AuthenticationService extends HangarComponent {
     }
 
     public UserTable loginAsFakeUser() {
-        String userName = config.fakeUser.getUsername();
+        String userName = config.fakeUser.username();
         UserTable userTable = userService.getUserTable(userName);
         if (userTable == null) {
             userTable = new UserTable(
                     -1, // we can pass -1 here since it's not actually inserted in the DB in the DAO
                     UUID.randomUUID(),
                     userName,
-                    config.fakeUser.getEmail(),
+                    config.fakeUser.email(),
                     List.of(),
                     false,
                     Locale.ENGLISH.toLanguageTag(),
@@ -68,7 +68,7 @@ public class AuthenticationService extends HangarComponent {
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         try {
-            ResponseEntity<Void> response = restTemplate.postForEntity(config.security.api.getUrl() + "/avatar/org/" + org + "?apiKey=" + config.sso.apiKey(), requestEntity, Void.class);
+            ResponseEntity<Void> response = restTemplate.postForEntity(config.security.api().url() + "/avatar/org/" + org + "?apiKey=" + config.sso.apiKey(), requestEntity, Void.class);
             if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new ResponseStatusException(response.getStatusCode(), "Error from auth api");
             }

@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.validation.Valid;
 import java.util.List;
 
+// @el(user: io.papermc.hangar.model.db.UserTable)
 @LoggedIn
 @Controller
 @RateLimit(path = "apikey")

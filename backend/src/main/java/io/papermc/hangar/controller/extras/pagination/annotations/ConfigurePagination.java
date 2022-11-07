@@ -18,4 +18,6 @@ public @interface ConfigurePagination {
      * -1 means fallback to default configured value
      */
     long maxLimit();
+
+    // TODO add String SpEL param to use configurable values for action log amounts and version amounts
 }

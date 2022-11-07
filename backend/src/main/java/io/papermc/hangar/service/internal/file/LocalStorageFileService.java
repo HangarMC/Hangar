@@ -91,7 +91,7 @@ public class LocalStorageFileService implements FileService {
 
     @Override
     public String getRoot() {
-        return config.getPluginUploadDir();
+        return config.workDir();
     }
 
     @Override

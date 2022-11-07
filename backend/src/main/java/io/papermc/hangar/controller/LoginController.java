@@ -50,7 +50,7 @@ public class LoginController extends HangarComponent {
 
     @GetMapping(path = "/login", params = "returnUrl")
     public RedirectView loginFromFrontend(@RequestParam(defaultValue = "/") String returnUrl) {
-        if (config.fakeUser.isEnabled()) {
+        if (config.fakeUser.enabled()) {
             config.checkDev();
 
             UserTable fakeUser = authenticationService.loginAsFakeUser();
@@ -95,7 +95,7 @@ public class LoginController extends HangarComponent {
 
     @GetMapping(path = "/logout", params = "returnUrl")
     public RedirectView logout(@RequestParam(defaultValue = "/logged-out") String returnUrl) {
-        if (config.fakeUser.isEnabled()) {
+        if (config.fakeUser.enabled()) {
             response.addCookie(new Cookie("url", returnUrl));
             return new RedirectView("/fake-logout");
         } else {
@@ -151,7 +151,7 @@ public class LoginController extends HangarComponent {
 
     @GetMapping("/signup")
     public RedirectView signUp(@RequestParam(defaultValue = "") String returnUrl) {
-        if (config.fakeUser.isEnabled()) {
+        if (config.fakeUser.enabled()) {
             throw new HangarApiException("nav.user.error.fakeUserEnabled", "Signup");
         }
         return new RedirectView(ssoService.getSignupUrl(returnUrl));

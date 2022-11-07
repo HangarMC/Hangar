@@ -30,7 +30,7 @@ public class HealthService extends HangarComponent {
     }
 
     public List<UnhealthyProject> getStaleProjects() {
-        return healthDAO.getStaleProjects("'" + config.projects.getStaleAge().toSeconds() + " SECONDS'");
+        return healthDAO.getStaleProjects("'" + config.projects.staleAge().toSeconds() + " SECONDS'");
     }
 
     public List<UnhealthyProject> getNonPublicProjects() {

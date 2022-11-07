@@ -39,9 +39,9 @@ public class ValidationService {
             error = "invalidName";
         } else if (name.length() < 3) {
             error = "tooShortName";
-        } else if (name.length() > config.projects.getMaxNameLen()) {
+        } else if (name.length() > config.projects.maxNameLen()) {
             error = "tooLongName";
-        } else if (name.contains(ProjectFactory.SOFT_DELETION_SUFFIX) || !config.projects.getNameMatcher().test(name)) {
+        } else if (name.contains(ProjectFactory.SOFT_DELETION_SUFFIX) || !config.projects.nameRegex().test(name)) {
             error = "invalidName";
         }
         return error != null ? "project.new.error." + error : null;
@@ -52,7 +52,7 @@ public class ValidationService {
         if (bannedRoutes.contains(name) || name.contains(ProjectFactory.SOFT_DELETION_SUFFIX)) {
             return false;
         }
-        if (name.length() < 1 || name.length() > config.projects.getMaxVersionNameLen() || !config.projects.getVersionNameMatcher().test(name)) {
+        if (name.length() < 1 || name.length() > config.projects.maxVersionNameLen() || !config.projects.versionNameRegex().test(name)) {
             return false;
         }
         return true;

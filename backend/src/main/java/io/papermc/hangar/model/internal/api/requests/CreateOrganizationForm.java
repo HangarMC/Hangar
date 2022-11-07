@@ -12,19 +12,19 @@ public class CreateOrganizationForm extends EditMembersForm<OrganizationRole> {
     @Validate(SpEL = "@validate.min(#root, @hangarConfig.org.minNameLen)", message = "organization.new.error.invalidName")
     private final String name;
 
-    public CreateOrganizationForm(List<Member<OrganizationRole>> members, String name) {
+    public CreateOrganizationForm(final List<Member<OrganizationRole>> members, final String name) {
         super(members);
         this.name = name;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public String toString() {
         return "CreateOrganizationForm{" +
-                "name='" + name + '\'' +
+                "name='" + this.name + '\'' +
                 "} " + super.toString();
     }
 }

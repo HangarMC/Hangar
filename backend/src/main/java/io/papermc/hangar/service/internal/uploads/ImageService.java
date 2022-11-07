@@ -42,6 +42,6 @@ public class ImageService extends HangarComponent {
     }
 
     public String getUserIcon(String author) {
-        return String.format(config.security.api.getAvatarUrl(), author);
+        return String.format(config.security.api().avatarUrl(), author);
     }
 }

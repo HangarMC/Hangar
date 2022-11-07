@@ -51,15 +51,15 @@ public class JobService extends HangarComponent {
 
     @PostConstruct
     public void initThreadPool() {
-        this.executorService = new ThreadPoolExecutor(1, config.jobs.getMaxConcurrentJobs(), 60, TimeUnit.SECONDS, new SynchronousQueue<>());
+        this.executorService = new ThreadPoolExecutor(1, config.jobs.maxConcurrentJobs(), 60, TimeUnit.SECONDS, new SynchronousQueue<>());
     }
 
     public void checkAndProcess() {
-        if (!config.discourse.isEnabled()) { return; }
+        if (!config.discourse.enabled()) { return; }
         long awaitingJobs = jobsDAO.countAwaitingJobs();
         logger.debug("Found {} awaiting jobs", awaitingJobs);
         if (awaitingJobs > 0) {
-            long numberToProcess = Math.max(1, Math.min(awaitingJobs, config.jobs.getMaxConcurrentJobs()));
+            long numberToProcess = Math.max(1, Math.min(awaitingJobs, config.jobs.maxConcurrentJobs()));
             for (long i = 0; i < numberToProcess; i++) {
                 executorService.submit(this::process);
             }
@@ -72,7 +72,7 @@ public class JobService extends HangarComponent {
 
     @Transactional
     public void save(Job job) {
-        if (!config.discourse.isEnabled()) { return; }
+        if (!config.discourse.enabled()) { return; }
         jobsDAO.save(job.toTable());
     }
 
@@ -97,15 +97,15 @@ public class JobService extends HangarComponent {
                            toJobString(jobTable) +
                            "Status Code: " + statusError.getStatus() + "\n" +
                            toMessageString(statusError);
-            jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(config.jobs.getStatusErrorTimeout()).plusSeconds(5), error, "status_error_" + statusError.getStatus().value());
+            jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(config.jobs.statusErrorTimeout()).plusSeconds(5), error, "status_error_" + statusError.getStatus().value());
         } catch (DiscourseError.UnknownError unknownError) {
             String error = "Encountered error when executing Discourse request\n" +
                             toJobString(jobTable) +
                            "Type: " + unknownError.getDescriptor() + "\n" +
                            toMessageString(unknownError);
-            jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(config.jobs.getUnknownErrorTimeout()).plusSeconds(5), error, "unknown_error" + unknownError.getDescriptor());
+            jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(config.jobs.unknownErrorTimeout()).plusSeconds(5), error, "unknown_error" + unknownError.getDescriptor());
         } catch (DiscourseError.NotAvailableError notAvailableError) {
-            jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(config.jobs.getNotAvailableTimeout()).plusSeconds(5), "Not Available", "not_available");
+            jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(config.jobs.notAvailableTimeout()).plusSeconds(5), "Not Available", "not_available");
         } catch (DiscourseError.NotProcessable notProcessable) {
             logger.debug("job failed to process discourse job: {} {}", notProcessable.getMessage(), jobTable);
             String error = "Encountered error when processing discourse job\n" +

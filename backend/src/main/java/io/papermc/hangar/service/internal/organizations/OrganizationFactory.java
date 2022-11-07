@@ -48,14 +48,14 @@ public class OrganizationFactory extends HangarComponent {
 
     @Transactional
     public void createOrganization(String name) {
-        if (!config.org.isEnabled()) {
+        if (!config.org.enabled()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "organization.new.error.notEnabled");
         }
-        if (organizationService.getOrganizationsOwnedBy(getHangarPrincipal().getId()).size() >= config.org.getCreateLimit()) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "organization.new.error.tooManyOrgs", config.org.getCreateLimit());
+        if (organizationService.getOrganizationsOwnedBy(getHangarPrincipal().getId()).size() >= config.org.createLimit()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "organization.new.error.tooManyOrgs", config.org.createLimit());
         }
 
-        String dummyEmail = name.replaceAll("[^a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]", "") + '@' + config.org.getDummyEmailDomain();
+        String dummyEmail = name.replaceAll("[^a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]", "") + '@' + config.org.dummyEmailDomain();
         UserTable userTable = userDAO.create(UUID.randomUUID(), name, dummyEmail, "", "", List.of(), false, null);
         OrganizationTable organizationTable = organizationDAO.insert(new OrganizationTable(userTable.getId(), name, getHangarPrincipal().getId(), userTable.getId()));
         globalRoleService.addRole(GlobalRole.ORGANIZATION.create(null, userTable.getId(), false));

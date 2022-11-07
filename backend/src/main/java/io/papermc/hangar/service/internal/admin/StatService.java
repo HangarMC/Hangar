@@ -66,7 +66,7 @@ public class StatService extends HangarComponent {
     private void setCookie(String cookieValue) {
         response.addHeader(HttpHeaders.SET_COOKIE,
                 ResponseCookie.from(STAT_TRACKING_COOKIE, cookieValue)
-                        .secure(config.security.isSecure())
+                        .secure(config.security.secure())
                         .path("/")
                         .maxAge((long) (60 * 60 * 24 * 356.24 * 1000))
                         .sameSite("Strict")

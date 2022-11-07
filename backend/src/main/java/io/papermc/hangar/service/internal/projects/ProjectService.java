@@ -138,7 +138,7 @@ public class ProjectService extends HangarComponent {
 
         final Map<Platform, HangarVersion> mainChannelVersions = new EnumMap<>(Platform.class);
         for (final Platform platform : Platform.getValues()) {
-            final HangarVersion version = getLastVersion(author, slug, platform, config.channels.getNameDefault());
+            final HangarVersion version = getLastVersion(author, slug, platform, config.channels.nameDefault());
             if (version != null) {
                 if (version.getPlatformDependencies().isEmpty()) {
                     final Map<Platform, SortedSet<String>> platformDependencies = versionsApiDAO.getPlatformDependencies(version.getId());
@@ -246,7 +246,7 @@ public class ProjectService extends HangarComponent {
 
     private void evictIconCache(String author, String slug) {
         String url = config.getBaseUrl() + "/api/internal/projects/project/" + author + "/" + slug + "/icon";
-        restTemplate.delete(config.security.api.getUrl() + "/image/" + url + "?apiKey=" + config.sso.apiKey());
+        restTemplate.delete(config.security.api().url() + "/image/" + url + "?apiKey=" + config.sso.apiKey());
     }
 
     private String getBase64(String author, String slug, String old, String path) {

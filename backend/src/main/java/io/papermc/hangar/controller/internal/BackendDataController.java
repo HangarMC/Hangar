@@ -210,19 +210,19 @@ public class BackendDataController {
     public ResponseEntity<ObjectNode> getValidations() {
         ObjectNode validations = noJsonValueMapper.createObjectNode();
         ObjectNode projectValidations = noJsonValueMapper.createObjectNode();
-        projectValidations.set("name", noJsonValueMapper.valueToTree(new Validation(config.projects.getNameRegex(), config.projects.getMaxNameLen(), null)));
-        projectValidations.set("desc", noJsonValueMapper.valueToTree(new Validation(null, config.projects.getMaxDescLen(), null)));
-        projectValidations.set("keywords", noJsonValueMapper.valueToTree(new Validation(null, config.projects.getMaxKeywords(), null)));
-        projectValidations.set("channels", noJsonValueMapper.valueToTree(new Validation(config.channels.getNameRegex(), config.channels.getMaxNameLen(), null)));
+        projectValidations.set("name", noJsonValueMapper.valueToTree(new Validation(config.projects.nameRegex().strPattern(), config.projects.maxNameLen(), null)));
+        projectValidations.set("desc", noJsonValueMapper.valueToTree(new Validation(null, config.projects.maxDescLen(), null)));
+        projectValidations.set("keywords", noJsonValueMapper.valueToTree(new Validation(null, config.projects.maxKeywords(), null)));
+        projectValidations.set("channels", noJsonValueMapper.valueToTree(new Validation(config.channels.nameRegex(), config.channels.maxNameLen(), null)));
         projectValidations.set("pageName", noJsonValueMapper.valueToTree(new Validation(config.pages.nameRegex(), config.pages.maxNameLen(), config.pages.minNameLen())));
         projectValidations.set("pageContent", noJsonValueMapper.valueToTree(new Validation(null, config.pages.maxLen(), config.pages.minLen())));
-        projectValidations.put("maxPageCount", config.projects.getMaxPages());
-        projectValidations.put("maxChannelCount", config.projects.getMaxChannels());
+        projectValidations.put("maxPageCount", config.projects.maxPages());
+        projectValidations.put("maxChannelCount", config.projects.maxChannels());
         validations.set("project", projectValidations);
         validations.set("userTagline", noJsonValueMapper.valueToTree(new Validation(null, config.user.maxTaglineLen(), null)));
-        validations.set("version", noJsonValueMapper.valueToTree(new Validation(config.projects.getVersionNameRegex(), config.projects.getMaxVersionNameLen(), null)));
-        validations.set("org", noJsonValueMapper.valueToTree(new Validation(config.org.getNameRegex(), config.org.getMaxNameLen(), config.org.getMinNameLen())));
-        validations.put("maxOrgCount", config.org.getCreateLimit());
+        validations.set("version", noJsonValueMapper.valueToTree(new Validation(config.projects.versionNameRegex().strPattern(), config.projects.maxVersionNameLen(), null)));
+        validations.set("org", noJsonValueMapper.valueToTree(new Validation(config.org.nameRegex(), config.org.maxNameLen(), config.org.minNameLen())));
+        validations.put("maxOrgCount", config.org.createLimit());
         validations.put("urlRegex", config.getUrlRegex());
         return ResponseEntity.ok(validations);
     }

@@ -39,8 +39,8 @@ public class DiscourseApi {
 
     private HttpHeaders header(String poster) {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Api-Key", config.getApiKey());
-        headers.set("Api-Username", poster == null ? config.getAdminUser() : poster);
+        headers.set("Api-Key", config.apiKey());
+        headers.set("Api-Username", poster == null ? config.adminUser() : poster);
         return headers;
     }
 
@@ -48,7 +48,7 @@ public class DiscourseApi {
         Map<String, Object> args = new HashMap<>();
         args.put("topic_id", topicId);
         args.put("raw", content);
-        return execute(args, config.getUrl() + "/posts.json", header(poster), HttpMethod.POST, DiscoursePost.class);
+        return execute(args, config.url() + "/posts.json", header(poster), HttpMethod.POST, DiscoursePost.class);
     }
 
     public DiscoursePost createTopic(String poster, String title, String content, @Nullable Integer categoryId) {
@@ -56,7 +56,7 @@ public class DiscourseApi {
         args.put("title", title);
         args.put("raw", content);
         args.put("category", categoryId);
-        return execute(args, config.getUrl() + "/posts.json", header(poster), HttpMethod.POST, DiscoursePost.class);
+        return execute(args, config.url() + "/posts.json", header(poster), HttpMethod.POST, DiscoursePost.class);
     }
 
     public void updateTopic(String poster, long topicId, @Nullable String title, @Nullable Integer categoryId) {
@@ -64,17 +64,17 @@ public class DiscourseApi {
         args.put("topic_id", topicId);
         args.put("title", title);
         args.put("category", categoryId);
-        execute(args, config.getUrl() + "/t/-/" + topicId + ".json", header(poster), HttpMethod.PUT);
+        execute(args, config.url() + "/t/-/" + topicId + ".json", header(poster), HttpMethod.PUT);
     }
 
     public void updatePost(String poster, long postId, String content) {
         Map<String, String> args = new HashMap<>();
         args.put("raw", content);
-        execute(args, config.getUrl() + "/posts/" + postId + ".json", header(poster), HttpMethod.PUT);
+        execute(args, config.url() + "/posts/" + postId + ".json", header(poster), HttpMethod.PUT);
     }
 
     public void deleteTopic(String poster, long topicId) {
-        execute(null, config.getUrl() + "/t/" + topicId + ".json", header(poster), HttpMethod.DELETE);
+        execute(null, config.url() + "/t/" + topicId + ".json", header(poster), HttpMethod.DELETE);
     }
 
     private void execute(Object args, String url, HttpHeaders headers, HttpMethod method) {

@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 
-public class StringUtils {
+public final class StringUtils {
 
     private StringUtils() {
     }

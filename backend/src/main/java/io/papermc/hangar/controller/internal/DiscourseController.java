@@ -36,7 +36,7 @@ public class DiscourseController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 30)
     @VisibilityRequired(type = Type.PROJECT, args = "{#projectId}")
     public String createPost(@PathVariable long projectId, @RequestBody Map<String, String> content) {
-        if (!config.discourse.isEnabled()) {
+        if (!config.discourse.enabled()) {
             throw new HangarApiException("Discourse is NOT enabled!");
         }
         jobService.save(new PostDiscourseReplyJob(projectId, getHangarPrincipal().getName(), content.get("content")));

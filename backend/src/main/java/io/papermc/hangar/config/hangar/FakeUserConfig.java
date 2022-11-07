@@ -1,37 +1,12 @@
 package io.papermc.hangar.config.hangar;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
-@Component
 @ConfigurationProperties(prefix = "fake-user")
-public class FakeUserConfig {
-
-    private boolean enabled = true;
-    private String username = "paper";
-    private String email = "paper@papermc.io";
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+public record FakeUserConfig(
+    @DefaultValue("true") boolean enabled,
+    @DefaultValue("paper") String username,
+    @DefaultValue("paper@papermc.io") String email
+) {
 }

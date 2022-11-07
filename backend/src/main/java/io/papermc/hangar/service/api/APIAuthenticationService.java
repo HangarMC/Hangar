@@ -39,13 +39,13 @@ public class APIAuthenticationService extends HangarComponent {
         }
         String identifier = apiKey.split("\\.")[0];
         String token = apiKey.split("\\.")[1];
-        String hashedToken = CryptoUtils.hmacSha256(config.security.getTokenSecret(), token.getBytes(StandardCharsets.UTF_8));
+        String hashedToken = CryptoUtils.hmacSha256(config.security.tokenSecret(), token.getBytes(StandardCharsets.UTF_8));
         ApiKeyTable apiKeyTable = apiKeyDAO.findApiKey(identifier, hashedToken);
         if (apiKeyTable == null) {
             throw new HangarApiException("No valid API Key found");
         }
         UserTable userTable = userDAO.getUserTable(apiKeyTable.getOwnerId());
         String jwt = tokenService.expiring(userTable, apiKeyTable.getPermissions(), identifier);
-        return new ApiSession(jwt, config.security.getRefreshTokenExpiry().toSeconds());
+        return new ApiSession(jwt, config.security.refreshTokenExpiry().toSeconds());
     }
 }
