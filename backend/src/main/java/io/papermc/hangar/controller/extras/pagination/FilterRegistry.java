@@ -1,13 +1,11 @@
 package io.papermc.hangar.controller.extras.pagination;
 
-import io.papermc.hangar.controller.extras.pagination.Filter.FilterInstance;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 @SuppressWarnings("unchecked")
@@ -16,9 +14,9 @@ public class FilterRegistry {
     private final Map<Class<? extends Filter<?>>, Filter<?>> filters = new HashMap<>();
 
     @Autowired
-    public FilterRegistry(List<? extends Filter<? extends FilterInstance>> filters) {
+    public FilterRegistry(final List<? extends Filter<? extends Filter.FilterInstance>> filters) {
         filters.forEach(f -> {
-            var filterClass = (Class<? extends Filter<? extends FilterInstance>>) f.getClass();
+            final Class<? extends Filter<?>> filterClass = (Class<? extends Filter<? extends Filter.FilterInstance>>) f.getClass();
             if (this.filters.containsKey((filterClass))) {
                 throw new IllegalArgumentException(filterClass + " is already registered as filter");
             }
@@ -27,9 +25,9 @@ public class FilterRegistry {
     }
 
     @NotNull
-    public <T extends Filter<? extends FilterInstance>> T get(Class<T> filterClass) {
-        if (filters.containsKey(filterClass)) {
-            return (T) filters.get(filterClass);
+    public <T extends Filter<? extends Filter.FilterInstance>> T get(final Class<T> filterClass) {
+        if (this.filters.containsKey(filterClass)) {
+            return (T) this.filters.get(filterClass);
         }
         throw new IllegalArgumentException(filterClass + " is not a registered filter");
     }

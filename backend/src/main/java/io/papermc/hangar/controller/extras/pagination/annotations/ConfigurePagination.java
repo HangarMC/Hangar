@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.intellij.lang.annotations.Language;
 
 /**
  * Configure default page length
@@ -14,10 +15,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigurePagination {
 
-    /**
-     * -1 means fallback to default configured value
-     */
-    long maxLimit();
+    long maxLimit() default -1;
 
-    // TODO add String SpEL param to use configurable values for action log amounts and version amounts
+    @Language("SpEL")
+    String maxLimitString() default ""; // TODO implement
+
+    long defaultLimit() default -1;
+
+    @Language("SpEL")
+    String defaultLimitString() default "";
 }

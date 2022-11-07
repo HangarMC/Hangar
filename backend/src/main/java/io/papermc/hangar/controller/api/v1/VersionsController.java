@@ -2,6 +2,7 @@ package io.papermc.hangar.controller.api.v1;
 
 import io.papermc.hangar.controller.api.v1.interfaces.IVersionsController;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
+import io.papermc.hangar.controller.extras.pagination.annotations.ConfigurePagination;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionTagFilter;
@@ -51,7 +52,7 @@ public class VersionsController implements IVersionsController {
     @Override
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
     @ApplicableFilters({VersionChannelFilter.class, VersionPlatformFilter.class, VersionTagFilter.class})
-    public PaginatedResult<Version> getVersions(String author, String slug, @NotNull RequestPagination pagination) {
+    public PaginatedResult<Version> getVersions(String author, String slug, @NotNull @ConfigurePagination(defaultLimitString = "@hangarConfig.projects.initVersionLoad", maxLimit = 25) RequestPagination pagination) {
         return versionsApiService.getVersions(author, slug, pagination);
     }
 

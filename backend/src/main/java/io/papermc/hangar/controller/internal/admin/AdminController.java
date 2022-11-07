@@ -124,7 +124,7 @@ public class AdminController extends HangarComponent {
     @PermissionRequired(NamedPermission.REVIEWER)
     @ApplicableFilters({LogActionFilter.class, LogPageFilter.class, LogProjectFilter.class, LogSubjectFilter.class, LogUserFilter.class, LogVersionFilter.class})
     // TODO add sorters
-    public PaginatedResult<HangarLoggedAction> getActionLog(@NotNull @ConfigurePagination(maxLimit = 50) RequestPagination pagination) {
+    public PaginatedResult<HangarLoggedAction> getActionLog(@NotNull @ConfigurePagination(defaultLimit = 50, maxLimit = 100) RequestPagination pagination) {
         return actionLogger.getLogs(pagination);
     }
 

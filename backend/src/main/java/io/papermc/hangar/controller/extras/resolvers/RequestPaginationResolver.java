@@ -2,7 +2,6 @@ package io.papermc.hangar.controller.extras.resolvers;
 
 import io.papermc.hangar.controller.extras.ApiUtils;
 import io.papermc.hangar.controller.extras.pagination.Filter;
-import io.papermc.hangar.controller.extras.pagination.Filter.FilterInstance;
 import io.papermc.hangar.controller.extras.pagination.FilterRegistry;
 import io.papermc.hangar.controller.extras.pagination.SorterRegistry;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
@@ -10,62 +9,98 @@ import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSort
 import io.papermc.hangar.controller.extras.pagination.annotations.ConfigurePagination;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.requests.RequestPagination;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.core.MethodParameter;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.support.WebDataBinderFactory;
-import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.method.support.ModelAndViewContainer;
-
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.MethodParameter;
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
 public class RequestPaginationResolver implements HandlerMethodArgumentResolver {
 
+    private static final SpelExpressionParser EXPRESSION_PARSER = new SpelExpressionParser();
+
     private final FilterRegistry filterRegistry;
+    private final StandardEvaluationContext evaluationContext;
 
     // need lazy here to avoid circular dep issue
     @Autowired
-    public RequestPaginationResolver(@Lazy FilterRegistry filterRegistry) {
+    public RequestPaginationResolver(@Lazy final FilterRegistry filterRegistry, final StandardEvaluationContext evaluationContext) {
         this.filterRegistry = filterRegistry;
+        this.evaluationContext = evaluationContext;
     }
 
     @Override
-    public boolean supportsParameter(@NotNull MethodParameter parameter) {
+    public boolean supportsParameter(@NotNull final MethodParameter parameter) {
         return RequestPagination.class.isAssignableFrom(parameter.getParameterType());
     }
 
-    @Override
-    public RequestPagination resolveArgument(@NotNull MethodParameter parameter, ModelAndViewContainer mavContainer, @NotNull NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        long offset = ApiUtils.offsetOrZero(Optional.ofNullable(webRequest.getParameter("offset")).map(Long::parseLong).orElse(null));
-        long limit;
-        Optional<Long> limitParam = Optional.ofNullable(webRequest.getParameter("limit")).map(Long::parseLong);
-        ConfigurePagination settings = parameter.getParameterAnnotation(ConfigurePagination.class);
-        if (settings != null) {
-            limit = ApiUtils.limitOrDefault(limitParam.orElse(null), settings.maxLimit());
-        } else {
-            limit = ApiUtils.limitOrDefault(limitParam.orElse(null));
+    private RequestPagination create(final @Nullable Long requestOffset, final @Nullable Long requestLimit, final @Nullable ConfigurePagination settings) {
+        final long offset = ApiUtils.offsetOrZero(requestOffset);
+        if (settings == null) {
+            return new RequestPagination(ApiUtils.limitOrDefault(requestLimit), offset);
         }
-        RequestPagination pagination = new RequestPagination(limit, offset);
+        final long maxLimit;
+        if (settings.maxLimit() != -1) {
+            maxLimit = settings.maxLimit();
+        } else if (!settings.maxLimitString().isBlank()) {
+            final Expression expression = EXPRESSION_PARSER.parseExpression(settings.maxLimitString());
+            maxLimit = Objects.requireNonNull(expression.getValue(this.evaluationContext, requestLimit, Long.class), "SpEL must evaluate to a long");
+        } else {
+            maxLimit = ApiUtils.DEFAULT_MAX_LIMIT;
+        }
+        final long limit;
+        if (requestLimit == null) {
+            final long defaultLimit;
+            if (settings.defaultLimit() != -1) {
+                defaultLimit = settings.defaultLimit();
+            } else if (!settings.defaultLimitString().isBlank()) {
+                final Expression expression = EXPRESSION_PARSER.parseExpression(settings.defaultLimitString());
+                defaultLimit = Objects.requireNonNull(expression.getValue(this.evaluationContext, requestLimit, Long.class), "SpEL must evaluate to a long");
+            } else {
+                defaultLimit = ApiUtils.DEFAULT_LIMIT;
+            }
+            limit = defaultLimit;
+        } else {
+            limit = requestLimit;
+        }
+        return new RequestPagination(Math.min(maxLimit, limit), offset);
+
+    }
+
+    @Override
+    public RequestPagination resolveArgument(@NotNull final MethodParameter parameter, final ModelAndViewContainer mavContainer, @NotNull final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
+        final RequestPagination pagination = this.create(
+            ApiUtils.mapParameter(webRequest, "offset", Long::parseLong),
+            ApiUtils.mapParameter(webRequest, "limit", Long::parseLong),
+            parameter.getParameterAnnotation(ConfigurePagination.class)
+        );
 
         // find filters
-        Set<String> paramNames = new HashSet<>(webRequest.getParameterMap().keySet());
-        Class<? extends Filter<? extends FilterInstance>>[] applicableFilters = Optional.ofNullable(parameter.getMethodAnnotation(ApplicableFilters.class)).map(ApplicableFilters::value).orElse(null);
+        final Set<String> paramNames = new HashSet<>(webRequest.getParameterMap().keySet());
+        final Class<? extends Filter<? extends Filter.FilterInstance>>[] applicableFilters = Optional.ofNullable(parameter.getMethodAnnotation(ApplicableFilters.class)).map(ApplicableFilters::value).orElse(null);
         if (applicableFilters != null) {
-            for (Class<? extends Filter<? extends FilterInstance>> filter : applicableFilters) {
-                Filter<? extends FilterInstance> f = filterRegistry.get(filter);
+            for (final Class<? extends Filter<? extends Filter.FilterInstance>> filterClass : applicableFilters) {
+                final Filter<? extends Filter.FilterInstance> f = this.filterRegistry.get(filterClass);
                 if (f.supports(webRequest)) {
                     pagination.getFilters().add(f.create(webRequest));
                     paramNames.removeAll(f.getQueryParamNames());
@@ -81,7 +116,7 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
         paramNames.remove("relevance");
 
         // remove request params
-        for (Parameter param : parameter.getExecutable().getParameters()) {
+        for (final Parameter param : parameter.getExecutable().getParameters()) {
             paramNames.remove(param.getName());
         }
 
@@ -91,10 +126,10 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
         }
 
         // find sorters
-        Set<String> applicableSorters = Optional.ofNullable(parameter.getMethodAnnotation(ApplicableSorters.class)).map(ApplicableSorters::value).map(sorters -> Stream.of(sorters).map(SorterRegistry::getName).collect(Collectors.toUnmodifiableSet())).orElse(Collections.emptySet());
-        List<String> presentSorters = Optional.ofNullable(webRequest.getParameterValues("sort")).map(Arrays::asList).orElse(new ArrayList<>());
-        for (String sorter : presentSorters) {
-            String sortKey = sorter.startsWith("-") ? sorter.substring(1) : sorter;
+        final Set<String> applicableSorters = Optional.ofNullable(parameter.getMethodAnnotation(ApplicableSorters.class)).map(ApplicableSorters::value).map(sorters -> Stream.of(sorters).map(SorterRegistry::getName).collect(Collectors.toUnmodifiableSet())).orElse(Collections.emptySet());
+        final List<String> presentSorters = Optional.ofNullable(webRequest.getParameterValues("sort")).map(Arrays::asList).orElse(new ArrayList<>());
+        for (final String sorter : presentSorters) {
+            final String sortKey = sorter.startsWith("-") ? sorter.substring(1) : sorter;
             if (!applicableSorters.contains(sortKey)) {
                 throw new HangarApiException(sortKey + " is an invalid sort type for this request");
             }

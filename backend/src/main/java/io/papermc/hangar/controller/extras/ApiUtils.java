@@ -1,28 +1,35 @@
 package io.papermc.hangar.controller.extras;
 
-import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.util.StaticContextAccessor;
-import org.jetbrains.annotations.Nullable;
+import java.util.function.Function;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.framework.qual.DefaultQualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.context.request.NativeWebRequest;
 
-public class ApiUtils {
+@DefaultQualifier(NonNull.class)
+public final class ApiUtils {
 
-    private ApiUtils() { }
+    public static final int DEFAULT_MAX_LIMIT = 50;
+    public static final int DEFAULT_LIMIT = 25;
 
-    private static final HangarConfig hangarConfig = StaticContextAccessor.getBean(HangarConfig.class);
+    private ApiUtils() {
+    }
 
     /**
      * Gets the pagination limit or the max configured
+     *
      * @param limit requested limit
      * @return actual limit
      */
-    public static long limitOrDefault(@Nullable Long limit) {
-        return limitOrDefault(limit, hangarConfig.projects.initLoad());
+    public static long limitOrDefault(@Nullable final Long limit) {
+        return limitOrDefault(limit, DEFAULT_LIMIT);
     }
 
-    public static long limitOrDefault(@Nullable Long limit, long maxLimit) {
-        if (limit != null && limit < 1) throw new HangarApiException(HttpStatus.BAD_REQUEST, "Limit should be greater than 0");
+    public static long limitOrDefault(@Nullable final Long limit, final long maxLimit) {
+        if (limit != null && limit < 1)
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "Limit should be greater than 0");
         return Math.min(limit == null ? maxLimit : limit, maxLimit);
     }
 
@@ -32,8 +39,16 @@ public class ApiUtils {
      * @param offset the requested offset
      * @return actual offset
      */
-    public static long offsetOrZero(Long offset) {
+    public static long offsetOrZero(final @Nullable Long offset) {
         return Math.max(offset == null ? 0 : offset, 0);
+    }
+
+    public static <T> @Nullable T mapParameter(final NativeWebRequest webRequest, final String param, Function<String, T> map) {
+        final @Nullable String value = webRequest.getParameter(param);
+        if (value != null) {
+            return map.apply(value);
+        }
+        return null;
     }
 
 }
