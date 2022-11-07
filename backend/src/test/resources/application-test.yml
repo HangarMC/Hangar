@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:tc:postgresql:12.8:///
+    url: jdbc:tc:postgresql:14:///
     username: ""
     password: ""
 
