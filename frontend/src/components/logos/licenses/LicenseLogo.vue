@@ -19,5 +19,6 @@ const props = withDefaults(
   <icon-mdi-feather v-else-if="license === 'Apache 2.0'" v-bind="$attrs" :width="size" :height="size" />
   <GPLLogo v-else-if="license === 'GPL'" v-bind="$attrs" :width="size" :height="size" />
   <LGPLLogo v-else-if="license === 'LGPL'" v-bind="$attrs" :width="size" :height="size" />
+  <AGPLLogo v-else-if="license === 'AGPL'" v-bind "$attrs" :width="size" :height="size" />
   <icon-mdi-gavel v-else-if="license === 'Other'" v-bind="$attrs" :width="size" :height="size" />
 </template>
