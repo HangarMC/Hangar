@@ -189,11 +189,4 @@ public class WebConfig extends WebMvcConfigurationSupport {
             return response;
         }
     }
-
-    @Bean
-    public StandardEvaluationContext standardEvaluationContext(ApplicationContext applicationContext) {
-        StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
-        evaluationContext.setBeanResolver(new BeanFactoryResolver(applicationContext));
-        return evaluationContext;
-    }
 }

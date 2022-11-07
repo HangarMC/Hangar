@@ -18,7 +18,7 @@ public @interface ConfigurePagination {
     long maxLimit() default -1;
 
     @Language("SpEL")
-    String maxLimitString() default ""; // TODO implement
+    String maxLimitString() default "";
 
     long defaultLimit() default -1;
 
