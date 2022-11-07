@@ -7,31 +7,35 @@ import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Platform;
-import org.jetbrains.annotations.Nullable;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import org.jetbrains.annotations.Nullable;
 
 public class PendingVersion {
 
+    // @el(root: String)
     @NotBlank(message = "version.new.error.invalidVersionString")
     @Validate(SpEL = "@validate.regex(#root, @hangarConfig.projects.versionNameRegex)", message = "version.new.error.invalidVersionString")
     private final String versionString;
     private final Map<Platform, Set<@Valid PluginDependency>> pluginDependencies;
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
     private final Map<Platform, @Size(min = 1, message = "version.edit.error.noPlatformVersions") SortedSet<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
+
+    // @el(root: String)
     @NotBlank(message = "version.new.error.noDescription")
     @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxLen)", message = "page.new.error.maxLength")
     private final String description;
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
     private final List<@Valid PendingVersionFile> files;
+
+    // @el(root: String)
     @NotBlank(message = "version.new.error.channel.noName")
     @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName")
     private final String channelName;

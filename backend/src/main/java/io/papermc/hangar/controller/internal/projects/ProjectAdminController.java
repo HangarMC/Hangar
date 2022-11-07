@@ -12,6 +12,8 @@ import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.projects.ProjectAdminService;
 import io.papermc.hangar.service.internal.projects.ProjectNoteService;
+import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,9 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.validation.Valid;
-import java.util.List;
-
+// @el(projectId: long)
 @LoggedIn
 @Controller
 @RateLimit(path = "projectadmin")

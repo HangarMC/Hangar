@@ -12,8 +12,12 @@ public class ProjectLicense {
     private static final HangarConfig config = StaticContextAccessor.getBean(HangarConfig.class);
 
     private final String name;
+
+    // @el(root: String)
     @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
     private final String url;
+
+    // @el(root: String)
     @Validate(SpEL = "@validate.required(#root)")
     private final String type;
 

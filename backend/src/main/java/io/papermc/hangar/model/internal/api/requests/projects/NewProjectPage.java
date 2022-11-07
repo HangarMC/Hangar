@@ -2,11 +2,11 @@ package io.papermc.hangar.model.internal.api.requests.projects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.controller.validations.Validate;
-
 import javax.validation.constraints.NotBlank;
 
 public class NewProjectPage {
 
+    // @el(root: String)
     @NotBlank
     @Validate(SpEL = "@validate.min(#root, @hangarConfig.pages.minNameLen)", message = "page.new.error.name.minLength")
     @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxNameLen)", message = "page.new.error.name.maxLength")

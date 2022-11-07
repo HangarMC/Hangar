@@ -2,10 +2,10 @@ package io.papermc.hangar.model.internal.api.requests;
 
 import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
-
 import java.util.List;
 
 public class CreateOrganizationForm extends EditMembersForm<OrganizationRole> {
+    // @el(root: String)
     @Validate(SpEL = "@validate.required(#root)", message = "organization.new.error.invalidName")
     @Validate(SpEL = "@validate.regex(#root, @hangarConfig.org.nameRegex)", message = "organization.new.error.invalidName")
     @Validate(SpEL = "@validate.max(#root, @hangarConfig.org.maxNameLen)", message = "organization.new.error.invalidName")

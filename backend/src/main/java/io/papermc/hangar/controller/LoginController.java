@@ -161,7 +161,7 @@ public class LoginController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 2, refillSeconds = 10)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void sync(@NotNull @RequestBody SsoSyncData body, @RequestHeader("X-Kratos-Hook-Api-Key") String apiKey) {
-        if (!apiKey.equals("hookapikey-changeme")) {
+        if (!apiKey.equals("hookapikey-changeme")) { // TODO change
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 

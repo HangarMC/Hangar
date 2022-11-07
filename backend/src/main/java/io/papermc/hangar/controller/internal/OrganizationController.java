@@ -47,6 +47,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
+// @el(orgName: String)
 @Controller
 @RateLimit(path = "organization")
 @RequestMapping("/api/internal/organizations")
@@ -83,20 +84,20 @@ public class OrganizationController extends HangarComponent {
         }
     }
 
-    @GetMapping(value = "/org/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HangarOrganization> getOrganization(@PathVariable String name) {
-        return ResponseEntity.ok(organizationService.getHangarOrganization(name));
+    @GetMapping(value = "/org/{orgName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HangarOrganization> getOrganization(@PathVariable String orgName) {
+        return ResponseEntity.ok(organizationService.getHangarOrganization(orgName));
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
-    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#name}")
-    @PostMapping(path = "/org/{name}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addOrganizationMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
-        OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#orgName}")
+    @PostMapping(path = "/org/{orgName}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addOrganizationMember(@PathVariable String orgName, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
+        OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
         if (organizationTable == null) {
-            throw new HangarApiException("Org " + name + " doesn't exist");
+            throw new HangarApiException("Org " + orgName + " doesn't exist");
         }
         inviteService.sendInvite(member, organizationTable);
     }
@@ -104,48 +105,48 @@ public class OrganizationController extends HangarComponent {
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 5, refillTokens = 2, refillSeconds = 10)
-    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#name}")
-    @PostMapping(path = "/org/{name}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void editOrganizationMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
-        OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#orgName}")
+    @PostMapping(path = "/org/{orgName}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void editOrganizationMember(@PathVariable String orgName, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
+        OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
         memberService.editMember(member, organizationTable);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
-    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#name}")
-    @PostMapping(path = "/org/{name}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void removeOrganizationMember(@PathVariable String name, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
-        OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#orgName}")
+    @PostMapping(path = "/org/{orgName}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void removeOrganizationMember(@PathVariable String orgName, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
+        OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
         memberService.removeMember(member, organizationTable);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#name}")
-    @PostMapping(path = "/org/{name}/members/leave", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void leaveOrganization(@PathVariable String name) {
-        OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#orgName}")
+    @PostMapping(path = "/org/{orgName}/members/leave", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void leaveOrganization(@PathVariable String orgName) {
+        OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
         memberService.leave(organizationTable);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#name}")
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#orgName}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
-    @PostMapping(path = "/org/{name}/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void transferOrganization(@PathVariable String name, @Valid @RequestBody StringContent nameContent) {
-        final OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+    @PostMapping(path = "/org/{orgName}/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void transferOrganization(@PathVariable String orgName, @Valid @RequestBody StringContent nameContent) {
+        final OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
         inviteService.sendTransferRequest(nameContent.getContent(), organizationTable);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#name}")
-    @PostMapping(path = "/org/{name}/canceltransfer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void cancelOrganizationTransfer(@PathVariable String name) {
-        final OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#orgName}")
+    @PostMapping(path = "/org/{orgName}/canceltransfer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void cancelOrganizationTransfer(@PathVariable String orgName) {
+        final OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
         inviteService.cancelTransferRequest(organizationTable);
     }
 
@@ -160,21 +161,21 @@ public class OrganizationController extends HangarComponent {
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 60)
-    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.DELETE_ORGANIZATION, args = "{#name}")
-    @PostMapping(path = "/org/{name}/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void delete(@PathVariable String name, @RequestBody @Valid StringContent content) {
-        final OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.DELETE_ORGANIZATION, args = "{#orgName}")
+    @PostMapping(path = "/org/{orgName}/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void delete(@PathVariable String orgName, @RequestBody @Valid StringContent content) {
+        final OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
         organizationFactory.deleteOrganization(organizationTable, content.getContent());
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 20)
-    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
-    @PostMapping(path = "/org/{name}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveTagline(@PathVariable String name, @Valid @RequestBody StringContent content) {
-        UserTable userTable = userService.getUserTable(name);
-        OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#orgName}")
+    @PostMapping(path = "/org/{orgName}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void saveTagline(@PathVariable String orgName, @Valid @RequestBody StringContent content) {
+        UserTable userTable = userService.getUserTable(orgName);
+        OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
         if (userTable == null || organizationTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
@@ -190,10 +191,10 @@ public class OrganizationController extends HangarComponent {
     @Unlocked
     @ResponseBody
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
-    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
-    @PostMapping(value = "/org/{name}/settings/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void changeAvatar(@PathVariable String name, @RequestParam MultipartFile avatar) throws IOException {
-        authenticationService.changeAvatar(name, avatar);
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#orgName}")
+    @PostMapping(value = "/org/{orgName}/settings/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void changeAvatar(@PathVariable String orgName, @RequestParam MultipartFile avatar) throws IOException {
+        authenticationService.changeAvatar(orgName, avatar);
     }
 
     @Anyone

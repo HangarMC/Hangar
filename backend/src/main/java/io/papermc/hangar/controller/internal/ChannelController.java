@@ -17,6 +17,10 @@ import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.internal.projects.ChannelService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,11 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+// @el(projectId: long)
 @Controller
 @RateLimit(path = "channel")
 @RequestMapping(value = "/api/internal/channels", produces = MediaType.APPLICATION_JSON_VALUE)

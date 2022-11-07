@@ -6,6 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Set;
+import org.intellij.lang.annotations.Language;
 
 /**
  * Visibility check for a project or version
@@ -24,6 +25,7 @@ public @interface VisibilityRequired {
      * Method arguments to resolve the project or version
      * @return method arguments as an SpEL array
      */
+    @Language("SpEL")
     String args();
 
     enum Type {

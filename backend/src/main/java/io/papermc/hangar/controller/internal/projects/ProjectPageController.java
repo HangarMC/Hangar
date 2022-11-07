@@ -18,6 +18,8 @@ import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.internal.MarkdownService;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
 import io.papermc.hangar.util.BBCodeConverter;
+import java.util.Collection;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,9 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.validation.Valid;
-import java.util.Collection;
-
+// @el(author: String, slug: String, projectId: long)
 @Anyone
 @Controller
 @RateLimit(path = "projectpage")

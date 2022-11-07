@@ -30,6 +30,9 @@ import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.uploads.ImageService;
 import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,10 +47,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
-import javax.validation.Valid;
-import java.util.List;
-import java.util.stream.Collectors;
 
+// @el(author: String, slug: String, projectId: long, project: io.papermc.hangar.model.db.projects.ProjectTable)
 @Controller
 @RateLimit(path = "project")
 @RequestMapping(path = "/api/internal/projects", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -96,7 +97,7 @@ public class ProjectController extends HangarComponent {
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createProject(@RequestBody @Valid NewProjectForm newProject) {
         ProjectTable projectTable = projectFactory.createProject(newProject);
-        // need to do this here, outside of the transactional
+        // need to do this here, outside the transactional
         projectService.refreshHomeProjects();
         return ResponseEntity.ok(projectTable.getUrl());
     }

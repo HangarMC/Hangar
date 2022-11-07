@@ -47,6 +47,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
+// @el(projectId: long, author: String, slug: String, versionString: String, platform: io.papermc.hangar.model.common.Platform)
 @Controller
 @Secured("ROLE_USER")
 @RateLimit(path = "version")
@@ -174,13 +175,13 @@ public class VersionController extends HangarComponent {
 
     @ResponseBody
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
-    @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
+    @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}") // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public Resource download(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString, @PathVariable Platform platform, @RequestParam(required = false) String token) {
         return downloadService.getVersionFile(author, slug, versionString, platform, true, token);
     }
 
-    @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
+    @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}") // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/downloadCheck")
     public ResponseEntity<String> downloadCheck(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString, @PathVariable Platform platform) {
         boolean requiresConfirmation = downloadService.requiresConfirmation(author, slug, versionString, platform);

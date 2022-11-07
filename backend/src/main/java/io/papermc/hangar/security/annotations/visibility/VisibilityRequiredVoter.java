@@ -1,18 +1,16 @@
 package io.papermc.hangar.security.annotations.visibility;
 
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.security.annotations.HangarDecisionVoter;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequiredMetadataExtractor.VisibilityRequiredAttribute;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.versions.VersionService;
+import java.util.Arrays;
 import org.aopalliance.intercept.MethodInvocation;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
 
 @Component
 public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequiredAttribute> {
@@ -47,7 +45,7 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
                 if (arguments.length == 1 && versionService.getProjectVersionTable((long) arguments[0]) != null) {
                     return ACCESS_GRANTED;
                 } else {
-                    if (versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1], (String) arguments[2]) != null) {
+                    if (versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1], (String) arguments[2]) != null) { // TODO is platform needed here?
                         return ACCESS_GRANTED;
                     } else {
                         return ACCESS_DENIED;

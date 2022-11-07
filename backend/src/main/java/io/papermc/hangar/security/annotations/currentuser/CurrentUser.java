@@ -1,12 +1,12 @@
 package io.papermc.hangar.security.annotations.currentuser;
 
-import org.springframework.core.annotation.AliasFor;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.intellij.lang.annotations.Language;
+import org.springframework.core.annotation.AliasFor;
 
 /**
  * Requires that the user referenced in the method be the current user
@@ -21,6 +21,7 @@ public @interface CurrentUser {
      * interchangeable with {@link #userArgument()}
      * @return the SpEL string for the argument in a method
      */
+    @Language("SpEL")
     @AliasFor("userArgument")
     String value() default "";
 
@@ -28,6 +29,7 @@ public @interface CurrentUser {
      * interchangeable with {@link #value()}
      * @return the SpEL string for the argument in a method
      */
+    @Language("SpEL")
     @AliasFor("value")
     String userArgument() default "";
 }

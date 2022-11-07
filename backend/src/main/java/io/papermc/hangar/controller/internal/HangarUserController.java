@@ -90,6 +90,7 @@ public class HangarUserController extends HangarComponent {
         return ResponseEntity.ok(usersApiService.getUser(hangarAuthenticationToken.getName(), HangarUser.class));
     }
 
+    // @el(userName: String)
     @Unlocked
     @CurrentUser("#userName")
     @ResponseStatus(HttpStatus.OK)
