@@ -3,6 +3,9 @@
   "extends": [
     "config:base"
   ],
+  "schedule": [
+    "before 3am on Monday"
+  ],
   "ignoreDeps": [
     "io.awspring.cloud:spring-cloud-aws-starter-s3", // m3 is spring boot 3 only
     "vite-plugin-pwa", // v0.13 requires vite 3
