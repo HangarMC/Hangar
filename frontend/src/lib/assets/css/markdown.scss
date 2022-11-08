@@ -80,6 +80,11 @@
 
   blockquote {
     margin: 0;
+    quotes: unset;
+    p:first-of-type::before,
+    p:first-of-type::after {
+      content: unset;
+    }
   }
 
   ul,
