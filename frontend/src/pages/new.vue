@@ -232,7 +232,6 @@ function createProject() {
             :values="backendData.licenseOptions"
             :label="i18n.t('project.new.step3.type')"
             :rules="[required()]"
-            :model-value="unspecifiedLicenseName"
           />
         </div>
         <div v-if="isCustomLicense" class="basis-full md:basis-8/12 mt-4">

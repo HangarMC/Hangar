@@ -62,6 +62,7 @@ hangar:
     - "Apache 2.0"
     - "GPL"
     - "LGPL"
+    - "AGPL"
     - "Other"
 
   announcements:
