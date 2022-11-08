@@ -167,6 +167,7 @@ backend:
       options: "?currentSchema=hangar"
     tokenSecret: "secret" # todo secret
     backendOauthUrl: "http://hangarauth-hydra:4444"
+    backendAuthHost: "http://hangarauth-backend:8080"
     storage:
       type: "local" # todo storage stuff
       accessKey: "todo"
