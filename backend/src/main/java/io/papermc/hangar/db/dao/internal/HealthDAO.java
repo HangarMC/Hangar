@@ -54,19 +54,19 @@ public interface HealthDAO {
 
     @UseEnumStrategy(EnumStrategy.BY_ORDINAL)
     @RegisterConstructorMapper(MissingFileCheck.class)
-    @SqlQuery(" SELECT pv.version_string," +
-            "          pv.file_name," +
-            "          p.owner_name \"owner\"," +
-            "          p.slug," +
-            "          p.name," +
-            "          pq.platform" +
-            "   FROM project_versions pv" +
-            "       JOIN projects p ON pv.project_id = p.id" +
-            "       JOIN (SELECT DISTINCT plv.platform, pvpd.version_id" +
-            "               FROM project_version_platform_dependencies pvpd" +
-            "                   JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
-            "            ) pq ON pv.id = pq.version_id " +
-            "   WHERE pv.file_name IS NOT NULL" +
-            "   ORDER BY pv.created_at DESC")
+    @SqlQuery("SELECT pv.version_string,\n" +
+              "       pvd.file_name,\n" +
+              "       p.owner_name \"owner\",\n" +
+              "       p.slug,\n" +
+              "       p.name,\n" +
+              "       pq.platform\n" +
+              "FROM project_versions pv\n" +
+              "         JOIN projects p ON pv.project_id = p.id\n" +
+              "         JOIN (SELECT DISTINCT plv.platform, pvpd.version_id\n" +
+              "               FROM project_version_platform_dependencies pvpd\n" +
+              "                        JOIN platform_versions plv ON pvpd.platform_version_id = plv.id) pq ON pv.id = pq.version_id\n" +
+              "         JOIN project_version_downloads pvd ON pvd.version_id = pq.version_id\n" +
+              "WHERE pvd.file_name IS NOT NULL\n" +
+              "ORDER BY pv.created_at DESC")
     List<MissingFileCheck> getVersionsForMissingFiles();
 }
