@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+import io.papermc.hangar.util.PatternWrapper;
 
 @Component
 public class Validations {
@@ -17,6 +18,11 @@ public class Validations {
         if (isEmpty(value)) return true;
         Pattern pattern = regexCache.computeIfAbsent(regex, Pattern::compile);
         return pattern.matcher(value).matches();
+    }
+
+    public boolean regex(String value, PatternWrapper regex) {
+        if (isEmpty(value)) return true;
+        return regex.test(value);
     }
 
     public boolean required(String value) {
