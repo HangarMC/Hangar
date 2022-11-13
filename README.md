@@ -3,10 +3,10 @@
 This is the repository for Hangar, a plugin repository used for Paper plugins and similar software.
 
 Hangar is loosely based off of [Ore](https://github.com/SpongePowered/Ore), created by the Sponge project,
-but rebuilt from the ground up using the Spring Boot Framework in Java for the backend and nuxt (and vuetify) for the frontend (which is partially server rendered).
+but rebuilt from the ground up using the Spring Boot Framework in Java for the backend and nuxt (and windi) for the frontend (which is partially server rendered).
 We would like to thank all Ore contributors. Without them, this project would never have been possible.
 
-There may or may not be a staging instance running at https://hangar.benndorf.dev
+There may or may not be a staging instance running at https://hangar.papermc.dev
 It may or may not allow you to log in, please don't create too much of a mess so that I don't always need to nuke the DB when I want to use it.
 
 ## Contributing
