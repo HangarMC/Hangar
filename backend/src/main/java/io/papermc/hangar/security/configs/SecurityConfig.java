@@ -7,11 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -21,7 +22,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
     public static final String AUTH_NAME = "HangarAuth";
     public static final String REFRESH_COOKIE_NAME = AUTH_NAME + "_REFRESH";
@@ -34,15 +35,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final TokenService tokenService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final HangarAuthenticationProvider authenticationProvider;
 
     @Autowired
-    public SecurityConfig(TokenService tokenService, HangarAuthenticationProvider hangarAuthenticationProvider, AuthenticationEntryPoint authenticationEntryPoint) {
+    public SecurityConfig(TokenService tokenService, HangarAuthenticationProvider authenticationProvider, AuthenticationEntryPoint authenticationEntryPoint) {
         this.tokenService = tokenService;
+        this.authenticationProvider = authenticationProvider;
         this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 // Disable default configurations
                 .logout().disable()
@@ -59,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(new HangarAuthenticationFilter(
                         new OrRequestMatcher(API_MATCHER, LOGOUT_MATCHER, INVALIDATE_MATCHER),
                         tokenService,
-                        authenticationManager(),
+                        authenticationManagerBean(),
                         authenticationEntryPoint),
                         AnonymousAuthenticationFilter.class
                 )
@@ -68,11 +71,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // Permit all (use method security for controller access)
                 .authorizeRequests().anyRequest().permitAll();
+
+        return http.build();
     }
 
     @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public AuthenticationManager authenticationManagerBean() {
+        return new ProviderManager(authenticationProvider);
     }
 }
