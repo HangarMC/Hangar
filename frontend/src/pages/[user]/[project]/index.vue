@@ -41,9 +41,7 @@ function saveSponsors(content: string) {
     content,
   })
     .then(() => {
-      if (sponsors.value) {
-        sponsors.value = content;
-      }
+      sponsors.value = content;
       editingSponsors.value = false;
     })
     .catch((e) => handleRequestError(e, ctx, i18n, "page.new.error.save"));
