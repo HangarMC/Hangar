@@ -7,10 +7,11 @@ const props = withDefaults(
   defineProps<{
     items: Array<unknown>;
     itemsPerPage?: number;
-    serverPagination: Pagination;
+    serverPagination?: Pagination;
   }>(),
   {
     itemsPerPage: 10,
+    serverPagination: undefined,
   }
 );
 

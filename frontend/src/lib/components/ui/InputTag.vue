@@ -21,7 +21,7 @@ const props = withDefaults(
     loading?: boolean;
     messages?: string[];
     errorMessages?: string[];
-    rules?: ValidationRule<string | undefined>[];
+    rules?: ValidationRule<string[] | undefined>[];
     tagMaxlength?: number;
     options?: string[];
     noErrorTooltip?: boolean;
