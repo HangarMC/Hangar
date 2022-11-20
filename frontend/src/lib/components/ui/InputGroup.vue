@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ValidationRule } from "@vuelidate/core";
+import { type ValidationRule } from "@vuelidate/core";
 import { useValidation } from "~/lib/composables/useValidationHelpers";
 import ErrorTooltip from "~/lib/components/design/ErrorTooltip.vue";
 import { computed } from "vue";

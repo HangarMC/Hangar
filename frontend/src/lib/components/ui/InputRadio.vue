@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useValidation } from "~/lib/composables/useValidationHelpers";
-import { ValidationRule } from "@vuelidate/core";
+import { type ValidationRule } from "@vuelidate/core";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value?: string): void;

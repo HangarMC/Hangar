@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Popper from "vue3-popper";
-import { ErrorObject } from "@vuelidate/core";
-import { computed, Ref } from "vue";
+import { type ErrorObject } from "@vuelidate/core";
+import { computed, type Ref } from "vue";
 import { isErrorObject } from "~/lib/composables/useValidationHelpers";
 
 const props = defineProps<{

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, Ref } from "vue";
+import { computed, ref, type Ref } from "vue";
 import Link from "~/lib/components/design/Link.vue";
 import Card from "~/lib/components/design/Card.vue";
 import { useSettingsStore } from "~/store/settings";

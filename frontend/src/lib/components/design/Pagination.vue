@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
 import PaginationButtons from "~/lib/components/design/PaginationButtons.vue";
-import { Pagination } from "hangar-api";
+import { type Pagination } from "hangar-api";
 
 const props = withDefaults(
   defineProps<{

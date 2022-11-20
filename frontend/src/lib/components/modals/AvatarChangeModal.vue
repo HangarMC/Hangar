@@ -38,7 +38,7 @@
 <script lang="ts" setup>
 import { $fetch } from "ohmyfetch";
 import { useI18n } from "vue-i18n";
-import { Cropper, CropperResult } from "vue-advanced-cropper";
+import { Cropper, type CropperResult } from "vue-advanced-cropper";
 import { onMounted, ref, watch } from "vue";
 import Button from "~/lib/components/design/Button.vue";
 import InputFile from "~/lib/components/ui/InputFile.vue";
