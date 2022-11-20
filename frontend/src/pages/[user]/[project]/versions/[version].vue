@@ -6,9 +6,6 @@ import { useRoute, useRouter } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { HangarProject } from "hangar-internal";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
-import { useHead } from "@vueuse/head";
-import { useSeo } from "~/composables/useSeo";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import { Platform } from "~/types/enums";
 
 const ctx = useContext();

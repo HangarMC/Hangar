@@ -91,7 +91,7 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
   <Card>
     <template #header>{{ i18n.t("versionApproval.approvalQueue") }}</template>
 
-    <SortableTable :headers="notStartedHeaders" :items="data?.notStarted">
+    <SortableTable v-if="data" :headers="notStartedHeaders" :items="data.notStarted">
       <template #item_project="{ item }">
         <Link :to="`/${item.namespace.owner}/${item.namespace.slug}`">
           {{ `${item.namespace.owner}/${item.namespace.slug}` }}
@@ -124,7 +124,7 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
   <Card class="mt-4">
     <template #header>{{ i18n.t("versionApproval.inReview") }}</template>
 
-    <SortableTable :headers="underReviewHeaders" :items="data?.underReview" expandable>
+    <SortableTable v-if="data" :headers="underReviewHeaders" :items="data.underReview" expandable>
       <template #item_project="{ item }">
         <Link :to="`/${item.namespace.owner}/${item.namespace.slug}`">
           {{ `${item.namespace.owner}/${item.namespace.slug}` }}

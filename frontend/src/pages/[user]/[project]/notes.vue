@@ -71,7 +71,7 @@ async function addNote() {
     <h2 class="text-lg font-bold mb-1 mt-2">
       {{ i18n.t("notes.notes") }}
     </h2>
-    <SortableTable :items="notes" :headers="headers">
+    <SortableTable v-if="notes" :items="notes" :headers="headers">
       <template #empty>
         <Alert type="warning">{{ i18n.t("notes.noNotes") }}</Alert>
       </template>

@@ -37,7 +37,7 @@ function getRouteParams(activity: ReviewActivity) {
     <Card>
       <template #header>{{ i18n.t("userActivity.reviews") }}</template>
 
-      <Table v-if="reviewActivities.length">
+      <Table v-if="reviewActivities && reviewActivities.length">
         <tbody>
           <tr v-for="(activity, idx) in reviewActivities" :key="`review-${idx}`">
             <td>{{ i18n.t("userActivity.reviewApproved") }}</td>
@@ -66,7 +66,7 @@ function getRouteParams(activity: ReviewActivity) {
     <Card>
       <template #header>{{ i18n.t("userActivity.flags") }}</template>
 
-      <Table v-if="flagActivities.length">
+      <Table v-if="flagActivities && flagActivities.length">
         <tbody>
           <tr v-for="(activity, idx) in flagActivities" :key="`flag-${idx}`">
             <td>{{ i18n.t("userActivity.flagResolved") }}</td>

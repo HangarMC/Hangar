@@ -6,7 +6,7 @@ import Button from "~/lib/components/design/Button.vue";
 import { reactive, ref } from "vue";
 import { useContext } from "vite-ssr/vue";
 import { useInternalApi } from "~/composables/useApi";
-import { ApiKey, IPermission, User } from "hangar-api";
+import { ApiKey, User } from "hangar-api";
 import { useRoute } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";

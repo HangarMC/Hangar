@@ -28,6 +28,7 @@ import InputTag from "~/lib/components/ui/InputTag.vue";
 import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import { useProjectChannels } from "~/composables/useApiHelper";
+import { ValidationRule } from "@vuelidate/core";
 
 const route = useRoute();
 const router = useRouter();
@@ -170,15 +171,18 @@ const platforms = computed<IPlatform[]>(() => {
 const selectedPlatformsData = computed<IPlatform[]>(() => {
   const result: IPlatform[] = [];
   for (const platformName of selectedPlatforms.value) {
-    result.push(backendData.platforms.get(platformName as Platform)!);
+    const iPlatform = backendData.platforms.get(platformName);
+    if (iPlatform) {
+      result.push(iPlatform);
+    }
   }
   return result;
 });
 
 const artifactURLRules = [validUrl()];
 const versionRules = [required()];
-const platformVersionRules = computed(() => {
-  return [(v: string[]) => !!v.length || "Error"];
+const platformVersionRules = computed<ValidationRule<string[] | undefined>[]>(() => {
+  return [(v) => !!v && !!v.length];
 });
 const changelogRules = [required(t("version.new.form.release.bulletin"))];
 
@@ -356,7 +360,7 @@ useHead(
             <InputText :model-value="pendingFile.fileInfo.name" :label="t('version.new.form.fileName')" disabled />
           </div>
           <div v-if="pendingFile.fileInfo" class="basis-full <md:mt-4 md:(basis-2/12)">
-            <InputText :model-value="formatSize(pendingFile.fileInfo.sizeBytes)" :label="t('version.new.form.fileSize')" disabled />
+            <InputText :model-value="String(formatSize(pendingFile.fileInfo.sizeBytes))" :label="t('version.new.form.fileSize')" disabled />
           </div>
           <div v-else class="basis-full <md:mt-4 md:basis-6/12">
             <InputText v-model="pendingFile.externalUrl" :label="t('version.new.form.externalUrl')" disabled />

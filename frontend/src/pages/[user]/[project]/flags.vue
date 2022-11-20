@@ -43,7 +43,7 @@ useHead(useSeo("Flags | " + props.project.name, props.project.description, route
       </Link>
     </template>
 
-    <SortableTable :headers="headers" :items="flags">
+    <SortableTable v-if="flags" :items="flags" :headers="headers">
       <template #empty>
         <Alert type="info">
           {{ i18n.t("flags.noFlags") }}

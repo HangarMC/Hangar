@@ -18,10 +18,7 @@ import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useRoute } from "vue-router";
-import Tooltip from "~/lib/components/design/Tooltip.vue";
 import { useNotificationStore } from "~/lib/store/notification";
-import InputRadio from "~/lib/components/ui/InputRadio.vue";
-import { ref } from "vue";
 
 const props = defineProps<{
   user: User;
@@ -90,7 +87,7 @@ async function editChannel(channel: ProjectChannel) {
     <template #header>{{ i18n.t("channel.manage.title") }}</template>
     <p class="mb-2">{{ i18n.t("channel.manage.subtitle") }}</p>
 
-    <Table class="w-full">
+    <Table v-if="channels" class="w-full">
       <thead>
         <tr>
           <th><IconMdiTag />{{ i18n.t("channel.manage.channelName") }}</th>

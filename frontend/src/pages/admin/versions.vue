@@ -20,7 +20,7 @@ const ctx = useContext();
 const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
-const notifcation = useNotificationStore();
+const notification = useNotificationStore();
 
 const platformMap = useBackendDataStore().platforms;
 const originalPlatforms = platformMap ? [...platformMap.values()] : [];
@@ -35,12 +35,13 @@ async function save() {
   for (const pl of platforms.value || []) {
     data[pl.enumName] = pl.possibleVersions;
   }
-  const result = await useInternalApi("admin/platformVersions", true, "post", data).catch((e) => handleRequestError(e, ctx, i18n));
-  if (result) {
-    notifcation.success(i18n.t("platformVersions.success"));
+  try {
+    await useInternalApi("admin/platformVersions", true, "post", data);
+    notification.success(i18n.t("platformVersions.success"));
     router.go(0);
-  } else {
+  } catch (e: any) {
     loading.value = false;
+    handleRequestError(e, ctx, i18n);
   }
 }
 

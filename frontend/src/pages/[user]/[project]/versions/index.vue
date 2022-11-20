@@ -120,8 +120,8 @@ function getVisibilityTitle(visibility: Visibility) {
   <div class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-9/12 flex-grow">
       <ul>
-        <Alert v-if="!versions.result || versions.result.length === 0" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
-        <Pagination v-else :items="versions.result">
+        <Alert v-if="!versions || !versions.result || versions.result.length === 0" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
+        <Pagination v-else-if="versions" :items="versions.result">
           <template #default="{ item }">
             <li class="mb-2">
               <Card :class="getBorderClasses(item)" class="pb-1">

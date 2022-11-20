@@ -21,7 +21,7 @@ useHead(useSeo(i18n.t("health.title"), null, route, null));
 <template>
   <PageTitle>{{ i18n.t("health.title") }}</PageTitle>
   <div class="grid gap-8 grid-cols-1 md:grid-cols-2">
-    <Card>
+    <Card v-if="healthReport">
       <template #header> {{ i18n.t("health.noTopicProject") }}</template>
 
       <ul class="max-h-xs overflow-auto">
@@ -35,7 +35,7 @@ useHead(useSeo(i18n.t("health.title"), null, route, null));
         </li>
       </ul>
     </Card>
-    <Card>
+    <Card v-if="healthReport">
       <template #header> {{ i18n.t("health.erroredJobs") }}</template>
 
       <ul class="max-h-xs overflow-auto">
@@ -47,7 +47,7 @@ useHead(useSeo(i18n.t("health.title"), null, route, null));
         </li>
       </ul>
     </Card>
-    <Card>
+    <Card v-if="healthReport">
       <template #header> {{ i18n.t("health.staleProjects") }}</template>
 
       <ul class="max-h-xs overflow-auto">
@@ -61,7 +61,7 @@ useHead(useSeo(i18n.t("health.title"), null, route, null));
         </li>
       </ul>
     </Card>
-    <Card>
+    <Card v-if="healthReport">
       <template #header> {{ i18n.t("health.notPublicProjects") }}</template>
 
       <ul class="max-h-xs overflow-auto">
@@ -85,7 +85,7 @@ useHead(useSeo(i18n.t("health.title"), null, route, null));
         <!--<li v-if="!healthReport.noPlatform || healthReport.noPlatform.length === 0">{{ i18n.t('health.empty') }}</li>-->
       </ul>
     </Card>
-    <Card>
+    <Card v-if="healthReport">
       <template #header> {{ i18n.t("health.missingFileProjects") }}</template>
 
       <ul class="max-h-xs overflow-auto">

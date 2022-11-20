@@ -144,7 +144,7 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
   <Card md="col-start-1">
     <template #header>{{ i18n.t("userAdmin.projects") }}</template>
 
-    <SortableTable :items="projects.result" :headers="projectsConfig">
+    <SortableTable v-if="projects" :items="projects.result" :headers="projectsConfig">
       <template #item_name="{ item }">
         <Link :to="'/' + item.namespace.owner + '/' + item.name">
           {{ item.name }}

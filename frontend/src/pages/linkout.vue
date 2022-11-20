@@ -10,7 +10,7 @@ import { useLocalStorage } from "@vueuse/core";
 import { computed } from "vue";
 
 const route = useRoute();
-const remoteUrl = route.query.remoteUrl;
+const remoteUrl = Array.isArray(route.query.remoteUrl) ? route.query.remoteUrl[0] : route.query.remoteUrl;
 const i18n = useI18n();
 
 const trustedHosts = useLocalStorage("trustedHosts", [] as string[]);
