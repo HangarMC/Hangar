@@ -162,14 +162,14 @@ backend:
       hostname: "hangarauth-postgresql"
       port: 5432
       username: "hangarauth"
-      password: "hangarauth" # TODO: secret
+      password: "hangarauth"
       database: "hangarauth"
       options: "?currentSchema=hangar"
-    tokenSecret: "secret" # todo secret
+    tokenSecret: "secret"
     backendOauthUrl: "http://hangarauth-hydra:4444"
     backendAuthHost: "http://hangarauth-backend:8080"
     storage:
-      type: "local" # todo storage stuff
+      type: "local"
       accessKey: "todo"
       secretKey: "todo"
       bucket: "todo"
