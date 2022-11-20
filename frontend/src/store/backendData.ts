@@ -95,13 +95,13 @@ export const useBackendDataStore = defineStore("backendData", () => {
         fetchIfNeeded(async () => useInternalApi<string[]>("data/licenses", false), licenses),
         fetchIfNeeded(async () => useInternalApi<AnnouncementObject[]>("data/announcements", false), announcements),
         fetchIfNeeded(async () => useInternalApi<IVisibility[]>("data/visibilities", false), visibilities),
-        fetchIfNeeded(async () => useInternalApi("data/validations", false), validations),
-        fetchIfNeeded(async () => useInternalApi("data/orgRoles", false), orgRoles),
-        fetchIfNeeded(async () => useInternalApi("data/channelColors", false), channelColors),
-        fetchIfNeeded(async () => useInternalApi("data/projectRoles", false), projectRoles),
-        fetchIfNeeded(async () => useInternalApi("data/globalRoles", false), globalRoles),
-        fetchIfNeeded(async () => useInternalApi("data/flagReasons", false), flagReasons),
-        fetchIfNeeded(async () => useInternalApi("data/version-info", false), versionInfo),
+        fetchIfNeeded(async () => useInternalApi<NonNullable<typeof validations.value>>("data/validations", false), validations),
+        fetchIfNeeded(async () => useInternalApi<NonNullable<typeof orgRoles.value>>("data/orgRoles", false), orgRoles),
+        fetchIfNeeded(async () => useInternalApi<NonNullable<typeof channelColors.value>>("data/channelColors", false), channelColors),
+        fetchIfNeeded(async () => useInternalApi<NonNullable<typeof projectRoles.value>>("data/projectRoles", false), projectRoles),
+        fetchIfNeeded(async () => useInternalApi<NonNullable<typeof globalRoles.value>>("data/globalRoles", false), globalRoles),
+        fetchIfNeeded(async () => useInternalApi<NonNullable<typeof flagReasons.value>>("data/flagReasons", false), flagReasons),
+        fetchIfNeeded(async () => useInternalApi<NonNullable<typeof versionInfo.value>>("data/version-info", false), versionInfo),
       ]);
     } catch (e) {
       console.error("ERROR FETCHING BACKEND DATA");

@@ -21,6 +21,7 @@ import { maxLength, minLength, required } from "~/lib/composables/useValidationH
 import { validApiKeyName } from "~/composables/useHangarValidations";
 import { useVuelidate } from "@vuelidate/core";
 import InputGroup from "~/lib/components/ui/InputGroup.vue";
+import { NamedPermission } from "~/types/enums";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -33,7 +34,7 @@ const props = defineProps<{
 }>();
 
 const apiKeys = ref(await useInternalApi<ApiKey[]>("api-keys/existing-keys/" + route.params.user));
-const possiblePerms = await useInternalApi<IPermission[]>("api-keys/possible-perms/" + route.params.user);
+const possiblePerms = await useInternalApi<NamedPermission[]>("api-keys/possible-perms/" + route.params.user);
 
 const name = ref("");
 const loadingCreate = ref(false);

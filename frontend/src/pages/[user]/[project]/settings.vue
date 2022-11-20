@@ -136,7 +136,7 @@ async function save() {
       ...form,
     });
     await router.go(0);
-  } catch (e) {
+  } catch (e: any) {
     handleRequestError(e, ctx, i18n);
   }
   loading.save = false;
@@ -149,7 +149,7 @@ async function transfer() {
       content: search.value,
     });
     notificationStore.success(i18n.t("project.settings.success.transferRequest", [search.value]));
-  } catch (e) {
+  } catch (e: any) {
     handleRequestError(e, ctx, i18n);
   }
   loading.transfer = false;
@@ -163,7 +163,7 @@ async function rename() {
     });
     notificationStore.success(i18n.t("project.settings.success.rename", [newName.value]));
     await router.push("/" + route.params.user + "/" + newSlug);
-  } catch (e) {
+  } catch (e: any) {
     handleRequestError(e, ctx, i18n);
   }
   loading.rename = false;
@@ -180,7 +180,7 @@ async function softDelete(comment: string) {
     } else {
       await router.push("/");
     }
-  } catch (e) {
+  } catch (e: any) {
     handleRequestError(e, ctx, i18n);
   }
 }
@@ -192,7 +192,7 @@ async function hardDelete(comment: string) {
     });
     notificationStore.success(i18n.t("project.settings.success.hardDelete"));
     await router.push("/");
-  } catch (e) {
+  } catch (e: any) {
     handleRequestError(e, ctx, i18n);
   }
 }
@@ -210,7 +210,7 @@ async function uploadIcon() {
     cropperResult.value = null;
     await loadIconIntoCropper();
     notificationStore.success(i18n.t("project.settings.success.changedIcon"));
-  } catch (e) {
+  } catch (e: any) {
     handleRequestError(e, ctx, i18n);
   }
   loading.uploadIcon = false;
@@ -223,7 +223,7 @@ async function resetIcon() {
     useNotificationStore().success(i18n.t("project.settings.success.resetIcon"));
     projectIcon.value = null;
     await loadIconIntoCropper();
-  } catch (e) {
+  } catch (e: any) {
     handleRequestError(e, ctx, i18n);
   }
   loading.resetIcon = false;

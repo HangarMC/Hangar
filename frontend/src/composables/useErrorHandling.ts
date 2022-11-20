@@ -1,15 +1,17 @@
 import { AxiosError } from "axios";
 import { HangarApiException, HangarValidationException, MultiHangarApiException } from "hangar-api";
-import { Composer, VueMessageType } from "vue-i18n";
+import { Composer, UseI18nOptions } from "vue-i18n";
 import { Context } from "vite-ssr/vue";
 import { useNotificationStore } from "~/lib/store/notification";
 
-export function handleRequestError(
-  err: AxiosError,
-  { writeResponse }: Context,
-  i18n: Composer<unknown, unknown, unknown, VueMessageType>,
-  msg: string | undefined = undefined
-) {
+type I18nType = Composer<
+  NonNullable<UseI18nOptions["messages"]>,
+  NonNullable<UseI18nOptions["datetimeFormats"]>,
+  NonNullable<UseI18nOptions["numberFormats"]>,
+  NonNullable<UseI18nOptions["locale"]>
+>;
+
+export function handleRequestError(err: AxiosError, { writeResponse }: Context, i18n: I18nType, msg: string | undefined = undefined) {
   if (import.meta.env.SSR) {
     _handleRequestError(err, writeResponse, i18n);
     return;
@@ -40,7 +42,7 @@ export function handleRequestError(
   }
 }
 
-function _handleRequestError(err: AxiosError, writeResponse: Context["writeResponse"], i18n: Composer<unknown, unknown, unknown, VueMessageType>) {
+function _handleRequestError(err: AxiosError, writeResponse: Context["writeResponse"], i18n: I18nType) {
   if (!err.isAxiosError) {
     // everything should be an AxiosError
     writeResponse({
