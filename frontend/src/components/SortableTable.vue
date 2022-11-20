@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { hasSlotContent } from "~/lib/composables/useSlot";
 import Table from "~/lib/components/design/Table.vue";
-import { reactive, ref } from "vue";
+import { reactive, ref, watch } from "vue";
 import PaginationButtons from "~/lib/components/design/PaginationButtons.vue";
-import Pagination from "~/lib/components/design/Pagination.vue";
+import PaginationComponent from "~/lib/components/design/Pagination.vue";
+import { Pagination } from "hangar-api";
 
 export interface Header {
   name: string;
@@ -16,6 +17,7 @@ const props = defineProps<{
   headers: Header[];
   items: any[];
   expandable?: boolean;
+  serverPagination?: Pagination;
 }>();
 
 const expanded = ref<Record<number, boolean>>({});
@@ -35,6 +37,8 @@ function sort() {
   });
 }
 
+watch(() => props.items, sort);
+
 function click(header: Header) {
   if (header.sortable) {
     if (sorter[header.name] === 1) {
@@ -45,7 +49,16 @@ function click(header: Header) {
       sorter[header.name] = 1;
     }
     sort();
+    emit("update:sort", header.name, sorter);
   }
+}
+
+const emit = defineEmits<{
+  (e: "update:page", value: number): void;
+  (e: "update:sort", col: string, sorter: Record<string, number>): void;
+}>();
+function updatePage(newPage: number) {
+  emit("update:page", newPage);
 }
 </script>
 
@@ -64,7 +77,7 @@ function click(header: Header) {
       </tr>
     </thead>
     <tbody>
-      <Pagination v-if="sorted.length !== 0" :items="sorted">
+      <PaginationComponent v-if="sorted.length !== 0" :items="sorted" :server-pagination="serverPagination" @update:page="updatePage">
         <template #default="{ item, idx }">
           <tr>
             <td v-for="header in headers" :key="header.name" :style="header.width ? 'width: ' + header.width : ''" @click="expanded[idx] = !expanded[idx]">
@@ -81,14 +94,14 @@ function click(header: Header) {
             <slot name="expanded-item" :item="item" :headers="headers"></slot>
           </tr>
         </template>
-        <template #pagination="{ page, pages, updatePage }">
+        <template #pagination="slotProps">
           <tr>
             <td :colspan="headers.length">
-              <PaginationButtons :page="page" :pages="pages" @update:page="updatePage" />
+              <PaginationButtons :page="slotProps.page" :pages="slotProps.pages" @update:page="slotProps.updatePage" />
             </td>
           </tr>
         </template>
-      </Pagination>
+      </PaginationComponent>
       <tr v-if="!items || items.length === 0">
         <td :colspan="headers.length">
           <slot name="empty"></slot>
