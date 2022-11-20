@@ -3,6 +3,7 @@ import { HangarApiException, HangarValidationException, MultiHangarApiException 
 import { Composer, UseI18nOptions } from "vue-i18n";
 import { Context } from "vite-ssr/vue";
 import { useNotificationStore } from "~/lib/store/notification";
+import { ref } from "vue";
 
 type I18nType = Composer<
   NonNullable<UseI18nOptions["messages"]>,
@@ -14,7 +15,7 @@ type I18nType = Composer<
 export function handleRequestError(err: AxiosError, { writeResponse }: Context, i18n: I18nType, msg: string | undefined = undefined) {
   if (import.meta.env.SSR) {
     _handleRequestError(err, writeResponse, i18n);
-    return;
+    return ref();
   }
   const notfication = useNotificationStore();
   if (!err.isAxiosError) {
@@ -40,6 +41,7 @@ export function handleRequestError(err: AxiosError, { writeResponse }: Context, 
   } else {
     console.log(err);
   }
+  return ref();
 }
 
 function _handleRequestError(err: AxiosError, writeResponse: Context["writeResponse"], i18n: I18nType) {
