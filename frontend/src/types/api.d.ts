@@ -1,10 +1,6 @@
 declare module "hangar-api" {
   import type { Visibility } from "~/types/enums";
 
-  interface Model {
-    createdAt: string;
-  }
-
   interface Named {
     name: string;
   }
