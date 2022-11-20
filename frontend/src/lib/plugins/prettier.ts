@@ -26,7 +26,7 @@ export default function prettier(): Plugin {
 
   return {
     name: "vite:prettier",
-    async transform(_, id) {
+    transform(_, id) {
       const file = normalize(id);
       const fileInfo = getFileInfo.sync(id);
       if (!checkVueFile(id) && !fileInfo.ignored && filter(id)) {

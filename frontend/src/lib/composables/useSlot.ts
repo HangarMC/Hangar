@@ -1,4 +1,4 @@
-import { Comment, Text, Slot, VNode } from "vue";
+import { Comment, Text, type Slot, type VNode } from "vue";
 
 export function hasSlotContent(slot: Slot | undefined, slotProps = {}): boolean {
   if (!slot) return false;

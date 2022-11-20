@@ -1,9 +1,9 @@
 import type { App } from "vue";
 import { createI18n } from "vue-i18n";
 import { ref } from "vue";
-import { langLog } from "~/lib/composables/useLog";
 import { DATE_FORMATS } from "./date-formats";
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from "./locales";
+import { langLog } from "~/lib/composables/useLog";
 
 export { DEFAULT_LOCALE, SUPPORTED_LOCALES, SUPPORTED_LANGUAGES, extractLocaleFromPath } from "./locales";
 

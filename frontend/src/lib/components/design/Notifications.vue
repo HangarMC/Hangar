@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { useNotificationStore } from "~/lib/store/notification";
 import { ref } from "vue";
+import { useNotificationStore } from "~/lib/store/notification";
 
 const notificationStore = useNotificationStore();
 const notifications = ref(notificationStore.notifications);
 
-//TODO make more responsive: stop removal timer and progress bar on hover
+// TODO make more responsive: stop removal timer and progress bar on hover
 </script>
 
 <template>

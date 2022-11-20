@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useValidation } from "~/lib/composables/useValidationHelpers";
 import { type ValidationRule } from "@vuelidate/core";
+import { useValidation } from "~/lib/composables/useValidationHelpers";
 import InputWrapper from "~/lib/components/ui/InputWrapper.vue";
 
 const emit = defineEmits<{

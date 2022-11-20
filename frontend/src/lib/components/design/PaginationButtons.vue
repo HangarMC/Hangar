@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import Button from "~/lib/components/design/Button.vue";
 import { computed } from "vue";
+import Button from "~/lib/components/design/Button.vue";
 
 const props = defineProps<{
   page: number;

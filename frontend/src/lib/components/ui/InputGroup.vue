@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { type ValidationRule } from "@vuelidate/core";
+import { computed } from "vue";
 import { useValidation } from "~/lib/composables/useValidationHelpers";
 import ErrorTooltip from "~/lib/components/design/ErrorTooltip.vue";
-import { computed } from "vue";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value?: string[] | boolean[] | number[] | object[]): void;

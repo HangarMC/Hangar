@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref, type Ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
+import { useVuelidate } from "@vuelidate/core";
 import Link from "~/lib/components/design/Link.vue";
 import Card from "~/lib/components/design/Card.vue";
-import { useSettingsStore } from "~/store/settings";
+import { useSettingsStore } from "~/store/useSettingsStore";
 import Button from "~/lib/components/design/Button.vue";
-import { useI18n } from "vue-i18n";
-import { useVuelidate } from "@vuelidate/core";
-import { useRouter } from "vue-router";
 
 const router = useRouter();
 const settings = useSettingsStore();
@@ -19,6 +19,17 @@ const internalValue = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
 });
+
+export interface Step {
+  value: string;
+  header: string;
+  beforeBack?: () => Promise<boolean>;
+  beforeNext?: () => Promise<boolean>;
+  disableBack?: Ref<boolean>;
+  disableNext?: Ref<boolean>;
+  showBack?: Ref<boolean>;
+  showNext?: Ref<boolean>;
+}
 
 const props = defineProps<{
   modelValue: string;
@@ -80,17 +91,6 @@ async function goto(step: Step) {
   } else if (idx < activeStepIndex.value) {
     await back();
   }
-}
-
-export interface Step {
-  value: string;
-  header: string;
-  beforeBack?: () => Promise<boolean>;
-  beforeNext?: () => Promise<boolean>;
-  disableBack?: Ref<boolean>;
-  disableNext?: Ref<boolean>;
-  showBack?: Ref<boolean>;
-  showNext?: Ref<boolean>;
 }
 </script>
 

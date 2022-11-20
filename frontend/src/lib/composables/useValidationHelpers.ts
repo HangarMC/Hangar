@@ -1,7 +1,7 @@
-import { ErrorObject, useVuelidate, ValidationRule } from "@vuelidate/core";
-import { computed, Ref } from "vue";
+import { type ErrorObject, useVuelidate, type ValidationRule } from "@vuelidate/core";
+import { computed, type Ref } from "vue";
 import * as validators from "@vuelidate/validators";
-import { createI18nMessage, helpers, ValidatorWrapper } from "@vuelidate/validators";
+import { createI18nMessage, helpers, type ValidatorWrapper } from "@vuelidate/validators";
 import { I18n } from "~/lib/i18n";
 
 export function isErrorObject(errorObject: string | ErrorObject): errorObject is ErrorObject {
@@ -82,7 +82,7 @@ export const pattern = withOverrideMessage(
 );
 
 export const dum = withOverrideMessage(
-  helpers.withAsync(async (value: any) => {
+  helpers.withAsync((value: any) => {
     console.log("validate", value, value.length);
     return { $valid: false, $message: "organization.new.error.jsonError" };
   })

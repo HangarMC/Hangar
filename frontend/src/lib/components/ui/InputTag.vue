@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
-import { useValidation } from "~/lib/composables/useValidationHelpers";
 import { type ValidationRule } from "@vuelidate/core";
+import { useValidation } from "~/lib/composables/useValidationHelpers";
 import InputWrapper from "~/lib/components/ui/InputWrapper.vue";
 
 const tag = ref<string>("");
@@ -49,7 +49,7 @@ watch(tag, (t) => {
 });
 
 function remove(t: string) {
-  tags.value = tags.value.filter((v) => v != t);
+  tags.value = tags.value.filter((v) => v !== t);
   v.value.$touch();
 }
 
