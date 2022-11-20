@@ -1,6 +1,8 @@
-import { Model } from "hangar-api";
-
 declare module "hangar-api" {
+  interface Model {
+    createdAt: string;
+  }
+
   interface Pagination {
     limit: number;
     offset: number;
