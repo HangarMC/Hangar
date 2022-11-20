@@ -1,10 +1,9 @@
 package io.papermc.hangar.config.hangar;
 
+import io.papermc.hangar.model.internal.api.responses.Validation;
 import io.papermc.hangar.util.PatternWrapper;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.boot.convert.DurationUnit;
@@ -33,4 +32,20 @@ public record ProjectsConfig( // TODO split into ProjectsConfig and VersionsConf
     @DefaultValue("10") @DurationUnit(ChronoUnit.MINUTES) Duration unsafeDownloadMaxAge,
     @DefaultValue("false") boolean showUnreviewedDownloadWarning
 ) {
+
+    public Validation projectName() {
+        return new Validation(this.nameRegex(), this.maxNameLen(), null);
+    }
+
+    public Validation projectDescription() {
+        return Validation.max(this.maxDescLen());
+    }
+
+    public Validation projectKeywords() {
+        return Validation.max(this.maxKeywords());
+    }
+
+    public Validation versionName() {
+        return new Validation(this.versionNameRegex(), this.maxVersionNameLen(), null);
+    }
 }

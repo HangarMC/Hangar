@@ -11,8 +11,8 @@ import java.sql.SQLException;
 public class LogActionColumnMapper implements ColumnMapper<LogAction<?>> {
 
     @Override
-    public LogAction<?> map(ResultSet r, int columnNumber, StatementContext ctx) throws SQLException {
-        String action = r.getString(columnNumber);
+    public LogAction<?> map(final ResultSet r, final int columnNumber, final StatementContext ctx) throws SQLException {
+        final String action = r.getString(columnNumber);
         if (!LogAction.LOG_REGISTRY.containsKey(action)) {
             throw new SQLDataException(action + " is not a valid LogAction");
         }

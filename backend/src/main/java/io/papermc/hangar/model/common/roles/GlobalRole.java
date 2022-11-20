@@ -24,6 +24,8 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
 
     ORGANIZATION("Organization", 100, OrganizationRole.ORGANIZATION_OWNER.getPermissions(), "Organization", Color.PURPLE);
 
+    private static final GlobalRole[] VALUES = GlobalRole.values();
+
     private final String value;
     private final long roleId;
     private final Permission permissions;
@@ -103,5 +105,9 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
             }
         }
         throw new IllegalArgumentException("No GlobalRole '" + apiValue + "'");
+    }
+
+    public static GlobalRole[] getValues() {
+        return VALUES;
     }
 }

@@ -9,13 +9,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * {@link Permission} should have it's own mapper just since its essentially a wrapper for a long.
+ * {@link Permission} should have its own mapper just since it's essentially a wrapper for a long.
  */
 @Component
 public class PermissionMapper implements ColumnMapper<Permission> {
 
     @Override
-    public Permission map(ResultSet r, int columnNumber, StatementContext ctx) throws SQLException {
+    public Permission map(final ResultSet r, final int columnNumber, final StatementContext ctx) throws SQLException {
         return Permission.fromLong(r.getLong(columnNumber));
     }
 }

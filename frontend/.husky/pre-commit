@@ -3,4 +3,5 @@
 
 cd frontend
 pnpm prettier --write src/types/generated/**.*
+git add src/types/generated/**.*
 pnpm lint-staged

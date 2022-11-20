@@ -12,11 +12,10 @@ import java.util.Optional;
 public class RoleColumnMapperFactory implements ColumnMapperFactory {
 
     @Override
-    public Optional<ColumnMapper<?>> build(Type type, ConfigRegistry config) {
-        if (!(type instanceof Class) || !Role.class.isAssignableFrom((Class<?>) type) || !((Class<?>) type).isEnum()) {
+    public Optional<ColumnMapper<?>> build(final Type type, final ConfigRegistry config) {
+        if (!(type instanceof final Class<?> clazz) || !Role.class.isAssignableFrom((Class<?>) type) || !((Class<?>) type).isEnum()) {
             return Optional.empty();
         }
-        Class<?> clazz = (Class<?>) type;
         if (clazz == GlobalRole.class) {
             return Optional.of((r, columnNumber, ctx) -> Role.ID_ROLES.get(r.getLong(columnNumber)));
         } else {

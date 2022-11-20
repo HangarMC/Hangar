@@ -1,11 +1,13 @@
 package io.papermc.hangar.model.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum NamedPermission {
     VIEW_PUBLIC_INFO("view_public_info", Permission.ViewPublicInfo, "ViewPublicInfo"),
     EDIT_OWN_USER_SETTINGS("edit_own_user_settings", Permission.EditOwnUserSettings, "EditOwnUserSettings"),

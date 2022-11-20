@@ -67,16 +67,10 @@ public class Permission implements Comparable<Permission>, Argument {
     public static final Permission RestoreVersion = new Permission(1L << 44);
     public static final Permission RestoreProject = new Permission(1L << 45);
 
-    private long value;
+    private final long value;
 
     @JdbiConstructor
     public Permission(long value) {
-        this.value = value;
-    }
-
-    public Permission() { }
-
-    public void setValue(long value) {
         this.value = value;
     }
 
@@ -117,6 +111,7 @@ public class Permission implements Comparable<Permission>, Argument {
     public boolean isNone() {
         return value == 0;
     }
+
     @JsonValue
     public String toBinString() {
         return Long.toBinaryString(value);

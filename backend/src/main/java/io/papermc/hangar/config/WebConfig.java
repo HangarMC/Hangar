@@ -126,7 +126,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     @Override
     public void configureMessageConverters(@NotNull List<HttpMessageConverter<?>> converters) {
         // TODO kinda wack, but idk a better way rn
-        ParameterNamesAnnotationIntrospector sAnnotationIntrospector = (ParameterNamesAnnotationIntrospector) mapper.getSerializationConfig().getAnnotationIntrospector().allIntrospectors().stream().filter(ParameterNamesAnnotationIntrospector.class::isInstance).findFirst().get();
+        ParameterNamesAnnotationIntrospector sAnnotationIntrospector = (ParameterNamesAnnotationIntrospector) mapper.getSerializationConfig().getAnnotationIntrospector().allIntrospectors().stream().filter(ParameterNamesAnnotationIntrospector.class::isInstance).findFirst().orElseThrow();
         mapper.setAnnotationIntrospectors(
                 AnnotationIntrospector.pair(sAnnotationIntrospector, new HangarAnnotationIntrospector()),
                 mapper.getDeserializationConfig().getAnnotationIntrospector()
