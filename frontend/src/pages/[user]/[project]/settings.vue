@@ -258,7 +258,7 @@ useHead(
       <Tabs v-model="selectedTab" :tabs="tabs">
         <template #general>
           <ProjectSettingsSection title="project.settings.category" description="project.settings.categorySub">
-            <InputSelect v-model="form.category" :values="backendData.categoryOptions" :rules="[required()]" />
+            <InputSelect v-model="form.category" :values="backendData.categoryOptions" :rules="[required()]" i18n-text-values />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.description" description="project.settings.descriptionSub">
             <InputText

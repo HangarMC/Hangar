@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSettingsStore } from "~/store/settings";
+import { useSettingsStore } from "~/store/useSettingsStore";
 import { useHead } from "@vueuse/head";
 import { settingsLog } from "~/lib/composables/useLog";
 import { useAuthStore } from "~/store/auth";

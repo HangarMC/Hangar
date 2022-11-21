@@ -11,7 +11,7 @@ import { hasPerms, toNamedPermission } from "~/composables/usePerm";
 import { NamedPermission, PermissionType } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useI18n } from "vue-i18n";
-import { useSettingsStore } from "~/store/settings";
+import { useSettingsStore } from "~/store/useSettingsStore";
 import * as domain from "~/composables/useDomain";
 
 export const install: UserModule = async ({ request, response, router, redirect }) => {

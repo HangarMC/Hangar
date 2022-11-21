@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
-import { useSettingsStore } from "~/store/settings";
+import { useSettingsStore } from "~/store/useSettingsStore";
 import Announcement from "~/components/Announcement.vue";
 import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";

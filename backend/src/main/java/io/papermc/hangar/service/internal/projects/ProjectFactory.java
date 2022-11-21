@@ -112,7 +112,7 @@ public class ProjectFactory extends HangarComponent {
     }
 
     public void checkProjectAvailability(final long userId, final String name) {
-        checkProjectAvailability(userId, name, false);
+        this.checkProjectAvailability(userId, name, false);
     }
 
     public void checkProjectAvailability(final long userId, final String name, final boolean skipNameChecking) {

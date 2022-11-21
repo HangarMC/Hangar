@@ -10,8 +10,9 @@ insert_final_newline = true
 ij_any_block_comment_at_first_column = false
 ij_any_line_comment_at_first_column = false
 ij_any_block_comment_add_space = true
-ij_typescript_use_double_quotes = false
-ij_javascript_use_double_quotes = false
+max_line_length = 160
+ij_visual_guides = 160
+
 ij_sass_use_double_quotes = false
 ij_html_quote_style = double
 
@@ -21,11 +22,11 @@ ij_java_use_fq_class_names = false
 ij_java_class_count_to_use_import_on_demand = 99999
 ij_java_names_count_to_use_import_on_demand = 99999
 ij_java_imports_layout = *,|,$*
+ij_java_generate_final_locals = true
+ij_java_generate_final_parameters = true
+ij_java_continuation_indent_size = 4
 
-[*.yml]
-indent_size = 2
-
-[*.yaml]
+[{*.yml, *.yaml}]
 indent_size = 2
 
 [*.md]

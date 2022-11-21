@@ -62,7 +62,7 @@ public class OrganizationController extends HangarComponent {
     private final ValidationService validationService;
 
     @Autowired
-    public OrganizationController(UserService userService, OrganizationFactory organizationFactory, OrganizationService organizationService, OrganizationMemberService memberService, OrganizationInviteService inviteService, AuthenticationService authenticationService, ValidationService validationService) {
+    public OrganizationController(final UserService userService, final OrganizationFactory organizationFactory, final OrganizationService organizationService, final OrganizationMemberService memberService, final OrganizationInviteService inviteService, final AuthenticationService authenticationService, final ValidationService validationService) {
         this.userService = userService;
         this.organizationFactory = organizationFactory;
         this.organizationService = organizationService;
@@ -75,11 +75,11 @@ public class OrganizationController extends HangarComponent {
     @Anyone
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/validate")
-    public void validateName(@RequestParam String name) {
-        if (!validationService.isValidUsername(name)) {
+    public void validateName(@RequestParam final String name) {
+        if (!this.validationService.isValidOrgName(name)) {
             throw new HangarApiException("author.error.invalidUsername");
         }
-        if (userService.getUserTable(name) != null) {
+        if (this.userService.getUserTable(name) != null) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST);
         }
     }

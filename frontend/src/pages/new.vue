@@ -11,7 +11,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
 import Steps, { Step } from "~/lib/components/design/Steps.vue";
-import { useSettingsStore } from "~/store/settings";
+import { useSettingsStore } from "~/store/useSettingsStore";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import InputTag from "~/lib/components/ui/InputTag.vue";
@@ -202,6 +202,7 @@ function createProject() {
             :values="backendData.categoryOptions"
             :label="i18n.t('project.new.step2.projectCategory')"
             :rules="[required()]"
+            i18n-text-values
           />
         </div>
       </div>
