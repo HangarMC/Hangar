@@ -5,17 +5,17 @@ import { createI18nMessage, helpers, type ValidatorWrapper } from "@vuelidate/va
 import { I18n } from "~/lib/i18n";
 
 export function isErrorObject(errorObject: string | ErrorObject): errorObject is ErrorObject {
-  return (<ErrorObject>errorObject).$message !== undefined;
+  return typeof errorObject === "object" && "$message" in errorObject;
 }
 
 export function constructValidators<T>(rules: ValidationRule<T | undefined>[] | undefined, name: string) {
   return rules ? { [name]: rules } : { [name]: {} };
 }
 
-export function useValidation<T>(
+export function useValidation<T, V = any>(
   name: string | undefined,
   rules: ValidationRule<T | undefined>[] | undefined,
-  state: Ref,
+  state: Ref<V>,
   errorMessages: Ref<string[] | undefined>,
   silentErrors = false
 ) {
@@ -71,14 +71,13 @@ export const url = withOverrideMessage(validators.url);
 export const email = withOverrideMessage(validators.email);
 
 // custom
-export const pattern = withOverrideMessage(
-  (regex: string) =>
-    helpers.withParams({ regex, type: "pattern" }, (value: string) => {
-      if (!helpers.req(value)) {
-        return { $valid: true };
-      }
-      return { $valid: new RegExp(regex).test(value) };
-    }) as ValidationRule<{ regex: string }>
+export const pattern = withOverrideMessage((regex: string) =>
+  helpers.withParams({ regex, type: "pattern" }, (value: string) => {
+    if (!helpers.req(value)) {
+      return { $valid: true };
+    }
+    return { $valid: new RegExp(regex).test(value) };
+  })
 );
 
 export const dum = withOverrideMessage(

@@ -27,7 +27,7 @@ const props = defineProps<{
 const errorMessages = computed(() => props.errorMessages);
 const { v, errors, hasError } = useValidation(props.label, props.rules, value, errorMessages);
 
-defineExpose({ v });
+defineExpose({ validation: v });
 </script>
 
 <template>
@@ -44,7 +44,7 @@ defineExpose({ v });
     :no-error-tooltip="noErrorTooltip"
   >
     <template #default="slotProps">
-      <input v-model="value" type="text" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" :disabled="disabled" @blur="v.$touch()" />
+      <input v-model="value" type="text" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" :disabled="disabled" @input="v.$touch" />
     </template>
     <template v-for="(_, name) in $slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData || {}" />

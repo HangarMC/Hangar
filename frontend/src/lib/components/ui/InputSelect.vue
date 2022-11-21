@@ -3,6 +3,9 @@ import { computed } from "vue";
 import { type ValidationRule } from "@vuelidate/core";
 import { useValidation } from "~/lib/composables/useValidationHelpers";
 import InputWrapper from "~/lib/components/ui/InputWrapper.vue";
+import { useI18n } from "vue-i18n";
+
+const i18n = useI18n();
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: object | string | boolean | number | null | undefined): void;
@@ -30,6 +33,7 @@ const props = withDefaults(
     errorMessages?: string[];
     rules?: ValidationRule<string | undefined>[];
     noErrorTooltip?: boolean;
+    i18nTextValues?: boolean;
   }>(),
   {
     modelValue: "",
@@ -40,6 +44,7 @@ const props = withDefaults(
     messages: () => [],
     errorMessages: () => [],
     rules: () => [],
+    i18nTextValues: false,
   }
 );
 const errorMessages = computed(() => props.errorMessages);
@@ -60,7 +65,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
     <template #default="slotProps">
       <select v-model="internalVal" :disabled="disabled" :class="slotProps.class" class="appearance-none" @blur="v.$touch()">
         <option v-for="val in values" :key="val[itemValue] || val" :value="val[itemValue] || val" class="dark:bg-[#191e28]">
-          {{ val[itemText] || val }}
+          {{ i18nTextValues ? i18n.t(val[itemText] || val) : val[itemText] || val }}
         </option>
       </select>
     </template>
