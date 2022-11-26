@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import Button from "~/lib/components/design/Button.vue";
 import Link from "~/lib/components/design/Link.vue";
 
@@ -9,6 +9,12 @@ const emit = defineEmits<{
 const internalValue = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
+});
+
+watch(internalValue, (n) => {
+  if (props.tabs.length > 0 && !props.tabs.some((t) => t.value === n)) {
+    internalValue.value = props.tabs[0].value;
+  }
 });
 
 export interface Tab {
