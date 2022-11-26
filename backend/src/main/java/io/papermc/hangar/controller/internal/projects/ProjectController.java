@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
@@ -133,20 +134,22 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/saveIcon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void saveProjectIcon(@PathVariable String author, @PathVariable String slug, @RequestParam MultipartFile projectIcon) {
-        projectService.saveIcon(author, slug, projectIcon);
+    public String saveProjectIcon(@PathVariable String author, @PathVariable String slug, @RequestParam MultipartFile projectIcon) {
+        return projectService.saveIcon(author, slug, projectIcon);
     }
 
     @Unlocked
+    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping("/project/{author}/{slug}/resetIcon")
-    public void resetProjectIcon(@PathVariable String author, @PathVariable String slug) {
-        projectService.resetIcon(author, slug);
+    public String resetProjectIcon(@PathVariable String author, @PathVariable String slug) {
+        return projectService.resetIcon(author, slug);
     }
 
     @Unlocked

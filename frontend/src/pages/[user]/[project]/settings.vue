@@ -206,10 +206,14 @@ async function uploadIcon() {
   data.append("projectIcon", cropperResult.value);
   loading.uploadIcon = true;
   try {
-    await useInternalApi(`projects/project/${route.params.user}/${route.params.project}/saveIcon`, true, "post", data);
+    const response = await useInternalApi<string | null>(`projects/project/${route.params.user}/${route.params.project}/saveIcon`, true, "post", data);
     cropperResult.value = null;
     await loadIconIntoCropper();
-    notificationStore.success(i18n.t("project.settings.success.changedIcon"));
+    if (response) {
+      useNotificationStore().success(i18n.t("project.settings.success.changedIconWarn", [response]));
+    } else {
+      useNotificationStore().success(i18n.t("project.settings.success.changedIcon"));
+    }
   } catch (e: any) {
     handleRequestError(e, ctx, i18n);
   }
@@ -219,8 +223,12 @@ async function uploadIcon() {
 async function resetIcon() {
   loading.resetIcon = true;
   try {
-    await useInternalApi(`projects/project/${route.params.user}/${route.params.project}/resetIcon`, true, "post");
-    useNotificationStore().success(i18n.t("project.settings.success.resetIcon"));
+    const response = await useInternalApi<string | null>(`projects/project/${route.params.user}/${route.params.project}/resetIcon`, true, "post");
+    if (response) {
+      useNotificationStore().success(i18n.t("project.settings.success.resetIconWarn", [response]));
+    } else {
+      useNotificationStore().success(i18n.t("project.settings.success.resetIcon"));
+    }
     projectIcon.value = null;
     await loadIconIntoCropper();
   } catch (e: any) {

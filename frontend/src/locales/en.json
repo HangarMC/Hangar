@@ -352,7 +352,9 @@
       },
       "success": {
         "changedIcon": "Successfully changed the project icon",
+        "changedIconWarn": "Successfully changed the project icon, however the cache couldn't be cleared, it might not be updated instantly: {0}",
         "resetIcon": "Successfully reset the project icon",
+        "resetIconWarn": "Successfully reset the project icon, however the cache couldn't be cleared, it might not be updated instantly: {0}",
         "rename": "Successfully renamed the project to {0}",
         "transferRequest": "Successfully sent a transfer request to {0}. You can cancel this via the member list.",
         "softDelete": "You have deleted this project",

@@ -55,6 +55,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -214,7 +215,7 @@ public class ProjectService extends HangarComponent {
         projectsDAO.update(projectTable);
     }
 
-    public void saveIcon(String author, String slug, MultipartFile icon) {
+    public String saveIcon(String author, String slug, MultipartFile icon) {
         ProjectTable projectTable = getProjectTable(author, slug);
         if (!StringUtils.equalsAny(icon.getContentType(), MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.error.invalidFile", icon.getContentType());
@@ -232,21 +233,26 @@ public class ProjectService extends HangarComponent {
             e.printStackTrace();
             throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        evictIconCache(author, slug);
+        return evictIconCache(author, slug);
     }
 
-    public void resetIcon(String author, String slug) {
+    public String resetIcon(String author, String slug) {
         ProjectTable projectTable = getProjectTable(author, slug);
         String base64 = getBase64(author, slug, "old", projectFiles.getIconPath(author, slug));
         if (fileService.delete(projectFiles.getIconPath(author, slug))) {
             actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), "#empty", base64));
         }
-        evictIconCache(author, slug);
+        return evictIconCache(author, slug);
     }
 
-    private void evictIconCache(String author, String slug) {
-        String url = config.getBaseUrl() + "/api/internal/projects/project/" + author + "/" + slug + "/icon";
-        restTemplate.delete(config.security.api().url() + "/image/" + url + "?apiKey=" + config.sso.apiKey());
+    private String evictIconCache(String author, String slug) {
+        try {
+            String url = config.getBaseUrl() + "/api/internal/projects/project/" + author + "/" + slug + "/icon";
+            restTemplate.delete(config.security.api().url() + "/image/" + url + "?apiKey=" + config.sso.apiKey());
+            return "dum";
+        } catch (HttpClientErrorException e) {
+            return e.getMessage();
+        }
     }
 
     private String getBase64(String author, String slug, String old, String path) {
