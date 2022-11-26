@@ -66,13 +66,13 @@ public class S3FileService implements FileService {
         if (!oldPath.startsWith(getRoot()) && newPath.startsWith(getRoot())) {
             write(Files.newInputStream(Path.of(oldPath)), newPath);
         } else {
-            throw new UnsupportedOperationException("cant move " + oldPath + " to " + newPath);// TODO
+            throw new UnsupportedOperationException("cant move " + oldPath + " to " + newPath);
         }
     }
 
     @Override
     public void link(String existingPath, String newPath) throws IOException {
-        throw new UnsupportedOperationException("cant move " + existingPath + " to " + newPath);// TODO
+        throw new UnsupportedOperationException("cant link " + existingPath + " to " + newPath);
     }
 
     @Override

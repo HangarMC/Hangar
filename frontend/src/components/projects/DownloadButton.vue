@@ -41,6 +41,8 @@ function downloadLink(platform: Platform, version: DownloadableVersion) {
   return version && version.downloads[platform]?.externalUrl ? version.downloads[platform].externalUrl : version.downloads[platform].downloadUrl;
 }
 
+const platformDownloadLink = computed(() => downloadLink(props.platform, props.version));
+
 const external = computed(() => false);
 </script>
 
@@ -67,7 +69,7 @@ const external = computed(() => false);
       </DropdownItem>
     </DropdownButton>
 
-    <a v-else-if="platform && version" :href="downloadLink(platform, version)" target="_blank" rel="noopener noreferrer">
+    <a v-else-if="platform && version" :href="platformDownloadLink" target="_blank" rel="noopener noreferrer">
       <Button :size="small ? 'medium' : 'large'">
         <IconMdiDownloadOutline />
         <span v-if="!small" class="ml-1">{{ external ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}</span>

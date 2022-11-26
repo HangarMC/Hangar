@@ -40,6 +40,7 @@ import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.file.FileService;
+import io.papermc.hangar.service.internal.file.S3FileService;
 import io.papermc.hangar.service.internal.projects.ChannelService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
@@ -391,7 +392,13 @@ public class VersionFactory extends HangarComponent {
 
             final String platformPath = fileService.resolve(versionDir, platform.name());
             final String platformJarPath = fileService.resolve(platformPath, tmpVersionJar.getFileName().toString());
-            fileService.link(platformJarPath, newVersionJarPath);
+            if (fileService instanceof S3FileService) {
+                // this isn't nice, but we cant link, so what am I supposed to do?
+                // fileService.move(tmpVersionJar.toString(), platformJarPath);
+                // actually, lets do nothing here, in frontend only the primary platform is used for downloading anyways
+            } else {
+                fileService.link(platformJarPath, newVersionJarPath);
+            }
         }
 
         final ProjectVersionDownloadTable table = new ProjectVersionDownloadTable(projectVersionTable.getVersionId(), fileInfo.getSizeBytes(), fileInfo.getMd5Hash(), fileInfo.getName(), null);

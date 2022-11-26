@@ -20,6 +20,7 @@ declare module "@vue/runtime-core" {
     IconMdiChat: typeof import("~icons/mdi/chat")["default"];
     IconMdiCheck: typeof import("~icons/mdi/check")["default"];
     IconMdiCheckBold: typeof import("~icons/mdi/check-bold")["default"];
+    IconMdiCheckboxMarkedCircle: typeof import("~icons/mdi/checkbox-marked-circle")["default"];
     IconMdiCircle: typeof import("~icons/mdi/circle")["default"];
     IconMdiClipboardOutline: typeof import("~icons/mdi/clipboard-outline")["default"];
     IconMdiClose: typeof import("~icons/mdi/close")["default"];
@@ -34,6 +35,7 @@ declare module "@vue/runtime-core" {
     IconMdiEye: typeof import("~icons/mdi/eye")["default"];
     IconMdiEyeOff: typeof import("~icons/mdi/eye-off")["default"];
     IconMdiFeather: typeof import("~icons/mdi/feather")["default"];
+    IconMdiFile: typeof import("~icons/mdi/file")["default"];
     IconMdiFlag: typeof import("~icons/mdi/flag")["default"];
     IconMdiGamepadRoundLeft: typeof import("~icons/mdi/gamepad-round-left")["default"];
     IconMdiGavel: typeof import("~icons/mdi/gavel")["default"];
@@ -42,10 +44,14 @@ declare module "@vue/runtime-core" {
     IconMdiHorseVariant: typeof import("~icons/mdi/horse-variant")["default"];
     IconMdiInformation: typeof import("~icons/mdi/information")["default"];
     IconMdiKeyOutline: typeof import("~icons/mdi/key-outline")["default"];
+    IconMdiListStatus: typeof import("~icons/mdi/list-status")["default"];
     IconMdiMenu: typeof import("~icons/mdi/menu")["default"];
     IconMdiMenuDown: typeof import("~icons/mdi/menu-down")["default"];
     IconMdiOpenInNew: typeof import("~icons/mdi/open-in-new")["default"];
     IconMdiPencil: typeof import("~icons/mdi/pencil")["default"];
+    IconMdiPin: typeof import("~icons/mdi/pin")["default"];
+    IconMdiPinOff: typeof import("~icons/mdi/pin-off")["default"];
+    IconMdiPlay: typeof import("~icons/mdi/play")["default"];
     IconMdiPlus: typeof import("~icons/mdi/plus")["default"];
     IconMdiRenameBox: typeof import("~icons/mdi/rename-box")["default"];
     IconMdiShape: typeof import("~icons/mdi/shape")["default"];
