@@ -26,9 +26,11 @@ declare module "@vue/runtime-core" {
     IconMdiClose: typeof import("~icons/mdi/close")["default"];
     IconMdiCloseCircle: typeof import("~icons/mdi/close-circle")["default"];
     IconMdiCodeBracesBox: typeof import("~icons/mdi/code-braces-box")["default"];
+    IconMdiCogTransfer: typeof import("~icons/mdi/cog-transfer")["default"];
     IconMdiContentSave: typeof import("~icons/mdi/content-save")["default"];
     IconMdiController: typeof import("~icons/mdi/controller")["default"];
     IconMdiDelete: typeof import("~icons/mdi/delete")["default"];
+    IconMdiDeleteAlert: typeof import("~icons/mdi/delete-alert")["default"];
     IconMdiDownload: typeof import("~icons/mdi/download")["default"];
     IconMdiDownloadOutline: typeof import("~icons/mdi/download-outline")["default"];
     IconMdiEarth: typeof import("~icons/mdi/earth")["default"];
@@ -45,6 +47,8 @@ declare module "@vue/runtime-core" {
     IconMdiInformation: typeof import("~icons/mdi/information")["default"];
     IconMdiKeyOutline: typeof import("~icons/mdi/key-outline")["default"];
     IconMdiListStatus: typeof import("~icons/mdi/list-status")["default"];
+    IconMdiLockOpenOutline: typeof import("~icons/mdi/lock-open-outline")["default"];
+    IconMdiLockOutline: typeof import("~icons/mdi/lock-outline")["default"];
     IconMdiMenu: typeof import("~icons/mdi/menu")["default"];
     IconMdiMenuDown: typeof import("~icons/mdi/menu-down")["default"];
     IconMdiOpenInNew: typeof import("~icons/mdi/open-in-new")["default"];
