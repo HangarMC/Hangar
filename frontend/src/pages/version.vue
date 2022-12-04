@@ -36,7 +36,7 @@ useHead(useSeo("Hangar Version", null, route, null));
       please report any findings to our <Link href="https://github.com/HangarMC/Hangar/issues/new/choose">issue tracker</Link>!
     </li>
     <li mb="2">
-      <Link href="https://github.com/orgs/HangarMC/projects/1/views/14">During Beta</Link> we aim to fix all bugs and introduce a few new exiting features.
+      <Link href="https://github.com/orgs/HangarMC/projects/1/views/14">During Beta</Link> we aim to fix all bugs and introduce a few new exciting features.
       Hangar might be in this period for a while.
     </li>
     <li mb="2">
@@ -46,7 +46,7 @@ useHead(useSeo("Hangar Version", null, route, null));
   </ul>
   <p mt="2">You can see a graphical display of those milestones <Link href="https://github.com/orgs/HangarMC/projects/1/insights/2">here</Link>.</p>
   <Alert mt="4">
-    Please remember, these are estimates, not promises, they can change at any time as the team shifts focus. Altho you can always speed up a particular task by
+    Please remember, these are estimates, not promises, they can change at any time as the team shifts focus. Although you can always speed up a particular task by
     contributing!
   </Alert>
 </template>
