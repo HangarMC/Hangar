@@ -29,7 +29,6 @@ module.exports = {
         extensions: [".js", ".ts", ".d.ts", ".vue"],
       },
     },
-    "import/core-modules": ["virtual:generated-layouts", "virtual:generated-pages"],
   },
   rules: {
     "eol-last": ["error", "always"],
