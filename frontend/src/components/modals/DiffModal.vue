@@ -30,7 +30,7 @@ const prettyDiff = computed(() => {
   for (let x = 0; x < diffs.length; x++) {
     const op = diffs[x][0]; // Operation (insert, delete, equal)
     const data = diffs[x][1]; // Text of change.
-    const text = data.replace(patternAmp, "&amp;").replace(patternLt, "&lt;").replace(patternGt, "&gt;").replace(patternPara, "&para;<br>");
+    const text = data.replaceAll(patternAmp, "&amp;").replaceAll(patternLt, "&lt;").replaceAll(patternGt, "&gt;").replaceAll(patternPara, "&para;<br>");
     switch (op) {
       case DIFF_INSERT:
         html[x] = '<ins style="background:#46954a33;">' + text + "</ins>";

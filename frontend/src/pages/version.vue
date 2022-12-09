@@ -46,7 +46,7 @@ useHead(useSeo("Hangar Version", null, route, null));
   </ul>
   <p mt="2">You can see a graphical display of those milestones <Link href="https://github.com/orgs/HangarMC/projects/1/insights/2">here</Link>.</p>
   <Alert mt="4">
-    Please remember, these are estimates, not promises, they can change at any time as the team shifts focus. Although you can always speed up a particular task by
-    contributing!
+    Please remember, these are estimates, not promises, they can change at any time as the team shifts focus. Although you can always speed up a particular task
+    by contributing!
   </Alert>
 </template>

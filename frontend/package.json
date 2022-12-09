@@ -18,6 +18,9 @@
       "eslint"
     ]
   },
+  "eslintConfig": {
+    "extends": "./src/lib/config/vitessr.eslint.config.js"
+  },
   "dependencies": {
     "@headlessui/vue": "1.7.4",
     "@nuxt/devalue": "2.0.0",
