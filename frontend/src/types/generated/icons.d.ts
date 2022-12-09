@@ -48,9 +48,6 @@ declare module "@vue/runtime-core" {
     IconMdiPlus: typeof import("~icons/mdi/plus")["default"];
     IconMdiShape: typeof import("~icons/mdi/shape")["default"];
     IconMdiShieldSun: typeof import("~icons/mdi/shield-sun")["default"];
-    IconMdiSort: typeof import("~icons/mdi/sort")["default"];
-    IconMdiSortAscending: typeof import("~icons/mdi/sort-ascending")["default"];
-    IconMdiSortDescending: typeof import("~icons/mdi/sort-descending")["default"];
     IconMdiSortVariant: typeof import("~icons/mdi/sort-variant")["default"];
     IconMdiStar: typeof import("~icons/mdi/star")["default"];
     IconMdiStarOutline: typeof import("~icons/mdi/star-outline")["default"];
