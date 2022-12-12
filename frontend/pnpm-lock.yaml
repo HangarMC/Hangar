@@ -16,7 +16,7 @@ specifiers:
   '@types/prettier': 2.7.1
   '@types/qs': 6.9.7
   '@types/swagger-ui-dist': 3.30.1
-  '@vitejs/plugin-vue': 3.2.0
+  '@vitejs/plugin-vue': 4.0.0
   '@vue/compiler-sfc': 3.2.45
   '@vue/eslint-config-typescript': 11.0.2
   '@vue/server-renderer': 3.2.45
@@ -99,7 +99,7 @@ dependencies:
   qs: 6.11.0
   swagger-ui-dist: 4.15.5
   universal-cookie: 4.0.4
-  vite-ssr: 0.16.0_qukds6vp7n2br4qjnral7lzv6e
+  vite-ssr: 0.16.0_obqbzjqqe2c6yeljxsqehnwn4u
   vue: 3.2.45
   vue-advanced-cropper: 2.8.6_vue@3.2.45
   vue-i18n: 9.2.2_vue@3.2.45
@@ -120,7 +120,7 @@ devDependencies:
   '@types/prettier': 2.7.1
   '@types/qs': 6.9.7
   '@types/swagger-ui-dist': 3.30.1
-  '@vitejs/plugin-vue': 3.2.0_vite@3.2.4+vue@3.2.45
+  '@vitejs/plugin-vue': 4.0.0_vite@3.2.4+vue@3.2.45
   '@vue/compiler-sfc': 3.2.45
   '@vue/eslint-config-typescript': 11.0.2_sb3redb42nwkq4q6vnqovjecl4
   '@vue/server-renderer': 3.2.45_vue@3.2.45
@@ -1989,11 +1989,11 @@ packages:
       vue: 3.2.45
     dev: false
 
-  /@vitejs/plugin-vue/3.2.0_vite@3.2.4+vue@3.2.45:
-    resolution: {integrity: sha512-E0tnaL4fr+qkdCNxJ+Xd0yM31UwMkQje76fsDVBBUCoGOUPexu2VDUYHL8P4CwV+zMvWw6nlRw19OnRKmYAJpw==}
+  /@vitejs/plugin-vue/4.0.0_vite@3.2.4+vue@3.2.45:
+    resolution: {integrity: sha512-e0X4jErIxAB5oLtDqbHvHpJe/uWNkdpYV83AOG2xo2tEVSzCzewgJMtREZM30wXnM5ls90hxiOtAuVU6H5JgbA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
-      vite: ^3.0.0
+      vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
       vite: 3.2.4_sass@1.56.1
@@ -5665,7 +5665,7 @@ packages:
       - supports-color
     dev: true
 
-  /vite-ssr/0.16.0_qukds6vp7n2br4qjnral7lzv6e:
+  /vite-ssr/0.16.0_obqbzjqqe2c6yeljxsqehnwn4u:
     resolution: {integrity: sha512-Yo6dO1gT019+aeTSEGV0ggiL06wy8VHMcM9nkv58upfMWLBsaIyr5zJufuEtDsaNyMS7r30IACuTmbpk7IPReg==}
     hasBin: true
     peerDependencies:
@@ -5699,7 +5699,7 @@ packages:
         optional: true
     dependencies:
       '@rollup/plugin-replace': 3.1.0
-      '@vitejs/plugin-vue': 3.2.0_vite@3.2.4+vue@3.2.45
+      '@vitejs/plugin-vue': 4.0.0_vite@3.2.4+vue@3.2.45
       '@vue/server-renderer': 3.2.45_vue@3.2.45
       '@vueuse/head': 1.0.20_vue@3.2.45
       chalk: 4.1.2
