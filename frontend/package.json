@@ -9,7 +9,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "previewBuild": "nuxt build && nuxt preview",
-    "prep": "nuxt prepapre",
+    "prep": "nuxt prepare",
     "lint:eslint": "eslint --ext \".js,.vue,.ts,.html\" --ignore-path .gitignore --fix .",
     "lint:prettier": "prettier -w .",
     "prepare": "cd .. && husky install frontend/.husky"
