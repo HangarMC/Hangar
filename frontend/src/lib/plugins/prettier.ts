@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "node:path";
 import { getFileInfo, check, resolveConfig, format } from "prettier";
 import qs from "qs";
-import { Plugin } from "vite";
+import { type Plugin } from "vite";
 import { createFilter } from "@rollup/pluginutils";
 
 export default function prettier(): Plugin {
