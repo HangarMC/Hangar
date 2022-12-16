@@ -65,7 +65,7 @@ jobs:
         run: (cd frontend && pnpm install --frozen-lockfile)
 
       - name: Lint frontend
-        run: (cd frontend && pnpm lint:eslint)
+        run: (cd frontend && pnpm prep && pnpm lint:eslint)
 
       # - name: Sync forth and back with crowdin
       #   uses: crowdin/github-action@1.4.0

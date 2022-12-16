@@ -48,7 +48,7 @@ jobs:
       - name: Lint frontend
         env:
           CI: true
-        run: (cd frontend && pnpm lint:eslint)
+        run: (cd frontend && pnpm prep && pnpm lint:eslint)
 
       - name: Build frontend
         env:
