@@ -26,9 +26,7 @@ const props = withDefaults(
 const open = ref(false);
 const popper = ref();
 function close() {
-  console.log(open.value);
   open.value = false;
-  popper.value.close();
 }
 
 defineExpose({ close });

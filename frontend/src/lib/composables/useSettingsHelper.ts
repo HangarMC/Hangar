@@ -21,7 +21,7 @@ export function useSettingsHelper(
       theme = userData.value.theme || "white";
       settingsLog("user is logged in, locale = " + newLocale + ", theme = " + theme);
     } else {
-      if (request.headers["accept-language"]) {
+      if (request?.headers?.["accept-language"]) {
         const pickedLocale = localeParser.pick(SUPPORTED_LOCALES, request.headers["accept-language"]);
         if (!pickedLocale) {
           settingsLog("user is not logged in and could not pick locale from header, using default...", SUPPORTED_LOCALES, request.headers["accept-language"]);
@@ -43,7 +43,7 @@ export function useSettingsHelper(
         response?.setHeader("Accept-CH", "Sec-CH-Prefers-Color-Scheme");
         response?.setHeader("Vary", "Sec-CH-Prefers-Color-Scheme");
         response?.setHeader("Critical-CH", "Sec-CH-Prefers-Color-Scheme");
-        const themeHeader = request.headers["sec-ch-prefers-color-scheme"];
+        const themeHeader = request?.headers?.["sec-ch-prefers-color-scheme"];
         if (themeHeader) {
           settingsLog("user is not logged in, using theme from header", themeHeader);
           theme = themeHeader === "dark" ? "dark" : "light";

@@ -1,17 +1,9 @@
 <script lang="ts" setup>
 import Popper from "vue3-popper";
-import { ref } from "vue";
-
-const popper = ref();
-function close() {
-  popper.value.close();
-}
-
-defineExpose({ close });
 </script>
 
 <template>
-  <Popper v-bind="$attrs" ref="popper">
+  <Popper v-bind="$attrs">
     <slot />
     <template #content="{ close }">
       <slot name="content" :close="close" />

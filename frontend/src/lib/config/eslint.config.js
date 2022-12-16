@@ -16,6 +16,7 @@ module.exports = {
     "plugin:import/typescript",
     "@vue/typescript/recommended",
     "plugin:eslint-comments/recommended",
+    "@nuxtjs/eslint-config-typescript",
     "prettier",
   ],
   plugins: ["unicorn"],
@@ -29,6 +30,7 @@ module.exports = {
         extensions: [".js", ".ts", ".d.ts", ".vue"],
       },
     },
+  "import/core-modules": ["virtual:windi.css"],
   },
   rules: {
     "eol-last": ["error", "always"],
