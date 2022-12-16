@@ -10,4 +10,4 @@ ENV PORT=1337
 ENTRYPOINT ["./entrypoint.sh"]
 
 COPY --chown=node:node --chmod=744 /chart/dockerfiles/frontend/entrypoint.sh /hangar-frontend/entrypoint.sh
-COPY --chown=node:node /frontend/.output /frontend/
+COPY --chown=node:node /frontend/.output/ /frontend/
