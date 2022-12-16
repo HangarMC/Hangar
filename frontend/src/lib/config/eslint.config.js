@@ -30,7 +30,7 @@ module.exports = {
         extensions: [".js", ".ts", ".d.ts", ".vue"],
       },
     },
-  "import/core-modules": ["virtual:windi.css"],
+    "import/core-modules": ["virtual:windi.css"],
   },
   rules: {
     "eol-last": ["error", "always"],
