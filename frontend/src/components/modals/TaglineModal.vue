@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
-import { ref } from "vue";
 import { useNotificationStore } from "~/lib/store/notification";
 import InputText from "~/lib/components/ui/InputText.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useContext } from "vite-ssr/vue";
-import { useRouter } from "vue-router";
 import { useBackendDataStore } from "~/store/backendData";
 
 const props = defineProps<{
@@ -18,7 +17,6 @@ const props = defineProps<{
 
 const newTagline = ref(props.tagline);
 
-const ctx = useContext();
 const router = useRouter();
 const i18n = useI18n();
 const backendData = useBackendDataStore();
@@ -32,7 +30,7 @@ async function save() {
     });
     router.go(0);
   } catch (e) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e, i18n);
   }
   loading.value = false;
 }

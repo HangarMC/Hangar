@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import { DependencyVersion, PaginatedResult, PluginDependency, Project, ProjectNamespace } from "hangar-api";
+import { useI18n } from "vue-i18n";
+import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 import { Platform } from "~/types/enums";
 import Table from "~/lib/components/design/Table.vue";
-import { useI18n } from "vue-i18n";
 import Button from "~/lib/components/design/Button.vue";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import { required } from "~/lib/composables/useValidationHelpers";
-import { computed, ref } from "vue";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 import { useApi } from "~/composables/useApi";
-import { useRoute } from "vue-router";
 import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
 
 const route = useRoute();
@@ -93,7 +93,7 @@ const selectedUploadTabs: Tab[] = [
   { value: "url", header: "URL" },
 ];
 
-defineExpose({ dependencies, reset: reset });
+defineExpose({ dependencies, reset });
 </script>
 
 <template>

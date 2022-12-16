@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
+import { AxiosError } from "axios";
+import { User } from "hangar-api";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { AxiosError } from "axios";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
-import { useContext } from "vite-ssr/vue";
-import { User } from "hangar-api";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
 import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 import { useNotificationStore } from "~/lib/store/notification";
 
@@ -18,7 +17,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const ctx = useContext();
 const router = useRouter();
 
 const comment = ref<string>("");
@@ -32,7 +30,7 @@ async function confirm(close: () => void) {
     router.go(0);
     useNotificationStore().success(i18n.t(`author.lock.success${props.user.locked ? "Unlock" : "Lock"}`, [props.user.name]));
   } catch (e) {
-    handleRequestError(e as AxiosError, ctx, i18n);
+    handleRequestError(e as AxiosError, i18n);
   }
 }
 </script>

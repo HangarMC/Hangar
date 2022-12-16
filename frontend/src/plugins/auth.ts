@@ -1,22 +1,20 @@
-import type { UserModule } from "~/types";
+import { RouteLocationNormalized, RouteLocationRaw } from "vue-router";
+import { PermissionCheck, UserPermissions } from "hangar-api";
+import { useI18n } from "vue-i18n";
+import { NuxtApp } from "nuxt/app";
 import { useAuth } from "~/composables/useAuth";
 import { routePermLog } from "~/lib/composables/useLog";
 import { useAuthStore } from "~/store/auth";
-import { RouteLocationNormalized, RouteLocationRaw } from "vue-router";
-import { useContext } from "vite-ssr/vue";
 import { useApi } from "~/composables/useApi";
-import { PermissionCheck, UserPermissions } from "hangar-api";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 import { hasPerms, toNamedPermission } from "~/composables/usePerm";
 import { NamedPermission, PermissionType } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useI18n } from "vue-i18n";
 import { useSettingsStore } from "~/store/useSettingsStore";
-import * as domain from "~/composables/useDomain";
+import { defineNuxtPlugin, useRequestEvent, useRouter } from "#imports";
 
-export const install: UserModule = async ({ request, response, router, redirect }) => {
-  router.beforeEach(async (to, from, next) => {
-    const d = domain.create(request, response);
+export default defineNuxtPlugin(async (nuxtApp: NuxtApp) => {
+  useRouter().beforeEach(async (to, from, next) => {
     if (to.fullPath.startsWith("/@vite")) {
       // really don't need to do stuff for such meta routes
       return;
@@ -30,15 +28,18 @@ export const install: UserModule = async ({ request, response, router, redirect 
     } else {
       next();
     }
-    domain.exit(d);
   });
-  if (request?.url.includes("/@vite")) {
+  await useAuth.updateUser();
+  if (!process.server) return;
+  const event = useRequestEvent();
+  const request = event.node.res;
+  const response = event.node.res;
+  if (request?.url?.includes("/@vite")) {
     // really don't need to do stuff for such meta routes
     return;
   }
-  await useAuth.updateUser();
   await useSettingsStore().loadSettingsServer(request, response);
-};
+});
 
 async function loadPerms(to: RouteLocationNormalized) {
   const authStore = useAuthStore();
@@ -83,33 +84,20 @@ async function handleRoutePerms(to: RouteLocationNormalized) {
   }
 }
 
-type handlersType = { [key: string]: (authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) => Promise<RouteLocationRaw | undefined> };
+type handlersType = {
+  [key: string]: (
+    authStore: ReturnType<typeof useAuthStore>,
+    to: RouteLocationNormalized
+  ) => Promise<RouteLocationRaw | undefined> | RouteLocationRaw | undefined;
+};
 const handlers: handlersType = {
-  requireLoggedIn: requireLoggedIn,
-  requireNotLoggedIn: requireNotLoggedIn,
-  requireCurrentUser: requireCurrentUser,
-  requireGlobalPerm: requireGlobalPerm,
-  requireProjectPerm: requireProjectPerm,
-  require404: require404,
+  currentUserRequired,
+  globalPermsRequired,
+  projectPermsRequired,
 };
 
-async function requireLoggedIn(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
-  routePermLog("route requireLoggedIn");
-  const result = checkLogin(authStore, to, 401, "You must be logged in to perform this action");
-  if (result) return result;
-}
-
-async function requireNotLoggedIn(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
-  routePermLog("route requireNotLoggedIn");
-  if (authStore.authenticated) {
-    return {
-      path: "/",
-    };
-  }
-}
-
-async function requireCurrentUser(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
-  routePermLog("route requireCurrentUser");
+function currentUserRequired(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
+  routePermLog("route currentUserRequired");
   if (!to.params.user) {
     throw new TypeError("Must have 'user' as a route param to use CurrentUser");
   }
@@ -122,30 +110,30 @@ async function requireCurrentUser(authStore: ReturnType<typeof useAuthStore>, to
   }
 }
 
-async function requireGlobalPerm(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
-  routePermLog("route requireGlobalPerm", to.meta.requireGlobalPerm);
+async function globalPermsRequired(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
+  routePermLog("route globalPermsRequired", to.meta.globalPermsRequired);
   const result = checkLogin(authStore, to, 403);
   if (result) return result;
   const check = await useApi<PermissionCheck>("permissions/hasAll", true, "get", {
-    permissions: toNamedPermission(to.meta.requireGlobalPerm as string[]),
+    permissions: toNamedPermission(to.meta.globalPermsRequired as string[]),
   }).catch((e) => {
     try {
-      console.log("error!", e);
-      handleRequestError(e, useContext(), useI18n());
+      routePermLog("error!", e);
+      handleRequestError(e, useI18n());
     } catch (e2) {
-      console.log("error while checking perm", e);
-      console.log("encountered additional error while error handling", e2);
+      routePermLog("error while checking perm", e);
+      routePermLog("encountered additional error while error handling", e2);
     }
   });
-  console.debug("result", check);
+  routePermLog("result", check);
   if (check && (check.type !== PermissionType.GLOBAL || !check.result)) {
-    console.debug("404?");
+    routePermLog("404?");
     return useErrorRedirect(to, 404, "Not found");
   }
 }
 
-async function requireProjectPerm(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
-  routePermLog("route requireProjectPerm", to.meta.requireProjectPerm);
+function projectPermsRequired(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
+  routePermLog("route projectPermsRequired", to.meta.projectPermsRequired);
   if (!to.params.user || !to.params.project) {
     throw new Error("Can't use this decorator on a route without `author` and `slug` path params");
   }
@@ -154,15 +142,10 @@ async function requireProjectPerm(authStore: ReturnType<typeof useAuthStore>, to
   if (!authStore.routePermissions) {
     return useErrorRedirect(to, 404);
   }
-  routePermLog("check has perms", to.meta.requireProjectPerm);
-  if (!hasPerms(...toNamedPermission(to.meta.requireProjectPerm as string[]))) {
+  routePermLog("check has perms", to.meta.projectPermsRequired);
+  if (!hasPerms(...toNamedPermission(to.meta.projectPermsRequired as string[]))) {
     return useErrorRedirect(to, 404);
   }
-}
-
-async function require404(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
-  routePermLog("route requireProjectPerm", to.meta.require404);
-  return useErrorRedirect(to, 404);
 }
 
 function checkLogin(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized, status: number, msg?: string) {

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { useHead } from "@vueuse/head";
-import { useSeo } from "~/composables/useSeo";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useRoute } from "vue-router";
 import { HangarProject } from "hangar-internal";
+import { useSeo } from "~/composables/useSeo";
+import { projectIconUrl } from "~/composables/useUrlHelper";
 
 const route = useRoute();
 const props = defineProps<{

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import ProjectNavItem from "~/components/projects/ProjectNavItem.vue";
 import { computed } from "vue";
-import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission } from "~/types/enums";
 import { useI18n } from "vue-i18n";
 import { HangarProject } from "hangar-internal";
+import ProjectNavItem from "~/components/projects/ProjectNavItem.vue";
+import { hasPerms } from "~/composables/usePerm";
+import { NamedPermission } from "~/types/enums";
 import { avatarUrl, linkout } from "~/composables/useUrlHelper";
 
 const props = defineProps<{

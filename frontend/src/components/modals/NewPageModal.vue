@@ -1,17 +1,16 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
+import { HangarProjectPage } from "hangar-internal";
+import { computed, inject, ref, watch } from "vue";
+import { AxiosError } from "axios";
+import { useRoute, useRouter } from "vue-router";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import { useBackendDataStore } from "~/store/backendData";
-import { useContext } from "vite-ssr/vue";
-import { HangarProjectPage } from "hangar-internal";
-import { computed, inject, ref, watch } from "vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import InputSelect, { Option } from "~/lib/components/ui/InputSelect.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { AxiosError } from "axios";
-import { useRoute, useRouter } from "vue-router";
 
 const props = defineProps<{
   projectId: number;
@@ -19,7 +18,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const ctx = useContext();
 const route = useRoute();
 const router = useRouter();
 const backendData = useBackendDataStore();
@@ -45,7 +43,7 @@ watch(name, async () => {
   })
     .catch((err: AxiosError) => {
       if (!err.response?.data.isHangarApiException) {
-        return handleRequestError(err, ctx, i18n);
+        return handleRequestError(err, i18n);
       }
       nameErrorMessages.value.push(i18n.t(err.response.data.message));
     })
@@ -79,7 +77,7 @@ async function createPage() {
 
     await router.push(`/${route.params.user}/${route.params.project}/pages/${slug}`);
   } catch (e) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e, i18n);
   }
   loading.value = false;
 

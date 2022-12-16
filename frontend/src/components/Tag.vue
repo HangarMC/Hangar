@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 
-const props = defineProps<{
-  name?: string;
-  color?: Color;
-}>();
-
 interface Color {
   foreground?: string;
   background?: string;
 }
+
+const props = defineProps<{
+  name?: string;
+  color?: Color;
+}>();
 
 const ccColor = computed(() => {
   if (props.color?.foreground) {

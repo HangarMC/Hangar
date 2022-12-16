@@ -1,34 +1,37 @@
 <script lang="ts" setup>
 import { useHead } from "@vueuse/head";
-import { useSeo } from "~/composables/useSeo";
 import { useRoute } from "vue-router";
-import { Platform, ReviewAction, ReviewState } from "~/types/enums";
 import { HangarProject, HangarReview, HangarReviewMessage, HangarVersion, IPlatform } from "hangar-internal";
+import { useI18n } from "vue-i18n";
+import { computed, reactive, ref } from "vue";
+import { useVuelidate } from "@vuelidate/core";
+import { useSeo } from "~/composables/useSeo";
+import { Platform, ReviewAction, ReviewState } from "~/types/enums";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import Button from "~/lib/components/design/Button.vue";
-import { useI18n } from "vue-i18n";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 import Alert from "~/lib/components/design/Alert.vue";
-import { computed, reactive, ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useAuthStore } from "~/store/auth";
 import { prettyDate, prettyDateTime } from "~/lib/composables/useDate";
 import { useBackendDataStore } from "~/store/backendData";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useContext } from "vite-ssr/vue";
-import { useVuelidate } from "@vuelidate/core";
 import Tag from "~/components/Tag.vue";
 import Accordeon from "~/lib/components/design/Accordeon.vue";
 import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
+import { definePageMeta } from "#imports";
+
+definePageMeta({
+  globalPermsRequired: ["REVIEWER"],
+});
 
 const route = useRoute();
 const authStore = useAuthStore();
 const backendDataStore = useBackendDataStore();
 const i18n = useI18n();
 const t = i18n.t;
-const ctx = useContext();
 const v = useVuelidate();
 
 const props = defineProps<{
@@ -315,7 +318,7 @@ function sendReviewRequest(
       then();
       refresh();
     })
-    .catch((e) => handleRequestError(e, ctx, i18n))
+    .catch((e) => handleRequestError(e, i18n))
     .finally(final);
 }
 
@@ -443,8 +446,3 @@ useHead(
     </Alert>
   </div>
 </template>
-
-<route lang="yaml">
-meta:
-  requireGlobalPerm: ["REVIEWER"]
-</route>

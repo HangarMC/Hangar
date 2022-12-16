@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
+import { computed, isRef, ref, watch } from "vue";
+import { useHead } from "@vueuse/head";
+import { useRoute, useRouter } from "vue-router";
+import { PaginatedResult, Project } from "hangar-api";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import ProjectList from "~/components/projects/ProjectList.vue";
 import { useProjects } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useContext } from "vite-ssr/vue";
 import Card from "~/lib/components/design/Card.vue";
 import Container from "~/lib/components/design/Container.vue";
-import { computed, isRef, ref, watch } from "vue";
 import { useSeo } from "~/composables/useSeo";
-import { useHead } from "@vueuse/head";
-import { useRoute, useRouter } from "vue-router";
 import { useApi } from "~/composables/useApi";
-import { PaginatedResult, Project } from "hangar-api";
 import Alert from "~/lib/components/design/Alert.vue";
 import { Platform } from "~/types/enums";
 import InputRadio from "~/lib/components/ui/InputRadio.vue";
@@ -26,7 +25,6 @@ import { useConfig } from "~/lib/composables/useConfig";
 const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
-const ctx = useContext();
 
 const backendData = useBackendDataStore();
 const sorters = [
@@ -54,7 +52,7 @@ const projects = ref<PaginatedResult<Project> | null>();
 const requestParams = computed(() => {
   const limit = 10;
   const params: Record<string, any> = {
-    limit: limit,
+    limit,
     offset: page.value * limit,
     version: filters.value.versions,
     category: filters.value.categories,
@@ -70,7 +68,7 @@ const requestParams = computed(() => {
 
   return params;
 });
-const p = await useProjects(requestParams.value).catch((e) => handleRequestError(e, ctx, i18n));
+const p = await useProjects(requestParams.value).catch((e) => handleRequestError(e, i18n));
 if (p && p.value) {
   projects.value = p.value;
   await checkOffsetLargerCount();
@@ -100,7 +98,7 @@ async function updateProjects() {
 
 // if somebody set page too high, lets reset it back
 async function checkOffsetLargerCount() {
-  if (projects.value && projects.value.pagination.offset != 0 && projects.value.pagination.offset > projects.value.pagination.count) {
+  if (projects.value && projects.value.pagination?.offset !== 0 && projects.value.pagination?.offset > projects.value.pagination?.count) {
     page.value = 0;
     await updateProjects();
   }
@@ -151,107 +149,104 @@ useHead(meta);
 </script>
 
 <template>
-  <Container class="flex flex-col items-center gap-4">
-    <Alert v-if="loggedOut" type="success">{{ i18n.t("hangar.loggedOut") }}</Alert>
-    <h1 class="text-3xl font-bold uppercase text-center mt-4">{{ i18n.t("hangar.projectSearch.title") }}</h1>
-    <h2 class="text-1xl text-center my-2">{{ i18n.t("hangar.projectSearch.subTitle") }}</h2>
-    <!-- Search Bar -->
-    <div class="relative rounded-md flex shadow-md w-full max-w-screen-md">
-      <!-- Text Input -->
-      <input
-        v-model="query"
-        class="rounded-l-md p-4 basis-full min-w-0 dark:bg-gray-700"
-        type="text"
-        :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
-      />
-      <!-- Sorting Button -->
-      <Menu>
-        <MenuButton class="bg-gradient-to-r from-[#004ee9] to-[#367aff] rounded-r-md text-left font-semibold flex items-center gap-2 text-white p-2">
-          <span class="whitespace-nowrap">{{ i18n.t("hangar.projectSearch.sortBy") }}</span>
-          <icon-mdi-sort-variant class="text-xl pointer-events-none" />
-        </MenuButton>
-        <transition
-          enter-active-class="transition duration-100 ease-out"
-          enter-from-class="transform scale-95 opacity-0"
-          enter-to-class="transform scale-100 opacity-100"
-          leave-active-class="transition duration-75 ease-out"
-          leave-from-class="transform scale-100 opacity-100"
-          leave-to-class="transform scale-95 opacity-0"
-        >
-          <MenuItems class="absolute right-0 top-16 flex flex-col z-10 background-default filter drop-shadow-md rounded-md border-top-primary">
-            <MenuItem v-for="sorter in sorters" :key="sorter.id" v-slot="{ active }">
-              <button :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': active }" class="p-2 text-left" @click="activeSorter = sorter.id">
-                {{ sorter.label }}
-              </button>
-            </MenuItem>
-          </MenuItems>
-        </transition>
-      </Menu>
-    </div>
-  </Container>
-  <Container class="mt-5" lg="flex items-start gap-6">
-    <!-- Projects -->
-    <div class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
-      <ProjectList :projects="projects" @update:page="(newPage) => (page = newPage)" />
-    </div>
-    <!-- Sidebar -->
-    <Card accent class="min-w-300px flex flex-col gap-4">
-      <div class="platforms">
-        <h4 class="font-bold mb-1">
-          {{ i18n.t("hangar.projectSearch.platforms") }}
-          <span v-if="filters.platform" class="font-normal text-sm hover:(underline) text-gray-600 dark:text-gray-400" @click="filters.platform = null">
-            {{ i18n.t("hangar.projectSearch.clear") }}
-          </span>
-        </h4>
-        <div class="flex flex-col gap-1">
-          <ul>
-            <li v-for="platform in backendData.visiblePlatforms" :key="platform.enumName" class="inline-flex w-full">
-              <InputRadio :label="platform.name" :model-value="filters.platform" :value="platform.enumName" @update:model-value="updatePlatform">
-                <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
-              </InputRadio>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div v-if="filters.platform" class="versions">
-        <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions") }}</h4>
-        <div class="flex flex-col gap-1 max-h-30 overflow-auto">
-          <InputCheckbox
-            v-for="version in versions(filters.platform)"
-            :key="version.version"
-            v-model="filters.versions"
-            :value="version.version"
-            :label="version.version"
-          />
-        </div>
-      </div>
-      <div class="categories">
-        <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.categories") }}</h4>
-        <div class="flex flex-col gap-1">
-          <InputCheckbox
-            v-for="category in backendData.visibleCategories"
-            :key="category.apiName"
-            v-model="filters.categories"
-            :value="category.apiName"
-            :label="i18n.t(category.title)"
+  <div>
+    <Container class="flex flex-col items-center gap-4">
+      <Alert v-if="loggedOut" type="success">{{ i18n.t("hangar.loggedOut") }}</Alert>
+      <h1 class="text-3xl font-bold uppercase text-center mt-4">{{ i18n.t("hangar.projectSearch.title") }}</h1>
+      <h2 class="text-1xl text-center my-2">{{ i18n.t("hangar.projectSearch.subTitle") }}</h2>
+      <!-- Search Bar -->
+      <div class="relative rounded-md flex shadow-md w-full max-w-screen-md">
+        <!-- Text Input -->
+        <input
+          v-model="query"
+          class="rounded-l-md p-4 basis-full min-w-0 dark:bg-gray-700"
+          type="text"
+          :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
+        />
+        <!-- Sorting Button -->
+        <Menu>
+          <MenuButton class="bg-gradient-to-r from-[#004ee9] to-[#367aff] rounded-r-md text-left font-semibold flex items-center gap-2 text-white p-2">
+            <span class="whitespace-nowrap">{{ i18n.t("hangar.projectSearch.sortBy") }}</span>
+            <icon-mdi-sort-variant class="text-xl pointer-events-none" />
+          </MenuButton>
+          <transition
+            enter-active-class="transition duration-100 ease-out"
+            enter-from-class="transform scale-95 opacity-0"
+            enter-to-class="transform scale-100 opacity-100"
+            leave-active-class="transition duration-75 ease-out"
+            leave-from-class="transform scale-100 opacity-100"
+            leave-to-class="transform scale-95 opacity-0"
           >
-            <CategoryLogo :category="category.apiName" :size="22" class="mr-1" />
-          </InputCheckbox>
-        </div>
+            <MenuItems class="absolute right-0 top-16 flex flex-col z-10 background-default filter drop-shadow-md rounded-md border-top-primary">
+              <MenuItem v-for="sorter in sorters" :key="sorter.id" v-slot="{ active }">
+                <button :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': active }" class="p-2 text-left" @click="activeSorter = sorter.id">
+                  {{ sorter.label }}
+                </button>
+              </MenuItem>
+            </MenuItems>
+          </transition>
+        </Menu>
       </div>
-      <div class="licenses">
-        <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.licenses") }}</h4>
-        <div class="flex flex-col gap-1">
-          <InputCheckbox v-for="license in backendData.licenses" :key="license" v-model="filters.licenses" :value="license" :label="license">
-            <LicenseLogo :license="license" :size="22" class="mr-1" />
-          </InputCheckbox>
-        </div>
+    </Container>
+    <Container class="mt-5" lg="flex items-start gap-6">
+      <!-- Projects -->
+      <div class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
+        <ProjectList :projects="projects" @update:page="(newPage) => (page = newPage)" />
       </div>
-    </Card>
-  </Container>
+      <!-- Sidebar -->
+      <Card accent class="min-w-300px flex flex-col gap-4">
+        <div class="platforms">
+          <h4 class="font-bold mb-1">
+            {{ i18n.t("hangar.projectSearch.platforms") }}
+            <span v-if="filters.platform" class="font-normal text-sm hover:(underline) text-gray-600 dark:text-gray-400" @click="filters.platform = null">
+              {{ i18n.t("hangar.projectSearch.clear") }}
+            </span>
+          </h4>
+          <div class="flex flex-col gap-1">
+            <ul>
+              <li v-for="platform in backendData.visiblePlatforms" :key="platform.enumName" class="inline-flex w-full">
+                <InputRadio :label="platform.name" :model-value="filters.platform" :value="platform.enumName" @update:model-value="updatePlatform">
+                  <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
+                </InputRadio>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div v-if="filters.platform" class="versions">
+          <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions") }}</h4>
+          <div class="flex flex-col gap-1 max-h-30 overflow-auto">
+            <InputCheckbox
+              v-for="version in versions(filters.platform)"
+              :key="version.version"
+              v-model="filters.versions"
+              :value="version.version"
+              :label="version.version"
+            />
+          </div>
+        </div>
+        <div class="categories">
+          <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.categories") }}</h4>
+          <div class="flex flex-col gap-1">
+            <InputCheckbox
+              v-for="category in backendData.visibleCategories"
+              :key="category.apiName"
+              v-model="filters.categories"
+              :value="category.apiName"
+              :label="i18n.t(category.title)"
+            >
+              <CategoryLogo :category="category.apiName" :size="22" class="mr-1" />
+            </InputCheckbox>
+          </div>
+        </div>
+        <div class="licenses">
+          <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.licenses") }}</h4>
+          <div class="flex flex-col gap-1">
+            <InputCheckbox v-for="license in backendData.licenses" :key="license" v-model="filters.licenses" :value="license" :label="license">
+              <LicenseLogo :license="license" :size="22" class="mr-1" />
+            </InputCheckbox>
+          </div>
+        </div>
+      </Card>
+    </Container>
+  </div>
 </template>
-
-<route lang="yaml">
-meta:
-  layout: wide
-</route>

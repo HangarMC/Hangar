@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { ProjectOwner, ProjectSettingsForm } from "hangar-internal";
-import { ProjectCategory } from "~/types/enums";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { computed, Ref, ref } from "vue";
-import { useInternalApi } from "~/composables/useApi";
-import { useContext } from "vite-ssr/vue";
-import { useBackendDataStore } from "~/store/backendData";
+import { computed, type Ref, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
+import { useVuelidate } from "@vuelidate/core";
+import { ProjectCategory } from "~/types/enums";
+import { handleRequestError } from "~/composables/useErrorHandling";
+import { useInternalApi } from "~/composables/useApi";
+import { useBackendDataStore } from "~/store/backendData";
+import { useSeo } from "~/composables/useSeo";
 import Steps, { Step } from "~/lib/components/design/Steps.vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
@@ -19,12 +19,12 @@ import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
 import Button from "~/lib/components/design/Button.vue";
 import Markdown from "~/components/Markdown.vue";
 import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
-import { useVuelidate } from "@vuelidate/core";
 import { required, maxLength, pattern, url, requiredIf } from "~/lib/composables/useValidationHelpers";
 import { validProjectName } from "~/composables/useHangarValidations";
 import Spinner from "~/lib/components/design/Spinner.vue";
 import Link from "~/lib/components/design/Link.vue";
 import { usePossibleOwners } from "~/composables/useApiHelper";
+import { definePageMeta } from "#imports";
 
 interface NewProjectForm extends ProjectSettingsForm {
   ownerId: ProjectOwner["userId"];
@@ -32,7 +32,10 @@ interface NewProjectForm extends ProjectSettingsForm {
   pageContent: string | null;
 }
 
-const ctx = useContext();
+definePageMeta({
+  loginRequired: true,
+});
+
 const i18n = useI18n();
 const backendData = useBackendDataStore();
 const router = useRouter();
@@ -119,7 +122,7 @@ function convertBBCode() {
     .then((markdown) => {
       converter.value.markdown = markdown;
     })
-    .catch((e) => handleRequestError(e, ctx, i18n))
+    .catch((e) => handleRequestError(e, i18n))
     .finally(() => {
       converter.value.loading = false;
     });
@@ -143,7 +146,7 @@ function createProject() {
         }
       }
 
-      handleRequestError(err, ctx, i18n, "project.new.error.create");
+      handleRequestError(err, i18n, "project.new.error.create");
     })
     .finally(() => {
       projectLoading.value = false;
@@ -327,11 +330,6 @@ function createProject() {
     </template>
   </Steps>
 </template>
-
-<route lang="yaml">
-meta:
-  requireLoggedIn: true
-</route>
 
 <style lang="scss" scoped>
 .v-enter-active {

@@ -19,7 +19,3 @@ useHead(useSeo((route.params.status || 404) + " " + (route.params.msg || "Not fo
     </template>
   </div>
 </template>
-
-<route lang="yaml">
-layout: error
-</route>

@@ -2,7 +2,7 @@ import { RouteLocationNormalizedLoaded } from "vue-router";
 import { HangarProject } from "hangar-internal";
 import { ref, watch } from "vue";
 
-export async function useOpenProjectPages(route: RouteLocationNormalizedLoaded, project: HangarProject) {
+export function useOpenProjectPages(route: RouteLocationNormalizedLoaded, project: HangarProject) {
   const open = ref<string[]>([]);
 
   watch(

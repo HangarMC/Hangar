@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
-import { useResolvedFlags, useUnresolvedFlags } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
 import { ref } from "vue";
 import { Flag, HangarFlagNotification } from "hangar-internal";
+import { PaginatedResult } from "hangar-api";
+import { useResolvedFlags, useUnresolvedFlags } from "~/composables/useApiHelper";
+import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Card from "~/lib/components/design/Card.vue";
@@ -13,26 +13,24 @@ import Button from "~/lib/components/design/Button.vue";
 import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
 import ReportNotificationModal from "~/components/modals/ReportNotificationModal.vue";
 import Pagination from "~/lib/components/design/Pagination.vue";
-import { PaginatedResult } from "hangar-api";
 
 const props = defineProps<{
   resolved: boolean;
 }>();
 
-const ctx = useContext();
 const i18n = useI18n();
 const route = useRoute();
-const flags = await (props.resolved ? useResolvedFlags() : useUnresolvedFlags()).catch((e) => handleRequestError(e, ctx, i18n));
+const flags = await (props.resolved ? useResolvedFlags() : useUnresolvedFlags()).catch((e) => handleRequestError(e, i18n));
 const loading = ref<{ [key: number]: boolean }>({});
 
 function resolve(flag: Flag) {
   loading.value[flag.id] = true;
   useInternalApi(`flags/${flag.id}/resolve/${props.resolved ? "false" : "true"}`, false, "POST")
-    .catch<any>((e) => handleRequestError(e, ctx, i18n))
+    .catch<any>((e) => handleRequestError(e, i18n))
     .then(async () => {
       if (flags && flags.value) {
         const newFlags = await useInternalApi<PaginatedResult<Flag>>("flags/" + (props.resolved ? "resolved" : "unresolved"), false).catch((e) =>
-          handleRequestError(e, ctx, i18n)
+          handleRequestError(e, i18n)
         );
         if (newFlags) {
           flags.value = newFlags;
@@ -44,7 +42,7 @@ function resolve(flag: Flag) {
     });
 }
 
-//TODO: bake into hangarflag?
+// TODO: bake into hangarflag?
 const notifications = ref<HangarFlagNotification[]>([]);
 const currentId = ref(-1);
 async function getNotifications(flag: Flag) {
@@ -53,7 +51,7 @@ async function getNotifications(flag: Flag) {
   }
 
   notifications.value = (await useInternalApi<HangarFlagNotification[]>(`flags/${flag.id}/notifications`, false, "get").catch((e) =>
-    handleRequestError(e, ctx, i18n)
+    handleRequestError(e, i18n)
   )) as HangarFlagNotification[];
   currentId.value = flag.id;
 }

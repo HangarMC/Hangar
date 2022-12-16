@@ -1,17 +1,16 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
+import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import { Visibility } from "~/types/enums";
 import InputRadio from "~/lib/components/ui/InputRadio.vue";
 import { useBackendDataStore } from "~/store/backendData";
-import { computed, ref } from "vue";
 import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useContext } from "vite-ssr/vue";
 import { useNotificationStore } from "~/lib/store/notification";
-import { useRouter } from "vue-router";
 
 const props = defineProps<{
   type: "project" | "version";
@@ -20,7 +19,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const ctx = useContext();
 const backendData = useBackendDataStore();
 const notification = useNotificationStore();
 const router = useRouter();
@@ -36,7 +34,7 @@ async function submit(): Promise<void> {
   await useInternalApi(props.postUrl, true, "post", {
     visibility: visibility.value,
     comment: setVisibility.value?.showModal ? reason.value : null,
-  }).catch((e) => handleRequestError(e, ctx, i18n));
+  }).catch((e) => handleRequestError(e, i18n));
   reason.value = "";
   if (setVisibility.value) {
     notification.success(i18n.t("visibility.modal.success", [props.type, i18n.t(setVisibility.value?.title)]));

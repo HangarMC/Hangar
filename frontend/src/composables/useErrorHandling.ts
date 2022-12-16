@@ -1,20 +1,12 @@
 import { AxiosError } from "axios";
 import { HangarApiException, HangarValidationException, MultiHangarApiException } from "hangar-api";
-import { Composer, UseI18nOptions } from "vue-i18n";
-import { Context } from "vite-ssr/vue";
-import { useNotificationStore } from "~/lib/store/notification";
+import { useI18n } from "vue-i18n";
 import { ref } from "vue";
+import { useNotificationStore } from "~/lib/store/notification";
 
-type I18nType = Composer<
-  NonNullable<UseI18nOptions["messages"]>,
-  NonNullable<UseI18nOptions["datetimeFormats"]>,
-  NonNullable<UseI18nOptions["numberFormats"]>,
-  NonNullable<UseI18nOptions["locale"]>
->;
-
-export function handleRequestError(err: AxiosError, { writeResponse }: Context, i18n: I18nType, msg: string | undefined = undefined) {
+export function handleRequestError(err: AxiosError, i18n: ReturnType<typeof useI18n>, msg: string | undefined = undefined) {
   if (import.meta.env.SSR) {
-    _handleRequestError(err, writeResponse, i18n);
+    _handleRequestError(err, i18n);
     return ref();
   }
   const notfication = useNotificationStore();
@@ -44,7 +36,11 @@ export function handleRequestError(err: AxiosError, { writeResponse }: Context, 
   return ref();
 }
 
-function _handleRequestError(err: AxiosError, writeResponse: Context["writeResponse"], i18n: I18nType) {
+function _handleRequestError(err: AxiosError, i18n: ReturnType<typeof useI18n>) {
+  function writeResponse(object: unknown) {
+    console.log("writeResponse", object);
+    // throw new Error("TODO: Implement me"); // TODO
+  }
   if (!err.isAxiosError) {
     // everything should be an AxiosError
     writeResponse({
@@ -79,7 +75,7 @@ function _handleRequestError(err: AxiosError, writeResponse: Context["writeRespo
   }
 }
 
-function collectErrors(exception: HangarApiException | MultiHangarApiException, i18n: Context["app"]["i18n"]): string[] {
+function collectErrors(exception: HangarApiException | MultiHangarApiException, i18n: ReturnType<typeof useI18n>): string[] {
   if (!exception.isMultiException) {
     return [i18n.te(exception.message) ? i18n.t(exception.message, [exception.messageArgs]) : exception.message];
   } else {

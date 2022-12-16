@@ -1,16 +1,14 @@
+import { HangarUser } from "hangar-internal";
+import { AxiosError, AxiosRequestHeaders } from "axios";
+import Cookies from "universal-cookie";
+import jwtDecode, { type JwtPayload } from "jwt-decode";
 import { useAuthStore } from "~/store/auth";
 import { useCookies } from "~/composables/useCookies";
 import { useInternalApi } from "~/composables/useApi";
 import { useAxios } from "~/composables/useAxios";
 import { authLog } from "~/lib/composables/useLog";
-import { HangarUser } from "hangar-internal";
-import * as domain from "~/composables/useDomain";
-import { Pinia } from "pinia";
-import { AxiosError, AxiosRequestHeaders } from "axios";
-import { useResponse } from "~/composables/useResReq";
-import Cookies from "universal-cookie";
-import jwtDecode, { JwtPayload } from "jwt-decode";
 import { useConfig } from "~/lib/composables/useConfig";
+import { useRequestEvent } from "#imports";
 
 class Auth {
   loginUrl(redirectUrl: string): string {
@@ -20,7 +18,7 @@ class Auth {
     return `/login?returnUrl=${useConfig().publicHost}${redirectUrl}`;
   }
 
-  async logout() {
+  logout() {
     location.replace(`/logout?returnUrl=${useConfig().publicHost}?loggedOut`);
   }
 
@@ -36,6 +34,7 @@ class Auth {
   }
 
   // TODO do we need to scope this to the user?
+  // TODO do we even need this anymore?
   refreshPromise: Promise<boolean | string> | null = null;
 
   async refreshToken() {
@@ -70,7 +69,7 @@ class Auth {
           resolve(false);
         } else if (import.meta.env.SSR) {
           if (response.headers["set-cookie"]) {
-            useResponse()?.setHeader("set-cookie", response.headers["set-cookie"]);
+            useRequestEvent().node.res?.setHeader("set-cookie", response.headers["set-cookie"]);
             const token = new Cookies(response.headers["set-cookie"]?.join("; ")).get("HangarAuth");
             if (token) {
               authLog("got token");
@@ -103,7 +102,7 @@ class Auth {
   }
 
   async invalidate() {
-    const store = useAuthStore(this.usePiniaIfPresent());
+    const store = useAuthStore();
     store.$patch({
       user: null,
       authenticated: false,
@@ -120,13 +119,13 @@ class Auth {
   }
 
   async updateUser(): Promise<void> {
-    const authStore = useAuthStore(this.usePiniaIfPresent());
+    const authStore = useAuthStore();
     if (authStore.invalidated) {
       authLog("no point in updating if we just invalidated");
       return;
     }
-    const user = await useInternalApi<HangarUser>("users/@me", true).catch(async (err) => {
-      authLog("no user");
+    const user = await useInternalApi<HangarUser>("users/@me", true).catch((err) => {
+      authLog("no user", Object.assign({}, err));
       return this.invalidate();
     });
     if (user) {
@@ -135,10 +134,6 @@ class Auth {
       authStore.$patch({ authenticated: true, invalidated: false });
       authLog("user is now " + authStore.user?.name);
     }
-  }
-
-  usePiniaIfPresent() {
-    return import.meta.env.SSR ? domain.get<Pinia>("pinia") : null;
   }
 }
 

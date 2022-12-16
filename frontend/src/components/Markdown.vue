@@ -1,12 +1,10 @@
 <script lang="ts" setup>
 import { computed, nextTick, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useContext } from "vite-ssr/vue";
-import { useI18n } from "vue-i18n";
 import Spinner from "~/lib/components/design/Spinner.vue";
 
-const ctx = useContext();
 const i18n = useI18n();
 const props = withDefaults(
   defineProps<{
@@ -28,7 +26,7 @@ async function fetch() {
   loading.value = true;
   renderedMarkdown.value = await useInternalApi<string>("pages/render", false, "post", {
     content: props.raw,
-  }).catch<any>((e) => handleRequestError(e, ctx, i18n));
+  }).catch<any>((e) => handleRequestError(e, i18n));
   loading.value = false;
   if (!import.meta.env.SSR) {
     await nextTick(setupAdmonition);
@@ -100,6 +98,6 @@ function setupAdmonition() {
 </template>
 
 <style lang="scss">
-@import "/src/lib/assets/css/admonition.css";
-@import "/src/lib/assets/css/markdown.scss";
+@import "@/lib/assets/css/admonition.css";
+@import "@/lib/assets/css/markdown.scss";
 </style>

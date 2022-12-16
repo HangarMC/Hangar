@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
+import { HangarProject, HangarVersion } from "hangar-internal";
+import { computed, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
-import { HangarProject, HangarVersion } from "hangar-internal";
-import { useContext } from "vite-ssr/vue";
-import { computed, ref } from "vue";
 import { Platform } from "~/types/enums";
 import { useBackendDataStore } from "~/store/backendData";
-import { useRoute, useRouter } from "vue-router";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
@@ -19,7 +18,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const ctx = useContext();
 const route = useRoute();
 const router = useRouter();
 const backendData = useBackendDataStore();
@@ -34,13 +32,13 @@ const projectVersion = computed(() => {
 const loading = ref(false);
 const selectedVersions = ref(projectVersion.value?.platformDependencies[platform.value?.name.toUpperCase() as Platform]);
 
-async function save() {
+function save() {
   loading.value = true;
   useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/savePlatformVersions`, true, "post", {
     platform: platform.value?.name?.toUpperCase(),
     versions: selectedVersions.value,
   })
-    .catch((e) => handleRequestError(e, ctx, i18n))
+    .catch((e) => handleRequestError(e, i18n))
     .then(async () => {
       await router.go(0);
     })

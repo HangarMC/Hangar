@@ -1,33 +1,36 @@
 <script lang="ts" setup>
-import Card from "~/lib/components/design/Card.vue";
 import { User } from "hangar-api";
 import { useI18n } from "vue-i18n";
+import { HangarProject, ProjectChannel } from "hangar-internal";
+import { useHead } from "@vueuse/head";
+import { useRoute } from "vue-router";
+import Card from "~/lib/components/design/Card.vue";
 import { Header } from "~/components/SortableTable.vue";
 import { ChannelFlag } from "~/types/enums";
-import { useContext } from "vite-ssr/vue";
 import { useProjectChannels } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { HangarProject, ProjectChannel } from "hangar-internal";
 import { useInternalApi } from "~/composables/useApi";
 import Table from "~/lib/components/design/Table.vue";
 import Tag from "~/components/Tag.vue";
 import Button from "~/lib/components/design/Button.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import ChannelModal from "~/components/modals/ChannelModal.vue";
-import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
-import { useRoute } from "vue-router";
 import { useNotificationStore } from "~/lib/store/notification";
+import { definePageMeta } from "#imports";
+
+definePageMeta({
+  projectPermsRequired: ["EDIT_CHANNELS"],
+});
 
 const props = defineProps<{
   user: User;
   project: HangarProject;
 }>();
 const i18n = useI18n();
-const ctx = useContext();
 const route = useRoute();
-const channels = await useProjectChannels(props.project.namespace.owner, props.project.namespace.slug).catch((e) => handleRequestError(e, ctx, i18n));
+const channels = await useProjectChannels(props.project.namespace.owner, props.project.namespace.slug).catch((e) => handleRequestError(e, i18n));
 const validations = useBackendDataStore().validations;
 const notifications = useNotificationStore();
 
@@ -37,7 +40,7 @@ useHead(
 
 async function refreshChannels() {
   const newChannels = await useInternalApi<ProjectChannel[]>(`channels/${props.project.namespace.owner}/${props.project.namespace.slug}`, false).catch((e) =>
-    handleRequestError(e, ctx, i18n)
+    handleRequestError(e, i18n)
   );
   if (channels && newChannels) {
     channels.value = newChannels;
@@ -50,7 +53,7 @@ async function deleteChannel(channel: ProjectChannel) {
       refreshChannels();
       notifications.warn(i18n.t("channel.modal.success.deletedChannel", [channel.name]));
     })
-    .catch((e) => handleRequestError(e, ctx, i18n));
+    .catch((e) => handleRequestError(e, i18n));
 }
 
 async function addChannel(channel: ProjectChannel) {
@@ -63,7 +66,7 @@ async function addChannel(channel: ProjectChannel) {
       refreshChannels();
       notifications.success(i18n.t("channel.modal.success.addedChannel", [channel.name]));
     })
-    .catch((e) => handleRequestError(e, ctx, i18n));
+    .catch((e) => handleRequestError(e, i18n));
 }
 
 async function editChannel(channel: ProjectChannel) {
@@ -78,7 +81,7 @@ async function editChannel(channel: ProjectChannel) {
       refreshChannels();
       notifications.success(i18n.t("channel.modal.success.editedChannel", [channel.name]));
     })
-    .catch((e) => handleRequestError(e, ctx, i18n));
+    .catch((e) => handleRequestError(e, i18n));
 }
 </script>
 
@@ -134,8 +137,3 @@ async function editChannel(channel: ProjectChannel) {
     </ChannelModal>
   </Card>
 </template>
-
-<route lang="yaml">
-meta:
-  requireProjectPerm: ["EDIT_CHANNELS"]
-</route>

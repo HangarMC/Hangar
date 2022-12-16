@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { hasSlotContent } from "~/lib/composables/useSlot";
 import { useSlots } from "vue";
+import { hasSlotContent } from "~/lib/composables/useSlot";
 
 const props = withDefaults(
   defineProps<{

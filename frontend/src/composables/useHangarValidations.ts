@@ -12,7 +12,7 @@ export const validProjectName = withOverrideMessage((ownerId: () => string) =>
       try {
         await useInternalApi("projects/validateName", false, "get", {
           userId: ownerId(),
-          value: value,
+          value,
         });
         return { $valid: true };
       } catch (e: any) {
@@ -71,9 +71,9 @@ export const validChannelName = withOverrideMessage((projectId: string, existing
       }
       try {
         await useInternalApi("channels/checkName", true, "get", {
-          projectId: projectId,
+          projectId,
           name: value,
-          existingName: existingName,
+          existingName,
         });
         return { $valid: true };
       } catch (e: any) {
@@ -92,9 +92,9 @@ export const validChannelColor = withOverrideMessage((projectId: string, existin
       }
       try {
         await useInternalApi("channels/checkColor", true, "get", {
-          projectId: projectId,
+          projectId,
           color: value,
-          existingColor: existingColor,
+          existingColor,
         });
         return { $valid: true };
       } catch (e: any) {

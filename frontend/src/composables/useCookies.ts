@@ -1,11 +1,12 @@
 import { createCookies, useCookies as cookies } from "@vueuse/integrations/useCookies";
-import { useRequest, useResponse } from "~/composables/useResReq";
 import * as cookie from "cookie";
+import { useRequestEvent } from "#imports";
 
 export const useCookies = () => {
   if (import.meta.env.SSR) {
-    const req = useRequest();
-    const res = useResponse();
+    const event = useRequestEvent();
+    const req = event.node.req;
+    const res = event.node.res;
     if (!req || !req.headers) {
       console.error("req null?!");
       console.trace();

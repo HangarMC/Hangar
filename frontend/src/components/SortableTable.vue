@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import { reactive, ref, watch } from "vue";
+import { Pagination } from "hangar-api";
 import { hasSlotContent } from "~/lib/composables/useSlot";
 import Table from "~/lib/components/design/Table.vue";
-import { reactive, ref, watch } from "vue";
 import PaginationButtons from "~/lib/components/design/PaginationButtons.vue";
 import PaginationComponent from "~/lib/components/design/Pagination.vue";
-import { Pagination } from "hangar-api";
 
 export interface Header {
   name: string;

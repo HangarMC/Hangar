@@ -2,11 +2,10 @@
 import { HangarProject, HangarProjectPage } from "hangar-internal";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import { useProjectPage } from "~/composables/useProjectPage";
-import { useContext } from "vite-ssr";
 import { useHead } from "@vueuse/head";
-import { useSeo } from "~/composables/useSeo";
 import { inject } from "vue";
+import { useProjectPage } from "~/composables/useProjectPage";
+import { useSeo } from "~/composables/useSeo";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { projectIconUrl } from "~/composables/useUrlHelper";
@@ -17,12 +16,11 @@ const props = defineProps<{
 
 const route = useRoute();
 const router = useRouter();
-const ctx = useContext();
 const i18n = useI18n();
 
 const updateProjectPages = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
 
-const { editingPage, changeEditingPage, page, savePage, deletePage } = await useProjectPage(route, router, ctx, i18n, props.project);
+const { editingPage, changeEditingPage, page, savePage, deletePage } = await useProjectPage(route, router, i18n, props.project);
 if (page) {
   const title = page.value?.name === "Home" ? props.project.name : page.value?.name + " | " + props.project.name;
   useHead(useSeo(title, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
@@ -36,7 +34,7 @@ async function deletePageAndUpdateProject() {
       updateProjectPages(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.project.id}`, false, "get"));
     }
   } catch (e: any) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e, i18n);
   }
 }
 </script>

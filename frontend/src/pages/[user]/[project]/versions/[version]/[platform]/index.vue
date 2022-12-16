@@ -1,15 +1,17 @@
 <script lang="ts" setup>
-import { NamedPermission, Platform, ReviewState, Visibility, PinnedStatus } from "~/types/enums";
 import { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
-import { useContext } from "vite-ssr/vue";
+import { User } from "hangar-api";
+import { useHead } from "@vueuse/head";
+import { AxiosError } from "axios";
+import { filesize } from "filesize";
+import { NamedPermission, Platform, ReviewState, Visibility, PinnedStatus } from "~/types/enums";
 import { useBackendDataStore } from "~/store/backendData";
 import { lastUpdated } from "~/lib/composables/useTime";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { User } from "hangar-api";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 import TagComponent from "~/components/Tag.vue";
 import { hasPerms } from "~/composables/usePerm";
@@ -18,24 +20,20 @@ import MarkdownEditor from "~/components/MarkdownEditor.vue";
 import Markdown from "~/components/Markdown.vue";
 import Card from "~/lib/components/design/Card.vue";
 import Link from "~/lib/components/design/Link.vue";
-import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useNotificationStore } from "~/lib/store/notification";
 import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import PlatformVersionEditModal from "~/components/modals/PlatformVersionEditModal.vue";
-import { AxiosError } from "axios";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
-import { filesize } from "filesize";
 
 const route = useRoute();
 const i18n = useI18n();
-const ctx = useContext();
 const router = useRouter();
 const backendData = useBackendDataStore();
 const notification = useNotificationStore();
@@ -102,7 +100,7 @@ async function savePage(content: string) {
     }
     editingPage.value = false;
   } catch (err) {
-    handleRequestError(err as AxiosError, ctx, i18n, "page.new.error.save");
+    handleRequestError(err as AxiosError, i18n, "page.new.error.save");
   }
 }
 
@@ -112,7 +110,7 @@ async function setPinned(value: boolean) {
     notification.success(i18n.t(`version.page.pinned.request.${value}`));
     router.go(0);
   } catch (e) {
-    handleRequestError(e as AxiosError, ctx, i18n);
+    handleRequestError(e as AxiosError, i18n);
   }
 }
 
@@ -124,7 +122,7 @@ async function deleteVersion(comment: string) {
     notification.success(i18n.t("version.success.softDelete"));
     await router.replace(`/${route.params.user}/${route.params.project}/versions`);
   } catch (e) {
-    handleRequestError(e as AxiosError, ctx, i18n);
+    handleRequestError(e as AxiosError, i18n);
   }
 }
 
@@ -141,7 +139,7 @@ async function hardDeleteVersion(comment: string) {
       },
     });
   } catch (e) {
-    handleRequestError(e as AxiosError, ctx, i18n);
+    handleRequestError(e as AxiosError, i18n);
   }
 }
 
@@ -151,7 +149,7 @@ async function restoreVersion() {
     notification.success(i18n.t("version.success.restore"));
     await router.replace(`/${route.params.user}/${route.params.project}/versions`);
   } catch (e) {
-    handleRequestError(e as AxiosError, ctx, i18n);
+    handleRequestError(e as AxiosError, i18n);
   }
 }
 </script>

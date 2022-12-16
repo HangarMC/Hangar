@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
-import { useContext } from "vite-ssr/vue";
+import { useHead } from "@vueuse/head";
+import { HangarProject } from "hangar-internal";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import Card from "~/lib/components/design/Card.vue";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
@@ -10,14 +11,11 @@ import { avatarUrl, projectIconUrl } from "~/composables/useUrlHelper";
 import Alert from "~/lib/components/design/Alert.vue";
 import { useWatchers } from "~/composables/useApiHelper";
 import Link from "~/lib/components/design/Link.vue";
-import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
-import { HangarProject } from "hangar-internal";
 
 const route = useRoute();
 const i18n = useI18n();
-const ctx = useContext();
-const watchers = await useWatchers(route.params.user as string, route.params.project as string).catch<any>((e) => handleRequestError(e, ctx, i18n));
+const watchers = await useWatchers(route.params.user as string, route.params.project as string).catch<any>((e) => handleRequestError(e, i18n));
 
 const props = defineProps<{
   project: HangarProject;

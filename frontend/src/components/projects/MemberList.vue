@@ -2,6 +2,8 @@
 import { computed, handleError, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { JoinableMember } from "hangar-internal";
+import { PaginatedResult, Role, User } from "hangar-api";
+import { useRoute, useRouter } from "vue-router";
 import { NamedPermission } from "~/types/enums";
 import Card from "~/lib/components/design/Card.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
@@ -11,16 +13,18 @@ import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import { avatarUrl } from "~/composables/useUrlHelper";
 import { hasPerms } from "~/composables/usePerm";
 import { useBackendDataStore } from "~/store/backendData";
-import { PaginatedResult, Role, User } from "hangar-api";
-import { useRoute, useRouter } from "vue-router";
 import { useApi, useInternalApi } from "~/composables/useApi";
-import { useContext } from "vite-ssr/vue";
 import IconMdiClock from "~icons/mdi/clock";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 import { useAuthStore } from "~/store/auth";
 import MemberLeaveModal from "~/components/modals/MemberLeaveModal.vue";
 import { handleRequestError } from "~/composables/useErrorHandling";
+
+interface EditableMember {
+  name: string;
+  roleId: number;
+}
 
 const props = withDefaults(
   defineProps<{
@@ -54,7 +58,6 @@ const i18n = useI18n();
 const store = useBackendDataStore();
 const route = useRoute();
 const router = useRouter();
-const ctx = useContext();
 const authStore = useAuthStore();
 const roles: Role[] = props.organization ? store.orgRoles : store.projectRoles;
 
@@ -88,7 +91,7 @@ function cancelTransfer() {
   const url = props.organization ? `organizations/org/${props.author}/canceltransfer` : `projects/project/${props.author}/${props.slug}/canceltransfer`;
   useInternalApi(url, true, "post")
     .then(() => router.go(0))
-    .catch((e) => handleRequestError(e, ctx, i18n))
+    .catch((e) => handleRequestError(e, i18n))
     .finally(() => (saving.value = false));
 }
 
@@ -104,7 +107,7 @@ function invite(member: string, role: Role) {
   return "";
 }
 
-async function post(member: EditableMember, action: "edit" | "add" | "remove") {
+function post(member: EditableMember, action: "edit" | "add" | "remove") {
   addErrors.value = [];
   if (member.name.length === 0) {
     addErrors.value.push(i18n.t("general.error.nameEmpty"));
@@ -143,11 +146,6 @@ async function doSearch(val: string) {
     offset: 0,
   });
   result.value = users.result.filter((u) => !props.members.some((m) => m.user.name === u.name)).map((u) => u.name);
-}
-
-interface EditableMember {
-  name: string;
-  roleId: number;
 }
 </script>
 

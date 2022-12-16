@@ -25,10 +25,17 @@ const props = withDefaults(
 const errored = ref(false);
 
 const sizeClass = computed(() => {
-  if (props.size == "xs") return "w-32px h-32px";
-  else if (props.size == "sm") return "w-50px h-50px";
-  else if (props.size == "md") return "w-75px h-75px";
-  else if (props.size == "lg") return "w-100px h-100px";
+  switch (props.size) {
+    case "xs":
+      return "w-32px h-32px";
+    case "sm":
+      return "w-50px h-50px";
+    case "md":
+      return "w-75px h-75px";
+    case "lg":
+      return "w-100px h-100px";
+    // No default
+  }
 
   return "w-200px h-200px";
 });

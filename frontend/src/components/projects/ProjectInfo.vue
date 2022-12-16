@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
+import { HangarProject } from "hangar-internal";
 import { forumUrl } from "~/composables/useUrlHelper";
 import Card from "~/lib/components/design/Card.vue";
 import Link from "~/lib/components/design/Link.vue";
@@ -8,7 +9,6 @@ import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
-import { HangarProject } from "hangar-internal";
 import DonationModal from "~/components/donation/DonationModal.vue";
 import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
 

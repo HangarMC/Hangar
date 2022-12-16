@@ -43,7 +43,7 @@ jobs:
       - name: Install frontend deps
         env:
           CI: true
-        run: (cd frontend && pnpm install --frozen-lockfile && cd server && pnpm install --frozen-lockfile)
+        run: (cd frontend && pnpm install --frozen-lockfile)
 
       - name: Lint frontend
         env:
@@ -58,5 +58,5 @@ jobs:
           AUTH_HOST: "https://hangar-auth.benndorf.dev"
           PUBLIC_HOST: "https://hangar.benndorf.dev"
           DEBUG: "hangar:*"
-        run: (cd frontend && pnpm build && cd server && pnpm build)
+        run: (cd frontend && pnpm build)
 

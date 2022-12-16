@@ -1,20 +1,38 @@
 <script lang="ts" setup>
-import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
-import { handleRequestError } from "~/composables/useErrorHandling";
 import { ref, watch } from "vue";
+import Chartist, { IChartistSeriesData, ILineChartOptions } from "chartist";
+import { useHead } from "@vueuse/head";
+import { handleRequestError } from "~/composables/useErrorHandling";
 import { fromISOString, toISODateString } from "~/lib/composables/useDate";
 import { useInternalApi } from "~/composables/useApi";
 import Chart from "~/components/Chart.vue";
-import Chartist, { IChartistSeriesData, ILineChartOptions } from "chartist";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
 import Card from "~/lib/components/design/Card.vue";
 import InputDate from "~/lib/components/ui/InputDate.vue";
-import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
+import { definePageMeta } from "#imports";
 
-const ctx = useContext();
+definePageMeta({
+  globalPermsRequired: ["VIEW_STATS"],
+});
+
+interface DayStat {
+  x: Date;
+  y: number;
+}
+
+interface DayStats {
+  day: string;
+  flagsClosed: number;
+  flagsOpened: number;
+  reviews: number;
+  totalDownloads: number;
+  unsafeDownloads: number;
+  uploads: number;
+}
+
 const i18n = useI18n();
 const route = useRoute();
 
@@ -26,7 +44,7 @@ const endDate = ref<string>(toISODateString(now));
 let data: DayStats[] = (await useInternalApi<DayStats[]>("admin/stats", true, "get", {
   from: startDate.value,
   to: endDate.value,
-}).catch((e) => handleRequestError(e, ctx, i18n))) as DayStats[];
+}).catch((e) => handleRequestError(e, i18n))) as DayStats[];
 
 let reviews: DayStat[] = [];
 let uploads: DayStat[] = [];
@@ -104,7 +122,7 @@ async function updateDate() {
   data = (await useInternalApi<DayStats[]>("admin/stats", true, "get", {
     from: startDate.value,
     to: endDate.value,
-  }).catch((e) => handleRequestError(e, ctx, i18n))) as DayStats[];
+  }).catch((e) => handleRequestError(e, i18n))) as DayStats[];
   if (!data) {
     return;
   }
@@ -130,48 +148,30 @@ async function updateDate() {
   (flagData.value.series[0] as IChartistSeriesData).data = openedFlags;
   (flagData.value.series[1] as IChartistSeriesData).data = closedFlags;
 }
-
-interface DayStat {
-  x: Date;
-  y: number;
-}
-
-interface DayStats {
-  day: string;
-  flagsClosed: number;
-  flagsOpened: number;
-  reviews: number;
-  totalDownloads: number;
-  unsafeDownloads: number;
-  uploads: number;
-}
 </script>
 
 <template>
-  <PageTitle>{{ i18n.t("stats.title") }}</PageTitle>
-  <InputDate v-model="startDate" />
-  <InputDate v-model="endDate" />
-  <Card class="mt-4">
-    <template #header> {{ i18n.t("stats.plugins") }}</template>
-    <client-only>
-      <Chart id="stats" :data="pluginData" :options="options" bar-type="Line" />
-    </client-only>
-  </Card>
-  <Card class="mt-4">
-    <template #header>{{ i18n.t("stats.downloads") }}</template>
-    <client-only>
-      <Chart id="downloads" :data="downloadData" :options="options" bar-type="Line" />
-    </client-only>
-  </Card>
-  <Card class="mt-4">
-    <template #header>{{ i18n.t("stats.flags") }}</template>
-    <client-only>
-      <Chart id="flags" :data="flagData" :options="options" bar-type="Line" />
-    </client-only>
-  </Card>
+  <div>
+    <PageTitle>{{ i18n.t("stats.title") }}</PageTitle>
+    <InputDate v-model="startDate" />
+    <InputDate v-model="endDate" />
+    <Card class="mt-4">
+      <template #header> {{ i18n.t("stats.plugins") }}</template>
+      <client-only>
+        <Chart id="stats" :data="pluginData" :options="options" bar-type="Line" />
+      </client-only>
+    </Card>
+    <Card class="mt-4">
+      <template #header>{{ i18n.t("stats.downloads") }}</template>
+      <client-only>
+        <Chart id="downloads" :data="downloadData" :options="options" bar-type="Line" />
+      </client-only>
+    </Card>
+    <Card class="mt-4">
+      <template #header>{{ i18n.t("stats.flags") }}</template>
+      <client-only>
+        <Chart id="flags" :data="flagData" :options="options" bar-type="Line" />
+      </client-only>
+    </Card>
+  </div>
 </template>
-
-<route lang="yaml">
-meta:
-  requireGlobalPerm: ["VIEW_STATS"]
-</route>

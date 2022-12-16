@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/lib/components/modals/Modal.vue";
 import { ProjectChannel } from "hangar-internal";
 import { computed, reactive, ref } from "vue";
+import { useVuelidate } from "@vuelidate/core";
+import Button from "~/lib/components/design/Button.vue";
+import Modal from "~/lib/components/modals/Modal.vue";
 import { useBackendDataStore } from "~/store/backendData";
-import { useContext } from "vite-ssr/vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import { required } from "~/lib/composables/useValidationHelpers";
 import { validChannelName, validChannelColor } from "~/composables/useHangarValidations";
-import { useVuelidate } from "@vuelidate/core";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { ChannelFlag } from "~/types/enums";
 
@@ -23,7 +22,6 @@ const emit = defineEmits<{
 }>();
 
 const i18n = useI18n();
-const ctx = useContext();
 const v = useVuelidate();
 
 const frozen = props.channel && props.channel.flags.includes(ChannelFlag.FROZEN);

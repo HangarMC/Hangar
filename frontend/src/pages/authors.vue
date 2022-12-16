@@ -1,22 +1,20 @@
 <script lang="ts" setup>
-import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
+import { useHead } from "@vueuse/head";
+import { PaginatedResult, User } from "hangar-api";
+import { computed, ref } from "vue";
 import { useAuthors } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import SortableTable, { Header } from "~/components/SortableTable.vue";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
-import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import Link from "~/lib/components/design/Link.vue";
 import { useApi } from "~/composables/useApi";
-import { PaginatedResult, User } from "hangar-api";
-import { computed, ref } from "vue";
-const ctx = useContext();
 const i18n = useI18n();
 const route = useRoute();
-const authors = await useAuthors().catch((e) => handleRequestError(e, ctx, i18n));
+const authors = await useAuthors().catch((e) => handleRequestError(e, i18n));
 
 const headers = [
   { name: "pic", title: "", sortable: false },
@@ -30,7 +28,7 @@ const sort = ref<string[]>([]);
 const requestParams = computed(() => {
   const limit = 25;
   return {
-    limit: limit,
+    limit,
     offset: page.value * limit,
     sort: sort.value,
   };
@@ -40,8 +38,8 @@ async function updateSort(col: string, sorter: Record<string, number>) {
   sort.value = [...Object.keys(sorter)]
     .map((k) => {
       const val = sorter[k];
-      if (val == -1) return "-" + k;
-      if (val == 1) return k;
+      if (val === -1) return "-" + k;
+      if (val === 1) return k;
       return null;
     })
     .filter((v) => v !== null) as string[];
@@ -62,12 +60,14 @@ useHead(useSeo(i18n.t("pages.authorsTitle"), "Hangar Project Authors", route, nu
 </script>
 
 <template>
-  <PageTitle>Authors</PageTitle>
-  <SortableTable :headers="headers" :items="authors?.result" :server-pagination="authors?.pagination" @update:sort="updateSort" @update:page="updatePage">
-    <template #item_pic="{ item }"><UserAvatar :username="item.name" size="xs"></UserAvatar></template>
-    <template #item_joinDate="{ item }">{{ i18n.d(item?.joinDate, "date") }}</template>
-    <template #item_name="{ item }">
-      <Link :to="'/' + item.name">{{ item.name }}</Link>
-    </template>
-  </SortableTable>
+  <div>
+    <PageTitle>Authors</PageTitle>
+    <SortableTable :headers="headers" :items="authors?.result" :server-pagination="authors?.pagination" @update:sort="updateSort" @update:page="updatePage">
+      <template #item_pic="{ item }"><UserAvatar :username="item.name" size="xs"></UserAvatar></template>
+      <template #item_joinDate="{ item }">{{ i18n.d(item?.joinDate, "date") }}</template>
+      <template #item_name="{ item }">
+        <Link :to="'/' + item.name">{{ item.name }}</Link>
+      </template>
+    </SortableTable>
+  </div>
 </template>

@@ -1,19 +1,18 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
+import { HangarProject, HangarVersion } from "hangar-internal";
+import { computed, onMounted, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { DependencyVersion, PluginDependency } from "hangar-api";
+import { cloneDeep } from "lodash-es";
 import { hasPerms } from "~/composables/usePerm";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
-import { HangarProject, HangarVersion } from "hangar-internal";
-import { useContext } from "vite-ssr/vue";
-import { computed, onMounted, ref, watch } from "vue";
 import { NamedPermission, Platform } from "~/types/enums";
 import { useBackendDataStore } from "~/store/backendData";
-import { useRoute, useRouter } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
 import DependencyTable from "~/components/projects/DependencyTable.vue";
-import { DependencyVersion, PluginDependency } from "hangar-api";
-import { cloneDeep } from "lodash-es";
 
 const props = defineProps<{
   project: HangarProject;
@@ -21,7 +20,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const ctx = useContext();
 const route = useRoute();
 const router = useRouter();
 const backendData = useBackendDataStore();
@@ -72,7 +70,7 @@ async function save() {
     });
     await router.go(0);
   } catch (e) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e, i18n);
   }
   loading.value = false;
 }

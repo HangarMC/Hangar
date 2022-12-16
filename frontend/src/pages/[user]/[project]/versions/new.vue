@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import { PluginDependency } from "hangar-api";
 import { useHead } from "@vueuse/head";
-import { useSeo } from "~/composables/useSeo";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import { HangarProject, IPlatform, PendingVersion, ProjectChannel } from "hangar-internal";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
+import { computed, reactive, type Ref, ref } from "vue";
+import { remove } from "lodash-es";
+import { type ValidationRule } from "@vuelidate/core";
+import { useSeo } from "~/composables/useSeo";
+import { projectIconUrl } from "~/composables/useUrlHelper";
 import Steps, { Step } from "~/lib/components/design/Steps.vue";
-import { computed, reactive, Ref, ref } from "vue";
 import InputFile from "~/lib/components/ui/InputFile.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
@@ -18,21 +20,22 @@ import { required, url as validUrl } from "~/lib/composables/useValidationHelper
 import { useInternalApi } from "~/composables/useApi";
 import { Platform } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useContext } from "vite-ssr/vue";
 import { formatSize } from "~/lib/composables/useFile";
 import ChannelModal from "~/components/modals/ChannelModal.vue";
-import { remove } from "lodash-es";
 import { useBackendDataStore } from "~/store/backendData";
 import DependencyTable from "~/components/projects/DependencyTable.vue";
 import InputTag from "~/lib/components/ui/InputTag.vue";
 import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import { useProjectChannels } from "~/composables/useApiHelper";
-import { ValidationRule } from "@vuelidate/core";
+import { definePageMeta } from "#imports";
+
+definePageMeta({
+  projectPermsRequired: ["CREATE_VERSION"],
+});
 
 const route = useRoute();
 const router = useRouter();
-const ctx = useContext();
 const i18n = useI18n();
 const t = i18n.t;
 const backendData = useBackendDataStore();
@@ -45,7 +48,7 @@ const steps: Step[] = [
   {
     value: "artifact",
     header: t("version.new.steps.1.header"),
-    beforeNext: async () => {
+    beforeNext: () => {
       return createPendingVersion();
     },
     disableNext: computed(() => {
@@ -211,7 +214,7 @@ async function createPendingVersion() {
   );
 
   pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project.id}/upload`, true, "post", formData).catch<any>((e) =>
-    handleRequestError(e, ctx, i18n)
+    handleRequestError(e, i18n)
   );
   loading.create = false;
 
@@ -257,7 +260,7 @@ async function createVersion() {
     await useInternalApi(`versions/version/${props.project.id}/create`, true, "post", pendingVersion.value);
     await router.push(`/${route.params.user}/${route.params.project}/versions`);
   } catch (e: any) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e, i18n);
   } finally {
     loading.submit = false;
   }
@@ -408,8 +411,3 @@ useHead(
     </template>
   </Steps>
 </template>
-
-<route lang="yaml">
-meta:
-  requireProjectPerm: ["CREATE_VERSION"]
-</route>

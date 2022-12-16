@@ -1,26 +1,29 @@
 <script lang="ts" setup>
 import { useHead } from "@vueuse/head";
-import { useSeo } from "~/composables/useSeo";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
+import { computed, ref } from "vue";
+import { useVuelidate } from "@vuelidate/core";
+import { useSeo } from "~/composables/useSeo";
 import Card from "~/lib/components/design/Card.vue";
 import { useAuthStore } from "~/store/auth";
 import { useBackendDataStore } from "~/store/backendData";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useContext } from "vite-ssr/vue";
-import { computed, ref } from "vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import Button from "~/lib/components/design/Button.vue";
 import Alert from "~/lib/components/design/Alert.vue";
 import { maxLength, minLength, pattern, required } from "~/lib/composables/useValidationHelpers";
 import { validOrgName } from "~/composables/useHangarValidations";
-import { useVuelidate } from "@vuelidate/core";
+import { definePageMeta } from "#imports";
+
+definePageMeta({
+  loginRequired: true,
+});
 
 const route = useRoute();
 const router = useRouter();
 const i18n = useI18n();
-const ctx = useContext();
 const backendData = useBackendDataStore();
 const v = useVuelidate();
 
@@ -39,7 +42,7 @@ async function create() {
     });
     await router.push("/" + name.value);
   } catch (e: any) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e, i18n);
   }
 }
 </script>
@@ -75,8 +78,3 @@ async function create() {
     </Alert>
   </Card>
 </template>
-
-<route lang="yaml">
-meta:
-  requireLoggedIn: true
-</route>

@@ -1,4 +1,6 @@
 {
+  // https://v3.nuxtjs.org/concepts/typescript
+  "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
     "module": "ESNext",
@@ -13,10 +15,10 @@
     "noUnusedLocals": true,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["vite/client", "vite-plugin-pages/client", "vite-plugin-vue-layouts/client", "unplugin-icons/types/vue"],
+    "types": ["vite/client", "vite-plugin-pages/client", "vite-plugin-vue-layouts/client", "unplugin-icons/types/vue", "nuxt-windicss"],
     "paths": {
       "~/*": ["src/*"],
-      "~icons/*": ["src/types/generated/icons.d.ts"]
+      "#imports": [".nuxt/imports"]
     }
   },
   "exclude": ["dist", "node_modules"]

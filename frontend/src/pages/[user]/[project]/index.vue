@@ -1,18 +1,17 @@
 <script lang="ts" setup>
 import { User } from "hangar-api";
-import Card from "~/lib/components/design/Card.vue";
 import { useI18n } from "vue-i18n";
-import ProjectInfo from "~/components/projects/ProjectInfo.vue";
 import { HangarProject, PinnedVersion } from "hangar-internal";
+import { useRoute, useRouter } from "vue-router";
+import { ref } from "vue";
+import Card from "~/lib/components/design/Card.vue";
+import ProjectInfo from "~/components/projects/ProjectInfo.vue";
 import MemberList from "~/components/projects/MemberList.vue";
 import MarkdownEditor from "~/components/MarkdownEditor.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
-import { useRoute, useRouter } from "vue-router";
-import { useContext } from "vite-ssr/vue";
 import Markdown from "~/components/Markdown.vue";
 import ProjectPageList from "~/components/projects/ProjectPageList.vue";
-import { ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useBackendDataStore } from "~/store/backendData";
@@ -28,9 +27,7 @@ const props = defineProps<{
 }>();
 const i18n = useI18n();
 const backendData = useBackendDataStore();
-const ctx = useContext();
 const route = useRoute();
-const context = useContext();
 const router = useRouter();
 const openProjectPages = await useOpenProjectPages(route, props.project);
 
@@ -44,7 +41,7 @@ function saveSponsors(content: string) {
       sponsors.value = content;
       editingSponsors.value = false;
     })
-    .catch((e) => handleRequestError(e, ctx, i18n, "page.new.error.save"));
+    .catch((e) => handleRequestError(e, i18n, "page.new.error.save"));
 }
 
 function createPinnedVersionUrl(version: PinnedVersion): string {

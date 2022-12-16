@@ -4,26 +4,27 @@
     "node": ">=16"
   },
   "scripts": {
-    "dev": "vite-ssr dev --port 3333",
-    "dev:spa": "vite --port 3333",
-    "build": "cross-env NODE_ENV=production vite-ssr build",
-    "preview": "vite-ssr --port 1337 --open",
-    "lint:eslint": "eslint --ext \".js,.vue,.ts,.json,.html\" --ignore-path .gitignore --ignore-pattern 'server/**' --fix .",
+    "build": "nuxt build",
+    "dev": "nuxt dev --port 3333",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "previewBuild": "nuxt build && nuxt preview",
+    "lint:eslint": "eslint --ext \".js,.vue,.ts,.html\" --ignore-path .gitignore --fix .",
     "lint:prettier": "prettier -w .",
     "prepare": "cd .. && husky install frontend/.husky"
   },
   "lint-staged": {
-    "*.{ts,js,vue,json,html}": [
+    "*.{ts,js,vue,html}": [
       "prettier -c",
       "eslint"
     ]
   },
   "eslintConfig": {
-    "extends": "./src/lib/config/vitessr.eslint.config.js"
+    "extends": "./src/lib/config/eslint.config.js"
   },
   "dependencies": {
     "@headlessui/vue": "1.7.4",
-    "@nuxt/devalue": "2.0.0",
+    "@pinia/nuxt": "0.4.6",
     "@vuelidate/core": "2.0.0",
     "@vuelidate/validators": "2.0.0",
     "@vueuse/components": "9.6.0",
@@ -40,22 +41,21 @@
     "jwt-decode": "3.1.2",
     "lodash-es": "4.17.21",
     "nprogress": "0.2.0",
-    "ohmyfetch": "0.4.21",
     "pinia": "2.0.27",
     "prism-theme-vars": "0.2.4",
     "qs": "6.11.0",
     "swagger-ui-dist": "4.15.5",
     "universal-cookie": "4.0.4",
-    "vite-ssr": "0.16.0",
     "vue": "3.2.45",
     "vue-advanced-cropper": "2.8.6",
     "vue-i18n": "9.2.2",
-    "vue-router": "4.1.6",
     "vue3-popper": "1.5.0"
   },
   "devDependencies": {
-    "@iconify/json": "2.1.147",
+    "@iconify-json/mdi": "1.1.38",
     "@intlify/vite-plugin-vue-i18n": "6.0.3",
+    "@nuxtjs-alt/proxy": "2.1.2",
+    "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@types/accept-language-parser": "1.5.3",
     "@types/chartist": "0.11.1",
     "@types/debug": "4.1.7",
@@ -67,11 +67,8 @@
     "@types/prettier": "2.7.1",
     "@types/qs": "6.9.7",
     "@types/swagger-ui-dist": "3.30.1",
-    "@vitejs/plugin-vue": "3.2.0",
     "@vue/compiler-sfc": "3.2.45",
     "@vue/eslint-config-typescript": "11.0.2",
-    "@vue/server-renderer": "3.2.45",
-    "cross-env": "7.0.3",
     "eslint": "8.29.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-import-resolver-alias": "1.1.2",
@@ -81,7 +78,8 @@
     "eslint-plugin-vue": "9.8.0",
     "husky": "8.0.2",
     "lint-staged": "13.0.4",
-    "node-fetch": "3.3.0",
+    "nuxt": "3.0.0",
+    "nuxt-windicss": "2.6.0",
     "pnpm": "7.18.0",
     "prettier": "2.8.0",
     "regenerator-runtime": "0.13.11",
@@ -91,10 +89,6 @@
     "unplugin-icons": "0.14.14",
     "unplugin-vue-components": "0.22.11",
     "vite": "3.2.4",
-    "vite-plugin-eslint": "1.8.1",
-    "vite-plugin-pages": "0.27.1",
-    "vite-plugin-pwa": "0.13.3",
-    "vite-plugin-vue-layouts": "0.7.0",
-    "vite-plugin-windicss": "1.8.8"
+    "vite-plugin-eslint": "1.8.1"
   }
 }

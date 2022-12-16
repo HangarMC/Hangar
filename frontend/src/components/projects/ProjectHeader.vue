@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { computed, ref, Ref } from "vue";
+import { computed, ref, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { HangarProject } from "hangar-internal";
+import { AxiosError } from "axios";
+import { useRouter } from "vue-router";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Button from "~/lib/components/design/Button.vue";
 import Card from "~/lib/components/design/Card.vue";
 import { projectIconUrl } from "~/composables/useUrlHelper";
-import { HangarProject } from "hangar-internal";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useContext } from "vite-ssr/vue";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import { useAuthStore } from "~/store/auth";
 import { useNotificationStore } from "~/lib/store/notification";
@@ -17,11 +18,8 @@ import Alert from "~/lib/components/design/Alert.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission, Platform, ReviewState, Visibility } from "~/types/enums";
 import Markdown from "~/components/Markdown.vue";
-import { AxiosError } from "axios";
-import { useRouter } from "vue-router";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
 
-const ctx = useContext();
 const i18n = useI18n();
 const router = useRouter();
 const notification = useNotificationStore();
@@ -54,7 +52,7 @@ function toggleState(route: string, completedKey: string, revokedKey: string, va
 
       notification.success(i18n.t("project.actions." + (value.value ? completedKey : revokedKey)));
     })
-    .catch((err) => handleRequestError(err, ctx, i18n, i18n.t(`project.error.${route}`)));
+    .catch((err) => handleRequestError(err, i18n, i18n.t(`project.error.${route}`)));
 }
 
 function toggleStar() {
@@ -71,7 +69,7 @@ async function sendForApproval() {
     notification.success(i18n.t("projectApproval.sendForApproval"));
     await router.go(0);
   } catch (e) {
-    handleRequestError(e as AxiosError, ctx, i18n);
+    handleRequestError(e as AxiosError, i18n);
   }
 }
 

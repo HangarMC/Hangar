@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import Button from "~/lib/components/design/Button.vue";
 import { useI18n } from "vue-i18n";
 import { HangarProject, PinnedVersion } from "hangar-internal";
 import { computed } from "vue";
+import { PlatformVersionDownload } from "hangar-api";
+import Button from "~/lib/components/design/Button.vue";
 import { Platform } from "~/types/enums";
 import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
-import { PlatformVersionDownload } from "hangar-api";
 
 const i18n = useI18n();
 const backendData = useBackendDataStore();

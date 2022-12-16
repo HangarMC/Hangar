@@ -1,19 +1,18 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
+import { ref } from "vue";
+import { HangarProject } from "hangar-internal";
+import { AxiosError } from "axios";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
-import { useContext } from "vite-ssr/vue";
-import { useRouter } from "vue-router";
 import InputRadio from "~/lib/components/ui/InputRadio.vue";
 import { useBackendDataStore } from "~/store/backendData";
-import { ref } from "vue";
 import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 import { required } from "~/lib/composables/useValidationHelpers";
 import { useInternalApi } from "~/composables/useApi";
-import { HangarProject } from "hangar-internal";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { AxiosError } from "axios";
 import { useNotificationStore } from "~/lib/store/notification";
 
 const props = defineProps<{
@@ -22,7 +21,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const ctx = useContext();
 const router = useRouter();
 const backendData = useBackendDataStore();
 
@@ -40,7 +38,7 @@ async function submit(close: () => void) {
     useNotificationStore().success(i18n.t("project.flag.flagSend"));
     await router.go(0);
   } catch (e) {
-    handleRequestError(e as AxiosError, ctx, i18n);
+    handleRequestError(e as AxiosError, i18n);
   }
 }
 </script>

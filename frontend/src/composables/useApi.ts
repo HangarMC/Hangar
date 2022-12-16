@@ -2,14 +2,13 @@ import type { AxiosError, AxiosRequestConfig } from "axios";
 import type { HangarApiException } from "hangar-api";
 import qs from "qs";
 import Cookies from "universal-cookie";
+import { isEmpty } from "lodash-es";
+import type { Ref } from "vue";
 import { useAxios } from "~/composables/useAxios";
 import { useCookies } from "~/composables/useCookies";
-import { Ref } from "vue";
 import { authLog, fetchLog } from "~/lib/composables/useLog";
-import { isEmpty } from "lodash-es";
 import { useAuth } from "~/composables/useAuth";
-import { useRequest, useResponse } from "~/composables/useResReq";
-import { Context } from "vite-ssr/vue";
+import { useRequestEvent } from "#imports";
 
 function request<T>(url: string, method: AxiosRequestConfig["method"], data: object, headers: Record<string, string> = {}, retry = false): Promise<T> {
   const cookies = useCookies();
@@ -42,7 +41,7 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
         resolve(data);
       })
       .catch(async (error: AxiosError) => {
-        const { trace, ...err } = error.response?.data as { trace: any };
+        const { trace, ...err } = (error.response?.data as { trace: any }) || {};
         authLog("failed", err);
         // do we have an expired token?
         if (error.response?.status === 403) {
@@ -78,7 +77,7 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
   });
 }
 
-export async function useApi<T>(
+export function useApi<T>(
   url: string,
   authed = true,
   method: AxiosRequestConfig["method"] = "get",
@@ -89,7 +88,7 @@ export async function useApi<T>(
   return processAuthStuff(headers, authed, (headers) => request(`v1/${url}`, method, data, headers));
 }
 
-export async function useInternalApi<T = void>(
+export function useInternalApi<T = void>(
   url: string,
   authed = true,
   method: AxiosRequestConfig["method"] = "get",
@@ -106,7 +105,7 @@ export async function processAuthStuff<T>(headers: Record<string, string>, authR
     let token = useCookies().get("HangarAuth");
     let refreshToken = useCookies().get("HangarAuth_REFRESH");
     if (!token) {
-      const header = useResponse()?.getHeader("set-cookie") as string[];
+      const header = useRequestEvent().node.res?.getHeader("set-cookie") as string[];
       if (header && header.join) {
         const cookies = new Cookies(header.join("; "));
         token = cookies.get("HangarAuth");
@@ -127,6 +126,7 @@ export async function processAuthStuff<T>(headers: Record<string, string>, authR
         } else {
           authLog("could not refresh, invalidate");
           await useAuth.invalidate();
+          // eslint-disable-next-line no-throw-literal
           throw {
             isAxiosError: true,
             response: {
@@ -146,6 +146,7 @@ export async function processAuthStuff<T>(headers: Record<string, string>, authR
     } else {
       authLog("can't forward token, no cookie");
       if (authRequired) {
+        // eslint-disable-next-line no-throw-literal
         throw {
           isAxiosError: true,
           response: {
@@ -173,6 +174,7 @@ export async function processAuthStuff<T>(headers: Record<string, string>, authR
         authLog("could not refresh, invalidate");
         await useAuth.invalidate();
         if (authRequired) {
+          // eslint-disable-next-line no-throw-literal
           throw {
             isAxiosError: true,
             response: {
@@ -193,7 +195,7 @@ export async function processAuthStuff<T>(headers: Record<string, string>, authR
 }
 
 function forwardHeader(): Record<string, string> {
-  const req: Context["request"] = useRequest();
+  const req = useRequestEvent().node.req;
   const result: Record<string, string> = {};
   if (!req) return result;
 

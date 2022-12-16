@@ -1,43 +1,46 @@
 <script lang="ts" setup>
 import { useHead } from "@vueuse/head";
-import { useSeo } from "~/composables/useSeo";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useRoute, useRouter } from "vue-router";
 import { HangarProject } from "hangar-internal";
 import { useI18n } from "vue-i18n";
+import { computed, onMounted, reactive, ref, watch } from "vue";
+import { cloneDeep } from "lodash-es";
+import { useVuelidate } from "@vuelidate/core";
+import { Cropper, type CropperResult } from "vue-advanced-cropper";
+import { PaginatedResult, User } from "hangar-api";
+import { useSeo } from "~/composables/useSeo";
+import { projectIconUrl } from "~/composables/useUrlHelper";
 import Card from "~/lib/components/design/Card.vue";
 import MemberList from "~/components/projects/MemberList.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission, Visibility } from "~/types/enums";
 import Button from "~/lib/components/design/Button.vue";
 import Tabs from "~/lib/components/design/Tabs.vue";
-import { computed, onMounted, reactive, ref, watch } from "vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import InputText from "~/lib/components/ui/InputText.vue";
-import { cloneDeep } from "lodash-es";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import InputFile from "~/lib/components/ui/InputFile.vue";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useContext } from "vite-ssr/vue";
 import { useNotificationStore } from "~/lib/store/notification";
 import InputTag from "~/lib/components/ui/InputTag.vue";
 import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 import ProjectSettingsSection from "~/components/projects/ProjectSettingsSection.vue";
 import { maxLength, required, requiredIf, url } from "~/lib/composables/useValidationHelpers";
 import { validProjectName } from "~/composables/useHangarValidations";
-import { useVuelidate } from "@vuelidate/core";
-import { Cropper, CropperResult } from "vue-advanced-cropper";
 
 import "vue-advanced-cropper/dist/style.css";
-import { PaginatedResult, User } from "hangar-api";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
+import { definePageMeta } from "#imports";
+
+definePageMeta({
+  projectPermsRequired: ["EDIT_SUBJECT_SETTINGS"],
+});
 
 const route = useRoute();
 const router = useRouter();
 const i18n = useI18n();
-const ctx = useContext();
 const backendData = useBackendDataStore();
 const v = useVuelidate();
 const notificationStore = useNotificationStore();
@@ -137,7 +140,7 @@ async function save() {
     });
     await router.go(0);
   } catch (e: any) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e, i18n);
   }
   loading.save = false;
 }
@@ -150,7 +153,7 @@ async function transfer() {
     });
     notificationStore.success(i18n.t("project.settings.success.transferRequest", [search.value]));
   } catch (e: any) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e, i18n);
   }
   loading.transfer = false;
 }
@@ -164,7 +167,7 @@ async function rename() {
     notificationStore.success(i18n.t("project.settings.success.rename", [newName.value]));
     await router.push("/" + route.params.user + "/" + newSlug);
   } catch (e: any) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e, i18n);
   }
   loading.rename = false;
 }
@@ -181,7 +184,7 @@ async function softDelete(comment: string) {
       await router.push("/");
     }
   } catch (e: any) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e, i18n);
   }
 }
 
@@ -193,7 +196,7 @@ async function hardDelete(comment: string) {
     notificationStore.success(i18n.t("project.settings.success.hardDelete"));
     await router.push("/");
   } catch (e: any) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e, i18n);
   }
 }
 
@@ -215,7 +218,7 @@ async function uploadIcon() {
       useNotificationStore().success(i18n.t("project.settings.success.changedIcon"));
     }
   } catch (e: any) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e, i18n);
   }
   loading.uploadIcon = false;
 }
@@ -232,7 +235,7 @@ async function resetIcon() {
     projectIcon.value = null;
     await loadIconIntoCropper();
   } catch (e: any) {
-    handleRequestError(e, ctx, i18n);
+    handleRequestError(e, i18n);
   }
   loading.resetIcon = false;
 }
@@ -447,8 +450,3 @@ useHead(
     />
   </div>
 </template>
-
-<route lang="yaml">
-meta:
-  requireProjectPerm: ["EDIT_SUBJECT_SETTINGS"]
-</route>

@@ -12,7 +12,7 @@ const route = useRoute();
 
 const selected = computed(() => {
   const routerPath = route.fullPath.endsWith("/") ? route.fullPath.substr(0, route.fullPath.length - 1) : route.fullPath;
-  return routerPath == props.to;
+  return routerPath === props.to;
 });
 
 const clazz = computed(() => {

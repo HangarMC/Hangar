@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
+import { HangarNotification, Invite, Invites } from "hangar-internal";
+import { computed, ref, type Ref } from "vue";
+import { useHead } from "@vueuse/head";
+import { PaginatedResult } from "hangar-api";
 import { useInvites, useNotifications, useReadNotifications, useUnreadNotifications } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { HangarNotification, Invite, Invites } from "hangar-internal";
-import { computed, ref, Ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useSeo } from "~/composables/useSeo";
-import { useHead } from "@vueuse/head";
 import { useNotificationStore } from "~/lib/store/notification";
 import Card from "~/lib/components/design/Card.vue";
 import Button from "~/lib/components/design/Button.vue";
@@ -17,21 +17,24 @@ import IconMdiAlertOutline from "~icons/mdi/alert-outline";
 import IconMdiInformationOutline from "~icons/mdi/information-outline";
 import IconMdiMessageOutline from "~icons/mdi/message-outline";
 import IconMdiCheck from "~icons/mdi/check";
-import { PaginatedResult } from "hangar-api";
 import Pagination from "~/lib/components/design/Pagination.vue";
 import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
+import { definePageMeta } from "#imports";
 
-const ctx = useContext();
+definePageMeta({
+  loginRequired: true,
+});
+
 const i18n = useI18n();
 const route = useRoute();
 const notificationStore = useNotificationStore();
 
-//TODO send in one
-const unreadNotifications = (await useUnreadNotifications().catch((e) => handleRequestError(e, ctx, i18n))) as Ref<PaginatedResult<HangarNotification>>;
-const readNotifications = (await useReadNotifications().catch((e) => handleRequestError(e, ctx, i18n))) as Ref<PaginatedResult<HangarNotification>>;
-const allNotifications = (await useNotifications().catch((e) => handleRequestError(e, ctx, i18n))) as Ref<PaginatedResult<HangarNotification>>;
+// TODO send in one
+const unreadNotifications = (await useUnreadNotifications().catch((e) => handleRequestError(e, i18n))) as Ref<PaginatedResult<HangarNotification>>;
+const readNotifications = (await useReadNotifications().catch((e) => handleRequestError(e, i18n))) as Ref<PaginatedResult<HangarNotification>>;
+const allNotifications = (await useNotifications().catch((e) => handleRequestError(e, i18n))) as Ref<PaginatedResult<HangarNotification>>;
 const notifications: Ref<PaginatedResult<HangarNotification>> = ref(unreadNotifications.value);
-const invites = (await useInvites().catch((e) => handleRequestError(e, ctx, i18n))) as Ref<Invites>;
+const invites = (await useInvites().catch((e) => handleRequestError(e, i18n))) as Ref<Invites>;
 
 const selectedTab = ref("unread");
 const selectedTabs: Tab[] = [
@@ -62,7 +65,7 @@ const filteredInvites = computed(() => {
 useHead(useSeo("Notifications", null, route, null));
 
 async function markAllAsRead() {
-  await useInternalApi(`markallread`, true, "post").catch((e) => handleRequestError(e, ctx, i18n));
+  await useInternalApi(`markallread`, true, "post").catch((e) => handleRequestError(e, i18n));
   unreadNotifications.value.result = [];
   unreadNotifications.value.pagination.limit = 0;
   unreadNotifications.value.pagination.offset = 0;
@@ -70,7 +73,7 @@ async function markAllAsRead() {
 }
 
 async function markNotificationRead(notification: HangarNotification, router = true) {
-  await useInternalApi(`notifications/${notification.id}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n));
+  await useInternalApi(`notifications/${notification.id}`, true, "post").catch((e) => handleRequestError(e, i18n));
   notification.read = true;
   notifications.value.result = notifications.value.result.filter((n) => n !== notification);
   if (notification.action && router) {
@@ -79,7 +82,7 @@ async function markNotificationRead(notification: HangarNotification, router = t
 }
 
 async function updateInvite(invite: Invite, status: "accept" | "decline") {
-  await useInternalApi(`invites/${invite.type}/${invite.roleTableId}/${status}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n));
+  await useInternalApi(`invites/${invite.type}/${invite.roleTableId}/${status}`, true, "post").catch((e) => handleRequestError(e, i18n));
   if (status === "accept") {
     invite.accepted = true;
   } else {
@@ -160,8 +163,3 @@ function updateSelectedNotifications() {
     </Card>
   </div>
 </template>
-
-<route lang="yaml">
-meta:
-  requireLoggedIn: true
-</route>

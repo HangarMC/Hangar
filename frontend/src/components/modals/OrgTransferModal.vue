@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
+import { ref } from "vue";
+import { PaginatedResult, User } from "hangar-api";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
-import { useContext } from "vite-ssr/vue";
-import { useRouter } from "vue-router";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
-import { ref } from "vue";
-import { PaginatedResult, User } from "hangar-api";
 import { useNotificationStore } from "~/lib/store/notification";
 
 const props = defineProps<{
@@ -16,7 +15,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const ctx = useContext();
 const router = useRouter();
 const notificationStore = useNotificationStore();
 
@@ -37,7 +35,7 @@ async function transfer() {
   loading.value = true;
   await useInternalApi<string>(`organizations/org/${props.organization}/transfer`, true, "post", {
     content: search.value,
-  }).catch((e) => handleRequestError(e, ctx, i18n));
+  }).catch((e) => handleRequestError(e, i18n));
   notificationStore.success(i18n.t("organization.settings.success.transferRequest", [search.value]));
   loading.value = false;
 }

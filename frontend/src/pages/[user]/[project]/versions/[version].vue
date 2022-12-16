@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import { useProjectVersionsInternal } from "~/composables/useApiHelper";
-import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import { handleRequestError } from "~/composables/useErrorHandling";
 import { HangarProject } from "hangar-internal";
+import { handleRequestError } from "~/composables/useErrorHandling";
+import { useProjectVersionsInternal } from "~/composables/useApiHelper";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 import { Platform } from "~/types/enums";
 
-const ctx = useContext();
 const i18n = useI18n();
 const route = useRoute();
 
@@ -17,7 +15,7 @@ const props = defineProps<{
 }>();
 
 const version = await useProjectVersionsInternal(route.params.user as string, route.params.project as string, route.params.version as string).catch((e) =>
-  handleRequestError(e, ctx, i18n)
+  handleRequestError(e, i18n)
 );
 if (!version || !version.value) {
   await useRouter().replace(useErrorRedirect(route, 404, "Not found"));

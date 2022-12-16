@@ -1,19 +1,18 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
+import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
+import { Flag } from "hangar-internal";
+import { Project } from "hangar-api";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import { Visibility } from "~/types/enums";
 import InputRadio from "~/lib/components/ui/InputRadio.vue";
 import { useBackendDataStore } from "~/store/backendData";
-import { computed, ref } from "vue";
 import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useContext } from "vite-ssr/vue";
 import { useNotificationStore } from "~/lib/store/notification";
-import { useRouter } from "vue-router";
-import { Flag } from "hangar-internal";
-import { Project } from "hangar-api";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 
 const props = defineProps<{
@@ -22,7 +21,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const ctx = useContext();
 const backendData = useBackendDataStore();
 const notification = useNotificationStore();
 const router = useRouter();
@@ -35,7 +33,7 @@ async function submit() {
     warning: warning.value,
     toReporter: props.sendToReporter,
     content: content.value,
-  }).catch((e) => handleRequestError(e, ctx, i18n));
+  }).catch((e) => handleRequestError(e, i18n));
   content.value = "";
   router.go(0);
 }

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { onMounted } from "vue";
 import { useHead } from "@vueuse/head";
-import { useSeo } from "~/composables/useSeo";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
+import { useSeo } from "~/composables/useSeo";
 import { useAuthStore } from "~/store/auth";
 
 const i18n = useI18n();

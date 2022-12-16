@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { TranslateResult, useI18n } from "vue-i18n";
+import { type TranslateResult, useI18n } from "vue-i18n";
 import Markdown from "~/components/Markdown.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 

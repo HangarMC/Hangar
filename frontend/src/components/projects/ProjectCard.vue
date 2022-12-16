@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+import { Project } from "hangar-api";
 import Card from "~/lib/components/design/Card.vue";
 import Link from "~/lib/components/design/Link.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { lastUpdated } from "~/lib/composables/useTime";
-import { useI18n } from "vue-i18n";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
-import { Project } from "hangar-api";
 import { Visibility } from "~/types/enums";
 import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
 

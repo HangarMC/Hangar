@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { TranslateResult, useI18n } from "vue-i18n";
+import { type TranslateResult, useI18n } from "vue-i18n";
 import { DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diff_match_patch as Diff } from "diff-match-patch";
-import Modal from "~/lib/components/modals/Modal.vue";
 import { computed } from "vue";
+import Modal from "~/lib/components/modals/Modal.vue";
 
 const props = defineProps<{
   title: string | TranslateResult;

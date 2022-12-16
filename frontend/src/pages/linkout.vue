@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { useRoute } from "vue-router";
-import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
-import Card from "~/lib/components/design/Card.vue";
 import { useI18n } from "vue-i18n";
-import Button from "~/lib/components/design/Button.vue";
-import Link from "~/lib/components/design/Link.vue";
 import { useLocalStorage } from "@vueuse/core";
 import { computed } from "vue";
+import { useSeo } from "~/composables/useSeo";
+import Card from "~/lib/components/design/Card.vue";
+import Button from "~/lib/components/design/Button.vue";
+import Link from "~/lib/components/design/Link.vue";
 
 const route = useRoute();
 const remoteUrl = Array.isArray(route.query.remoteUrl) ? route.query.remoteUrl[0] : route.query.remoteUrl;

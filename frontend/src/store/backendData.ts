@@ -2,9 +2,9 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
 import { IPlatform, IProjectCategory, IPrompt, IVisibility, Color, FlagReason } from "hangar-internal";
+import { Announcement as AnnouncementObject, Announcement, IPermission, Role } from "hangar-api";
 import { NamedPermission, Platform, ProjectCategory, Prompt } from "~/types/enums";
 
-import { Announcement as AnnouncementObject, Announcement, IPermission, Role } from "hangar-api";
 import { fetchIfNeeded, useInternalApi } from "~/composables/useApi";
 import { Option } from "~/lib/components/ui/InputSelect.vue";
 
@@ -91,16 +91,16 @@ export const useBackendDataStore = defineStore("backendData", () => {
           return convertToMap<Prompt, IPrompt>(promptsResult, (value) => value.name);
         }, prompts),
 
-        fetchIfNeeded(async () => useInternalApi<string[]>("data/licenses", false), licenses),
-        fetchIfNeeded(async () => useInternalApi<AnnouncementObject[]>("data/announcements", false), announcements),
-        fetchIfNeeded(async () => useInternalApi<IVisibility[]>("data/visibilities", false), visibilities),
-        fetchIfNeeded(async () => useInternalApi<NonNullable<typeof validations.value>>("data/validations", false), validations),
-        fetchIfNeeded(async () => useInternalApi<NonNullable<typeof orgRoles.value>>("data/orgRoles", false), orgRoles),
-        fetchIfNeeded(async () => useInternalApi<NonNullable<typeof channelColors.value>>("data/channelColors", false), channelColors),
-        fetchIfNeeded(async () => useInternalApi<NonNullable<typeof projectRoles.value>>("data/projectRoles", false), projectRoles),
-        fetchIfNeeded(async () => useInternalApi<NonNullable<typeof globalRoles.value>>("data/globalRoles", false), globalRoles),
-        fetchIfNeeded(async () => useInternalApi<NonNullable<typeof flagReasons.value>>("data/flagReasons", false), flagReasons),
-        fetchIfNeeded(async () => useInternalApi<NonNullable<typeof versionInfo.value>>("data/version-info", false), versionInfo),
+        fetchIfNeeded(() => useInternalApi<string[]>("data/licenses", false), licenses),
+        fetchIfNeeded(() => useInternalApi<AnnouncementObject[]>("data/announcements", false), announcements),
+        fetchIfNeeded(() => useInternalApi<IVisibility[]>("data/visibilities", false), visibilities),
+        fetchIfNeeded(() => useInternalApi<NonNullable<typeof validations.value>>("data/validations", false), validations),
+        fetchIfNeeded(() => useInternalApi<NonNullable<typeof orgRoles.value>>("data/orgRoles", false), orgRoles),
+        fetchIfNeeded(() => useInternalApi<NonNullable<typeof channelColors.value>>("data/channelColors", false), channelColors),
+        fetchIfNeeded(() => useInternalApi<NonNullable<typeof projectRoles.value>>("data/projectRoles", false), projectRoles),
+        fetchIfNeeded(() => useInternalApi<NonNullable<typeof globalRoles.value>>("data/globalRoles", false), globalRoles),
+        fetchIfNeeded(() => useInternalApi<NonNullable<typeof flagReasons.value>>("data/flagReasons", false), flagReasons),
+        fetchIfNeeded(() => useInternalApi<NonNullable<typeof versionInfo.value>>("data/version-info", false), versionInfo),
       ]);
     } catch (e) {
       console.error("ERROR FETCHING BACKEND DATA");

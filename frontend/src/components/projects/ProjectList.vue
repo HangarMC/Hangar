@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { PaginatedResult, Project } from "hangar-api";
-import { PropType } from "vue";
 import { useI18n } from "vue-i18n";
 import Pagination from "~/lib/components/design/Pagination.vue";
 import ProjectCard from "~/components/projects/ProjectCard.vue";

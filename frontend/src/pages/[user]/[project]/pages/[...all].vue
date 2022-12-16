@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { useContext } from "vite-ssr/vue";
 import { useRoute, useRouter } from "vue-router";
 import { User } from "hangar-api";
 import { HangarProject } from "hangar-internal";
@@ -19,7 +18,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const ctx = useContext();
 const route = useRoute();
 const router = useRouter();
 

@@ -1,22 +1,21 @@
 <script lang="ts" setup>
-import Link from "~/lib/components/design/Link.vue";
 import { useI18n } from "vue-i18n";
+import { PaginatedResult, Version } from "hangar-api";
+import { computed, reactive, watch } from "vue";
+import { useRoute } from "vue-router";
+import { HangarProject } from "hangar-internal";
+import { useHead } from "@vueuse/head";
+import Link from "~/lib/components/design/Link.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission, Platform, Visibility } from "~/types/enums";
 import Card from "~/lib/components/design/Card.vue";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import Tag from "~/components/Tag.vue";
 import Button from "~/lib/components/design/Button.vue";
-import { PaginatedResult, Version } from "hangar-api";
-import { computed, reactive, watch } from "vue";
 import { useBackendDataStore } from "~/store/backendData";
 import { useProjectChannels, useProjectVersions } from "~/composables/useApiHelper";
-import { useContext } from "vite-ssr/vue";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useRoute } from "vue-router";
 import { useApi } from "~/composables/useApi";
-import { HangarProject } from "hangar-internal";
-import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import Alert from "~/lib/components/design/Alert.vue";
@@ -24,7 +23,6 @@ import Pagination from "~/lib/components/design/Pagination.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 
 const i18n = useI18n();
-const ctx = useContext();
 const route = useRoute();
 const backendData = useBackendDataStore();
 
@@ -50,8 +48,8 @@ const requestOptions = computed(() => {
   };
 });
 
-const channels = await useProjectChannels(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, ctx, i18n));
-const versions = await useProjectVersions(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, ctx, i18n));
+const channels = await useProjectChannels(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, i18n));
+const versions = await useProjectVersions(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, i18n));
 
 if (channels) {
   filter.channels.push(...(channels.value?.map((c) => c.name) || []));
@@ -77,7 +75,7 @@ watch(
       false,
       "get",
       requestOptions.value
-    ).catch((e) => handleRequestError(e, ctx, i18n));
+    ).catch((e) => handleRequestError(e, i18n));
     if (newVersions) {
       versions.value = newVersions;
     }

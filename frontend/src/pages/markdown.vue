@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
+import { useHead } from "@vueuse/head";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
-import { useHead } from "@vueuse/head";
 import Markdown from "~/components/Markdown.vue";
 
 const i18n = useI18n();
@@ -46,6 +46,8 @@ useHead(useSeo("Hangar Markdown", null, route, null));
 </script>
 
 <template>
-  <PageTitle>{{ "Hangar Markdown" }}</PageTitle>
-  <Markdown :raw="text"></Markdown>
+  <div>
+    <PageTitle>{{ "Hangar Markdown" }}</PageTitle>
+    <Markdown :raw="text"></Markdown>
+  </div>
 </template>

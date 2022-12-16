@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
+import { HangarNotification } from "hangar-internal";
+import { ref } from "vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import Announcement from "~/components/Announcement.vue";
 import DropdownButton from "~/lib/components/design/DropdownButton.vue";
@@ -37,18 +39,14 @@ import UserAvatar from "~/components/UserAvatar.vue";
 import Button from "~/lib/components/design/Button.vue";
 import { useRecentNotifications, useUnreadNotificationsCount } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { HangarNotification } from "hangar-internal";
-import { useContext } from "vite-ssr/vue";
-import { ref } from "vue";
 import Link from "~/lib/components/design/Link.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useConfig } from "~/lib/composables/useConfig";
 
 const settings = useSettingsStore();
-const { t } = useI18n();
 const backendData = useBackendDataStore();
-const ctx = useContext();
 const i18n = useI18n();
+const t = i18n.t;
 const authStore = useAuthStore();
 
 const notifications = ref<HangarNotification[]>([]);
@@ -63,7 +61,7 @@ if (authStore.user) {
       unreadNotifications.value = v.value;
     }
   });
-  useRecentNotifications(true, 30)
+  useRecentNotifications(30)
     .then((v) => {
       if (v && v.value) {
         // Only show notifications that are recent or unread (from the last 30 notifications)
@@ -81,7 +79,7 @@ if (authStore.user) {
         });
       }
     })
-    .catch((e) => handleRequestError(e, ctx, i18n));
+    .catch((e) => handleRequestError(e, i18n));
 
   if (hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)) {
     useInternalApi<number>("admin/approval/projectneedingapproval", false)
@@ -90,21 +88,21 @@ if (authStore.user) {
           projectApprovalQueue.value = v;
         }
       })
-      .catch((e) => handleRequestError(e, ctx, i18n));
+      .catch((e) => handleRequestError(e, i18n));
     useInternalApi<number>("admin/approval/versionsneedingapproval", false)
       .then((v) => {
         if (v) {
           versionApprovalQueue.value = v;
         }
       })
-      .catch((e) => handleRequestError(e, ctx, i18n));
+      .catch((e) => handleRequestError(e, i18n));
     useInternalApi<number>("flags/unresolvedamount", false)
       .then((v) => {
         if (v) {
           reportQueue.value = v;
         }
       })
-      .catch((e) => handleRequestError(e, ctx, i18n));
+      .catch((e) => handleRequestError(e, i18n));
   }
 }
 
@@ -147,12 +145,12 @@ function markNotificationsRead() {
   }
 }
 
-async function markNotificationRead(notification: HangarNotification) {
+function markNotificationRead(notification: HangarNotification) {
   if (!notification.read) {
     notification.read = true;
     unreadNotifications.value--;
     loadedUnreadNotifications.value--;
-    useInternalApi(`notifications/${notification.id}`, true, "post").catch((e) => handleRequestError(e, ctx, i18n));
+    useInternalApi(`notifications/${notification.id}`, true, "post").catch((e) => handleRequestError(e, i18n));
   }
 }
 

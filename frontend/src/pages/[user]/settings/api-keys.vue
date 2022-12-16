@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useI18n } from "vue-i18n";
-import InputText from "~/lib/components/ui/InputText.vue";
-import Button from "~/lib/components/design/Button.vue";
 import { reactive, ref } from "vue";
-import { useContext } from "vite-ssr/vue";
-import { useInternalApi } from "~/composables/useApi";
 import { ApiKey, User } from "hangar-api";
 import { useRoute } from "vue-router";
+import { useHead } from "@vueuse/head";
+import { useVuelidate } from "@vuelidate/core";
+import PageTitle from "~/lib/components/design/PageTitle.vue";
+import InputText from "~/lib/components/ui/InputText.vue";
+import Button from "~/lib/components/design/Button.vue";
+import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import Table from "~/lib/components/design/Table.vue";
@@ -15,15 +16,18 @@ import Alert from "~/lib/components/design/Alert.vue";
 import Card from "~/lib/components/design/Card.vue";
 import { useSeo } from "~/composables/useSeo";
 import { avatarUrl } from "~/composables/useUrlHelper";
-import { useHead } from "@vueuse/head";
 import { useNotificationStore } from "~/lib/store/notification";
 import { maxLength, minLength, required } from "~/lib/composables/useValidationHelpers";
 import { validApiKeyName } from "~/composables/useHangarValidations";
-import { useVuelidate } from "@vuelidate/core";
 import InputGroup from "~/lib/components/ui/InputGroup.vue";
 import { NamedPermission } from "~/types/enums";
+import { definePageMeta } from "#imports";
 
-const ctx = useContext();
+definePageMeta({
+  currentUserRequired: true,
+  globalPermsRequired: ["EDIT_API_KEYS"],
+});
+
 const i18n = useI18n();
 const route = useRoute();
 const notification = useNotificationStore();
@@ -49,7 +53,7 @@ async function create() {
   const key = await useInternalApi<string>(`api-keys/create-key/${route.params.user}`, true, "post", {
     name: name.value,
     permissions: selectedPerms.value,
-  }).catch((err) => handleRequestError(err, ctx, i18n));
+  }).catch((err) => handleRequestError(err, i18n));
   if (key) {
     apiKeys.value.unshift({
       token: key,
@@ -69,7 +73,7 @@ async function deleteKey(key: ApiKey) {
   loadingDelete[key.name] = true;
   await useInternalApi(`api-keys/delete-key/${route.params.user}`, true, "post", {
     content: key.name,
-  }).catch((err) => handleRequestError(err, ctx, i18n));
+  }).catch((err) => handleRequestError(err, i18n));
   apiKeys.value = apiKeys.value.filter((k) => k.name !== key.name);
   notification.success(i18n.t("apiKeys.success.delete", [key.name]));
   loadingDelete[key.name] = false;
@@ -142,12 +146,6 @@ async function deleteKey(key: ApiKey) {
     </Card>
   </div>
 </template>
-
-<route lang="yaml">
-meta:
-  requireCurrentUser: true
-  requireGlobalPerm: ["EDIT_API_KEYS"]
-</route>
 
 <style lang="scss" scoped>
 .autofix {
