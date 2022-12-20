@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
 
-type Item = Record<Exclude<string, "children">, string> & { children?: Item[]}
+type Item = Record<Exclude<string, "children">, string> & { children?: Item[] };
 
 const props = defineProps<{
   items?: Item[];
