@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import Popper from "vue3-popper";
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     hover?: boolean;
-    show?: boolean | null;
+    show?: boolean;
   }>(),
   {
     hover: true,
-    show: null,
+    show: undefined,
   }
 );
 </script>

@@ -19,7 +19,7 @@ const props = defineProps<{
 }>();
 
 const errorMessages = computed(() => props.errorMessages);
-const { v, errors, hasError } = useValidation(props.label, props.rules, value, errorMessages, true);
+const { v, errors } = useValidation(props.label, props.rules, value, errorMessages, true);
 </script>
 
 <template>

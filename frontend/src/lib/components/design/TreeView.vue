@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
 
+type Item = Record<Exclude<string, "children">, string> & { children?: Item[]}
+
 const props = defineProps<{
-  items: Record<string, unknown>;
+  items?: Item[];
   itemKey: string;
   clazz?: string;
   open: string[];
@@ -25,7 +27,7 @@ watch(
   <div v-for="item in items" :key="item[itemKey]" :class="props.clazz">
     <span class="flex">
       <IconMdiMenuDown
-        v-if="item.children && item.children.length > 0"
+        v-if="'children' in item && item.children?.length"
         :class="'cursor-pointer transform transition-transform ' + (expanded[item[itemKey]] ? 'rotate-0' : '-rotate-90')"
         @click="expanded[item[itemKey]] = !expanded[item[itemKey]]"
       />
@@ -33,7 +35,7 @@ watch(
       <slot name="item" :item="item"></slot>
     </span>
     <TreeView
-      v-if="expanded[item[itemKey]] && item.children && item.children.length > 0"
+      v-if="expanded[item[itemKey]] && 'children' in item && item.children?.length"
       :key="item[itemKey]"
       :items="item.children"
       :item-key="itemKey"

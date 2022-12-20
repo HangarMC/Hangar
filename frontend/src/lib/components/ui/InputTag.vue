@@ -37,7 +37,7 @@ const props = withDefaults(
   }
 );
 
-const id = Math.random();
+const id = Math.random() + '';
 
 const errorMessages = computed(() => props.errorMessages);
 const { v, errors, hasError } = useValidation(props.label, props.rules, tags, errorMessages);

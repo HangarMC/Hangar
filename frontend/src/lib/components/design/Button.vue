@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { RouteLocationRaw } from "vue-router";
 import Spinner from "~/lib/components/design/Spinner.vue";
 
-const emit = defineEmits<{
+defineEmits<{
   (e: "click"): void;
 }>();
 const props = withDefaults(
