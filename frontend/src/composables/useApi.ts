@@ -44,14 +44,12 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
   });
 }
 
-export function useApi<T>(url: string, authed = true, method: AxiosRequestConfig["method"] = "get", data: object = {}): Promise<T> {
+export function useApi<T>(url: string, method: AxiosRequestConfig["method"] = "get", data: object = {}): Promise<T> {
   fetchLog("useApi", url);
   return request(`v1/${url}`, method, data);
 }
 
-// TODO do something with authed
-
-export function useInternalApi<T = void>(url: string, authed = true, method: AxiosRequestConfig["method"] = "get", data: object = {}): Promise<T> {
+export function useInternalApi<T = void>(url: string, method: AxiosRequestConfig["method"] = "get", data: object = {}): Promise<T> {
   fetchLog("useInternalApi", url);
   return request(`internal/${url}`, method, data);
 }

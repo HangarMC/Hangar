@@ -31,7 +31,7 @@ async function deletePageAndUpdateProject() {
 
   try {
     if (updateProjectPages) {
-      updateProjectPages(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.project.id}`, false, "get"));
+      updateProjectPages(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.project.id}`, "get"));
     }
   } catch (e: any) {
     handleRequestError(e, i18n);

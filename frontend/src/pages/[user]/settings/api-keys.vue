@@ -50,7 +50,7 @@ useHead(useSeo(i18n.t("apiKeys.title") + " | " + props.user.name, null, route, a
 async function create() {
   if (!(await v.value.$validate())) return;
   loadingCreate.value = true;
-  const key = await useInternalApi<string>(`api-keys/create-key/${route.params.user}`, true, "post", {
+  const key = await useInternalApi<string>(`api-keys/create-key/${route.params.user}`, "post", {
     name: name.value,
     permissions: selectedPerms.value,
   }).catch((err) => handleRequestError(err, i18n));
@@ -71,7 +71,7 @@ async function create() {
 
 async function deleteKey(key: ApiKey) {
   loadingDelete[key.name] = true;
-  await useInternalApi(`api-keys/delete-key/${route.params.user}`, true, "post", {
+  await useInternalApi(`api-keys/delete-key/${route.params.user}`, "post", {
     content: key.name,
   }).catch((err) => handleRequestError(err, i18n));
   apiKeys.value = apiKeys.value.filter((k) => k.name !== key.name);

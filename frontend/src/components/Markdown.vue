@@ -24,7 +24,7 @@ const loading = ref<boolean>(false);
 async function fetch() {
   if (!props.raw) return;
   loading.value = true;
-  renderedMarkdown.value = await useInternalApi<string>("pages/render", false, "post", {
+  renderedMarkdown.value = await useInternalApi<string>("pages/render", "post", {
     content: props.raw,
   }).catch<any>((e) => handleRequestError(e, i18n));
   loading.value = false;

@@ -45,11 +45,11 @@ async function addNote() {
     return;
   }
   loading.value = true;
-  await useInternalApi(`projects/notes/${props.project.id}`, true, "post", {
+  await useInternalApi(`projects/notes/${props.project.id}`, "post", {
     content: text.value,
   }).catch((e) => handleRequestError(e, i18n));
   text.value = "";
-  const newNotes = await useInternalApi<Note[]>("projects/notes/" + props.project.id, false).catch((e) => handleRequestError(e, i18n));
+  const newNotes = await useInternalApi<Note[]>("projects/notes/" + props.project.id).catch((e) => handleRequestError(e, i18n));
   if (notes && newNotes) {
     notes.value = newNotes;
   }

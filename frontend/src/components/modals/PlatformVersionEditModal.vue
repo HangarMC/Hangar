@@ -34,7 +34,7 @@ const selectedVersions = ref(projectVersion.value?.platformDependencies[platform
 
 function save() {
   loading.value = true;
-  useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/savePlatformVersions`, true, "post", {
+  useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/savePlatformVersions`, "post", {
     platform: platform.value?.name?.toUpperCase(),
     versions: selectedVersions.value,
   })

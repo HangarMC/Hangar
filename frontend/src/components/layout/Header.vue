@@ -82,21 +82,21 @@ if (authStore.user) {
     .catch((e) => handleRequestError(e, i18n));
 
   if (hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)) {
-    useInternalApi<number>("admin/approval/projectneedingapproval", false)
+    useInternalApi<number>("admin/approval/projectneedingapproval")
       .then((v) => {
         if (v) {
           projectApprovalQueue.value = v;
         }
       })
       .catch((e) => handleRequestError(e, i18n));
-    useInternalApi<number>("admin/approval/versionsneedingapproval", false)
+    useInternalApi<number>("admin/approval/versionsneedingapproval")
       .then((v) => {
         if (v) {
           versionApprovalQueue.value = v;
         }
       })
       .catch((e) => handleRequestError(e, i18n));
-    useInternalApi<number>("flags/unresolvedamount", false)
+    useInternalApi<number>("flags/unresolvedamount")
       .then((v) => {
         if (v) {
           reportQueue.value = v;
@@ -150,7 +150,7 @@ function markNotificationRead(notification: HangarNotification) {
     notification.read = true;
     unreadNotifications.value--;
     loadedUnreadNotifications.value--;
-    useInternalApi(`notifications/${notification.id}`, true, "post").catch((e) => handleRequestError(e, i18n));
+    useInternalApi(`notifications/${notification.id}`, "post").catch((e) => handleRequestError(e, i18n));
   }
 }
 

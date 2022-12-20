@@ -26,7 +26,7 @@ async function loadRoutePerms(to: RouteLocationNormalized) {
   const authStore = useAuthStore();
   if (to.params.user && to.params.project) {
     if (authStore.authenticated) {
-      const perms = await useApi<UserPermissions>("permissions", true, "get", {
+      const perms = await useApi<UserPermissions>("permissions", "get", {
         author: to.params.user,
         slug: to.params.project,
       }).catch(() => authStore.setRoutePerms(null));
@@ -37,7 +37,7 @@ async function loadRoutePerms(to: RouteLocationNormalized) {
     }
   } else if (to.params.user) {
     if (authStore.authenticated) {
-      const perms = await useApi<UserPermissions>("permissions", true, "get", {
+      const perms = await useApi<UserPermissions>("permissions", "get", {
         organization: to.params.user,
       }).catch(() => authStore.setRoutePerms(null));
       if (perms) {
@@ -96,7 +96,7 @@ async function globalPermsRequired(authStore: ReturnType<typeof useAuthStore>, t
   const result = checkLogin(authStore, to, 403);
   if (result) return result;
   const i18n = useI18n();
-  const check = await useApi<PermissionCheck>("permissions/hasAll", true, "get", {
+  const check = await useApi<PermissionCheck>("permissions/hasAll", "get", {
     permissions: toNamedPermission(to.meta.globalPermsRequired as string[]),
   }).catch((e) => {
     try {

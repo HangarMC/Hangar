@@ -37,7 +37,7 @@ useHead(useSeo(i18n.t("organization.new.title"), null, route, null));
 
 async function create() {
   try {
-    await useInternalApi("organizations/create", true, "post", {
+    await useInternalApi("organizations/create", "post", {
       name: name.value,
     });
     await router.push("/" + name.value);

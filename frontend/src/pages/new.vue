@@ -116,7 +116,7 @@ useHead(useSeo("New Project", null, route, null));
 
 function convertBBCode() {
   converter.value.loading = true;
-  useInternalApi<string>("pages/convert-bbcode", false, "post", {
+  useInternalApi<string>("pages/convert-bbcode", "post", {
     content: converter.value.bbCode,
   })
     .then((markdown) => {
@@ -134,7 +134,7 @@ function createProject() {
   if (!form.value.pageContent) {
     form.value.pageContent = "# " + form.value.name + "  \nWelcome to your new project!";
   }
-  useInternalApi<string>("projects/create", true, "post", form.value)
+  useInternalApi<string>("projects/create", "post", form.value)
     .then((u) => {
       router.push(u);
     })

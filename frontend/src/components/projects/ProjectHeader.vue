@@ -41,7 +41,7 @@ const watchingCount = ref(props.project.stats.watchers);
 const isOwn = computed(() => !user || user.name === props.project.namespace.owner);
 
 function toggleState(route: string, completedKey: string, revokedKey: string, value: Ref<boolean>, count: Ref<number>) {
-  useInternalApi(`projects/project/${props.project.id}/${route}/${!value.value}`, true, "post")
+  useInternalApi(`projects/project/${props.project.id}/${route}/${!value.value}`, "post")
     .then(() => {
       value.value = !value.value;
       if (value.value) {
@@ -65,7 +65,7 @@ function toggleWatch() {
 
 async function sendForApproval() {
   try {
-    await useInternalApi(`projects/visibility/${props.project.id}/sendforapproval`, true, "post");
+    await useInternalApi(`projects/visibility/${props.project.id}/sendforapproval`, "post");
     notification.success(i18n.t("projectApproval.sendForApproval"));
     await router.go(0);
   } catch (e) {

@@ -29,7 +29,7 @@ const content = ref<string>("");
 const warning = ref<boolean>(false);
 
 async function submit() {
-  await useInternalApi(`flags/${props.flag.id}/notify`, true, "post", {
+  await useInternalApi(`flags/${props.flag.id}/notify`, "post", {
     warning: warning.value,
     toReporter: props.sendToReporter,
     content: content.value,

@@ -53,7 +53,7 @@ async function updatePage(newPage: number) {
 }
 
 async function update() {
-  authors.value = await useApi<PaginatedResult<User>>("authors", false, "GET", requestParams.value);
+  authors.value = await useApi<PaginatedResult<User>>("authors", "GET", requestParams.value);
 }
 
 useHead(useSeo(i18n.t("pages.authorsTitle"), "Hangar Project Authors", route, null));

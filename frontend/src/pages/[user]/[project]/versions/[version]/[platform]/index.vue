@@ -92,7 +92,7 @@ function setPlatform(plat: Platform) {
 
 async function savePage(content: string) {
   try {
-    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/saveDescription`, true, "post", {
+    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/saveDescription`, "post", {
       content,
     });
     if (projectVersion.value) {
@@ -106,7 +106,7 @@ async function savePage(content: string) {
 
 async function setPinned(value: boolean) {
   try {
-    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/pinned?value=${value}`, true, "post");
+    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/pinned?value=${value}`, "post");
     notification.success(i18n.t(`version.page.pinned.request.${value}`));
     router.go(0);
   } catch (e) {
@@ -116,7 +116,7 @@ async function setPinned(value: boolean) {
 
 async function deleteVersion(comment: string) {
   try {
-    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/delete`, true, "post", {
+    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/delete`, "post", {
       content: comment,
     });
     notification.success(i18n.t("version.success.softDelete"));
@@ -128,7 +128,7 @@ async function deleteVersion(comment: string) {
 
 async function hardDeleteVersion(comment: string) {
   try {
-    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/hardDelete`, true, "post", {
+    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/hardDelete`, "post", {
       content: comment,
     });
     notification.success(i18n.t("version.success.hardDelete"));
@@ -145,7 +145,7 @@ async function hardDeleteVersion(comment: string) {
 
 async function restoreVersion() {
   try {
-    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/restore`, true, "post");
+    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/restore`, "post");
     notification.success(i18n.t("version.success.restore"));
     await router.replace(`/${route.params.user}/${route.params.project}/versions`);
   } catch (e) {

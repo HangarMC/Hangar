@@ -118,7 +118,7 @@ class Auth {
       authLog("no point in updating if we already have a user");
       return;
     }
-    const user = await useInternalApi<HangarUser>("users/@me", true).catch((err) => {
+    const user = await useInternalApi<HangarUser>("users/@me").catch((err) => {
       authLog("no user, with err", Object.assign({}, err));
       return this.invalidate(axios);
     });

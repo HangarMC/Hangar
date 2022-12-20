@@ -305,7 +305,7 @@ function sendReviewRequest(
   }
 ): Promise<void> {
   const msg = `reviews.presets.${urlPath}`;
-  return useInternalApi(`reviews/${projectVersion.value.id}/reviews/${urlPath}`, true, "post", { message: msg, args })
+  return useInternalApi(`reviews/${projectVersion.value.id}/reviews/${urlPath}`, "post", { message: msg, args })
     .then(() => {
       if (currentUserReview.value) {
         currentUserReview.value.messages.push({

@@ -29,7 +29,7 @@ const flagComment = ref<string>();
 
 async function submit(close: () => void) {
   try {
-    await useInternalApi("flags/", true, "POST", {
+    await useInternalApi("flags/", "POST", {
       projectId: props.project.id,
       reason: flagReason.value,
       comment: flagComment.value,

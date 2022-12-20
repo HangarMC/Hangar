@@ -39,7 +39,7 @@ async function save() {
     data[pl.enumName] = pl.possibleVersions;
   }
   try {
-    await useInternalApi("admin/platformVersions", true, "post", data);
+    await useInternalApi("admin/platformVersions", "post", data);
     notification.success(i18n.t("platformVersions.success"));
     router.go(0);
   } catch (e: any) {

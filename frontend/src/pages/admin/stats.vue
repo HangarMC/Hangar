@@ -41,7 +41,7 @@ const oneMonthBefore = new Date(now.getFullYear(), now.getMonth() - 1, now.getDa
 const startDate = ref<string>(toISODateString(oneMonthBefore));
 const endDate = ref<string>(toISODateString(now));
 
-let data: DayStats[] = (await useInternalApi<DayStats[]>("admin/stats", true, "get", {
+let data: DayStats[] = (await useInternalApi<DayStats[]>("admin/stats", "get", {
   from: startDate.value,
   to: endDate.value,
 }).catch((e) => handleRequestError(e, i18n))) as DayStats[];
@@ -119,7 +119,7 @@ watch(endDate, updateDate);
 
 async function updateDate() {
   console.log("update", startDate, endDate);
-  data = (await useInternalApi<DayStats[]>("admin/stats", true, "get", {
+  data = (await useInternalApi<DayStats[]>("admin/stats", "get", {
     from: startDate.value,
     to: endDate.value,
   }).catch((e) => handleRequestError(e, i18n))) as DayStats[];

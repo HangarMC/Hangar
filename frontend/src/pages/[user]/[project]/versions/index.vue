@@ -72,7 +72,6 @@ watch(
     }
     const newVersions = await useApi<PaginatedResult<Version>>(
       `projects/${route.params.user}/${route.params.project}/versions`,
-      false,
       "get",
       requestOptions.value
     ).catch((e) => handleRequestError(e, i18n));

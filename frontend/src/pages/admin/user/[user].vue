@@ -31,10 +31,10 @@ const route = useRoute();
 const router = useRouter();
 const backendData = useBackendDataStore();
 
-const projects = await useApi<PaginatedResult<Project>>("projects", false, "get", {
+const projects = await useApi<PaginatedResult<Project>>("projects", "get", {
   owner: route.params.user,
 }).catch((e) => handleRequestError(e, i18n));
-const orgs = await useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${route.params.user}/userOrganizations`, false).catch((e) =>
+const orgs = await useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${route.params.user}/userOrganizations`).catch((e) =>
   handleRequestError(e, i18n)
 );
 const user = await useUser(route.params.user as string).catch((e) => handleRequestError(e, i18n));
@@ -67,7 +67,7 @@ const _authUrl = computed(() => authUrl(route.params.user as string));
 const selectedRole = ref();
 async function processRole(add: boolean) {
   try {
-    await useInternalApi("/admin/user/" + route.params.user + "/" + selectedRole.value, true, add ? "POST" : "DELETE");
+    await useInternalApi("/admin/user/" + route.params.user + "/" + selectedRole.value, add ? "POST" : "DELETE");
     if (user) {
       user.value = await useApi<User>(("users/" + route.params.user) as string);
     }

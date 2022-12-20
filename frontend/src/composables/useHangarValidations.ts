@@ -10,7 +10,7 @@ export const validProjectName = withOverrideMessage((ownerId: () => string) =>
         return { $valid: true };
       }
       try {
-        await useInternalApi("projects/validateName", false, "get", {
+        await useInternalApi("projects/validateName", "get", {
           userId: ownerId(),
           value,
         });
@@ -33,7 +33,7 @@ export const validOrgName = withOverrideMessage(
     }
 
     try {
-      await useInternalApi("organizations/validate", false, "get", {
+      await useInternalApi("organizations/validate", "get", {
         name: value,
       });
       return { $valid: true };
@@ -51,7 +51,7 @@ export const validApiKeyName = withOverrideMessage((username: string) =>
         return { $valid: true };
       }
       try {
-        await useInternalApi(`api-keys/check-key/${username}`, true, "get", {
+        await useInternalApi(`api-keys/check-key/${username}`, "get", {
           name: value,
         });
         return { $valid: true };
@@ -70,7 +70,7 @@ export const validChannelName = withOverrideMessage((projectId: string, existing
         return { $valid: true };
       }
       try {
-        await useInternalApi("channels/checkName", true, "get", {
+        await useInternalApi("channels/checkName", "get", {
           projectId,
           name: value,
           existingName,
@@ -91,7 +91,7 @@ export const validChannelColor = withOverrideMessage((projectId: string, existin
         return { $valid: true };
       }
       try {
-        await useInternalApi("channels/checkColor", true, "get", {
+        await useInternalApi("channels/checkColor", "get", {
           projectId,
           color: value,
           existingColor,

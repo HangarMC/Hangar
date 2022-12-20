@@ -36,7 +36,7 @@ watch(name, async () => {
   if (!name.value) return;
   validateLoading.value = true;
   nameErrorMessages.value = [];
-  await useInternalApi("pages/checkName", true, "get", {
+  await useInternalApi("pages/checkName", "get", {
     projectId: props.projectId,
     name: name.value,
     parentId: parent.value,
@@ -66,13 +66,13 @@ function flatDeep(pages: HangarProjectPage[], prefix: string): Option[] {
 async function createPage() {
   try {
     loading.value = true;
-    const slug = await useInternalApi<string>(`pages/create/${props.projectId}`, true, "post", {
+    const slug = await useInternalApi<string>(`pages/create/${props.projectId}`, "post", {
       name: name.value,
       parentId: parent.value,
     });
 
     if (updateProjectPagesCallback) {
-      updateProjectPagesCallback(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.projectId}`, false, "get"));
+      updateProjectPagesCallback(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.projectId}`, "get"));
     }
 
     await router.push(`/${route.params.user}/${route.params.project}/pages/${slug}`);

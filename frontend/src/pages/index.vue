@@ -92,7 +92,7 @@ watch(
 );
 
 async function updateProjects() {
-  projects.value = await useApi<PaginatedResult<Project>>("projects", false, "get", requestParams.value);
+  projects.value = await useApi<PaginatedResult<Project>>("projects", "get", requestParams.value);
   await checkOffsetLargerCount();
 }
 

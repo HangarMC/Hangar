@@ -22,7 +22,7 @@ useHead(useSeo("BBCode Converter", null, route, null));
 
 async function convertBBCode() {
   loading.value = true;
-  output.value = await useInternalApi<string>("pages/convert-bbcode", false, "post", {
+  output.value = await useInternalApi<string>("pages/convert-bbcode", "post", {
     content: input.value,
   }).catch<any>((e) => handleRequestError(e, i18n));
   loading.value = false;

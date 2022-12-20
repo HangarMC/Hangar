@@ -23,7 +23,7 @@ const comment = ref<string>("");
 
 async function confirm(close: () => void) {
   try {
-    await useInternalApi(`admin/lock-user/${props.user.name}/${!props.user.locked}`, true, "post", {
+    await useInternalApi(`admin/lock-user/${props.user.name}/${!props.user.locked}`, "post", {
       content: comment.value,
     });
     close();

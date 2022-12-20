@@ -31,7 +31,7 @@ const setVisibility = computed(() => backendData.visibilities.find((v) => v.name
 const currentVisibility = computed(() => backendData.visibilities.find((v) => v.name === props.propVisibility));
 
 async function submit(): Promise<void> {
-  await useInternalApi(props.postUrl, true, "post", {
+  await useInternalApi(props.postUrl, "post", {
     visibility: visibility.value,
     comment: setVisibility.value?.showModal ? reason.value : null,
   }).catch((e) => handleRequestError(e, i18n));

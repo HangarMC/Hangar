@@ -65,7 +65,7 @@ const filteredInvites = computed(() => {
 useHead(useSeo("Notifications", null, route, null));
 
 async function markAllAsRead() {
-  await useInternalApi(`markallread`, true, "post").catch((e) => handleRequestError(e, i18n));
+  await useInternalApi(`markallread`, "post").catch((e) => handleRequestError(e, i18n));
   unreadNotifications.value.result = [];
   unreadNotifications.value.pagination.limit = 0;
   unreadNotifications.value.pagination.offset = 0;
@@ -73,7 +73,7 @@ async function markAllAsRead() {
 }
 
 async function markNotificationRead(notification: HangarNotification, router = true) {
-  await useInternalApi(`notifications/${notification.id}`, true, "post").catch((e) => handleRequestError(e, i18n));
+  await useInternalApi(`notifications/${notification.id}`, "post").catch((e) => handleRequestError(e, i18n));
   notification.read = true;
   notifications.value.result = notifications.value.result.filter((n) => n !== notification);
   if (notification.action && router) {
@@ -82,7 +82,7 @@ async function markNotificationRead(notification: HangarNotification, router = t
 }
 
 async function updateInvite(invite: Invite, status: "accept" | "decline") {
-  await useInternalApi(`invites/${invite.type}/${invite.roleTableId}/${status}`, true, "post").catch((e) => handleRequestError(e, i18n));
+  await useInternalApi(`invites/${invite.type}/${invite.roleTableId}/${status}`, "post").catch((e) => handleRequestError(e, i18n));
   if (status === "accept") {
     invite.accepted = true;
   } else {

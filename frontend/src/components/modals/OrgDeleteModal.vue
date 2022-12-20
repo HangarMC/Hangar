@@ -20,7 +20,7 @@ const loading = ref<boolean>(false);
 
 async function deleteOrg() {
   loading.value = true;
-  await useInternalApi(`organizations/org/${props.organization}/delete`, true, "post", {
+  await useInternalApi(`organizations/org/${props.organization}/delete`, "post", {
     content: comment.value,
   }).catch((e) => handleRequestError(e, i18n));
   await router.push("/");

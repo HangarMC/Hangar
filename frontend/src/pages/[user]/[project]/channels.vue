@@ -39,7 +39,7 @@ useHead(
 );
 
 async function refreshChannels() {
-  const newChannels = await useInternalApi<ProjectChannel[]>(`channels/${props.project.namespace.owner}/${props.project.namespace.slug}`, false).catch((e) =>
+  const newChannels = await useInternalApi<ProjectChannel[]>(`channels/${props.project.namespace.owner}/${props.project.namespace.slug}`).catch((e) =>
     handleRequestError(e, i18n)
   );
   if (channels && newChannels) {
@@ -48,7 +48,7 @@ async function refreshChannels() {
 }
 
 async function deleteChannel(channel: ProjectChannel) {
-  await useInternalApi(`channels/${props.project.id}/delete/${channel.id}`, true, "post")
+  await useInternalApi(`channels/${props.project.id}/delete/${channel.id}`, "post")
     .then(() => {
       refreshChannels();
       notifications.warn(i18n.t("channel.modal.success.deletedChannel", [channel.name]));
@@ -57,7 +57,7 @@ async function deleteChannel(channel: ProjectChannel) {
 }
 
 async function addChannel(channel: ProjectChannel) {
-  await useInternalApi(`channels/${props.project.id}/create`, true, "post", {
+  await useInternalApi(`channels/${props.project.id}/create`, "post", {
     name: channel.name,
     color: channel.color,
     flags: channel.flags,
@@ -71,7 +71,7 @@ async function addChannel(channel: ProjectChannel) {
 
 async function editChannel(channel: ProjectChannel) {
   if (!channel.id) return;
-  await useInternalApi(`channels/${props.project.id}/edit`, true, "post", {
+  await useInternalApi(`channels/${props.project.id}/edit`, "post", {
     id: channel.id,
     name: channel.name,
     color: channel.color,

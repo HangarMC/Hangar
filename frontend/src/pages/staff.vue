@@ -55,7 +55,7 @@ async function updatePage(newPage: number) {
 }
 
 async function update() {
-  staff.value = await useApi<PaginatedResult<User>>("staff", false, "GET", requestParams.value);
+  staff.value = await useApi<PaginatedResult<User>>("staff", "GET", requestParams.value);
 }
 
 useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));

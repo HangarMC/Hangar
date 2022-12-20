@@ -23,7 +23,7 @@ const result = ref<string[]>([]);
 const loading = ref<boolean>(false);
 async function doSearch(val: string) {
   result.value = [];
-  const users = await useApi<PaginatedResult<User>>("users", false, "get", {
+  const users = await useApi<PaginatedResult<User>>("users", "get", {
     query: val,
     limit: 25,
     offset: 0,
@@ -33,7 +33,7 @@ async function doSearch(val: string) {
 
 async function transfer() {
   loading.value = true;
-  await useInternalApi<string>(`organizations/org/${props.organization}/transfer`, true, "post", {
+  await useInternalApi<string>(`organizations/org/${props.organization}/transfer`, "post", {
     content: search.value,
   }).catch((e) => handleRequestError(e, i18n));
   notificationStore.success(i18n.t("organization.settings.success.transferRequest", [search.value]));

@@ -64,7 +64,7 @@ function hasInvalidDependency(dependencies: PluginDependency[]) {
 async function save() {
   loading.value = true;
   try {
-    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/savePluginDependencies`, true, "post", {
+    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/savePluginDependencies`, "post", {
       platform: platform.value?.name?.toUpperCase(),
       pluginDependencies: depTable.value.dependencies,
     });

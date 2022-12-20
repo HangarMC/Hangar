@@ -64,7 +64,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
       // todo consider caching these in node server/globally, these are all always needed
       await Promise.all([
         fetchIfNeeded(async () => {
-          const categoryResult = await useInternalApi<IProjectCategory[]>("data/categories", false);
+          const categoryResult = await useInternalApi<IProjectCategory[]>("data/categories");
           for (const c of categoryResult) {
             c.title = "project.category." + c.apiName;
           }
@@ -72,7 +72,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
         }, projectCategories),
 
         fetchIfNeeded(async () => {
-          const permissionResultTemp = await useInternalApi<{ value: NamedPermission; frontendName: string; permission: string }[]>("data/permissions", false);
+          const permissionResultTemp = await useInternalApi<{ value: NamedPermission; frontendName: string; permission: string }[]>("data/permissions");
           const permissionResult: IPermission[] = permissionResultTemp.map(({ value, frontendName, permission }) => ({
             value,
             frontendName,
@@ -82,25 +82,25 @@ export const useBackendDataStore = defineStore("backendData", () => {
         }, permissions),
 
         fetchIfNeeded(async () => {
-          const platformResult: IPlatform[] = await useInternalApi<IPlatform[]>("data/platforms", false);
+          const platformResult: IPlatform[] = await useInternalApi<IPlatform[]>("data/platforms");
           return convertToMap<Platform, IPlatform>(platformResult, (value) => value.name.toUpperCase());
         }, platforms),
 
         fetchIfNeeded(async () => {
-          const promptsResult: IPrompt[] = await useInternalApi<IPrompt[]>("data/prompts", false);
+          const promptsResult: IPrompt[] = await useInternalApi<IPrompt[]>("data/prompts");
           return convertToMap<Prompt, IPrompt>(promptsResult, (value) => value.name);
         }, prompts),
 
-        fetchIfNeeded(() => useInternalApi<string[]>("data/licenses", false), licenses),
-        fetchIfNeeded(() => useInternalApi<AnnouncementObject[]>("data/announcements", false), announcements),
-        fetchIfNeeded(() => useInternalApi<IVisibility[]>("data/visibilities", false), visibilities),
-        fetchIfNeeded(() => useInternalApi<NonNullable<typeof validations.value>>("data/validations", false), validations),
-        fetchIfNeeded(() => useInternalApi<NonNullable<typeof orgRoles.value>>("data/orgRoles", false), orgRoles),
-        fetchIfNeeded(() => useInternalApi<NonNullable<typeof channelColors.value>>("data/channelColors", false), channelColors),
-        fetchIfNeeded(() => useInternalApi<NonNullable<typeof projectRoles.value>>("data/projectRoles", false), projectRoles),
-        fetchIfNeeded(() => useInternalApi<NonNullable<typeof globalRoles.value>>("data/globalRoles", false), globalRoles),
-        fetchIfNeeded(() => useInternalApi<NonNullable<typeof flagReasons.value>>("data/flagReasons", false), flagReasons),
-        fetchIfNeeded(() => useInternalApi<NonNullable<typeof versionInfo.value>>("data/version-info", false), versionInfo),
+        fetchIfNeeded(() => useInternalApi<string[]>("data/licenses"), licenses),
+        fetchIfNeeded(() => useInternalApi<AnnouncementObject[]>("data/announcements"), announcements),
+        fetchIfNeeded(() => useInternalApi<IVisibility[]>("data/visibilities"), visibilities),
+        fetchIfNeeded(() => useInternalApi<NonNullable<typeof validations.value>>("data/validations"), validations),
+        fetchIfNeeded(() => useInternalApi<NonNullable<typeof orgRoles.value>>("data/orgRoles"), orgRoles),
+        fetchIfNeeded(() => useInternalApi<NonNullable<typeof channelColors.value>>("data/channelColors"), channelColors),
+        fetchIfNeeded(() => useInternalApi<NonNullable<typeof projectRoles.value>>("data/projectRoles"), projectRoles),
+        fetchIfNeeded(() => useInternalApi<NonNullable<typeof globalRoles.value>>("data/globalRoles"), globalRoles),
+        fetchIfNeeded(() => useInternalApi<NonNullable<typeof flagReasons.value>>("data/flagReasons"), flagReasons),
+        fetchIfNeeded(() => useInternalApi<NonNullable<typeof versionInfo.value>>("data/version-info"), versionInfo),
       ]);
     } catch (e) {
       console.error("ERROR FETCHING BACKEND DATA");

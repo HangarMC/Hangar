@@ -89,7 +89,7 @@ function cancelTransfer() {
 
   saving.value = true;
   const url = props.organization ? `organizations/org/${props.author}/canceltransfer` : `projects/project/${props.author}/${props.slug}/canceltransfer`;
-  useInternalApi(url, true, "post")
+  useInternalApi(url, "post")
     .then(() => router.go(0))
     .catch((e) => handleRequestError(e, i18n))
     .finally(() => (saving.value = false));
@@ -119,7 +119,7 @@ function post(member: EditableMember, action: "edit" | "add" | "remove") {
 
   saving.value = true;
   const url = props.organization ? `organizations/org/${props.author}/members/${action}` : `projects/project/${props.author}/${props.slug}/members/${action}`;
-  useInternalApi(url, true, "post", member)
+  useInternalApi(url, "post", member)
     .then(() => {
       router.go(0);
     })
@@ -140,7 +140,7 @@ function convertMember(member: JoinableMember): EditableMember {
 
 async function doSearch(val: string) {
   result.value = [];
-  const users = await useApi<PaginatedResult<User>>("users", false, "get", {
+  const users = await useApi<PaginatedResult<User>>("users", "get", {
     query: val,
     limit: 25,
     offset: 0,

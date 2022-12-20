@@ -25,11 +25,11 @@ const loading = ref<{ [key: number]: boolean }>({});
 
 function resolve(flag: Flag) {
   loading.value[flag.id] = true;
-  useInternalApi(`flags/${flag.id}/resolve/${props.resolved ? "false" : "true"}`, false, "POST")
+  useInternalApi(`flags/${flag.id}/resolve/${props.resolved ? "false" : "true"}`, "POST")
     .catch<any>((e) => handleRequestError(e, i18n))
     .then(async () => {
       if (flags && flags.value) {
-        const newFlags = await useInternalApi<PaginatedResult<Flag>>("flags/" + (props.resolved ? "resolved" : "unresolved"), false).catch((e) =>
+        const newFlags = await useInternalApi<PaginatedResult<Flag>>("flags/" + (props.resolved ? "resolved" : "unresolved")).catch((e) =>
           handleRequestError(e, i18n)
         );
         if (newFlags) {
@@ -50,7 +50,7 @@ async function getNotifications(flag: Flag) {
     return;
   }
 
-  notifications.value = (await useInternalApi<HangarFlagNotification[]>(`flags/${flag.id}/notifications`, false, "get").catch((e) =>
+  notifications.value = (await useInternalApi<HangarFlagNotification[]>(`flags/${flag.id}/notifications`, "get").catch((e) =>
     handleRequestError(e, i18n)
   )) as HangarFlagNotification[];
   currentId.value = flag.id;

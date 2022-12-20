@@ -25,7 +25,7 @@ const loading = ref(false);
 async function save() {
   loading.value = true;
   try {
-    await useInternalApi(props.action, true, "post", {
+    await useInternalApi(props.action, "post", {
       content: newTagline.value,
     });
     router.go(0);

@@ -123,7 +123,7 @@ const search = ref<string>("");
 const result = ref<string[]>([]);
 async function doSearch(val: string) {
   result.value = [];
-  const users = await useApi<PaginatedResult<User>>("users", false, "get", {
+  const users = await useApi<PaginatedResult<User>>("users", "get", {
     query: val,
     limit: 25,
     offset: 0,
@@ -135,7 +135,7 @@ async function save() {
   loading.save = true;
   try {
     if (!(await v.value.$validate())) return;
-    await useInternalApi(`projects/project/${route.params.user}/${route.params.project}/settings`, true, "post", {
+    await useInternalApi(`projects/project/${route.params.user}/${route.params.project}/settings`, "post", {
       ...form,
     });
     await router.go(0);
@@ -148,7 +148,7 @@ async function save() {
 async function transfer() {
   loading.transfer = true;
   try {
-    await useInternalApi<string>(`projects/project/${route.params.user}/${route.params.project}/transfer`, true, "post", {
+    await useInternalApi<string>(`projects/project/${route.params.user}/${route.params.project}/transfer`, "post", {
       content: search.value,
     });
     notificationStore.success(i18n.t("project.settings.success.transferRequest", [search.value]));
@@ -161,7 +161,7 @@ async function transfer() {
 async function rename() {
   loading.rename = true;
   try {
-    const newSlug = await useInternalApi<string>(`projects/project/${route.params.user}/${route.params.project}/rename`, true, "post", {
+    const newSlug = await useInternalApi<string>(`projects/project/${route.params.user}/${route.params.project}/rename`, "post", {
       content: newName.value,
     });
     notificationStore.success(i18n.t("project.settings.success.rename", [newName.value]));
@@ -174,7 +174,7 @@ async function rename() {
 
 async function softDelete(comment: string) {
   try {
-    await useInternalApi(`projects/project/${props.project.id}/manage/delete`, true, "post", {
+    await useInternalApi(`projects/project/${props.project.id}/manage/delete`, "post", {
       content: comment,
     });
     useNotificationStore().success(i18n.t("project.settings.success.softDelete"));
@@ -190,7 +190,7 @@ async function softDelete(comment: string) {
 
 async function hardDelete(comment: string) {
   try {
-    await useInternalApi(`projects/project/${props.project.id}/manage/hardDelete`, true, "post", {
+    await useInternalApi(`projects/project/${props.project.id}/manage/hardDelete`, "post", {
       content: comment,
     });
     notificationStore.success(i18n.t("project.settings.success.hardDelete"));
@@ -209,7 +209,7 @@ async function uploadIcon() {
   data.append("projectIcon", cropperResult.value);
   loading.uploadIcon = true;
   try {
-    const response = await useInternalApi<string | null>(`projects/project/${route.params.user}/${route.params.project}/saveIcon`, true, "post", data);
+    const response = await useInternalApi<string | null>(`projects/project/${route.params.user}/${route.params.project}/saveIcon`, "post", data);
     cropperResult.value = null;
     await loadIconIntoCropper();
     if (response) {
@@ -226,7 +226,7 @@ async function uploadIcon() {
 async function resetIcon() {
   loading.resetIcon = true;
   try {
-    const response = await useInternalApi<string | null>(`projects/project/${route.params.user}/${route.params.project}/resetIcon`, true, "post");
+    const response = await useInternalApi<string | null>(`projects/project/${route.params.user}/${route.params.project}/resetIcon`, "post");
     if (response) {
       useNotificationStore().success(i18n.t("project.settings.success.resetIconWarn", [response]));
     } else {
