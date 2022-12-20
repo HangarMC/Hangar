@@ -61,6 +61,9 @@ export default defineNuxtConfig({
   experimental: {
     writeEarlyHints: false,
   },
+  typescript: {
+    // typeCheck: "build", // TODO enable typechecking on build
+  },
   proxy: {
     enableProxy: true,
     proxies: {

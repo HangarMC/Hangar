@@ -1,10 +1,10 @@
 import { AxiosError } from "axios";
 import { HangarApiException, HangarValidationException, MultiHangarApiException } from "hangar-api";
-import { useI18n } from "vue-i18n";
+import { Composer } from "vue-i18n";
 import { ref } from "vue";
 import { useNotificationStore } from "~/lib/store/notification";
 
-export function handleRequestError(err: AxiosError, i18n: ReturnType<typeof useI18n>, msg: string | undefined = undefined) {
+export function handleRequestError(err: AxiosError, i18n: Composer, msg: string | undefined = undefined) {
   if (import.meta.env.SSR) {
     _handleRequestError(err, i18n);
     return ref();
@@ -36,7 +36,7 @@ export function handleRequestError(err: AxiosError, i18n: ReturnType<typeof useI
   return ref();
 }
 
-function _handleRequestError(err: AxiosError, i18n: ReturnType<typeof useI18n>) {
+function _handleRequestError(err: AxiosError, i18n: Composer) {
   function writeResponse(object: unknown) {
     console.log("writeResponse", object);
     // throw new Error("TODO: Implement me"); // TODO
@@ -75,7 +75,7 @@ function _handleRequestError(err: AxiosError, i18n: ReturnType<typeof useI18n>) 
   }
 }
 
-function collectErrors(exception: HangarApiException | MultiHangarApiException, i18n: ReturnType<typeof useI18n>): string[] {
+function collectErrors(exception: HangarApiException | MultiHangarApiException, i18n: Composer): string[] {
   if (!exception.isMultiException) {
     return [i18n.te(exception.message) ? i18n.t(exception.message, [exception.messageArgs]) : exception.message];
   } else {

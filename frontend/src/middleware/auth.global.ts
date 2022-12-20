@@ -101,7 +101,7 @@ async function globalPermsRequired(authStore: ReturnType<typeof useAuthStore>, t
   }).catch((e) => {
     try {
       routePermLog("error!", e);
-      handleRequestError(e, i18n as ReturnType<typeof useI18n>); // dont ask me why I need this cast...
+      handleRequestError(e, i18n);
     } catch (e2) {
       routePermLog("error while checking perm", e);
       routePermLog("encountered additional error while error handling", e2);

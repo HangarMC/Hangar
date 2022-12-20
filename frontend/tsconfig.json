@@ -15,7 +15,7 @@
     "noUnusedLocals": true,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["vite/client", "vite-plugin-pages/client", "vite-plugin-vue-layouts/client", "unplugin-icons/types/vue", "nuxt-windicss"],
+    "types": ["vite/client", "unplugin-icons/types/vue", "nuxt-windicss"],
     "paths": {
       "~/*": ["src/*"],
       "#imports": [".nuxt/imports"]
