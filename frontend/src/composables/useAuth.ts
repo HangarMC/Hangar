@@ -1,14 +1,13 @@
 import { HangarUser } from "hangar-internal";
-import { AxiosError, AxiosRequestHeaders } from "axios";
-import Cookies from "universal-cookie";
+import { AxiosError, AxiosInstance, AxiosRequestHeaders } from "axios";
 import jwtDecode, { type JwtPayload } from "jwt-decode";
 import { useAuthStore } from "~/store/auth";
 import { useCookies } from "~/composables/useCookies";
 import { useInternalApi } from "~/composables/useApi";
-import { useAxios } from "~/composables/useAxios";
 import { authLog } from "~/lib/composables/useLog";
 import { useConfig } from "~/lib/composables/useConfig";
 import { useRequestEvent } from "#imports";
+import { useAxios } from "~/composables/useAxios";
 
 class Auth {
   loginUrl(redirectUrl: string): string {
@@ -22,8 +21,8 @@ class Auth {
     location.replace(`/logout?returnUrl=${useConfig().publicHost}?loggedOut`);
   }
 
-  validateToken(token: string) {
-    if (!token) {
+  validateToken(token: unknown): token is string {
+    if (!token || typeof token !== "string") {
       return false;
     }
     const decoded = jwtDecode<JwtPayload>(token);
@@ -34,10 +33,10 @@ class Auth {
   }
 
   // TODO do we need to scope this to the user?
-  // TODO do we even need this anymore?
-  refreshPromise: Promise<boolean | string> | null = null;
+  refreshPromise: Promise<false | string> | null = null;
 
-  async refreshToken() {
+  async refreshToken(): Promise<false | string> {
+    // we use a promise as a lock here to make sure only one request is doing a refresh, avoids too many requests
     authLog("refresh token");
     if (this.refreshPromise) {
       authLog("locked, lets wait");
@@ -45,9 +44,8 @@ class Auth {
       authLog("lock over", result);
       return result;
     }
-
     // eslint-disable-next-line no-async-promise-executor
-    this.refreshPromise = new Promise<boolean | string>(async (resolve) => {
+    this.refreshPromise = new Promise<false | string>(async (resolve) => {
       const refreshToken = useCookies().get("HangarAuth_REFRESH");
       if (import.meta.env.SSR && !refreshToken) {
         authLog("no cookie, no point in refreshing");
@@ -63,28 +61,23 @@ class Auth {
           headers.cookie = "HangarAuth_REFRESH=" + refreshToken;
           authLog("pass refresh cookie", refreshToken);
         }
-        const response = await useAxios.get("/refresh", { headers });
+        const response = await useAxios().get("/refresh", { headers });
         if (response.status === 299) {
           authLog("had no cookie");
           resolve(false);
-        } else if (import.meta.env.SSR) {
-          if (response.headers["set-cookie"]) {
+        } else if (response.status === 204) {
+          // forward cookie header to renew refresh cookie
+          if (import.meta.env.SSR && response.headers["set-cookie"]) {
             useRequestEvent().node.res?.setHeader("set-cookie", response.headers["set-cookie"]);
-            const token = new Cookies(response.headers["set-cookie"]?.join("; ")).get("HangarAuth");
-            if (token) {
-              authLog("got token");
-              resolve(token);
-            } else {
-              authLog("got no token in cookie header", response.headers["set-cookie"]);
-              resolve(false);
-            }
+          }
+          // validate and return token
+          const token = response.data;
+          if (useAuth.validateToken(token)) {
+            resolve(response.data);
           } else {
-            authLog("got no cookie header back");
+            authLog("refreshed token is not valid?", token);
             resolve(false);
           }
-        } else {
-          authLog("done");
-          resolve(true);
         }
         this.refreshPromise = null;
       } catch (e) {
@@ -101,38 +94,45 @@ class Auth {
     return this.refreshPromise;
   }
 
-  async invalidate() {
+  async invalidate(axios: AxiosInstance) {
     const store = useAuthStore();
     store.$patch({
       user: null,
       authenticated: false,
+      token: null,
     });
     if (!store.invalidated) {
-      await useAxios.get("/invalidate").catch((e) => authLog("Invalidate failed", e.message));
-    }
-    if (!import.meta.env.SSR) {
-      useCookies().remove("HangarAuth_REFRESH", { path: "/" });
-      useCookies().remove("HangarAuth", { path: "/" });
-      authLog("Invalidated auth cookies");
+      await axios.get("/invalidate").catch((e) => authLog("Invalidate failed", e.message));
     }
     store.invalidated = true;
   }
 
   async updateUser(): Promise<void> {
     const authStore = useAuthStore();
+    const axios = useAxios();
     if (authStore.invalidated) {
       authLog("no point in updating if we just invalidated");
       return;
     }
+    if (authStore.user) {
+      authLog("no point in updating if we already have a user");
+      return;
+    }
     const user = await useInternalApi<HangarUser>("users/@me", true).catch((err) => {
-      authLog("no user", Object.assign({}, err));
-      return this.invalidate();
+      authLog("no user, with err", Object.assign({}, err));
+      return this.invalidate(axios);
     });
     if (user) {
       authLog("patching " + user.name);
-      authStore.setUser(user);
-      authStore.$patch({ authenticated: true, invalidated: false });
+      authStore.user = user;
+      authStore.authenticated = true;
+      authStore.invalidated = false;
+      if (user.accessToken) {
+        authStore.token = user.accessToken;
+      }
       authLog("user is now " + authStore.user?.name);
+    } else {
+      authLog("no user, no content");
     }
   }
 }

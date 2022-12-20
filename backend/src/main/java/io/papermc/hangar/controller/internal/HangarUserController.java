@@ -26,6 +26,8 @@ import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
+import io.papermc.hangar.security.configs.SecurityConfig;
+import io.papermc.hangar.service.TokenService;
 import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.perms.roles.OrganizationRoleService;
 import io.papermc.hangar.service.internal.perms.roles.ProjectRoleService;
@@ -45,6 +47,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,9 +71,10 @@ public class HangarUserController extends HangarComponent {
     private final OrganizationRoleService organizationRoleService;
     private final ProjectInviteService projectInviteService;
     private final OrganizationInviteService organizationInviteService;
+    private final TokenService tokenService;
 
     @Autowired
-    public HangarUserController(ObjectMapper mapper, UsersApiService usersApiService, UserService userService, NotificationService notificationService, ProjectRoleService projectRoleService, OrganizationRoleService organizationRoleService, ProjectInviteService projectInviteService, OrganizationInviteService organizationInviteService) {
+    public HangarUserController(ObjectMapper mapper, UsersApiService usersApiService, UserService userService, NotificationService notificationService, ProjectRoleService projectRoleService, OrganizationRoleService organizationRoleService, ProjectInviteService projectInviteService, OrganizationInviteService organizationInviteService, final TokenService tokenService) {
         this.mapper = mapper;
         this.usersApiService = usersApiService;
         this.userService = userService;
@@ -79,15 +83,38 @@ public class HangarUserController extends HangarComponent {
         this.organizationRoleService = organizationRoleService;
         this.projectInviteService = projectInviteService;
         this.organizationInviteService = organizationInviteService;
+        this.tokenService = tokenService;
     }
 
     @Anyone
     @GetMapping("/users/@me")
-    public ResponseEntity<?> getCurrentUser(HangarAuthenticationToken hangarAuthenticationToken) {
+    public ResponseEntity<?> getCurrentUser(HangarAuthenticationToken hangarAuthenticationToken, @CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) String refreshToken) {
+        String token;
+        String name;
         if (hangarAuthenticationToken == null) {
-            return ResponseEntity.noContent().build();
+            // if we don't have a token, lets see if we can get one via our refresh token
+            if (refreshToken == null) {
+                // neither token nor refresh token -> sorry no content
+                return ResponseEntity.noContent().build();
+            }
+            try {
+               TokenService.RefreshResponse refreshResponse = tokenService.refreshAccessToken(refreshToken);
+               token = refreshResponse.accessToken();
+               name = refreshResponse.userTable().getName();
+            } catch (HangarApiException ex) {
+                // no token + no valid refresh token -> no content
+                System.out.println("getCurrentUser failed: " + ex.getMessage());
+                return ResponseEntity.noContent().build();
+            }
+        } else {
+            // when we have a token, just use that
+            token = hangarAuthenticationToken.getCredentials().getToken();
+            name = hangarAuthenticationToken.getName();
         }
-        return ResponseEntity.ok(usersApiService.getUser(hangarAuthenticationToken.getName(), HangarUser.class));
+        // get user
+        HangarUser user = usersApiService.getUser(name, HangarUser.class);
+        user.setAccessToken(token);
+        return ResponseEntity.ok(user);
     }
 
     // @el(userName: String)

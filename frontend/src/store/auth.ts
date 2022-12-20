@@ -4,6 +4,7 @@ import { ref } from "vue";
 import { authLog } from "~/lib/composables/useLog";
 
 export const useAuthStore = defineStore("auth", () => {
+  const token = ref<string | null>(null);
   const authenticated = ref<boolean>(false);
   const user = ref<HangarUser | null>(null);
   const routePermissions = ref<string | null>(null);
@@ -11,13 +12,9 @@ export const useAuthStore = defineStore("auth", () => {
 
   authLog("create authStore");
 
-  function setUser(newUser: HangarUser) {
-    user.value = newUser;
-  }
-
   function setRoutePerms(routePerms: string | null) {
     routePermissions.value = routePerms;
   }
 
-  return { authenticated, user, routePermissions, invalidated, setUser, setRoutePerms };
+  return { token, authenticated, user, routePermissions, invalidated, setRoutePerms };
 });

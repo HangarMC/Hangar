@@ -15,6 +15,7 @@ public class HangarUser extends User implements Identified {
     private final List<Integer> readPrompts;
     private final String language;
     private final String theme;
+    private String accessToken;
 
     public HangarUser(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount, boolean locked, long id, List<Integer> readPrompts, String language, String theme) {
         super(createdAt, name, tagline, joinDate, roles, projectCount, locked);
@@ -47,6 +48,14 @@ public class HangarUser extends User implements Identified {
 
     public String getTheme() {
         return theme;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(final String accessToken) {
+        this.accessToken = accessToken;
     }
 
     public User toUser() {

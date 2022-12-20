@@ -1,47 +1,28 @@
-import { RouteLocationNormalized, RouteLocationRaw } from "vue-router";
-import { PermissionCheck, UserPermissions } from "hangar-api";
+import { RouteLocationNamedRaw, RouteLocationNormalized } from "vue-router";
 import { useI18n } from "vue-i18n";
-import { NuxtApp } from "nuxt/app";
-import { useAuth } from "~/composables/useAuth";
-import { routePermLog } from "~/lib/composables/useLog";
+import { PermissionCheck, UserPermissions } from "hangar-api";
+import { defineNuxtRouteMiddleware, handleRequestError, hasPerms, navigateTo, toNamedPermission, useApi, useAuth } from "#imports";
 import { useAuthStore } from "~/store/auth";
-import { useApi } from "~/composables/useApi";
-import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
-import { hasPerms, toNamedPermission } from "~/composables/usePerm";
+import { routePermLog } from "~/lib/composables/useLog";
 import { NamedPermission, PermissionType } from "~/types/enums";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useSettingsStore } from "~/store/useSettingsStore";
-import { defineNuxtPlugin, useRequestEvent, useRouter } from "#imports";
+import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 
-export default defineNuxtPlugin(async (nuxtApp: NuxtApp) => {
-  useRouter().beforeEach(async (to, from, next) => {
-    if (to.fullPath.startsWith("/@vite")) {
-      // really don't need to do stuff for such meta routes
-      return;
-    }
-
-    await loadPerms(to);
-
-    const result = await handleRoutePerms(to);
-    if (result) {
-      next(result);
-    } else {
-      next();
-    }
-  });
-  await useAuth.updateUser();
-  if (!process.server) return;
-  const event = useRequestEvent();
-  const request = event.node.res;
-  const response = event.node.res;
-  if (request?.url?.includes("/@vite")) {
+export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+  if (to.fullPath.startsWith("/@vite")) {
     // really don't need to do stuff for such meta routes
+    console.log("hit vite path???????????????????????", to.fullPath);
     return;
   }
-  await useSettingsStore().loadSettingsServer(request, response);
+
+  await useAuth.updateUser();
+  await loadRoutePerms(to);
+  const result = await handleRoutePerms(to);
+  if (result) {
+    return navigateTo(result, { redirectCode: result.params?.status });
+  }
 });
 
-async function loadPerms(to: RouteLocationNormalized) {
+async function loadRoutePerms(to: RouteLocationNormalized) {
   const authStore = useAuthStore();
   if (to.params.user && to.params.project) {
     if (authStore.authenticated) {
@@ -88,7 +69,7 @@ type handlersType = {
   [key: string]: (
     authStore: ReturnType<typeof useAuthStore>,
     to: RouteLocationNormalized
-  ) => Promise<RouteLocationRaw | undefined> | RouteLocationRaw | undefined;
+  ) => Promise<RouteLocationNamedRaw | undefined> | RouteLocationNamedRaw | undefined;
 };
 const handlers: handlersType = {
   currentUserRequired,
@@ -114,12 +95,13 @@ async function globalPermsRequired(authStore: ReturnType<typeof useAuthStore>, t
   routePermLog("route globalPermsRequired", to.meta.globalPermsRequired);
   const result = checkLogin(authStore, to, 403);
   if (result) return result;
+  const i18n = useI18n();
   const check = await useApi<PermissionCheck>("permissions/hasAll", true, "get", {
     permissions: toNamedPermission(to.meta.globalPermsRequired as string[]),
   }).catch((e) => {
     try {
       routePermLog("error!", e);
-      handleRequestError(e, useI18n());
+      handleRequestError(e, i18n as ReturnType<typeof useI18n>); // dont ask me why I need this cast...
     } catch (e2) {
       routePermLog("error while checking perm", e);
       routePermLog("encountered additional error while error handling", e2);

@@ -42,6 +42,7 @@ declare module "hangar-internal" {
     readPrompts: number[];
     language: string;
     theme: string;
+    accessToken?: string;
   }
 
   interface UserTable extends Table, Named {

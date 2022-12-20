@@ -52,19 +52,18 @@ public class TokenService extends HangarComponent {
         return getVerifier().verify(token);
     }
 
-    public void issueRefreshAndAccessToken(UserTable userTable) {
+    public void issueRefreshToken(UserTable userTable) {
         UserRefreshToken userRefreshToken = userRefreshTokenDAO.insert(new UserRefreshToken(userTable.getId(), UUID.randomUUID(), UUID.randomUUID()));
         addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), config.security.refreshTokenExpiry().toSeconds(), true);
-        String accessToken = newToken0(userTable);
-        // let the access token cookie be around for longer, so we can more nicely detect expired tokens via the response code
-        addCookie(SecurityConfig.AUTH_NAME, accessToken, config.security.tokenExpiry().toSeconds() * 2, false);
     }
 
     private void addCookie(String name, String value, long maxAge, boolean httpOnly) {
         response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, value).path("/").secure(config.security.secure()).maxAge(maxAge).sameSite("Lax").httpOnly(httpOnly).build().toString());
     }
 
-    public void refreshAccessToken(String refreshToken) {
+    public record RefreshResponse(String accessToken, UserTable userTable) {}
+
+    public RefreshResponse refreshAccessToken(String refreshToken) {
         if (refreshToken == null) {
             throw new HangarApiException(299, "No refresh token found");
         }
@@ -90,8 +89,7 @@ public class TokenService extends HangarComponent {
         userRefreshToken = userRefreshTokenDAO.update(userRefreshToken);
         addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), config.security.refreshTokenExpiry().toSeconds(), true);
         // then issue a new access token
-        String accessToken = newToken0(userTable);
-        addCookie(SecurityConfig.AUTH_NAME, accessToken, config.security.tokenExpiry().toSeconds(), false);
+        return new RefreshResponse(newToken0(userTable), userTable);
     }
 
     public void invalidateToken(String refreshToken) {

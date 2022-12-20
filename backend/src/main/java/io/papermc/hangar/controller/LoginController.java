@@ -54,8 +54,8 @@ public class LoginController extends HangarComponent {
             config.checkDev();
 
             UserTable fakeUser = authenticationService.loginAsFakeUser();
-            tokenService.issueRefreshAndAccessToken(fakeUser);
-            return new RedirectView(returnUrl);
+            tokenService.issueRefreshToken(fakeUser);
+            return addBaseAndRedirect(returnUrl);
         } else {
             response.addCookie(new Cookie("url", returnUrl));
             return redirectToSso(ssoService.getLoginUrl(config.getBaseUrl() + "/login"));
@@ -73,14 +73,14 @@ public class LoginController extends HangarComponent {
         if (!validationService.isValidUsername(user.getName())) {
             throw new HangarApiException("nav.user.error.invalidUsername");
         }
-        tokenService.issueRefreshAndAccessToken(user);
+        tokenService.issueRefreshToken(user);
         return addBaseAndRedirect(url);
     }
 
     @GetMapping("/refresh")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void refreshAccessToken(@CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) String refreshToken) {
-        tokenService.refreshAccessToken(refreshToken);
+    public String refreshAccessToken(@CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) String refreshToken) {
+        return tokenService.refreshAccessToken(refreshToken).accessToken();
     }
 
     @GetMapping("/invalidate")
@@ -105,7 +105,7 @@ public class LoginController extends HangarComponent {
                 return redirectToSso(ssoService.getLogoutUrl(config.getBaseUrl() + "/handle-logout", principal.get()));
             } else {
                 tokenService.invalidateToken(null);
-                return new RedirectView(returnUrl);
+                return addBaseAndRedirect(returnUrl);
             }
         }
     }

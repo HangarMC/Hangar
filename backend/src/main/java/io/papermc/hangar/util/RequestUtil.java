@@ -2,13 +2,11 @@ package io.papermc.hangar.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class RequestUtil {
 
@@ -46,5 +44,9 @@ public class RequestUtil {
         } catch (UnknownHostException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    public static String appendParam(String url, String paramName, String paramValue) {
+        return UriComponentsBuilder.fromUriString(url).queryParam(paramName, paramValue).build().toUriString();
     }
 }
