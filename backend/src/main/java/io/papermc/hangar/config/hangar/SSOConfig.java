@@ -14,6 +14,7 @@ public record SSOConfig(
     @DefaultValue("my-client") String clientId,
     @DefaultValue("http://localhost:3001") String authUrl,
     @DefaultValue("/account/signup") String signupUrl,
-    @DefaultValue("secret") String apiKey
+    @DefaultValue("secret") String apiKey,
+    @DefaultValue("") String kratosApiKey
 ) {
 }

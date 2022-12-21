@@ -166,6 +166,7 @@ backend:
       database: "hangarauth"
       options: "?currentSchema=hangar"
     tokenSecret: "secret"
+    kratosApiKey: "hookapikey-changeme"
     backendOauthUrl: "http://hangarauth-hydra:4444"
     backendAuthHost: "http://hangarauth-backend:8080"
     storage:

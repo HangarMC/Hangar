@@ -43,7 +43,7 @@ spring:
 # Fake User #
 #############
 fake-user:
-  enabled: true
+  enabled: false
   username: paper
   email: paper@papermc.io
 #  id: -3
@@ -146,6 +146,8 @@ hangar:
     auth-url: "http://localhost:3001"
     signup-url: "/account/signup/"
     api-key: "supersecret"
+
+    kratos-api-key: "hookapikey-changeme"
 
   security:
     secure: false
