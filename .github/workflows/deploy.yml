@@ -113,7 +113,7 @@ jobs:
         id: frontend-meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.GITHUB_REPOSITORY }}/frontend
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/frontend
           tags: |
             type=sha,enable=true,format=short,prefix=${{ env.BRANCH_NAME }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
 
@@ -132,7 +132,7 @@ jobs:
         id: backend-meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.GITHUB_REPOSITORY }}/backend
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/backend
           tags: |
             type=sha,enable=true,format=short,prefix=${{ env.BRANCH_NAME }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
 
