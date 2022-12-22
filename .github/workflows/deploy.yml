@@ -16,6 +16,7 @@ concurrency:
 
 env:
   REGISTRY: ghcr.io
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
   build:
@@ -114,7 +115,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/HangarMC/hangar-frontend
           tags: |
-            type=sha,enable=true,format=short,prefix=${{ env.GITHUB_REF_NAME }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
+            type=sha,enable=true,format=short,prefix=${{ env.BRANCH_NAME }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
 
       - name: Build and push frontend Dockerfile
         uses: docker/build-push-action@v3
@@ -133,7 +134,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/HangarMC/hangar-backend
           tags: |
-            type=sha,enable=true,format=short,prefix=${{ env.GITHUB_REF_NAME }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
+            type=sha,enable=true,format=short,prefix=${{ env.BRANCH_NAME }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
 
       - name: Build and push backend Dockerfile
         uses: docker/build-push-action@v3
