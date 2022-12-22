@@ -51,7 +51,7 @@ export const withI18nMessage = <T extends ValidationRule | ValidatorWrapper>(val
       if (overrideMsg) {
         msg = overrideMsg;
       }
-      return I18n.value.global.t(msg, params);
+      return I18n.value.t(msg, params);
     },
   })(validator, { withArguments: true });
 };
