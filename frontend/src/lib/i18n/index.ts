@@ -44,7 +44,7 @@ export async function installI18n(app: App, locale = "") {
     });
 
     app.use(i18n);
-    I18n.value = i18n;
+    I18n.value = i18n.global;
   } catch (error) {
     console.log("installI18n error", error);
 
