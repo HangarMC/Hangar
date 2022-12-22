@@ -21,6 +21,7 @@ import { projectIconUrl } from "~/composables/useUrlHelper";
 import Alert from "~/lib/components/design/Alert.vue";
 import Pagination from "~/lib/components/design/Pagination.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
+import ComingSoon from "~/lib/components/design/ComingSoon.vue";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -155,7 +156,7 @@ function getVisibilityTitle(visibility: Visibility) {
                         </span>
                         <span class="basis-full inline-flex items-center">
                           <IconMdiDownload class="mr-1" />
-                          {{ item.stats.downloads }}
+                          <ComingSoon>{{ item.stats.downloads }}</ComingSoon>
                         </span>
                       </div>
                     </div>

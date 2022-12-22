@@ -9,6 +9,7 @@ import { lastUpdated } from "~/lib/composables/useTime";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import { Visibility } from "~/types/enums";
 import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
+import ComingSoon from "~/lib/components/design/ComingSoon.vue";
 
 const i18n = useI18n();
 
@@ -58,7 +59,8 @@ function getBorderClasses(): string {
           <IconMdiStar class="mx-1" /> {{ project.stats.stars }} {{ i18n.t("project.info.stars", project.stats.stars) }}
         </span>
         <span class="inline-flex items-center">
-          <IconMdiDownload class="mx-1" /> {{ project.stats.downloads }} {{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}
+          <IconMdiDownload class="mx-1" />
+          <ComingSoon>{{ project.stats.downloads }} {{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}</ComingSoon>
         </span>
         <Tooltip>
           <template #content>
@@ -71,7 +73,9 @@ function getBorderClasses(): string {
     <div class="sm:hidden space-x-1 text-center mt-2">
       <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" />{{ lastUpdated(project.lastUpdated) }}</span>
       <span class="inline-flex items-center"> <IconMdiStar class="mx-1" /> {{ project.stats.stars }} </span>
-      <span class="inline-flex items-center"> <IconMdiDownload class="mx-1" /> {{ project.stats.downloads }} </span>
+      <span class="inline-flex items-center">
+        <IconMdiDownload class="mx-1" /><ComingSoon short>{{ project.stats.downloads }}</ComingSoon>
+      </span>
     </div>
   </Card>
 </template>
