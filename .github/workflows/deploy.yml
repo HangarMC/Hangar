@@ -14,6 +14,9 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  REGISTRY: ghcr.io
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -109,7 +112,7 @@ jobs:
         id: frontend-meta
         uses: docker/metadata-action@v4
         with:
-          images: ghcr.io/HangarMC/hangar-frontend
+          images: ${{ env.REGISTRY }}/HangarMC/hangar-frontend
           tags: |
             type=sha,enable=true,format=short,prefix=${{ env.GITHUB_HEAD_REF }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
 
@@ -128,7 +131,7 @@ jobs:
         id: backend-meta
         uses: docker/metadata-action@v4
         with:
-          images: ghcr.io/HangarMC/hangar-backend
+          images: ${{ env.REGISTRY }}/HangarMC/hangar-backend
           tags: |
             type=sha,enable=true,format=short,prefix=${{ env.GITHUB_HEAD_REF }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
 
