@@ -1,12 +1,18 @@
 package io.papermc.hangar.db.dao;
 
+import io.papermc.hangar.db.extras.BindPagination;
 import io.papermc.hangar.db.mappers.factories.RoleColumnMapperFactory;
 import io.papermc.hangar.model.api.User;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapperFactory;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
+import org.jdbi.v3.sqlobject.customizer.AllowUnusedBindings;
+import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.MapTo;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -46,6 +52,8 @@ public interface UsersDAO {
         return _getUser(null, id, type);
     }
 
+    @AllowUnusedBindings // query can be unused
+    @UseStringTemplateEngine
     @SqlQuery("SELECT u.id," +
             "       u.created_at," +
             "       u.name," +
@@ -59,15 +67,16 @@ public interface UsersDAO {
             "       u.theme," +
             "       exists(SELECT 1 FROM organizations o WHERE u.id = o.user_id) AS is_organization" +
             "   FROM users u" +
-            "   WHERE u.name ILIKE '%' || :query || '%' " +
+            "   <if(hasQuery)>WHERE u.name ILIKE '%' || :query || '%'<endif>" +
             "   GROUP BY u.id " +
-            "   LIMIT :limit OFFSET :offset")
-    <T extends User> List<T> getUsers(String query, long limit, long offset, @MapTo Class<T> type);
+            "   <sorters>" +
+            "   <offsetLimit>")
+    <T extends User> List<T> getUsers(@Define boolean hasQuery, String query, @BindPagination RequestPagination pagination, @MapTo Class<T> type);
 
+    @AllowUnusedBindings // query can be unused
+    @UseStringTemplateEngine
     @SqlQuery("SELECT COUNT(*)" +
             "   FROM users u" +
-            "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
-            "       JOIN roles r ON ugr.role_id = r.id" +
-            "   WHERE u.name ILIKE '%' || :query || '%'")
-    long getUsersCount(String query);
+            "   <if(hasQuery)>WHERE u.name ILIKE '%' || :query || '%'<endif>")
+    long getUsersCount(@Define boolean hasQuery, String query);
 }

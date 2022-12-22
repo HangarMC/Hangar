@@ -1,12 +1,10 @@
 import { RouteLocationNamedRaw, RouteLocationNormalized } from "vue-router";
-import { Composer, useI18n } from "vue-i18n";
 import { PermissionCheck, UserPermissions } from "hangar-api";
-import { defineNuxtRouteMiddleware, handleRequestError, hasPerms, navigateTo, toNamedPermission, useApi, useAuth } from "#imports";
+import { defineNuxtRouteMiddleware, handleRequestError, hasPerms, toNamedPermission, useApi, useAuth } from "#imports";
 import { useAuthStore } from "~/store/auth";
 import { routePermLog } from "~/lib/composables/useLog";
 import { NamedPermission, PermissionType } from "~/types/enums";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
-import { I18n } from "~/lib/i18n";
 
 export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
   if (to.fullPath.startsWith("/@vite")) {
@@ -17,10 +15,7 @@ export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, fro
 
   await useAuth.updateUser();
   await loadRoutePerms(to);
-  const result = await handleRoutePerms(to);
-  if (result) {
-    return navigateTo(result, { redirectCode: result.params?.status });
-  }
+  await handleRoutePerms(to);
 });
 
 async function loadRoutePerms(to: RouteLocationNormalized) {
@@ -60,9 +55,7 @@ async function handleRoutePerms(to: RouteLocationNormalized) {
   for (const key in handlers) {
     if (!to.meta[key]) continue;
     const handler = handlers[key];
-    const result = await handler(authStore, to);
-    routePermLog("result", result);
-    if (result) return result;
+    await handler(authStore, to);
   }
 }
 
@@ -83,8 +76,7 @@ function currentUserRequired(authStore: ReturnType<typeof useAuthStore>, to: Rou
   if (!to.params.user) {
     throw new TypeError("Must have 'user' as a route param to use CurrentUser");
   }
-  const result = checkLogin(authStore, to, 404);
-  if (result) return result;
+  checkLogin(authStore, to, 404);
   if (!hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)) {
     if (to.params.user !== authStore.user?.name) {
       return useErrorRedirect(to, 403);
@@ -94,8 +86,7 @@ function currentUserRequired(authStore: ReturnType<typeof useAuthStore>, to: Rou
 
 async function globalPermsRequired(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
   routePermLog("route globalPermsRequired", to.meta.globalPermsRequired);
-  const result = checkLogin(authStore, to, 403);
-  if (result) return result;
+  checkLogin(authStore, to, 403);
   const check = await useApi<PermissionCheck>("permissions/hasAll", "get", {
     permissions: toNamedPermission(to.meta.globalPermsRequired as string[]),
   }).catch((e) => {
@@ -119,8 +110,7 @@ function projectPermsRequired(authStore: ReturnType<typeof useAuthStore>, to: Ro
   if (!to.params.user || !to.params.project) {
     throw new Error("Can't use this decorator on a route without `author` and `slug` path params");
   }
-  const result = checkLogin(authStore, to, 404);
-  if (result) return result;
+  checkLogin(authStore, to, 404);
   if (!authStore.routePermissions) {
     return useErrorRedirect(to, 404);
   }
@@ -133,6 +123,6 @@ function projectPermsRequired(authStore: ReturnType<typeof useAuthStore>, to: Ro
 function checkLogin(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized, status: number, msg?: string) {
   if (!authStore.authenticated) {
     routePermLog("not logged in!");
-    return useErrorRedirect(to, status, msg);
+    return useErrorRedirect(to, status, msg || "Not logged in!");
   }
 }

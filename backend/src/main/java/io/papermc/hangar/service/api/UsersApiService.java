@@ -23,6 +23,7 @@ import io.papermc.hangar.service.internal.projects.ProjectAdminService;
 import io.papermc.hangar.service.internal.versions.ReviewService;
 import java.util.List;
 import java.util.function.BiFunction;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,8 +67,9 @@ public class UsersApiService extends HangarComponent {
 
     @Transactional
     public <T extends User> PaginatedResult<T> getUsers(String query, RequestPagination pagination, Class<T> type) {
-        List<T> users = usersDAO.getUsers(query, pagination.getLimit(), pagination.getOffset(), type);
-        return new PaginatedResult<>(new Pagination(usersDAO.getUsersCount(query), pagination), users);
+        boolean hasQuery = !StringUtils.isBlank(query);
+        List<T> users = usersDAO.getUsers(hasQuery, query, pagination, type);
+        return new PaginatedResult<>(new Pagination(usersDAO.getUsersCount(hasQuery, query), pagination), users);
     }
 
     @Transactional

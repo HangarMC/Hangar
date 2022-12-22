@@ -50,6 +50,10 @@ export async function useAuthors() {
   return (await useAsyncData("useAuthors", () => useApi<PaginatedResult<User>>("authors"))).data;
 }
 
+export async function useUsers() {
+  return (await useAsyncData("useUsers", () => useApi<PaginatedResult<User>>("users"))).data;
+}
+
 export async function useInvites() {
   return (await useAsyncData("useInvites", () => useInternalApi<Invites>("invites"))).data;
 }

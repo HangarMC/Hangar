@@ -69,7 +69,9 @@
       "username": "Username",
       "roles": "Roles",
       "joined": "Joined",
-      "projects": "Projects"
+      "projects": "Projects",
+      "locked": "Locked?",
+      "organization": "Org?"
     }
   },
   "nav": {
@@ -87,6 +89,7 @@
       "health": "Hangar Health",
       "log": "User Action Log",
       "platformVersions": "Platform Versions",
+      "userList": "User List",
       "logout": "Sign out",
       "error": {
         "loginFailed": "Authentication Failed",
@@ -919,6 +922,9 @@
     "hangarAuth": "HangarAuth Profile",
     "forum": "Forum Profile",
     "roles": "Roles"
+  },
+  "userList": {
+    "title": "User List"
   },
   "userActionLog": {
     "title": "User Action Log",

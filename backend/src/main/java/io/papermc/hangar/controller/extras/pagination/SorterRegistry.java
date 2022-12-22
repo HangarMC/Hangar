@@ -11,6 +11,8 @@ public enum SorterRegistry implements Sorter {
     USER_NAME("name", simpleSorter("lower(u.name)")),
     USER_PROJECT_COUNT("projectCount", simpleSorter("project_count")),
     USER_ROLES("roles", simpleSorter("roles")),
+    USER_ORG("org", simpleSorter("is_organization")),
+    USER_LOCKED("locked", simpleSorter("locked")),
 
     // For Projects
     VIEWS("views", simpleSorter("hp.views")),

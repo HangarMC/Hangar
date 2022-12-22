@@ -37,6 +37,7 @@ public class UsersController extends HangarComponent implements IUsersController
     }
 
     @Override
+    @ApplicableSorters({SorterRegistry.USER_NAME, SorterRegistry.USER_JOIN_DATE, SorterRegistry.USER_PROJECT_COUNT, SorterRegistry.USER_LOCKED, SorterRegistry.USER_ORG, SorterRegistry.USER_ROLES})
     public ResponseEntity<PaginatedResult<User>> getUsers(String query, @NotNull RequestPagination pagination) {
         return ResponseEntity.ok(usersApiService.getUsers(query, pagination, User.class));
     }

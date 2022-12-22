@@ -53,7 +53,7 @@ public interface IUsersController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/users")
-    ResponseEntity<PaginatedResult<User>> getUsers(@ApiParam(value = "The search query", required = true) @RequestParam("query") String query,
+    ResponseEntity<PaginatedResult<User>> getUsers(@ApiParam(value = "The search query", required = true) @RequestParam(value = "query", required = false) String query,
                                                    @ApiParam("Pagination information") @NotNull RequestPagination pagination);
 
     @ApiOperation(
