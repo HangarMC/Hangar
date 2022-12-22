@@ -98,6 +98,12 @@
   }
 }
 
+// override prism stuff
+.markdown pre[class*=language-] {
+  border: none;
+  box-shadow: none;
+}
+
 // Active tailwind overrides specific to markdown.
 
 // Padding on first table row element
