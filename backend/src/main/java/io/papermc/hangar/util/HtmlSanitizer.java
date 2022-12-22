@@ -62,7 +62,7 @@ public final class HtmlSanitizer {
             .allowAttributes("alt", "src", "border", "height", "width", "preserveAspectRatio", "viewBox", "class").onElements("img", "svg") // TODO don't allow class attribute
             .allowAttributes("fill", "d").onElements("path").toFactory();
         sanitizer = Sanitizers.FORMATTING.and(Sanitizers.BLOCKS).and(Sanitizers.TABLES).and(Sanitizers.STYLES)
-            .and(images).and(links).and(iframes).and(new HtmlPolicyBuilder().allowElements("pre", "details", "summary", "hr").toFactory());
+            .and(images).and(links).and(iframes).and(new HtmlPolicyBuilder().allowElements("pre", "details", "summary", "hr", "code").toFactory());
     }
 
     public String sanitize(final String input) {

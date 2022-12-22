@@ -16,6 +16,7 @@ specifiers:
   '@types/markdown-it-link-attributes': 3.0.1
   '@types/nprogress': 0.2.0
   '@types/prettier': 2.7.1
+  '@types/prismjs': ^1.26.0
   '@types/qs': 6.9.7
   '@types/swagger-ui-dist': 3.30.1
   '@vue/compiler-sfc': 3.2.45
@@ -51,6 +52,7 @@ specifiers:
   pnpm: 7.18.0
   prettier: 2.8.0
   prism-theme-vars: 0.2.4
+  prismjs: ^1.29.0
   qs: 6.11.0
   regenerator-runtime: 0.13.11
   sass: 1.56.1
@@ -89,6 +91,7 @@ dependencies:
   nprogress: 0.2.0
   pinia: 2.0.27_mgnvym7yiazkylwwogi5r767ue
   prism-theme-vars: 0.2.4
+  prismjs: 1.29.0
   qs: 6.11.0
   swagger-ui-dist: 4.15.5
   universal-cookie: 4.0.4
@@ -111,6 +114,7 @@ devDependencies:
   '@types/markdown-it-link-attributes': 3.0.1
   '@types/nprogress': 0.2.0
   '@types/prettier': 2.7.1
+  '@types/prismjs': 1.26.0
   '@types/qs': 6.9.7
   '@types/swagger-ui-dist': 3.30.1
   '@vue/compiler-sfc': 3.2.45
@@ -1236,6 +1240,10 @@ packages:
 
   /@types/prettier/2.7.1:
     resolution: {integrity: sha512-ri0UmynRRvZiiUJdiz38MmIblKK+oH30MztdBVR95dv/Ubw6neWSb8u1XpRb72L4qsZOhz+L+z9JD40SJmfWow==}
+    dev: true
+
+  /@types/prismjs/1.26.0:
+    resolution: {integrity: sha512-ZTaqn/qSqUuAq1YwvOFQfVW1AR/oQJlLSZVustdjwI+GZ8kr0MSHBj0tsXPW1EqHubx50gtBEjbPGsdZwQwCjQ==}
     dev: true
 
   /@types/qs/6.9.7:
@@ -5927,6 +5935,11 @@ packages:
 
   /prism-theme-vars/0.2.4:
     resolution: {integrity: sha512-B3Pht+GCT87sZph7hMRLlCQXzCM0awW7Rhk08RavpqRW4LEQOeqN0uMG4QCWkul2tr8PB61YAOJGUrEW+1uuJA==}
+    dev: false
+
+  /prismjs/1.29.0:
+    resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==}
+    engines: {node: '>=6'}
     dev: false
 
   /process-nextick-args/2.0.1:

@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import Spinner from "~/lib/components/design/Spinner.vue";
+import { usePrismStore } from "~/store/prism";
 
 const i18n = useI18n();
 const props = withDefaults(
@@ -21,6 +22,7 @@ watch(dum, fetch, { deep: true });
 
 const renderedMarkdown = ref<string>("");
 const loading = ref<boolean>(false);
+const containsCode = ref(false);
 async function fetch() {
   if (!props.raw) return;
   loading.value = true;
@@ -30,6 +32,9 @@ async function fetch() {
   loading.value = false;
   if (!import.meta.env.SSR) {
     await nextTick(setupAdmonition);
+    if (renderedMarkdown.value.includes("<code")) {
+      await usePrismStore().handlePrism();
+    }
   }
 }
 await fetch();
