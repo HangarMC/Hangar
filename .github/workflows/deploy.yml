@@ -114,7 +114,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/HangarMC/hangar-frontend
           tags: |
-            type=sha,enable=true,format=short,prefix=${{ env.GITHUB_HEAD_REF }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
+            type=sha,enable=true,format=short,prefix=${{ env.GITHUB_REF_NAME }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
 
       - name: Build and push frontend Dockerfile
         uses: docker/build-push-action@v3
@@ -133,7 +133,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/HangarMC/hangar-backend
           tags: |
-            type=sha,enable=true,format=short,prefix=${{ env.GITHUB_HEAD_REF }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
+            type=sha,enable=true,format=short,prefix=${{ env.GITHUB_REF_NAME }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
 
       - name: Build and push backend Dockerfile
         uses: docker/build-push-action@v3
