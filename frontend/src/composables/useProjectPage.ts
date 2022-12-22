@@ -10,7 +10,7 @@ import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 export async function useProjectPage(route: RouteLocationNormalizedLoaded, router: Router, i18n: ReturnType<typeof useI18n>, project: HangarProject) {
   const page = await usePage(route.params.user as string, route.params.project as string, route.params.all as string).catch((e) => handleRequestError(e));
   if (!page) {
-    await router.replace(useErrorRedirect(route, 404, "Not found"));
+    throw useErrorRedirect(route, 404, "Not found");
   }
 
   const editingPage = ref<boolean>(false);

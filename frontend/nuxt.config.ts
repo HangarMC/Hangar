@@ -67,6 +67,11 @@ export default defineNuxtConfig({
   nitro: {
     compressPublicAssets: true,
   },
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => ["lottie-player"].includes(tag),
+    },
+  },
   proxy: {
     enableProxy: true,
     proxies: {

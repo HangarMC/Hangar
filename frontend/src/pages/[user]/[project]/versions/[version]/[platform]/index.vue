@@ -48,7 +48,7 @@ const props = defineProps<{
 const p = ref<Platform>(((route.params.platform as string) || "").toUpperCase() as Platform);
 const projectVersion = computed<HangarVersion | undefined>(() => props.version);
 if (!projectVersion.value) {
-  await useRouter().replace(useErrorRedirect(route, 404, "Not found"));
+  throw useErrorRedirect(route, 404, "Not found");
 }
 const platform = ref<IPlatform | undefined>(backendData.platforms.get(p.value));
 const isReviewStateChecked = computed<boolean>(
@@ -187,7 +187,7 @@ async function restoreVersion() {
               {{ platform?.name }}
             </template>
             <template #default="{ close }">
-              <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()" @click="setPlatform(plat) || close()" class="inline-flex">
+              <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()" class="inline-flex" @click="setPlatform(plat) || close()">
                 <PlatformLogo :platform="plat" :size="24" class="mr-1 flex-shrink-0" />
                 {{ backendData.platforms?.get(plat)?.name }}
               </DropdownItem>

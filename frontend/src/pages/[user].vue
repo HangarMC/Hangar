@@ -10,7 +10,7 @@ const route = useRoute();
 const user = await useUser(route.params.user as string).catch((e) => handleRequestError(e));
 let organization = null;
 if (!user || !user.value) {
-  await useRouter().replace(useErrorRedirect(useRoute(), 404, "Not found"));
+  throw useErrorRedirect(useRoute(), 404, "Not found");
 } else if (user.value?.isOrganization) {
   organization = await useOrganization(route.params.user as string).catch((e) => handleRequestError(e));
 }

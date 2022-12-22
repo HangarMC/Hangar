@@ -8,6 +8,7 @@ import { useAuthStore } from "~/store/auth";
 import { useBackendDataStore } from "~/store/backendData";
 import "regenerator-runtime/runtime"; // popper needs this?
 
+// keep in sync with error.vue, cause reasons
 const authStore = useAuthStore();
 const settingsStore = useSettingsStore();
 settingsStore.loadSettingsClient();

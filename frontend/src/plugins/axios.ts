@@ -44,7 +44,13 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
       const authStore = useAuthStore();
       const originalConfig = err.config;
 
-      axiosLog("got error", err);
+      const transformedError = {
+        code: err?.code,
+        requestUrl: err?.request?.path,
+        status: err?.response?.status,
+        data: err?.response?.data,
+      };
+      axiosLog("got error", transformedError);
 
       if (originalConfig?.url !== "/refresh" && originalConfig?.url !== "/invalidate" && err.response) {
         // token expired

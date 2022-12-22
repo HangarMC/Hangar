@@ -18,7 +18,7 @@ const version = await useProjectVersionsInternal(route.params.user as string, ro
   handleRequestError(e)
 );
 if (!version || !version.value) {
-  await useRouter().replace(useErrorRedirect(route, 404, "Not found"));
+  throw useErrorRedirect(route, 404, "Not found");
 }
 
 const versionPlatforms: Set<Platform> = new Set<Platform>();
@@ -34,7 +34,10 @@ if (!route.params.platform) {
     path = path.substring(0, path.length - 1);
   }
   const [entry] = versionPlatforms;
-  await (entry ? useRouter().replace({ path: `${path}/${entry.toLowerCase()}` }) : useRouter().replace(useErrorRedirect(route, 404, "Not found")));
+  if (!entry) {
+    throw useErrorRedirect(route, 404, "Not found");
+  }
+  await useRouter().replace({ path: `${path}/${entry.toLowerCase()}` });
 }
 </script>
 

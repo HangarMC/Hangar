@@ -38,7 +38,7 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
       })
       .catch((error: AxiosError) => {
         const { trace, ...err } = (error.response?.data as { trace: any }) || {};
-        authLog("failed", err, error);
+        authLog("failed", err);
         reject(error);
       });
   });
