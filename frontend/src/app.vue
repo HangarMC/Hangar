@@ -17,6 +17,7 @@ settingsLog("render for user", authStore.user?.name, "with darkmode", settingsSt
 useHead({
   htmlAttrs: {
     class: computed(() => (settingsStore.darkMode ? "dark" : "light")),
+    lang: "en", // TODO load from user locale
   },
   bodyAttrs: {
     class: "background-body text-[#262626] dark:text-[#E0E6f0]",
