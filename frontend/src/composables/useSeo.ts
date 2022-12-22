@@ -17,7 +17,15 @@ export function useSeo(
   title = title ? title + " | Hangar" : "Hangar";
   const seo = {
     title,
-    link: [{ rel: "canonical", href: canonical }],
+    link: [
+      { rel: "canonical", href: canonical },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/favicon/apple-touch-icon.png" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon/favicon-32x32.png" },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon/favicon-16x16.png" },
+      { rel: "manifest", href: "/favicon/site.webmanifest" },
+      { rel: "mask-icon", href: "/favicon/safari-pinned-tab.svg", color: "#686868" },
+      { rel: "shortcut icon", href: "/favicon/favicon.ico" },
+    ],
     meta: [
       { property: "description", name: "description", content: description },
       {
@@ -55,6 +63,9 @@ export function useSeo(
         name: "og:image",
         content: image,
       },
+      { property: "msapplication-TileColor", name: "msapplication-TileColor", content: "#da532c" },
+      { property: "msapplication-config", name: "msapplication-config", content: "/favicon/browserconfig.xml" },
+      { property: "theme-color", name: "theme-color", content: "#ffffff" },
     ],
     script: [
       {
