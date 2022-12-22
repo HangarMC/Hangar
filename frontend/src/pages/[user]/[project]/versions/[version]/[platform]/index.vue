@@ -181,9 +181,14 @@ async function restoreVersion() {
           <Tooltip v-if="requiresConfirmation" :content="i18n.t('version.page.unsafeWarning')">
             <IconMdiAlertCircleOutline class="text-2xl" />
           </Tooltip>
-          <DropdownButton v-if="versionPlatforms.size > 1" class="inline" :name="platform?.name" button-size="large">
+          <DropdownButton v-if="versionPlatforms.size > 1" class="inline" button-size="large">
+            <template #button-label>
+              <PlatformLogo :platform="platform?.enumName" :size="24" class="mr-1 flex-shrink-0" />
+              {{ platform?.name }}
+            </template>
             <template #default="{ close }">
-              <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()" @click="setPlatform(plat) || close()">
+              <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()" @click="setPlatform(plat) || close()" class="inline-flex">
+                <PlatformLogo :platform="plat" :size="24" class="mr-1 flex-shrink-0" />
                 {{ backendData.platforms?.get(plat)?.name }}
               </DropdownItem>
             </template>
