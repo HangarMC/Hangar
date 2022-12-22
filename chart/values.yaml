@@ -13,7 +13,7 @@ frontend:
   replicaCount: 1
 
   image:
-    repository: ghcr.io/papermc/hangar_frontend
+    repository: ghcr.io/hangarmc/hangar/frontend
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
     tag: "latest"
@@ -97,7 +97,7 @@ backend:
   replicaCount: 1
 
   image:
-    repository: ghcr.io/papermc/hangar_backend
+    repository: ghcr.io/hangarmc/hangar/backend
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
     tag: "latest"
