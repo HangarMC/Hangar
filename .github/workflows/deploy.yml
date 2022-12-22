@@ -4,6 +4,8 @@ on:
   # allow manual dispatch
   workflow_dispatch:
   # run on PRs
+  pull_request:
+  # run on pushes to master
   push:
     branches:
       - master
