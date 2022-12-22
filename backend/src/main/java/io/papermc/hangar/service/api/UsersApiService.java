@@ -16,8 +16,11 @@ import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.model.internal.user.HangarUser.HeaderData;
 import io.papermc.hangar.service.PermissionService;
+import io.papermc.hangar.service.internal.admin.FlagService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.projects.PinnedProjectService;
+import io.papermc.hangar.service.internal.projects.ProjectAdminService;
+import io.papermc.hangar.service.internal.versions.ReviewService;
 import java.util.List;
 import java.util.function.BiFunction;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,15 +42,21 @@ public class UsersApiService extends HangarComponent {
     private final PermissionService permissionService;
     private final OrganizationService organizationService;
     private final PinnedProjectService pinnedProjectService;
+    private final ReviewService reviewService;
+    private final ProjectAdminService projectAdminService;
+    private final FlagService flagService;
 
     @Autowired
-    public UsersApiService(UsersDAO usersDAO, UsersApiDAO usersApiDAO, NotificationsDAO notificationsDAO, PermissionService permissionService, OrganizationService organizationService, final PinnedProjectService pinnedProjectService) {
+    public UsersApiService(UsersDAO usersDAO, UsersApiDAO usersApiDAO, NotificationsDAO notificationsDAO, PermissionService permissionService, OrganizationService organizationService, final PinnedProjectService pinnedProjectService, final ReviewService reviewService, @Lazy final ProjectAdminService projectAdminService, final FlagService flagService) {
         this.usersDAO = usersDAO;
         this.usersApiDAO = usersApiDAO;
         this.notificationsDAO = notificationsDAO;
         this.permissionService = permissionService;
         this.organizationService = organizationService;
         this.pinnedProjectService = pinnedProjectService;
+        this.reviewService = reviewService;
+        this.projectAdminService = projectAdminService;
+        this.flagService = flagService;
     }
 
     public <T extends User> T getUser(String name, Class<T> type) {
@@ -120,9 +130,9 @@ public class UsersApiService extends HangarComponent {
         Permission globalPermission = permissionService.getGlobalPermissions(hangarUser.getId());
         long unreadNotifs = notificationsDAO.getUnreadNotificationCount(hangarUser.getId());
         long unansweredInvites = notificationsDAO.getUnansweredInvites(hangarUser.getId());
-        long unresolvedFlags = globalPermission.has(Permission.ModNotesAndFlags) ? notificationsDAO.getUnresolvedFlagsCount() : 0;
-        long projectApprovals = globalPermission.has(Permission.ModNotesAndFlags.add(Permission.SeeHidden)) ? notificationsDAO.getProjectApprovalsCount() : 0;
-        long reviewQueueCount = globalPermission.has(Permission.Reviewer) ? notificationsDAO.getReviewQueueCount() : 0;
+        long unresolvedFlags = globalPermission.has(Permission.ModNotesAndFlags) ? flagService.getFlagsQueueSize(false) : 0;
+        long projectApprovals = globalPermission.has(Permission.ModNotesAndFlags.add(Permission.SeeHidden)) ? projectAdminService.getApprovalQueueSize() : 0;
+        long reviewQueueCount = globalPermission.has(Permission.Reviewer) ? reviewService.getApprovalQueueSize() : 0;
         long organizationCount = organizationService.getUserOrganizationCount(hangarUser.getId());
         hangarUser.setHeaderData(new HeaderData(
             globalPermission,

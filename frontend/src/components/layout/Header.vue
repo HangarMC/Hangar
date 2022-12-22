@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
-import { HangarNotification } from "hangar-internal";
+import { HangarNotification, HangarUser } from "hangar-internal";
 import { ref } from "vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import Announcement from "~/components/Announcement.vue";
@@ -42,6 +42,7 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import Link from "~/lib/components/design/Link.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useConfig } from "~/lib/composables/useConfig";
+import { unref } from "#imports";
 
 const settings = useSettingsStore();
 const backendData = useBackendDataStore();
@@ -52,58 +53,9 @@ const authStore = useAuthStore();
 const notifications = ref<HangarNotification[]>([]);
 const unreadNotifications = ref<number>(0);
 const loadedUnreadNotifications = ref<number>(0);
-const projectApprovalQueue = ref<number>(0);
-const versionApprovalQueue = ref<number>(0);
-const reportQueue = ref<number>(0);
+
 if (authStore.user) {
-  useUnreadNotificationsCount().then((v) => {
-    if (v && v.value) {
-      unreadNotifications.value = v.value;
-    }
-  });
-  useRecentNotifications(30)
-    .then((v) => {
-      if (v && v.value) {
-        // Only show notifications that are recent or unread (from the last 30 notifications)
-        let filteredAmount = 0;
-        notifications.value = v.value.filter((notification) => {
-          if (filteredAmount < 8 && (!notification.read || isRecent(notification.createdAt))) {
-            if (!notification.read) {
-              loadedUnreadNotifications.value++;
-            }
-
-            filteredAmount++;
-            return true;
-          }
-          return false;
-        });
-      }
-    })
-    .catch((e) => handleRequestError(e));
-
-  if (hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)) {
-    useInternalApi<number>("admin/approval/projectneedingapproval")
-      .then((v) => {
-        if (v) {
-          projectApprovalQueue.value = v;
-        }
-      })
-      .catch((e) => handleRequestError(e));
-    useInternalApi<number>("admin/approval/versionsneedingapproval")
-      .then((v) => {
-        if (v) {
-          versionApprovalQueue.value = v;
-        }
-      })
-      .catch((e) => handleRequestError(e));
-    useInternalApi<number>("flags/unresolvedamount")
-      .then((v) => {
-        if (v) {
-          reportQueue.value = v;
-        }
-      })
-      .catch((e) => handleRequestError(e));
-  }
+  updateNotifications();
 }
 
 const navBarLinks = [
@@ -152,6 +104,41 @@ function markNotificationRead(notification: HangarNotification) {
     loadedUnreadNotifications.value--;
     useInternalApi(`notifications/${notification.id}`, "post").catch((e) => handleRequestError(e));
   }
+}
+
+function updateNavData() {
+  useInternalApi<HangarUser>("/users/@me")
+    .catch((e) => handleRequestError(e))
+    .then((user) => {
+      return (authStore.user = unref(user));
+    });
+}
+
+function updateNotifications() {
+  useUnreadNotificationsCount().then((v) => {
+    if (v && v.value) {
+      unreadNotifications.value = v.value;
+    }
+  });
+  useRecentNotifications(30)
+    .then((v) => {
+      if (v && v.value) {
+        // Only show notifications that are recent or unread (from the last 30 notifications)
+        let filteredAmount = 0;
+        notifications.value = v.value.filter((notification: HangarNotification) => {
+          if (filteredAmount < 8 && (!notification.read || isRecent(notification.createdAt))) {
+            if (!notification.read) {
+              loadedUnreadNotifications.value++;
+            }
+
+            filteredAmount++;
+            return true;
+          }
+          return false;
+        });
+      }
+    })
+    .catch((e) => handleRequestError(e));
 }
 
 function isRecent(date: string): boolean {
@@ -251,7 +238,7 @@ function isRecent(date: string): boolean {
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
         <div v-if="authStore.user">
-          <Popper placement="bottom-end">
+          <Popper placement="bottom-end" @click="updateNotifications">
             <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)" aria-label="Notifications">
               <IconMdiBellOutline v-if="unreadNotifications === 0" class="text-[1.2em]" />
               <IconMdiBellBadge v-if="unreadNotifications !== 0" class="text-[1.2em]" />
@@ -305,7 +292,7 @@ function isRecent(date: string): boolean {
         <!-- Profile dropdown -->
         <div v-if="authStore.user">
           <Popper placement="bottom-end">
-            <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)">
+            <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)" @click="updateNavData">
               <UserAvatar :username="authStore.user.name" size="xs" :background="false" :disable-link="true" />
               {{ authStore.user.name }}
             </button>
@@ -318,15 +305,15 @@ function isRecent(date: string): boolean {
                 <hr />
                 <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/flags">
                   {{ t("nav.user.flags") }}
-                  <span v-if="reportQueue !== 0">{{ "(" + reportQueue + ")" }}</span>
+                  <span v-if="authStore.user.headerData.unresolvedFlags !== 0">{{ "(" + authStore.user.headerData.unresolvedFlags + ")" }}</span>
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/approval/projects">
                   {{ t("nav.user.projectApprovals") }}
-                  <span v-if="projectApprovalQueue !== 0">{{ "(" + projectApprovalQueue + ")" }}</span>
+                  <span v-if="authStore.user.headerData.projectApprovals !== 0">{{ "(" + authStore.user.headerData.projectApprovals + ")" }}</span>
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.REVIEWER)" to="/admin/approval/versions">
                   {{ t("nav.user.versionApprovals") }}
-                  <span v-if="versionApprovalQueue !== 0">{{ "(" + versionApprovalQueue + ")" }}</span>
+                  <span v-if="authStore.user.headerData.reviewQueueCount !== 0">{{ "(" + authStore.user.headerData.reviewQueueCount + ")" }}</span>
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.VIEW_STATS)" to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.VIEW_HEALTH)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>
