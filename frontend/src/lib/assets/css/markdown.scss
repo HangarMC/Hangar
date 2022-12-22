@@ -99,7 +99,7 @@
 }
 
 // override prism stuff
-.markdown pre[class*=language-] {
+.markdown pre[class*="language-"] {
   border: none;
   box-shadow: none;
 }
