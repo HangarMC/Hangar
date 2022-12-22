@@ -397,7 +397,7 @@ public class VersionFactory extends HangarComponent {
                 // fileService.move(tmpVersionJar.toString(), platformJarPath);
                 // actually, lets do nothing here, in frontend only the primary platform is used for downloading anyways
             } else {
-                fileService.link(platformJarPath, newVersionJarPath);
+                fileService.link(newVersionJarPath, platformJarPath);
             }
         }
 

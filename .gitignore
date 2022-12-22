@@ -6,6 +6,7 @@ node_modules
 node.exe
 dist
 node
+work/
 
 ### STS ###
 .apt_generated
