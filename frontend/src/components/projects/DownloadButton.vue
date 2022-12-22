@@ -37,11 +37,28 @@ const props = withDefaults(
   }
 );
 
-function downloadLink(platform: Platform, version: DownloadableVersion) {
-  return version && version.downloads[platform]?.externalUrl ? version.downloads[platform].externalUrl : version.downloads[platform].downloadUrl;
+function downloadLink(platform: Platform | undefined, version: DownloadableVersion | undefined) {
+  if (!version || !platform) return;
+  return version.downloads[platform]?.externalUrl ? version.downloads[platform].externalUrl : version.downloads[platform].downloadUrl;
 }
 
-const platformDownloadLink = computed(() => downloadLink(props.platform, props.version));
+const singlePlatform = computed<Platform | undefined>(() => {
+  if (props.project?.mainChannelVersions) {
+    const keys = Object.keys(props.project.mainChannelVersions);
+    if (keys.length === 1) {
+      return keys[0] as Platform;
+    }
+  }
+  return props.platform;
+});
+const singleVersion = computed<DownloadableVersion | undefined>(() => {
+  if (!props.version && props.project?.mainChannelVersions && singlePlatform.value) {
+    return props.project.mainChannelVersions[singlePlatform.value];
+  }
+  return props.version;
+});
+
+const platformDownloadLink = computed(() => downloadLink(singlePlatform.value, singleVersion.value));
 
 const external = computed(() => false);
 </script>
@@ -69,10 +86,11 @@ const external = computed(() => false);
       </DropdownItem>
     </DropdownButton>
 
-    <a v-else-if="platform && version" :href="platformDownloadLink" target="_blank" rel="noopener noreferrer">
+    <a v-else-if="singlePlatform && singleVersion" :href="platformDownloadLink" target="_blank" rel="noopener noreferrer">
       <Button :size="small ? 'medium' : 'large'">
         <IconMdiDownloadOutline />
         <span v-if="!small" class="ml-1">{{ external ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}</span>
+        <PlatformLogo :platform="singlePlatform" :size="24" class="mr-1 flex-shrink-0" />
       </Button>
     </a>
 
