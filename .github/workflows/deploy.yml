@@ -25,6 +25,13 @@ jobs:
         with:
           submodules: true
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Get timestamp
+        id: timestamp
+        run: echo "timestamp=$(date +%s)" >> $GITHUB_OUTPUT
+
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
@@ -89,25 +96,47 @@ jobs:
           DEBUG: "hangar:*"
         run: (cd frontend && pnpm build)
 
-      - name: Login to GitHub Container Registry
+      - name: Login to registry
         uses: docker/login-action@v2
         with:
-          registry: ghcr.io
-          username: ${{ secrets.CR_USER }}
-          password: ${{ secrets.CR_PAT }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker (frontend)
+        id: frontend-meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/HangarMC/hangar-frontend
+          tags: |
+            type=sha,enable=true,format=short,prefix=${{ env.GITHUB_HEAD_REF }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
 
       - name: Build and push frontend Dockerfile
         uses: docker/build-push-action@v3
         with:
           context: .
           file: chart/dockerfiles/frontend/Dockerfile
-          tags: ghcr.io/papermc/hangar_frontend:latest
+          tags: ${{ steps.frontend-meta.outputs.tags }}
+          labels: ${{ steps.frontend-meta.outputs.labels }}
           push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Extract metadata (tags, labels) for Docker (backend)
+        id: backend-meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/HangarMC/hangar-backend
+          tags: |
+            type=sha,enable=true,format=short,prefix=${{ env.GITHUB_HEAD_REF }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
 
       - name: Build and push backend Dockerfile
         uses: docker/build-push-action@v3
         with:
           context: .
           file: chart/dockerfiles/backend/Dockerfile
-          tags: ghcr.io/papermc/hangar_backend:latest
+          tags: ${{ steps.backend-meta.outputs.tags }}
+          labels: ${{ steps.backend-meta.outputs.labels }}
           push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
