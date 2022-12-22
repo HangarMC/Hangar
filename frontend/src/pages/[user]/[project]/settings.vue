@@ -357,7 +357,7 @@ useHead(
           <ProjectSettingsSection title="project.settings.support" description="project.settings.supportSub">
             <InputText v-model.trim="form.settings.support" :label="i18n.t('project.new.step3.support')" :rules="[url()]" />
           </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.support" description="project.settings.wikiSub">
+          <ProjectSettingsSection title="project.settings.wiki" description="project.settings.wikiSub">
             <InputText v-model.trim="form.settings.wiki" :label="i18n.t('project.new.step3.wiki')" :rules="[url()]" />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
