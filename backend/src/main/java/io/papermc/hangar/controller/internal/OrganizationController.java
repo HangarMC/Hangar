@@ -222,9 +222,9 @@ public class OrganizationController extends HangarComponent {
     }
 
     @Unlocked
-    @PostMapping(path = "/{org}/userOrganizationsVisibility", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/{org}/userOrganizationsVisibility", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void changeUserOrganizationMembershipVisibility(@RequestBody boolean hidden, @PathVariable String org) {
+    public void changeUserOrganizationMembershipVisibility(@RequestParam boolean hidden, @PathVariable String org) {
         OrganizationTable table = organizationService.getOrganizationTable(org);
         if (table == null) {
             throw new HangarApiException();

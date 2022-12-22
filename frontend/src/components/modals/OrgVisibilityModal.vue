@@ -27,9 +27,8 @@ const internalVisibility = computed({
 
 async function changeOrgVisibility(org: string) {
   loading.value = true;
-  await useInternalApi<{ [key: string]: boolean }>(`organizations/${org}/userOrganizationsVisibility`, "POST", internalVisibility.value[org] as any, {
-    "Content-Type": "application/json",
-  }).catch((e) => handleRequestError(e));
+  const hidden = internalVisibility.value[org];
+  await useInternalApi(`organizations/${org}/userOrganizationsVisibility?hidden=${hidden}`, "post").catch((e) => handleRequestError(e));
   loading.value = false;
 }
 </script>
