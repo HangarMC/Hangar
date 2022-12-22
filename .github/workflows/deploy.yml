@@ -116,6 +116,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/frontend
           tags: |
             type=sha,enable=true,format=short,prefix=${{ env.BRANCH_NAME }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
+            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push frontend Dockerfile
         uses: docker/build-push-action@v3
@@ -135,6 +136,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/backend
           tags: |
             type=sha,enable=true,format=short,prefix=${{ env.BRANCH_NAME }}-,suffix=-${{ steps.timestamp.outputs.timestamp }}
+            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push backend Dockerfile
         uses: docker/build-push-action@v3
