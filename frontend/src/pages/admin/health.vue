@@ -16,7 +16,7 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute();
-const healthReport = await useHealthReport().catch((e) => handleRequestError(e, i18n));
+const healthReport = await useHealthReport().catch((e) => handleRequestError(e));
 
 useHead(useSeo(i18n.t("health.title"), null, route, null));
 </script>

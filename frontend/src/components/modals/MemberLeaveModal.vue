@@ -26,7 +26,7 @@ function leave() {
   const url = props.organization ? `organizations/org/${props.author}/members/leave` : `projects/project/${props.author}/${props.slug}/members/leave`;
   useInternalApi(url, "post")
     .then(() => router.go(0))
-    .catch((e) => handleRequestError(e, i18n));
+    .catch((e) => handleRequestError(e));
 }
 </script>
 

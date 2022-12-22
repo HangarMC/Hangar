@@ -110,7 +110,7 @@ async function setPinned(value: boolean) {
     notification.success(i18n.t(`version.page.pinned.request.${value}`));
     router.go(0);
   } catch (e) {
-    handleRequestError(e as AxiosError, i18n);
+    handleRequestError(e as AxiosError);
   }
 }
 
@@ -122,7 +122,7 @@ async function deleteVersion(comment: string) {
     notification.success(i18n.t("version.success.softDelete"));
     await router.replace(`/${route.params.user}/${route.params.project}/versions`);
   } catch (e) {
-    handleRequestError(e as AxiosError, i18n);
+    handleRequestError(e as AxiosError);
   }
 }
 
@@ -139,7 +139,7 @@ async function hardDeleteVersion(comment: string) {
       },
     });
   } catch (e) {
-    handleRequestError(e as AxiosError, i18n);
+    handleRequestError(e as AxiosError);
   }
 }
 
@@ -149,7 +149,7 @@ async function restoreVersion() {
     notification.success(i18n.t("version.success.restore"));
     await router.replace(`/${route.params.user}/${route.params.project}/versions`);
   } catch (e) {
-    handleRequestError(e as AxiosError, i18n);
+    handleRequestError(e as AxiosError);
   }
 }
 </script>

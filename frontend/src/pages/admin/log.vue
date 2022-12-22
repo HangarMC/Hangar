@@ -20,7 +20,7 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute();
-const loggedActions = await useActionLogs().catch((e) => handleRequestError(e, i18n));
+const loggedActions = await useActionLogs().catch((e) => handleRequestError(e));
 
 const headers = [
   { title: i18n.t("userActionLog.user"), name: "user", sortable: false },

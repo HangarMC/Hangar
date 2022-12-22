@@ -16,7 +16,7 @@ import { useApi } from "~/composables/useApi";
 
 const i18n = useI18n();
 const route = useRoute();
-const staff = await useStaff().catch((e) => handleRequestError(e, i18n));
+const staff = await useStaff().catch((e) => handleRequestError(e));
 
 const headers = [
   { name: "pic", title: "", sortable: false },

@@ -33,11 +33,11 @@ const backendData = useBackendDataStore();
 
 const projects = await useApi<PaginatedResult<Project>>("projects", "get", {
   owner: route.params.user,
-}).catch((e) => handleRequestError(e, i18n));
+}).catch((e) => handleRequestError(e));
 const orgs = await useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${route.params.user}/userOrganizations`).catch((e) =>
-  handleRequestError(e, i18n)
+  handleRequestError(e)
 );
-const user = await useUser(route.params.user as string).catch((e) => handleRequestError(e, i18n));
+const user = await useUser(route.params.user as string).catch((e) => handleRequestError(e));
 
 const projectsConfig = [
   { title: i18n.t("userAdmin.project"), name: "name" },
@@ -72,7 +72,7 @@ async function processRole(add: boolean) {
       user.value = await useApi<User>(("users/" + route.params.user) as string);
     }
   } catch (e) {
-    handleRequestError(e as AxiosError, i18n);
+    handleRequestError(e as AxiosError);
   }
 }
 

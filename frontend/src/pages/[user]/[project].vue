@@ -19,7 +19,7 @@ defineProps({
 
 const i18n = useI18n();
 const route = useRoute();
-const project = await useProject(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, i18n));
+const project = await useProject(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e));
 if (!project || !project.value) {
   await useRouter().replace(useErrorRedirect(route, 404, "Not found"));
 }

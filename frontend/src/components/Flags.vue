@@ -20,17 +20,17 @@ const props = defineProps<{
 
 const i18n = useI18n();
 const route = useRoute();
-const flags = await (props.resolved ? useResolvedFlags() : useUnresolvedFlags()).catch((e) => handleRequestError(e, i18n));
+const flags = await (props.resolved ? useResolvedFlags() : useUnresolvedFlags()).catch((e) => handleRequestError(e));
 const loading = ref<{ [key: number]: boolean }>({});
 
 function resolve(flag: Flag) {
   loading.value[flag.id] = true;
   useInternalApi(`flags/${flag.id}/resolve/${props.resolved ? "false" : "true"}`, "POST")
-    .catch<any>((e) => handleRequestError(e, i18n))
+    .catch<any>((e) => handleRequestError(e))
     .then(async () => {
       if (flags && flags.value) {
         const newFlags = await useInternalApi<PaginatedResult<Flag>>("flags/" + (props.resolved ? "resolved" : "unresolved")).catch((e) =>
-          handleRequestError(e, i18n)
+          handleRequestError(e)
         );
         if (newFlags) {
           flags.value = newFlags;
@@ -51,7 +51,7 @@ async function getNotifications(flag: Flag) {
   }
 
   notifications.value = (await useInternalApi<HangarFlagNotification[]>(`flags/${flag.id}/notifications`, "get").catch((e) =>
-    handleRequestError(e, i18n)
+    handleRequestError(e)
   )) as HangarFlagNotification[];
   currentId.value = flag.id;
 }

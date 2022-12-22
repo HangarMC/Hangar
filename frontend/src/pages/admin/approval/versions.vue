@@ -20,7 +20,7 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute();
-const data = await useVersionApprovals().catch((e) => handleRequestError(e, i18n));
+const data = await useVersionApprovals().catch((e) => handleRequestError(e));
 
 const actions = {
   ongoing: [ReviewAction.START, ReviewAction.MESSAGE, ReviewAction.UNDO_APPROVAL, ReviewAction.REOPEN],

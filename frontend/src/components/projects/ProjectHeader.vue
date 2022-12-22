@@ -69,7 +69,7 @@ async function sendForApproval() {
     notification.success(i18n.t("projectApproval.sendForApproval"));
     await router.go(0);
   } catch (e) {
-    handleRequestError(e as AxiosError, i18n);
+    handleRequestError(e as AxiosError);
   }
 }
 

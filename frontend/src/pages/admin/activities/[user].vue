@@ -19,8 +19,8 @@ definePageMeta({
 
 const route = useRoute();
 const i18n = useI18n();
-const flagActivities = await useInternalApi<FlagActivity[]>(`admin/activity/${route.params.user}/flags`).catch((e) => handleRequestError(e, i18n));
-const reviewActivities = await useInternalApi<ReviewActivity[]>(`admin/activity/${route.params.user}/reviews`).catch((e) => handleRequestError(e, i18n));
+const flagActivities = await useInternalApi<FlagActivity[]>(`admin/activity/${route.params.user}/flags`).catch((e) => handleRequestError(e));
+const reviewActivities = await useInternalApi<ReviewActivity[]>(`admin/activity/${route.params.user}/reviews`).catch((e) => handleRequestError(e));
 
 useHead(useSeo(i18n.t("userActivity.title", [route.params.user]) + route.params.constructor, null, route, null));
 

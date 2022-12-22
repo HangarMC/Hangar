@@ -26,7 +26,7 @@ async function fetch() {
   loading.value = true;
   renderedMarkdown.value = await useInternalApi<string>("pages/render", "post", {
     content: props.raw,
-  }).catch<any>((e) => handleRequestError(e, i18n));
+  }).catch<any>((e) => handleRequestError(e));
   loading.value = false;
   if (!import.meta.env.SSR) {
     await nextTick(setupAdmonition);

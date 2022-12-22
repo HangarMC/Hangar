@@ -49,8 +49,8 @@ const requestOptions = computed(() => {
   };
 });
 
-const channels = await useProjectChannels(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, i18n));
-const versions = await useProjectVersions(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, i18n));
+const channels = await useProjectChannels(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e));
+const versions = await useProjectVersions(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e));
 
 if (channels) {
   filter.channels.push(...(channels.value?.map((c) => c.name) || []));
@@ -75,7 +75,7 @@ watch(
       `projects/${route.params.user}/${route.params.project}/versions`,
       "get",
       requestOptions.value
-    ).catch((e) => handleRequestError(e, i18n));
+    ).catch((e) => handleRequestError(e));
     if (newVersions) {
       versions.value = newVersions;
     }

@@ -34,7 +34,7 @@ async function deletePageAndUpdateProject() {
       updateProjectPages(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.project.id}`, "get"));
     }
   } catch (e: any) {
-    handleRequestError(e, i18n);
+    handleRequestError(e);
   }
 }
 </script>

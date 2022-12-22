@@ -34,7 +34,7 @@ async function submit(): Promise<void> {
   await useInternalApi(props.postUrl, "post", {
     visibility: visibility.value,
     comment: setVisibility.value?.showModal ? reason.value : null,
-  }).catch((e) => handleRequestError(e, i18n));
+  }).catch((e) => handleRequestError(e));
   reason.value = "";
   if (setVisibility.value) {
     notification.success(i18n.t("visibility.modal.success", [props.type, i18n.t(setVisibility.value?.title)]));

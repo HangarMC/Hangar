@@ -44,7 +44,7 @@ const endDate = ref<string>(toISODateString(now));
 let data: DayStats[] = (await useInternalApi<DayStats[]>("admin/stats", "get", {
   from: startDate.value,
   to: endDate.value,
-}).catch((e) => handleRequestError(e, i18n))) as DayStats[];
+}).catch((e) => handleRequestError(e))) as DayStats[];
 
 let reviews: DayStat[] = [];
 let uploads: DayStat[] = [];
@@ -122,7 +122,7 @@ async function updateDate() {
   data = (await useInternalApi<DayStats[]>("admin/stats", "get", {
     from: startDate.value,
     to: endDate.value,
-  }).catch((e) => handleRequestError(e, i18n))) as DayStats[];
+  }).catch((e) => handleRequestError(e))) as DayStats[];
   if (!data) {
     return;
   }

@@ -30,7 +30,7 @@ async function save() {
     });
     router.go(0);
   } catch (e) {
-    handleRequestError(e, i18n);
+    handleRequestError(e);
   }
   loading.value = false;
 }

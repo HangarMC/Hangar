@@ -38,7 +38,7 @@ function save() {
     platform: platform.value?.name?.toUpperCase(),
     versions: selectedVersions.value,
   })
-    .catch((e) => handleRequestError(e, i18n))
+    .catch((e) => handleRequestError(e))
     .then(async () => {
       await router.go(0);
     })

@@ -35,7 +35,7 @@ async function transfer() {
   loading.value = true;
   await useInternalApi<string>(`organizations/org/${props.organization}/transfer`, "post", {
     content: search.value,
-  }).catch((e) => handleRequestError(e, i18n));
+  }).catch((e) => handleRequestError(e));
   notificationStore.success(i18n.t("organization.settings.success.transferRequest", [search.value]));
   loading.value = false;
 }

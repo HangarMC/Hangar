@@ -15,7 +15,7 @@ import { useSeo } from "~/composables/useSeo";
 
 const route = useRoute();
 const i18n = useI18n();
-const watchers = await useWatchers(route.params.user as string, route.params.project as string).catch<any>((e) => handleRequestError(e, i18n));
+const watchers = await useWatchers(route.params.user as string, route.params.project as string).catch<any>((e) => handleRequestError(e));
 
 const props = defineProps<{
   project: HangarProject;

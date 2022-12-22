@@ -44,7 +44,7 @@ async function save() {
     router.go(0);
   } catch (e: any) {
     loading.value = false;
-    handleRequestError(e, i18n);
+    handleRequestError(e);
   }
 }
 

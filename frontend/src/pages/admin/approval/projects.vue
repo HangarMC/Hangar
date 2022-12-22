@@ -21,9 +21,7 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute();
-const data: ApprovalProjects = (await useInternalApi<ApprovalProjects>("admin/approval/projects").catch((e) =>
-  handleRequestError(e, i18n)
-)) as ApprovalProjects;
+const data: ApprovalProjects = (await useInternalApi<ApprovalProjects>("admin/approval/projects").catch((e) => handleRequestError(e))) as ApprovalProjects;
 
 useHead(useSeo(i18n.t("projectApproval.title"), null, route, null));
 </script>

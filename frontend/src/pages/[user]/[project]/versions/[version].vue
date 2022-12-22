@@ -15,7 +15,7 @@ const props = defineProps<{
 }>();
 
 const version = await useProjectVersionsInternal(route.params.user as string, route.params.project as string, route.params.version as string).catch((e) =>
-  handleRequestError(e, i18n)
+  handleRequestError(e)
 );
 if (!version || !version.value) {
   await useRouter().replace(useErrorRedirect(route, 404, "Not found"));

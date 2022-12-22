@@ -30,7 +30,7 @@ async function confirm(close: () => void) {
     router.go(0);
     useNotificationStore().success(i18n.t(`author.lock.success${props.user.locked ? "Unlock" : "Lock"}`, [props.user.name]));
   } catch (e) {
-    handleRequestError(e as AxiosError, i18n);
+    handleRequestError(e as AxiosError);
   }
 }
 </script>

@@ -24,7 +24,7 @@ async function convertBBCode() {
   loading.value = true;
   output.value = await useInternalApi<string>("pages/convert-bbcode", "post", {
     content: input.value,
-  }).catch<any>((e) => handleRequestError(e, i18n));
+  }).catch<any>((e) => handleRequestError(e));
   loading.value = false;
 }
 </script>

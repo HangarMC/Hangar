@@ -3,8 +3,9 @@ import { HangarApiException, HangarValidationException, MultiHangarApiException 
 import { Composer } from "vue-i18n";
 import { ref } from "vue";
 import { useNotificationStore } from "~/lib/store/notification";
+import { I18n } from "~/lib/i18n";
 
-export function handleRequestError(err: AxiosError, i18n: Composer, msg: string | undefined = undefined) {
+export function handleRequestError(err: AxiosError, i18n: Composer = I18n.value, msg: string | undefined = undefined) {
   if (import.meta.env.SSR) {
     _handleRequestError(err, i18n);
     return ref();

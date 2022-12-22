@@ -1,11 +1,12 @@
 import { RouteLocationNamedRaw, RouteLocationNormalized } from "vue-router";
-import { useI18n } from "vue-i18n";
+import { Composer, useI18n } from "vue-i18n";
 import { PermissionCheck, UserPermissions } from "hangar-api";
 import { defineNuxtRouteMiddleware, handleRequestError, hasPerms, navigateTo, toNamedPermission, useApi, useAuth } from "#imports";
 import { useAuthStore } from "~/store/auth";
 import { routePermLog } from "~/lib/composables/useLog";
 import { NamedPermission, PermissionType } from "~/types/enums";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
+import { I18n } from "~/lib/i18n";
 
 export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
   if (to.fullPath.startsWith("/@vite")) {
@@ -95,13 +96,12 @@ async function globalPermsRequired(authStore: ReturnType<typeof useAuthStore>, t
   routePermLog("route globalPermsRequired", to.meta.globalPermsRequired);
   const result = checkLogin(authStore, to, 403);
   if (result) return result;
-  const i18n = useI18n();
   const check = await useApi<PermissionCheck>("permissions/hasAll", "get", {
     permissions: toNamedPermission(to.meta.globalPermsRequired as string[]),
   }).catch((e) => {
     try {
       routePermLog("error!", e);
-      handleRequestError(e, i18n);
+      handleRequestError(e);
     } catch (e2) {
       routePermLog("error while checking perm", e);
       routePermLog("encountered additional error while error handling", e2);

@@ -42,7 +42,7 @@ async function create() {
     });
     await router.push("/" + name.value);
   } catch (e: any) {
-    handleRequestError(e, i18n);
+    handleRequestError(e);
   }
 }
 </script>

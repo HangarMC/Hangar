@@ -43,7 +43,7 @@ watch(name, async () => {
   })
     .catch((err: AxiosError) => {
       if (!err.response?.data.isHangarApiException) {
-        return handleRequestError(err, i18n);
+        return handleRequestError(err);
       }
       nameErrorMessages.value.push(i18n.t(err.response.data.message));
     })
@@ -77,7 +77,7 @@ async function createPage() {
 
     await router.push(`/${route.params.user}/${route.params.project}/pages/${slug}`);
   } catch (e) {
-    handleRequestError(e, i18n);
+    handleRequestError(e);
   }
   loading.value = false;
 

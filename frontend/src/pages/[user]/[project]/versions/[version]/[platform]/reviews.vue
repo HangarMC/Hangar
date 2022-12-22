@@ -318,7 +318,7 @@ function sendReviewRequest(
       then();
       refresh();
     })
-    .catch((e) => handleRequestError(e, i18n))
+    .catch((e) => handleRequestError(e))
     .finally(final);
 }
 

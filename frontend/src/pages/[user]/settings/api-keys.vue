@@ -53,7 +53,7 @@ async function create() {
   const key = await useInternalApi<string>(`api-keys/create-key/${route.params.user}`, "post", {
     name: name.value,
     permissions: selectedPerms.value,
-  }).catch((err) => handleRequestError(err, i18n));
+  }).catch((err) => handleRequestError(err));
   if (key) {
     apiKeys.value.unshift({
       token: key,
@@ -73,7 +73,7 @@ async function deleteKey(key: ApiKey) {
   loadingDelete[key.name] = true;
   await useInternalApi(`api-keys/delete-key/${route.params.user}`, "post", {
     content: key.name,
-  }).catch((err) => handleRequestError(err, i18n));
+  }).catch((err) => handleRequestError(err));
   apiKeys.value = apiKeys.value.filter((k) => k.name !== key.name);
   notification.success(i18n.t("apiKeys.success.delete", [key.name]));
   loadingDelete[key.name] = false;

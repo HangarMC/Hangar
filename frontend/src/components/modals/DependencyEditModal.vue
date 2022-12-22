@@ -70,7 +70,7 @@ async function save() {
     });
     await router.go(0);
   } catch (e) {
-    handleRequestError(e, i18n);
+    handleRequestError(e);
   }
   loading.value = false;
 }

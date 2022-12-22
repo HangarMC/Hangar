@@ -29,7 +29,7 @@ async function changeOrgVisibility(org: string) {
   loading.value = true;
   await useInternalApi<{ [key: string]: boolean }>(`organizations/${org}/userOrganizationsVisibility`, "POST", internalVisibility.value[org] as any, {
     "Content-Type": "application/json",
-  }).catch((e) => handleRequestError(e, i18n));
+  }).catch((e) => handleRequestError(e));
   loading.value = false;
 }
 </script>

@@ -14,7 +14,7 @@ import Link from "~/lib/components/design/Link.vue";
 import { useApi } from "~/composables/useApi";
 const i18n = useI18n();
 const route = useRoute();
-const authors = await useAuthors().catch((e) => handleRequestError(e, i18n));
+const authors = await useAuthors().catch((e) => handleRequestError(e));
 
 const headers = [
   { name: "pic", title: "", sortable: false },

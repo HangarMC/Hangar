@@ -24,7 +24,7 @@ const props = defineProps<{
 }>();
 const i18n = useI18n();
 const route = useRoute();
-const flags = await useProjectFlags(props.project.id).catch((e) => handleRequestError(e, i18n));
+const flags = await useProjectFlags(props.project.id).catch((e) => handleRequestError(e));
 
 const headers = [
   { title: "Submitter", name: "user" },

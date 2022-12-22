@@ -122,7 +122,7 @@ function convertBBCode() {
     .then((markdown) => {
       converter.value.markdown = markdown;
     })
-    .catch((e) => handleRequestError(e, i18n))
+    .catch((e) => handleRequestError(e))
     .finally(() => {
       converter.value.loading = false;
     });

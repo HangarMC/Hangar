@@ -17,7 +17,7 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute();
-const flags = await useUnresolvedFlags().catch((e) => handleRequestError(e, i18n));
+const flags = await useUnresolvedFlags().catch((e) => handleRequestError(e));
 const loading = ref<{ [key: number]: boolean }>({});
 
 const selectedTab = ref("unresolved");

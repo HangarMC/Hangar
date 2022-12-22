@@ -33,7 +33,7 @@ async function submit() {
     warning: warning.value,
     toReporter: props.sendToReporter,
     content: content.value,
-  }).catch((e) => handleRequestError(e, i18n));
+  }).catch((e) => handleRequestError(e));
   content.value = "";
   router.go(0);
 }

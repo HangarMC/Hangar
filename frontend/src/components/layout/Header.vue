@@ -79,7 +79,7 @@ if (authStore.user) {
         });
       }
     })
-    .catch((e) => handleRequestError(e, i18n));
+    .catch((e) => handleRequestError(e));
 
   if (hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)) {
     useInternalApi<number>("admin/approval/projectneedingapproval")
@@ -88,21 +88,21 @@ if (authStore.user) {
           projectApprovalQueue.value = v;
         }
       })
-      .catch((e) => handleRequestError(e, i18n));
+      .catch((e) => handleRequestError(e));
     useInternalApi<number>("admin/approval/versionsneedingapproval")
       .then((v) => {
         if (v) {
           versionApprovalQueue.value = v;
         }
       })
-      .catch((e) => handleRequestError(e, i18n));
+      .catch((e) => handleRequestError(e));
     useInternalApi<number>("flags/unresolvedamount")
       .then((v) => {
         if (v) {
           reportQueue.value = v;
         }
       })
-      .catch((e) => handleRequestError(e, i18n));
+      .catch((e) => handleRequestError(e));
   }
 }
 
@@ -150,7 +150,7 @@ function markNotificationRead(notification: HangarNotification) {
     notification.read = true;
     unreadNotifications.value--;
     loadedUnreadNotifications.value--;
-    useInternalApi(`notifications/${notification.id}`, "post").catch((e) => handleRequestError(e, i18n));
+    useInternalApi(`notifications/${notification.id}`, "post").catch((e) => handleRequestError(e));
   }
 }
 

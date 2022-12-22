@@ -68,7 +68,7 @@ const requestParams = computed(() => {
 
   return params;
 });
-const p = await useProjects(requestParams.value).catch((e) => handleRequestError(e, i18n));
+const p = await useProjects(requestParams.value).catch((e) => handleRequestError(e));
 if (p && p.value) {
   projects.value = p.value;
   await checkOffsetLargerCount();

@@ -28,7 +28,7 @@ const props = defineProps<{
 }>();
 const i18n = useI18n();
 const route = useRoute();
-const notes = await useProjectNotes(props.project.id).catch((e) => handleRequestError(e, i18n));
+const notes = await useProjectNotes(props.project.id).catch((e) => handleRequestError(e));
 const text = ref("");
 const loading = ref(false);
 
@@ -47,9 +47,9 @@ async function addNote() {
   loading.value = true;
   await useInternalApi(`projects/notes/${props.project.id}`, "post", {
     content: text.value,
-  }).catch((e) => handleRequestError(e, i18n));
+  }).catch((e) => handleRequestError(e));
   text.value = "";
-  const newNotes = await useInternalApi<Note[]>("projects/notes/" + props.project.id).catch((e) => handleRequestError(e, i18n));
+  const newNotes = await useInternalApi<Note[]>("projects/notes/" + props.project.id).catch((e) => handleRequestError(e));
   if (notes && newNotes) {
     notes.value = newNotes;
   }

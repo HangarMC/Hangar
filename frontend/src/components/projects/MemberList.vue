@@ -91,7 +91,7 @@ function cancelTransfer() {
   const url = props.organization ? `organizations/org/${props.author}/canceltransfer` : `projects/project/${props.author}/${props.slug}/canceltransfer`;
   useInternalApi(url, "post")
     .then(() => router.go(0))
-    .catch((e) => handleRequestError(e, i18n))
+    .catch((e) => handleRequestError(e))
     .finally(() => (saving.value = false));
 }
 
