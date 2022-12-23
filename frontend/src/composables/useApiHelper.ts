@@ -1,4 +1,4 @@
-import { PaginatedResult, Project, ProjectCompact, User, Version } from "hangar-api";
+import { PaginatedResult, Project, ProjectCompact, User, Version, VersionInfo } from "hangar-api";
 import {
   Flag,
   HangarNotification,
@@ -15,6 +15,7 @@ import {
   ReviewQueueEntry,
   RoleTable,
 } from "hangar-internal";
+import { Ref } from "vue";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { useAsyncData } from "#imports";
 
@@ -142,6 +143,10 @@ export async function usePossibleOwners() {
 export async function useOrgVisibility(user: string) {
   return (await useAsyncData("useOrgVisibility:" + user, () => useInternalApi<{ [key: string]: boolean }>(`organizations/${user}/userOrganizationsVisibility`)))
     .data;
+}
+
+export async function useVersionInfo(): Promise<Ref<VersionInfo | undefined>> {
+  return (await useAsyncData("useVersionInfo", () => useInternalApi<VersionInfo>(`data/version-info`))).data;
 }
 
 export async function useUserData(user: string) {

@@ -78,6 +78,5 @@ declare module "hangar-api" {
     globalRoles: Role[];
     channelColors: Color[];
     flagReasons: FlagReason[];
-    versionInfo: VersionInfo;
   }
 }

@@ -92,7 +92,6 @@ async function loadData(state: BackendData, axiosInstance: AxiosInstance) {
     globalRoles,
     channelColors,
     flagReasons,
-    versionInfo,
   ] = (
     await Promise.all([
       axiosInstance.get<typeof state.projectCategories>("/categories"),
@@ -108,7 +107,6 @@ async function loadData(state: BackendData, axiosInstance: AxiosInstance) {
       axiosInstance.get<typeof state.globalRoles>("/globalRoles"),
       axiosInstance.get<typeof state.channelColors>("/channelColors"),
       axiosInstance.get<typeof state.flagReasons>("/flagReasons"),
-      axiosInstance.get<typeof state.versionInfo>("/version-info"),
     ])
   ).map((it) => it.data);
 
@@ -129,5 +127,4 @@ async function loadData(state: BackendData, axiosInstance: AxiosInstance) {
   state.globalRoles = globalRoles as typeof state.globalRoles;
   state.channelColors = channelColors as typeof state.channelColors;
   state.flagReasons = flagReasons as typeof state.flagReasons;
-  state.versionInfo = versionInfo as typeof state.versionInfo;
 }

@@ -118,7 +118,6 @@ watch(startDate, updateDate);
 watch(endDate, updateDate);
 
 async function updateDate() {
-  console.log("update", startDate, endDate);
   data = (await useInternalApi<DayStats[]>("admin/stats", "get", {
     from: startDate.value,
     to: endDate.value,
