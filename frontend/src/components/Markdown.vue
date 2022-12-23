@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import { debounce } from "lodash-es";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import Spinner from "~/lib/components/design/Spinner.vue";
@@ -18,11 +19,10 @@ const props = withDefaults(
 );
 
 const dum = computed(() => props);
-watch(dum, fetch, { deep: true });
+watch(dum, debounce(fetch, 250, { leading: false }), { deep: true });
 
 const renderedMarkdown = ref<string>("");
 const loading = ref<boolean>(false);
-const containsCode = ref(false);
 async function fetch() {
   if (!props.raw) return;
   loading.value = true;

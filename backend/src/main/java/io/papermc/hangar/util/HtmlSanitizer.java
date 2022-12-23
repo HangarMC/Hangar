@@ -60,9 +60,16 @@ public final class HtmlSanitizer {
 
         final PolicyFactory images = new HtmlPolicyBuilder().allowStandardUrlProtocols().allowElements("img", "svg", "path")
             .allowAttributes("alt", "src", "border", "height", "width", "preserveAspectRatio", "viewBox", "class").onElements("img", "svg") // TODO don't allow class attribute
-            .allowAttributes("fill", "d").onElements("path").toFactory();
+            .allowAttributes("fill", "d").onElements("path")
+            .toFactory();
+
+        // for code highlighting
+        final PolicyFactory codeBlocks = new HtmlPolicyBuilder().allowElements("code", "pre")
+            .allowAttributes("class").onElements("code", "pre")
+            .toFactory();
+
         sanitizer = Sanitizers.FORMATTING.and(Sanitizers.BLOCKS).and(Sanitizers.TABLES).and(Sanitizers.STYLES)
-            .and(images).and(links).and(iframes).and(new HtmlPolicyBuilder().allowElements("pre", "details", "summary", "hr", "code").toFactory());
+            .and(images).and(links).and(iframes).and(codeBlocks).and(new HtmlPolicyBuilder().allowElements("details", "summary", "hr").toFactory());
     }
 
     public String sanitize(final String input) {
