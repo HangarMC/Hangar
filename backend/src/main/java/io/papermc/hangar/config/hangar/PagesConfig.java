@@ -38,7 +38,7 @@ public record PagesConfig(
 
     @ConfigurationProperties(prefix = "hangar.pages.home")
     public record Home(
-        @DefaultValue("Home") String name,
+        @DefaultValue("Resource Page") String name,
         @DefaultValue("Welcome to your new project!") String message
     ) {
     }
