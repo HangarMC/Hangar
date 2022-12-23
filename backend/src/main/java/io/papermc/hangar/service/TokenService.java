@@ -24,6 +24,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.Date;
@@ -84,9 +85,14 @@ public class TokenService extends HangarComponent {
         if (userTable == null) {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Unknown user");
         }
-        // we gotta update the refresh token
-        userRefreshToken.setToken(UUID.randomUUID());
-        userRefreshToken = userRefreshTokenDAO.update(userRefreshToken);
+        // check if we gotta update the refresh token
+        Duration timeSinceLastUpdate = Duration.between(userRefreshToken.getLastUpdated(), OffsetDateTime.now());
+        if (timeSinceLastUpdate.toDays() > 1) {
+            userRefreshToken.setToken(UUID.randomUUID());
+            userRefreshToken.setLastUpdated(OffsetDateTime.now());
+            userRefreshToken = userRefreshTokenDAO.update(userRefreshToken);
+        }
+        // in any case, refreshing the cookie is good
         addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), config.security.refreshTokenExpiry().toSeconds(), true);
         // then issue a new access token
         return new RefreshResponse(newToken0(userTable), userTable);
