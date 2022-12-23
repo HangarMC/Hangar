@@ -45,7 +45,13 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, tags, er
 if (!tags.value) tags.value = [];
 
 watch(tag, (t) => {
-  tag.value = t.replace(" ", "").substring(0, props.tagMaxlength);
+  // comma and space act like enter, didn't find a nicer way to implement this...
+  if (t.includes(",") || t.includes(" ")) {
+    tag.value = t.replace(",", "").replace(" ", "").substring(0, props.tagMaxlength);
+    add();
+    return;
+  }
+  tag.value = t.substring(0, props.tagMaxlength);
 });
 
 function remove(t: string) {
