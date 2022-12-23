@@ -32,7 +32,7 @@ async function fetch() {
   loading.value = false;
   if (!import.meta.env.SSR) {
     await nextTick(setupAdmonition);
-    if (renderedMarkdown.value.includes("<code")) {
+    if (renderedMarkdown.value?.includes("<code")) {
       await usePrismStore().handlePrism();
     }
   }

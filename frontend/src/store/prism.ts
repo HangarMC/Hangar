@@ -2,10 +2,10 @@ import { defineStore } from "pinia";
 import type { highlightAll, Languages } from "prismjs";
 import { ref } from "#imports";
 import { prismLog } from "~/lib/composables/useLog";
+import "prismjs/themes/prism-tomorrow.min.css";
 
 export const usePrismStore = defineStore("prism", () => {
   const prism = ref<{ highlightAll: typeof highlightAll; languages: Languages } | null>(null);
-  const themeLoaded = ref(false);
   const languages = ref<string[]>([]);
 
   async function loadPrism() {
@@ -17,7 +17,7 @@ export const usePrismStore = defineStore("prism", () => {
 
   async function loadLanguages() {
     const langs = new Set<string>();
-    for (const codeBlock of document.getElementsByTagName("code")) {
+    for (const codeBlock of document.querySelectorAll('code[class*="language-"]')) {
       langs.add(codeBlock.className.replace("language-", ""));
     }
     prismLog("Load languages", langs);
@@ -33,26 +33,13 @@ export const usePrismStore = defineStore("prism", () => {
     languages.value.push(lang);
   }
 
-  async function loadTheme() {
-    if (themeLoaded.value) return;
-    prismLog("loading style...");
-    const style = (await import("prismjs/themes/prism-tomorrow.min.css")).default;
-    const styleBlock = document.createElement("style");
-    prismLog("injecting style...", style);
-    styleBlock.innerText = style;
-    document.head.append(styleBlock);
-    themeLoaded.value = true;
-    prismLog("done");
-  }
-
   async function handlePrism() {
     prismLog("handle prism...");
     await loadPrism();
     await loadLanguages();
-    await loadTheme();
     prism.value?.highlightAll();
     prismLog("DONE!");
   }
 
-  return { prism, themeLoaded, languages, handlePrism };
+  return { prism, languages, handlePrism };
 });

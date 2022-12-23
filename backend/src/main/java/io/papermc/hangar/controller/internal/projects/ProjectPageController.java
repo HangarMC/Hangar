@@ -53,7 +53,7 @@ public class ProjectPageController extends HangarComponent {
     }
 
     @Anyone
-    @RateLimit(overdraft = 10, refillTokens = 3, refillSeconds = 5, greedy = true)
+    @RateLimit(overdraft = 20, refillTokens = 3, refillSeconds = 5, greedy = true)
     @PostMapping(path = "/render", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> renderMarkdown(@RequestBody @Valid StringContent content) {
         if (content.getContent().length() > config.projects.contentMaxLen()) {
