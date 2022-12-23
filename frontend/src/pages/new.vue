@@ -8,7 +8,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { ProjectCategory } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
-import { useBackendData, useLicenseOptions } from "~/store/backendData";
+import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
 import { useSeo } from "~/composables/useSeo";
 import Steps, { Step } from "~/lib/components/design/Steps.vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
@@ -201,7 +201,7 @@ function createProject() {
         <div class="basis-full md:basis-4/12 mt-4">
           <InputSelect
             v-model="form.category"
-            :values="useBackendData.categoryOptions"
+            :values="useCategoryOptions"
             :label="i18n.t('project.new.step2.projectCategory')"
             :rules="[required()]"
             i18n-text-values
