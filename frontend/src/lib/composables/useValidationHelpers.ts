@@ -79,10 +79,3 @@ export const pattern = withOverrideMessage((regex: string) =>
     return { $valid: new RegExp(regex).test(value) };
   })
 );
-
-export const dum = withOverrideMessage(
-  helpers.withAsync((value: any) => {
-    console.log("validate", value, value.length);
-    return { $valid: false, $message: "organization.new.error.jsonError" };
-  })
-);

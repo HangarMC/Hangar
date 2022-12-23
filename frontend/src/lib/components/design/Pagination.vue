@@ -21,11 +21,11 @@ const slicedItems = computed(() => {
   if (props.serverPagination) {
     return props.items;
   }
-  return props.items.slice(page.value * props.itemsPerPage, (page.value + 1) * props.itemsPerPage);
+  return props.items?.slice(page.value * props.itemsPerPage, (page.value + 1) * props.itemsPerPage);
 });
 const pageCount = computed(() =>
   Math.ceil(
-    (props.serverPagination ? props.serverPagination.count : props.items.length) / (props.serverPagination ? props.serverPagination.limit : props.itemsPerPage)
+    (props.serverPagination ? props.serverPagination.count : props.items?.length) / (props.serverPagination ? props.serverPagination.limit : props.itemsPerPage)
   )
 );
 
