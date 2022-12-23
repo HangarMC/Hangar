@@ -16,14 +16,8 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
   axiosInstance.interceptors.request.use(
     (config) => {
       const authStore = useAuthStore();
-      const token = authStore.token;
       // forward auth token
-      if (!config.headers) {
-        config.headers = {};
-      }
-      if (token) {
-        config.headers.Authorization = "HangarAuth " + token;
-      }
+      addAuthHeader(config, authStore.token);
       // forward other headers for ssr
       forwardRequestHeaders(config, nuxtApp);
       // axiosLog("calling with headers", config.headers);
@@ -42,28 +36,30 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
     },
     async (err) => {
       const authStore = useAuthStore();
-      const originalConfig = err.config;
-
-      const transformedError = {
-        code: err?.code,
-        requestUrl: err?.request?.path,
-        status: err?.response?.status,
-        data: err?.response?.data,
-      };
-      axiosLog("got error", transformedError);
+      const originalConfig = err.config as AxiosRequestConfig & { _retry: boolean };
 
       if (originalConfig?.url !== "/refresh" && originalConfig?.url !== "/invalidate" && err.response) {
         // token expired
-        if (err.response.status === 401 && !originalConfig._retry) {
+        if (err.response.status === 403 && err.response.data?.message === "JWT was expired" && !originalConfig._retry) {
           originalConfig._retry = true;
 
-          authLog("Request to", originalConfig.url, "failed with", err.response.status, "==> refreshing token");
+          authLog("Request to", originalConfig.url, "failed with", err.response.status, err.response.data, "==> refreshing token");
           const refreshedToken = await useAuth.refreshToken();
           if (refreshedToken) {
             authStore.token = refreshedToken;
+            authLog("redo request", originalConfig.url);
+            addAuthHeader(originalConfig, refreshedToken);
             return axiosInstance(originalConfig);
           }
         }
+      } else {
+        const transformedError = {
+          code: err?.code,
+          requestUrl: err?.request?.path,
+          status: err?.response?.status,
+          data: err?.response?.data,
+        };
+        axiosLog("got error", transformedError);
       }
 
       throw err;
@@ -76,6 +72,15 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
     },
   };
 });
+
+function addAuthHeader(config: AxiosRequestConfig, token: string | undefined) {
+  if (!config.headers) {
+    config.headers = {};
+  }
+  if (token) {
+    config.headers.Authorization = "HangarAuth " + token;
+  }
+}
 
 function forwardRequestHeaders(config: AxiosRequestConfig, nuxtApp: NuxtApp) {
   if (!process.server) return;

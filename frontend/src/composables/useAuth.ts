@@ -55,7 +55,7 @@ class Auth {
       }
 
       try {
-        authLog("do request");
+        authLog("do refresh request");
         const headers: AxiosRequestHeaders = {};
         if (import.meta.env.SSR) {
           headers.cookie = "HangarAuth_REFRESH=" + refreshToken;
@@ -65,7 +65,7 @@ class Auth {
         if (response.status === 299) {
           authLog("had no cookie");
           resolve(false);
-        } else if (response.status === 204) {
+        } else if (response.status === 200) {
           // forward cookie header to renew refresh cookie
           if (import.meta.env.SSR && response.headers["set-cookie"]) {
             useRequestEvent().node.res?.setHeader("set-cookie", response.headers["set-cookie"]);
@@ -73,6 +73,7 @@ class Auth {
           // validate and return token
           const token = response.data;
           if (useAuth.validateToken(token)) {
+            authLog("got valid token");
             resolve(response.data);
           } else {
             authLog("refreshed token is not valid?", token);

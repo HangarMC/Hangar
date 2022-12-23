@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
@@ -77,8 +78,8 @@ public class LoginController extends HangarComponent {
         return addBaseAndRedirect(url);
     }
 
+    @ResponseBody
     @GetMapping("/refresh")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public String refreshAccessToken(@CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) String refreshToken) {
         return tokenService.refreshAccessToken(refreshToken).accessToken();
     }
