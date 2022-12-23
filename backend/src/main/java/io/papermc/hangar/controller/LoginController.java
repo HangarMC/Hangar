@@ -94,19 +94,20 @@ public class LoginController extends HangarComponent {
         }
     }
 
+    @ResponseBody
     @GetMapping(path = "/logout", params = "returnUrl")
-    public RedirectView logout(@RequestParam(defaultValue = "/logged-out") String returnUrl) {
+    public String logout(@RequestParam(defaultValue = "/?loggedOut") String returnUrl) {
         if (config.fakeUser.enabled()) {
             response.addCookie(new Cookie("url", returnUrl));
-            return new RedirectView("/fake-logout");
+            return "/fake-logout";
         } else {
             response.addCookie(new Cookie("url", returnUrl));
             Optional<HangarPrincipal> principal = getOptionalHangarPrincipal();
             if (principal.isPresent()) {
-                return redirectToSso(ssoService.getLogoutUrl(config.getBaseUrl() + "/handle-logout", principal.get()));
+                return ssoService.getLogoutUrl(config.getBaseUrl() + "/handle-logout", principal.get()).getUrl();
             } else {
                 tokenService.invalidateToken(null);
-                return addBaseAndRedirect(returnUrl);
+                return addBase(returnUrl);
             }
         }
     }
@@ -175,6 +176,10 @@ public class LoginController extends HangarComponent {
     }
 
     private RedirectView addBaseAndRedirect(String url) {
+        return new RedirectView(addBase(url));
+    }
+
+    private String addBase(String url) {
         if (!url.startsWith("http")) {
             if (url.startsWith("/")) {
                 url = config.getBaseUrl() + url;
@@ -182,7 +187,7 @@ public class LoginController extends HangarComponent {
                 url = config.getBaseUrl() + "/" + url;
             }
         }
-        return new RedirectView(url);
+        return url;
     }
 
     private RedirectView redirectToSso(URLWithNonce urlWithNonce) {

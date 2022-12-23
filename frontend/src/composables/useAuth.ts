@@ -6,8 +6,9 @@ import { useCookies } from "~/composables/useCookies";
 import { useInternalApi } from "~/composables/useApi";
 import { authLog } from "~/lib/composables/useLog";
 import { useConfig } from "~/lib/composables/useConfig";
-import { useRequestEvent } from "#imports";
+import { handleRequestError, useRequestEvent } from "#imports";
 import { useAxios } from "~/composables/useAxios";
+import { useNotificationStore } from "~/lib/store/notification";
 
 class Auth {
   loginUrl(redirectUrl: string): string {
@@ -17,8 +18,15 @@ class Auth {
     return `/login?returnUrl=${useConfig().publicHost}${redirectUrl}`;
   }
 
-  logout() {
-    location.replace(`/logout?returnUrl=${useConfig().publicHost}?loggedOut`);
+  async logout() {
+    const result = await useAxios()
+      .get(`/logout?returnUrl=${useConfig().publicHost}?loggedOut`)
+      .catch((e) => handleRequestError(e));
+    if ("status" in result && result?.status === 200 && result?.data) {
+      location.replace(result?.data);
+    } else {
+      useNotificationStore().error("Error while logging out?!");
+    }
   }
 
   validateToken(token: unknown): token is string {
