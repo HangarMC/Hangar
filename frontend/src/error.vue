@@ -8,7 +8,6 @@ import { useSeo } from "~/composables/useSeo";
 import Lottie from "~/components/Lottie.vue";
 import { useAuthStore } from "~/store/auth";
 import { useSettingsStore } from "~/store/useSettingsStore";
-import { useBackendDataStore } from "~/store/backendData";
 import { settingsLog } from "~/lib/composables/useLog";
 
 // keep in sync with app.vue, cause reasons
@@ -16,7 +15,6 @@ const authStore = useAuthStore();
 const settingsStore = useSettingsStore();
 settingsStore.loadSettingsClient();
 settingsStore.setupMobile();
-await useBackendDataStore().initBackendData();
 settingsLog("render for user", authStore.user?.name, "with darkmode", settingsStore.darkMode);
 useHead({
   htmlAttrs: {

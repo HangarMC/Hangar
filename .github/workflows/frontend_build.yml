@@ -55,8 +55,9 @@ jobs:
           CI: true
           # keep these in sync with compose!
           BACKEND_HOST: "http://hangar_backend:8080"
-          AUTH_HOST: "https://hangar-auth.benndorf.dev"
-          PUBLIC_HOST: "https://hangar.benndorf.dev"
+          AUTH_HOST: "https://hangar-auth.papermc.dev"
+          PUBLIC_HOST: "https://hangar.papermc.dev"
+          BACKEND_DATA_HOST: "https://hangar.papermc.dev"
           DEBUG: "hangar:*"
         run: (cd frontend && pnpm build)
 

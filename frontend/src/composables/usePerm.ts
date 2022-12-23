@@ -3,7 +3,7 @@
  * @param namedPermission perms required
  */
 import { useAuthStore } from "~/store/auth";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import { NamedPermission } from "~/types/enums";
 
 export function toNamedPermission(perms: string[]): NamedPermission[] {
@@ -21,8 +21,8 @@ export function hasPerms(...namedPermission: NamedPermission[]): boolean {
   if (!perms) return false;
   const _perms = BigInt("0b" + perms);
   let result = true;
-  const registeredPerms = useBackendDataStore().permissions;
-  if (!registeredPerms) {
+  const registeredPerms = useBackendData.permissions;
+  if (!registeredPerms || registeredPerms.size === 0) {
     throw new Error("No perms from backend?");
   }
   for (const np of namedPermission) {

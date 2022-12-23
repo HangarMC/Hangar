@@ -114,7 +114,7 @@ function projectPermsRequired(authStore: ReturnType<typeof useAuthStore>, to: Ro
   if (!authStore.routePermissions) {
     return useErrorRedirect(to, 404);
   }
-  routePermLog("check has perms", to.meta.projectPermsRequired);
+  routePermLog("check has perms", to.meta.projectPermsRequired, toNamedPermission(to.meta.projectPermsRequired as string[]));
   if (!hasPerms(...toNamedPermission(to.meta.projectPermsRequired as string[]))) {
     return useErrorRedirect(to, 404);
   }

@@ -5,7 +5,7 @@ import { computed, ref } from "vue";
 import { cloneDeep, isEqual } from "lodash-es";
 import { useHead } from "@vueuse/head";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import { useInternalApi } from "~/composables/useApi";
 import InputTag from "~/lib/components/ui/InputTag.vue";
 import Button from "~/lib/components/design/Button.vue";
@@ -25,7 +25,7 @@ const route = useRoute();
 const router = useRouter();
 const notification = useNotificationStore();
 
-const platformMap = useBackendDataStore().platforms;
+const platformMap = useBackendData.platforms;
 const originalPlatforms = platformMap ? [...platformMap.values()] : [];
 const platforms = ref(cloneDeep(originalPlatforms));
 const loading = ref<boolean>(false);

@@ -8,7 +8,7 @@ import { useHead } from "@vueuse/head";
 import { AxiosError } from "axios";
 import { filesize } from "filesize";
 import { NamedPermission, Platform, ReviewState, Visibility, PinnedStatus } from "~/types/enums";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import { lastUpdated } from "~/lib/composables/useTime";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -35,7 +35,6 @@ import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
 const route = useRoute();
 const i18n = useI18n();
 const router = useRouter();
-const backendData = useBackendDataStore();
 const notification = useNotificationStore();
 
 const props = defineProps<{
@@ -50,12 +49,12 @@ const projectVersion = computed<HangarVersion | undefined>(() => props.version);
 if (!projectVersion.value) {
   throw useErrorRedirect(route, 404, "Not found");
 }
-const platform = ref<IPlatform | undefined>(backendData.platforms.get(p.value));
+const platform = ref<IPlatform | undefined>(useBackendData.platforms.get(p.value));
 const isReviewStateChecked = computed<boolean>(
   () => projectVersion.value?.reviewState === ReviewState.PARTIALLY_REVIEWED || projectVersion.value?.reviewState === ReviewState.REVIEWED
 );
 const isUnderReview = computed<boolean>(() => projectVersion.value?.reviewState === ReviewState.UNDER_REVIEW);
-const currentVisibility = computed(() => backendData.visibilities.find((v) => v.name === projectVersion.value?.visibility));
+const currentVisibility = computed(() => useBackendData.visibilities.find((v) => v.name === projectVersion.value?.visibility));
 const editingPage = ref(false);
 const requiresConfirmation = computed<boolean>(() => {
   if (projectVersion.value?.reviewState !== ReviewState.REVIEWED) {
@@ -87,7 +86,7 @@ useHead(
 
 function setPlatform(plat: Platform) {
   p.value = plat;
-  platform.value = backendData.platforms.get(plat);
+  platform.value = useBackendData.platforms.get(plat);
 }
 
 async function savePage(content: string) {
@@ -189,7 +188,7 @@ async function restoreVersion() {
             <template #default="{ close }">
               <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()" class="inline-flex" @click="setPlatform(plat) || close()">
                 <PlatformLogo :platform="plat" :size="24" class="mr-1 flex-shrink-0" />
-                {{ backendData.platforms?.get(plat)?.name }}
+                {{ useBackendData.platforms?.get(plat)?.name }}
               </DropdownItem>
             </template>
           </DropdownButton>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { DependencyVersion, PaginatedResult, PluginDependency, Project, ProjectNamespace } from "hangar-api";
 import { useI18n } from "vue-i18n";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { useRoute } from "vue-router";
 import { Platform } from "~/types/enums";
 import Table from "~/lib/components/design/Table.vue";

@@ -8,6 +8,7 @@ import prettier from "./src/lib/plugins/prettier";
 
 const backendHost = process.env.BACKEND_HOST || "http://localhost:8080";
 const authHost = process.env.AUTH_HOST || "http://localhost:3001";
+const backendDataHost = process.env.BACKEND_DATA_HOST || "https://hangar.papermc.dev";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
@@ -19,7 +20,18 @@ export default defineNuxtConfig({
     authHost,
     backendHost,
   },
-  modules: ["nuxt-windicss", "@pinia/nuxt", "@nuxtjs-alt/proxy", "unplugin-icons/nuxt"],
+  modules: [
+    "nuxt-windicss",
+    "@pinia/nuxt",
+    "@nuxtjs-alt/proxy",
+    "unplugin-icons/nuxt",
+    [
+      "./src/module/backendData",
+      {
+        serverUrl: backendDataHost,
+      },
+    ],
+  ],
   vite: {
     plugins: [
       // https://github.com/antfu/unplugin-vue-components

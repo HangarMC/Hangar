@@ -18,7 +18,7 @@ import { authUrl, forumUserUrl } from "~/composables/useUrlHelper";
 import { useUser } from "~/composables/useApiHelper";
 import Tag from "~/components/Tag.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import Button from "~/lib/components/design/Button.vue";
 import { definePageMeta } from "#imports";
 
@@ -29,7 +29,6 @@ definePageMeta({
 const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
-const backendData = useBackendDataStore();
 
 const projects = await useApi<PaginatedResult<Project>>("projects", "get", {
   owner: route.params.user,
@@ -96,7 +95,7 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
 
         <div class="flex mt-2">
           <div class="flex-grow">
-            <InputSelect v-model="selectedRole" :values="backendData.globalRoles" item-text="title" item-value="value"></InputSelect>
+            <InputSelect v-model="selectedRole" :values="useBackendData.globalRoles" item-text="title" item-value="value"></InputSelect>
           </div>
           <div>
             <Button size="medium" :disabled="!selectedRole || user.roles.some((r) => r.value === selectedRole)" @click="processRole(true)">

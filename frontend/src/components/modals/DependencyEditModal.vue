@@ -9,7 +9,7 @@ import { hasPerms } from "~/composables/usePerm";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import { NamedPermission, Platform } from "~/types/enums";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
 import DependencyTable from "~/components/projects/DependencyTable.vue";
@@ -22,10 +22,9 @@ const props = defineProps<{
 const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
-const backendData = useBackendDataStore();
 
 const platform = computed(() => {
-  return backendData.platforms.get((route.params.platform as string).toUpperCase() as Platform);
+  return useBackendData.platforms.get((route.params.platform as string).toUpperCase() as Platform);
 });
 const projectVersion = computed(() => {
   return props.version;

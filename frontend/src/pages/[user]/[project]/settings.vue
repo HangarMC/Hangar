@@ -17,7 +17,7 @@ import { NamedPermission, Visibility } from "~/types/enums";
 import Button from "~/lib/components/design/Button.vue";
 import Tabs from "~/lib/components/design/Tabs.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
 import InputText from "~/lib/components/ui/InputText.vue";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import InputFile from "~/lib/components/ui/InputFile.vue";
@@ -41,7 +41,6 @@ definePageMeta({
 const route = useRoute();
 const router = useRouter();
 const i18n = useI18n();
-const backendData = useBackendDataStore();
 const v = useVuelidate();
 const notificationStore = useNotificationStore();
 const props = defineProps<{
@@ -269,14 +268,14 @@ useHead(
       <Tabs v-model="selectedTab" :tabs="tabs">
         <template #general>
           <ProjectSettingsSection title="project.settings.category" description="project.settings.categorySub">
-            <InputSelect v-model="form.category" :values="backendData.categoryOptions" :rules="[required()]" i18n-text-values />
+            <InputSelect v-model="form.category" :values="useCategoryOptions" :rules="[required()]" i18n-text-values />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.description" description="project.settings.descriptionSub">
             <InputText
               v-model="form.description"
               counter
-              :maxlength="backendData.validations?.project?.desc?.max"
-              :rules="[required(), maxLength()(backendData.validations?.project?.desc?.max)]"
+              :maxlength="useBackendData.validations?.project?.desc?.max"
+              :rules="[required(), maxLength()(useBackendData.validations?.project?.desc?.max)]"
             />
           </ProjectSettingsSection>
           <!-- todo: forums integration -->
@@ -287,9 +286,9 @@ useHead(
             <InputTag
               v-model="form.settings.keywords"
               counter
-              :maxlength="backendData.validations?.project.keywords.max"
+              :maxlength="useBackendData.validations?.project.keywords.max"
               :label="i18n.t('project.new.step3.keywords')"
-              :rules="[maxLength()(backendData.validations?.project.keywords.max)]"
+              :rules="[maxLength()(useBackendData.validations?.project.keywords.max)]"
             />
           </ProjectSettingsSection>
           <ProjectSettingsSection>
@@ -363,7 +362,7 @@ useHead(
           <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
             <div class="flex">
               <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
-                <InputSelect v-model="form.settings.license.type" :values="backendData.licenseOptions" :label="i18n.t('project.settings.licenseType')" />
+                <InputSelect v-model="form.settings.license.type" :values="useLicenseOptions" :label="i18n.t('project.settings.licenseType')" />
               </div>
               <div v-if="isCustomLicense" class="basis-full md:basis-8/12">
                 <InputText v-model.trim="form.settings.license.name" :label="i18n.t('project.settings.licenseCustom')" />

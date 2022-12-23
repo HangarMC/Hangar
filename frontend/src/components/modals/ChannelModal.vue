@@ -5,7 +5,7 @@ import { computed, reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import InputText from "~/lib/components/ui/InputText.vue";
 import { required } from "~/lib/composables/useValidationHelpers";
 import { validChannelName, validChannelColor } from "~/composables/useHangarValidations";
@@ -38,7 +38,7 @@ const color = ref<string>(props.channel ? props.channel.color : "");
 const flags = ref<ChannelFlag[]>(props.channel ? props.channel.flags : []);
 const swatches = computed<string[][]>(() => {
   const result: string[][] = [];
-  const backendColors = useBackendDataStore().channelColors;
+  const backendColors = useBackendData.channelColors;
   const columns = Math.floor(Math.sqrt(backendColors.length));
   const rows = Math.ceil(Math.sqrt(backendColors.length));
   for (let i = 0; i < rows; i++) {

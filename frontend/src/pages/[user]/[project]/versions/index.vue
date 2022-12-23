@@ -12,7 +12,7 @@ import Card from "~/lib/components/design/Card.vue";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import Tag from "~/components/Tag.vue";
 import Button from "~/lib/components/design/Button.vue";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import { useProjectChannels, useProjectVersions } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useApi } from "~/composables/useApi";
@@ -25,7 +25,6 @@ import ComingSoon from "~/lib/components/design/ComingSoon.vue";
 
 const i18n = useI18n();
 const route = useRoute();
-const backendData = useBackendDataStore();
 
 const filter = reactive({
   channels: [] as string[],
@@ -39,7 +38,7 @@ const props = defineProps<{
   project: HangarProject;
 }>();
 const options = reactive({ page: 1, itemsPerPage: 10 });
-const platforms = computed(() => [...(backendData.platforms?.values() || [])]);
+const platforms = computed(() => [...(useBackendData.platforms?.values() || [])]);
 const requestOptions = computed(() => {
   return {
     limit: options.itemsPerPage,
@@ -109,7 +108,7 @@ function getBorderClasses(version: Version): string {
 }
 
 function getVisibilityTitle(visibility: Visibility) {
-  const value = backendData.visibilities.find((v) => v.name === visibility);
+  const value = useBackendData.visibilities.find((v) => v.name === visibility);
   return value ? i18n.t(value.title) : null;
 }
 </script>

@@ -14,7 +14,6 @@ import Markdown from "~/components/Markdown.vue";
 import ProjectPageList from "~/components/projects/ProjectPageList.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useBackendDataStore } from "~/store/backendData";
 import Tag from "~/components/Tag.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
@@ -26,7 +25,6 @@ const props = defineProps<{
   project: HangarProject;
 }>();
 const i18n = useI18n();
-const backendData = useBackendDataStore();
 const route = useRoute();
 const router = useRouter();
 const openProjectPages = await useOpenProjectPages(route, props.project);

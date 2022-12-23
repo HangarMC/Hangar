@@ -77,7 +77,7 @@ function updatePage(newPage: number) {
       </tr>
     </thead>
     <tbody>
-      <PaginationComponent v-if="sorted.length !== 0" :items="sorted" :server-pagination="serverPagination" @update:page="updatePage">
+      <PaginationComponent v-if="sorted?.length !== 0" :items="sorted" :server-pagination="serverPagination" @update:page="updatePage">
         <template #default="{ item, idx }">
           <tr>
             <td v-for="header in headers" :key="header.name" :style="header.width ? 'width: ' + header.width : ''" @click="expanded[idx] = !expanded[idx]">
@@ -102,7 +102,7 @@ function updatePage(newPage: number) {
           </tr>
         </template>
       </PaginationComponent>
-      <tr v-if="!items || items.length === 0">
+      <tr v-if="!items || items?.length === 0">
         <td :colspan="headers.length">
           <slot name="empty"></slot>
         </td>

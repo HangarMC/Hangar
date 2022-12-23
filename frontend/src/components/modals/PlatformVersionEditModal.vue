@@ -6,8 +6,7 @@ import { useRoute, useRouter } from "vue-router";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import { Platform } from "~/types/enums";
-import { useBackendDataStore } from "~/store/backendData";
-import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
+import { useBackendData } from "~/store/backendData";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
 import InputTag from "~/lib/components/ui/InputTag.vue";
@@ -20,10 +19,9 @@ const props = defineProps<{
 const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
-const backendData = useBackendDataStore();
 
 const platform = computed(() => {
-  return backendData.platforms?.get((route.params.platform as string).toUpperCase() as Platform);
+  return useBackendData.platforms?.get((route.params.platform as string).toUpperCase() as Platform);
 });
 const projectVersion = computed(() => {
   return props.version;

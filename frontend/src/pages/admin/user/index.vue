@@ -10,7 +10,6 @@ import Tag from "~/components/Tag.vue";
 import { useApi } from "~/composables/useApi";
 import { Header } from "~/components/SortableTable.vue";
 import { useSeo } from "~/composables/useSeo";
-import { useBackendDataStore } from "~/store/backendData";
 import { definePageMeta, handleRequestError, watch } from "#imports";
 import { useUsers } from "~/composables/useApiHelper";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
@@ -23,7 +22,6 @@ definePageMeta({
 const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
-const backendData = useBackendDataStore();
 
 const headers = [
   { name: "pic", title: "", sortable: false },

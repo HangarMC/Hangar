@@ -6,7 +6,7 @@ import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import { Visibility } from "~/types/enums";
 import InputRadio from "~/lib/components/ui/InputRadio.vue";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -19,7 +19,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const backendData = useBackendDataStore();
 const notification = useNotificationStore();
 const router = useRouter();
 
@@ -27,8 +26,8 @@ const visibility = ref<Visibility>();
 const reason = ref<string>("");
 
 const showTextarea = computed(() => setVisibility.value?.showModal && props.propVisibility !== visibility.value);
-const setVisibility = computed(() => backendData.visibilities.find((v) => v.name === visibility.value));
-const currentVisibility = computed(() => backendData.visibilities.find((v) => v.name === props.propVisibility));
+const setVisibility = computed(() => useBackendData.visibilities.find((v) => v.name === visibility.value));
+const currentVisibility = computed(() => useBackendData.visibilities.find((v) => v.name === props.propVisibility));
 
 async function submit(): Promise<void> {
   await useInternalApi(props.postUrl, "post", {

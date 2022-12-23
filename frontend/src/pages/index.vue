@@ -6,7 +6,7 @@ import { useHead } from "@vueuse/head";
 import { useRoute, useRouter } from "vue-router";
 import { PaginatedResult, Project } from "hangar-api";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData, useVisibleCategories, useVisiblePlatforms } from "~/store/backendData";
 import ProjectList from "~/components/projects/ProjectList.vue";
 import { useProjects } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -26,7 +26,6 @@ const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
 
-const backendData = useBackendDataStore();
 const sorters = [
   { id: "-stars", label: i18n.t("project.sorting.mostStars") },
   { id: "-downloads", label: i18n.t("project.sorting.mostDownloads") },
@@ -105,7 +104,7 @@ async function checkOffsetLargerCount() {
 }
 
 function versions(platform: Platform) {
-  const platformData = backendData.platforms?.get(platform);
+  const platformData = useBackendData.platforms?.get(platform);
   if (!platformData) {
     return [];
   }
@@ -204,7 +203,7 @@ useHead(meta);
           </h4>
           <div class="flex flex-col gap-1">
             <ul>
-              <li v-for="platform in backendData.visiblePlatforms" :key="platform.enumName" class="inline-flex w-full">
+              <li v-for="platform in useVisiblePlatforms" :key="platform.enumName" class="inline-flex w-full">
                 <InputRadio :label="platform.name" :model-value="filters.platform" :value="platform.enumName" @update:model-value="updatePlatform">
                   <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
                 </InputRadio>
@@ -228,7 +227,7 @@ useHead(meta);
           <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.categories") }}</h4>
           <div class="flex flex-col gap-1">
             <InputCheckbox
-              v-for="category in backendData.visibleCategories"
+              v-for="category in useVisibleCategories"
               :key="category.apiName"
               v-model="filters.categories"
               :value="category.apiName"
@@ -241,7 +240,7 @@ useHead(meta);
         <div class="licenses">
           <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.licenses") }}</h4>
           <div class="flex flex-col gap-1">
-            <InputCheckbox v-for="license in backendData.licenses" :key="license" v-model="filters.licenses" :value="license" :label="license">
+            <InputCheckbox v-for="license in useBackendData.licenses" :key="license" v-model="filters.licenses" :value="license" :label="license">
               <LicenseLogo :license="license" :size="22" class="mr-1" />
             </InputCheckbox>
           </div>

@@ -6,12 +6,11 @@ import { PlatformVersionDownload } from "hangar-api";
 import Button from "~/lib/components/design/Button.vue";
 import { Platform } from "~/types/enums";
 import DropdownButton from "~/lib/components/design/DropdownButton.vue";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 
 const i18n = useI18n();
-const backendData = useBackendDataStore();
 
 interface DownloadableVersion {
   name: string;
@@ -81,7 +80,7 @@ const external = computed(() => false);
         rel="noopener noreferrer"
       >
         <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
-        {{ backendData.platforms.get(p)?.name }}
+        {{ useBackendData.platforms.get(p)?.name }}
         <span v-if="showVersions" class="ml-1">({{ v }})</span>
       </DropdownItem>
     </DropdownButton>
@@ -110,7 +109,7 @@ const external = computed(() => false);
         rel="noopener noreferrer"
       >
         <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
-        {{ backendData.platforms.get(p)?.name }}
+        {{ useBackendData.platforms.get(p)?.name }}
         <span v-if="v.platformDependencies && showVersions" class="ml-1">({{ v.platformDependenciesFormatted[p] }})</span>
       </DropdownItem>
     </DropdownButton>

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { computed, ref } from "vue";
-import Markdown from "~/components/Markdown.vue";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import { useInternalApi } from "~/composables/useApi";

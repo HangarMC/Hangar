@@ -2,7 +2,7 @@
 import { type PropType, provide } from "vue";
 import { User } from "hangar-api";
 import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { HangarProjectPage } from "hangar-internal";
 import { useProject } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";

@@ -5,7 +5,7 @@ import { HangarProject } from "hangar-internal";
 import ProjectNavItem from "~/components/projects/ProjectNavItem.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
-import { avatarUrl, linkout } from "~/composables/useUrlHelper";
+import { linkout } from "~/composables/useUrlHelper";
 
 const props = defineProps<{
   project: HangarProject;

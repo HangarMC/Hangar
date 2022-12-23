@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, handleError, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { JoinableMember } from "hangar-internal";
 import { PaginatedResult, Role, User } from "hangar-api";
@@ -12,7 +12,7 @@ import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import { avatarUrl } from "~/composables/useUrlHelper";
 import { hasPerms } from "~/composables/usePerm";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import IconMdiClock from "~icons/mdi/clock";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
@@ -55,11 +55,10 @@ const sortedMembers = [...props.members].sort((r1, r2) => {
 });
 
 const i18n = useI18n();
-const store = useBackendDataStore();
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
-const roles: Role[] = props.organization ? store.orgRoles : store.projectRoles;
+const roles: Role[] = props.organization ? useBackendData.orgRoles : useBackendData.projectRoles;
 
 const canLeave = computed<boolean>(() => {
   if (!authStore.user) {

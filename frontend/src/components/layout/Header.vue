@@ -30,7 +30,7 @@ import IconMdiFolderPlusOutline from "~icons/mdi/folder-plus-outline";
 
 import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import { authLog } from "~/lib/composables/useLog";
 import { lastUpdated } from "~/lib/composables/useTime";
 import { hasPerms } from "~/composables/usePerm";
@@ -44,8 +44,10 @@ import { useInternalApi } from "~/composables/useApi";
 import { useConfig } from "~/lib/composables/useConfig";
 import { unref } from "#imports";
 
+// marker so that you can inspect backend data in dev tools
+const backendData = useBackendData;
+
 const settings = useSettingsStore();
-const backendData = useBackendDataStore();
 const i18n = useI18n();
 const t = i18n.t;
 const authStore = useAuthStore();
@@ -149,8 +151,8 @@ function isRecent(date: string): boolean {
 
 <template>
   <header class="background-default shadow-md">
-    <div v-if="backendData.announcements">
-      <Announcement v-for="(announcement, idx) in backendData.announcements" :key="idx" :announcement="announcement" />
+    <div v-if="useBackendData.announcements">
+      <Announcement v-for="(announcement, idx) in useBackendData.announcements" :key="idx" :announcement="announcement" />
     </div>
 
     <nav class="max-w-screen-xl mx-auto flex justify-between px-4 py-2">

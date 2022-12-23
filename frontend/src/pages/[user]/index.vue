@@ -12,7 +12,7 @@ import UserAvatar from "~/components/UserAvatar.vue";
 import Link from "~/lib/components/design/Link.vue";
 import MemberList from "~/components/projects/MemberList.vue";
 import { useOrgVisibility, useUserData } from "~/composables/useApiHelper";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import { useAuthStore } from "~/store/auth";
 import { useSeo } from "~/composables/useSeo";
 import UserHeader from "~/components/UserHeader.vue";
@@ -42,7 +42,7 @@ let organizationVisibility = null;
 if (props.user.name === useAuthStore().user?.name) {
   organizationVisibility = await useOrgVisibility(props.user.name);
 }
-const orgRoles = useBackendDataStore().orgRoles;
+const orgRoles = useBackendData.orgRoles;
 const authStore = useAuthStore();
 
 interface UserButton {

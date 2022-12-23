@@ -13,7 +13,7 @@ import { useInternalApi } from "~/composables/useApi";
 import Table from "~/lib/components/design/Table.vue";
 import Tag from "~/components/Tag.vue";
 import Button from "~/lib/components/design/Button.vue";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import ChannelModal from "~/components/modals/ChannelModal.vue";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
@@ -31,7 +31,7 @@ const props = defineProps<{
 const i18n = useI18n();
 const route = useRoute();
 const channels = await useProjectChannels(props.project.namespace.owner, props.project.namespace.slug).catch((e) => handleRequestError(e));
-const validations = useBackendDataStore().validations;
+const validations = useBackendData.validations;
 const notifications = useNotificationStore();
 
 useHead(

@@ -2,12 +2,12 @@
 import { useHead } from "@vueuse/head";
 import { useRoute } from "vue-router";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import Link from "~/lib/components/design/Link.vue";
 import Alert from "~/lib/components/design/Alert.vue";
 import { useSeo } from "~/composables/useSeo";
 
-const version = useBackendDataStore().versionInfo;
+const version = useBackendData.versionInfo;
 const route = useRoute();
 useHead(useSeo("Hangar Version", null, route, null));
 </script>

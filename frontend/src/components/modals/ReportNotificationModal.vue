@@ -1,14 +1,10 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { Flag } from "hangar-internal";
-import { Project } from "hangar-api";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
-import { Visibility } from "~/types/enums";
-import InputRadio from "~/lib/components/ui/InputRadio.vue";
-import { useBackendDataStore } from "~/store/backendData";
 import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -21,7 +17,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const backendData = useBackendDataStore();
 const notification = useNotificationStore();
 const router = useRouter();
 

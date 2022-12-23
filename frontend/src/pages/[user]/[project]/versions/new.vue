@@ -22,7 +22,7 @@ import { Platform } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { formatSize } from "~/lib/composables/useFile";
 import ChannelModal from "~/components/modals/ChannelModal.vue";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import DependencyTable from "~/components/projects/DependencyTable.vue";
 import InputTag from "~/lib/components/ui/InputTag.vue";
 import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
@@ -38,7 +38,6 @@ const route = useRoute();
 const router = useRouter();
 const i18n = useI18n();
 const t = i18n.t;
-const backendData = useBackendDataStore();
 const props = defineProps<{
   project: HangarProject;
 }>();
@@ -169,12 +168,12 @@ const selectedChannel = ref<string>("Release");
 const currentChannel = computed(() => channels.value?.find((c) => c.name === selectedChannel.value));
 
 const platforms = computed<IPlatform[]>(() => {
-  return [...backendData.platforms.values()];
+  return [...useBackendData.platforms.values()];
 });
 const selectedPlatformsData = computed<IPlatform[]>(() => {
   const result: IPlatform[] = [];
   for (const platformName of selectedPlatforms.value) {
-    const iPlatform = backendData.platforms.get(platformName);
+    const iPlatform = useBackendData.platforms.get(platformName);
     if (iPlatform) {
       result.push(iPlatform);
     }
@@ -337,7 +336,7 @@ useHead(
           <Button v-if="platformFiles.length !== 1" class="md:ml-4 mt-4" @click="removePlatformFile(idx)"><IconMdiDelete /></Button>
         </div>
       </div>
-      <Button :disabled="backendData.platforms.size !== 0 && platformFiles.length >= backendData.platforms.size" @click="addPlatformFile()">
+      <Button :disabled="useBackendData.platforms.size !== 0 && platformFiles.length >= useBackendData.platforms.size" @click="addPlatformFile()">
         <IconMdiPlus /> Add file/url for another platform
       </Button>
     </template>
@@ -350,7 +349,7 @@ useHead(
             v-model="pendingVersion.versionString"
             :label="t('version.new.form.versionString')"
             :rules="versionRules"
-            :maxlength="backendData.validations.version.max"
+            :maxlength="useBackendData.validations.version.max"
             counter
           />
         </div>

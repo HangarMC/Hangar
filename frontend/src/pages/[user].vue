@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useOrganization, useUser } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";

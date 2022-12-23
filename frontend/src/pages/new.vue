@@ -8,7 +8,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { ProjectCategory } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData, useLicenseOptions } from "~/store/backendData";
 import { useSeo } from "~/composables/useSeo";
 import Steps, { Step } from "~/lib/components/design/Steps.vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
@@ -37,7 +37,6 @@ definePageMeta({
 });
 
 const i18n = useI18n();
-const backendData = useBackendDataStore();
 const router = useRouter();
 const route = useRoute();
 const settings = useSettingsStore();
@@ -180,12 +179,12 @@ function createProject() {
           <InputText
             v-model.trim="form.name"
             :label="i18n.t('project.new.step2.projectName')"
-            :maxlength="backendData.validations.project.name.max"
+            :maxlength="useBackendData.validations.project.name.max"
             counter
             :rules="[
               required(),
-              maxLength()(backendData.validations.project.name.max),
-              pattern()(backendData.validations.project.name.regex),
+              maxLength()(useBackendData.validations.project.name.max),
+              pattern()(useBackendData.validations.project.name.regex),
               validProjectName()(() => form.ownerId),
             ]"
           />
@@ -195,14 +194,14 @@ function createProject() {
             v-model.trim="form.description"
             :label="i18n.t('project.new.step2.projectSummary')"
             :rules="[required()]"
-            :maxlength="backendData.validations.project.desc.max"
+            :maxlength="useBackendData.validations.project.desc.max"
             counter
           />
         </div>
         <div class="basis-full md:basis-4/12 mt-4">
           <InputSelect
             v-model="form.category"
-            :values="backendData.categoryOptions"
+            :values="useBackendData.categoryOptions"
             :label="i18n.t('project.new.step2.projectCategory')"
             :rules="[required()]"
             i18n-text-values
@@ -231,12 +230,7 @@ function createProject() {
       </div>
       <div class="flex flex-wrap">
         <div class="basis-full mt-4" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
-          <InputSelect
-            v-model="form.settings.license.type"
-            :values="backendData.licenseOptions"
-            :label="i18n.t('project.new.step3.type')"
-            :rules="[required()]"
-          />
+          <InputSelect v-model="form.settings.license.type" :values="useLicenseOptions" :label="i18n.t('project.new.step3.type')" :rules="[required()]" />
         </div>
         <div v-if="isCustomLicense" class="basis-full md:basis-8/12 mt-4">
           <InputText v-model.trim="form.settings.license.name" :label="i18n.t('project.new.step3.customName')" :rules="[requiredIf()(isCustomLicense)]" />
@@ -255,8 +249,8 @@ function createProject() {
           <InputTag
             v-model="form.settings.keywords"
             :label="i18n.t('project.new.step3.keywords')"
-            :rules="[maxLength()(backendData.validations.project.keywords.max)]"
-            :maxlength="backendData.validations.project.keywords.max"
+            :rules="[maxLength()(useBackendData.validations.project.keywords.max)]"
+            :maxlength="useBackendData.validations.project.keywords.max"
           />
         </div>
       </div>

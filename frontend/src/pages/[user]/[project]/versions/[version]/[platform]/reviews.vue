@@ -15,7 +15,7 @@ import Alert from "~/lib/components/design/Alert.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useAuthStore } from "~/store/auth";
 import { prettyDate, prettyDateTime } from "~/lib/composables/useDate";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import Tag from "~/components/Tag.vue";
 import Accordeon from "~/lib/components/design/Accordeon.vue";
@@ -29,7 +29,6 @@ definePageMeta({
 
 const route = useRoute();
 const authStore = useAuthStore();
-const backendDataStore = useBackendDataStore();
 const i18n = useI18n();
 const t = i18n.t;
 const v = useVuelidate();
@@ -82,7 +81,7 @@ const projectVersion = computed<HangarVersion>(() => {
 });
 
 const platform = computed<IPlatform | undefined>(() => {
-  return backendDataStore.platforms?.get(platformEnum.value);
+  return useBackendData.platforms?.get(platformEnum.value);
 });
 
 const isReviewStateChecked = computed<boolean>(() => {

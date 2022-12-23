@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 import { useRoute, useRouter } from "vue-router";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
-import { useBackendDataStore } from "~/store/backendData";
+import { useBackendData } from "~/store/backendData";
 import InputText from "~/lib/components/ui/InputText.vue";
 import InputSelect, { Option } from "~/lib/components/ui/InputSelect.vue";
 import { useInternalApi } from "~/composables/useApi";
@@ -20,7 +20,6 @@ const props = defineProps<{
 const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
-const backendData = useBackendDataStore();
 
 const updateProjectPagesCallback = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
 const modal = ref<any | null>(null); // Filled by vue
@@ -93,8 +92,8 @@ async function createPage() {
         :label="i18n.t('page.new.name')"
         :error-messages="nameErrorMessages"
         counter
-        :maxlength="backendData.validations.project.pageName.max"
-        :minlength="backendData.validations.project.pageName.min"
+        :maxlength="useBackendData.validations.project.pageName.max"
+        :minlength="useBackendData.validations.project.pageName.min"
       />
       <InputSelect v-model="parent" :values="pageRoots" :label="i18n.t('page.new.parent')" class="pt-2 pb-1" />
     </div>
