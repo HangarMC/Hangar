@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { NuxtApp } from "nuxt/app";
+import NProgress from "nprogress";
 import { defineNuxtPlugin, useAuth, useRequestEvent } from "#imports";
 import { useAuthStore } from "~/store/auth";
 import { authLog, axiosLog } from "~/lib/composables/useLog";
@@ -21,6 +22,8 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
       // forward other headers for ssr
       forwardRequestHeaders(config, nuxtApp);
       // axiosLog("calling with headers", config.headers);
+      // Progress bar
+      if (process.client) NProgress.start();
       return config;
     },
     (error) => {
@@ -32,6 +35,8 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
     (res) => {
       // forward cookies and stuff to browser
       forwardResponseHeaders(res, nuxtApp);
+      // Progress bar
+      if (process.client) NProgress.done();
       return res;
     },
     async (err) => {
@@ -61,6 +66,9 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
         };
         axiosLog("got error", transformedError);
       }
+
+      // Progress bar
+      if (process.client) NProgress.done();
 
       throw err;
     }
