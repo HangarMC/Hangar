@@ -24,5 +24,5 @@ export function forumUserUrl(name: number | string) {
 }
 
 export function linkout(url: string) {
-  return "/linkout?remoteUrl=" + url;
+  return "/linkout?remoteUrl=" + encodeURIComponent(url);
 }
