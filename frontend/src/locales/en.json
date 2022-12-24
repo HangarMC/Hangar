@@ -42,7 +42,8 @@
       "api": "API",
       "resourceGuidelines": "Resource Guidelines",
       "org": "GitHub Organization",
-      "tos": "Terms of Service"
+      "tos": "Terms of Service",
+      "privacypolicy": "Privacy Policy"
     },
     "projectSearch": {
       "clear": "(clear)",
@@ -62,7 +63,6 @@
     "sponsoredBy": "Sponsored by"
   },
   "pages": {
-    "guidelinesTitle": "Resource Guidelines",
     "staffTitle": "Staff",
     "authorsTitle": "Authors",
     "headers": {

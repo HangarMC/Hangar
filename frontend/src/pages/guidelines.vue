@@ -2,15 +2,15 @@
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
-import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
 import Markdown from "~/components/Markdown.vue";
 
 const i18n = useI18n();
 const route = useRoute();
 
-// TODO Link to docs https://github.com/PaperMC/docs/pull/72
 const text = `
+# Resource Guidelines
+
 Remember that these are just guidelines and that the Hangar team may choose to allow or disallow an action that is not
 explicitly listed here at our own discretion.
 
@@ -120,7 +120,6 @@ useHead(useSeo(i18n.t("pages.guidelinesTitle"), null, route, null));
 
 <template>
   <div>
-    <PageTitle>{{ i18n.t("guidelines.title") }}</PageTitle>
     <Markdown :raw="text"></Markdown>
   </div>
 </template>

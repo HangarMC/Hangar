@@ -18,8 +18,8 @@ const i18n = useI18n();
           <a href="https://github.com/HangarMC" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">{{
             i18n.t("hangar.footer.org")
           }}</a>
-          <router-link :to="{ name: 'tos' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0"
-            >{{ i18n.t("hangar.footer.tos") }}
+          <router-link :to="{ name: 'privacy' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0"
+            >{{ i18n.t("hangar.footer.privacypolicy") }}
           </router-link>
         </div>
         <p class="font-bold">© {{ new Date().getFullYear() }} <a href="https://papermc.io/">PaperMC</a></p>
