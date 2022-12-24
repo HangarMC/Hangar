@@ -1,5 +1,6 @@
 // COPIED FROM https://github.com/vsch/flexmark-java/blob/master/flexmark-ext-resizable-image/src/main/java/com/vladsch/flexmark/ext/resizable/image/internal/ResizableImageInlineParserExtension.java TO FIX AN ISSUE, SEE // FIX
 // REMOVE ME AFTER THIS GOT MERGED: https://github.com/vsch/flexmark-java/pull/503
+// AND https://github.com/vsch/flexmark-java/issues/542 IS RESOLVED
 
 /**
  * Copyright (c) 2015-2016, Atlassian Pty Ltd
@@ -44,7 +45,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 public class ResizableImageInlineParserExtension implements InlineParserExtension {
-    final public static Pattern IMAGE_PATTERN = Pattern.compile("\\!\\[(\\S*)\\]\\((\\S*)\\s*=*(\\d*)x*(\\d*)\\)",
+    final public static Pattern IMAGE_PATTERN = Pattern.compile("!\\[([^\\s\\]]*)]\\(([^\\s\\]]+)\\s*=*(\\d*)x*(\\d*)\\)", // Hangar - fix image in link
             Pattern.CASE_INSENSITIVE);
 
     public ResizableImageInlineParserExtension(LightInlineParser inlineParser) {
