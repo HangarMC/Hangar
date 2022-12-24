@@ -90,7 +90,7 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
         class="min-h-10"
       />
       <DonationModal
-        v-if="project.settings.donation.enable"
+        v-if="project.settings.donation.enable && false"
         :donation-subject="project.settings.donation.subject"
         :donation-target="project.namespace.owner + '/' + project.name"
       />

@@ -33,6 +33,7 @@ import { validProjectName } from "~/composables/useHangarValidations";
 import "vue-advanced-cropper/dist/style.css";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 import { definePageMeta } from "#imports";
+import Alert from "~/lib/components/design/Alert.vue";
 
 definePageMeta({
   projectPermsRequired: ["EDIT_SUBJECT_SETTINGS"],
@@ -427,14 +428,16 @@ useHead(
           </ProjectSettingsSection>
         </template>
         <template #donation>
+          <Alert type="info" class="my-4">Coming Soon!</Alert>
           <ProjectSettingsSection title="project.settings.donation.enable">
-            <InputCheckbox v-model="form.settings.donation.enable" :label="i18n.t('project.settings.donation.enableSub')" />
+            <InputCheckbox v-model="form.settings.donation.enable" :label="i18n.t('project.settings.donation.enableSub')" disabled />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.donation.subject" description="project.settings.donation.subjectSub">
             <InputText
               v-model="form.settings.donation.subject"
               :label="i18n.t('project.settings.donation.subjectLabel')"
               :rules="[requiredIf()(form.settings.donation.enable)]"
+              disabled
             />
           </ProjectSettingsSection>
         </template>
