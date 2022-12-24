@@ -79,6 +79,8 @@ jobs:
         run: (cd frontend && pnpm install --frozen-lockfile)
 
       - name: Lint frontend
+        env:
+          DEBUG: "hangar:*"
         run: (cd frontend && pnpm prep && pnpm lint:eslint)
 
       # - name: Sync forth and back with crowdin
