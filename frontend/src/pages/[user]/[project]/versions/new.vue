@@ -279,6 +279,7 @@ function togglePlatform(platformFile: PlatformFile, platform: Platform) {
   } else {
     platformFile.platforms.push(platform);
   }
+  platformFile.platforms.sort((a, b) => platforms.value.findIndex((p) => p.enumName === a) - platforms.value.findIndex((p) => p.enumName === b));
 }
 
 useHead(
