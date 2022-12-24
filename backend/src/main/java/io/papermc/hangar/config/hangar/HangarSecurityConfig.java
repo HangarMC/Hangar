@@ -2,6 +2,8 @@ package io.papermc.hangar.config.hangar;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -66,7 +68,7 @@ public record HangarSecurityConfig(
         if (this.isSafe(urlString)) {
             return urlString;
         }
-        return "/linkout?remoteUrl=" + urlString;
+        return "/linkout?remoteUrl=" + URLEncoder.encode(urlString, StandardCharsets.UTF_8);
     }
 
     public String proxyImage(final String urlString) {
