@@ -55,6 +55,15 @@ export default defineNuxtModule({
         },
         baseURL: moduleOptions.serverUrl + "/api/internal/data",
       });
+      axiosInstance.interceptors.response.use(undefined, (err) => {
+        if (axios.isAxiosError(err)) {
+          if (err.response?.status === 404) {
+            backendDataLog("Couldn't load " + err.request?.path + ", skipping");
+            return null;
+          }
+        }
+        throw err;
+      });
 
       try {
         await loadData(state, axiosInstance);
@@ -114,7 +123,7 @@ async function loadData(state: BackendData, axiosInstance: AxiosInstance) {
       axiosInstance.get<typeof state.flagReasons>("/flagReasons"),
       axiosInstance.get<typeof state.loggedActions>("/loggedActions"),
     ])
-  ).map((it) => it.data);
+  ).map((it) => it?.data || it);
 
   for (const c of projectCategories as unknown as IProjectCategory[]) {
     c.title = "project.category." + c.apiName;
