@@ -26,10 +26,12 @@ const props = defineProps<{
 const errorMessages = computed(() => props.errorMessages);
 const { v, errors, hasError } = useValidation(props.label, props.rules, file, errorMessages);
 
-function onFileChange(e: InputEvent) {
-  const files = (e.target as HTMLInputElement).files || e.dataTransfer?.files;
-  if (!files?.length) return;
-  file.value = files[0];
+function onFileChange(e: Event) {
+  if ("dataTransfer" in e) {
+    const files = (e.target as HTMLInputElement).files || (e.dataTransfer as DataTransfer)?.files;
+    if (!files?.length) return;
+    file.value = files[0];
+  }
 }
 
 // check if we got reset from the outside

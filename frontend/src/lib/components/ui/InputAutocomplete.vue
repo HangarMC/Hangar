@@ -46,23 +46,11 @@ const props = withDefaults(
 );
 
 function getValue(val: Record<string, string>) {
-  if (typeof props.itemValue === "function") {
-    return props.itemValue(val);
-  } else if (val[props.itemValue]) {
-    return val[props.itemValue];
-  } else {
-    return val;
-  }
+  return typeof props.itemValue === "function" ? props.itemValue(val) : val[props.itemValue];
 }
 
 function getText(val: Record<string, string>) {
-  if (typeof props.itemText === "function") {
-    return props.itemText(val);
-  } else if (val[props.itemText]) {
-    return val[props.itemText];
-  } else {
-    return val;
-  }
+  return typeof props.itemText === "function" ? props.itemText(val) : val[props.itemText];
 }
 
 watch(internalVal, (val) => emit("search", val));

@@ -5,7 +5,7 @@ import { computed, type Ref } from "vue";
 import { isErrorObject } from "~/lib/composables/useValidationHelpers";
 
 const props = defineProps<{
-  errorMessages?: string[] | ErrorObject[];
+  errorMessages?: (string | ErrorObject)[];
 }>();
 
 const formattedError = computed<string | Ref<string>>(() => {

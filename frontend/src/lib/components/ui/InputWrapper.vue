@@ -3,8 +3,9 @@ import { type ErrorObject } from "@vuelidate/core";
 import ErrorTooltip from "~/lib/components/design/ErrorTooltip.vue";
 import Spinner from "~/lib/components/design/Spinner.vue";
 import { isErrorObject } from "~/lib/composables/useValidationHelpers";
+import { unref } from "#imports";
 
-defineProps<{
+const props = defineProps<{
   errors?: (string | ErrorObject)[];
   messages?: string[];
   hasError: boolean;
@@ -13,9 +14,13 @@ defineProps<{
   counter?: boolean;
   maxlength?: number;
   loading?: boolean;
-  value: unknown;
+  value: any;
   noErrorTooltip?: boolean;
 }>();
+
+function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
+  return isErrorObject(message) ? unref(message.$message) : message;
+}
 </script>
 
 <template>
@@ -58,7 +63,7 @@ defineProps<{
       <span v-for="message in messages" :key="message"> {{ message }}<br /> </span>
     </span>
     <span v-if="errors && noErrorTooltip" class="text-small text-red-400">
-      <span v-for="message in errors" :key="message"> {{ isErrorObject(message) ? message.$message : message }}<br /> </span>
+      <span v-for="message in errors" :key="getErrorMessage(message)"> {{ getErrorMessage(message) }}<br /> </span>
     </span>
   </component>
 </template>
