@@ -22,7 +22,14 @@ const props = defineProps<{
   disabled?: boolean;
   rules?: ValidationRule<string | undefined>[];
   noErrorTooltip?: boolean;
+  minRows?: number;
+  maxRows?: number;
+  extraRows?: number;
 }>();
+
+const rows = computed(() => {
+  return Math.max(props.minRows || 3, Math.min(props.maxRows || 100, value.value?.split(/\r\n|\r|\n/g).length + (props.extraRows || 0)));
+});
 
 const errorMessages = computed(() => props.errorMessages);
 const { v, errors, hasError } = useValidation(props.label, props.rules, value, errorMessages);
@@ -42,7 +49,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, value, e
     :no-error-tooltip="noErrorTooltip"
   >
     <template #default="slotProps">
-      <textarea v-model="value" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" :disabled="disabled" @blur="v.$touch()" />
+      <textarea v-model="value" v-bind="$attrs" :maxlength="maxlength" :rows="rows" :class="slotProps.class" :disabled="disabled" @blur="v.$touch()" />
     </template>
     <template v-for="(_, name) in $slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData || {}" />
