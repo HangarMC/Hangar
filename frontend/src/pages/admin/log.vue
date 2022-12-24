@@ -2,6 +2,9 @@
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
+import { PaginatedResult } from "hangar-api";
+import { computed, ref } from "vue";
+import { LoggedAction } from "hangar-internal";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useActionLogs } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -12,7 +15,7 @@ import MarkdownModal from "~/components/modals/MarkdownModal.vue";
 import DiffModal from "~/components/modals/DiffModal.vue";
 import Button from "~/lib/components/design/Button.vue";
 import { useSeo } from "~/composables/useSeo";
-import { definePageMeta } from "#imports";
+import { definePageMeta, useInternalApi } from "#imports";
 
 definePageMeta({
   globalPermsRequired: ["VIEW_LOGS"],
@@ -22,6 +25,7 @@ const i18n = useI18n();
 const route = useRoute();
 const loggedActions = await useActionLogs().catch((e) => handleRequestError(e));
 
+// TODO add support for sorting
 const headers = [
   { title: i18n.t("userActionLog.user"), name: "user", sortable: false },
   { title: i18n.t("userActionLog.address"), name: "address", sortable: false },
@@ -31,7 +35,39 @@ const headers = [
   { title: i18n.t("userActionLog.oldState"), name: "oldState", sortable: false },
   { title: i18n.t("userActionLog.newState"), name: "newState", sortable: false },
 ] as Header[];
-// TODO add support for loading more
+
+const page = ref(0);
+const sort = ref<string[]>([]);
+const requestParams = computed(() => {
+  const limit = 25;
+  return {
+    limit,
+    offset: page.value * limit,
+    sort: sort.value,
+  };
+});
+
+async function updateSort(col: string, sorter: Record<string, number>) {
+  sort.value = [...Object.keys(sorter)]
+    .map((k) => {
+      const val = sorter[k];
+      if (val === -1) return "-" + k;
+      if (val === 1) return k;
+      return null;
+    })
+    .filter((v) => v !== null) as string[];
+
+  await update();
+}
+
+async function updatePage(newPage: number) {
+  page.value = newPage;
+  await update();
+}
+
+async function update() {
+  loggedActions.value = await useInternalApi<PaginatedResult<LoggedAction>>("admin/log/", "GET", requestParams.value);
+}
 
 useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
 </script>
@@ -40,7 +76,13 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
   <div>
     <PageTitle>{{ i18n.t("userActionLog.title") }}</PageTitle>
     <Card>
-      <SortableTable :headers="headers" :items="loggedActions?.result">
+      <SortableTable
+        :headers="headers"
+        :items="loggedActions?.result"
+        :server-pagination="loggedActions?.pagination"
+        @update:sort="updateSort"
+        @update:page="updatePage"
+      >
         <template #item_user="{ item }">
           <Link :to="'/' + item.userName">{{ item.userName }}</Link>
         </template>
@@ -51,12 +93,12 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
           {{ i18n.t(item.action.description) }}
         </template>
         <template #item_context="{ item }">
-          <template v-if="item.page">
+          <template v-if="item.project && item.page">
             <Link :to="'/' + item.project.owner + '/' + item.project.slug + '/pages/' + item.page.slug">
               {{ item.project.owner + "/" + item.project.slug + "/" + item.page.slug }}
             </Link>
           </template>
-          <template v-else-if="item.version">
+          <template v-else-if="item.version && item.project">
             <Link :to="'/' + item.project.owner + '/' + item.project.slug + '/versions/' + item.version.versionString">
               {{ `${item.project.owner}/${item.project.slug}/${item.version.versionString}` }}
             </Link>
