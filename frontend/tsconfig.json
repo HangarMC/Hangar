@@ -15,11 +15,16 @@
     "noUnusedLocals": true,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
+    "jsx": "preserve",
     "types": ["vite/client", "unplugin-icons/types/vue", "nuxt-windicss"],
     "paths": {
       "~/*": ["src/*"],
       "#imports": [".nuxt/imports"]
     }
+  },
+  "vueCompilerOptions": {
+    "jsxTemplates": true,
+    "experimentalRfc436": true
   },
   "exclude": ["dist", "node_modules"]
 }

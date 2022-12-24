@@ -1,10 +1,12 @@
-<script lang="ts" setup>
+<script lang="ts" setup generic="T extends Record<string, any>">
 import { reactive, ref, watch } from "vue";
 import { Pagination } from "hangar-api";
 import { hasSlotContent } from "~/lib/composables/useSlot";
 import Table from "~/lib/components/design/Table.vue";
 import PaginationButtons from "~/lib/components/design/PaginationButtons.vue";
 import PaginationComponent from "~/lib/components/design/Pagination.vue";
+
+type T = Record<string, any>; // remove when https://github.com/vuejs/rfcs/discussions/436 lands or when using volar
 
 export interface Header {
   name: string;
@@ -15,14 +17,14 @@ export interface Header {
 
 const props = defineProps<{
   headers: Header[];
-  items: any[];
+  items: T[];
   expandable?: boolean;
   serverPagination?: Pagination;
 }>();
 
 const expanded = ref<Record<number, boolean>>({});
 const sorter = reactive<Record<string, number>>({});
-const sorted = ref<any[]>(props.items);
+const sorted = ref<T[]>(props.items);
 
 const page = ref(0);
 

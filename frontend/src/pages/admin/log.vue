@@ -77,6 +77,7 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
     <PageTitle>{{ i18n.t("userActionLog.title") }}</PageTitle>
     <Card>
       <SortableTable
+        :loading="true"
         :headers="headers"
         :items="loggedActions?.result"
         :server-pagination="loggedActions?.pagination"
