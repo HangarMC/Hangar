@@ -369,7 +369,7 @@ useHead(
           </div>
           <div class="-ml-2 flex flex-wrap items-center">
             <div v-for="platform in pendingFile.platforms" :key="platform">
-              <PlatformLogo :platform="platform" size="30" class="mr-1" />
+              <PlatformLogo :platform="platform" :size="30" class="mr-1" />
             </div>
           </div>
         </div>
@@ -391,7 +391,7 @@ useHead(
       <div class="flex flex-wrap space-y-7">
         <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
           <span class="text-lg inline-flex items-center"><PlatformLogo :platform="platform.enumName" :size="25" class="mr-1" /> {{ platform.name }}</span>
-          <DependencyTable ref="dependencyTables" :key="`${platform.name}-deps-table`" :platform="platform.enumName" :version="pendingVersion" is-new />
+          <DependencyTable ref="dependencyTables" :key="`${platform.name}-deps-table`" :platform="platform.enumName" :version="pendingVersion" />
         </div>
       </div>
     </template>

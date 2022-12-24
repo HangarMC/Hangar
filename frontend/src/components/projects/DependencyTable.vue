@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { DependencyVersion, PaginatedResult, PluginDependency, Project, ProjectNamespace } from "hangar-api";
 import { useI18n } from "vue-i18n";
-import { ref } from "vue";
-import { useRoute } from "vue-router";
 import { Platform } from "~/types/enums";
 import Table from "~/lib/components/design/Table.vue";
 import Button from "~/lib/components/design/Button.vue";
@@ -12,6 +10,7 @@ import { required } from "~/lib/composables/useValidationHelpers";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 import { useApi } from "~/composables/useApi";
 import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
+import { watch, ref, useRoute } from "#imports";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -93,6 +92,14 @@ const selectedUploadTabs: Tab[] = [
   { value: "url", header: "URL" },
 ];
 
+function changeTabs(val: string, idx: number) {
+  if (val === "file") {
+    dependencies.value[idx].externalUrl = null;
+  } else if (val === "url") {
+    dependencies.value[idx].namespace = null;
+  }
+}
+
 defineExpose({ dependencies, reset });
 </script>
 
@@ -115,13 +122,13 @@ defineExpose({ dependencies, reset });
         </td>
         <td><InputCheckbox v-model="dep.required" :ripple="false" :disabled="noEditing" /></td>
         <td class="flex flex-wrap gap-2">
-          <Tabs v-model="selectedTab[index]" :tabs="selectedUploadTabs" class="items-center" compact>
+          <Tabs v-model="selectedTab[index]" :tabs="selectedUploadTabs" class="items-center" compact @update:model-value="changeTabs($event, index)">
             <template #file>
               <InputAutocomplete
                 :id="dep.name"
                 :model-value="toString(dep.namespace)"
                 :placeholder="t('version.new.form.hangarProject')"
-                :values="completionResults[dep.name]"
+                :values="completionResults[index]"
                 :item-text="getNamespace"
                 :item-value="getNamespace"
                 :disabled="!!dep.externalUrl || noEditing"
