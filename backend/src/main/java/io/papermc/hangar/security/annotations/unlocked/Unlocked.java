@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
 /**
  * Require the user be logged in AND unlocked
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Secured("USER_ROLE")
+@Secured("ROLE_USER")
 public @interface Unlocked {
 }

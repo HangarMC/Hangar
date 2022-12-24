@@ -8,6 +8,7 @@ import io.papermc.hangar.model.internal.admin.activity.FlagActivity;
 import io.papermc.hangar.model.internal.admin.activity.ReviewActivity;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
+import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.admin.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
+@Unlocked
 @Controller
 @ResponseBody
 @RateLimit(path = "adminactivity")

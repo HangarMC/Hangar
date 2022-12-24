@@ -26,6 +26,7 @@ import io.papermc.hangar.model.internal.api.responses.HealthReport;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
+import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.admin.HealthService;
@@ -53,6 +54,7 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
+@Unlocked
 @Controller
 @RateLimit(path = "admin")
 @RequestMapping("/api/internal/admin")

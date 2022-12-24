@@ -8,6 +8,7 @@ import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.internal.versions.HangarReviewQueueEntry;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
+import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.projects.ProjectAdminService;
 import io.papermc.hangar.service.internal.versions.ReviewService;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+@Unlocked
 @Controller
 @RateLimit(path = "adminapproval")
 @PermissionRequired(NamedPermission.REVIEWER)

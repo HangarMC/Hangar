@@ -9,6 +9,7 @@ import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.currentuser.CurrentUser;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
+import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.APIKeyService;
 import io.papermc.hangar.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,7 @@ public class ApiKeyController {
         return permissionService.getAllPossiblePermissions(user.getId()).toNamed();
     }
 
+    @Unlocked
     @ResponseBody
     @CurrentUser("#user")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)

@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.validation.Valid;
 import java.util.List;
 
+@Unlocked
 @Controller
-@Secured("ROLE_USER")
 @RateLimit(path = "review")
 @RequestMapping(path = "/api/internal/reviews")
 @PermissionRequired(NamedPermission.REVIEWER)

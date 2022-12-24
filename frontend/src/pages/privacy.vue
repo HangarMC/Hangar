@@ -118,7 +118,7 @@ You are advised to review this Privacy Policy periodically for any changes. Chan
 Contact Us
 ----------
 
-If you have any questions about this Privacy Policy, You can contact via email at admin@papermc.io.
+If you have any questions about this Privacy Policy, You can contact Us via email at admin@papermc.io.
 
 Last updated: December 24, 2022
 `;

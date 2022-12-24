@@ -53,15 +53,15 @@ Additional features or addons may not be hidden behind a paywall; this includes 
 permitted.
 
 All functionality present in your plugin should be usable without restriction and cannot require a license key to
-operate. Plugins may not be used to display advertisements.
+operate. Plugins may not be used to display advertisements - informative mentions of (optional) platform or plugin dependencies are allowed.
 
 On the resource page, you may link to the following:
 
 * Related resources, such as projects you took inspiration from, dependencies, and *free* versions of the same resource
-  on other websites
-* Related documents, such as documentation, tutorials, source code, and support Discords, including paid support
-* Donation links - you can also go to your project's donation settings to display them more prominently
-* Paid subscription services (such as Patreon) to receive early previews of upcoming, free releases
+  on other websites.
+* Related documents, such as documentation, tutorials, source code, and support Discords, including paid support.
+* Donation links - you can also go to your project's donation settings to display them more prominently.
+* Paid subscription services (such as Patreon) to receive early previews of upcoming, free releases.
 
 ### Sponsors
 
@@ -89,8 +89,7 @@ circumvention of Minecraft account ownership.
 ## Forks of Exisiting Projects
 
 You are not allowed to re-upload resources of other authors as-is. Forks are permitted as long as they meet the
-requirements as stated below. Staff have the final say in what constitutes an accepted fork. You must also follow the
-license of the parent project appropriately.
+requirements as stated below. Staff have the final say in what constitutes an accepted fork.
 
 Your project must either:
 

@@ -6,7 +6,6 @@ import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.VisibilityChangeForm;
 import io.papermc.hangar.model.internal.projects.HangarProjectNote;
-import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -27,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 // @el(projectId: long)
-@LoggedIn
+@Unlocked
 @Controller
 @RateLimit(path = "projectadmin")
 @RequestMapping("/api/internal/projects")
@@ -48,7 +47,6 @@ public class ProjectAdminController extends HangarComponent {
         return ResponseEntity.ok(projectNoteService.getNotes(projectId));
     }
 
-    @Unlocked
     @ResponseStatus(HttpStatus.CREATED)
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     @PostMapping(path = "/notes/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -56,7 +54,6 @@ public class ProjectAdminController extends HangarComponent {
         projectNoteService.addNote(projectId, content.getContent());
     }
 
-    @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.REVIEWER)
     @PostMapping(path = "/visibility/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -64,7 +61,6 @@ public class ProjectAdminController extends HangarComponent {
         projectAdminService.changeVisibility(projectId, visibilityChangeForm.getVisibility(), visibilityChangeForm.getComment());
     }
 
-    @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_PAGE, args = "{#projectId}")
     @PostMapping("/visibility/{projectId}/sendforapproval")
