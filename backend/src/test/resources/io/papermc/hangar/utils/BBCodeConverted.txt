@@ -27,7 +27,7 @@ IMPORTANT: If using the plugin on a Spigot server, the plugin **[ProtocolLib](ht
 
 ![https://www.spigotmc.org/attachments/401279](https://www.spigotmc.org/attachments/401279)
 
-Did you find a bug? Use the [**issue tracker**](https://github.com/kennytv/maintenance/issues)
+### Did you find a bug? Use the [**issue tracker**](https://github.com/kennytv/maintenance/issues)
 Other questions or problems? Click the wonderful icon below ✨
 
 [![https://www.spigotmc.org/attachments/401277](https://www.spigotmc.org/attachments/401277)](https://discord.gg/vgcuzhq)
@@ -72,12 +72,17 @@ config-version: 4
 
 ```
 
+<details>
+<summary>language-en.yml</summary>
+
 ```
 noPermission: "&cYou do not have the permission to execute that command."
 kickmessage: "&cThe server is currently under maintenance!%NEWLINE%&cTry again later!"
 ...
 
 ```
+
+</details>
 
 
 ![https://www.spigotmc.org/attachments/401278](https://www.spigotmc.org/attachments/401278)

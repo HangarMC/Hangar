@@ -30,20 +30,19 @@ public class BBCodeConverter {
         REPLACERS.put("user", (tag, tagArg, content) -> content);
         REPLACERS.put("list", (tag, tagArg, content) -> content);
 
-        REPLACERS.put("spoiler", (tag, tagArg, content) -> {
-            return "<details>\n" +
-                   "    <summary>" + removeQuotes(tagArg) + "</summary>\n" +
-                   "    " + content + "\n" +
-                   "</details>\n";
-        });
+        REPLACERS.put("spoiler", (tag, tagArg, content) -> "<details>\n<summary>%s</summary>\n\n%s\n</details>\n".formatted(removeQuotes(tagArg), content));
         REPLACERS.put("b", (tag, tagArg, content) -> "**" + content + "**");
         REPLACERS.put("i", (tag, tagArg, content) -> "*" + content + "*");
         REPLACERS.put("s", (tag, tagArg, content) -> "~~" + content + "~~");
         REPLACERS.put("img", (tag, tagArg, content) -> "![" + content + "](" + content + ")");
         REPLACERS.put("media", (tag, tagArg, content) -> "youtube".equals(tagArg) ? "@[YouTube](https://youtu.be/" + content + ")" : null);
         REPLACERS.put("size", (tag, tagArg, content) -> {
+            if (content.isBlank()) {
+                return content;
+            }
+
             Integer size = Ints.tryParse(tagArg);
-            if (size == null) {
+            if (size == null || size == 4) { // 4 is the default size
                 return content;
             }
 
@@ -177,7 +176,7 @@ public class BBCodeConverter {
         TagReplacer replacer = REPLACERS.get(currentTag);
         if (replacer != null && replacer.appendNewline()) {
             int lastChar = s.length() - 1;
-            if (s.lastIndexOf("\n") == lastChar) {
+            if (s.lastIndexOf('\n') == lastChar) {
                 return s.substring(0, lastChar);
             }
         }
@@ -309,7 +308,7 @@ public class BBCodeConverter {
         if (s.length() > 2) {
             final char c = s.charAt(0);
             if ((c == '\'' || c == '"') && c == s.charAt(s.length() - 1)) {
-                return s.substring(0, s.length() - 1);
+                return s.substring(1, s.length() - 1);
             }
         }
         return s;
