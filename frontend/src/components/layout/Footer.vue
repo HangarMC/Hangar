@@ -18,6 +18,9 @@ const { t } = useI18n();
           <a href="https://github.com/HangarMC" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
             {{ t("hangar.footer.org") }}
           </a>
+          <router-link :to="{ name: 'terms' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
+            {{ t("hangar.footer.terms") }}
+          </router-link>
           <router-link :to="{ name: 'privacy' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
             {{ t("hangar.footer.privacypolicy") }}
           </router-link>

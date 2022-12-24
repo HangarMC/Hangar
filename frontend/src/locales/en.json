@@ -42,7 +42,7 @@
       "api": "API",
       "resourceGuidelines": "Resource Guidelines",
       "org": "GitHub Organization",
-      "tos": "Terms of Service",
+      "terms": "Terms and Conditions",
       "privacypolicy": "Privacy Policy"
     },
     "projectSearch": {
@@ -65,6 +65,7 @@
   "pages": {
     "guidelinesTitle": "Resource Guidelines",
     "privacypolicyTitle": "Privacy Policy",
+    "termsTitle": "Terms and Conditions",
     "staffTitle": "Staff",
     "authorsTitle": "Authors",
     "headers": {
