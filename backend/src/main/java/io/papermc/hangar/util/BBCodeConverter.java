@@ -1,7 +1,7 @@
 package io.papermc.hangar.util;
 
+import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +29,6 @@ public class BBCodeConverter {
         REPLACERS.put("font", (tag, tagArg, content) -> content);
         REPLACERS.put("user", (tag, tagArg, content) -> content);
         REPLACERS.put("list", (tag, tagArg, content) -> content);
-        REPLACERS.put("size", (tag, tagArg, content) -> content);
 
         REPLACERS.put("spoiler", (tag, tagArg, content) -> content); // disable till we figure out if we want to allow html, markdown doesnt support spoilers
 
@@ -38,6 +37,19 @@ public class BBCodeConverter {
         REPLACERS.put("s", (tag, tagArg, content) -> "~~" + content + "~~");
         REPLACERS.put("img", (tag, tagArg, content) -> "![" + content + "](" + content + ")");
         REPLACERS.put("media", (tag, tagArg, content) -> "youtube".equals(tagArg) ? "@[YouTube](https://youtu.be/" + content + ")" : null);
+        REPLACERS.put("size", (tag, tagArg, content) -> {
+            Integer size = Ints.tryParse(tagArg);
+            if (size == null) {
+                return content;
+            }
+
+            // Clamp the size to what's allowed and start from 2 as we only have 6 header levels in markdown
+            size = Math.min(7, size);
+            size = Math.max(2, size);
+
+            final int headerLevel = 8 - size;
+            return "#".repeat(headerLevel) + " " + content;
+        });
         REPLACERS.put("url", (tag, tagArg, content) -> {
             String url = tagArg == null ? content : tagArg;
             char firstCharacter = url.length() > 2 ? url.charAt(0) : '-';
