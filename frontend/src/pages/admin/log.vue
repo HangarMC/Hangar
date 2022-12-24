@@ -188,3 +188,9 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
     </Card>
   </div>
 </template>
+
+<style>
+main[data-page="admin-log"] .max-w-screen-xl {
+  max-width: 100% !important;
+}
+</style>

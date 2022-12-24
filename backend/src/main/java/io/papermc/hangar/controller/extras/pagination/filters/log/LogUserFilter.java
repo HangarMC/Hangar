@@ -2,6 +2,7 @@ package io.papermc.hangar.controller.extras.pagination.filters.log;
 
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogUserFilter.LogUserFilterInstance;
+import org.apache.commons.lang3.StringUtils;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -37,8 +38,10 @@ public class LogUserFilter implements Filter<LogUserFilterInstance> {
 
         @Override
         public void createSql(StringBuilder sb, SqlStatement<?> q) {
-            sb.append(" AND la.user_name = :userName");
-            q.bind("userName", userName);
+            if (StringUtils.isNotBlank(userName)) {
+                sb.append(" AND la.user_name = :userName");
+                q.bind("userName", userName);
+            }
         }
 
         @Override

@@ -11,7 +11,7 @@ const key = computed<string>(() => route.params.user as string);
 </script>
 
 <template>
-  <main>
+  <main :data-page="route.name">
     <Header />
     <Container class="min-h-[80vh]">
       <slot />
