@@ -16,6 +16,7 @@ export default defineNuxtModule({
     serverUrl: "https://hangar.papermc.dev",
     path: "./src/generated/backendData.json",
     ttl: 30 * 60 * 1000, // 30 min
+    version: 1,
   },
   setup(moduleOptions, nuxt) {
     nuxt.hook("prepare:types", async () => {
@@ -33,7 +34,9 @@ export default defineNuxtModule({
         state?.meta?.lastGenerated &&
         new Date(state.meta.lastGenerated).getTime() + moduleOptions.ttl > Date.now() &&
         // ...but only if the API URL is the same
-        state.meta.apiUrl === moduleOptions.serverUrl
+        state.meta.apiUrl === moduleOptions.serverUrl &&
+        // ...and the version is the same
+        state.meta.version === moduleOptions.version
       ) {
         backendDataLog("Not generating backend data since its still valid, lastGenerated was", new Date(state.meta.lastGenerated));
         return;
@@ -43,6 +46,7 @@ export default defineNuxtModule({
       state.meta = {
         lastGenerated: new Date().toISOString(),
         apiUrl: moduleOptions.serverUrl,
+        version: moduleOptions.version,
       };
 
       const axiosInstance = axios.create({
@@ -92,6 +96,7 @@ async function loadData(state: BackendData, axiosInstance: AxiosInstance) {
     globalRoles,
     channelColors,
     flagReasons,
+    loggedActions,
   ] = (
     await Promise.all([
       axiosInstance.get<typeof state.projectCategories>("/categories"),
@@ -107,6 +112,7 @@ async function loadData(state: BackendData, axiosInstance: AxiosInstance) {
       axiosInstance.get<typeof state.globalRoles>("/globalRoles"),
       axiosInstance.get<typeof state.channelColors>("/channelColors"),
       axiosInstance.get<typeof state.flagReasons>("/flagReasons"),
+      axiosInstance.get<typeof state.loggedActions>("/loggedActions"),
     ])
   ).map((it) => it.data);
 
@@ -127,4 +133,5 @@ async function loadData(state: BackendData, axiosInstance: AxiosInstance) {
   state.globalRoles = globalRoles as typeof state.globalRoles;
   state.channelColors = channelColors as typeof state.channelColors;
   state.flagReasons = flagReasons as typeof state.flagReasons;
+  state.loggedActions = loggedActions as typeof state.loggedActions;
 }

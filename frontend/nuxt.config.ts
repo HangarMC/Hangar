@@ -8,7 +8,8 @@ import prettier from "./src/lib/plugins/prettier";
 
 const backendHost = process.env.BACKEND_HOST || "http://localhost:8080";
 const authHost = process.env.AUTH_HOST || "http://localhost:3001";
-const backendDataHost = process.env.BACKEND_DATA_HOST || "https://hangar.papermc.dev";
+const local = false; // set to true if backendData should be fetched from localhost
+const backendDataHost = process.env.BACKEND_DATA_HOST || (local ? "http://localhost:8080" : "https://hangar.papermc.dev");
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({

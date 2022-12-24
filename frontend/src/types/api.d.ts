@@ -64,6 +64,7 @@ declare module "hangar-api" {
     meta: {
       lastGenerated: string;
       apiUrl: string;
+      version: number;
     };
     projectCategories: Map<ProjectCategory, IProjectCategory>;
     permissions: Map<NamedPermission, IPermission>;
@@ -78,5 +79,6 @@ declare module "hangar-api" {
     globalRoles: Role[];
     channelColors: Color[];
     flagReasons: FlagReason[];
+    loggedActions: string[];
   }
 }

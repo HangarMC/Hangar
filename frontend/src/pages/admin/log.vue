@@ -4,7 +4,8 @@ import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
 import { PaginatedResult } from "hangar-api";
 import { computed, ref } from "vue";
-import { LoggedAction } from "hangar-internal";
+import { LoggedAction, LoggedActionType } from "hangar-internal";
+import { debounce } from "lodash-es";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useActionLogs } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -15,7 +16,10 @@ import MarkdownModal from "~/components/modals/MarkdownModal.vue";
 import DiffModal from "~/components/modals/DiffModal.vue";
 import Button from "~/lib/components/design/Button.vue";
 import { useSeo } from "~/composables/useSeo";
-import { definePageMeta, useInternalApi } from "#imports";
+import { definePageMeta, useInternalApi, watch } from "#imports";
+import InputText from "~/lib/components/ui/InputText.vue";
+import InputSelect from "~/lib/components/ui/InputSelect.vue";
+import { useBackendData } from "~/store/backendData";
 
 definePageMeta({
   globalPermsRequired: ["VIEW_LOGS"],
@@ -38,14 +42,23 @@ const headers = [
 
 const page = ref(0);
 const sort = ref<string[]>([]);
+const filter = ref<{
+  user?: string;
+  logAction?: LoggedActionType;
+  authorName?: string;
+  projectSlug?: string;
+}>({});
 const requestParams = computed(() => {
   const limit = 25;
   return {
+    ...filter.value,
     limit,
     offset: page.value * limit,
     sort: sort.value,
   };
 });
+
+watch(filter, debounce(update, 500), { deep: true });
 
 async function updateSort(col: string, sorter: Record<string, number>) {
   sort.value = [...Object.keys(sorter)]
@@ -76,6 +89,21 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
   <div>
     <PageTitle>{{ i18n.t("userActionLog.title") }}</PageTitle>
     <Card>
+      <div class="flex mb-4">
+        <div class="basis-3/12">
+          <InputText v-model="filter.user" label="User" />
+        </div>
+        <div class="basis-3/12">
+          <InputSelect v-model="filter.logAction" :values="useBackendData.loggedActions" label="Action" />
+        </div>
+        <div class="basis-3/12">
+          <InputText v-model="filter.authorName" label="Author Name" />
+        </div>
+        <div class="basis-3/12">
+          <InputText v-model="filter.projectSlug" label="Project Slug" />
+        </div>
+      </div>
+
       <SortableTable
         :loading="true"
         :headers="headers"

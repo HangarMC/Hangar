@@ -20,6 +20,7 @@ import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.internal.api.responses.Validations;
+import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.internal.PlatformService;
@@ -27,6 +28,7 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.GitProperties;
@@ -43,7 +45,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @Anyone
 @RateLimit(path = "backenddata")
-@RequestMapping(path = "/api/internal/data", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+@RequestMapping(path = "/api/internal/data", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BackendDataController {
 
     private final ObjectMapper objectMapper; // ignores JsonValue annotations
@@ -214,6 +216,13 @@ public class BackendDataController {
     @ResponseBody
     public Validations getValidations() {
         return Validations.create(this.config);
+    }
+
+    @GetMapping("/loggedActions")
+    @Cacheable("loggedActions")
+    @ResponseBody
+    public Set<String> getLoggedActions() {
+        return LogAction.LOG_REGISTRY.keySet();
     }
 }
 
