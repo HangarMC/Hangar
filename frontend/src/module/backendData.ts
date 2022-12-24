@@ -18,7 +18,7 @@ export default defineNuxtModule({
     ttl: 30 * 60 * 1000, // 30 min
   },
   setup(moduleOptions, nuxt) {
-    nuxt.hook("build:before", async () => {
+    nuxt.hook("prepare:types", async () => {
       let state = {} as BackendData;
       try {
         const data = await fs.readFile(moduleOptions.path, "utf8");
