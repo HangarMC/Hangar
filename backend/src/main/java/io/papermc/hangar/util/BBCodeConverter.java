@@ -30,8 +30,12 @@ public class BBCodeConverter {
         REPLACERS.put("user", (tag, tagArg, content) -> content);
         REPLACERS.put("list", (tag, tagArg, content) -> content);
 
-        REPLACERS.put("spoiler", (tag, tagArg, content) -> content); // disable till we figure out if we want to allow html, markdown doesnt support spoilers
-
+        REPLACERS.put("spoiler", (tag, tagArg, content) -> {
+            return "<details>\n" +
+                   "    <summary>" + removeQuotes(tagArg) + "</summary>\n" +
+                   "    " + content + "\n" +
+                   "</details>\n";
+        });
         REPLACERS.put("b", (tag, tagArg, content) -> "**" + content + "**");
         REPLACERS.put("i", (tag, tagArg, content) -> "*" + content + "*");
         REPLACERS.put("s", (tag, tagArg, content) -> "~~" + content + "~~");
@@ -71,8 +75,8 @@ public class BBCodeConverter {
                 }
 
                 return "```" + lang + "\n"
-                    + content
-                    + "\n```";
+                       + content
+                       + "\n```";
             }
 
             @Override
@@ -299,5 +303,15 @@ public class BBCodeConverter {
         default boolean appendNewline() {
             return false;
         }
+    }
+
+    private static String removeQuotes(final String s) {
+        if (s.length() > 2) {
+            final char c = s.charAt(0);
+            if ((c == '\'' || c == '"') && c == s.charAt(s.length() - 1)) {
+                return s.substring(0, s.length() - 1);
+            }
+        }
+        return s;
     }
 }
