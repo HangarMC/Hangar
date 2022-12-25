@@ -12,7 +12,7 @@ const text = `
 Terms and Conditions
 ====================
 
-Please read these terms and conditions carefully before using Our Service. By accessing or using the Service You agree to be bound by these Terms and
+Please read these terms and conditions carefully before using Our Service. By accessing or using the Service, You agree to be bound by these Terms and
 Conditions. If You disagree with any part of these Terms and Conditions then You may not access the Service.
 
 Definitions
@@ -21,15 +21,15 @@ Definitions
 * **We** (referred to as either "We", "Us" or "Our" in this Agreement) refers to Hangar under PaperMC.
 * **Service** refers to the Website.
 * **Website** refers to Hangar, accessible from [https://hangar.papermc.io/](https://hangar.papermc.io/)
-  and [https://hangar.papermc.dev/](https://hangar.papermc.dev/)
+  or [https://hangar.papermc.dev/](https://hangar.papermc.dev/).
 
 Acceptable Conduct
 ------------------
-Our Resource Guidelines as linked in the footer of this Website and Our [Community Guidelines](https://papermc.io/community-guidelines) apply.
+Our [Resource Guidelines](guidelines) of this Website and Our [Community Guidelines](https://papermc.io/community-guidelines) apply.
 
 Privacy
 -------
-See Our Privacy Policy as linked in the footer of this Website.
+See Our [Privacy Policy](privacy).
 
 Content and Copyright
 ---------
@@ -71,7 +71,7 @@ Limitation of Liability
 To the maximum extent permitted by applicable law, in no event shall We be liable for any special, incidental, indirect, or
 consequential damages whatsoever (including, but not limited to, damages for loss of profits, loss of data or other information, for business interruption, for
 personal injury, loss of privacy arising out of or in any way related to the use of or inability to use the Service, third-party software and/or third-party
-hardware used with the Service, or otherwise in connection with any provision of this Terms), even if We have been advised of the
+hardware used with the Service, or otherwise in connection with any provision of these Terms), even if We have been advised of the
 possibility of such damages and even if the remedy fails of its essential purpose.
 
 Disclaimer
@@ -97,7 +97,7 @@ If You have any concern or dispute about the Service, You agree to first try to 
 Changes to These Terms and Conditions
 -------------------------------------
 
-We reserve the right, at Our sole discretion, to modify or replace these Terms at any time. If a revision is material We will make reasonable efforts to provide a prior notice
+We reserve the right, at Our sole discretion, to modify or replace these Terms at any time. If a revision is material, We will make reasonable efforts to provide a prior notice
 to any new terms taking effect. What constitutes a material change will be determined at Our sole discretion.
 
 By continuing to access or use Our Service after those revisions become effective, You agree to be bound by the revised terms. If You do not agree to the new
@@ -108,7 +108,7 @@ Contact Us
 
 If you have any questions about these Terms and Conditions, You can contact via email at admin@papermc.io.
 
-Last updated: December 24, 2022
+Last updated: December 25, 2022
 `;
 
 useHead(useSeo(i18n.t("pages.termsTitle"), null, route, null));

@@ -14,8 +14,8 @@ const text = `
 Remember that these are just guidelines and that the Hangar team may choose to allow or disallow an action that is not
 explicitly listed here at our own discretion.
 
-In general, our [community guidelines](https://papermc.io/community-guidelines) also apply to resources submitted on
-Hangar. The same applies to (international) law.
+In general, our [Community Guidelines](https://papermc.io/community-guidelines) also apply to resources submitted on
+Hangar.
 
 ## Project Name
 
@@ -33,7 +33,7 @@ Examples of names that are **allowed**:
 
 - *Warps-Reborn*
 - *Warps2*
-- *CoolWarps-Paper* (although per-platform releases can be done in a single project)
+- *CoolWarps-Paper* (although discouraged, as per-platform releases can be done in a single project)
 
 ## Project Category
 
@@ -42,8 +42,8 @@ that only slightly applies. If no category appears accurate, the Miscellaneous c
 
 ## Resource Updates
 
-While the ratelimit for uploading new versions is very lenient to allow sometimes necessary hotfixes, you should not
-unnecessarily push a large number updates to the release channel, solely to bump the update date of your project or to
+While the rate-limit for uploading new versions is very lenient to allow sometimes necessary hotfixes, you should not
+unnecessarily push a large number of updates to the release channel, solely to bump the update date of your project or to
 flood watching users with notifications.
 
 ## Monetization / Advertising
@@ -86,7 +86,7 @@ but they may not promote this additional usage or be specifically designed for s
 designed for proxies requiring \`online-mode=false\` are allowed, provided they are not written to facilitate
 circumvention of Minecraft account ownership.
 
-## Forks of Exisiting Projects
+## Forks of Existing Projects
 
 You are not allowed to re-upload resources of other authors as-is. Forks are permitted as long as they meet the
 requirements as stated below. Staff have the final say in what constitutes an accepted fork.
@@ -112,6 +112,8 @@ Other malicious actions, such as deleting a server's data or banning random play
 ---
 These guidelines are loosely based on [Ore's plugin submission guidelines](https://docs.spongepowered.org/stable/en/ore/guidelines.html),
 licensed under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+
+Last updated: December 25, 2022
 `;
 
 useHead(useSeo(i18n.t("pages.guidelinesTitle"), null, route, null));

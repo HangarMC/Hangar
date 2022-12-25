@@ -22,7 +22,7 @@ Definitions
 * **We** (referred to as either "We", "Us" or "Our" in this Agreement) refers to Hangar under PaperMC.
 * **Service** refers to the Website.
 * **Website** refers to Hangar, accessible from [https://hangar.papermc.io/](https://hangar.papermc.io/)
-and [https://hangar.papermc.dev/](https://hangar.papermc.dev/)
+  or [https://hangar.papermc.dev/](https://hangar.papermc.dev/).
 
 Types of Data Collected
 -----------------------
@@ -110,7 +110,7 @@ Changes to this Privacy Policy
 
 We may update Our Privacy Policy from time to time. We will notify You of any changes by posting the new Privacy Policy on this page.
 
-We will let You know via email and/or a prominent notice on Our Service, prior to the change becoming effective and update the "Last updated" date at the top of
+We will let You know via email and/or a prominent notice on Our Service, prior to the change becoming effective, and update the "Last updated" date at the top of
 this Privacy Policy.
 
 You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.
@@ -120,7 +120,7 @@ Contact Us
 
 If you have any questions about this Privacy Policy, You can contact Us via email at admin@papermc.io.
 
-Last updated: December 24, 2022
+Last updated: December 25, 2022
 `;
 
 useHead(useSeo(i18n.t("pages.privacypolicyTitle"), null, route, null));
