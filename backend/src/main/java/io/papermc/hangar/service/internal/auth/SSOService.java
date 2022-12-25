@@ -14,6 +14,7 @@ import io.papermc.hangar.model.internal.sso.Traits;
 import io.papermc.hangar.model.internal.sso.URLWithNonce;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.TokenService;
+import io.papermc.hangar.service.internal.projects.ProjectService;
 import java.math.BigInteger;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
@@ -44,93 +45,99 @@ public class SSOService {
     private final RestTemplate restTemplate;
     private final UserOauthTokenDAO userOauthTokenDAO;
     private final TokenService tokenService;
+    private final ProjectService projectService;
     private final UserDAO userDAO;
 
     @Autowired
-    public SSOService(HangarConfig hangarConfig, UserSignOnDAO userSignOnDAO, RestTemplate restTemplate, UserOauthTokenDAO userOauthTokenDAO, TokenService tokenService, UserDAO userDAO) {
+    public SSOService(final HangarConfig hangarConfig, final UserSignOnDAO userSignOnDAO, final RestTemplate restTemplate, final UserOauthTokenDAO userOauthTokenDAO, final TokenService tokenService, final ProjectService projectService, final UserDAO userDAO) {
         this.hangarConfig = hangarConfig;
         this.userSignOnDAO = userSignOnDAO;
         this.restTemplate = restTemplate;
         this.userOauthTokenDAO = userOauthTokenDAO;
         this.tokenService = tokenService;
+        this.projectService = projectService;
         this.userDAO = userDAO;
     }
 
-    private boolean isNonceValid(String nonce) {
-        UserSignOnTable userSignOn = userSignOnDAO.getByNonce(nonce);
+    private boolean isNonceValid(final String nonce) {
+        final UserSignOnTable userSignOn = this.userSignOnDAO.getByNonce(nonce);
         if (userSignOn == null) return false;
-        long millisSinceCreated = userSignOn.getCreatedAt().until(OffsetDateTime.now(), ChronoUnit.MILLIS);
+        final long millisSinceCreated = userSignOn.getCreatedAt().until(OffsetDateTime.now(), ChronoUnit.MILLIS);
         if (userSignOn.isCompleted() || millisSinceCreated > 600000) return false;
-        userSignOnDAO.markCompleted(userSignOn.getId());
+        this.userSignOnDAO.markCompleted(userSignOn.getId());
         return true;
     }
 
-    public URLWithNonce getLoginUrl(String returnUrl) {
-        String generatedNonce = nonce();
-        String url = UriComponentsBuilder.fromUriString(hangarConfig.sso.oauthUrl() + hangarConfig.sso.loginUrl())
-                .queryParam("client_id", hangarConfig.sso.clientId())
-                .queryParam("scope", "openid email profile")
-                .queryParam("response_type", "code")
-                .queryParam("redirect_uri", returnUrl)
-                .queryParam("state", generatedNonce)
-                .build().toUriString();
+    public URLWithNonce getLoginUrl(final String returnUrl) {
+        final String generatedNonce = this.nonce();
+        final String url = UriComponentsBuilder.fromUriString(this.hangarConfig.sso.oauthUrl() + this.hangarConfig.sso.loginUrl())
+            .queryParam("client_id", this.hangarConfig.sso.clientId())
+            .queryParam("scope", "openid email profile")
+            .queryParam("response_type", "code")
+            .queryParam("redirect_uri", returnUrl)
+            .queryParam("state", generatedNonce)
+            .build().toUriString();
 
         return new URLWithNonce(url, generatedNonce);
     }
 
-    private String idToken(String username) {
-        UserOauthTokenTable token = userOauthTokenDAO.getByUsername(username);
+    private String idToken(final String username) {
+        final UserOauthTokenTable token = this.userOauthTokenDAO.getByUsername(username);
         if (token == null) {
-            log.warn("Can't log-out {} as there is no id token stored!", token);
+            log.warn("Can't log-out {} as there is no id token stored!", username);
             return null;
         }
         return token.getIdToken();
     }
 
-    public URLWithNonce getLogoutUrl(String returnUrl, HangarPrincipal user) {
-        String idToken = idToken(user.getName());
-        String generatedNonce = nonce();
-        String url = UriComponentsBuilder.fromUriString(hangarConfig.sso.oauthUrl() + hangarConfig.sso.logoutUrl())
-                .queryParam("post_logout_redirect_uri", returnUrl)
-                .queryParam("id_token_hint", idToken)
-                .queryParam("state", tokenService.simple(user.getName()))
-                .build().toUriString();
+    public URLWithNonce getLogoutUrl(final String returnUrl, final HangarPrincipal user) {
+        final String idToken = this.idToken(user.getName());
+        final String generatedNonce = this.nonce();
+        final String url = UriComponentsBuilder.fromUriString(this.hangarConfig.sso.oauthUrl() + this.hangarConfig.sso.logoutUrl())
+            .queryParam("post_logout_redirect_uri", returnUrl)
+            .queryParam("id_token_hint", idToken)
+            .queryParam("state", this.tokenService.simple(user.getName()))
+            .build().toUriString();
         return new URLWithNonce(url, generatedNonce);
     }
 
-    public String getSignupUrl(String returnUrl) {
+    public String getSignupUrl(final String returnUrl) {
         // TODO figure out what we wanna do here
-        return hangarConfig.sso.authUrl() + hangarConfig.sso.signupUrl();
+        return this.hangarConfig.sso.authUrl() + this.hangarConfig.sso.signupUrl();
     }
 
     private String nonce() {
         return new BigInteger(130, ThreadLocalRandom.current()).toString(32);
     }
 
-    public UserTable authenticate(String code, String nonce, String returnUrl) {
-        String token = redeemCode(code, returnUrl);
-        DecodedJWT decoded = JWT.decode(token);
+    public UserTable authenticate(final String code, final String nonce, final String returnUrl) {
+        final String token = this.redeemCode(code, returnUrl);
+        final DecodedJWT decoded = JWT.decode(token);
 
-        UUID uuid = UUID.fromString(decoded.getSubject());
-        Traits traits = decoded.getClaim("traits").as(Traits.class);
+        final UUID uuid = UUID.fromString(decoded.getSubject());
+        final Traits traits = decoded.getClaim("traits").as(Traits.class);
         if (traits == null) {
             log.warn("Can't login {} as there are no traits!", uuid);
             return null;
         }
-        UserTable userTable = sync(uuid, traits);
-        if (!isNonceValid(nonce)) {
+        final UserTable userTable = this.sync(uuid, traits);
+        if (!this.isNonceValid(nonce)) {
             return null;
         }
-        saveIdToken(token, traits.username());
+        this.saveIdToken(token, traits.username());
         return userTable;
     }
 
-    public UserTable sync(UUID uuid, Traits traits) {
-        UserTable user = userDAO.getUserTable(traits.username());
+    public UserTable sync(final UUID uuid, final Traits traits) {
+        UserTable user = this.userDAO.getUserTable(uuid);
+        boolean refreshHomeProjects = false;
         if (user == null) {
-            user = userDAO.create(uuid, traits.username(), traits.email(), "", traits.language(), List.of(), false, traits.theme());
+            user = this.userDAO.create(uuid, traits.username(), traits.email(), "", traits.language(), List.of(), false, traits.theme());
         } else {
-            user.setName(traits.username());
+            if (!user.getName().equals(traits.username())) {
+                user.setName(traits.username());
+                refreshHomeProjects = true; // must refresh this view when a username is changed
+            }
             user.setEmail(traits.email());
             // only sync if set
             if (traits.language() != null) {
@@ -139,38 +146,41 @@ public class SSOService {
             if (traits.theme() != null) {
                 user.setTheme(traits.theme());
             }
-            userDAO.update(user);
+            this.userDAO.update(user);
+            if (refreshHomeProjects) {
+                this.projectService.refreshHomeProjects();
+            }
         }
 
         return user;
     }
 
-    public String redeemCode(String code, String redirect) {
-        HttpHeaders headers = new HttpHeaders();
+    public String redeemCode(final String code, final String redirect) {
+        final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        final MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("code", code);
         map.add("grant_type", "authorization_code");
-        map.add("client_id", hangarConfig.sso.clientId());
+        map.add("client_id", this.hangarConfig.sso.clientId());
         map.add("redirect_uri", redirect);
 
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+        final HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
-        ResponseEntity<TokenResponse> tokenResponse = restTemplate.exchange(hangarConfig.sso.backendOauthUrl() + hangarConfig.sso.tokenUrl(), HttpMethod.POST, entity, TokenResponse.class);
+        final ResponseEntity<TokenResponse> tokenResponse = this.restTemplate.exchange(this.hangarConfig.sso.backendOauthUrl() + this.hangarConfig.sso.tokenUrl(), HttpMethod.POST, entity, TokenResponse.class);
 
         return tokenResponse.getBody().getIdToken();
     }
 
-    public UserSignOnTable insert(String nonce) {
-        return userSignOnDAO.insert(new UserSignOnTable(nonce));
+    public UserSignOnTable insert(final String nonce) {
+        return this.userSignOnDAO.insert(new UserSignOnTable(nonce));
     }
 
-    public void saveIdToken(String idToken, String username) {
-        userOauthTokenDAO.insert(new UserOauthTokenTable(username, idToken));
+    public void saveIdToken(final String idToken, final String username) {
+        this.userOauthTokenDAO.insert(new UserOauthTokenTable(username, idToken));
     }
 
-    public void logout(String username) {
-        userOauthTokenDAO.remove(username);
+    public void logout(final String username) {
+        this.userOauthTokenDAO.remove(username);
     }
 }
