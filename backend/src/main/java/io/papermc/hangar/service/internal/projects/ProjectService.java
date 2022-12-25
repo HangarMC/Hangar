@@ -154,7 +154,7 @@ public class ProjectService extends HangarComponent {
             }
         }
 
-        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, mainChannelVersions);
+        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, mainChannelVersions, this.fileService.exists(this.projectFiles.getIconPath(author, slug)));
     }
 
     public @Nullable HangarVersion getLastVersion(String author, String slug, Platform platform, @Nullable String channel) {

@@ -44,6 +44,7 @@ declare module "hangar-internal" {
     pages: HangarProjectPage[];
     pinnedVersions: PinnedVersion[];
     mainChannelVersions: Record<Platform, HangarVersion>;
+    customIcon: boolean;
   }
 
   interface ProjectPage extends Table {

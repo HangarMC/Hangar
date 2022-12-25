@@ -21,49 +21,49 @@ public class LocalStorageFileService implements FileService {
     private final StorageConfig config;
     private final HangarConfig hangarConfig;
 
-    public LocalStorageFileService(StorageConfig config, HangarConfig hangarConfig) {
+    public LocalStorageFileService(final StorageConfig config, final HangarConfig hangarConfig) {
         this.config = config;
         this.hangarConfig = hangarConfig;
     }
 
     @Override
-    public Resource getResource(String path) {
+    public Resource getResource(final String path) {
         return new FileSystemResource(path);
     }
 
     @Override
-    public boolean exists(String path) {
+    public boolean exists(final String path) {
         return Files.exists(Path.of(path));
     }
 
     @Override
-    public void deleteDirectory(String dir) {
+    public void deleteDirectory(final String dir) {
         FileUtils.deleteDirectory(Path.of(dir));
     }
 
     @Override
-    public boolean delete(String path) {
+    public boolean delete(final String path) {
         return FileUtils.delete(Path.of(path));
     }
 
     @Override
-    public byte[] bytes(String path) throws IOException {
+    public byte[] bytes(final String path) throws IOException {
         return Files.readAllBytes(Path.of(path));
     }
 
     @Override
-    public void write(InputStream inputStream, String path) throws IOException {
-        Path p = Path.of(path);
+    public void write(final InputStream inputStream, final String path) throws IOException {
+        final Path p = Path.of(path);
         if (Files.notExists(p)) {
             Files.createDirectories(p.getParent());
         }
-        Files.copy(inputStream, p);
+        Files.copy(inputStream, p, StandardCopyOption.REPLACE_EXISTING);
     }
 
     @Override
-    public void move(String oldPathString, String newPathString) throws IOException {
-        Path oldPath = Path.of(oldPathString);
-        Path newPath = Path.of(newPathString);
+    public void move(final String oldPathString, final String newPathString) throws IOException {
+        final Path oldPath = Path.of(oldPathString);
+        final Path newPath = Path.of(newPathString);
         if (Files.notExists(newPath)) {
             Files.createDirectories(newPath.getParent());
         }
@@ -75,9 +75,9 @@ public class LocalStorageFileService implements FileService {
     }
 
     @Override
-    public void link(String existingPathString, String newPathString) throws IOException {
-        Path existingPath = Path.of(existingPathString);
-        Path newPath = Path.of(newPathString);
+    public void link(final String existingPathString, final String newPathString) throws IOException {
+        final Path existingPath = Path.of(existingPathString);
+        final Path newPath = Path.of(newPathString);
         if (Files.notExists(newPath)) {
             Files.createDirectories(newPath.getParent());
         }
@@ -85,17 +85,17 @@ public class LocalStorageFileService implements FileService {
     }
 
     @Override
-    public String resolve(String path, String fileName) {
+    public String resolve(final String path, final String fileName) {
         return Path.of(path).resolve(fileName).toString();
     }
 
     @Override
     public String getRoot() {
-        return config.workDir();
+        return this.config.workDir();
     }
 
     @Override
-    public String getDownloadUrl(String user, String project, String version, Platform platform, String fileName) {
-        return hangarConfig.getBaseUrl() + "/api/v1/projects/" + user + "/" + project + "/versions/" + version + "/" + platform.name() + "/download";
+    public String getDownloadUrl(final String user, final String project, final String version, final Platform platform, final String fileName) {
+        return this.hangarConfig.getBaseUrl() + "/api/v1/projects/" + user + "/" + project + "/versions/" + version + "/" + platform.name() + "/download";
     }
 }

@@ -32,8 +32,9 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     private final Collection<HangarProjectPage> pages;
     private final List<PinnedVersion> pinnedVersions;
     private final Map<Platform, HangarVersion> mainChannelVersions;
+    private final boolean customIcon;
 
-    public HangarProject(final Project project, final long id, final ProjectOwner owner, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, HangarVersion> mainChannelVersions) {
+    public HangarProject(final Project project, final long id, final ProjectOwner owner, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, HangarVersion> mainChannelVersions, final boolean customIcon) {
         super(project);
         this.id = id;
         this.owner = owner;
@@ -44,20 +45,21 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         this.pages = pages;
         this.pinnedVersions = pinnedVersions;
         this.mainChannelVersions = mainChannelVersions;
+        this.customIcon = customIcon;
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
     @Override
     public long getProjectId() {
-        return id;
+        return this.id;
     }
 
     @Override
     public ProjectOwner getOwner() {
-        return owner;
+        return this.owner;
     }
 
     @Override
@@ -67,23 +69,23 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
 
     @Override
     public List<JoinableMember<ProjectRoleTable>> getMembers() {
-        return members;
+        return this.members;
     }
 
     public String getLastVisibilityChangeComment() {
-        return lastVisibilityChangeComment;
+        return this.lastVisibilityChangeComment;
     }
 
     public String getLastVisibilityChangeUserName() {
-        return lastVisibilityChangeUserName;
+        return this.lastVisibilityChangeUserName;
     }
 
     public HangarProjectInfo getInfo() {
-        return info;
+        return this.info;
     }
 
     public Collection<HangarProjectPage> getPages() {
-        return pages;
+        return this.pages;
     }
 
     public List<PinnedVersion> getPinnedVersions() {
@@ -91,7 +93,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     }
 
     public Map<Platform, HangarVersion> getMainChannelVersions() {
-        return mainChannelVersions;
+        return this.mainChannelVersions;
     }
 
     @Override
@@ -105,7 +107,12 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
             ", info=" + this.info +
             ", pages=" + this.pages +
             ", pinnedVersions=" + this.pinnedVersions +
+            ", customIcon=" + this.customIcon +
             "} " + super.toString();
+    }
+
+    public boolean isCustomIcon() {
+        return customIcon;
     }
 
     public static class HangarProjectInfo {
@@ -125,35 +132,35 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         }
 
         public int getPublicVersions() {
-            return publicVersions;
+            return this.publicVersions;
         }
 
         @RequiresPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
         public int getFlagCount() {
-            return flagCount;
+            return this.flagCount;
         }
 
         @RequiresPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
         public int getNoteCount() {
-            return noteCount;
+            return this.noteCount;
         }
 
         public long getStarCount() {
-            return starCount;
+            return this.starCount;
         }
 
         public long getWatcherCount() {
-            return watcherCount;
+            return this.watcherCount;
         }
 
         @Override
         public String toString() {
             return "HangarProjectInfo{" +
-                "publicVersions=" + publicVersions +
-                ", flagCount=" + flagCount +
-                ", noteCount=" + noteCount +
-                ", starCount=" + starCount +
-                ", watcherCount=" + watcherCount +
+                "publicVersions=" + this.publicVersions +
+                ", flagCount=" + this.flagCount +
+                ", noteCount=" + this.noteCount +
+                ", starCount=" + this.starCount +
+                ", watcherCount=" + this.watcherCount +
                 '}';
         }
     }
@@ -167,7 +174,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         private final Map<Platform, String> platformDependenciesFormatted;
         private final Map<Platform, PlatformVersionDownload> downloads;
 
-        public PinnedVersion(long versionId, Type type, String name, @Nested("pc") ProjectChannel channel) {
+        public PinnedVersion(final long versionId, final Type type, final String name, @Nested("pc") final ProjectChannel channel) {
             this.versionId = versionId;
             this.type = type;
             this.name = name;
@@ -177,38 +184,38 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         }
 
         public long getVersionId() {
-            return versionId;
+            return this.versionId;
         }
 
         public Type getType() {
-            return type;
+            return this.type;
         }
 
         public String getName() {
-            return name;
+            return this.name;
         }
 
         public Map<Platform, String> getPlatformDependenciesFormatted() {
-            return platformDependenciesFormatted;
+            return this.platformDependenciesFormatted;
         }
 
         public ProjectChannel getChannel() {
-            return channel;
+            return this.channel;
         }
 
         public Map<Platform, PlatformVersionDownload> getDownloads() {
-            return downloads;
+            return this.downloads;
         }
 
         @Override
         public String toString() {
             return "PinnedVersion{" +
-                "versionId=" + versionId +
-                ", type=" + type +
-                ", name='" + name + '\'' +
-                ", channel=" + channel +
-                ", platformDependenciesFormatted=" + platformDependenciesFormatted +
-                ", downloads=" + downloads +
+                "versionId=" + this.versionId +
+                ", type=" + this.type +
+                ", name='" + this.name + '\'' +
+                ", channel=" + this.channel +
+                ", platformDependenciesFormatted=" + this.platformDependenciesFormatted +
+                ", downloads=" + this.downloads +
                 '}';
         }
 

@@ -9,7 +9,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { Cropper, type CropperResult } from "vue-advanced-cropper";
 import { PaginatedResult, User } from "hangar-api";
 import { useSeo } from "~/composables/useSeo";
-import { projectIconUrl } from "~/composables/useUrlHelper";
+import { avatarUrl, projectIconUrl } from "~/composables/useUrlHelper";
 import Card from "~/lib/components/design/Card.vue";
 import MemberList from "~/components/projects/MemberList.vue";
 import { hasPerms } from "~/composables/usePerm";
@@ -65,11 +65,13 @@ if (!form.settings.license.type) {
   form.settings.license.type = "Unspecified";
 }
 
+const hasCustomIcon = ref(props.project.customIcon);
 const projectIcon = ref<File | null>(null);
 const cropperInput = ref();
 const cropperResult = ref();
+const imgSrc = ref(projectIconUrl(props.project.namespace.owner, props.project.namespace.slug));
 let reader: FileReader | null = null;
-onMounted(async () => {
+onMounted(() => {
   reader = new FileReader();
   reader.addEventListener(
     "load",
@@ -78,7 +80,6 @@ onMounted(async () => {
     },
     false
   );
-  await loadIconIntoCropper();
 });
 
 watch(projectIcon, (newValue) => {
@@ -91,16 +92,6 @@ function changeImage({ canvas }: CropperResult) {
   canvas?.toBlob((blob) => {
     cropperResult.value = blob;
   });
-}
-
-async function loadIconIntoCropper() {
-  const response = await fetch(projectIconUrl(props.project.namespace.owner, props.project.namespace.slug, false), {
-    headers: {
-      "Cache-Control": "no-cache",
-    },
-  });
-  const data = await response.blob();
-  reader?.readAsDataURL(data);
 }
 
 const newName = ref<string | null>("");
@@ -210,8 +201,11 @@ async function uploadIcon() {
   loading.uploadIcon = true;
   try {
     const response = await useInternalApi<string | null>(`projects/project/${route.params.user}/${route.params.project}/saveIcon`, "post", data);
+    imgSrc.value = URL.createObjectURL(cropperResult.value); // set temporary source so it changes right away
+    projectIcon.value = null;
+    cropperInput.value = null;
     cropperResult.value = null;
-    await loadIconIntoCropper();
+    hasCustomIcon.value = true;
     if (response) {
       useNotificationStore().success(i18n.t("project.settings.success.changedIconWarn", [response]));
     } else {
@@ -232,8 +226,11 @@ async function resetIcon() {
     } else {
       useNotificationStore().success(i18n.t("project.settings.success.resetIcon"));
     }
+    imgSrc.value = avatarUrl(props.project.owner.name); // set temporary source so it changes right away
     projectIcon.value = null;
-    await loadIconIntoCropper();
+    cropperInput.value = null;
+    cropperResult.value = null;
+    hasCustomIcon.value = false;
   } catch (e: any) {
     handleRequestError(e);
   }
@@ -305,11 +302,11 @@ useHead(
                 <IconMdiUpload />
                 {{ i18n.t("project.settings.iconUpload") }}
               </Button>
-              <Button :loading="loading.resetIcon" @click="resetIcon">
-                <IconMdiUpload />
+              <Button :disabled="!hasCustomIcon" :loading="loading.resetIcon" @click="resetIcon">
+                <IconMdiCached />
                 {{ i18n.t("project.settings.iconReset") }}
               </Button>
-              <div class="col-span-1 col-start-3 row-start-1 row-span-3">
+              <div class="col-span-1 col-start-3 row-start-1 row-span-3" :class="{ 'justify-self-center': !cropperInput }">
                 <cropper
                   v-if="cropperInput"
                   :src="cropperInput"
@@ -332,14 +329,7 @@ useHead(
                   image-restriction="stencil"
                   @change="changeImage"
                 />
-                <img
-                  v-else
-                  id="project-icon-preview"
-                  width="150"
-                  height="150"
-                  alt="Project Icon"
-                  :src="projectIconUrl(project.namespace.owner, project.namespace.slug)"
-                />
+                <img v-else id="project-icon-preview" width="150" height="150" alt="Project Icon" :src="imgSrc" />
               </div>
             </div>
           </ProjectSettingsSection>
