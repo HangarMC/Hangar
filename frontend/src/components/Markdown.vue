@@ -32,9 +32,9 @@ async function fetch() {
   loading.value = false;
   if (!import.meta.env.SSR) {
     await nextTick(setupAdmonition);
-    if (renderedMarkdown.value?.includes("<code")) {
-      await usePrismStore().handlePrism();
-    }
+    // if (typeof renderedMarkdown.value?.includes === "function" && renderedMarkdown.value?.includes("<code")) {
+    await usePrismStore().handlePrism();
+    // }
   }
 }
 await fetch();

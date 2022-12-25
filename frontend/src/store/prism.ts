@@ -29,7 +29,7 @@ export const usePrismStore = defineStore("prism", () => {
 
   async function loadLanguage(lang: string) {
     if (languages.value.includes(lang)) return;
-    prism.value?.languages?.extend(lang, await import(`../../node_modules/prismjs/components/prism-${lang}.js`));
+    prism.value?.languages?.extend(lang, await import(/* @vite-ignore */ `/prism/prism-${lang}.min.js`));
     languages.value.push(lang);
   }
 
