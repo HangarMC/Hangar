@@ -22,15 +22,20 @@ export const usePrismStore = defineStore("prism", () => {
     }
     prismLog("Load languages", langs);
     for (const lang of langs) {
-      await loadLanguage(lang);
+      try {
+        await loadLanguage(lang);
+      } catch (e: any) {
+        prismLog("failed to load lang %s", lang, e);
+      }
     }
     prismLog("done");
   }
 
   async function loadLanguage(lang: string) {
-    if (languages.value.includes(lang)) return;
-    prism.value?.languages?.extend(lang, await import(/* @vite-ignore */ `/prism/prism-${lang}.min.js`));
-    languages.value.push(lang);
+    const normalLang = lang.trim().toLowerCase();
+    if (languages.value.includes(normalLang)) return;
+    prism.value?.languages?.extend(normalLang, await import(/* @vite-ignore */ `/prism/prism-${normalLang}.min.js`));
+    languages.value.push(normalLang);
   }
 
   async function handlePrism() {
