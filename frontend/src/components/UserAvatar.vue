@@ -71,7 +71,7 @@ const url = computed(() => {
 
 <template>
   <div :class="'rounded-lg ' + backgroundClass + sizeClass">
-    <component :is="disableLink ? 'span' : 'router-link'" :to="url">
+    <component :is="disableLink ? 'span' : 'router-link'" :key="url" :to="url">
       <img class="rounded-lg w-full h-full" :title="username" :src="src" :alt="username" @error="errored = true" />
     </component>
   </div>

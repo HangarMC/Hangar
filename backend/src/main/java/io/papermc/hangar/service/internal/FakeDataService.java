@@ -28,6 +28,7 @@ import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.projects.ProjectService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FakeDataService extends HangarComponent {
@@ -48,6 +49,7 @@ public class FakeDataService extends HangarComponent {
         this.projectsDAO = projectsDAO;
     }
 
+    @Transactional
     public void generate(int users, int projectsPerUser) {
         HangarAuthenticationToken oldAuth = (HangarAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         try {
