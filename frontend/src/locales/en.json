@@ -530,6 +530,7 @@
       "approved": "Approved",
       "userAdminLogs": "User Admin Logs",
       "unsafeWarning": "This version has not been reviewed by our staff and may not be safe to download",
+      "unsafeWarningExternal": "External downloads are not under our control and may not be safe to use",
       "downloadUrlCopied": "Copied!",
       "downloadUrlHover": "Click to copy download URL",
       "noVersions": "There are no versions yet!",
