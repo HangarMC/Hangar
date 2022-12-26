@@ -27,10 +27,10 @@ const route = useRoute();
 const router = useRouter();
 
 const sorters = [
+  { id: "-updated", label: i18n.t("project.sorting.recentlyUpdated") },
+  { id: "-newest", label: i18n.t("project.sorting.newest") },
   { id: "-stars", label: i18n.t("project.sorting.mostStars") },
   { id: "-downloads", label: i18n.t("project.sorting.mostDownloads") },
-  { id: "-newest", label: i18n.t("project.sorting.newest") },
-  { id: "-updated", label: i18n.t("project.sorting.recentlyUpdated") },
   { id: "-recent_downloads", label: i18n.t("project.sorting.recentDownloads") },
 ];
 
@@ -176,9 +176,13 @@ useHead(meta);
             leave-from-class="transform scale-100 opacity-100"
             leave-to-class="transform scale-95 opacity-0"
           >
-            <MenuItems class="absolute right-0 top-16 flex flex-col z-10 background-default filter drop-shadow-md rounded-md border-top-primary">
+            <MenuItems class="absolute right-0 top-15 flex flex-col z-10 background-default filter drop-shadow-md rounded border-top-primary border-t-2">
               <MenuItem v-for="sorter in sorters" :key="sorter.id" v-slot="{ active }">
-                <button :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': active }" class="p-2 text-left" @click="activeSorter = sorter.id">
+                <button
+                  :class="{ 'bg-gray-100 dark:bg-gray-700': active, 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': activeSorter === sorter.id }"
+                  class="px-4 py-2 text-left"
+                  @click="activeSorter = sorter.id"
+                >
                   {{ sorter.label }}
                 </button>
               </MenuItem>

@@ -243,10 +243,10 @@ function isRecent(date: string): boolean {
           <Popper placement="bottom-end" @click="updateNotifications">
             <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)" aria-label="Notifications">
               <IconMdiBellOutline v-if="unreadNotifications === 0" class="text-[1.2em]" />
-              <IconMdiBellBadge v-if="unreadNotifications !== 0" class="text-[1.2em]" />
+              <IconMdiBellBadge v-else class="text-[1.2em]" />
             </button>
             <template #content="{ close }">
-              <div class="flex flex-col rounded border-t-2 border-primary-400 background-default filter drop-shadow-md overflow-auto max-w-150">
+              <div class="-mt-1 flex flex-col rounded border-t-2 border-primary-400 background-default filter drop-shadow-md overflow-auto max-w-150">
                 <div v-if="notifications.length === 0">
                   <span class="flex shadow-0 p-2 mt-2 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
                 </div>
@@ -299,7 +299,7 @@ function isRecent(date: string): boolean {
               {{ authStore.user.name }}
             </button>
             <template #content="{ close }">
-              <div class="py-1 rounded border-t-2 border-primary-400 background-default filter drop-shadow-md flex flex-col" @click="close()">
+              <div class="-mt-2 py-1 rounded border-t-2 border-primary-400 background-default filter drop-shadow-md flex flex-col" @click="close()">
                 <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
                 <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
                 <DropdownItem :to="'/' + authStore.user.name + '/settings/api-keys'">{{ t("nav.user.apiKeys") }}</DropdownItem>
