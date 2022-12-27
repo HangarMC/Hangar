@@ -85,6 +85,7 @@ export default defineNuxtModule({
         } else {
           backendDataLog("Unknown error while generating backend data:", err);
         }
+        await fs.writeFile(moduleOptions.path, JSON.stringify({}));
       }
     });
   },
