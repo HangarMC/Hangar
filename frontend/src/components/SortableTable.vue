@@ -29,6 +29,11 @@ const sorted = ref<T[]>(props.items);
 const page = ref(0);
 
 function sort() {
+  if (props.serverPagination) {
+    // if we use server fetched data, we don't want to sort on the client, ever
+    sorted.value = props.items;
+    return;
+  }
   sorted.value = [...props.items].sort((a, b) => {
     for (const field of Object.keys(sorter)) {
       if (sorter[field] === 0) continue;
