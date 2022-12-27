@@ -19,14 +19,18 @@ public interface UserDAO {
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO users (uuid, created_at, name, email, tagline, join_date, read_prompts, locked, language, theme) " +
-               "VALUES (:uuid, :now, :name, :email, :tagline, :now, :readPrompts, :locked, :language, :theme)")
+    @SqlUpdate("""
+        INSERT INTO users (uuid, created_at, name, email, tagline, join_date, read_prompts, locked, language, theme)
+        VALUES (:uuid, :now, :name, :email, :tagline, :now, :readPrompts, :locked, :language, :theme)
+        """)
     UserTable insert(@BindBean UserTable user);
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO users (uuid, created_at, name, email, tagline, join_date, read_prompts, locked, language, theme) " +
-               "VALUES (:uuid, :now, :name, :email, :tagline, :now, :readPrompts, :locked, :language, :theme)")
+    @SqlUpdate("""
+        INSERT INTO users (uuid, created_at, name, email, tagline, join_date, read_prompts, locked, language, theme)
+        VALUES (:uuid, :now, :name, :email, :tagline, :now, :readPrompts, :locked, :language, :theme)
+        """)
     UserTable create(UUID uuid, String name, String email, String tagline, String language, List<Integer> readPrompts, boolean locked, String theme);
 
     @SqlUpdate("DELETE FROM users WHERE id = :id")
@@ -36,21 +40,29 @@ public interface UserDAO {
     @SqlUpdate("UPDATE users SET name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language, theme = :theme WHERE id = :id")
     UserTable update(@BindBean UserTable user);
 
-    @SqlQuery("SELECT * FROM users WHERE id = :id OR lower(name) = lower(:name)")
-    UserTable _getUserTable(Long id, String name);
-    default UserTable getUserTable(long id) {
-        return _getUserTable(id, null);
+    @SqlQuery("SELECT * FROM users WHERE id = :id OR LOWER(name) = LOWER(:name) OR uuid = :uuid")
+    UserTable _getUserTable(Long id, String name, UUID uuid);
+
+    default UserTable getUserTable(final long id) {
+        return this._getUserTable(id, null, null);
     }
-    default UserTable getUserTable(@NotNull String name) {
-        return _getUserTable(null, name);
+
+    default UserTable getUserTable(final @NotNull String name) {
+        return this._getUserTable(null, name, null);
+    }
+
+    default UserTable getUserTable(final @NotNull UUID uuid) {
+        return this._getUserTable(null, null, uuid);
     }
 
     @SqlQuery("SELECT * FROM users WHERE email = :email")
     UserTable getUserTableByEmail(String email);
 
-    @SqlQuery("SELECT u.name" +
-            "    FROM users u" +
-            "    ORDER BY (SELECT count(*) FROM project_members_all pma WHERE pma.user_id = u.id) DESC" +
-            "    LIMIT 49000")
+    @SqlQuery("""
+        SELECT u.name
+        FROM users u
+        ORDER BY (SELECT COUNT(*) FROM project_members_all pma WHERE pma.user_id = u.id) DESC
+        LIMIT 49000
+        """)
     List<String> getAuthorNames();
 }

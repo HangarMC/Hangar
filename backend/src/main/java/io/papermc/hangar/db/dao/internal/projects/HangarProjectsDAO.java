@@ -5,7 +5,7 @@ import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.projects.HangarChannel;
-import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo;
+import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
@@ -77,7 +77,7 @@ public interface HangarProjectsDAO {
             "   WHERE upr.project_id = :projectId <if(!canSeePending)>AND (upr.accepted IS TRUE OR upr.user_id = :userId)<endif>")
     List<JoinableMember<ProjectRoleTable>> getProjectMembers(long projectId, Long userId, @Define boolean canSeePending);
 
-    @RegisterConstructorMapper(HangarProjectInfo.class)
+    @RegisterConstructorMapper(HangarProject.HangarProjectInfo.class)
     @SqlQuery("SELECT count(DISTINCT pv.id) public_versions," +
             "       count(DISTINCT pf.id) flag_count," +
             "       count(DISTINCT ps.user_id) star_count," +
@@ -91,7 +91,7 @@ public interface HangarProjectsDAO {
             "       LEFT JOIN project_notes pn ON p.id = pn.project_id" +
             "   WHERE p.id = :projectId" +
             "   GROUP BY p.id")
-    HangarProjectInfo getHangarProjectInfo(long projectId);
+    HangarProject.HangarProjectInfo getHangarProjectInfo(long projectId);
 
     @RegisterConstructorMapper(HangarChannel.class)
     @SqlQuery("SELECT pc.*," +

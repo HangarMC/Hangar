@@ -273,7 +273,7 @@ public class ProjectService extends HangarComponent {
     }
 
     public void refreshHomeProjects() {
-        hangarProjectsDAO.refreshHomeProjects();
+        this.hangarProjectsDAO.refreshHomeProjects();
     }
 
     @Nullable
