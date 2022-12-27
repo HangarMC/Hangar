@@ -43,7 +43,8 @@
       "resourceGuidelines": "Resource Guidelines",
       "org": "GitHub Organization",
       "terms": "Terms and Conditions",
-      "privacypolicy": "Privacy Policy"
+      "privacypolicy": "Privacy Policy",
+      "status": "Status"
     },
     "projectSearch": {
       "clear": "(clear)",
