@@ -37,7 +37,7 @@ public interface HangarProjectFlagsDAO {
         "   JOIN users fu ON pf.user_id = fu.id " +
         "   LEFT OUTER JOIN users ru ON ru.id = pf.resolved_by " +
         "WHERE pf.resolved = :resolved " +
-        "GROUP BY pf.id, fu.id, ru.id, p.id <offsetlimit>")
+        "GROUP BY pf.id, fu.id, ru.id, p.id <offsetLimit>")
     List<HangarProjectFlag> getFlags(@BindPagination RequestPagination pagination, boolean resolved);
 
     @SqlQuery("SELECT count(id) FROM project_flags WHERE resolved = :resolved")

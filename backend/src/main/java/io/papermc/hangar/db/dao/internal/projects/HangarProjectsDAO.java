@@ -73,7 +73,7 @@ public interface HangarProjectsDAO {
         "       upr.accepted upr_accepted" +
         "   FROM user_project_roles upr" +
         "       JOIN users u ON upr.user_id = u.id" +
-        "   WHERE upr.project_id = :projectId <if(!canseepending)>AND (upr.accepted IS TRUE OR upr.user_id = :userId)<endif>")
+        "   WHERE upr.project_id = :projectId <if(!canSeePending)>AND (upr.accepted IS TRUE OR upr.user_id = :userId)<endif>")
     List<JoinableMember<ProjectRoleTable>> getProjectMembers(long projectId, Long userId, @Define boolean canSeePending);
 
     @RegisterConstructorMapper(HangarProject.HangarProjectInfo.class)

@@ -46,7 +46,7 @@ public interface VersionsApiDAO {
         "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'" +
         "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
         "           ELSE 'NONE'" +
-        "       END AS pinnedstatus" +
+        "       END AS pinnedStatus" +
         "   FROM project_versions pv" +
         "       JOIN project_channels pc ON pv.channel_id = pc.id" +
         "       JOIN projects p ON pv.project_id = p.id" +
@@ -82,7 +82,7 @@ public interface VersionsApiDAO {
         "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'" +
         "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
         "           ELSE 'NONE'" +
-        "       END AS pinnedstatus" +
+        "       END AS pinnedStatus" +
         "   FROM project_versions pv" +
         "       JOIN project_channels pc ON pv.channel_id = pc.id" +
         "       JOIN projects p ON pv.project_id = p.id" +
@@ -119,7 +119,7 @@ public interface VersionsApiDAO {
         "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'" +
         "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
         "           ELSE 'NONE'" +
-        "       END AS pinnedstatus" +
+        "       END AS pinnedStatus" +
         "   FROM project_versions pv" +
         "       JOIN projects p ON pv.project_id = p.id" +
         "       JOIN project_channels pc ON pv.channel_id = pc.id" +
@@ -130,9 +130,9 @@ public interface VersionsApiDAO {
         "           GROUP BY pvpd.version_id" +
         "       ) sq ON pv.id = sq.version_id" +
         "   WHERE TRUE <filters>" +
-        "       <if(!canseehidden)>" +
+        "       <if(!canSeeHidden)>" +
         "           AND (pv.visibility = 0 " +
-        "           <if(userid)>" +
+        "           <if(userId)>" +
         "               OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4) " +
         "           <endif>)" +
         "       <endif>" +
@@ -151,9 +151,9 @@ public interface VersionsApiDAO {
         "           GROUP BY pvpd.version_id" +
         "       ) sq ON pv.id = sq.version_id" +
         "   WHERE TRUE <filters> " +
-        "       <if(!canseehidden)>" +
+        "       <if(!canSeeHidden)>" +
         "           AND (pv.visibility = 0 " +
-        "           <if(userid)>" +
+        "           <if(userId)>" +
         "              OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)" +
         "           <endif>)" +
         "       <endif> " +

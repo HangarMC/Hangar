@@ -59,7 +59,7 @@ public interface ProjectsApiDAO {
         "         JOIN projects p ON hp.id = p.id" +
         "         WHERE lower(hp.slug) = lower(:slug) AND" +
         "           lower(hp.owner_name) = lower(:author)" +
-        "         <if(!canseehidden)> AND (hp.visibility = 0 <if(requesterid)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif>")
+        "         <if(!canSeeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif>")
     Project getProject(String author, String slug, @Define boolean canSeeHidden, @Define @Bind Long requesterId);
 
     @UseStringTemplateEngine
@@ -82,8 +82,8 @@ public interface ProjectsApiDAO {
             ((extract(EPOCH FROM coalesce(hp.last_updated, hp.created_at)) - 1609459200) / 604800) *1 AS last_updated_double, --- We can order with this. That "dum" does not work. It only orders it with this.
             hp.visibility,
             <relevance>
-            EXISTS(SELECT * FROM project_stars S WHERE S.project_id = p.id AND S.user_id = :requesterId) AS starred,
-            EXISTS(SELECT * FROM project_watchers S WHERE S.project_id = p.id AND S.user_id = :requesterId) AS watching,
+            EXISTS(SELECT * FROM project_stars ps WHERE ps.project_id = p.id AND ps.user_id = :requesterId) AS starred,
+            EXISTS(SELECT * FROM project_watchers pw WHERE pw.project_id = p.id AND pw.user_id = :requesterId) AS watching,
             EXISTS(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) AS flagged,
             p.homepage,
             p.issues,
@@ -122,7 +122,7 @@ public interface ProjectsApiDAO {
         "         LEFT JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id " +
         "         LEFT JOIN platform_versions v ON pvpd.platform_version_id = v.id " +
         "         WHERE TRUE <filters>" + // Not sure how else to get here a single Where
-        "         <if(!seehidden)> AND (hp.visibility = 0 <if(requesterid)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif> ")
+        "         <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif> ")
     long countProjects(@Define boolean seeHidden, @Define Long requesterId,
                        @BindPagination(isCount = true) RequestPagination pagination);
 

@@ -48,14 +48,14 @@ public interface OrganizationRolesDAO extends IRolesDAO<OrganizationRoleTable> {
     OrganizationRoleTable getTableByPrincipal(long organizationId, long userId);
 
     @Override
-    @SqlQuery("SELECT uor.*, ow.id AS ownerid, ow.name AS ownername FROM user_organization_roles uor " +
+    @SqlQuery("SELECT uor.*, ow.id AS ownerId, ow.name AS ownerName FROM user_organization_roles uor " +
         "  JOIN organizations o ON o.id = uor.organization_id" +
         "  JOIN users ow ON o.owner_id = ow.id " +
         "WHERE organization_id = :organizationId AND uor.user_id = :userId")
     OrganizationRoleTable getTable(@BindBean OrganizationRoleTable table);
 
     @KeyColumn("name")
-    @SqlQuery("SELECT o.name, uor.*, ow.id AS ownerid, ow.name AS ownername" +
+    @SqlQuery("SELECT o.name, uor.*, ow.id AS ownerId, ow.name AS ownerName" +
         "   FROM user_organization_roles uor" +
         "       JOIN organizations o ON o.id = uor.organization_id" +
         "       JOIN users u ON uor.user_id = u.id" +

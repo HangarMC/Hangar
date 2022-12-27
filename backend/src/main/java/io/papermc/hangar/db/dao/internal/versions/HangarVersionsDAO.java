@@ -34,7 +34,7 @@ public interface HangarVersionsDAO {
         "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'" +
         "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
         "           ELSE 'NONE'" +
-        "       END AS pinnedstatus," +
+        "       END AS pinnedStatus," +
         "       ru.name approved_by" +
         "   FROM project_versions pv" +
         "       JOIN project_channels pc ON pv.channel_id = pc.id" +
@@ -42,7 +42,7 @@ public interface HangarVersionsDAO {
         "       LEFT JOIN users u ON pv.author_id = u.id" +
         "       LEFT JOIN users ru ON pv.reviewer_id = ru.id" +
         "   WHERE " +
-        "       (!canSeeHidden)>" +
+        "       <!if(!canSeeHidden)>" +
         "           (pv.visibility = 0 " +
         "           <if(userId)>" +
         "               OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4) " +
@@ -71,7 +71,7 @@ public interface HangarVersionsDAO {
         "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'" +
         "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
         "           ELSE 'NONE'" +
-        "       END AS pinnedstatus," +
+        "       END AS pinnedStatus," +
         "       ru.name approved_by" +
         "   FROM project_versions pv" +
         "       JOIN project_channels pc ON pv.channel_id = pc.id" +

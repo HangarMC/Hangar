@@ -102,7 +102,7 @@ public interface UsersApiDAO {
         "   WHERE u.id IN " +
         "       (SELECT DISTINCT p.owner_id FROM projects p WHERE p.visibility != 1)" +
         "   <sorters>" +
-        "   <offsetlimit>")
+        "   <offsetLimit>")
     List<User> getAuthors(@BindPagination RequestPagination pagination);
 
     @SqlQuery("SELECT count(DISTINCT p.owner_id) FROM projects p WHERE p.visibility != 1")
@@ -123,7 +123,7 @@ public interface UsersApiDAO {
         "   WHERE r.name IN (<staffRoles>)" +
         "   GROUP BY u.id" +
         "   <sorters>" +
-        "   <offsetlimit>")
+        "   <offsetLimit>")
     List<User> getStaff(@BindList(onEmpty = BindList.EmptyHandling.NULL_STRING) List<String> staffRoles, @BindPagination RequestPagination pagination);
 
     @SqlQuery(" SELECT count(u.id)" +
