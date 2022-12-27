@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="LanguageInjectionConfiguration">
+    <injection language="SQL" injector-id="java">
+      <display-name>SqlQuery.value (org.jdbi.v3.sqlobject.statement)</display-name>
+      <single-file value="false" />
+      <place><![CDATA[psiMethod().withName("value").withParameters().definedInClass("org.jdbi.v3.sqlobject.statement.SqlQuery")]]></place>
+    </injection>
+    <injection language="SQL" injector-id="java">
+      <display-name>SqlUpdate.value (org.jdbi.v3.sqlobject.statement)</display-name>
+      <single-file value="false" />
+      <place><![CDATA[psiMethod().withName("value").withParameters().definedInClass("org.jdbi.v3.sqlobject.statement.SqlUpdate")]]></place>
+    </injection>
+  </component>
+</project>
