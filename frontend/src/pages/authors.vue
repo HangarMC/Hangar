@@ -14,7 +14,6 @@ import Link from "~/lib/components/design/Link.vue";
 import { useApi } from "~/composables/useApi";
 const i18n = useI18n();
 const route = useRoute();
-const authors = await useAuthors().catch((e) => handleRequestError(e));
 
 const headers = [
   { name: "pic", title: "", sortable: false },
@@ -24,7 +23,7 @@ const headers = [
 ] as Header[];
 
 const page = ref(0);
-const sort = ref<string[]>([]);
+const sort = ref<string[]>(["-projectCount"]);
 const requestParams = computed(() => {
   const limit = 25;
   return {
@@ -33,6 +32,7 @@ const requestParams = computed(() => {
     sort: sort.value,
   };
 });
+const authors = await useAuthors(requestParams.value).catch((e) => handleRequestError(e));
 
 async function updateSort(col: string, sorter: Record<string, number>) {
   sort.value = [...Object.keys(sorter)]
@@ -62,7 +62,14 @@ useHead(useSeo(i18n.t("pages.authorsTitle"), "Hangar Project Authors", route, nu
 <template>
   <div>
     <PageTitle>Authors</PageTitle>
-    <SortableTable :headers="headers" :items="authors?.result" :server-pagination="authors?.pagination" @update:sort="updateSort" @update:page="updatePage">
+    <SortableTable
+      :headers="headers"
+      :items="authors?.result"
+      :server-pagination="authors?.pagination"
+      :initial-sorter="{ projectCount: -1 }"
+      @update:sort="updateSort"
+      @update:page="updatePage"
+    >
       <template #item_pic="{ item }"><UserAvatar :username="item.name" size="xs"></UserAvatar></template>
       <template #item_joinDate="{ item }">{{ i18n.d(item?.joinDate, "date") }}</template>
       <template #item_name="{ item }">

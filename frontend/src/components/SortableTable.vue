@@ -20,10 +20,11 @@ const props = defineProps<{
   items: T[];
   expandable?: boolean;
   serverPagination?: Pagination;
+  initialSorter?: Record<string, number>;
 }>();
 
 const expanded = ref<Record<number, boolean>>({});
-const sorter = reactive<Record<string, number>>({});
+const sorter = reactive<Record<string, number>>(props.initialSorter || {});
 const sorted = ref<T[]>(props.items);
 
 const page = ref(0);

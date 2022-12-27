@@ -43,12 +43,12 @@ export async function useWatchers(user: string, project: string) {
   return (await useAsyncData("useWatchers:" + user + ":" + project, () => useApi<PaginatedResult<User>>(`projects/${user}/${project}/watchers`))).data;
 }
 
-export async function useStaff() {
-  return (await useAsyncData("useStaff", () => useApi<PaginatedResult<User>>("staff"))).data;
+export async function useStaff(params?: { offset?: number; limit?: number; sort?: string[] }) {
+  return (await useAsyncData("useStaff", () => useApi<PaginatedResult<User>>("staff", "GET", params))).data;
 }
 
-export async function useAuthors() {
-  return (await useAsyncData("useAuthors", () => useApi<PaginatedResult<User>>("authors"))).data;
+export async function useAuthors(params?: { offset?: number; limit?: number; sort?: string[] }) {
+  return (await useAsyncData("useAuthors", () => useApi<PaginatedResult<User>>("authors", "GET", params))).data;
 }
 
 export async function useUsers() {
