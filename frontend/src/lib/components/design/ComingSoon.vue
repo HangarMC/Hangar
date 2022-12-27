@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VNode, computed, useSlots } from "vue";
+import { computed, useSlots, VNode } from "vue";
 
 const props = defineProps<{
   short?: boolean;
@@ -23,8 +23,11 @@ const content = computed(() => {
 });
 
 function replace(vnode: VNode) {
-  if (vnode.type.toString() === "Symbol(Text)") {
+  if (vnode.type.toString() === "Symbol(Text)" || vnode.type.toString() === "Symbol()") {
+    console.log("redacting");
     vnode.children = props.short ? "[R]" : "[REDACTED]";
+  } else {
+    console.log("vnode type", vnode.type.toString());
   }
 }
 
@@ -45,6 +48,7 @@ const render = () => {
     filter: blur(4px);
   }
 }
+
 .text-right .coming-soon {
   float: right;
 }
