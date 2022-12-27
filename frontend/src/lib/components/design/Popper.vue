@@ -1,5 +1,14 @@
 <script lang="ts" setup>
 import Popper from "vue3-popper";
+import { onErrorCaptured } from "#imports";
+import { popperLog } from "~/lib/composables/useLog";
+
+onErrorCaptured((err) => {
+  if (err.stack?.includes("popper")) {
+    popperLog("Captured popper error", err);
+    return false;
+  }
+});
 </script>
 
 <template>

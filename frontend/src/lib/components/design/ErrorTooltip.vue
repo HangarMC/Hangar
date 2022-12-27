@@ -3,6 +3,8 @@ import Popper from "vue3-popper";
 import { type ErrorObject } from "@vuelidate/core";
 import { computed, type Ref } from "vue";
 import { isErrorObject } from "~/lib/composables/useValidationHelpers";
+import { onErrorCaptured } from "#imports";
+import { popperLog } from "~/lib/composables/useLog";
 
 const props = defineProps<{
   errorMessages?: (string | ErrorObject)[];
@@ -17,6 +19,13 @@ const formattedError = computed<string | Ref<string>>(() => {
 
 const hasError = computed<boolean>(() => {
   return props.errorMessages ? props.errorMessages.length > 0 : false;
+});
+
+onErrorCaptured((err) => {
+  if (err.stack?.includes("popper")) {
+    popperLog("Captured popper error", err);
+    return false;
+  }
 });
 </script>
 

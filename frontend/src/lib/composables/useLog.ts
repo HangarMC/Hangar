@@ -12,3 +12,4 @@ export const kratosLog = debug("hangar:kratos");
 export const configLog = debug("hangar:config");
 export const prismLog = debug("hangar:prism");
 export const backendDataLog = debug("hangar:backendData");
+export const popperLog = debug("hangar:popper");
