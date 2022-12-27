@@ -24,10 +24,7 @@ const content = computed(() => {
 
 function replace(vnode: VNode) {
   if (vnode.type.toString() === "Symbol(Text)" || vnode.type.toString() === "Symbol()") {
-    console.log("redacting");
     vnode.children = props.short ? "[R]" : "[REDACTED]";
-  } else {
-    console.log("vnode type", vnode.type.toString());
   }
 }
 
