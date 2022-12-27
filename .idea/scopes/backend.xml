@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="backend" pattern="file[hangar]:*/" />
+</component>

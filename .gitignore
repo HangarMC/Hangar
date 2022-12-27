@@ -35,6 +35,13 @@ build/
 .vscode/
 
 
-### Unignore Inspection Profiles ###
+### Unignore some IntelliJ things ###
 !/.idea/inspectionProfiles
 !/.idea/codeStyles
+!/.idea/prettier.xml
+!/.idea/jsLinters/eslint.xml
+!/.idea/sqldialects.xml
+!/.idea/dataSources.xml
+!/.idea/vcs.xml
+!/.idea/scopes/
+!/.idea/encodings.xml
