@@ -37,6 +37,18 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
             <td class="text-right">{{ i18n.d(project.createdAt, "date") }}</td>
           </tr>
           <tr>
+            <th class="text-left">{{ i18n.t("project.info.license") }}</th>
+            <td v-if="!project.settings.license.type || project.settings.license.type === 'Unspecified'" class="text-right">
+              {{ project.settings.license.type }}
+            </td>
+            <td v-else-if="project.settings.license.type === '(custom)'" class="text-right">
+              <Link :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">{{ project.settings.license.name }}</Link>
+            </td>
+            <td v-else class="text-right">
+              <Link :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">{{ project.settings.license.type }}</Link>
+            </td>
+          </tr>
+          <tr>
             <th class="text-left">{{ i18n.t("project.info.views", 0) }}</th>
             <td class="text-right">
               <ComingSoon>{{ project.stats.views }}</ComingSoon>

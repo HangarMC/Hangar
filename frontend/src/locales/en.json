@@ -281,6 +281,7 @@
     "info": {
       "title": "Information",
       "publishDate": "Published on",
+      "license": "License",
       "views": "Views | View | Views",
       "totalDownloads": "Downloads | Download | Downloads",
       "stars": "Stars | Star | Stars",

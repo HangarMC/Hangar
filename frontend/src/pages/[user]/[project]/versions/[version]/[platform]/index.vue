@@ -31,6 +31,7 @@ import DownloadButton from "~/components/projects/DownloadButton.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
+import ComingSoon from "~/lib/components/design/ComingSoon.vue";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -282,6 +283,46 @@ async function restoreVersion() {
             </template>
           </TextAreaModal>
         </div>
+      </Card>
+
+      <Card>
+        <template #header>
+          <div class="inline-flex w-full">
+            <h3 class="flex-grow">{{ i18n.t("project.info.title") }}</h3>
+          </div>
+        </template>
+
+        <table class="w-full">
+          <tr>
+            <th class="text-left">{{ i18n.t("project.info.publishDate") }}</th>
+            <td class="text-right">{{ i18n.d(version.createdAt, "date") }}</td>
+          </tr>
+          <tr>
+            <th class="text-left">{{ i18n.t("project.info.license") }}</th>
+            <td v-if="!project.settings.license.type || project.settings.license.type === 'Unspecified'" class="text-right">
+              {{ project.settings.license.type }}
+            </td>
+            <td v-else-if="project.settings.license.type === '(custom)'" class="text-right">
+              <Link :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">{{ project.settings.license.name }}</Link>
+            </td>
+            <td v-else class="text-right">
+              <Link :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">{{ project.settings.license.type }}</Link>
+            </td>
+          </tr>
+          <tr>
+            <th class="text-left">{{ i18n.t("project.info.views", 0) }}</th>
+            <td class="text-right">
+              <ComingSoon>{{ project.stats.views }}</ComingSoon>
+            </td>
+          </tr>
+          <tr>
+            <th class="text-left">{{ i18n.t("project.info.totalDownloads", 0) }}</th>
+            <td class="text-right">
+              <!-- version downloads instead -->
+              <ComingSoon>{{ project.stats.downloads }}</ComingSoon>
+            </td>
+          </tr>
+        </table>
       </Card>
 
       <Card>
