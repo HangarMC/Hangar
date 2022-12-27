@@ -3,10 +3,9 @@ package io.papermc.hangar.model.internal.projects;
 import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
-import org.jdbi.v3.core.enums.EnumByOrdinal;
-
 import java.time.OffsetDateTime;
 import java.util.Set;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 public class HangarChannel extends ProjectChannelTable {
 
@@ -24,7 +23,7 @@ public class HangarChannel extends ProjectChannelTable {
     @Override
     public String toString() {
         return "HangarChannel{" +
-                "projectCount=" + this.versionCount +
-                "} " + super.toString();
+            "projectCount=" + this.versionCount +
+            "} " + super.toString();
     }
 }

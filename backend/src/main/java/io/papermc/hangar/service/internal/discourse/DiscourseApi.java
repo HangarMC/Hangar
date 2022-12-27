@@ -1,5 +1,11 @@
 package io.papermc.hangar.service.internal.discourse;
 
+import io.papermc.hangar.config.hangar.DiscourseConfig;
+import io.papermc.hangar.model.internal.discourse.DiscourseError;
+import io.papermc.hangar.model.internal.discourse.DiscoursePost;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,14 +21,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-
-import io.papermc.hangar.config.hangar.DiscourseConfig;
-import io.papermc.hangar.model.internal.discourse.DiscourseError;
-import io.papermc.hangar.model.internal.discourse.DiscoursePost;
-
 @Component
 public class DiscourseApi {
 
@@ -32,80 +30,80 @@ public class DiscourseApi {
     private final DiscourseConfig config;
 
     @Autowired
-    public DiscourseApi(RestTemplate restTemplate, DiscourseConfig config) {
+    public DiscourseApi(final RestTemplate restTemplate, final DiscourseConfig config) {
         this.restTemplate = restTemplate;
         this.config = config;
     }
 
-    private HttpHeaders header(String poster) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Api-Key", config.apiKey());
-        headers.set("Api-Username", poster == null ? config.adminUser() : poster);
+    private HttpHeaders header(final String poster) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.set("Api-Key", this.config.apiKey());
+        headers.set("Api-Username", poster == null ? this.config.adminUser() : poster);
         return headers;
     }
 
-    public DiscoursePost createPost(String poster, long topicId, String content) {
-        Map<String, Object> args = new HashMap<>();
+    public DiscoursePost createPost(final String poster, final long topicId, final String content) {
+        final Map<String, Object> args = new HashMap<>();
         args.put("topic_id", topicId);
         args.put("raw", content);
-        return execute(args, config.url() + "/posts.json", header(poster), HttpMethod.POST, DiscoursePost.class);
+        return this.execute(args, this.config.url() + "/posts.json", this.header(poster), HttpMethod.POST, DiscoursePost.class);
     }
 
-    public DiscoursePost createTopic(String poster, String title, String content, @Nullable Integer categoryId) {
-        Map<String, Object> args = new HashMap<>();
+    public DiscoursePost createTopic(final String poster, final String title, final String content, final @Nullable Integer categoryId) {
+        final Map<String, Object> args = new HashMap<>();
         args.put("title", title);
         args.put("raw", content);
         args.put("category", categoryId);
-        return execute(args, config.url() + "/posts.json", header(poster), HttpMethod.POST, DiscoursePost.class);
+        return this.execute(args, this.config.url() + "/posts.json", this.header(poster), HttpMethod.POST, DiscoursePost.class);
     }
 
-    public void updateTopic(String poster, long topicId, @Nullable String title, @Nullable Integer categoryId) {
-        Map<String, Object> args = new HashMap<>();
+    public void updateTopic(final String poster, final long topicId, final @Nullable String title, final @Nullable Integer categoryId) {
+        final Map<String, Object> args = new HashMap<>();
         args.put("topic_id", topicId);
         args.put("title", title);
         args.put("category", categoryId);
-        execute(args, config.url() + "/t/-/" + topicId + ".json", header(poster), HttpMethod.PUT);
+        this.execute(args, this.config.url() + "/t/-/" + topicId + ".json", this.header(poster), HttpMethod.PUT);
     }
 
-    public void updatePost(String poster, long postId, String content) {
-        Map<String, String> args = new HashMap<>();
+    public void updatePost(final String poster, final long postId, final String content) {
+        final Map<String, String> args = new HashMap<>();
         args.put("raw", content);
-        execute(args, config.url() + "/posts/" + postId + ".json", header(poster), HttpMethod.PUT);
+        this.execute(args, this.config.url() + "/posts/" + postId + ".json", this.header(poster), HttpMethod.PUT);
     }
 
-    public void deleteTopic(String poster, long topicId) {
-        execute(null, config.url() + "/t/" + topicId + ".json", header(poster), HttpMethod.DELETE);
+    public void deleteTopic(final String poster, final long topicId) {
+        this.execute(null, this.config.url() + "/t/" + topicId + ".json", this.header(poster), HttpMethod.DELETE);
     }
 
-    private void execute(Object args, String url, HttpHeaders headers, HttpMethod method) {
-        execute(args, url, headers, method, Object.class);
+    private void execute(final Object args, final String url, final HttpHeaders headers, final HttpMethod method) {
+        this.execute(args, url, headers, method, Object.class);
     }
 
-    private <T> T execute(Object args, String url, HttpHeaders headers, HttpMethod method, Class<T> responseType) {
+    private <T> T execute(final Object args, final String url, final HttpHeaders headers, final HttpMethod method, final Class<T> responseType) {
         try {
-            HttpEntity<Object> entity = new HttpEntity<>(args, headers);
-            ResponseEntity<T> response = restTemplate.exchange(url, method, entity, responseType);
+            final HttpEntity<Object> entity = new HttpEntity<>(args, headers);
+            final ResponseEntity<T> response = this.restTemplate.exchange(url, method, entity, responseType);
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
             } else {
-                Object body = response.getBody();
-                throw createFromStatus(response.getStatusCode(), body != null ? body.toString() : null);
+                final Object body = response.getBody();
+                throw this.createFromStatus(response.getStatusCode(), body != null ? body.toString() : null);
             }
-        } catch (HttpStatusCodeException ex) {
-            throw createFromStatus(ex.getStatusCode(), ex.getResponseBodyAsString());
-        } catch (Exception ex) {
+        } catch (final HttpStatusCodeException ex) {
+            throw this.createFromStatus(ex.getStatusCode(), ex.getResponseBodyAsString());
+        } catch (final Exception ex) {
             throw new DiscourseError.UnknownError("Unknown discourse error, " + ex.getMessage(), "unknown", Map.of());
         }
     }
 
-    private DiscourseError createFromStatus(HttpStatus status, String message) {
+    private DiscourseError createFromStatus(final HttpStatus status, final String message) {
         if (status.equals(HttpStatus.TOO_MANY_REQUESTS)) {
             if (message != null) {
                 try {
-                    JSONObject json = new JSONObject(message);
-                    JSONObject extras = json.getJSONObject("extras");
+                    final JSONObject json = new JSONObject(message);
+                    final JSONObject extras = json.getJSONObject("extras");
                     return new DiscourseError.RateLimitError(Duration.ofSeconds(extras.getInt("wait_seconds")));
-                } catch (JSONException e) {
+                } catch (final JSONException e) {
                     logger.warn("Failed to parse JSON in 429 from Discourse. Error: {} To parse: {}", e.getMessage(), message, e);
                     return new DiscourseError.RateLimitError(Duration.ofHours(12));
                 }

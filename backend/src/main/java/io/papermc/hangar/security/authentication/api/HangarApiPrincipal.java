@@ -8,24 +8,24 @@ public class HangarApiPrincipal extends HangarPrincipal {
 
     private final ApiKeyTable apiKeyTable;
 
-    public HangarApiPrincipal(long id, String name, boolean locked, Permission globalPermissions, ApiKeyTable apiKeyTable) {
+    public HangarApiPrincipal(final long id, final String name, final boolean locked, final Permission globalPermissions, final ApiKeyTable apiKeyTable) {
         super(id, name, locked, globalPermissions);
         this.apiKeyTable = apiKeyTable;
     }
 
     @Override
     public Permission getPossiblePermissions() {
-        return apiKeyTable.getPermissions();
+        return this.apiKeyTable.getPermissions();
     }
 
     public ApiKeyTable getApiKeyTable() {
-        return apiKeyTable;
+        return this.apiKeyTable;
     }
 
     @Override
     public String toString() {
         return "HangarApiPrincipal{" +
-                "apiKeyTable=" + apiKeyTable +
-                "} " + super.toString();
+            "apiKeyTable=" + this.apiKeyTable +
+            "} " + super.toString();
     }
 }

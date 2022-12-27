@@ -7,21 +7,21 @@ public class PageContext extends LogContext<LoggedActionsPageTable, PageContext>
     private final Long projectId;
     private final Long pageId;
 
-    private PageContext(Long projectId, Long pageId) {
+    private PageContext(final Long projectId, final Long pageId) {
         super(Context.PAGE, LoggedActionsPageTable::new);
         this.projectId = projectId;
         this.pageId = pageId;
     }
 
     public Long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     public Long getPageId() {
-        return pageId;
+        return this.pageId;
     }
 
-    public static PageContext of(Long projectId, Long pageId) {
+    public static PageContext of(final Long projectId, final Long pageId) {
         return new PageContext(projectId, pageId);
     }
 }

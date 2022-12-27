@@ -8,10 +8,9 @@ import io.papermc.hangar.model.internal.logs.contexts.PageContext;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 public class LogAction<LC extends LogContext<? extends LoggedActionTable, LC>> {
 
@@ -73,7 +72,7 @@ public class LogAction<LC extends LogContext<? extends LoggedActionTable, LC>> {
     private final PGLoggedAction pgLoggedAction;
     private final String name;
 
-    private LogAction(PGLoggedAction pgLoggedAction, String name) {
+    private LogAction(final PGLoggedAction pgLoggedAction, final String name) {
         this.pgLoggedAction = pgLoggedAction;
         this.name = name;
         if (LOG_REGISTRY.containsKey(pgLoggedAction.getValue())) {
@@ -83,18 +82,18 @@ public class LogAction<LC extends LogContext<? extends LoggedActionTable, LC>> {
     }
 
     public PGLoggedAction getPgLoggedAction() {
-        return pgLoggedAction;
+        return this.pgLoggedAction;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getDescription() {
-        return "userActionLog.types." + name.replaceAll("\\s+", "");
+        return "userActionLog.types." + this.name.replaceAll("\\s+", "");
     }
 
-    public LoggedAction<LC> create(LC context, @NotNull String newState, @NotNull String oldState) {
+    public LoggedAction<LC> create(final LC context, final @NotNull String newState, final @NotNull String oldState) {
         return new LoggedAction<>(this, context, newState, oldState);
     }
 }

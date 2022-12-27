@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface RolesDAO {
 
     @Timestamped
-    @SqlUpdate("INSERT INTO roles VALUES (:id, :now, :name, :category, :title, :color, :assignable, :rank, cast(:permission as bit(64)))")
+    @SqlUpdate("INSERT INTO roles VALUES (:id, :now, :name, :category, :title, :color, :assignable, :rank, cast(:permission AS bit(64)))")
     void insert(@BindBean RoleTable roleTable);
 
     @SqlQuery("SELECT id, created_at, name, category, title, color, assignable, rank, permission::bigint FROM roles WHERE id = :id")

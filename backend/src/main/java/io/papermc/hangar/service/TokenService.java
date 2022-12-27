@@ -16,6 +16,11 @@ import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.security.authentication.api.HangarApiPrincipal;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.internal.users.UserService;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.util.Date;
+import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -23,12 +28,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.util.Date;
-import java.util.UUID;
 
 @Service
 public class TokenService extends HangarComponent {
@@ -42,106 +41,106 @@ public class TokenService extends HangarComponent {
     private Algorithm algo;
 
     @Autowired
-    public TokenService(ApiKeyDAO apiKeyDAO, UserRefreshTokenDAO userRefreshTokenDAO, UserService userService, PermissionService permissionService) {
+    public TokenService(final ApiKeyDAO apiKeyDAO, final UserRefreshTokenDAO userRefreshTokenDAO, final UserService userService, final PermissionService permissionService) {
         this.apiKeyDAO = apiKeyDAO;
         this.userRefreshTokenDAO = userRefreshTokenDAO;
         this.userService = userService;
         this.permissionService = permissionService;
     }
 
-    public DecodedJWT verify(String token) {
-        return getVerifier().verify(token);
+    public DecodedJWT verify(final String token) {
+        return this.getVerifier().verify(token);
     }
 
-    public void issueRefreshToken(UserTable userTable) {
-        UserRefreshToken userRefreshToken = userRefreshTokenDAO.insert(new UserRefreshToken(userTable.getId(), UUID.randomUUID(), UUID.randomUUID()));
-        addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), config.security.refreshTokenExpiry().toSeconds(), true);
+    public void issueRefreshToken(final UserTable userTable) {
+        final UserRefreshToken userRefreshToken = this.userRefreshTokenDAO.insert(new UserRefreshToken(userTable.getId(), UUID.randomUUID(), UUID.randomUUID()));
+        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), this.config.security.refreshTokenExpiry().toSeconds(), true);
     }
 
-    private void addCookie(String name, String value, long maxAge, boolean httpOnly) {
-        response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, value).path("/").secure(config.security.secure()).maxAge(maxAge).sameSite("Lax").httpOnly(httpOnly).build().toString());
+    private void addCookie(final String name, final String value, final long maxAge, final boolean httpOnly) {
+        this.response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, value).path("/").secure(this.config.security.secure()).maxAge(maxAge).sameSite("Lax").httpOnly(httpOnly).build().toString());
     }
 
     public record RefreshResponse(String accessToken, UserTable userTable) {}
 
-    public RefreshResponse refreshAccessToken(String refreshToken) {
+    public RefreshResponse refreshAccessToken(final String refreshToken) {
         if (refreshToken == null) {
             throw new HangarApiException(299, "No refresh token found");
         }
-        UUID uuid;
+        final UUID uuid;
         try {
             uuid = UUID.fromString(refreshToken);
-        } catch (IllegalArgumentException ex) {
+        } catch (final IllegalArgumentException ex) {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Invalid refresh token " + refreshToken);
         }
-        UserRefreshToken userRefreshToken = userRefreshTokenDAO.getByToken(uuid);
+        UserRefreshToken userRefreshToken = this.userRefreshTokenDAO.getByToken(uuid);
         if (userRefreshToken == null) {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Unrecognized refresh token " + uuid);
         }
-        if (userRefreshToken.getLastUpdated().isBefore(OffsetDateTime.now().minus(config.security.refreshTokenExpiry()))) {
+        if (userRefreshToken.getLastUpdated().isBefore(OffsetDateTime.now().minus(this.config.security.refreshTokenExpiry()))) {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Expired refresh token" + uuid);
         }
-        UserTable userTable = userService.getUserTable(userRefreshToken.getUserId());
+        final UserTable userTable = this.userService.getUserTable(userRefreshToken.getUserId());
         if (userTable == null) {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Unknown user");
         }
         // check if we gotta update the refresh token
-        Duration timeSinceLastUpdate = Duration.between(userRefreshToken.getLastUpdated(), OffsetDateTime.now());
+        final Duration timeSinceLastUpdate = Duration.between(userRefreshToken.getLastUpdated(), OffsetDateTime.now());
         if (timeSinceLastUpdate.toDays() > 1) {
             userRefreshToken.setToken(UUID.randomUUID());
             userRefreshToken.setLastUpdated(OffsetDateTime.now());
-            userRefreshToken = userRefreshTokenDAO.update(userRefreshToken);
+            userRefreshToken = this.userRefreshTokenDAO.update(userRefreshToken);
         }
         // in any case, refreshing the cookie is good
-        addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), config.security.refreshTokenExpiry().toSeconds(), true);
+        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), this.config.security.refreshTokenExpiry().toSeconds(), true);
         // then issue a new access token
-        return new RefreshResponse(newToken0(userTable), userTable);
+        return new RefreshResponse(this.newToken0(userTable), userTable);
     }
 
-    public void invalidateToken(String refreshToken) {
+    public void invalidateToken(final String refreshToken) {
         if (refreshToken != null) {
-            userRefreshTokenDAO.delete(UUID.fromString(refreshToken));
+            this.userRefreshTokenDAO.delete(UUID.fromString(refreshToken));
         }
-        addCookie(SecurityConfig.REFRESH_COOKIE_NAME, null, 0, true);
-        addCookie(SecurityConfig.AUTH_NAME, null, 0, false);
+        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, null, 0, true);
+        this.addCookie(SecurityConfig.AUTH_NAME, null, 0, false);
     }
 
-    private String newToken0(UserTable userTable) {
-        Permission globalPermissions = permissionService.getGlobalPermissions(userTable.getId());
-        return expiring(userTable, globalPermissions, null);
+    private String newToken0(final UserTable userTable) {
+        final Permission globalPermissions = this.permissionService.getGlobalPermissions(userTable.getId());
+        return this.expiring(userTable, globalPermissions, null);
     }
 
-    public String expiring(UserTable userTable, Permission globalPermission, @Nullable String apiKeyIdentifier) {
+    public String expiring(final UserTable userTable, final Permission globalPermission, final @Nullable String apiKeyIdentifier) {
         return JWT.create()
-                .withIssuer(config.security.tokenIssuer())
-                .withExpiresAt(new Date(Instant.now().plus(config.security.tokenExpiry()).toEpochMilli()))
-                .withSubject(userTable.getName())
-                .withClaim("id", userTable.getId())
-                .withClaim("permissions", globalPermission.toBinString())
-                .withClaim("locked", userTable.isLocked())
-                .withClaim("apiKeyIdentifier", apiKeyIdentifier)
-                .sign(getAlgo());
+            .withIssuer(this.config.security.tokenIssuer())
+            .withExpiresAt(new Date(Instant.now().plus(this.config.security.tokenExpiry()).toEpochMilli()))
+            .withSubject(userTable.getName())
+            .withClaim("id", userTable.getId())
+            .withClaim("permissions", globalPermission.toBinString())
+            .withClaim("locked", userTable.isLocked())
+            .withClaim("apiKeyIdentifier", apiKeyIdentifier)
+            .sign(this.getAlgo());
     }
 
-    public String simple(String username) {
+    public String simple(final String username) {
         return JWT.create()
-                .withIssuer(config.security.tokenIssuer())
-                .withExpiresAt(new Date(Instant.now().plus(config.security.tokenExpiry()).toEpochMilli()))
-                .withSubject(username)
-                .sign(getAlgo());
+            .withIssuer(this.config.security.tokenIssuer())
+            .withExpiresAt(new Date(Instant.now().plus(this.config.security.tokenExpiry()).toEpochMilli()))
+            .withSubject(username)
+            .sign(this.getAlgo());
     }
 
-    public HangarPrincipal parseHangarPrincipal(DecodedJWT decodedJWT) {
-        String subject = decodedJWT.getSubject();
-        Long userId = decodedJWT.getClaim("id").asLong();
-        boolean locked = decodedJWT.getClaim("locked").asBoolean();
-        Permission globalPermission = Permission.fromBinString(decodedJWT.getClaim("permissions").asString());
-        String apiKeyIdentifier = decodedJWT.getClaim("apiKeyIdentifier").asString();
+    public HangarPrincipal parseHangarPrincipal(final DecodedJWT decodedJWT) {
+        final String subject = decodedJWT.getSubject();
+        final Long userId = decodedJWT.getClaim("id").asLong();
+        final boolean locked = decodedJWT.getClaim("locked").asBoolean();
+        final Permission globalPermission = Permission.fromBinString(decodedJWT.getClaim("permissions").asString());
+        final String apiKeyIdentifier = decodedJWT.getClaim("apiKeyIdentifier").asString();
         if (subject == null || userId == null || globalPermission == null) {
             throw new BadCredentialsException("Malformed jwt");
         }
         if (apiKeyIdentifier != null) {
-            ApiKeyTable apiKeyTable = apiKeyDAO.findApiKey(userId, apiKeyIdentifier);
+            final ApiKeyTable apiKeyTable = this.apiKeyDAO.findApiKey(userId, apiKeyIdentifier);
             if (apiKeyTable == null) {
                 throw new BadCredentialsException("Invalid api key identifier");
             }
@@ -152,19 +151,19 @@ public class TokenService extends HangarComponent {
     }
 
     private JWTVerifier getVerifier() {
-        if (verifier == null) {
-            verifier = JWT.require(getAlgo())
-                    .acceptLeeway(10)
-                    .withIssuer(config.security.tokenIssuer())
-                    .build();
+        if (this.verifier == null) {
+            this.verifier = JWT.require(this.getAlgo())
+                .acceptLeeway(10)
+                .withIssuer(this.config.security.tokenIssuer())
+                .build();
         }
-        return verifier;
+        return this.verifier;
     }
 
     private Algorithm getAlgo() {
-        if (algo == null) {
-            algo = Algorithm.HMAC256(config.security.tokenSecret());
+        if (this.algo == null) {
+            this.algo = Algorithm.HMAC256(this.config.security.tokenSecret());
         }
-        return algo;
+        return this.algo;
     }
 }

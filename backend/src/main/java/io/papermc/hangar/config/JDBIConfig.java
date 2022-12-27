@@ -5,6 +5,11 @@ import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.JobState;
 import io.papermc.hangar.db.customtypes.PGLoggedAction;
 import io.papermc.hangar.db.customtypes.RoleCategory;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Logger;
+import javax.sql.DataSource;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.RowMapper;
@@ -21,12 +26,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 
-import javax.sql.DataSource;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Logger;
-
 @Configuration
 public class JDBIConfig {
 
@@ -41,28 +40,29 @@ public class JDBIConfig {
     }
 
     @Bean
-    DataSource dataSource(@Value("${spring.datasource.url}") String url, @Value("${spring.datasource.username}") String username, @Value("${spring.datasource.password}") String password) {
-        HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).url(url).username(username).password(password).build();
+    DataSource dataSource(@Value("${spring.datasource.url}") final String url, @Value("${spring.datasource.username}") final String username, @Value("${spring.datasource.password}") final String password) {
+        final HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).url(url).username(username).password(password).build();
         dataSource.setPoolName(UUID.randomUUID().toString());
         return dataSource;
     }
 
     @Bean
-    public Jdbi jdbi(DataSource dataSource, List<JdbiPlugin> jdbiPlugins, List<RowMapper<?>> rowMappers, List<RowMapperFactory> rowMapperFactories, List<ColumnMapper<?>> columnMappers) {
-        SqlLogger myLogger = new SqlLogger() {
+    public Jdbi jdbi(final DataSource dataSource, final List<JdbiPlugin> jdbiPlugins, final List<RowMapper<?>> rowMappers, final List<RowMapperFactory> rowMapperFactories, final List<ColumnMapper<?>> columnMappers) {
+        final SqlLogger myLogger = new SqlLogger() {
             @Override
-            public void logException(StatementContext context, SQLException ex) {
+            public void logException(final StatementContext context, final SQLException ex) {
                 Logger.getLogger("sql").info("sql: " + context.getRenderedSql());
             }
+
             @Override
-            public void logAfterExecution(StatementContext context) {
+            public void logAfterExecution(final StatementContext context) {
                 Logger.getLogger("sql").info("sql ae: " + context.getRenderedSql());
             }
         };
-        TransactionAwareDataSourceProxy dataSourceProxy = new TransactionAwareDataSourceProxy(dataSource);
-        Jdbi jdbi = Jdbi.create(dataSourceProxy);
-        //jdbi.setSqlLogger(myLogger); // for debugging sql statements
-        PostgresTypes config = jdbi.getConfig(PostgresTypes.class);
+        final TransactionAwareDataSourceProxy dataSourceProxy = new TransactionAwareDataSourceProxy(dataSource);
+        final Jdbi jdbi = Jdbi.create(dataSourceProxy);
+        // jdbi.setSqlLogger(myLogger); // for debugging sql statements
+        final PostgresTypes config = jdbi.getConfig(PostgresTypes.class);
 
         jdbiPlugins.forEach(jdbi::installPlugin);
         rowMappers.forEach(jdbi::registerRowMapper);

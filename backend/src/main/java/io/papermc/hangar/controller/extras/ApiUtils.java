@@ -23,11 +23,11 @@ public final class ApiUtils {
      * @param limit requested limit
      * @return actual limit
      */
-    public static long limitOrDefault(@Nullable final Long limit) {
+    public static long limitOrDefault(final @Nullable Long limit) {
         return limitOrDefault(limit, DEFAULT_LIMIT);
     }
 
-    public static long limitOrDefault(@Nullable final Long limit, final long maxLimit) {
+    public static long limitOrDefault(final @Nullable Long limit, final long maxLimit) {
         if (limit != null && limit < 1)
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Limit should be greater than 0");
         return Math.min(limit == null ? maxLimit : limit, maxLimit);
@@ -43,7 +43,7 @@ public final class ApiUtils {
         return Math.max(offset == null ? 0 : offset, 0);
     }
 
-    public static <T> @Nullable T mapParameter(final NativeWebRequest webRequest, final String param, Function<String, T> map) {
+    public static <T> @Nullable T mapParameter(final NativeWebRequest webRequest, final String param, final Function<String, T> map) {
         final @Nullable String value = webRequest.getParameter(param);
         if (value != null) {
             return map.apply(value);

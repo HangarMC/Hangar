@@ -2,19 +2,17 @@ package io.papermc.hangar.db.dao.internal.table.versions.dependencies;
 
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionDependencyTable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
-import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlBatch;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.springframework.stereotype.Repository;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 @RegisterConstructorMapper(ProjectVersionDependencyTable.class)

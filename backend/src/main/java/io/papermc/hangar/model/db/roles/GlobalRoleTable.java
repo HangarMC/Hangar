@@ -8,34 +8,34 @@ public class GlobalRoleTable implements IRoleTable<GlobalRole> {
     private final long userId;
     private final GlobalRole role;
 
-    public GlobalRoleTable(long userId, @ColumnName("role_id") GlobalRole role) {
+    public GlobalRoleTable(final long userId, @ColumnName("role_id") final GlobalRole role) {
         this.userId = userId;
         this.role = role;
     }
 
     @Override
     public long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     @Override
     public GlobalRole getRole() {
-        return role;
+        return this.role;
     }
 
     @Override
-    public void setRole(GlobalRole role) {
+    public void setRole(final GlobalRole role) {
         throw new UnsupportedOperationException("Delete the global role and add a new one to change it");
     }
 
     @Override
     public long getRoleId() {
-        return role.getRoleId();
+        return this.role.getRoleId();
     }
 
     @Override
     public String getRoleType() {
-        return role.getValue();
+        return this.role.getValue();
     }
 
     @Override
@@ -44,15 +44,15 @@ public class GlobalRoleTable implements IRoleTable<GlobalRole> {
     }
 
     @Override
-    public void setAccepted(boolean accepted) {
+    public void setAccepted(final boolean accepted) {
         throw new UnsupportedOperationException("Cannot change the acceptance of global roles");
     }
 
     @Override
     public String toString() {
         return "GlobalRoleTable{" +
-                "userId=" + userId +
-                ", role=" + role +
-                '}';
+            "userId=" + this.userId +
+            ", role=" + this.role +
+            '}';
     }
 }

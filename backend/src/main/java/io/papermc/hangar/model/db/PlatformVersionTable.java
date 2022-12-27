@@ -1,10 +1,9 @@
 package io.papermc.hangar.model.db;
 
 import io.papermc.hangar.model.common.Platform;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.time.OffsetDateTime;
 
 public class PlatformVersionTable extends Table {
 
@@ -12,31 +11,31 @@ public class PlatformVersionTable extends Table {
     private final String version;
 
     @JdbiConstructor
-    public PlatformVersionTable(OffsetDateTime createdAt, long id, @EnumByOrdinal Platform platform, String version) {
+    public PlatformVersionTable(final OffsetDateTime createdAt, final long id, @EnumByOrdinal final Platform platform, final String version) {
         super(createdAt, id);
         this.platform = platform;
         this.version = version;
     }
 
-    public PlatformVersionTable(Platform platform, String version) {
+    public PlatformVersionTable(final Platform platform, final String version) {
         this.platform = platform;
         this.version = version;
     }
 
     @EnumByOrdinal
     public Platform getPlatform() {
-        return platform;
+        return this.platform;
     }
 
     public String getVersion() {
-        return version;
+        return this.version;
     }
 
     @Override
     public String toString() {
         return "PlatformVersionTable{" +
-                "platform=" + platform +
-                ", version='" + version + '\'' +
-                "} " + super.toString();
+            "platform=" + this.platform +
+            ", version='" + this.version + '\'' +
+            "} " + super.toString();
     }
 }

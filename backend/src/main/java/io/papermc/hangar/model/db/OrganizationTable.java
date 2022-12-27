@@ -4,10 +4,9 @@ import io.papermc.hangar.model.Owned;
 import io.papermc.hangar.model.Visitable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.loggable.OrganizationLoggable;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.time.OffsetDateTime;
 
 public class OrganizationTable extends Table implements Visitable, ProjectOwner, OrganizationLoggable, Owned {
 
@@ -16,14 +15,14 @@ public class OrganizationTable extends Table implements Visitable, ProjectOwner,
     private final long userId;
 
     @JdbiConstructor
-    public OrganizationTable(OffsetDateTime createdAt, @PropagateNull long id, String name, long ownerId, long userId) {
+    public OrganizationTable(final OffsetDateTime createdAt, @PropagateNull final long id, final String name, final long ownerId, final long userId) {
         super(createdAt, id);
         this.name = name;
         this.ownerId = ownerId;
         this.userId = userId;
     }
 
-    public OrganizationTable(long id, String name, long ownerId, long userId) {
+    public OrganizationTable(final long id, final String name, final long ownerId, final long userId) {
         super(id);
         this.name = name;
         this.ownerId = ownerId;
@@ -32,21 +31,21 @@ public class OrganizationTable extends Table implements Visitable, ProjectOwner,
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public long getOwnerId() {
-        return ownerId;
+        return this.ownerId;
     }
 
-    public void setOwnerId(long ownerId) {
+    public void setOwnerId(final long ownerId) {
         this.ownerId = ownerId;
     }
 
     @Override
     public long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     @Override
@@ -56,7 +55,7 @@ public class OrganizationTable extends Table implements Visitable, ProjectOwner,
 
     @Override
     public String getUrl() {
-        return "/" + getName();
+        return "/" + this.getName();
     }
 
     @Override
@@ -67,9 +66,9 @@ public class OrganizationTable extends Table implements Visitable, ProjectOwner,
     @Override
     public String toString() {
         return "OrganizationTable{" +
-                "name='" + name + '\'' +
-                ", ownerId=" + ownerId +
-                ", userId=" + userId +
-                "} " + super.toString();
+            "name='" + this.name + '\'' +
+            ", ownerId=" + this.ownerId +
+            ", userId=" + this.userId +
+            "} " + super.toString();
     }
 }

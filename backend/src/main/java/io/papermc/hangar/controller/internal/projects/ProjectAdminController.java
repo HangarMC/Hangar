@@ -36,35 +36,35 @@ public class ProjectAdminController extends HangarComponent {
     private final ProjectNoteService projectNoteService;
 
     @Autowired
-    public ProjectAdminController(ProjectAdminService projectAdminService, ProjectNoteService projectNoteService) {
+    public ProjectAdminController(final ProjectAdminService projectAdminService, final ProjectNoteService projectNoteService) {
         this.projectAdminService = projectAdminService;
         this.projectNoteService = projectNoteService;
     }
 
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     @GetMapping(path = "/notes/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<HangarProjectNote>> getProjectNotes(@PathVariable long projectId) {
-        return ResponseEntity.ok(projectNoteService.getNotes(projectId));
+    public ResponseEntity<List<HangarProjectNote>> getProjectNotes(@PathVariable final long projectId) {
+        return ResponseEntity.ok(this.projectNoteService.getNotes(projectId));
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     @PostMapping(path = "/notes/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addProjectNote(@PathVariable long projectId, @RequestBody @Valid StringContent content) {
-        projectNoteService.addNote(projectId, content.getContent());
+    public void addProjectNote(@PathVariable final long projectId, @RequestBody final @Valid StringContent content) {
+        this.projectNoteService.addNote(projectId, content.getContent());
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.REVIEWER)
     @PostMapping(path = "/visibility/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void changeProjectVisibility(@PathVariable long projectId, @Valid @RequestBody VisibilityChangeForm visibilityChangeForm) {
-        projectAdminService.changeVisibility(projectId, visibilityChangeForm.getVisibility(), visibilityChangeForm.getComment());
+    public void changeProjectVisibility(@PathVariable final long projectId, @RequestBody final @Valid VisibilityChangeForm visibilityChangeForm) {
+        this.projectAdminService.changeVisibility(projectId, visibilityChangeForm.getVisibility(), visibilityChangeForm.getComment());
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_PAGE, args = "{#projectId}")
     @PostMapping("/visibility/{projectId}/sendforapproval")
-    public void sendProjectForApproval(@PathVariable long projectId) {
-        projectAdminService.sendProjectForApproval(projectId);
+    public void sendProjectForApproval(@PathVariable final long projectId) {
+        this.projectAdminService.sendProjectForApproval(projectId);
     }
 }

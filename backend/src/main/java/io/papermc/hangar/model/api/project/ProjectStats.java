@@ -9,7 +9,7 @@ public class ProjectStats {
     private final long stars;
     private final long watchers;
 
-    public ProjectStats(long views, long downloads, long recentViews, long recentDownloads, long stars, long watchers) {
+    public ProjectStats(final long views, final long downloads, final long recentViews, final long recentDownloads, final long stars, final long watchers) {
         this.views = views;
         this.downloads = downloads;
         this.recentViews = recentViews;
@@ -19,38 +19,38 @@ public class ProjectStats {
     }
 
     public long getViews() {
-        return views;
+        return this.views;
     }
 
     public long getDownloads() {
-        return downloads;
+        return this.downloads;
     }
 
     public long getRecentViews() {
-        return recentViews;
+        return this.recentViews;
     }
 
     public long getRecentDownloads() {
-        return recentDownloads;
+        return this.recentDownloads;
     }
 
     public long getStars() {
-        return stars;
+        return this.stars;
     }
 
     public long getWatchers() {
-        return watchers;
+        return this.watchers;
     }
 
     @Override
     public String toString() {
         return "ProjectStats{" +
-                "views=" + views +
-                ", downloads=" + downloads +
-                ", recentViews=" + recentViews +
-                ", recentDownloads=" + recentDownloads +
-                ", stars=" + stars +
-                ", watchers=" + watchers +
-                '}';
+            "views=" + this.views +
+            ", downloads=" + this.downloads +
+            ", recentViews=" + this.recentViews +
+            ", recentDownloads=" + this.recentDownloads +
+            ", stars=" + this.stars +
+            ", watchers=" + this.watchers +
+            '}';
     }
 }

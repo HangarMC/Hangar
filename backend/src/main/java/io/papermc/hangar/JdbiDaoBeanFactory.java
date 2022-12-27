@@ -11,23 +11,23 @@ public class JdbiDaoBeanFactory implements FactoryBean<Object>, InitializingBean
     private final Class<?> jdbiDaoClass;
     private volatile Object jdbiDaoBean;
 
-    public JdbiDaoBeanFactory(Jdbi jdbi, Class<?> jdbiDaoClass) {
+    public JdbiDaoBeanFactory(final Jdbi jdbi, final Class<?> jdbiDaoClass) {
         this.jdbi = jdbi;
         this.jdbiDaoClass = jdbiDaoClass;
     }
 
     @Override
     public Object getObject() throws Exception {
-        return jdbiDaoBean;
+        return this.jdbiDaoBean;
     }
 
     @Override
     public Class<?> getObjectType() {
-        return jdbiDaoClass;
+        return this.jdbiDaoClass;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        jdbiDaoBean = jdbi.onDemand(jdbiDaoClass);
+        this.jdbiDaoBean = this.jdbi.onDemand(this.jdbiDaoClass);
     }
 }

@@ -5,9 +5,8 @@ import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.Table;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class RoleTable extends Table implements Named {
 
@@ -20,7 +19,7 @@ public class RoleTable extends Table implements Named {
     private final Permission permission;
 
     @JdbiConstructor
-    public RoleTable(OffsetDateTime createdAt, long id, String name, RoleCategory category, String title, String color, boolean assignable, Integer rank, Permission permission) {
+    public RoleTable(final OffsetDateTime createdAt, final long id, final String name, final RoleCategory category, final String title, final String color, final boolean assignable, final Integer rank, final Permission permission) {
         super(createdAt, id);
         this.name = name;
         this.category = category;
@@ -31,7 +30,7 @@ public class RoleTable extends Table implements Named {
         this.permission = permission;
     }
 
-    private RoleTable(long id, String name, RoleCategory category, String title, String color, boolean assignable, Integer rank, Permission permission) {
+    private RoleTable(final long id, final String name, final RoleCategory category, final String title, final String color, final boolean assignable, final Integer rank, final Permission permission) {
         super(id);
         this.name = name;
         this.category = category;
@@ -44,56 +43,56 @@ public class RoleTable extends Table implements Named {
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public RoleCategory getCategory() {
-        return category;
+        return this.category;
     }
 
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     public String getColor() {
-        return color;
+        return this.color;
     }
 
     public boolean isAssignable() {
-        return assignable;
+        return this.assignable;
     }
 
     public Integer getRank() {
-        return rank;
+        return this.rank;
     }
 
     public Permission getPermission() {
-        return permission;
+        return this.permission;
     }
 
-    public static RoleTable fromRole(Role<?> role) {
+    public static RoleTable fromRole(final Role<?> role) {
         return new RoleTable(
             role.getRoleId(),
-                role.getValue(),
-                role.getRoleCategory(),
-                role.getTitle(),
-                role.getColor().getHex(),
-                role.isAssignable(),
-                role.getRank(),
-                role.getPermissions()
+            role.getValue(),
+            role.getRoleCategory(),
+            role.getTitle(),
+            role.getColor().getHex(),
+            role.isAssignable(),
+            role.getRank(),
+            role.getPermissions()
         );
     }
 
     @Override
     public String toString() {
         return "RoleTable{" +
-                "name='" + name + '\'' +
-                ", category=" + category +
-                ", title='" + title + '\'' +
-                ", color='" + color + '\'' +
-                ", assignable=" + assignable +
-                ", rank=" + rank +
-                ", permission=" + permission +
-                "} " + super.toString();
+            "name='" + this.name + '\'' +
+            ", category=" + this.category +
+            ", title='" + this.title + '\'' +
+            ", color='" + this.color + '\'' +
+            ", assignable=" + this.assignable +
+            ", rank=" + this.rank +
+            ", permission=" + this.permission +
+            "} " + super.toString();
     }
 }

@@ -33,91 +33,88 @@ public class UserService extends HangarComponent {
     private final RestTemplate restTemplate;
 
     @Autowired
-    public UserService(UserDAO userDAO, HangarUsersDAO hangarUsersDAO, @Lazy RestTemplate restTemplate) {
+    public UserService(final UserDAO userDAO, final HangarUsersDAO hangarUsersDAO, @Lazy final RestTemplate restTemplate) {
         this.userDAO = userDAO;
         this.hangarUsersDAO = hangarUsersDAO;
         this.restTemplate = restTemplate;
     }
 
-    public UserTable insertUser(UserTable userTable) {
-        return userDAO.insert(userTable);
+    public UserTable insertUser(final UserTable userTable) {
+        return this.userDAO.insert(userTable);
     }
 
-    @Nullable
-    public UserTable getUserTable(@Nullable String userName) {
-        return getUserTable(userName, userDAO::getUserTable);
+    public @Nullable UserTable getUserTable(final @Nullable String userName) {
+        return this.getUserTable(userName, this.userDAO::getUserTable);
     }
 
-    @Nullable
-    public UserTable getUserTable(@Nullable Long userId) {
-        return getUserTable(userId, userDAO::getUserTable);
+    public @Nullable UserTable getUserTable(final @Nullable Long userId) {
+        return this.getUserTable(userId, this.userDAO::getUserTable);
     }
 
-    public void toggleWatching(long projectId, boolean state) {
+    public void toggleWatching(final long projectId, final boolean state) {
         if (state) {
-            hangarUsersDAO.setWatching(projectId, getHangarPrincipal().getUserId());
+            this.hangarUsersDAO.setWatching(projectId, this.getHangarPrincipal().getUserId());
         } else {
-            hangarUsersDAO.setNotWatching(projectId, getHangarPrincipal().getUserId());
+            this.hangarUsersDAO.setNotWatching(projectId, this.getHangarPrincipal().getUserId());
         }
     }
 
-    public void toggleStarred(long projectId, boolean state) {
+    public void toggleStarred(final long projectId, final boolean state) {
         if (state) {
-            hangarUsersDAO.setStarred(projectId, getHangarPrincipal().getUserId());
+            this.hangarUsersDAO.setStarred(projectId, this.getHangarPrincipal().getUserId());
         } else {
-            hangarUsersDAO.setNotStarred(projectId, getHangarPrincipal().getUserId());
+            this.hangarUsersDAO.setNotStarred(projectId, this.getHangarPrincipal().getUserId());
         }
     }
 
     @Transactional
-    public void markPromptRead(Prompt prompt) {
-        UserTable userTable = userDAO.getUserTable(getHangarPrincipal().getId());
+    public void markPromptRead(final Prompt prompt) {
+        final UserTable userTable = this.userDAO.getUserTable(this.getHangarPrincipal().getId());
         if (!userTable.getReadPrompts().contains(prompt.ordinal())) {
             userTable.getReadPrompts().add(prompt.ordinal());
-            userDAO.update(userTable);
+            this.userDAO.update(userTable);
         }
     }
 
     @Transactional
-    public void setLocked(UserTable user, boolean locked, String comment) {
+    public void setLocked(final UserTable user, final boolean locked, final String comment) {
         if (user.isLocked() != locked) {
             user.setLocked(locked);
-            userDAO.update(user);
-            UserContext userContext = UserContext.of(user.getUserId());
-            LoggedAction<UserContext> loggedAction;
+            this.userDAO.update(user);
+            final UserContext userContext = UserContext.of(user.getUserId());
+            final LoggedAction<UserContext> loggedAction;
             if (locked) {
                 loggedAction = LogAction.USER_LOCKED.create(userContext, user.getName() + " is now locked: " + comment, user.getName() + " was unlocked");
             } else {
                 loggedAction = LogAction.USER_UNLOCKED.create(userContext, user.getName() + " has been unlocked: " + comment, user.getName() + " was locked");
             }
-            actionLogger.user(loggedAction);
+            this.actionLogger.user(loggedAction);
         }
     }
 
-    public void updateUser(UserTable userTable) {
-        userDAO.update(userTable);
+    public void updateUser(final UserTable userTable) {
+        this.userDAO.update(userTable);
     }
 
-    @Nullable
-    private <T> UserTable getUserTable(@Nullable T identifier, @NotNull Function<T, UserTable> userTableFunction) {
+    private @Nullable <T> UserTable getUserTable(final @Nullable T identifier, final @NotNull Function<T, UserTable> userTableFunction) {
         if (identifier == null) {
             return null;
         }
         return userTableFunction.apply(identifier);
     }
 
-    public void updateSSO(UUID uuid, Traits traits) {
-        HttpHeaders headers = new HttpHeaders();
+    public void updateSSO(final UUID uuid, final Traits traits) {
+        final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Traits> requestEntity = new HttpEntity<>(traits, headers);
+        final HttpEntity<Traits> requestEntity = new HttpEntity<>(traits, headers);
 
         try {
-            ResponseEntity<Void> response = restTemplate.postForEntity(config.security.api().url() + "/sync/user/" + uuid.toString() + "?apiKey=" + config.sso.apiKey(), requestEntity, Void.class);
+            final ResponseEntity<Void> response = this.restTemplate.postForEntity(this.config.security.api().url() + "/sync/user/" + uuid.toString() + "?apiKey=" + this.config.sso.apiKey(), requestEntity, Void.class);
             if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new ResponseStatusException(response.getStatusCode(), "Error from auth api");
             }
-        } catch (HttpStatusCodeException ex) {
+        } catch (final HttpStatusCodeException ex) {
             throw new ResponseStatusException(ex.getStatusCode(), "Error from auth api: " + ex.getMessage(), ex);
         }
     }

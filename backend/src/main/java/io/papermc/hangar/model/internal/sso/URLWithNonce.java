@@ -5,24 +5,24 @@ public class URLWithNonce {
     private final String url;
     private final String nonce;
 
-    public URLWithNonce(String url, String nonce) {
+    public URLWithNonce(final String url, final String nonce) {
         this.url = url;
         this.nonce = nonce;
     }
 
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     public String getNonce() {
-        return nonce;
+        return this.nonce;
     }
 
     @Override
     public String toString() {
         return "URLWithNonce{" +
-                "url='" + url + '\'' +
-                ", nonce='" + nonce + '\'' +
-                '}';
+            "url='" + this.url + '\'' +
+            ", nonce='" + this.nonce + '\'' +
+            '}';
     }
 }

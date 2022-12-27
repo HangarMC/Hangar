@@ -1,9 +1,9 @@
 package io.papermc.hangar.util;
 
 import com.google.common.primitives.Ints;
-import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 
 public class BBCodeConverter {
 
@@ -55,7 +55,7 @@ public class BBCodeConverter {
         });
         REPLACERS.put("url", (tag, tagArg, content) -> {
             String url = tagArg == null ? content : tagArg;
-            char firstCharacter = url.length() > 2 ? url.charAt(0) : '-';
+            final char firstCharacter = url.length() > 2 ? url.charAt(0) : '-';
             if ((firstCharacter == '\'' || firstCharacter == '\"') && url.charAt(url.length() - 1) == firstCharacter) {
                 url = url.substring(1, url.length() - 1);
             }
@@ -63,8 +63,8 @@ public class BBCodeConverter {
         });
         REPLACERS.put("code", new TagReplacer() {
             @Override
-            public String process(String tag, String tagArg, String content) {
-                String lang;
+            public String process(final String tag, final String tagArg, final String content) {
+                final String lang;
                 if (tagArg == null) {
                     lang = "";
                 } else if (tagArg.equals("kotlin")) {
@@ -74,8 +74,8 @@ public class BBCodeConverter {
                 }
 
                 return "```" + lang + "\n"
-                       + content
-                       + "\n```";
+                    + content
+                    + "\n```";
             }
 
             @Override
@@ -90,7 +90,7 @@ public class BBCodeConverter {
         });
         REPLACERS.put("icode", new TagReplacer() {
             @Override
-            public String process(String tag, String tagArg, String content) {
+            public String process(final String tag, final String tagArg, final String content) {
                 return "`" + content + "`";
             }
 
@@ -100,7 +100,7 @@ public class BBCodeConverter {
             }
         });
         REPLACERS.put("attach", ((tag, tagArg, content) -> {
-            String imageUrl = "https://www.spigotmc.org/attachments/" + content;
+            final String imageUrl = "https://www.spigotmc.org/attachments/" + content;
             return "![" + imageUrl + "](" + imageUrl + ")";
         }));
 
@@ -118,46 +118,46 @@ public class BBCodeConverter {
         // Deduplication, remove spaces in tags
         int index = 0;
         while ((index = s.indexOf(TAG_PREFIX, index)) != -1) {
-            int closingIndex = process(s, index, true);
+            final int closingIndex = this.process(s, index, true);
             if (closingIndex == -1) {
                 index++;
                 continue;
             }
 
-            s = s.substring(0, index) + currentContent + s.substring(closingIndex);
+            s = s.substring(0, index) + this.currentContent + s.substring(closingIndex);
         }
 
         // Iterate until no whitespaces are left (else they might only be moved into the upper tag...)
         String result;
-        while ((result = removeTrailingWhitespaces(s)) != null) {
+        while ((result = this.removeTrailingWhitespaces(s)) != null) {
             s = result;
         }
 
         // Tag conversion
         index = 0;
         while ((index = s.indexOf(TAG_PREFIX, index)) != -1) {
-            int closingIndex = process(s, index, false);
+            final int closingIndex = this.process(s, index, false);
             if (closingIndex == -1) {
                 // No closing tag/no simple match
                 index++;
                 continue;
             }
 
-            if (currentContent == null) {
+            if (this.currentContent == null) {
                 // Simple opening tag match
-                String replacement = SIMPLE_SINGLETON_REPLACERS.get(currentTag);
+                final String replacement = SIMPLE_SINGLETON_REPLACERS.get(this.currentTag);
                 s = s.substring(0, index) + replacement + s.substring(closingIndex);
                 continue;
             }
 
-            TagReplacer replacer = REPLACERS.get(currentTag);
+            final TagReplacer replacer = REPLACERS.get(this.currentTag);
             if (replacer == null) {
                 // No replacer found
                 index++;
                 continue;
             }
 
-            String processed = replacer.process(currentTag, currentArg, currentContent);
+            String processed = replacer.process(this.currentTag, this.currentArg, this.currentContent);
             if (processed == null) {
                 index++;
             } else {
@@ -173,9 +173,9 @@ public class BBCodeConverter {
         }
 
         // Removes newlines from the end of the last tag adds newlines
-        TagReplacer replacer = REPLACERS.get(currentTag);
+        final TagReplacer replacer = REPLACERS.get(this.currentTag);
         if (replacer != null && replacer.appendNewline()) {
-            int lastChar = s.length() - 1;
+            final int lastChar = s.length() - 1;
             if (s.lastIndexOf('\n') == lastChar) {
                 return s.substring(0, lastChar);
             }
@@ -184,40 +184,39 @@ public class BBCodeConverter {
         return s;
     }
 
-    @Nullable
-    private String removeTrailingWhitespaces(String s) {
+    private @Nullable String removeTrailingWhitespaces(String s) {
         int index = 0;
         boolean foundTrailingSpace = false;
         while ((index = s.indexOf(TAG_PREFIX, index)) != -1) {
-            int closingIndex = process(s, index, false);
-            if (closingIndex == -1 || currentContent == null) {
+            final int closingIndex = this.process(s, index, false);
+            if (closingIndex == -1 || this.currentContent == null) {
                 index++;
                 continue;
             }
-            TagReplacer replacer = REPLACERS.get(currentTag);
+            final TagReplacer replacer = REPLACERS.get(this.currentTag);
             if (replacer != null && replacer.hasRawContents()) {
                 index++;
                 continue;
             }
 
-            boolean startsWithSpace = currentContent.startsWith(" ");
-            boolean endsWithSpace = currentContent.endsWith(" ");
+            final boolean startsWithSpace = this.currentContent.startsWith(" ");
+            final boolean endsWithSpace = this.currentContent.endsWith(" ");
             if (startsWithSpace || endsWithSpace) {
                 foundTrailingSpace = true;
-                currentContent = currentContent.trim();
+                this.currentContent = this.currentContent.trim();
             }
 
             // Readd opening and closing tag, then spaces
-            int tagSuffixIndex = s.indexOf(TAG_SUFFIX, index);
-            currentContent = s.substring(index, tagSuffixIndex + 1) + currentContent + s.substring(closingIndex - currentTag.length() - 3, closingIndex);
+            final int tagSuffixIndex = s.indexOf(TAG_SUFFIX, index);
+            this.currentContent = s.substring(index, tagSuffixIndex + 1) + this.currentContent + s.substring(closingIndex - this.currentTag.length() - 3, closingIndex);
             if (startsWithSpace) {
-                currentContent = " " + currentContent;
+                this.currentContent = " " + this.currentContent;
             }
             if (endsWithSpace) {
-                currentContent += " ";
+                this.currentContent += " ";
             }
 
-            s = s.substring(0, index) + currentContent + s.substring(closingIndex);
+            s = s.substring(0, index) + this.currentContent + s.substring(closingIndex);
             index++;
         }
         return foundTrailingSpace ? s : null;
@@ -229,8 +228,8 @@ public class BBCodeConverter {
      * @param deduplicate whether tags should be deduplicated, false for normal conversion
      * @return index after the currently processed tag is closed, or -1 if none
      */
-    private int process(String s, int index, boolean deduplicate) {
-        int tagSuffixIndex = s.indexOf(TAG_SUFFIX, index);
+    private int process(final String s, final int index, final boolean deduplicate) {
+        final int tagSuffixIndex = s.indexOf(TAG_SUFFIX, index);
         if (tagSuffixIndex == -1 || tagSuffixIndex == index + 1) {
             // No closing bracket
             return -1;
@@ -238,7 +237,7 @@ public class BBCodeConverter {
 
         String tagName = s.substring(index + 1, tagSuffixIndex).toLowerCase();
         String tagArg = null;
-        int argIndex = tagName.indexOf(ARG_PREFIX);
+        final int argIndex = tagName.indexOf(ARG_PREFIX);
         if (argIndex != -1) {
             tagArg = tagName.substring(argIndex + 1);
             tagName = tagName.substring(0, argIndex);
@@ -246,34 +245,34 @@ public class BBCodeConverter {
 
         if (!deduplicate && SIMPLE_SINGLETON_REPLACERS.containsKey(tagName)) {
             // Simple opening tag only replacement
-            currentTag = tagName;
-            currentArg = null;
-            currentContent = null;
+            this.currentTag = tagName;
+            this.currentArg = null;
+            this.currentContent = null;
             return tagSuffixIndex + 1;
         }
 
-        String lowerCaseString = s.toLowerCase();
-        String closingTag = String.format(CLOSING_FORMAT, tagName);
-        int closingIndex = lowerCaseString.indexOf(closingTag, index);
+        final String lowerCaseString = s.toLowerCase();
+        final String closingTag = String.format(CLOSING_FORMAT, tagName);
+        final int closingIndex = lowerCaseString.indexOf(closingTag, index);
         if (closingIndex == -1) {
             // No closing tag
             return -1;
         }
 
-        currentTag = tagName;
-        currentArg = tagArg;
-        currentContent = s.substring(tagSuffixIndex + 1, closingIndex);
+        this.currentTag = tagName;
+        this.currentArg = tagArg;
+        this.currentContent = s.substring(tagSuffixIndex + 1, closingIndex);
         if (deduplicate) {
-            String fullTag = s.substring(index, tagSuffixIndex + 1).toLowerCase();
-            String lowerCaseContent = lowerCaseString.substring(tagSuffixIndex + 1, closingIndex);
-            int duplicateTagIndex = lowerCaseContent.indexOf(fullTag);
+            final String fullTag = s.substring(index, tagSuffixIndex + 1).toLowerCase();
+            final String lowerCaseContent = lowerCaseString.substring(tagSuffixIndex + 1, closingIndex);
+            final int duplicateTagIndex = lowerCaseContent.indexOf(fullTag);
             if (duplicateTagIndex == -1) {
                 // No duplicate
                 return -1;
             }
 
             // Keep opening tag, remove duplicate opening in content, skip one closing tag
-            currentContent = fullTag + currentContent.substring(0, duplicateTagIndex) + currentContent.substring(duplicateTagIndex + fullTag.length());
+            this.currentContent = fullTag + this.currentContent.substring(0, duplicateTagIndex) + this.currentContent.substring(duplicateTagIndex + fullTag.length());
         }
 
         return closingIndex + closingTag.length();

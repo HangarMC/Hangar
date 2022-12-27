@@ -6,16 +6,16 @@ public class ProjectContext extends LogContext<LoggedActionsProjectTable, Projec
 
     private final Long projectId;
 
-    private ProjectContext(Long projectId) {
+    private ProjectContext(final Long projectId) {
         super(Context.PROJECT, LoggedActionsProjectTable::new);
         this.projectId = projectId;
     }
 
     public final Long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
-    public static ProjectContext of(Long projectId) {
+    public static ProjectContext of(final Long projectId) {
         return new ProjectContext(projectId);
     }
 }

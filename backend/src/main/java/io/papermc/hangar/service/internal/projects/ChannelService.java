@@ -10,15 +10,14 @@ import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarChannel;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Set;
 import java.util.function.LongFunction;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ChannelService extends HangarComponent {
@@ -26,26 +25,26 @@ public class ChannelService extends HangarComponent {
     private final ProjectChannelsDAO projectChannelsDAO;
     private final HangarProjectsDAO hangarProjectsDAO;
 
-    public ChannelService(ProjectChannelsDAO projectChannelsDAO, HangarProjectsDAO hangarProjectsDAO) {
+    public ChannelService(final ProjectChannelsDAO projectChannelsDAO, final HangarProjectsDAO hangarProjectsDAO) {
         this.projectChannelsDAO = projectChannelsDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
     }
 
-    public void checkName(long projectId, String name, @Nullable String existingName) {
-        checkName(projectId, name, existingName, projectChannelsDAO::getProjectChannels);
+    public void checkName(final long projectId, final String name, final @Nullable String existingName) {
+        this.checkName(projectId, name, existingName, this.projectChannelsDAO::getProjectChannels);
     }
 
-    public void checkColor(long projectId, Color color, @Nullable Color existingColor) {
-        checkColor(projectId, color, existingColor, projectChannelsDAO::getProjectChannels);
+    public void checkColor(final long projectId, final Color color, final @Nullable Color existingColor) {
+        this.checkColor(projectId, color, existingColor, this.projectChannelsDAO::getProjectChannels);
     }
 
-    private void checkName(long projectId, String name, @Nullable String existingName, LongFunction<List<ProjectChannelTable>> channelTableFunction) {
+    private void checkName(final long projectId, final String name, final @Nullable String existingName, final LongFunction<List<ProjectChannelTable>> channelTableFunction) {
         if (channelTableFunction.apply(projectId).stream().filter(ch -> !ch.getName().equals(existingName)).anyMatch(ch -> ch.getName().equalsIgnoreCase(name))) {
             throw new HangarApiException(HttpStatus.CONFLICT, "channel.modal.error.duplicateName");
         }
     }
 
-    private void checkColor(long projectId, Color color, @Nullable Color existingColor, LongFunction<List<ProjectChannelTable>> channelTableFunction) {
+    private void checkColor(final long projectId, final Color color, final @Nullable Color existingColor, final LongFunction<List<ProjectChannelTable>> channelTableFunction) {
         if (channelTableFunction.apply(projectId).stream().filter(ch -> ch.getColor() != existingColor).anyMatch(ch -> ch.getColor() == color)) {
             throw new HangarApiException(HttpStatus.CONFLICT, "channel.modal.error.duplicateColor");
         }
@@ -67,14 +66,14 @@ public class ChannelService extends HangarComponent {
     @Transactional
     public ProjectChannelTable createProjectChannel(final String name, final Color color, final long projectId, final Set<ChannelFlag> flags) {
         this.validateChannel(name, color, projectId, this.projectChannelsDAO.getProjectChannels(projectId));
-        ProjectChannelTable channelTable = this.projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, flags));
+        final ProjectChannelTable channelTable = this.projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, flags));
         this.actionLogger.project(LogAction.PROJECT_CHANNEL_CREATED.create(ProjectContext.of(projectId), formatChannelChange(channelTable), ""));
         return channelTable;
     }
 
     @Transactional
     public void editProjectChannel(final long channelId, final String name, final Color color, final long projectId, final Set<ChannelFlag> flags) {
-        ProjectChannelTable projectChannelTable = this.getProjectChannel(channelId);
+        final ProjectChannelTable projectChannelTable = this.getProjectChannel(channelId);
         if (projectChannelTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
@@ -109,7 +108,7 @@ public class ChannelService extends HangarComponent {
         }
 
         this.validateChannel(name, color, projectId, this.projectChannelsDAO.getProjectChannels(projectId).stream().filter(ch -> ch.getId() != channelId).collect(Collectors.toList()));
-        String old = formatChannelChange(projectChannelTable);
+        final String old = formatChannelChange(projectChannelTable);
         projectChannelTable.setName(name);
         projectChannelTable.setColor(color);
         projectChannelTable.setFlags(flags);
@@ -119,7 +118,7 @@ public class ChannelService extends HangarComponent {
 
     @Transactional
     public void deleteProjectChannel(final long projectId, final long channelId) {
-        HangarChannel hangarChannel = this.hangarProjectsDAO.getHangarChannel(channelId);
+        final HangarChannel hangarChannel = this.hangarProjectsDAO.getHangarChannel(channelId);
         if (hangarChannel == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
@@ -134,24 +133,24 @@ public class ChannelService extends HangarComponent {
         this.actionLogger.project(LogAction.PROJECT_CHANNEL_DELETED.create(ProjectContext.of(projectId), "<i>Deleted</i>", formatChannelChange(hangarChannel)));
     }
 
-    public List<HangarChannel> getProjectChannels(long projectId) {
-        return hangarProjectsDAO.getHangarChannels(projectId);
+    public List<HangarChannel> getProjectChannels(final long projectId) {
+        return this.hangarProjectsDAO.getHangarChannels(projectId);
     }
 
-    public ProjectChannelTable getProjectChannel(long projectId, String name, Color color) {
-        return projectChannelsDAO.getProjectChannel(projectId, name, color);
+    public ProjectChannelTable getProjectChannel(final long projectId, final String name, final Color color) {
+        return this.projectChannelsDAO.getProjectChannel(projectId, name, color);
     }
 
-    public ProjectChannelTable getProjectChannel(long channelId) {
-        return projectChannelsDAO.getProjectChannel(channelId);
+    public ProjectChannelTable getProjectChannel(final long channelId) {
+        return this.projectChannelsDAO.getProjectChannel(channelId);
     }
 
-    public ProjectChannelTable getProjectChannelForVersion(long versionId) {
-        return projectChannelsDAO.getProjectChannelForVersion(versionId);
+    public ProjectChannelTable getProjectChannelForVersion(final long versionId) {
+        return this.projectChannelsDAO.getProjectChannelForVersion(versionId);
     }
 
-    public ProjectChannelTable getFirstChannel(long projectId) {
-        return projectChannelsDAO.getFirstChannel(projectId);
+    public ProjectChannelTable getFirstChannel(final long projectId) {
+        return this.projectChannelsDAO.getFirstChannel(projectId);
     }
 
     private static String formatChannelChange(final ProjectChannelTable channelTable) {

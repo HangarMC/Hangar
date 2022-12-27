@@ -6,16 +6,16 @@ public class OrganizationContext extends LogContext<LoggedActionsOrganizationTab
 
     private final Long organizationId;
 
-    private OrganizationContext(Long organizationId) {
+    private OrganizationContext(final Long organizationId) {
         super(Context.ORGANIZATION, LoggedActionsOrganizationTable::new);
         this.organizationId = organizationId;
     }
 
     public Long getOrganizationId() {
-        return organizationId;
+        return this.organizationId;
     }
 
-    public static OrganizationContext of(Long organizationId) {
+    public static OrganizationContext of(final Long organizationId) {
         return new OrganizationContext(organizationId);
     }
 }

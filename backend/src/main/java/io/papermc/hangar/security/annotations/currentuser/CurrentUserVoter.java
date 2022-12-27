@@ -4,7 +4,6 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.security.annotations.HangarDecisionVoter;
-import io.papermc.hangar.security.annotations.currentuser.CurrentUserMetadataExtractor.CurrentUserAttribute;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import org.aopalliance.intercept.MethodInvocation;
 import org.jetbrains.annotations.NotNull;
@@ -12,23 +11,22 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CurrentUserVoter extends HangarDecisionVoter<CurrentUserAttribute> {
+public class CurrentUserVoter extends HangarDecisionVoter<CurrentUserMetadataExtractor.CurrentUserAttribute> {
 
     public CurrentUserVoter() {
-        super(CurrentUserAttribute.class);
+        super(CurrentUserMetadataExtractor.CurrentUserAttribute.class);
     }
 
     @Override
-    public int vote(Authentication authentication, MethodInvocation methodInvocation, @NotNull CurrentUserAttribute attribute) {
-        if (!(authentication instanceof HangarAuthenticationToken)) {
+    public int vote(final Authentication authentication, final MethodInvocation methodInvocation, final @NotNull CurrentUserMetadataExtractor.CurrentUserAttribute attribute) {
+        if (!(authentication instanceof HangarAuthenticationToken hangarAuthenticationToken)) {
             return ACCESS_DENIED;
         }
-        HangarAuthenticationToken hangarAuthenticationToken = (HangarAuthenticationToken) authentication;
         if (hangarAuthenticationToken.getPrincipal().isAllowedGlobal(Permission.EditAllUserSettings)) {
             return ACCESS_GRANTED;
         }
-        String userName;
-        Object user = attribute.getExpression().getValue(getMethodEvaluationContext(methodInvocation));
+        final String userName;
+        final Object user = attribute.getExpression().getValue(this.getMethodEvaluationContext(methodInvocation));
         if (user instanceof UserTable) {
             userName = ((UserTable) user).getName();
         } else if (user instanceof String) {

@@ -9,40 +9,40 @@ public class ChangeAvatarToken {
     private final String targetUsername;
     private final int requestUserId;
 
-    public ChangeAvatarToken(String signedData, String targetUsername, int requestUserId) {
+    public ChangeAvatarToken(final String signedData, final String targetUsername, final int requestUserId) {
         this.signedData = signedData;
         this.targetUsername = targetUsername;
         this.requestUserId = requestUserId;
     }
 
     public String getSignedData() {
-        return signedData;
+        return this.signedData;
     }
 
     public String getTargetUsername() {
-        return targetUsername;
+        return this.targetUsername;
     }
 
     public int getRequestUserId() {
-        return requestUserId;
+        return this.requestUserId;
     }
 
     @JsonCreator
-    public static ChangeAvatarToken of(ObjectNode objectNode) {
-        ObjectNode rawData = (ObjectNode) objectNode.get("raw_data");
+    public static ChangeAvatarToken of(final ObjectNode objectNode) {
+        final ObjectNode rawData = (ObjectNode) objectNode.get("raw_data");
         return new ChangeAvatarToken(
-                objectNode.get("signed_data").asText(),
-                rawData.get("target_username").asText(),
-                rawData.get("request_user_id").asInt()
+            objectNode.get("signed_data").asText(),
+            rawData.get("target_username").asText(),
+            rawData.get("request_user_id").asInt()
         );
     }
 
     @Override
     public String toString() {
         return "ChangeAvatarToken{" +
-                "signedData='" + signedData + '\'' +
-                ", targetUsername='" + targetUsername + '\'' +
-                ", requestUserId=" + requestUserId +
-                '}';
+            "signedData='" + this.signedData + '\'' +
+            ", targetUsername='" + this.targetUsername + '\'' +
+            ", requestUserId=" + this.requestUserId +
+            '}';
     }
 }

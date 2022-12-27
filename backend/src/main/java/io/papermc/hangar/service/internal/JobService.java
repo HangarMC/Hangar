@@ -15,14 +15,6 @@ import io.papermc.hangar.model.internal.job.UpdateDiscourseVersionPostJob;
 import io.papermc.hangar.service.internal.discourse.DiscourseService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.versions.VersionService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -30,6 +22,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class JobService extends HangarComponent {
@@ -42,7 +41,7 @@ public class JobService extends HangarComponent {
     private ExecutorService executorService;
 
     @Autowired
-    public JobService(JobsDAO jobsDAO, @Lazy DiscourseService discourseService, @Lazy ProjectService projectService, @Lazy VersionService versionService) {
+    public JobService(final JobsDAO jobsDAO, @Lazy final DiscourseService discourseService, @Lazy final ProjectService projectService, @Lazy final VersionService versionService) {
         this.jobsDAO = jobsDAO;
         this.discourseService = discourseService;
         this.projectService = projectService;
@@ -51,133 +50,137 @@ public class JobService extends HangarComponent {
 
     @PostConstruct
     public void initThreadPool() {
-        this.executorService = new ThreadPoolExecutor(1, config.jobs.maxConcurrentJobs(), 60, TimeUnit.SECONDS, new SynchronousQueue<>());
+        this.executorService = new ThreadPoolExecutor(1, this.config.jobs.maxConcurrentJobs(), 60, TimeUnit.SECONDS, new SynchronousQueue<>());
     }
 
     public void checkAndProcess() {
-        if (!config.discourse.enabled()) { return; }
-        long awaitingJobs = jobsDAO.countAwaitingJobs();
-        logger.debug("Found {} awaiting jobs", awaitingJobs);
+        if (!this.config.discourse.enabled()) {
+            return;
+        }
+        final long awaitingJobs = this.jobsDAO.countAwaitingJobs();
+        this.logger.debug("Found {} awaiting jobs", awaitingJobs);
         if (awaitingJobs > 0) {
-            long numberToProcess = Math.max(1, Math.min(awaitingJobs, config.jobs.maxConcurrentJobs()));
+            final long numberToProcess = Math.max(1, Math.min(awaitingJobs, this.config.jobs.maxConcurrentJobs()));
             for (long i = 0; i < numberToProcess; i++) {
-                executorService.submit(this::process);
+                this.executorService.submit(this::process);
             }
         }
     }
 
     public List<JobTable> getErroredJobs() {
-        return jobsDAO.getErroredJobs();
+        return this.jobsDAO.getErroredJobs();
     }
 
     @Transactional
-    public void save(Job job) {
-        if (!config.discourse.enabled()) { return; }
-        jobsDAO.save(job.toTable());
+    public void save(final Job job) {
+        if (!this.config.discourse.enabled()) {
+            return;
+        }
+        this.jobsDAO.save(job.toTable());
     }
 
     public void process() {
         SecurityContextHolder.getContext().setAuthentication(new JobAuthentication());
 
-        JobTable jobTable = jobsDAO.fetchJob();
+        final JobTable jobTable = this.jobsDAO.fetchJob();
         if (jobTable == null) {
             return;
         }
 
-        logger.debug("Starting job: {} {} {}", jobTable.getId(), jobTable.getJobType(), jobTable.getJobProperties());
+        this.logger.debug("Starting job: {} {} {}", jobTable.getId(), jobTable.getJobType(), jobTable.getJobProperties());
 
         try {
-            processJob(jobTable);
+            this.processJob(jobTable);
 
-            jobsDAO.finishJob(jobTable.getId());
-        } catch (DiscourseError.RateLimitError rateLimitError) {
-            jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(rateLimitError.getDuration()).plusSeconds(5), "Rate limit hit", "rate_limit");
-        } catch (DiscourseError.StatusError statusError) {
-            String error = "Encountered status error when executing Discourse request\n" +
-                           toJobString(jobTable) +
-                           "Status Code: " + statusError.getStatus() + "\n" +
-                           toMessageString(statusError);
-            jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(config.jobs.statusErrorTimeout()).plusSeconds(5), error, "status_error_" + statusError.getStatus().value());
-        } catch (DiscourseError.UnknownError unknownError) {
-            String error = "Encountered error when executing Discourse request\n" +
-                            toJobString(jobTable) +
-                           "Type: " + unknownError.getDescriptor() + "\n" +
-                           toMessageString(unknownError);
-            jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(config.jobs.unknownErrorTimeout()).plusSeconds(5), error, "unknown_error" + unknownError.getDescriptor());
-        } catch (DiscourseError.NotAvailableError notAvailableError) {
-            jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(config.jobs.notAvailableTimeout()).plusSeconds(5), "Not Available", "not_available");
-        } catch (DiscourseError.NotProcessable notProcessable) {
-            logger.debug("job failed to process discourse job: {} {}", notProcessable.getMessage(), jobTable);
-            String error = "Encountered error when processing discourse job\n" +
-                            toJobString(jobTable) +
-                           "Type: not_processable\n" +
-                           toMessageString(notProcessable);
-            jobsDAO.fail(jobTable.getId(), error, "not_processable");
-        } catch (JobException jobException) {
-            logger.debug("job failed to process: {} {}", jobException.getMessage(), jobTable);
-            String error = "Encountered error when processing job\n" +
-                            toJobString(jobTable) +
-                           "Type: " + jobException.getDescriptor() + "\n" +
-                           toMessageString(jobException);
-            jobsDAO.fail(jobTable.getId(), error, jobException.getDescriptor());
-        } catch (Exception ex) {
-            logger.debug("job failed to process: {} {}", ex.getMessage(), jobTable, ex);
-            String error = "Encountered error when processing job\n" +
-                            toJobString(jobTable) +
-                           "Exception: " + ex.getClass().getName() + "\n" +
-                           toMessageString(ex);
-            jobsDAO.fail(jobTable.getId(), error, "exception");
+            this.jobsDAO.finishJob(jobTable.getId());
+        } catch (final DiscourseError.RateLimitError rateLimitError) {
+            this.jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(rateLimitError.getDuration()).plusSeconds(5), "Rate limit hit", "rate_limit");
+        } catch (final DiscourseError.StatusError statusError) {
+            final String error = "Encountered status error when executing Discourse request\n" +
+                this.toJobString(jobTable) +
+                "Status Code: " + statusError.getStatus() + "\n" +
+                this.toMessageString(statusError);
+            this.jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(this.config.jobs.statusErrorTimeout()).plusSeconds(5), error, "status_error_" + statusError.getStatus().value());
+        } catch (final DiscourseError.UnknownError unknownError) {
+            final String error = "Encountered error when executing Discourse request\n" +
+                this.toJobString(jobTable) +
+                "Type: " + unknownError.getDescriptor() + "\n" +
+                this.toMessageString(unknownError);
+            this.jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(this.config.jobs.unknownErrorTimeout()).plusSeconds(5), error, "unknown_error" + unknownError.getDescriptor());
+        } catch (final DiscourseError.NotAvailableError notAvailableError) {
+            this.jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(this.config.jobs.notAvailableTimeout()).plusSeconds(5), "Not Available", "not_available");
+        } catch (final DiscourseError.NotProcessable notProcessable) {
+            this.logger.debug("job failed to process discourse job: {} {}", notProcessable.getMessage(), jobTable);
+            final String error = "Encountered error when processing discourse job\n" +
+                this.toJobString(jobTable) +
+                "Type: not_processable\n" +
+                this.toMessageString(notProcessable);
+            this.jobsDAO.fail(jobTable.getId(), error, "not_processable");
+        } catch (final JobException jobException) {
+            this.logger.debug("job failed to process: {} {}", jobException.getMessage(), jobTable);
+            final String error = "Encountered error when processing job\n" +
+                this.toJobString(jobTable) +
+                "Type: " + jobException.getDescriptor() + "\n" +
+                this.toMessageString(jobException);
+            this.jobsDAO.fail(jobTable.getId(), error, jobException.getDescriptor());
+        } catch (final Exception ex) {
+            this.logger.debug("job failed to process: {} {}", ex.getMessage(), jobTable, ex);
+            final String error = "Encountered error when processing job\n" +
+                this.toJobString(jobTable) +
+                "Exception: " + ex.getClass().getName() + "\n" +
+                this.toMessageString(ex);
+            this.jobsDAO.fail(jobTable.getId(), error, "exception");
         }
     }
 
-    private String toJobString(JobTable jobTable) {
+    private String toJobString(final JobTable jobTable) {
         return "Job: " + jobTable.getId() + " " + jobTable.getJobType() + " " + jobTable.getJobProperties() + "\n";
     }
 
-    private String toMessageString(Throwable error) {
+    private String toMessageString(final Throwable error) {
         return "Message: " + error.getMessage();
     }
 
-    public void processJob(JobTable job) {
+    public void processJob(final JobTable job) {
         switch (job.getJobType()) {
             case UPDATE_DISCOURSE_PROJECT_TOPIC:
-                UpdateDiscourseProjectTopicJob updateDiscourseProjectTopicJob = UpdateDiscourseProjectTopicJob.loadFromTable(job);
-                ProjectTable project = projectService.getProjectTable(updateDiscourseProjectTopicJob.getProjectId());
+                final UpdateDiscourseProjectTopicJob updateDiscourseProjectTopicJob = UpdateDiscourseProjectTopicJob.loadFromTable(job);
+                ProjectTable project = this.projectService.getProjectTable(updateDiscourseProjectTopicJob.getProjectId());
                 if (project == null) {
                     throw new JobException("No such project '" + updateDiscourseProjectTopicJob.getProjectId() + "'?", "project_not_found");
                 }
                 if (project.getTopicId() == null) {
-                    discourseService.createProjectTopic(project);
+                    this.discourseService.createProjectTopic(project);
                 } else {
-                    discourseService.updateProjectTopic(project);
+                    this.discourseService.updateProjectTopic(project);
                 }
                 break;
             case UPDATE_DISCOURSE_VERSION_POST:
-                UpdateDiscourseVersionPostJob updateDiscourseVersionPostJob = UpdateDiscourseVersionPostJob.loadFromTable(job);
-                ProjectVersionTable version = versionService.getProjectVersionTable(updateDiscourseVersionPostJob.getVersionId());
+                final UpdateDiscourseVersionPostJob updateDiscourseVersionPostJob = UpdateDiscourseVersionPostJob.loadFromTable(job);
+                final ProjectVersionTable version = this.versionService.getProjectVersionTable(updateDiscourseVersionPostJob.getVersionId());
                 if (version == null) {
                     throw new JobException("No such version '" + updateDiscourseVersionPostJob.getVersionId() + "'?", "version_not_found");
                 }
-                project = projectService.getProjectTable(version.getProjectId());
+                project = this.projectService.getProjectTable(version.getProjectId());
                 if (project == null) {
                     throw new JobException("No such project '" + version.getProjectId() + "'?", "project_not_found");
                 }
                 if (project.getTopicId() == null) {
-                    discourseService.createProjectTopic(project);
+                    this.discourseService.createProjectTopic(project);
                     throw new DiscourseError.RateLimitError(Duration.ofMinutes(2));
                 } else if (version.getPostId() == null) {
-                    discourseService.createVersionPost(project, version);
+                    this.discourseService.createVersionPost(project, version);
                 } else {
-                    discourseService.updateVersionPost(project, version);
+                    this.discourseService.updateVersionPost(project, version);
                 }
                 break;
             case DELETE_DISCOURSE_TOPIC:
-                DeleteDiscourseTopicJob deleteDiscourseTopicJob = DeleteDiscourseTopicJob.loadFromTable(job);
-                discourseService.deleteTopic(deleteDiscourseTopicJob.getTopicId());
+                final DeleteDiscourseTopicJob deleteDiscourseTopicJob = DeleteDiscourseTopicJob.loadFromTable(job);
+                this.discourseService.deleteTopic(deleteDiscourseTopicJob.getTopicId());
                 break;
             case POST_DISCOURSE_REPLY:
-                PostDiscourseReplyJob postDiscourseReplyJob = PostDiscourseReplyJob.loadFromTable(job);
-                discourseService.createComment(postDiscourseReplyJob.getProjectId(), postDiscourseReplyJob.getPoster(), postDiscourseReplyJob.getContent());
+                final PostDiscourseReplyJob postDiscourseReplyJob = PostDiscourseReplyJob.loadFromTable(job);
+                this.discourseService.createComment(postDiscourseReplyJob.getProjectId(), postDiscourseReplyJob.getPoster(), postDiscourseReplyJob.getContent());
                 break;
             default:
                 throw new JobException("Unknown job type " + job, "unknown_job_type");

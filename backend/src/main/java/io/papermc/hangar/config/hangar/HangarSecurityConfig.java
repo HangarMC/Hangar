@@ -7,12 +7,10 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.boot.convert.DurationUnit;
-import org.springframework.stereotype.Component;
 
 @ConfigurationProperties(prefix = "hangar.security")
 public record HangarSecurityConfig(

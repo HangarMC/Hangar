@@ -14,13 +14,12 @@ import io.papermc.hangar.service.internal.perms.members.OrganizationMemberServic
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
 public class OrganizationFactory extends HangarComponent {
@@ -35,7 +34,7 @@ public class OrganizationFactory extends HangarComponent {
     private final ProjectFactory projectFactory;
 
     @Autowired
-    public OrganizationFactory(UserDAO userDAO, OrganizationDAO organizationDAO, OrganizationService organizationService, OrganizationMemberService organizationMemberService, GlobalRoleService globalRoleService, final ProjectInviteService inviteService, final ProjectsDAO projectsDAO, final ProjectFactory projectFactory) {
+    public OrganizationFactory(final UserDAO userDAO, final OrganizationDAO organizationDAO, final OrganizationService organizationService, final OrganizationMemberService organizationMemberService, final GlobalRoleService globalRoleService, final ProjectInviteService inviteService, final ProjectsDAO projectsDAO, final ProjectFactory projectFactory) {
         this.userDAO = userDAO;
         this.organizationDAO = organizationDAO;
         this.organizationService = organizationService;
@@ -47,33 +46,33 @@ public class OrganizationFactory extends HangarComponent {
     }
 
     @Transactional
-    public void createOrganization(String name) {
-        if (!config.org.enabled()) {
+    public void createOrganization(final String name) {
+        if (!this.config.org.enabled()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "organization.new.error.notEnabled");
         }
-        if (organizationService.getOrganizationsOwnedBy(getHangarPrincipal().getId()).size() >= config.org.createLimit()) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "organization.new.error.tooManyOrgs", config.org.createLimit());
+        if (this.organizationService.getOrganizationsOwnedBy(this.getHangarPrincipal().getId()).size() >= this.config.org.createLimit()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "organization.new.error.tooManyOrgs", this.config.org.createLimit());
         }
 
-        String dummyEmail = name.replaceAll("[^a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]", "") + '@' + config.org.dummyEmailDomain();
-        UserTable userTable = userDAO.create(UUID.randomUUID(), name, dummyEmail, "", "", List.of(), false, null);
-        OrganizationTable organizationTable = organizationDAO.insert(new OrganizationTable(userTable.getId(), name, getHangarPrincipal().getId(), userTable.getId()));
-        globalRoleService.addRole(GlobalRole.ORGANIZATION.create(null, userTable.getId(), false));
-        organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_OWNER.create(organizationTable.getId(), getHangarPrincipal().getId(), true));
+        final String dummyEmail = name.replaceAll("[^a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]", "") + '@' + this.config.org.dummyEmailDomain();
+        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), name, dummyEmail, "", "", List.of(), false, null);
+        final OrganizationTable organizationTable = this.organizationDAO.insert(new OrganizationTable(userTable.getId(), name, this.getHangarPrincipal().getId(), userTable.getId()));
+        this.globalRoleService.addRole(GlobalRole.ORGANIZATION.create(null, userTable.getId(), false));
+        this.organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_OWNER.create(organizationTable.getId(), this.getHangarPrincipal().getId(), true));
     }
 
     @Transactional
     public void deleteOrganization(final OrganizationTable organizationTable, final String comment) {
         // Move projects to organization owner and soft delete them
-        final UserTable ownerTable = userDAO.getUserTable(organizationTable.getOwnerId());
-        final List<ProjectTable> projects = projectsDAO.getUserProjects(organizationTable.getUserId(), true);
+        final UserTable ownerTable = this.userDAO.getUserTable(organizationTable.getOwnerId());
+        final List<ProjectTable> projects = this.projectsDAO.getUserProjects(organizationTable.getUserId(), true);
         for (final ProjectTable project : projects) {
-            inviteService.setOwner(project, ownerTable, true);
-            projectFactory.softDelete(project, comment);
+            this.inviteService.setOwner(project, ownerTable, true);
+            this.projectFactory.softDelete(project, comment);
         }
 
         // Hard delete organization
-        organizationDAO.delete(organizationTable.getOrganizationId());
-        userDAO.delete(organizationTable.getUserId());
+        this.organizationDAO.delete(organizationTable.getOrganizationId());
+        this.userDAO.delete(organizationTable.getUserId());
     }
 }

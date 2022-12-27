@@ -10,7 +10,7 @@ public class PossibleProjectOwner implements ProjectOwner {
     private final String name;
     private final boolean isOrganization;
 
-    public PossibleProjectOwner(ProjectOwner projectOwner) {
+    public PossibleProjectOwner(final ProjectOwner projectOwner) {
         this.id = projectOwner.getId();
         this.userId = projectOwner.getUserId();
         this.name = projectOwner.getName();
@@ -19,31 +19,31 @@ public class PossibleProjectOwner implements ProjectOwner {
 
     @Override
     public long getId() {
-        return id;
+        return this.id;
     }
 
     @Override
     public long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public boolean isOrganization() {
-        return isOrganization;
+        return this.isOrganization;
     }
 
     @Override
     public String toString() {
         return "PossibleProjectOwner{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", name='" + name + '\'' +
-                ", isOrganization=" + isOrganization +
-                '}';
+            "id=" + this.id +
+            ", userId=" + this.userId +
+            ", name='" + this.name + '\'' +
+            ", isOrganization=" + this.isOrganization +
+            '}';
     }
 }

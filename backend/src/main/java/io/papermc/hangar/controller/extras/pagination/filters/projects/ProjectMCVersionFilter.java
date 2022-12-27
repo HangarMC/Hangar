@@ -1,6 +1,8 @@
 package io.papermc.hangar.controller.extras.pagination.filters.projects;
 
 import io.papermc.hangar.controller.extras.pagination.Filter;
+import java.util.Arrays;
+import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,16 +10,13 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import java.util.Arrays;
-import java.util.Set;
-
 @Component
 public class ProjectMCVersionFilter implements Filter<ProjectMCVersionFilter.ProjectMCVersionFilterInstance> {
 
     private final ConversionService conversionService;
 
     @Autowired
-    public ProjectMCVersionFilter(ConversionService conversionService) {
+    public ProjectMCVersionFilter(final ConversionService conversionService) {
         this.conversionService = conversionService;
     }
 
@@ -31,13 +30,12 @@ public class ProjectMCVersionFilter implements Filter<ProjectMCVersionFilter.Pro
         return "A Minecraft version to filter for";
     }
 
-    @NotNull
     @Override
-    public ProjectMCVersionFilterInstance create(NativeWebRequest webRequest) {
-        return new ProjectMCVersionFilterInstance(conversionService.convert(webRequest.getParameterValues(getSingleQueryParam()), String[].class));
+    public @NotNull ProjectMCVersionFilterInstance create(final NativeWebRequest webRequest) {
+        return new ProjectMCVersionFilterInstance(this.conversionService.convert(webRequest.getParameterValues(this.getSingleQueryParam()), String[].class));
     }
 
-    static class ProjectMCVersionFilterInstance implements FilterInstance {
+    static class ProjectMCVersionFilterInstance implements Filter.FilterInstance {
 
         private final String[] versions;
 
@@ -46,14 +44,14 @@ public class ProjectMCVersionFilter implements Filter<ProjectMCVersionFilter.Pro
         }
 
         @Override
-        public void createSql(StringBuilder sb, SqlStatement<?> q) {
+        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             sb.append(" AND v.version").append(" IN (");
-            for (int i = 0; i < versions.length; i++) {
+            for (int i = 0; i < this.versions.length; i++) {
                 sb.append(":__version__").append(i);
-                if (i + 1 != versions.length) {
+                if (i + 1 != this.versions.length) {
                     sb.append(",");
                 }
-                q.bind("__version__" + i, versions[i]);
+                q.bind("__version__" + i, this.versions[i]);
             }
             sb.append(")");
         }
@@ -61,7 +59,7 @@ public class ProjectMCVersionFilter implements Filter<ProjectMCVersionFilter.Pro
         @Override
         public String toString() {
             return "ProjectMCVersionFilterInstance{" +
-                "versions=" + Arrays.toString(versions) +
+                "versions=" + Arrays.toString(this.versions) +
                 '}';
         }
     }

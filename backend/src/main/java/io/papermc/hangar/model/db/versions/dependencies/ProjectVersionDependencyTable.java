@@ -1,10 +1,9 @@
 package io.papermc.hangar.model.db.versions.dependencies;
 
 import io.papermc.hangar.model.common.Platform;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.time.OffsetDateTime;
 
 public class ProjectVersionDependencyTable extends VersionDependencyTable {
 
@@ -15,7 +14,7 @@ public class ProjectVersionDependencyTable extends VersionDependencyTable {
     private String externalUrl;
 
     @JdbiConstructor
-    public ProjectVersionDependencyTable(OffsetDateTime createdAt, long id, long versionId, @EnumByOrdinal Platform platform, String name, boolean required, Long projectId, String externalUrl) {
+    public ProjectVersionDependencyTable(final OffsetDateTime createdAt, final long id, final long versionId, @EnumByOrdinal final Platform platform, final String name, final boolean required, final Long projectId, final String externalUrl) {
         super(createdAt, id, versionId);
         this.platform = platform;
         this.name = name;
@@ -24,7 +23,7 @@ public class ProjectVersionDependencyTable extends VersionDependencyTable {
         this.externalUrl = externalUrl;
     }
 
-    public ProjectVersionDependencyTable(long versionId, Platform platform, String name, boolean required, Long projectId, String externalUrl) {
+    public ProjectVersionDependencyTable(final long versionId, final Platform platform, final String name, final boolean required, final Long projectId, final String externalUrl) {
         super(versionId);
         this.platform = platform;
         this.name = name;
@@ -35,49 +34,49 @@ public class ProjectVersionDependencyTable extends VersionDependencyTable {
 
     @EnumByOrdinal
     public Platform getPlatform() {
-        return platform;
+        return this.platform;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public boolean isRequired() {
-        return required;
+        return this.required;
     }
 
-    public void setRequired(boolean required) {
+    public void setRequired(final boolean required) {
         this.required = required;
     }
 
     public Long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
-    public void setProjectId(Long projectId) {
+    public void setProjectId(final Long projectId) {
         this.projectId = projectId;
     }
 
     public String getExternalUrl() {
-        return externalUrl;
+        return this.externalUrl;
     }
 
-    public void setExternalUrl(String externalUrl) {
+    public void setExternalUrl(final String externalUrl) {
         this.externalUrl = externalUrl;
     }
 
     public String toLogString() {
-        return "Name: " + name + (required ? " (required)" : "");
+        return "Name: " + this.name + (this.required ? " (required)" : "");
     }
 
     @Override
     public String toString() {
         return "ProjectVersionDependencyTable{" +
-                "platform=" + platform +
-                ", name='" + name + '\'' +
-                ", required=" + required +
-                ", projectId=" + projectId +
-                ", externalUrl='" + externalUrl + '\'' +
-                "} " + super.toString();
+            "platform=" + this.platform +
+            ", name='" + this.name + '\'' +
+            ", required=" + this.required +
+            ", projectId=" + this.projectId +
+            ", externalUrl='" + this.externalUrl + '\'' +
+            "} " + super.toString();
     }
 }

@@ -13,19 +13,18 @@ public abstract class HangarModelPathVarResolver<M> extends PathVariableMethodAr
     protected abstract Class<M> modelType();
 
     @Override
-    public boolean supportsParameter(@NotNull final MethodParameter parameter) {
+    public boolean supportsParameter(final @NotNull MethodParameter parameter) {
         return super.supportsParameter(parameter) && parameter.getParameterType().equals(this.modelType());
     }
 
     @Override
-    protected void handleMissingValue(@NotNull final String name, @NotNull final MethodParameter parameter) {
+    protected void handleMissingValue(final @NotNull String name, final @NotNull MethodParameter parameter) {
         throw new HangarApiException(HttpStatus.NOT_FOUND);
     }
 
-    @Nullable
     @Override
-    protected final M resolveName(@NotNull final String name, @NotNull final MethodParameter parameter, @NotNull final NativeWebRequest request) throws Exception {
-        String param = (String) super.resolveName(name, parameter, request);
+    protected final @Nullable M resolveName(final @NotNull String name, final @NotNull MethodParameter parameter, final @NotNull NativeWebRequest request) throws Exception {
+        final String param = (String) super.resolveName(name, parameter, request);
         if (param == null) {
             return null;
         }

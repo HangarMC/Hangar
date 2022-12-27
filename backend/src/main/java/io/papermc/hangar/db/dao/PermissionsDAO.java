@@ -2,18 +2,17 @@ package io.papermc.hangar.db.dao;
 
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
+import java.util.Map;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.ValueColumn;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
 
-import java.util.Map;
-
 @Repository
 public interface PermissionsDAO {
 
-    @SqlQuery("SELECT COALESCE(gt.permission, B'0'::bit(64))::bigint perm_value" +
+    @SqlQuery("SELECT coalesce(gt.permission, B'0'::bit(64))::bigint perm_value" +
         " FROM users u " +
         "     LEFT JOIN global_trust gt ON u.id = gt.user_id" +
         " WHERE u.id = :userId OR u.name = :userName")
@@ -27,10 +26,10 @@ public interface PermissionsDAO {
         return this._getGlobalPermission(null, userName);
     }
 
-    @SqlQuery("SELECT (COALESCE(gt.permission, B'0'::bit(64)) | COALESCE(pt.permission, B'0'::bit(64)) | COALESCE(ot.permission, B'0'::bit(64)))::bigint AS perm_value" +
+    @SqlQuery("SELECT (coalesce(gt.permission, B'0'::bit(64)) | coalesce(pt.permission, B'0'::bit(64)) | coalesce(ot.permission, B'0'::bit(64)))::bigint AS perm_value" +
         " FROM users u " +
         "     LEFT JOIN global_trust gt ON u.id = gt.user_id" +
-        "     LEFT JOIN projects p ON (LOWER(p.owner_name) = LOWER(:author) AND p.slug = :slug) OR p.id = :projectId" +
+        "     LEFT JOIN projects p ON (lower(p.owner_name) = lower(:author) AND p.slug = :slug) OR p.id = :projectId" +
         "     LEFT JOIN project_trust pt ON u.id = pt.user_id AND pt.project_id = p.id" +
         "     LEFT JOIN organization_trust ot ON u.id = ot.user_id AND ot.organization_id = p.owner_id" +
         " WHERE u.id = :userId")
@@ -46,7 +45,7 @@ public interface PermissionsDAO {
 
     @ValueColumn("permission")
     @RegisterConstructorMapper(UserTable.class)
-    @SqlQuery("SELECT u.*, (COALESCE(gt.permission, B'0'::bit(64)) | COALESCE(pt.permission, B'0'::bit(64)) | COALESCE(ot.permission, B'0'::bit(64)))::bigint AS permission" +
+    @SqlQuery("SELECT u.*, (coalesce(gt.permission, B'0'::bit(64)) | coalesce(pt.permission, B'0'::bit(64)) | coalesce(ot.permission, B'0'::bit(64)))::bigint AS permission" +
         "   FROM users u" +
         "       JOIN project_trust pt ON u.id = pt.user_id" +
         "       JOIN projects p ON pt.project_id = p.id" +
@@ -55,7 +54,7 @@ public interface PermissionsDAO {
         "   WHERE pt.project_id = :projectId")
     Map<UserTable, Permission> getProjectMemberPermissions(long projectId);
 
-    @SqlQuery("SELECT (COALESCE(gt.permission, B'0'::bit(64)) | COALESCE(ot.permission, B'0'::bit(64)))::bigint AS perm_value" +
+    @SqlQuery("SELECT (coalesce(gt.permission, B'0'::bit(64)) | coalesce(ot.permission, B'0'::bit(64)))::bigint AS perm_value" +
         " FROM users u " +
         "     LEFT JOIN organizations o ON o.name = :orgName OR o.id = :orgId" +
         "     LEFT JOIN global_trust gt ON u.id = gt.user_id" +
@@ -71,9 +70,9 @@ public interface PermissionsDAO {
         return this._getOrganizationPermission(userId, null, orgId);
     }
 
-    @SqlQuery("SELECT COALESCE(BIT_OR(r.permission), B'0'::bit(64))::bigint perm_value FROM user_project_roles upr JOIN roles r ON upr.role_type = r.name WHERE upr.user_id = :userId")
+    @SqlQuery("SELECT coalesce(bit_or(r.permission), B'0'::bit(64))::bigint perm_value FROM user_project_roles upr JOIN roles r ON upr.role_type = r.name WHERE upr.user_id = :userId")
     Permission getPossibleProjectPermissions(long userId);
 
-    @SqlQuery("SELECT COALESCE(BIT_OR(r.permission), B'0'::bit(64))::bigint perm_value FROM user_organization_roles uor JOIN roles r ON uor.role_type = r.name WHERE uor.user_id = :userId")
+    @SqlQuery("SELECT coalesce(bit_or(r.permission), B'0'::bit(64))::bigint perm_value FROM user_organization_roles uor JOIN roles r ON uor.role_type = r.name WHERE uor.user_id = :userId")
     Permission getPossibleOrganizationPermissions(long userId);
 }

@@ -19,7 +19,6 @@ import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
-import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.internal.versions.DownloadService;
 import io.papermc.hangar.service.internal.versions.PinnedVersionService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
@@ -61,7 +60,7 @@ public class VersionController extends HangarComponent {
     private final PinnedVersionService pinnedVersionService;
 
     @Autowired
-    public VersionController(VersionFactory versionFactory, VersionService versionService, VersionDependencyService versionDependencyService, DownloadService downloadService, final PinnedVersionService pinnedVersionService) {
+    public VersionController(final VersionFactory versionFactory, final VersionService versionService, final VersionDependencyService versionDependencyService, final DownloadService downloadService, final PinnedVersionService pinnedVersionService) {
         this.versionFactory = versionFactory;
         this.versionService = versionService;
         this.versionDependencyService = versionDependencyService;
@@ -69,22 +68,22 @@ public class VersionController extends HangarComponent {
         this.pinnedVersionService = pinnedVersionService;
     }
 
-    @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HangarVersion> getVersion(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString) {
-        return ResponseEntity.ok(versionService.getHangarVersion(author, slug, versionString));
+    public ResponseEntity<HangarVersion> getVersion(@PathVariable final String author, @PathVariable final String slug, @PathVariable final String versionString) {
+        return ResponseEntity.ok(this.versionService.getHangarVersion(author, slug, versionString));
     }
 
     @Unlocked
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PendingVersion> create(@PathVariable("id") long projectId,
-                                                 @RequestPart(required = false) @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
-                                                 @RequestPart @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFileOrUrl> data,
-                                                 @RequestPart @NotBlank String channel) {
+    public ResponseEntity<PendingVersion> create(@PathVariable("id") final long projectId,
+                                                 @RequestPart(required = false) final @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
+                                                 @RequestPart final @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFileOrUrl> data,
+                                                 @RequestPart final @NotBlank String channel) {
         // Use separate lists to hack around multipart form data limitations
-        return ResponseEntity.ok(versionFactory.createPendingVersion(projectId, data, files, channel));
+        return ResponseEntity.ok(this.versionFactory.createPendingVersion(projectId, data, files, channel));
     }
 
     @Unlocked
@@ -92,8 +91,8 @@ public class VersionController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{id}/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createVersion(@PathVariable("id") long projectId, @RequestBody @Valid PendingVersion pendingVersion) {
-        versionFactory.publishPendingVersion(projectId, pendingVersion);
+    public void createVersion(@PathVariable("id") final long projectId, @RequestBody final @Valid PendingVersion pendingVersion) {
+        this.versionFactory.publishPendingVersion(projectId, pendingVersion);
     }
 
     @Unlocked
@@ -101,20 +100,20 @@ public class VersionController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{projectId}/{versionId}/saveDescription", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveDescription(@PathVariable long projectId, @PathVariable long versionId, @Valid @RequestBody StringContent stringContent) {
-        if (stringContent.getContent().length() > config.pages.maxLen()) {
+    public void saveDescription(@PathVariable final long projectId, @PathVariable final long versionId, @RequestBody final @Valid StringContent stringContent) {
+        if (stringContent.getContent().length() > this.config.pages.maxLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
 
-        ProjectVersionTable projectVersionTable = versionService.getProjectVersionTable(versionId);
+        final ProjectVersionTable projectVersionTable = this.versionService.getProjectVersionTable(versionId);
         if (projectVersionTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        String oldDesc = projectVersionTable.getDescription();
-        String newDesc = stringContent.getContent().trim();
+        final String oldDesc = projectVersionTable.getDescription();
+        final String newDesc = stringContent.getContent().trim();
         projectVersionTable.setDescription(newDesc);
-        versionService.updateProjectVersionTable(projectVersionTable);
-        actionLogger.version(LogAction.VERSION_DESCRIPTION_CHANGED.create(VersionContext.of(projectId, versionId), newDesc, oldDesc));
+        this.versionService.updateProjectVersionTable(projectVersionTable);
+        this.actionLogger.version(LogAction.VERSION_DESCRIPTION_CHANGED.create(VersionContext.of(projectId, versionId), newDesc, oldDesc));
     }
 
     @Unlocked
@@ -122,8 +121,8 @@ public class VersionController extends HangarComponent {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping(path = "/version/{projectId}/{versionId}/savePlatformVersions", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void savePlatformVersions(@PathVariable long projectId, @PathVariable long versionId, @Valid @RequestBody UpdatePlatformVersions updatePlatformVersions) {
-        versionDependencyService.updateVersionPlatformVersions(projectId, versionId, updatePlatformVersions);
+    public void savePlatformVersions(@PathVariable final long projectId, @PathVariable final long versionId, @RequestBody final @Valid UpdatePlatformVersions updatePlatformVersions) {
+        this.versionDependencyService.updateVersionPlatformVersions(projectId, versionId, updatePlatformVersions);
     }
 
     @Unlocked
@@ -131,8 +130,8 @@ public class VersionController extends HangarComponent {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping(path = "/version/{projectId}/{versionId}/savePluginDependencies", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void savePluginDependencies(@PathVariable long projectId, @PathVariable long versionId, @Valid @RequestBody UpdatePluginDependencies updatePluginDependencies) {
-        versionDependencyService.updateVersionPluginDependencies(projectId, versionId, updatePluginDependencies);
+    public void savePluginDependencies(@PathVariable final long projectId, @PathVariable final long versionId, @RequestBody final @Valid UpdatePluginDependencies updatePluginDependencies) {
+        this.versionDependencyService.updateVersionPluginDependencies(projectId, versionId, updatePluginDependencies);
     }
 
     @Unlocked
@@ -153,40 +152,42 @@ public class VersionController extends HangarComponent {
     @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 30)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.DELETE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{projectId}/{versionId}/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void softDeleteVersion(@PathVariable long projectId, @PathVariable("versionId") ProjectVersionTable version, @RequestBody @Valid StringContent commentContent) {
-        versionService.softDeleteVersion(projectId, version, commentContent.getContent());
+    public void softDeleteVersion(@PathVariable final long projectId, @PathVariable("versionId") final ProjectVersionTable version, @RequestBody final @Valid StringContent commentContent) {
+        this.versionService.softDeleteVersion(projectId, version, commentContent.getContent());
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PermissionRequired(NamedPermission.HARD_DELETE_VERSION)
     @PostMapping(path = "/version/{projectId}/{versionId}/hardDelete", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void hardDeleteVersion(@PathVariable("projectId") ProjectTable projectTable, @PathVariable("versionId") ProjectVersionTable projectVersionTable, @RequestBody @Valid StringContent commentContent) {
-        versionService.hardDeleteVersion(projectTable, projectVersionTable, commentContent.getContent());
+    public void hardDeleteVersion(@PathVariable("projectId") final ProjectTable projectTable, @PathVariable("versionId") final ProjectVersionTable projectVersionTable, @RequestBody final @Valid StringContent commentContent) {
+        this.versionService.hardDeleteVersion(projectTable, projectVersionTable, commentContent.getContent());
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.CREATED)
     @PermissionRequired(NamedPermission.RESTORE_VERSION)
     @PostMapping("/version/{projectId}/{versionId}/restore")
-    public void restoreVersion(@PathVariable long projectId, @PathVariable("versionId") ProjectVersionTable version) {
-        versionService.restoreVersion(projectId, version);
+    public void restoreVersion(@PathVariable final long projectId, @PathVariable("versionId") final ProjectVersionTable version) {
+        this.versionService.restoreVersion(projectId, version);
     }
 
     @ResponseBody
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
-    @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}") // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
+    // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public Resource download(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString, @PathVariable Platform platform, @RequestParam(required = false) String token) {
-        return downloadService.getVersionFile(author, slug, versionString, platform, true, token);
+    public Resource download(@PathVariable final String author, @PathVariable final String slug, @PathVariable final String versionString, @PathVariable final Platform platform, @RequestParam(required = false) final String token) {
+        return this.downloadService.getVersionFile(author, slug, versionString, platform, true, token);
     }
 
-    @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}") // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
+    // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/downloadCheck")
-    public ResponseEntity<String> downloadCheck(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString, @PathVariable Platform platform) {
-        boolean requiresConfirmation = downloadService.requiresConfirmation(author, slug, versionString, platform);
+    public ResponseEntity<String> downloadCheck(@PathVariable final String author, @PathVariable final String slug, @PathVariable final String versionString, @PathVariable final Platform platform) {
+        final boolean requiresConfirmation = this.downloadService.requiresConfirmation(author, slug, versionString, platform);
         if (requiresConfirmation) {
-            String token = downloadService.createConfirmationToken(author, slug, versionString);
+            final String token = this.downloadService.createConfirmationToken(author, slug, versionString);
             if (token == null) {
                 // null means we already had confirmed, no reason to confirm again
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

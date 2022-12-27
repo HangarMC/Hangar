@@ -1,15 +1,14 @@
 package io.papermc.hangar.db.dao.internal.table;
 
 import io.papermc.hangar.model.db.JobTable;
+import java.time.OffsetDateTime;
+import java.util.List;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
-
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @Repository
 @RegisterConstructorMapper(JobTable.class)
@@ -26,8 +25,8 @@ public interface JobsDAO {
     long countAwaitingJobs();
 
     @SqlQuery("UPDATE jobs SET state = 'started', last_updated = now() WHERE id = (" +
-               "    SELECT id FROM jobs WHERE state = 'not_started' AND (retry_at IS NULL OR retry_at < now()) ORDER BY id /*FOR UPDATE SKIP LOCKED*/ LIMIT 1" +
-               ") RETURNING *")
+        "    SELECT id FROM jobs WHERE state = 'not_started' AND (retry_at IS NULL OR retry_at < now()) ORDER BY id /*FOR UPDATE SKIP LOCKED*/ LIMIT 1" +
+        ") RETURNING *")
     JobTable fetchJob();
 
     @SqlUpdate("UPDATE jobs SET state = 'done', last_updated = now() WHERE id = :id")

@@ -5,10 +5,10 @@ import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
-import org.jetbrains.annotations.NotNull;
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import java.util.Arrays;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum OrganizationRole implements Role<OrganizationRoleTable> {
@@ -39,11 +39,11 @@ public enum OrganizationRole implements Role<OrganizationRoleTable> {
         return ASSIGNABLE_ROLES;
     }
 
-    OrganizationRole(String value, long roleId, Permission permissions, String title, Color color, int rank) {
+    OrganizationRole(final String value, final long roleId, final Permission permissions, final String title, final Color color, final int rank) {
         this(value, roleId, permissions, title, color, rank, true);
     }
 
-    OrganizationRole(String value, long roleId, Permission permissions, String title, Color color, int rank, boolean isAssignable) {
+    OrganizationRole(final String value, final long roleId, final Permission permissions, final String title, final Color color, final int rank, final boolean isAssignable) {
         this.value = value;
         this.roleId = roleId;
         this.permissions = permissions;
@@ -54,53 +54,48 @@ public enum OrganizationRole implements Role<OrganizationRoleTable> {
         Role.registerRole(this);
     }
 
-    @NotNull
     @Override
-    public String getValue() {
-        return value;
+    public @NotNull String getValue() {
+        return this.value;
     }
 
     @Override
     public long getRoleId() {
-        return roleId;
+        return this.roleId;
     }
 
-    @NotNull
     @Override
-    public RoleCategory getRoleCategory() {
+    public @NotNull RoleCategory getRoleCategory() {
         return RoleCategory.ORGANIZATION;
     }
 
-    @NotNull
     @Override
-    public Permission getPermissions() {
-        return permissions;
+    public @NotNull Permission getPermissions() {
+        return this.permissions;
     }
 
-    @NotNull
     @Override
-    public String getTitle() {
-        return title;
+    public @NotNull String getTitle() {
+        return this.title;
     }
 
-    @NotNull
     @Override
-    public Color getColor() {
-        return color;
+    public @NotNull Color getColor() {
+        return this.color;
     }
 
     @Override
     public boolean isAssignable() {
-        return isAssignable;
+        return this.isAssignable;
     }
 
     @Override
     public Integer getRank() {
-        return rank;
+        return this.rank;
     }
 
     @Override
-    public @NotNull OrganizationRoleTable create(Long organizationId, long userId, boolean isAccepted) {
+    public @NotNull OrganizationRoleTable create(final Long organizationId, final long userId, final boolean isAccepted) {
         Preconditions.checkNotNull(organizationId, "organization id");
         return new OrganizationRoleTable(userId, this, isAccepted, organizationId);
     }

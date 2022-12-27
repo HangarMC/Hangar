@@ -9,31 +9,30 @@ import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.OrganizationContext;
 import io.papermc.hangar.service.internal.perms.roles.OrganizationRoleService;
-import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService.OrganizationNotificationService;
+import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-
 @Service
 public class OrganizationMemberService extends MemberService<
-        OrganizationContext,
-        OrganizationRole,
-        OrganizationRoleTable,
-        OrganizationRolesDAO,
-        OrganizationRoleService,
-        OrganizationTable,
-        OrganizationNotificationService,
-        OrganizationMembersDAO,
-        OrganizationMemberTable
-        > {
+    OrganizationContext,
+    OrganizationRole,
+    OrganizationRoleTable,
+    OrganizationRolesDAO,
+    OrganizationRoleService,
+    OrganizationTable,
+    JoinableNotificationService.OrganizationNotificationService,
+    OrganizationMembersDAO,
+    OrganizationMemberTable
+    > {
 
     @Autowired
     private OrganizationMembersDAO dao;
 
     @Autowired
-    public OrganizationMemberService(OrganizationRoleService roleService, OrganizationMembersDAO organizationMembersDAO, OrganizationNotificationService organizationNotificationService) {
+    public OrganizationMemberService(final OrganizationRoleService roleService, final OrganizationMembersDAO organizationMembersDAO, final JoinableNotificationService.OrganizationNotificationService organizationNotificationService) {
         super(roleService, organizationMembersDAO, organizationNotificationService, OrganizationMemberTable::new, "organization.settings.members.", LogAction.ORGANIZATION_MEMBER_ADDED, LogAction.ORGANIZATION_MEMBERS_REMOVED, LogAction.ORGANIZATION_MEMBER_ROLES_CHANGED);
     }
 
@@ -42,11 +41,11 @@ public class OrganizationMemberService extends MemberService<
         return List.of(OrganizationRole.ORGANIZATION_OWNER);
     }
 
-    public void setMembershipVisibility(long organizationId, long userId, boolean hidden) {
-        dao.setMembershipVisibility(organizationId, userId, hidden);
+    public void setMembershipVisibility(final long organizationId, final long userId, final boolean hidden) {
+        this.dao.setMembershipVisibility(organizationId, userId, hidden);
     }
 
-    public Map<String, Boolean> getUserOrganizationMembershipVisibility(String user) {
-        return dao.getUserOrganizationMembershipVisibility(user);
+    public Map<String, Boolean> getUserOrganizationMembershipVisibility(final String user) {
+        return this.dao.getUserOrganizationMembershipVisibility(user);
     }
 }

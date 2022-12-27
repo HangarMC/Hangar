@@ -6,9 +6,7 @@ import com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.emoji.EmojiExtension;
 import com.vladsch.flexmark.ext.emoji.EmojiImageType;
-import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
-import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
 import com.vladsch.flexmark.ext.gitlab.GitLabExtension;
 import com.vladsch.flexmark.ext.resizable.image.ResizableImageExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
@@ -27,13 +25,12 @@ import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.util.HtmlSanitizer;
+import java.util.Arrays;
+import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
-import java.util.Set;
 
 @Service
 public class MarkdownService {
@@ -43,11 +40,11 @@ public class MarkdownService {
     private final HtmlSanitizer sanitizer;
 
     @Autowired
-    public MarkdownService(HangarConfig config, final HtmlSanitizer sanitizer) {
+    public MarkdownService(final HangarConfig config, final HtmlSanitizer sanitizer) {
         this.config = config;
         this.sanitizer = sanitizer;
 
-        options = new MutableDataSet()
+        this.options = new MutableDataSet()
             .set(AnchorLinkExtension.ANCHORLINKS_TEXT_SUFFIX, "<svg class=\"ml-2 text-xl\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 24 24\" width=\"1.2em\" height=\"1.2em\"><path fill=\"currentColor\" d=\"M10.59 13.41c.41.39.41 1.03 0 1.42c-.39.39-1.03.39-1.42 0a5.003 5.003 0 0 1 0-7.07l3.54-3.54a5.003 5.003 0 0 1 7.07 0a5.003 5.003 0 0 1 0 7.07l-1.49 1.49c.01-.82-.12-1.64-.4-2.42l.47-.48a2.982 2.982 0 0 0 0-4.24a2.982 2.982 0 0 0-4.24 0l-3.53 3.53a2.982 2.982 0 0 0 0 4.24m2.82-4.24c.39-.39 1.03-.39 1.42 0a5.003 5.003 0 0 1 0 7.07l-3.54 3.54a5.003 5.003 0 0 1-7.07 0a5.003 5.003 0 0 1 0-7.07l1.49-1.49c-.01.82.12 1.64.4 2.43l-.47.47a2.982 2.982 0 0 0 0 4.24a2.982 2.982 0 0 0 4.24 0l3.53-3.53a2.982 2.982 0 0 0 0-4.24a.973.973 0 0 1 0-1.42Z\"></path></svg>")
             .set(AnchorLinkExtension.ANCHORLINKS_ANCHOR_CLASS, "headeranchor inline-flex items-center order-last")
             .set(AnchorLinkExtension.ANCHORLINKS_WRAP_TEXT, false)
@@ -68,9 +65,9 @@ public class MarkdownService {
                     TypographicExtension.create(),
                     WikiLinkExtension.create(),
                     EmojiExtension.create(),
-                    //TODO readd after sanitization is fixed
-                    //TaskListExtension.create(),
-                    //FootnoteExtension.create(),
+                    // TODO readd after sanitization is fixed
+                    // TaskListExtension.create(),
+                    // FootnoteExtension.create(),
                     AdmonitionExtension.create(),
                     GitLabExtension.create(),
                     YouTubeLinkExtension.create(),
@@ -78,18 +75,18 @@ public class MarkdownService {
                 )
             );
 
-        markdownParser = Parser.builder(options).build();
+        this.markdownParser = Parser.builder(this.options).build();
     }
 
-    public String render(String input) {
+    public String render(final String input) {
         if (input == null) {
             return "";
         }
         return this.render(input, RenderSettings.defaultSettings);
     }
 
-    public String render(String input, RenderSettings settings) {
-        MutableDataSet localOptions = new MutableDataSet(this.options);
+    public String render(String input, final RenderSettings settings) {
+        final MutableDataSet localOptions = new MutableDataSet(this.options);
 
         if (settings.linkEscapeChars != null) {
             localOptions.set(WikiLinkExtension.LINK_ESCAPE_CHARS, settings.linkEscapeChars);
@@ -98,14 +95,14 @@ public class MarkdownService {
             localOptions.set(WikiLinkExtension.LINK_PREFIX, settings.linkPrefix);
         }
 
-        HtmlRenderer htmlRenderer = HtmlRenderer
+        final HtmlRenderer htmlRenderer = HtmlRenderer
             .builder(localOptions)
-            .linkResolverFactory(new ExternalLinkResolverFactory(config))
+            .linkResolverFactory(new ExternalLinkResolverFactory(this.config))
             .build();
 
         // Render markdown and then sanitize html
-        input = htmlRenderer.render(markdownParser.parse(input));
-        return sanitizer.sanitize(input);
+        input = htmlRenderer.render(this.markdownParser.parse(input));
+        return this.sanitizer.sanitize(input);
     }
 
     static class RenderSettings {
@@ -114,7 +111,7 @@ public class MarkdownService {
 
         public static final RenderSettings defaultSettings = new RenderSettings(null, null);
 
-        public RenderSettings(String linkEscapeChars, String linkPrefix) {
+        public RenderSettings(final String linkEscapeChars, final String linkPrefix) {
             this.linkEscapeChars = linkEscapeChars;
             this.linkPrefix = linkPrefix;
         }
@@ -124,7 +121,7 @@ public class MarkdownService {
 
         private final HangarConfig config;
 
-        ExternalLinkResolverFactory(HangarConfig config) {
+        ExternalLinkResolverFactory(final HangarConfig config) {
             this.config = config;
         }
 
@@ -144,8 +141,8 @@ public class MarkdownService {
         }
 
         @Override
-        public @NotNull LinkResolver apply(@NotNull LinkResolverBasicContext linkResolverBasicContext) {
-            return new ExternalLinkResolver(config);
+        public @NotNull LinkResolver apply(final @NotNull LinkResolverBasicContext linkResolverBasicContext) {
+            return new ExternalLinkResolver(this.config);
         }
     }
 
@@ -153,18 +150,18 @@ public class MarkdownService {
 
         private final HangarConfig config;
 
-        ExternalLinkResolver(HangarConfig config) {
+        ExternalLinkResolver(final HangarConfig config) {
             this.config = config;
         }
 
         @Override
-        public @NotNull ResolvedLink resolveLink(@NotNull Node node, @NotNull LinkResolverBasicContext context, @NotNull ResolvedLink link) {
+        public @NotNull ResolvedLink resolveLink(final @NotNull Node node, final @NotNull LinkResolverBasicContext context, final @NotNull ResolvedLink link) {
             if (node instanceof MailLink) {
                 return link;
             } else if (link.getLinkType() == LinkType.IMAGE) {
-                return link.withStatus(LinkStatus.VALID).withUrl(config.security.proxyImage(link.getUrl()));
+                return link.withStatus(LinkStatus.VALID).withUrl(this.config.security.proxyImage(link.getUrl()));
             } else {
-                return link.withStatus(LinkStatus.VALID).withUrl(config.security.makeSafe(link.getUrl()));
+                return link.withStatus(LinkStatus.VALID).withUrl(this.config.security.makeSafe(link.getUrl()));
             }
         }
     }

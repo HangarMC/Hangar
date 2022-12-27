@@ -10,6 +10,7 @@ import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.admin.ActivityService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -17,8 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
 
 @Unlocked
 @Controller
@@ -31,23 +30,23 @@ public class AdminActivityController extends HangarComponent {
     private final ActivityService activityService;
 
     @Autowired
-    public AdminActivityController(ActivityService activityService) {
+    public AdminActivityController(final ActivityService activityService) {
         this.activityService = activityService;
     }
 
     @GetMapping("/flags")
-    public List<FlagActivity> getFlagActivity(@PathVariable UserTable user) {
+    public List<FlagActivity> getFlagActivity(@PathVariable final UserTable user) {
         if (user.isOrganization()) {
             throw new HangarApiException("userActivity.error.isOrg");
         }
-        return activityService.getFlagActivity(user);
+        return this.activityService.getFlagActivity(user);
     }
 
     @GetMapping("/reviews")
-    public List<ReviewActivity> getReviewActivity(@PathVariable UserTable user) {
+    public List<ReviewActivity> getReviewActivity(@PathVariable final UserTable user) {
         if (user.isOrganization()) {
             throw new HangarApiException("userActivity.error.isOrg");
         }
-        return activityService.getReviewActivity(user);
+        return this.activityService.getReviewActivity(user);
     }
 }

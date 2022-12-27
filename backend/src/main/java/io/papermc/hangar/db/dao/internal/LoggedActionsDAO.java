@@ -9,6 +9,7 @@ import io.papermc.hangar.model.db.log.LoggedActionsProjectTable;
 import io.papermc.hangar.model.db.log.LoggedActionsUserTable;
 import io.papermc.hangar.model.db.log.LoggedActionsVersionTable;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
+import java.util.List;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -18,8 +19,6 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface LoggedActionsDAO {
@@ -48,14 +47,14 @@ public interface LoggedActionsDAO {
     @RegisterColumnMapper(LogActionColumnMapper.class)
     @RegisterConstructorMapper(HangarLoggedAction.class)
     @SqlQuery("SELECT * FROM v_logged_actions la " +
-              " WHERE true <filters>" +
-              " ORDER BY la.created_at DESC <offsetLimit>")
+        " WHERE TRUE <filters>" +
+        " ORDER BY la.created_at DESC <offsetLimit>")
     // TODO add <sorters>
     @DefineNamedBindings
     List<HangarLoggedAction> getLog(@BindPagination RequestPagination pagination);
 
     @UseStringTemplateEngine
     @SqlQuery("SELECT count(*) FROM v_logged_actions la " +
-              " WHERE true <filters>")
+        " WHERE TRUE <filters>")
     long getLogCount(@BindPagination(isCount = true) RequestPagination pagination);
 }

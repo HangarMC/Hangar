@@ -2,42 +2,39 @@ package io.papermc.hangar.model.api.requests;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.model.common.projects.FlagReason;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class FlagForm {
-    @NotBlank
-    private final String comment;
+    private final @NotBlank String comment;
     private final long projectId;
-    @NotNull
-    private final FlagReason reason;
+    private final @NotNull FlagReason reason;
 
     @JsonCreator
-    public FlagForm(String comment, long projectId, FlagReason reason) {
+    public FlagForm(final String comment, final long projectId, final FlagReason reason) {
         this.comment = comment;
         this.projectId = projectId;
         this.reason = reason;
     }
 
     public String getComment() {
-        return comment;
+        return this.comment;
     }
 
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     public FlagReason getReason() {
-        return reason;
+        return this.reason;
     }
 
     @Override
     public String toString() {
         return "FlagForm{" +
-                "comment='" + comment + '\'' +
-                ", projectId=" + projectId +
-                ", reason=" + reason +
-                '}';
+            "comment='" + this.comment + '\'' +
+            ", projectId=" + this.projectId +
+            ", reason=" + this.reason +
+            '}';
     }
 }

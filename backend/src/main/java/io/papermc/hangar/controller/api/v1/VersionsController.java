@@ -17,7 +17,6 @@ import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
-import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.api.VersionsApiService;
 import io.papermc.hangar.service.internal.versions.DownloadService;
 import java.time.OffsetDateTime;
@@ -38,34 +37,34 @@ public class VersionsController implements IVersionsController {
     private final VersionsApiService versionsApiService;
 
     @Autowired
-    public VersionsController(DownloadService downloadService, VersionsApiService versionsApiService) {
+    public VersionsController(final DownloadService downloadService, final VersionsApiService versionsApiService) {
         this.downloadService = downloadService;
         this.versionsApiService = versionsApiService;
     }
 
     @Override
-    @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
-    public Version getVersion(String author, String slug, String name) {
-        return versionsApiService.getVersion(author, slug, name);
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
+    public Version getVersion(final String author, final String slug, final String name) {
+        return this.versionsApiService.getVersion(author, slug, name);
     }
 
     @Override
-    @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
     @ApplicableFilters({VersionChannelFilter.class, VersionPlatformFilter.class, VersionTagFilter.class})
-    public PaginatedResult<Version> getVersions(String author, String slug, @NotNull @ConfigurePagination(defaultLimitString = "@hangarConfig.projects.initVersionLoad", maxLimit = 25) RequestPagination pagination) {
-        return versionsApiService.getVersions(author, slug, pagination);
+    public PaginatedResult<Version> getVersions(final String author, final String slug, @ConfigurePagination(defaultLimitString = "@hangarConfig.projects.initVersionLoad", maxLimit = 25) final @NotNull RequestPagination pagination) {
+        return this.versionsApiService.getVersions(author, slug, pagination);
     }
 
     @Override
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#author, #slug}")
-    public Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, Platform platform, @NotNull OffsetDateTime fromDate, @NotNull OffsetDateTime toDate) {
-        return versionsApiService.getVersionStats(author, slug, versionString, platform, fromDate, toDate);
+    public Map<String, VersionStats> getVersionStats(final String author, final String slug, final String versionString, final Platform platform, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
+        return this.versionsApiService.getVersionStats(author, slug, versionString, platform, fromDate, toDate);
     }
 
     @Override
     @RateLimit(overdraft = 10, refillTokens = 2)
-    @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
-    public Resource downloadVersion(String author, String slug, String versionString, Platform platform) {
-        return downloadService.getVersionFile(author, slug, versionString, platform, false, null);
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
+    public Resource downloadVersion(final String author, final String slug, final String versionString, final Platform platform) {
+        return this.downloadService.getVersionFile(author, slug, versionString, platform, false, null);
     }
 }

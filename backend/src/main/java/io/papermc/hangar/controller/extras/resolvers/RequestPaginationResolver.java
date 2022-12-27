@@ -50,7 +50,7 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
     }
 
     @Override
-    public boolean supportsParameter(@NotNull final MethodParameter parameter) {
+    public boolean supportsParameter(final @NotNull MethodParameter parameter) {
         return RequestPagination.class.isAssignableFrom(parameter.getParameterType());
     }
 
@@ -88,7 +88,7 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
     }
 
     @Override
-    public RequestPagination resolveArgument(@NotNull final MethodParameter parameter, final ModelAndViewContainer mavContainer, @NotNull final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
+    public RequestPagination resolveArgument(final @NotNull MethodParameter parameter, final ModelAndViewContainer mavContainer, final @NotNull NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
         final RequestPagination pagination = this.create(
             ApiUtils.mapParameter(webRequest, "offset", Long::parseLong),
             ApiUtils.mapParameter(webRequest, "limit", Long::parseLong),

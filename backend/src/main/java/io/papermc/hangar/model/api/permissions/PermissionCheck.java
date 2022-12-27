@@ -7,16 +7,16 @@ public class PermissionCheck {
     private final PermissionType type;
     private final boolean result;
 
-    public PermissionCheck(PermissionType type, boolean result) {
+    public PermissionCheck(final PermissionType type, final boolean result) {
         this.type = type;
         this.result = result;
     }
 
     public PermissionType getType() {
-        return type;
+        return this.type;
     }
 
     public boolean isResult() {
-        return result;
+        return this.result;
     }
 }

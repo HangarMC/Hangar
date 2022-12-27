@@ -10,8 +10,9 @@ import org.springframework.boot.convert.DurationUnit;
 @ConfigurationProperties(prefix = "hangar.api")
 public record ApiConfig(@NestedConfigurationProperty Session session) { // TODO is this used anywhere now?
 
+    // TODO is this used anywhere now?
     @ConfigurationProperties(prefix = "hangar.api.session")
-    public record Session( // TODO is this used anywhere now?
+    public record Session(
         @DurationUnit(ChronoUnit.HOURS) @DefaultValue("3") Duration publicExpiration,
         @DurationUnit(ChronoUnit.DAYS) @DefaultValue("14") Duration expiration
     ) {

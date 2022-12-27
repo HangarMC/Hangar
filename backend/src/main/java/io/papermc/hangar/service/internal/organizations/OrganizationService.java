@@ -14,12 +14,11 @@ import io.papermc.hangar.model.internal.HangarOrganization;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class OrganizationService extends HangarComponent {
@@ -32,7 +31,7 @@ public class OrganizationService extends HangarComponent {
     private final OrganizationMemberService organizationMemberService;
 
     @Autowired
-    public OrganizationService(HangarOrganizationsDAO hangarOrganizationsDAO, OrganizationRolesDAO organizationRolesDAO, OrganizationDAO organizationDAO, UserDAO userDAO, PermissionService permissionService, OrganizationMemberService organizationMemberService) {
+    public OrganizationService(final HangarOrganizationsDAO hangarOrganizationsDAO, final OrganizationRolesDAO organizationRolesDAO, final OrganizationDAO organizationDAO, final UserDAO userDAO, final PermissionService permissionService, final OrganizationMemberService organizationMemberService) {
         this.hangarOrganizationsDAO = hangarOrganizationsDAO;
         this.organizationRolesDAO = organizationRolesDAO;
         this.organizationDAO = organizationDAO;
@@ -42,41 +41,41 @@ public class OrganizationService extends HangarComponent {
     }
 
     public OrganizationTable getOrganizationTable(final long id) {
-        return organizationDAO.getById(id);
+        return this.organizationDAO.getById(id);
     }
 
-    public OrganizationTable getOrganizationTable(String name) {
-        return organizationDAO.getByName(name);
+    public OrganizationTable getOrganizationTable(final String name) {
+        return this.organizationDAO.getByName(name);
     }
 
-    public List<OrganizationTable> getOrganizationTablesWithPermission(long userId, Permission permission) {
-        return organizationDAO.getOrganizationsWithPermission(userId, permission);
+    public List<OrganizationTable> getOrganizationTablesWithPermission(final long userId, final Permission permission) {
+        return this.organizationDAO.getOrganizationsWithPermission(userId, permission);
     }
 
-    public List<OrganizationTable> getOrganizationsOwnedBy(long ownerId) {
-        return organizationDAO.getOrganizationsOwnedBy(ownerId);
+    public List<OrganizationTable> getOrganizationsOwnedBy(final long ownerId) {
+        return this.organizationDAO.getOrganizationsOwnedBy(ownerId);
     }
 
-    public HangarOrganization getHangarOrganization(String name) {
-        OrganizationTable organizationTable = organizationDAO.getByName(name);
+    public HangarOrganization getHangarOrganization(final String name) {
+        final OrganizationTable organizationTable = this.organizationDAO.getByName(name);
         if (organizationTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        UserTable owner = userDAO.getUserTable(organizationTable.getOwnerId());
-        List<JoinableMember<OrganizationRoleTable>> members = hangarOrganizationsDAO.getOrganizationMembers(organizationTable.getId(), getHangarUserId(), permissionService.getOrganizationPermissions(getHangarUserId(), organizationTable.getId()).has(Permission.ManageOrganizationMembers));
+        final UserTable owner = this.userDAO.getUserTable(organizationTable.getOwnerId());
+        final List<JoinableMember<OrganizationRoleTable>> members = this.hangarOrganizationsDAO.getOrganizationMembers(organizationTable.getId(), this.getHangarUserId(), this.permissionService.getOrganizationPermissions(this.getHangarUserId(), organizationTable.getId()).has(Permission.ManageOrganizationMembers));
         return new HangarOrganization(organizationTable.getId(), owner, members);
     }
 
-    public Map<String, OrganizationRoleTable> getUserOrganizationRoles(String user, boolean includeHidden) {
-        Map<String, OrganizationRoleTable> roles = organizationRolesDAO.getUserOrganizationRoles(user, getHangarUserId());
+    public Map<String, OrganizationRoleTable> getUserOrganizationRoles(final String user, final boolean includeHidden) {
+        final Map<String, OrganizationRoleTable> roles = this.organizationRolesDAO.getUserOrganizationRoles(user, this.getHangarUserId());
         if (!includeHidden) {
-            Map<String, Boolean> visibility = organizationMemberService.getUserOrganizationMembershipVisibility(user);
+            final Map<String, Boolean> visibility = this.organizationMemberService.getUserOrganizationMembershipVisibility(user);
             roles.keySet().removeIf(org -> Boolean.TRUE.equals(visibility.getOrDefault(org, true)));
         }
         return roles;
     }
 
-    public long getUserOrganizationCount(long userId) {
-        return organizationDAO.getOrganizationCount(userId);
+    public long getUserOrganizationCount(final long userId) {
+        return this.organizationDAO.getOrganizationCount(userId);
     }
 }

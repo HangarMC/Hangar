@@ -6,19 +6,19 @@ public class Pagination extends RequestPagination {
 
     private final long count;
 
-    public Pagination(Long count, RequestPagination pagination) {
+    public Pagination(final Long count, final RequestPagination pagination) {
         super(pagination.getLimit(), pagination.getOffset());
         this.count = count != null ? count : 0;
     }
 
     public long getCount() {
-        return count;
+        return this.count;
     }
 
     @Override
     public String toString() {
         return "Pagination{" +
-                "count=" + count +
-                "} " + super.toString();
+            "count=" + this.count +
+            "} " + super.toString();
     }
 }

@@ -2,10 +2,9 @@ package io.papermc.hangar.model.internal.admin.activity;
 
 import io.papermc.hangar.model.api.project.ProjectNamespace;
 import io.papermc.hangar.model.common.Platform;
-import org.jdbi.v3.core.mapper.Nested;
-
 import java.time.OffsetDateTime;
 import java.util.List;
+import org.jdbi.v3.core.mapper.Nested;
 
 public class ReviewActivity extends Activity {
 
@@ -13,7 +12,7 @@ public class ReviewActivity extends Activity {
     private final String versionString;
     private final List<Platform> platforms;
 
-    public ReviewActivity(@Nested ProjectNamespace namespace, OffsetDateTime endedAt, String versionString, List<Platform> platforms) {
+    public ReviewActivity(@Nested final ProjectNamespace namespace, final OffsetDateTime endedAt, final String versionString, final List<Platform> platforms) {
         super(namespace);
         this.endedAt = endedAt;
         this.versionString = versionString;
@@ -21,23 +20,23 @@ public class ReviewActivity extends Activity {
     }
 
     public OffsetDateTime getEndedAt() {
-        return endedAt;
+        return this.endedAt;
     }
 
     public String getVersionString() {
-        return versionString;
+        return this.versionString;
     }
 
     public List<Platform> getPlatforms() {
-        return platforms;
+        return this.platforms;
     }
 
     @Override
     public String toString() {
         return "ReviewActivity{" +
-                "endedAt=" + endedAt +
-                ", versionString='" + versionString + '\'' +
-                ", platforms=" + platforms +
-                "} " + super.toString();
+            "endedAt=" + this.endedAt +
+            ", versionString='" + this.versionString + '\'' +
+            ", platforms=" + this.platforms +
+            "} " + super.toString();
     }
 }

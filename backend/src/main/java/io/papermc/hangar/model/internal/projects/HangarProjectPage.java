@@ -3,7 +3,6 @@ package io.papermc.hangar.model.internal.projects;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
-
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,7 +15,7 @@ public class HangarProjectPage {
     private final boolean home;
     private final Map<Long, HangarProjectPage> children;
 
-    public HangarProjectPage(ProjectPageTable projectPageTable, boolean home) {
+    public HangarProjectPage(final ProjectPageTable projectPageTable, final boolean home) {
         this.id = projectPageTable.getId();
         this.name = projectPageTable.getName();
         this.slug = projectPageTable.getSlug();
@@ -25,37 +24,37 @@ public class HangarProjectPage {
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getSlug() {
-        return slug;
+        return this.slug;
     }
 
     public boolean isHome() {
-        return home;
+        return this.home;
     }
 
     @JsonIgnore
     public Map<Long, HangarProjectPage> getChildren() {
-        return children;
+        return this.children;
     }
 
     @JsonProperty("children")
     public Collection<HangarProjectPage> getPageChildren() {
-        return children.values();
+        return this.children.values();
     }
 
     @Override
     public String toString() {
         return "HangarProjectPage{" +
-                "name='" + name + '\'' +
-                ", slug='" + slug + '\'' +
-                ", children=" + children +
-                '}';
+            "name='" + this.name + '\'' +
+            ", slug='" + this.slug + '\'' +
+            ", children=" + this.children +
+            '}';
     }
 }

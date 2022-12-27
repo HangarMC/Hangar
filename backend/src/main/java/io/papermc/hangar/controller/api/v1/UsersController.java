@@ -12,12 +12,11 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.api.UsersApiService;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-
-import java.util.List;
 
 @Anyone
 @Controller
@@ -27,45 +26,45 @@ public class UsersController extends HangarComponent implements IUsersController
     private final UsersApiService usersApiService;
 
     @Autowired
-    public UsersController(UsersApiService usersApiService) {
+    public UsersController(final UsersApiService usersApiService) {
         this.usersApiService = usersApiService;
     }
 
     @Override
-    public ResponseEntity<User> getUser(String userName) {
-        return ResponseEntity.ok(usersApiService.getUser(userName, User.class));
+    public ResponseEntity<User> getUser(final String userName) {
+        return ResponseEntity.ok(this.usersApiService.getUser(userName, User.class));
     }
 
     @Override
     @ApplicableSorters({SorterRegistry.USER_NAME, SorterRegistry.USER_JOIN_DATE, SorterRegistry.USER_PROJECT_COUNT, SorterRegistry.USER_LOCKED, SorterRegistry.USER_ORG, SorterRegistry.USER_ROLES})
-    public ResponseEntity<PaginatedResult<User>> getUsers(String query, @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(usersApiService.getUsers(query, pagination, User.class));
+    public ResponseEntity<PaginatedResult<User>> getUsers(final String query, final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.usersApiService.getUsers(query, pagination, User.class));
     }
 
     @Override
-    public ResponseEntity<PaginatedResult<ProjectCompact>> getUserStarred(String userName, ProjectSortingStrategy sort, @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(usersApiService.getUserStarred(userName, sort, pagination));
+    public ResponseEntity<PaginatedResult<ProjectCompact>> getUserStarred(final String userName, final ProjectSortingStrategy sort, final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.usersApiService.getUserStarred(userName, sort, pagination));
     }
 
     @Override
-    public ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(String userName, ProjectSortingStrategy sort, @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(usersApiService.getUserWatching(userName, sort, pagination));
+    public ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(final String userName, final ProjectSortingStrategy sort, final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.usersApiService.getUserWatching(userName, sort, pagination));
     }
 
     @Override
     public ResponseEntity<List<ProjectCompact>> getUserPinnedProjects(final String userName) {
-        return ResponseEntity.ok(usersApiService.getUserPinned(userName));
+        return ResponseEntity.ok(this.usersApiService.getUserPinned(userName));
     }
 
     @Override
     @ApplicableSorters({SorterRegistry.USER_NAME, SorterRegistry.USER_JOIN_DATE, SorterRegistry.USER_PROJECT_COUNT})
-    public ResponseEntity<PaginatedResult<User>> getAuthors(@NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(usersApiService.getAuthors(pagination));
+    public ResponseEntity<PaginatedResult<User>> getAuthors(final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.usersApiService.getAuthors(pagination));
     }
 
     @Override
     @ApplicableSorters({SorterRegistry.USER_NAME, SorterRegistry.USER_JOIN_DATE, SorterRegistry.USER_ROLES})
-    public ResponseEntity<PaginatedResult<User>> getStaff(@NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(usersApiService.getStaff(pagination));
+    public ResponseEntity<PaginatedResult<User>> getStaff(final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.usersApiService.getStaff(pagination));
     }
 }

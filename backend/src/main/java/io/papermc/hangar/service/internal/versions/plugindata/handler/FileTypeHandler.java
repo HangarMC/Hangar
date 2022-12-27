@@ -2,34 +2,31 @@ package io.papermc.hangar.service.internal.versions.plugindata.handler;
 
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
-import org.jdbi.v3.core.internal.MemoizingSupplier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.configurate.ConfigurateException;
-
 import java.io.BufferedReader;
 import java.util.Collections;
 import java.util.Set;
 import java.util.SortedSet;
+import org.jdbi.v3.core.internal.MemoizingSupplier;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.ConfigurateException;
 
 public abstract class FileTypeHandler<D extends FileTypeHandler.FileData> {
 
     private final String fileName;
     private final Platform platform;
 
-    protected FileTypeHandler(String fileName, Platform platform) {
+    protected FileTypeHandler(final String fileName, final Platform platform) {
         this.fileName = fileName;
         this.platform = platform;
     }
 
-    @NotNull
-    public String getFileName() {
-        return fileName;
+    public @NotNull String getFileName() {
+        return this.fileName;
     }
 
-    @NotNull
-    public Platform getPlatform() {
-        return platform;
+    public @NotNull Platform getPlatform() {
+        return this.platform;
     }
 
     public abstract D getData(BufferedReader reader) throws ConfigurateException;
@@ -45,38 +42,31 @@ public abstract class FileTypeHandler<D extends FileTypeHandler.FileData> {
         @SuppressWarnings("java:S2065")
         private final transient MemoizingSupplier<Set<PluginDependency>> pluginDependencies = MemoizingSupplier.of(this::createPluginDependencies);
 
-        @Nullable
-        public final String getVersion() {
+        public final @Nullable String getVersion() {
             return this.version;
         }
 
-        @Nullable
-        public final String getName() {
+        public final @Nullable String getName() {
             return this.name;
         }
 
-        @Nullable
-        public final String getDescription() {
+        public final @Nullable String getDescription() {
             return this.description;
         }
 
-        @NotNull
-        protected abstract Set<PluginDependency> createPluginDependencies();
+        protected abstract @NotNull Set<PluginDependency> createPluginDependencies();
 
-        @NotNull
-        public final Set<PluginDependency> getPluginDependencies() {
+        public final @NotNull Set<PluginDependency> getPluginDependencies() {
             return this.pluginDependencies.get();
         }
 
-        @NotNull
-        public SortedSet<String> getPlatformDependencies() {
+        public @NotNull SortedSet<String> getPlatformDependencies() {
             return Collections.emptySortedSet();
         }
 
-        @NotNull
-        public final Set<String> getAuthors() {
+        public final @NotNull Set<String> getAuthors() {
             if (this.author != null) {
-                return Set.of(author);
+                return Set.of(this.author);
             }
             return this.authors == null ? Collections.emptySet() : this.authors;
         }
@@ -84,10 +74,10 @@ public abstract class FileTypeHandler<D extends FileTypeHandler.FileData> {
         @Override
         public final String toString() {
             return "FileData{" +
-                    "version='" + version + '\'' +
-                    ", name='" + name + '\'' +
-                    ", pluginDependencies='" + getPluginDependencies() + '\'' +
-                    '}';
+                "version='" + this.version + '\'' +
+                ", name='" + this.name + '\'' +
+                ", pluginDependencies='" + this.getPluginDependencies() + '\'' +
+                '}';
         }
     }
 }

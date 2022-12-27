@@ -2,13 +2,12 @@ package io.papermc.hangar.controller.extras.pagination.filters.versions;
 
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter.VersionChannelFilterInstance;
+import java.util.Arrays;
+import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
-
-import java.util.Arrays;
-import java.util.Set;
 
 @Component
 public class VersionChannelFilter implements Filter<VersionChannelFilterInstance> {
@@ -23,27 +22,26 @@ public class VersionChannelFilter implements Filter<VersionChannelFilterInstance
         return "A name of a version channel to filter for";
     }
 
-    @NotNull
     @Override
-    public VersionChannelFilterInstance create(NativeWebRequest webRequest) {
-        return new VersionChannelFilterInstance(webRequest.getParameterValues(getSingleQueryParam()));
+    public @NotNull VersionChannelFilterInstance create(final NativeWebRequest webRequest) {
+        return new VersionChannelFilterInstance(webRequest.getParameterValues(this.getSingleQueryParam()));
     }
 
-    public static class VersionChannelFilterInstance implements FilterInstance {
+    public static class VersionChannelFilterInstance implements Filter.FilterInstance {
 
         private final String[] channels;
 
-        public VersionChannelFilterInstance(String[] channels) {
+        public VersionChannelFilterInstance(final String[] channels) {
             this.channels = channels;
         }
 
         @Override
-        public void createSql(StringBuilder sb, SqlStatement<?> q) {
+        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             sb.append(" AND pc.name IN (");
-            for (int i = 0; i < channels.length; i++) {
+            for (int i = 0; i < this.channels.length; i++) {
                 sb.append(":__channelName_").append(i);
-                q.bind("__channelName_" + i, channels[i]);
-                if (i + 1 != channels.length) {
+                q.bind("__channelName_" + i, this.channels[i]);
+                if (i + 1 != this.channels.length) {
                     sb.append(",");
                 }
             }
@@ -53,8 +51,8 @@ public class VersionChannelFilter implements Filter<VersionChannelFilterInstance
         @Override
         public String toString() {
             return "VersionChannelFilterInstance{" +
-                    "channels=" + Arrays.toString(channels) +
-                    '}';
+                "channels=" + Arrays.toString(this.channels) +
+                '}';
         }
     }
 }

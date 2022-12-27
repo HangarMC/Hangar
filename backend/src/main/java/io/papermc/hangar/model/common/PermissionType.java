@@ -2,7 +2,6 @@ package io.papermc.hangar.model.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-
 import java.util.Set;
 
 public enum PermissionType {
@@ -15,7 +14,7 @@ public enum PermissionType {
     private final String value;
     private final Set<Integer> argCounts;
 
-    PermissionType(String value, Integer...argCounts) {
+    PermissionType(final String value, final Integer... argCounts) {
         this.value = value;
         this.argCounts = Set.of(argCounts);
     }
@@ -23,16 +22,16 @@ public enum PermissionType {
     @Override
     @JsonValue
     public String toString() {
-        return String.valueOf(value);
+        return String.valueOf(this.value);
     }
 
     public Set<Integer> getArgCounts() {
-        return argCounts;
+        return this.argCounts;
     }
 
     @JsonCreator
-    public static PermissionType fromValue(String text) {
-        for (PermissionType b : PermissionType.values()) {
+    public static PermissionType fromValue(final String text) {
+        for (final PermissionType b : values()) {
             if (String.valueOf(b.value).equals(text)) {
                 return b;
             }

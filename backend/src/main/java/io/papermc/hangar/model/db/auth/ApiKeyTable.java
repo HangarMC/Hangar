@@ -3,9 +3,8 @@ package io.papermc.hangar.model.db.auth;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.Table;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ApiKeyTable extends Table implements Named {
 
@@ -15,7 +14,7 @@ public class ApiKeyTable extends Table implements Named {
     private final String token;
     private final Permission permissions;
 
-    public ApiKeyTable(String name, long ownerId, String tokenIdentifier, String token, Permission permissions) {
+    public ApiKeyTable(final String name, final long ownerId, final String tokenIdentifier, final String token, final Permission permissions) {
         this.name = name;
         this.ownerId = ownerId;
         this.tokenIdentifier = tokenIdentifier;
@@ -24,7 +23,7 @@ public class ApiKeyTable extends Table implements Named {
     }
 
     @JdbiConstructor
-    public ApiKeyTable(OffsetDateTime createdAt, long id, String name, long ownerId, String tokenIdentifier, String token, Permission permissions) {
+    public ApiKeyTable(final OffsetDateTime createdAt, final long id, final String name, final long ownerId, final String tokenIdentifier, final String token, final Permission permissions) {
         super(createdAt, id);
         this.name = name;
         this.ownerId = ownerId;
@@ -35,33 +34,33 @@ public class ApiKeyTable extends Table implements Named {
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public long getOwnerId() {
-        return ownerId;
+        return this.ownerId;
     }
 
     public String getTokenIdentifier() {
-        return tokenIdentifier;
+        return this.tokenIdentifier;
     }
 
     public String getToken() {
-        return token;
+        return this.token;
     }
 
     public Permission getPermissions() {
-        return permissions;
+        return this.permissions;
     }
 
     @Override
     public String toString() {
         return "ApiKeyTable{" +
-                "name='" + name + '\'' +
-                ", ownerId=" + ownerId +
-                ", tokenIdentifier='" + tokenIdentifier + '\'' +
-                ", token='" + token + '\'' +
-                ", permissions=" + permissions +
-                "} " + super.toString();
+            "name='" + this.name + '\'' +
+            ", ownerId=" + this.ownerId +
+            ", tokenIdentifier='" + this.tokenIdentifier + '\'' +
+            ", token='" + this.token + '\'' +
+            ", permissions=" + this.permissions +
+            "} " + super.toString();
     }
 }

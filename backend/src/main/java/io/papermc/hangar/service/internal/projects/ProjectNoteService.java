@@ -5,10 +5,9 @@ import io.papermc.hangar.db.dao.internal.projects.HangarProjectNotesDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectNotesDAO;
 import io.papermc.hangar.model.db.projects.ProjectNoteTable;
 import io.papermc.hangar.model.internal.projects.HangarProjectNote;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProjectNoteService extends HangarComponent {
@@ -17,16 +16,16 @@ public class ProjectNoteService extends HangarComponent {
     private final HangarProjectNotesDAO hangarProjectNotesDAO;
 
     @Autowired
-    public ProjectNoteService(ProjectNotesDAO projectNotesDAO, HangarProjectNotesDAO hangarProjectNotesDAO) {
+    public ProjectNoteService(final ProjectNotesDAO projectNotesDAO, final HangarProjectNotesDAO hangarProjectNotesDAO) {
         this.projectNotesDAO = projectNotesDAO;
         this.hangarProjectNotesDAO = hangarProjectNotesDAO;
     }
 
-    public List<HangarProjectNote> getNotes(long projectId) {
-        return hangarProjectNotesDAO.getProjectNotes(projectId);
+    public List<HangarProjectNote> getNotes(final long projectId) {
+        return this.hangarProjectNotesDAO.getProjectNotes(projectId);
     }
 
-    public void addNote(long projectId, String msg) {
-        projectNotesDAO.insert(new ProjectNoteTable(projectId, msg, getHangarPrincipal().getId()));
+    public void addNote(final long projectId, final String msg) {
+        this.projectNotesDAO.insert(new ProjectNoteTable(projectId, msg, this.getHangarPrincipal().getId()));
     }
 }

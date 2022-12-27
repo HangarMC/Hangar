@@ -2,7 +2,6 @@ package io.papermc.hangar.db.dao.internal.versions;
 
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.internal.versions.HangarReview;
-import io.papermc.hangar.model.internal.versions.HangarReview.HangarReviewMessage;
 import io.papermc.hangar.model.internal.versions.HangarReviewQueueEntry;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -20,7 +19,7 @@ import org.springframework.stereotype.Repository;
 public interface HangarReviewsDAO {
 
     @UseRowReducer(HangarReviewReducer.class)
-    @RegisterConstructorMapper(value = HangarReviewMessage.class, prefix = "hrm_")
+    @RegisterConstructorMapper(value = HangarReview.HangarReviewMessage.class, prefix = "hrm_")
     @SqlQuery("SELECT pvr.id," +
         "       pvr.created_at," +
         "       pvr.ended_at," +
@@ -39,11 +38,11 @@ public interface HangarReviewsDAO {
 
     class HangarReviewReducer implements LinkedHashMapRowReducer<Long, HangarReview> {
         @Override
-        public void accumulate(Map<Long, HangarReview> container, RowView rowView) {
-            HangarReview hangarReview = container.computeIfAbsent(rowView.getColumn("id", Long.class), id -> rowView.getRow(HangarReview.class));
+        public void accumulate(final Map<Long, HangarReview> container, final RowView rowView) {
+            final HangarReview hangarReview = container.computeIfAbsent(rowView.getColumn("id", Long.class), id -> rowView.getRow(HangarReview.class));
 
             if (rowView.getColumn("hrm_created_at", OffsetDateTime.class) != null) {
-                hangarReview.getMessages().add(rowView.getRow(HangarReviewMessage.class));
+                hangarReview.getMessages().add(rowView.getRow(HangarReview.HangarReviewMessage.class));
             }
         }
     }
@@ -82,7 +81,7 @@ public interface HangarReviewsDAO {
     List<HangarReviewQueueEntry> getReviewQueue(@EnumByOrdinal ReviewState reviewState);
 
     @SqlQuery("""
-        SELECT COUNT(pv.id)
+        SELECT count(pv.id)
            FROM project_versions pv
                JOIN projects p ON pv.project_id = p.id
            WHERE pv.review_state = :reviewState AND
@@ -93,8 +92,8 @@ public interface HangarReviewsDAO {
 
     class ReviewQueueReducer implements LinkedHashMapRowReducer<Long, HangarReviewQueueEntry> {
         @Override
-        public void accumulate(Map<Long, HangarReviewQueueEntry> container, RowView rowView) {
-            HangarReviewQueueEntry entry = container.computeIfAbsent(rowView.getColumn("version_id", Long.class), id -> rowView.getRow(HangarReviewQueueEntry.class));
+        public void accumulate(final Map<Long, HangarReviewQueueEntry> container, final RowView rowView) {
+            final HangarReviewQueueEntry entry = container.computeIfAbsent(rowView.getColumn("version_id", Long.class), id -> rowView.getRow(HangarReviewQueueEntry.class));
 
             if (rowView.getColumn("r_reviewer_name", String.class) != null) {
                 entry.getReviews().add(rowView.getRow(HangarReviewQueueEntry.Review.class));

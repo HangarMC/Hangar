@@ -1,7 +1,6 @@
 package io.papermc.hangar.model.internal.user.notifications;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-
 import java.util.Locale;
 
 public enum NotificationType {
@@ -13,6 +12,6 @@ public enum NotificationType {
 
     @JsonValue
     public String getValue() {
-        return name().toLowerCase(Locale.ROOT);
+        return this.name().toLowerCase(Locale.ROOT);
     }
 }

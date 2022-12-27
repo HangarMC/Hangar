@@ -12,6 +12,8 @@ import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.APIKeyService;
 import io.papermc.hangar.service.PermissionService;
+import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,9 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.validation.Valid;
-import java.util.List;
-
 // @el(user: io.papermc.hangar.model.db.UserTable)
 @LoggedIn
 @Controller
@@ -40,7 +39,7 @@ public class ApiKeyController {
     private final APIKeyService apiKeyService;
 
     @Autowired
-    public ApiKeyController(PermissionService permissionService, APIKeyService apiKeyService) {
+    public ApiKeyController(final PermissionService permissionService, final APIKeyService apiKeyService) {
         this.permissionService = permissionService;
         this.apiKeyService = apiKeyService;
     }
@@ -48,22 +47,22 @@ public class ApiKeyController {
     @ResponseStatus(HttpStatus.OK)
     @CurrentUser("#user")
     @GetMapping("/check-key/{user}")
-    public void checkKeyName(@PathVariable UserTable user, @RequestParam String name) {
-        apiKeyService.checkName(user, name);
+    public void checkKeyName(@PathVariable final UserTable user, @RequestParam final String name) {
+        this.apiKeyService.checkName(user, name);
     }
 
     @ResponseBody
     @CurrentUser("#user")
     @GetMapping(path = "/existing-keys/{user}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ApiKey> getApiKeys(@PathVariable UserTable user) {
-        return apiKeyService.getApiKeys(user.getId());
+    public List<ApiKey> getApiKeys(@PathVariable final UserTable user) {
+        return this.apiKeyService.getApiKeys(user.getId());
     }
 
     @ResponseBody
     @CurrentUser("#user")
     @GetMapping(path = "/possible-perms/{user}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<NamedPermission> getPossiblePermissions(@PathVariable UserTable user) {
-        return permissionService.getAllPossiblePermissions(user.getId()).toNamed();
+    public List<NamedPermission> getPossiblePermissions(@PathVariable final UserTable user) {
+        return this.permissionService.getAllPossiblePermissions(user.getId()).toNamed();
     }
 
     @Unlocked
@@ -71,14 +70,14 @@ public class ApiKeyController {
     @CurrentUser("#user")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
     @PostMapping(path = "/create-key/{user}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    public String createApiKey(@PathVariable UserTable user, @RequestBody @Valid CreateAPIKeyForm apiKeyForm) {
-        return apiKeyService.createApiKey(user, apiKeyForm, permissionService.getAllPossiblePermissions(user.getId()));
+    public String createApiKey(@PathVariable final UserTable user, @RequestBody final @Valid CreateAPIKeyForm apiKeyForm) {
+        return this.apiKeyService.createApiKey(user, apiKeyForm, this.permissionService.getAllPossiblePermissions(user.getId()));
     }
 
     @ResponseBody
     @CurrentUser("#user")
     @PostMapping(path = "/delete-key/{user}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteApiKey(@PathVariable UserTable user, @RequestBody @Valid StringContent nameContent) {
-        apiKeyService.deleteApiKey(user, nameContent.getContent());
+    public void deleteApiKey(@PathVariable final UserTable user, @RequestBody final @Valid StringContent nameContent) {
+        this.apiKeyService.deleteApiKey(user, nameContent.getContent());
     }
 }

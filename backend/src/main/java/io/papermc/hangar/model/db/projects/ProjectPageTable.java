@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.identified.ProjectIdentified;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectPageTable extends Table implements Named, ProjectIdentified {
 
@@ -18,7 +17,7 @@ public class ProjectPageTable extends Table implements Named, ProjectIdentified 
     private Long parentId;
 
     @JdbiConstructor
-    public ProjectPageTable(OffsetDateTime createdAt, long id, long projectId, String name, String slug, String contents, boolean deletable, Long parentId) {
+    public ProjectPageTable(final OffsetDateTime createdAt, final long id, final long projectId, final String name, final String slug, final String contents, final boolean deletable, final Long parentId) {
         super(createdAt, id);
         this.projectId = projectId;
         this.name = name;
@@ -28,7 +27,7 @@ public class ProjectPageTable extends Table implements Named, ProjectIdentified 
         this.parentId = parentId;
     }
 
-    public ProjectPageTable(long projectId, String name, String slug, String contents, boolean deletable, Long parentId) {
+    public ProjectPageTable(final long projectId, final String name, final String slug, final String contents, final boolean deletable, final Long parentId) {
         this.projectId = projectId;
         this.name = name;
         this.slug = slug;
@@ -40,48 +39,48 @@ public class ProjectPageTable extends Table implements Named, ProjectIdentified 
     @JsonIgnore
     @Override
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getSlug() {
-        return slug;
+        return this.slug;
     }
 
     public String getContents() {
-        return contents;
+        return this.contents;
     }
 
-    public void setContents(String contents) {
+    public void setContents(final String contents) {
         this.contents = contents;
     }
 
     public boolean isDeletable() {
-        return deletable;
+        return this.deletable;
     }
 
     @JsonIgnore
     public Long getParentId() {
-        return parentId;
+        return this.parentId;
     }
 
-    public void setParentId(Long parentId) {
+    public void setParentId(final Long parentId) {
         this.parentId = parentId;
     }
 
     @Override
     public String toString() {
         return "ProjectPageTable{" +
-                "projectId=" + projectId +
-                ", name='" + name + '\'' +
-                ", slug='" + slug + '\'' +
-                ", contents='" + contents + '\'' +
-                ", deletable=" + deletable +
-                ", parentId=" + parentId +
-                "} " + super.toString();
+            "projectId=" + this.projectId +
+            ", name='" + this.name + '\'' +
+            ", slug='" + this.slug + '\'' +
+            ", contents='" + this.contents + '\'' +
+            ", deletable=" + this.deletable +
+            ", parentId=" + this.parentId +
+            "} " + super.toString();
     }
 }

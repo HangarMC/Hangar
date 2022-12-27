@@ -1,9 +1,8 @@
 package io.papermc.hangar.model.internal.user.notifications;
 
-import org.jdbi.v3.core.enums.EnumByOrdinal;
-
 import java.time.OffsetDateTime;
 import java.util.List;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 public class HangarNotification {
 
@@ -15,7 +14,7 @@ public class HangarNotification {
     private final String originUserName;
     private final NotificationType type;
 
-    public HangarNotification(OffsetDateTime createdAt, long id, String action, List<String> message, boolean read, String originUserName, @EnumByOrdinal NotificationType type) {
+    public HangarNotification(final OffsetDateTime createdAt, final long id, final String action, final List<String> message, final boolean read, final String originUserName, @EnumByOrdinal final NotificationType type) {
         this.createdAt = createdAt;
         this.id = id;
         this.action = action;
@@ -26,42 +25,42 @@ public class HangarNotification {
     }
 
     public OffsetDateTime getCreatedAt() {
-        return createdAt;
+        return this.createdAt;
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
     public String getAction() {
-        return action;
+        return this.action;
     }
 
     public List<String> getMessage() {
-        return message;
+        return this.message;
     }
 
     public boolean isRead() {
-        return read;
+        return this.read;
     }
 
     public String getOriginUserName() {
-        return originUserName;
+        return this.originUserName;
     }
 
     public NotificationType getType() {
-        return type;
+        return this.type;
     }
 
     @Override
     public String toString() {
         return "HangarNotification{" +
-                "id=" + id +
-                ", action='" + action + '\'' +
-                ", message=" + message +
-                ", read=" + read +
-                ", originUserName='" + originUserName + '\'' +
-                ", type=" + type +
-                '}';
+            "id=" + this.id +
+            ", action='" + this.action + '\'' +
+            ", message=" + this.message +
+            ", read=" + this.read +
+            ", originUserName='" + this.originUserName + '\'' +
+            ", type=" + this.type +
+            '}';
     }
 }

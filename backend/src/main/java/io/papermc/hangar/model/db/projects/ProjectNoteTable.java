@@ -1,9 +1,8 @@
 package io.papermc.hangar.model.db.projects;
 
 import io.papermc.hangar.model.db.Table;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectNoteTable extends Table {
 
@@ -12,37 +11,37 @@ public class ProjectNoteTable extends Table {
     private final Long userId;
 
     @JdbiConstructor
-    public ProjectNoteTable(OffsetDateTime createdAt, long id, long projectId, String message, Long userId) {
+    public ProjectNoteTable(final OffsetDateTime createdAt, final long id, final long projectId, final String message, final Long userId) {
         super(createdAt, id);
         this.projectId = projectId;
         this.message = message;
         this.userId = userId;
     }
 
-    public ProjectNoteTable(long projectId, String message, Long userId) {
+    public ProjectNoteTable(final long projectId, final String message, final Long userId) {
         this.projectId = projectId;
         this.message = message;
         this.userId = userId;
     }
 
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
     public Long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     @Override
     public String toString() {
         return "ProjectNoteTable{" +
-                "projectId=" + projectId +
-                ", message='" + message + '\'' +
-                ", userId=" + userId +
-                "} " + super.toString();
+            "projectId=" + this.projectId +
+            ", message='" + this.message + '\'' +
+            ", userId=" + this.userId +
+            "} " + super.toString();
     }
 }

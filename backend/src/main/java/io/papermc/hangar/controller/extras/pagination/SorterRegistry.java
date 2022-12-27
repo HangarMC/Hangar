@@ -1,9 +1,8 @@
 package io.papermc.hangar.controller.extras.pagination;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 public enum SorterRegistry implements Sorter {
 
@@ -28,28 +27,27 @@ public enum SorterRegistry implements Sorter {
     private final String name;
     private final Sorter sorter;
 
-    SorterRegistry(String name, Sorter sorter) {
+    SorterRegistry(final String name, final Sorter sorter) {
         this.name = name;
         this.sorter = sorter;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
-    public void applySorting(StringBuilder sb, SortDirection dir) {
+    public void applySorting(final StringBuilder sb, final SortDirection dir) {
         this.sorter.applySorting(sb, dir);
     }
 
-    private static Sorter simpleSorter(@NotNull String columnName) {
+    private static Sorter simpleSorter(final @NotNull String columnName) {
         return (sb, dir) -> sb.append(columnName).append(dir);
     }
 
-    @NotNull
-    public static SorterRegistry getSorter(@NotNull String name) {
+    public static @NotNull SorterRegistry getSorter(final @NotNull String name) {
         if (SORTERS.isEmpty()) {
-            for (SorterRegistry value : SorterRegistry.values()) {
+            for (final SorterRegistry value : values()) {
                 SORTERS.put(value.name, value);
             }
         }
@@ -65,13 +63,13 @@ public enum SorterRegistry implements Sorter {
 
         private final String sql;
 
-        SortDirection(String sql) {
+        SortDirection(final String sql) {
             this.sql = sql;
         }
 
         @Override
         public String toString() {
-            return sql;
+            return this.sql;
         }
     }
 }

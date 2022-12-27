@@ -29,6 +29,6 @@ public enum ChannelFlag {
      * @return whether the flag is editable even if the channel is frozen
      */
     public boolean isAlwaysEditable() {
-        return alwaysEditable;
+        return this.alwaysEditable;
     }
 }

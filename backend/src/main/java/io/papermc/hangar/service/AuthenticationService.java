@@ -30,49 +30,49 @@ public class AuthenticationService extends HangarComponent {
     private final GlobalRoleService globalRoleService;
     private final RestTemplate restTemplate;
 
-    public AuthenticationService(UserService userService, GlobalRoleService globalRoleService, RestTemplate restTemplate) {
+    public AuthenticationService(final UserService userService, final GlobalRoleService globalRoleService, final RestTemplate restTemplate) {
         this.userService = userService;
         this.globalRoleService = globalRoleService;
         this.restTemplate = restTemplate;
     }
 
     public UserTable loginAsFakeUser() {
-        String userName = config.fakeUser.username();
-        UserTable userTable = userService.getUserTable(userName);
+        final String userName = this.config.fakeUser.username();
+        UserTable userTable = this.userService.getUserTable(userName);
         if (userTable == null) {
             userTable = new UserTable(
-                    -1, // we can pass -1 here since it's not actually inserted in the DB in the DAO
-                    UUID.randomUUID(),
-                    userName,
-                    config.fakeUser.email(),
-                    List.of(),
-                    false,
-                    Locale.ENGLISH.toLanguageTag(),
-                    "white"
+                -1, // we can pass -1 here since it's not actually inserted in the DB in the DAO
+                UUID.randomUUID(),
+                userName,
+                this.config.fakeUser.email(),
+                List.of(),
+                false,
+                Locale.ENGLISH.toLanguageTag(),
+                "white"
             );
 
-            userTable = userService.insertUser(userTable);
+            userTable = this.userService.insertUser(userTable);
 
-            globalRoleService.addRole(GlobalRole.HANGAR_ADMIN.create(null, userTable.getId(), true));
+            this.globalRoleService.addRole(GlobalRole.HANGAR_ADMIN.create(null, userTable.getId(), true));
         }
         return userTable;
     }
 
-    public void changeAvatar(String org, MultipartFile avatar) throws IOException {
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    public void changeAvatar(final String org, final MultipartFile avatar) throws IOException {
+        final MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("avatar", new MultipartInputStreamFileResource(avatar.getInputStream(), avatar.getOriginalFilename()));
 
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         try {
-            ResponseEntity<Void> response = restTemplate.postForEntity(config.security.api().url() + "/avatar/org/" + org + "?apiKey=" + config.sso.apiKey(), requestEntity, Void.class);
+            final ResponseEntity<Void> response = this.restTemplate.postForEntity(this.config.security.api().url() + "/avatar/org/" + org + "?apiKey=" + this.config.sso.apiKey(), requestEntity, Void.class);
             if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new ResponseStatusException(response.getStatusCode(), "Error from auth api");
             }
-        } catch (HttpStatusCodeException ex) {
+        } catch (final HttpStatusCodeException ex) {
             throw new ResponseStatusException(ex.getStatusCode(), "Error from auth api: " + ex.getMessage(), ex);
         }
     }
@@ -81,7 +81,7 @@ public class AuthenticationService extends HangarComponent {
 
         private final String filename;
 
-        MultipartInputStreamFileResource(InputStream inputStream, String filename) {
+        MultipartInputStreamFileResource(final InputStream inputStream, final String filename) {
             super(inputStream);
             this.filename = filename;
         }

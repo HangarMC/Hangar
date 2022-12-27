@@ -2,12 +2,11 @@ package io.papermc.hangar.db.mappers.factories;
 
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.common.roles.Role;
+import java.lang.reflect.Type;
+import java.util.Optional;
 import org.jdbi.v3.core.config.ConfigRegistry;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.ColumnMapperFactory;
-
-import java.lang.reflect.Type;
-import java.util.Optional;
 
 public class RoleColumnMapperFactory implements ColumnMapperFactory {
 

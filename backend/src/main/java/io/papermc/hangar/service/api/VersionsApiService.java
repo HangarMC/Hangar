@@ -27,36 +27,36 @@ public class VersionsApiService extends HangarComponent {
     private final VersionDependencyService versionDependencyService;
 
     @Autowired
-    public VersionsApiService(VersionsApiDAO versionsApiDAO, VersionDependencyService versionDependencyService) {
+    public VersionsApiService(final VersionsApiDAO versionsApiDAO, final VersionDependencyService versionDependencyService) {
         this.versionsApiDAO = versionsApiDAO;
         this.versionDependencyService = versionDependencyService;
     }
 
     @Transactional
-    public Version getVersion(String author, String slug, String versionString) {
-        final Map.Entry<Long, Version> version = versionsApiDAO.getVersionWithVersionString(author, slug, versionString, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+    public Version getVersion(final String author, final String slug, final String versionString) {
+        final Map.Entry<Long, Version> version = this.versionsApiDAO.getVersionWithVersionString(author, slug, versionString, this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        versionDependencyService.addDownloadsAndDependencies(author, slug, versionString, version.getKey(), version.getValue());
+        this.versionDependencyService.addDownloadsAndDependencies(author, slug, versionString, version.getKey(), version.getValue());
         return version.getValue();
     }
 
     @Transactional
-    public PaginatedResult<Version> getVersions(String author, String slug, RequestPagination pagination) {
-        boolean canSeeHidden = getGlobalPermissions().has(Permission.SeeHidden);
-        List<Version> versions = versionsApiDAO.getVersions(author, slug, canSeeHidden, getHangarUserId(), pagination).entrySet().stream()
-            .map(entry -> versionDependencyService.addDownloadsAndDependencies(author, slug, entry.getValue().getName(), entry.getKey(), entry.getValue()))
+    public PaginatedResult<Version> getVersions(final String author, final String slug, final RequestPagination pagination) {
+        final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
+        final List<Version> versions = this.versionsApiDAO.getVersions(author, slug, canSeeHidden, this.getHangarUserId(), pagination).entrySet().stream()
+            .map(entry -> this.versionDependencyService.addDownloadsAndDependencies(author, slug, entry.getValue().getName(), entry.getKey(), entry.getValue()))
             .sorted((v1, v2) -> v2.getCreatedAt().compareTo(v1.getCreatedAt()))
             .collect(Collectors.toList());
-        Long versionCount = versionsApiDAO.getVersionCount(author, slug, canSeeHidden, getHangarUserId(), pagination);
+        final Long versionCount = this.versionsApiDAO.getVersionCount(author, slug, canSeeHidden, this.getHangarUserId(), pagination);
         return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount, pagination), versions);
     }
 
-    public Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, Platform platform, OffsetDateTime fromDate, OffsetDateTime toDate) {
+    public Map<String, VersionStats> getVersionStats(final String author, final String slug, final String versionString, final Platform platform, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
         if (fromDate.isAfter(toDate)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "From date is after to date");
         }
-        return versionsApiDAO.getVersionStats(author, slug, versionString, platform, fromDate, toDate);
+        return this.versionsApiDAO.getVersionStats(author, slug, versionString, platform, fromDate, toDate);
     }
 }

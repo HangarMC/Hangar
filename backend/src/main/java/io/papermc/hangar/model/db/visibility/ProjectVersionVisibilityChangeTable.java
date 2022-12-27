@@ -1,34 +1,33 @@
 package io.papermc.hangar.model.db.visibility;
 
 import io.papermc.hangar.model.common.projects.Visibility;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.time.OffsetDateTime;
 
 public class ProjectVersionVisibilityChangeTable extends VisibilityChangeTable {
 
     private final long versionId;
 
     @JdbiConstructor
-    public ProjectVersionVisibilityChangeTable(OffsetDateTime createdAt, long id, long createdBy, String comment, @EnumByOrdinal Visibility visibility, Long resolvedBy, OffsetDateTime resolvedAt, long versionId) {
+    public ProjectVersionVisibilityChangeTable(final OffsetDateTime createdAt, final long id, final long createdBy, final String comment, @EnumByOrdinal final Visibility visibility, final Long resolvedBy, final OffsetDateTime resolvedAt, final long versionId) {
         super(createdAt, id, createdBy, comment, visibility, resolvedBy, resolvedAt);
         this.versionId = versionId;
     }
 
-    public ProjectVersionVisibilityChangeTable(long createdBy, String comment, Visibility visibility, long versionId) {
+    public ProjectVersionVisibilityChangeTable(final long createdBy, final String comment, final Visibility visibility, final long versionId) {
         super(createdBy, comment, visibility);
         this.versionId = versionId;
     }
 
     public long getVersionId() {
-        return versionId;
+        return this.versionId;
     }
 
     @Override
     public String toString() {
         return "ProjectVersionVisibilityChangeTable{" +
-                "versionId=" + versionId +
-                "} " + super.toString();
+            "versionId=" + this.versionId +
+            "} " + super.toString();
     }
 }

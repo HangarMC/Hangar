@@ -1,9 +1,8 @@
 package io.papermc.hangar.model.api.requests;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.papermc.hangar.controller.extras.pagination.Filter.FilterInstance;
+import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,7 +19,7 @@ public class RequestPagination {
 
     @JsonIgnore
     @ApiModelProperty(hidden = true)
-    private final List<FilterInstance> filters;
+    private final List<Filter.FilterInstance> filters;
 
     @JsonIgnore
     @ApiModelProperty(hidden = true)
@@ -29,7 +28,7 @@ public class RequestPagination {
     /**
      * limit/offset params should be validated before construction
      */
-    public RequestPagination(Long limit, Long offset) {
+    public RequestPagination(final Long limit, final Long offset) {
         this.limit = limit;
         this.offset = offset;
         this.filters = new ArrayList<>();
@@ -37,28 +36,28 @@ public class RequestPagination {
     }
 
     public long getLimit() {
-        return limit;
+        return this.limit;
     }
 
     public long getOffset() {
-        return offset;
+        return this.offset;
     }
 
-    public List<FilterInstance> getFilters() {
-        return filters;
+    public List<Filter.FilterInstance> getFilters() {
+        return this.filters;
     }
 
     public Map<String, Consumer<StringBuilder>> getSorters() {
-        return sorters;
+        return this.sorters;
     }
 
     @Override
     public String toString() {
         return "RequestPagination{" +
-                "limit=" + limit +
-                ", offset=" + offset +
-                ", filters=" + filters +
-                ", sorters=" + sorters.keySet() +
-                '}';
+            "limit=" + this.limit +
+            ", offset=" + this.offset +
+            ", filters=" + this.filters +
+            ", sorters=" + this.sorters.keySet() +
+            '}';
     }
 }

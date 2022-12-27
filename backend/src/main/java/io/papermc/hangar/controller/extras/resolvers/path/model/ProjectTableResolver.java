@@ -25,8 +25,8 @@ public class ProjectTableResolver extends HangarModelPathVarResolver<ProjectTabl
     }
 
     @Override
-    protected ProjectTable resolveParameter(@NotNull final String param) {
-        Long projectId = NumberUtils.createLong(param);
+    protected ProjectTable resolveParameter(final @NotNull String param) {
+        final Long projectId = NumberUtils.createLong(param);
         if (projectId == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }

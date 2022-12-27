@@ -3,10 +3,9 @@ package io.papermc.hangar.model.internal.admin.health;
 import io.papermc.hangar.model.Visible;
 import io.papermc.hangar.model.api.project.ProjectNamespace;
 import io.papermc.hangar.model.common.projects.Visibility;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
-
-import java.time.OffsetDateTime;
 
 public class UnhealthyProject implements Visible {
 
@@ -16,7 +15,7 @@ public class UnhealthyProject implements Visible {
     private final OffsetDateTime lastUpdated;
     private final Visibility visibility;
 
-    public UnhealthyProject(@Nested ProjectNamespace namespace, Long topicId, Long postId, OffsetDateTime lastUpdated, @EnumByOrdinal Visibility visibility) {
+    public UnhealthyProject(@Nested final ProjectNamespace namespace, final Long topicId, final Long postId, final OffsetDateTime lastUpdated, @EnumByOrdinal final Visibility visibility) {
         this.namespace = namespace;
         this.topicId = topicId;
         this.postId = postId;
@@ -25,34 +24,34 @@ public class UnhealthyProject implements Visible {
     }
 
     public ProjectNamespace getNamespace() {
-        return namespace;
+        return this.namespace;
     }
 
     public Long getTopicId() {
-        return topicId;
+        return this.topicId;
     }
 
     public Long getPostId() {
-        return postId;
+        return this.postId;
     }
 
     public OffsetDateTime getLastUpdated() {
-        return lastUpdated;
+        return this.lastUpdated;
     }
 
     @Override
     public Visibility getVisibility() {
-        return visibility;
+        return this.visibility;
     }
 
     @Override
     public String toString() {
         return "UnhealthyProject{" +
-                "namespace=" + namespace +
-                ", topicId=" + topicId +
-                ", postId=" + postId +
-                ", lastUpdated=" + lastUpdated +
-                ", visibility=" + visibility +
-                "} " + super.toString();
+            "namespace=" + this.namespace +
+            ", topicId=" + this.topicId +
+            ", postId=" + this.postId +
+            ", lastUpdated=" + this.lastUpdated +
+            ", visibility=" + this.visibility +
+            "} " + super.toString();
     }
 }

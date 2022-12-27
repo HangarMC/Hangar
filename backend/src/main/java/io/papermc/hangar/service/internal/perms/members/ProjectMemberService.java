@@ -9,27 +9,26 @@ import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.service.internal.perms.roles.ProjectRoleService;
-import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService.ProjectNotificationService;
+import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class ProjectMemberService extends MemberService<
-        ProjectContext,
-        ProjectRole,
-        ProjectRoleTable,
-        ProjectRolesDAO,
-        ProjectRoleService,
-        ProjectTable,
-        ProjectNotificationService,
-        ProjectMembersDAO,
-        ProjectMemberTable
-        > {
+    ProjectContext,
+    ProjectRole,
+    ProjectRoleTable,
+    ProjectRolesDAO,
+    ProjectRoleService,
+    ProjectTable,
+    JoinableNotificationService.ProjectNotificationService,
+    ProjectMembersDAO,
+    ProjectMemberTable
+    > {
 
     @Autowired
-    public ProjectMemberService(ProjectRoleService projectRoleService, ProjectMembersDAO projectMembersDAO, ProjectNotificationService projectNotificationService) {
+    public ProjectMemberService(final ProjectRoleService projectRoleService, final ProjectMembersDAO projectMembersDAO, final JoinableNotificationService.ProjectNotificationService projectNotificationService) {
         super(projectRoleService, projectMembersDAO, projectNotificationService, ProjectMemberTable::new, "project.settings.error.members.", LogAction.PROJECT_MEMBER_ADDED, LogAction.PROJECT_MEMBERS_REMOVED, LogAction.PROJECT_MEMBER_ROLES_CHANGED);
     }
 

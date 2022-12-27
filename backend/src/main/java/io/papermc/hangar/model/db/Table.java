@@ -2,7 +2,6 @@ package io.papermc.hangar.model.db;
 
 import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.Model;
-
 import java.time.OffsetDateTime;
 
 public abstract class Table extends Model implements Identified {
@@ -15,26 +14,26 @@ public abstract class Table extends Model implements Identified {
     }
 
     // for creating fake users
-    protected Table(long id) {
+    protected Table(final long id) {
         super(null);
         this.id = id;
     }
 
     // for JDBI
-    protected Table(OffsetDateTime createdAt, long id) {
+    protected Table(final OffsetDateTime createdAt, final long id) {
         super(createdAt);
         this.id = id;
     }
 
     @Override
     public long getId() {
-        return id;
+        return this.id;
     }
 
     @Override
     public String toString() {
         return "Table{" +
-                "id=" + id +
-                "} " + super.toString();
+            "id=" + this.id +
+            "} " + super.toString();
     }
 }

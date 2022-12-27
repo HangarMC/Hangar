@@ -22,7 +22,7 @@ public class UserTableResolver extends HangarModelPathVarResolver<UserTable> {
     }
 
     @Override
-    protected UserTable resolveParameter(@NotNull final String param) {
+    protected UserTable resolveParameter(final @NotNull String param) {
         return this.userService.getUserTable(param);
     }
 }

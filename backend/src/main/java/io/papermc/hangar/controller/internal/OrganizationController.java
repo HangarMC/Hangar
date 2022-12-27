@@ -85,8 +85,8 @@ public class OrganizationController extends HangarComponent {
     }
 
     @GetMapping(value = "/org/{orgName}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HangarOrganization> getOrganization(@PathVariable String orgName) {
-        return ResponseEntity.ok(organizationService.getHangarOrganization(orgName));
+    public ResponseEntity<HangarOrganization> getOrganization(@PathVariable final String orgName) {
+        return ResponseEntity.ok(this.organizationService.getHangarOrganization(orgName));
     }
 
     @Unlocked
@@ -94,12 +94,12 @@ public class OrganizationController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#orgName}")
     @PostMapping(path = "/org/{orgName}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addOrganizationMember(@PathVariable String orgName, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
-        OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
+    public void addOrganizationMember(@PathVariable final String orgName, @RequestBody final @Valid EditMembersForm.Member<OrganizationRole> member) {
+        final OrganizationTable organizationTable = this.organizationService.getOrganizationTable(orgName);
         if (organizationTable == null) {
             throw new HangarApiException("Org " + orgName + " doesn't exist");
         }
-        inviteService.sendInvite(member, organizationTable);
+        this.inviteService.sendInvite(member, organizationTable);
     }
 
     @Unlocked
@@ -107,9 +107,9 @@ public class OrganizationController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#orgName}")
     @PostMapping(path = "/org/{orgName}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void editOrganizationMember(@PathVariable String orgName, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
-        OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
-        memberService.editMember(member, organizationTable);
+    public void editOrganizationMember(@PathVariable final String orgName, @RequestBody final @Valid EditMembersForm.Member<OrganizationRole> member) {
+        final OrganizationTable organizationTable = this.organizationService.getOrganizationTable(orgName);
+        this.memberService.editMember(member, organizationTable);
     }
 
     @Unlocked
@@ -117,18 +117,18 @@ public class OrganizationController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#orgName}")
     @PostMapping(path = "/org/{orgName}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void removeOrganizationMember(@PathVariable String orgName, @Valid @RequestBody EditMembersForm.Member<OrganizationRole> member) {
-        OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
-        memberService.removeMember(member, organizationTable);
+    public void removeOrganizationMember(@PathVariable final String orgName, @RequestBody final @Valid EditMembersForm.Member<OrganizationRole> member) {
+        final OrganizationTable organizationTable = this.organizationService.getOrganizationTable(orgName);
+        this.memberService.removeMember(member, organizationTable);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#orgName}")
     @PostMapping(path = "/org/{orgName}/members/leave", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void leaveOrganization(@PathVariable String orgName) {
-        OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
-        memberService.leave(organizationTable);
+    public void leaveOrganization(@PathVariable final String orgName) {
+        final OrganizationTable organizationTable = this.organizationService.getOrganizationTable(orgName);
+        this.memberService.leave(organizationTable);
     }
 
     @Unlocked
@@ -136,26 +136,26 @@ public class OrganizationController extends HangarComponent {
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#orgName}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PostMapping(path = "/org/{orgName}/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void transferOrganization(@PathVariable String orgName, @Valid @RequestBody StringContent nameContent) {
-        final OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
-        inviteService.sendTransferRequest(nameContent.getContent(), organizationTable);
+    public void transferOrganization(@PathVariable final String orgName, @RequestBody final @Valid StringContent nameContent) {
+        final OrganizationTable organizationTable = this.organizationService.getOrganizationTable(orgName);
+        this.inviteService.sendTransferRequest(nameContent.getContent(), organizationTable);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#orgName}")
     @PostMapping(path = "/org/{orgName}/canceltransfer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void cancelOrganizationTransfer(@PathVariable String orgName) {
-        final OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
-        inviteService.cancelTransferRequest(organizationTable);
+    public void cancelOrganizationTransfer(@PathVariable final String orgName) {
+        final OrganizationTable organizationTable = this.organizationService.getOrganizationTable(orgName);
+        this.inviteService.cancelTransferRequest(organizationTable);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 60)
     @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void create(@Valid @RequestBody CreateOrganizationForm createOrganizationForm) {
-        organizationFactory.createOrganization(createOrganizationForm.getName());
+    public void create(@RequestBody final @Valid CreateOrganizationForm createOrganizationForm) {
+        this.organizationFactory.createOrganization(createOrganizationForm.getName());
     }
 
     @Unlocked
@@ -163,9 +163,9 @@ public class OrganizationController extends HangarComponent {
     @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 60)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.DELETE_ORGANIZATION, args = "{#orgName}")
     @PostMapping(path = "/org/{orgName}/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void delete(@PathVariable String orgName, @RequestBody @Valid StringContent content) {
-        final OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
-        organizationFactory.deleteOrganization(organizationTable, content.getContent());
+    public void delete(@PathVariable final String orgName, @RequestBody final @Valid StringContent content) {
+        final OrganizationTable organizationTable = this.organizationService.getOrganizationTable(orgName);
+        this.organizationFactory.deleteOrganization(organizationTable, content.getContent());
     }
 
     @Unlocked
@@ -173,19 +173,19 @@ public class OrganizationController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#orgName}")
     @PostMapping(path = "/org/{orgName}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveTagline(@PathVariable String orgName, @Valid @RequestBody StringContent content) {
-        UserTable userTable = userService.getUserTable(orgName);
-        OrganizationTable organizationTable = organizationService.getOrganizationTable(orgName);
+    public void saveTagline(@PathVariable final String orgName, @RequestBody final @Valid StringContent content) {
+        final UserTable userTable = this.userService.getUserTable(orgName);
+        final OrganizationTable organizationTable = this.organizationService.getOrganizationTable(orgName);
         if (userTable == null || organizationTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        if (content.getContent().length() > config.user.maxTaglineLen()) {
+        if (content.getContent().length() > this.config.user.maxTaglineLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "author.error.invalidTagline");
         }
-        String oldTagline = userTable.getTagline() == null ? "" : userTable.getTagline();
+        final String oldTagline = userTable.getTagline() == null ? "" : userTable.getTagline();
         userTable.setTagline(content.getContent());
-        userService.updateUser(userTable);
-        actionLogger.user(LogAction.USER_TAGLINE_CHANGED.create(UserContext.of(userTable.getId()), userTable.getTagline(), oldTagline));
+        this.userService.updateUser(userTable);
+        this.actionLogger.user(LogAction.USER_TAGLINE_CHANGED.create(UserContext.of(userTable.getId()), userTable.getTagline(), oldTagline));
     }
 
     @Unlocked
@@ -193,30 +193,30 @@ public class OrganizationController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#orgName}")
     @PostMapping(value = "/org/{orgName}/settings/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void changeAvatar(@PathVariable String orgName, @RequestParam MultipartFile avatar) throws IOException {
-        authenticationService.changeAvatar(orgName, avatar);
+    public void changeAvatar(@PathVariable final String orgName, @RequestParam final MultipartFile avatar) throws IOException {
+        this.authenticationService.changeAvatar(orgName, avatar);
     }
 
     @Anyone
     @GetMapping(path = "/{user}/userOrganizations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, OrganizationRoleTable>> getUserOrganizationRoles(@PathVariable String user) {
+    public ResponseEntity<Map<String, OrganizationRoleTable>> getUserOrganizationRoles(@PathVariable final String user) {
         boolean includeHidden = false;
-        Optional<HangarPrincipal> principal = getOptionalHangarPrincipal();
+        final Optional<HangarPrincipal> principal = this.getOptionalHangarPrincipal();
         if (principal.isPresent()) {
             includeHidden = principal.get().getName().equals(user);
             if (!includeHidden) {
                 includeHidden = principal.get().isAllowedGlobal(Permission.SeeHidden);
             }
         }
-        return ResponseEntity.ok(organizationService.getUserOrganizationRoles(user, includeHidden));
+        return ResponseEntity.ok(this.organizationService.getUserOrganizationRoles(user, includeHidden));
     }
 
     @LoggedIn
     @GetMapping(path = "/{user}/userOrganizationsVisibility", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, Boolean>> getUserOrganizationMembershipVisibility(@PathVariable String user) {
-        HangarPrincipal principal = getHangarPrincipal();
+    public ResponseEntity<Map<String, Boolean>> getUserOrganizationMembershipVisibility(@PathVariable final String user) {
+        final HangarPrincipal principal = this.getHangarPrincipal();
         if (principal.getName().equals(user) || principal.isAllowedGlobal(Permission.SeeHidden)) {
-            return ResponseEntity.ok(memberService.getUserOrganizationMembershipVisibility(user));
+            return ResponseEntity.ok(this.memberService.getUserOrganizationMembershipVisibility(user));
         }
         throw new HangarApiException(HttpStatus.BAD_REQUEST);
     }
@@ -224,11 +224,11 @@ public class OrganizationController extends HangarComponent {
     @Unlocked
     @PostMapping(path = "/{org}/userOrganizationsVisibility", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void changeUserOrganizationMembershipVisibility(@RequestParam boolean hidden, @PathVariable String org) {
-        OrganizationTable table = organizationService.getOrganizationTable(org);
+    public void changeUserOrganizationMembershipVisibility(@RequestParam final boolean hidden, @PathVariable final String org) {
+        final OrganizationTable table = this.organizationService.getOrganizationTable(org);
         if (table == null) {
             throw new HangarApiException();
         }
-        memberService.setMembershipVisibility(table.getOrganizationId(), getHangarPrincipal().getUserId(), hidden);
+        this.memberService.setMembershipVisibility(table.getOrganizationId(), this.getHangarPrincipal().getUserId(), hidden);
     }
 }

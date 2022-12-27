@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.dao.internal.table.members;
 
 import io.papermc.hangar.model.db.members.OrganizationMemberTable;
-
+import java.util.Map;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.ValueColumn;
@@ -10,8 +10,6 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
-
-import java.util.Map;
 
 @Repository
 @RegisterConstructorMapper(OrganizationMemberTable.class)
@@ -36,9 +34,9 @@ public interface OrganizationMembersDAO extends MembersDAO<OrganizationMemberTab
     @KeyColumn("name")
     @ValueColumn("hidden")
     @SqlQuery("SELECT o.name, uom.hidden" +
-              "   FROM organization_members uom" +
-              "       JOIN organizations o ON o.id = uom.organization_id" +
-              "       JOIN users u ON uom.user_id = u.id" +
-              "   WHERE u.name = :user")
+        "   FROM organization_members uom" +
+        "       JOIN organizations o ON o.id = uom.organization_id" +
+        "       JOIN users u ON uom.user_id = u.id" +
+        "   WHERE u.name = :user")
     Map<String, Boolean> getUserOrganizationMembershipVisibility(String user);
 }

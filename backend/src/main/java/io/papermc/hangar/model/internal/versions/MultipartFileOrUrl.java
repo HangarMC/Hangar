@@ -12,6 +12,6 @@ public record MultipartFileOrUrl(
     @Nullable @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl") String externalUrl) {
 
     public boolean isUrl() {
-        return externalUrl != null && !externalUrl.isEmpty();
+        return this.externalUrl != null && !this.externalUrl.isEmpty();
     }
 }

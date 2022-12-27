@@ -4,10 +4,9 @@ import io.papermc.hangar.model.api.project.ProjectNamespace;
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.projects.ProjectFlagTable;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jetbrains.annotations.Nullable;
-
-import java.time.OffsetDateTime;
 
 public class HangarProjectFlag extends ProjectFlagTable {
 
@@ -16,7 +15,7 @@ public class HangarProjectFlag extends ProjectFlagTable {
     private final ProjectNamespace projectNamespace;
     private final Visibility projectVisibility;
 
-    public HangarProjectFlag(OffsetDateTime createdAt, long id, long projectId, long userId, @EnumByOrdinal FlagReason reason, boolean resolved, String comment, OffsetDateTime resolvedAt, Long resolvedBy, String reportedByName, @Nullable String resolvedByName, String projectOwnerName, String projectSlug, @EnumByOrdinal Visibility projectVisibility) {
+    public HangarProjectFlag(final OffsetDateTime createdAt, final long id, final long projectId, final long userId, @EnumByOrdinal final FlagReason reason, final boolean resolved, final String comment, final OffsetDateTime resolvedAt, final Long resolvedBy, final String reportedByName, final @Nullable String resolvedByName, final String projectOwnerName, final String projectSlug, @EnumByOrdinal final Visibility projectVisibility) {
         super(createdAt, id, projectId, userId, reason, resolved, comment, resolvedAt, resolvedBy);
         this.reportedByName = reportedByName;
         this.resolvedByName = resolvedByName;
@@ -25,28 +24,28 @@ public class HangarProjectFlag extends ProjectFlagTable {
     }
 
     public String getReportedByName() {
-        return reportedByName;
+        return this.reportedByName;
     }
 
     public String getResolvedByName() {
-        return resolvedByName;
+        return this.resolvedByName;
     }
 
     public ProjectNamespace getProjectNamespace() {
-        return projectNamespace;
+        return this.projectNamespace;
     }
 
     public Visibility getProjectVisibility() {
-        return projectVisibility;
+        return this.projectVisibility;
     }
 
     @Override
     public String toString() {
         return "HangarProjectFlag{" +
-                "reportedByName='" + reportedByName + '\'' +
-                ", resolvedByName='" + resolvedByName + '\'' +
-                ", projectNamespace=" + projectNamespace +
-                ", projectVisibility=" + projectVisibility +
-                "} " + super.toString();
+            "reportedByName='" + this.reportedByName + '\'' +
+            ", resolvedByName='" + this.resolvedByName + '\'' +
+            ", projectNamespace=" + this.projectNamespace +
+            ", projectVisibility=" + this.projectVisibility +
+            "} " + super.toString();
     }
 }

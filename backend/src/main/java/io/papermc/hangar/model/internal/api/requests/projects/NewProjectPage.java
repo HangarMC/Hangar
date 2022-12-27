@@ -7,33 +7,29 @@ import javax.validation.constraints.NotBlank;
 public class NewProjectPage {
 
     // @el(root: String)
-    @NotBlank
-    @Validate(SpEL = "@validate.min(#root, @hangarConfig.pages.minNameLen)", message = "page.new.error.name.minLength")
-    @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxNameLen)", message = "page.new.error.name.maxLength")
-    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.pages.nameRegex)", message = "page.new.error.name.invalidChars")
-    private final String name;
+    private final @NotBlank @Validate(SpEL = "@validate.min(#root, @hangarConfig.pages.minNameLen)", message = "page.new.error.name.minLength") @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxNameLen)", message = "page.new.error.name.maxLength") @Validate(SpEL = "@validate.regex(#root, @hangarConfig.pages.nameRegex)", message = "page.new.error.name.invalidChars") String name;
     private final Long parentId;
 
     @JsonCreator
-    public NewProjectPage(@NotBlank String name, Long parentId) {
+    public NewProjectPage(final @NotBlank String name, final Long parentId) {
         this.name = name;
         this.parentId = parentId;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
 
     public Long getParentId() {
-        return parentId;
+        return this.parentId;
     }
 
     @Override
     public String toString() {
         return "NewProjectPage{" +
-                "name='" + name + '\'' +
-                ", parentId=" + parentId +
-                '}';
+            "name='" + this.name + '\'' +
+            ", parentId=" + this.parentId +
+            '}';
     }
 }

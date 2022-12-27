@@ -9,12 +9,11 @@ import io.github.bucket4j.Refill;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.util.RequestUtil;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Service;
-
 import java.net.InetAddress;
 import java.time.Duration;
 import java.util.Locale;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.stereotype.Service;
 
 @Service
 public class BucketService extends HangarComponent {
@@ -28,17 +27,17 @@ public class BucketService extends HangarComponent {
      * @param limit rate limit
      * @return bucket, or null if no limit should be applied
      */
-    public @Nullable Bucket bucket(String path, RateLimit limit) {
-        //TODO local/loopback address checks/admin user check => return null?
-        InetAddress address = RequestUtil.getRemoteInetAddress(request);
-        Cache<String, Bucket> pathCache = cache.get(address);
-        return pathCache.get(path.toLowerCase(Locale.ROOT), p -> createBucket(limit));
+    public @Nullable Bucket bucket(final String path, final RateLimit limit) {
+        // TODO local/loopback address checks/admin user check => return null?
+        final InetAddress address = RequestUtil.getRemoteInetAddress(this.request);
+        final Cache<String, Bucket> pathCache = this.cache.get(address);
+        return pathCache.get(path.toLowerCase(Locale.ROOT), p -> this.createBucket(limit));
     }
 
-    private Bucket createBucket(RateLimit limit) {
-        Refill refill = limit.greedy() ? Refill.greedy(limit.refillTokens(), Duration.ofSeconds(limit.refillSeconds()))
+    private Bucket createBucket(final RateLimit limit) {
+        final Refill refill = limit.greedy() ? Refill.greedy(limit.refillTokens(), Duration.ofSeconds(limit.refillSeconds()))
             : Refill.intervally(limit.refillTokens(), Duration.ofSeconds(limit.refillSeconds()));
-        Bandwidth bandwidth = Bandwidth.classic(limit.overdraft(), refill);
+        final Bandwidth bandwidth = Bandwidth.classic(limit.overdraft(), refill);
         return Bucket.builder().addLimit(bandwidth).build();
     }
 }

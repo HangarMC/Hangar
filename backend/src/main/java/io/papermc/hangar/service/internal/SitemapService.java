@@ -13,11 +13,10 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Locale;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SitemapService extends HangarComponent {
@@ -27,7 +26,7 @@ public class SitemapService extends HangarComponent {
     private final ProjectVersionsDAO projectVersionsDAO;
     private final HangarProjectPagesDAO hangarProjectPagesDAO;
 
-    public SitemapService(UserDAO userDAO, ProjectsDAO projectsDAO, ProjectVersionsDAO projectVersionsDAO, HangarProjectPagesDAO hangarProjectPagesDAO) {
+    public SitemapService(final UserDAO userDAO, final ProjectsDAO projectsDAO, final ProjectVersionsDAO projectVersionsDAO, final HangarProjectPagesDAO hangarProjectPagesDAO) {
         this.userDAO = userDAO;
         this.projectsDAO = projectsDAO;
         this.projectVersionsDAO = projectVersionsDAO;
@@ -36,52 +35,52 @@ public class SitemapService extends HangarComponent {
 
     @Cacheable("indexSitemap")
     public String getSitemap() {
-        SitemapGenerator generator = SitemapGenerator.of(config.getBaseUrl())
-                .addPage(WebPage.builder().name("global-sitemap.xml").build());
+        final SitemapGenerator generator = SitemapGenerator.of(this.config.getBaseUrl())
+            .addPage(WebPage.builder().name("global-sitemap.xml").build());
 
-        userDAO.getAuthorNames().forEach(name -> generator.addPage(name + "/sitemap.xml"));
+        this.userDAO.getAuthorNames().forEach(name -> generator.addPage(name + "/sitemap.xml"));
         return generator.toString();
     }
 
     @Cacheable("globalSitemap")
     public String getGlobalSitemap() {
-        return SitemapGenerator.of(config.getBaseUrl())
-                .addPage(WebPage.builder().name("").changeFreq(ChangeFreq.HOURLY).build())
-                .addPage(WebPage.builder().name("authors").changeFreq(ChangeFreq.WEEKLY).build())
-                .addPage(WebPage.builder().name("staff").changeFreq(ChangeFreq.WEEKLY).build())
-                .addPage(WebPage.builder().name("api").build())
-                .toString();
+        return SitemapGenerator.of(this.config.getBaseUrl())
+            .addPage(WebPage.builder().name("").changeFreq(ChangeFreq.HOURLY).build())
+            .addPage(WebPage.builder().name("authors").changeFreq(ChangeFreq.WEEKLY).build())
+            .addPage(WebPage.builder().name("staff").changeFreq(ChangeFreq.WEEKLY).build())
+            .addPage(WebPage.builder().name("api").build())
+            .toString();
     }
 
     @Cacheable(value = "userSitemap", key = "#username")
-    public String getUserSitemap(String username) {
-        final UserTable userTable = userDAO.getUserTable(username);
-        final SitemapGenerator generator = SitemapGenerator.of(config.getBaseUrl());
+    public String getUserSitemap(final String username) {
+        final UserTable userTable = this.userDAO.getUserTable(username);
+        final SitemapGenerator generator = SitemapGenerator.of(this.config.getBaseUrl());
         generator.defaultChangeFreqWeekly();
 
         // add all projects
-        List<ProjectTable> projects = projectsDAO.getUserProjects(userTable.getId(), false);
+        final List<ProjectTable> projects = this.projectsDAO.getUserProjects(userTable.getId(), false);
         projects.forEach(p -> generator.addPage(userTable.getName() + "/" + p.getSlug()));
 
         // add all versions of said projects
         projects.forEach(p -> {
-            List<ProjectVersionTable> projectVersions = projectVersionsDAO.getProjectVersions(p.getId());
+            final List<ProjectVersionTable> projectVersions = this.projectVersionsDAO.getProjectVersions(p.getId());
 
             projectVersions.forEach(pv -> {
-                List<Platform> platforms = projectVersionsDAO.getVersionPlatforms(pv.getId());
-                platforms.forEach(platform -> generator.addPage(path(userTable.getName(), p.getSlug(), "versions", pv.getVersionString(), platform.name().toLowerCase(Locale.ROOT))));
+                final List<Platform> platforms = this.projectVersionsDAO.getVersionPlatforms(pv.getId());
+                platforms.forEach(platform -> generator.addPage(this.path(userTable.getName(), p.getSlug(), "versions", pv.getVersionString(), platform.name().toLowerCase(Locale.ROOT))));
 
             });
         });
 
         // add all pages of said projects
         projects.forEach(project -> {
-            List<ExtendedProjectPage> projectPages = hangarProjectPagesDAO.getProjectPages(project.getId());
-            for (ExtendedProjectPage pp : projectPages) {
+            final List<ExtendedProjectPage> projectPages = this.hangarProjectPagesDAO.getProjectPages(project.getId());
+            for (final ExtendedProjectPage pp : projectPages) {
                 if (pp.isHome()) {
                     continue;
                 }
-                generator.addPage(path(userTable.getName(), project.getSlug(), "pages", pp.getSlug()));
+                generator.addPage(this.path(userTable.getName(), project.getSlug(), "pages", pp.getSlug()));
             }
         });
 
@@ -91,7 +90,7 @@ public class SitemapService extends HangarComponent {
         return generator.toString();
     }
 
-    private String path(String...paths) {
+    private String path(final String... paths) {
         return String.join("/", paths);
     }
 }

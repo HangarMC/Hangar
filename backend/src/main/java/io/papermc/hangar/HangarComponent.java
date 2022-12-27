@@ -6,6 +6,9 @@ import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.UserActionLogService;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.jdbi.v3.core.internal.MemoizingSupplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,13 +20,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
-
 public abstract class HangarComponent {
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     protected HttpServletRequest request;
@@ -39,27 +38,25 @@ public abstract class HangarComponent {
     protected UserActionLogService actionLogger;
 
     protected final Optional<HangarPrincipal> getOptionalHangarPrincipal() {
-        return getHangarPrincipal0().get();
+        return this.getHangarPrincipal0().get();
     }
 
-    @NotNull
-    protected final Permission getGlobalPermissions() {
-        return getHangarPrincipal0().get().map(HangarPrincipal::getGlobalPermissions).orElse(PermissionService.DEFAULT_SIGNED_OUT_PERMISSIONS);
+    protected final @NotNull Permission getGlobalPermissions() {
+        return this.getHangarPrincipal0().get().map(HangarPrincipal::getGlobalPermissions).orElse(PermissionService.DEFAULT_SIGNED_OUT_PERMISSIONS);
     }
 
     protected final HangarPrincipal getHangarPrincipal() {
-        return getHangarPrincipal0().get().orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authentication principal found"));
+        return this.getHangarPrincipal0().get().orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authentication principal found"));
     }
 
-    @Nullable
-    protected final Long getHangarUserId() {
-        return getHangarPrincipal0().get().map(HangarPrincipal::getId).orElse(null);
+    protected final @Nullable Long getHangarUserId() {
+        return this.getHangarPrincipal0().get().map(HangarPrincipal::getId).orElse(null);
     }
 
     private MemoizingSupplier<Optional<HangarPrincipal>> getHangarPrincipal0() {
         return MemoizingSupplier.of(() -> Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .filter(HangarAuthenticationToken.class::isInstance)
-                .map(HangarAuthenticationToken.class::cast)
-                .map(HangarAuthenticationToken::getPrincipal));
+            .filter(HangarAuthenticationToken.class::isInstance)
+            .map(HangarAuthenticationToken.class::cast)
+            .map(HangarAuthenticationToken::getPrincipal));
     }
 }

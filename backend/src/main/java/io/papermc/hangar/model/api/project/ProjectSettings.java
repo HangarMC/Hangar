@@ -11,41 +11,31 @@ import org.jetbrains.annotations.Nullable;
 public class ProjectSettings {
 
     // @el(root: String)
-    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
-    private final String homepage;
+    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl") String homepage;
 
     // @el(root: String)
-    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
-    private final String issues;
+    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl") String issues;
 
     // @el(root: String)
-    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
-    private final String source;
+    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl") String source;
 
     // @el(root: String)
-    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
-    private final String support;
+    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl") String support;
 
     // @el(root: String)
-    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
-    private final String wiki;
-    @Valid
-    private final ProjectLicense license;
-    @Valid
-    private final ProjectDonationSettings donation;
+    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl") String wiki;
+    private final @Valid ProjectLicense license;
+    private final @Valid ProjectDonationSettings donation;
 
     // @el(root: Collection<String>)
-    @NotNull
-    @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywords)", message = "project.new.error.tooManyKeywords")
-    private final Collection<String> keywords;
+    private final @NotNull @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywords)", message = "project.new.error.tooManyKeywords") Collection<String> keywords;
     private final boolean forumSync;
 
     // @el(root: String)
-    @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxSponsorsLen)", message = "project.new.error.tooLongSponsors")
-    private final String sponsors;
+    private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxSponsorsLen)", message = "project.new.error.tooLongSponsors") String sponsors;
 
     @JsonCreator
-    public ProjectSettings(@Nullable String homepage, @Nullable String issues, @Nullable String source, @Nullable String support, @Nullable String wiki, @Nested("license") ProjectLicense license, @Nested("donation") ProjectDonationSettings donation, Collection<String> keywords, boolean forumSync, String sponsors) {
+    public ProjectSettings(final @Nullable String homepage, final @Nullable String issues, final @Nullable String source, final @Nullable String support, final @Nullable String wiki, @Nested("license") final ProjectLicense license, @Nested("donation") final ProjectDonationSettings donation, final Collection<String> keywords, final boolean forumSync, final String sponsors) {
         this.homepage = homepage;
         this.issues = issues;
         this.source = source;
@@ -59,58 +49,58 @@ public class ProjectSettings {
     }
 
     public String getHomepage() {
-        return homepage;
+        return this.homepage;
     }
 
     public String getIssues() {
-        return issues;
+        return this.issues;
     }
 
     public String getSource() {
-        return source;
+        return this.source;
     }
 
     public String getSupport() {
-        return support;
+        return this.support;
     }
 
     public String getWiki() {
-        return wiki;
+        return this.wiki;
     }
 
     public ProjectLicense getLicense() {
-        return license;
+        return this.license;
     }
 
     public ProjectDonationSettings getDonation() {
-        return donation;
+        return this.donation;
     }
 
     public Collection<String> getKeywords() {
-        return keywords;
+        return this.keywords;
     }
 
     public boolean isForumSync() {
-        return forumSync;
+        return this.forumSync;
     }
 
     public String getSponsors() {
-        return sponsors;
+        return this.sponsors;
     }
 
     @Override
     public String toString() {
         return "ProjectSettings{" +
-                "homepage='" + homepage + '\'' +
-                ", issues='" + issues + '\'' +
-                ", source='" + source + '\'' +
-                ", support='" + support + '\'' +
-               ", support='" + wiki + '\'' +
-                ", license=" + license +
-                ", donation=" + donation +
-                ", keywords=" + keywords +
-                ", forumSync=" + forumSync +
-                ", sponsors='" + sponsors + '\'' +
-                '}';
+            "homepage='" + this.homepage + '\'' +
+            ", issues='" + this.issues + '\'' +
+            ", source='" + this.source + '\'' +
+            ", support='" + this.support + '\'' +
+            ", support='" + this.wiki + '\'' +
+            ", license=" + this.license +
+            ", donation=" + this.donation +
+            ", keywords=" + this.keywords +
+            ", forumSync=" + this.forumSync +
+            ", sponsors='" + this.sponsors + '\'' +
+            '}';
     }
 }

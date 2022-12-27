@@ -17,12 +17,14 @@ import org.intellij.lang.annotations.Language;
 public @interface VisibilityRequired {
     /**
      * Project or Version
+     *
      * @return type to check
      */
     Type type();
 
     /**
      * Method arguments to resolve the project or version
+     *
      * @return method arguments as an SpEL array
      */
     @Language("SpEL")
@@ -34,12 +36,12 @@ public @interface VisibilityRequired {
 
         private final Set<Integer> argCount;
 
-        Type(Integer...argCounts) {
+        Type(final Integer... argCounts) {
             this.argCount = Set.of(argCounts);
         }
 
         public Set<Integer> getArgCount() {
-            return argCount;
+            return this.argCount;
         }
     }
 }

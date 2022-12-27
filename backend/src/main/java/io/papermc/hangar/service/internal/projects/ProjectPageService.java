@@ -31,57 +31,57 @@ public class ProjectPageService extends HangarComponent {
     private final JobService jobService;
     private final ValidationService validationService;
 
-    public ProjectPageService(ProjectPagesDAO projectPagesDAO, HangarProjectPagesDAO hangarProjectPagesDAO, JobService jobService, final ValidationService validationService) {
+    public ProjectPageService(final ProjectPagesDAO projectPagesDAO, final HangarProjectPagesDAO hangarProjectPagesDAO, final JobService jobService, final ValidationService validationService) {
         this.projectPagesDAO = projectPagesDAO;
         this.hangarProjectPagesDAO = hangarProjectPagesDAO;
         this.jobService = jobService;
         this.validationService = validationService;
     }
 
-    public void checkDuplicateName(long projectId, String name, @Nullable Long parentId) {
-        if ((parentId != null && projectPagesDAO.getChildPage(projectId, parentId, name) != null) || (parentId == null && projectPagesDAO.getRootPage(projectId, StringUtils.slugify(name)) != null)) {
+    public void checkDuplicateName(final long projectId, final String name, final @Nullable Long parentId) {
+        if ((parentId != null && this.projectPagesDAO.getChildPage(projectId, parentId, name) != null) || (parentId == null && this.projectPagesDAO.getRootPage(projectId, StringUtils.slugify(name)) != null)) {
             throw new HangarApiException("page.new.error.duplicateName");
         }
     }
 
     @Transactional
-    public ProjectPageTable createPage(long projectId, String name, String slug, String contents, boolean deletable, @Nullable Long parentId, boolean isHome) {
-        if (!isHome && contents.length() < config.pages.minLen()) {
+    public ProjectPageTable createPage(final long projectId, final String name, final String slug, final String contents, final boolean deletable, final @Nullable Long parentId, final boolean isHome) {
+        if (!isHome && contents.length() < this.config.pages.minLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.minLength");
         }
 
-        if (contents.length() > config.pages.maxLen()) {
+        if (contents.length() > this.config.pages.maxLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
 
-        validationService.testPageName(name);
+        this.validationService.testPageName(name);
 
-        checkDuplicateName(projectId, name, parentId);
+        this.checkDuplicateName(projectId, name, parentId);
 
         ProjectPageTable projectPageTable = new ProjectPageTable(
-                projectId,
-                name,
-                slug,
-                contents,
-                deletable,
-                parentId
+            projectId,
+            name,
+            slug,
+            contents,
+            deletable,
+            parentId
         );
-        projectPageTable = projectPagesDAO.insert(projectPageTable);
+        projectPageTable = this.projectPagesDAO.insert(projectPageTable);
         if (isHome) {
-            projectPagesDAO.insertHomePage(new ProjectHomePageTable(projectPageTable.getProjectId(), projectPageTable.getId()));
-            jobService.save(new UpdateDiscourseProjectTopicJob(projectId));
+            this.projectPagesDAO.insertHomePage(new ProjectHomePageTable(projectPageTable.getProjectId(), projectPageTable.getId()));
+            this.jobService.save(new UpdateDiscourseProjectTopicJob(projectId));
         }
-        actionLogger.projectPage(LogAction.PROJECT_PAGE_CREATED.create(PageContext.of(projectPageTable.getProjectId(), projectPageTable.getId()), contents, ""));
+        this.actionLogger.projectPage(LogAction.PROJECT_PAGE_CREATED.create(PageContext.of(projectPageTable.getProjectId(), projectPageTable.getId()), contents, ""));
         return projectPageTable;
     }
 
-    public Map<Long, HangarProjectPage> getProjectPages(long projectId) {
-        Map<Long, HangarProjectPage> hangarProjectPages = new LinkedHashMap<>();
-        for (ExtendedProjectPage projectPage : hangarProjectPagesDAO.getProjectPages(projectId)) {
+    public Map<Long, HangarProjectPage> getProjectPages(final long projectId) {
+        final Map<Long, HangarProjectPage> hangarProjectPages = new LinkedHashMap<>();
+        for (final ExtendedProjectPage projectPage : this.hangarProjectPagesDAO.getProjectPages(projectId)) {
             if (projectPage.getParentId() == null) {
                 hangarProjectPages.put(projectPage.getId(), new HangarProjectPage(projectPage, projectPage.isHome()));
             } else {
-                HangarProjectPage parent = findById(projectPage.getParentId(), hangarProjectPages);
+                final HangarProjectPage parent = this.findById(projectPage.getParentId(), hangarProjectPages);
                 if (parent == null) {
                     throw new IllegalStateException("Should always find a parent");
                 }
@@ -92,12 +92,12 @@ public class ProjectPageService extends HangarComponent {
         return hangarProjectPages;
     }
 
-    private HangarProjectPage findById(long id, Map<Long, HangarProjectPage> pageMap) {
+    private HangarProjectPage findById(final long id, final Map<Long, HangarProjectPage> pageMap) {
         if (pageMap.containsKey(id)) {
             return pageMap.get(id);
         } else {
-            for (HangarProjectPage page : pageMap.values()) {
-                HangarProjectPage possiblePage = findById(id, page.getChildren());
+            for (final HangarProjectPage page : pageMap.values()) {
+                final HangarProjectPage possiblePage = this.findById(id, page.getChildren());
                 if (possiblePage != null) {
                     return possiblePage;
                 }
@@ -106,11 +106,11 @@ public class ProjectPageService extends HangarComponent {
         }
     }
 
-    public ExtendedProjectPage getProjectPage(String author, String slug, String requestUri) {
+    public ExtendedProjectPage getProjectPage(final String author, final String slug, final String requestUri) {
         String path = requestUri.replace("/api/internal/pages/page/" + author + "/" + slug, "");
-        ExtendedProjectPage pageTable;
+        final ExtendedProjectPage pageTable;
         if (path.isEmpty() || path.equals("/")) {
-            pageTable = hangarProjectPagesDAO.getHomePage(author, slug);
+            pageTable = this.hangarProjectPagesDAO.getHomePage(author, slug);
         } else {
             if (path.endsWith("/")) {
                 path = path.substring(0, path.length() - 1);
@@ -118,7 +118,7 @@ public class ProjectPageService extends HangarComponent {
             if (path.startsWith("/")) {
                 path = path.substring(1);
             }
-            pageTable = hangarProjectPagesDAO.getProjectPage(author, slug, path);
+            pageTable = this.hangarProjectPagesDAO.getProjectPage(author, slug, path);
         }
         if (pageTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "Page not found");
@@ -126,54 +126,54 @@ public class ProjectPageService extends HangarComponent {
         return pageTable;
     }
 
-    public ExtendedProjectPage getProjectPage(long id) {
-        return hangarProjectPagesDAO.getProjectPage(id);
+    public ExtendedProjectPage getProjectPage(final long id) {
+        return this.hangarProjectPagesDAO.getProjectPage(id);
     }
 
     @Transactional
-    public String createProjectPage(long projectId, NewProjectPage newProjectPage) {
+    public String createProjectPage(final long projectId, final NewProjectPage newProjectPage) {
         String slug = StringUtils.slugify(newProjectPage.getName());
         if (newProjectPage.getParentId() != null) {
-            slug = projectPagesDAO.getProjectPage(projectId, newProjectPage.getParentId()).getSlug() + "/" + slug;
+            slug = this.projectPagesDAO.getProjectPage(projectId, newProjectPage.getParentId()).getSlug() + "/" + slug;
         }
-        createPage(projectId, newProjectPage.getName(), slug, "# " + newProjectPage.getName() + "\n\nWelcome to your new page", true, newProjectPage.getParentId(), false);
+        this.createPage(projectId, newProjectPage.getName(), slug, "# " + newProjectPage.getName() + "\n\nWelcome to your new page", true, newProjectPage.getParentId(), false);
         return slug;
     }
 
     @Transactional
-    public void saveProjectPage(long projectId, long pageId, String newContents) {
-        if (newContents.length() > config.pages.maxLen()) {
+    public void saveProjectPage(final long projectId, final long pageId, final String newContents) {
+        if (newContents.length() > this.config.pages.maxLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
 
-        ProjectPageTable pageTable = projectPagesDAO.getProjectPage(projectId, pageId);
+        final ProjectPageTable pageTable = this.projectPagesDAO.getProjectPage(projectId, pageId);
         if (pageTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "No page found");
         }
-        String oldContent = pageTable.getContents();
+        final String oldContent = pageTable.getContents();
         pageTable.setContents(newContents);
-        projectPagesDAO.update(pageTable);
-        actionLogger.projectPage(LogAction.PROJECT_PAGE_EDITED.create(PageContext.of(projectId, pageId), newContents, oldContent));
+        this.projectPagesDAO.update(pageTable);
+        this.actionLogger.projectPage(LogAction.PROJECT_PAGE_EDITED.create(PageContext.of(projectId, pageId), newContents, oldContent));
     }
 
     @Transactional
-    public void deleteProjectPage(long projectId, long pageId) {
-        ProjectPageTable pageTable = projectPagesDAO.getProjectPage(projectId, pageId);
+    public void deleteProjectPage(final long projectId, final long pageId) {
+        final ProjectPageTable pageTable = this.projectPagesDAO.getProjectPage(projectId, pageId);
         if (pageTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "No page found");
         }
         if (!pageTable.isDeletable()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Page is not deletable");
         }
-        List<ProjectPageTable> children = projectPagesDAO.getChildPages(projectId, pageId);
+        final List<ProjectPageTable> children = this.projectPagesDAO.getChildPages(projectId, pageId);
         if (!children.isEmpty()) {
-            for (ProjectPageTable child : children) {
+            for (final ProjectPageTable child : children) {
                 child.setParentId(pageTable.getParentId());
             }
-            projectPagesDAO.updateParents(children);
+            this.projectPagesDAO.updateParents(children);
         }
         // Log must come first otherwise db error
-        actionLogger.projectPage(LogAction.PROJECT_PAGE_DELETED.create(PageContext.of(projectId, pageId), "", pageTable.getContents()));
-        projectPagesDAO.delete(pageTable);
+        this.actionLogger.projectPage(LogAction.PROJECT_PAGE_DELETED.create(PageContext.of(projectId, pageId), "", pageTable.getContents()));
+        this.projectPagesDAO.delete(pageTable);
     }
 }

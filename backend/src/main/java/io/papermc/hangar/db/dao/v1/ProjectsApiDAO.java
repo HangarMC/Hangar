@@ -6,6 +6,9 @@ import io.papermc.hangar.model.api.project.DayProjectStats;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectMember;
 import io.papermc.hangar.model.api.requests.RequestPagination;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Map;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
@@ -14,10 +17,6 @@ import org.jdbi.v3.sqlobject.customizer.DefineNamedBindings;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 @RegisterConstructorMapper(Project.class)
@@ -37,11 +36,11 @@ public interface ProjectsApiDAO {
         "       hp.watchers," +
         "       hp.category," +
         "       hp.description," +
-        "       COALESCE(hp.last_updated, hp.created_at) AS last_updated," +
+        "       coalesce(hp.last_updated, hp.created_at) AS last_updated," +
         "       hp.visibility, " +
         "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred, " +
         "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching, " +
-        "       exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) as flagged," +
+        "       exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) AS flagged," +
         "       p.homepage," +
         "       p.issues," +
         "       p.source," +
@@ -79,13 +78,13 @@ public interface ProjectsApiDAO {
             hp.category,
             hp.description,
             hp.last_updated AS dum, --- need to add this so we can use it in order by, special constraint on distinct queries
-            COALESCE(hp.last_updated, hp.created_at) AS last_updated,
-            ((EXTRACT(EPOCH FROM COALESCE(hp.last_updated, hp.created_at)) - 1609459200) / 604800) *1 AS last_updated_double, --- We can order with this. That "dum" does not work. It only orders it with this.
+            coalesce(hp.last_updated, hp.created_at) AS last_updated,
+            ((extract(EPOCH FROM coalesce(hp.last_updated, hp.created_at)) - 1609459200) / 604800) *1 AS last_updated_double, --- We can order with this. That "dum" does not work. It only orders it with this.
             hp.visibility,
             <relevance>
-            exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred,
-            exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching,
-            exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) as flagged,
+            EXISTS(SELECT * FROM project_stars ps WHERE ps.project_id = p.id AND ps.user_id = :requesterId) AS starred,
+            EXISTS(SELECT * FROM project_watchers pw WHERE pw.project_id = p.id AND pw.user_id = :requesterId) AS watching,
+            EXISTS(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) AS flagged,
             p.homepage,
             p.issues,
             p.source,
@@ -102,11 +101,11 @@ public interface ProjectsApiDAO {
             p.donation_subject,
             p.sponsors
         FROM home_projects hp
-            JOIN projects p on hp.id = p.id
-            LEFT JOIN project_versions pv on p.id = pv.project_id
-            LEFT JOIN project_version_platform_dependencies pvpd on pv.id = pvpd.version_id
-            LEFT JOIN platform_versions v on pvpd.platform_version_id = v.id
-            WHERE true <filters> -- Not sure how else to get here a single Where
+            JOIN projects p ON hp.id = p.id
+            LEFT JOIN project_versions pv ON p.id = pv.project_id
+            LEFT JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id
+            LEFT JOIN platform_versions v ON pvpd.platform_version_id = v.id
+            WHERE TRUE <filters> -- Not sure how else to get here a single Where
             <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif>
             <sorters>
             <offsetLimit>""")
@@ -119,10 +118,10 @@ public interface ProjectsApiDAO {
     @SqlQuery("SELECT count(DISTINCT hp.id) " +
         "  FROM home_projects hp" +
         "         JOIN projects p ON hp.id = p.id" +
-        "         LEFT JOIN project_versions pv on p.id = pv.project_id " +
-        "         LEFT JOIN project_version_platform_dependencies pvpd on pv.id = pvpd.version_id " +
-        "         LEFT JOIN platform_versions v on pvpd.platform_version_id = v.id " +
-        "         WHERE true <filters>" + // Not sure how else to get here a single Where
+        "         LEFT JOIN project_versions pv ON p.id = pv.project_id " +
+        "         LEFT JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id " +
+        "         LEFT JOIN platform_versions v ON pvpd.platform_version_id = v.id " +
+        "         WHERE TRUE <filters>" + // Not sure how else to get here a single Where
         "         <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif> ")
     long countProjects(@Define boolean seeHidden, @Define Long requesterId,
                        @BindPagination(isCount = true) RequestPagination pagination);
@@ -134,7 +133,7 @@ public interface ProjectsApiDAO {
         "       JOIN users u ON upr.user_id = u.id " +
         "       JOIN roles r ON upr.role_type = r.name " +
         "   WHERE p.slug = :slug AND p.owner_name = :author " +
-        "   GROUP BY u.name ORDER BY max(r.permission::BIGINT) DESC " +
+        "   GROUP BY u.name ORDER BY max(r.permission::bigint) DESC " +
         "   <offsetLimit>")
     List<ProjectMember> getProjectMembers(String author, String slug, @BindPagination RequestPagination pagination);
 
@@ -206,9 +205,9 @@ public interface ProjectsApiDAO {
 
     @KeyColumn("dateKey")
     @RegisterConstructorMapper(DayProjectStats.class)
-    @SqlQuery("SELECT cast(dates.day AS date) dateKey, coalesce(sum(pvd.downloads), 0) AS downloads, coalesce(pv.views, 0) AS views" +
+    @SqlQuery("SELECT cast(dates.day AS date) datekey, coalesce(sum(pvd.downloads), 0) AS downloads, coalesce(pv.views, 0) AS views" +
         "   FROM projects p," +
-        "   (SELECT generate_series(:fromDate::date, :toDate::date, INTERVAL '1 DAY') as day) dates " +
+        "   (SELECT generate_series(:fromDate::date, :toDate::date, INTERVAL '1 DAY') AS day) dates " +
         "       LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day" +
         "       LEFT JOIN project_views pv ON dates.day = pv.day AND pvd.project_id = pv.project_id" +
         "   WHERE " +

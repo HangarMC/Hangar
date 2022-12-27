@@ -3,20 +3,19 @@ package io.papermc.hangar.exceptions;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import java.io.IOException;
+import java.util.Objects;
 import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.io.IOException;
-import java.util.Objects;
-
 @JsonComponent
 public class MethodArgumentNotValidExceptionSerializer extends JsonSerializer<MethodArgumentNotValidException> {
 
     @Override
-    public void serialize(MethodArgumentNotValidException exception, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(final MethodArgumentNotValidException exception, final JsonGenerator gen, final SerializerProvider provider) throws IOException {
         gen.writeStartObject();
         gen.writeStringField("message", exception.getMessage());
         gen.writeStringField("object", exception.getObjectName());
@@ -26,7 +25,7 @@ public class MethodArgumentNotValidExceptionSerializer extends JsonSerializer<Me
         gen.writeStringField("statusPhrase", HttpStatus.BAD_REQUEST.getReasonPhrase());
         gen.writeEndObject();
         gen.writeArrayFieldStart("globalErrors");
-        for (ObjectError globalError : exception.getGlobalErrors()) {
+        for (final ObjectError globalError : exception.getGlobalErrors()) {
             gen.writeStartObject();
             gen.writeStringField("code", globalError.getCode());
             gen.writeStringField("errorMsg", globalError.getDefaultMessage());
@@ -35,7 +34,7 @@ public class MethodArgumentNotValidExceptionSerializer extends JsonSerializer<Me
         }
         gen.writeEndArray();
         gen.writeArrayFieldStart("fieldErrors");
-        for (FieldError fieldError : exception.getFieldErrors()) {
+        for (final FieldError fieldError : exception.getFieldErrors()) {
             gen.writeStartObject();
             gen.writeStringField("code", fieldError.getCode());
             gen.writeStringField("errorMsg", fieldError.getDefaultMessage());

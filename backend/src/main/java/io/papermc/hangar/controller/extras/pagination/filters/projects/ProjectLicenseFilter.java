@@ -1,5 +1,8 @@
 package io.papermc.hangar.controller.extras.pagination.filters.projects;
 
+import io.papermc.hangar.controller.extras.pagination.Filter;
+import java.util.Arrays;
+import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,18 +10,13 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import java.util.Arrays;
-import java.util.Set;
-
-import io.papermc.hangar.controller.extras.pagination.Filter;
-
 @Component
 public class ProjectLicenseFilter implements Filter<ProjectLicenseFilter.ProjectLicenseFilterInstance> {
 
     private final ConversionService conversionService;
 
     @Autowired
-    public ProjectLicenseFilter(ConversionService conversionService) {
+    public ProjectLicenseFilter(final ConversionService conversionService) {
         this.conversionService = conversionService;
     }
 
@@ -32,29 +30,28 @@ public class ProjectLicenseFilter implements Filter<ProjectLicenseFilter.Project
         return "A license to filter for";
     }
 
-    @NotNull
     @Override
-    public ProjectLicenseFilterInstance create(NativeWebRequest webRequest) {
-        return new ProjectLicenseFilterInstance(conversionService.convert(webRequest.getParameterValues(getSingleQueryParam()), String[].class));
+    public @NotNull ProjectLicenseFilterInstance create(final NativeWebRequest webRequest) {
+        return new ProjectLicenseFilterInstance(this.conversionService.convert(webRequest.getParameterValues(this.getSingleQueryParam()), String[].class));
     }
 
-    static class ProjectLicenseFilterInstance implements FilterInstance {
+    static class ProjectLicenseFilterInstance implements Filter.FilterInstance {
 
         private final String[] licenses;
 
-        public ProjectLicenseFilterInstance(String[] licenses) {
+        public ProjectLicenseFilterInstance(final String[] licenses) {
             this.licenses = licenses;
         }
 
         @Override
-        public void createSql(StringBuilder sb, SqlStatement<?> q) {
+        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             sb.append(" AND p.license_type").append(" IN (");
-            for (int i = 0; i < licenses.length; i++) {
+            for (int i = 0; i < this.licenses.length; i++) {
                 sb.append(":__licenses__").append(i);
-                if (i + 1 != licenses.length) {
+                if (i + 1 != this.licenses.length) {
                     sb.append(",");
                 }
-                q.bind("__licenses__" + i, licenses[i]);
+                q.bind("__licenses__" + i, this.licenses[i]);
             }
             sb.append(")");
         }
@@ -62,8 +59,8 @@ public class ProjectLicenseFilter implements Filter<ProjectLicenseFilter.Project
         @Override
         public String toString() {
             return "ProjectLicenseFilterInstance{" +
-                   "licenses=" + Arrays.toString(licenses) +
-                   '}';
+                "licenses=" + Arrays.toString(this.licenses) +
+                '}';
         }
     }
 }

@@ -24,8 +24,7 @@ public class FilterRegistry {
         filters.forEach(f -> this.filters.put((Class<? extends Filter<?>>) f.getClass(), f));
     }
 
-    @NotNull
-    public <T extends Filter<? extends Filter.FilterInstance>> T get(final Class<T> filterClass) {
+    public @NotNull <T extends Filter<? extends Filter.FilterInstance>> T get(final Class<T> filterClass) {
         if (this.filters.containsKey(filterClass)) {
             return (T) this.filters.get(filterClass);
         }

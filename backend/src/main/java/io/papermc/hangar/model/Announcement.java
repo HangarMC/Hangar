@@ -11,45 +11,45 @@ public class Announcement {
     public Announcement() {
     }
 
-    public Announcement(String text, String color) {
+    public Announcement(final String text, final String color) {
         this.text = text;
         this.color = color;
     }
 
     public String getText() {
-        return text;
+        return this.text;
     }
 
-    public void setText(String text) {
+    public void setText(final String text) {
         this.text = text;
     }
 
     public String getColor() {
-        return color;
+        return this.color;
     }
 
-    public void setColor(String color) {
+    public void setColor(final String color) {
         this.color = color;
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", Announcement.class.getSimpleName() + "[", "]")
-                .add("text='" + text + "'")
-                .add("color='" + color + "'")
-                .toString();
+            .add("text='" + this.text + "'")
+            .add("color='" + this.color + "'")
+            .toString();
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Announcement that = (Announcement) o;
-        return Objects.equals(text, that.text) && Objects.equals(color, that.color);
+        if (o == null || this.getClass() != o.getClass()) return false;
+        final Announcement that = (Announcement) o;
+        return Objects.equals(this.text, that.text) && Objects.equals(this.color, that.color);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(text, color);
+        return Objects.hash(this.text, this.color);
     }
 }

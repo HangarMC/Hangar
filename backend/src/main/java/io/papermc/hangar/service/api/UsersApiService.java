@@ -15,7 +15,6 @@ import io.papermc.hangar.model.api.project.ProjectSortingStrategy;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.internal.user.HangarUser;
-import io.papermc.hangar.model.internal.user.HangarUser.HeaderData;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.admin.FlagService;
@@ -53,7 +52,7 @@ public class UsersApiService extends HangarComponent {
     private final FlagService flagService;
 
     @Autowired
-    public UsersApiService(UsersDAO usersDAO, UsersApiDAO usersApiDAO, NotificationsDAO notificationsDAO, PermissionService permissionService, OrganizationService organizationService, final PinnedProjectService pinnedProjectService, final ReviewService reviewService, @Lazy final ProjectAdminService projectAdminService, final FlagService flagService) {
+    public UsersApiService(final UsersDAO usersDAO, final UsersApiDAO usersApiDAO, final NotificationsDAO notificationsDAO, final PermissionService permissionService, final OrganizationService organizationService, final PinnedProjectService pinnedProjectService, final ReviewService reviewService, @Lazy final ProjectAdminService projectAdminService, final FlagService flagService) {
         this.usersDAO = usersDAO;
         this.usersApiDAO = usersApiDAO;
         this.notificationsDAO = notificationsDAO;
@@ -65,34 +64,34 @@ public class UsersApiService extends HangarComponent {
         this.flagService = flagService;
     }
 
-    public <T extends User> T getUser(String name, Class<T> type) {
-        T user = getUserRequired(name, usersDAO::getUser, type);
+    public <T extends User> T getUser(final String name, final Class<T> type) {
+        final T user = this.getUserRequired(name, this.usersDAO::getUser, type);
         this.supplyNameHistory(user);
-        return user instanceof HangarUser ? (T) supplyHeaderData((HangarUser) user) : user;
+        return user instanceof HangarUser ? (T) this.supplyHeaderData((HangarUser) user) : user;
     }
 
     @Transactional
-    public <T extends User> PaginatedResult<T> getUsers(String query, RequestPagination pagination, Class<T> type) {
-        boolean hasQuery = !StringUtils.isBlank(query);
-        List<T> users = usersDAO.getUsers(hasQuery, query, pagination, type);
-        return new PaginatedResult<>(new Pagination(usersDAO.getUsersCount(hasQuery, query), pagination), users);
+    public <T extends User> PaginatedResult<T> getUsers(final String query, final RequestPagination pagination, final Class<T> type) {
+        final boolean hasQuery = !StringUtils.isBlank(query);
+        final List<T> users = this.usersDAO.getUsers(hasQuery, query, pagination, type);
+        return new PaginatedResult<>(new Pagination(this.usersDAO.getUsersCount(hasQuery, query), pagination), users);
     }
 
     @Transactional
-    public PaginatedResult<ProjectCompact> getUserStarred(String userName, ProjectSortingStrategy sortingStrategy, RequestPagination pagination) {
-        getUserRequired(userName, usersDAO::getUser, User.class);
-        boolean canSeeHidden = getGlobalPermissions().has(Permission.SeeHidden);
-        List<ProjectCompact> projects = usersApiDAO.getUserStarred(userName, canSeeHidden, getHangarUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
-        long count = usersApiDAO.getUserStarredCount(userName, canSeeHidden, getHangarUserId());
+    public PaginatedResult<ProjectCompact> getUserStarred(final String userName, final ProjectSortingStrategy sortingStrategy, final RequestPagination pagination) {
+        this.getUserRequired(userName, this.usersDAO::getUser, User.class);
+        final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
+        final List<ProjectCompact> projects = this.usersApiDAO.getUserStarred(userName, canSeeHidden, this.getHangarUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
+        final long count = this.usersApiDAO.getUserStarredCount(userName, canSeeHidden, this.getHangarUserId());
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
 
     @Transactional
-    public PaginatedResult<ProjectCompact> getUserWatching(String userName, ProjectSortingStrategy sortingStrategy, RequestPagination pagination) {
-        getUserRequired(userName, usersDAO::getUser, User.class);
-        boolean canSeeHidden = getGlobalPermissions().has(Permission.SeeHidden);
-        List<ProjectCompact> projects = usersApiDAO.getUserWatching(userName, canSeeHidden, getHangarUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
-        long count = usersApiDAO.getUserWatchingCount(userName, canSeeHidden, getHangarUserId());
+    public PaginatedResult<ProjectCompact> getUserWatching(final String userName, final ProjectSortingStrategy sortingStrategy, final RequestPagination pagination) {
+        this.getUserRequired(userName, this.usersDAO::getUser, User.class);
+        final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
+        final List<ProjectCompact> projects = this.usersApiDAO.getUserWatching(userName, canSeeHidden, this.getHangarUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
+        final long count = this.usersApiDAO.getUserWatchingCount(userName, canSeeHidden, this.getHangarUserId());
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
 
@@ -103,9 +102,9 @@ public class UsersApiService extends HangarComponent {
 
     @Cacheable(CacheConfig.AUTHORS)
     @Transactional
-    public PaginatedResult<User> getAuthors(RequestPagination pagination) {
-        List<User> users = usersApiDAO.getAuthors(pagination);
-        long count = usersApiDAO.getAuthorsCount();
+    public PaginatedResult<User> getAuthors(final RequestPagination pagination) {
+        final List<User> users = this.usersApiDAO.getAuthors(pagination);
+        final long count = this.usersApiDAO.getAuthorsCount();
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
 
@@ -116,33 +115,32 @@ public class UsersApiService extends HangarComponent {
 
     @Cacheable(CacheConfig.STAFF)
     @Transactional
-    public PaginatedResult<User> getStaff(RequestPagination pagination) {
-        List<User> users = usersApiDAO.getStaff(config.user.staffRoles(), pagination);
-        long count = usersApiDAO.getStaffCount(config.user.staffRoles());
+    public PaginatedResult<User> getStaff(final RequestPagination pagination) {
+        final List<User> users = this.usersApiDAO.getStaff(this.config.user.staffRoles(), pagination);
+        final long count = this.usersApiDAO.getStaffCount(this.config.user.staffRoles());
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
 
-    @NotNull
-    private <T, U extends User> U getUserRequired(@Nullable T identifier, @NotNull BiFunction<T, Class<U>, U> function, @NotNull Class<U> type) {
+    private @NotNull <T, U extends User> U getUserRequired(final @Nullable T identifier, final @NotNull BiFunction<T, Class<U>, U> function, final @NotNull Class<U> type) {
         if (identifier == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        U user = function.apply(identifier, type);
+        final U user = function.apply(identifier, type);
         if (user == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a user with identifier: " + identifier);
         }
         return user;
     }
 
-    public HangarUser supplyHeaderData(HangarUser hangarUser) {
-        Permission globalPermission = permissionService.getGlobalPermissions(hangarUser.getId());
-        long unreadNotifs = notificationsDAO.getUnreadNotificationCount(hangarUser.getId());
-        long unansweredInvites = notificationsDAO.getUnansweredInvites(hangarUser.getId());
-        long unresolvedFlags = globalPermission.has(Permission.ModNotesAndFlags) ? flagService.getFlagsQueueSize(false) : 0;
-        long projectApprovals = globalPermission.has(Permission.ModNotesAndFlags.add(Permission.SeeHidden)) ? projectAdminService.getApprovalQueueSize() : 0;
-        long reviewQueueCount = globalPermission.has(Permission.Reviewer) ? reviewService.getApprovalQueueSize() : 0;
-        long organizationCount = organizationService.getUserOrganizationCount(hangarUser.getId());
-        hangarUser.setHeaderData(new HeaderData(
+    public HangarUser supplyHeaderData(final HangarUser hangarUser) {
+        final Permission globalPermission = this.permissionService.getGlobalPermissions(hangarUser.getId());
+        final long unreadNotifs = this.notificationsDAO.getUnreadNotificationCount(hangarUser.getId());
+        final long unansweredInvites = this.notificationsDAO.getUnansweredInvites(hangarUser.getId());
+        final long unresolvedFlags = globalPermission.has(Permission.ModNotesAndFlags) ? this.flagService.getFlagsQueueSize(false) : 0;
+        final long projectApprovals = globalPermission.has(Permission.ModNotesAndFlags.add(Permission.SeeHidden)) ? this.projectAdminService.getApprovalQueueSize() : 0;
+        final long reviewQueueCount = globalPermission.has(Permission.Reviewer) ? this.reviewService.getApprovalQueueSize() : 0;
+        final long organizationCount = this.organizationService.getUserOrganizationCount(hangarUser.getId());
+        hangarUser.setHeaderData(new HangarUser.HeaderData(
             globalPermission,
             unreadNotifs,
             unansweredInvites,
@@ -157,14 +155,14 @@ public class UsersApiService extends HangarComponent {
         final Optional<HangarPrincipal> hangarPrincipal = this.getOptionalHangarPrincipal();
         final List<UserNameChange> userNameHistory;
         if (hangarPrincipal.isPresent() && hangarPrincipal.get().isAllowedGlobal(Permission.SeeHidden)) {
-            userNameHistory = this.usersApiDAO.getUserNameHistory(user.getName(),  OffsetDateTime.MIN);
+            userNameHistory = this.usersApiDAO.getUserNameHistory(user.getName(), OffsetDateTime.MIN);
         } else {
             userNameHistory = this.usersApiDAO.getUserNameHistory(user.getName(), OffsetDateTime.now().minus(this.config.user.nameChangeHistory(), ChronoUnit.DAYS));
         }
         user.setNameHistory(userNameHistory);
     }
 
-    public List<ProjectCompact> getUserPinned(String userName) {
-        return pinnedProjectService.getPinnedVersions(getUserRequired(userName, usersDAO::getUser, HangarUser.class).getId());
+    public List<ProjectCompact> getUserPinned(final String userName) {
+        return this.pinnedProjectService.getPinnedVersions(this.getUserRequired(userName, this.usersDAO::getUser, HangarUser.class).getId());
     }
 }

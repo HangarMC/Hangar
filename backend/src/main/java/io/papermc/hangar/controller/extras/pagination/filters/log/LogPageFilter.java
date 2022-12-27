@@ -2,13 +2,12 @@ package io.papermc.hangar.controller.extras.pagination.filters.log;
 
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogPageFilter.LogPageFilterInstance;
+import java.util.Set;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
-
-import java.util.Set;
 
 @Component
 public class LogPageFilter implements Filter<LogPageFilterInstance> {
@@ -24,26 +23,25 @@ public class LogPageFilter implements Filter<LogPageFilterInstance> {
     }
 
     @Override
-    public boolean supports(NativeWebRequest webRequest) {
-        return Filter.super.supports(webRequest) && NumberUtils.isDigits(webRequest.getParameter(getSingleQueryParam()));
+    public boolean supports(final NativeWebRequest webRequest) {
+        return Filter.super.supports(webRequest) && NumberUtils.isDigits(webRequest.getParameter(this.getSingleQueryParam()));
     }
 
-    @NotNull
     @Override
-    public LogPageFilterInstance create(NativeWebRequest webRequest) {
-        return new LogPageFilterInstance(Long.parseLong(webRequest.getParameter(getSingleQueryParam())));
+    public @NotNull LogPageFilterInstance create(final NativeWebRequest webRequest) {
+        return new LogPageFilterInstance(Long.parseLong(webRequest.getParameter(this.getSingleQueryParam())));
     }
 
-    static class LogPageFilterInstance implements FilterInstance {
+    static class LogPageFilterInstance implements Filter.FilterInstance {
 
         private final long pageId;
 
-        LogPageFilterInstance(long pageId) {
+        LogPageFilterInstance(final long pageId) {
             this.pageId = pageId;
         }
 
         @Override
-        public void createSql(StringBuilder sb, SqlStatement<?> q) {
+        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             sb.append(" AND la.pp_id = :pageId");
             q.bind("pageId", this.pageId);
         }

@@ -1,47 +1,46 @@
 package io.papermc.hangar.model.db.versions.dependencies;
 
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectVersionPlatformDependencyTable extends VersionDependencyTable {
 
     private final long platformVersionId;
 
     @JdbiConstructor
-    public ProjectVersionPlatformDependencyTable(OffsetDateTime createdAt, long id, long versionId, long platformVersionId) {
+    public ProjectVersionPlatformDependencyTable(final OffsetDateTime createdAt, final long id, final long versionId, final long platformVersionId) {
         super(createdAt, id, versionId);
         this.platformVersionId = platformVersionId;
     }
 
-    public ProjectVersionPlatformDependencyTable(long versionId, long platformVersionId) {
+    public ProjectVersionPlatformDependencyTable(final long versionId, final long platformVersionId) {
         super(versionId);
         this.platformVersionId = platformVersionId;
     }
 
     public long getPlatformVersionId() {
-        return platformVersionId;
+        return this.platformVersionId;
     }
 
     @Override
     public String toString() {
         return "ProjectVersionPlatformDependencyTable{" +
-                "platformVersionId=" + platformVersionId +
-                "} " + super.toString();
+            "platformVersionId=" + this.platformVersionId +
+            "} " + super.toString();
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        ProjectVersionPlatformDependencyTable that = (ProjectVersionPlatformDependencyTable) o;
-        return platformVersionId == that.platformVersionId;
+        final ProjectVersionPlatformDependencyTable that = (ProjectVersionPlatformDependencyTable) o;
+        return this.platformVersionId == that.platformVersionId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), platformVersionId);
+        return Objects.hash(super.hashCode(), this.platformVersionId);
     }
 }

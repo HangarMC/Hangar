@@ -3,19 +3,30 @@ package io.papermc.hangar.config;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesAnnotationIntrospector;
-
+import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimitInterceptor;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
@@ -38,40 +49,21 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
-
 @Configuration
 public class WebConfig extends WebMvcConfigurationSupport {
 
-    private static Logger interceptorLogger = LoggerFactory.getLogger(LoggingInterceptor.class); // NO-SONAR
+    private static final Logger interceptorLogger = LoggerFactory.getLogger(LoggingInterceptor.class); // NO-SONAR
 
     private final HangarConfig hangarConfig;
     private final ObjectMapper mapper;
     private final RateLimitInterceptor rateLimitInterceptor;
 
-    private final List<Converter<?,?>> converters;
-    private final List<ConverterFactory<?,?>> converterFactories;
+    private final List<Converter<?, ?>> converters;
+    private final List<ConverterFactory<?, ?>> converterFactories;
     private final List<HandlerMethodArgumentResolver> resolvers;
 
     @Autowired
-    public WebConfig(HangarConfig hangarConfig, ObjectMapper mapper, RateLimitInterceptor rateLimitInterceptor, List<Converter<?, ?>> converters, List<ConverterFactory<?, ?>> converterFactories, List<HandlerMethodArgumentResolver> resolvers) {
+    public WebConfig(final HangarConfig hangarConfig, final ObjectMapper mapper, final RateLimitInterceptor rateLimitInterceptor, final List<Converter<?, ?>> converters, final List<ConverterFactory<?, ?>> converterFactories, final List<HandlerMethodArgumentResolver> resolvers) {
         this.hangarConfig = hangarConfig;
         this.mapper = mapper;
         this.rateLimitInterceptor = rateLimitInterceptor;
@@ -81,17 +73,17 @@ public class WebConfig extends WebMvcConfigurationSupport {
     }
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(rateLimitInterceptor).addPathPatterns("/**");
+    public void addInterceptors(final InterceptorRegistry registry) {
+        registry.addInterceptor(this.rateLimitInterceptor).addPathPatterns("/**");
     }
 
     @Override
-    protected void addCorsMappings(CorsRegistry registry) {
-        CorsRegistration corsRegistration = registry.addMapping("/api/internal/**");
-        if (hangarConfig.isDev()) {
+    protected void addCorsMappings(final CorsRegistry registry) {
+        final CorsRegistration corsRegistration = registry.addMapping("/api/internal/**");
+        if (this.hangarConfig.isDev()) {
             corsRegistration.allowedOrigins("http://localhost:3333");
         } else {
-            corsRegistration.allowedOrigins(hangarConfig.getBaseUrl());
+            corsRegistration.allowedOrigins(this.hangarConfig.getBaseUrl());
         }
         corsRegistration.allowedMethods("GET", "HEAD", "POST", "DELETE");
     }
@@ -110,7 +102,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     public Filter identifyFilter() {
         return new OncePerRequestFilter() {
             @Override
-            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+            protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
                 response.setHeader("Server", "Hangar");
                 filterChain.doFilter(request, response);
             }
@@ -118,53 +110,52 @@ public class WebConfig extends WebMvcConfigurationSupport {
     }
 
     @Override
-    protected void addFormatters(FormatterRegistry registry) {
-        converters.forEach(registry::addConverter);
-        converterFactories.forEach(registry::addConverterFactory);
+    protected void addFormatters(final FormatterRegistry registry) {
+        this.converters.forEach(registry::addConverter);
+        this.converterFactories.forEach(registry::addConverterFactory);
     }
 
     @Override
-    public void configureMessageConverters(@NotNull List<HttpMessageConverter<?>> converters) {
+    public void configureMessageConverters(final @NotNull List<HttpMessageConverter<?>> converters) {
         // TODO kinda wack, but idk a better way rn
-        ParameterNamesAnnotationIntrospector sAnnotationIntrospector = (ParameterNamesAnnotationIntrospector) mapper.getSerializationConfig().getAnnotationIntrospector().allIntrospectors().stream().filter(ParameterNamesAnnotationIntrospector.class::isInstance).findFirst().orElseThrow();
-        mapper.setAnnotationIntrospectors(
-                AnnotationIntrospector.pair(sAnnotationIntrospector, new HangarAnnotationIntrospector()),
-                mapper.getDeserializationConfig().getAnnotationIntrospector()
+        final ParameterNamesAnnotationIntrospector sAnnotationIntrospector = (ParameterNamesAnnotationIntrospector) this.mapper.getSerializationConfig().getAnnotationIntrospector().allIntrospectors().stream().filter(ParameterNamesAnnotationIntrospector.class::isInstance).findFirst().orElseThrow();
+        this.mapper.setAnnotationIntrospectors(
+            AnnotationIntrospector.pair(sAnnotationIntrospector, new HangarAnnotationIntrospector()),
+            this.mapper.getDeserializationConfig().getAnnotationIntrospector()
         );
-        converters.add(new MappingJackson2HttpMessageConverter(mapper));
-        super.addDefaultHttpMessageConverters(converters);
+        converters.add(new MappingJackson2HttpMessageConverter(this.mapper));
+        this.addDefaultHttpMessageConverters(converters);
     }
 
-    @NotNull
     @Override
-    protected RequestMappingHandlerAdapter createRequestMappingHandlerAdapter() {
+    protected @NotNull RequestMappingHandlerAdapter createRequestMappingHandlerAdapter() {
         return new RequestMappingHandlerAdapter() {
             @Override
             public void afterPropertiesSet() {
                 super.afterPropertiesSet();
-                List<HandlerMethodArgumentResolver> existingResolvers = new ArrayList<>(Objects.requireNonNull(getArgumentResolvers()));
-                existingResolvers.addAll(0, resolvers);
+                final List<HandlerMethodArgumentResolver> existingResolvers = new ArrayList<>(Objects.requireNonNull(this.getArgumentResolvers()));
+                existingResolvers.addAll(0, WebConfig.this.resolvers);
                 this.setArgumentResolvers(existingResolvers);
             }
         };
     }
 
     @Bean
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper mapper) {
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(final ObjectMapper mapper) {
         return new MappingJackson2HttpMessageConverter(mapper);
     }
 
     @Bean
-    public RestTemplate restTemplate(List<HttpMessageConverter<?>> messageConverters) {
-        RestTemplate restTemplate;
+    public RestTemplate restTemplate(final List<HttpMessageConverter<?>> messageConverters) {
+        final RestTemplate restTemplate;
         if (interceptorLogger.isDebugEnabled()) {
-            ClientHttpRequestFactory factory = new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory());
+            final ClientHttpRequestFactory factory = new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory());
             restTemplate = new RestTemplate(factory);
             restTemplate.setInterceptors(List.of(new LoggingInterceptor()));
         } else {
             restTemplate = new RestTemplate();
         }
-        super.addDefaultHttpMessageConverters(messageConverters);
+        this.addDefaultHttpMessageConverters(messageConverters);
         restTemplate.setMessageConverters(messageConverters);
         return restTemplate;
     }
@@ -172,17 +163,17 @@ public class WebConfig extends WebMvcConfigurationSupport {
     static class LoggingInterceptor implements ClientHttpRequestInterceptor {
 
         @Override
-        public ClientHttpResponse intercept(HttpRequest req, byte[] reqBody, ClientHttpRequestExecution ex) throws IOException {
+        public ClientHttpResponse intercept(final HttpRequest req, final byte[] reqBody, final ClientHttpRequestExecution ex) throws IOException {
             if (interceptorLogger.isDebugEnabled()) {
                 interceptorLogger.debug("Request {}, body {}, headers {}", req.getMethod() + " " + req.getURI(), new String(reqBody, StandardCharsets.UTF_8), req.getHeaders());
             }
-            ClientHttpResponse response = ex.execute(req, reqBody);
+            final ClientHttpResponse response = ex.execute(req, reqBody);
             if (interceptorLogger.isDebugEnabled()) {
-                int code = response.getRawStatusCode();
-                HttpStatus status = HttpStatus.resolve(code);
+                final int code = response.getRawStatusCode();
+                final HttpStatus status = HttpStatus.resolve(code);
 
-                InputStreamReader isr = new InputStreamReader(response.getBody(), StandardCharsets.UTF_8);
-                String body = new BufferedReader(isr).lines().collect(Collectors.joining("\n"));
+                final InputStreamReader isr = new InputStreamReader(response.getBody(), StandardCharsets.UTF_8);
+                final String body = new BufferedReader(isr).lines().collect(Collectors.joining("\n"));
 
                 interceptorLogger.debug("Response {}, body {}, headers {}", (status != null ? status : code), body, response.getHeaders());
             }

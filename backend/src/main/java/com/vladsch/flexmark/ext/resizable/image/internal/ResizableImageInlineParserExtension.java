@@ -5,20 +5,20 @@
 /**
  * Copyright (c) 2015-2016, Atlassian Pty Ltd
  * All rights reserved.
- *
+ * <p>
  * Copyright (c) 2016-2018, Vladimir Schneider,
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * <p>
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- *
+ * list of conditions and the following disclaimer.
+ * <p>
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
- *
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -38,76 +38,72 @@ import com.vladsch.flexmark.parser.InlineParserExtension;
 import com.vladsch.flexmark.parser.InlineParserExtensionFactory;
 import com.vladsch.flexmark.parser.LightInlineParser;
 import com.vladsch.flexmark.util.sequence.BasedSequence;
+import java.util.Set;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Set;
-import java.util.regex.Pattern;
-
 public class ResizableImageInlineParserExtension implements InlineParserExtension {
-    final public static Pattern IMAGE_PATTERN = Pattern.compile("!\\[([^\\s\\]]*)]\\(([^\\s\\]]+)\\s*=*(\\d*)x*(\\d*)\\)", // Hangar - fix image in link
-            Pattern.CASE_INSENSITIVE);
+    public static final Pattern IMAGE_PATTERN = Pattern.compile("!\\[([^\\s\\]]*)]\\(([^\\s\\]]+)\\s*=*(\\d*)x*(\\d*)\\)", // Hangar - fix image in link
+        Pattern.CASE_INSENSITIVE);
 
-    public ResizableImageInlineParserExtension(LightInlineParser inlineParser) {
+    public ResizableImageInlineParserExtension(final LightInlineParser inlineParser) {
     }
 
     @Override
-    public void finalizeDocument(@NotNull InlineParser inlineParser) {
+    public void finalizeDocument(final @NotNull InlineParser inlineParser) {
     }
 
     @Override
-    public void finalizeBlock(@NotNull InlineParser inlineParser) {
+    public void finalizeBlock(final @NotNull InlineParser inlineParser) {
     }
 
     @Override
-    public boolean parse(@NotNull LightInlineParser inlineParser) {
-        int index = inlineParser.getIndex();
+    public boolean parse(final @NotNull LightInlineParser inlineParser) {
+        final int index = inlineParser.getIndex();
         // FIX
-        BasedSequence input = inlineParser.getInput();
+        final BasedSequence input = inlineParser.getInput();
         if (index + 1 >= input.length()) {
             return false;
         }
-        char c = input.charAt(index + 1);
+        final char c = input.charAt(index + 1);
         // END FIX
         if (c == '[') {
-            BasedSequence[] matches = inlineParser.matchWithGroups(IMAGE_PATTERN);
+            final BasedSequence[] matches = inlineParser.matchWithGroups(IMAGE_PATTERN);
             if (matches != null) {
                 inlineParser.flushTextNode();
 
-                BasedSequence text = matches[1];
-                BasedSequence source = matches[2];
-                BasedSequence width = matches[3];
-                BasedSequence height = matches[4];
+                final BasedSequence text = matches[1];
+                final BasedSequence source = matches[2];
+                final BasedSequence width = matches[3];
+                final BasedSequence height = matches[4];
 
-                ResizableImage image = new ResizableImage(text, source, width, height);
+                final ResizableImage image = new ResizableImage(text, source, width, height);
                 inlineParser.getBlock().appendChild(image);
                 return true;
             }
         }
         return false;
     }
+
     public static class Factory implements InlineParserExtensionFactory {
-        @Nullable
         @Override
-        public Set<Class<?>> getAfterDependents() {
+        public @Nullable Set<Class<?>> getAfterDependents() {
             return null;
         }
 
-        @NotNull
         @Override
-        public CharSequence getCharacters() {
+        public @NotNull CharSequence getCharacters() {
             return "!";
         }
 
-        @Nullable
         @Override
-        public Set<Class<?>> getBeforeDependents() {
+        public @Nullable Set<Class<?>> getBeforeDependents() {
             return null;
         }
 
-        @NotNull
         @Override
-        public InlineParserExtension apply(@NotNull LightInlineParser lightInlineParser) {
+        public @NotNull InlineParserExtension apply(final @NotNull LightInlineParser lightInlineParser) {
             return new ResizableImageInlineParserExtension(lightInlineParser);
         }
 

@@ -1,9 +1,8 @@
 package io.papermc.hangar.db.customtypes;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.postgresql.util.PGobject;
-
 import java.util.Objects;
+import org.postgresql.util.PGobject;
 
 public class RoleCategory extends PGobject {
 
@@ -13,36 +12,36 @@ public class RoleCategory extends PGobject {
 
     private String value;
 
-    RoleCategory(String value) {
+    RoleCategory(final String value) {
         this();
         this.value = value;
     }
 
     public RoleCategory() {
-        setType("role_category");
+        this.setType("role_category");
     }
 
 
     @Override
-    public void setValue(String value) {
+    public void setValue(final String value) {
         this.value = value;
     }
 
     @Override
     @JsonValue
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        RoleCategory that = (RoleCategory) o;
+        final RoleCategory that = (RoleCategory) o;
 
-        return Objects.equals(value, that.value);
+        return Objects.equals(this.value, that.value);
     }
 
     @Override
@@ -53,7 +52,7 @@ public class RoleCategory extends PGobject {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (value != null ? value.hashCode() : 0);
+        result = 31 * result + (this.value != null ? this.value.hashCode() : 0);
         return result;
     }
 }

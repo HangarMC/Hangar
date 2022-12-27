@@ -17,7 +17,7 @@ public final class HtmlSanitizer {
 
     @Autowired
     public HtmlSanitizer(final HangarConfig config) {
-        //TODO remove this disgusting hack when we can put the sanitizer before the markdown renderer
+        // TODO remove this disgusting hack when we can put the sanitizer before the markdown renderer
         final PolicyFactory links = new HtmlPolicyBuilder().withPostprocessor((HtmlStreamEventReceiver r) -> new HtmlStreamEventReceiverWrapper(r) {
             @Override
             public void openTag(final String elementName, final List<String> attrs) {
@@ -68,11 +68,11 @@ public final class HtmlSanitizer {
             .allowAttributes("class").onElements("code", "pre")
             .toFactory();
 
-        sanitizer = Sanitizers.FORMATTING.and(Sanitizers.BLOCKS).and(Sanitizers.TABLES).and(Sanitizers.STYLES)
+        this.sanitizer = Sanitizers.FORMATTING.and(Sanitizers.BLOCKS).and(Sanitizers.TABLES).and(Sanitizers.STYLES)
             .and(images).and(links).and(iframes).and(codeBlocks).and(new HtmlPolicyBuilder().allowElements("details", "summary", "hr").toFactory());
     }
 
     public String sanitize(final String input) {
-        return sanitizer.sanitize(input);
+        return this.sanitizer.sanitize(input);
     }
 }

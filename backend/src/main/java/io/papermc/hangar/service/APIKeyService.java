@@ -13,16 +13,14 @@ import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.util.CryptoUtils;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class APIKeyService extends HangarComponent {
@@ -31,44 +29,44 @@ public class APIKeyService extends HangarComponent {
     private final HangarApiKeysDAO hangarApiKeysDAO;
 
     @Autowired
-    public APIKeyService(ApiKeyDAO apiKeyDAO, HangarApiKeysDAO hangarApiKeysDAO) {
+    public APIKeyService(final ApiKeyDAO apiKeyDAO, final HangarApiKeysDAO hangarApiKeysDAO) {
         this.apiKeyDAO = apiKeyDAO;
         this.hangarApiKeysDAO = hangarApiKeysDAO;
     }
 
-    public List<ApiKey> getApiKeys(long userId) {
-        return hangarApiKeysDAO.getUserApiKeys(userId);
+    public List<ApiKey> getApiKeys(final long userId) {
+        return this.hangarApiKeysDAO.getUserApiKeys(userId);
     }
 
-    public void checkName(UserIdentified userIdentified, String name) {
-        if (apiKeyDAO.getByUserAndName(userIdentified.getUserId(), name) != null) {
+    public void checkName(final UserIdentified userIdentified, final String name) {
+        if (this.apiKeyDAO.getByUserAndName(userIdentified.getUserId(), name) != null) {
             throw new HangarApiException("apiKeys.error.duplicateName");
         }
     }
 
     @Transactional
-    public String createApiKey(UserIdentified userIdentified, CreateAPIKeyForm apiKeyForm, Permission possiblePermissions) {
-        Permission keyPermission = apiKeyForm.getPermissions().stream().map(NamedPermission::getPermission).reduce(Permission::add).orElse(Permission.None);
+    public String createApiKey(final UserIdentified userIdentified, final CreateAPIKeyForm apiKeyForm, final Permission possiblePermissions) {
+        final Permission keyPermission = apiKeyForm.getPermissions().stream().map(NamedPermission::getPermission).reduce(Permission::add).orElse(Permission.None);
         if (!possiblePermissions.has(keyPermission)) {
             throw new HangarApiException("apiKeys.error.notEnoughPerms");
         }
 
-        checkName(userIdentified, apiKeyForm.getName());
+        this.checkName(userIdentified, apiKeyForm.getName());
 
-        String tokenIdentifier = UUID.randomUUID().toString();
-        String token = UUID.randomUUID().toString();
-        String hashedToken = CryptoUtils.hmacSha256(config.security.tokenSecret(), token.getBytes(StandardCharsets.UTF_8));
-        apiKeyDAO.insert(new ApiKeyTable(apiKeyForm.getName(), userIdentified.getUserId(), tokenIdentifier, hashedToken, keyPermission));
-        actionLogger.user(LogAction.USER_APIKEY_CREATED.create(UserContext.of(userIdentified.getUserId()), "Key Name: " + apiKeyForm.getName() + "<br>" + apiKeyForm.getPermissions().stream().map(NamedPermission::getFrontendName).collect(Collectors.joining(",<br>")), ""));
+        final String tokenIdentifier = UUID.randomUUID().toString();
+        final String token = UUID.randomUUID().toString();
+        final String hashedToken = CryptoUtils.hmacSha256(this.config.security.tokenSecret(), token.getBytes(StandardCharsets.UTF_8));
+        this.apiKeyDAO.insert(new ApiKeyTable(apiKeyForm.getName(), userIdentified.getUserId(), tokenIdentifier, hashedToken, keyPermission));
+        this.actionLogger.user(LogAction.USER_APIKEY_CREATED.create(UserContext.of(userIdentified.getUserId()), "Key Name: " + apiKeyForm.getName() + "<br>" + apiKeyForm.getPermissions().stream().map(NamedPermission::getFrontendName).collect(Collectors.joining(",<br>")), ""));
         return tokenIdentifier + "." + token;
     }
 
     @Transactional
-    public void deleteApiKey(UserIdentified userIdentified, String keyName) {
-        if (apiKeyDAO.delete(keyName, userIdentified.getUserId()) == 0) {
+    public void deleteApiKey(final UserIdentified userIdentified, final String keyName) {
+        if (this.apiKeyDAO.delete(keyName, userIdentified.getUserId()) == 0) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        actionLogger.user(LogAction.USER_APIKEY_DELETED.create(UserContext.of(userIdentified.getUserId()), "", "Key Name: " + keyName));
+        this.actionLogger.user(LogAction.USER_APIKEY_DELETED.create(UserContext.of(userIdentified.getUserId()), "", "Key Name: " + keyName));
     }
 
 }

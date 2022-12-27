@@ -11,12 +11,8 @@ import javax.validation.constraints.NotNull;
 public class ChannelForm {
 
     // @el(root: String)
-    @NotBlank
-    @Validate(SpEL = "@validations.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName")
-    @Validate(SpEL = "@validations.max(#root, @hangarConfig.channels.maxNameLen)", message = "channel.modal.error.tooLongName")
-    private final String name;
-    @NotNull
-    private final Color color;
+    private final @NotBlank @Validate(SpEL = "@validations.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName") @Validate(SpEL = "@validations.max(#root, @hangarConfig.channels.maxNameLen)", message = "channel.modal.error.tooLongName") String name;
+    private final @NotNull Color color;
     private final Set<ChannelFlag> flags;
 
     @JsonCreator

@@ -19,6 +19,7 @@ import org.springframework.core.annotation.AliasFor;
 public @interface CurrentUser {
     /**
      * interchangeable with {@link #userArgument()}
+     *
      * @return the SpEL string for the argument in a method
      */
     @Language("SpEL")
@@ -27,6 +28,7 @@ public @interface CurrentUser {
 
     /**
      * interchangeable with {@link #value()}
+     *
      * @return the SpEL string for the argument in a method
      */
     @Language("SpEL")

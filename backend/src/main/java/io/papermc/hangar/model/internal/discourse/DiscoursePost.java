@@ -1,11 +1,9 @@
 package io.papermc.hangar.model.internal.discourse;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import org.jetbrains.annotations.Nullable;
-
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import org.jetbrains.annotations.Nullable;
 
 public class DiscoursePost {
 
@@ -21,9 +19,8 @@ public class DiscoursePost {
     private OffsetDateTime createdAt;
     @JsonProperty("updated_at")
     private OffsetDateTime updatedAt;
-    @Nullable
     @JsonProperty("deleted_at")
-    private OffsetDateTime deletedAt;
+    private @Nullable OffsetDateTime deletedAt;
     @JsonProperty("cooked")
     private String content;
     @JsonProperty("reply_count")
@@ -35,7 +32,7 @@ public class DiscoursePost {
         //
     }
 
-    public DiscoursePost(long id, long topicId, long userId, String username, String topicSlug, OffsetDateTime createdAt, OffsetDateTime updatedAt, @Nullable OffsetDateTime deletedAt, String content, long replyCount, long postNumber) {
+    public DiscoursePost(final long id, final long topicId, final long userId, final String username, final String topicSlug, final OffsetDateTime createdAt, final OffsetDateTime updatedAt, final @Nullable OffsetDateTime deletedAt, final String content, final long replyCount, final long postNumber) {
         this.id = id;
         this.topicId = topicId;
         this.userId = userId;
@@ -50,84 +47,84 @@ public class DiscoursePost {
     }
 
     public boolean isTopic() {
-        return postNumber == 1;
+        return this.postNumber == 1;
     }
 
     public boolean isDeleted() {
-        return deletedAt != null;
+        return this.deletedAt != null;
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
     public long getTopicId() {
-        return topicId;
+        return this.topicId;
     }
 
     public long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public String getUsername() {
-        return username;
+        return this.username;
     }
 
     public String getTopicSlug() {
-        return topicSlug;
+        return this.topicSlug;
     }
 
     public OffsetDateTime getCreatedAt() {
-        return createdAt;
+        return this.createdAt;
     }
 
     public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
+        return this.updatedAt;
     }
 
     public OffsetDateTime getDeletedAt() {
-        return deletedAt;
+        return this.deletedAt;
     }
 
     public String getContent() {
-        return content;
+        return this.content;
     }
 
     public long getReplyCount() {
-        return replyCount;
+        return this.replyCount;
     }
 
     public long getPostNumber() {
-        return postNumber;
+        return this.postNumber;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DiscoursePost that = (DiscoursePost) o;
-        return id == that.id && topicId == that.topicId && userId == that.userId && replyCount == that.replyCount && postNumber == that.postNumber && Objects.equals(username, that.username) && Objects.equals(topicSlug, that.topicSlug) && Objects.equals(createdAt, that.createdAt) && Objects.equals(updatedAt, that.updatedAt) && Objects.equals(deletedAt, that.deletedAt) && Objects.equals(content, that.content);
+        if (o == null || this.getClass() != o.getClass()) return false;
+        final DiscoursePost that = (DiscoursePost) o;
+        return this.id == that.id && this.topicId == that.topicId && this.userId == that.userId && this.replyCount == that.replyCount && this.postNumber == that.postNumber && Objects.equals(this.username, that.username) && Objects.equals(this.topicSlug, that.topicSlug) && Objects.equals(this.createdAt, that.createdAt) && Objects.equals(this.updatedAt, that.updatedAt) && Objects.equals(this.deletedAt, that.deletedAt) && Objects.equals(this.content, that.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, topicId, userId, username, topicSlug, createdAt, updatedAt, deletedAt, content, replyCount, postNumber);
+        return Objects.hash(this.id, this.topicId, this.userId, this.username, this.topicSlug, this.createdAt, this.updatedAt, this.deletedAt, this.content, this.replyCount, this.postNumber);
     }
 
     @Override
     public String toString() {
         return "DiscoursePost{" +
-               "id=" + id +
-               ", topicId=" + topicId +
-               ", userId=" + userId +
-               ", username='" + username + '\'' +
-               ", topicSlug='" + topicSlug + '\'' +
-               ", createdAt=" + createdAt +
-               ", updatedAt=" + updatedAt +
-               ", deletedAt=" + deletedAt +
-               ", content='" + content + '\'' +
-               ", replyCount=" + replyCount +
-               ", postNumber=" + postNumber +
-               '}';
+            "id=" + this.id +
+            ", topicId=" + this.topicId +
+            ", userId=" + this.userId +
+            ", username='" + this.username + '\'' +
+            ", topicSlug='" + this.topicSlug + '\'' +
+            ", createdAt=" + this.createdAt +
+            ", updatedAt=" + this.updatedAt +
+            ", deletedAt=" + this.deletedAt +
+            ", content='" + this.content + '\'' +
+            ", replyCount=" + this.replyCount +
+            ", postNumber=" + this.postNumber +
+            '}';
     }
 }

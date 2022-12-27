@@ -1,11 +1,9 @@
 package io.papermc.hangar.model.internal.job;
 
+import io.papermc.hangar.model.db.JobTable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.model.db.JobTable;
 
 public class PostDiscourseReplyJob extends Job {
 
@@ -13,7 +11,7 @@ public class PostDiscourseReplyJob extends Job {
     private String poster;
     private String content;
 
-    public PostDiscourseReplyJob(long projectId, String poster, String content) {
+    public PostDiscourseReplyJob(final long projectId, final String poster, final String content) {
         super(JobType.POST_DISCOURSE_REPLY);
         this.projectId = projectId;
         this.poster = poster;
@@ -25,56 +23,56 @@ public class PostDiscourseReplyJob extends Job {
     }
 
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
-    public void setProjectId(long projectId) {
+    public void setProjectId(final long projectId) {
         this.projectId = projectId;
     }
 
     public String getPoster() {
-        return poster;
+        return this.poster;
     }
 
-    public void setPoster(String poster) {
+    public void setPoster(final String poster) {
         this.poster = poster;
     }
 
     public String getContent() {
-        return content;
+        return this.content;
     }
 
-    public void setContent(String content) {
+    public void setContent(final String content) {
         this.content = content;
     }
 
     @Override
     public void loadFromProperties() {
-        if (getJobProperties() == null) {
+        if (this.getJobProperties() == null) {
             return;
         }
-        if (getJobProperties().containsKey("projectId")) {
-            this.projectId = Long.parseLong(getJobProperties().get("projectId"));
+        if (this.getJobProperties().containsKey("projectId")) {
+            this.projectId = Long.parseLong(this.getJobProperties().get("projectId"));
         }
-        if (getJobProperties().containsKey("poster")) {
-            this.poster = getJobProperties().get("poster");
+        if (this.getJobProperties().containsKey("poster")) {
+            this.poster = this.getJobProperties().get("poster");
         }
-        if (getJobProperties().containsKey("content")) {
-            this.content = getJobProperties().get("content");
+        if (this.getJobProperties().containsKey("content")) {
+            this.content = this.getJobProperties().get("content");
         }
     }
 
     @Override
     public void saveIntoProperties() {
-        Map<String, String> properties = new HashMap<>();
-        properties.put("projectId", projectId + "");
-        properties.put("poster", poster);
-        properties.put("content", content );
-        setJobProperties(properties);
+        final Map<String, String> properties = new HashMap<>();
+        properties.put("projectId", this.projectId + "");
+        properties.put("poster", this.poster);
+        properties.put("content", this.content);
+        this.setJobProperties(properties);
     }
 
-    public static PostDiscourseReplyJob loadFromTable(JobTable table) {
-        PostDiscourseReplyJob job  = new PostDiscourseReplyJob();
+    public static PostDiscourseReplyJob loadFromTable(final JobTable table) {
+        final PostDiscourseReplyJob job = new PostDiscourseReplyJob();
         job.fromTable(table);
         job.setJobProperties(table.getJobProperties().getMap());
         job.loadFromProperties();
@@ -82,26 +80,26 @@ public class PostDiscourseReplyJob extends Job {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        PostDiscourseReplyJob that = (PostDiscourseReplyJob) o;
-        return projectId == that.projectId && Objects.equals(poster, that.poster) && Objects.equals(content, that.content);
+        final PostDiscourseReplyJob that = (PostDiscourseReplyJob) o;
+        return this.projectId == that.projectId && Objects.equals(this.poster, that.poster) && Objects.equals(this.content, that.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), projectId, poster, content);
+        return Objects.hash(super.hashCode(), this.projectId, this.poster, this.content);
     }
 
     @Override
     public String toString() {
         return "PostDiscourseReplyJob{" +
-               "createdAt=" + createdAt +
-               ", projectId=" + projectId +
-               ", poster='" + poster + '\'' +
-               ", content='" + content + '\'' +
-               "} " + super.toString();
+            "createdAt=" + this.createdAt +
+            ", projectId=" + this.projectId +
+            ", poster='" + this.poster + '\'' +
+            ", content='" + this.content + '\'' +
+            "} " + super.toString();
     }
 }

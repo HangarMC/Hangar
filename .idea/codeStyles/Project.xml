@@ -11,7 +11,6 @@
       <option name="IDENTIFIER_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
       <option name="CUSTOM_TYPE_CASE" value="1" />
-      <option name="ALIAS_CASE" value="1" />
       <option name="BUILT_IN_CASE" value="4" />
       <option name="SUBQUERY_OPENING" value="1" />
       <option name="SUBQUERY_CONTENT" value="1" />
@@ -19,9 +18,12 @@
       <option name="INSERT_INTO_NL" value="2" />
       <option name="INSERT_EL_WRAP" value="2" />
       <option name="SET_EL_LINE" value="1" />
+      <option name="SET_EL_WRAP" value="2" />
       <option name="WITH_ALIGN_AS" value="true" />
-      <option name="SELECT_USE_AS_WORD" value="2" />
+      <option name="SELECT_EL_WRAP" value="2" />
+      <option name="FROM_EL_WRAP" value="2" />
       <option name="FROM_ONLY_JOIN_INDENT" value="1" />
+      <option name="WHERE_EL_WRAP" value="2" />
       <option name="ORDER_EL_WRAP" value="2" />
       <option name="CONSTRAINT_WRAP_1" value="false" />
       <option name="CONSTRAINT_WRAP_4" value="true" />

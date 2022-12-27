@@ -1,12 +1,11 @@
 package io.papermc.hangar.db.mappers;
 
 import io.papermc.hangar.model.internal.logs.LogAction;
-import org.jdbi.v3.core.mapper.ColumnMapper;
-import org.jdbi.v3.core.statement.StatementContext;
-
 import java.sql.ResultSet;
 import java.sql.SQLDataException;
 import java.sql.SQLException;
+import org.jdbi.v3.core.mapper.ColumnMapper;
+import org.jdbi.v3.core.statement.StatementContext;
 
 public class LogActionColumnMapper implements ColumnMapper<LogAction<?>> {
 

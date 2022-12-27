@@ -3,13 +3,12 @@ package io.papermc.hangar.exceptions;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.io.IOException;
 
 public class HangarApiException extends ResponseStatusException {
 
@@ -84,9 +83,8 @@ public class HangarApiException extends ResponseStatusException {
         return this.args;
     }
 
-    @NotNull
     @Override
-    public HttpHeaders getResponseHeaders() {
+    public @NotNull HttpHeaders getResponseHeaders() {
         return this.httpHeaders;
     }
 
@@ -99,7 +97,7 @@ public class HangarApiException extends ResponseStatusException {
             HttpStatus status = null;
             try {
                 status = exception.getStatus();
-            } catch (IllegalArgumentException ignored) {
+            } catch (final IllegalArgumentException ignored) {
             }
             if (message == null || message.isBlank()) {
                 if (status != null) {
@@ -111,7 +109,7 @@ public class HangarApiException extends ResponseStatusException {
             gen.writeStartObject();
             gen.writeStringField("message", message);
             gen.writeArrayFieldStart("messageArgs");
-            for (Object arg : exception.args) {
+            for (final Object arg : exception.args) {
                 provider.defaultSerializeValue(arg, gen);
             }
             gen.writeEndArray();

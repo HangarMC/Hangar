@@ -13,7 +13,7 @@ public class HangarProjectApproval {
     private final String comment;
     private final String changeRequester;
 
-    public HangarProjectApproval(long projectId, @Nested("pn") ProjectNamespace namespace, @EnumByOrdinal Visibility visibility, String comment, String changeRequester) {
+    public HangarProjectApproval(final long projectId, @Nested("pn") final ProjectNamespace namespace, @EnumByOrdinal final Visibility visibility, final String comment, final String changeRequester) {
         this.projectId = projectId;
         this.namespace = namespace;
         this.visibility = visibility;
@@ -22,33 +22,33 @@ public class HangarProjectApproval {
     }
 
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     public ProjectNamespace getNamespace() {
-        return namespace;
+        return this.namespace;
     }
 
     public Visibility getVisibility() {
-        return visibility;
+        return this.visibility;
     }
 
     public String getComment() {
-        return comment;
+        return this.comment;
     }
 
     public String getChangeRequester() {
-        return changeRequester;
+        return this.changeRequester;
     }
 
     @Override
     public String toString() {
         return "HangarProjectApproval{" +
-                "projectId=" + projectId +
-                ", namespace=" + namespace +
-                ", visibility=" + visibility +
-                ", comment='" + comment + '\'' +
-                ", changeRequester='" + changeRequester + '\'' +
-                '}';
+            "projectId=" + this.projectId +
+            ", namespace=" + this.namespace +
+            ", visibility=" + this.visibility +
+            ", comment='" + this.comment + '\'' +
+            ", changeRequester='" + this.changeRequester + '\'' +
+            '}';
     }
 }

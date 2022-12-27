@@ -10,7 +10,7 @@ import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
-import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
+import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.LogContext;
 import io.papermc.hangar.model.loggable.Loggable;
@@ -18,11 +18,10 @@ import io.papermc.hangar.service.internal.perms.members.MemberService;
 import io.papermc.hangar.service.internal.perms.roles.RoleService;
 import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role<RT>, RT extends ExtendedRoleTable<R, LC>, J extends Table & Named & Owned & Loggable<LC>> extends HangarComponent {
 
@@ -40,7 +39,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
     private final JoinableNotificationService<RT, J> joinableNotificationService;
     private final String errorPrefix;
 
-    protected InviteService(RoleService<RT, R, ?> roleService, MemberService<LC, R, RT, ?, ?, ?, ?, ?, ?> memberService, JoinableNotificationService<RT, J> joinableNotificationService, String errorPrefix) {
+    protected InviteService(final RoleService<RT, R, ?> roleService, final MemberService<LC, R, RT, ?, ?, ?, ?, ?, ?> memberService, final JoinableNotificationService<RT, J> joinableNotificationService, final String errorPrefix) {
         this.roleService = roleService;
         this.memberService = memberService;
         this.joinableNotificationService = joinableNotificationService;
@@ -48,49 +47,49 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
     }
 
     @Transactional
-    public void sendInvite(Member<R> invitee, J joinable) {
-        UserTable userTable = userDAO.getUserTable(invitee.getName());
+    public void sendInvite(final EditMembersForm.Member<R> invitee, final J joinable) {
+        final UserTable userTable = this.userDAO.getUserTable(invitee.getName());
         if (userTable == null) {
             throw new HangarApiException(this.errorPrefix + "invalidUser", invitee.getName());
         }
 
-        RT roleTable = roleService.addRole(invitee.getRole().create(joinable.getId(), userTable.getId(), false), true);
+        final RT roleTable = this.roleService.addRole(invitee.getRole().create(joinable.getId(), userTable.getId(), false), true);
         if (roleTable == null) {
             throw new HangarApiException(this.errorPrefix + "alreadyInvited", invitee.getName());
         }
 
-        joinableNotificationService.invited(List.of(roleTable), joinable, getHangarUserId());
-        logInvitesSent(joinable, "Invited: " + userTable.getName() + " (" + invitee.getRole().getTitle() + ")");
+        this.joinableNotificationService.invited(List.of(roleTable), joinable, this.getHangarUserId());
+        this.logInvitesSent(joinable, "Invited: " + userTable.getName() + " (" + invitee.getRole().getTitle() + ")");
     }
 
     @Transactional
     public void sendTransferRequest(final String user, final J joinable) {
-        final UserTable userTable = userDAO.getUserTable(user);
-        //TODO transfer project to organization (and divert invite to owner)
+        final UserTable userTable = this.userDAO.getUserTable(user);
+        // TODO transfer project to organization (and divert invite to owner)
         if (userTable == null || userTable.isOrganization()) {
             throw new HangarApiException(this.errorPrefix + "invalidUser", user);
         }
 
-        final List<RT> ownerRoles = roleService.getRoles(joinable.getId(), getOwnerRole());
+        final List<RT> ownerRoles = this.roleService.getRoles(joinable.getId(), this.getOwnerRole());
         if (ownerRoles.stream().anyMatch(rt -> rt.getUserId() != joinable.getOwnerId())) {
             throw new HangarApiException(this.errorPrefix + "pendingTransfer");
         }
 
-        final RT roleTable = roleService.addRole(getOwnerRole().create(joinable.getId(), userTable.getId(), false), true);
+        final RT roleTable = this.roleService.addRole(this.getOwnerRole().create(joinable.getId(), userTable.getId(), false), true);
         if (roleTable == null) {
             throw new HangarApiException(this.errorPrefix + "alreadyInvited", user);
         }
 
-        joinableNotificationService.transferRequest(roleTable, joinable, getHangarPrincipal().getUserId(), getHangarPrincipal().getName());
-        logInvitesSent(joinable, "Sent transfer request: " + userTable.getName());
+        this.joinableNotificationService.transferRequest(roleTable, joinable, this.getHangarPrincipal().getUserId(), this.getHangarPrincipal().getName());
+        this.logInvitesSent(joinable, "Sent transfer request: " + userTable.getName());
     }
 
     @Transactional
     public void cancelTransferRequest(final J joinable) {
-        final List<RT> ownerRoles = roleService.getRoles(joinable.getId(), getOwnerRole());
+        final List<RT> ownerRoles = this.roleService.getRoles(joinable.getId(), this.getOwnerRole());
         for (final RT ownerRole : ownerRoles) {
             if (!ownerRole.isAccepted()) {
-                roleService.deleteRole(ownerRole);
+                this.roleService.deleteRole(ownerRole);
             }
         }
     }
@@ -101,8 +100,8 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
 
     abstract LogAction<LC> getInviteSentAction();
 
-    protected void logInvitesSent(Loggable<LC> loggable, String log) {
-        loggable.logAction(actionLogger, getInviteSentAction(), log, "");
+    protected void logInvitesSent(final Loggable<LC> loggable, final String log) {
+        loggable.logAction(this.actionLogger, this.getInviteSentAction(), log, "");
     }
 
     @Transactional
@@ -111,37 +110,37 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
             throw new IllegalArgumentException("Cannot accept an invite that has already been accepted");
         }
 
-        final UserTable userTable = userDAO.getUserTable(roleTable.getUserId());
-        roleTable = roleService.changeAcceptance(roleTable, true);
-        memberService.addMember(roleTable);
-        logInviteAccepted(roleTable, userTable);
+        final UserTable userTable = this.userDAO.getUserTable(roleTable.getUserId());
+        roleTable = this.roleService.changeAcceptance(roleTable, true);
+        this.memberService.addMember(roleTable);
+        this.logInviteAccepted(roleTable, userTable);
 
-        if (roleTable.getRole().getRoleId() == getOwnerRole().getRoleId()) {
-            setOwner(getJoinable(roleTable.getPrincipalId()), userTable, false);
+        if (roleTable.getRole().getRoleId() == this.getOwnerRole().getRoleId()) {
+            this.setOwner(this.getJoinable(roleTable.getPrincipalId()), userTable, false);
         }
     }
 
     @Transactional
-    public void setOwner(final J joinable, final UserTable userTable, final boolean addRole) { //TODO make sure new owner doesn't have project of the same name
+    public void setOwner(final J joinable, final UserTable userTable, final boolean addRole) { // TODO make sure new owner doesn't have project of the same name
         if (addRole) {
-            final RT oldRole = roleService.getRole(joinable.getId(), userTable.getId());
+            final RT oldRole = this.roleService.getRole(joinable.getId(), userTable.getId());
             if (oldRole != null) {
-                oldRole.setRole(getOwnerRole());
+                oldRole.setRole(this.getOwnerRole());
                 oldRole.setAccepted(true);
-                roleService.updateRole(oldRole);
+                this.roleService.updateRole(oldRole);
             } else {
-                final RT roleTable = roleService.addRole(getOwnerRole().create(joinable.getId(), userTable.getId(), true), false);
-                memberService.addMember(roleTable);
+                final RT roleTable = this.roleService.addRole(this.getOwnerRole().create(joinable.getId(), userTable.getId(), true), false);
+                this.memberService.addMember(roleTable);
             }
         }
 
         // Set role of old owner to next highest
         final long oldOwnerId = joinable.getOwnerId();
-        final RT oldOwnerRoleTable = roleService.getRole(joinable.getId(), oldOwnerId);
-        oldOwnerRoleTable.setRole(getAdminRole());
-        roleService.updateRole(oldOwnerRoleTable);
+        final RT oldOwnerRoleTable = this.roleService.getRole(joinable.getId(), oldOwnerId);
+        oldOwnerRoleTable.setRole(this.getAdminRole());
+        this.roleService.updateRole(oldOwnerRoleTable);
         // Transfer of ownership and move files if needed - should always be done last
-        updateOwnerId(joinable, userTable);
+        this.updateOwnerId(joinable, userTable);
     }
 
     public abstract J getJoinable(final long id);
@@ -150,20 +149,20 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
 
     abstract LogAction<LC> getInviteAcceptAction();
 
-    protected void logInviteAccepted(RT roleTable, UserTable userTable) {
-        roleTable.logAction(actionLogger, getInviteAcceptAction(), userTable.getName() + " accepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME));
+    protected void logInviteAccepted(final RT roleTable, final UserTable userTable) {
+        roleTable.logAction(this.actionLogger, this.getInviteAcceptAction(), userTable.getName() + " accepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME));
     }
 
     @Transactional
-    public void declineInvite(RT roleTable) {
-        roleService.deleteRole(roleTable);
-        logInviteDeclined(roleTable, userDAO.getUserTable(roleTable.getUserId()));
+    public void declineInvite(final RT roleTable) {
+        this.roleService.deleteRole(roleTable);
+        this.logInviteDeclined(roleTable, this.userDAO.getUserTable(roleTable.getUserId()));
     }
 
     abstract LogAction<LC> getInviteDeclineAction();
 
-    protected void logInviteDeclined(RT roleTable, UserTable userTable) {
-        roleTable.logAction(actionLogger, getInviteDeclineAction(), userTable.getName() + " declined an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME));
+    protected void logInviteDeclined(final RT roleTable, final UserTable userTable) {
+        roleTable.logAction(this.actionLogger, this.getInviteDeclineAction(), userTable.getName() + " declined an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME));
     }
 
 }

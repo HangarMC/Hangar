@@ -2,12 +2,11 @@ package io.papermc.hangar.controller.extras.pagination.filters.projects;
 
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectQueryFilter.ProjectQueryFilterInstance;
+import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
-
-import java.util.Set;
 
 @Component
 public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance> {
@@ -22,35 +21,34 @@ public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance> {
         return "The query to use when searching";
     }
 
-    @NotNull
     @Override
-    public ProjectQueryFilterInstance create(NativeWebRequest webRequest) {
-        return new ProjectQueryFilterInstance(webRequest.getParameter(getSingleQueryParam()));
+    public @NotNull ProjectQueryFilterInstance create(final NativeWebRequest webRequest) {
+        return new ProjectQueryFilterInstance(webRequest.getParameter(this.getSingleQueryParam()));
     }
 
-    static class ProjectQueryFilterInstance implements FilterInstance {
+    static class ProjectQueryFilterInstance implements Filter.FilterInstance {
 
         private final String query;
 
-        ProjectQueryFilterInstance(String query) {
+        ProjectQueryFilterInstance(final String query) {
             this.query = query;
         }
 
         @Override
-        public void createSql(StringBuilder sb, SqlStatement<?> q) {
+        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             sb.append(" AND (hp.search_words @@ websearch_to_tsquery");
-            if (!query.endsWith(" ")) {
+            if (!this.query.endsWith(" ")) {
                 sb.append("_postfix");
             }
             sb.append("('english', :query)").append(")");
-            q.bind("query", query.trim());
+            q.bind("query", this.query.trim());
         }
 
         @Override
         public String toString() {
             return "ProjectQueryFilterInstance{" +
-                    "query='" + query + '\'' +
-                    '}';
+                "query='" + this.query + '\'' +
+                '}';
         }
     }
 }

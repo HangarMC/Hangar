@@ -3,6 +3,7 @@ package io.papermc.hangar.controller.extras.pagination.filters.log;
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogVersionFilter.LogVersionFilterInstance;
 import io.papermc.hangar.model.common.Platform;
+import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +11,13 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import java.util.Set;
-
 @Component
 public class LogVersionFilter implements Filter<LogVersionFilterInstance> {
 
     private final ConversionService conversionService;
 
     @Autowired
-    public LogVersionFilter(ConversionService conversionService) {
+    public LogVersionFilter(final ConversionService conversionService) {
         this.conversionService = conversionService;
     }
 
@@ -33,28 +32,27 @@ public class LogVersionFilter implements Filter<LogVersionFilterInstance> {
     }
 
     @Override
-    public boolean supports(NativeWebRequest webRequest) {
-        return getQueryParamNames().stream().allMatch(webRequest.getParameterMap()::containsKey);
+    public boolean supports(final NativeWebRequest webRequest) {
+        return this.getQueryParamNames().stream().allMatch(webRequest.getParameterMap()::containsKey);
     }
 
-    @NotNull
     @Override
-    public LogVersionFilterInstance create(NativeWebRequest webRequest) {
-        return new LogVersionFilterInstance(webRequest.getParameter("versionString"), conversionService.convert(webRequest.getParameter("platform"), Platform.class));
+    public @NotNull LogVersionFilterInstance create(final NativeWebRequest webRequest) {
+        return new LogVersionFilterInstance(webRequest.getParameter("versionString"), this.conversionService.convert(webRequest.getParameter("platform"), Platform.class));
     }
 
-    static class LogVersionFilterInstance implements FilterInstance {
+    static class LogVersionFilterInstance implements Filter.FilterInstance {
 
         private final String versionString;
         private final Platform platform;
 
-        LogVersionFilterInstance(String versionString, Platform platform) {
+        LogVersionFilterInstance(final String versionString, final Platform platform) {
             this.versionString = versionString;
             this.platform = platform;
         }
 
         @Override
-        public void createSql(StringBuilder sb, SqlStatement<?> q) {
+        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             sb.append(" AND la.pv_version_string = :versionString");
             q.bind("versionString", this.versionString);
             sb.append(" AND :platform = ANY(la.pv_platforms)");

@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import static io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
-
 // @el(projectId: long)
 @Unlocked
 @Controller
@@ -27,19 +25,19 @@ public class DiscourseController extends HangarComponent {
 
     private final JobService jobService;
 
-    public DiscourseController(JobService jobService) {
+    public DiscourseController(final JobService jobService) {
         this.jobService = jobService;
     }
 
     @PostMapping("/{projectId}/comment")
     @ResponseBody
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 30)
-    @VisibilityRequired(type = Type.PROJECT, args = "{#projectId}")
-    public String createPost(@PathVariable long projectId, @RequestBody Map<String, String> content) {
-        if (!config.discourse.enabled()) {
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#projectId}")
+    public String createPost(@PathVariable final long projectId, @RequestBody final Map<String, String> content) {
+        if (!this.config.discourse.enabled()) {
             throw new HangarApiException("Discourse is NOT enabled!");
         }
-        jobService.save(new PostDiscourseReplyJob(projectId, getHangarPrincipal().getName(), content.get("content")));
+        this.jobService.save(new PostDiscourseReplyJob(projectId, this.getHangarPrincipal().getName(), content.get("content")));
         return "dum";
     }
 }

@@ -22,61 +22,61 @@ public class S3FileService implements FileService {
     private final ResourceLoader resourceLoader;
     private final S3Template s3Template;
 
-    public S3FileService(StorageConfig config, ResourceLoader resourceLoader, S3Template s3Template) {
+    public S3FileService(final StorageConfig config, final ResourceLoader resourceLoader, final S3Template s3Template) {
         this.config = config;
         this.resourceLoader = resourceLoader;
         this.s3Template = s3Template;
     }
 
     @Override
-    public Resource getResource(String path) {
+    public Resource getResource(final String path) {
         return this.resourceLoader.getResource(path);
     }
 
     @Override
-    public boolean exists(String path) {
-        return getResource(path).exists();
+    public boolean exists(final String path) {
+        return this.getResource(path).exists();
     }
 
     @Override
-    public void deleteDirectory(String dir) {
-        this.s3Template.deleteObject(config.bucket(), dir);
+    public void deleteDirectory(final String dir) {
+        this.s3Template.deleteObject(this.config.bucket(), dir);
     }
 
     @Override
-    public boolean delete(String path) {
+    public boolean delete(final String path) {
         this.s3Template.deleteObject(path);
         return true;
     }
 
     @Override
-    public byte[] bytes(String path) throws IOException {
-        return getResource(path).getInputStream().readAllBytes();
+    public byte[] bytes(final String path) throws IOException {
+        return this.getResource(path).getInputStream().readAllBytes();
     }
 
     @Override
-    public void write(InputStream inputStream, String path) throws IOException {
-        try (OutputStream outputStream = ((S3Resource) getResource(path)).getOutputStream()) {
+    public void write(final InputStream inputStream, final String path) throws IOException {
+        try (final OutputStream outputStream = ((S3Resource) this.getResource(path)).getOutputStream()) {
             outputStream.write(inputStream.readAllBytes());
         }
     }
 
     @Override
-    public void move(String oldPath, String newPath) throws IOException {
-        if (!oldPath.startsWith(getRoot()) && newPath.startsWith(getRoot())) {
-            write(Files.newInputStream(Path.of(oldPath)), newPath);
+    public void move(final String oldPath, final String newPath) throws IOException {
+        if (!oldPath.startsWith(this.getRoot()) && newPath.startsWith(this.getRoot())) {
+            this.write(Files.newInputStream(Path.of(oldPath)), newPath);
         } else {
             throw new UnsupportedOperationException("cant move " + oldPath + " to " + newPath);
         }
     }
 
     @Override
-    public void link(String existingPath, String newPath) throws IOException {
+    public void link(final String existingPath, final String newPath) throws IOException {
         throw new UnsupportedOperationException("cant link " + existingPath + " to " + newPath);
     }
 
     @Override
-    public String resolve(String path, String fileName) {
+    public String resolve(final String path, final String fileName) {
         if (path.endsWith("/")) {
             return path + fileName;
         } else {
@@ -86,11 +86,11 @@ public class S3FileService implements FileService {
 
     @Override
     public String getRoot() {
-        return "s3://" + config.bucket() + "/";
+        return "s3://" + this.config.bucket() + "/";
     }
 
     @Override
-    public String getDownloadUrl(String user, String project, String version, Platform platform, String fileName) {
-        return config.cdnEndpoint() + (config.cdnIncludeBucket() ? "/" + config.bucket() : "") + "/plugins/" + user + "/" + project + "/versions/" + version + "/" + platform.name() + "/" + fileName;
+    public String getDownloadUrl(final String user, final String project, final String version, final Platform platform, final String fileName) {
+        return this.config.cdnEndpoint() + (this.config.cdnIncludeBucket() ? "/" + this.config.bucket() : "") + "/plugins/" + user + "/" + project + "/versions/" + version + "/" + platform.name() + "/" + fileName;
     }
 }

@@ -20,7 +20,6 @@ import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
-import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
@@ -66,7 +65,7 @@ public class ProjectController extends HangarComponent {
     private final PinnedProjectService pinnedProjectService;
 
     @Autowired
-    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService, ProjectMemberService projectMemberService, ProjectInviteService projectInviteService, ImageService imageService, StatService statService, final PinnedProjectService pinnedProjectService) {
+    public ProjectController(final ProjectFactory projectFactory, final ProjectService projectService, final UserService userService, final OrganizationService organizationService, final ProjectMemberService projectMemberService, final ProjectInviteService projectInviteService, final ImageService imageService, final StatService statService, final PinnedProjectService pinnedProjectService) {
         this.projectFactory = projectFactory;
         this.projectService = projectService;
         this.userService = userService;
@@ -81,34 +80,34 @@ public class ProjectController extends HangarComponent {
     @LoggedIn
     @GetMapping("/validateName")
     @ResponseStatus(HttpStatus.OK)
-    public void validateProjectName(@RequestParam long userId, @RequestParam String value) {
-        projectFactory.checkProjectAvailability(userId, value);
+    public void validateProjectName(@RequestParam final long userId, @RequestParam final String value) {
+        this.projectFactory.checkProjectAvailability(userId, value);
     }
 
     @LoggedIn
     @GetMapping("/possibleOwners")
     public ResponseEntity<List<PossibleProjectOwner>> possibleProjectCreators() {
-        List<PossibleProjectOwner> possibleProjectOwners = organizationService.getOrganizationTablesWithPermission(getHangarPrincipal().getId(), Permission.CreateProject).stream().map(PossibleProjectOwner::new).collect(Collectors.toList());
-        possibleProjectOwners.add(0, new PossibleProjectOwner(getHangarPrincipal()));
+        final List<PossibleProjectOwner> possibleProjectOwners = this.organizationService.getOrganizationTablesWithPermission(this.getHangarPrincipal().getId(), Permission.CreateProject).stream().map(PossibleProjectOwner::new).collect(Collectors.toList());
+        possibleProjectOwners.add(0, new PossibleProjectOwner(this.getHangarPrincipal()));
         return ResponseEntity.ok(possibleProjectOwners);
     }
 
     @Unlocked
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createProject(@RequestBody @Valid NewProjectForm newProject) {
-        ProjectTable projectTable = projectFactory.createProject(newProject);
+    public ResponseEntity<String> createProject(@RequestBody final @Valid NewProjectForm newProject) {
+        final ProjectTable projectTable = this.projectFactory.createProject(newProject);
         // need to do this here, outside the transactional
-        projectService.refreshHomeProjects();
+        this.projectService.refreshHomeProjects();
         return ResponseEntity.ok(projectTable.getUrl());
     }
 
-    @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
     @GetMapping("/project/{author}/{slug}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<HangarProject> getHangarProject(@PathVariable String author, @PathVariable String slug) {
-        HangarProject hangarProject = projectService.getHangarProject(author, slug);
-        statService.addProjectView(hangarProject);
+    public ResponseEntity<HangarProject> getHangarProject(@PathVariable final String author, @PathVariable final String slug) {
+        final HangarProject hangarProject = this.projectService.getHangarProject(author, slug);
+        this.statService.addProjectView(hangarProject);
         return ResponseEntity.ok(hangarProject);
     }
 
@@ -117,8 +116,8 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/settings", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveProjectSettings(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody ProjectSettingsForm settingsForm) {
-        projectService.saveSettings(author, slug, settingsForm);
+    public void saveProjectSettings(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid ProjectSettingsForm settingsForm) {
+        this.projectService.saveSettings(author, slug, settingsForm);
     }
 
     @Unlocked
@@ -126,11 +125,11 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 5)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/sponsors", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveProjectSettings(@PathVariable String author, @PathVariable String slug, @RequestBody @Valid StringContent content) {
-        if (content.getContent().length() > config.projects.maxSponsorsLen()) {
+    public void saveProjectSettings(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid StringContent content) {
+        if (content.getContent().length() > this.config.projects.maxSponsorsLen()) {
             throw new HangarApiException("page.new.error.name.maxLength");
         }
-        projectService.saveSponsors(author, slug, content);
+        this.projectService.saveSponsors(author, slug, content);
     }
 
     @Unlocked
@@ -139,8 +138,8 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/saveIcon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String saveProjectIcon(@PathVariable String author, @PathVariable String slug, @RequestParam MultipartFile projectIcon) {
-        return projectService.saveIcon(author, slug, projectIcon);
+    public String saveProjectIcon(@PathVariable final String author, @PathVariable final String slug, @RequestParam final MultipartFile projectIcon) {
+        return this.projectService.saveIcon(author, slug, projectIcon);
     }
 
     @Unlocked
@@ -148,16 +147,16 @@ public class ProjectController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping("/project/{author}/{slug}/resetIcon")
-    public String resetProjectIcon(@PathVariable String author, @PathVariable String slug) {
-        return projectService.resetIcon(author, slug);
+    public String resetProjectIcon(@PathVariable final String author, @PathVariable final String slug) {
+        return this.projectService.resetIcon(author, slug);
     }
 
     @Unlocked
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#author, #slug}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PostMapping(path = "/project/{author}/{slug}/rename", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> renameProject(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody StringContent nameContent) {
-        return ResponseEntity.ok(projectFactory.renameProject(author, slug, nameContent.getContent()));
+    public ResponseEntity<String> renameProject(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid StringContent nameContent) {
+        return ResponseEntity.ok(this.projectFactory.renameProject(author, slug, nameContent.getContent()));
     }
 
     @Unlocked
@@ -165,18 +164,18 @@ public class ProjectController extends HangarComponent {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#author, #slug}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PostMapping(path = "/project/{author}/{slug}/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void transferProject(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody StringContent nameContent) {
-        final ProjectTable projectTable = projectService.getProjectTable(author, slug);
-        projectInviteService.sendTransferRequest(nameContent.getContent(), projectTable);
+    public void transferProject(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid StringContent nameContent) {
+        final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
+        this.projectInviteService.sendTransferRequest(nameContent.getContent(), projectTable);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/canceltransfer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void cancelProjectTransfer(@PathVariable String author, @PathVariable String slug) {
-        final ProjectTable projectTable = projectService.getProjectTable(author, slug);
-        projectInviteService.cancelTransferRequest(projectTable);
+    public void cancelProjectTransfer(@PathVariable final String author, @PathVariable final String slug) {
+        final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
+        this.projectInviteService.cancelTransferRequest(projectTable);
     }
 
     @Unlocked
@@ -184,9 +183,9 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addProjectMember(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody EditMembersForm.Member<ProjectRole> member) {
-        ProjectTable projectTable = projectService.getProjectTable(author, slug);
-        projectInviteService.sendInvite(member, projectTable);
+    public void addProjectMember(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid EditMembersForm.Member<ProjectRole> member) {
+        final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
+        this.projectInviteService.sendInvite(member, projectTable);
     }
 
     @Unlocked
@@ -194,45 +193,45 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void editProjectMember(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody EditMembersForm.Member<ProjectRole> member) {
-        ProjectTable projectTable = projectService.getProjectTable(author, slug);
-        projectMemberService.editMember(member, projectTable);
+    public void editProjectMember(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid EditMembersForm.Member<ProjectRole> member) {
+        final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
+        this.projectMemberService.editMember(member, projectTable);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void removeProjectMember(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody EditMembersForm.Member<ProjectRole> member) {
-        ProjectTable projectTable = projectService.getProjectTable(author, slug);
-        projectMemberService.removeMember(member, projectTable);
+    public void removeProjectMember(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid EditMembersForm.Member<ProjectRole> member) {
+        final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
+        this.projectMemberService.removeMember(member, projectTable);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/members/leave", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void leaveProject(@PathVariable String author, @PathVariable String slug) {
-        ProjectTable projectTable = projectService.getProjectTable(author, slug);
-        projectMemberService.leave(projectTable);
+    public void leaveProject(@PathVariable final String author, @PathVariable final String slug) {
+        final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
+        this.projectMemberService.leave(projectTable);
     }
 
     @Unlocked
-    @VisibilityRequired(type = Type.PROJECT, args = "{#projectId}")
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#projectId}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping("/project/{id}/star/{state}")
     @ResponseStatus(HttpStatus.OK)
-    public void setProjectStarred(@PathVariable("id") long projectId, @PathVariable boolean state) {
-        userService.toggleStarred(projectId, state);
+    public void setProjectStarred(@PathVariable("id") final long projectId, @PathVariable final boolean state) {
+        this.userService.toggleStarred(projectId, state);
     }
 
     @Unlocked
-    @VisibilityRequired(type = Type.PROJECT, args = "{#projectId}")
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#projectId}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping("/project/{id}/watch/{state}")
     @ResponseStatus(HttpStatus.OK)
-    public void setProjectWatching(@PathVariable("id") long projectId, @PathVariable boolean state) {
-        userService.toggleWatching(projectId, state);
+    public void setProjectWatching(@PathVariable("id") final long projectId, @PathVariable final boolean state) {
+        this.userService.toggleWatching(projectId, state);
     }
 
     @Unlocked
@@ -242,9 +241,9 @@ public class ProjectController extends HangarComponent {
     @PostMapping(path = "/project/{id}/pin/{state}")
     public void setPinnedStatus(@PathVariable final long id, @PathVariable final boolean state) {
         if (state) {
-            pinnedProjectService.addPinnedProject(getHangarUserId(), id);
+            this.pinnedProjectService.addPinnedProject(this.getHangarUserId(), id);
         } else {
-            pinnedProjectService.removePinnedProject(getHangarUserId(), id);
+            this.pinnedProjectService.removePinnedProject(this.getHangarUserId(), id);
         }
     }
 
@@ -253,26 +252,26 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 45)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.DELETE_PROJECT, args = "{#project}")
     @PostMapping(path = "/project/{projectId}/manage/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void softDeleteProject(@PathVariable("projectId") ProjectTable project, @RequestBody @Valid StringContent commentContent) {
-        projectFactory.softDelete(project, commentContent.getContent());
+    public void softDeleteProject(@PathVariable("projectId") final ProjectTable project, @RequestBody final @Valid StringContent commentContent) {
+        this.projectFactory.softDelete(project, commentContent.getContent());
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PermissionRequired(NamedPermission.HARD_DELETE_PROJECT)
     @PostMapping(path = "/project/{projectId}/manage/hardDelete", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void hardDeleteProject(@PathVariable("projectId") ProjectTable project, @RequestBody @Valid StringContent commentContent) {
-        projectFactory.hardDelete(project, commentContent.getContent());
+    public void hardDeleteProject(@PathVariable("projectId") final ProjectTable project, @RequestBody final @Valid StringContent commentContent) {
+        this.projectFactory.hardDelete(project, commentContent.getContent());
     }
 
     // Can't put visibility required because the browser image requests don't include the JWT needed for authorization
     @Anyone
     @GetMapping(path = "/project/{author}/{slug}/icon", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public Object getProjectIcon(@PathVariable String author, @PathVariable String slug) {
+    public Object getProjectIcon(@PathVariable final String author, @PathVariable final String slug) {
         try {
-            return imageService.getProjectIcon(author, slug);
-        } catch (InternalHangarException e) {
-            return new RedirectView(imageService.getUserIcon(author));
+            return this.imageService.getProjectIcon(author, slug);
+        } catch (final InternalHangarException e) {
+            return new RedirectView(this.imageService.getUserIcon(author));
         }
     }
 }

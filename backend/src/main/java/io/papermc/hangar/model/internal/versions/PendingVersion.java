@@ -1,7 +1,6 @@
 package io.papermc.hangar.model.internal.versions;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.ChannelFlag;
@@ -21,31 +20,22 @@ import org.jetbrains.annotations.Nullable;
 public class PendingVersion {
 
     // @el(root: String)
-    @NotBlank(message = "version.new.error.invalidVersionString")
-    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.projects.versionNameRegex)", message = "version.new.error.invalidVersionString")
-    private final String versionString;
+    private final @NotBlank(message = "version.new.error.invalidVersionString") @Validate(SpEL = "@validate.regex(#root, @hangarConfig.projects.versionNameRegex)", message = "version.new.error.invalidVersionString") String versionString;
     private final Map<Platform, Set<@Valid PluginDependency>> pluginDependencies;
-    @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
-    private final Map<Platform, @Size(min = 1, message = "version.edit.error.noPlatformVersions") SortedSet<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
+    private final @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms") Map<Platform, @Size(min = 1, message = "version.edit.error.noPlatformVersions") SortedSet<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
 
     // @el(root: String)
-    @NotBlank(message = "version.new.error.noDescription")
-    @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxLen)", message = "page.new.error.maxLength")
-    private final String description;
-    @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
-    private final List<@Valid PendingVersionFile> files;
+    private final @NotBlank(message = "version.new.error.noDescription") @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxLen)", message = "page.new.error.maxLength") String description;
+    private final @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid PendingVersionFile> files;
 
     // @el(root: String)
-    @NotBlank(message = "version.new.error.channel.noName")
-    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName")
-    private final String channelName;
-    @NotNull(message = "version.new.error.channel.noColor")
-    private final Color channelColor;
+    private final @NotBlank(message = "version.new.error.channel.noName") @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName") String channelName;
+    private final @NotNull(message = "version.new.error.channel.noColor") Color channelColor;
     private final Set<ChannelFlag> channelFlags;
     private final boolean forumSync;
 
-    @JsonCreator(mode = Mode.PROPERTIES)
-    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, EnumMap<Platform, SortedSet<String>> platformDependencies, String description, List<PendingVersionFile> files, String channelName, Color channelColor, Set<ChannelFlag> channelFlags, boolean forumSync) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public PendingVersion(final String versionString, final Map<Platform, Set<PluginDependency>> pluginDependencies, final EnumMap<Platform, SortedSet<String>> platformDependencies, final String description, final List<PendingVersionFile> files, final String channelName, final Color channelColor, final Set<ChannelFlag> channelFlags, final boolean forumSync) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
@@ -57,7 +47,7 @@ public class PendingVersion {
         this.forumSync = forumSync;
     }
 
-    public PendingVersion(@Nullable String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, Map<Platform, SortedSet<String>> platformDependencies, List<PendingVersionFile> files, boolean forumSync) {
+    public PendingVersion(final @Nullable String versionString, final Map<Platform, Set<PluginDependency>> pluginDependencies, final Map<Platform, SortedSet<String>> platformDependencies, final List<PendingVersionFile> files, final boolean forumSync) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
@@ -71,53 +61,53 @@ public class PendingVersion {
     }
 
     public String getVersionString() {
-        return versionString;
+        return this.versionString;
     }
 
     public Map<Platform, Set<PluginDependency>> getPluginDependencies() {
-        return pluginDependencies;
+        return this.pluginDependencies;
     }
 
     public Map<Platform, SortedSet<String>> getPlatformDependencies() {
-        return platformDependencies;
+        return this.platformDependencies;
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public List<PendingVersionFile> getFiles() {
-        return files;
+        return this.files;
     }
 
     public String getChannelName() {
-        return channelName;
+        return this.channelName;
     }
 
     public Color getChannelColor() {
-        return channelColor;
+        return this.channelColor;
     }
 
     public Set<ChannelFlag> getChannelFlags() {
-        return channelFlags;
+        return this.channelFlags;
     }
 
     public boolean isForumSync() {
-        return forumSync;
+        return this.forumSync;
     }
 
     @Override
     public String toString() {
         return "PendingVersion{" +
-            "versionString='" + versionString + '\'' +
-            ", pluginDependencies=" + pluginDependencies +
-            ", platformDependencies=" + platformDependencies +
-            ", description='" + description + '\'' +
-            ", files=" + files +
-            ", channelName='" + channelName + '\'' +
-            ", channelColor=" + channelColor +
-            ", channelFlags=" + channelFlags +
-            ", forumSync=" + forumSync +
+            "versionString='" + this.versionString + '\'' +
+            ", pluginDependencies=" + this.pluginDependencies +
+            ", platformDependencies=" + this.platformDependencies +
+            ", description='" + this.description + '\'' +
+            ", files=" + this.files +
+            ", channelName='" + this.channelName + '\'' +
+            ", channelColor=" + this.channelColor +
+            ", channelFlags=" + this.channelFlags +
+            ", forumSync=" + this.forumSync +
             '}';
     }
 }

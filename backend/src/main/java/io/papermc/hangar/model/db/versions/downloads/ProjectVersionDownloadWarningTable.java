@@ -1,13 +1,11 @@
 package io.papermc.hangar.model.db.versions.downloads;
 
 import io.papermc.hangar.model.db.Table;
-
-import org.jdbi.v3.core.annotation.JdbiProperty;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.net.InetAddress;
 import java.time.OffsetDateTime;
 import java.util.UUID;
+import org.jdbi.v3.core.annotation.JdbiProperty;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectVersionDownloadWarningTable extends Table {
 
@@ -18,7 +16,7 @@ public class ProjectVersionDownloadWarningTable extends Table {
     private boolean confirmed;
     private Long downloadId;
 
-    public ProjectVersionDownloadWarningTable(OffsetDateTime expiresAt, UUID token, long versionId, InetAddress address) {
+    public ProjectVersionDownloadWarningTable(final OffsetDateTime expiresAt, final UUID token, final long versionId, final InetAddress address) {
         this.expiresAt = expiresAt;
         this.token = token;
         this.versionId = versionId;
@@ -28,7 +26,7 @@ public class ProjectVersionDownloadWarningTable extends Table {
     }
 
     @JdbiConstructor
-    public ProjectVersionDownloadWarningTable(OffsetDateTime createdAt, long id, OffsetDateTime expiresAt, UUID token, long versionId, InetAddress address, boolean confirmed, Long downloadId) {
+    public ProjectVersionDownloadWarningTable(final OffsetDateTime createdAt, final long id, final OffsetDateTime expiresAt, final UUID token, final long versionId, final InetAddress address, final boolean confirmed, final Long downloadId) {
         super(createdAt, id);
         this.expiresAt = expiresAt;
         this.token = token;
@@ -39,56 +37,56 @@ public class ProjectVersionDownloadWarningTable extends Table {
     }
 
     public OffsetDateTime getExpiresAt() {
-        return expiresAt;
+        return this.expiresAt;
     }
 
     public UUID getToken() {
-        return token;
+        return this.token;
     }
 
     public long getVersionId() {
-        return versionId;
+        return this.versionId;
     }
 
     public InetAddress getAddress() {
-        return address;
+        return this.address;
     }
 
     public boolean isConfirmed() {
-        return confirmed;
+        return this.confirmed;
     }
 
-    public void setConfirmed(boolean confirmed) {
+    public void setConfirmed(final boolean confirmed) {
         this.confirmed = confirmed;
     }
 
     public Long getDownloadId() {
-        return downloadId;
+        return this.downloadId;
     }
 
-    public void setDownloadId(Long downloadId) {
+    public void setDownloadId(final Long downloadId) {
         this.downloadId = downloadId;
     }
 
-    @JdbiProperty(map=false)
-    public static String cookieKey(long versionId) {
+    @JdbiProperty(map = false)
+    public static String cookieKey(final long versionId) {
         return "_warning_" + versionId;
     }
 
-    @JdbiProperty(map=false)
+    @JdbiProperty(map = false)
     public boolean hasExpired() {
-        return expiresAt.isBefore(OffsetDateTime.now());
+        return this.expiresAt.isBefore(OffsetDateTime.now());
     }
 
     @Override
     public String toString() {
         return "ProjectVersionDownloadWarningTable{" +
-                "expiresAt=" + expiresAt +
-                ", token=" + token +
-                ", versionId=" + versionId +
-                ", address=" + address +
-                ", confirmed=" + confirmed +
-                ", downloadId=" + downloadId +
-                "} " + super.toString();
+            "expiresAt=" + this.expiresAt +
+            ", token=" + this.token +
+            ", versionId=" + this.versionId +
+            ", address=" + this.address +
+            ", confirmed=" + this.confirmed +
+            ", downloadId=" + this.downloadId +
+            "} " + super.toString();
     }
 }

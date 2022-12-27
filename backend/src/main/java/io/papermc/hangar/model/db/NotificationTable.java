@@ -1,10 +1,9 @@
 package io.papermc.hangar.model.db;
 
 import io.papermc.hangar.model.internal.user.notifications.NotificationType;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.time.OffsetDateTime;
 
 public class NotificationTable extends Table {
 
@@ -16,7 +15,7 @@ public class NotificationTable extends Table {
     private final NotificationType type;
 
     @JdbiConstructor
-    public NotificationTable(OffsetDateTime createdAt, long id, long userId, String action, boolean read, Long originId, String[] messageArgs, @EnumByOrdinal NotificationType type) {
+    public NotificationTable(final OffsetDateTime createdAt, final long id, final long userId, final String action, final boolean read, final Long originId, final String[] messageArgs, @EnumByOrdinal final NotificationType type) {
         super(createdAt, id);
         this.userId = userId;
         this.action = action;
@@ -26,7 +25,7 @@ public class NotificationTable extends Table {
         this.type = type;
     }
 
-    public NotificationTable(long userId, String action, Long originId, String[] messageArgs, NotificationType type) {
+    public NotificationTable(final long userId, final String action, final Long originId, final String[] messageArgs, final NotificationType type) {
         this.userId = userId;
         this.action = action;
         this.read = false;
@@ -36,27 +35,27 @@ public class NotificationTable extends Table {
     }
 
     public long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public String getAction() {
-        return action;
+        return this.action;
     }
 
     public boolean isRead() {
-        return read;
+        return this.read;
     }
 
     public Long getOriginId() {
-        return originId;
+        return this.originId;
     }
 
     public String[] getMessageArgs() {
-        return messageArgs;
+        return this.messageArgs;
     }
 
     @EnumByOrdinal
     public NotificationType getType() {
-        return type;
+        return this.type;
     }
 }

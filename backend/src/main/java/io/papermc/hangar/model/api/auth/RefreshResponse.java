@@ -7,7 +7,7 @@ public class RefreshResponse {
     private final long expiresIn;
     private final String cookieName;
 
-    public RefreshResponse(String token, String refreshToken, long expiresIn, String cookieName) {
+    public RefreshResponse(final String token, final String refreshToken, final long expiresIn, final String cookieName) {
         this.token = token;
         this.refreshToken = refreshToken;
         this.expiresIn = expiresIn;
@@ -15,28 +15,28 @@ public class RefreshResponse {
     }
 
     public String getToken() {
-        return token;
+        return this.token;
     }
 
     public String getRefreshToken() {
-        return refreshToken;
+        return this.refreshToken;
     }
 
     public long getExpiresIn() {
-        return expiresIn;
+        return this.expiresIn;
     }
 
     public String getCookieName() {
-        return cookieName;
+        return this.cookieName;
     }
 
     @Override
     public String toString() {
         return "RefreshResponse{" +
-                "token='" + token + '\'' +
-                ", refreshToken='" + refreshToken + '\'' +
-                ", expiresIn=" + expiresIn +
-                ", cookieName='" + cookieName + '\'' +
-                '}';
+            "token='" + this.token + '\'' +
+            ", refreshToken='" + this.refreshToken + '\'' +
+            ", expiresIn=" + this.expiresIn +
+            ", cookieName='" + this.cookieName + '\'' +
+            '}';
     }
 }

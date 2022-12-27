@@ -1,25 +1,23 @@
 package io.papermc.hangar.controller.extras.pagination;
 
 import io.papermc.hangar.controller.extras.pagination.Filter.FilterInstance;
+import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.context.request.NativeWebRequest;
-
-import java.util.Set;
 
 public interface Filter<F extends FilterInstance> {
 
     Set<String> getQueryParamNames();
 
-    @NotNull
-    default String getSingleQueryParam() {
-        return getQueryParamNames().stream().findFirst().orElseThrow();
+    default @NotNull String getSingleQueryParam() {
+        return this.getQueryParamNames().stream().findFirst().orElseThrow();
     }
 
     String getDescription();
 
-    default boolean supports(NativeWebRequest webRequest) {
-        return webRequest.getParameterMap().containsKey(getSingleQueryParam());
+    default boolean supports(final NativeWebRequest webRequest) {
+        return webRequest.getParameterMap().containsKey(this.getSingleQueryParam());
     }
 
     @NotNull

@@ -3,12 +3,11 @@ package io.papermc.hangar.exceptions;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import java.io.IOException;
+import java.util.List;
 import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.io.IOException;
-import java.util.List;
 
 public class MultiHangarApiException extends ResponseStatusException {
 
@@ -32,7 +31,7 @@ public class MultiHangarApiException extends ResponseStatusException {
             gen.writeBooleanField("isMultiException", true);
             gen.writeBooleanField("isHangarApiException", true);
             gen.writeArrayFieldStart("exceptions");
-            for (HangarApiException exception : value.exceptions) {
+            for (final HangarApiException exception : value.exceptions) {
                 String message = exception.getReason();
                 if (message == null || message.isBlank()) {
                     message = exception.getStatus().getReasonPhrase();
@@ -40,7 +39,7 @@ public class MultiHangarApiException extends ResponseStatusException {
                 gen.writeStartObject();
                 gen.writeStringField("message", message);
                 gen.writeArrayFieldStart("messageArgs");
-                for (Object arg : exception.getArgs()) {
+                for (final Object arg : exception.getArgs()) {
                     serializers.defaultSerializeValue(arg, gen);
                 }
                 gen.writeEndArray();

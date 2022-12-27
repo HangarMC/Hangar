@@ -24,7 +24,6 @@ import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsFor
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarProject;
-import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
@@ -78,7 +77,7 @@ public class ProjectService extends HangarComponent {
     private final FileService fileService;
 
     @Autowired
-    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, @Lazy RestTemplate restTemplate, final DownloadService downloadService, FileService fileService) {
+    public ProjectService(final ProjectsDAO projectDAO, final HangarUsersDAO hangarUsersDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final ProjectFiles projectFiles, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, @Lazy final RestTemplate restTemplate, final DownloadService downloadService, final FileService fileService) {
         this.projectsDAO = projectDAO;
         this.hangarUsersDAO = hangarUsersDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
@@ -95,59 +94,57 @@ public class ProjectService extends HangarComponent {
         this.fileService = fileService;
     }
 
-    @Nullable
-    public ProjectTable getProjectTable(@Nullable Long projectId) {
-        return getProjectTable(projectId, projectsDAO::getById);
+    public @Nullable ProjectTable getProjectTable(final @Nullable Long projectId) {
+        return this.getProjectTable(projectId, this.projectsDAO::getById);
     }
 
-    public ProjectTable getProjectTable(@Nullable String author, @Nullable String slug) {
-        return getProjectTable(author, slug, projectsDAO::getBySlug);
+    public ProjectTable getProjectTable(final @Nullable String author, final @Nullable String slug) {
+        return this.getProjectTable(author, slug, this.projectsDAO::getBySlug);
     }
 
-    @Nullable
-    public ProjectOwner getProjectOwner(long userId) {
-        if (Objects.equals(getHangarUserId(), userId)) {
-            return getHangarPrincipal();
+    public @Nullable ProjectOwner getProjectOwner(final long userId) {
+        if (Objects.equals(this.getHangarUserId(), userId)) {
+            return this.getHangarPrincipal();
         }
-        return organizationService.getOrganizationTablesWithPermission(getHangarPrincipal().getId(), Permission.CreateProject).stream().filter(ot -> ot.getUserId() == userId).findFirst().orElse(null);
+        return this.organizationService.getOrganizationTablesWithPermission(this.getHangarPrincipal().getId(), Permission.CreateProject).stream().filter(ot -> ot.getUserId() == userId).findFirst().orElse(null);
     }
 
-    public ProjectOwner getProjectOwner(String userName) {
-        Pair<UserTable, OrganizationTable> pair = hangarUsersDAO.getUserAndOrg(userName);
+    public ProjectOwner getProjectOwner(final String userName) {
+        final Pair<UserTable, OrganizationTable> pair = this.hangarUsersDAO.getUserAndOrg(userName);
         if (pair.getRight() != null) {
             return pair.getRight();
         }
         return pair.getLeft();
     }
 
-    public HangarProject getHangarProject(String author, String slug) {
-        Pair<Long, Project> project = hangarProjectsDAO.getProject(author, slug, getHangarUserId());
-        ProjectOwner projectOwner = getProjectOwner(author);
-        List<JoinableMember<ProjectRoleTable>> members = hangarProjectsDAO.getProjectMembers(project.getLeft(), getHangarUserId(), permissionService.getProjectPermissions(getHangarUserId(), project.getLeft()).has(Permission.EditProjectSettings));
+    public HangarProject getHangarProject(final String author, final String slug) {
+        final Pair<Long, Project> project = this.hangarProjectsDAO.getProject(author, slug, this.getHangarUserId());
+        final ProjectOwner projectOwner = this.getProjectOwner(author);
+        final List<JoinableMember<ProjectRoleTable>> members = this.hangarProjectsDAO.getProjectMembers(project.getLeft(), this.getHangarUserId(), this.permissionService.getProjectPermissions(this.getHangarUserId(), project.getLeft()).has(Permission.EditProjectSettings));
         String lastVisibilityChangeComment = "";
         String lastVisibilityChangeUserName = "";
         if (project.getRight().getVisibility() == Visibility.NEEDSCHANGES || project.getRight().getVisibility() == Visibility.SOFTDELETE) {
-            var projectVisibilityChangeTable = projectVisibilityService.getLastVisibilityChange(project.getLeft());
+            final var projectVisibilityChangeTable = this.projectVisibilityService.getLastVisibilityChange(project.getLeft());
             lastVisibilityChangeComment = projectVisibilityChangeTable.getValue().getComment();
             if (project.getRight().getVisibility() == Visibility.SOFTDELETE) {
                 lastVisibilityChangeUserName = projectVisibilityChangeTable.getKey();
             }
         }
-        HangarProjectInfo info = hangarProjectsDAO.getHangarProjectInfo(project.getLeft());
-        Map<Long, HangarProjectPage> pages = projectPageService.getProjectPages(project.getLeft());
+        final HangarProject.HangarProjectInfo info = this.hangarProjectsDAO.getHangarProjectInfo(project.getLeft());
+        final Map<Long, HangarProjectPage> pages = this.projectPageService.getProjectPages(project.getLeft());
         final List<HangarProject.PinnedVersion> pinnedVersions = this.pinnedVersionService.getPinnedVersions(project.getRight().getNamespace().getOwner(), project.getRight().getNamespace().getSlug(), project.getLeft());
 
         final Map<Platform, HangarVersion> mainChannelVersions = new EnumMap<>(Platform.class);
         for (final Platform platform : Platform.getValues()) {
-            final HangarVersion version = getLastVersion(author, slug, platform, config.channels.nameDefault());
+            final HangarVersion version = this.getLastVersion(author, slug, platform, this.config.channels.nameDefault());
             if (version != null) {
                 if (version.getPlatformDependencies().isEmpty()) {
-                    final Map<Platform, SortedSet<String>> platformDependencies = versionsApiDAO.getPlatformDependencies(version.getId());
+                    final Map<Platform, SortedSet<String>> platformDependencies = this.versionsApiDAO.getPlatformDependencies(version.getId());
                     version.getPlatformDependencies().putAll(platformDependencies);
                     for (final Map.Entry<Platform, SortedSet<String>> entry : platformDependencies.entrySet()) {
                         version.getPlatformDependenciesFormatted().put(entry.getKey(), io.papermc.hangar.util.StringUtils.formatVersionNumbers(new ArrayList<>(entry.getValue())));
                     }
-                    downloadService.addDownloads(project.getRight().getNamespace().getOwner(), project.getRight().getNamespace().getSlug(), version.getName(), version.getId(), version.getDownloads());
+                    this.downloadService.addDownloads(project.getRight().getNamespace().getOwner(), project.getRight().getNamespace().getSlug(), version.getName(), version.getId(), version.getDownloads());
                 }
 
                 mainChannelVersions.put(platform, version);
@@ -157,25 +154,25 @@ public class ProjectService extends HangarComponent {
         return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, mainChannelVersions, this.fileService.exists(this.projectFiles.getIconPath(author, slug)));
     }
 
-    public @Nullable HangarVersion getLastVersion(String author, String slug, Platform platform, @Nullable String channel) {
-        RequestPagination pagination = new RequestPagination(1L, 0L);
+    public @Nullable HangarVersion getLastVersion(final String author, final String slug, final Platform platform, final @Nullable String channel) {
+        final RequestPagination pagination = new RequestPagination(1L, 0L);
         pagination.getFilters().add(new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
         if (channel != null) {
             // Find the last version with the specified channel
             pagination.getFilters().add(new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
         }
 
-        Long versionId = versionsApiDAO.getVersions(author, slug, false, getHangarUserId(), pagination).keySet().stream().findAny().orElse(null);
+        final Long versionId = this.versionsApiDAO.getVersions(author, slug, false, this.getHangarUserId(), pagination).keySet().stream().findAny().orElse(null);
         if (versionId != null) {
-            return hangarVersionsDAO.getVersion(versionId, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+            return this.hangarVersionsDAO.getVersion(versionId, this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
         }
 
         // Try again with any channel, else empty
-        return channel != null ? getLastVersion(author, slug, platform, null) : null;
+        return channel != null ? this.getLastVersion(author, slug, platform, null) : null;
     }
 
-    public void saveSettings(String author, String slug, ProjectSettingsForm settingsForm) {
-        ProjectTable projectTable = getProjectTable(author, slug);
+    public void saveSettings(final String author, final String slug, final ProjectSettingsForm settingsForm) {
+        final ProjectTable projectTable = this.getProjectTable(author, slug);
         projectTable.setCategory(settingsForm.getCategory());
         projectTable.setKeywords(settingsForm.getSettings().getKeywords());
         projectTable.setHomepage(settingsForm.getSettings().getHomepage());
@@ -194,29 +191,29 @@ public class ProjectService extends HangarComponent {
         projectTable.setDescription(settingsForm.getDescription());
         projectTable.setDonationEnabled(settingsForm.getSettings().getDonation().isEnable());
         projectTable.setDonationSubject(settingsForm.getSettings().getDonation().getSubject());
-        projectsDAO.update(projectTable);
-        refreshHomeProjects();
+        this.projectsDAO.update(projectTable);
+        this.refreshHomeProjects();
         // TODO what settings changed
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
     }
 
     @Transactional
-    public void saveSponsors(String author, String slug, StringContent content) {
-        ProjectTable projectTable = getProjectTable(author, slug);
+    public void saveSponsors(final String author, final String slug, final StringContent content) {
+        final ProjectTable projectTable = this.getProjectTable(author, slug);
         projectTable.setSponsors(content.getContent());
-        projectsDAO.update(projectTable);
+        this.projectsDAO.update(projectTable);
         // TODO what settings changed
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
     }
 
-    public void saveDiscourseData(ProjectTable projectTable, long topicId, long postId) {
+    public void saveDiscourseData(final ProjectTable projectTable, final long topicId, final long postId) {
         projectTable.setTopicId(topicId);
         projectTable.setPostId(postId);
-        projectsDAO.update(projectTable);
+        this.projectsDAO.update(projectTable);
     }
 
-    public String saveIcon(String author, String slug, MultipartFile icon) {
-        ProjectTable projectTable = getProjectTable(author, slug);
+    public String saveIcon(final String author, final String slug, final MultipartFile icon) {
+        final ProjectTable projectTable = this.getProjectTable(author, slug);
         if (!StringUtils.equalsAny(icon.getContentType(), MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.error.invalidFile", icon.getContentType());
         }
@@ -224,71 +221,69 @@ public class ProjectService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.error.noFile");
         }
         try {
-            String iconPath = projectFiles.getIconPath(author, slug);
-            String oldBase64 = getBase64(author, slug, "old", iconPath);
-            fileService.write(icon.getInputStream(), iconPath);
-            String newBase64 = getBase64(author, slug, "new", iconPath);
-            actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), newBase64, oldBase64));
-        } catch (IOException e) {
+            final String iconPath = this.projectFiles.getIconPath(author, slug);
+            final String oldBase64 = this.getBase64(author, slug, "old", iconPath);
+            this.fileService.write(icon.getInputStream(), iconPath);
+            final String newBase64 = this.getBase64(author, slug, "new", iconPath);
+            this.actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), newBase64, oldBase64));
+        } catch (final IOException e) {
             e.printStackTrace();
             throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return evictIconCache(author, slug);
+        return this.evictIconCache(author, slug);
     }
 
-    public String resetIcon(String author, String slug) {
-        ProjectTable projectTable = getProjectTable(author, slug);
-        String base64 = getBase64(author, slug, "old", projectFiles.getIconPath(author, slug));
-        if (fileService.delete(projectFiles.getIconPath(author, slug))) {
-            actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), "#empty", base64));
+    public String resetIcon(final String author, final String slug) {
+        final ProjectTable projectTable = this.getProjectTable(author, slug);
+        final String base64 = this.getBase64(author, slug, "old", this.projectFiles.getIconPath(author, slug));
+        if (this.fileService.delete(this.projectFiles.getIconPath(author, slug))) {
+            this.actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), "#empty", base64));
         }
-        return evictIconCache(author, slug);
+        return this.evictIconCache(author, slug);
     }
 
-    private String evictIconCache(String author, String slug) {
+    private String evictIconCache(final String author, final String slug) {
         try {
-            String url = config.getBaseUrl() + "/api/internal/projects/project/" + author + "/" + slug + "/icon";
-            restTemplate.delete(config.security.api().url() + "/image/" + url + "?apiKey=" + config.sso.apiKey());
+            final String url = this.config.getBaseUrl() + "/api/internal/projects/project/" + author + "/" + slug + "/icon";
+            this.restTemplate.delete(this.config.security.api().url() + "/image/" + url + "?apiKey=" + this.config.sso.apiKey());
             return "dum";
-        } catch (HttpClientErrorException e) {
+        } catch (final HttpClientErrorException e) {
             return e.getMessage();
         }
     }
 
-    private String getBase64(String author, String slug, String old, String path) {
+    private String getBase64(final String author, final String slug, final String old, final String path) {
         String base64 = "#empty";
-        if (path == null || !fileService.exists(path)) {
+        if (path == null || !this.fileService.exists(path)) {
             return base64;
         }
         try {
-            base64 = Base64.getEncoder().encodeToString(fileService.bytes(path));
-        } catch (IOException e) {
-            logger.warn("Error while loading {} icon for project {}/{}: {}:{}", old, author, slug, e.getClass().getSimpleName(), e.getMessage());
+            base64 = Base64.getEncoder().encodeToString(this.fileService.bytes(path));
+        } catch (final IOException e) {
+            this.logger.warn("Error while loading {} icon for project {}/{}: {}:{}", old, author, slug, e.getClass().getSimpleName(), e.getMessage());
         }
         return base64;
     }
 
-    public List<UserTable> getProjectWatchers(long projectId) {
-        return projectsDAO.getProjectWatchers(projectId);
+    public List<UserTable> getProjectWatchers(final long projectId) {
+        return this.projectsDAO.getProjectWatchers(projectId);
     }
 
     public void refreshHomeProjects() {
         this.hangarProjectsDAO.refreshHomeProjects();
     }
 
-    @Nullable
-    private <T> ProjectTable getProjectTable(@Nullable T identifier, @NotNull Function<T, ProjectTable> projectTableFunction) {
+    private @Nullable <T> ProjectTable getProjectTable(final @Nullable T identifier, final @NotNull Function<T, ProjectTable> projectTableFunction) {
         if (identifier == null) {
             return null;
         }
-        return projectVisibilityService.checkVisibility(projectTableFunction.apply(identifier));
+        return this.projectVisibilityService.checkVisibility(projectTableFunction.apply(identifier));
     }
 
-    @Nullable
-    private <T> ProjectTable getProjectTable(@Nullable T identifierOne, @Nullable T identifierTwo, @NotNull BiFunction<T, T, ProjectTable> projectTableFunction) {
+    private @Nullable <T> ProjectTable getProjectTable(final @Nullable T identifierOne, final @Nullable T identifierTwo, final @NotNull BiFunction<T, T, ProjectTable> projectTableFunction) {
         if (identifierOne == null || identifierTwo == null) {
             return null;
         }
-        return projectVisibilityService.checkVisibility(projectTableFunction.apply(identifierOne, identifierTwo));
+        return this.projectVisibilityService.checkVisibility(projectTableFunction.apply(identifierOne, identifierTwo));
     }
 }

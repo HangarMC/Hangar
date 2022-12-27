@@ -18,16 +18,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface IAuthenticationController {
 
     @ApiOperation(
-            value = "Creates an API JWT",
-            nickname = "authenticate",
-            notes = "`Log-in` with your API key in order to be able to call other endpoints authenticated. The returned JWT should be specified as a header in all following requests: `Authorization: HangarAuth your.jwt`",
-            authorizations = @Authorization("Key"),
-            tags = "Authentication"
+        value = "Creates an API JWT",
+        nickname = "authenticate",
+        notes = "`Log-in` with your API key in order to be able to call other endpoints authenticated. The returned JWT should be specified as a header in all following requests: `Authorization: HangarAuth your.jwt`",
+        authorizations = @Authorization("Key"),
+        tags = "Authentication"
     )
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Ok"),
-            @ApiResponse(code = 400, message = "Bad Request"),
-            @ApiResponse(code = 401, message = "Api key missing or invalid")
+        @ApiResponse(code = 200, message = "Ok"),
+        @ApiResponse(code = 400, message = "Bad Request"),
+        @ApiResponse(code = 401, message = "Api key missing or invalid")
     })
     @PostMapping("/authenticate")
     ResponseEntity<ApiSession> authenticate(@ApiParam("JWT") @RequestParam String apiKey);

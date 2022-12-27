@@ -7,22 +7,22 @@ public class OrganizationMemberTable extends MemberTable {
     private final long organizationId;
     private final boolean hidden;
 
-    public OrganizationMemberTable(long userId, long organizationId) {
+    public OrganizationMemberTable(final long userId, final long organizationId) {
         this(userId, organizationId, false);
     }
 
     @JdbiConstructor
-    public OrganizationMemberTable(long userId, long organizationId, boolean hidden) {
+    public OrganizationMemberTable(final long userId, final long organizationId, final boolean hidden) {
         super(userId);
         this.organizationId = organizationId;
         this.hidden = hidden;
     }
 
     public long getOrganizationId() {
-        return organizationId;
+        return this.organizationId;
     }
 
     public boolean isHidden() {
-        return hidden;
+        return this.hidden;
     }
 }
