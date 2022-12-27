@@ -23,8 +23,8 @@ public class PaginatedResult<T> {
     @Override
     public String toString() {
         return "PaginatedResult{" +
-                "pagination=" + this.pagination +
-                ", result=" + this.result +
-                '}';
+            "pagination=" + this.pagination +
+            ", result=" + this.result +
+            '}';
     }
 }

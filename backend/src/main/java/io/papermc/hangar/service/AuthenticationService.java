@@ -41,14 +41,14 @@ public class AuthenticationService extends HangarComponent {
         UserTable userTable = this.userService.getUserTable(userName);
         if (userTable == null) {
             userTable = new UserTable(
-                    -1, // we can pass -1 here since it's not actually inserted in the DB in the DAO
-                    UUID.randomUUID(),
-                    userName,
-                    this.config.fakeUser.email(),
-                    List.of(),
-                    false,
-                    Locale.ENGLISH.toLanguageTag(),
-                    "white"
+                -1, // we can pass -1 here since it's not actually inserted in the DB in the DAO
+                UUID.randomUUID(),
+                userName,
+                this.config.fakeUser.email(),
+                List.of(),
+                false,
+                Locale.ENGLISH.toLanguageTag(),
+                "white"
             );
 
             userTable = this.userService.insertUser(userTable);

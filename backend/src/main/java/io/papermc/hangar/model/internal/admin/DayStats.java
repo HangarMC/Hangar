@@ -53,13 +53,13 @@ public class DayStats {
     @Override
     public String toString() {
         return "DayStats{" +
-                "day=" + this.day +
-                ", reviews=" + this.reviews +
-                ", uploads=" + this.uploads +
-                ", totalDownloads=" + this.totalDownloads +
-                ", unsafeDownloads=" + this.unsafeDownloads +
-                ", flagsOpened=" + this.flagsOpened +
-                ", flagsClosed=" + this.flagsClosed +
-                '}';
+            "day=" + this.day +
+            ", reviews=" + this.reviews +
+            ", uploads=" + this.uploads +
+            ", totalDownloads=" + this.totalDownloads +
+            ", unsafeDownloads=" + this.unsafeDownloads +
+            ", flagsOpened=" + this.flagsOpened +
+            ", flagsClosed=" + this.flagsClosed +
+            '}';
     }
 }

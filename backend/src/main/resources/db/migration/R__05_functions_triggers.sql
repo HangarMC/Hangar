@@ -1,9 +1,10 @@
-CREATE OR REPLACE FUNCTION delete_old_project_version_download_warnings() RETURNS TRIGGER
+CREATE OR REPLACE FUNCTION delete_old_project_version_download_warnings() RETURNS trigger
     LANGUAGE plpgsql
-AS $$
+AS
+$$
 BEGIN
-    DELETE FROM project_version_download_warnings WHERE created_at < current_date - interval '30' day;
-    RETURN NEW;
+    DELETE FROM project_version_download_warnings WHERE created_at < current_date - INTERVAL '30' DAY;
+    RETURN new;
 END
 $$;
 
@@ -12,12 +13,13 @@ CREATE OR REPLACE TRIGGER clean_old_project_version_download_warnings
     ON project_version_download_warnings
 EXECUTE PROCEDURE delete_old_project_version_download_warnings();
 
-CREATE OR REPLACE FUNCTION delete_old_project_version_unsafe_downloads() RETURNS TRIGGER
+CREATE OR REPLACE FUNCTION delete_old_project_version_unsafe_downloads() RETURNS trigger
     LANGUAGE plpgsql
-AS $$
+AS
+$$
 BEGIN
-    DELETE FROM project_version_unsafe_downloads WHERE created_at < current_date - interval '30' day;
-    RETURN NEW;
+    DELETE FROM project_version_unsafe_downloads WHERE created_at < current_date - INTERVAL '30' DAY;
+    RETURN new;
 END
 $$;
 
@@ -26,9 +28,10 @@ CREATE OR REPLACE TRIGGER clean_old_project_version_unsafe_downloads
     ON project_version_unsafe_downloads
 EXECUTE PROCEDURE delete_old_project_version_unsafe_downloads();
 
-CREATE OR REPLACE FUNCTION update_project_name_trigger() RETURNS TRIGGER
+CREATE OR REPLACE FUNCTION update_project_name_trigger() RETURNS trigger
     LANGUAGE plpgsql
-AS $$
+AS
+$$
 BEGIN
     UPDATE projects p SET name = u.name FROM users u WHERE p.id = new.id AND u.id = new.owner_id;
 END;
@@ -39,22 +42,23 @@ CREATE OR REPLACE TRIGGER project_owner_name_updater
         OF owner_id
     ON projects
     FOR EACH ROW
-    WHEN  (old.owner_id <> new.owner_id)
+    WHEN (old.owner_id <> new.owner_id)
 EXECUTE PROCEDURE update_project_name_trigger();
 
 CREATE OR REPLACE FUNCTION websearch_to_tsquery_postfix(dictionary regconfig, query text) RETURNS tsquery
     IMMUTABLE
     STRICT
     LANGUAGE plpgsql
-AS $$
+AS
+$$
 DECLARE
-    arr  TEXT[]  := regexp_split_to_array(query, '\s+');
-    last TEXT    := websearch_to_tsquery('simple', arr[array_length(arr, 1)])::TEXT;
-    init TSQUERY := websearch_to_tsquery(dictionary, regexp_replace(query, '\S+$', ''));
+    arr  text[]  := regexp_split_to_array(query, '\s+');
+    last text    := websearch_to_tsquery('simple', arr[array_length(arr, 1)])::text;
+    init tsquery := websearch_to_tsquery(dictionary, regexp_replace(query, '\S+$', ''));
 BEGIN
     IF last = '' THEN
         BEGIN
-            RETURN init && $2::TSQUERY;
+            RETURN init && $2::tsquery;
         EXCEPTION
             WHEN SYNTAX_ERROR THEN
                 RETURN init && websearch_to_tsquery('');

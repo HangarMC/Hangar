@@ -1,9 +1,8 @@
 package io.papermc.hangar.model.internal.discourse;
 
-import org.springframework.http.HttpStatus;
-
 import java.time.Duration;
 import java.util.Map;
+import org.springframework.http.HttpStatus;
 
 public class DiscourseError extends RuntimeException {
 

@@ -33,10 +33,10 @@ public class RefreshResponse {
     @Override
     public String toString() {
         return "RefreshResponse{" +
-                "token='" + this.token + '\'' +
-                ", refreshToken='" + this.refreshToken + '\'' +
-                ", expiresIn=" + this.expiresIn +
-                ", cookieName='" + this.cookieName + '\'' +
-                '}';
+            "token='" + this.token + '\'' +
+            ", refreshToken='" + this.refreshToken + '\'' +
+            ", expiresIn=" + this.expiresIn +
+            ", cookieName='" + this.cookieName + '\'' +
+            '}';
     }
 }

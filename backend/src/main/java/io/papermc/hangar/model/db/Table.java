@@ -2,7 +2,6 @@ package io.papermc.hangar.model.db;
 
 import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.Model;
-
 import java.time.OffsetDateTime;
 
 public abstract class Table extends Model implements Identified {
@@ -34,7 +33,7 @@ public abstract class Table extends Model implements Identified {
     @Override
     public String toString() {
         return "Table{" +
-                "id=" + this.id +
-                "} " + super.toString();
+            "id=" + this.id +
+            "} " + super.toString();
     }
 }

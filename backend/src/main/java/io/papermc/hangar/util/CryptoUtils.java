@@ -1,17 +1,17 @@
 package io.papermc.hangar.util;
 
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 
 public class CryptoUtils {
 
-    private CryptoUtils() { }
+    private CryptoUtils() {
+    }
 
     private static final char[] hexArray = "0123456789abcdef".toCharArray();
 

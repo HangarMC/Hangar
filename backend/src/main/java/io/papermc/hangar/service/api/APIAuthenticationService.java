@@ -9,12 +9,10 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.auth.ApiKeyTable;
 import io.papermc.hangar.service.TokenService;
 import io.papermc.hangar.util.CryptoUtils;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class APIAuthenticationService extends HangarComponent {

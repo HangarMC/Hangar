@@ -2,7 +2,6 @@ package io.papermc.hangar.model.internal.projects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
-
 import java.time.OffsetDateTime;
 
 public class ExtendedProjectPage extends ProjectPageTable {
@@ -22,7 +21,7 @@ public class ExtendedProjectPage extends ProjectPageTable {
     @Override
     public String toString() {
         return "HangarViewProjectPage{" +
-                "home=" + this.home +
-                "} " + super.toString();
+            "home=" + this.home +
+            "} " + super.toString();
     }
 }

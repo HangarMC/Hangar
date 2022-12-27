@@ -8,11 +8,10 @@ import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
-
-import java.time.OffsetDateTime;
 
 public class HangarVersion extends Version implements Identified {
 

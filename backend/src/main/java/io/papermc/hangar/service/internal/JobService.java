@@ -15,14 +15,6 @@ import io.papermc.hangar.model.internal.job.UpdateDiscourseVersionPostJob;
 import io.papermc.hangar.service.internal.discourse.DiscourseService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.versions.VersionService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -30,6 +22,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class JobService extends HangarComponent {
@@ -55,7 +54,9 @@ public class JobService extends HangarComponent {
     }
 
     public void checkAndProcess() {
-        if (!this.config.discourse.enabled()) { return; }
+        if (!this.config.discourse.enabled()) {
+            return;
+        }
         final long awaitingJobs = this.jobsDAO.countAwaitingJobs();
         this.logger.debug("Found {} awaiting jobs", awaitingJobs);
         if (awaitingJobs > 0) {
@@ -72,7 +73,9 @@ public class JobService extends HangarComponent {
 
     @Transactional
     public void save(final Job job) {
-        if (!this.config.discourse.enabled()) { return; }
+        if (!this.config.discourse.enabled()) {
+            return;
+        }
         this.jobsDAO.save(job.toTable());
     }
 
@@ -94,38 +97,38 @@ public class JobService extends HangarComponent {
             this.jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(rateLimitError.getDuration()).plusSeconds(5), "Rate limit hit", "rate_limit");
         } catch (final DiscourseError.StatusError statusError) {
             final String error = "Encountered status error when executing Discourse request\n" +
-                    this.toJobString(jobTable) +
-                           "Status Code: " + statusError.getStatus() + "\n" +
-                    this.toMessageString(statusError);
+                this.toJobString(jobTable) +
+                "Status Code: " + statusError.getStatus() + "\n" +
+                this.toMessageString(statusError);
             this.jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(this.config.jobs.statusErrorTimeout()).plusSeconds(5), error, "status_error_" + statusError.getStatus().value());
         } catch (final DiscourseError.UnknownError unknownError) {
             final String error = "Encountered error when executing Discourse request\n" +
-                    this.toJobString(jobTable) +
-                           "Type: " + unknownError.getDescriptor() + "\n" +
-                    this.toMessageString(unknownError);
+                this.toJobString(jobTable) +
+                "Type: " + unknownError.getDescriptor() + "\n" +
+                this.toMessageString(unknownError);
             this.jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(this.config.jobs.unknownErrorTimeout()).plusSeconds(5), error, "unknown_error" + unknownError.getDescriptor());
         } catch (final DiscourseError.NotAvailableError notAvailableError) {
             this.jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(this.config.jobs.notAvailableTimeout()).plusSeconds(5), "Not Available", "not_available");
         } catch (final DiscourseError.NotProcessable notProcessable) {
             this.logger.debug("job failed to process discourse job: {} {}", notProcessable.getMessage(), jobTable);
             final String error = "Encountered error when processing discourse job\n" +
-                    this.toJobString(jobTable) +
-                           "Type: not_processable\n" +
-                    this.toMessageString(notProcessable);
+                this.toJobString(jobTable) +
+                "Type: not_processable\n" +
+                this.toMessageString(notProcessable);
             this.jobsDAO.fail(jobTable.getId(), error, "not_processable");
         } catch (final JobException jobException) {
             this.logger.debug("job failed to process: {} {}", jobException.getMessage(), jobTable);
             final String error = "Encountered error when processing job\n" +
-                    this.toJobString(jobTable) +
-                           "Type: " + jobException.getDescriptor() + "\n" +
-                    this.toMessageString(jobException);
+                this.toJobString(jobTable) +
+                "Type: " + jobException.getDescriptor() + "\n" +
+                this.toMessageString(jobException);
             this.jobsDAO.fail(jobTable.getId(), error, jobException.getDescriptor());
         } catch (final Exception ex) {
             this.logger.debug("job failed to process: {} {}", ex.getMessage(), jobTable, ex);
             final String error = "Encountered error when processing job\n" +
-                    this.toJobString(jobTable) +
-                           "Exception: " + ex.getClass().getName() + "\n" +
-                    this.toMessageString(ex);
+                this.toJobString(jobTable) +
+                "Exception: " + ex.getClass().getName() + "\n" +
+                this.toMessageString(ex);
             this.jobsDAO.fail(jobTable.getId(), error, "exception");
         }
     }

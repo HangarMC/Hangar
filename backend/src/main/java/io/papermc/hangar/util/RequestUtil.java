@@ -1,16 +1,16 @@
 package io.papermc.hangar.util;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 public class RequestUtil {
 
-    private RequestUtil() { }
+    private RequestUtil() {
+    }
 
     private static final String ATTR = "HangarIP";
 
@@ -34,7 +34,7 @@ public class RequestUtil {
             ip = request.getRemoteAddr();
         }
 
-        request.setAttribute(ATTR,ip);
+        request.setAttribute(ATTR, ip);
         return ip;
     }
 

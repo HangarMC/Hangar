@@ -9,11 +9,10 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.service.internal.UserActionLogService;
+import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service
 public class ProjectVersionVisibilityService extends VisibilityService<VersionContext, ProjectVersionTable, ProjectVersionVisibilityChangeTable> {

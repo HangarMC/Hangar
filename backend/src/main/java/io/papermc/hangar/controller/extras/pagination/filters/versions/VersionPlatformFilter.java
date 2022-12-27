@@ -3,15 +3,14 @@ package io.papermc.hangar.controller.extras.pagination.filters.versions;
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter.VersionPlatformFilterInstance;
 import io.papermc.hangar.model.common.Platform;
+import java.util.Arrays;
+import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
-
-import java.util.Arrays;
-import java.util.Set;
 
 @Component
 public class VersionPlatformFilter implements Filter<VersionPlatformFilterInstance> {
@@ -62,8 +61,8 @@ public class VersionPlatformFilter implements Filter<VersionPlatformFilterInstan
         @Override
         public String toString() {
             return "VersionPlatformFilterInstance{" +
-                    "platforms=" + Arrays.toString(this.platforms) +
-                    '}';
+                "platforms=" + Arrays.toString(this.platforms) +
+                '}';
         }
     }
 }

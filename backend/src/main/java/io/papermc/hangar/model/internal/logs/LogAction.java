@@ -8,10 +8,9 @@ import io.papermc.hangar.model.internal.logs.contexts.PageContext;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 public class LogAction<LC extends LogContext<? extends LoggedActionTable, LC>> {
 

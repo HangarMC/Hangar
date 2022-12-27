@@ -1,9 +1,8 @@
 package io.papermc.hangar.model.db.versions.dependencies;
 
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectVersionPlatformDependencyTable extends VersionDependencyTable {
 
@@ -27,8 +26,8 @@ public class ProjectVersionPlatformDependencyTable extends VersionDependencyTabl
     @Override
     public String toString() {
         return "ProjectVersionPlatformDependencyTable{" +
-                "platformVersionId=" + this.platformVersionId +
-                "} " + super.toString();
+            "platformVersionId=" + this.platformVersionId +
+            "} " + super.toString();
     }
 
     @Override

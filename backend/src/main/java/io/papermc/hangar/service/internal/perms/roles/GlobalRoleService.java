@@ -3,10 +3,9 @@ package io.papermc.hangar.service.internal.perms.roles;
 import io.papermc.hangar.db.dao.internal.table.roles.GlobalRolesDAO;
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
 @Service
 public class GlobalRoleService extends RoleService<GlobalRoleTable, GlobalRole, GlobalRolesDAO> {

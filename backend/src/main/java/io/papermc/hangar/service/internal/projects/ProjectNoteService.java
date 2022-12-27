@@ -5,10 +5,9 @@ import io.papermc.hangar.db.dao.internal.projects.HangarProjectNotesDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectNotesDAO;
 import io.papermc.hangar.model.db.projects.ProjectNoteTable;
 import io.papermc.hangar.model.internal.projects.HangarProjectNote;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProjectNoteService extends HangarComponent {

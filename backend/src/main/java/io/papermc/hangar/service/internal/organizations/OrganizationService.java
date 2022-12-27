@@ -14,12 +14,11 @@ import io.papermc.hangar.model.internal.HangarOrganization;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class OrganizationService extends HangarComponent {

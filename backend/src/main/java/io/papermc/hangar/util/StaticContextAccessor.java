@@ -1,15 +1,14 @@
 package io.papermc.hangar.util;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.proxy.InvocationHandler;
 import org.springframework.cglib.proxy.Proxy;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 // https://stackoverflow.com/questions/12537851/accessing-spring-beans-in-static-method/42796662
 @Component
@@ -34,13 +33,13 @@ public class StaticContextAccessor {
         final DynamicInvocationhandler<T> invocationhandler = new DynamicInvocationhandler<>();
         classHandlers.put(clazz, invocationhandler);
         return (T) Proxy.newProxyInstance(
-                clazz.getClassLoader(),
-                new Class[]{clazz},
-                invocationhandler
+            clazz.getClassLoader(),
+            new Class[]{clazz},
+            invocationhandler
         );
     }
 
-    //Use the context to get the actual beans and feed them to the invocationhandlers
+    // Use the context to get the actual beans and feed them to the invocationhandlers
     @PostConstruct
     private void init() {
         classHandlers.forEach((clazz, invocationHandler) -> {

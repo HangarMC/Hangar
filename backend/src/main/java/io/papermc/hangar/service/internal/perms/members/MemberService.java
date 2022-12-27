@@ -17,10 +17,10 @@ import io.papermc.hangar.model.internal.logs.contexts.LogContext;
 import io.papermc.hangar.model.loggable.Loggable;
 import io.papermc.hangar.service.internal.perms.roles.RoleService;
 import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
+import java.util.List;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 @Transactional
 public abstract class MemberService<

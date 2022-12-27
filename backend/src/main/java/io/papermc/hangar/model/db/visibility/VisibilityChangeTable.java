@@ -2,9 +2,8 @@ package io.papermc.hangar.model.db.visibility;
 
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.Table;
-import org.jdbi.v3.core.enums.EnumByOrdinal;
-
 import java.time.OffsetDateTime;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 public abstract class VisibilityChangeTable extends Table {
 
@@ -53,11 +52,11 @@ public abstract class VisibilityChangeTable extends Table {
     @Override
     public String toString() {
         return "VisibilityChangeTable{" +
-                "createdBy=" + this.createdBy +
-                ", comment='" + this.comment + '\'' +
-                ", visibility=" + this.visibility +
-                ", resolvedBy=" + this.resolvedBy +
-                ", resolvedAt=" + this.resolvedAt +
-                "} " + super.toString();
+            "createdBy=" + this.createdBy +
+            ", comment='" + this.comment + '\'' +
+            ", visibility=" + this.visibility +
+            ", resolvedBy=" + this.resolvedBy +
+            ", resolvedAt=" + this.resolvedAt +
+            "} " + super.toString();
     }
 }

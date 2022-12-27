@@ -36,7 +36,9 @@ public class HangarPrincipal implements ProjectOwner {
         return this.locked;
     }
 
-    public Permission getPossiblePermissions(){ return Permission.All; }
+    public Permission getPossiblePermissions() {
+        return Permission.All;
+    }
 
     public final Permission getGlobalPermissions() {
         return this.globalPermissions.intersect(this.getPossiblePermissions());
@@ -57,10 +59,10 @@ public class HangarPrincipal implements ProjectOwner {
     @Override
     public String toString() {
         return "HangarPrincipal{" +
-                "id=" + this.id +
-                ", name='" + this.name + '\'' +
-                ", locked=" + this.locked +
-                ", globalPermissions=" + this.globalPermissions +
-                '}';
+            "id=" + this.id +
+            ", name='" + this.name + '\'' +
+            ", locked=" + this.locked +
+            ", globalPermissions=" + this.globalPermissions +
+            '}';
     }
 }

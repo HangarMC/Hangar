@@ -11,15 +11,14 @@ import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.PermissionService;
+import java.util.List;
+import java.util.function.BiPredicate;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-
-import java.util.List;
-import java.util.function.BiPredicate;
 
 @Anyone
 @Controller

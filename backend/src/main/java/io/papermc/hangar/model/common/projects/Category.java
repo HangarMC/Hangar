@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.jdbi.v3.core.enums.EnumByOrdinal;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @EnumByOrdinal
@@ -82,7 +81,8 @@ public enum Category {
             try {
                 final int id = Integer.parseInt(s);
                 categories.add(Category.VALUES[id]);
-            } catch (final NumberFormatException | ArrayIndexOutOfBoundsException ignored) { }
+            } catch (final NumberFormatException | ArrayIndexOutOfBoundsException ignored) {
+            }
         });
         return categories;
     }

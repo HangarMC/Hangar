@@ -3,10 +3,9 @@ package io.papermc.hangar.model.internal.admin.health;
 import io.papermc.hangar.model.Visible;
 import io.papermc.hangar.model.api.project.ProjectNamespace;
 import io.papermc.hangar.model.common.projects.Visibility;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
-
-import java.time.OffsetDateTime;
 
 public class UnhealthyProject implements Visible {
 
@@ -48,11 +47,11 @@ public class UnhealthyProject implements Visible {
     @Override
     public String toString() {
         return "UnhealthyProject{" +
-                "namespace=" + this.namespace +
-                ", topicId=" + this.topicId +
-                ", postId=" + this.postId +
-                ", lastUpdated=" + this.lastUpdated +
-                ", visibility=" + this.visibility +
-                "} " + super.toString();
+            "namespace=" + this.namespace +
+            ", topicId=" + this.topicId +
+            ", postId=" + this.postId +
+            ", lastUpdated=" + this.lastUpdated +
+            ", visibility=" + this.visibility +
+            "} " + super.toString();
     }
 }

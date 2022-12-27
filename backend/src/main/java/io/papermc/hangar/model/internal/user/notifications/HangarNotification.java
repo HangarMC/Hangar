@@ -1,9 +1,8 @@
 package io.papermc.hangar.model.internal.user.notifications;
 
-import org.jdbi.v3.core.enums.EnumByOrdinal;
-
 import java.time.OffsetDateTime;
 import java.util.List;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 public class HangarNotification {
 
@@ -56,12 +55,12 @@ public class HangarNotification {
     @Override
     public String toString() {
         return "HangarNotification{" +
-                "id=" + this.id +
-                ", action='" + this.action + '\'' +
-                ", message=" + this.message +
-                ", read=" + this.read +
-                ", originUserName='" + this.originUserName + '\'' +
-                ", type=" + this.type +
-                '}';
+            "id=" + this.id +
+            ", action='" + this.action + '\'' +
+            ", message=" + this.message +
+            ", read=" + this.read +
+            ", originUserName='" + this.originUserName + '\'' +
+            ", type=" + this.type +
+            '}';
     }
 }

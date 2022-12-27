@@ -2,6 +2,7 @@ package io.papermc.hangar.db.dao.internal.table.roles;
 
 import io.papermc.hangar.db.mappers.factories.RoleColumnMapperFactory;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
+import java.util.List;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapperFactory;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -9,8 +10,6 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 @RegisterConstructorMapper(GlobalRoleTable.class)
@@ -53,9 +52,9 @@ public interface GlobalRolesDAO extends IRolesDAO<GlobalRoleTable> {
     GlobalRoleTable getTable(@BindBean GlobalRoleTable table);
 
     @SqlQuery("SELECT ugr.* " +
-            "   FROM user_global_roles ugr" +
-            "   JOIN roles r ON ugr.role_id = r.id" +
-            "   WHERE ugr.user_id = :userId" +
-            "   ORDER BY r.permission::BIGINT DESC")
+        "   FROM user_global_roles ugr" +
+        "   JOIN roles r ON ugr.role_id = r.id" +
+        "   WHERE ugr.user_id = :userId" +
+        "   ORDER BY r.permission::bigint DESC")
     List<GlobalRoleTable> getGlobalRoleTables(long userId);
 }

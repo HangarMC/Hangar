@@ -1,7 +1,6 @@
 package io.papermc.hangar.model.db.stats;
 
 import io.papermc.hangar.model.db.Table;
-
 import java.net.InetAddress;
 import java.time.OffsetDateTime;
 
@@ -46,10 +45,10 @@ public abstract class IndividualTable extends Table {
     @Override
     public String toString() {
         return "IndividualTable{" +
-                "address=" + this.address +
-                ", cookie='" + this.cookie + '\'' +
-                ", userId=" + this.userId +
-                ", processed=" + this.processed +
-                '}';
+            "address=" + this.address +
+            ", cookie='" + this.cookie + '\'' +
+            ", userId=" + this.userId +
+            ", processed=" + this.processed +
+            '}';
     }
 }

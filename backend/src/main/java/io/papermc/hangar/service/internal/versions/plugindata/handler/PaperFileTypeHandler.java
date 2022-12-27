@@ -3,14 +3,6 @@ package io.papermc.hangar.service.internal.versions.plugindata.handler;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.PaperFileTypeHandler.PaperFileData;
-import org.jetbrains.annotations.NotNull;
-import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.objectmapping.ConfigSerializable;
-import org.spongepowered.configurate.objectmapping.meta.Setting;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
-import org.springframework.stereotype.Component;
-
 import java.io.BufferedReader;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +10,12 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+import org.spongepowered.configurate.objectmapping.meta.Setting;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
+import org.springframework.stereotype.Component;
 
 @Component
 public class PaperFileTypeHandler extends FileTypeHandler<PaperFileData> {

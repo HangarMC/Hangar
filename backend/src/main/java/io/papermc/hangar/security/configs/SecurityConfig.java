@@ -47,30 +47,30 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http
-                // Disable default configurations
-                .logout().disable()
-                .httpBasic().disable()
-                .formLogin().disable()
+            // Disable default configurations
+            .logout().disable()
+            .httpBasic().disable()
+            .formLogin().disable()
 
-                // Disable session creation
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            // Disable session creation
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
-                // Disable csrf (shouldn't need it as its just a backend api now)
-                .csrf().disable()
+            // Disable csrf (shouldn't need it as its just a backend api now)
+            .csrf().disable()
 
-                // Custom auth filters
-                .addFilterBefore(new HangarAuthenticationFilter(
-                        new OrRequestMatcher(API_MATCHER, LOGOUT_MATCHER, INVALIDATE_MATCHER),
-                                this.tokenService,
-                                this.authenticationManagerBean(),
-                                this.authenticationEntryPoint),
-                        AnonymousAuthenticationFilter.class
-                )
+            // Custom auth filters
+            .addFilterBefore(new HangarAuthenticationFilter(
+                    new OrRequestMatcher(API_MATCHER, LOGOUT_MATCHER, INVALIDATE_MATCHER),
+                    this.tokenService,
+                    this.authenticationManagerBean(),
+                    this.authenticationEntryPoint),
+                AnonymousAuthenticationFilter.class
+            )
 
 //                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
 
-                // Permit all (use method security for controller access)
-                .authorizeRequests().anyRequest().permitAll();
+            // Permit all (use method security for controller access)
+            .authorizeRequests().anyRequest().permitAll();
 
         return http.build();
     }

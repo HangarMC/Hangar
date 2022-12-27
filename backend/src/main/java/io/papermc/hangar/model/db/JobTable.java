@@ -1,14 +1,11 @@
 package io.papermc.hangar.model.db;
 
-import org.jdbi.v3.core.enums.EnumByName;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.time.OffsetDateTime;
-import java.util.Map;
-
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.JobState;
 import io.papermc.hangar.model.internal.job.JobType;
+import java.time.OffsetDateTime;
+import org.jdbi.v3.core.enums.EnumByName;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class JobTable extends Table {
 
@@ -73,13 +70,13 @@ public class JobTable extends Table {
     @Override
     public String toString() {
         return "JobTable{" +
-                "lastUpdated=" + this.lastUpdated +
-                ", retryAt=" + this.retryAt +
-                ", lastError='" + this.lastError + '\'' +
-                ", lastErrorDescriptor='" + this.lastErrorDescriptor + '\'' +
-                ", jobState=" + this.state +
-                ", jobType=" + this.jobType +
-                ", jobProperties=" + this.jobProperties +
-                "} " + super.toString();
+            "lastUpdated=" + this.lastUpdated +
+            ", retryAt=" + this.retryAt +
+            ", lastError='" + this.lastError + '\'' +
+            ", lastErrorDescriptor='" + this.lastErrorDescriptor + '\'' +
+            ", jobState=" + this.state +
+            ", jobType=" + this.jobType +
+            ", jobProperties=" + this.jobProperties +
+            "} " + super.toString();
     }
 }

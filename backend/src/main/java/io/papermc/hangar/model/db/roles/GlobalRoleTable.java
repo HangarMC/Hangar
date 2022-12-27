@@ -51,8 +51,8 @@ public class GlobalRoleTable implements IRoleTable<GlobalRole> {
     @Override
     public String toString() {
         return "GlobalRoleTable{" +
-                "userId=" + this.userId +
-                ", role=" + this.role +
-                '}';
+            "userId=" + this.userId +
+            ", role=" + this.role +
+            '}';
     }
 }

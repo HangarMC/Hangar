@@ -5,6 +5,11 @@ import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.JobState;
 import io.papermc.hangar.db.customtypes.PGLoggedAction;
 import io.papermc.hangar.db.customtypes.RoleCategory;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Logger;
+import javax.sql.DataSource;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.RowMapper;
@@ -20,12 +25,6 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
-
-import javax.sql.DataSource;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Logger;
 
 @Configuration
 public class JDBIConfig {
@@ -54,6 +53,7 @@ public class JDBIConfig {
             public void logException(final StatementContext context, final SQLException ex) {
                 Logger.getLogger("sql").info("sql: " + context.getRenderedSql());
             }
+
             @Override
             public void logAfterExecution(final StatementContext context) {
                 Logger.getLogger("sql").info("sql ae: " + context.getRenderedSql());
@@ -61,7 +61,7 @@ public class JDBIConfig {
         };
         final TransactionAwareDataSourceProxy dataSourceProxy = new TransactionAwareDataSourceProxy(dataSource);
         final Jdbi jdbi = Jdbi.create(dataSourceProxy);
-        //jdbi.setSqlLogger(myLogger); // for debugging sql statements
+        // jdbi.setSqlLogger(myLogger); // for debugging sql statements
         final PostgresTypes config = jdbi.getConfig(PostgresTypes.class);
 
         jdbiPlugins.forEach(jdbi::installPlugin);

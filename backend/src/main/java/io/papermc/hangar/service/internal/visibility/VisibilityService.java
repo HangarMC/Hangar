@@ -13,11 +13,11 @@ import io.papermc.hangar.model.internal.logs.contexts.LogContext;
 import io.papermc.hangar.model.loggable.Loggable;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.JobService;
+import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
-import java.util.Map;
 
 abstract class VisibilityService<LC extends LogContext<?, LC>, M extends Table & ModelVisible & ProjectIdentified & Loggable<LC>, VT extends VisibilityChangeTable> extends HangarComponent {
 
@@ -82,7 +82,8 @@ abstract class VisibilityService<LC extends LogContext<?, LC>, M extends Table &
 
     abstract void insertNewVisibilityEntry(VT visibilityTable);
 
-    protected void postUpdate(final @Nullable M model) { }
+    protected void postUpdate(final @Nullable M model) {
+    }
 
     public abstract Map.Entry<String, VT> getLastVisibilityChange(long principalId);
 

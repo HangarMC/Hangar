@@ -1,9 +1,9 @@
-create table users_history
+CREATE TABLE users_history
 (
-    uuid     uuid                     not null
-        constraint users_history_users_uuid_fk
-            references users (uuid),
-    old_name varchar(255)             not null,
-    new_name varchar(255)             not null,
-    date     timestamp with time zone not null
+    uuid     uuid                     NOT NULL
+        CONSTRAINT users_history_users_uuid_fk
+            REFERENCES users (uuid),
+    old_name varchar(255)             NOT NULL,
+    new_name varchar(255)             NOT NULL,
+    date     timestamp WITH TIME ZONE NOT NULL
 );

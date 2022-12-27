@@ -18,11 +18,10 @@ import io.papermc.hangar.service.internal.perms.members.MemberService;
 import io.papermc.hangar.service.internal.perms.roles.RoleService;
 import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role<RT>, RT extends ExtendedRoleTable<R, LC>, J extends Table & Named & Owned & Loggable<LC>> extends HangarComponent {
 
@@ -66,7 +65,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
     @Transactional
     public void sendTransferRequest(final String user, final J joinable) {
         final UserTable userTable = this.userDAO.getUserTable(user);
-        //TODO transfer project to organization (and divert invite to owner)
+        // TODO transfer project to organization (and divert invite to owner)
         if (userTable == null || userTable.isOrganization()) {
             throw new HangarApiException(this.errorPrefix + "invalidUser", user);
         }
@@ -122,7 +121,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
     }
 
     @Transactional
-    public void setOwner(final J joinable, final UserTable userTable, final boolean addRole) { //TODO make sure new owner doesn't have project of the same name
+    public void setOwner(final J joinable, final UserTable userTable, final boolean addRole) { // TODO make sure new owner doesn't have project of the same name
         if (addRole) {
             final RT oldRole = this.roleService.getRole(joinable.getId(), userTable.getId());
             if (oldRole != null) {

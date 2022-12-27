@@ -35,10 +35,10 @@ public interface PlatformVersionDAO {
 
     @KeyColumn("platform")
     @ValueColumn("versions")
-    @SqlQuery("SELECT platform, (array_agg(version ORDER BY string_to_array(version, '.')::INT[])) versions FROM platform_versions GROUP BY platform")
+    @SqlQuery("SELECT platform, (array_agg(version ORDER BY string_to_array(version, '.')::int[])) versions FROM platform_versions GROUP BY platform")
     TreeMap<Platform, List<String>> getVersions();
 
-    @SqlQuery("SELECT version FROM platform_versions WHERE platform = :platform ORDER BY string_to_array(version, '.')::INT[]")
+    @SqlQuery("SELECT version FROM platform_versions WHERE platform = :platform ORDER BY string_to_array(version, '.')::int[]")
     List<String> getVersionsForPlatform(@EnumByOrdinal Platform platform);
 
     @KeyColumn("version")

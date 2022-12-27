@@ -30,9 +30,9 @@ public class LogProject {
     @Override
     public String toString() {
         return "LogProject{" +
-                "id=" + this.id +
-                ", slug='" + this.slug + '\'' +
-                ", owner='" + this.owner + '\'' +
-                '}';
+            "id=" + this.id +
+            ", slug='" + this.slug + '\'' +
+            ", owner='" + this.owner + '\'' +
+            '}';
     }
 }

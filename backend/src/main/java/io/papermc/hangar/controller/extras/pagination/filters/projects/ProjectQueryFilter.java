@@ -2,12 +2,11 @@ package io.papermc.hangar.controller.extras.pagination.filters.projects;
 
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectQueryFilter.ProjectQueryFilterInstance;
+import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
-
-import java.util.Set;
 
 @Component
 public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance> {
@@ -48,8 +47,8 @@ public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance> {
         @Override
         public String toString() {
             return "ProjectQueryFilterInstance{" +
-                    "query='" + this.query + '\'' +
-                    '}';
+                "query='" + this.query + '\'' +
+                '}';
         }
     }
 }

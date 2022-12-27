@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import static io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
-
 // @el(projectId: long)
 @Unlocked
 @Controller

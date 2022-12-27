@@ -7,14 +7,13 @@ import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.security.annotations.HangarDecisionVoter;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import io.papermc.hangar.service.PermissionService;
+import java.util.Arrays;
+import java.util.Set;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.Set;
 
 @Component
 public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequiredMetadataExtractor.PermissionRequiredAttribute> {

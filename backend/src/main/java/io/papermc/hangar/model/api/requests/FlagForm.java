@@ -2,7 +2,6 @@ package io.papermc.hangar.model.api.requests;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.model.common.projects.FlagReason;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -33,9 +32,9 @@ public class FlagForm {
     @Override
     public String toString() {
         return "FlagForm{" +
-                "comment='" + this.comment + '\'' +
-                ", projectId=" + this.projectId +
-                ", reason=" + this.reason +
-                '}';
+            "comment='" + this.comment + '\'' +
+            ", projectId=" + this.projectId +
+            ", reason=" + this.reason +
+            '}';
     }
 }

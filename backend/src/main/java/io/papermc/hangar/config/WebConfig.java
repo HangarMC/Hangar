@@ -3,19 +3,30 @@ package io.papermc.hangar.config;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesAnnotationIntrospector;
-
+import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimitInterceptor;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
@@ -38,25 +49,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
-
 @Configuration
 public class WebConfig extends WebMvcConfigurationSupport {
 
@@ -66,8 +58,8 @@ public class WebConfig extends WebMvcConfigurationSupport {
     private final ObjectMapper mapper;
     private final RateLimitInterceptor rateLimitInterceptor;
 
-    private final List<Converter<?,?>> converters;
-    private final List<ConverterFactory<?,?>> converterFactories;
+    private final List<Converter<?, ?>> converters;
+    private final List<ConverterFactory<?, ?>> converterFactories;
     private final List<HandlerMethodArgumentResolver> resolvers;
 
     @Autowired
@@ -128,7 +120,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
         // TODO kinda wack, but idk a better way rn
         final ParameterNamesAnnotationIntrospector sAnnotationIntrospector = (ParameterNamesAnnotationIntrospector) this.mapper.getSerializationConfig().getAnnotationIntrospector().allIntrospectors().stream().filter(ParameterNamesAnnotationIntrospector.class::isInstance).findFirst().orElseThrow();
         this.mapper.setAnnotationIntrospectors(
-                AnnotationIntrospector.pair(sAnnotationIntrospector, new HangarAnnotationIntrospector()),
+            AnnotationIntrospector.pair(sAnnotationIntrospector, new HangarAnnotationIntrospector()),
             this.mapper.getDeserializationConfig().getAnnotationIntrospector()
         );
         converters.add(new MappingJackson2HttpMessageConverter(this.mapper));

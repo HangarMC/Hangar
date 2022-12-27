@@ -17,15 +17,13 @@ import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilityService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
-import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
+import java.util.List;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class VersionService extends HangarComponent {

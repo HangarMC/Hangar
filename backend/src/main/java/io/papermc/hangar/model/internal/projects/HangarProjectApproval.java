@@ -44,11 +44,11 @@ public class HangarProjectApproval {
     @Override
     public String toString() {
         return "HangarProjectApproval{" +
-                "projectId=" + this.projectId +
-                ", namespace=" + this.namespace +
-                ", visibility=" + this.visibility +
-                ", comment='" + this.comment + '\'' +
-                ", changeRequester='" + this.changeRequester + '\'' +
-                '}';
+            "projectId=" + this.projectId +
+            ", namespace=" + this.namespace +
+            ", visibility=" + this.visibility +
+            ", comment='" + this.comment + '\'' +
+            ", changeRequester='" + this.changeRequester + '\'' +
+            '}';
     }
 }

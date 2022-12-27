@@ -1,19 +1,16 @@
 package io.papermc.hangar.config.hangar;
 
 import io.awspring.cloud.autoconfigure.core.AwsProperties;
-import io.papermc.hangar.HangarApplication;
+import java.net.URI;
+import java.net.URISyntaxException;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.regions.providers.AwsRegionProvider;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.system.ApplicationHome;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 @ConfigurationProperties(prefix = "hangar.storage")
 public record StorageConfig(

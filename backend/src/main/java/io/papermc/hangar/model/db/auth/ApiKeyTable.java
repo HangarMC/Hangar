@@ -3,9 +3,8 @@ package io.papermc.hangar.model.db.auth;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.Table;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ApiKeyTable extends Table implements Named {
 
@@ -57,11 +56,11 @@ public class ApiKeyTable extends Table implements Named {
     @Override
     public String toString() {
         return "ApiKeyTable{" +
-                "name='" + this.name + '\'' +
-                ", ownerId=" + this.ownerId +
-                ", tokenIdentifier='" + this.tokenIdentifier + '\'' +
-                ", token='" + this.token + '\'' +
-                ", permissions=" + this.permissions +
-                "} " + super.toString();
+            "name='" + this.name + '\'' +
+            ", ownerId=" + this.ownerId +
+            ", tokenIdentifier='" + this.tokenIdentifier + '\'' +
+            ", token='" + this.token + '\'' +
+            ", permissions=" + this.permissions +
+            "} " + super.toString();
     }
 }

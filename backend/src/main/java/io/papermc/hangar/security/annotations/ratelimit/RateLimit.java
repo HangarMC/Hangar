@@ -1,12 +1,11 @@
 package io.papermc.hangar.security.annotations.ratelimit;
 
-import org.checkerframework.common.value.qual.IntRange;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.checkerframework.common.value.qual.IntRange;
 
 /**
  * Annotation for controllers or individual endpoint methods.

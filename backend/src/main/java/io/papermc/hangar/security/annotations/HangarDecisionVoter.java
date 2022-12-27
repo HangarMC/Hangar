@@ -1,5 +1,8 @@
 package io.papermc.hangar.security.annotations;
 
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.aopalliance.intercept.MethodInvocation;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -11,16 +14,13 @@ import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 /**
  * Must override one of
  * <ul>
  *    <li>{@link #vote(Authentication, MethodInvocation, ConfigAttribute)}</li>
  *    <li>{@link #vote(Authentication, MethodInvocation, Set)}</li>
  * </ul>
+ *
  * @param <A>
  */
 public abstract class HangarDecisionVoter<A extends ConfigAttribute> implements AccessDecisionVoter<MethodInvocation> {
@@ -83,12 +83,13 @@ public abstract class HangarDecisionVoter<A extends ConfigAttribute> implements 
 
     protected final @NotNull MethodBasedEvaluationContext getMethodEvaluationContext(final MethodInvocation invocation) {
         return new MethodBasedEvaluationContext(
-                invocation.getMethod().getDeclaringClass(),
-                invocation.getMethod(),
-                invocation.getArguments(),
+            invocation.getMethod().getDeclaringClass(),
+            invocation.getMethod(),
+            invocation.getArguments(),
             this.parameterNameDiscoverer
         );
     }
 
-    public void onAccessDenied() {}
+    public void onAccessDenied() {
+    }
 }

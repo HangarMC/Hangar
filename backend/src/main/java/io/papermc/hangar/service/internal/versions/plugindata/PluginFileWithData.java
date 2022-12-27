@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.versions.plugindata;
 
 import io.papermc.hangar.util.CryptoUtils;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

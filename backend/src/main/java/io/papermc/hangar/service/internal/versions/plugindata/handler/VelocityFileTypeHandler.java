@@ -3,16 +3,15 @@ package io.papermc.hangar.service.internal.versions.plugindata.handler;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.VelocityFileTypeHandler.VelocityFileData;
+import java.io.BufferedReader;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.jackson.JacksonConfigurationLoader;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.springframework.stereotype.Component;
-
-import java.io.BufferedReader;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class VelocityFileTypeHandler extends FileTypeHandler<VelocityFileData> {

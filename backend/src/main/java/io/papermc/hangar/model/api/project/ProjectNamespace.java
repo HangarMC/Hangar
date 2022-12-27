@@ -1,9 +1,8 @@
 package io.papermc.hangar.model.api.project;
 
+import java.util.Objects;
 import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.util.Objects;
 
 public class ProjectNamespace {
 

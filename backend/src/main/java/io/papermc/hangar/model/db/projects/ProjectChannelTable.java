@@ -4,12 +4,11 @@ import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.db.Table;
-import org.jdbi.v3.core.enums.EnumByOrdinal;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectChannelTable extends Table implements Named {
 

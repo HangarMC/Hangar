@@ -27,9 +27,9 @@ public class UserActions {
     @Override
     public String toString() {
         return "UserActions{" +
-                "starred=" + this.starred +
-                ", watching=" + this.watching +
-                ", flagged=" + this.flagged +
-                '}';
+            "starred=" + this.starred +
+            ", watching=" + this.watching +
+            ", flagged=" + this.flagged +
+            '}';
     }
 }

@@ -6,9 +6,7 @@ import com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.emoji.EmojiExtension;
 import com.vladsch.flexmark.ext.emoji.EmojiImageType;
-import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
-import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
 import com.vladsch.flexmark.ext.gitlab.GitLabExtension;
 import com.vladsch.flexmark.ext.resizable.image.ResizableImageExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
@@ -27,13 +25,12 @@ import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.util.HtmlSanitizer;
+import java.util.Arrays;
+import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
-import java.util.Set;
 
 @Service
 public class MarkdownService {
@@ -68,9 +65,9 @@ public class MarkdownService {
                     TypographicExtension.create(),
                     WikiLinkExtension.create(),
                     EmojiExtension.create(),
-                    //TODO readd after sanitization is fixed
-                    //TaskListExtension.create(),
-                    //FootnoteExtension.create(),
+                    // TODO readd after sanitization is fixed
+                    // TaskListExtension.create(),
+                    // FootnoteExtension.create(),
                     AdmonitionExtension.create(),
                     GitLabExtension.create(),
                     YouTubeLinkExtension.create(),

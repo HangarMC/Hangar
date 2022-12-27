@@ -2,6 +2,8 @@ package io.papermc.hangar.security.configs;
 
 import io.papermc.hangar.security.HangarMetadataSources;
 import io.papermc.hangar.security.HangarUnanimousBased;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -20,9 +22,6 @@ import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Configuration
 @AutoConfigureBefore(SecurityConfig.class)
@@ -49,7 +48,7 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
     protected AccessDecisionManager accessDecisionManager() {
         final List<AccessDecisionVoter<?>> decisionVoters = new ArrayList<>();
         final ExpressionBasedPreInvocationAdvice expressionAdvice =
-                new ExpressionBasedPreInvocationAdvice();
+            new ExpressionBasedPreInvocationAdvice();
         expressionAdvice.setExpressionHandler(this.getExpressionHandler());
         decisionVoters.add(new PreInvocationAuthorizationAdviceVoter(expressionAdvice));
         decisionVoters.add(new Jsr250Voter());

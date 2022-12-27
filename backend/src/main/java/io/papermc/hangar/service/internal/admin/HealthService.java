@@ -6,10 +6,9 @@ import io.papermc.hangar.model.internal.admin.health.MissingFileCheck;
 import io.papermc.hangar.model.internal.admin.health.UnhealthyProject;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class HealthService extends HangarComponent {

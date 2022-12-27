@@ -4,13 +4,12 @@ import io.papermc.hangar.model.api.project.ProjectNamespace;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.ReviewAction;
-import org.jdbi.v3.core.enums.EnumByOrdinal;
-import org.jdbi.v3.core.mapper.Nested;
-import org.jetbrains.annotations.Nullable;
-
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jdbi.v3.core.mapper.Nested;
+import org.jetbrains.annotations.Nullable;
 
 public class HangarReviewQueueEntry {
 
@@ -105,26 +104,26 @@ public class HangarReviewQueueEntry {
         @Override
         public String toString() {
             return "Review{" +
-                    "reviewerName='" + this.reviewerName + '\'' +
-                    ", reviewStarted=" + this.reviewStarted +
-                    ", reviewEnded=" + this.reviewEnded +
-                    ", lastAction=" + this.lastAction +
-                    '}';
+                "reviewerName='" + this.reviewerName + '\'' +
+                ", reviewStarted=" + this.reviewStarted +
+                ", reviewEnded=" + this.reviewEnded +
+                ", lastAction=" + this.lastAction +
+                '}';
         }
     }
 
     @Override
     public String toString() {
         return "HangarReviewQueueEntry{" +
-                "namespace=" + this.namespace +
-                ", versionId=" + this.versionId +
-                ", versionString='" + this.versionString + '\'' +
-                ", platforms=" + this.platforms +
-                ", versionCreatedAt=" + this.versionCreatedAt +
-                ", versionAuthor='" + this.versionAuthor + '\'' +
-                ", channelName='" + this.channelName + '\'' +
-                ", channelColor=" + this.channelColor +
-                ", reviews=" + this.reviews +
-                '}';
+            "namespace=" + this.namespace +
+            ", versionId=" + this.versionId +
+            ", versionString='" + this.versionString + '\'' +
+            ", platforms=" + this.platforms +
+            ", versionCreatedAt=" + this.versionCreatedAt +
+            ", versionAuthor='" + this.versionAuthor + '\'' +
+            ", channelName='" + this.channelName + '\'' +
+            ", channelColor=" + this.channelColor +
+            ", reviews=" + this.reviews +
+            '}';
     }
 }

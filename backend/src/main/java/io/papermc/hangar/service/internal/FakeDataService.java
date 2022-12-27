@@ -1,14 +1,5 @@
 package io.papermc.hangar.service.internal;
 
-import net.datafaker.Faker;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import java.time.ZoneOffset;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -28,6 +19,15 @@ import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.projects.ProjectService;
+import java.time.ZoneOffset;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import net.datafaker.Faker;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service

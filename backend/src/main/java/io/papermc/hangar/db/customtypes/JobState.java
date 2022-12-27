@@ -1,8 +1,7 @@
 package io.papermc.hangar.db.customtypes;
 
-import org.postgresql.util.PGobject;
-
 import java.util.Objects;
+import org.postgresql.util.PGobject;
 
 public class JobState extends PGobject {
 

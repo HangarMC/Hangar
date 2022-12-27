@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.controller.validations.AtLeastOneNotNull;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.api.project.ProjectNamespace;
+import java.util.Objects;
+import javax.validation.constraints.NotBlank;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.jetbrains.annotations.Nullable;
-
-import javax.validation.constraints.NotBlank;
-import java.util.Objects;
 
 @AtLeastOneNotNull(fieldNames = {"namespace", "externalUrl"}, includeBlankStrings = true, message = "Must specify a projectId or external URL for a dependency")
 public class PluginDependency implements Named {
@@ -55,11 +54,11 @@ public class PluginDependency implements Named {
     @Override
     public String toString() {
         return "PluginDependency{" +
-                "name='" + this.name + '\'' +
-                ", required=" + this.required +
-                ", namespace=" + this.namespace +
-                ", externalUrl='" + this.externalUrl + '\'' +
-                '}';
+            "name='" + this.name + '\'' +
+            ", required=" + this.required +
+            ", namespace=" + this.namespace +
+            ", externalUrl='" + this.externalUrl + '\'' +
+            '}';
     }
 
     @Override

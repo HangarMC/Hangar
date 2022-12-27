@@ -96,7 +96,7 @@ public class DownloadService extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
-        //TODO as one query
+        // TODO as one query
         final ProjectVersionPlatformDownloadTable platformDownload = this.downloadsDAO.getPlatformDownload(pvt.getVersionId(), platform);
         final ProjectVersionDownloadTable download = this.downloadsDAO.getDownload(platformDownload.getVersionId(), platformDownload.getDownloadId());
         if (download.getFileName() == null) {

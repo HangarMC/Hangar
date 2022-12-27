@@ -2,7 +2,6 @@ package io.papermc.hangar.model.db.log;
 
 import io.papermc.hangar.model.internal.logs.LoggedAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
-
 import java.net.InetAddress;
 
 public class LoggedActionsUserTable extends LoggedActionTable {
@@ -21,7 +20,7 @@ public class LoggedActionsUserTable extends LoggedActionTable {
     @Override
     public String toString() {
         return "LoggedActionsUserTable{" +
-                "subjectId=" + this.subjectId +
-                "} " + super.toString();
+            "subjectId=" + this.subjectId +
+            "} " + super.toString();
     }
 }

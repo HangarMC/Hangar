@@ -1,8 +1,5 @@
 package io.papermc.hangar.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -11,12 +8,15 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
-    private FileUtils() { }
+    private FileUtils() {
+    }
 
     public static void deletedFiles(final Path superDir) {
         try (final Stream<Path> files = Files.list(superDir)) {

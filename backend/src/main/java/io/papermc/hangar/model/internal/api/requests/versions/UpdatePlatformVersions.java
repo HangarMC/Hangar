@@ -2,11 +2,10 @@ package io.papermc.hangar.model.internal.api.requests.versions;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.model.common.Platform;
-
+import java.util.Set;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Set;
 
 public class UpdatePlatformVersions {
 
@@ -30,8 +29,8 @@ public class UpdatePlatformVersions {
     @Override
     public String toString() {
         return "UpdatePlatformVersions{" +
-                "platform=" + this.platform +
-                ", versions=" + this.versions +
-                '}';
+            "platform=" + this.platform +
+            ", versions=" + this.versions +
+            '}';
     }
 }

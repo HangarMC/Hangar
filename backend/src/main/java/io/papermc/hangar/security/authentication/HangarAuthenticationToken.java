@@ -30,7 +30,7 @@ public class HangarAuthenticationToken extends AbstractAuthenticationToken {
 
     // Initial token creation before verifying the user exists in the table
     public static HangarAuthenticationToken createUnverifiedToken(final DecodedJWT token) {
-       return new HangarAuthenticationToken(token);
+        return new HangarAuthenticationToken(token);
     }
 
     // Used by HangarAuthenticationProvider once user is verified

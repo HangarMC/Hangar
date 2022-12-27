@@ -2,7 +2,6 @@ package io.papermc.hangar.model.api.permissions;
 
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
-
 import java.util.List;
 
 public class UserPermissions {
@@ -32,9 +31,9 @@ public class UserPermissions {
     @Override
     public String toString() {
         return "UserPermissions{" +
-                "type=" + this.type +
-                ", permissionBinString='" + this.permissionBinString + '\'' +
-                ", permissions=" + this.permissions +
-                '}';
+            "type=" + this.type +
+            ", permissionBinString='" + this.permissionBinString + '\'' +
+            ", permissions=" + this.permissions +
+            '}';
     }
 }

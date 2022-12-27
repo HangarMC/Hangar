@@ -1,13 +1,5 @@
 package io.papermc.hangar.security;
 
-import org.jetbrains.annotations.NotNull;
-import org.springframework.core.GenericTypeResolver;
-import org.springframework.core.annotation.MergedAnnotations;
-import org.springframework.security.access.ConfigAttribute;
-import org.springframework.security.access.annotation.AnnotationMetadataExtractor;
-import org.springframework.security.access.method.AbstractFallbackMethodSecurityMetadataSource;
-import org.springframework.util.Assert;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -17,6 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.core.GenericTypeResolver;
+import org.springframework.core.annotation.MergedAnnotations;
+import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.annotation.AnnotationMetadataExtractor;
+import org.springframework.security.access.method.AbstractFallbackMethodSecurityMetadataSource;
+import org.springframework.util.Assert;
 
 
 @SuppressWarnings("rawtypes")
@@ -24,7 +23,7 @@ public class HangarMetadataSources extends AbstractFallbackMethodSecurityMetadat
 
     private final Map<Class<? extends Annotation>, AnnotationMetadataExtractor> annotationExtractors = new HashMap<>();
 
-    public HangarMetadataSources(final AnnotationMetadataExtractor...annotationMetadataExtractors) {
+    public HangarMetadataSources(final AnnotationMetadataExtractor... annotationMetadataExtractors) {
         this(Arrays.asList(annotationMetadataExtractors));
     }
 
@@ -43,11 +42,11 @@ public class HangarMetadataSources extends AbstractFallbackMethodSecurityMetadat
     protected Collection<ConfigAttribute> findAttributes(final Method method, final Class<?> targetClass) {
         return Stream.concat(
             this.annotationExtractors.entrySet().stream()
-                        .map(entry -> this.processAnnotation(method, entry))
-                        .flatMap(Collection::stream),
+                .map(entry -> this.processAnnotation(method, entry))
+                .flatMap(Collection::stream),
             this.annotationExtractors.entrySet().stream()
-                        .map(entry -> this.processAnnotation(targetClass, entry))
-                        .flatMap(Collection::stream)
+                .map(entry -> this.processAnnotation(targetClass, entry))
+                .flatMap(Collection::stream)
         ).collect(Collectors.toUnmodifiableSet());
     }
 

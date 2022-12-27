@@ -2,13 +2,12 @@ package io.papermc.hangar.controller.extras.pagination.filters.versions;
 
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter.VersionChannelFilterInstance;
+import java.util.Arrays;
+import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
-
-import java.util.Arrays;
-import java.util.Set;
 
 @Component
 public class VersionChannelFilter implements Filter<VersionChannelFilterInstance> {
@@ -52,8 +51,8 @@ public class VersionChannelFilter implements Filter<VersionChannelFilterInstance
         @Override
         public String toString() {
             return "VersionChannelFilterInstance{" +
-                    "channels=" + Arrays.toString(this.channels) +
-                    '}';
+                "channels=" + Arrays.toString(this.channels) +
+                '}';
         }
     }
 }

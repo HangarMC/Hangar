@@ -21,8 +21,8 @@ public class DayProjectStats {
     @Override
     public String toString() {
         return "DayProjectStats{" +
-                "views=" + this.views +
-                ", downloads=" + this.downloads +
-                '}';
+            "views=" + this.views +
+            ", downloads=" + this.downloads +
+            '}';
     }
 }

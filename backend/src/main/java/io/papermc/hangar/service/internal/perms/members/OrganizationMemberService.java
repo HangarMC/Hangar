@@ -10,24 +10,23 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.OrganizationContext;
 import io.papermc.hangar.service.internal.perms.roles.OrganizationRoleService;
 import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-
 @Service
 public class OrganizationMemberService extends MemberService<
-        OrganizationContext,
-        OrganizationRole,
-        OrganizationRoleTable,
-        OrganizationRolesDAO,
-        OrganizationRoleService,
-        OrganizationTable,
-        JoinableNotificationService.OrganizationNotificationService,
-        OrganizationMembersDAO,
-        OrganizationMemberTable
-        > {
+    OrganizationContext,
+    OrganizationRole,
+    OrganizationRoleTable,
+    OrganizationRolesDAO,
+    OrganizationRoleService,
+    OrganizationTable,
+    JoinableNotificationService.OrganizationNotificationService,
+    OrganizationMembersDAO,
+    OrganizationMemberTable
+    > {
 
     @Autowired
     private OrganizationMembersDAO dao;

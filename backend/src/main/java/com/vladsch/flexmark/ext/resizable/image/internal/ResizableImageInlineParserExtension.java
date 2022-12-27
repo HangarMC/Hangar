@@ -5,20 +5,20 @@
 /**
  * Copyright (c) 2015-2016, Atlassian Pty Ltd
  * All rights reserved.
- *
+ * <p>
  * Copyright (c) 2016-2018, Vladimir Schneider,
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * <p>
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- *
+ * list of conditions and the following disclaimer.
+ * <p>
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
- *
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -38,15 +38,14 @@ import com.vladsch.flexmark.parser.InlineParserExtension;
 import com.vladsch.flexmark.parser.InlineParserExtensionFactory;
 import com.vladsch.flexmark.parser.LightInlineParser;
 import com.vladsch.flexmark.util.sequence.BasedSequence;
+import java.util.Set;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Set;
-import java.util.regex.Pattern;
-
 public class ResizableImageInlineParserExtension implements InlineParserExtension {
     public static final Pattern IMAGE_PATTERN = Pattern.compile("!\\[([^\\s\\]]*)]\\(([^\\s\\]]+)\\s*=*(\\d*)x*(\\d*)\\)", // Hangar - fix image in link
-            Pattern.CASE_INSENSITIVE);
+        Pattern.CASE_INSENSITIVE);
 
     public ResizableImageInlineParserExtension(final LightInlineParser inlineParser) {
     }
@@ -86,6 +85,7 @@ public class ResizableImageInlineParserExtension implements InlineParserExtensio
         }
         return false;
     }
+
     public static class Factory implements InlineParserExtensionFactory {
         @Override
         public @Nullable Set<Class<?>> getAfterDependents() {

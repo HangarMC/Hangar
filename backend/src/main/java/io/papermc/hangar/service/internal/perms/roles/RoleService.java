@@ -4,10 +4,10 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.roles.IRolesDAO;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.roles.IRoleTable;
+import java.util.List;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 public abstract class RoleService<RT extends IRoleTable<R>, R extends Role<RT>, D extends IRolesDAO<RT>> extends HangarComponent {
 

@@ -4,11 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.loggable.ProjectLoggable;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.annotation.JdbiProperty;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.time.OffsetDateTime;
 
 public class ProjectRoleTable extends ExtendedRoleTable<ProjectRole, ProjectContext> implements ProjectLoggable {
 
@@ -31,7 +30,7 @@ public class ProjectRoleTable extends ExtendedRoleTable<ProjectRole, ProjectCont
         return this.projectId;
     }
 
-    @JdbiProperty(map=false)
+    @JdbiProperty(map = false)
     @Override
     public long getPrincipalId() {
         return this.projectId;
@@ -40,7 +39,7 @@ public class ProjectRoleTable extends ExtendedRoleTable<ProjectRole, ProjectCont
     @Override
     public String toString() {
         return "ProjectRoleTable{" +
-                "projectId=" + this.projectId +
-                "} " + super.toString();
+            "projectId=" + this.projectId +
+            "} " + super.toString();
     }
 }

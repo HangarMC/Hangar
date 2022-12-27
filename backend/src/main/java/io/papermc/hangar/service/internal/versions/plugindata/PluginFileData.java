@@ -4,15 +4,14 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.FileTypeHandler;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.http.HttpStatus;
-import org.springframework.lang.Nullable;
-
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 
 public class PluginFileData {
 
@@ -65,6 +64,7 @@ public class PluginFileData {
     }
 
     private static final String INCOMPLETE_MSG = "version.new.error.incomplete";
+
     public void validate() {
         if (this.getName() == null) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, INCOMPLETE_MSG, "name");

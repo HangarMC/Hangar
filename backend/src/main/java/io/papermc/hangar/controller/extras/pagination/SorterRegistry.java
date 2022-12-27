@@ -1,9 +1,8 @@
 package io.papermc.hangar.controller.extras.pagination;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 public enum SorterRegistry implements Sorter {
 

@@ -3,7 +3,6 @@ package io.papermc.hangar.model.api;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 

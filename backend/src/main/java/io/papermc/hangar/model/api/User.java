@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.roles.GlobalRole;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nullable;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class User extends Model implements Named {
 
@@ -91,13 +90,13 @@ public class User extends Model implements Named {
     @Override
     public String toString() {
         return "User{" +
-                "name='" + this.name + '\'' +
-                ", tagline='" + this.tagline + '\'' +
-                ", joinDate=" + this.joinDate +
-                ", roles=" + this.roles +
-                ", projectCount=" + this.projectCount +
-                ", isOrganization=" + this.isOrganization +
-                ", locked=" + this.locked +
-                "} " + super.toString();
+            "name='" + this.name + '\'' +
+            ", tagline='" + this.tagline + '\'' +
+            ", joinDate=" + this.joinDate +
+            ", roles=" + this.roles +
+            ", projectCount=" + this.projectCount +
+            ", isOrganization=" + this.isOrganization +
+            ", locked=" + this.locked +
+            "} " + super.toString();
     }
 }

@@ -29,9 +29,9 @@ public class LogPage {
     @Override
     public String toString() {
         return "LogPage{" +
-                "id=" + this.id +
-                ", name='" + this.name + '\'' +
-                ", slug='" + this.slug + '\'' +
-                '}';
+            "id=" + this.id +
+            ", name='" + this.name + '\'' +
+            ", slug='" + this.slug + '\'' +
+            '}';
     }
 }

@@ -1,10 +1,9 @@
 package io.papermc.hangar.model.db.stats;
 
 import io.papermc.hangar.model.identified.ProjectIdentified;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.net.InetAddress;
 import java.time.OffsetDateTime;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectViewIndividualTable extends IndividualTable implements ProjectIdentified {
 
@@ -29,7 +28,7 @@ public class ProjectViewIndividualTable extends IndividualTable implements Proje
     @Override
     public String toString() {
         return "ProjectViewIndividualTable{" +
-                "projectId=" + this.projectId +
-                "} " + super.toString();
+            "projectId=" + this.projectId +
+            "} " + super.toString();
     }
 }

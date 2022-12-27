@@ -35,9 +35,9 @@ public class Announcement {
     @Override
     public String toString() {
         return new StringJoiner(", ", Announcement.class.getSimpleName() + "[", "]")
-                .add("text='" + this.text + "'")
-                .add("color='" + this.color + "'")
-                .toString();
+            .add("text='" + this.text + "'")
+            .add("color='" + this.color + "'")
+            .toString();
     }
 
     @Override

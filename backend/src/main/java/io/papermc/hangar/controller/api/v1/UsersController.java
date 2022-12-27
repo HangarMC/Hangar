@@ -12,12 +12,11 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.api.UsersApiService;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-
-import java.util.List;
 
 @Anyone
 @Controller

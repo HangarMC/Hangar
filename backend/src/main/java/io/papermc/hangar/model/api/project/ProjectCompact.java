@@ -5,10 +5,9 @@ import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.Visible;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
-
-import java.time.OffsetDateTime;
 
 public class ProjectCompact extends Model implements Named, Visible {
 
@@ -58,11 +57,11 @@ public class ProjectCompact extends Model implements Named, Visible {
     @Override
     public String toString() {
         return "ProjectCompact{" +
-                "name='" + this.name + '\'' +
-                ", namespace=" + this.namespace +
-                ", stats=" + this.stats +
-                ", category=" + this.category +
-                ", visibility=" + this.visibility +
-                "} " + super.toString();
+            "name='" + this.name + '\'' +
+            ", namespace=" + this.namespace +
+            ", stats=" + this.stats +
+            ", category=" + this.category +
+            ", visibility=" + this.visibility +
+            "} " + super.toString();
     }
 }

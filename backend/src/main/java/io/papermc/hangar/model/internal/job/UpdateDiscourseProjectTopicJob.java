@@ -1,10 +1,9 @@
 package io.papermc.hangar.model.internal.job;
 
+import io.papermc.hangar.model.db.JobTable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import io.papermc.hangar.model.db.JobTable;
 
 public class UpdateDiscourseProjectTopicJob extends Job {
 
@@ -42,7 +41,7 @@ public class UpdateDiscourseProjectTopicJob extends Job {
     }
 
     public static UpdateDiscourseProjectTopicJob loadFromTable(final JobTable table) {
-        final UpdateDiscourseProjectTopicJob job  = new UpdateDiscourseProjectTopicJob();
+        final UpdateDiscourseProjectTopicJob job = new UpdateDiscourseProjectTopicJob();
         job.fromTable(table);
         job.setJobProperties(table.getJobProperties().getMap());
         job.loadFromProperties();
@@ -66,8 +65,8 @@ public class UpdateDiscourseProjectTopicJob extends Job {
     @Override
     public String toString() {
         return "UpdateDiscourseProjectTopicJob{" +
-               "createdAt=" + this.createdAt +
-               ", projectId=" + this.projectId +
-               "} " + super.toString();
+            "createdAt=" + this.createdAt +
+            ", projectId=" + this.projectId +
+            "} " + super.toString();
     }
 }

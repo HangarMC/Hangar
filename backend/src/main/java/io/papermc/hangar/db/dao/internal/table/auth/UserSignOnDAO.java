@@ -21,6 +21,6 @@ public interface UserSignOnDAO {
     @SqlQuery("SELECT * FROM user_sign_ons WHERE nonce = :nonce")
     UserSignOnTable getByNonce(String nonce);
 
-    @SqlUpdate("UPDATE user_sign_ons SET completed = true WHERE id = :id")
+    @SqlUpdate("UPDATE user_sign_ons SET completed = TRUE WHERE id = :id")
     void markCompleted(long id);
 }

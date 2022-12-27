@@ -1,9 +1,8 @@
 package io.papermc.hangar.db.customtypes;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.postgresql.util.PGobject;
-
 import java.util.Objects;
+import org.postgresql.util.PGobject;
 
 public class PGLoggedAction extends PGobject {
 

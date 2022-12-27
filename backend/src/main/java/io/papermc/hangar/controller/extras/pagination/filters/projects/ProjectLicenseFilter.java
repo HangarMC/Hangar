@@ -1,16 +1,14 @@
 package io.papermc.hangar.controller.extras.pagination.filters.projects;
 
+import io.papermc.hangar.controller.extras.pagination.Filter;
+import java.util.Arrays;
+import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
-
-import java.util.Arrays;
-import java.util.Set;
-
-import io.papermc.hangar.controller.extras.pagination.Filter;
 
 @Component
 public class ProjectLicenseFilter implements Filter<ProjectLicenseFilter.ProjectLicenseFilterInstance> {
@@ -61,8 +59,8 @@ public class ProjectLicenseFilter implements Filter<ProjectLicenseFilter.Project
         @Override
         public String toString() {
             return "ProjectLicenseFilterInstance{" +
-                   "licenses=" + Arrays.toString(this.licenses) +
-                   '}';
+                "licenses=" + Arrays.toString(this.licenses) +
+                '}';
         }
     }
 }

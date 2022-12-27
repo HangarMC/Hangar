@@ -1,11 +1,9 @@
 package io.papermc.hangar.model.internal.discourse;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import org.jetbrains.annotations.Nullable;
-
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import org.jetbrains.annotations.Nullable;
 
 public class DiscoursePost {
 
@@ -116,17 +114,17 @@ public class DiscoursePost {
     @Override
     public String toString() {
         return "DiscoursePost{" +
-               "id=" + this.id +
-               ", topicId=" + this.topicId +
-               ", userId=" + this.userId +
-               ", username='" + this.username + '\'' +
-               ", topicSlug='" + this.topicSlug + '\'' +
-               ", createdAt=" + this.createdAt +
-               ", updatedAt=" + this.updatedAt +
-               ", deletedAt=" + this.deletedAt +
-               ", content='" + this.content + '\'' +
-               ", replyCount=" + this.replyCount +
-               ", postNumber=" + this.postNumber +
-               '}';
+            "id=" + this.id +
+            ", topicId=" + this.topicId +
+            ", userId=" + this.userId +
+            ", username='" + this.username + '\'' +
+            ", topicSlug='" + this.topicSlug + '\'' +
+            ", createdAt=" + this.createdAt +
+            ", updatedAt=" + this.updatedAt +
+            ", deletedAt=" + this.deletedAt +
+            ", content='" + this.content + '\'' +
+            ", replyCount=" + this.replyCount +
+            ", postNumber=" + this.postNumber +
+            '}';
     }
 }

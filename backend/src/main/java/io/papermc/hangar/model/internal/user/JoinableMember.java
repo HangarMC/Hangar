@@ -31,9 +31,9 @@ public class JoinableMember<R extends ExtendedRoleTable<?, ?>> {
     @Override
     public String toString() {
         return "JoinableMember{" +
-                "role=" + this.role +
-                ", user=" + this.user +
-                ", hidden=" + this.hidden +
-                '}';
+            "role=" + this.role +
+            ", user=" + this.user +
+            ", hidden=" + this.hidden +
+            '}';
     }
 }

@@ -2,13 +2,12 @@ package io.papermc.hangar.model.db;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
-import org.jdbi.v3.core.mapper.PropagateNull;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-import org.jetbrains.annotations.Nullable;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
+import org.jdbi.v3.core.mapper.PropagateNull;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
+import org.jetbrains.annotations.Nullable;
 
 public class UserTable extends Table implements ProjectOwner {
 
@@ -129,15 +128,15 @@ public class UserTable extends Table implements ProjectOwner {
     @Override
     public String toString() {
         return "UserTable{" +
-                ", uuid='" + this.uuid + '\'' +
-                ", name='" + this.name + '\'' +
-                ", email='" + this.email + '\'' +
-                ", tagline='" + this.tagline + '\'' +
-                ", joinDate=" + this.joinDate +
-                ", readPrompts=" + this.readPrompts +
-                ", locked=" + this.locked +
-                ", language='" + this.language + '\'' +
-                ", theme='" + this.theme + '\'' +
-                "} " + super.toString();
+            ", uuid='" + this.uuid + '\'' +
+            ", name='" + this.name + '\'' +
+            ", email='" + this.email + '\'' +
+            ", tagline='" + this.tagline + '\'' +
+            ", joinDate=" + this.joinDate +
+            ", readPrompts=" + this.readPrompts +
+            ", locked=" + this.locked +
+            ", language='" + this.language + '\'' +
+            ", theme='" + this.theme + '\'' +
+            "} " + super.toString();
     }
 }

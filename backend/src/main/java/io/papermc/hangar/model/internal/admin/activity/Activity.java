@@ -17,7 +17,7 @@ public abstract class Activity {
     @Override
     public String toString() {
         return "Activity{" +
-                "namespace=" + this.namespace +
-                '}';
+            "namespace=" + this.namespace +
+            '}';
     }
 }

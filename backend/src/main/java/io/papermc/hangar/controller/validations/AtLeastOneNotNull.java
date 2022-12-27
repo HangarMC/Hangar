@@ -1,17 +1,16 @@
 package io.papermc.hangar.controller.validations;
 
-import org.springframework.beans.BeanUtils;
-
-import javax.validation.Constraint;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.Payload;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.validation.Constraint;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import javax.validation.Payload;
+import org.springframework.beans.BeanUtils;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -19,9 +18,13 @@ import java.lang.annotation.Target;
 @Documented
 public @interface AtLeastOneNotNull {
     String[] fieldNames();
+
     String message() default "Must have one non null field";
+
     boolean includeBlankStrings() default false;
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 
     class Validator implements ConstraintValidator<AtLeastOneNotNull, Object> {

@@ -1,9 +1,7 @@
 package io.papermc.hangar.model.api.project;
 
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.util.List;
 import java.util.StringJoiner;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectDonationSettings {
 
@@ -27,8 +25,8 @@ public class ProjectDonationSettings {
     @Override
     public String toString() {
         return new StringJoiner(", ", ProjectDonationSettings.class.getSimpleName() + "[", "]")
-                .add("enable=" + this.enable)
-                .add("email='" + this.subject + "'")
-                .toString();
+            .add("enable=" + this.enable)
+            .add("email='" + this.subject + "'")
+            .toString();
     }
 }

@@ -3,7 +3,6 @@ package io.papermc.hangar.model.db.log;
 import io.papermc.hangar.db.customtypes.PGLoggedAction;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.internal.logs.LoggedAction;
-
 import java.net.InetAddress;
 
 public abstract class LoggedActionTable extends Table {
@@ -45,11 +44,11 @@ public abstract class LoggedActionTable extends Table {
     @Override
     public String toString() {
         return "UserLoggedAction{" +
-                "userId=" + this.userId +
-                ", address=" + this.address +
-                ", action=" + this.action +
-                ", newState='" + this.newState + '\'' +
-                ", oldState='" + this.oldState + '\'' +
-                "} " + super.toString();
+            "userId=" + this.userId +
+            ", address=" + this.address +
+            ", action=" + this.action +
+            ", newState='" + this.newState + '\'' +
+            ", oldState='" + this.oldState + '\'' +
+            "} " + super.toString();
     }
 }

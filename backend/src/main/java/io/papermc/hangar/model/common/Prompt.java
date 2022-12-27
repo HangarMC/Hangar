@@ -14,9 +14,13 @@ public enum Prompt {
         this.messageKey = messageKey;
     }
 
-    public int getOrdinal() { return this.ordinal(); }
+    public int getOrdinal() {
+        return this.ordinal();
+    }
 
-    public String getName() { return this.name(); }
+    public String getName() {
+        return this.name();
+    }
 
     public String getTitleKey() {
         return this.titleKey;
@@ -28,5 +32,7 @@ public enum Prompt {
 
     private static final Prompt[] VALUES = values();
 
-    public static Prompt[] getValues() { return VALUES; }
+    public static Prompt[] getValues() {
+        return VALUES;
+    }
 }

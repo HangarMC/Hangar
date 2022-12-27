@@ -2,7 +2,6 @@ package io.papermc.hangar.model.internal.versions;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.model.common.Platform;
-
 import java.util.List;
 
 public class PlatformDependency {
@@ -27,8 +26,8 @@ public class PlatformDependency {
     @Override
     public String toString() {
         return "PlatformDependency{" +
-                "platform=" + this.platform +
-                ", versions=" + this.versions +
-                '}';
+            "platform=" + this.platform +
+            ", versions=" + this.versions +
+            '}';
     }
 }

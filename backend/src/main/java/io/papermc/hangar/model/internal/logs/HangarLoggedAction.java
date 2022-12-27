@@ -6,11 +6,10 @@ import io.papermc.hangar.model.internal.logs.viewmodels.LogPage;
 import io.papermc.hangar.model.internal.logs.viewmodels.LogProject;
 import io.papermc.hangar.model.internal.logs.viewmodels.LogSubject;
 import io.papermc.hangar.model.internal.logs.viewmodels.LogVersion;
-import org.jdbi.v3.core.enums.EnumByOrdinal;
-import org.jdbi.v3.core.mapper.Nested;
-
 import java.net.InetAddress;
 import java.time.OffsetDateTime;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jdbi.v3.core.mapper.Nested;
 
 public class HangarLoggedAction extends Model {
 
@@ -88,17 +87,17 @@ public class HangarLoggedAction extends Model {
     @Override
     public String toString() {
         return "HangarLoggedAction{" +
-                "userId=" + this.userId +
-                ", userName='" + this.userName + '\'' +
-                ", address=" + this.address +
-                ", action=" + this.action +
-                ", context=" + this.contextType +
-                ", newState='" + this.newState + '\'' +
-                ", oldState='" + this.oldState + '\'' +
-                ", project=" + this.project +
-                ", version=" + this.version +
-                ", page=" + this.page +
-                ", subject=" + this.subject +
-                "} " + super.toString();
+            "userId=" + this.userId +
+            ", userName='" + this.userName + '\'' +
+            ", address=" + this.address +
+            ", action=" + this.action +
+            ", context=" + this.contextType +
+            ", newState='" + this.newState + '\'' +
+            ", oldState='" + this.oldState + '\'' +
+            ", project=" + this.project +
+            ", version=" + this.version +
+            ", page=" + this.page +
+            ", subject=" + this.subject +
+            "} " + super.toString();
     }
 }

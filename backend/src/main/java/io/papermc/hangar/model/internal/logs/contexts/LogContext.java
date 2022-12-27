@@ -2,7 +2,6 @@ package io.papermc.hangar.model.internal.logs.contexts;
 
 import io.papermc.hangar.model.db.log.LoggedActionTable;
 import io.papermc.hangar.model.internal.logs.LoggedAction;
-
 import java.net.InetAddress;
 
 public abstract class LogContext<LT extends LoggedActionTable, LC extends LogContext<LT, LC>> {

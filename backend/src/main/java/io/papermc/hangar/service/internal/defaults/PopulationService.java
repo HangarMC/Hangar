@@ -10,15 +10,14 @@ import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.PlatformVersionTable;
 import io.papermc.hangar.model.db.roles.RoleTable;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class PopulationService {

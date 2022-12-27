@@ -3,6 +3,7 @@ package io.papermc.hangar.controller.extras.pagination.filters.versions;
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionTagFilter.VersionTagFilterInstance;
 import io.papermc.hangar.exceptions.HangarApiException;
+import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
@@ -10,8 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.NativeWebRequest;
-
-import java.util.Set;
 
 @Component
 public class VersionTagFilter implements Filter<VersionTagFilterInstance> {
@@ -66,8 +65,8 @@ public class VersionTagFilter implements Filter<VersionTagFilterInstance> {
         @Override
         public String toString() {
             return "VersionTagFilterInstance{" +
-                    "versionTags=" + this.versionTags +
-                    '}';
+                "versionTags=" + this.versionTags +
+                '}';
         }
     }
 }

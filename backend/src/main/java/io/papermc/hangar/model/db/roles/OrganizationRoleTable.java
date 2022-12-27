@@ -1,17 +1,14 @@
 package io.papermc.hangar.model.db.roles;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import io.papermc.hangar.model.common.roles.OrganizationRole;
+import io.papermc.hangar.model.internal.logs.contexts.OrganizationContext;
+import io.papermc.hangar.model.loggable.OrganizationLoggable;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.annotation.JdbiProperty;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.springframework.lang.Nullable;
-
-import java.time.OffsetDateTime;
-
-import io.papermc.hangar.model.common.roles.OrganizationRole;
-import io.papermc.hangar.model.internal.logs.contexts.OrganizationContext;
-import io.papermc.hangar.model.loggable.OrganizationLoggable;
 
 public class OrganizationRoleTable extends ExtendedRoleTable<OrganizationRole, OrganizationContext> implements OrganizationLoggable {
 
@@ -40,7 +37,7 @@ public class OrganizationRoleTable extends ExtendedRoleTable<OrganizationRole, O
     }
 
     @Override
-    @JdbiProperty(map=false)
+    @JdbiProperty(map = false)
     public long getPrincipalId() {
         return this.organizationId;
     }
@@ -56,7 +53,7 @@ public class OrganizationRoleTable extends ExtendedRoleTable<OrganizationRole, O
     @Override
     public String toString() {
         return "OrganizationRoleTable{" +
-                "organizationId=" + this.organizationId +
-                "} " + super.toString();
+            "organizationId=" + this.organizationId +
+            "} " + super.toString();
     }
 }

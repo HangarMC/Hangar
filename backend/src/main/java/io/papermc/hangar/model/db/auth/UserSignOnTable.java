@@ -1,9 +1,8 @@
 package io.papermc.hangar.model.db.auth;
 
 import io.papermc.hangar.model.db.Table;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class UserSignOnTable extends Table {
 
@@ -36,8 +35,8 @@ public class UserSignOnTable extends Table {
     @Override
     public String toString() {
         return "UserSignOnTable{" +
-                "nonce='" + this.nonce + '\'' +
-                ", completed=" + this.completed +
-                "} " + super.toString();
+            "nonce='" + this.nonce + '\'' +
+            ", completed=" + this.completed +
+            "} " + super.toString();
     }
 }

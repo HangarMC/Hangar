@@ -59,12 +59,12 @@ public class ProjectPageService extends HangarComponent {
         this.checkDuplicateName(projectId, name, parentId);
 
         ProjectPageTable projectPageTable = new ProjectPageTable(
-                projectId,
-                name,
-                slug,
-                contents,
-                deletable,
-                parentId
+            projectId,
+            name,
+            slug,
+            contents,
+            deletable,
+            parentId
         );
         projectPageTable = this.projectPagesDAO.insert(projectPageTable);
         if (isHome) {

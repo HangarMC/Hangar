@@ -37,9 +37,9 @@ public class NewProjectForm extends ProjectSettingsForm {
     @Override
     public String toString() {
         return "NewProjectForm{" +
-                "ownerId=" + this.ownerId +
-                ", name='" + this.name + '\'' +
-                ", pageContent='" + this.pageContent + '\'' +
-                "} " + super.toString();
+            "ownerId=" + this.ownerId +
+            ", name='" + this.name + '\'' +
+            ", pageContent='" + this.pageContent + '\'' +
+            "} " + super.toString();
     }
 }

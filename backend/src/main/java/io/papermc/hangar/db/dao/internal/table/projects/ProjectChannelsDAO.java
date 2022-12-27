@@ -2,6 +2,7 @@ package io.papermc.hangar.db.dao.internal.table.projects;
 
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
+import java.util.List;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -10,8 +11,6 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 @RegisterConstructorMapper(ProjectChannelTable.class)

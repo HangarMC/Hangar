@@ -1,16 +1,15 @@
 package io.papermc.hangar.model.common;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.jdbi.v3.core.argument.Argument;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-import org.jdbi.v3.core.statement.StatementContext;
-
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jdbi.v3.core.argument.Argument;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
+import org.jdbi.v3.core.statement.StatementContext;
 
 public class Permission implements Comparable<Permission>, Argument {
 
@@ -92,6 +91,7 @@ public class Permission implements Comparable<Permission>, Argument {
 
     /**
      * Check if permission has all of another permission
+     *
      * @param other another permission
      * @return true if permission has all of other permission <b>OR</b> other permission is {@link #None}
      */

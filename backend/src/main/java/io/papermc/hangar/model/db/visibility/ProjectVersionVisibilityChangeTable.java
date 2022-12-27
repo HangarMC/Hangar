@@ -1,10 +1,9 @@
 package io.papermc.hangar.model.db.visibility;
 
 import io.papermc.hangar.model.common.projects.Visibility;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.time.OffsetDateTime;
 
 public class ProjectVersionVisibilityChangeTable extends VisibilityChangeTable {
 
@@ -28,7 +27,7 @@ public class ProjectVersionVisibilityChangeTable extends VisibilityChangeTable {
     @Override
     public String toString() {
         return "ProjectVersionVisibilityChangeTable{" +
-                "versionId=" + this.versionId +
-                "} " + super.toString();
+            "versionId=" + this.versionId +
+            "} " + super.toString();
     }
 }

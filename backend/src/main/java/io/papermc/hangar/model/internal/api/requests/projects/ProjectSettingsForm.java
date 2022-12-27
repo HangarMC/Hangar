@@ -37,9 +37,9 @@ public class ProjectSettingsForm {
     @Override
     public String toString() {
         return "ProjectSettingsForm{" +
-                "settings=" + this.settings +
-                ", category=" + this.category +
-                ", description='" + this.description + '\'' +
-                '}';
+            "settings=" + this.settings +
+            ", category=" + this.category +
+            ", description='" + this.description + '\'' +
+            '}';
     }
 }

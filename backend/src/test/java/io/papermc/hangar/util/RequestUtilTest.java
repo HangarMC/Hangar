@@ -3,7 +3,7 @@ package io.papermc.hangar.util;
 import org.junit.jupiter.api.Test;
 
 import static io.papermc.hangar.util.RequestUtil.appendParam;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RequestUtilTest {
 

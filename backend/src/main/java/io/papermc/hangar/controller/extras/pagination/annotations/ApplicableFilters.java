@@ -1,7 +1,6 @@
 package io.papermc.hangar.controller.extras.pagination.annotations;
 
 import io.papermc.hangar.controller.extras.pagination.Filter;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,11 +1,10 @@
 package io.papermc.hangar.util;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 class BBCodeConverterTest {
 
@@ -103,21 +102,21 @@ class BBCodeConverterTest {
     @Test
     void testCodeBlocksDiffLine() {
         Assertions.assertEquals("""
-            ```
+                ```
 
-            MARKDOWN
+                MARKDOWN
 
-            ```""",
-                this.converter.convertToMarkdown("""
-            [code]
-            MARKDOWN
-            [/code]"""));
+                ```""",
+            this.converter.convertToMarkdown("""
+                [code]
+                MARKDOWN
+                [/code]"""));
 
         Assertions.assertEquals("""
-            ```
-            MARKDOWN
-            ```""",
-                this.converter.convertToMarkdown("[code]MARKDOWN[/code]"));
+                ```
+                MARKDOWN
+                ```""",
+            this.converter.convertToMarkdown("[code]MARKDOWN[/code]"));
 
         Assertions.assertEquals("""
                 ```
@@ -126,36 +125,36 @@ class BBCodeConverterTest {
                 ```
                 Codeblock!
                 ```""",
-                this.converter.convertToMarkdown("[code]Codeblock![/code][code]Codeblock![/code]"));
+            this.converter.convertToMarkdown("[code]Codeblock![/code][code]Codeblock![/code]"));
     }
 
     @Test
     void testCodeBlocksDiffLineLang() {
-       Assertions.assertEquals("""
-               ```kt
+        Assertions.assertEquals("""
+                ```kt
 
-               TEXT
+                TEXT
 
-               ```""",
-               this.converter.convertToMarkdown("""
-               [code=Kotlin]
-               TEXT
-               [/code]"""));
+                ```""",
+            this.converter.convertToMarkdown("""
+                [code=Kotlin]
+                TEXT
+                [/code]"""));
 
         Assertions.assertEquals("""
-               ```java
-               TEXT
+                ```java
+                TEXT
 
-               ```""",
-                this.converter.convertToMarkdown("""
-               [code=Java]TEXT
-               [/code]"""));
+                ```""",
+            this.converter.convertToMarkdown("""
+                [code=Java]TEXT
+                [/code]"""));
 
         Assertions.assertEquals("""
-              ```java
-              TEXT
-              ```""",
-                this.converter.convertToMarkdown("[code=Java]TEXT[/code]"));
+                ```java
+                TEXT
+                ```""",
+            this.converter.convertToMarkdown("[code=Java]TEXT[/code]"));
     }
 
     @Test

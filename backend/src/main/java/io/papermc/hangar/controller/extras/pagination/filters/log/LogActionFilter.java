@@ -3,12 +3,11 @@ package io.papermc.hangar.controller.extras.pagination.filters.log;
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogActionFilter.LogActionFilterInstance;
 import io.papermc.hangar.model.internal.logs.LogAction;
+import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
-
-import java.util.Set;
 
 @Component
 public class LogActionFilter implements Filter<LogActionFilterInstance> {

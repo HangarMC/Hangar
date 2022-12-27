@@ -1,10 +1,9 @@
 package io.papermc.hangar.model.internal.projects;
 
 import io.papermc.hangar.model.db.projects.ProjectNoteTable;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.jetbrains.annotations.Nullable;
-
-import java.time.OffsetDateTime;
 
 public class HangarProjectNote extends ProjectNoteTable {
 
@@ -23,7 +22,7 @@ public class HangarProjectNote extends ProjectNoteTable {
     @Override
     public String toString() {
         return "HangarProjectNote{" +
-                "userName='" + this.userName + '\'' +
-                "} " + super.toString();
+            "userName='" + this.userName + '\'' +
+            "} " + super.toString();
     }
 }

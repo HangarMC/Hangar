@@ -2,13 +2,12 @@ package io.papermc.hangar.model.db.roles;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.jdbi.v3.core.annotation.JdbiProperty;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.internal.logs.contexts.LogContext;
 import io.papermc.hangar.model.loggable.Loggable;
-
 import java.time.OffsetDateTime;
+import org.jdbi.v3.core.annotation.JdbiProperty;
 
 public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>, LC extends LogContext<?, LC>> extends Table implements IRoleTable<R>, Loggable<LC> {
 
@@ -68,15 +67,15 @@ public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>,
         this.accepted = accepted;
     }
 
-    @JdbiProperty(map=false)
+    @JdbiProperty(map = false)
     public abstract long getPrincipalId();
 
     @Override
     public String toString() {
         return "ExtendedRoleTable{" +
-                "userId=" + this.userId +
-                ", role=" + this.role +
-                ", accepted=" + this.accepted +
-                "} " + super.toString();
+            "userId=" + this.userId +
+            ", role=" + this.role +
+            ", accepted=" + this.accepted +
+            "} " + super.toString();
     }
 }

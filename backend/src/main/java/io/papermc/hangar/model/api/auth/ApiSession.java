@@ -21,8 +21,8 @@ public class ApiSession {
     @Override
     public String toString() {
         return "ApiSession{" +
-                "token='" + this.token + '\'' +
-                ", expiresIn=" + this.expiresIn +
-                '}';
+            "token='" + this.token + '\'' +
+            ", expiresIn=" + this.expiresIn +
+            '}';
     }
 }

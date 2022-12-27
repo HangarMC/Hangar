@@ -25,7 +25,7 @@ public class HangarApiPrincipal extends HangarPrincipal {
     @Override
     public String toString() {
         return "HangarApiPrincipal{" +
-                "apiKeyTable=" + this.apiKeyTable +
-                "} " + super.toString();
+            "apiKeyTable=" + this.apiKeyTable +
+            "} " + super.toString();
     }
 }

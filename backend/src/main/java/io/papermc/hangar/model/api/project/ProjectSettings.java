@@ -91,16 +91,16 @@ public class ProjectSettings {
     @Override
     public String toString() {
         return "ProjectSettings{" +
-                "homepage='" + this.homepage + '\'' +
-                ", issues='" + this.issues + '\'' +
-                ", source='" + this.source + '\'' +
-                ", support='" + this.support + '\'' +
-               ", support='" + this.wiki + '\'' +
-                ", license=" + this.license +
-                ", donation=" + this.donation +
-                ", keywords=" + this.keywords +
-                ", forumSync=" + this.forumSync +
-                ", sponsors='" + this.sponsors + '\'' +
-                '}';
+            "homepage='" + this.homepage + '\'' +
+            ", issues='" + this.issues + '\'' +
+            ", source='" + this.source + '\'' +
+            ", support='" + this.support + '\'' +
+            ", support='" + this.wiki + '\'' +
+            ", license=" + this.license +
+            ", donation=" + this.donation +
+            ", keywords=" + this.keywords +
+            ", forumSync=" + this.forumSync +
+            ", sponsors='" + this.sponsors + '\'' +
+            '}';
     }
 }

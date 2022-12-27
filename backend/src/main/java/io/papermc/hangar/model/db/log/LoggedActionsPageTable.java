@@ -3,7 +3,6 @@ package io.papermc.hangar.model.db.log;
 
 import io.papermc.hangar.model.internal.logs.LoggedAction;
 import io.papermc.hangar.model.internal.logs.contexts.PageContext;
-
 import java.net.InetAddress;
 
 public class LoggedActionsPageTable extends LoggedActionTable {
@@ -28,8 +27,8 @@ public class LoggedActionsPageTable extends LoggedActionTable {
     @Override
     public String toString() {
         return "LoggedActionsPageTable{" +
-                "projectId=" + this.projectId +
-                ", pageId=" + this.pageId +
-                "} " + super.toString();
+            "projectId=" + this.projectId +
+            ", pageId=" + this.pageId +
+            "} " + super.toString();
     }
 }

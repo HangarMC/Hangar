@@ -1,11 +1,10 @@
 package io.papermc.hangar.controller.extras.pagination;
 
 import io.papermc.hangar.controller.extras.pagination.Filter.FilterInstance;
+import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.context.request.NativeWebRequest;
-
-import java.util.Set;
 
 public interface Filter<F extends FilterInstance> {
 

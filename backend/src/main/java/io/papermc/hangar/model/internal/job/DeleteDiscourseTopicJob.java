@@ -1,10 +1,9 @@
 package io.papermc.hangar.model.internal.job;
 
+import io.papermc.hangar.model.db.JobTable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import io.papermc.hangar.model.db.JobTable;
 
 public class DeleteDiscourseTopicJob extends Job {
 
@@ -42,7 +41,7 @@ public class DeleteDiscourseTopicJob extends Job {
     }
 
     public static DeleteDiscourseTopicJob loadFromTable(final JobTable table) {
-        final DeleteDiscourseTopicJob job  = new DeleteDiscourseTopicJob();
+        final DeleteDiscourseTopicJob job = new DeleteDiscourseTopicJob();
         job.fromTable(table);
         job.setJobProperties(table.getJobProperties().getMap());
         job.loadFromProperties();
@@ -66,8 +65,8 @@ public class DeleteDiscourseTopicJob extends Job {
     @Override
     public String toString() {
         return "DeleteDiscourseTopicJob{" +
-               "createdAt=" + this.createdAt +
-               ", topicId=" + this.topicId +
-               "} " + super.toString();
+            "createdAt=" + this.createdAt +
+            ", topicId=" + this.topicId +
+            "} " + super.toString();
     }
 }

@@ -12,10 +12,9 @@ import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import io.papermc.hangar.service.internal.perms.roles.OrganizationRoleService;
 import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class OrganizationInviteService extends InviteService<OrganizationContext, OrganizationRole, OrganizationRoleTable, OrganizationTable> {

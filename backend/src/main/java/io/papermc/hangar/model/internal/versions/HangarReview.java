@@ -4,11 +4,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.common.ReviewAction;
-import org.jdbi.v3.core.enums.EnumByOrdinal;
-
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 public class HangarReview extends Model {
 
@@ -44,11 +43,11 @@ public class HangarReview extends Model {
     @Override
     public String toString() {
         return "HangarReview{" +
-                "endedAt=" + this.endedAt +
-                ", userName='" + this.userName + '\'' +
-                ", userId=" + this.userId +
-                ", messages=" + this.messages +
-                "} " + super.toString();
+            "endedAt=" + this.endedAt +
+            ", userName='" + this.userName + '\'' +
+            ", userId=" + this.userId +
+            ", messages=" + this.messages +
+            "} " + super.toString();
     }
 
     public static class HangarReviewMessage extends Model {
@@ -79,10 +78,10 @@ public class HangarReview extends Model {
         @Override
         public String toString() {
             return "HangarReviewMessage{" +
-                    "message='" + this.message + '\'' +
-                    ", args=" + this.args +
-                    ", action=" + this.action +
-                    "} " + super.toString();
+                "message='" + this.message + '\'' +
+                ", args=" + this.args +
+                ", action=" + this.action +
+                "} " + super.toString();
         }
     }
 }

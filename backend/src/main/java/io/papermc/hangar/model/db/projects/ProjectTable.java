@@ -6,15 +6,13 @@ import io.papermc.hangar.model.Visitable;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.Table;
-import io.papermc.hangar.model.identified.ProjectIdentified;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
 import io.papermc.hangar.model.loggable.ProjectLoggable;
 import io.papermc.hangar.util.StringUtils;
-import org.jdbi.v3.core.enums.EnumByOrdinal;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
 import java.util.Collection;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectTable extends Table implements Visitable, ModelVisible, Owned, ProjectLoggable {
 
@@ -318,28 +316,28 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
     @Override
     public String toString() {
         return "ProjectTable{" +
-               "name='" + this.name + '\'' +
-               ", slug='" + this.slug + '\'' +
-               ", ownerName='" + this.ownerName + '\'' +
-               ", ownerId=" + this.ownerId +
-               ", topicId=" + this.topicId +
-               ", postId=" + this.postId +
-               ", category=" + this.category +
-               ", description='" + this.description + '\'' +
-               ", visibility=" + this.visibility +
-               ", keywords=" + this.keywords +
-               ", homepage='" + this.homepage + '\'' +
-               ", issues='" + this.issues + '\'' +
-               ", source='" + this.source + '\'' +
-               ", support='" + this.support + '\'' +
-               ", wiki='" + this.wiki + '\'' +
-               ", licenseType='" + this.licenseType + '\'' +
-               ", licenseName='" + this.licenseName + '\'' +
-               ", licenseUrl='" + this.licenseUrl + '\'' +
-               ", forumSync=" + this.forumSync +
-               ", donationEnabled=" + this.donationEnabled +
-               ", donationEmail='" + this.donationSubject + '\'' +
-               ", sponsors='" + this.sponsors + '\'' +
-               "} " + super.toString();
+            "name='" + this.name + '\'' +
+            ", slug='" + this.slug + '\'' +
+            ", ownerName='" + this.ownerName + '\'' +
+            ", ownerId=" + this.ownerId +
+            ", topicId=" + this.topicId +
+            ", postId=" + this.postId +
+            ", category=" + this.category +
+            ", description='" + this.description + '\'' +
+            ", visibility=" + this.visibility +
+            ", keywords=" + this.keywords +
+            ", homepage='" + this.homepage + '\'' +
+            ", issues='" + this.issues + '\'' +
+            ", source='" + this.source + '\'' +
+            ", support='" + this.support + '\'' +
+            ", wiki='" + this.wiki + '\'' +
+            ", licenseType='" + this.licenseType + '\'' +
+            ", licenseName='" + this.licenseName + '\'' +
+            ", licenseUrl='" + this.licenseUrl + '\'' +
+            ", forumSync=" + this.forumSync +
+            ", donationEnabled=" + this.donationEnabled +
+            ", donationEmail='" + this.donationSubject + '\'' +
+            ", sponsors='" + this.sponsors + '\'' +
+            "} " + super.toString();
     }
 }

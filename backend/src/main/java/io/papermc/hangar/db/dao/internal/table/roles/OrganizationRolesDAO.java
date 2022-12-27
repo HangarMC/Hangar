@@ -2,6 +2,8 @@ package io.papermc.hangar.db.dao.internal.table.roles;
 
 import io.papermc.hangar.db.mappers.factories.RoleColumnMapperFactory;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
+import java.util.List;
+import java.util.Map;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapperFactory;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
@@ -12,9 +14,6 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Map;
-
 @Repository
 @RegisterConstructorMapper(OrganizationRoleTable.class)
 @RegisterColumnMapperFactory(RoleColumnMapperFactory.class)
@@ -24,7 +23,7 @@ public interface OrganizationRolesDAO extends IRolesDAO<OrganizationRoleTable> {
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("INSERT INTO user_organization_roles (created_at, user_id, role_type, organization_id, accepted) " +
-               "VALUES (:now, :userId, :roleType, :organizationId, :accepted)")
+        "VALUES (:now, :userId, :roleType, :organizationId, :accepted)")
     OrganizationRoleTable insert(@BindBean OrganizationRoleTable table);
 
     @Override
@@ -49,18 +48,18 @@ public interface OrganizationRolesDAO extends IRolesDAO<OrganizationRoleTable> {
     OrganizationRoleTable getTableByPrincipal(long organizationId, long userId);
 
     @Override
-    @SqlQuery("SELECT uor.*, ow.id as ownerId, ow.name AS ownerName FROM user_organization_roles uor " +
-              "  JOIN organizations o ON o.id = uor.organization_id" +
-              "  JOIN users ow ON o.owner_id = ow.id " +
-              "WHERE organization_id = :organizationId AND uor.user_id = :userId")
+    @SqlQuery("SELECT uor.*, ow.id AS ownerid, ow.name AS ownername FROM user_organization_roles uor " +
+        "  JOIN organizations o ON o.id = uor.organization_id" +
+        "  JOIN users ow ON o.owner_id = ow.id " +
+        "WHERE organization_id = :organizationId AND uor.user_id = :userId")
     OrganizationRoleTable getTable(@BindBean OrganizationRoleTable table);
 
     @KeyColumn("name")
-    @SqlQuery("SELECT o.name, uor.*, ow.id as ownerId, ow.name AS ownerName" +
-            "   FROM user_organization_roles uor" +
-            "       JOIN organizations o ON o.id = uor.organization_id" +
-            "       JOIN users u ON uor.user_id = u.id" +
-            "       JOIN users ow ON o.owner_id = ow.id" +
-            "   WHERE u.name = :user AND uor.accepted IS TRUE")
+    @SqlQuery("SELECT o.name, uor.*, ow.id AS ownerid, ow.name AS ownername" +
+        "   FROM user_organization_roles uor" +
+        "       JOIN organizations o ON o.id = uor.organization_id" +
+        "       JOIN users u ON uor.user_id = u.id" +
+        "       JOIN users ow ON o.owner_id = ow.id" +
+        "   WHERE u.name = :user AND uor.accepted IS TRUE")
     Map<String, OrganizationRoleTable> getUserOrganizationRoles(String user, Long userId);
 }

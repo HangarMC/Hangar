@@ -1,10 +1,9 @@
 package io.papermc.hangar.model.db.versions.dependencies;
 
 import io.papermc.hangar.model.common.Platform;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.time.OffsetDateTime;
 
 public class ProjectVersionDependencyTable extends VersionDependencyTable {
 
@@ -73,11 +72,11 @@ public class ProjectVersionDependencyTable extends VersionDependencyTable {
     @Override
     public String toString() {
         return "ProjectVersionDependencyTable{" +
-                "platform=" + this.platform +
-                ", name='" + this.name + '\'' +
-                ", required=" + this.required +
-                ", projectId=" + this.projectId +
-                ", externalUrl='" + this.externalUrl + '\'' +
-                "} " + super.toString();
+            "platform=" + this.platform +
+            ", name='" + this.name + '\'' +
+            ", required=" + this.required +
+            ", projectId=" + this.projectId +
+            ", externalUrl='" + this.externalUrl + '\'' +
+            "} " + super.toString();
     }
 }

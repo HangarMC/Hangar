@@ -19,15 +19,14 @@ import io.papermc.hangar.model.internal.versions.HangarReview;
 import io.papermc.hangar.model.internal.versions.HangarReviewQueueEntry;
 import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilityService;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Objects;
+import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.validation.constraints.NotNull;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional
@@ -131,8 +130,7 @@ public class ReviewService extends HangarComponent {
                 projectVersionTable.setApprovedAt(OffsetDateTime.now());
                 projectVersionTable = this.projectVersionsDAO.update(projectVersionTable);
                 this.projectVersionVisibilityService.changeVisibility(projectVersionTable, Visibility.PUBLIC, "visibility.changes.version.reviewed");
-            }
-            else {
+            } else {
                 this.projectVersionsDAO.update(projectVersionTable);
             }
         }

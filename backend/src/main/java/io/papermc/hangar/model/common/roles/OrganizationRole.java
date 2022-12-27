@@ -5,10 +5,10 @@ import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
-import org.jetbrains.annotations.NotNull;
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import java.util.Arrays;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum OrganizationRole implements Role<OrganizationRoleTable> {

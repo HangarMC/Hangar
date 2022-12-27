@@ -1,5 +1,8 @@
 package io.papermc.hangar;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
@@ -21,10 +24,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Repository;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
 
 // https://stackoverflow.com/questions/61526870/spring-boot-custom-bean-loader
 public class JdbiBeanFactoryPostProcessor implements BeanDefinitionRegistryPostProcessor, ResourceLoaderAware, EnvironmentAware, BeanClassLoaderAware, BeanFactoryAware {
@@ -73,9 +72,9 @@ public class JdbiBeanFactoryPostProcessor implements BeanDefinitionRegistryPostP
         scanner.addIncludeFilter(new AnnotationTypeFilter(Repository.class));
         final List<String> basePackages = AutoConfigurationPackages.get(this.beanFactory);
         basePackages.stream()
-                .map(scanner::findCandidateComponents)
-                .flatMap(Collection::stream)
-                .forEach(bd -> this.registerJdbiDaoBeanFactory(registry, bd));
+            .map(scanner::findCandidateComponents)
+            .flatMap(Collection::stream)
+            .forEach(bd -> this.registerJdbiDaoBeanFactory(registry, bd));
     }
 
     private void registerJdbiDaoBeanFactory(final BeanDefinitionRegistry registry, final BeanDefinition bd) {

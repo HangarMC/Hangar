@@ -174,13 +174,15 @@ public class VersionController extends HangarComponent {
 
     @ResponseBody
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
-    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#author, #slug, #versionString, #platform}") // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
+    // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public Resource download(@PathVariable final String author, @PathVariable final String slug, @PathVariable final String versionString, @PathVariable final Platform platform, @RequestParam(required = false) final String token) {
         return this.downloadService.getVersionFile(author, slug, versionString, platform, true, token);
     }
 
-    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#author, #slug, #versionString, #platform}") // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
+    // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/downloadCheck")
     public ResponseEntity<String> downloadCheck(@PathVariable final String author, @PathVariable final String slug, @PathVariable final String versionString, @PathVariable final Platform platform) {
         final boolean requiresConfirmation = this.downloadService.requiresConfirmation(author, slug, versionString, platform);

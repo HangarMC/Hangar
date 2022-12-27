@@ -1,7 +1,6 @@
 package io.papermc.hangar.model.internal.sso;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Objects;
 
 public class TokenResponse {
@@ -78,13 +77,13 @@ public class TokenResponse {
     @Override
     public String toString() {
         return "TokenResponce{" +
-               "accessToken='" + this.accessToken + '\'' +
-               ", expiresIn=" + this.expiresIn +
-               ", idToken='" + this.idToken + '\'' +
-               ", refreshToken='" + this.refreshToken + '\'' +
-               ", scope='" + this.scope + '\'' +
-               ", tokenType='" + this.tokenType + '\'' +
-               '}';
+            "accessToken='" + this.accessToken + '\'' +
+            ", expiresIn=" + this.expiresIn +
+            ", idToken='" + this.idToken + '\'' +
+            ", refreshToken='" + this.refreshToken + '\'' +
+            ", scope='" + this.scope + '\'' +
+            ", tokenType='" + this.tokenType + '\'' +
+            '}';
     }
 
     @Override

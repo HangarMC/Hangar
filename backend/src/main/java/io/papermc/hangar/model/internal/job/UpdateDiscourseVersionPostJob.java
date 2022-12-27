@@ -1,10 +1,9 @@
 package io.papermc.hangar.model.internal.job;
 
+import io.papermc.hangar.model.db.JobTable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import io.papermc.hangar.model.db.JobTable;
 
 public class UpdateDiscourseVersionPostJob extends Job {
 
@@ -42,7 +41,7 @@ public class UpdateDiscourseVersionPostJob extends Job {
     }
 
     public static UpdateDiscourseVersionPostJob loadFromTable(final JobTable table) {
-        final UpdateDiscourseVersionPostJob job  = new UpdateDiscourseVersionPostJob();
+        final UpdateDiscourseVersionPostJob job = new UpdateDiscourseVersionPostJob();
         job.fromTable(table);
         job.setJobProperties(table.getJobProperties().getMap());
         job.loadFromProperties();
@@ -66,8 +65,8 @@ public class UpdateDiscourseVersionPostJob extends Job {
     @Override
     public String toString() {
         return "UpdateDiscourseVersionPostJob{" +
-               "createdAt=" + this.createdAt +
-               ", versionId=" + this.versionId +
-               "} " + super.toString();
+            "createdAt=" + this.createdAt +
+            ", versionId=" + this.versionId +
+            "} " + super.toString();
     }
 }

@@ -5,7 +5,6 @@ import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.roles.IRoleTable;
-
 import java.util.Locale;
 
 public abstract class HangarInvite<R extends Role<? extends IRoleTable<R>>> {

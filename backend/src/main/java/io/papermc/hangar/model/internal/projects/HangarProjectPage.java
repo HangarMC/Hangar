@@ -3,7 +3,6 @@ package io.papermc.hangar.model.internal.projects;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
-
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -53,9 +52,9 @@ public class HangarProjectPage {
     @Override
     public String toString() {
         return "HangarProjectPage{" +
-                "name='" + this.name + '\'' +
-                ", slug='" + this.slug + '\'' +
-                ", children=" + this.children +
-                '}';
+            "name='" + this.name + '\'' +
+            ", slug='" + this.slug + '\'' +
+            ", children=" + this.children +
+            '}';
     }
 }

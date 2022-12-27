@@ -155,7 +155,7 @@ public class UsersApiService extends HangarComponent {
         final Optional<HangarPrincipal> hangarPrincipal = this.getOptionalHangarPrincipal();
         final List<UserNameChange> userNameHistory;
         if (hangarPrincipal.isPresent() && hangarPrincipal.get().isAllowedGlobal(Permission.SeeHidden)) {
-            userNameHistory = this.usersApiDAO.getUserNameHistory(user.getName(),  OffsetDateTime.MIN);
+            userNameHistory = this.usersApiDAO.getUserNameHistory(user.getName(), OffsetDateTime.MIN);
         } else {
             userNameHistory = this.usersApiDAO.getUserNameHistory(user.getName(), OffsetDateTime.now().minus(this.config.user.nameChangeHistory(), ChronoUnit.DAYS));
         }

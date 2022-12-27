@@ -1,9 +1,9 @@
 package io.papermc.hangar.service.internal.file;
 
-import org.springframework.core.io.Resource;
+import io.papermc.hangar.model.common.Platform;
 import java.io.IOException;
 import java.io.InputStream;
-import io.papermc.hangar.model.common.Platform;
+import org.springframework.core.io.Resource;
 
 public interface FileService {
 

@@ -43,11 +43,11 @@ public class MissingFileCheck {
     @Override
     public String toString() {
         return "MissingFileCheck{" +
-                "platform=" + this.platform +
-                ", versionString='" + this.versionString + '\'' +
-                ", fileName='" + this.fileName + '\'' +
-                ", namespace=" + this.namespace +
-                ", name='" + this.name + '\'' +
-                '}';
+            "platform=" + this.platform +
+            ", versionString='" + this.versionString + '\'' +
+            ", fileName='" + this.fileName + '\'' +
+            ", namespace=" + this.namespace +
+            ", name='" + this.name + '\'' +
+            '}';
     }
 }

@@ -2,7 +2,6 @@ package io.papermc.hangar.model.internal.api.requests.versions;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import javax.validation.constraints.NotNull;
 
 public class ReviewMessage {

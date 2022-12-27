@@ -57,9 +57,9 @@ public class ProjectLicense {
     @Override
     public String toString() {
         return "ProjectLicense{" +
-                "name='" + this.name + '\'' +
-                ", url='" + this.url + '\'' +
-                ", type='" + this.type + '\'' +
-                '}';
+            "name='" + this.name + '\'' +
+            ", url='" + this.url + '\'' +
+            ", type='" + this.type + '\'' +
+            '}';
     }
 }

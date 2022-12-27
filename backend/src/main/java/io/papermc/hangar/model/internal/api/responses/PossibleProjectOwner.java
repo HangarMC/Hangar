@@ -40,10 +40,10 @@ public class PossibleProjectOwner implements ProjectOwner {
     @Override
     public String toString() {
         return "PossibleProjectOwner{" +
-                "id=" + this.id +
-                ", userId=" + this.userId +
-                ", name='" + this.name + '\'' +
-                ", isOrganization=" + this.isOrganization +
-                '}';
+            "id=" + this.id +
+            ", userId=" + this.userId +
+            ", name='" + this.name + '\'' +
+            ", isOrganization=" + this.isOrganization +
+            '}';
     }
 }

@@ -81,7 +81,7 @@ public interface HangarReviewsDAO {
     List<HangarReviewQueueEntry> getReviewQueue(@EnumByOrdinal ReviewState reviewState);
 
     @SqlQuery("""
-        SELECT COUNT(pv.id)
+        SELECT count(pv.id)
            FROM project_versions pv
                JOIN projects p ON pv.project_id = p.id
            WHERE pv.review_state = :reviewState AND

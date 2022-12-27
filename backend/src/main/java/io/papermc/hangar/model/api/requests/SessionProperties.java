@@ -24,8 +24,8 @@ public class SessionProperties {
     @Override
     public String toString() {
         return "SessionProperties{" +
-                "_fake=" + this._fake +
-                ", expiresIn=" + this.expiresIn +
-                '}';
+            "_fake=" + this._fake +
+            ", expiresIn=" + this.expiresIn +
+            '}';
     }
 }

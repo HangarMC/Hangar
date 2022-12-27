@@ -4,10 +4,17 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.TokenService;
-
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Stream;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.log.LogMessage;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,16 +27,6 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class HangarAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -49,9 +46,9 @@ public class HangarAuthenticationFilter extends AbstractAuthenticationProcessing
     protected boolean requiresAuthentication(final HttpServletRequest request, final HttpServletResponse response) {
         if (super.requiresAuthentication(request, response)) {
             final Optional<String> token = Stream.of(
-                    Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION)).map(value -> value.replace(SecurityConfig.AUTH_NAME, "").trim()),
-                    Optional.ofNullable(request.getParameter("t")),
-                    Optional.ofNullable(request.getCookies()).flatMap(cookies -> Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConfig.AUTH_NAME)).map(Cookie::getValue).findFirst())
+                Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION)).map(value -> value.replace(SecurityConfig.AUTH_NAME, "").trim()),
+                Optional.ofNullable(request.getParameter("t")),
+                Optional.ofNullable(request.getCookies()).flatMap(cookies -> Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConfig.AUTH_NAME)).map(Cookie::getValue).findFirst())
             ).flatMap(Optional::stream).findFirst();
             if (token.isEmpty()) {
                 logger.trace("Couldn't find a {} token on the request {}", SecurityConfig.AUTH_NAME, request.getRequestURI());

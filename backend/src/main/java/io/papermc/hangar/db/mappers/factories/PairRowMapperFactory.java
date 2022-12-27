@@ -1,5 +1,9 @@
 package io.papermc.hangar.db.mappers.factories;
 
+import java.lang.reflect.Type;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Optional;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdbi.v3.core.config.ConfigRegistry;
@@ -12,11 +16,6 @@ import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.core.mapper.RowMappers;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Type;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Optional;
 
 @Component
 public class PairRowMapperFactory implements RowMapperFactory {
@@ -46,7 +45,7 @@ public class PairRowMapperFactory implements RowMapperFactory {
         if (rowMapper.isPresent()) {
             return rowMapper.get().map(rs, ctx);
         } else {
-            final ColumnMapper<?> columnMapper = columnMappers.findFor(type).orElseThrow(() -> new NoSuchMapperException("No column mapper registered for Pair " + (left ? "left" : "right") +  " parameter " + type));
+            final ColumnMapper<?> columnMapper = columnMappers.findFor(type).orElseThrow(() -> new NoSuchMapperException("No column mapper registered for Pair " + (left ? "left" : "right") + " parameter " + type));
             return columnMapper.map(rs, 1, ctx);
         }
     }

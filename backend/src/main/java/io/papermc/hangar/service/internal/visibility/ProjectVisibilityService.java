@@ -1,9 +1,5 @@
 package io.papermc.hangar.service.internal.visibility;
 
-import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.VisibilityDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -13,8 +9,10 @@ import io.papermc.hangar.model.internal.job.UpdateDiscourseProjectTopicJob;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.service.internal.JobService;
-
 import java.util.Map;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ProjectVisibilityService extends VisibilityService<ProjectContext, ProjectTable, ProjectVisibilityChangeTable> {

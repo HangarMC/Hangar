@@ -2,9 +2,7 @@ package io.papermc.hangar.db.dao.internal.table.projects;
 
 import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.db.projects.PinnedProjectTable;
-
 import java.util.List;
-
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;

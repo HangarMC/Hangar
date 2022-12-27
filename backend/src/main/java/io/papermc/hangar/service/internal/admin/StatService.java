@@ -10,19 +10,18 @@ import io.papermc.hangar.model.identified.ProjectIdentified;
 import io.papermc.hangar.model.identified.VersionIdentified;
 import io.papermc.hangar.model.internal.admin.DayStats;
 import io.papermc.hangar.util.RequestUtil;
+import java.net.InetAddress;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import javax.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
-
-import javax.servlet.http.Cookie;
-import java.net.InetAddress;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class StatService extends HangarComponent {
@@ -65,12 +64,12 @@ public class StatService extends HangarComponent {
 
     private void setCookie(final String cookieValue) {
         this.response.addHeader(HttpHeaders.SET_COOKIE,
-                ResponseCookie.from(STAT_TRACKING_COOKIE, cookieValue)
-                        .secure(this.config.security.secure())
-                        .path("/")
-                        .maxAge((long) (60 * 60 * 24 * 356.24 * 1000))
-                        .sameSite("Strict")
-                        .build().toString()
+            ResponseCookie.from(STAT_TRACKING_COOKIE, cookieValue)
+                .secure(this.config.security.secure())
+                .path("/")
+                .maxAge((long) (60 * 60 * 24 * 356.24 * 1000))
+                .sameSite("Strict")
+                .build().toString()
         );
     }
 

@@ -1,12 +1,6 @@
 package io.papermc.hangar.db.extras;
 
-import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.model.api.requests.RequestPagination;
-import org.jdbi.v3.core.statement.SqlStatement;
-import org.jdbi.v3.sqlobject.customizer.SqlStatementCustomizerFactory;
-import org.jdbi.v3.sqlobject.customizer.SqlStatementCustomizingAnnotation;
-import org.jdbi.v3.sqlobject.customizer.SqlStatementParameterCustomizer;
-
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -16,6 +10,10 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
+import org.jdbi.v3.core.statement.SqlStatement;
+import org.jdbi.v3.sqlobject.customizer.SqlStatementCustomizerFactory;
+import org.jdbi.v3.sqlobject.customizer.SqlStatementCustomizingAnnotation;
+import org.jdbi.v3.sqlobject.customizer.SqlStatementParameterCustomizer;
 
 /**
  * Configure filters, sorters, offset, and limit from a web request

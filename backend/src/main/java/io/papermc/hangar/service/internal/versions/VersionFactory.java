@@ -51,16 +51,6 @@ import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.CryptoUtils;
 import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.spongepowered.configurate.ConfigurateException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -77,6 +67,16 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.configurate.ConfigurateException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class VersionFactory extends HangarComponent {
@@ -306,7 +306,7 @@ public class VersionFactory extends HangarComponent {
             this.actionLogger.version(LogAction.VERSION_CREATED.create(VersionContext.of(projectId, projectVersionTable.getId()), "published", ""));
 
             if (projectTable.getVisibility() == Visibility.NEW) {
-                //TODO automatic checks for malicious code or files => set visibility to NEEDSAPPROVAL
+                // TODO automatic checks for malicious code or files => set visibility to NEEDSAPPROVAL
                 this.projectVisibilityService.changeVisibility(projectTable, Visibility.PUBLIC, "First version");
             }
 
@@ -437,7 +437,7 @@ public class VersionFactory extends HangarComponent {
 
     @Transactional
     public @Nullable LastDependencies getLastVersionDependencies(final String author, final String slug, final @Nullable String channel, final Platform platform) {
-        //TODO optimize with specific query
+        // TODO optimize with specific query
         final RequestPagination pagination = new RequestPagination(1L, 0L);
         pagination.getFilters().add(new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
         if (channel != null) {

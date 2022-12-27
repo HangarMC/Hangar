@@ -2,7 +2,6 @@ package io.papermc.hangar.model.db.log;
 
 import io.papermc.hangar.model.internal.logs.LoggedAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
-
 import java.net.InetAddress;
 
 public class LoggedActionsProjectTable extends LoggedActionTable {
@@ -21,7 +20,7 @@ public class LoggedActionsProjectTable extends LoggedActionTable {
     @Override
     public String toString() {
         return "LoggedActionsProjectTable{" +
-                "projectId=" + this.projectId +
-                "} " + super.toString();
+            "projectId=" + this.projectId +
+            "} " + super.toString();
     }
 }

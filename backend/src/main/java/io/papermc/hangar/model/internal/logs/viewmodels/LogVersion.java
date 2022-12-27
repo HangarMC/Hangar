@@ -1,9 +1,8 @@
 package io.papermc.hangar.model.internal.logs.viewmodels;
 
 import io.papermc.hangar.model.common.Platform;
-import org.jdbi.v3.core.mapper.PropagateNull;
-
 import java.util.List;
+import org.jdbi.v3.core.mapper.PropagateNull;
 
 public class LogVersion {
 
@@ -32,9 +31,9 @@ public class LogVersion {
     @Override
     public String toString() {
         return "LogVersion{" +
-                "id=" + this.id +
-                ", versionString='" + this.versionString + '\'' +
-                ", platforms=" + this.platforms +
-                '}';
+            "id=" + this.id +
+            ", versionString='" + this.versionString + '\'' +
+            ", platforms=" + this.platforms +
+            '}';
     }
 }

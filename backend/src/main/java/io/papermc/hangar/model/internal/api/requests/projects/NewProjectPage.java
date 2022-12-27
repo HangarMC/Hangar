@@ -28,8 +28,8 @@ public class NewProjectPage {
     @Override
     public String toString() {
         return "NewProjectPage{" +
-                "name='" + this.name + '\'' +
-                ", parentId=" + this.parentId +
-                '}';
+            "name='" + this.name + '\'' +
+            ", parentId=" + this.parentId +
+            '}';
     }
 }

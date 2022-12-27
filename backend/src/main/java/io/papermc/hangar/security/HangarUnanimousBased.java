@@ -1,14 +1,13 @@
 package io.papermc.hangar.security;
 
 import io.papermc.hangar.security.annotations.HangarDecisionVoter;
+import java.util.Collection;
+import java.util.List;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.core.Authentication;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * So the default {@link UnanimousBased} decision manager
@@ -22,7 +21,7 @@ public class HangarUnanimousBased extends UnanimousBased {
     }
 
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void decide(final Authentication authentication, final Object object, final Collection<ConfigAttribute> attributes) throws AccessDeniedException {
         int grant = 0;
         for (final AccessDecisionVoter voter : this.getDecisionVoters()) {

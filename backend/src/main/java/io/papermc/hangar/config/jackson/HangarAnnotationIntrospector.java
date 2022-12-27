@@ -5,12 +5,11 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
+import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.Arrays;
 
 public class HangarAnnotationIntrospector extends JacksonAnnotationIntrospector {
 

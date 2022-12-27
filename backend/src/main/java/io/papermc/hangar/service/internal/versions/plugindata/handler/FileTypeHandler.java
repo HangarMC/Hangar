@@ -2,15 +2,14 @@ package io.papermc.hangar.service.internal.versions.plugindata.handler;
 
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
-import org.jdbi.v3.core.internal.MemoizingSupplier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.configurate.ConfigurateException;
-
 import java.io.BufferedReader;
 import java.util.Collections;
 import java.util.Set;
 import java.util.SortedSet;
+import org.jdbi.v3.core.internal.MemoizingSupplier;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.ConfigurateException;
 
 public abstract class FileTypeHandler<D extends FileTypeHandler.FileData> {
 
@@ -75,10 +74,10 @@ public abstract class FileTypeHandler<D extends FileTypeHandler.FileData> {
         @Override
         public final String toString() {
             return "FileData{" +
-                    "version='" + this.version + '\'' +
-                    ", name='" + this.name + '\'' +
-                    ", pluginDependencies='" + this.getPluginDependencies() + '\'' +
-                    '}';
+                "version='" + this.version + '\'' +
+                ", name='" + this.name + '\'' +
+                ", pluginDependencies='" + this.getPluginDependencies() + '\'' +
+                '}';
         }
     }
 }

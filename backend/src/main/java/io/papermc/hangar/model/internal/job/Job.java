@@ -4,12 +4,11 @@ import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.JobState;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.db.JobTable;
-import org.jetbrains.annotations.Nullable;
-
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class Job extends Model {
 
@@ -95,6 +94,7 @@ public abstract class Job extends Model {
     }
 
     public abstract void loadFromProperties();
+
     public abstract void saveIntoProperties();
 
     public void fromTable(final JobTable table) {
@@ -130,14 +130,14 @@ public abstract class Job extends Model {
     @Override
     public String toString() {
         return "Job{" +
-               "createdAt=" + this.createdAt +
-               ", lastUpdated=" + this.lastUpdated +
-               ", retryAt=" + this.retryAt +
-               ", lastError='" + this.lastError + '\'' +
-               ", lastErrorDescriptor='" + this.lastErrorDescriptor + '\'' +
-               ", state=" + this.state +
-               ", jobType=" + this.jobType +
-               ", jobProperties=" + this.jobProperties +
-               "} " + super.toString();
+            "createdAt=" + this.createdAt +
+            ", lastUpdated=" + this.lastUpdated +
+            ", retryAt=" + this.retryAt +
+            ", lastError='" + this.lastError + '\'' +
+            ", lastErrorDescriptor='" + this.lastErrorDescriptor + '\'' +
+            ", state=" + this.state +
+            ", jobType=" + this.jobType +
+            ", jobProperties=" + this.jobProperties +
+            "} " + super.toString();
     }
 }

@@ -45,12 +45,12 @@ public class ProjectStats {
     @Override
     public String toString() {
         return "ProjectStats{" +
-                "views=" + this.views +
-                ", downloads=" + this.downloads +
-                ", recentViews=" + this.recentViews +
-                ", recentDownloads=" + this.recentDownloads +
-                ", stars=" + this.stars +
-                ", watchers=" + this.watchers +
-                '}';
+            "views=" + this.views +
+            ", downloads=" + this.downloads +
+            ", recentViews=" + this.recentViews +
+            ", recentDownloads=" + this.recentDownloads +
+            ", stars=" + this.stars +
+            ", watchers=" + this.watchers +
+            '}';
     }
 }

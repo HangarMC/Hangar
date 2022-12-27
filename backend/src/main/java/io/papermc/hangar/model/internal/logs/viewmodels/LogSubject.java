@@ -26,8 +26,8 @@ public class LogSubject {
     @Override
     public String toString() {
         return "LogSubject{" +
-                "id=" + this.id +
-                ", name='" + this.name + '\'' +
-                '}';
+            "id=" + this.id +
+            ", name='" + this.name + '\'' +
+            '}';
     }
 }

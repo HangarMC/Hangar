@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.api.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.papermc.hangar.model.api.auth.ApiSession;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -8,9 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import io.papermc.hangar.model.api.auth.ApiSession;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ActiveProfiles("test")
@@ -36,7 +36,7 @@ class PermissionsControllerTest {
     @Test
     void testHasAllWithProjectOnly() throws Exception {
         this.mockMvc.perform(get("/api/v1/permissions/hasAll?permissions=create_organization&permissions=create_project")
-            .header("Authorization", "HangarAuth " + this.getJwt(projectOnly)))
+                .header("Authorization", "HangarAuth " + this.getJwt(projectOnly)))
             .andExpect(jsonPath("$.result").value(false));
     }
 

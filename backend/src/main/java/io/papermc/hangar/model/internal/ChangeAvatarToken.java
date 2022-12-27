@@ -31,18 +31,18 @@ public class ChangeAvatarToken {
     public static ChangeAvatarToken of(final ObjectNode objectNode) {
         final ObjectNode rawData = (ObjectNode) objectNode.get("raw_data");
         return new ChangeAvatarToken(
-                objectNode.get("signed_data").asText(),
-                rawData.get("target_username").asText(),
-                rawData.get("request_user_id").asInt()
+            objectNode.get("signed_data").asText(),
+            rawData.get("target_username").asText(),
+            rawData.get("request_user_id").asInt()
         );
     }
 
     @Override
     public String toString() {
         return "ChangeAvatarToken{" +
-                "signedData='" + this.signedData + '\'' +
-                ", targetUsername='" + this.targetUsername + '\'' +
-                ", requestUserId=" + this.requestUserId +
-                '}';
+            "signedData='" + this.signedData + '\'' +
+            ", targetUsername='" + this.targetUsername + '\'' +
+            ", requestUserId=" + this.requestUserId +
+            '}';
     }
 }

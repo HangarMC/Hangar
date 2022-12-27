@@ -20,7 +20,7 @@ public class CreateOrganizationForm extends EditMembersForm<OrganizationRole> {
     @Override
     public String toString() {
         return "CreateOrganizationForm{" +
-                "name='" + this.name + '\'' +
-                "} " + super.toString();
+            "name='" + this.name + '\'' +
+            "} " + super.toString();
     }
 }

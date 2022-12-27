@@ -1,11 +1,10 @@
 package io.papermc.hangar.db.dao.internal.projects;
 
 import io.papermc.hangar.model.internal.projects.HangarProjectApproval;
+import java.util.List;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 @RegisterConstructorMapper(HangarProjectApproval.class)
@@ -35,7 +34,7 @@ public interface HangarProjectsAdminDAO {
     List<HangarProjectApproval> getVisibilityNeedsApproval();
 
     @SqlQuery("""
-        SELECT COUNT(sq.id)
+        SELECT count(sq.id)
           FROM (SELECT p.id,
                        vc.resolved_at,
                        lag(vc.visibility) OVER last_vc AS last_visibility

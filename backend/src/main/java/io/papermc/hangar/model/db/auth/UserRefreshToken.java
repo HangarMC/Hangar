@@ -1,10 +1,9 @@
 package io.papermc.hangar.model.db.auth;
 
 import io.papermc.hangar.model.db.Table;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
 import java.util.UUID;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class UserRefreshToken extends Table {
 
@@ -55,10 +54,10 @@ public class UserRefreshToken extends Table {
     @Override
     public String toString() {
         return "UserRefreshToken{" +
-                "userId=" + this.userId +
-                ", lastUpdated=" + this.lastUpdated +
-                ", token=" + this.token +
-                ", deviceId=" + this.deviceId +
-                "} " + super.toString();
+            "userId=" + this.userId +
+            ", lastUpdated=" + this.lastUpdated +
+            ", token=" + this.token +
+            ", deviceId=" + this.deviceId +
+            "} " + super.toString();
     }
 }

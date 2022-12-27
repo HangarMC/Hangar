@@ -1,7 +1,6 @@
 package io.papermc.hangar.model.db.versions.dependencies;
 
 import io.papermc.hangar.model.db.Table;
-
 import java.time.OffsetDateTime;
 
 public abstract class VersionDependencyTable extends Table {
@@ -24,7 +23,7 @@ public abstract class VersionDependencyTable extends Table {
     @Override
     public String toString() {
         return "VersionDependencyTable{" +
-                "versionId=" + this.versionId +
-                "} " + super.toString();
+            "versionId=" + this.versionId +
+            "} " + super.toString();
     }
 }

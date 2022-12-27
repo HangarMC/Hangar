@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.identified.ProjectIdentified;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectPageTable extends Table implements Named, ProjectIdentified {
 
@@ -76,12 +75,12 @@ public class ProjectPageTable extends Table implements Named, ProjectIdentified 
     @Override
     public String toString() {
         return "ProjectPageTable{" +
-                "projectId=" + this.projectId +
-                ", name='" + this.name + '\'' +
-                ", slug='" + this.slug + '\'' +
-                ", contents='" + this.contents + '\'' +
-                ", deletable=" + this.deletable +
-                ", parentId=" + this.parentId +
-                "} " + super.toString();
+            "projectId=" + this.projectId +
+            ", name='" + this.name + '\'' +
+            ", slug='" + this.slug + '\'' +
+            ", contents='" + this.contents + '\'' +
+            ", deletable=" + this.deletable +
+            ", parentId=" + this.parentId +
+            "} " + super.toString();
     }
 }

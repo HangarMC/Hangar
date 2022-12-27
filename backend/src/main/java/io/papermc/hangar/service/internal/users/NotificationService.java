@@ -19,12 +19,11 @@ import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.model.internal.user.notifications.HangarNotification;
 import io.papermc.hangar.model.internal.user.notifications.NotificationType;
 import io.papermc.hangar.service.PermissionService;
+import java.util.ArrayList;
+import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class NotificationService extends HangarComponent {

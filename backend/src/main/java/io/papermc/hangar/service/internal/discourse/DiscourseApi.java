@@ -1,5 +1,11 @@
 package io.papermc.hangar.service.internal.discourse;
 
+import io.papermc.hangar.config.hangar.DiscourseConfig;
+import io.papermc.hangar.model.internal.discourse.DiscourseError;
+import io.papermc.hangar.model.internal.discourse.DiscoursePost;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,14 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-
-import io.papermc.hangar.config.hangar.DiscourseConfig;
-import io.papermc.hangar.model.internal.discourse.DiscourseError;
-import io.papermc.hangar.model.internal.discourse.DiscoursePost;
 
 @Component
 public class DiscourseApi {

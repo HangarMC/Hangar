@@ -4,16 +4,16 @@ import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.IRoleTable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface Role<T extends IRoleTable<? extends Role<T>>> {
 
     Map<String, Role<?>> VALUE_ROLES = new HashMap<>();
     Map<Long, Role<?>> ID_ROLES = new HashMap<>();
+
     static <C extends Enum<C> & Role<?>> void registerRole(final C roleEnum) {
         if (ID_ROLES.containsKey(roleEnum.getRoleId()) || VALUE_ROLES.containsKey(roleEnum.getValue())) {
             throw new IllegalArgumentException(roleEnum + " has a duplicate role ID or value");

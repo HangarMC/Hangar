@@ -9,12 +9,11 @@ import io.github.bucket4j.Refill;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.util.RequestUtil;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Service;
-
 import java.net.InetAddress;
 import java.time.Duration;
 import java.util.Locale;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.stereotype.Service;
 
 @Service
 public class BucketService extends HangarComponent {
@@ -29,7 +28,7 @@ public class BucketService extends HangarComponent {
      * @return bucket, or null if no limit should be applied
      */
     public @Nullable Bucket bucket(final String path, final RateLimit limit) {
-        //TODO local/loopback address checks/admin user check => return null?
+        // TODO local/loopback address checks/admin user check => return null?
         final InetAddress address = RequestUtil.getRemoteInetAddress(this.request);
         final Cache<String, Bucket> pathCache = this.cache.get(address);
         return pathCache.get(path.toLowerCase(Locale.ROOT), p -> this.createBucket(limit));

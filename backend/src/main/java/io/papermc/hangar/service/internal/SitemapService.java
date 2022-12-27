@@ -13,11 +13,10 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Locale;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SitemapService extends HangarComponent {
@@ -37,7 +36,7 @@ public class SitemapService extends HangarComponent {
     @Cacheable("indexSitemap")
     public String getSitemap() {
         final SitemapGenerator generator = SitemapGenerator.of(this.config.getBaseUrl())
-                .addPage(WebPage.builder().name("global-sitemap.xml").build());
+            .addPage(WebPage.builder().name("global-sitemap.xml").build());
 
         this.userDAO.getAuthorNames().forEach(name -> generator.addPage(name + "/sitemap.xml"));
         return generator.toString();
@@ -46,11 +45,11 @@ public class SitemapService extends HangarComponent {
     @Cacheable("globalSitemap")
     public String getGlobalSitemap() {
         return SitemapGenerator.of(this.config.getBaseUrl())
-                .addPage(WebPage.builder().name("").changeFreq(ChangeFreq.HOURLY).build())
-                .addPage(WebPage.builder().name("authors").changeFreq(ChangeFreq.WEEKLY).build())
-                .addPage(WebPage.builder().name("staff").changeFreq(ChangeFreq.WEEKLY).build())
-                .addPage(WebPage.builder().name("api").build())
-                .toString();
+            .addPage(WebPage.builder().name("").changeFreq(ChangeFreq.HOURLY).build())
+            .addPage(WebPage.builder().name("authors").changeFreq(ChangeFreq.WEEKLY).build())
+            .addPage(WebPage.builder().name("staff").changeFreq(ChangeFreq.WEEKLY).build())
+            .addPage(WebPage.builder().name("api").build())
+            .toString();
     }
 
     @Cacheable(value = "userSitemap", key = "#username")
@@ -91,7 +90,7 @@ public class SitemapService extends HangarComponent {
         return generator.toString();
     }
 
-    private String path(final String...paths) {
+    private String path(final String... paths) {
         return String.join("/", paths);
     }
 }

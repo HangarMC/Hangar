@@ -2,6 +2,7 @@ package io.papermc.hangar.db.dao.internal.table.versions;
 
 import io.papermc.hangar.model.db.versions.reviews.ProjectVersionReviewMessageTable;
 import io.papermc.hangar.model.db.versions.reviews.ProjectVersionReviewTable;
+import java.util.List;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
@@ -9,8 +10,6 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 @RegisterConstructorMapper(ProjectVersionReviewTable.class)
@@ -39,9 +38,9 @@ public interface ProjectVersionReviewsDAO {
     List<ProjectVersionReviewTable> getUnfinishedReviews(long versionId);
 
     @SqlQuery("SELECT pvrm.* " +
-            "   FROM project_version_review_messages pvrm" +
-            "       JOIN project_version_reviews pvr ON pvrm.review_id = pvr.id" +
-            "   WHERE pvr.version_id = :versionId AND pvr.user_id = :userId" +
-            "   ORDER BY pvrm.created_at DESC LIMIT 1")
+        "   FROM project_version_review_messages pvrm" +
+        "       JOIN project_version_reviews pvr ON pvrm.review_id = pvr.id" +
+        "   WHERE pvr.version_id = :versionId AND pvr.user_id = :userId" +
+        "   ORDER BY pvrm.created_at DESC LIMIT 1")
     ProjectVersionReviewMessageTable getLatestMessage(long versionId, long userId);
 }

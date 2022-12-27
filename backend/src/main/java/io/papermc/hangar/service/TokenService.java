@@ -16,6 +16,11 @@ import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.security.authentication.api.HangarApiPrincipal;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.internal.users.UserService;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.util.Date;
+import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -23,12 +28,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.util.Date;
-import java.util.UUID;
 
 @Service
 public class TokenService extends HangarComponent {
@@ -113,22 +112,22 @@ public class TokenService extends HangarComponent {
 
     public String expiring(final UserTable userTable, final Permission globalPermission, final @Nullable String apiKeyIdentifier) {
         return JWT.create()
-                .withIssuer(this.config.security.tokenIssuer())
-                .withExpiresAt(new Date(Instant.now().plus(this.config.security.tokenExpiry()).toEpochMilli()))
-                .withSubject(userTable.getName())
-                .withClaim("id", userTable.getId())
-                .withClaim("permissions", globalPermission.toBinString())
-                .withClaim("locked", userTable.isLocked())
-                .withClaim("apiKeyIdentifier", apiKeyIdentifier)
-                .sign(this.getAlgo());
+            .withIssuer(this.config.security.tokenIssuer())
+            .withExpiresAt(new Date(Instant.now().plus(this.config.security.tokenExpiry()).toEpochMilli()))
+            .withSubject(userTable.getName())
+            .withClaim("id", userTable.getId())
+            .withClaim("permissions", globalPermission.toBinString())
+            .withClaim("locked", userTable.isLocked())
+            .withClaim("apiKeyIdentifier", apiKeyIdentifier)
+            .sign(this.getAlgo());
     }
 
     public String simple(final String username) {
         return JWT.create()
-                .withIssuer(this.config.security.tokenIssuer())
-                .withExpiresAt(new Date(Instant.now().plus(this.config.security.tokenExpiry()).toEpochMilli()))
-                .withSubject(username)
-                .sign(this.getAlgo());
+            .withIssuer(this.config.security.tokenIssuer())
+            .withExpiresAt(new Date(Instant.now().plus(this.config.security.tokenExpiry()).toEpochMilli()))
+            .withSubject(username)
+            .sign(this.getAlgo());
     }
 
     public HangarPrincipal parseHangarPrincipal(final DecodedJWT decodedJWT) {
@@ -154,9 +153,9 @@ public class TokenService extends HangarComponent {
     private JWTVerifier getVerifier() {
         if (this.verifier == null) {
             this.verifier = JWT.require(this.getAlgo())
-                    .acceptLeeway(10)
-                    .withIssuer(this.config.security.tokenIssuer())
-                    .build();
+                .acceptLeeway(10)
+                .withIssuer(this.config.security.tokenIssuer())
+                .build();
         }
         return this.verifier;
     }

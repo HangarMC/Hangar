@@ -4,10 +4,9 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.projects.PinnedProjectDAO;
 import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.db.projects.PinnedProjectTable;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class PinnedProjectService extends HangarComponent {

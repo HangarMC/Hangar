@@ -15,7 +15,7 @@ public class VersionStats {
     @Override
     public String toString() {
         return "VersionStats{" +
-                "downloads=" + this.downloads +
-                '}';
+            "downloads=" + this.downloads +
+            '}';
     }
 }

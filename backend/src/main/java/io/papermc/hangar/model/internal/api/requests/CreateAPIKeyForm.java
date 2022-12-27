@@ -2,10 +2,9 @@ package io.papermc.hangar.model.internal.api.requests;
 
 import io.papermc.hangar.model.common.NamedPermission;
 import io.swagger.annotations.ApiModelProperty;
-
+import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.List;
 
 public class CreateAPIKeyForm {
 
@@ -31,8 +30,8 @@ public class CreateAPIKeyForm {
     @Override
     public String toString() {
         return "CreateAPIKeyForm{" +
-                "name='" + this.name + '\'' +
-                ", permissions=" + this.permissions +
-                '}';
+            "name='" + this.name + '\'' +
+            ", permissions=" + this.permissions +
+            '}';
     }
 }

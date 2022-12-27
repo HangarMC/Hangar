@@ -1,10 +1,9 @@
 package io.papermc.hangar.service.internal;
 
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.util.Map;
 
 @ExtendWith(SpringExtension.class)
 class PaypalServiceTest {

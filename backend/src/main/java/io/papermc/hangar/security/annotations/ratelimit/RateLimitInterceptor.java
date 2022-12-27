@@ -3,6 +3,9 @@ package io.papermc.hangar.security.annotations.ratelimit;
 import io.github.bucket4j.Bucket;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.service.internal.BucketService;
+import java.lang.reflect.Method;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Method;
 
 @Component
 public class RateLimitInterceptor implements HandlerInterceptor {

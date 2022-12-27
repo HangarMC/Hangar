@@ -3,10 +3,9 @@ package io.papermc.hangar.model.db.projects;
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.loggable.ProjectLoggable;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.time.OffsetDateTime;
 
 public class ProjectFlagTable extends Table implements ProjectLoggable {
 
@@ -81,13 +80,13 @@ public class ProjectFlagTable extends Table implements ProjectLoggable {
     @Override
     public String toString() {
         return "ProjectFlagTable{" +
-               "projectId=" + this.projectId +
-               ", userId=" + this.userId +
-               ", reason=" + this.reason +
-               ", resolved=" + this.resolved +
-               ", comment='" + this.comment + '\'' +
-               ", resolvedAt=" + this.resolvedAt +
-               ", resolvedBy=" + this.resolvedBy +
-               "} " + super.toString();
+            "projectId=" + this.projectId +
+            ", userId=" + this.userId +
+            ", reason=" + this.reason +
+            ", resolved=" + this.resolved +
+            ", comment='" + this.comment + '\'' +
+            ", resolvedAt=" + this.resolvedAt +
+            ", resolvedBy=" + this.resolvedBy +
+            "} " + super.toString();
     }
 }

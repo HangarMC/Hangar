@@ -20,18 +20,17 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class VersionDependencyService extends HangarComponent {
@@ -70,7 +69,7 @@ public class VersionDependencyService extends HangarComponent {
             version.getPlatformDependenciesFormatted().put(entry.getKey(), StringUtils.formatVersionNumbers(new ArrayList<>(entry.getValue())));
         }
 
-        //TODO into one query
+        // TODO into one query
         for (final Platform platform : Platform.getValues()) {
             final Set<PluginDependency> pluginDependencySet = this.versionsApiDAO.getPluginDependencies(versionId, platform);
             if (!pluginDependencySet.isEmpty()) {

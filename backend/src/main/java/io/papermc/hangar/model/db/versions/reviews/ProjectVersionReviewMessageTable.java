@@ -3,10 +3,9 @@ package io.papermc.hangar.model.db.versions.reviews;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.common.ReviewAction;
 import io.papermc.hangar.model.db.Table;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.time.OffsetDateTime;
 
 public class ProjectVersionReviewMessageTable extends Table {
 
@@ -60,9 +59,9 @@ public class ProjectVersionReviewMessageTable extends Table {
     @Override
     public String toString() {
         return "ProjectVersionReviewMessageTable{" +
-                "reviewId=" + this.reviewId +
-                ", message='" + this.message + '\'' +
-                ", action=" + this.action +
-                "} " + super.toString();
+            "reviewId=" + this.reviewId +
+            ", message='" + this.message + '\'' +
+            ", action=" + this.action +
+            "} " + super.toString();
     }
 }

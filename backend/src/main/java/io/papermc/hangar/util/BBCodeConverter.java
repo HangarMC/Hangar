@@ -1,9 +1,9 @@
 package io.papermc.hangar.util;
 
 import com.google.common.primitives.Ints;
-import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 
 public class BBCodeConverter {
 
@@ -74,8 +74,8 @@ public class BBCodeConverter {
                 }
 
                 return "```" + lang + "\n"
-                       + content
-                       + "\n```";
+                    + content
+                    + "\n```";
             }
 
             @Override

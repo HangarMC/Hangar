@@ -6,6 +6,9 @@ import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.UserActionLogService;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.jdbi.v3.core.internal.MemoizingSupplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,10 +19,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
 
 public abstract class HangarComponent {
 
@@ -56,8 +55,8 @@ public abstract class HangarComponent {
 
     private MemoizingSupplier<Optional<HangarPrincipal>> getHangarPrincipal0() {
         return MemoizingSupplier.of(() -> Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .filter(HangarAuthenticationToken.class::isInstance)
-                .map(HangarAuthenticationToken.class::cast)
-                .map(HangarAuthenticationToken::getPrincipal));
+            .filter(HangarAuthenticationToken.class::isInstance)
+            .map(HangarAuthenticationToken.class::cast)
+            .map(HangarAuthenticationToken::getPrincipal));
     }
 }

@@ -4,12 +4,11 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.PermissionsDAO;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
+import java.util.Map;
+import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
-import java.util.function.Function;
 
 @Service
 public class PermissionService extends HangarComponent {
@@ -74,7 +73,6 @@ public class PermissionService extends HangarComponent {
         final Permission perm = permissionSupplier.apply(identifier);
         if (perm == null) {
             return DEFAULT_SIGNED_IN_PERMISSIONS;
-        }
-        else return perm.add(DEFAULT_SIGNED_IN_PERMISSIONS);
+        } else return perm.add(DEFAULT_SIGNED_IN_PERMISSIONS);
     }
 }

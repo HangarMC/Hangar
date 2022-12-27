@@ -2,7 +2,6 @@ package io.papermc.hangar.model.internal.api.requests.projects;
 
 import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Color;
-
 import java.util.Set;
 
 public class EditChannelForm extends ChannelForm {
@@ -21,7 +20,7 @@ public class EditChannelForm extends ChannelForm {
     @Override
     public String toString() {
         return "EditChannelForm{" +
-                "id=" + this.id +
-                "} " + super.toString();
+            "id=" + this.id +
+            "} " + super.toString();
     }
 }

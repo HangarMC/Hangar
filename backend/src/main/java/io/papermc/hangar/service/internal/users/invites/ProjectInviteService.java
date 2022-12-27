@@ -13,9 +13,9 @@ import io.papermc.hangar.service.internal.perms.roles.ProjectRoleService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 public class ProjectInviteService extends InviteService<ProjectContext, ProjectRole, ProjectRoleTable, ProjectTable> {

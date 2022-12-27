@@ -5,7 +5,6 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.user.JoinableMember;
-
 import java.util.List;
 
 public class HangarOrganization implements Joinable<OrganizationRoleTable> {
@@ -42,9 +41,9 @@ public class HangarOrganization implements Joinable<OrganizationRoleTable> {
     @Override
     public String toString() {
         return "HangarOrganization{" +
-                "id=" + this.id +
-                ", owner=" + this.owner +
-                ", members=" + this.members +
-                '}';
+            "id=" + this.id +
+            ", owner=" + this.owner +
+            ", members=" + this.members +
+            '}';
     }
 }

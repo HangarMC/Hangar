@@ -1,11 +1,5 @@
 package io.papermc.hangar.service.internal.discourse;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Map;
-import java.util.Objects;
-
 import io.papermc.hangar.config.hangar.DiscourseConfig;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.projects.Visibility;
@@ -18,6 +12,10 @@ import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.versions.VersionService;
+import java.util.Map;
+import java.util.Objects;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Never call these methods in here directly, they need to be called as part of a job, with retry and shit
@@ -74,10 +72,10 @@ public class DiscourseService {
             throw new JobException("project post wasn't created " + project.getProjectId(), "sanity_check");
         }
         if (!post.isTopic()) {
-            throw new JobException("project post isn't a topic?! " +  project.getProjectId(), "sanity_check");
+            throw new JobException("project post isn't a topic?! " + project.getProjectId(), "sanity_check");
         }
         if (!post.getUsername().equals(project.getOwnerName())) {
-            throw new JobException("project post user isn't owner?! " +  project.getProjectId(), "sanity_check");
+            throw new JobException("project post user isn't owner?! " + project.getProjectId(), "sanity_check");
         }
 
         this.projectService.saveDiscourseData(project, post.getTopicId(), post.getId());

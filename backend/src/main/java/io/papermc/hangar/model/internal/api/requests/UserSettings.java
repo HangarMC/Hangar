@@ -29,8 +29,8 @@ public class UserSettings {
     @Override
     public String toString() {
         return "UserSettings{" +
-               "theme='" + this.theme + '\'' +
-               ", language='" + this.language + '\'' +
-               '}';
+            "theme='" + this.theme + '\'' +
+            ", language='" + this.language + '\'' +
+            '}';
     }
 }

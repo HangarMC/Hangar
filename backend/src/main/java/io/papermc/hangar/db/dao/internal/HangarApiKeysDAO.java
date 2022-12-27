@@ -1,11 +1,10 @@
 package io.papermc.hangar.db.dao.internal;
 
 import io.papermc.hangar.model.api.ApiKey;
+import java.util.List;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 @RegisterConstructorMapper(ApiKey.class)

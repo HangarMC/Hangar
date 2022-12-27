@@ -3,7 +3,6 @@ package io.papermc.hangar.model.db.log;
 
 import io.papermc.hangar.model.internal.logs.LoggedAction;
 import io.papermc.hangar.model.internal.logs.contexts.OrganizationContext;
-
 import java.net.InetAddress;
 
 public class LoggedActionsOrganizationTable extends LoggedActionTable {
@@ -22,7 +21,7 @@ public class LoggedActionsOrganizationTable extends LoggedActionTable {
     @Override
     public String toString() {
         return "LoggedActionsOrganizationTable{" +
-                "organizationId=" + this.organizationId +
-                "} " + super.toString();
+            "organizationId=" + this.organizationId +
+            "} " + super.toString();
     }
 }

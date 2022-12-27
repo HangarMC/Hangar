@@ -5,10 +5,9 @@ import io.papermc.hangar.db.dao.internal.ActivityDAO;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.admin.activity.FlagActivity;
 import io.papermc.hangar.model.internal.admin.activity.ReviewActivity;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ActivityService extends HangarComponent {

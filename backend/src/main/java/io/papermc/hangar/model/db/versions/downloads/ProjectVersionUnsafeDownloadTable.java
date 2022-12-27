@@ -1,10 +1,9 @@
 package io.papermc.hangar.model.db.versions.downloads;
 
 import io.papermc.hangar.model.db.Table;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.net.InetAddress;
 import java.time.OffsetDateTime;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectVersionUnsafeDownloadTable extends Table {
 
@@ -34,8 +33,8 @@ public class ProjectVersionUnsafeDownloadTable extends Table {
     @Override
     public String toString() {
         return "ProjectVersionUnsafeDownloadTable{" +
-                "userId=" + this.userId +
-                ", address=" + this.address +
-                "} " + super.toString();
+            "userId=" + this.userId +
+            ", address=" + this.address +
+            "} " + super.toString();
     }
 }

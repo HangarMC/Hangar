@@ -2,7 +2,6 @@ package io.papermc.hangar.model.internal.logs;
 
 import io.papermc.hangar.model.db.log.LoggedActionTable;
 import io.papermc.hangar.model.internal.logs.contexts.LogContext;
-
 import java.util.Objects;
 
 public class LoggedAction<LC extends LogContext<? extends LoggedActionTable, LC>> {

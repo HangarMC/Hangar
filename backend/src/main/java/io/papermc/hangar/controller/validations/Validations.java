@@ -1,13 +1,12 @@
 package io.papermc.hangar.controller.validations;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
-
+import io.papermc.hangar.util.PatternWrapper;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-import io.papermc.hangar.util.PatternWrapper;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 @Component
 public class Validations {

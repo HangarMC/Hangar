@@ -3,7 +3,6 @@ package io.papermc.hangar.model.api.requests;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -55,10 +54,10 @@ public class RequestPagination {
     @Override
     public String toString() {
         return "RequestPagination{" +
-                "limit=" + this.limit +
-                ", offset=" + this.offset +
-                ", filters=" + this.filters +
-                ", sorters=" + this.sorters.keySet() +
-                '}';
+            "limit=" + this.limit +
+            ", offset=" + this.offset +
+            ", filters=" + this.filters +
+            ", sorters=" + this.sorters.keySet() +
+            '}';
     }
 }

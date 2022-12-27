@@ -2,9 +2,9 @@ package io.papermc.hangar.db.dao.internal.table;
 
 import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.db.UserTable;
-import org.jdbi.v3.sqlobject.config.KeyColumn;
+import java.util.List;
+import java.util.UUID;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
-import org.jdbi.v3.sqlobject.config.ValueColumn;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
@@ -12,12 +12,6 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
-
-import java.time.OffsetDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @Repository
 @RegisterConstructorMapper(UserTable.class)
@@ -46,7 +40,7 @@ public interface UserDAO {
     @SqlUpdate("UPDATE users SET name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language, theme = :theme WHERE id = :id")
     UserTable update(@BindBean UserTable user);
 
-    @SqlQuery("SELECT * FROM users WHERE id = :id OR LOWER(name) = LOWER(:name) OR uuid = :uuid")
+    @SqlQuery("SELECT * FROM users WHERE id = :id OR lower(name) = lower(:name) OR uuid = :uuid")
     UserTable _getUserTable(Long id, String name, UUID uuid);
 
     default UserTable getUserTable(final long id) {
@@ -67,7 +61,7 @@ public interface UserDAO {
     @SqlQuery("""
         SELECT u.name
         FROM users u
-        ORDER BY (SELECT COUNT(*) FROM project_members_all pma WHERE pma.user_id = u.id) DESC
+        ORDER BY (SELECT count(*) FROM project_members_all pma WHERE pma.user_id = u.id) DESC
         LIMIT 49000
         """)
     List<String> getAuthorNames();
@@ -78,5 +72,5 @@ public interface UserDAO {
 
     @Timestamped
     @SqlUpdate("INSERT INTO users_history(uuid, old_name, new_name, date) VALUES (:uuid, :oldName, :newName, :now)")
-    void recordNameChange(final  @NotNull UUID uuid, final @NotNull String oldName, final @NotNull String newName);
+    void recordNameChange(final @NotNull UUID uuid, final @NotNull String oldName, final @NotNull String newName);
 }

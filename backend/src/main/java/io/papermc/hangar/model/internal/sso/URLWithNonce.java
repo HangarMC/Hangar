@@ -21,8 +21,8 @@ public class URLWithNonce {
     @Override
     public String toString() {
         return "URLWithNonce{" +
-                "url='" + this.url + '\'' +
-                ", nonce='" + this.nonce + '\'' +
-                '}';
+            "url='" + this.url + '\'' +
+            ", nonce='" + this.nonce + '\'' +
+            '}';
     }
 }

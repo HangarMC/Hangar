@@ -1,9 +1,6 @@
 package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.HangarComponent;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
@@ -13,6 +10,8 @@ import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class PaypalService extends HangarComponent {
@@ -29,11 +28,11 @@ public class PaypalService extends HangarComponent {
 
     public void handle(final String ipn) throws URISyntaxException {
         final HttpRequest request = HttpRequest
-                .newBuilder(new URI((this.sandbox ? PAYPAL_SANDBOX_CALLBACK : PAYPAL_CALLBACK) + ipn))
-                .header("User-Agent", "Hangar")
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .GET()
-                .build();
+            .newBuilder(new URI((this.sandbox ? PAYPAL_SANDBOX_CALLBACK : PAYPAL_CALLBACK) + ipn))
+            .header("User-Agent", "Hangar")
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .GET()
+            .build();
 
         this.client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept(r -> {
             if (r.statusCode() == 200) {

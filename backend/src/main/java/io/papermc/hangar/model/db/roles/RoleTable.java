@@ -5,9 +5,8 @@ import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.Table;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class RoleTable extends Table implements Named {
 
@@ -74,26 +73,26 @@ public class RoleTable extends Table implements Named {
     public static RoleTable fromRole(final Role<?> role) {
         return new RoleTable(
             role.getRoleId(),
-                role.getValue(),
-                role.getRoleCategory(),
-                role.getTitle(),
-                role.getColor().getHex(),
-                role.isAssignable(),
-                role.getRank(),
-                role.getPermissions()
+            role.getValue(),
+            role.getRoleCategory(),
+            role.getTitle(),
+            role.getColor().getHex(),
+            role.isAssignable(),
+            role.getRank(),
+            role.getPermissions()
         );
     }
 
     @Override
     public String toString() {
         return "RoleTable{" +
-                "name='" + this.name + '\'' +
-                ", category=" + this.category +
-                ", title='" + this.title + '\'' +
-                ", color='" + this.color + '\'' +
-                ", assignable=" + this.assignable +
-                ", rank=" + this.rank +
-                ", permission=" + this.permission +
-                "} " + super.toString();
+            "name='" + this.name + '\'' +
+            ", category=" + this.category +
+            ", title='" + this.title + '\'' +
+            ", color='" + this.color + '\'' +
+            ", assignable=" + this.assignable +
+            ", rank=" + this.rank +
+            ", permission=" + this.permission +
+            "} " + super.toString();
     }
 }

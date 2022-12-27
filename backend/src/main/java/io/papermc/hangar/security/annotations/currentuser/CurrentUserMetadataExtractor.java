@@ -1,14 +1,13 @@
 package io.papermc.hangar.security.annotations.currentuser;
 
+import java.util.Collection;
+import java.util.Set;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.annotation.AnnotationMetadataExtractor;
 import org.springframework.stereotype.Component;
-
-import java.util.Collection;
-import java.util.Set;
 
 @Component
 public class CurrentUserMetadataExtractor implements AnnotationMetadataExtractor<CurrentUser> {

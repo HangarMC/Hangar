@@ -1,9 +1,8 @@
 package io.papermc.hangar.model.db.projects;
 
 import io.papermc.hangar.model.db.Table;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.time.OffsetDateTime;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectHomePageTable extends Table {
 
@@ -33,8 +32,8 @@ public class ProjectHomePageTable extends Table {
     @Override
     public String toString() {
         return "ProjectHomePageTable{" +
-                "projectId=" + this.projectId +
-                ", pageId=" + this.pageId +
-                "} " + super.toString();
+            "projectId=" + this.projectId +
+            ", pageId=" + this.pageId +
+            "} " + super.toString();
     }
 }

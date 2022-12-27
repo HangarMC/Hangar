@@ -4,10 +4,9 @@ import io.papermc.hangar.model.api.project.ProjectNamespace;
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.projects.ProjectFlagTable;
+import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jetbrains.annotations.Nullable;
-
-import java.time.OffsetDateTime;
 
 public class HangarProjectFlag extends ProjectFlagTable {
 
@@ -43,10 +42,10 @@ public class HangarProjectFlag extends ProjectFlagTable {
     @Override
     public String toString() {
         return "HangarProjectFlag{" +
-                "reportedByName='" + this.reportedByName + '\'' +
-                ", resolvedByName='" + this.resolvedByName + '\'' +
-                ", projectNamespace=" + this.projectNamespace +
-                ", projectVisibility=" + this.projectVisibility +
-                "} " + super.toString();
+            "reportedByName='" + this.reportedByName + '\'' +
+            ", resolvedByName='" + this.resolvedByName + '\'' +
+            ", projectNamespace=" + this.projectNamespace +
+            ", projectVisibility=" + this.projectVisibility +
+            "} " + super.toString();
     }
 }

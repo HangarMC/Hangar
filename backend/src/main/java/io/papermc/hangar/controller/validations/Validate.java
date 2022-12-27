@@ -25,8 +25,11 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 public @interface Validate {
     @Language("SpEL")
     String SpEL() default "";
+
     String message() default "Invalid field";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 
     class ValidateConstraintValidator implements ConstraintValidator<Validate, Object> {
