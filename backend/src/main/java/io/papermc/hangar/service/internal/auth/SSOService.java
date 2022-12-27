@@ -6,6 +6,9 @@ import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.UserOauthTokenDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.UserSignOnDAO;
+import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.exceptions.WebHookException;
+import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.auth.UserOauthTokenTable;
 import io.papermc.hangar.model.db.auth.UserSignOnTable;
@@ -17,7 +20,9 @@ import io.papermc.hangar.service.TokenService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import java.math.BigInteger;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -135,6 +140,7 @@ public class SSOService {
             user = this.userDAO.create(uuid, traits.username(), traits.email(), "", traits.language(), List.of(), false, traits.theme());
         } else {
             if (!user.getName().equals(traits.username())) {
+                this.handleUsernameChange(user, traits.username());
                 user.setName(traits.username());
                 refreshHomeProjects = true; // must refresh this view when a username is changed
             }
@@ -153,6 +159,22 @@ public class SSOService {
         }
 
         return user;
+    }
+
+    private void handleUsernameChange(final UserTable user, final String newName) {
+        // make sure a user with that name doesn't exist yet
+        if (this.userDAO.getUserTable(newName) != null) {
+            throw new HangarApiException("A user with that name already exists!");
+        }
+        // check that last change was long ago
+        final List<UserNameChange> userNameHistory = this.userDAO.getUserNameHistory(user.getUuid());
+        userNameHistory.sort(Comparator.comparing(UserNameChange::date).reversed());
+        final OffsetDateTime nextChange = userNameHistory.get(0).date().plus(this.hangarConfig.user.nameChangeInterval(), ChronoUnit.DAYS);
+        if (!userNameHistory.isEmpty() && nextChange.isAfter(OffsetDateTime.now())) {
+            throw WebHookException.of("You can't change your name that soon! You have to wait till " + nextChange.format(DateTimeFormatter.RFC_1123_DATE_TIME));
+        }
+        // record the change into the db
+        this.userDAO.recordNameChange(user.getUuid(), user.getName(), newName);
     }
 
     public String redeemCode(final String code, final String redirect) {

@@ -2,11 +2,13 @@ package io.papermc.hangar.model.internal.user;
 
 import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.api.User;
+import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.roles.GlobalRole;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import javax.annotation.Nullable;
 
 public class HangarUser extends User implements Identified {
 
@@ -17,8 +19,8 @@ public class HangarUser extends User implements Identified {
     private final String theme;
     private String accessToken;
 
-    public HangarUser(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount, boolean locked, long id, List<Integer> readPrompts, String language, String theme) {
-        super(createdAt, name, tagline, joinDate, roles, projectCount, locked);
+    public HangarUser(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount, boolean locked, @Nullable List<UserNameChange> nameHistory, long id, List<Integer> readPrompts, String language, String theme) {
+        super(createdAt, name, tagline, joinDate, roles, projectCount, locked, nameHistory);
         this.id = id;
         this.readPrompts = readPrompts;
         this.language = language;
@@ -66,7 +68,9 @@ public class HangarUser extends User implements Identified {
                 this.getJoinDate(),
                 this.getRoles(),
                 this.getProjectCount(),
-                this.isLocked());
+                this.isLocked(),
+                this.getNameHistory()
+            );
     }
 
     public static class HeaderData {

@@ -25,6 +25,7 @@ declare module "@vue/runtime-core" {
     IconMdiCheckDecagram: typeof import("~icons/mdi/check-decagram")["default"];
     IconMdiCheckDecagramOutline: typeof import("~icons/mdi/check-decagram-outline")["default"];
     IconMdiChevronDoubleDown: typeof import("~icons/mdi/chevron-double-down")["default"];
+    IconMdiChevronDown: typeof import("~icons/mdi/chevron-down")["default"];
     IconMdiCircle: typeof import("~icons/mdi/circle")["default"];
     IconMdiClipboardOutline: typeof import("~icons/mdi/clipboard-outline")["default"];
     IconMdiClose: typeof import("~icons/mdi/close")["default"];

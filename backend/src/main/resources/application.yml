@@ -132,7 +132,8 @@ hangar:
       - Hangar_Admin
       - Hangar_Mod
       - Hangar_Dev
-
+    name-change-interval: 30
+    name-change-history: 90
 
   sso:
     enabled: true

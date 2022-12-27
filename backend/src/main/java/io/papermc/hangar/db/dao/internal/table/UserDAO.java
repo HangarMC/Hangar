@@ -1,7 +1,10 @@
 package io.papermc.hangar.db.dao.internal.table;
 
+import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.db.UserTable;
+import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
+import org.jdbi.v3.sqlobject.config.ValueColumn;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
@@ -10,7 +13,10 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Repository
@@ -65,4 +71,12 @@ public interface UserDAO {
         LIMIT 49000
         """)
     List<String> getAuthorNames();
+
+    @RegisterConstructorMapper(UserNameChange.class)
+    @SqlQuery("SELECT old_name, new_name, date FROM users_history WHERE uuid = :uuid ORDER BY date ASC")
+    List<UserNameChange> getUserNameHistory(final @NotNull UUID uuid);
+
+    @Timestamped
+    @SqlUpdate("INSERT INTO users_history(uuid, old_name, new_name, date) VALUES (:uuid, :oldName, :newName, :now)")
+    void recordNameChange(final  @NotNull UUID uuid, final @NotNull String oldName, final @NotNull String newName);
 }

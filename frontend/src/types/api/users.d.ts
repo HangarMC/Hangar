@@ -20,6 +20,7 @@ declare module "hangar-api" {
     projectCount: number;
     isOrganization: boolean;
     locked: boolean;
+    nameHistory: { oldName: string; newName: string; date: string }[];
   }
 
   interface ApiKey extends Model, Named {

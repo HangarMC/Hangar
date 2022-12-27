@@ -9,19 +9,24 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
 import io.papermc.hangar.model.api.User;
+import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.api.project.ProjectSortingStrategy;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.model.internal.user.HangarUser.HeaderData;
+import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.admin.FlagService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.projects.PinnedProjectService;
 import io.papermc.hangar.service.internal.projects.ProjectAdminService;
 import io.papermc.hangar.service.internal.versions.ReviewService;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -62,6 +67,7 @@ public class UsersApiService extends HangarComponent {
 
     public <T extends User> T getUser(String name, Class<T> type) {
         T user = getUserRequired(name, usersDAO::getUser, type);
+        this.supplyNameHistory(user);
         return user instanceof HangarUser ? (T) supplyHeaderData((HangarUser) user) : user;
     }
 
@@ -145,6 +151,17 @@ public class UsersApiService extends HangarComponent {
             reviewQueueCount,
             organizationCount));
         return hangarUser;
+    }
+
+    public void supplyNameHistory(final User user) {
+        final Optional<HangarPrincipal> hangarPrincipal = this.getOptionalHangarPrincipal();
+        final List<UserNameChange> userNameHistory;
+        if (hangarPrincipal.isPresent() && hangarPrincipal.get().isAllowedGlobal(Permission.SeeHidden)) {
+            userNameHistory = this.usersApiDAO.getUserNameHistory(user.getName(),  OffsetDateTime.MIN);
+        } else {
+            userNameHistory = this.usersApiDAO.getUserNameHistory(user.getName(), OffsetDateTime.now().minus(this.config.user.nameChangeHistory(), ChronoUnit.DAYS));
+        }
+        user.setNameHistory(userNameHistory);
     }
 
     public List<ProjectCompact> getUserPinned(String userName) {

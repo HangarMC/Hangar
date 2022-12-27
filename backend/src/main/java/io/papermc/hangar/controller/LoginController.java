@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.exceptions.WebHookException;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.sso.SsoSyncData;
 import io.papermc.hangar.model.internal.sso.URLWithNonce;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -161,18 +163,22 @@ public class LoginController extends HangarComponent {
 
     @PostMapping("/sync")
     @RateLimit(overdraft = 5, refillTokens = 2, refillSeconds = 10)
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void sync(@NotNull @RequestBody SsoSyncData body, @RequestHeader("X-Kratos-Hook-Api-Key") String apiKey) {
+    public ResponseEntity sync(@NotNull @RequestBody SsoSyncData body, @RequestHeader("X-Kratos-Hook-Api-Key") String apiKey) {
         if (!apiKey.equals(config.sso.kratosApiKey())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
         if (body.state().equals("active")) {
             logger.debug("Syncing {}'s new traits: {}", body.id(), body.traits());
-            ssoService.sync(body.id(), body.traits());
+            try {
+                ssoService.sync(body.id(), body.traits());
+            } catch (WebHookException ex) {
+                return ResponseEntity.badRequest().body(ex.getError());
+            }
         } else {
             logger.debug("Not syncing since its not active! {}", body);
         }
+        return ResponseEntity.accepted().build();
     }
 
     private RedirectView addBaseAndRedirect(String url) {

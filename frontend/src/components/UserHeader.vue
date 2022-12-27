@@ -3,6 +3,7 @@ import { Organization } from "hangar-internal";
 import { User } from "hangar-api";
 import { useI18n } from "vue-i18n";
 import { computed } from "vue";
+import { prettyDateTime } from "../lib/composables/useDate";
 import UserAvatar from "~/components/UserAvatar.vue";
 import { avatarUrl } from "~/composables/useUrlHelper";
 import Card from "~/lib/components/design/Card.vue";
@@ -14,6 +15,7 @@ import Tag from "~/components/Tag.vue";
 import AvatarChangeModal from "~/lib/components/modals/AvatarChangeModal.vue";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import Button from "~/lib/components/design/Button.vue";
+import Popper from "~/lib/components/design/Popper.vue";
 
 const props = defineProps<{
   user: User;
@@ -62,6 +64,17 @@ const canEditCurrentUser = computed<boolean>(() => {
           </a>-->
           <span v-if="user.locked" class="ml-1">
             <IconMdiLockOutline />
+          </span>
+          <span v-if="user.nameHistory?.length > 0" class="text-md">
+            <Popper>
+              <IconMdiChevronDown />
+              <template #content="{ close }">
+                <div class="-mt-2 p-2 rounded border-t-2 border-primary-400 background-default filter drop-shadow-xl flex flex-col text-lg" @click="close()">
+                  <div class="font-bold">Was known as:</div>
+                  <div v-for="(history, idx) of user.nameHistory" :key="idx">{{ history.oldName }} till {{ prettyDateTime(history.date) }}</div>
+                </div>
+              </template>
+            </Popper>
           </span>
         </h1>
 

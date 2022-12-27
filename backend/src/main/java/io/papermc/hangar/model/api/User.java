@@ -9,6 +9,7 @@ import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
+import javax.annotation.Nullable;
 
 public class User extends Model implements Named {
 
@@ -19,9 +20,10 @@ public class User extends Model implements Named {
     private final long projectCount;
     private final boolean isOrganization;
     private final boolean locked;
+    private List<UserNameChange> nameHistory;
 
     @JdbiConstructor
-    public User(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount, boolean locked) {
+    public User(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount, boolean locked, @Nullable List<UserNameChange> nameHistory) {
         super(createdAt);
         this.name = name;
         this.tagline = tagline;
@@ -30,6 +32,7 @@ public class User extends Model implements Named {
         this.projectCount = projectCount;
         this.isOrganization = roles.contains(GlobalRole.ORGANIZATION);
         this.locked = locked;
+        this.nameHistory = nameHistory;
     }
 
     @Override
@@ -60,6 +63,15 @@ public class User extends Model implements Named {
 
     public boolean isLocked() {
         return locked;
+    }
+
+    @Nullable
+    public List<UserNameChange> getNameHistory() {
+        return this.nameHistory;
+    }
+
+    public void setNameHistory(final List<UserNameChange> nameHistory) {
+        this.nameHistory = nameHistory;
     }
 
     @Override
