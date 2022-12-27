@@ -85,11 +85,11 @@ public class SwaggerConfig {
                 .build()
                 .directModelSubstitute(LocalDate.class, java.sql.Date.class)
                 .directModelSubstitute(OffsetDateTime.class, Date.class)
-                .apiInfo(apiInfo());
+                .apiInfo(this.apiInfo());
     }
 
     @Bean
-    public CustomScanner customScanner(FilterRegistry filterRegistry) {
+    public CustomScanner customScanner(final FilterRegistry filterRegistry) {
         return new CustomScanner(filterRegistry);
     }
 
@@ -97,15 +97,15 @@ public class SwaggerConfig {
 
         private final FilterRegistry filterRegistry;
 
-        public CustomScanner(FilterRegistry filterRegistry) {
+        public CustomScanner(final FilterRegistry filterRegistry) {
             this.filterRegistry = filterRegistry;
         }
 
         @Override
-        public void apply(OperationContext context) {
-            Optional<ApplicableSorters> sorters = context.findAnnotation(ApplicableSorters.class);
+        public void apply(final OperationContext context) {
+            final Optional<ApplicableSorters> sorters = context.findAnnotation(ApplicableSorters.class);
             if (sorters.isPresent()) {
-                Set<RequestParameter> requestParameters = context.operationBuilder().build().getRequestParameters();
+                final Set<RequestParameter> requestParameters = context.operationBuilder().build().getRequestParameters();
                 requestParameters.add(new RequestParameterBuilder()
                         .name("sort")
                         .in(ParameterType.QUERY)
@@ -113,12 +113,12 @@ public class SwaggerConfig {
                         .query(q -> q.style(ParameterStyle.SIMPLE).model(m -> m.scalarModel(ScalarType.STRING)).enumerationFacet(e -> e.allowedValues(Arrays.asList(sorters.get().value()).stream().map(SorterRegistry::getName).collect(Collectors.toSet())))).build());
                 context.operationBuilder().requestParameters(requestParameters);
             }
-            Optional<ApplicableFilters> filters = context.findAnnotation(ApplicableFilters.class);
+            final Optional<ApplicableFilters> filters = context.findAnnotation(ApplicableFilters.class);
             if (filters.isPresent()) {
-                Set<RequestParameter> requestParameters = context.operationBuilder().build().getRequestParameters();
+                final Set<RequestParameter> requestParameters = context.operationBuilder().build().getRequestParameters();
 
-                for (var clazz : filters.get().value()) {
-                    var filter = filterRegistry.get(clazz);
+                for (final var clazz : filters.get().value()) {
+                    final var filter = this.filterRegistry.get(clazz);
 
                     requestParameters.add(new RequestParameterBuilder()
                             .name(filter.getSingleQueryParam()) // TODO multi-param filters
@@ -131,32 +131,32 @@ public class SwaggerConfig {
         }
 
         @Override
-        public boolean supports(DocumentationType documentationType) {
+        public boolean supports(final DocumentationType documentationType) {
             return true;
         }
     }
 
     // Hack to make this shit work on spring boot 2.6 // TODO migrate to springdoc
     @Bean
-    public InitializingBean removeSpringfoxHandlerProvider(DocumentationPluginsBootstrapper bootstrapper) {
+    public InitializingBean removeSpringfoxHandlerProvider(final DocumentationPluginsBootstrapper bootstrapper) {
         return () -> bootstrapper.getHandlerProviders().removeIf(WebMvcRequestHandlerProvider.class::isInstance);
     }
 
     @Bean
-    public RequestHandlerProvider customRequestHandlerProvider(Optional<ServletContext> servletContext, HandlerMethodResolver methodResolver, List<RequestMappingInfoHandlerMapping> handlerMappings) {
-        String contextPath = servletContext.map(ServletContext::getContextPath).orElse(ROOT);
+    public RequestHandlerProvider customRequestHandlerProvider(final Optional<ServletContext> servletContext, final HandlerMethodResolver methodResolver, final List<RequestMappingInfoHandlerMapping> handlerMappings) {
+        final String contextPath = servletContext.map(ServletContext::getContextPath).orElse(ROOT);
         return () -> handlerMappings.stream()
             .filter(mapping -> !mapping.getClass().getSimpleName().equals("IntegrationRequestMappingHandlerMapping"))
             .map(mapping -> mapping.getHandlerMethods().entrySet())
             .flatMap(Set::stream)
-            .map(entry -> new WebMvcRequestHandler(contextPath, methodResolver, tweakInfo(entry.getKey()), entry.getValue()))
+            .map(entry -> new WebMvcRequestHandler(contextPath, methodResolver, this.tweakInfo(entry.getKey()), entry.getValue()))
             .sorted(byPatternsCondition())
             .collect(toList());
     }
 
-    RequestMappingInfo tweakInfo(RequestMappingInfo info) {
+    RequestMappingInfo tweakInfo(final RequestMappingInfo info) {
         if (info.getPathPatternsCondition() == null) return info;
-        String[] patterns = info.getPathPatternsCondition().getPatternValues().toArray(String[]::new);
+        final String[] patterns = info.getPathPatternsCondition().getPatternValues().toArray(String[]::new);
         return info.mutate().options(new RequestMappingInfo.BuilderConfiguration()).paths(patterns).build();
     }
 }

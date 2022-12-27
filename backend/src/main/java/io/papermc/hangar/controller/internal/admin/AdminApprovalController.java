@@ -31,7 +31,7 @@ public class AdminApprovalController extends HangarComponent {
     private final ObjectMapper mapper;
 
     @Autowired
-    public AdminApprovalController(ProjectAdminService projectAdminService, ReviewService reviewService, ObjectMapper mapper) {
+    public AdminApprovalController(final ProjectAdminService projectAdminService, final ReviewService reviewService, final ObjectMapper mapper) {
         this.projectAdminService = projectAdminService;
         this.reviewService = reviewService;
         this.mapper = mapper;
@@ -39,29 +39,29 @@ public class AdminApprovalController extends HangarComponent {
 
     @GetMapping("/versions")
     public ResponseEntity<ObjectNode> getReviewQueue() {
-        List<HangarReviewQueueEntry> underReviewEntries = reviewService.getReviewQueue(ReviewState.UNDER_REVIEW);
-        List<HangarReviewQueueEntry> notStartedEntries = reviewService.getReviewQueue(ReviewState.UNREVIEWED);
-        ObjectNode objectNode = mapper.createObjectNode();
-        objectNode.set("underReview", mapper.valueToTree(underReviewEntries));
-        objectNode.set("notStarted", mapper.valueToTree(notStartedEntries));
+        final List<HangarReviewQueueEntry> underReviewEntries = this.reviewService.getReviewQueue(ReviewState.UNDER_REVIEW);
+        final List<HangarReviewQueueEntry> notStartedEntries = this.reviewService.getReviewQueue(ReviewState.UNREVIEWED);
+        final ObjectNode objectNode = this.mapper.createObjectNode();
+        objectNode.set("underReview", this.mapper.valueToTree(underReviewEntries));
+        objectNode.set("notStarted", this.mapper.valueToTree(notStartedEntries));
         return ResponseEntity.ok(objectNode);
     }
 
     @GetMapping("/projects")
     public ResponseEntity<ObjectNode> getProjectApprovals() {
-        ObjectNode objectNode = mapper.createObjectNode();
-        objectNode.set("needsApproval", mapper.valueToTree(projectAdminService.getProjectsNeedingApproval()));
-        objectNode.set("waitingProjects", mapper.valueToTree(projectAdminService.getProjectsWaitingForChanges()));
+        final ObjectNode objectNode = this.mapper.createObjectNode();
+        objectNode.set("needsApproval", this.mapper.valueToTree(this.projectAdminService.getProjectsNeedingApproval()));
+        objectNode.set("waitingProjects", this.mapper.valueToTree(this.projectAdminService.getProjectsWaitingForChanges()));
         return ResponseEntity.ok(objectNode);
     }
 
     @GetMapping("/projectneedingapproval")
     public ResponseEntity<Integer> getProjectApprovalQueueSize() {
-        return ResponseEntity.ok(projectAdminService.getApprovalQueueSize());
+        return ResponseEntity.ok(this.projectAdminService.getApprovalQueueSize());
     }
 
     @GetMapping("/versionsneedingapproval")
     public ResponseEntity<Integer> getVersionApprovalQueueSize() {
-        return ResponseEntity.ok(reviewService.getApprovalQueueSize());
+        return ResponseEntity.ok(this.reviewService.getApprovalQueueSize());
     }
 }

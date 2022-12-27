@@ -10,30 +10,30 @@ public class JoinableMember<R extends ExtendedRoleTable<?, ?>> {
     private final UserTable user;
     private final boolean hidden;
 
-    public JoinableMember(@Nested R role, UserTable user, boolean hidden) {
+    public JoinableMember(@Nested final R role, final UserTable user, final boolean hidden) {
         this.role = role;
         this.user = user;
         this.hidden = hidden;
     }
 
     public R getRole() {
-        return role;
+        return this.role;
     }
 
     public UserTable getUser() {
-        return user;
+        return this.user;
     }
 
     public boolean isHidden() {
-        return hidden;
+        return this.hidden;
     }
 
     @Override
     public String toString() {
         return "JoinableMember{" +
-                "role=" + role +
-                ", user=" + user +
-                ", hidden=" + hidden +
+                "role=" + this.role +
+                ", user=" + this.user +
+                ", hidden=" + this.hidden +
                 '}';
     }
 }

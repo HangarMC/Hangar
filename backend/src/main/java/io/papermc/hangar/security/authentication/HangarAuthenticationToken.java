@@ -15,53 +15,52 @@ public class HangarAuthenticationToken extends AbstractAuthenticationToken {
     private final DecodedJWT token;
     private final HangarPrincipal user;
 
-    private HangarAuthenticationToken(HangarPrincipal user, DecodedJWT token) {
+    private HangarAuthenticationToken(final HangarPrincipal user, final DecodedJWT token) {
         super(AuthorityUtils.createAuthorityList("ROLE_USER"));
         this.token = token;
         this.user = user;
         super.setAuthenticated(true);
     }
 
-    private HangarAuthenticationToken(DecodedJWT token) {
+    private HangarAuthenticationToken(final DecodedJWT token) {
         super(null);
         this.token = token;
         this.user = null;
     }
 
     // Initial token creation before verifying the user exists in the table
-    public static HangarAuthenticationToken createUnverifiedToken(DecodedJWT token) {
+    public static HangarAuthenticationToken createUnverifiedToken(final DecodedJWT token) {
        return new HangarAuthenticationToken(token);
     }
 
     // Used by HangarAuthenticationProvider once user is verified
-    public static HangarAuthenticationToken createVerifiedToken(HangarPrincipal user, DecodedJWT token) {
+    public static HangarAuthenticationToken createVerifiedToken(final HangarPrincipal user, final DecodedJWT token) {
         return new HangarAuthenticationToken(user, token);
     }
 
     @Override
     public DecodedJWT getCredentials() {
-        return token;
+        return this.token;
     }
 
     @Override
     public String getName() {
-        if (user == null) {
+        if (this.user == null) {
             throw new AuthenticationServiceException("This authentication token is not authenticated, so it doesn't have a user");
         }
-        return user.getName();
+        return this.user.getName();
     }
 
     @Override
-    @NotNull
-    public HangarPrincipal getPrincipal() {
-        if (user == null) {
+    public @NotNull HangarPrincipal getPrincipal() {
+        if (this.user == null) {
             throw new AuthenticationServiceException("This authentication token is not authenticated, so it doesn't have a user");
         }
-        return user;
+        return this.user;
     }
 
     @Override
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+    public void setAuthenticated(final boolean isAuthenticated) throws IllegalArgumentException {
         if (isAuthenticated) {
             throw new IllegalArgumentException("Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
         }

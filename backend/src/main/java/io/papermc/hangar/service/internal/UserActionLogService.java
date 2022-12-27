@@ -27,41 +27,41 @@ public class UserActionLogService extends HangarComponent {
     private final LoggedActionsDAO loggedActionsDAO;
 
     @Autowired
-    public UserActionLogService(LoggedActionsDAO loggedActionsDAO) {
+    public UserActionLogService(final LoggedActionsDAO loggedActionsDAO) {
         this.loggedActionsDAO = loggedActionsDAO;
     }
 
     @Transactional
-    public void project(LoggedAction<ProjectContext> action) {
-        log(loggedActionsDAO::insertProjectLog, action);
+    public void project(final LoggedAction<ProjectContext> action) {
+        this.log(this.loggedActionsDAO::insertProjectLog, action);
     }
 
     @Transactional
-    public void projectPage(LoggedAction<PageContext> action) {
-        log(loggedActionsDAO::insertProjectPageLog, action);
+    public void projectPage(final LoggedAction<PageContext> action) {
+        this.log(this.loggedActionsDAO::insertProjectPageLog, action);
     }
 
     @Transactional
-    public void version(LoggedAction<VersionContext> action) {
-        log(loggedActionsDAO::insertVersionLog, action);
+    public void version(final LoggedAction<VersionContext> action) {
+        this.log(this.loggedActionsDAO::insertVersionLog, action);
     }
 
     @Transactional
-    public void user(LoggedAction<UserContext> action) {
-        log(loggedActionsDAO::insertUserLog, action);
+    public void user(final LoggedAction<UserContext> action) {
+        this.log(this.loggedActionsDAO::insertUserLog, action);
     }
 
     @Transactional
-    public void organization(LoggedAction<OrganizationContext> action) {
-        log(loggedActionsDAO::insertOrganizationLog, action);
+    public void organization(final LoggedAction<OrganizationContext> action) {
+        this.log(this.loggedActionsDAO::insertOrganizationLog, action);
     }
 
-    private <LT extends LoggedActionTable, LC extends LogContext<LT, LC>> void log(Consumer<LT> inserter, LoggedAction<LC> action) {
-        inserter.accept(action.getContext().createTable(getHangarPrincipal().getUserId(), RequestUtil.getRemoteInetAddress(request), action));
+    private <LT extends LoggedActionTable, LC extends LogContext<LT, LC>> void log(final Consumer<LT> inserter, final LoggedAction<LC> action) {
+        inserter.accept(action.getContext().createTable(this.getHangarPrincipal().getUserId(), RequestUtil.getRemoteInetAddress(this.request), action));
     }
 
     @Transactional
-    public PaginatedResult<HangarLoggedAction> getLogs(RequestPagination pagination) {
-        return new PaginatedResult<>(new Pagination(loggedActionsDAO.getLogCount(pagination), pagination), loggedActionsDAO.getLog(pagination));
+    public PaginatedResult<HangarLoggedAction> getLogs(final RequestPagination pagination) {
+        return new PaginatedResult<>(new Pagination(this.loggedActionsDAO.getLogCount(pagination), pagination), this.loggedActionsDAO.getLog(pagination));
     }
 }

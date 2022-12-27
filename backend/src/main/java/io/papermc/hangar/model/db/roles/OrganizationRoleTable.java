@@ -20,14 +20,14 @@ public class OrganizationRoleTable extends ExtendedRoleTable<OrganizationRole, O
     private final String ownerName;
 
     @JdbiConstructor
-    public OrganizationRoleTable(OffsetDateTime createdAt, long id, long userId, @ColumnName("role_type") OrganizationRole role, boolean accepted, long organizationId, @Nullable Long ownerId, @Nullable String ownerName) {
+    public OrganizationRoleTable(final OffsetDateTime createdAt, final long id, final long userId, @ColumnName("role_type") final OrganizationRole role, final boolean accepted, final long organizationId, @Nullable final Long ownerId, @Nullable final String ownerName) {
         super(createdAt, id, userId, role, accepted);
         this.organizationId = organizationId;
         this.ownerId = ownerId == null ? -1 : ownerId;
         this.ownerName = ownerName;
     }
 
-    public OrganizationRoleTable(long userId, OrganizationRole role, boolean accepted, long organizationId) {
+    public OrganizationRoleTable(final long userId, final OrganizationRole role, final boolean accepted, final long organizationId) {
         super(userId, role, accepted);
         this.organizationId = organizationId;
         this.ownerId = -1;
@@ -36,27 +36,27 @@ public class OrganizationRoleTable extends ExtendedRoleTable<OrganizationRole, O
 
     @JsonIgnore
     public long getOrganizationId() {
-        return organizationId;
+        return this.organizationId;
     }
 
     @Override
     @JdbiProperty(map=false)
     public long getPrincipalId() {
-        return organizationId;
+        return this.organizationId;
     }
 
     public String getOwnerName() {
-        return ownerName;
+        return this.ownerName;
     }
 
     public long getOwnerId() {
-        return ownerId;
+        return this.ownerId;
     }
 
     @Override
     public String toString() {
         return "OrganizationRoleTable{" +
-                "organizationId=" + organizationId +
+                "organizationId=" + this.organizationId +
                 "} " + super.toString();
     }
 }

@@ -12,32 +12,32 @@ public class UserOauthTokenTable extends Table {
     private final String idToken;
 
     @JdbiConstructor
-    public UserOauthTokenTable(OffsetDateTime createdAt, long id, String username, String idToken) {
+    public UserOauthTokenTable(final OffsetDateTime createdAt, final long id, final String username, final String idToken) {
         super(createdAt, id);
         this.username = username;
         this.idToken = idToken;
     }
 
-    public UserOauthTokenTable(String username, String idToken) {
+    public UserOauthTokenTable(final String username, final String idToken) {
         this.username = username;
         this.idToken = idToken;
     }
 
     public String getIdToken() {
-        return idToken;
+        return this.idToken;
     }
 
     public String getUsername() {
-        return username;
+        return this.username;
     }
 
     @Override
     public String toString() {
         return "UserOauthTokenTable{" +
-               "createdAt=" + createdAt +
-               ", id=" + id +
-               ", username='" + username + '\'' +
-               ", idToken='" + idToken + '\'' +
+               "createdAt=" + this.createdAt +
+               ", id=" + this.id +
+               ", username='" + this.username + '\'' +
+               ", idToken='" + this.idToken + '\'' +
                "} " + super.toString();
     }
 }

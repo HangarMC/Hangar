@@ -38,14 +38,14 @@ public class SecurityConfig {
     private final HangarAuthenticationProvider authenticationProvider;
 
     @Autowired
-    public SecurityConfig(TokenService tokenService, HangarAuthenticationProvider authenticationProvider, AuthenticationEntryPoint authenticationEntryPoint) {
+    public SecurityConfig(final TokenService tokenService, final HangarAuthenticationProvider authenticationProvider, final AuthenticationEntryPoint authenticationEntryPoint) {
         this.tokenService = tokenService;
         this.authenticationProvider = authenticationProvider;
         this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http
                 // Disable default configurations
                 .logout().disable()
@@ -61,9 +61,9 @@ public class SecurityConfig {
                 // Custom auth filters
                 .addFilterBefore(new HangarAuthenticationFilter(
                         new OrRequestMatcher(API_MATCHER, LOGOUT_MATCHER, INVALIDATE_MATCHER),
-                        tokenService,
-                        authenticationManagerBean(),
-                        authenticationEntryPoint),
+                                this.tokenService,
+                                this.authenticationManagerBean(),
+                                this.authenticationEntryPoint),
                         AnonymousAuthenticationFilter.class
                 )
 
@@ -77,6 +77,6 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManagerBean() {
-        return new ProviderManager(authenticationProvider);
+        return new ProviderManager(this.authenticationProvider);
     }
 }

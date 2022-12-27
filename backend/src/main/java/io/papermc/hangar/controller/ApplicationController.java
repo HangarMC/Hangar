@@ -48,7 +48,7 @@ public class ApplicationController extends HangarComponent {
                 .disallow("/*/*/versions/*/confirm")
                 .disallow("/*/*/versions/*/*/reviews")
                 .endGroup()
-                .sitemap(config.getBaseUrl() + "/sitemap.xml")
+                .sitemap(this.config.getBaseUrl() + "/sitemap.xml")
                 .build();
     }
 }

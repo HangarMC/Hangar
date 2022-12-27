@@ -23,11 +23,11 @@ public abstract class Job extends Model {
 
     private Map<String, String> jobProperties;
 
-    Job(JobType type) {
+    Job(final JobType type) {
         this(null, null, null, null, null, JobState.NOT_STARTED, type, new HashMap<>());
     }
 
-    protected Job(OffsetDateTime createdAt, @Nullable OffsetDateTime lastUpdated, @Nullable OffsetDateTime retryAt, @Nullable String lastError, @Nullable String lastErrorDescriptor, JobState state, JobType jobType, Map<String, String> jobProperties) {
+    protected Job(final OffsetDateTime createdAt, final @Nullable OffsetDateTime lastUpdated, final @Nullable OffsetDateTime retryAt, final @Nullable String lastError, final @Nullable String lastErrorDescriptor, final JobState state, final JobType jobType, final Map<String, String> jobProperties) {
         super(createdAt);
         this.lastUpdated = lastUpdated;
         this.retryAt = retryAt;
@@ -39,65 +39,65 @@ public abstract class Job extends Model {
     }
 
     public OffsetDateTime getLastUpdated() {
-        return lastUpdated;
+        return this.lastUpdated;
     }
 
-    public void setLastUpdated(OffsetDateTime lastUpdated) {
+    public void setLastUpdated(final OffsetDateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 
     public OffsetDateTime getRetryAt() {
-        return retryAt;
+        return this.retryAt;
     }
 
-    public void setRetryAt(OffsetDateTime retryAt) {
+    public void setRetryAt(final OffsetDateTime retryAt) {
         this.retryAt = retryAt;
     }
 
     public String getLastError() {
-        return lastError;
+        return this.lastError;
     }
 
-    public void setLastError(String lastError) {
+    public void setLastError(final String lastError) {
         this.lastError = lastError;
     }
 
     public String getLastErrorDescriptor() {
-        return lastErrorDescriptor;
+        return this.lastErrorDescriptor;
     }
 
-    public void setLastErrorDescriptor(String lastErrorDescriptor) {
+    public void setLastErrorDescriptor(final String lastErrorDescriptor) {
         this.lastErrorDescriptor = lastErrorDescriptor;
     }
 
     public JobState getState() {
-        return state;
+        return this.state;
     }
 
-    public void setState(JobState state) {
+    public void setState(final JobState state) {
         this.state = state;
     }
 
     public JobType getJobType() {
-        return jobType;
+        return this.jobType;
     }
 
-    public void setJobType(JobType jobType) {
+    public void setJobType(final JobType jobType) {
         this.jobType = jobType;
     }
 
     public Map<String, String> getJobProperties() {
-        return jobProperties;
+        return this.jobProperties;
     }
 
-    public void setJobProperties(Map<String, String> jobProperties) {
+    public void setJobProperties(final Map<String, String> jobProperties) {
         this.jobProperties = jobProperties;
     }
 
     public abstract void loadFromProperties();
     public abstract void saveIntoProperties();
 
-    public void fromTable(JobTable table) {
+    public void fromTable(final JobTable table) {
         this.createdAt = table.getCreatedAt();
         this.lastUpdated = table.getLastUpdated();
         this.retryAt = table.getRetryAt();
@@ -109,35 +109,35 @@ public abstract class Job extends Model {
     }
 
     public JobTable toTable() {
-        saveIntoProperties();
-        return new JobTable(createdAt, -1, lastUpdated, retryAt, lastError, lastErrorDescriptor, state, jobType, new JSONB(jobProperties));
+        this.saveIntoProperties();
+        return new JobTable(this.createdAt, -1, this.lastUpdated, this.retryAt, this.lastError, this.lastErrorDescriptor, this.state, this.jobType, new JSONB(this.jobProperties));
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        Job job = (Job) o;
-        return Objects.equals(lastUpdated, job.lastUpdated) && Objects.equals(retryAt, job.retryAt) && Objects.equals(lastError, job.lastError) && Objects.equals(lastErrorDescriptor, job.lastErrorDescriptor) && Objects.equals(state, job.state) && jobType == job.jobType && Objects.equals(jobProperties, job.jobProperties);
+        final Job job = (Job) o;
+        return Objects.equals(this.lastUpdated, job.lastUpdated) && Objects.equals(this.retryAt, job.retryAt) && Objects.equals(this.lastError, job.lastError) && Objects.equals(this.lastErrorDescriptor, job.lastErrorDescriptor) && Objects.equals(this.state, job.state) && this.jobType == job.jobType && Objects.equals(this.jobProperties, job.jobProperties);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), lastUpdated, retryAt, lastError, lastErrorDescriptor, state, jobType, jobProperties);
+        return Objects.hash(super.hashCode(), this.lastUpdated, this.retryAt, this.lastError, this.lastErrorDescriptor, this.state, this.jobType, this.jobProperties);
     }
 
     @Override
     public String toString() {
         return "Job{" +
-               "createdAt=" + createdAt +
-               ", lastUpdated=" + lastUpdated +
-               ", retryAt=" + retryAt +
-               ", lastError='" + lastError + '\'' +
-               ", lastErrorDescriptor='" + lastErrorDescriptor + '\'' +
-               ", state=" + state +
-               ", jobType=" + jobType +
-               ", jobProperties=" + jobProperties +
+               "createdAt=" + this.createdAt +
+               ", lastUpdated=" + this.lastUpdated +
+               ", retryAt=" + this.retryAt +
+               ", lastError='" + this.lastError + '\'' +
+               ", lastErrorDescriptor='" + this.lastErrorDescriptor + '\'' +
+               ", state=" + this.state +
+               ", jobType=" + this.jobType +
+               ", jobProperties=" + this.jobProperties +
                "} " + super.toString();
     }
 }

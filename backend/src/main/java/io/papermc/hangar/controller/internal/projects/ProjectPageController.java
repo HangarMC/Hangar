@@ -13,7 +13,6 @@ import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
-import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.internal.MarkdownService;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
@@ -46,7 +45,7 @@ public class ProjectPageController extends HangarComponent {
     private final ValidationService validationService;
 
     @Autowired
-    public ProjectPageController(ProjectPageService projectPageService, MarkdownService markdownService, ValidationService validationService) {
+    public ProjectPageController(final ProjectPageService projectPageService, final MarkdownService markdownService, final ValidationService validationService) {
         this.projectPageService = projectPageService;
         this.markdownService = markdownService;
         this.validationService = validationService;
@@ -55,45 +54,45 @@ public class ProjectPageController extends HangarComponent {
     @Anyone
     @RateLimit(overdraft = 20, refillTokens = 3, refillSeconds = 5, greedy = true)
     @PostMapping(path = "/render", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> renderMarkdown(@RequestBody @Valid StringContent content) {
-        if (content.getContent().length() > config.projects.contentMaxLen()) {
+    public ResponseEntity<String> renderMarkdown(@RequestBody final @Valid StringContent content) {
+        if (content.getContent().length() > this.config.projects.contentMaxLen()) {
             throw new HangarApiException("page.new.error.name.maxLength");
         }
-        return ResponseEntity.ok(markdownService.render(content.getContent()));
+        return ResponseEntity.ok(this.markdownService.render(content.getContent()));
     }
 
     @Unlocked
     @RateLimit(overdraft = 10, refillTokens = 3, refillSeconds = 5)
     @ResponseBody
     @PostMapping(path = "/convert-bbcode", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    public String convertBBCode(@RequestBody @Valid StringContent bbCodeContent) {
-        if (bbCodeContent.getContent().length() > config.projects.maxBBCodeLen()) {
+    public String convertBBCode(@RequestBody final @Valid StringContent bbCodeContent) {
+        if (bbCodeContent.getContent().length() > this.config.projects.maxBBCodeLen()) {
             throw new HangarApiException("page.new.error.name.maxLength");
         }
-        BBCodeConverter bbCodeConverter = new BBCodeConverter();
+        final BBCodeConverter bbCodeConverter = new BBCodeConverter();
         return bbCodeConverter.convertToMarkdown(bbCodeContent.getContent());
     }
 
     @Anyone
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/checkName")
-    public void checkName(@RequestParam long projectId, @RequestParam String name, @RequestParam(required = false) Long parentId) {
-        validationService.testPageName(name);
-        projectPageService.checkDuplicateName(projectId, name, parentId);
+    public void checkName(@RequestParam final long projectId, @RequestParam final String name, @RequestParam(required = false) final Long parentId) {
+        this.validationService.testPageName(name);
+        this.projectPageService.checkDuplicateName(projectId, name, parentId);
     }
 
-    @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
     @GetMapping(path = "/page/{author}/{slug}/**", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ExtendedProjectPage> getProjectPage(@PathVariable String author, @PathVariable String slug) {
-        return ResponseEntity.ok(projectPageService.getProjectPage(author, slug, request.getRequestURI()));
+    public ResponseEntity<ExtendedProjectPage> getProjectPage(@PathVariable final String author, @PathVariable final String slug) {
+        return ResponseEntity.ok(this.projectPageService.getProjectPage(author, slug, this.request.getRequestURI()));
     }
 
     @Unlocked
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
-    @GetMapping(value = "/list/{projectId}")
+    @GetMapping("/list/{projectId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Collection<HangarProjectPage>> listProjectPages(@PathVariable final long projectId) {
-        return ResponseEntity.ok(projectPageService.getProjectPages(projectId).values());
+        return ResponseEntity.ok(this.projectPageService.getProjectPages(projectId).values());
     }
 
     @Unlocked
@@ -101,8 +100,8 @@ public class ProjectPageController extends HangarComponent {
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#projectId}")
     @PostMapping(value = "/create/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> createProjectPage(@PathVariable long projectId, @RequestBody @Valid NewProjectPage newProjectPage) {
-        return ResponseEntity.ok(projectPageService.createProjectPage(projectId, newProjectPage));
+    public ResponseEntity<String> createProjectPage(@PathVariable final long projectId, @RequestBody final @Valid NewProjectPage newProjectPage) {
+        return ResponseEntity.ok(this.projectPageService.createProjectPage(projectId, newProjectPage));
     }
 
     @Unlocked
@@ -110,15 +109,15 @@ public class ProjectPageController extends HangarComponent {
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#projectId}")
     @PostMapping(value = "/save/{projectId}/{pageId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void saveProjectPage(@PathVariable long projectId, @PathVariable long pageId, @RequestBody @Valid StringContent content) {
-        projectPageService.saveProjectPage(projectId, pageId, content.getContent());
+    public void saveProjectPage(@PathVariable final long projectId, @PathVariable final long pageId, @RequestBody final @Valid StringContent content) {
+        this.projectPageService.saveProjectPage(projectId, pageId, content.getContent());
     }
 
     @Unlocked
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#projectId}")
     @PostMapping("/delete/{projectId}/{pageId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteProjectPage(@PathVariable long projectId, @PathVariable long pageId) {
-        projectPageService.deleteProjectPage(projectId, pageId);
+    public void deleteProjectPage(@PathVariable final long projectId, @PathVariable final long pageId) {
+        this.projectPageService.deleteProjectPage(projectId, pageId);
     }
 }

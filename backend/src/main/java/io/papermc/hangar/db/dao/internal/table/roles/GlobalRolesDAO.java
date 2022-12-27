@@ -22,7 +22,7 @@ public interface GlobalRolesDAO extends IRolesDAO<GlobalRoleTable> {
     GlobalRoleTable insert(@BindBean GlobalRoleTable table);
 
     @Override
-    default GlobalRoleTable update(GlobalRoleTable table) {
+    default GlobalRoleTable update(final GlobalRoleTable table) {
         throw new UnsupportedOperationException("Cannot update global roles, just delete them");
     }
 
@@ -34,17 +34,17 @@ public interface GlobalRolesDAO extends IRolesDAO<GlobalRoleTable> {
     void deleteAll(long userId);
 
     @Override
-    default GlobalRoleTable getTable(long id, long userId) {
+    default GlobalRoleTable getTable(final long id, final long userId) {
         throw new UnsupportedOperationException("Cannot get global roles by just an id");
     }
 
     @Override
-    default List<GlobalRoleTable> getRoleTablesByPrincipal(long principalId, String role) {
+    default List<GlobalRoleTable> getRoleTablesByPrincipal(final long principalId, final String role) {
         throw new UnsupportedOperationException("Cannot get global roles with a principal id");
     }
 
     @Override
-    default GlobalRoleTable getTableByPrincipal(long principalId, long userId) {
+    default GlobalRoleTable getTableByPrincipal(final long principalId, final long userId) {
         throw new UnsupportedOperationException("Cannot get global roles with a principal id");
     }
 

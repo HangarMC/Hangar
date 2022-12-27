@@ -44,12 +44,12 @@ public interface UsersDAO {
             "   GROUP BY u.id")
     <T extends User> T _getUser(String name, Long id, @MapTo Class<T> type);
 
-    default <T extends User> T getUser(String name, Class<T> type) {
-        return _getUser(name, null, type);
+    default <T extends User> T getUser(final String name, final Class<T> type) {
+        return this._getUser(name, null, type);
     }
 
-    default <T extends User> T getUser(long id, Class<T> type) {
-        return _getUser(null, id, type);
+    default <T extends User> T getUser(final long id, final Class<T> type) {
+        return this._getUser(null, id, type);
     }
 
     @AllowUnusedBindings // query can be unused

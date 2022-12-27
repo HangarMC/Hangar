@@ -18,28 +18,28 @@ public class FileUtils {
 
     private FileUtils() { }
 
-    public static void deletedFiles(Path superDir) {
-        try (Stream<Path> files = Files.list(superDir)) {
+    public static void deletedFiles(final Path superDir) {
+        try (final Stream<Path> files = Files.list(superDir)) {
             files.filter(Predicate.not(Files::isDirectory)).forEach(FileUtils::delete);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static boolean delete(Path path) {
+    public static boolean delete(final Path path) {
         if (path == null) return false;
         try {
             return Files.deleteIfExists(path);
-        } catch (IOException ignored) {
+        } catch (final IOException ignored) {
             return false;
         }
     }
 
-    public static void deleteDirectory(Path dir) {
+    public static void deleteDirectory(final Path dir) {
         if (Files.exists(dir)) {
             try {
                 Files.walkFileTree(dir, new DeleteFileVisitor());
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 e.printStackTrace();
             }
         } else {
@@ -49,7 +49,7 @@ public class FileUtils {
 
     private static class DeleteFileVisitor extends SimpleFileVisitor<Path> {
         @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
             if (Files.exists(file)) {
                 Files.delete(file);
             } else {
@@ -59,7 +59,7 @@ public class FileUtils {
         }
 
         @Override
-        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+        public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
             if (Files.exists(dir)) {
                 Files.delete(dir);
             } else {

@@ -37,7 +37,7 @@ public class FlagService extends HangarComponent {
     private final NotificationService notificationService;
 
     @Autowired
-    public FlagService(ProjectFlagsDAO projectFlagsDAO, HangarProjectFlagsDAO hangarProjectFlagsDAO, final ProjectFlagNotificationsDAO flagNotificationsDAO, final HangarProjectFlagNofiticationsDAO hangarProjectFlagNofiticationsDAO, final NotificationService notificationService) {
+    public FlagService(final ProjectFlagsDAO projectFlagsDAO, final HangarProjectFlagsDAO hangarProjectFlagsDAO, final ProjectFlagNotificationsDAO flagNotificationsDAO, final HangarProjectFlagNofiticationsDAO hangarProjectFlagNofiticationsDAO, final NotificationService notificationService) {
         this.projectFlagsDAO = projectFlagsDAO;
         this.hangarProjectFlagsDAO = hangarProjectFlagsDAO;
         this.flagNotificationsDAO = flagNotificationsDAO;
@@ -46,64 +46,64 @@ public class FlagService extends HangarComponent {
     }
 
     @Transactional
-    public void createFlag(long projectId, FlagReason reason, String comment) {
-        if (hasUnresolvedFlag(projectId, getHangarPrincipal().getId())) {
+    public void createFlag(final long projectId, final FlagReason reason, final String comment) {
+        if (this.hasUnresolvedFlag(projectId, this.getHangarPrincipal().getId())) {
             throw new HangarApiException("project.flag.error.alreadyOpen");
         }
-        projectFlagsDAO.insert(new ProjectFlagTable(projectId, getHangarPrincipal().getId(), reason, comment));
-        actionLogger.project(LogAction.PROJECT_FLAGGED.create(ProjectContext.of(projectId), "Flagged by " + getHangarPrincipal().getName(), ""));
+        this.projectFlagsDAO.insert(new ProjectFlagTable(projectId, this.getHangarPrincipal().getId(), reason, comment));
+        this.actionLogger.project(LogAction.PROJECT_FLAGGED.create(ProjectContext.of(projectId), "Flagged by " + this.getHangarPrincipal().getName(), ""));
     }
 
-    public boolean hasUnresolvedFlag(long projectId, long userId) {
-        return projectFlagsDAO.getUnresolvedFlag(projectId, userId) != null;
+    public boolean hasUnresolvedFlag(final long projectId, final long userId) {
+        return this.projectFlagsDAO.getUnresolvedFlag(projectId, userId) != null;
     }
 
     @Transactional
-    public void markAsResolved(long flagId, boolean resolved) {
-        HangarProjectFlag hangarProjectFlag = hangarProjectFlagsDAO.getById(flagId);
+    public void markAsResolved(final long flagId, final boolean resolved) {
+        final HangarProjectFlag hangarProjectFlag = this.hangarProjectFlagsDAO.getById(flagId);
         if (hangarProjectFlag == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         if (resolved == hangarProjectFlag.isResolved()) {
             throw new HangarApiException("project.flag.error.alreadyResolved");
         }
-        Long resolvedBy = resolved ? getHangarPrincipal().getId() : null;
-        OffsetDateTime resolvedAt = resolved ? OffsetDateTime.now() : null;
-        projectFlagsDAO.markAsResolved(flagId, resolved, resolvedBy, resolvedAt);
-        hangarProjectFlag.logAction(actionLogger, LogAction.PROJECT_FLAG_RESOLVED, "Flag resolved by " + getHangarPrincipal().getName(), "Flag reported by " + hangarProjectFlag.getReportedByName());
+        final Long resolvedBy = resolved ? this.getHangarPrincipal().getId() : null;
+        final OffsetDateTime resolvedAt = resolved ? OffsetDateTime.now() : null;
+        this.projectFlagsDAO.markAsResolved(flagId, resolved, resolvedBy, resolvedAt);
+        hangarProjectFlag.logAction(this.actionLogger, LogAction.PROJECT_FLAG_RESOLVED, "Flag resolved by " + this.getHangarPrincipal().getName(), "Flag reported by " + hangarProjectFlag.getReportedByName());
     }
 
     @Transactional
     public void notifyParty(final long flagId, final boolean warning, final boolean toReporter, final String notification) {
-        final HangarProjectFlag flag = hangarProjectFlagsDAO.getById(flagId);
+        final HangarProjectFlag flag = this.hangarProjectFlagsDAO.getById(flagId);
         final String[] message = {"notifications.project.manualReportComment", flag.getProjectNamespace().getSlug(), notification};
         if (toReporter) {
-            final long id = notificationService.notify(flag.getUserId(), null, getHangarUserId(), warning ? NotificationType.WARNING : NotificationType.INFO, message).getId();
-            flagNotificationsDAO.insert(new ProjectFlagNotificationTable(flag.getId(), id));
+            final long id = this.notificationService.notify(flag.getUserId(), null, this.getHangarUserId(), warning ? NotificationType.WARNING : NotificationType.INFO, message).getId();
+            this.flagNotificationsDAO.insert(new ProjectFlagNotificationTable(flag.getId(), id));
         } else {
-            final List<ProjectFlagNotificationTable> tables = notificationService.notifyProjectMembers(flag.getProjectId(), getHangarUserId(), flag.getProjectNamespace().getOwner(),
+            final List<ProjectFlagNotificationTable> tables = this.notificationService.notifyProjectMembers(flag.getProjectId(), this.getHangarUserId(), flag.getProjectNamespace().getOwner(),
                     flag.getProjectNamespace().getSlug(), warning ? NotificationType.WARNING : NotificationType.INFO, message).stream()
                 .map(table -> new ProjectFlagNotificationTable(flag.getId(), table.getId())).collect(Collectors.toList());
-            flagNotificationsDAO.insert(tables);
+            this.flagNotificationsDAO.insert(tables);
         }
     }
 
     public List<HangarProjectFlagNotification> getFlagNotifications(final long flagId) {
-        return hangarProjectFlagNofiticationsDAO.getNotifications(flagId);
+        return this.hangarProjectFlagNofiticationsDAO.getNotifications(flagId);
     }
 
-    public List<HangarProjectFlag> getFlags(long projectId) {
-        return hangarProjectFlagsDAO.getFlags(projectId);
+    public List<HangarProjectFlag> getFlags(final long projectId) {
+        return this.hangarProjectFlagsDAO.getFlags(projectId);
     }
 
     @Transactional
-    public PaginatedResult<HangarProjectFlag> getFlags(@NotNull final RequestPagination pagination, final boolean resolved) {
-        final List<HangarProjectFlag> flags = hangarProjectFlagsDAO.getFlags(pagination, resolved);
-        final long count = hangarProjectFlagsDAO.getFlagsCount(resolved);
+    public PaginatedResult<HangarProjectFlag> getFlags(final @NotNull RequestPagination pagination, final boolean resolved) {
+        final List<HangarProjectFlag> flags = this.hangarProjectFlagsDAO.getFlags(pagination, resolved);
+        final long count = this.hangarProjectFlagsDAO.getFlagsCount(resolved);
         return new PaginatedResult<>(new Pagination(count, pagination), flags);
     }
 
     public long getFlagsQueueSize(final boolean resolved) {
-        return hangarProjectFlagsDAO.getFlagsCount(resolved);
+        return this.hangarProjectFlagsDAO.getFlagsCount(resolved);
     }
 }

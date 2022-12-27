@@ -24,7 +24,7 @@ public class HangarReviewQueueEntry {
     private final Color channelColor;
     private final List<Review> reviews;
 
-    public HangarReviewQueueEntry(@Nested("pn") ProjectNamespace namespace, long versionId, String versionString, List<Platform> platforms, OffsetDateTime versionCreatedAt, String versionAuthor, String channelName, @EnumByOrdinal Color channelColor) {
+    public HangarReviewQueueEntry(@Nested("pn") final ProjectNamespace namespace, final long versionId, final String versionString, final List<Platform> platforms, final OffsetDateTime versionCreatedAt, final String versionAuthor, final String channelName, @EnumByOrdinal final Color channelColor) {
         this.namespace = namespace;
         this.versionId = versionId;
         this.versionString = versionString;
@@ -37,39 +37,39 @@ public class HangarReviewQueueEntry {
     }
 
     public ProjectNamespace getNamespace() {
-        return namespace;
+        return this.namespace;
     }
 
     public long getVersionId() {
-        return versionId;
+        return this.versionId;
     }
 
     public String getVersionString() {
-        return versionString;
+        return this.versionString;
     }
 
     public List<Platform> getPlatforms() {
-        return platforms;
+        return this.platforms;
     }
 
     public OffsetDateTime getVersionCreatedAt() {
-        return versionCreatedAt;
+        return this.versionCreatedAt;
     }
 
     public String getVersionAuthor() {
-        return versionAuthor;
+        return this.versionAuthor;
     }
 
     public String getChannelName() {
-        return channelName;
+        return this.channelName;
     }
 
     public Color getChannelColor() {
-        return channelColor;
+        return this.channelColor;
     }
 
     public List<Review> getReviews() {
-        return reviews;
+        return this.reviews;
     }
 
     public static class Review {
@@ -79,7 +79,7 @@ public class HangarReviewQueueEntry {
         private final OffsetDateTime reviewEnded;
         private final ReviewAction lastAction;
 
-        public Review(String reviewerName, OffsetDateTime reviewStarted, @Nullable OffsetDateTime reviewEnded, @EnumByOrdinal ReviewAction lastAction) {
+        public Review(final String reviewerName, final OffsetDateTime reviewStarted, final @Nullable OffsetDateTime reviewEnded, @EnumByOrdinal final ReviewAction lastAction) {
             this.reviewerName = reviewerName;
             this.reviewStarted = reviewStarted;
             this.reviewEnded = reviewEnded;
@@ -87,28 +87,28 @@ public class HangarReviewQueueEntry {
         }
 
         public String getReviewerName() {
-            return reviewerName;
+            return this.reviewerName;
         }
 
         public OffsetDateTime getReviewStarted() {
-            return reviewStarted;
+            return this.reviewStarted;
         }
 
         public OffsetDateTime getReviewEnded() {
-            return reviewEnded;
+            return this.reviewEnded;
         }
 
         public ReviewAction getLastAction() {
-            return lastAction;
+            return this.lastAction;
         }
 
         @Override
         public String toString() {
             return "Review{" +
-                    "reviewerName='" + reviewerName + '\'' +
-                    ", reviewStarted=" + reviewStarted +
-                    ", reviewEnded=" + reviewEnded +
-                    ", lastAction=" + lastAction +
+                    "reviewerName='" + this.reviewerName + '\'' +
+                    ", reviewStarted=" + this.reviewStarted +
+                    ", reviewEnded=" + this.reviewEnded +
+                    ", lastAction=" + this.lastAction +
                     '}';
         }
     }
@@ -116,15 +116,15 @@ public class HangarReviewQueueEntry {
     @Override
     public String toString() {
         return "HangarReviewQueueEntry{" +
-                "namespace=" + namespace +
-                ", versionId=" + versionId +
-                ", versionString='" + versionString + '\'' +
-                ", platforms=" + platforms +
-                ", versionCreatedAt=" + versionCreatedAt +
-                ", versionAuthor='" + versionAuthor + '\'' +
-                ", channelName='" + channelName + '\'' +
-                ", channelColor=" + channelColor +
-                ", reviews=" + reviews +
+                "namespace=" + this.namespace +
+                ", versionId=" + this.versionId +
+                ", versionString='" + this.versionString + '\'' +
+                ", platforms=" + this.platforms +
+                ", versionCreatedAt=" + this.versionCreatedAt +
+                ", versionAuthor='" + this.versionAuthor + '\'' +
+                ", channelName='" + this.channelName + '\'' +
+                ", channelColor=" + this.channelColor +
+                ", reviews=" + this.reviews +
                 '}';
     }
 }

@@ -15,7 +15,7 @@ public final class WebHookException extends RuntimeException {
         return this.error;
     }
 
-    public static WebHookException of(String message) {
+    public static WebHookException of(final String message) {
         return new WebHookException(Map.of("messages", List.of(Map.of(
             "instance_ptr", "#/method",
             "messages", List.of(

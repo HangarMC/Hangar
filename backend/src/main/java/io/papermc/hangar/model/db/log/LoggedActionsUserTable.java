@@ -9,19 +9,19 @@ public class LoggedActionsUserTable extends LoggedActionTable {
 
     private final long subjectId;
 
-    public LoggedActionsUserTable(long userId, InetAddress address, LoggedAction<UserContext> action) {
+    public LoggedActionsUserTable(final long userId, final InetAddress address, final LoggedAction<UserContext> action) {
         super(userId, address, action);
         this.subjectId = action.getContext().getUserId();
     }
 
     public long getSubjectId() {
-        return subjectId;
+        return this.subjectId;
     }
 
     @Override
     public String toString() {
         return "LoggedActionsUserTable{" +
-                "subjectId=" + subjectId +
+                "subjectId=" + this.subjectId +
                 "} " + super.toString();
     }
 }

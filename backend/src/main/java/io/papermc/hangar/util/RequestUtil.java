@@ -14,16 +14,16 @@ public class RequestUtil {
 
     private static final String ATTR = "HangarIP";
 
-    public static String getRemoteAddress(HttpServletRequest request) {
-        Object attribute = request.getAttribute(ATTR);
+    public static String getRemoteAddress(final HttpServletRequest request) {
+        final Object attribute = request.getAttribute(ATTR);
         if (attribute instanceof String ip) {
             return ip;
         }
 
-        String header = request.getHeader("X-Forwarded-For");
-        String ipHeader = request.getHeader("x-real-ip");
-        String cfHeader = request.getHeader("cf-connecting-ip");
-        String ip;
+        final String header = request.getHeader("X-Forwarded-For");
+        final String ipHeader = request.getHeader("x-real-ip");
+        final String cfHeader = request.getHeader("cf-connecting-ip");
+        final String ip;
         if (cfHeader != null) {
             ip = cfHeader;
         } else if (ipHeader != null) {
@@ -38,15 +38,15 @@ public class RequestUtil {
         return ip;
     }
 
-    public static InetAddress getRemoteInetAddress(HttpServletRequest request) {
+    public static InetAddress getRemoteInetAddress(final HttpServletRequest request) {
         try {
             return InetAddress.getByName(getRemoteAddress(request));
-        } catch (UnknownHostException e) {
+        } catch (final UnknownHostException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 
-    public static String appendParam(String url, String paramName, String paramValue) {
+    public static String appendParam(final String url, final String paramName, final String paramValue) {
         return UriComponentsBuilder.fromUriString(url).queryParam(paramName, paramValue).build().toUriString();
     }
 }

@@ -11,30 +11,30 @@ public class LogVersion {
     private final String versionString;
     private final List<Platform> platforms;
 
-    public LogVersion(@PropagateNull Long id, String versionString, List<Platform> platforms) {
+    public LogVersion(@PropagateNull final Long id, final String versionString, final List<Platform> platforms) {
         this.id = id;
         this.versionString = versionString;
         this.platforms = platforms;
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public String getVersionString() {
-        return versionString;
+        return this.versionString;
     }
 
     public List<Platform> getPlatforms() {
-        return platforms;
+        return this.platforms;
     }
 
     @Override
     public String toString() {
         return "LogVersion{" +
-                "id=" + id +
-                ", versionString='" + versionString + '\'' +
-                ", platforms=" + platforms +
+                "id=" + this.id +
+                ", versionString='" + this.versionString + '\'' +
+                ", platforms=" + this.platforms +
                 '}';
     }
 }

@@ -31,23 +31,23 @@ public class AdminActivityController extends HangarComponent {
     private final ActivityService activityService;
 
     @Autowired
-    public AdminActivityController(ActivityService activityService) {
+    public AdminActivityController(final ActivityService activityService) {
         this.activityService = activityService;
     }
 
     @GetMapping("/flags")
-    public List<FlagActivity> getFlagActivity(@PathVariable UserTable user) {
+    public List<FlagActivity> getFlagActivity(@PathVariable final UserTable user) {
         if (user.isOrganization()) {
             throw new HangarApiException("userActivity.error.isOrg");
         }
-        return activityService.getFlagActivity(user);
+        return this.activityService.getFlagActivity(user);
     }
 
     @GetMapping("/reviews")
-    public List<ReviewActivity> getReviewActivity(@PathVariable UserTable user) {
+    public List<ReviewActivity> getReviewActivity(@PathVariable final UserTable user) {
         if (user.isOrganization()) {
             throw new HangarApiException("userActivity.error.isOrg");
         }
-        return activityService.getReviewActivity(user);
+        return this.activityService.getReviewActivity(user);
     }
 }

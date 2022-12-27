@@ -18,7 +18,7 @@ public final class StringUtils {
      * @param str String to create slug for
      * @return Slug of string
      */
-    public static String slugify(String str) {
+    public static String slugify(final String str) {
         return compact(str).replace(' ', '-');
     }
 
@@ -28,7 +28,7 @@ public final class StringUtils {
      * @param str String to compact
      * @return Compacted string
      */
-    public static String compact(String str) {
+    public static String compact(final String str) {
         return str.trim().replaceAll(" +", " ");
     }
 
@@ -38,7 +38,7 @@ public final class StringUtils {
      * @param str version string to check (e.g. 2.3.1) MUST BE ALL NUMBERS
      * @return the list of integers in ltr order
      */
-    public static List<Integer> splitVersionNumber(String str) {
+    public static List<Integer> splitVersionNumber(final String str) {
         return Arrays.stream(str.split("\\.")).map(Integer::parseInt).collect(Collectors.toList());
     }
 
@@ -52,7 +52,7 @@ public final class StringUtils {
      * @param versionNumbers version numbers
      * @return formatted string
      */
-    public static String formatVersionNumbers(List<String> versionNumbers) {
+    public static String formatVersionNumbers(final List<String> versionNumbers) {
         versionNumbers.sort((version1, version2) -> {
             int vnum1 = 0, vnum2 = 0;
 
@@ -85,17 +85,17 @@ public final class StringUtils {
             if (verString.isBlank()) {
                 return version;
             }
-            List<Integer> versionArr = StringUtils.splitVersionNumber(version);
-            Matcher hyphen = PREV_HAS_HYPHEN.matcher(verString);
-            Matcher comma = PREV_HAS_COMMA_OR_FIRST.matcher(verString);
+            final List<Integer> versionArr = splitVersionNumber(version);
+            final Matcher hyphen = PREV_HAS_HYPHEN.matcher(verString);
+            final Matcher comma = PREV_HAS_COMMA_OR_FIRST.matcher(verString);
             if (hyphen.find()) {
-                String[] group = hyphen.group().split("\\.");
-                int prevVersion = Integer.parseInt(group[group.length - 1]);
-                Matcher prevVersionMatcher = LAST_WHOLE_VERSION.matcher(verString);
+                final String[] group = hyphen.group().split("\\.");
+                final int prevVersion = Integer.parseInt(group[group.length - 1]);
+                final Matcher prevVersionMatcher = LAST_WHOLE_VERSION.matcher(verString);
                 if (!prevVersionMatcher.find()) {
                     throw new IllegalArgumentException("Bad version string");
                 }
-                List<Integer> previousWholeVersion = StringUtils.splitVersionNumber(prevVersionMatcher.group());
+                final List<Integer> previousWholeVersion = splitVersionNumber(prevVersionMatcher.group());
                 if (previousWholeVersion.size() == versionArr.size()) {
                     if (versionArr.get(versionArr.size() - 1) - 1 == prevVersion) {
                         return verString.replaceFirst("-[0-9.]+$", "-" + version);
@@ -106,7 +106,7 @@ public final class StringUtils {
                     return verString + ", " + version;
                 }
             } else if (comma.find()) {
-                List<Integer> prevVersion = StringUtils.splitVersionNumber(comma.group());
+                final List<Integer> prevVersion = splitVersionNumber(comma.group());
                 if (prevVersion.size() == versionArr.size()) {
                     if (versionArr.get(versionArr.size() - 1) - 1 == prevVersion.get(prevVersion.size() - 1)) {
                         return verString + "-" + version;
@@ -122,16 +122,13 @@ public final class StringUtils {
         });
     }
 
-    public static String parsePythonNullable(String input) {
+    public static String parsePythonNullable(final String input) {
         return input.equals("None") ? null : input;
     }
 
-    public static boolean isAnyEqualIgnoreCase(@NotNull String lhs, String @NotNull ... rhs) {
-        if (rhs.length == 0) {
-            return false;
-        }
+    public static boolean isAnyEqualIgnoreCase(final @NotNull String lhs, final String @NotNull ... rhs) {
 
-        for (String string : rhs) {
+        for (final String string : rhs) {
             if (lhs.equalsIgnoreCase(string)) {
                 return true;
             }

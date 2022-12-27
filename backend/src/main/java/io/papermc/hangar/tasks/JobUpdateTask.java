@@ -11,12 +11,12 @@ public class JobUpdateTask {
     private final JobService service;
 
     @Autowired
-    public JobUpdateTask(JobService service) {
+    public JobUpdateTask(final JobService service) {
         this.service = service;
     }
 
     @Scheduled(fixedRateString = "#{@hangarConfig.jobs.checkInterval.toMillis()}", initialDelayString = "#{@hangarConfig.jobs.checkInterval.toMillis()}")
     public void checkAndProcess() {
-        service.checkAndProcess();
+        this.service.checkAndProcess();
     }
 }

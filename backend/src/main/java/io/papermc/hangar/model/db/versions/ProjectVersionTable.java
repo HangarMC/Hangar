@@ -31,7 +31,7 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
     private Long postId;
 
     @JdbiConstructor
-    public ProjectVersionTable(OffsetDateTime createdAt, long id, String versionString, String description, long projectId, long channelId, Long reviewerId, OffsetDateTime approvedAt, long authorId, @EnumByOrdinal Visibility visibility, @EnumByOrdinal ReviewState reviewState, boolean createForumPost, Long postId) {
+    public ProjectVersionTable(final OffsetDateTime createdAt, final long id, final String versionString, final String description, final long projectId, final long channelId, final Long reviewerId, final OffsetDateTime approvedAt, final long authorId, @EnumByOrdinal final Visibility visibility, @EnumByOrdinal final ReviewState reviewState, final boolean createForumPost, final Long postId) {
         super(createdAt, id);
         this.versionString = versionString;
         this.description = description;
@@ -46,7 +46,7 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
         this.postId = postId;
     }
 
-    public ProjectVersionTable(String versionString, String description, long projectId, long channelId, long authorId, boolean createForumPost) {
+    public ProjectVersionTable(final String versionString, final String description, final long projectId, final long channelId, final long authorId, final boolean createForumPost) {
         this.versionString = versionString;
         this.description = description;
         this.projectId = projectId;
@@ -56,7 +56,7 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
     }
 
     public String getVersionString() {
-        return versionString;
+        return this.versionString;
     }
 
     public void setVersionString(final String versionString) {
@@ -64,79 +64,79 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
     @Override
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     public long getChannelId() {
-        return channelId;
+        return this.channelId;
     }
 
-    public void setChannelId(long channelId) {
+    public void setChannelId(final long channelId) {
         this.channelId = channelId;
     }
 
     public Long getReviewerId() {
-        return reviewerId;
+        return this.reviewerId;
     }
 
-    public void setReviewerId(Long reviewerId) {
+    public void setReviewerId(final Long reviewerId) {
         this.reviewerId = reviewerId;
     }
 
     public OffsetDateTime getApprovedAt() {
-        return approvedAt;
+        return this.approvedAt;
     }
 
-    public void setApprovedAt(OffsetDateTime approvedAt) {
+    public void setApprovedAt(final OffsetDateTime approvedAt) {
         this.approvedAt = approvedAt;
     }
 
     public long getAuthorId() {
-        return authorId;
+        return this.authorId;
     }
 
     @Override
     @EnumByOrdinal
     public Visibility getVisibility() {
-        return visibility;
+        return this.visibility;
     }
 
     @Override
-    public void setVisibility(Visibility visibility) {
+    public void setVisibility(final Visibility visibility) {
         this.visibility = visibility;
     }
 
     @EnumByOrdinal
     public ReviewState getReviewState() {
-        return reviewState;
+        return this.reviewState;
     }
 
-    public void setReviewState(ReviewState reviewState) {
+    public void setReviewState(final ReviewState reviewState) {
         this.reviewState = reviewState;
     }
 
     public boolean isCreateForumPost() {
-        return createForumPost;
+        return this.createForumPost;
     }
 
-    public void setCreateForumPost(boolean createForumPost) {
+    public void setCreateForumPost(final boolean createForumPost) {
         this.createForumPost = createForumPost;
     }
 
     public Long getPostId() {
-        return postId;
+        return this.postId;
     }
 
-    public void setPostId(Long postId) {
+    public void setPostId(final Long postId) {
         this.postId = postId;
     }
 
@@ -147,11 +147,11 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
 
     @Override
     public long getVersionId() {
-        return id;
+        return this.id;
     }
 
     @Override
-    public Consumer<LoggedAction<VersionContext>> getLogInserter(UserActionLogService actionLogger) {
+    public Consumer<LoggedAction<VersionContext>> getLogInserter(final UserActionLogService actionLogger) {
         return actionLogger::version;
     }
 
@@ -163,17 +163,17 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
     @Override
     public String toString() {
         return "ProjectVersionTable{" +
-            "versionString='" + versionString + '\'' +
-            ", description='" + description + '\'' +
-            ", projectId=" + projectId +
-            ", channelId=" + channelId +
-            ", reviewerId=" + reviewerId +
-            ", approvedAt=" + approvedAt +
-            ", authorId=" + authorId +
-            ", visibility=" + visibility +
-            ", reviewState=" + reviewState +
-            ", createForumPost=" + createForumPost +
-            ", postId=" + postId +
+            "versionString='" + this.versionString + '\'' +
+            ", description='" + this.description + '\'' +
+            ", projectId=" + this.projectId +
+            ", channelId=" + this.channelId +
+            ", reviewerId=" + this.reviewerId +
+            ", approvedAt=" + this.approvedAt +
+            ", authorId=" + this.authorId +
+            ", visibility=" + this.visibility +
+            ", reviewState=" + this.reviewState +
+            ", createForumPost=" + this.createForumPost +
+            ", postId=" + this.postId +
             "} " + super.toString();
     }
 }

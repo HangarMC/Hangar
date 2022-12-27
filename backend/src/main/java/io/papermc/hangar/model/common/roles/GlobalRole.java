@@ -24,7 +24,7 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
 
     ORGANIZATION("Organization", 100, OrganizationRole.ORGANIZATION_OWNER.getPermissions(), "Organization", Color.PURPLE);
 
-    private static final GlobalRole[] VALUES = GlobalRole.values();
+    private static final GlobalRole[] VALUES = values();
 
     private final String value;
     private final long roleId;
@@ -33,11 +33,11 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
     private final Color color;
     private final Integer rank;
 
-    GlobalRole(String value, long roleId, Permission permissions, String title, Color color) {
+    GlobalRole(final String value, final long roleId, final Permission permissions, final String title, final Color color) {
         this(value, roleId, permissions, title, color, null);
     }
 
-    GlobalRole(String value, long roleId, Permission permissions, String title, Color color, Integer rank) {
+    GlobalRole(final String value, final long roleId, final Permission permissions, final String title, final Color color, final Integer rank) {
         this.value = value;
         this.roleId = roleId;
         this.permissions = permissions;
@@ -47,39 +47,34 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
         Role.registerRole(this);
     }
 
-    @NotNull
     @Override
-    public String getValue() {
-        return value;
+    public @NotNull String getValue() {
+        return this.value;
     }
 
     @Override
     public long getRoleId() {
-        return roleId;
+        return this.roleId;
     }
 
-    @NotNull
     @Override
-    public RoleCategory getRoleCategory() {
+    public @NotNull RoleCategory getRoleCategory() {
         return RoleCategory.GLOBAL;
     }
 
-    @NotNull
     @Override
-    public Permission getPermissions() {
-        return permissions;
+    public @NotNull Permission getPermissions() {
+        return this.permissions;
     }
 
-    @NotNull
     @Override
-    public String getTitle() {
-        return title;
+    public @NotNull String getTitle() {
+        return this.title;
     }
 
-    @NotNull
     @Override
-    public Color getColor() {
-        return color;
+    public @NotNull Color getColor() {
+        return this.color;
     }
 
     @Override
@@ -89,17 +84,16 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
 
     @Override
     public @Nullable Integer getRank() {
-        return rank;
+        return this.rank;
     }
 
-    @NotNull
     @Override
-    public GlobalRoleTable create(@Nullable Long ignored, long userId, boolean ignoredToo) {
+    public @NotNull GlobalRoleTable create(final @Nullable Long ignored, final long userId, final boolean ignoredToo) {
         return new GlobalRoleTable(userId, this);
     }
 
-    public static GlobalRole byApiValue(String apiValue) {
-        for (GlobalRole value : values()) {
+    public static GlobalRole byApiValue(final String apiValue) {
+        for (final GlobalRole value : values()) {
             if (value.value.endsWith(apiValue)) {
                 return value;
             }

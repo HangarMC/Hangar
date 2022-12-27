@@ -9,41 +9,37 @@ import javax.validation.constraints.NotNull;
 
 public class ProjectSettingsForm {
 
-    @Valid
-    private final ProjectSettings settings;
-    @NotNull(message = "project.new.error.noCategory")
-    private final Category category;
+    private final @Valid ProjectSettings settings;
+    private final @NotNull(message = "project.new.error.noCategory") Category category;
 
     // @el(root: String)
-    @NotNull(message = "project.new.error.noDescription")
-    @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxDescLen)", message = "project.new.error.tooLongDesc")
-    private final String description;
+    private final @NotNull(message = "project.new.error.noDescription") @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxDescLen)", message = "project.new.error.tooLongDesc") String description;
 
     @JsonCreator
-    public ProjectSettingsForm(ProjectSettings settings, Category category, String description) {
+    public ProjectSettingsForm(final ProjectSettings settings, final Category category, final String description) {
         this.settings = settings;
         this.category = category;
         this.description = description;
     }
 
     public ProjectSettings getSettings() {
-        return settings;
+        return this.settings;
     }
 
     public Category getCategory() {
-        return category;
+        return this.category;
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     @Override
     public String toString() {
         return "ProjectSettingsForm{" +
-                "settings=" + settings +
-                ", category=" + category +
-                ", description='" + description + '\'' +
+                "settings=" + this.settings +
+                ", category=" + this.category +
+                ", description='" + this.description + '\'' +
                 '}';
     }
 }

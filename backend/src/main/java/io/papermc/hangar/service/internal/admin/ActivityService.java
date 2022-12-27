@@ -16,15 +16,15 @@ public class ActivityService extends HangarComponent {
     private final ActivityDAO activityDAO;
 
     @Autowired
-    public ActivityService(ActivityDAO activityDAO) {
+    public ActivityService(final ActivityDAO activityDAO) {
         this.activityDAO = activityDAO;
     }
 
-    public List<FlagActivity> getFlagActivity(UserTable userTable) {
-        return activityDAO.getFlagActivity(userTable.getId());
+    public List<FlagActivity> getFlagActivity(final UserTable userTable) {
+        return this.activityDAO.getFlagActivity(userTable.getId());
     }
 
-    public List<ReviewActivity> getReviewActivity(UserTable userTable) {
-        return activityDAO.getReviewActivity(userTable.getId());
+    public List<ReviewActivity> getReviewActivity(final UserTable userTable) {
+        return this.activityDAO.getReviewActivity(userTable.getId());
     }
 }

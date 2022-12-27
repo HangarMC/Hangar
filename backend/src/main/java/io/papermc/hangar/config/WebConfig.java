@@ -60,7 +60,7 @@ import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
 @Configuration
 public class WebConfig extends WebMvcConfigurationSupport {
 
-    private static Logger interceptorLogger = LoggerFactory.getLogger(LoggingInterceptor.class); // NO-SONAR
+    private static final Logger interceptorLogger = LoggerFactory.getLogger(LoggingInterceptor.class); // NO-SONAR
 
     private final HangarConfig hangarConfig;
     private final ObjectMapper mapper;
@@ -71,7 +71,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     private final List<HandlerMethodArgumentResolver> resolvers;
 
     @Autowired
-    public WebConfig(HangarConfig hangarConfig, ObjectMapper mapper, RateLimitInterceptor rateLimitInterceptor, List<Converter<?, ?>> converters, List<ConverterFactory<?, ?>> converterFactories, List<HandlerMethodArgumentResolver> resolvers) {
+    public WebConfig(final HangarConfig hangarConfig, final ObjectMapper mapper, final RateLimitInterceptor rateLimitInterceptor, final List<Converter<?, ?>> converters, final List<ConverterFactory<?, ?>> converterFactories, final List<HandlerMethodArgumentResolver> resolvers) {
         this.hangarConfig = hangarConfig;
         this.mapper = mapper;
         this.rateLimitInterceptor = rateLimitInterceptor;
@@ -81,17 +81,17 @@ public class WebConfig extends WebMvcConfigurationSupport {
     }
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(rateLimitInterceptor).addPathPatterns("/**");
+    public void addInterceptors(final InterceptorRegistry registry) {
+        registry.addInterceptor(this.rateLimitInterceptor).addPathPatterns("/**");
     }
 
     @Override
-    protected void addCorsMappings(CorsRegistry registry) {
-        CorsRegistration corsRegistration = registry.addMapping("/api/internal/**");
-        if (hangarConfig.isDev()) {
+    protected void addCorsMappings(final CorsRegistry registry) {
+        final CorsRegistration corsRegistration = registry.addMapping("/api/internal/**");
+        if (this.hangarConfig.isDev()) {
             corsRegistration.allowedOrigins("http://localhost:3333");
         } else {
-            corsRegistration.allowedOrigins(hangarConfig.getBaseUrl());
+            corsRegistration.allowedOrigins(this.hangarConfig.getBaseUrl());
         }
         corsRegistration.allowedMethods("GET", "HEAD", "POST", "DELETE");
     }
@@ -110,7 +110,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     public Filter identifyFilter() {
         return new OncePerRequestFilter() {
             @Override
-            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+            protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
                 response.setHeader("Server", "Hangar");
                 filterChain.doFilter(request, response);
             }
@@ -118,53 +118,52 @@ public class WebConfig extends WebMvcConfigurationSupport {
     }
 
     @Override
-    protected void addFormatters(FormatterRegistry registry) {
-        converters.forEach(registry::addConverter);
-        converterFactories.forEach(registry::addConverterFactory);
+    protected void addFormatters(final FormatterRegistry registry) {
+        this.converters.forEach(registry::addConverter);
+        this.converterFactories.forEach(registry::addConverterFactory);
     }
 
     @Override
-    public void configureMessageConverters(@NotNull List<HttpMessageConverter<?>> converters) {
+    public void configureMessageConverters(final @NotNull List<HttpMessageConverter<?>> converters) {
         // TODO kinda wack, but idk a better way rn
-        ParameterNamesAnnotationIntrospector sAnnotationIntrospector = (ParameterNamesAnnotationIntrospector) mapper.getSerializationConfig().getAnnotationIntrospector().allIntrospectors().stream().filter(ParameterNamesAnnotationIntrospector.class::isInstance).findFirst().orElseThrow();
-        mapper.setAnnotationIntrospectors(
+        final ParameterNamesAnnotationIntrospector sAnnotationIntrospector = (ParameterNamesAnnotationIntrospector) this.mapper.getSerializationConfig().getAnnotationIntrospector().allIntrospectors().stream().filter(ParameterNamesAnnotationIntrospector.class::isInstance).findFirst().orElseThrow();
+        this.mapper.setAnnotationIntrospectors(
                 AnnotationIntrospector.pair(sAnnotationIntrospector, new HangarAnnotationIntrospector()),
-                mapper.getDeserializationConfig().getAnnotationIntrospector()
+            this.mapper.getDeserializationConfig().getAnnotationIntrospector()
         );
-        converters.add(new MappingJackson2HttpMessageConverter(mapper));
-        super.addDefaultHttpMessageConverters(converters);
+        converters.add(new MappingJackson2HttpMessageConverter(this.mapper));
+        this.addDefaultHttpMessageConverters(converters);
     }
 
-    @NotNull
     @Override
-    protected RequestMappingHandlerAdapter createRequestMappingHandlerAdapter() {
+    protected @NotNull RequestMappingHandlerAdapter createRequestMappingHandlerAdapter() {
         return new RequestMappingHandlerAdapter() {
             @Override
             public void afterPropertiesSet() {
                 super.afterPropertiesSet();
-                List<HandlerMethodArgumentResolver> existingResolvers = new ArrayList<>(Objects.requireNonNull(getArgumentResolvers()));
-                existingResolvers.addAll(0, resolvers);
+                final List<HandlerMethodArgumentResolver> existingResolvers = new ArrayList<>(Objects.requireNonNull(this.getArgumentResolvers()));
+                existingResolvers.addAll(0, WebConfig.this.resolvers);
                 this.setArgumentResolvers(existingResolvers);
             }
         };
     }
 
     @Bean
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper mapper) {
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(final ObjectMapper mapper) {
         return new MappingJackson2HttpMessageConverter(mapper);
     }
 
     @Bean
-    public RestTemplate restTemplate(List<HttpMessageConverter<?>> messageConverters) {
-        RestTemplate restTemplate;
+    public RestTemplate restTemplate(final List<HttpMessageConverter<?>> messageConverters) {
+        final RestTemplate restTemplate;
         if (interceptorLogger.isDebugEnabled()) {
-            ClientHttpRequestFactory factory = new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory());
+            final ClientHttpRequestFactory factory = new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory());
             restTemplate = new RestTemplate(factory);
             restTemplate.setInterceptors(List.of(new LoggingInterceptor()));
         } else {
             restTemplate = new RestTemplate();
         }
-        super.addDefaultHttpMessageConverters(messageConverters);
+        this.addDefaultHttpMessageConverters(messageConverters);
         restTemplate.setMessageConverters(messageConverters);
         return restTemplate;
     }
@@ -172,17 +171,17 @@ public class WebConfig extends WebMvcConfigurationSupport {
     static class LoggingInterceptor implements ClientHttpRequestInterceptor {
 
         @Override
-        public ClientHttpResponse intercept(HttpRequest req, byte[] reqBody, ClientHttpRequestExecution ex) throws IOException {
+        public ClientHttpResponse intercept(final HttpRequest req, final byte[] reqBody, final ClientHttpRequestExecution ex) throws IOException {
             if (interceptorLogger.isDebugEnabled()) {
                 interceptorLogger.debug("Request {}, body {}, headers {}", req.getMethod() + " " + req.getURI(), new String(reqBody, StandardCharsets.UTF_8), req.getHeaders());
             }
-            ClientHttpResponse response = ex.execute(req, reqBody);
+            final ClientHttpResponse response = ex.execute(req, reqBody);
             if (interceptorLogger.isDebugEnabled()) {
-                int code = response.getRawStatusCode();
-                HttpStatus status = HttpStatus.resolve(code);
+                final int code = response.getRawStatusCode();
+                final HttpStatus status = HttpStatus.resolve(code);
 
-                InputStreamReader isr = new InputStreamReader(response.getBody(), StandardCharsets.UTF_8);
-                String body = new BufferedReader(isr).lines().collect(Collectors.joining("\n"));
+                final InputStreamReader isr = new InputStreamReader(response.getBody(), StandardCharsets.UTF_8);
+                final String body = new BufferedReader(isr).lines().collect(Collectors.joining("\n"));
 
                 interceptorLogger.debug("Response {}, body {}, headers {}", (status != null ? status : code), body, response.getHeaders());
             }

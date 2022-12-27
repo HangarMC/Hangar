@@ -27,12 +27,12 @@ public class PaperFileTypeHandler extends FileTypeHandler<PaperFileData> {
     }
 
     @Override
-    public PaperFileData getData(BufferedReader reader) throws ConfigurateException {
+    public PaperFileData getData(final BufferedReader reader) throws ConfigurateException {
         return YamlConfigurationLoader.builder().buildAndLoadString(reader.lines().collect(Collectors.joining("\n"))).get(PaperFileData.class);
     }
 
     @ConfigSerializable
-    public static class PaperFileData extends FileData {
+    public static class PaperFileData extends FileTypeHandler.FileData {
 
         @Setting("depend")
         private List<String> hardDepends;
@@ -41,27 +41,25 @@ public class PaperFileTypeHandler extends FileTypeHandler<PaperFileData> {
         @Setting("api-version")
         private String apiVersion;
 
-        @NotNull
         @Override
-        public SortedSet<String> getPlatformDependencies() {
-            SortedSet<String> platformVersions = new TreeSet<>();
+        public @NotNull SortedSet<String> getPlatformDependencies() {
+            final SortedSet<String> platformVersions = new TreeSet<>();
             if (this.apiVersion != null) {
                 platformVersions.add(this.apiVersion);
             }
             return platformVersions;
         }
 
-        @NotNull
         @Override
-        protected Set<PluginDependency> createPluginDependencies() {
-            Set<PluginDependency> dependencies = new HashSet<>();
-            if (hardDepends != null) {
-                for (String hardDepend : hardDepends) {
+        protected @NotNull Set<PluginDependency> createPluginDependencies() {
+            final Set<PluginDependency> dependencies = new HashSet<>();
+            if (this.hardDepends != null) {
+                for (final String hardDepend : this.hardDepends) {
                     dependencies.add(PluginDependency.of(hardDepend, true));
                 }
             }
-            if (softDepends != null) {
-                for (String softDepend : softDepends) {
+            if (this.softDepends != null) {
+                for (final String softDepend : this.softDepends) {
                     dependencies.add(PluginDependency.of(softDepend, false));
                 }
             }

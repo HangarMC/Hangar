@@ -8,24 +8,24 @@ public class SessionProperties {
     private final Long expiresIn;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public SessionProperties(boolean _fake, Long expiresIn) {
+    public SessionProperties(final boolean _fake, final Long expiresIn) {
         this._fake = _fake;
         this.expiresIn = expiresIn;
     }
 
     public boolean isFake() {
-        return _fake;
+        return this._fake;
     }
 
     public Long getExpiresIn() {
-        return expiresIn;
+        return this.expiresIn;
     }
 
     @Override
     public String toString() {
         return "SessionProperties{" +
-                "_fake=" + _fake +
-                ", expiresIn=" + expiresIn +
+                "_fake=" + this._fake +
+                ", expiresIn=" + this.expiresIn +
                 '}';
     }
 }

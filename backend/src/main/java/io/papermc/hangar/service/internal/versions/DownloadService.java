@@ -53,7 +53,7 @@ public class DownloadService extends HangarComponent {
     private final FileService fileService;
 
     @Autowired
-    public DownloadService(StatService statService, ProjectFiles projectFiles, ProjectsDAO projectsDAO, ProjectVersionsDAO projectVersionsDAO, ProjectVersionUnsafeDownloadsDAO projectVersionUnsafeDownloadsDAO, ProjectVersionDownloadWarningsDAO projectVersionDownloadWarningsDAO, final ProjectVersionDownloadsDAO downloadsDAO, FileService fileService) {
+    public DownloadService(final StatService statService, final ProjectFiles projectFiles, final ProjectsDAO projectsDAO, final ProjectVersionsDAO projectVersionsDAO, final ProjectVersionUnsafeDownloadsDAO projectVersionUnsafeDownloadsDAO, final ProjectVersionDownloadWarningsDAO projectVersionDownloadWarningsDAO, final ProjectVersionDownloadsDAO downloadsDAO, final FileService fileService) {
         this.statService = statService;
         this.projectFiles = projectFiles;
         this.projectsDAO = projectsDAO;
@@ -65,11 +65,11 @@ public class DownloadService extends HangarComponent {
     }
 
     @Transactional
-    public String createConfirmationToken(String author, String slug, String versionString) {
-        ProjectVersionTable pvt = projectVersionsDAO.getProjectVersionTable(author, slug, versionString);
-        InetAddress remoteInetAddress = RequestUtil.getRemoteInetAddress(request);
+    public String createConfirmationToken(final String author, final String slug, final String versionString) {
+        final ProjectVersionTable pvt = this.projectVersionsDAO.getProjectVersionTable(author, slug, versionString);
+        final InetAddress remoteInetAddress = RequestUtil.getRemoteInetAddress(this.request);
         // check for existing token
-        ProjectVersionDownloadWarningTable warning = projectVersionDownloadWarningsDAO.findWarning(remoteInetAddress, pvt.getId());
+        final ProjectVersionDownloadWarningTable warning = this.projectVersionDownloadWarningsDAO.findWarning(remoteInetAddress, pvt.getId());
         if (warning != null) {
             if (warning.isConfirmed()) {
                 return null;
@@ -78,9 +78,9 @@ public class DownloadService extends HangarComponent {
         }
 
         // create new token
-        UUID token = UUID.randomUUID();
-        OffsetDateTime expiresAt = OffsetDateTime.now().plus(config.projects.unsafeDownloadMaxAge().toMillis(), ChronoUnit.MILLIS);
-        projectVersionDownloadWarningsDAO.insert(new ProjectVersionDownloadWarningTable(
+        final UUID token = UUID.randomUUID();
+        final OffsetDateTime expiresAt = OffsetDateTime.now().plus(this.config.projects.unsafeDownloadMaxAge().toMillis(), ChronoUnit.MILLIS);
+        this.projectVersionDownloadWarningsDAO.insert(new ProjectVersionDownloadWarningTable(
             expiresAt,
             token,
             pvt.getId(),
@@ -90,94 +90,94 @@ public class DownloadService extends HangarComponent {
     }
 
     @Transactional
-    public Resource getVersionFile(String author, String slug, String versionString, Platform platform, boolean checkConfirmation, @Nullable String token) {
-        ProjectVersionTable pvt = projectVersionsDAO.getProjectVersionTable(author, slug, versionString);
+    public Resource getVersionFile(final String author, final String slug, final String versionString, final Platform platform, final boolean checkConfirmation, final @Nullable String token) {
+        final ProjectVersionTable pvt = this.projectVersionsDAO.getProjectVersionTable(author, slug, versionString);
         if (pvt == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
         //TODO as one query
-        final ProjectVersionPlatformDownloadTable platformDownload = downloadsDAO.getPlatformDownload(pvt.getVersionId(), platform);
-        final ProjectVersionDownloadTable download = downloadsDAO.getDownload(platformDownload.getVersionId(), platformDownload.getDownloadId());
+        final ProjectVersionPlatformDownloadTable platformDownload = this.downloadsDAO.getPlatformDownload(pvt.getVersionId(), platform);
+        final ProjectVersionDownloadTable download = this.downloadsDAO.getDownload(platformDownload.getVersionId(), platformDownload.getDownloadId());
         if (download.getFileName() == null) {
             throw new HangarApiException("Couldn't find a file for version " + versionString);
         }
 
-        ProjectTable project = projectsDAO.getById(pvt.getProjectId());
-        String path = projectFiles.getVersionDir(project.getOwnerName(), project.getSlug(), versionString, platform, download.getFileName());
-        if (!fileService.exists(path)) {
+        final ProjectTable project = this.projectsDAO.getById(pvt.getProjectId());
+        final String path = this.projectFiles.getVersionDir(project.getOwnerName(), project.getSlug(), versionString, platform, download.getFileName());
+        if (!this.fileService.exists(path)) {
             throw new HangarApiException("Couldn't find a file for version " + versionString);
         }
 
-        if (requiresConfirmation(pvt, download)) {
+        if (this.requiresConfirmation(pvt, download)) {
             if (checkConfirmation) {
                 // find cookie
-                Optional<Cookie> cookie = Optional.ofNullable(WebUtils.getCookie(request, ProjectVersionDownloadWarningTable.cookieKey(pvt.getId())));
-                boolean hasSessionConfirm = "confirmed".equals(cookie.map(Cookie::getValue).orElse(""));
-                if (!hasSessionConfirm && !isConfirmed(pvt, download, token)) {
+                final Optional<Cookie> cookie = Optional.ofNullable(WebUtils.getCookie(this.request, ProjectVersionDownloadWarningTable.cookieKey(pvt.getId())));
+                final boolean hasSessionConfirm = "confirmed".equals(cookie.map(Cookie::getValue).orElse(""));
+                if (!hasSessionConfirm && !this.isConfirmed(pvt, download, token)) {
                     throw new HangarApiException(HttpStatus.PRECONDITION_FAILED, "Needs confirmation. Please try again");
                 }
             } else {
-                projectVersionUnsafeDownloadsDAO.insert(new ProjectVersionUnsafeDownloadTable(getHangarUserId(), RequestUtil.getRemoteInetAddress(request)));
+                this.projectVersionUnsafeDownloadsDAO.insert(new ProjectVersionUnsafeDownloadTable(this.getHangarUserId(), RequestUtil.getRemoteInetAddress(this.request)));
             }
         }
 
-        statService.addVersionDownload(pvt);
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + download.getFileName() + "\"");
-        return fileService.getResource(path);
+        this.statService.addVersionDownload(pvt);
+        this.response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + download.getFileName() + "\"");
+        return this.fileService.getResource(path);
     }
 
-    public boolean requiresConfirmation(String author, String slug, String versionString, Platform platform) {
-        ProjectVersionTable pvt = projectVersionsDAO.getProjectVersionTable(author, slug, versionString);
+    public boolean requiresConfirmation(final String author, final String slug, final String versionString, final Platform platform) {
+        final ProjectVersionTable pvt = this.projectVersionsDAO.getProjectVersionTable(author, slug, versionString);
         if (pvt == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
-        final ProjectVersionPlatformDownloadTable platformDownload = downloadsDAO.getPlatformDownload(pvt.getVersionId(), platform);
-        return requiresConfirmation(pvt, downloadsDAO.getDownload(platformDownload.getVersionId(), platformDownload.getDownloadId()));
+        final ProjectVersionPlatformDownloadTable platformDownload = this.downloadsDAO.getPlatformDownload(pvt.getVersionId(), platform);
+        return this.requiresConfirmation(pvt, this.downloadsDAO.getDownload(platformDownload.getVersionId(), platformDownload.getDownloadId()));
     }
 
-    private boolean requiresConfirmation(ProjectVersionTable pvt, ProjectVersionDownloadTable downloadTable) {
-        if (pvt.getVisibility() == Visibility.PUBLIC && !config.projects.showUnreviewedDownloadWarning()) {
+    private boolean requiresConfirmation(final ProjectVersionTable pvt, final ProjectVersionDownloadTable downloadTable) {
+        if (pvt.getVisibility() == Visibility.PUBLIC && !this.config.projects.showUnreviewedDownloadWarning()) {
             return false;
         }
-        return pvt.getReviewState() != ReviewState.REVIEWED && (downloadTable.getExternalUrl() == null || !config.security.checkSafe(downloadTable.getExternalUrl()));
+        return pvt.getReviewState() != ReviewState.REVIEWED && (downloadTable.getExternalUrl() == null || !this.config.security.checkSafe(downloadTable.getExternalUrl()));
     }
 
-    private boolean isConfirmed(ProjectVersionTable pvt, ProjectVersionDownloadTable downloadTable, @Nullable String token) {
-        if (pvt.getReviewState() == ReviewState.REVIEWED || (downloadTable.getExternalUrl() != null && config.security.checkSafe(downloadTable.getExternalUrl()))) {
+    private boolean isConfirmed(final ProjectVersionTable pvt, final ProjectVersionDownloadTable downloadTable, final @Nullable String token) {
+        if (pvt.getReviewState() == ReviewState.REVIEWED || (downloadTable.getExternalUrl() != null && this.config.security.checkSafe(downloadTable.getExternalUrl()))) {
             return true;
         }
-        InetAddress remoteInetAddress = RequestUtil.getRemoteInetAddress(request);
+        final InetAddress remoteInetAddress = RequestUtil.getRemoteInetAddress(this.request);
         if (token == null || token.equals("null")) {
-            ProjectVersionDownloadWarningTable warning = projectVersionDownloadWarningsDAO.findWarning(remoteInetAddress, pvt.getId());
+            final ProjectVersionDownloadWarningTable warning = this.projectVersionDownloadWarningsDAO.findWarning(remoteInetAddress, pvt.getId());
             if (warning != null && warning.isConfirmed()) {
-                projectVersionUnsafeDownloadsDAO.insert(new ProjectVersionUnsafeDownloadTable(getHangarUserId(), remoteInetAddress));
+                this.projectVersionUnsafeDownloadsDAO.insert(new ProjectVersionUnsafeDownloadTable(this.getHangarUserId(), remoteInetAddress));
                 return true;
             } else {
                 return false;
             }
         }
 
-        var downloadWarning = projectVersionDownloadWarningsDAO.findWarning(token, remoteInetAddress, pvt.getId());
+        final var downloadWarning = this.projectVersionDownloadWarningsDAO.findWarning(token, remoteInetAddress, pvt.getId());
         if (downloadWarning == null) {
             return false;
         }
         if (downloadWarning.hasExpired()) {
-            projectVersionDownloadWarningsDAO.delete(downloadWarning.getId());
+            this.projectVersionDownloadWarningsDAO.delete(downloadWarning.getId());
             return false;
         }
-        var unsafeDownload = projectVersionUnsafeDownloadsDAO.insert(new ProjectVersionUnsafeDownloadTable(getHangarUserId(), remoteInetAddress));
+        final var unsafeDownload = this.projectVersionUnsafeDownloadsDAO.insert(new ProjectVersionUnsafeDownloadTable(this.getHangarUserId(), remoteInetAddress));
         downloadWarning.setConfirmed(true);
         downloadWarning.setDownloadId(unsafeDownload.getId());
-        projectVersionDownloadWarningsDAO.update(downloadWarning);
+        this.projectVersionDownloadWarningsDAO.update(downloadWarning);
         return true;
     }
 
-    public void addDownloads(String user, String project, String version, long versionId, Map<Platform, PlatformVersionDownload> versionDownloadsMap) {
+    public void addDownloads(final String user, final String project, final String version, final long versionId, final Map<Platform, PlatformVersionDownload> versionDownloadsMap) {
         // TODO into one query
-        final List<ProjectVersionDownloadTable> versionDownloads = downloadsDAO.getDownloads(versionId);
-        final List<ProjectVersionPlatformDownloadTable> platformDownloads = downloadsDAO.getPlatformDownloads(versionId);
+        final List<ProjectVersionDownloadTable> versionDownloads = this.downloadsDAO.getDownloads(versionId);
+        final List<ProjectVersionPlatformDownloadTable> platformDownloads = this.downloadsDAO.getPlatformDownloads(versionId);
         final Map<Long, PlatformVersionDownload> downloads = new HashMap<>();
         for (final ProjectVersionPlatformDownloadTable platformDownload : platformDownloads) {
             PlatformVersionDownload download = downloads.get(platformDownload.getDownloadId());
@@ -188,7 +188,7 @@ public class DownloadService extends HangarComponent {
 
             final ProjectVersionDownloadTable downloadTable = versionDownloads.stream().filter(table -> table.getId() == platformDownload.getDownloadId()).findAny().orElseThrow(NullPointerException::new);
             final FileInfo fileInfo = downloadTable.getFileName() != null ? new FileInfo(downloadTable.getFileName(), downloadTable.getFileSize(), downloadTable.getHash()) : null;
-            download = new PlatformVersionDownload(fileInfo, downloadTable.getExternalUrl(), fileService.getDownloadUrl(user, project, version, platformDownload.getPlatform(), fileInfo != null ? fileInfo.getName() : null));
+            download = new PlatformVersionDownload(fileInfo, downloadTable.getExternalUrl(), this.fileService.getDownloadUrl(user, project, version, platformDownload.getPlatform(), fileInfo != null ? fileInfo.getName() : null));
             downloads.put(platformDownload.getDownloadId(), download);
             versionDownloadsMap.put(platformDownload.getPlatform(), download);
         }

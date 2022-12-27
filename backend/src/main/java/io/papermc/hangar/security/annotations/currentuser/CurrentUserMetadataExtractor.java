@@ -16,20 +16,20 @@ public class CurrentUserMetadataExtractor implements AnnotationMetadataExtractor
     private final ExpressionParser expressionParser = new SpelExpressionParser();
 
     @Override
-    public Collection<? extends ConfigAttribute> extractAttributes(CurrentUser securityAnnotation) {
-        return Set.of(new CurrentUserAttribute(expressionParser.parseExpression(securityAnnotation.userArgument())));
+    public Collection<? extends ConfigAttribute> extractAttributes(final CurrentUser securityAnnotation) {
+        return Set.of(new CurrentUserAttribute(this.expressionParser.parseExpression(securityAnnotation.userArgument())));
     }
 
     static class CurrentUserAttribute implements ConfigAttribute {
 
         private final Expression expression;
 
-        public CurrentUserAttribute(Expression expression) {
+        public CurrentUserAttribute(final Expression expression) {
             this.expression = expression;
         }
 
         public Expression getExpression() {
-            return expression;
+            return this.expression;
         }
 
         @Override

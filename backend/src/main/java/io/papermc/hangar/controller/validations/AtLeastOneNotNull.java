@@ -29,21 +29,21 @@ public @interface AtLeastOneNotNull {
         private String[] fieldNames;
 
         @Override
-        public void initialize(AtLeastOneNotNull constraintAnnotation) {
+        public void initialize(final AtLeastOneNotNull constraintAnnotation) {
             this.fieldNames = constraintAnnotation.fieldNames();
         }
 
         @Override
-        public boolean isValid(Object value, ConstraintValidatorContext context) {
+        public boolean isValid(final Object value, final ConstraintValidatorContext context) {
             if (value == null) {
                 return true;
             }
 
             try {
-                for (String fieldName : fieldNames) {
-                    PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(value.getClass(), fieldName);
+                for (final String fieldName : this.fieldNames) {
+                    final PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(value.getClass(), fieldName);
                     if (propertyDescriptor != null) {
-                        Object property = propertyDescriptor.getReadMethod().invoke(value);
+                        final Object property = propertyDescriptor.getReadMethod().invoke(value);
                         if (property != null) {
                             if (property instanceof String) {
                                 return !((String) property).isBlank();
@@ -54,7 +54,7 @@ public @interface AtLeastOneNotNull {
                     }
                 }
                 return false;
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
                 return false;
             }

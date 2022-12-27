@@ -20,14 +20,14 @@ public class FakeDataController {
 
     private final FakeDataService fakeDataService;
 
-    public FakeDataController(FakeDataService fakeDataService) {
+    public FakeDataController(final FakeDataService fakeDataService) {
         this.fakeDataService = fakeDataService;
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/")
     @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
-    public void generateFakeData(@RequestParam int users, @RequestParam int projectsPerUser) {
-        fakeDataService.generate(users, projectsPerUser);
+    public void generateFakeData(@RequestParam final int users, @RequestParam final int projectsPerUser) {
+        this.fakeDataService.generate(users, projectsPerUser);
     }
 }

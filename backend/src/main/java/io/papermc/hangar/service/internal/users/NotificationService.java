@@ -35,7 +35,7 @@ public class NotificationService extends HangarComponent {
     private final ProjectsDAO projectsDAO;
     private final PermissionService permissionService;
 
-    public NotificationService(NotificationsDAO notificationsDAO, HangarNotificationsDAO hangarNotificationsDAO, final HangarProjectsDAO hangarProjectsDAO, ProjectsDAO projectsDAO, PermissionService permissionService) {
+    public NotificationService(final NotificationsDAO notificationsDAO, final HangarNotificationsDAO hangarNotificationsDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectsDAO projectsDAO, final PermissionService permissionService) {
         this.notificationsDAO = notificationsDAO;
         this.hangarNotificationsDAO = hangarNotificationsDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
@@ -44,44 +44,44 @@ public class NotificationService extends HangarComponent {
     }
 
     public List<HangarNotification> getRecentNotifications(final int amount) {
-        return hangarNotificationsDAO.getNotifications(getHangarUserId(), amount);
+        return this.hangarNotificationsDAO.getNotifications(this.getHangarUserId(), amount);
     }
 
     @Transactional
-    public PaginatedResult<HangarNotification> getNotifications(final RequestPagination pagination, @Nullable final Boolean read) {
-        final List<HangarNotification> notifications = read != null ? hangarNotificationsDAO.getNotifications(getHangarUserId(), read, pagination) : hangarNotificationsDAO.getNotifications(getHangarUserId(), pagination);
-        return new PaginatedResult<>(new Pagination(getUnreadNotifications(), pagination), notifications);
+    public PaginatedResult<HangarNotification> getNotifications(final RequestPagination pagination, final @Nullable Boolean read) {
+        final List<HangarNotification> notifications = read != null ? this.hangarNotificationsDAO.getNotifications(this.getHangarUserId(), read, pagination) : this.hangarNotificationsDAO.getNotifications(this.getHangarUserId(), pagination);
+        return new PaginatedResult<>(new Pagination(this.getUnreadNotifications(), pagination), notifications);
     }
 
     public long getUnreadNotifications() {
-        return notificationsDAO.getUnreadNotificationCount(getHangarUserId());
+        return this.notificationsDAO.getUnreadNotificationCount(this.getHangarUserId());
     }
 
-    public boolean markNotificationAsRead(long notificationId) {
-        return notificationsDAO.markAsRead(notificationId, getHangarUserId());
+    public boolean markNotificationAsRead(final long notificationId) {
+        return this.notificationsDAO.markAsRead(notificationId, this.getHangarUserId());
     }
 
     public void markNotificationsAsRead() {
-        notificationsDAO.markAllAsRead(getHangarUserId());
+        this.notificationsDAO.markAllAsRead(this.getHangarUserId());
     }
 
-    public void notifyVisibilityChange(final ProjectTable projectTable, final Visibility visibility, @Nullable final String comment) {
+    public void notifyVisibilityChange(final ProjectTable projectTable, final Visibility visibility, final @Nullable String comment) {
         final NotificationType notificationType = visibility == Visibility.SOFTDELETE || visibility == Visibility.NEEDSCHANGES
             || visibility == Visibility.NEEDSAPPROVAL ? NotificationType.WARNING : NotificationType.SUCCESS;
         final String[] message = comment != null && !comment.isBlank()
             ? new String[]{"notifications.project.visibilityChangedComment", projectTable.getName(), visibility.name(), comment}
             : new String[]{"notifications.project.visibilityChanged", projectTable.getName(), visibility.name()};
-        notifyProjectMembers(projectTable.getProjectId(), getHangarUserId(), projectTable.getOwnerName(), projectTable.getSlug(), notificationType, message);
+        this.notifyProjectMembers(projectTable.getProjectId(), this.getHangarUserId(), projectTable.getOwnerName(), projectTable.getSlug(), notificationType, message);
     }
 
-    public NotificationTable notify(final long userId, @Nullable final String action, @Nullable final Long originId, final NotificationType notificationType, final String[] message) {
-        return notificationsDAO.insert(new NotificationTable(userId, action, originId, message, notificationType));
+    public NotificationTable notify(final long userId, final @Nullable String action, final @Nullable Long originId, final NotificationType notificationType, final String[] message) {
+        return this.notificationsDAO.insert(new NotificationTable(userId, action, originId, message, notificationType));
     }
 
-    public List<NotificationTable> notifyProjectMembers(final long projectId, @Nullable final Long originId,
+    public List<NotificationTable> notifyProjectMembers(final long projectId, final @Nullable Long originId,
                                                         final String owner, final String slug, final NotificationType notificationType, final String[] message) {
         final List<NotificationTable> notifications = new ArrayList<>();
-        final List<JoinableMember<ProjectRoleTable>> members = hangarProjectsDAO.getProjectMembers(projectId, null, false);
+        final List<JoinableMember<ProjectRoleTable>> members = this.hangarProjectsDAO.getProjectMembers(projectId, null, false);
         for (final JoinableMember<ProjectRoleTable> member : members) {
             notifications.add(new NotificationTable(
                 member.getUser().getUserId(),
@@ -90,12 +90,12 @@ public class NotificationService extends HangarComponent {
                 message, notificationType)
             );
         }
-        return notificationsDAO.insert(notifications);
+        return this.notificationsDAO.insert(notifications);
     }
 
-    public void notifyUsersNewVersion(ProjectTable projectTable, ProjectVersionTable projectVersionTable, List<UserTable> projectWatchers) {
-        List<NotificationTable> notificationTables = new ArrayList<>();
-        for (UserTable projectWatcher : projectWatchers) {
+    public void notifyUsersNewVersion(final ProjectTable projectTable, final ProjectVersionTable projectVersionTable, final List<UserTable> projectWatchers) {
+        final List<NotificationTable> notificationTables = new ArrayList<>();
+        for (final UserTable projectWatcher : projectWatchers) {
             notificationTables.add(new NotificationTable(
                 projectWatcher.getId(),
                 projectTable.getOwnerName() + "/" + projectTable.getSlug() + "/versions/" + projectVersionTable.getVersionString(),
@@ -103,13 +103,13 @@ public class NotificationService extends HangarComponent {
                 new String[]{"notifications.project.newVersion", projectTable.getName(), projectVersionTable.getVersionString()}, NotificationType.NEUTRAL)
             );
         }
-        notificationsDAO.insert(notificationTables);
+        this.notificationsDAO.insert(notificationTables);
     }
 
-    public void notifyUsersVersionReviewed(ProjectVersionTable projectVersionTable, boolean partial) {
-        List<NotificationTable> notificationTables = new ArrayList<>();
-        ProjectTable projectTable = projectsDAO.getById(projectVersionTable.getProjectId());
-        permissionService.getProjectMemberPermissions(projectVersionTable.getProjectId()).forEach((user, perm) -> {
+    public void notifyUsersVersionReviewed(final ProjectVersionTable projectVersionTable, final boolean partial) {
+        final List<NotificationTable> notificationTables = new ArrayList<>();
+        final ProjectTable projectTable = this.projectsDAO.getById(projectVersionTable.getProjectId());
+        this.permissionService.getProjectMemberPermissions(projectVersionTable.getProjectId()).forEach((user, perm) -> {
             if (perm.has(Permission.EditVersion)) {
                 notificationTables.add(new NotificationTable(
                     user.getId(),
@@ -120,6 +120,6 @@ public class NotificationService extends HangarComponent {
                 );
             }
         });
-        notificationsDAO.insert(notificationTables);
+        this.notificationsDAO.insert(notificationTables);
     }
 }

@@ -23,22 +23,21 @@ public class LogSubjectFilter implements Filter<LogSubjectFilterInstance> {
         return "Filters by subject name, usually a user action where the subject name is the user the action is about, not the user that performed the action";
     }
 
-    @NotNull
     @Override
-    public LogSubjectFilterInstance create(NativeWebRequest webRequest) {
-        return new LogSubjectFilterInstance(webRequest.getParameter(getSingleQueryParam()));
+    public @NotNull LogSubjectFilterInstance create(final NativeWebRequest webRequest) {
+        return new LogSubjectFilterInstance(webRequest.getParameter(this.getSingleQueryParam()));
     }
 
-    static class LogSubjectFilterInstance implements FilterInstance {
+    static class LogSubjectFilterInstance implements Filter.FilterInstance {
 
         private final String subjectName;
 
-        LogSubjectFilterInstance(String subjectName) {
+        LogSubjectFilterInstance(final String subjectName) {
             this.subjectName = subjectName;
         }
 
         @Override
-        public void createSql(StringBuilder sb, SqlStatement<?> q) {
+        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             if (StringUtils.isNotBlank(this.subjectName)) {
                 sb.append(" AND la.s_name = :subjectName");
                 q.bind("subjectName", this.subjectName);

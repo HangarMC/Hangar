@@ -7,22 +7,20 @@ import javax.validation.constraints.NotNull;
 
 public class ReviewMessage {
 
-    @NotNull
-    private final String message;
-    @NotNull
-    private final ObjectNode args;
+    private final @NotNull String message;
+    private final @NotNull ObjectNode args;
 
     @JsonCreator
-    public ReviewMessage(String message, ObjectNode args) {
+    public ReviewMessage(final String message, final ObjectNode args) {
         this.message = message;
         this.args = args;
     }
 
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
     public ObjectNode getArgs() {
-        return args;
+        return this.args;
     }
 }

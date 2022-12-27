@@ -14,22 +14,21 @@ import java.util.Objects;
 @AtLeastOneNotNull(fieldNames = {"namespace", "externalUrl"}, includeBlankStrings = true, message = "Must specify a projectId or external URL for a dependency")
 public class PluginDependency implements Named {
 
-    @NotBlank(message = "Must have a dependency name")
-    private final String name;
+    private final @NotBlank(message = "Must have a dependency name") String name;
     private final boolean required;
     private final ProjectNamespace namespace;
     private final String externalUrl;
 
     @JdbiConstructor
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PluginDependency(String name, boolean required, @Nested("pn") @Nullable ProjectNamespace namespace, String externalUrl) {
+    public PluginDependency(final String name, final boolean required, @Nested("pn") final @Nullable ProjectNamespace namespace, final String externalUrl) {
         this.name = name;
         this.required = required;
         this.namespace = namespace;
         this.externalUrl = externalUrl;
     }
 
-    private PluginDependency(String name, boolean required) {
+    private PluginDependency(final String name, final boolean required) {
         this.name = name;
         this.required = required;
         this.namespace = null;
@@ -38,46 +37,45 @@ public class PluginDependency implements Named {
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public boolean isRequired() {
-        return required;
+        return this.required;
     }
 
-    @Nullable
-    public ProjectNamespace getNamespace() {
-        return namespace;
+    public @Nullable ProjectNamespace getNamespace() {
+        return this.namespace;
     }
 
     public String getExternalUrl() {
-        return externalUrl;
+        return this.externalUrl;
     }
 
     @Override
     public String toString() {
         return "PluginDependency{" +
-                "name='" + name + '\'' +
-                ", required=" + required +
-                ", namespace=" + namespace +
-                ", externalUrl='" + externalUrl + '\'' +
+                "name='" + this.name + '\'' +
+                ", required=" + this.required +
+                ", namespace=" + this.namespace +
+                ", externalUrl='" + this.externalUrl + '\'' +
                 '}';
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PluginDependency that = (PluginDependency) o;
-        return required == that.required && name.equals(that.name) && Objects.equals(namespace, that.namespace) && Objects.equals(externalUrl, that.externalUrl);
+        if (o == null || this.getClass() != o.getClass()) return false;
+        final PluginDependency that = (PluginDependency) o;
+        return this.required == that.required && this.name.equals(that.name) && Objects.equals(this.namespace, that.namespace) && Objects.equals(this.externalUrl, that.externalUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, required, namespace, externalUrl);
+        return Objects.hash(this.name, this.required, this.namespace, this.externalUrl);
     }
 
-    public static PluginDependency of(String name, boolean required) {
+    public static PluginDependency of(final String name, final boolean required) {
         return new PluginDependency(name, required);
     }
 }

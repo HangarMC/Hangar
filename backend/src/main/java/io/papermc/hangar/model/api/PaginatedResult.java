@@ -7,24 +7,24 @@ public class PaginatedResult<T> {
     private final Pagination pagination;
     private final List<T> result;
 
-    public PaginatedResult(Pagination pagination, List<T> result) {
+    public PaginatedResult(final Pagination pagination, final List<T> result) {
         this.pagination = pagination;
         this.result = result;
     }
 
     public Pagination getPagination() {
-        return pagination;
+        return this.pagination;
     }
 
     public List<T> getResult() {
-        return result;
+        return this.result;
     }
 
     @Override
     public String toString() {
         return "PaginatedResult{" +
-                "pagination=" + pagination +
-                ", result=" + result +
+                "pagination=" + this.pagination +
+                ", result=" + this.result +
                 '}';
     }
 }

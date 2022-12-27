@@ -59,32 +59,32 @@ public class HangarConfig {
         private String link;
 
         public String getName() {
-            return name;
+            return this.name;
         }
 
-        public void setName(String name) {
+        public void setName(final String name) {
             this.name = name;
         }
 
         public String getImage() {
-            return image;
+            return this.image;
         }
 
-        public void setImage(String image) {
+        public void setImage(final String image) {
             this.image = image;
         }
 
         public String getLink() {
-            return link;
+            return this.link;
         }
 
-        public void setLink(String link) {
+        public void setLink(final String link) {
             this.link = link;
         }
     }
 
     @Autowired
-    public HangarConfig(FakeUserConfig fakeUser, HomepageConfig homepage, ChannelsConfig channels, PagesConfig pages, ProjectsConfig projects, UserConfig user, OrganizationsConfig org, ApiConfig api, SSOConfig sso, HangarSecurityConfig security, QueueConfig queue, DiscourseConfig discourse, JobsConfig jobs, StorageConfig storage) {
+    public HangarConfig(final FakeUserConfig fakeUser, final HomepageConfig homepage, final ChannelsConfig channels, final PagesConfig pages, final ProjectsConfig projects, final UserConfig user, final OrganizationsConfig org, final ApiConfig api, final SSOConfig sso, final HangarSecurityConfig security, final QueueConfig queue, final DiscourseConfig discourse, final JobsConfig jobs, final StorageConfig storage) {
         this.fakeUser = fakeUser;
         this.homepage = homepage;
         this.channels = channels;
@@ -108,66 +108,66 @@ public class HangarConfig {
     }
 
     public String getLogo() {
-        return logo;
+        return this.logo;
     }
 
-    public void setLogo(String logo) {
+    public void setLogo(final String logo) {
         this.logo = logo;
     }
 
     public List<Sponsor> getSponsors() {
-        return sponsors;
+        return this.sponsors;
     }
 
-    public void setSponsors(List<Sponsor> sponsors) {
+    public void setSponsors(final List<Sponsor> sponsors) {
         this.sponsors = sponsors;
     }
 
     public List<Announcement> getAnnouncements() {
-        return announcements;
+        return this.announcements;
     }
 
-    public void setAnnouncements(List<Announcement> announcements) {
+    public void setAnnouncements(final List<Announcement> announcements) {
         this.announcements = announcements;
     }
 
     public boolean isDev() {
-        return dev;
+        return this.dev;
     }
 
-    public void setDev(boolean dev) {
+    public void setDev(final boolean dev) {
         this.dev = dev;
     }
 
     public String getBaseUrl() {
-        return baseUrl;
+        return this.baseUrl;
     }
 
-    public void setBaseUrl(String baseUrl) {
+    public void setBaseUrl(final String baseUrl) {
         this.baseUrl = baseUrl;
     }
 
     public String getGaCode() {
-        return gaCode;
+        return this.gaCode;
     }
 
-    public void setGaCode(String gaCode) {
+    public void setGaCode(final String gaCode) {
         this.gaCode = gaCode;
     }
 
     public String getUrlRegex() {
-        return urlRegex;
+        return this.urlRegex;
     }
 
-    public void setUrlRegex(String urlRegex) {
+    public void setUrlRegex(final String urlRegex) {
         this.urlRegex = urlRegex;
     }
 
     public List<String> getLicenses() {
-        return licenses;
+        return this.licenses;
     }
 
-    public void setLicenses(List<String> licenses) {
+    public void setLicenses(final List<String> licenses) {
         this.licenses = licenses;
     }
 

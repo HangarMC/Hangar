@@ -26,7 +26,7 @@ public enum ProjectSortingStrategy {
 
     public static final ProjectSortingStrategy[] VALUES = values();
 
-    ProjectSortingStrategy(int value, String title, String sql, String apiName) {
+    ProjectSortingStrategy(final int value, final String title, final String sql, final String apiName) {
         this.value = value;
         this.title = title;
         this.sql = sql;
@@ -34,30 +34,30 @@ public enum ProjectSortingStrategy {
     }
 
     public int getValue() {
-        return value;
+        return this.value;
     }
 
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     public String getSql() {
-        return sql;
+        return this.sql;
     }
 
     public String getApiName() {
-        return apiName;
+        return this.apiName;
     }
 
     @Override
     @JsonValue
     public String toString() {
-        return String.valueOf(apiName);
+        return String.valueOf(this.apiName);
     }
 
     @JsonCreator
-    public static ProjectSortingStrategy fromApiName(String apiName) {
-        for (ProjectSortingStrategy b : ProjectSortingStrategy.values()) {
+    public static ProjectSortingStrategy fromApiName(final String apiName) {
+        for (final ProjectSortingStrategy b : values()) {
             if (b.apiName.equals(apiName)) {
                 return b;
             }

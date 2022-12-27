@@ -20,92 +20,92 @@ public class PaypalService extends HangarComponent {
     private static final String PAYPAL_CALLBACK = "https://ipnpb.paypal.com/cgi-bin/webscr?cmd=_notify-validate&";
     private static final String PAYPAL_SANDBOX_CALLBACK = "https://ipnpb.sandbox.paypal.com/cgi-bin/webscr?cmd=_notify-validate&";
 
-    private HttpClient client;
-    private boolean sandbox = true;
+    private final HttpClient client;
+    private final boolean sandbox = true;
 
     public PaypalService() {
-        client = HttpClient.newHttpClient();
+        this.client = HttpClient.newHttpClient();
     }
 
-    public void handle(String ipn) throws URISyntaxException {
-        HttpRequest request = HttpRequest
-                .newBuilder(new URI((sandbox ? PAYPAL_SANDBOX_CALLBACK : PAYPAL_CALLBACK) + ipn))
+    public void handle(final String ipn) throws URISyntaxException {
+        final HttpRequest request = HttpRequest
+                .newBuilder(new URI((this.sandbox ? PAYPAL_SANDBOX_CALLBACK : PAYPAL_CALLBACK) + ipn))
                 .header("User-Agent", "Hangar")
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .GET()
                 .build();
 
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept(r -> {
+        this.client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept(r -> {
             if (r.statusCode() == 200) {
                 switch (r.body()) {
                     case "VERIFIED":
-                        Map<String, String> parsedIpn = parseIpn(ipn);
-                        logger.info("Verified ipn: {}", parsedIpn);
-                        handleIpn(parsedIpn);
+                        final Map<String, String> parsedIpn = this.parseIpn(ipn);
+                        this.logger.info("Verified ipn: {}", parsedIpn);
+                        this.handleIpn(parsedIpn);
                         break;
                     case "INVALID":
-                        logger.info("Invalid ipn: {}", ipn);
+                        this.logger.info("Invalid ipn: {}", ipn);
 
                         break;
                     default:
-                        logger.error("Error while verifying ipn {}, {}", r.statusCode(), r.body());
-                        logger.error("IPN was {}", ipn);
+                        this.logger.error("Error while verifying ipn {}, {}", r.statusCode(), r.body());
+                        this.logger.error("IPN was {}", ipn);
                         break;
                 }
             } else {
-                logger.error("Error while verifying ipn {}, {}", r.statusCode(), r.body());
-                logger.error("IPN was {}", ipn);
+                this.logger.error("Error while verifying ipn {}, {}", r.statusCode(), r.body());
+                this.logger.error("IPN was {}", ipn);
             }
         });
     }
 
-    public void handleIpn(Map<String, String> ipn) {
+    public void handleIpn(final Map<String, String> ipn) {
         // check that recipient is a hangar author
-        String receiver = ipn.get("receiver_email");
-        logger.info("Receiver is: {}", receiver);
+        final String receiver = ipn.get("receiver_email");
+        this.logger.info("Receiver is: {}", receiver);
         // check that transaction id and last payment status isnt already here
-        String transactionId = ipn.get("txn_id");
-        logger.info("transaction id is {}", transactionId);
-        String paymentStatus = ipn.get("payment_status");
+        final String transactionId = ipn.get("txn_id");
+        this.logger.info("transaction id is {}", transactionId);
+        final String paymentStatus = ipn.get("payment_status");
         // check that status is completed
         if (paymentStatus.equals("Completed")) {
             // precede
-            logger.info("Status was completed");
+            this.logger.info("Status was completed");
         } else {
             // send notification
-            logger.info("Status: {}", paymentStatus);
+            this.logger.info("Status: {}", paymentStatus);
             return;
         }
         // check the amount and currency
-        String amount = ipn.get("mc_gross");
-        String fee = ipn.get("mc_fee");
-        String currency = ipn.get("mc_currency");
-        logger.info("Currency {} amount {} fee {}", currency, amount, fee);
+        final String amount = ipn.get("mc_gross");
+        final String fee = ipn.get("mc_fee");
+        final String currency = ipn.get("mc_currency");
+        this.logger.info("Currency {} amount {} fee {}", currency, amount, fee);
         // check that its not a test_ipn
-        String test = ipn.get("test_ipn");
+        final String test = ipn.get("test_ipn");
         if (test != null && test.equals("1")) {
-            logger.info("Was test ipn");
+            this.logger.info("Was test ipn");
         }
         // check that payer is a hangar user and has a pending payment
-        String payer = ipn.get("payer_email");
-        logger.info("Payer {}", payer);
+        final String payer = ipn.get("payer_email");
+        this.logger.info("Payer {}", payer);
         // read custom
-        String custom = ipn.get("custom");
-        logger.info("Custom {}", custom);
+        final String custom = ipn.get("custom");
+        this.logger.info("Custom {}", custom);
     }
 
-    public Map<String, String> parseIpn(String ipn) {
+    public Map<String, String> parseIpn(final String ipn) {
         // FormHttpMessageConverter#read
-        String[] pairs = StringUtils.tokenizeToStringArray(ipn, "&");
-        Map<String, String> result = new HashMap<>(pairs.length);
+        final String[] pairs = StringUtils.tokenizeToStringArray(ipn, "&");
+        final Map<String, String> result = new HashMap<>(pairs.length);
 
-        for (String pair : pairs) {
-            int idx = pair.indexOf("=");
+        for (final String pair : pairs) {
+            final int idx = pair.indexOf("=");
             if (idx == -1) {
                 result.put(URLDecoder.decode(pair, Charset.defaultCharset()), null);
             } else {
-                String name = URLDecoder.decode(pair.substring(0, idx), Charset.defaultCharset());
-                String value = URLDecoder.decode(pair.substring(idx + 1), Charset.defaultCharset());
+                final String name = URLDecoder.decode(pair.substring(0, idx), Charset.defaultCharset());
+                final String value = URLDecoder.decode(pair.substring(idx + 1), Charset.defaultCharset());
                 result.put(name, value);
             }
         }

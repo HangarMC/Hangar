@@ -15,54 +15,52 @@ public class EditMembersForm<R extends Role<? extends ExtendedRoleTable<R, ?>>> 
     private final List<@Valid Member<R>> members;
 
     @JsonCreator
-    public EditMembersForm(List<Member<R>> members) {
+    public EditMembersForm(final List<Member<R>> members) {
         this.members = members;
     }
 
     public List<Member<R>> getMembers() {
-        return members;
+        return this.members;
     }
 
     @Override
     public String toString() {
         return "EditMembersForm{" +
-            "members=" + members +
+            "members=" + this.members +
             '}';
     }
 
     public static class Member<R extends Role<? extends ExtendedRoleTable<R, ?>>> {
 
-        @NotBlank
-        private final String name;
+        private final @NotBlank String name;
 
         // @el(root: Role)
-        @Validate(SpEL = "#root.assignable")
-        private final R role;
+        private final @Validate(SpEL = "#root.assignable") R role;
 
         @SuppressWarnings("unchecked")
         @JsonCreator
-        public Member(String name, long roleId) {
+        public Member(final String name, final long roleId) {
             this.name = name;
             try {
                 this.role = (R) Role.ID_ROLES.get(roleId);
-            } catch (ClassCastException e) {
+            } catch (final ClassCastException e) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST);
             }
         }
 
         public String getName() {
-            return name;
+            return this.name;
         }
 
         public R getRole() {
-            return role;
+            return this.role;
         }
 
         @Override
         public String toString() {
             return "Member{" +
-                ", name='" + name + '\'' +
-                ", role=" + role +
+                ", name='" + this.name + '\'' +
+                ", role=" + this.role +
                 '}';
         }
     }

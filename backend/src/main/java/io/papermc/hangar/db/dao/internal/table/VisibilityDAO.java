@@ -10,7 +10,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
-import java.util.Map.Entry;
+import java.util.Map;
 
 @Repository
 @RegisterConstructorMapper(ProjectVisibilityChangeTable.class)
@@ -37,7 +37,7 @@ public interface VisibilityDAO {
               "     LEFT JOIN users u ON pvc.created_by = u.id " +
               "WHERE pvc.project_id = :projectId " +
               "ORDER BY pvc.created_at DESC LIMIT 1")
-    Entry<String, ProjectVisibilityChangeTable> getLatestProjectVisibilityChange(long projectId);
+    Map.Entry<String, ProjectVisibilityChangeTable> getLatestProjectVisibilityChange(long projectId);
 
     // Versions
     @Timestamped
@@ -59,5 +59,5 @@ public interface VisibilityDAO {
             "     LEFT JOIN users u ON pvvc.created_by = u.id " +
             "WHERE pvvc.version_id = :versionId " +
             "ORDER BY pvvc.created_at DESC LIMIT 1")
-    Entry<String, ProjectVersionVisibilityChangeTable> getLatestVersionVisibilityChange(long versionId);
+    Map.Entry<String, ProjectVersionVisibilityChangeTable> getLatestVersionVisibilityChange(long versionId);
 }

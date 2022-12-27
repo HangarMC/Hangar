@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map.Entry;
+import java.util.Map;
 
 @Service
 public class ProjectVersionVisibilityService extends VisibilityService<VersionContext, ProjectVersionTable, ProjectVersionVisibilityChangeTable> {
@@ -23,7 +23,7 @@ public class ProjectVersionVisibilityService extends VisibilityService<VersionCo
     private final JobService jobService;
 
     @Autowired
-    public ProjectVersionVisibilityService(VisibilityDAO visibilityDAO, ProjectVersionsDAO projectVersionDAO, JobService jobService, UserActionLogService userActionLogService) {
+    public ProjectVersionVisibilityService(final VisibilityDAO visibilityDAO, final ProjectVersionsDAO projectVersionDAO, final JobService jobService, final UserActionLogService userActionLogService) {
         super(ProjectVersionVisibilityChangeTable::new, LogAction.VERSION_VISIBILITY_CHANGED);
         this.visibilityDAO = visibilityDAO;
         this.projectVersionsDAO = projectVersionDAO;
@@ -31,35 +31,35 @@ public class ProjectVersionVisibilityService extends VisibilityService<VersionCo
     }
 
     @Override
-    void updateLastVisChange(long currentUserId, long modelId) {
-        visibilityDAO.updateLatestVersionChange(currentUserId, modelId);
+    void updateLastVisChange(final long currentUserId, final long modelId) {
+        this.visibilityDAO.updateLatestVersionChange(currentUserId, modelId);
     }
 
     @Override
-    ProjectVersionTable getModel(long id) {
-        return projectVersionsDAO.getProjectVersionTable(id);
+    ProjectVersionTable getModel(final long id) {
+        return this.projectVersionsDAO.getProjectVersionTable(id);
     }
 
     @Override
-    ProjectVersionTable updateModel(ProjectVersionTable model) {
-        return projectVersionsDAO.update(model);
+    ProjectVersionTable updateModel(final ProjectVersionTable model) {
+        return this.projectVersionsDAO.update(model);
     }
 
     @Override
-    void insertNewVisibilityEntry(ProjectVersionVisibilityChangeTable visibilityTable) {
-        visibilityDAO.insert(visibilityTable);
+    void insertNewVisibilityEntry(final ProjectVersionVisibilityChangeTable visibilityTable) {
+        this.visibilityDAO.insert(visibilityTable);
     }
 
     @Override
-    protected void postUpdate(@Nullable ProjectVersionTable model) {
+    protected void postUpdate(final @Nullable ProjectVersionTable model) {
         if (model != null) {
-            jobService.save(new UpdateDiscourseProjectTopicJob(model.getProjectId()));
+            this.jobService.save(new UpdateDiscourseProjectTopicJob(model.getProjectId()));
         }
     }
 
     @Override
-    public Entry<String, ProjectVersionVisibilityChangeTable> getLastVisibilityChange(long principalId) {
-        return visibilityDAO.getLatestVersionVisibilityChange(principalId);
+    public Map.Entry<String, ProjectVersionVisibilityChangeTable> getLastVisibilityChange(final long principalId) {
+        return this.visibilityDAO.getLatestVersionVisibilityChange(principalId);
     }
 }
 

@@ -1,7 +1,6 @@
 package io.papermc.hangar.controller.extras.pagination.annotations;
 
 import io.papermc.hangar.controller.extras.pagination.Filter;
-import io.papermc.hangar.controller.extras.pagination.Filter.FilterInstance;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -17,5 +16,5 @@ public @interface ApplicableFilters {
     /**
      * Set of applicable filters for this request
      */
-    Class<? extends Filter<? extends FilterInstance>>[] value();
+    Class<? extends Filter<? extends Filter.FilterInstance>>[] value();
 }

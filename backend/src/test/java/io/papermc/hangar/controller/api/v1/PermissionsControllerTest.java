@@ -27,51 +27,51 @@ class PermissionsControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private String getJwt(String apiKey) throws Exception {
-        String response = this.mockMvc.perform(post("/api/v1/authenticate?apiKey=" + apiKey)).andReturn().getResponse().getContentAsString();
-        ApiSession apiSession = objectMapper.readValue(response, ApiSession.class);
+    private String getJwt(final String apiKey) throws Exception {
+        final String response = this.mockMvc.perform(post("/api/v1/authenticate?apiKey=" + apiKey)).andReturn().getResponse().getContentAsString();
+        final ApiSession apiSession = this.objectMapper.readValue(response, ApiSession.class);
         return apiSession.getToken();
     }
 
     @Test
     void testHasAllWithProjectOnly() throws Exception {
         this.mockMvc.perform(get("/api/v1/permissions/hasAll?permissions=create_organization&permissions=create_project")
-            .header("Authorization", "HangarAuth " + getJwt(projectOnly)))
+            .header("Authorization", "HangarAuth " + this.getJwt(projectOnly)))
             .andExpect(jsonPath("$.result").value(false));
     }
 
     @Test
     void testHasAllWithAll() throws Exception {
         this.mockMvc.perform(get("/api/v1/permissions/hasAll?permissions=create_organization&permissions=create_project")
-                .header("Authorization", "HangarAuth " + getJwt(all)))
+                .header("Authorization", "HangarAuth " + this.getJwt(all)))
             .andExpect(jsonPath("$.result").value(true));
     }
 
     @Test
     void testHasAnyWithProjectOnly() throws Exception {
         this.mockMvc.perform(get("/api/v1/permissions/hasAny?permissions=create_organization&permissions=create_project")
-                .header("Authorization", "HangarAuth " + getJwt(projectOnly)))
+                .header("Authorization", "HangarAuth " + this.getJwt(projectOnly)))
             .andExpect(jsonPath("$.result").value(true));
     }
 
     @Test
     void testHasAnyWithAll() throws Exception {
         this.mockMvc.perform(get("/api/v1/permissions/hasAny?permissions=create_organization&permissions=create_project")
-                .header("Authorization", "HangarAuth " + getJwt(all)))
+                .header("Authorization", "HangarAuth " + this.getJwt(all)))
             .andExpect(jsonPath("$.result").value(true));
     }
 
     @Test
     void testHiddenProjectSeeHidden() throws Exception {
         this.mockMvc.perform(get("/api/v1/permissions/?author=paper&slug=Test")
-                .header("Authorization", "HangarAuth " + getJwt(seeHidden)))
+                .header("Authorization", "HangarAuth " + this.getJwt(seeHidden)))
             .andExpect(jsonPath("$.permissionBinString").value("10000000000000000000000000"));
     }
 
     @Test
     void testHiddenProjectProjectOnly() throws Exception {
         this.mockMvc.perform(get("/api/v1/permissions/?author=paper&slug=Test")
-                .header("Authorization", "HangarAuth " + getJwt(projectOnly)))
+                .header("Authorization", "HangarAuth " + this.getJwt(projectOnly)))
             .andExpect(jsonPath("$.permissionBinString").value("100000000"));
     }
 }

@@ -30,22 +30,22 @@ public final class ProjectVersionDownloadTable extends Table {
     }
 
     public long getVersionId() {
-        return versionId;
+        return this.versionId;
     }
 
     public Long getFileSize() {
-        return fileSize;
+        return this.fileSize;
     }
 
     public String getHash() {
-        return hash;
+        return this.hash;
     }
 
     public String getFileName() {
-        return fileName;
+        return this.fileName;
     }
 
     public String getExternalUrl() {
-        return externalUrl;
+        return this.externalUrl;
     }
 }

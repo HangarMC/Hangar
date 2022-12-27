@@ -20,19 +20,19 @@ public class PlatformService extends HangarComponent {
     private final PlatformVersionDAO platformVersionDAO;
 
     @Autowired
-    public PlatformService(PlatformVersionDAO platformVersionDAO) {
+    public PlatformService(final PlatformVersionDAO platformVersionDAO) {
         this.platformVersionDAO = platformVersionDAO;
     }
 
-    public List<String> getVersionsForPlatform(Platform platform) {
-        return platformVersionDAO.getVersionsForPlatform(platform);
+    public List<String> getVersionsForPlatform(final Platform platform) {
+        return this.platformVersionDAO.getVersionsForPlatform(platform);
     }
 
     @Transactional
     @CacheEvict(value = CacheConfig.PLATFORMS, allEntries = true)
-    public void updatePlatformVersions(Map<Platform, List<String>> platformVersions) {
+    public void updatePlatformVersions(final Map<Platform, List<String>> platformVersions) {
         platformVersions.forEach((platform, versions) -> {
-            Map<String, PlatformVersionTable> platformVersionTables = platformVersionDAO.getForPlatform(platform);
+            final Map<String, PlatformVersionTable> platformVersionTables = this.platformVersionDAO.getForPlatform(platform);
             final Map<String, PlatformVersionTable> toBeRemoved = new HashMap<>();
             final Map<String, PlatformVersionTable> toBeAdded = new HashMap<>();
             platformVersionTables.forEach((version, pvt) -> {
@@ -45,8 +45,8 @@ public class PlatformService extends HangarComponent {
                     toBeAdded.put(v, new PlatformVersionTable(platform, v));
                 }
             });
-            platformVersionDAO.deleteAll(toBeRemoved.values());
-            platformVersionDAO.insertAll(toBeAdded.values());
+            this.platformVersionDAO.deleteAll(toBeRemoved.values());
+            this.platformVersionDAO.insertAll(toBeAdded.values());
         });
         // TODO user action logging
     }

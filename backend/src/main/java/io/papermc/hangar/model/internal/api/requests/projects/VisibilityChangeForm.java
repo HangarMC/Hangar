@@ -7,29 +7,28 @@ import javax.validation.constraints.NotNull;
 
 public class VisibilityChangeForm {
 
-    @NotNull
-    private final Visibility visibility;
+    private final @NotNull Visibility visibility;
     private final String comment;
 
     @JsonCreator
-    public VisibilityChangeForm(Visibility visibility, String comment) {
+    public VisibilityChangeForm(final Visibility visibility, final String comment) {
         this.visibility = visibility;
         this.comment = comment;
     }
 
     public Visibility getVisibility() {
-        return visibility;
+        return this.visibility;
     }
 
     public String getComment() {
-        return comment;
+        return this.comment;
     }
 
     @Override
     public String toString() {
         return "VisibilityChangeForm{" +
-                "visibility=" + visibility +
-                ", comment='" + comment + '\'' +
+                "visibility=" + this.visibility +
+                ", comment='" + this.comment + '\'' +
                 '}';
     }
 }

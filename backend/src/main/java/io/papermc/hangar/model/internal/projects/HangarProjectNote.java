@@ -11,19 +11,19 @@ public class HangarProjectNote extends ProjectNoteTable {
     private final String userName;
 
     @JdbiConstructor
-    public HangarProjectNote(OffsetDateTime createdAt, long id, long projectId, String message, Long userId, @Nullable String name) {
+    public HangarProjectNote(final OffsetDateTime createdAt, final long id, final long projectId, final String message, final Long userId, final @Nullable String name) {
         super(createdAt, id, projectId, message, userId);
         this.userName = name;
     }
 
     public String getUserName() {
-        return userName;
+        return this.userName;
     }
 
     @Override
     public String toString() {
         return "HangarProjectNote{" +
-                "userName='" + userName + '\'' +
+                "userName='" + this.userName + '\'' +
                 "} " + super.toString();
     }
 }

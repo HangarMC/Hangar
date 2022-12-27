@@ -21,18 +21,18 @@ public class ProjectFlagNotificationTable extends Table {
     }
 
     public long getFlagId() {
-        return flagId;
+        return this.flagId;
     }
 
     public long getNotificationId() {
-        return notificationId;
+        return this.notificationId;
     }
 
     @Override
     public String toString() {
         return "ProjectFlagNotificationTable{" +
-            "flagId=" + flagId +
-            ", notificationId=" + notificationId +
+            "flagId=" + this.flagId +
+            ", notificationId=" + this.notificationId +
             '}';
     }
 }

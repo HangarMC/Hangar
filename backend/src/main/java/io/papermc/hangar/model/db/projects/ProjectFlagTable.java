@@ -19,7 +19,7 @@ public class ProjectFlagTable extends Table implements ProjectLoggable {
     private Long resolvedBy;
 
     @JdbiConstructor
-    public ProjectFlagTable(OffsetDateTime createdAt, long id, long projectId, long userId, @EnumByOrdinal FlagReason reason, boolean resolved, String comment, OffsetDateTime resolvedAt, Long resolvedBy) {
+    public ProjectFlagTable(final OffsetDateTime createdAt, final long id, final long projectId, final long userId, @EnumByOrdinal final FlagReason reason, final boolean resolved, final String comment, final OffsetDateTime resolvedAt, final Long resolvedBy) {
         super(createdAt, id);
         this.projectId = projectId;
         this.userId = userId;
@@ -30,7 +30,7 @@ public class ProjectFlagTable extends Table implements ProjectLoggable {
         this.resolvedBy = resolvedBy;
     }
 
-    public ProjectFlagTable(long projectId, long userId, FlagReason reason, String comment) {
+    public ProjectFlagTable(final long projectId, final long userId, final FlagReason reason, final String comment) {
         this.projectId = projectId;
         this.userId = userId;
         this.reason = reason;
@@ -38,56 +38,56 @@ public class ProjectFlagTable extends Table implements ProjectLoggable {
     }
 
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     public long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     @EnumByOrdinal
     public FlagReason getReason() {
-        return reason;
+        return this.reason;
     }
 
     public boolean isResolved() {
-        return resolved;
+        return this.resolved;
     }
 
-    public void setResolved(boolean resolved) {
+    public void setResolved(final boolean resolved) {
         this.resolved = resolved;
     }
 
     public String getComment() {
-        return comment;
+        return this.comment;
     }
 
     public OffsetDateTime getResolvedAt() {
-        return resolvedAt;
+        return this.resolvedAt;
     }
 
-    public void setResolvedAt(OffsetDateTime resolvedAt) {
+    public void setResolvedAt(final OffsetDateTime resolvedAt) {
         this.resolvedAt = resolvedAt;
     }
 
     public Long getResolvedBy() {
-        return resolvedBy;
+        return this.resolvedBy;
     }
 
-    public void setResolvedBy(Long resolvedBy) {
+    public void setResolvedBy(final Long resolvedBy) {
         this.resolvedBy = resolvedBy;
     }
 
     @Override
     public String toString() {
         return "ProjectFlagTable{" +
-               "projectId=" + projectId +
-               ", userId=" + userId +
-               ", reason=" + reason +
-               ", resolved=" + resolved +
-               ", comment='" + comment + '\'' +
-               ", resolvedAt=" + resolvedAt +
-               ", resolvedBy=" + resolvedBy +
+               "projectId=" + this.projectId +
+               ", userId=" + this.userId +
+               ", reason=" + this.reason +
+               ", resolved=" + this.resolved +
+               ", comment='" + this.comment + '\'' +
+               ", resolvedAt=" + this.resolvedAt +
+               ", resolvedBy=" + this.resolvedBy +
                "} " + super.toString();
     }
 }

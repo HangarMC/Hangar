@@ -16,7 +16,7 @@ public class SitemapController extends HangarComponent {
     private final SitemapService sitemapService;
 
     @Autowired
-    public SitemapController(SitemapService sitemapService) {
+    public SitemapController(final SitemapService sitemapService) {
         this.sitemapService = sitemapService;
     }
 
@@ -24,20 +24,20 @@ public class SitemapController extends HangarComponent {
     @GetMapping(value = "/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
     public String sitemapIndex() {
-        return sitemapService.getSitemap();
+        return this.sitemapService.getSitemap();
     }
 
     @Anyone
     @GetMapping(value = "/global-sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
     public String globalSitemap() {
-        return sitemapService.getGlobalSitemap();
+        return this.sitemapService.getGlobalSitemap();
     }
 
     @Anyone
     @GetMapping(value = "/{user}/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
-    public String userSitemap(@PathVariable String user) {
-        return sitemapService.getUserSitemap(user);
+    public String userSitemap(@PathVariable final String user) {
+        return this.sitemapService.getUserSitemap(user);
     }
 }

@@ -18,66 +18,66 @@ public class JSONB extends PGobject {
     private transient JsonNode json;
     private transient Map<String, String> map;
 
-    public JSONB(String value) {
-        setType(TYPE_STRING);
+    public JSONB(final String value) {
+        this.setType(TYPE_STRING);
         this.value = value;
-        parseJson();
+        this.parseJson();
     }
 
-    public JSONB(Object value) {
-        setType(TYPE_STRING);
+    public JSONB(final Object value) {
+        this.setType(TYPE_STRING);
         try {
             this.value = new ObjectMapper().writeValueAsString(value);
-        } catch (JsonProcessingException e) {
+        } catch (final JsonProcessingException e) {
             e.printStackTrace();
         }
-        parseJson();
+        this.parseJson();
     }
 
     @JsonCreator
-    public JSONB(JsonNode json) {
-        setType(TYPE_STRING);
+    public JSONB(final JsonNode json) {
+        this.setType(TYPE_STRING);
         this.value = json.toString();
         this.json = json;
     }
 
     public JSONB() {
-        setType(TYPE_STRING);
+        this.setType(TYPE_STRING);
     }
 
     @JsonValue
     public JsonNode getJson() {
-        return json;
+        return this.json;
     }
 
     public Map<String, String> getMap() {
         if (this.map == null) {
             try {
-                this.map = new ObjectMapper().readValue(value, new TypeReference<>() {
+                this.map = new ObjectMapper().readValue(this.value, new TypeReference<>() {
                 });
-            } catch (JsonProcessingException | ClassCastException e) {
+            } catch (final JsonProcessingException | ClassCastException e) {
                 e.printStackTrace();
             }
         }
-        return map;
+        return this.map;
     }
 
     @Override
-    public void setValue(String value) {
+    public void setValue(final String value) {
         this.value = value;
-        parseJson();
+        this.parseJson();
     }
 
     private void parseJson() {
         try {
-            this.json = new ObjectMapper().readTree(value);
-        } catch (JsonProcessingException | ClassCastException e) {
+            this.json = new ObjectMapper().readTree(this.value);
+        } catch (final JsonProcessingException | ClassCastException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return super.equals(obj);
     }
 

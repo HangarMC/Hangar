@@ -42,7 +42,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
 
     private String sponsors;
 
-    public ProjectTable(ProjectOwner projectOwner, NewProjectForm form) {
+    public ProjectTable(final ProjectOwner projectOwner, final NewProjectForm form) {
         this.name = form.getName();
         this.slug = StringUtils.slugify(this.name);
         this.ownerName = projectOwner.getName();
@@ -66,7 +66,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.sponsors = "";
     }
 
-    protected ProjectTable(ProjectTable other) {
+    protected ProjectTable(final ProjectTable other) {
         this.name = other.name;
         this.slug = other.slug;
         this.ownerName = other.ownerName;
@@ -92,10 +92,10 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
     }
 
     @JdbiConstructor
-    public ProjectTable(OffsetDateTime createdAt, long id, String name, String slug, String ownerName, long ownerId, Long topicId,
-                        Long postId, @EnumByOrdinal Category category, String description, @EnumByOrdinal Visibility visibility, Collection<String> keywords,
-                        String homepage, String issues, String source, String support, String wiki, String licenseType, String licenseName, String licenseUrl, boolean forumSync,
-                        boolean donationEnabled, String donationSubject, String sponsors) {
+    public ProjectTable(final OffsetDateTime createdAt, final long id, final String name, final String slug, final String ownerName, final long ownerId, final Long topicId,
+                        final Long postId, @EnumByOrdinal final Category category, final String description, @EnumByOrdinal final Visibility visibility, final Collection<String> keywords,
+                        final String homepage, final String issues, final String source, final String support, final String wiki, final String licenseType, final String licenseName, final String licenseUrl, final boolean forumSync,
+                        final boolean donationEnabled, final String donationSubject, final String sponsors) {
         super(createdAt, id);
         this.name = name;
         this.slug = slug;
@@ -125,189 +125,189 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
     public String getSlug() {
-        return slug;
+        return this.slug;
     }
 
-    public void setSlug(String slug) {
+    public void setSlug(final String slug) {
         this.slug = slug;
     }
 
     public String getOwnerName() {
-        return ownerName;
+        return this.ownerName;
     }
 
-    public void setOwnerName(String ownerName) {
+    public void setOwnerName(final String ownerName) {
         this.ownerName = ownerName;
     }
 
     @Override
     public long getOwnerId() {
-        return ownerId;
+        return this.ownerId;
     }
 
-    public void setOwnerId(long ownerId) {
+    public void setOwnerId(final long ownerId) {
         this.ownerId = ownerId;
     }
 
     public Long getTopicId() {
-        return topicId;
+        return this.topicId;
     }
 
-    public void setTopicId(Long topicId) {
+    public void setTopicId(final Long topicId) {
         this.topicId = topicId;
     }
 
     public Long getPostId() {
-        return postId;
+        return this.postId;
     }
 
-    public void setPostId(Long postId) {
+    public void setPostId(final Long postId) {
         this.postId = postId;
     }
 
     @EnumByOrdinal
     public Category getCategory() {
-        return category;
+        return this.category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(final Category category) {
         this.category = category;
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
     @Override
     @EnumByOrdinal
     public Visibility getVisibility() {
-        return visibility;
+        return this.visibility;
     }
 
     @Override
-    public void setVisibility(Visibility visibility) {
+    public void setVisibility(final Visibility visibility) {
         this.visibility = visibility;
     }
 
     public Collection<String> getKeywords() {
-        return keywords;
+        return this.keywords;
     }
 
-    public void setKeywords(Collection<String> keywords) {
+    public void setKeywords(final Collection<String> keywords) {
         this.keywords = keywords;
     }
 
     public String getHomepage() {
-        return homepage;
+        return this.homepage;
     }
 
-    public void setHomepage(String homepage) {
+    public void setHomepage(final String homepage) {
         this.homepage = homepage;
     }
 
     public String getIssues() {
-        return issues;
+        return this.issues;
     }
 
-    public void setIssues(String issues) {
+    public void setIssues(final String issues) {
         this.issues = issues;
     }
 
     public String getSource() {
-        return source;
+        return this.source;
     }
 
-    public void setSource(String source) {
+    public void setSource(final String source) {
         this.source = source;
     }
 
     public String getSupport() {
-        return support;
+        return this.support;
     }
 
-    public void setSupport(String support) {
+    public void setSupport(final String support) {
         this.support = support;
     }
 
     public String getWiki() {
-        return wiki;
+        return this.wiki;
     }
 
-    public void setWiki(String wiki) {
+    public void setWiki(final String wiki) {
         this.wiki = wiki;
     }
 
     public String getLicenseType() {
-        return licenseType;
+        return this.licenseType;
     }
 
-    public void setLicenseType(String licenseType) {
+    public void setLicenseType(final String licenseType) {
         this.licenseType = licenseType;
     }
 
     public String getLicenseName() {
-        return licenseName;
+        return this.licenseName;
     }
 
-    public void setLicenseName(String licenseName) {
+    public void setLicenseName(final String licenseName) {
         this.licenseName = licenseName;
     }
 
     public String getLicenseUrl() {
-        return licenseUrl;
+        return this.licenseUrl;
     }
 
-    public void setLicenseUrl(String licenseUrl) {
+    public void setLicenseUrl(final String licenseUrl) {
         this.licenseUrl = licenseUrl;
     }
 
     public boolean isForumSync() {
-        return forumSync;
+        return this.forumSync;
     }
 
-    public void setForumSync(boolean forumSync) {
+    public void setForumSync(final boolean forumSync) {
         this.forumSync = forumSync;
     }
 
     public boolean isDonationEnabled() {
-        return donationEnabled;
+        return this.donationEnabled;
     }
 
-    public void setDonationEnabled(boolean donationEnabled) {
+    public void setDonationEnabled(final boolean donationEnabled) {
         this.donationEnabled = donationEnabled;
     }
 
     public String getDonationSubject() {
-        return donationSubject;
+        return this.donationSubject;
     }
 
-    public void setDonationSubject(String donationSubject) {
+    public void setDonationSubject(final String donationSubject) {
         this.donationSubject = donationSubject;
     }
 
     public String getSponsors() {
-        return sponsors;
+        return this.sponsors;
     }
 
-    public void setSponsors(String sponsors) {
+    public void setSponsors(final String sponsors) {
         this.sponsors = sponsors;
     }
 
     @Override
     public long getProjectId() {
-        return id;
+        return this.id;
     }
 
     @Override
@@ -318,28 +318,28 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
     @Override
     public String toString() {
         return "ProjectTable{" +
-               "name='" + name + '\'' +
-               ", slug='" + slug + '\'' +
-               ", ownerName='" + ownerName + '\'' +
-               ", ownerId=" + ownerId +
-               ", topicId=" + topicId +
-               ", postId=" + postId +
-               ", category=" + category +
-               ", description='" + description + '\'' +
-               ", visibility=" + visibility +
-               ", keywords=" + keywords +
-               ", homepage='" + homepage + '\'' +
-               ", issues='" + issues + '\'' +
-               ", source='" + source + '\'' +
-               ", support='" + support + '\'' +
-               ", wiki='" + wiki + '\'' +
-               ", licenseType='" + licenseType + '\'' +
-               ", licenseName='" + licenseName + '\'' +
-               ", licenseUrl='" + licenseUrl + '\'' +
-               ", forumSync=" + forumSync +
-               ", donationEnabled=" + donationEnabled +
-               ", donationEmail='" + donationSubject + '\'' +
-               ", sponsors='" + sponsors + '\'' +
+               "name='" + this.name + '\'' +
+               ", slug='" + this.slug + '\'' +
+               ", ownerName='" + this.ownerName + '\'' +
+               ", ownerId=" + this.ownerId +
+               ", topicId=" + this.topicId +
+               ", postId=" + this.postId +
+               ", category=" + this.category +
+               ", description='" + this.description + '\'' +
+               ", visibility=" + this.visibility +
+               ", keywords=" + this.keywords +
+               ", homepage='" + this.homepage + '\'' +
+               ", issues='" + this.issues + '\'' +
+               ", source='" + this.source + '\'' +
+               ", support='" + this.support + '\'' +
+               ", wiki='" + this.wiki + '\'' +
+               ", licenseType='" + this.licenseType + '\'' +
+               ", licenseName='" + this.licenseName + '\'' +
+               ", licenseUrl='" + this.licenseUrl + '\'' +
+               ", forumSync=" + this.forumSync +
+               ", donationEnabled=" + this.donationEnabled +
+               ", donationEmail='" + this.donationSubject + '\'' +
+               ", sponsors='" + this.sponsors + '\'' +
                "} " + super.toString();
     }
 }

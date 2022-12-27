@@ -24,7 +24,7 @@ public enum Platform {
     private final boolean isVisible;
     private final String url;
 
-    Platform(String name, Category category, String url, boolean isVisible) {
+    Platform(final String name, final Category category, final String url, final boolean isVisible) {
         this.name = name;
         this.category = category;
         this.url = url;
@@ -32,24 +32,24 @@ public enum Platform {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @JsonValue
     public String getEnumName() {
-        return name();
+        return this.name();
     }
 
     public Category getCategory() {
-        return category;
+        return this.category;
     }
 
     public boolean isVisible() {
-        return isVisible;
+        return this.isVisible;
     }
 
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     public static Platform[] getValues() {
@@ -64,25 +64,25 @@ public enum Platform {
         private final String tagName;
         private Set<Platform> platforms;
 
-        Category(String name, String tagName) {
+        Category(final String name, final String tagName) {
             this.name = name;
             this.tagName = tagName;
         }
 
         public String getName() {
-            return name;
+            return this.name;
         }
 
         @JsonValue
         public String getTagName() {
-            return tagName;
+            return this.tagName;
         }
 
         public Set<Platform> getPlatforms() {
-            if (platforms != null) {
-                platforms = Arrays.stream(Platform.VALUES).filter(p -> p.category == this).collect(Collectors.toSet());
+            if (this.platforms != null) {
+                this.platforms = Arrays.stream(VALUES).filter(p -> p.category == this).collect(Collectors.toSet());
             }
-            return platforms;
+            return this.platforms;
         }
     }
 }

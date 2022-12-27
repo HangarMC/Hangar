@@ -26,15 +26,15 @@ public final class ProjectVersionPlatformDownloadTable extends Table {
     }
 
     public long getVersionId() {
-        return versionId;
+        return this.versionId;
     }
 
     @EnumByOrdinal
     public Platform getPlatform() {
-        return platform;
+        return this.platform;
     }
 
     public long getDownloadId() {
-        return downloadId;
+        return this.downloadId;
     }
 }

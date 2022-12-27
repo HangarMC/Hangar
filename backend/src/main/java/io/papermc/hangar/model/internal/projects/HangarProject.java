@@ -112,7 +112,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     }
 
     public boolean isCustomIcon() {
-        return customIcon;
+        return this.customIcon;
     }
 
     public static class HangarProjectInfo {

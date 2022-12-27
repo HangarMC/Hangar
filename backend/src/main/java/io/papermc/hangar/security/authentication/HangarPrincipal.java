@@ -10,7 +10,7 @@ public class HangarPrincipal implements ProjectOwner {
     private final boolean locked;
     private final Permission globalPermissions;
 
-    public HangarPrincipal(long id, String name, boolean locked, Permission globalPermissions) {
+    public HangarPrincipal(final long id, final String name, final boolean locked, final Permission globalPermissions) {
         this.id = id;
         this.name = name;
         this.locked = locked;
@@ -19,48 +19,48 @@ public class HangarPrincipal implements ProjectOwner {
 
     @Override
     public long getId() {
-        return id;
+        return this.id;
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public long getUserId() {
-        return id;
+        return this.id;
     }
 
     public final boolean isLocked() {
-        return locked;
+        return this.locked;
     }
 
     public Permission getPossiblePermissions(){ return Permission.All; }
 
     public final Permission getGlobalPermissions() {
-        return globalPermissions.intersect(getPossiblePermissions());
+        return this.globalPermissions.intersect(this.getPossiblePermissions());
     }
 
-    public final boolean isAllowedGlobal(Permission requiredPermission) {
-        return isAllowed(requiredPermission, globalPermissions);
+    public final boolean isAllowedGlobal(final Permission requiredPermission) {
+        return this.isAllowed(requiredPermission, this.globalPermissions);
     }
 
-    public final boolean isAllowed(Permission requiredPermission, Permission currentPermission) {
-        Permission intersect = requiredPermission.intersect(currentPermission);
+    public final boolean isAllowed(final Permission requiredPermission, final Permission currentPermission) {
+        final Permission intersect = requiredPermission.intersect(currentPermission);
         if (intersect.isNone()) {
             return false;
         }
-        return getPossiblePermissions().has(requiredPermission.intersect(currentPermission));
+        return this.getPossiblePermissions().has(requiredPermission.intersect(currentPermission));
     }
 
     @Override
     public String toString() {
         return "HangarPrincipal{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", locked=" + locked +
-                ", globalPermissions=" + globalPermissions +
+                "id=" + this.id +
+                ", name='" + this.name + '\'' +
+                ", locked=" + this.locked +
+                ", globalPermissions=" + this.globalPermissions +
                 '}';
     }
 }

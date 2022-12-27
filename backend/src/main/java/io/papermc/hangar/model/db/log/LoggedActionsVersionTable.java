@@ -10,25 +10,25 @@ public class LoggedActionsVersionTable extends LoggedActionTable {
     private final long projectId;
     private final long versionId;
 
-    public LoggedActionsVersionTable(long userId, InetAddress address, LoggedAction<VersionContext> action) {
+    public LoggedActionsVersionTable(final long userId, final InetAddress address, final LoggedAction<VersionContext> action) {
         super(userId, address, action);
         this.projectId = action.getContext().getProjectId();
         this.versionId = action.getContext().getVersionId();
     }
 
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     public long getVersionId() {
-        return versionId;
+        return this.versionId;
     }
 
     @Override
     public String toString() {
         return "LoggedActionsVersionTable{" +
-                "projectId=" + projectId +
-                ", versionId=" + versionId +
+                "projectId=" + this.projectId +
+                ", versionId=" + this.versionId +
                 "} " + super.toString();
     }
 }

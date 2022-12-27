@@ -19,7 +19,7 @@ public enum Visibility {
     private final String cssClass;
     private final String title;
 
-    Visibility(String name, boolean showModal, String cssClass, String title) {
+    Visibility(final String name, final boolean showModal, final String cssClass, final String title) {
         this.name = name;
         this.showModal = showModal;
         this.cssClass = cssClass;
@@ -27,30 +27,30 @@ public enum Visibility {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public boolean getShowModal() {
-        return showModal;
+        return this.showModal;
     }
 
     public String getCssClass() {
-        return cssClass;
+        return this.cssClass;
     }
 
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     @Override
     @JsonValue
     public String toString() {
-        return name;
+        return this.name;
     }
 
     @JsonCreator
-    public static Visibility fromValue(String text) {
-        for (Visibility b : Visibility.values()) {
+    public static Visibility fromValue(final String text) {
+        for (final Visibility b : values()) {
             if (b.name.equals(text)) {
                 return b;
             }
@@ -58,8 +58,8 @@ public enum Visibility {
         return null;
     }
 
-    public static Visibility fromId(long visibility) {
-        for (Visibility b : Visibility.values()) {
+    public static Visibility fromId(final long visibility) {
+        for (final Visibility b : values()) {
             if (b.ordinal() == visibility) {
                 return b;
             }

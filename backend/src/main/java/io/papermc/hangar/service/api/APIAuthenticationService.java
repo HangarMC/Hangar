@@ -27,25 +27,25 @@ public class APIAuthenticationService extends HangarComponent {
     private final TokenService tokenService;
 
     @Autowired
-    public APIAuthenticationService(UserDAO userDAO, ApiKeyDAO apiKeyDAO, TokenService tokenService) {
+    public APIAuthenticationService(final UserDAO userDAO, final ApiKeyDAO apiKeyDAO, final TokenService tokenService) {
         this.userDAO = userDAO;
         this.apiKeyDAO = apiKeyDAO;
         this.tokenService = tokenService;
     }
 
-    public ApiSession createJWTForApiKey(String apiKey) {
+    public ApiSession createJWTForApiKey(final String apiKey) {
         if (!API_KEY_PATTERN.matcher(apiKey).matches()) {
             throw new HangarApiException("Badly formatted API Key");
         }
-        String identifier = apiKey.split("\\.")[0];
-        String token = apiKey.split("\\.")[1];
-        String hashedToken = CryptoUtils.hmacSha256(config.security.tokenSecret(), token.getBytes(StandardCharsets.UTF_8));
-        ApiKeyTable apiKeyTable = apiKeyDAO.findApiKey(identifier, hashedToken);
+        final String identifier = apiKey.split("\\.")[0];
+        final String token = apiKey.split("\\.")[1];
+        final String hashedToken = CryptoUtils.hmacSha256(this.config.security.tokenSecret(), token.getBytes(StandardCharsets.UTF_8));
+        final ApiKeyTable apiKeyTable = this.apiKeyDAO.findApiKey(identifier, hashedToken);
         if (apiKeyTable == null) {
             throw new HangarApiException("No valid API Key found");
         }
-        UserTable userTable = userDAO.getUserTable(apiKeyTable.getOwnerId());
-        String jwt = tokenService.expiring(userTable, apiKeyTable.getPermissions(), identifier);
-        return new ApiSession(jwt, config.security.refreshTokenExpiry().toSeconds());
+        final UserTable userTable = this.userDAO.getUserTable(apiKeyTable.getOwnerId());
+        final String jwt = this.tokenService.expiring(userTable, apiKeyTable.getPermissions(), identifier);
+        return new ApiSession(jwt, this.config.security.refreshTokenExpiry().toSeconds());
     }
 }

@@ -34,39 +34,39 @@ public class StatService extends HangarComponent {
     private final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO;
 
     @Autowired
-    public StatService(HangarStatsDAO hangarStatsDAO, ProjectViewsDAO projectViewsDAO, ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO) {
+    public StatService(final HangarStatsDAO hangarStatsDAO, final ProjectViewsDAO projectViewsDAO, final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO) {
         this.hangarStatsDAO = hangarStatsDAO;
         this.projectViewsDAO = projectViewsDAO;
         this.projectVersionDownloadStatsDAO = projectVersionDownloadStatsDAO;
     }
 
-    public List<DayStats> getStats(LocalDate from, LocalDate to) {
-        return hangarStatsDAO.getStats(from, to);
+    public List<DayStats> getStats(final LocalDate from, final LocalDate to) {
+        return this.hangarStatsDAO.getStats(from, to);
     }
 
     @Transactional
-    public void addProjectView(ProjectIdentified projectIdentified) {
-        Long userId = getHangarUserId();
-        InetAddress address = RequestUtil.getRemoteInetAddress(request);
-        Optional<String> existingCookie = projectViewsDAO.getIndividualView(userId, address).map(ProjectViewIndividualTable::getCookie);
-        String cookie = existingCookie.orElse(Optional.ofNullable(WebUtils.getCookie(request, STAT_TRACKING_COOKIE)).map(Cookie::getValue).orElse(UUID.randomUUID().toString()));
-        projectViewsDAO.insert(new ProjectViewIndividualTable(address, cookie, userId, projectIdentified.getProjectId()));
-        setCookie(cookie);
+    public void addProjectView(final ProjectIdentified projectIdentified) {
+        final Long userId = this.getHangarUserId();
+        final InetAddress address = RequestUtil.getRemoteInetAddress(this.request);
+        final Optional<String> existingCookie = this.projectViewsDAO.getIndividualView(userId, address).map(ProjectViewIndividualTable::getCookie);
+        final String cookie = existingCookie.orElse(Optional.ofNullable(WebUtils.getCookie(this.request, STAT_TRACKING_COOKIE)).map(Cookie::getValue).orElse(UUID.randomUUID().toString()));
+        this.projectViewsDAO.insert(new ProjectViewIndividualTable(address, cookie, userId, projectIdentified.getProjectId()));
+        this.setCookie(cookie);
     }
 
-    public <T extends VersionIdentified & ProjectIdentified> void addVersionDownload(T versionIdentified) {
-        Long userId = getHangarUserId();
-        InetAddress address = RequestUtil.getRemoteInetAddress(request);
-        Optional<String> existingCookie = projectVersionDownloadStatsDAO.getIndividualView(userId, address).map(ProjectVersionDownloadIndividualTable::getCookie);
-        String cookie = existingCookie.orElse(Optional.ofNullable(WebUtils.getCookie(request, STAT_TRACKING_COOKIE)).map(Cookie::getValue).orElse(UUID.randomUUID().toString()));
-        projectVersionDownloadStatsDAO.insert(new ProjectVersionDownloadIndividualTable(address, cookie, userId, versionIdentified.getProjectId(), versionIdentified.getVersionId()));
-        setCookie(cookie);
+    public <T extends VersionIdentified & ProjectIdentified> void addVersionDownload(final T versionIdentified) {
+        final Long userId = this.getHangarUserId();
+        final InetAddress address = RequestUtil.getRemoteInetAddress(this.request);
+        final Optional<String> existingCookie = this.projectVersionDownloadStatsDAO.getIndividualView(userId, address).map(ProjectVersionDownloadIndividualTable::getCookie);
+        final String cookie = existingCookie.orElse(Optional.ofNullable(WebUtils.getCookie(this.request, STAT_TRACKING_COOKIE)).map(Cookie::getValue).orElse(UUID.randomUUID().toString()));
+        this.projectVersionDownloadStatsDAO.insert(new ProjectVersionDownloadIndividualTable(address, cookie, userId, versionIdentified.getProjectId(), versionIdentified.getVersionId()));
+        this.setCookie(cookie);
     }
 
-    private void setCookie(String cookieValue) {
-        response.addHeader(HttpHeaders.SET_COOKIE,
+    private void setCookie(final String cookieValue) {
+        this.response.addHeader(HttpHeaders.SET_COOKIE,
                 ResponseCookie.from(STAT_TRACKING_COOKIE, cookieValue)
-                        .secure(config.security.secure())
+                        .secure(this.config.security.secure())
                         .path("/")
                         .maxAge((long) (60 * 60 * 24 * 356.24 * 1000))
                         .sameSite("Strict")
@@ -74,18 +74,18 @@ public class StatService extends HangarComponent {
         );
     }
 
-    private void processStats(String individualTable, String dayTable, String statColumn, boolean includeVersionId) {
-        hangarStatsDAO.fillStatsUserIdsFromOthers(individualTable);
-        hangarStatsDAO.processStatsMain(individualTable, dayTable, statColumn, true, includeVersionId);
-        hangarStatsDAO.processStatsMain(individualTable, dayTable, statColumn, false, includeVersionId);
-        hangarStatsDAO.deleteOldIndividual(individualTable);
+    private void processStats(final String individualTable, final String dayTable, final String statColumn, final boolean includeVersionId) {
+        this.hangarStatsDAO.fillStatsUserIdsFromOthers(individualTable);
+        this.hangarStatsDAO.processStatsMain(individualTable, dayTable, statColumn, true, includeVersionId);
+        this.hangarStatsDAO.processStatsMain(individualTable, dayTable, statColumn, false, includeVersionId);
+        this.hangarStatsDAO.deleteOldIndividual(individualTable);
     }
 
     public void processVersionDownloads() {
-        processStats("project_versions_downloads_individual", "project_versions_downloads", "downloads", true);
+        this.processStats("project_versions_downloads_individual", "project_versions_downloads", "downloads", true);
     }
 
     public void processProjectViews() {
-        processStats("project_views_individual", "project_views", "views", false);
+        this.processStats("project_views_individual", "project_views", "views", false);
     }
 }

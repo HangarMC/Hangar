@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 public interface ProjectLoggable extends Loggable<ProjectContext>, ProjectIdentified {
 
     @Override
-    default Consumer<LoggedAction<ProjectContext>> getLogInserter(UserActionLogService actionLogger) {
+    default Consumer<LoggedAction<ProjectContext>> getLogInserter(final UserActionLogService actionLogger) {
         return actionLogger::project;
     }
 

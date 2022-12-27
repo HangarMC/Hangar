@@ -6,18 +6,18 @@ public abstract class Activity {
 
     private final ProjectNamespace namespace;
 
-    protected Activity(ProjectNamespace namespace) {
+    protected Activity(final ProjectNamespace namespace) {
         this.namespace = namespace;
     }
 
     public ProjectNamespace getNamespace() {
-        return namespace;
+        return this.namespace;
     }
 
     @Override
     public String toString() {
         return "Activity{" +
-                "namespace=" + namespace +
+                "namespace=" + this.namespace +
                 '}';
     }
 }

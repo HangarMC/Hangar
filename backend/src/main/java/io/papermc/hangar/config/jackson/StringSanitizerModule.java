@@ -12,9 +12,9 @@ import java.io.IOException;
 @Component
 public class StringSanitizerModule extends SimpleModule {
     public StringSanitizerModule() {
-        addDeserializer(String.class, new StdScalarDeserializer<>(String.class) {
+        this.addDeserializer(String.class, new StdScalarDeserializer<>(String.class) {
             @Override
-            public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+            public String deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
                 return StringUtils.trimToNull(p.getValueAsString());
             }
         });

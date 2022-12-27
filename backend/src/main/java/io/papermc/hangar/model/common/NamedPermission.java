@@ -52,33 +52,33 @@ public enum NamedPermission {
     private final Permission permission;
     private final String frontendName;
 
-    NamedPermission(String value, Permission permission, String frontendName) {
+    NamedPermission(final String value, final Permission permission, final String frontendName) {
         this.value = value;
         this.permission = permission;
         this.frontendName = frontendName;
     }
 
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     public String getFrontendName() {
-        return frontendName;
+        return this.frontendName;
     }
 
     public Permission getPermission() {
-        return permission;
+        return this.permission;
     }
 
     @Override
     @JsonValue
     public String toString() {
-        return String.valueOf(value);
+        return String.valueOf(this.value);
     }
 
     @JsonCreator
-    public static NamedPermission fromValue(String text) {
-        for (NamedPermission b : NamedPermission.values()) {
+    public static NamedPermission fromValue(final String text) {
+        for (final NamedPermission b : values()) {
             if (b.value.equals(text)) {
                 return b;
             }
@@ -86,8 +86,8 @@ public enum NamedPermission {
         return null;
     }
 
-    public static List<NamedPermission> parseNamed(List<String> permStrings) {
-        return permStrings.stream().map(s -> NamedPermission.valueOf(s.toUpperCase())).collect(Collectors.toList());
+    public static List<NamedPermission> parseNamed(final List<String> permStrings) {
+        return permStrings.stream().map(s -> valueOf(s.toUpperCase())).collect(Collectors.toList());
     }
 
     private static final NamedPermission[] VALUES = values();

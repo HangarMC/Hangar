@@ -15,29 +15,29 @@ public class CryptoUtils {
 
     private static final char[] hexArray = "0123456789abcdef".toCharArray();
 
-    public static byte[] hmac(String algo, byte[] secret, byte[] data) {
+    public static byte[] hmac(final String algo, final byte[] secret, final byte[] data) {
         Preconditions.checkArgument(secret.length != 0, "empty secret");
         Preconditions.checkArgument(data.length != 0, "nothing to hash!");
         try {
-            Mac hmac = Mac.getInstance(algo);
-            SecretKeySpec keySpec = new SecretKeySpec(secret, algo);
+            final Mac hmac = Mac.getInstance(algo);
+            final SecretKeySpec keySpec = new SecretKeySpec(secret, algo);
             hmac.init(keySpec);
             return hmac.doFinal(data);
-        } catch (InvalidKeyException | NoSuchAlgorithmException e) {
+        } catch (final InvalidKeyException | NoSuchAlgorithmException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    public static String hmacSha256(String secret, byte[] data) {
+    public static String hmacSha256(final String secret, final byte[] data) {
         return bytesToHex(hmac("HmacSHA256", secret.getBytes(StandardCharsets.UTF_8), data));
     }
 
-    public static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
+    public static String bytesToHex(final byte[] bytes) {
+        final char[] hexChars = new char[bytes.length * 2];
         int j = 0;
         while (j < bytes.length) {
-            int v = bytes[j] & 0xFF;
+            final int v = bytes[j] & 0xFF;
             hexChars[j * 2] = hexArray[v >>> 4];
             hexChars[j * 2 + 1] = hexArray[v & 0x0F];
 
@@ -46,10 +46,10 @@ public class CryptoUtils {
         return new String(hexChars);
     }
 
-    public static String md5ToHex(byte[] bytes) {
+    public static String md5ToHex(final byte[] bytes) {
         try {
             return bytesToHex(MessageDigest.getInstance("MD5").digest(bytes));
-        } catch (NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
         }

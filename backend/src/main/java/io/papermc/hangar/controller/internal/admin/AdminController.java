@@ -36,7 +36,6 @@ import io.papermc.hangar.service.internal.users.UserService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -69,7 +68,7 @@ public class AdminController extends HangarComponent {
     private final GlobalRoleService globalRoleService;
 
     @Autowired
-    public AdminController(PlatformService platformService, StatService statService, HealthService healthService, JobService jobService, UserService userService, ObjectMapper mapper, GlobalRoleService globalRoleService) {
+    public AdminController(final PlatformService platformService, final StatService statService, final HealthService healthService, final JobService jobService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService) {
         this.platformService = platformService;
         this.statService = statService;
         this.healthService = healthService;
@@ -82,14 +81,14 @@ public class AdminController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "/platformVersions", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
-    public void changePlatformVersions(@RequestBody @Valid ChangePlatformVersionsForm form) {
-        platformService.updatePlatformVersions(form);
+    public void changePlatformVersions(@RequestBody final @Valid ChangePlatformVersionsForm form) {
+        this.platformService.updatePlatformVersions(form);
     }
 
     @ResponseBody
     @PermissionRequired(NamedPermission.VIEW_STATS)
     @GetMapping(path = "/stats", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ArrayNode getStats(@RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate to) {
+    public ArrayNode getStats(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
         if (from == null) {
             from = LocalDate.now().minusDays(30);
         }
@@ -99,26 +98,26 @@ public class AdminController extends HangarComponent {
         if (to.isBefore(from)) {
             to = from;
         }
-        return mapper.valueToTree(statService.getStats(from, to));
+        return this.mapper.valueToTree(this.statService.getStats(from, to));
     }
 
     @ResponseBody
     @PermissionRequired(NamedPermission.VIEW_HEALTH)
     @GetMapping(path = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
     public HealthReport getHealthReport() {
-        List<UnhealthyProject> noTopicProjects = healthService.getProjectsWithoutTopic();
-        List<UnhealthyProject> staleProjects = healthService.getStaleProjects();
-        List<UnhealthyProject> nonPublicProjects = healthService.getNonPublicProjects();
-        List<MissingFileCheck> missingFiles = healthService.getVersionsWithMissingFiles();
-        List<JobTable> erroredJobs = jobService.getErroredJobs();
+        final List<UnhealthyProject> noTopicProjects = this.healthService.getProjectsWithoutTopic();
+        final List<UnhealthyProject> staleProjects = this.healthService.getStaleProjects();
+        final List<UnhealthyProject> nonPublicProjects = this.healthService.getNonPublicProjects();
+        final List<MissingFileCheck> missingFiles = this.healthService.getVersionsWithMissingFiles();
+        final List<JobTable> erroredJobs = this.jobService.getErroredJobs();
         return new HealthReport(noTopicProjects, staleProjects, nonPublicProjects, missingFiles, erroredJobs);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.IS_STAFF)
     @PostMapping(value = "/lock-user/{user}/{locked}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void setUserLock(@PathVariable UserTable user, @PathVariable boolean locked, @RequestBody @Valid StringContent comment) {
-        userService.setLocked(user, locked, comment.getContent());
+    public void setUserLock(@PathVariable final UserTable user, @PathVariable final boolean locked, @RequestBody final @Valid StringContent comment) {
+        this.userService.setLocked(user, locked, comment.getContent());
     }
 
     @ResponseBody
@@ -126,21 +125,21 @@ public class AdminController extends HangarComponent {
     @PermissionRequired(NamedPermission.REVIEWER)
     @ApplicableFilters({LogActionFilter.class, LogPageFilter.class, LogProjectFilter.class, LogSubjectFilter.class, LogUserFilter.class, LogVersionFilter.class})
     // TODO add sorters
-    public PaginatedResult<HangarLoggedAction> getActionLog(@NotNull @ConfigurePagination(defaultLimit = 50, maxLimit = 100) RequestPagination pagination) {
-        return actionLogger.getLogs(pagination);
+    public PaginatedResult<HangarLoggedAction> getActionLog(@ConfigurePagination(defaultLimit = 50, maxLimit = 100) final @NotNull RequestPagination pagination) {
+        return this.actionLogger.getLogs(pagination);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.EDIT_ALL_USER_SETTINGS)
     @PostMapping("/user/{user}/{role}")
-    public void addRole(@PathVariable UserTable user, @PathVariable String role) {
-        globalRoleService.addRole(new GlobalRoleTable(user.getUserId(), GlobalRole.byApiValue(role)));
+    public void addRole(@PathVariable final UserTable user, @PathVariable final String role) {
+        this.globalRoleService.addRole(new GlobalRoleTable(user.getUserId(), GlobalRole.byApiValue(role)));
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.EDIT_ALL_USER_SETTINGS)
-    @DeleteMapping(value = "/user/{user}/{role}")
-    public void removeRole(@PathVariable UserTable user, @PathVariable String role) {
-        globalRoleService.deleteRole(new GlobalRoleTable(user.getUserId(), GlobalRole.byApiValue(role)));
+    @DeleteMapping("/user/{user}/{role}")
+    public void removeRole(@PathVariable final UserTable user, @PathVariable final String role) {
+        this.globalRoleService.deleteRole(new GlobalRoleTable(user.getUserId(), GlobalRole.byApiValue(role)));
     }
 }

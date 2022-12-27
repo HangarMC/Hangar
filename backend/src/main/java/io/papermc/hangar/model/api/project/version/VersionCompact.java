@@ -61,7 +61,7 @@ public class VersionCompact extends Model implements Named, Visible {
     }
 
     public Map<Platform, PlatformVersionDownload> getDownloads() {
-        return downloads;
+        return this.downloads;
     }
 
     public String getAuthor() {

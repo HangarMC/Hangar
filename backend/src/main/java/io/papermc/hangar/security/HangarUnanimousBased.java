@@ -17,16 +17,16 @@ import java.util.List;
  */
 public class HangarUnanimousBased extends UnanimousBased {
 
-    public HangarUnanimousBased(List<AccessDecisionVoter<?>> decisionVoters) {
+    public HangarUnanimousBased(final List<AccessDecisionVoter<?>> decisionVoters) {
         super(decisionVoters);
     }
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) throws AccessDeniedException {
+    public void decide(final Authentication authentication, final Object object, final Collection<ConfigAttribute> attributes) throws AccessDeniedException {
         int grant = 0;
-        for (AccessDecisionVoter voter : getDecisionVoters()) {
-            int result = voter.vote(authentication, object, attributes);
+        for (final AccessDecisionVoter voter : this.getDecisionVoters()) {
+            final int result = voter.vote(authentication, object, attributes);
             switch (result) {
                 case AccessDecisionVoter.ACCESS_GRANTED -> grant++;
                 case AccessDecisionVoter.ACCESS_DENIED -> {
@@ -41,6 +41,6 @@ public class HangarUnanimousBased extends UnanimousBased {
             return;
         }
 
-        checkAllowIfAllAbstainDecisions();
+        this.checkAllowIfAllAbstainDecisions();
     }
 }

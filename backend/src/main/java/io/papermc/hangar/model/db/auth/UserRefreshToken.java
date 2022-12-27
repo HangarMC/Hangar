@@ -14,7 +14,7 @@ public class UserRefreshToken extends Table {
     private final UUID deviceId;
 
     @JdbiConstructor
-    public UserRefreshToken(OffsetDateTime createdAt, long id, long userId, OffsetDateTime lastUpdated, UUID token, UUID deviceId) {
+    public UserRefreshToken(final OffsetDateTime createdAt, final long id, final long userId, final OffsetDateTime lastUpdated, final UUID token, final UUID deviceId) {
         super(createdAt, id);
         this.userId = userId;
         this.lastUpdated = lastUpdated;
@@ -22,43 +22,43 @@ public class UserRefreshToken extends Table {
         this.deviceId = deviceId;
     }
 
-    public UserRefreshToken(long userId, UUID token, UUID deviceId) {
+    public UserRefreshToken(final long userId, final UUID token, final UUID deviceId) {
         this.userId = userId;
         this.token = token;
         this.deviceId = deviceId;
     }
 
     public long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public OffsetDateTime getLastUpdated() {
-        return lastUpdated;
+        return this.lastUpdated;
     }
 
-    public void setLastUpdated(OffsetDateTime lastUpdated) {
+    public void setLastUpdated(final OffsetDateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 
     public UUID getToken() {
-        return token;
+        return this.token;
     }
 
-    public void setToken(UUID token) {
+    public void setToken(final UUID token) {
         this.token = token;
     }
 
     public UUID getDeviceId() {
-        return deviceId;
+        return this.deviceId;
     }
 
     @Override
     public String toString() {
         return "UserRefreshToken{" +
-                "userId=" + userId +
-                ", lastUpdated=" + lastUpdated +
-                ", token=" + token +
-                ", deviceId=" + deviceId +
+                "userId=" + this.userId +
+                ", lastUpdated=" + this.lastUpdated +
+                ", token=" + this.token +
+                ", deviceId=" + this.deviceId +
                 "} " + super.toString();
     }
 }

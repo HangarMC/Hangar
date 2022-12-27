@@ -11,15 +11,15 @@ import java.util.stream.Collectors;
 @Service
 public class GlobalRoleService extends RoleService<GlobalRoleTable, GlobalRole, GlobalRolesDAO> {
 
-    public GlobalRoleService(GlobalRolesDAO roleDao) {
+    public GlobalRoleService(final GlobalRolesDAO roleDao) {
         super(roleDao);
     }
 
-    public List<GlobalRole> getGlobalRoles(long userId) {
-        return roleDao.getGlobalRoleTables(userId).stream().map(GlobalRoleTable::getRole).collect(Collectors.toList());
+    public List<GlobalRole> getGlobalRoles(final long userId) {
+        return this.roleDao.getGlobalRoleTables(userId).stream().map(GlobalRoleTable::getRole).collect(Collectors.toList());
     }
 
-    public void removeAllGlobalRoles(long userId) {
-        roleDao.deleteAll(userId);
+    public void removeAllGlobalRoles(final long userId) {
+        this.roleDao.deleteAll(userId);
     }
 }

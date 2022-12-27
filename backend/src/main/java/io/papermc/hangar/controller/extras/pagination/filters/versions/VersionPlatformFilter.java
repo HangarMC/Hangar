@@ -19,7 +19,7 @@ public class VersionPlatformFilter implements Filter<VersionPlatformFilterInstan
     private final ConversionService conversionService;
 
     @Autowired
-    public VersionPlatformFilter(ConversionService conversionService) {
+    public VersionPlatformFilter(final ConversionService conversionService) {
         this.conversionService = conversionService;
     }
 
@@ -33,27 +33,26 @@ public class VersionPlatformFilter implements Filter<VersionPlatformFilterInstan
         return "A platform name to filter for";
     }
 
-    @NotNull
     @Override
-    public VersionPlatformFilterInstance create(NativeWebRequest webRequest) {
-        return new VersionPlatformFilterInstance(conversionService.convert(webRequest.getParameterValues(getSingleQueryParam()), Platform[].class));
+    public @NotNull VersionPlatformFilterInstance create(final NativeWebRequest webRequest) {
+        return new VersionPlatformFilterInstance(this.conversionService.convert(webRequest.getParameterValues(this.getSingleQueryParam()), Platform[].class));
     }
 
-    public static class VersionPlatformFilterInstance implements FilterInstance {
+    public static class VersionPlatformFilterInstance implements Filter.FilterInstance {
 
         private final Platform[] platforms;
 
-        public VersionPlatformFilterInstance(Platform[] platforms) {
+        public VersionPlatformFilterInstance(final Platform[] platforms) {
             this.platforms = platforms;
         }
 
         @Override
-        public void createSql(StringBuilder sb, SqlStatement<?> q) {
+        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             sb.append(" AND (");
-            for (int i = 0; i < platforms.length; i++) {
+            for (int i = 0; i < this.platforms.length; i++) {
                 sb.append(":__platform_").append(i).append(" = ANY(sq.platforms)");
-                q.bind("__platform_" + i, platforms[i]);
-                if (i + 1 != platforms.length) {
+                q.bind("__platform_" + i, this.platforms[i]);
+                if (i + 1 != this.platforms.length) {
                     sb.append(" OR ");
                 }
             }
@@ -63,7 +62,7 @@ public class VersionPlatformFilter implements Filter<VersionPlatformFilterInstan
         @Override
         public String toString() {
             return "VersionPlatformFilterInstance{" +
-                    "platforms=" + Arrays.toString(platforms) +
+                    "platforms=" + Arrays.toString(this.platforms) +
                     '}';
         }
     }

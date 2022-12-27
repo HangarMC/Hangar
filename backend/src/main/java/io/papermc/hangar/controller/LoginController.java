@@ -44,7 +44,7 @@ public class LoginController extends HangarComponent {
     private final ValidationService validationService;
 
     @Autowired
-    public LoginController(AuthenticationService authenticationService, SSOService ssoService, TokenService tokenService, ValidationService validationService) {
+    public LoginController(final AuthenticationService authenticationService, final SSOService ssoService, final TokenService tokenService, final ValidationService validationService) {
         this.authenticationService = authenticationService;
         this.ssoService = ssoService;
         this.tokenService = tokenService;
@@ -52,45 +52,45 @@ public class LoginController extends HangarComponent {
     }
 
     @GetMapping(path = "/login", params = "returnUrl")
-    public RedirectView loginFromFrontend(@RequestParam(defaultValue = "/") String returnUrl) {
-        if (config.fakeUser.enabled()) {
-            config.checkDev();
+    public RedirectView loginFromFrontend(@RequestParam(defaultValue = "/") final String returnUrl) {
+        if (this.config.fakeUser.enabled()) {
+            this.config.checkDev();
 
-            UserTable fakeUser = authenticationService.loginAsFakeUser();
-            tokenService.issueRefreshToken(fakeUser);
-            return addBaseAndRedirect(returnUrl);
+            final UserTable fakeUser = this.authenticationService.loginAsFakeUser();
+            this.tokenService.issueRefreshToken(fakeUser);
+            return this.addBaseAndRedirect(returnUrl);
         } else {
-            response.addCookie(new Cookie("url", returnUrl));
-            return redirectToSso(ssoService.getLoginUrl(config.getBaseUrl() + "/login"));
+            this.response.addCookie(new Cookie("url", returnUrl));
+            return this.redirectToSso(this.ssoService.getLoginUrl(this.config.getBaseUrl() + "/login"));
         }
     }
 
     @RateLimit(overdraft = 5, refillTokens = 5, refillSeconds = 10)
     @GetMapping(path = "/login", params = {"code", "state"})
-    public RedirectView loginFromAuth(@RequestParam String code, @RequestParam String state, @CookieValue String url) {
-        UserTable user = ssoService.authenticate(code, state, config.getBaseUrl() + "/login");
+    public RedirectView loginFromAuth(@RequestParam final String code, @RequestParam final String state, @CookieValue final String url) {
+        final UserTable user = this.ssoService.authenticate(code, state, this.config.getBaseUrl() + "/login");
         if (user == null) {
             throw new HangarApiException("nav.user.error.loginFailed");
         }
 
-        if (!validationService.isValidUsername(user.getName())) {
+        if (!this.validationService.isValidUsername(user.getName())) {
             throw new HangarApiException("nav.user.error.invalidUsername");
         }
-        tokenService.issueRefreshToken(user);
-        return addBaseAndRedirect(url);
+        this.tokenService.issueRefreshToken(user);
+        return this.addBaseAndRedirect(url);
     }
 
     @ResponseBody
     @GetMapping("/refresh")
-    public String refreshAccessToken(@CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) String refreshToken) {
-        return tokenService.refreshAccessToken(refreshToken).accessToken();
+    public String refreshAccessToken(@CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) final String refreshToken) {
+        return this.tokenService.refreshAccessToken(refreshToken).accessToken();
     }
 
     @GetMapping("/invalidate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void invalidateRefreshToken(@CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) String refreshToken) {
-        tokenService.invalidateToken(refreshToken);
-        HttpSession session = request.getSession(false);
+    public void invalidateRefreshToken(@CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) final String refreshToken) {
+        this.tokenService.invalidateToken(refreshToken);
+        final HttpSession session = this.request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
@@ -98,109 +98,109 @@ public class LoginController extends HangarComponent {
 
     @ResponseBody
     @GetMapping(path = "/logout", params = "returnUrl")
-    public String logout(@RequestParam(defaultValue = "/?loggedOut") String returnUrl) {
-        if (config.fakeUser.enabled()) {
-            response.addCookie(new Cookie("url", returnUrl));
+    public String logout(@RequestParam(defaultValue = "/?loggedOut") final String returnUrl) {
+        if (this.config.fakeUser.enabled()) {
+            this.response.addCookie(new Cookie("url", returnUrl));
             return "/fake-logout";
         } else {
-            response.addCookie(new Cookie("url", returnUrl));
-            Optional<HangarPrincipal> principal = getOptionalHangarPrincipal();
+            this.response.addCookie(new Cookie("url", returnUrl));
+            final Optional<HangarPrincipal> principal = this.getOptionalHangarPrincipal();
             if (principal.isPresent()) {
-                return ssoService.getLogoutUrl(config.getBaseUrl() + "/handle-logout", principal.get()).getUrl();
+                return this.ssoService.getLogoutUrl(this.config.getBaseUrl() + "/handle-logout", principal.get()).getUrl();
             } else {
-                tokenService.invalidateToken(null);
-                return addBase(returnUrl);
+                this.tokenService.invalidateToken(null);
+                return this.addBase(returnUrl);
             }
         }
     }
 
     @GetMapping(path = "/fake-logout")
-    public RedirectView fakeLogout(@CookieValue(value = "url", defaultValue = "/logged-out") String returnUrl, @CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) String refreshToken) {
+    public RedirectView fakeLogout(@CookieValue(value = "url", defaultValue = "/logged-out") final String returnUrl, @CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) final String refreshToken) {
         // invalidate refresh token
         if (refreshToken != null) {
-            tokenService.invalidateToken(refreshToken);
+            this.tokenService.invalidateToken(refreshToken);
         }
         // invalidate session
-        HttpSession session = request.getSession(false);
+        final HttpSession session = this.request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
-        return addBaseAndRedirect(returnUrl);
+        return this.addBaseAndRedirect(returnUrl);
     }
 
     @GetMapping(path = "/handle-logout", params = "state")
-    public RedirectView loggedOut(@RequestParam String state, @CookieValue(value = "url", defaultValue = "/logged-out") String returnUrl, @CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) String refreshToken) {
-        String username;
+    public RedirectView loggedOut(@RequestParam final String state, @CookieValue(value = "url", defaultValue = "/logged-out") final String returnUrl, @CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) final String refreshToken) {
+        final String username;
         try {
             // get username
-            DecodedJWT decodedJWT = tokenService.verify(state);
+            final DecodedJWT decodedJWT = this.tokenService.verify(state);
             username = decodedJWT.getSubject();
-        } catch (JWTVerificationException e) {
+        } catch (final JWTVerificationException e) {
             throw new HangarApiException("nav.user.error.logoutFailed", e.getMessage());
         }
 
         // invalidate id token
-        ssoService.logout(username);
+        this.ssoService.logout(username);
         // invalidate refresh token
         if (refreshToken != null) {
-            tokenService.invalidateToken(refreshToken);
+            this.tokenService.invalidateToken(refreshToken);
         }
         // invalidate session
-        HttpSession session = request.getSession(false);
+        final HttpSession session = this.request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
-        return addBaseAndRedirect(returnUrl);
+        return this.addBaseAndRedirect(returnUrl);
     }
 
     @GetMapping("/signup")
-    public RedirectView signUp(@RequestParam(defaultValue = "") String returnUrl) {
-        if (config.fakeUser.enabled()) {
+    public RedirectView signUp(@RequestParam(defaultValue = "") final String returnUrl) {
+        if (this.config.fakeUser.enabled()) {
             throw new HangarApiException("nav.user.error.fakeUserEnabled", "Signup");
         }
-        return new RedirectView(ssoService.getSignupUrl(returnUrl));
+        return new RedirectView(this.ssoService.getSignupUrl(returnUrl));
     }
 
     @PostMapping("/sync")
     @RateLimit(overdraft = 5, refillTokens = 2, refillSeconds = 10)
-    public ResponseEntity sync(@NotNull @RequestBody SsoSyncData body, @RequestHeader("X-Kratos-Hook-Api-Key") String apiKey) {
-        if (!apiKey.equals(config.sso.kratosApiKey())) {
+    public ResponseEntity sync(@RequestBody final @NotNull SsoSyncData body, @RequestHeader("X-Kratos-Hook-Api-Key") final String apiKey) {
+        if (!apiKey.equals(this.config.sso.kratosApiKey())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
         if (body.state().equals("active")) {
-            logger.debug("Syncing {}'s new traits: {}", body.id(), body.traits());
+            this.logger.debug("Syncing {}'s new traits: {}", body.id(), body.traits());
             try {
-                ssoService.sync(body.id(), body.traits());
-            } catch (WebHookException ex) {
+                this.ssoService.sync(body.id(), body.traits());
+            } catch (final WebHookException ex) {
                 return ResponseEntity.badRequest().body(ex.getError());
             }
         } else {
-            logger.debug("Not syncing since its not active! {}", body);
+            this.logger.debug("Not syncing since its not active! {}", body);
         }
         return ResponseEntity.accepted().build();
     }
 
-    private RedirectView addBaseAndRedirect(String url) {
-        return new RedirectView(addBase(url));
+    private RedirectView addBaseAndRedirect(final String url) {
+        return new RedirectView(this.addBase(url));
     }
 
     private String addBase(String url) {
         if (!url.startsWith("http")) {
             if (url.startsWith("/")) {
-                url = config.getBaseUrl() + url;
+                url = this.config.getBaseUrl() + url;
             } else {
-                url = config.getBaseUrl() + "/" + url;
+                url = this.config.getBaseUrl() + "/" + url;
             }
         }
         return url;
     }
 
-    private RedirectView redirectToSso(URLWithNonce urlWithNonce) {
-        if (!config.sso.enabled()) {
+    private RedirectView redirectToSso(final URLWithNonce urlWithNonce) {
+        if (!this.config.sso.enabled()) {
             throw new HangarApiException("nav.user.error.loginDisabled");
         }
-        ssoService.insert(urlWithNonce.getNonce());
+        this.ssoService.insert(urlWithNonce.getNonce());
         return new RedirectView(urlWithNonce.getUrl());
     }
 }

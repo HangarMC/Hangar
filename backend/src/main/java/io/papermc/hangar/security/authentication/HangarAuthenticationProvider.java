@@ -13,20 +13,20 @@ public class HangarAuthenticationProvider implements AuthenticationProvider {
     private final TokenService tokenService;
 
     @Autowired
-    public HangarAuthenticationProvider(TokenService tokenService) {
+    public HangarAuthenticationProvider(final TokenService tokenService) {
         this.tokenService = tokenService;
     }
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        HangarAuthenticationToken token = (HangarAuthenticationToken) authentication;
+    public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
+        final HangarAuthenticationToken token = (HangarAuthenticationToken) authentication;
 
-        HangarPrincipal hangarPrincipal = tokenService.parseHangarPrincipal(token.getCredentials());
+        final HangarPrincipal hangarPrincipal = this.tokenService.parseHangarPrincipal(token.getCredentials());
         return HangarAuthenticationToken.createVerifiedToken(hangarPrincipal, token.getCredentials());
     }
 
     @Override
-    public boolean supports(Class<?> authentication) {
+    public boolean supports(final Class<?> authentication) {
         return authentication.equals(HangarAuthenticationToken.class);
     }
 }

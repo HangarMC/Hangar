@@ -9,19 +9,19 @@ public class FlagActivity extends Activity {
 
     private final OffsetDateTime resolvedAt;
 
-    public FlagActivity(@Nested ProjectNamespace namespace, OffsetDateTime resolvedAt) {
+    public FlagActivity(@Nested final ProjectNamespace namespace, final OffsetDateTime resolvedAt) {
         super(namespace);
         this.resolvedAt = resolvedAt;
     }
 
     public OffsetDateTime getResolvedAt() {
-        return resolvedAt;
+        return this.resolvedAt;
     }
 
     @Override
     public String toString() {
         return "FlagActivity{" +
-                "resolvedAt=" + resolvedAt +
+                "resolvedAt=" + this.resolvedAt +
                 "} " + super.toString();
     }
 }

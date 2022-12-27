@@ -22,31 +22,31 @@ import java.util.Optional;
 public class PairRowMapperFactory implements RowMapperFactory {
 
     @Override
-    public Optional<RowMapper<?>> build(Type type, ConfigRegistry config) {
+    public Optional<RowMapper<?>> build(final Type type, final ConfigRegistry config) {
         if (!Pair.class.equals(GenericTypes.getErasedType(type))) {
             return Optional.empty();
         }
 
-        Type leftType = GenericTypes.resolveType(Pair.class.getTypeParameters()[0], type);
-        Type rightType = GenericTypes.resolveType(Pair.class.getTypeParameters()[1], type);
+        final Type leftType = GenericTypes.resolveType(Pair.class.getTypeParameters()[0], type);
+        final Type rightType = GenericTypes.resolveType(Pair.class.getTypeParameters()[1], type);
 
-        RowMappers rowMappers = config.get(RowMappers.class);
-        ColumnMappers columnMappers = config.get(ColumnMappers.class);
+        final RowMappers rowMappers = config.get(RowMappers.class);
+        final ColumnMappers columnMappers = config.get(ColumnMappers.class);
 
-        RowMapper<?> pairMapper = (rs, ctx) -> {
-            Object left = map(leftType, true, rowMappers, columnMappers, rs, ctx);
-            Object right = map(rightType, false, rowMappers, columnMappers, rs, ctx);
+        final RowMapper<?> pairMapper = (rs, ctx) -> {
+            final Object left = this.map(leftType, true, rowMappers, columnMappers, rs, ctx);
+            final Object right = this.map(rightType, false, rowMappers, columnMappers, rs, ctx);
             return new ImmutablePair<>(left, right);
         };
         return Optional.of(pairMapper);
     }
 
-    private Object map(Type type, boolean left, RowMappers rowMappers, ColumnMappers columnMappers, ResultSet rs, StatementContext ctx) throws SQLException {
-        Optional<RowMapper<?>> rowMapper = rowMappers.findFor(type);
+    private Object map(final Type type, final boolean left, final RowMappers rowMappers, final ColumnMappers columnMappers, final ResultSet rs, final StatementContext ctx) throws SQLException {
+        final Optional<RowMapper<?>> rowMapper = rowMappers.findFor(type);
         if (rowMapper.isPresent()) {
             return rowMapper.get().map(rs, ctx);
         } else {
-            ColumnMapper<?> columnMapper = columnMappers.findFor(type).orElseThrow(() -> new NoSuchMapperException("No column mapper registered for Pair " + (left ? "left" : "right") +  " parameter " + type));
+            final ColumnMapper<?> columnMapper = columnMappers.findFor(type).orElseThrow(() -> new NoSuchMapperException("No column mapper registered for Pair " + (left ? "left" : "right") +  " parameter " + type));
             return columnMapper.map(rs, 1, ctx);
         }
     }

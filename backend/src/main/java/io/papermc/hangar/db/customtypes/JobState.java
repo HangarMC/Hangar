@@ -15,18 +15,18 @@ public class JobState extends PGobject {
         //
     }
 
-    public JobState(String value) {
-        setType("job_state");
+    public JobState(final String value) {
+        this.setType("job_state");
         this.value = value;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (obj == null || this.getClass() != obj.getClass()) return false;
         if (!super.equals(obj)) return false;
 
-        JobState that = (JobState) obj;
+        final JobState that = (JobState) obj;
 
         return Objects.equals(this.value, that.value);
     }
@@ -39,7 +39,7 @@ public class JobState extends PGobject {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (value != null ? value.hashCode() : 0);
+        result = 31 * result + (this.value != null ? this.value.hashCode() : 0);
         return result;
     }
 }

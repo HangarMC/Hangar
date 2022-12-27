@@ -9,30 +9,30 @@ public class LogProject {
     private final String slug;
     private final String owner;
 
-    public LogProject(@PropagateNull Long id, String slug, @ColumnName("owner_name") String owner) {
+    public LogProject(@PropagateNull final Long id, final String slug, @ColumnName("owner_name") final String owner) {
         this.id = id;
         this.slug = slug;
         this.owner = owner;
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public String getSlug() {
-        return slug;
+        return this.slug;
     }
 
     public String getOwner() {
-        return owner;
+        return this.owner;
     }
 
     @Override
     public String toString() {
         return "LogProject{" +
-                "id=" + id +
-                ", slug='" + slug + '\'' +
-                ", owner='" + owner + '\'' +
+                "id=" + this.id +
+                ", slug='" + this.slug + '\'' +
+                ", owner='" + this.owner + '\'' +
                 '}';
     }
 }

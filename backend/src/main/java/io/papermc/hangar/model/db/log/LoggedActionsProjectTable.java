@@ -9,19 +9,19 @@ public class LoggedActionsProjectTable extends LoggedActionTable {
 
     private final long projectId;
 
-    public LoggedActionsProjectTable(long userId, InetAddress address, LoggedAction<ProjectContext> action) {
+    public LoggedActionsProjectTable(final long userId, final InetAddress address, final LoggedAction<ProjectContext> action) {
         super(userId, address, action);
         this.projectId = action.getContext().getProjectId();
     }
 
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     @Override
     public String toString() {
         return "LoggedActionsProjectTable{" +
-                "projectId=" + projectId +
+                "projectId=" + this.projectId +
                 "} " + super.toString();
     }
 }

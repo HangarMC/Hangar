@@ -14,19 +14,19 @@ public class HangarOrganization implements Joinable<OrganizationRoleTable> {
     private final UserTable owner;
     private final List<JoinableMember<OrganizationRoleTable>> members;
 
-    public HangarOrganization(long id, UserTable owner, List<JoinableMember<OrganizationRoleTable>> members) {
+    public HangarOrganization(final long id, final UserTable owner, final List<JoinableMember<OrganizationRoleTable>> members) {
         this.id = id;
         this.owner = owner;
         this.members = members;
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
     @Override
     public ProjectOwner getOwner() {
-        return owner;
+        return this.owner;
     }
 
     @Override
@@ -36,15 +36,15 @@ public class HangarOrganization implements Joinable<OrganizationRoleTable> {
 
     @Override
     public List<JoinableMember<OrganizationRoleTable>> getMembers() {
-        return members;
+        return this.members;
     }
 
     @Override
     public String toString() {
         return "HangarOrganization{" +
-                "id=" + id +
-                ", owner=" + owner +
-                ", members=" + members +
+                "id=" + this.id +
+                ", owner=" + this.owner +
+                ", members=" + this.members +
                 '}';
     }
 }

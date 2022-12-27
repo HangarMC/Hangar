@@ -34,14 +34,14 @@ class PluginDataServiceTest {
 
     @Test
     void testLoadPaperPluginMetadata() throws Exception {
-        PluginFileData data = classUnderTest.loadMeta(path.resolve("Paper.jar"), -1).getData();
+        final PluginFileData data = this.classUnderTest.loadMeta(path.resolve("Paper.jar"), -1).getData();
         data.validate();
         assertEquals("Maintenance", data.getName());
         assertEquals("Enable maintenance mode with a custom maintenance motd and icon.", data.getDescription());
         assertEquals("3.0.5", data.getVersion());
         assertIterableEquals(List.of("KennyTV"), data.getAuthors().get(Platform.PAPER));
 
-        Set<PluginDependency> deps = data.getDependencies().get(Platform.PAPER);
+        final Set<PluginDependency> deps = data.getDependencies().get(Platform.PAPER);
         assertThat(deps).hasSize(3);
         assertThat(deps).extracting(PluginDependency::getName).containsExactlyInAnyOrder("ProtocolLib", "ServerListPlus", "ProtocolSupport");
         assertThat(deps).extracting(PluginDependency::isRequired).containsOnly(false);
@@ -51,7 +51,7 @@ class PluginDataServiceTest {
 
     @Test
     void testLoadWaterfallPluginMetadata() throws Exception {
-        PluginFileData data = classUnderTest.loadMeta(path.resolve("Waterfall.jar"), -1).getData();
+        final PluginFileData data = this.classUnderTest.loadMeta(path.resolve("Waterfall.jar"), -1).getData();
 
         data.validate();
         assertEquals("Maintenance", data.getName());
@@ -59,7 +59,7 @@ class PluginDataServiceTest {
         assertEquals("3.0.5", data.getVersion());
         assertIterableEquals(List.of("KennyTV"), data.getAuthors().get(Platform.WATERFALL));
 
-        Set<PluginDependency> deps = data.getDependencies().get(Platform.WATERFALL);
+        final Set<PluginDependency> deps = data.getDependencies().get(Platform.WATERFALL);
         assertThat(deps)
                 .hasSize(2)
                 .anyMatch(pd -> pd.getName().equals("ServerListPlus") && !pd.isRequired())
@@ -68,7 +68,7 @@ class PluginDataServiceTest {
 
     @Test
     void testLoadVelocityPluginMetadata() throws Exception {
-        PluginFileData data = classUnderTest.loadMeta(path.resolve("Velocity.jar"), -1).getData();
+        final PluginFileData data = this.classUnderTest.loadMeta(path.resolve("Velocity.jar"), -1).getData();
 
         data.validate();
         assertEquals("Maintenance", data.getName());
@@ -76,7 +76,7 @@ class PluginDataServiceTest {
         assertEquals("3.0.5", data.getVersion());
         assertIterableEquals(List.of("KennyTV"), data.getAuthors().get(Platform.VELOCITY));
 
-        Set<PluginDependency> deps = data.getDependencies().get(Platform.VELOCITY);
+        final Set<PluginDependency> deps = data.getDependencies().get(Platform.VELOCITY);
         assertThat(deps)
                 .hasSize(1)
                 .anyMatch(pd -> pd.getName().equals("serverlistplus") && !pd.isRequired());
@@ -84,7 +84,7 @@ class PluginDataServiceTest {
 
     @Test
     void testLoadPaperPluginZipMetadata() throws Exception {
-        PluginFileData data = classUnderTest.loadMeta(path.resolve("TestZip.zip"), -1).getData();
+        final PluginFileData data = this.classUnderTest.loadMeta(path.resolve("TestZip.zip"), -1).getData();
 
         data.validate();
         assertEquals("Maintenance", data.getName());
@@ -92,7 +92,7 @@ class PluginDataServiceTest {
         assertEquals("3.0.5", data.getVersion());
         assertIterableEquals(List.of("KennyTV"), data.getAuthors().get(Platform.PAPER));
 
-        Set<PluginDependency> deps = data.getDependencies().get(Platform.PAPER);
+        final Set<PluginDependency> deps = data.getDependencies().get(Platform.PAPER);
         assertThat(deps).hasSize(3);
         assertThat(deps).extracting(PluginDependency::getName).containsExactlyInAnyOrder("ProtocolLib", "ServerListPlus", "ProtocolSupport");
         assertThat(deps).extracting(PluginDependency::isRequired).containsOnly(false);
@@ -105,10 +105,10 @@ class PluginDataServiceTest {
             "EmptyMeta.jar,version.new.error.metaNotFound",
             "Empty.zip,version.new.error.jarNotFound"
     })
-    void testLoadMetaShouldFail(String jarName, String expectedMsg) {
-        Path jarPath = path.resolve(jarName);
-        HangarApiException exception = assertThrows(HangarApiException.class, () -> {
-            classUnderTest.loadMeta(jarPath, -1);
+    void testLoadMetaShouldFail(final String jarName, final String expectedMsg) {
+        final Path jarPath = path.resolve(jarName);
+        final HangarApiException exception = assertThrows(HangarApiException.class, () -> {
+            this.classUnderTest.loadMeta(jarPath, -1);
         });
         assertEquals("400 BAD_REQUEST \"" + expectedMsg + "\"", exception.getMessage());
     }

@@ -12,40 +12,40 @@ public class ProjectVersionReviewTable extends Table {
     private OffsetDateTime endedAt;
 
     @JdbiConstructor
-    public ProjectVersionReviewTable(OffsetDateTime createdAt, long id, long versionId, long userId, OffsetDateTime endedAt) {
+    public ProjectVersionReviewTable(final OffsetDateTime createdAt, final long id, final long versionId, final long userId, final OffsetDateTime endedAt) {
         super(createdAt, id);
         this.versionId = versionId;
         this.userId = userId;
         this.endedAt = endedAt;
     }
 
-    public ProjectVersionReviewTable(long versionId, long userId) {
+    public ProjectVersionReviewTable(final long versionId, final long userId) {
         this.versionId = versionId;
         this.userId = userId;
     }
 
     public long getVersionId() {
-        return versionId;
+        return this.versionId;
     }
 
     public long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public OffsetDateTime getEndedAt() {
-        return endedAt;
+        return this.endedAt;
     }
 
-    public void setEndedAt(OffsetDateTime endedAt) {
+    public void setEndedAt(final OffsetDateTime endedAt) {
         this.endedAt = endedAt;
     }
 
     @Override
     public String toString() {
         return "ProjectVersionReviewTable{" +
-                "versionId=" + versionId +
-                ", userId=" + userId +
-                ", endedAt=" + endedAt +
+                "versionId=" + this.versionId +
+                ", userId=" + this.userId +
+                ", endedAt=" + this.endedAt +
                 "} " + super.toString();
     }
 }

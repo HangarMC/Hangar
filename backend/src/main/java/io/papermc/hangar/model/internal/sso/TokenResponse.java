@@ -18,7 +18,7 @@ public class TokenResponse {
     @JsonProperty("token_type")
     private String tokenType;
 
-    public TokenResponse(String accessToken, long expiresIn, String idToken, String refreshToken, String scope, String tokenType) {
+    public TokenResponse(final String accessToken, final long expiresIn, final String idToken, final String refreshToken, final String scope, final String tokenType) {
         this.accessToken = accessToken;
         this.expiresIn = expiresIn;
         this.idToken = idToken;
@@ -28,75 +28,75 @@ public class TokenResponse {
     }
 
     public String getAccessToken() {
-        return accessToken;
+        return this.accessToken;
     }
 
-    public void setAccessToken(String accessToken) {
+    public void setAccessToken(final String accessToken) {
         this.accessToken = accessToken;
     }
 
     public long getExpiresIn() {
-        return expiresIn;
+        return this.expiresIn;
     }
 
-    public void setExpiresIn(long expiresIn) {
+    public void setExpiresIn(final long expiresIn) {
         this.expiresIn = expiresIn;
     }
 
     public String getIdToken() {
-        return idToken;
+        return this.idToken;
     }
 
-    public void setIdToken(String idToken) {
+    public void setIdToken(final String idToken) {
         this.idToken = idToken;
     }
 
     public String getRefreshToken() {
-        return refreshToken;
+        return this.refreshToken;
     }
 
-    public void setRefreshToken(String refreshToken) {
+    public void setRefreshToken(final String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
     public String getScope() {
-        return scope;
+        return this.scope;
     }
 
-    public void setScope(String scope) {
+    public void setScope(final String scope) {
         this.scope = scope;
     }
 
     public String getTokenType() {
-        return tokenType;
+        return this.tokenType;
     }
 
-    public void setTokenType(String tokenType) {
+    public void setTokenType(final String tokenType) {
         this.tokenType = tokenType;
     }
 
     @Override
     public String toString() {
         return "TokenResponce{" +
-               "accessToken='" + accessToken + '\'' +
-               ", expiresIn=" + expiresIn +
-               ", idToken='" + idToken + '\'' +
-               ", refreshToken='" + refreshToken + '\'' +
-               ", scope='" + scope + '\'' +
-               ", tokenType='" + tokenType + '\'' +
+               "accessToken='" + this.accessToken + '\'' +
+               ", expiresIn=" + this.expiresIn +
+               ", idToken='" + this.idToken + '\'' +
+               ", refreshToken='" + this.refreshToken + '\'' +
+               ", scope='" + this.scope + '\'' +
+               ", tokenType='" + this.tokenType + '\'' +
                '}';
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TokenResponse that = (TokenResponse) o;
-        return expiresIn == that.expiresIn && Objects.equals(accessToken, that.accessToken) && Objects.equals(idToken, that.idToken) && Objects.equals(refreshToken, that.refreshToken) && Objects.equals(scope, that.scope) && Objects.equals(tokenType, that.tokenType);
+        if (o == null || this.getClass() != o.getClass()) return false;
+        final TokenResponse that = (TokenResponse) o;
+        return this.expiresIn == that.expiresIn && Objects.equals(this.accessToken, that.accessToken) && Objects.equals(this.idToken, that.idToken) && Objects.equals(this.refreshToken, that.refreshToken) && Objects.equals(this.scope, that.scope) && Objects.equals(this.tokenType, that.tokenType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accessToken, expiresIn, idToken, refreshToken, scope, tokenType);
+        return Objects.hash(this.accessToken, this.expiresIn, this.idToken, this.refreshToken, this.scope, this.tokenType);
     }
 }

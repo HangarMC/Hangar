@@ -23,7 +23,7 @@ import java.util.Optional;
 
 public abstract class HangarComponent {
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     protected HttpServletRequest request;
@@ -39,21 +39,19 @@ public abstract class HangarComponent {
     protected UserActionLogService actionLogger;
 
     protected final Optional<HangarPrincipal> getOptionalHangarPrincipal() {
-        return getHangarPrincipal0().get();
+        return this.getHangarPrincipal0().get();
     }
 
-    @NotNull
-    protected final Permission getGlobalPermissions() {
-        return getHangarPrincipal0().get().map(HangarPrincipal::getGlobalPermissions).orElse(PermissionService.DEFAULT_SIGNED_OUT_PERMISSIONS);
+    protected final @NotNull Permission getGlobalPermissions() {
+        return this.getHangarPrincipal0().get().map(HangarPrincipal::getGlobalPermissions).orElse(PermissionService.DEFAULT_SIGNED_OUT_PERMISSIONS);
     }
 
     protected final HangarPrincipal getHangarPrincipal() {
-        return getHangarPrincipal0().get().orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authentication principal found"));
+        return this.getHangarPrincipal0().get().orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authentication principal found"));
     }
 
-    @Nullable
-    protected final Long getHangarUserId() {
-        return getHangarPrincipal0().get().map(HangarPrincipal::getId).orElse(null);
+    protected final @Nullable Long getHangarUserId() {
+        return this.getHangarPrincipal0().get().map(HangarPrincipal::getId).orElse(null);
     }
 
     private MemoizingSupplier<Optional<HangarPrincipal>> getHangarPrincipal0() {

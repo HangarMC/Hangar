@@ -17,7 +17,7 @@ public class HangarReview extends Model {
     private final long userId;
     private final List<HangarReviewMessage> messages;
 
-    public HangarReview(OffsetDateTime createdAt, OffsetDateTime endedAt, String userName, long userId) {
+    public HangarReview(final OffsetDateTime createdAt, final OffsetDateTime endedAt, final String userName, final long userId) {
         super(createdAt);
         this.endedAt = endedAt;
         this.userName = userName;
@@ -26,28 +26,28 @@ public class HangarReview extends Model {
     }
 
     public OffsetDateTime getEndedAt() {
-        return endedAt;
+        return this.endedAt;
     }
 
     public String getUserName() {
-        return userName;
+        return this.userName;
     }
 
     public long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public List<HangarReviewMessage> getMessages() {
-        return messages;
+        return this.messages;
     }
 
     @Override
     public String toString() {
         return "HangarReview{" +
-                "endedAt=" + endedAt +
-                ", userName='" + userName + '\'' +
-                ", userId=" + userId +
-                ", messages=" + messages +
+                "endedAt=" + this.endedAt +
+                ", userName='" + this.userName + '\'' +
+                ", userId=" + this.userId +
+                ", messages=" + this.messages +
                 "} " + super.toString();
     }
 
@@ -57,7 +57,7 @@ public class HangarReview extends Model {
         private final ObjectNode args;
         private final ReviewAction action;
 
-        public HangarReviewMessage(OffsetDateTime createdAt, String message, JSONB args, @EnumByOrdinal ReviewAction action) {
+        public HangarReviewMessage(final OffsetDateTime createdAt, final String message, final JSONB args, @EnumByOrdinal final ReviewAction action) {
             super(createdAt);
             this.message = message;
             this.args = (ObjectNode) args.getJson();
@@ -65,23 +65,23 @@ public class HangarReview extends Model {
         }
 
         public String getMessage() {
-            return message;
+            return this.message;
         }
 
         public ObjectNode getArgs() {
-            return args;
+            return this.args;
         }
 
         public ReviewAction getAction() {
-            return action;
+            return this.action;
         }
 
         @Override
         public String toString() {
             return "HangarReviewMessage{" +
-                    "message='" + message + '\'' +
-                    ", args=" + args +
-                    ", action=" + action +
+                    "message='" + this.message + '\'' +
+                    ", args=" + this.args +
+                    ", action=" + this.action +
                     "} " + super.toString();
         }
     }

@@ -13,21 +13,20 @@ public abstract class RoleService<RT extends IRoleTable<R>, R extends Role<RT>, 
 
     protected final D roleDao;
 
-    protected RoleService(D roleDao) {
+    protected RoleService(final D roleDao) {
         this.roleDao = roleDao;
     }
 
-    @NotNull
-    public RT addRole(RT newRoleTable) {
-        return addRole(newRoleTable, false);
+    public @NotNull RT addRole(final RT newRoleTable) {
+        return this.addRole(newRoleTable, false);
     }
 
     @Contract("_, false -> !null")
     @Transactional
-    public RT addRole(RT newRoleTable, boolean ignoreIfDuplicate) {
-        RT existingRoleTable = roleDao.getTable(newRoleTable);
+    public RT addRole(final RT newRoleTable, final boolean ignoreIfDuplicate) {
+        final RT existingRoleTable = this.roleDao.getTable(newRoleTable);
         if (existingRoleTable == null) {
-            return roleDao.insert(newRoleTable);
+            return this.roleDao.insert(newRoleTable);
         }
         if (!ignoreIfDuplicate) {
             throw new IllegalArgumentException("User already has a role there");
@@ -35,32 +34,32 @@ public abstract class RoleService<RT extends IRoleTable<R>, R extends Role<RT>, 
         return null;
     }
 
-    public RT changeAcceptance(RT roleTable, boolean isAccepted) {
+    public RT changeAcceptance(RT roleTable, final boolean isAccepted) {
         if (roleTable.isAccepted() != isAccepted) {
             roleTable.setAccepted(isAccepted);
-            roleTable = roleDao.update(roleTable);
+            roleTable = this.roleDao.update(roleTable);
         }
         return roleTable;
     }
 
-    public void updateRole(RT roleTable) {
-        roleDao.update(roleTable);
+    public void updateRole(final RT roleTable) {
+        this.roleDao.update(roleTable);
     }
 
-    public void deleteRole(RT roleTable) {
-        roleDao.delete(roleTable);
+    public void deleteRole(final RT roleTable) {
+        this.roleDao.delete(roleTable);
     }
 
-    public RT getRole(long id) {
-        return roleDao.getTable(id, getHangarPrincipal().getUserId());
+    public RT getRole(final long id) {
+        return this.roleDao.getTable(id, this.getHangarPrincipal().getUserId());
     }
 
-    public RT getRole(long principalId, long userId) {
-        return roleDao.getTableByPrincipal(principalId, userId);
+    public RT getRole(final long principalId, final long userId) {
+        return this.roleDao.getTableByPrincipal(principalId, userId);
     }
 
     public List<RT> getRoles(final long principalId, final R role) {
-        return roleDao.getRoleTablesByPrincipal(principalId, role.getValue());
+        return this.roleDao.getRoleTablesByPrincipal(principalId, role.getValue());
     }
 
 }

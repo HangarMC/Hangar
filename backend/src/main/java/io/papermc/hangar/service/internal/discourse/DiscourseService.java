@@ -34,7 +34,7 @@ public class DiscourseService {
     private final DiscourseFormatter discourseFormatter;
 
     @Autowired
-    public DiscourseService(DiscourseApi api, DiscourseConfig config, ProjectPageService pageService, ProjectService projectService, VersionService versionService, ProjectPageService projectPageService, DiscourseFormatter discourseFormatter) {
+    public DiscourseService(final DiscourseApi api, final DiscourseConfig config, final ProjectPageService pageService, final ProjectService projectService, final VersionService versionService, final ProjectPageService projectPageService, final DiscourseFormatter discourseFormatter) {
         this.api = api;
         this.config = config;
         this.pageService = pageService;
@@ -44,10 +44,10 @@ public class DiscourseService {
         this.discourseFormatter = discourseFormatter;
     }
 
-    private String getHomepageContent(ProjectTable project) {
+    private String getHomepageContent(final ProjectTable project) {
         long id = -1;
-        Map<Long, HangarProjectPage> projectPages = projectPageService.getProjectPages(project.getId());
-        for (HangarProjectPage page : projectPages.values()) {
+        final Map<Long, HangarProjectPage> projectPages = this.projectPageService.getProjectPages(project.getId());
+        for (final HangarProjectPage page : projectPages.values()) {
             if (page.isHome()) {
                 id = page.getId();
                 break;
@@ -58,18 +58,18 @@ public class DiscourseService {
             throw new HangarApiException("No homepage found, can't create forum post!");
         }
 
-        ExtendedProjectPage projectPage = pageService.getProjectPage(id);
+        final ExtendedProjectPage projectPage = this.pageService.getProjectPage(id);
         if (projectPage == null) {
             throw new HangarApiException("No homepage content found, can't create forum post!");
         }
         return projectPage.getContents();
     }
 
-    public void createProjectTopic(ProjectTable project) {
-        String title = discourseFormatter.formatProjectTitle(project);
-        String content = discourseFormatter.formatProjectTopic(project, getHomepageContent(project));
+    public void createProjectTopic(final ProjectTable project) {
+        final String title = this.discourseFormatter.formatProjectTitle(project);
+        final String content = this.discourseFormatter.formatProjectTopic(project, this.getHomepageContent(project));
 
-        DiscoursePost post = api.createTopic(project.getOwnerName(), title, content, config.category());
+        final DiscoursePost post = this.api.createTopic(project.getOwnerName(), title, content, this.config.category());
         if (post == null) {
             throw new JobException("project post wasn't created " + project.getProjectId(), "sanity_check");
         }
@@ -80,50 +80,50 @@ public class DiscourseService {
             throw new JobException("project post user isn't owner?! " +  project.getProjectId(), "sanity_check");
         }
 
-        projectService.saveDiscourseData(project, post.getTopicId(), post.getId());
+        this.projectService.saveDiscourseData(project, post.getTopicId(), post.getId());
     }
 
-    public void updateProjectTopic(ProjectTable project) {
-        String title = discourseFormatter.formatProjectTitle(project);
-        String content = discourseFormatter.formatProjectTopic(project, getHomepageContent(project));
+    public void updateProjectTopic(final ProjectTable project) {
+        final String title = this.discourseFormatter.formatProjectTitle(project);
+        final String content = this.discourseFormatter.formatProjectTopic(project, this.getHomepageContent(project));
 
-        api.updateTopic(project.getOwnerName(), project.getTopicId(), title, project.getVisibility() == Visibility.PUBLIC ? config.category() : config.categoryDeleted());
-        api.updatePost(project.getOwnerName(), project.getPostId(), content);
+        this.api.updateTopic(project.getOwnerName(), project.getTopicId(), title, project.getVisibility() == Visibility.PUBLIC ? this.config.category() : this.config.categoryDeleted());
+        this.api.updatePost(project.getOwnerName(), project.getPostId(), content);
     }
 
-    public DiscoursePost postDiscussionReply(long topicId, String poster, String content) {
-        return api.createPost(poster, topicId, content);
+    public DiscoursePost postDiscussionReply(final long topicId, final String poster, final String content) {
+        return this.api.createPost(poster, topicId, content);
     }
 
-    public void createComment(long projectId, String poster, String content) {
+    public void createComment(final long projectId, final String poster, final String content) {
         Objects.requireNonNull(content, "No content");
-        ProjectTable projectTable = projectService.getProjectTable(projectId);
+        final ProjectTable projectTable = this.projectService.getProjectTable(projectId);
         if (projectTable == null) {
             throw new JobException("No project to post to", "project_not_found");
         }
         if (projectTable.getTopicId() == null) {
             throw new JobException("No topic to post to", "topic_not_found");
         }
-        postDiscussionReply(projectTable.getTopicId(), poster, content);
+        this.postDiscussionReply(projectTable.getTopicId(), poster, content);
     }
 
-    public void createVersionPost(ProjectTable project, ProjectVersionTable version) {
-        String content = discourseFormatter.formatVersionRelease(project, version, version.getDescription());
+    public void createVersionPost(final ProjectTable project, final ProjectVersionTable version) {
+        final String content = this.discourseFormatter.formatVersionRelease(project, version, version.getDescription());
 
-        DiscoursePost post = postDiscussionReply(project.getTopicId(), project.getOwnerName(), content);
-        versionService.saveDiscourseData(version, post.getId());
+        final DiscoursePost post = this.postDiscussionReply(project.getTopicId(), project.getOwnerName(), content);
+        this.versionService.saveDiscourseData(version, post.getId());
     }
 
-    public void updateVersionPost(ProjectTable project, ProjectVersionTable version) {
+    public void updateVersionPost(final ProjectTable project, final ProjectVersionTable version) {
         Objects.requireNonNull(project.getTopicId(), "No topic ID set");
         Objects.requireNonNull(version.getPostId(), "No post ID set");
 
-        String content = discourseFormatter.formatVersionRelease(project, version, version.getDescription());
+        final String content = this.discourseFormatter.formatVersionRelease(project, version, version.getDescription());
 
-        api.updatePost(project.getOwnerName(), version.getPostId().intValue(), content);
+        this.api.updatePost(project.getOwnerName(), version.getPostId().intValue(), content);
     }
 
-    public void deleteTopic(long topicId) {
-        api.deleteTopic(config.adminUser(), topicId);
+    public void deleteTopic(final long topicId) {
+        this.api.deleteTopic(this.config.adminUser(), topicId);
     }
 }

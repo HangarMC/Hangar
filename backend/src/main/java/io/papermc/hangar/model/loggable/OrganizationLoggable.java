@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 public interface OrganizationLoggable extends Loggable<OrganizationContext>, OrganizationIdentified {
 
     @Override
-    default Consumer<LoggedAction<OrganizationContext>> getLogInserter(UserActionLogService actionLogger) {
+    default Consumer<LoggedAction<OrganizationContext>> getLogInserter(final UserActionLogService actionLogger) {
         return actionLogger::organization;
     }
 

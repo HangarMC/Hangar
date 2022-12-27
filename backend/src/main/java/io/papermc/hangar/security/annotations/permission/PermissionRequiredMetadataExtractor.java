@@ -19,11 +19,11 @@ public class PermissionRequiredMetadataExtractor implements AnnotationMetadataEx
     private final ExpressionParser expressionParser = new SpelExpressionParser();
 
     @Override
-    public Collection<? extends ConfigAttribute> extractAttributes(PermissionRequired securityAnnotation) {
+    public Collection<? extends ConfigAttribute> extractAttributes(final PermissionRequired securityAnnotation) {
         return Set.of(new PermissionRequiredAttribute(
                 securityAnnotation.type(),
                 securityAnnotation.perms(),
-                expressionParser.parseExpression(securityAnnotation.args())
+                this.expressionParser.parseExpression(securityAnnotation.args())
         ));
     }
 
@@ -33,22 +33,22 @@ public class PermissionRequiredMetadataExtractor implements AnnotationMetadataEx
         private final NamedPermission[] permissions;
         private final Expression expression;
 
-        PermissionRequiredAttribute(PermissionType permissionType, NamedPermission[] permissions, Expression expression) {
+        PermissionRequiredAttribute(final PermissionType permissionType, final NamedPermission[] permissions, final Expression expression) {
             this.permissionType = permissionType;
             this.permissions = permissions;
             this.expression = expression;
         }
 
         public PermissionType getPermissionType() {
-            return permissionType;
+            return this.permissionType;
         }
 
         public NamedPermission[] getPermissions() {
-            return permissions;
+            return this.permissions;
         }
 
         public Expression getExpression() {
-            return expression;
+            return this.expression;
         }
 
         @Override
@@ -59,8 +59,8 @@ public class PermissionRequiredMetadataExtractor implements AnnotationMetadataEx
         @Override
         public String toString() {
             return "PermissionRequiredAttribute{" +
-                    "permissionType=" + permissionType +
-                    ", permissions=" + Arrays.toString(permissions) +
+                    "permissionType=" + this.permissionType +
+                    ", permissions=" + Arrays.toString(this.permissions) +
                     '}';
         }
     }

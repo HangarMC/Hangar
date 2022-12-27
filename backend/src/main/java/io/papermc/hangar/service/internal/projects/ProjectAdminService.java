@@ -26,7 +26,7 @@ public class ProjectAdminService extends HangarComponent {
     private final NotificationService notificationService;
 
     @Autowired
-    public ProjectAdminService(ProjectsDAO projectsDAO, HangarProjectsAdminDAO hangarProjectsAdminDAO, ProjectVisibilityService projectVisibilityService, final ProjectFactory projectFactory, final NotificationService notificationService) {
+    public ProjectAdminService(final ProjectsDAO projectsDAO, final HangarProjectsAdminDAO hangarProjectsAdminDAO, final ProjectVisibilityService projectVisibilityService, final ProjectFactory projectFactory, final NotificationService notificationService) {
         this.projectsDAO = projectsDAO;
         this.hangarProjectsAdminDAO = hangarProjectsAdminDAO;
         this.projectVisibilityService = projectVisibilityService;
@@ -34,50 +34,50 @@ public class ProjectAdminService extends HangarComponent {
         this.notificationService = notificationService;
     }
 
-    public void sendProjectForApproval(long projectId) {
-        ProjectTable projectTable = projectsDAO.getById(projectId);
+    public void sendProjectForApproval(final long projectId) {
+        final ProjectTable projectTable = this.projectsDAO.getById(projectId);
         if (projectTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         if (projectTable.getVisibility() != Visibility.NEEDSCHANGES) {
             throw new HangarApiException();
         }
-        projectVisibilityService.changeVisibility(projectTable, Visibility.NEEDSAPPROVAL, "");
+        this.projectVisibilityService.changeVisibility(projectTable, Visibility.NEEDSAPPROVAL, "");
     }
 
     @Transactional
     public void changeVisibility(final long projectId, final Visibility visibility, final String comment) {
-        final ProjectTable projectTable = projectVisibilityService.getModel(projectId);
+        final ProjectTable projectTable = this.projectVisibilityService.getModel(projectId);
         final Visibility oldVisibility = projectTable.getVisibility();
         if (oldVisibility == Visibility.SOFTDELETE && visibility != Visibility.SOFTDELETE) {
             final int suffixIndex = projectTable.getName().indexOf(ProjectFactory.SOFT_DELETION_SUFFIX);
             if (suffixIndex != -1) {
                 final String newName = projectTable.getName().substring(0, suffixIndex);
-                projectFactory.renameProject(projectTable.getOwnerName(), projectTable.getName(), newName, true);
+                this.projectFactory.renameProject(projectTable.getOwnerName(), projectTable.getName(), newName, true);
                 projectTable.setName(newName);
                 projectTable.setSlug(StringUtils.slugify(newName));
             }
-            projectVisibilityService.changeVisibility(projectId, visibility, comment);
+            this.projectVisibilityService.changeVisibility(projectId, visibility, comment);
         } else if (visibility == Visibility.SOFTDELETE) {
-            projectFactory.softDelete(projectTable, comment);
+            this.projectFactory.softDelete(projectTable, comment);
         } else {
-            projectVisibilityService.changeVisibility(projectId, visibility, comment);
+            this.projectVisibilityService.changeVisibility(projectId, visibility, comment);
         }
 
         if (oldVisibility != visibility) {
-            notificationService.notifyVisibilityChange(projectTable, visibility, comment);
+            this.notificationService.notifyVisibilityChange(projectTable, visibility, comment);
         }
     }
 
     public List<HangarProjectApproval> getProjectsNeedingApproval() {
-        return hangarProjectsAdminDAO.getVisibilityNeedsApproval();
+        return this.hangarProjectsAdminDAO.getVisibilityNeedsApproval();
     }
 
     public int getApprovalQueueSize() {
-        return hangarProjectsAdminDAO.getProjectsNeedingApprovalSize();
+        return this.hangarProjectsAdminDAO.getProjectsNeedingApprovalSize();
     }
 
     public List<HangarProjectApproval> getProjectsWaitingForChanges() {
-        return hangarProjectsAdminDAO.getVisibilityWaitingProject();
+        return this.hangarProjectsAdminDAO.getVisibilityWaitingProject();
     }
 }

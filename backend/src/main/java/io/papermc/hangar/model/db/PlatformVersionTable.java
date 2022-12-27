@@ -12,31 +12,31 @@ public class PlatformVersionTable extends Table {
     private final String version;
 
     @JdbiConstructor
-    public PlatformVersionTable(OffsetDateTime createdAt, long id, @EnumByOrdinal Platform platform, String version) {
+    public PlatformVersionTable(final OffsetDateTime createdAt, final long id, @EnumByOrdinal final Platform platform, final String version) {
         super(createdAt, id);
         this.platform = platform;
         this.version = version;
     }
 
-    public PlatformVersionTable(Platform platform, String version) {
+    public PlatformVersionTable(final Platform platform, final String version) {
         this.platform = platform;
         this.version = version;
     }
 
     @EnumByOrdinal
     public Platform getPlatform() {
-        return platform;
+        return this.platform;
     }
 
     public String getVersion() {
-        return version;
+        return this.version;
     }
 
     @Override
     public String toString() {
         return "PlatformVersionTable{" +
-                "platform=" + platform +
-                ", version='" + version + '\'' +
+                "platform=" + this.platform +
+                ", version='" + this.version + '\'' +
                 "} " + super.toString();
     }
 }

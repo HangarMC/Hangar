@@ -12,14 +12,14 @@ public class ProjectVersionDownloadIndividualTable extends IndividualTable imple
     private final long projectId;
     private final long versionId;
 
-    public ProjectVersionDownloadIndividualTable(InetAddress address, String cookie, Long userId, long projectId, long versionId) {
+    public ProjectVersionDownloadIndividualTable(final InetAddress address, final String cookie, final Long userId, final long projectId, final long versionId) {
         super(address, cookie, userId);
         this.projectId = projectId;
         this.versionId = versionId;
     }
 
     @JdbiConstructor
-    public ProjectVersionDownloadIndividualTable(OffsetDateTime createdAt, long id, InetAddress address, String cookie, Long userId, int processed, long projectId, long versionId) {
+    public ProjectVersionDownloadIndividualTable(final OffsetDateTime createdAt, final long id, final InetAddress address, final String cookie, final Long userId, final int processed, final long projectId, final long versionId) {
         super(createdAt, id, address, cookie, userId, processed);
         this.projectId = projectId;
         this.versionId = versionId;
@@ -27,19 +27,19 @@ public class ProjectVersionDownloadIndividualTable extends IndividualTable imple
 
     @Override
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     @Override
     public long getVersionId() {
-        return versionId;
+        return this.versionId;
     }
 
     @Override
     public String toString() {
         return "ProjectVersionDownloadIndividualTable{" +
-                "projectId=" + projectId +
-                ", versionId=" + versionId +
+                "projectId=" + this.projectId +
+                ", versionId=" + this.versionId +
                 "} " + super.toString();
     }
 }

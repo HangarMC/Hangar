@@ -10,16 +10,16 @@ public abstract class LogContext<LT extends LoggedActionTable, LC extends LogCon
     protected final Context contextType;
     private final LogTableConstructor<LT, LC> tableConstructor;
 
-    protected LogContext(Context contextType, LogTableConstructor<LT, LC> tableConstructor) {
+    protected LogContext(final Context contextType, final LogTableConstructor<LT, LC> tableConstructor) {
         this.contextType = contextType;
         this.tableConstructor = tableConstructor;
     }
 
     public final Context getContextType() {
-        return contextType;
+        return this.contextType;
     }
 
-    public final LT createTable(long userId, InetAddress address, LoggedAction<LC> action) {
-        return tableConstructor.create(userId, address, action);
+    public final LT createTable(final long userId, final InetAddress address, final LoggedAction<LC> action) {
+        return this.tableConstructor.create(userId, address, action);
     }
 }

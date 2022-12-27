@@ -7,11 +7,11 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.OrganizationContext;
-import io.papermc.hangar.model.internal.user.notifications.HangarInvite.HangarOrganizationInvite;
+import io.papermc.hangar.model.internal.user.notifications.HangarInvite;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import io.papermc.hangar.service.internal.perms.roles.OrganizationRoleService;
-import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService.OrganizationNotificationService;
+import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,14 +24,14 @@ public class OrganizationInviteService extends InviteService<OrganizationContext
     private final OrganizationDAO organizationDAO;
 
     @Autowired
-    public OrganizationInviteService(OrganizationRoleService roleService, OrganizationMemberService memberService, OrganizationNotificationService organizationNotificationService, final OrganizationService organizationService, final OrganizationDAO organizationDAO) {
+    public OrganizationInviteService(final OrganizationRoleService roleService, final OrganizationMemberService memberService, final JoinableNotificationService.OrganizationNotificationService organizationNotificationService, final OrganizationService organizationService, final OrganizationDAO organizationDAO) {
         super(roleService, memberService, organizationNotificationService, "organization.settings.members.");
         this.organizationService = organizationService;
         this.organizationDAO = organizationDAO;
     }
 
-    public List<HangarOrganizationInvite> getOrganizationInvites() {
-        return hangarNotificationsDAO.getOrganizationInvites(getHangarPrincipal().getId());
+    public List<HangarInvite.HangarOrganizationInvite> getOrganizationInvites() {
+        return this.hangarNotificationsDAO.getOrganizationInvites(this.getHangarPrincipal().getId());
     }
 
     @Override
@@ -51,13 +51,13 @@ public class OrganizationInviteService extends InviteService<OrganizationContext
 
     @Override
     public OrganizationTable getJoinable(final long id) {
-        return organizationService.getOrganizationTable(id);
+        return this.organizationService.getOrganizationTable(id);
     }
 
     @Override
     protected void updateOwnerId(final OrganizationTable organization, final UserTable newOwner) {
         organization.setOwnerId(newOwner.getUserId());
-        organizationDAO.update(organization);
+        this.organizationDAO.update(organization);
     }
 
     @Override

@@ -34,12 +34,12 @@ public @interface VisibilityRequired {
 
         private final Set<Integer> argCount;
 
-        Type(Integer...argCounts) {
+        Type(final Integer...argCounts) {
             this.argCount = Set.of(argCounts);
         }
 
         public Set<Integer> getArgCount() {
-            return argCount;
+            return this.argCount;
         }
     }
 }

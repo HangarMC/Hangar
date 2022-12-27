@@ -31,7 +31,7 @@ public class Version extends VersionCompact {
     }
 
     public Map<Platform, String> getPlatformDependenciesFormatted() {
-        return platformDependenciesFormatted;
+        return this.platformDependenciesFormatted;
     }
 
     @Override

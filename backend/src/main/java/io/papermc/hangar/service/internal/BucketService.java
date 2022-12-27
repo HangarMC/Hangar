@@ -28,17 +28,17 @@ public class BucketService extends HangarComponent {
      * @param limit rate limit
      * @return bucket, or null if no limit should be applied
      */
-    public @Nullable Bucket bucket(String path, RateLimit limit) {
+    public @Nullable Bucket bucket(final String path, final RateLimit limit) {
         //TODO local/loopback address checks/admin user check => return null?
-        InetAddress address = RequestUtil.getRemoteInetAddress(request);
-        Cache<String, Bucket> pathCache = cache.get(address);
-        return pathCache.get(path.toLowerCase(Locale.ROOT), p -> createBucket(limit));
+        final InetAddress address = RequestUtil.getRemoteInetAddress(this.request);
+        final Cache<String, Bucket> pathCache = this.cache.get(address);
+        return pathCache.get(path.toLowerCase(Locale.ROOT), p -> this.createBucket(limit));
     }
 
-    private Bucket createBucket(RateLimit limit) {
-        Refill refill = limit.greedy() ? Refill.greedy(limit.refillTokens(), Duration.ofSeconds(limit.refillSeconds()))
+    private Bucket createBucket(final RateLimit limit) {
+        final Refill refill = limit.greedy() ? Refill.greedy(limit.refillTokens(), Duration.ofSeconds(limit.refillSeconds()))
             : Refill.intervally(limit.refillTokens(), Duration.ofSeconds(limit.refillSeconds()));
-        Bandwidth bandwidth = Bandwidth.classic(limit.overdraft(), refill);
+        final Bandwidth bandwidth = Bandwidth.classic(limit.overdraft(), refill);
         return Bucket.builder().addLimit(bandwidth).build();
     }
 }

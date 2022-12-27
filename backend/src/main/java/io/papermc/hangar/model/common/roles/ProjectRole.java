@@ -40,11 +40,11 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
         return ASSIGNABLE_ROLES;
     }
 
-    ProjectRole(String value, long roleId, Permission permissions, String title, Color color, int rank) {
+    ProjectRole(final String value, final long roleId, final Permission permissions, final String title, final Color color, final int rank) {
         this(value, roleId, permissions, title, color, rank, true);
     }
 
-    ProjectRole(String value, long roleId, Permission permissions, String title, Color color, int rank, boolean isAssignable) {
+    ProjectRole(final String value, final long roleId, final Permission permissions, final String title, final Color color, final int rank, final boolean isAssignable) {
         this.value = value;
         this.roleId = roleId;
         this.permissions = permissions;
@@ -55,54 +55,48 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
         Role.registerRole(this);
     }
 
-    @NotNull
     @Override
-    public String getValue() {
-        return value;
+    public @NotNull String getValue() {
+        return this.value;
     }
 
     @Override
     public long getRoleId() {
-        return roleId;
+        return this.roleId;
     }
 
-    @NotNull
     @Override
-    public RoleCategory getRoleCategory() {
+    public @NotNull RoleCategory getRoleCategory() {
         return RoleCategory.PROJECT;
     }
 
-    @NotNull
     @Override
-    public Permission getPermissions() {
-        return permissions;
+    public @NotNull Permission getPermissions() {
+        return this.permissions;
     }
 
-    @NotNull
     @Override
-    public String getTitle() {
-        return title;
+    public @NotNull String getTitle() {
+        return this.title;
     }
 
-    @NotNull
     @Override
-    public Color getColor() {
-        return color;
+    public @NotNull Color getColor() {
+        return this.color;
     }
 
     @Override
     public boolean isAssignable() {
-        return isAssignable;
+        return this.isAssignable;
     }
 
     @Override
     public Integer getRank() {
-        return rank;
+        return this.rank;
     }
 
-    @NotNull
     @Override
-    public ProjectRoleTable create(Long projectId, long userId, boolean isAccepted) {
+    public @NotNull ProjectRoleTable create(final Long projectId, final long userId, final boolean isAccepted) {
         Preconditions.checkNotNull(projectId, "project id");
         return new ProjectRoleTable(userId, this, isAccepted, projectId);
     }

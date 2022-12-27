@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 
 public interface Loggable<LC extends LogContext<?, LC>> {
 
-    default void logAction(UserActionLogService actionLogger, LogAction<LC> logAction, @NotNull String newState, @NotNull String oldState) {
+    default void logAction(final UserActionLogService actionLogger, final LogAction<LC> logAction, final @NotNull String newState, final @NotNull String oldState) {
         this.getLogInserter(actionLogger).accept(logAction.create(this.createLogContext(), newState, oldState));
     }
 

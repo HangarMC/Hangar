@@ -16,8 +16,8 @@ public class VisibilityRequiredMetadataExtractor implements AnnotationMetadataEx
     private final ExpressionParser expressionParser = new SpelExpressionParser();
 
     @Override
-    public Collection<? extends ConfigAttribute> extractAttributes(VisibilityRequired securityAnnotation) {
-        return Set.of(new VisibilityRequiredAttribute(securityAnnotation.type(), expressionParser.parseExpression(securityAnnotation.args())));
+    public Collection<? extends ConfigAttribute> extractAttributes(final VisibilityRequired securityAnnotation) {
+        return Set.of(new VisibilityRequiredAttribute(securityAnnotation.type(), this.expressionParser.parseExpression(securityAnnotation.args())));
     }
 
     static class VisibilityRequiredAttribute implements ConfigAttribute {
@@ -25,17 +25,17 @@ public class VisibilityRequiredMetadataExtractor implements AnnotationMetadataEx
         private final VisibilityRequired.Type type;
         private final Expression expression;
 
-        VisibilityRequiredAttribute(VisibilityRequired.Type type, Expression expression) {
+        VisibilityRequiredAttribute(final VisibilityRequired.Type type, final Expression expression) {
             this.type = type;
             this.expression = expression;
         }
 
         public VisibilityRequired.Type getType() {
-            return type;
+            return this.type;
         }
 
         public Expression getExpression() {
-            return expression;
+            return this.expression;
         }
 
         @Override

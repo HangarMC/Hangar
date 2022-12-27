@@ -65,6 +65,6 @@ public interface IApiKeysController {
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
-    @DeleteMapping(value = "/keys")
+    @DeleteMapping("/keys")
     void deleteKey(@ApiParam(value = "The name of the key to delete", required = true) @RequestParam String name);
 }

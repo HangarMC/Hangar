@@ -11,24 +11,24 @@ public class ProjectVersionVisibilityChangeTable extends VisibilityChangeTable {
     private final long versionId;
 
     @JdbiConstructor
-    public ProjectVersionVisibilityChangeTable(OffsetDateTime createdAt, long id, long createdBy, String comment, @EnumByOrdinal Visibility visibility, Long resolvedBy, OffsetDateTime resolvedAt, long versionId) {
+    public ProjectVersionVisibilityChangeTable(final OffsetDateTime createdAt, final long id, final long createdBy, final String comment, @EnumByOrdinal final Visibility visibility, final Long resolvedBy, final OffsetDateTime resolvedAt, final long versionId) {
         super(createdAt, id, createdBy, comment, visibility, resolvedBy, resolvedAt);
         this.versionId = versionId;
     }
 
-    public ProjectVersionVisibilityChangeTable(long createdBy, String comment, Visibility visibility, long versionId) {
+    public ProjectVersionVisibilityChangeTable(final long createdBy, final String comment, final Visibility visibility, final long versionId) {
         super(createdBy, comment, visibility);
         this.versionId = versionId;
     }
 
     public long getVersionId() {
-        return versionId;
+        return this.versionId;
     }
 
     @Override
     public String toString() {
         return "ProjectVersionVisibilityChangeTable{" +
-                "versionId=" + versionId +
+                "versionId=" + this.versionId +
                 "} " + super.toString();
     }
 }

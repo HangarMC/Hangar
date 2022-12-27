@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class OrganizationRoleService extends RoleService<OrganizationRoleTable, OrganizationRole, OrganizationRolesDAO> {
 
     @Autowired
-    public OrganizationRoleService(OrganizationRolesDAO roleDao) {
+    public OrganizationRoleService(final OrganizationRolesDAO roleDao) {
         super(roleDao);
     }
 }

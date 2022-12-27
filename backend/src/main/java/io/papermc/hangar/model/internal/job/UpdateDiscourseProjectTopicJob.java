@@ -10,7 +10,7 @@ public class UpdateDiscourseProjectTopicJob extends Job {
 
     private long projectId;
 
-    public UpdateDiscourseProjectTopicJob(long projectId) {
+    public UpdateDiscourseProjectTopicJob(final long projectId) {
         super(JobType.UPDATE_DISCOURSE_PROJECT_TOPIC);
         this.projectId = projectId;
     }
@@ -20,29 +20,29 @@ public class UpdateDiscourseProjectTopicJob extends Job {
     }
 
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
-    public void setProjectId(long projectId) {
+    public void setProjectId(final long projectId) {
         this.projectId = projectId;
     }
 
     @Override
     public void loadFromProperties() {
-        if (getJobProperties() != null && getJobProperties().containsKey("projectId")) {
-            projectId = Long.parseLong(getJobProperties().get("projectId"));
+        if (this.getJobProperties() != null && this.getJobProperties().containsKey("projectId")) {
+            this.projectId = Long.parseLong(this.getJobProperties().get("projectId"));
         }
     }
 
     @Override
     public void saveIntoProperties() {
-        Map<String, String> properties = new HashMap<>();
-        properties.put("projectId", projectId + "");
-        setJobProperties(properties);
+        final Map<String, String> properties = new HashMap<>();
+        properties.put("projectId", this.projectId + "");
+        this.setJobProperties(properties);
     }
 
-    public static UpdateDiscourseProjectTopicJob loadFromTable(JobTable table) {
-        UpdateDiscourseProjectTopicJob job  = new UpdateDiscourseProjectTopicJob();
+    public static UpdateDiscourseProjectTopicJob loadFromTable(final JobTable table) {
+        final UpdateDiscourseProjectTopicJob job  = new UpdateDiscourseProjectTopicJob();
         job.fromTable(table);
         job.setJobProperties(table.getJobProperties().getMap());
         job.loadFromProperties();
@@ -50,24 +50,24 @@ public class UpdateDiscourseProjectTopicJob extends Job {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        UpdateDiscourseProjectTopicJob that = (UpdateDiscourseProjectTopicJob) o;
-        return projectId == that.projectId;
+        final UpdateDiscourseProjectTopicJob that = (UpdateDiscourseProjectTopicJob) o;
+        return this.projectId == that.projectId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), projectId);
+        return Objects.hash(super.hashCode(), this.projectId);
     }
 
     @Override
     public String toString() {
         return "UpdateDiscourseProjectTopicJob{" +
-               "createdAt=" + createdAt +
-               ", projectId=" + projectId +
+               "createdAt=" + this.createdAt +
+               ", projectId=" + this.projectId +
                "} " + super.toString();
     }
 }

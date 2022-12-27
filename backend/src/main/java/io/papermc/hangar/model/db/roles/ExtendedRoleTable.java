@@ -17,14 +17,14 @@ public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>,
     protected R role;
     protected boolean accepted;
 
-    protected ExtendedRoleTable(OffsetDateTime createdAt, long id, long userId, R role, boolean accepted) {
+    protected ExtendedRoleTable(final OffsetDateTime createdAt, final long id, final long userId, final R role, final boolean accepted) {
         super(createdAt, id);
         this.userId = userId;
         this.role = role;
         this.accepted = accepted;
     }
 
-    protected ExtendedRoleTable(long userId, R role, boolean accepted) {
+    protected ExtendedRoleTable(final long userId, final R role, final boolean accepted) {
         this.userId = userId;
         this.role = role;
         this.accepted = accepted;
@@ -32,39 +32,39 @@ public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>,
 
     @Override
     public long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     @Override
     @JsonIgnore
     public R getRole() {
-        return role;
+        return this.role;
     }
 
     @Override
-    public void setRole(R role) {
+    public void setRole(final R role) {
         this.role = role;
     }
 
     @Override
     @JsonIgnore
     public long getRoleId() {
-        return role.getRoleId();
+        return this.role.getRoleId();
     }
 
     @Override
     @JsonIgnore
     public String getRoleType() {
-        return role.getValue();
+        return this.role.getValue();
     }
 
     @Override
     public boolean isAccepted() {
-        return accepted;
+        return this.accepted;
     }
 
     @Override
-    public void setAccepted(boolean accepted) {
+    public void setAccepted(final boolean accepted) {
         this.accepted = accepted;
     }
 
@@ -74,9 +74,9 @@ public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>,
     @Override
     public String toString() {
         return "ExtendedRoleTable{" +
-                "userId=" + userId +
-                ", role=" + role +
-                ", accepted=" + accepted +
+                "userId=" + this.userId +
+                ", role=" + this.role +
+                ", accepted=" + this.accepted +
                 "} " + super.toString();
     }
 }

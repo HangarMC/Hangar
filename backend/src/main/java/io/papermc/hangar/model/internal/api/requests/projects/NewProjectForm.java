@@ -10,16 +10,12 @@ public class NewProjectForm extends ProjectSettingsForm {
     private final long ownerId;
 
     // @el(root: String)
-    @NotNull(message = "project.new.error.invalidName")
-    @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxNameLen)", message = "project.new.error.tooLongName")
-    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.projects.nameRegex)", message = "project.new.error.invalidName")
-    private final String name;
+    private final @NotNull(message = "project.new.error.invalidName") @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxNameLen)", message = "project.new.error.tooLongName") @Validate(SpEL = "@validate.regex(#root, @hangarConfig.projects.nameRegex)", message = "project.new.error.invalidName") String name;
 
     // @el(root: String)
-    @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxLen)", message = "page.new.error.maxLength")
-    private final String pageContent;
+    private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxLen)", message = "page.new.error.maxLength") String pageContent;
 
-    public NewProjectForm(ProjectSettings settings, Category category, String description, long ownerId, String name, String pageContent) {
+    public NewProjectForm(final ProjectSettings settings, final Category category, final String description, final long ownerId, final String name, final String pageContent) {
         super(settings, category, description);
         this.ownerId = ownerId;
         this.name = name;
@@ -27,23 +23,23 @@ public class NewProjectForm extends ProjectSettingsForm {
     }
 
     public long getOwnerId() {
-        return ownerId;
+        return this.ownerId;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getPageContent() {
-        return pageContent;
+        return this.pageContent;
     }
 
     @Override
     public String toString() {
         return "NewProjectForm{" +
-                "ownerId=" + ownerId +
-                ", name='" + name + '\'' +
-                ", pageContent='" + pageContent + '\'' +
+                "ownerId=" + this.ownerId +
+                ", name='" + this.name + '\'' +
+                ", pageContent='" + this.pageContent + '\'' +
                 "} " + super.toString();
     }
 }

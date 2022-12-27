@@ -7,19 +7,18 @@ import javax.validation.constraints.NotBlank;
  */
 public class StringContent {
 
-    @NotBlank
-    private String content;
+    private @NotBlank String content;
 
     public String getContent() {
-        return content;
+        return this.content;
     }
 
-    public void setContent(String content) {
+    public void setContent(final String content) {
         this.content = content;
     }
 
     @Override
     public String toString() {
-        return content;
+        return this.content;
     }
 }

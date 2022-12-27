@@ -70,24 +70,24 @@ public class Permission implements Comparable<Permission>, Argument {
     private final long value;
 
     @JdbiConstructor
-    public Permission(long value) {
+    public Permission(final long value) {
         this.value = value;
     }
 
-    public Permission add(Permission other) {
-        return new Permission(value | other.value);
+    public Permission add(final Permission other) {
+        return new Permission(this.value | other.value);
     }
 
-    public Permission intersect(Permission other) {
-        return new Permission(value & other.value);
+    public Permission intersect(final Permission other) {
+        return new Permission(this.value & other.value);
     }
 
-    public Permission remove(Permission other) {
-        return new Permission(value & ~other.value);
+    public Permission remove(final Permission other) {
+        return new Permission(this.value & ~other.value);
     }
 
-    public Permission toggle(Permission other) {
-        return new Permission(value ^ other.value);
+    public Permission toggle(final Permission other) {
+        return new Permission(this.value ^ other.value);
     }
 
     /**
@@ -95,13 +95,13 @@ public class Permission implements Comparable<Permission>, Argument {
      * @param other another permission
      * @return true if permission has all of other permission <b>OR</b> other permission is {@link #None}
      */
-    public boolean has(Permission other) {
-        return (value & other.value) == other.value;
+    public boolean has(final Permission other) {
+        return (this.value & other.value) == other.value;
     }
 
-    public boolean hasAll(NamedPermission[] perms) {
-        for (NamedPermission perm : perms) {
-            if (!has(perm.getPermission())) {
+    public boolean hasAll(final NamedPermission[] perms) {
+        for (final NamedPermission perm : perms) {
+            if (!this.has(perm.getPermission())) {
                 return false;
             }
         }
@@ -109,56 +109,56 @@ public class Permission implements Comparable<Permission>, Argument {
     }
 
     public boolean isNone() {
-        return value == 0;
+        return this.value == 0;
     }
 
     @JsonValue
     public String toBinString() {
-        return Long.toBinaryString(value);
+        return Long.toBinaryString(this.value);
     }
 
     public List<NamedPermission> toNamed() {
-        return Arrays.stream(NamedPermission.values()).filter(perm -> has(perm.getPermission())).collect(Collectors.toUnmodifiableList());
+        return Arrays.stream(NamedPermission.values()).filter(perm -> this.has(perm.getPermission())).collect(Collectors.toUnmodifiableList());
     }
 
     public long getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
-    public int compareTo(Permission o) {
-        return (int) (value - o.value);
+    public int compareTo(final Permission o) {
+        return (int) (this.value - o.value);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Permission that = (Permission) o;
-        return value == that.value;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        final Permission that = (Permission) o;
+        return this.value == that.value;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return Objects.hash(this.value);
     }
 
-    public static Permission fromLong(long value) {
+    public static Permission fromLong(final long value) {
         return new Permission(value);
     }
 
-    public static Permission fromBinString(String binString) {
+    public static Permission fromBinString(final String binString) {
         if (binString == null) return null;
         return new Permission(Long.parseLong(binString, 2));
     }
 
     @Override
     public String toString() {
-        return toNamed().toString();
+        return this.toNamed().toString();
     }
 
     @Override
-    public void apply(int position, PreparedStatement statement, StatementContext ctx) throws SQLException {
+    public void apply(final int position, final PreparedStatement statement, final StatementContext ctx) throws SQLException {
         statement.setLong(position, this.value);
     }
 }

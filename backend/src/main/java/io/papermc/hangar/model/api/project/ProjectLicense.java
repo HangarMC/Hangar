@@ -14,16 +14,14 @@ public class ProjectLicense {
     private final String name;
 
     // @el(root: String)
-    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
-    private final String url;
+    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl") String url;
 
     // @el(root: String)
-    @Validate(SpEL = "@validate.required(#root)")
-    private final String type;
+    private final @Validate(SpEL = "@validate.required(#root)") String type;
 
     @JdbiConstructor
-    public ProjectLicense(@Nullable String name, @Nullable String url) {
-        int index = config.getLicenses().indexOf(name);
+    public ProjectLicense(final @Nullable String name, final @Nullable String url) {
+        final int index = config.getLicenses().indexOf(name);
         if (name == null) {
             this.type = null;
             this.name = null;
@@ -38,30 +36,30 @@ public class ProjectLicense {
     }
 
     @JsonCreator
-    public ProjectLicense(@Nullable String name, @Nullable String url, @Nullable String type) {
+    public ProjectLicense(final @Nullable String name, final @Nullable String url, final @Nullable String type) {
         this.name = name;
         this.url = url;
         this.type = type;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     public String getType() {
-        return type;
+        return this.type;
     }
 
     @Override
     public String toString() {
         return "ProjectLicense{" +
-                "name='" + name + '\'' +
-                ", url='" + url + '\'' +
-                ", type='" + type + '\'' +
+                "name='" + this.name + '\'' +
+                ", url='" + this.url + '\'' +
+                ", type='" + this.type + '\'' +
                 '}';
     }
 }

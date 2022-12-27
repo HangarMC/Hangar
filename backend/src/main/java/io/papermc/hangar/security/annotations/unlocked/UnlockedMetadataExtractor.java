@@ -11,7 +11,7 @@ import java.util.Set;
 public class UnlockedMetadataExtractor implements AnnotationMetadataExtractor<Unlocked> {
 
     @Override
-    public Collection<? extends ConfigAttribute> extractAttributes(Unlocked securityAnnotation) {
+    public Collection<? extends ConfigAttribute> extractAttributes(final Unlocked securityAnnotation) {
         return Set.of(UnlockedAttribute.INSTANCE);
     }
 

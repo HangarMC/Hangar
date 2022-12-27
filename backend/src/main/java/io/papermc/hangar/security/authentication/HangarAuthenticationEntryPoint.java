@@ -22,13 +22,13 @@ public class HangarAuthenticationEntryPoint implements AuthenticationEntryPoint 
     private final ObjectMapper mapper;
 
     @Autowired
-    public HangarAuthenticationEntryPoint(ObjectMapper mapper) {
+    public HangarAuthenticationEntryPoint(final ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        HttpStatus status;
+    public void commence(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException failed) throws IOException {
+        final HttpStatus status;
         if (failed instanceof CredentialsExpiredException) {
             status = HttpStatus.FORBIDDEN;
         } else if (failed instanceof BadCredentialsException) {
@@ -39,6 +39,6 @@ public class HangarAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(status.value());
         response.setCharacterEncoding(Charsets.UTF_8.name());
-        response.getWriter().write(mapper.writeValueAsString(new HangarApiException(status, failed.getMessage())));
+        response.getWriter().write(this.mapper.writeValueAsString(new HangarApiException(status, failed.getMessage())));
     }
 }

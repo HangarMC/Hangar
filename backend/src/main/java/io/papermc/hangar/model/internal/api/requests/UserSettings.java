@@ -5,32 +5,32 @@ public class UserSettings {
     private String theme;
     private String language;
 
-    public UserSettings(String theme, String language) {
+    public UserSettings(final String theme, final String language) {
         this.theme = theme;
         this.language = language;
     }
 
     public String getTheme() {
-        return theme;
+        return this.theme;
     }
 
-    public void setTheme(String theme) {
+    public void setTheme(final String theme) {
         this.theme = theme;
     }
 
     public String getLanguage() {
-        return language;
+        return this.language;
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage(final String language) {
         this.language = language;
     }
 
     @Override
     public String toString() {
         return "UserSettings{" +
-               "theme='" + theme + '\'' +
-               ", language='" + language + '\'' +
+               "theme='" + this.theme + '\'' +
+               ", language='" + this.language + '\'' +
                '}';
     }
 }

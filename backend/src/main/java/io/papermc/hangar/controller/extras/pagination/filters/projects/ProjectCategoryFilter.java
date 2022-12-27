@@ -19,7 +19,7 @@ public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstan
     private final ConversionService conversionService;
 
     @Autowired
-    public ProjectCategoryFilter(ConversionService conversionService) {
+    public ProjectCategoryFilter(final ConversionService conversionService) {
         this.conversionService = conversionService;
     }
 
@@ -33,29 +33,28 @@ public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstan
         return "A category to filter for";
     }
 
-    @NotNull
     @Override
-    public ProjectCategoryFilterInstance create(NativeWebRequest webRequest) {
-        return new ProjectCategoryFilterInstance(conversionService.convert(webRequest.getParameterValues(getSingleQueryParam()), Category[].class));
+    public @NotNull ProjectCategoryFilterInstance create(final NativeWebRequest webRequest) {
+        return new ProjectCategoryFilterInstance(this.conversionService.convert(webRequest.getParameterValues(this.getSingleQueryParam()), Category[].class));
     }
 
-    static class ProjectCategoryFilterInstance implements FilterInstance {
+    static class ProjectCategoryFilterInstance implements Filter.FilterInstance {
 
         private final Category[] categories;
 
-        public ProjectCategoryFilterInstance(Category[] categories) {
+        public ProjectCategoryFilterInstance(final Category[] categories) {
             this.categories = categories;
         }
 
         @Override
-        public void createSql(StringBuilder sb, SqlStatement<?> q) {
+        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             sb.append(" AND ").append("p.category").append(" IN (");
-            for (int i = 0; i < categories.length; i++) {
+            for (int i = 0; i < this.categories.length; i++) {
                 sb.append(":__category__").append(i);
-                if (i + 1 != categories.length) {
+                if (i + 1 != this.categories.length) {
                     sb.append(",");
                 }
-                q.bind("__category__" + i, categories[i]);
+                q.bind("__category__" + i, this.categories[i]);
             }
             sb.append(")");
         }
@@ -63,7 +62,7 @@ public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstan
         @Override
         public String toString() {
             return "ProjectCategoryFilterInstance{" +
-                    "categories=" + Arrays.toString(categories) +
+                    "categories=" + Arrays.toString(this.categories) +
                     '}';
         }
     }

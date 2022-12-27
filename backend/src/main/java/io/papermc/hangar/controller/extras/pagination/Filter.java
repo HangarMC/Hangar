@@ -11,15 +11,14 @@ public interface Filter<F extends FilterInstance> {
 
     Set<String> getQueryParamNames();
 
-    @NotNull
-    default String getSingleQueryParam() {
-        return getQueryParamNames().stream().findFirst().orElseThrow();
+    default @NotNull String getSingleQueryParam() {
+        return this.getQueryParamNames().stream().findFirst().orElseThrow();
     }
 
     String getDescription();
 
-    default boolean supports(NativeWebRequest webRequest) {
-        return webRequest.getParameterMap().containsKey(getSingleQueryParam());
+    default boolean supports(final NativeWebRequest webRequest) {
+        return webRequest.getParameterMap().containsKey(this.getSingleQueryParam());
     }
 
     @NotNull

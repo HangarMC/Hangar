@@ -45,41 +45,41 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 public class ResizableImageInlineParserExtension implements InlineParserExtension {
-    final public static Pattern IMAGE_PATTERN = Pattern.compile("!\\[([^\\s\\]]*)]\\(([^\\s\\]]+)\\s*=*(\\d*)x*(\\d*)\\)", // Hangar - fix image in link
+    public static final Pattern IMAGE_PATTERN = Pattern.compile("!\\[([^\\s\\]]*)]\\(([^\\s\\]]+)\\s*=*(\\d*)x*(\\d*)\\)", // Hangar - fix image in link
             Pattern.CASE_INSENSITIVE);
 
-    public ResizableImageInlineParserExtension(LightInlineParser inlineParser) {
+    public ResizableImageInlineParserExtension(final LightInlineParser inlineParser) {
     }
 
     @Override
-    public void finalizeDocument(@NotNull InlineParser inlineParser) {
+    public void finalizeDocument(final @NotNull InlineParser inlineParser) {
     }
 
     @Override
-    public void finalizeBlock(@NotNull InlineParser inlineParser) {
+    public void finalizeBlock(final @NotNull InlineParser inlineParser) {
     }
 
     @Override
-    public boolean parse(@NotNull LightInlineParser inlineParser) {
-        int index = inlineParser.getIndex();
+    public boolean parse(final @NotNull LightInlineParser inlineParser) {
+        final int index = inlineParser.getIndex();
         // FIX
-        BasedSequence input = inlineParser.getInput();
+        final BasedSequence input = inlineParser.getInput();
         if (index + 1 >= input.length()) {
             return false;
         }
-        char c = input.charAt(index + 1);
+        final char c = input.charAt(index + 1);
         // END FIX
         if (c == '[') {
-            BasedSequence[] matches = inlineParser.matchWithGroups(IMAGE_PATTERN);
+            final BasedSequence[] matches = inlineParser.matchWithGroups(IMAGE_PATTERN);
             if (matches != null) {
                 inlineParser.flushTextNode();
 
-                BasedSequence text = matches[1];
-                BasedSequence source = matches[2];
-                BasedSequence width = matches[3];
-                BasedSequence height = matches[4];
+                final BasedSequence text = matches[1];
+                final BasedSequence source = matches[2];
+                final BasedSequence width = matches[3];
+                final BasedSequence height = matches[4];
 
-                ResizableImage image = new ResizableImage(text, source, width, height);
+                final ResizableImage image = new ResizableImage(text, source, width, height);
                 inlineParser.getBlock().appendChild(image);
                 return true;
             }
@@ -87,27 +87,23 @@ public class ResizableImageInlineParserExtension implements InlineParserExtensio
         return false;
     }
     public static class Factory implements InlineParserExtensionFactory {
-        @Nullable
         @Override
-        public Set<Class<?>> getAfterDependents() {
+        public @Nullable Set<Class<?>> getAfterDependents() {
             return null;
         }
 
-        @NotNull
         @Override
-        public CharSequence getCharacters() {
+        public @NotNull CharSequence getCharacters() {
             return "!";
         }
 
-        @Nullable
         @Override
-        public Set<Class<?>> getBeforeDependents() {
+        public @Nullable Set<Class<?>> getBeforeDependents() {
             return null;
         }
 
-        @NotNull
         @Override
-        public InlineParserExtension apply(@NotNull LightInlineParser lightInlineParser) {
+        public @NotNull InlineParserExtension apply(final @NotNull LightInlineParser lightInlineParser) {
             return new ResizableImageInlineParserExtension(lightInlineParser);
         }
 

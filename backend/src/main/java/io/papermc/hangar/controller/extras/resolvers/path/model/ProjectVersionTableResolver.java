@@ -23,8 +23,8 @@ public class ProjectVersionTableResolver extends HangarModelPathVarResolver<Proj
     }
 
     @Override
-    protected ProjectVersionTable resolveParameter(@NotNull final String param) {
-        Long versionId = NumberUtils.createLong(param);
+    protected ProjectVersionTable resolveParameter(final @NotNull String param) {
+        final Long versionId = NumberUtils.createLong(param);
         if (versionId == null) {
             return null;
         }

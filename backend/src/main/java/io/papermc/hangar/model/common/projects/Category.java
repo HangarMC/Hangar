@@ -32,11 +32,11 @@ public enum Category {
     private final boolean isVisible;
     private final String apiName;
 
-    Category(int value, String icon, String apiName) {
+    Category(final int value, final String icon, final String apiName) {
         this(value, icon, apiName, true);
     }
 
-    Category(int value, String icon, String apiName, boolean isVisible) {
+    Category(final int value, final String icon, final String apiName, final boolean isVisible) {
         this.value = value;
         this.icon = icon;
         this.apiName = apiName;
@@ -45,30 +45,30 @@ public enum Category {
 
     @JsonIgnore
     public int getValue() {
-        return value;
+        return this.value;
     }
 
     public String getIcon() {
-        return icon;
+        return this.icon;
     }
 
     public boolean isVisible() {
-        return isVisible;
+        return this.isVisible;
     }
 
     public String getApiName() {
-        return apiName;
+        return this.apiName;
     }
 
     @Override
     @JsonValue
     public String toString() {
-        return apiName;
+        return this.apiName;
     }
 
     @JsonCreator
-    public static Category fromValue(String text) {
-        for (Category b : Category.values()) {
+    public static Category fromValue(final String text) {
+        for (final Category b : values()) {
             if (b.apiName.equalsIgnoreCase(text)) {
                 return b;
             }
@@ -76,19 +76,19 @@ public enum Category {
         return null;
     }
 
-    public static List<Category> fromString(String str) {
-        List<Category> categories = new ArrayList<>();
+    public static List<Category> fromString(final String str) {
+        final List<Category> categories = new ArrayList<>();
         Arrays.stream(str.split(",")).forEach(s -> {
             try {
-                int id = Integer.parseInt(s);
+                final int id = Integer.parseInt(s);
                 categories.add(Category.VALUES[id]);
-            } catch (NumberFormatException | ArrayIndexOutOfBoundsException ignored) { }
+            } catch (final NumberFormatException | ArrayIndexOutOfBoundsException ignored) { }
         });
         return categories;
     }
 
     public static Set<Category> visible() {
-        return Arrays.stream(Category.values()).filter(Category::isVisible).collect(Collectors.toSet());
+        return Arrays.stream(values()).filter(Category::isVisible).collect(Collectors.toSet());
     }
 
     private static final Category[] VALUES = values();

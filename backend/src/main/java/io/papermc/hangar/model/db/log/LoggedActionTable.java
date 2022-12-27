@@ -14,7 +14,7 @@ public abstract class LoggedActionTable extends Table {
     private final String newState;
     private final String oldState;
 
-    protected LoggedActionTable(long userId, InetAddress address, LoggedAction<?> action) {
+    protected LoggedActionTable(final long userId, final InetAddress address, final LoggedAction<?> action) {
         this.userId = userId;
         this.address = address;
         this.action = action.getType().getPgLoggedAction();
@@ -23,33 +23,33 @@ public abstract class LoggedActionTable extends Table {
     }
 
     public long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public InetAddress getAddress() {
-        return address;
+        return this.address;
     }
 
     public PGLoggedAction getAction() {
-        return action;
+        return this.action;
     }
 
     public String getNewState() {
-        return newState;
+        return this.newState;
     }
 
     public String getOldState() {
-        return oldState;
+        return this.oldState;
     }
 
     @Override
     public String toString() {
         return "UserLoggedAction{" +
-                "userId=" + userId +
-                ", address=" + address +
-                ", action=" + action +
-                ", newState='" + newState + '\'' +
-                ", oldState='" + oldState + '\'' +
+                "userId=" + this.userId +
+                ", address=" + this.address +
+                ", action=" + this.action +
+                ", newState='" + this.newState + '\'' +
+                ", oldState='" + this.oldState + '\'' +
                 "} " + super.toString();
     }
 }

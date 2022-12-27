@@ -17,32 +17,32 @@ public class StringToEnumConverterFactory implements ConverterFactory<String, En
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends Enum> @NotNull Converter<String, T> getConverter(@NotNull Class<T> targetType) {
+    public <T extends Enum> @NotNull Converter<String, T> getConverter(final @NotNull Class<T> targetType) {
         return s -> {
             // search for json creator first
             try {
-                for (Method declaredMethod : targetType.getDeclaredMethods()) {
+                for (final Method declaredMethod : targetType.getDeclaredMethods()) {
                     if (declaredMethod.isAnnotationPresent(JsonCreator.class)) {
                         return (T) declaredMethod.invoke(null, s);
                     }
                 }
-            } catch (IllegalAccessException | InvocationTargetException ignored) {
+            } catch (final IllegalAccessException | InvocationTargetException ignored) {
                 // ignored
             }
 
             // try ordinal
-            int ordinal;
+            final int ordinal;
             try {
                 ordinal = Integer.parseInt(s);
                 return targetType.getEnumConstants()[ordinal];
-            } catch (NumberFormatException ignored) {
+            } catch (final NumberFormatException ignored) {
                 // ignored
             }
 
             // fall back to value of
             try {
                 return (T) Enum.valueOf(targetType, s.trim().toUpperCase());
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, s + " did not match a valid " + targetType);
             }
 

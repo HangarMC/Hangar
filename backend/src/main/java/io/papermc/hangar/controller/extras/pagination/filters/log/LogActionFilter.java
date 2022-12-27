@@ -24,28 +24,27 @@ public class LogActionFilter implements Filter<LogActionFilterInstance> {
     }
 
     @Override
-    public boolean supports(NativeWebRequest webRequest) {
-        return Filter.super.supports(webRequest) && LogAction.LOG_REGISTRY.containsKey(webRequest.getParameter(getSingleQueryParam()));
+    public boolean supports(final NativeWebRequest webRequest) {
+        return Filter.super.supports(webRequest) && LogAction.LOG_REGISTRY.containsKey(webRequest.getParameter(this.getSingleQueryParam()));
     }
 
-    @NotNull
     @Override
-    public LogActionFilterInstance create(NativeWebRequest webRequest) {
-        return new LogActionFilterInstance(LogAction.LOG_REGISTRY.get(webRequest.getParameter(getSingleQueryParam())));
+    public @NotNull LogActionFilterInstance create(final NativeWebRequest webRequest) {
+        return new LogActionFilterInstance(LogAction.LOG_REGISTRY.get(webRequest.getParameter(this.getSingleQueryParam())));
     }
 
-    static class LogActionFilterInstance implements FilterInstance {
+    static class LogActionFilterInstance implements Filter.FilterInstance {
 
         private final LogAction<?> logAction;
 
-        LogActionFilterInstance(LogAction<?> logAction) {
+        LogActionFilterInstance(final LogAction<?> logAction) {
             this.logAction = logAction;
         }
 
         @Override
-        public void createSql(StringBuilder sb, SqlStatement<?> q) {
+        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             sb.append(" AND la.action = :actionFilter::LOGGED_ACTION_TYPE");
-            q.bind("actionFilter", logAction.getPgLoggedAction().getValue());
+            q.bind("actionFilter", this.logAction.getPgLoggedAction().getValue());
         }
     }
 }

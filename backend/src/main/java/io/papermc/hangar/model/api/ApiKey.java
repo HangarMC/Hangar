@@ -13,7 +13,7 @@ public class ApiKey extends Model {
     private final String tokenIdentifier;
     private final List<NamedPermission> permissions;
 
-    public ApiKey(OffsetDateTime createdAt, String name, String tokenIdentifier, Permission permissions) {
+    public ApiKey(final OffsetDateTime createdAt, final String name, final String tokenIdentifier, final Permission permissions) {
         super(createdAt);
         this.name = name;
         this.tokenIdentifier = tokenIdentifier;
@@ -21,14 +21,14 @@ public class ApiKey extends Model {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getTokenIdentifier() {
-        return tokenIdentifier;
+        return this.tokenIdentifier;
     }
 
     public List<NamedPermission> getPermissions() {
-        return permissions;
+        return this.permissions;
     }
 }

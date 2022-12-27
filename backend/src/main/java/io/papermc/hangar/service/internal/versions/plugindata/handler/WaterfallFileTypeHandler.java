@@ -24,29 +24,28 @@ public class WaterfallFileTypeHandler extends FileTypeHandler<WaterfallFileData>
     }
 
     @Override
-    public WaterfallFileData getData(BufferedReader reader) throws ConfigurateException {
+    public WaterfallFileData getData(final BufferedReader reader) throws ConfigurateException {
         return YamlConfigurationLoader.builder().buildAndLoadString(reader.lines().collect(Collectors.joining("\n"))).get(WaterfallFileData.class);
     }
 
     @ConfigSerializable
-    public static class WaterfallFileData extends FileData {
+    public static class WaterfallFileData extends FileTypeHandler.FileData {
 
         @Setting("depends")
         private List<String> hardDepends;
         @Setting("softDepends")
         private List<String> softDepends;
 
-        @NotNull
         @Override
-        protected Set<PluginDependency> createPluginDependencies() {
-            Set<PluginDependency> dependencies = new HashSet<>();
-            if (hardDepends != null) {
-                for (String hardDepend : hardDepends) {
+        protected @NotNull Set<PluginDependency> createPluginDependencies() {
+            final Set<PluginDependency> dependencies = new HashSet<>();
+            if (this.hardDepends != null) {
+                for (final String hardDepend : this.hardDepends) {
                     dependencies.add(PluginDependency.of(hardDepend, true));
                 }
             }
-            if (softDepends != null) {
-                for (String softDepend : softDepends) {
+            if (this.softDepends != null) {
+                for (final String softDepend : this.softDepends) {
                     dependencies.add(PluginDependency.of(softDepend, false));
                 }
             }

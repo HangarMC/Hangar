@@ -10,24 +10,24 @@ public class LogSubject {
     private final Long id;
     private final String name;
 
-    public LogSubject(@PropagateNull Long id, String name) {
+    public LogSubject(@PropagateNull final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public String toString() {
         return "LogSubject{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "id=" + this.id +
+                ", name='" + this.name + '\'' +
                 '}';
     }
 }

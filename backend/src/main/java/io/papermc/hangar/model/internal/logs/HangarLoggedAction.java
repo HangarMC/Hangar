@@ -26,7 +26,7 @@ public class HangarLoggedAction extends Model {
     private final LogPage page;
     private final LogSubject subject;
 
-    public HangarLoggedAction(OffsetDateTime createdAt, Long userId, String userName, InetAddress address, LogAction<?> action, @EnumByOrdinal Context contextType, String newState, String oldState, @Nested("p_") LogProject project, @Nested("pv_") LogVersion version, @Nested("pp_") LogPage page, @Nested("s_") LogSubject subject) {
+    public HangarLoggedAction(final OffsetDateTime createdAt, final Long userId, final String userName, final InetAddress address, final LogAction<?> action, @EnumByOrdinal final Context contextType, final String newState, final String oldState, @Nested("p_") final LogProject project, @Nested("pv_") final LogVersion version, @Nested("pp_") final LogPage page, @Nested("s_") final LogSubject subject) {
         super(createdAt);
         this.userId = userId;
         this.userName = userName;
@@ -42,63 +42,63 @@ public class HangarLoggedAction extends Model {
     }
 
     public Long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public String getUserName() {
-        return userName;
+        return this.userName;
     }
 
     public InetAddress getAddress() {
-        return address;
+        return this.address;
     }
 
     public LogAction<?> getAction() {
-        return action;
+        return this.action;
     }
 
     public Context getContextType() {
-        return contextType;
+        return this.contextType;
     }
 
     public String getNewState() {
-        return newState;
+        return this.newState;
     }
 
     public String getOldState() {
-        return oldState;
+        return this.oldState;
     }
 
     public LogProject getProject() {
-        return project;
+        return this.project;
     }
 
     public LogVersion getVersion() {
-        return version;
+        return this.version;
     }
 
     public LogPage getPage() {
-        return page;
+        return this.page;
     }
 
     public LogSubject getSubject() {
-        return subject;
+        return this.subject;
     }
 
     @Override
     public String toString() {
         return "HangarLoggedAction{" +
-                "userId=" + userId +
-                ", userName='" + userName + '\'' +
-                ", address=" + address +
-                ", action=" + action +
-                ", context=" + contextType +
-                ", newState='" + newState + '\'' +
-                ", oldState='" + oldState + '\'' +
-                ", project=" + project +
-                ", version=" + version +
-                ", page=" + page +
-                ", subject=" + subject +
+                "userId=" + this.userId +
+                ", userName='" + this.userName + '\'' +
+                ", address=" + this.address +
+                ", action=" + this.action +
+                ", context=" + this.contextType +
+                ", newState='" + this.newState + '\'' +
+                ", oldState='" + this.oldState + '\'' +
+                ", project=" + this.project +
+                ", version=" + this.version +
+                ", page=" + this.page +
+                ", subject=" + this.subject +
                 "} " + super.toString();
     }
 }

@@ -9,33 +9,30 @@ import java.util.List;
 
 public class CreateAPIKeyForm {
 
-    @NotBlank
-    @Size(min = 5, max = 255)
     @ApiModelProperty(allowableValues = "range[5,256)", required = true)
-    private final String name;
+    private final @NotBlank @Size(min = 5, max = 255) String name;
 
-    @Size(min = 1)
     @ApiModelProperty(required = true)
-    private final List<NamedPermission> permissions;
+    private final @Size(min = 1) List<NamedPermission> permissions;
 
-    public CreateAPIKeyForm(String name, List<NamedPermission> permissions) {
+    public CreateAPIKeyForm(final String name, final List<NamedPermission> permissions) {
         this.name = name;
         this.permissions = permissions;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public List<NamedPermission> getPermissions() {
-        return permissions;
+        return this.permissions;
     }
 
     @Override
     public String toString() {
         return "CreateAPIKeyForm{" +
-                "name='" + name + '\'' +
-                ", permissions=" + permissions +
+                "name='" + this.name + '\'' +
+                ", permissions=" + this.permissions +
                 '}';
     }
 }

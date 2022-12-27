@@ -15,7 +15,7 @@ public abstract class Model {
         return this.createdAt;
     }
 
-    public void setCreatedAt(OffsetDateTime createdAt) {
+    public void setCreatedAt(final OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -23,7 +23,7 @@ public abstract class Model {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
-        Model model = (Model) o;
+        final Model model = (Model) o;
         return Objects.equals(this.createdAt, model.createdAt);
     }
 

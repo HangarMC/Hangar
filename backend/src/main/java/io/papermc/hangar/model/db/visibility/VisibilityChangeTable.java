@@ -14,7 +14,7 @@ public abstract class VisibilityChangeTable extends Table {
     private Long resolvedBy;
     private OffsetDateTime resolvedAt;
 
-    protected VisibilityChangeTable(OffsetDateTime createdAt, long id, long createdBy, String comment, Visibility visibility, Long resolvedBy, OffsetDateTime resolvedAt) {
+    protected VisibilityChangeTable(final OffsetDateTime createdAt, final long id, final long createdBy, final String comment, final Visibility visibility, final Long resolvedBy, final OffsetDateTime resolvedAt) {
         super(createdAt, id);
         this.createdBy = createdBy;
         this.comment = comment;
@@ -23,41 +23,41 @@ public abstract class VisibilityChangeTable extends Table {
         this.resolvedAt = resolvedAt;
     }
 
-    protected VisibilityChangeTable(long createdBy, String comment, Visibility visibility) {
+    protected VisibilityChangeTable(final long createdBy, final String comment, final Visibility visibility) {
         this.createdBy = createdBy;
         this.comment = comment;
         this.visibility = visibility;
     }
 
     public long getCreatedBy() {
-        return createdBy;
+        return this.createdBy;
     }
 
     public String getComment() {
-        return comment;
+        return this.comment;
     }
 
     @EnumByOrdinal
     public Visibility getVisibility() {
-        return visibility;
+        return this.visibility;
     }
 
     public Long getResolvedBy() {
-        return resolvedBy;
+        return this.resolvedBy;
     }
 
     public OffsetDateTime getResolvedAt() {
-        return resolvedAt;
+        return this.resolvedAt;
     }
 
     @Override
     public String toString() {
         return "VisibilityChangeTable{" +
-                "createdBy=" + createdBy +
-                ", comment='" + comment + '\'' +
-                ", visibility=" + visibility +
-                ", resolvedBy=" + resolvedBy +
-                ", resolvedAt=" + resolvedAt +
+                "createdBy=" + this.createdBy +
+                ", comment='" + this.comment + '\'' +
+                ", visibility=" + this.visibility +
+                ", resolvedBy=" + this.resolvedBy +
+                ", resolvedAt=" + this.resolvedAt +
                 "} " + super.toString();
     }
 }

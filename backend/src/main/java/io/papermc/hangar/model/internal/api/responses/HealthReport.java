@@ -14,7 +14,7 @@ public class HealthReport {
     private final List<MissingFileCheck> missingFiles;
     private final List<JobTable> erroredJobs;
 
-    public HealthReport(List<UnhealthyProject> noTopicProjects, List<UnhealthyProject> staleProjects, List<UnhealthyProject> nonPublicProjects, List<MissingFileCheck> missingFiles, List<JobTable> erroredJobs) {
+    public HealthReport(final List<UnhealthyProject> noTopicProjects, final List<UnhealthyProject> staleProjects, final List<UnhealthyProject> nonPublicProjects, final List<MissingFileCheck> missingFiles, final List<JobTable> erroredJobs) {
         this.noTopicProjects = noTopicProjects;
         this.staleProjects = staleProjects;
         this.nonPublicProjects = nonPublicProjects;
@@ -23,33 +23,33 @@ public class HealthReport {
     }
 
     public List<UnhealthyProject> getNoTopicProjects() {
-        return noTopicProjects;
+        return this.noTopicProjects;
     }
 
     public List<UnhealthyProject> getStaleProjects() {
-        return staleProjects;
+        return this.staleProjects;
     }
 
     public List<UnhealthyProject> getNonPublicProjects() {
-        return nonPublicProjects;
+        return this.nonPublicProjects;
     }
 
     public List<MissingFileCheck> getMissingFiles() {
-        return missingFiles;
+        return this.missingFiles;
     }
 
     public List<JobTable> getErroredJobs() {
-        return erroredJobs;
+        return this.erroredJobs;
     }
 
     @Override
     public String toString() {
         return "HealthReport{" +
-                "noTopicProjects=" + noTopicProjects +
-                ", staleProjects=" + staleProjects +
-                ", nonPublicProjects=" + nonPublicProjects +
-                ", missingFiles=" + missingFiles +
-                ", erroredJobs=" + erroredJobs +
+                "noTopicProjects=" + this.noTopicProjects +
+                ", staleProjects=" + this.staleProjects +
+                ", nonPublicProjects=" + this.nonPublicProjects +
+                ", missingFiles=" + this.missingFiles +
+                ", erroredJobs=" + this.erroredJobs +
                 '}';
     }
 }

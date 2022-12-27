@@ -35,55 +35,55 @@ public class JdbiBeanFactoryPostProcessor implements BeanDefinitionRegistryPostP
     private ClassLoader classLoader;
 
     @Override
-    public void setResourceLoader(@NotNull ResourceLoader resourceLoader) {
+    public void setResourceLoader(final @NotNull ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 
     @Override
-    public void setEnvironment(@NotNull Environment environment) {
+    public void setEnvironment(final @NotNull Environment environment) {
         this.environment = environment;
     }
 
     @Override
-    public void setBeanClassLoader(@NotNull ClassLoader classLoader) {
+    public void setBeanClassLoader(final @NotNull ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
     @Override
-    public void setBeanFactory(@NotNull BeanFactory beanFactory) throws BeansException {
+    public void setBeanFactory(final @NotNull BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
 
     @Override
-    public void postProcessBeanFactory(@NotNull ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
+    public void postProcessBeanFactory(final @NotNull ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
         // not needed
     }
 
     @Override
-    public void postProcessBeanDefinitionRegistry(@NotNull BeanDefinitionRegistry registry) throws BeansException {
-        ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false) {
+    public void postProcessBeanDefinitionRegistry(final @NotNull BeanDefinitionRegistry registry) throws BeansException {
+        final ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false) {
             @Override
-            protected boolean isCandidateComponent(@NotNull AnnotatedBeanDefinition beanDefinition) {
+            protected boolean isCandidateComponent(final @NotNull AnnotatedBeanDefinition beanDefinition) {
                 // By default, scanner does not accept regular interface without @Lookup method, bypass this
                 return true;
             }
         };
-        scanner.setEnvironment(environment);
-        scanner.setResourceLoader(resourceLoader);
+        scanner.setEnvironment(this.environment);
+        scanner.setResourceLoader(this.resourceLoader);
         scanner.addIncludeFilter(new AnnotationTypeFilter(Repository.class));
-        List<String> basePackages = AutoConfigurationPackages.get(beanFactory);
+        final List<String> basePackages = AutoConfigurationPackages.get(this.beanFactory);
         basePackages.stream()
                 .map(scanner::findCandidateComponents)
                 .flatMap(Collection::stream)
-                .forEach(bd -> registerJdbiDaoBeanFactory(registry, bd));
+                .forEach(bd -> this.registerJdbiDaoBeanFactory(registry, bd));
     }
 
-    private void registerJdbiDaoBeanFactory(BeanDefinitionRegistry registry, BeanDefinition bd) {
-        GenericBeanDefinition beanDefinition = (GenericBeanDefinition) bd;
-        Class<?> jdbiDaoClass;
+    private void registerJdbiDaoBeanFactory(final BeanDefinitionRegistry registry, final BeanDefinition bd) {
+        final GenericBeanDefinition beanDefinition = (GenericBeanDefinition) bd;
+        final Class<?> jdbiDaoClass;
         try {
-            jdbiDaoClass = beanDefinition.resolveBeanClass(classLoader);
-        } catch (ClassNotFoundException e) {
+            jdbiDaoClass = beanDefinition.resolveBeanClass(this.classLoader);
+        } catch (final ClassNotFoundException e) {
             throw new FatalBeanException(beanDefinition.getBeanClassName() + " not found on classpath", e);
         }
         beanDefinition.setBeanClass(JdbiDaoBeanFactory.class);

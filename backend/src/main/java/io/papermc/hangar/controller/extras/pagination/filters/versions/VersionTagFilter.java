@@ -26,32 +26,31 @@ public class VersionTagFilter implements Filter<VersionTagFilterInstance> {
         return "A version tag to filter for";
     }
 
-    @NotNull
     @Override
-    public VersionTagFilterInstance create(NativeWebRequest webRequest) {
-        MultiValueMap<String, String> versionTags = new LinkedMultiValueMap<>();
-        for (String tag : webRequest.getParameterValues(getSingleQueryParam())) {
+    public @NotNull VersionTagFilterInstance create(final NativeWebRequest webRequest) {
+        final MultiValueMap<String, String> versionTags = new LinkedMultiValueMap<>();
+        for (final String tag : webRequest.getParameterValues(this.getSingleQueryParam())) {
             if (!tag.contains(":")) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "Must specify a version. e.g. Paper:1.14");
             }
-            String[] splitTag = tag.split(":", 2);
+            final String[] splitTag = tag.split(":", 2);
             versionTags.add(splitTag[0], splitTag[1]);
         }
         return new VersionTagFilterInstance(versionTags);
     }
 
-    static class VersionTagFilterInstance implements FilterInstance {
+    static class VersionTagFilterInstance implements Filter.FilterInstance {
 
         private final MultiValueMap<String, String> versionTags;
 
-        VersionTagFilterInstance(MultiValueMap<String, String> versionTags) {
+        VersionTagFilterInstance(final MultiValueMap<String, String> versionTags) {
             this.versionTags = versionTags;
         }
 
         @Override
-        public void createSql(StringBuilder sb, SqlStatement<?> q) {
+        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             sb.append(" AND (");
-            versionTags.forEach((name, versions) -> {
+            this.versionTags.forEach((name, versions) -> {
                 q.bind("__vTag_name_" + name, name);
                 for (int i = 0; i < versions.size(); i++) {
                     sb.append(":__vTag_name_").append(name).append("_v_").append(i).append(" = ANY(SELECT unnest(vtsq.data) WHERE vtsq.name = :__vTag_name_").append(name).append(")");
@@ -67,7 +66,7 @@ public class VersionTagFilter implements Filter<VersionTagFilterInstance> {
         @Override
         public String toString() {
             return "VersionTagFilterInstance{" +
-                    "versionTags=" + versionTags +
+                    "versionTags=" + this.versionTags +
                     '}';
         }
     }

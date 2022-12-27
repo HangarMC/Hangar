@@ -12,7 +12,7 @@ public class MissingFileCheck {
     private final ProjectNamespace namespace;
     private final String name;
 
-    public MissingFileCheck(Platform platform, String versionString, String fileName, @Nested ProjectNamespace namespace, String name) {
+    public MissingFileCheck(final Platform platform, final String versionString, final String fileName, @Nested final ProjectNamespace namespace, final String name) {
         this.platform = platform;
         this.versionString = versionString;
         this.fileName = fileName;
@@ -21,33 +21,33 @@ public class MissingFileCheck {
     }
 
     public Platform getPlatform() {
-        return platform;
+        return this.platform;
     }
 
     public String getVersionString() {
-        return versionString;
+        return this.versionString;
     }
 
     public String getFileName() {
-        return fileName;
+        return this.fileName;
     }
 
     public ProjectNamespace getNamespace() {
-        return namespace;
+        return this.namespace;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public String toString() {
         return "MissingFileCheck{" +
-                "platform=" + platform +
-                ", versionString='" + versionString + '\'' +
-                ", fileName='" + fileName + '\'' +
-                ", namespace=" + namespace +
-                ", name='" + name + '\'' +
+                "platform=" + this.platform +
+                ", versionString='" + this.versionString + '\'' +
+                ", fileName='" + this.fileName + '\'' +
+                ", namespace=" + this.namespace +
+                ", name='" + this.name + '\'' +
                 '}';
     }
 }

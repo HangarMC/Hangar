@@ -6,30 +6,30 @@ public class UserActions {
     private final boolean watching;
     private final boolean flagged;
 
-    public UserActions(boolean starred, boolean watching, boolean flagged) {
+    public UserActions(final boolean starred, final boolean watching, final boolean flagged) {
         this.starred = starred;
         this.watching = watching;
         this.flagged = flagged;
     }
 
     public boolean isStarred() {
-        return starred;
+        return this.starred;
     }
 
     public boolean isWatching() {
-        return watching;
+        return this.watching;
     }
 
     public boolean isFlagged() {
-        return flagged;
+        return this.flagged;
     }
 
     @Override
     public String toString() {
         return "UserActions{" +
-                "starred=" + starred +
-                ", watching=" + watching +
-                ", flagged=" + flagged +
+                "starred=" + this.starred +
+                ", watching=" + this.watching +
+                ", flagged=" + this.flagged +
                 '}';
     }
 }

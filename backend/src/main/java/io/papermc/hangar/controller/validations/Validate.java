@@ -36,14 +36,14 @@ public @interface Validate {
         private Expression expression;
 
         @Override
-        public void initialize(Validate constraintAnnotation) {
-            ExpressionParser expressionParser = new SpelExpressionParser();
-            expression = expressionParser.parseExpression(constraintAnnotation.SpEL());
+        public void initialize(final Validate constraintAnnotation) {
+            final ExpressionParser expressionParser = new SpelExpressionParser();
+            this.expression = expressionParser.parseExpression(constraintAnnotation.SpEL());
         }
 
         @Override
-        public boolean isValid(Object value, ConstraintValidatorContext context) {
-            Boolean bool = expression.getValue(evaluationContext, value, boolean.class);
+        public boolean isValid(final Object value, final ConstraintValidatorContext context) {
+            final Boolean bool = this.expression.getValue(this.evaluationContext, value, boolean.class);
             return bool != null && bool;
         }
     }

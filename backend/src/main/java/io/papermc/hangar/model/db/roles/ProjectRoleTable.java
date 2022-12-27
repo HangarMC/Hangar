@@ -15,12 +15,12 @@ public class ProjectRoleTable extends ExtendedRoleTable<ProjectRole, ProjectCont
     private final long projectId;
 
     @JdbiConstructor
-    public ProjectRoleTable(OffsetDateTime createdAt, long id, long userId, @ColumnName("role_type") ProjectRole role, boolean accepted, long projectId) {
+    public ProjectRoleTable(final OffsetDateTime createdAt, final long id, final long userId, @ColumnName("role_type") final ProjectRole role, final boolean accepted, final long projectId) {
         super(createdAt, id, userId, role, accepted);
         this.projectId = projectId;
     }
 
-    public ProjectRoleTable(long userId, ProjectRole role, boolean accepted, long projectId) {
+    public ProjectRoleTable(final long userId, final ProjectRole role, final boolean accepted, final long projectId) {
         super(userId, role, accepted);
         this.projectId = projectId;
     }
@@ -28,19 +28,19 @@ public class ProjectRoleTable extends ExtendedRoleTable<ProjectRole, ProjectCont
     @JsonIgnore
     @Override
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     @JdbiProperty(map=false)
     @Override
     public long getPrincipalId() {
-        return projectId;
+        return this.projectId;
     }
 
     @Override
     public String toString() {
         return "ProjectRoleTable{" +
-                "projectId=" + projectId +
+                "projectId=" + this.projectId +
                 "} " + super.toString();
     }
 }

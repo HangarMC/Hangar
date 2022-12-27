@@ -107,7 +107,7 @@ public class VersionFactory extends HangarComponent {
     private final FileService fileService;
 
     @Autowired
-    public VersionFactory(ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, ProjectVersionDependenciesDAO projectVersionDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectVersionsDAO projectVersionDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, ProjectService projectService, NotificationService notificationService, PlatformService platformService, UsersApiService usersApiService, JobService jobService, ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, FileService fileService) {
+    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final PlatformVersionDAO platformVersionDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final JobService jobService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.platformVersionDAO = platformVersionDAO;
@@ -129,7 +129,7 @@ public class VersionFactory extends HangarComponent {
 
     @Transactional
     public PendingVersion createPendingVersion(final long projectId, final List<MultipartFileOrUrl> data, final List<MultipartFile> files, final String channel) {
-        final ProjectTable projectTable = projectService.getProjectTable(projectId);
+        final ProjectTable projectTable = this.projectService.getProjectTable(projectId);
         if (projectTable == null) {
             throw new IllegalArgumentException();
         }
@@ -141,7 +141,7 @@ public class VersionFactory extends HangarComponent {
         final Set<Platform> processedPlatforms = EnumSet.noneOf(Platform.class);
 
         // Delete old temp data
-        final Path userTempDir = projectFiles.getTempDir(getHangarPrincipal().getName());
+        final Path userTempDir = this.projectFiles.getTempDir(this.getHangarPrincipal().getName());
         if (Files.exists(userTempDir)) {
             FileUtils.deleteDirectory(userTempDir);
         }
@@ -155,13 +155,13 @@ public class VersionFactory extends HangarComponent {
 
             if (fileOrUrl.isUrl()) {
                 // Handle external url
-                createPendingUrl(channel, projectTable, pluginDependencies, platformDependencies, pendingFiles, fileOrUrl);
+                this.createPendingUrl(channel, projectTable, pluginDependencies, platformDependencies, pendingFiles, fileOrUrl);
             } else {
-                versionString = createPendingFile(files.remove(0), channel, projectTable, pluginDependencies, platformDependencies, pendingFiles, versionString, userTempDir, fileOrUrl);
+                versionString = this.createPendingFile(files.remove(0), channel, projectTable, pluginDependencies, platformDependencies, pendingFiles, versionString, userTempDir, fileOrUrl);
             }
         }
 
-        tempDirCache.put(userTempDir, DUMMY);
+        this.tempDirCache.put(userTempDir, DUMMY);
 
         for (final Platform platform : processedPlatforms) {
             platformDependencies.putIfAbsent(platform, Collections.emptySortedSet());
@@ -170,7 +170,7 @@ public class VersionFactory extends HangarComponent {
         return new PendingVersion(versionString, pluginDependencies, platformDependencies, pendingFiles, projectTable.isForumSync());
     }
 
-    private String createPendingFile(MultipartFile file, String channel, ProjectTable projectTable, Map<Platform, Set<PluginDependency>> pluginDependencies, Map<Platform, SortedSet<String>> platformDependencies, List<PendingVersionFile> pendingFiles, String versionString, Path userTempDir, MultipartFileOrUrl fileOrUrl) {
+    private String createPendingFile(final MultipartFile file, final String channel, final ProjectTable projectTable, final Map<Platform, Set<PluginDependency>> pluginDependencies, final Map<Platform, SortedSet<String>> platformDependencies, final List<PendingVersionFile> pendingFiles, String versionString, final Path userTempDir, final MultipartFileOrUrl fileOrUrl) {
         // check extension
         final String pluginFileName = file.getOriginalFilename();
         if (pluginFileName == null || (!pluginFileName.endsWith(".zip") && !pluginFileName.endsWith(".jar"))) {
@@ -189,13 +189,13 @@ public class VersionFactory extends HangarComponent {
 
             final Path tmpPluginFile = tmpDir.resolve(pluginFileName);
             file.transferTo(tmpPluginFile);
-            pluginDataFile = pluginDataService.loadMeta(tmpPluginFile, getHangarPrincipal().getUserId());
+            pluginDataFile = this.pluginDataService.loadMeta(tmpPluginFile, this.getHangarPrincipal().getUserId());
         } catch (final ConfigurateException configurateException) {
-            logger.error("Error while reading file metadata while uploading {} for {}", pluginFileName, getHangarPrincipal().getName(), configurateException);
+            this.logger.error("Error while reading file metadata while uploading {} for {}", pluginFileName, this.getHangarPrincipal().getName(), configurateException);
             FileUtils.deleteDirectory(userTempDir);
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.metaNotFound");
         } catch (final IOException e) {
-            logger.error("Error while uploading {} for {}", pluginFileName, getHangarPrincipal().getName(), e);
+            this.logger.error("Error while uploading {} for {}", pluginFileName, this.getHangarPrincipal().getName(), e);
             FileUtils.deleteDirectory(userTempDir);
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.unexpected");
         }
@@ -209,7 +209,7 @@ public class VersionFactory extends HangarComponent {
 
         // setup dependencies
         for (final Platform platform : fileOrUrl.platforms()) {
-            final LastDependencies lastDependencies = getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), channel, platform);
+            final LastDependencies lastDependencies = this.getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), channel, platform);
             if (lastDependencies != null) {
                 pluginDependencies.put(platform, lastDependencies.pluginDependencies());
                 platformDependencies.put(platform, lastDependencies.platformDependencies());
@@ -230,10 +230,10 @@ public class VersionFactory extends HangarComponent {
         return versionString;
     }
 
-    private void createPendingUrl(String channel, ProjectTable projectTable, Map<Platform, Set<PluginDependency>> pluginDependencies, Map<Platform, SortedSet<String>> platformDependencies, List<PendingVersionFile> pendingFiles, MultipartFileOrUrl fileOrUrl) {
+    private void createPendingUrl(final String channel, final ProjectTable projectTable, final Map<Platform, Set<PluginDependency>> pluginDependencies, final Map<Platform, SortedSet<String>> platformDependencies, final List<PendingVersionFile> pendingFiles, final MultipartFileOrUrl fileOrUrl) {
         pendingFiles.add(new PendingVersionFile(fileOrUrl.platforms(), null, fileOrUrl.externalUrl()));
         for (final Platform platform : fileOrUrl.platforms()) {
-            final LastDependencies lastDependencies = getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), channel, platform);
+            final LastDependencies lastDependencies = this.getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), channel, platform);
             if (lastDependencies != null) {
                 pluginDependencies.put(platform, lastDependencies.pluginDependencies());
                 platformDependencies.put(platform, lastDependencies.platformDependencies());
@@ -242,56 +242,56 @@ public class VersionFactory extends HangarComponent {
     }
 
     @Transactional
-    public void publishPendingVersion(long projectId, final PendingVersion pendingVersion) {
+    public void publishPendingVersion(final long projectId, final PendingVersion pendingVersion) {
         // basic validation
-        if (!validationService.isValidVersionName(pendingVersion.getVersionString())) {
+        if (!this.validationService.isValidVersionName(pendingVersion.getVersionString())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidName");
         }
-        if (pendingVersion.getPluginDependencies().values().stream().anyMatch(pluginDependencies -> pluginDependencies.size() > config.projects.maxDependencies())) {
+        if (pendingVersion.getPluginDependencies().values().stream().anyMatch(pluginDependencies -> pluginDependencies.size() > this.config.projects.maxDependencies())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.tooManyDependencies");
         }
-        if (exists(projectId, pendingVersion.getVersionString())) {
+        if (this.exists(projectId, pendingVersion.getVersionString())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.duplicateNameAndPlatform");
         }
 
         // get project
-        final ProjectTable projectTable = projectService.getProjectTable(projectId);
+        final ProjectTable projectTable = this.projectService.getProjectTable(projectId);
         assert projectTable != null;
 
         // verify that all platform files exist and that platform dependencies are setup correctly
-        final Path userTempDir = projectFiles.getTempDir(getHangarPrincipal().getName());
-        verifyPendingPlatforms(pendingVersion, userTempDir);
+        final Path userTempDir = this.projectFiles.getTempDir(this.getHangarPrincipal().getName());
+        this.verifyPendingPlatforms(pendingVersion, userTempDir);
 
         ProjectVersionTable projectVersionTable = null;
-        final String versionDir = projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getSlug(), pendingVersion.getVersionString());
+        final String versionDir = this.projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getSlug(), pendingVersion.getVersionString());
         try {
             // find channel
-            ProjectChannelTable projectChannelTable = channelService.getProjectChannel(projectId, pendingVersion.getChannelName(), pendingVersion.getChannelColor());
+            ProjectChannelTable projectChannelTable = this.channelService.getProjectChannel(projectId, pendingVersion.getChannelName(), pendingVersion.getChannelColor());
             if (projectChannelTable == null) {
                 projectChannelTable = this.channelService.createProjectChannel(pendingVersion.getChannelName(), pendingVersion.getChannelColor(), projectId, pendingVersion.getChannelFlags().stream().filter(ChannelFlag::isEditable).collect(Collectors.toSet()));
             }
 
             // insert version
-            projectVersionTable = projectVersionsDAO.insert(new ProjectVersionTable(
+            projectVersionTable = this.projectVersionsDAO.insert(new ProjectVersionTable(
                 pendingVersion.getVersionString(),
                 pendingVersion.getDescription(),
                 projectId,
                 projectChannelTable.getId(),
-                getHangarPrincipal().getUserId(),
+                this.getHangarPrincipal().getUserId(),
                 pendingVersion.isForumSync()
             ));
 
             // insert dependencies
-            processDependencies(pendingVersion, projectVersionTable.getId());
+            this.processDependencies(pendingVersion, projectVersionTable.getId());
 
             // move over files
             final List<Pair<ProjectVersionDownloadTable, List<Platform>>> downloadsTables = new ArrayList<>();
             for (final PendingVersionFile pendingVersionFile : pendingVersion.getFiles()) {
-                processPendingVersionFile(pendingVersion, userTempDir, projectVersionTable, versionDir, downloadsTables, pendingVersionFile);
+                this.processPendingVersionFile(pendingVersion, userTempDir, projectVersionTable, versionDir, downloadsTables, pendingVersionFile);
             }
 
             // Insert download data
-            final List<ProjectVersionDownloadTable> tables = downloadsDAO.insertDownloads(downloadsTables.stream().map(Pair::getLeft).toList());
+            final List<ProjectVersionDownloadTable> tables = this.downloadsDAO.insertDownloads(downloadsTables.stream().map(Pair::getLeft).toList());
             final List<ProjectVersionPlatformDownloadTable> platformDownloadsTables = new ArrayList<>();
             for (int i = 0; i < downloadsTables.size(); i++) {
                 final ProjectVersionDownloadTable downloadTable = tables.get(i);
@@ -299,29 +299,29 @@ public class VersionFactory extends HangarComponent {
                     platformDownloadsTables.add(new ProjectVersionPlatformDownloadTable(projectVersionTable.getVersionId(), platform, downloadTable.getId()));
                 }
             }
-            downloadsDAO.insertPlatformDownloads(platformDownloadsTables);
+            this.downloadsDAO.insertPlatformDownloads(platformDownloadsTables);
 
             // send notifications
-            notificationService.notifyUsersNewVersion(projectTable, projectVersionTable, projectService.getProjectWatchers(projectTable.getId()));
-            actionLogger.version(LogAction.VERSION_CREATED.create(VersionContext.of(projectId, projectVersionTable.getId()), "published", ""));
+            this.notificationService.notifyUsersNewVersion(projectTable, projectVersionTable, this.projectService.getProjectWatchers(projectTable.getId()));
+            this.actionLogger.version(LogAction.VERSION_CREATED.create(VersionContext.of(projectId, projectVersionTable.getId()), "published", ""));
 
             if (projectTable.getVisibility() == Visibility.NEW) {
                 //TODO automatic checks for malicious code or files => set visibility to NEEDSAPPROVAL
-                projectVisibilityService.changeVisibility(projectTable, Visibility.PUBLIC, "First version");
+                this.projectVisibilityService.changeVisibility(projectTable, Visibility.PUBLIC, "First version");
             }
 
             // forum stuff
-            processJobs(projectId, projectVersionTable.getId(), pendingVersion, projectTable);
+            this.processJobs(projectId, projectVersionTable.getId(), pendingVersion, projectTable);
 
             // cache purging
-            projectService.refreshHomeProjects();
-            usersApiService.clearAuthorsCache();
-        } catch (Exception e) {
-            logger.error("Unable to create version {} for {}", pendingVersion.getVersionString(), getHangarPrincipal().getName(), e);
+            this.projectService.refreshHomeProjects();
+            this.usersApiService.clearAuthorsCache();
+        } catch (final Exception e) {
+            this.logger.error("Unable to create version {} for {}", pendingVersion.getVersionString(), this.getHangarPrincipal().getName(), e);
             if (projectVersionTable != null) {
-                projectVersionsDAO.delete(projectVersionTable);
+                this.projectVersionsDAO.delete(projectVersionTable);
             }
-            fileService.deleteDirectory(versionDir);
+            this.fileService.deleteDirectory(versionDir);
             if (e instanceof IOException) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.fileIOError");
             } else {
@@ -330,25 +330,25 @@ public class VersionFactory extends HangarComponent {
         }
     }
 
-    private void processJobs(long projectId, long versionId, PendingVersion pendingVersion, ProjectTable projectTable) {
+    private void processJobs(final long projectId, final long versionId, final PendingVersion pendingVersion, final ProjectTable projectTable) {
         if (pendingVersion.isForumSync()) {
             if (projectTable.getVisibility() == Visibility.NEW) {
-                jobService.save(new UpdateDiscourseProjectTopicJob(projectId));
+                this.jobService.save(new UpdateDiscourseProjectTopicJob(projectId));
             }
-            jobService.save(new UpdateDiscourseVersionPostJob(versionId));
+            this.jobService.save(new UpdateDiscourseVersionPostJob(versionId));
         }
     }
 
-    private void processDependencies(PendingVersion pendingVersion, long versionId) {
+    private void processDependencies(final PendingVersion pendingVersion, final long versionId) {
         // platform deps
         final List<ProjectVersionPlatformDependencyTable> platformDependencyTables = new ArrayList<>();
         for (final Map.Entry<Platform, SortedSet<String>> entry : pendingVersion.getPlatformDependencies().entrySet()) {
             for (final String version : entry.getValue()) {
-                PlatformVersionTable platformVersionTable = platformVersionDAO.getByPlatformAndVersion(entry.getKey(), version);
+                final PlatformVersionTable platformVersionTable = this.platformVersionDAO.getByPlatformAndVersion(entry.getKey(), version);
                 platformDependencyTables.add(new ProjectVersionPlatformDependencyTable(versionId, platformVersionTable.getId()));
             }
         }
-        projectVersionPlatformDependenciesDAO.insertAll(platformDependencyTables);
+        this.projectVersionPlatformDependenciesDAO.insertAll(platformDependencyTables);
 
         // plugin deps
         final List<ProjectVersionDependencyTable> pluginDependencyTables = new ArrayList<>();
@@ -356,7 +356,7 @@ public class VersionFactory extends HangarComponent {
             for (final PluginDependency pluginDependency : platformListEntry.getValue()) {
                 Long depProjectId = null;
                 if (pluginDependency.getNamespace() != null) {
-                    Optional<ProjectTable> depProjectTable = Optional.ofNullable(projectService.getProjectTable(pluginDependency.getNamespace().getOwner(), pluginDependency.getNamespace().getSlug()));
+                    final Optional<ProjectTable> depProjectTable = Optional.ofNullable(this.projectService.getProjectTable(pluginDependency.getNamespace().getOwner(), pluginDependency.getNamespace().getSlug()));
                     if (depProjectTable.isEmpty()) {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPluginDependencyNamespace");
                     }
@@ -365,10 +365,10 @@ public class VersionFactory extends HangarComponent {
                 pluginDependencyTables.add(new ProjectVersionDependencyTable(versionId, platformListEntry.getKey(), pluginDependency.getName(), pluginDependency.isRequired(), depProjectId, pluginDependency.getExternalUrl()));
             }
         }
-        projectVersionDependenciesDAO.insertAll(pluginDependencyTables);
+        this.projectVersionDependenciesDAO.insertAll(pluginDependencyTables);
     }
 
-    private void processPendingVersionFile(PendingVersion pendingVersion, Path userTempDir, ProjectVersionTable projectVersionTable, String versionDir, List<Pair<ProjectVersionDownloadTable, List<Platform>>> downloadsTables, PendingVersionFile pendingVersionFile) throws IOException {
+    private void processPendingVersionFile(final PendingVersion pendingVersion, final Path userTempDir, final ProjectVersionTable projectVersionTable, final String versionDir, final List<Pair<ProjectVersionDownloadTable, List<Platform>>> downloadsTables, final PendingVersionFile pendingVersionFile) throws IOException {
         final FileInfo fileInfo = pendingVersionFile.fileInfo();
         if (fileInfo == null) {
             final ProjectVersionDownloadTable table = new ProjectVersionDownloadTable(projectVersionTable.getVersionId(), null, null, null, pendingVersionFile.externalUrl());
@@ -380,8 +380,8 @@ public class VersionFactory extends HangarComponent {
         final Platform platformToResolve = pendingVersionFile.platforms().get(0);
         final Path tmpVersionJar = userTempDir.resolve(platformToResolve.name()).resolve(fileInfo.getName());
 
-        final String newVersionJarPath = fileService.resolve(fileService.resolve(versionDir, platformToResolve.name()), tmpVersionJar.getFileName().toString());
-        fileService.move(tmpVersionJar.toString(), newVersionJarPath);
+        final String newVersionJarPath = this.fileService.resolve(this.fileService.resolve(versionDir, platformToResolve.name()), tmpVersionJar.getFileName().toString());
+        this.fileService.move(tmpVersionJar.toString(), newVersionJarPath);
 
         // Create links for the other platforms
         for (int i = 1; i < pendingVersionFile.platforms().size(); i++) {
@@ -390,14 +390,14 @@ public class VersionFactory extends HangarComponent {
                 continue;
             }
 
-            final String platformPath = fileService.resolve(versionDir, platform.name());
-            final String platformJarPath = fileService.resolve(platformPath, tmpVersionJar.getFileName().toString());
-            if (fileService instanceof S3FileService) {
+            final String platformPath = this.fileService.resolve(versionDir, platform.name());
+            final String platformJarPath = this.fileService.resolve(platformPath, tmpVersionJar.getFileName().toString());
+            if (this.fileService instanceof S3FileService) {
                 // this isn't nice, but we cant link, so what am I supposed to do?
                 // fileService.move(tmpVersionJar.toString(), platformJarPath);
                 // actually, lets do nothing here, in frontend only the primary platform is used for downloading anyways
             } else {
-                fileService.link(newVersionJarPath, platformJarPath);
+                this.fileService.link(newVersionJarPath, platformJarPath);
             }
         }
 
@@ -405,7 +405,7 @@ public class VersionFactory extends HangarComponent {
         downloadsTables.add(ImmutablePair.of(table, pendingVersionFile.platforms()));
     }
 
-    private void verifyPendingPlatforms(PendingVersion pendingVersion, Path userTempDir) {
+    private void verifyPendingPlatforms(final PendingVersion pendingVersion, final Path userTempDir) {
         final Set<Platform> processedPlatforms = EnumSet.noneOf(Platform.class);
         for (final PendingVersionFile pendingVersionFile : pendingVersion.getFiles()) {
             if (!processedPlatforms.addAll(pendingVersionFile.platforms())) {
@@ -425,18 +425,18 @@ public class VersionFactory extends HangarComponent {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.hashMismatch");
                     }
                 } catch (final IOException e) {
-                    logger.error("Could not publish version for {}", getHangarPrincipal().getName(), e);
+                    this.logger.error("Could not publish version for {}", this.getHangarPrincipal().getName(), e);
                 }
             }
 
-            if (pendingVersion.getPlatformDependencies().entrySet().stream().anyMatch(en -> !new HashSet<>(platformService.getVersionsForPlatform(en.getKey())).containsAll(en.getValue()))) {
+            if (pendingVersion.getPlatformDependencies().entrySet().stream().anyMatch(en -> !new HashSet<>(this.platformService.getVersionsForPlatform(en.getKey())).containsAll(en.getValue()))) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPlatformVersion");
             }
         }
     }
 
     @Transactional
-    public @Nullable LastDependencies getLastVersionDependencies(final String author, final String slug, @Nullable final String channel, final Platform platform) {
+    public @Nullable LastDependencies getLastVersionDependencies(final String author, final String slug, final @Nullable String channel, final Platform platform) {
         //TODO optimize with specific query
         final RequestPagination pagination = new RequestPagination(1L, 0L);
         pagination.getFilters().add(new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
@@ -445,20 +445,20 @@ public class VersionFactory extends HangarComponent {
             pagination.getFilters().add(new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
         }
 
-        final Long versionId = versionsApiDAO.getVersions(author, slug, false, getHangarUserId(), pagination).keySet().stream().findAny().orElse(null);
+        final Long versionId = this.versionsApiDAO.getVersions(author, slug, false, this.getHangarUserId(), pagination).keySet().stream().findAny().orElse(null);
         if (versionId != null) {
-            final SortedSet<String> platformDependency = versionsApiDAO.getPlatformDependencies(versionId).get(platform);
+            final SortedSet<String> platformDependency = this.versionsApiDAO.getPlatformDependencies(versionId).get(platform);
             if (platformDependency != null) {
-                return new LastDependencies(platformDependency, versionsApiDAO.getPluginDependencies(versionId, platform));
+                return new LastDependencies(platformDependency, this.versionsApiDAO.getPluginDependencies(versionId, platform));
             }
             return null;
         }
 
         // Try again with any channel, else empty
-        return channel != null ? getLastVersionDependencies(author, slug, null, platform) : null;
+        return channel != null ? this.getLastVersionDependencies(author, slug, null, platform) : null;
     }
 
-    private boolean exists(long projectId, String versionString) {
-        return projectVersionsDAO.getProjectVersion(projectId, versionString) != null;
+    private boolean exists(final long projectId, final String versionString) {
+        return this.projectVersionsDAO.getProjectVersion(projectId, versionString) != null;
     }
 }

@@ -84,9 +84,8 @@ public class HangarApiException extends ResponseStatusException {
         return this.args;
     }
 
-    @NotNull
     @Override
-    public HttpHeaders getResponseHeaders() {
+    public @NotNull HttpHeaders getResponseHeaders() {
         return this.httpHeaders;
     }
 
@@ -99,7 +98,7 @@ public class HangarApiException extends ResponseStatusException {
             HttpStatus status = null;
             try {
                 status = exception.getStatus();
-            } catch (IllegalArgumentException ignored) {
+            } catch (final IllegalArgumentException ignored) {
             }
             if (message == null || message.isBlank()) {
                 if (status != null) {
@@ -111,7 +110,7 @@ public class HangarApiException extends ResponseStatusException {
             gen.writeStartObject();
             gen.writeStringField("message", message);
             gen.writeArrayFieldStart("messageArgs");
-            for (Object arg : exception.args) {
+            for (final Object arg : exception.args) {
                 provider.defaultSerializeValue(arg, gen);
             }
             gen.writeEndArray();

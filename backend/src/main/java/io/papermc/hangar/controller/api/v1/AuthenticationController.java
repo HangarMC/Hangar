@@ -17,13 +17,13 @@ public class AuthenticationController extends HangarComponent implements IAuthen
     private final APIAuthenticationService apiAuthenticationService;
 
     @Autowired
-    public AuthenticationController(APIAuthenticationService apiAuthenticationService) {
+    public AuthenticationController(final APIAuthenticationService apiAuthenticationService) {
         this.apiAuthenticationService = apiAuthenticationService;
     }
 
     @Anyone
     @Override
-    public ResponseEntity<ApiSession> authenticate(String apiKey) {
-        return ResponseEntity.ok(apiAuthenticationService.createJWTForApiKey(apiKey));
+    public ResponseEntity<ApiSession> authenticate(final String apiKey) {
+        return ResponseEntity.ok(this.apiAuthenticationService.createJWTForApiKey(apiKey));
     }
 }

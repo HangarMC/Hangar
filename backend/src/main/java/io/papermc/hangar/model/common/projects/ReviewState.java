@@ -15,7 +15,7 @@ public enum ReviewState {
     private final String apiName;
     private final String frontendName;
 
-    ReviewState(String apiName, String frontendName) {
+    ReviewState(final String apiName, final String frontendName) {
         this.apiName = apiName;
         this.frontendName = frontendName;
     }
@@ -23,24 +23,24 @@ public enum ReviewState {
     @Override
     @JsonValue
     public String toString() {
-        return apiName;
+        return this.apiName;
     }
 
     public String getApiName() {
-        return apiName;
+        return this.apiName;
     }
 
     public String getFrontendName() {
-        return frontendName;
+        return this.frontendName;
     }
 
     public boolean isChecked() {
-        return this == ReviewState.REVIEWED || this == ReviewState.PARTIALLY_REVIEWED;
+        return this == REVIEWED || this == PARTIALLY_REVIEWED;
     }
 
     @JsonCreator
-    public static ReviewState fromValue(String text) {
-        for (ReviewState b : ReviewState.values()) {
+    public static ReviewState fromValue(final String text) {
+        for (final ReviewState b : values()) {
             if (String.valueOf(b.apiName).equals(text)) {
                 return b;
             }

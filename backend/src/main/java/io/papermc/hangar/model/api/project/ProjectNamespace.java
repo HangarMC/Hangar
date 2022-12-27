@@ -11,13 +11,13 @@ public class ProjectNamespace {
     private final String slug;
 
     @JdbiConstructor
-    public ProjectNamespace(@PropagateNull String owner, String slug) {
+    public ProjectNamespace(@PropagateNull final String owner, final String slug) {
         this.owner = owner;
         this.slug = slug;
     }
 
-    public ProjectNamespace(String namespace) {
-        String[] split = namespace.split("/");
+    public ProjectNamespace(final String namespace) {
+        final String[] split = namespace.split("/");
         if (split.length != 2) {
             throw new IllegalArgumentException("Namespace must be <owner>/<slug> but was '" + namespace + "'");
         }
@@ -26,29 +26,29 @@ public class ProjectNamespace {
     }
 
     public String getOwner() {
-        return owner;
+        return this.owner;
     }
 
     public String getSlug() {
-        return slug;
+        return this.slug;
     }
 
     @Override
     public String toString() {
-        return owner + "/" + slug;
+        return this.owner + "/" + this.slug;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProjectNamespace that = (ProjectNamespace) o;
-        return owner.equals(that.owner) && slug.equals(that.slug);
+        if (o == null || this.getClass() != o.getClass()) return false;
+        final ProjectNamespace that = (ProjectNamespace) o;
+        return this.owner.equals(that.owner) && this.slug.equals(that.slug);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(owner, slug);
+        return Objects.hash(this.owner, this.slug);
     }
 }
 

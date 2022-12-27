@@ -34,7 +34,7 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
     private final List<AccessDecisionVoter<?>> accessDecisionVoters;
 
     @Autowired
-    public MethodSecurityConfig(ApplicationContext applicationContext, List<AnnotationMetadataExtractor> annotationMetadataExtractors, List<AccessDecisionVoter<?>> accessDecisionVoters) {
+    public MethodSecurityConfig(final ApplicationContext applicationContext, final List<AnnotationMetadataExtractor> annotationMetadataExtractors, final List<AccessDecisionVoter<?>> accessDecisionVoters) {
         this.applicationContext = applicationContext;
         this.annotationMetadataExtractors = annotationMetadataExtractors;
         this.accessDecisionVoters = accessDecisionVoters;
@@ -42,27 +42,27 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 
     @Override
     protected MethodSecurityMetadataSource customMethodSecurityMetadataSource() {
-        return new HangarMetadataSources(annotationMetadataExtractors);
+        return new HangarMetadataSources(this.annotationMetadataExtractors);
     }
 
     @Override
     protected AccessDecisionManager accessDecisionManager() {
-        List<AccessDecisionVoter<?>> decisionVoters = new ArrayList<>();
-        ExpressionBasedPreInvocationAdvice expressionAdvice =
+        final List<AccessDecisionVoter<?>> decisionVoters = new ArrayList<>();
+        final ExpressionBasedPreInvocationAdvice expressionAdvice =
                 new ExpressionBasedPreInvocationAdvice();
-        expressionAdvice.setExpressionHandler(getExpressionHandler());
+        expressionAdvice.setExpressionHandler(this.getExpressionHandler());
         decisionVoters.add(new PreInvocationAuthorizationAdviceVoter(expressionAdvice));
         decisionVoters.add(new Jsr250Voter());
-        RoleVoter roleVoter = new RoleVoter();
+        final RoleVoter roleVoter = new RoleVoter();
         try {
-            GrantedAuthorityDefaults grantedAuthorityDefaults = applicationContext.getBean(GrantedAuthorityDefaults.class);
+            final GrantedAuthorityDefaults grantedAuthorityDefaults = this.applicationContext.getBean(GrantedAuthorityDefaults.class);
             roleVoter.setRolePrefix(grantedAuthorityDefaults.getRolePrefix());
-        } catch (BeansException ignored) {
+        } catch (final BeansException ignored) {
         }
         decisionVoters.add(roleVoter);
         decisionVoters.add(new AuthenticatedVoter());
-        decisionVoters.addAll(accessDecisionVoters);
-        UnanimousBased accessDecisionManager = new HangarUnanimousBased(decisionVoters);
+        decisionVoters.addAll(this.accessDecisionVoters);
+        final UnanimousBased accessDecisionManager = new HangarUnanimousBased(decisionVoters);
         accessDecisionManager.setAllowIfAllAbstainDecisions(true);
         return accessDecisionManager;
     }

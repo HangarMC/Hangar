@@ -11,25 +11,25 @@ public class LoggedActionsPageTable extends LoggedActionTable {
     private final long projectId;
     private final long pageId;
 
-    public LoggedActionsPageTable(long userId, InetAddress address, LoggedAction<PageContext> action) {
+    public LoggedActionsPageTable(final long userId, final InetAddress address, final LoggedAction<PageContext> action) {
         super(userId, address, action);
         this.projectId = action.getContext().getProjectId();
         this.pageId = action.getContext().getPageId();
     }
 
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     public long getPageId() {
-        return pageId;
+        return this.pageId;
     }
 
     @Override
     public String toString() {
         return "LoggedActionsPageTable{" +
-                "projectId=" + projectId +
-                ", pageId=" + pageId +
+                "projectId=" + this.projectId +
+                ", pageId=" + this.pageId +
                 "} " + super.toString();
     }
 }

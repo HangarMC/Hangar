@@ -13,25 +13,25 @@ public class RobotsBuilder {
         this.sitemaps = new ArrayList<>();
     }
 
-    public Group group(String userAgent) {
+    public Group group(final String userAgent) {
         return new Group(userAgent, this);
     }
 
-    public RobotsBuilder sitemap(String sitemap) {
+    public RobotsBuilder sitemap(final String sitemap) {
         this.sitemaps.add(sitemap);
         return this;
     }
 
     public String build() {
-        StringBuilder sb = new StringBuilder();
-        for (Group group : groups) {
+        final StringBuilder sb = new StringBuilder();
+        for (final Group group : this.groups) {
             sb.append("user-agent: ").append(group.userAgent).append("\n");
-            for (String directive : group.directives) {
+            for (final String directive : group.directives) {
                 sb.append(directive).append("\n");
             }
         }
         sb.append("\n\n");
-        for (String sitemap : sitemaps) {
+        for (final String sitemap : this.sitemaps) {
             sb.append("Sitemap: ").append(sitemap).append("\n");
         }
         return sb.toString();
@@ -43,18 +43,18 @@ public class RobotsBuilder {
         private final RobotsBuilder builder;
         private final List<String> directives;
 
-        private Group(String userAgent, RobotsBuilder builder) {
+        private Group(final String userAgent, final RobotsBuilder builder) {
             this.userAgent = userAgent;
             this.builder = builder;
             this.directives = new ArrayList<>();
         }
 
-        public Group allow(String path) {
+        public Group allow(final String path) {
             this.directives.add("Allow: " + path);
             return this;
         }
 
-        public Group disallow(String path) {
+        public Group disallow(final String path) {
             this.directives.add("Disallow: " + path);
             return this;
         }

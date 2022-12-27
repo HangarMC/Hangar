@@ -11,30 +11,30 @@ public class DiscourseError extends RuntimeException {
         private final HttpStatus status;
         private final String message;
 
-        public StatusError(HttpStatus status, String message) {
+        public StatusError(final HttpStatus status, final String message) {
             this.status = status;
             this.message = message;
         }
 
         public HttpStatus getStatus() {
-            return status;
+            return this.status;
         }
 
         @Override
         public String getMessage() {
-            return message;
+            return this.message;
         }
     }
 
     public static class RateLimitError extends DiscourseError {
         private final Duration duration;
 
-        public RateLimitError(Duration duration) {
+        public RateLimitError(final Duration duration) {
             this.duration = duration;
         }
 
         public Duration getDuration() {
-            return duration;
+            return this.duration;
         }
     }
 
@@ -51,8 +51,7 @@ public class DiscourseError extends RuntimeException {
         private final String descriptor;
         private final Map<String, Object> extras;
 
-        public UnknownError(String message, String descriptor, Map<String, Object> extras) {
-            super();
+        public UnknownError(final String message, final String descriptor, final Map<String, Object> extras) {
             this.message = message;
             this.descriptor = descriptor;
             this.extras = extras;
@@ -60,15 +59,15 @@ public class DiscourseError extends RuntimeException {
 
         @Override
         public String getMessage() {
-            return message;
+            return this.message;
         }
 
         public String getDescriptor() {
-            return descriptor;
+            return this.descriptor;
         }
 
         public Map<String, Object> getExtras() {
-            return extras;
+            return this.extras;
         }
     }
 
@@ -76,14 +75,13 @@ public class DiscourseError extends RuntimeException {
 
         private final String message;
 
-        public NotProcessable(String message) {
-            super();
+        public NotProcessable(final String message) {
             this.message = message;
         }
 
         @Override
         public String getMessage() {
-            return message;
+            return this.message;
         }
     }
 }

@@ -13,6 +13,6 @@ public enum NotificationType {
 
     @JsonValue
     public String getValue() {
-        return name().toLowerCase(Locale.ROOT);
+        return this.name().toLowerCase(Locale.ROOT);
     }
 }

@@ -22,35 +22,35 @@ public class RateLimitInterceptor implements HandlerInterceptor {
     private final BucketService bucketService;
 
     @Autowired
-    public RateLimitInterceptor(BucketService bucketService) {
+    public RateLimitInterceptor(final BucketService bucketService) {
         this.bucketService = bucketService;
     }
 
     @Override
-    public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {
+    public boolean preHandle(final @NotNull HttpServletRequest request, final @NotNull HttpServletResponse response, final @NotNull Object handler) {
         if (!(handler instanceof HandlerMethod handlerMethod)) {
             return true;
         }
 
-        Method method = handlerMethod.getMethod();
-        RateLimit limit = method.getAnnotation(RateLimit.class);
+        final Method method = handlerMethod.getMethod();
+        final RateLimit limit = method.getAnnotation(RateLimit.class);
         if (limit != null) {
-            applyLimit(request.getServletPath(), limit);
+            this.applyLimit(request.getServletPath(), limit);
         }
 
-        RateLimit superLimit = method.getDeclaringClass().getAnnotation(RateLimit.class);
+        final RateLimit superLimit = method.getDeclaringClass().getAnnotation(RateLimit.class);
         if (superLimit != null) {
-            applyLimit(request.getServletPath(), superLimit);
+            this.applyLimit(request.getServletPath(), superLimit);
         }
         return true;
     }
 
-    private void applyLimit(String path, RateLimit limit) throws HangarApiException {
+    private void applyLimit(String path, final RateLimit limit) throws HangarApiException {
         if (!limit.path().isEmpty()) {
             path = limit.path();
         }
 
-        Bucket bucket = bucketService.bucket(path, limit);
+        final Bucket bucket = this.bucketService.bucket(path, limit);
         if (bucket != null && !bucket.tryConsume(1)) {
             LOGGER.debug("Applying rate limit for path {} due to limit at {}", path, limit.path());
             throw HangarApiException.rateLimited();

@@ -19,7 +19,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -64,7 +63,7 @@ public interface VersionsApiDAO {
             "       pv.id = :versionId" +
             "   ORDERED BY pv.created_at DESC"
     )
-    Entry<Long, Version> getVersion(long versionId, @Define boolean canSeeHidden, @Define Long userId);
+    Map.Entry<Long, Version> getVersion(long versionId, @Define boolean canSeeHidden, @Define Long userId);
 
     @KeyColumn("id")
     @SqlQuery("SELECT pv.id," +
@@ -101,7 +100,7 @@ public interface VersionsApiDAO {
             "       lower(p.slug) = lower(:slug) AND" +
             "       pv.version_string = :versionString"
     )
-    Entry<Long, Version> getVersionWithVersionString(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
+    Map.Entry<Long, Version> getVersionWithVersionString(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
 
     @KeyColumn("id")
     @SqlQuery("SELECT pv.id," +

@@ -44,57 +44,57 @@ public class FlagController extends HangarComponent {
     @ResponseStatus(HttpStatus.CREATED)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void flag(@RequestBody @Valid FlagForm form) {
-        flagService.createFlag(form.getProjectId(), form.getReason(), form.getComment());
+    public void flag(@RequestBody final @Valid FlagForm form) {
+        this.flagService.createFlag(form.getProjectId(), form.getReason(), form.getComment());
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/{id}/resolve/{resolve}")
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
-    public void resolve(@PathVariable long id, @PathVariable boolean resolve) {
-        flagService.markAsResolved(id, resolve);
+    public void resolve(@PathVariable final long id, @PathVariable final boolean resolve) {
+        this.flagService.markAsResolved(id, resolve);
     }
 
     @ResponseBody
     @GetMapping(path = "/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
-    public List<HangarProjectFlag> getFlags(@PathVariable long projectId) {
-        return flagService.getFlags(projectId);
+    public List<HangarProjectFlag> getFlags(@PathVariable final long projectId) {
+        return this.flagService.getFlags(projectId);
     }
 
     @ResponseBody
     @GetMapping(path = "/resolved", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
-    public PaginatedResult<HangarProjectFlag> getResolvedFlags(@NotNull RequestPagination pagination) {
-        return flagService.getFlags(pagination, true);
+    public PaginatedResult<HangarProjectFlag> getResolvedFlags(final @NotNull RequestPagination pagination) {
+        return this.flagService.getFlags(pagination, true);
     }
 
     @ResponseBody
     @GetMapping(path = "/unresolved", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
-    public PaginatedResult<HangarProjectFlag> getUnresolvedFlags(@NotNull RequestPagination pagination) {
-        return flagService.getFlags(pagination, false);
+    public PaginatedResult<HangarProjectFlag> getUnresolvedFlags(final @NotNull RequestPagination pagination) {
+        return this.flagService.getFlags(pagination, false);
     }
 
     @GetMapping(path = "/unresolvedamount")
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     public ResponseEntity<Long> getUnresolvedFlagsQueueSize() {
-        return ResponseEntity.ok(flagService.getFlagsQueueSize(false));
+        return ResponseEntity.ok(this.flagService.getFlagsQueueSize(false));
     }
 
     @ResponseBody
     @GetMapping(path = "/{id}/notifications", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
-    public List<HangarProjectFlagNotification> getNotifications(@PathVariable long id) {
-        return flagService.getFlagNotifications(id);
+    public List<HangarProjectFlagNotification> getNotifications(@PathVariable final long id) {
+        return this.flagService.getFlagNotifications(id);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     @PostMapping(path = "/{id}/notify", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void notifyReportParty(@PathVariable long id, @RequestBody ReportNotificationForm form) {
-        flagService.notifyParty(id, form.warning(), form.toReporter(), form.content());
+    public void notifyReportParty(@PathVariable final long id, @RequestBody final ReportNotificationForm form) {
+        this.flagService.notifyParty(id, form.warning(), form.toReporter(), form.content());
     }
 }

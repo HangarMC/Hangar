@@ -24,26 +24,25 @@ public class LogPageFilter implements Filter<LogPageFilterInstance> {
     }
 
     @Override
-    public boolean supports(NativeWebRequest webRequest) {
-        return Filter.super.supports(webRequest) && NumberUtils.isDigits(webRequest.getParameter(getSingleQueryParam()));
+    public boolean supports(final NativeWebRequest webRequest) {
+        return Filter.super.supports(webRequest) && NumberUtils.isDigits(webRequest.getParameter(this.getSingleQueryParam()));
     }
 
-    @NotNull
     @Override
-    public LogPageFilterInstance create(NativeWebRequest webRequest) {
-        return new LogPageFilterInstance(Long.parseLong(webRequest.getParameter(getSingleQueryParam())));
+    public @NotNull LogPageFilterInstance create(final NativeWebRequest webRequest) {
+        return new LogPageFilterInstance(Long.parseLong(webRequest.getParameter(this.getSingleQueryParam())));
     }
 
-    static class LogPageFilterInstance implements FilterInstance {
+    static class LogPageFilterInstance implements Filter.FilterInstance {
 
         private final long pageId;
 
-        LogPageFilterInstance(long pageId) {
+        LogPageFilterInstance(final long pageId) {
             this.pageId = pageId;
         }
 
         @Override
-        public void createSql(StringBuilder sb, SqlStatement<?> q) {
+        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             sb.append(" AND la.pp_id = :pageId");
             q.bind("pageId", this.pageId);
         }

@@ -1,30 +1,29 @@
 package io.papermc.hangar.model.common;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
-@JsonFormat(shape = Shape.OBJECT)
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Prompt {
     CHANGE_AVATAR("prompts.changeAvatar.title", "prompts.changeAvatar.message");
 
     final String titleKey;
     final String messageKey;
 
-    Prompt(String titleKey, String messageKey) {
+    Prompt(final String titleKey, final String messageKey) {
         this.titleKey = titleKey;
         this.messageKey = messageKey;
     }
 
-    public int getOrdinal() { return ordinal(); }
+    public int getOrdinal() { return this.ordinal(); }
 
-    public String getName() { return name(); }
+    public String getName() { return this.name(); }
 
     public String getTitleKey() {
-        return titleKey;
+        return this.titleKey;
     }
 
     public String getMessageKey() {
-        return messageKey;
+        return this.messageKey;
     }
 
     private static final Prompt[] VALUES = values();

@@ -23,7 +23,7 @@ public class UserTable extends Table implements ProjectOwner {
     private String theme;
 
     @JdbiConstructor
-    public UserTable(OffsetDateTime createdAt, @PropagateNull long id, UUID uuid, String name, String email, String tagline, OffsetDateTime joinDate, List<Integer> readPrompts, boolean locked, String language, String theme) {
+    public UserTable(final OffsetDateTime createdAt, @PropagateNull final long id, final UUID uuid, final String name, final String email, final String tagline, final OffsetDateTime joinDate, final List<Integer> readPrompts, final boolean locked, final String language, final String theme) {
         super(createdAt, id);
         this.uuid = uuid;
         this.name = name;
@@ -36,7 +36,7 @@ public class UserTable extends Table implements ProjectOwner {
         this.theme = theme;
     }
 
-    public UserTable(long id, UUID uuid, String name, String email, List<Integer> readPrompts, boolean locked, String language, String theme) {
+    public UserTable(final long id, final UUID uuid, final String name, final String email, final List<Integer> readPrompts, final boolean locked, final String language, final String theme) {
         super(id);
         this.uuid = uuid;
         this.name = name;
@@ -48,97 +48,96 @@ public class UserTable extends Table implements ProjectOwner {
     }
 
     public UUID getUuid() {
-        return uuid;
+        return this.uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(final UUID uuid) {
         this.uuid = uuid;
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
     @JsonIgnore
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
-    @Nullable
-    public String getTagline() {
-        return tagline;
+    public @Nullable String getTagline() {
+        return this.tagline;
     }
 
-    public void setTagline(String tagline) {
+    public void setTagline(final String tagline) {
         this.tagline = tagline;
     }
 
     public OffsetDateTime getJoinDate() {
-        return joinDate;
+        return this.joinDate;
     }
 
-    public void setJoinDate(OffsetDateTime joinDate) {
+    public void setJoinDate(final OffsetDateTime joinDate) {
         this.joinDate = joinDate;
     }
 
     public List<Integer> getReadPrompts() {
-        return readPrompts;
+        return this.readPrompts;
     }
 
-    public void setReadPrompts(List<Integer> readPrompts) {
+    public void setReadPrompts(final List<Integer> readPrompts) {
         this.readPrompts = readPrompts;
     }
 
     public boolean isLocked() {
-        return locked;
+        return this.locked;
     }
 
-    public void setLocked(boolean locked) {
+    public void setLocked(final boolean locked) {
         this.locked = locked;
     }
 
     public String getLanguage() {
-        return language;
+        return this.language;
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage(final String language) {
         this.language = language;
     }
 
     public String getTheme() {
-        return theme;
+        return this.theme;
     }
 
-    public void setTheme(String theme) {
+    public void setTheme(final String theme) {
         this.theme = theme;
     }
 
     @Override
     public long getUserId() {
-        return id;
+        return this.id;
     }
 
     @Override
     public String toString() {
         return "UserTable{" +
-                ", uuid='" + uuid + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", tagline='" + tagline + '\'' +
-                ", joinDate=" + joinDate +
-                ", readPrompts=" + readPrompts +
-                ", locked=" + locked +
-                ", language='" + language + '\'' +
-                ", theme='" + theme + '\'' +
+                ", uuid='" + this.uuid + '\'' +
+                ", name='" + this.name + '\'' +
+                ", email='" + this.email + '\'' +
+                ", tagline='" + this.tagline + '\'' +
+                ", joinDate=" + this.joinDate +
+                ", readPrompts=" + this.readPrompts +
+                ", locked=" + this.locked +
+                ", language='" + this.language + '\'' +
+                ", theme='" + this.theme + '\'' +
                 "} " + super.toString();
     }
 }

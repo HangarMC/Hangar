@@ -17,8 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.Map.Entry;
+import java.util.Map;
 
 abstract class VisibilityService<LC extends LogContext<?, LC>, M extends Table & ModelVisible & ProjectIdentified & Loggable<LC>, VT extends VisibilityChangeTable> extends HangarComponent {
 
@@ -28,16 +27,16 @@ abstract class VisibilityService<LC extends LogContext<?, LC>, M extends Table &
     private final VisibilityChangeTableConstructor<VT> changeTableConstructor;
     private final LogAction<LC> visibilityChangeLogAction;
 
-    protected VisibilityService(VisibilityChangeTableConstructor<VT> changeTableConstructor, LogAction<LC> visibilityChangeLogAction) {
+    protected VisibilityService(final VisibilityChangeTableConstructor<VT> changeTableConstructor, final LogAction<LC> visibilityChangeLogAction) {
         this.changeTableConstructor = changeTableConstructor;
         this.visibilityChangeLogAction = visibilityChangeLogAction;
     }
 
-    public M changeVisibility(long modelId, Visibility newVisibility, String comment) {
-        return changeVisibility(getModel(modelId), newVisibility, comment);
+    public M changeVisibility(final long modelId, final Visibility newVisibility, final String comment) {
+        return this.changeVisibility(this.getModel(modelId), newVisibility, comment);
     }
 
-    public M changeVisibility(@Nullable M model, Visibility newVisibility, String comment) {
+    public M changeVisibility(@Nullable M model, final Visibility newVisibility, final String comment) {
         if (model == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
@@ -45,31 +44,31 @@ abstract class VisibilityService<LC extends LogContext<?, LC>, M extends Table &
             return model;
         }
 
-        updateLastVisChange(getHangarPrincipal().getUserId(), model.getId());
+        this.updateLastVisChange(this.getHangarPrincipal().getUserId(), model.getId());
 
-        insertNewVisibilityEntry(changeTableConstructor.create(getHangarPrincipal().getUserId(), comment == null ? "" : comment, newVisibility, model.getId()));
+        this.insertNewVisibilityEntry(this.changeTableConstructor.create(this.getHangarPrincipal().getUserId(), comment == null ? "" : comment, newVisibility, model.getId()));
 
-        Visibility oldVis = model.getVisibility();
+        final Visibility oldVis = model.getVisibility();
         model.setVisibility(newVisibility);
-        model = updateModel(model);
-        model.logAction(actionLogger, visibilityChangeLogAction, newVisibility.getTitle(), oldVis.getTitle());
-        postUpdate(model);
+        model = this.updateModel(model);
+        model.logAction(this.actionLogger, this.visibilityChangeLogAction, newVisibility.getTitle(), oldVis.getTitle());
+        this.postUpdate(model);
         return model;
     }
 
-    public final M checkVisibility(@Nullable M model) {
+    public final M checkVisibility(final @Nullable M model) {
         if (model == null) {
             return null;
         }
-        logger.debug("Checking visibility of {} User: {}", model, SecurityContextHolder.getContext().getAuthentication());
+        this.logger.debug("Checking visibility of {} User: {}", model, SecurityContextHolder.getContext().getAuthentication());
 
         if (SecurityContextHolder.getContext().getAuthentication() instanceof JobService.JobAuthentication) {
             return model;
         }
 
-        Permission perms = permissionService.getProjectPermissions(getHangarUserId(), model.getProjectId());
+        final Permission perms = this.permissionService.getProjectPermissions(this.getHangarUserId(), model.getProjectId());
         if (!perms.has(Permission.SeeHidden) && !perms.has(Permission.IsProjectMember) && model.getVisibility() != Visibility.PUBLIC) {
-            logger.debug("Not visible. Perms: {} Visibility: {}", perms, model.getVisibility());
+            this.logger.debug("Not visible. Perms: {} Visibility: {}", perms, model.getVisibility());
             return null;
         }
         return model;
@@ -83,9 +82,9 @@ abstract class VisibilityService<LC extends LogContext<?, LC>, M extends Table &
 
     abstract void insertNewVisibilityEntry(VT visibilityTable);
 
-    protected void postUpdate(@Nullable M model) { }
+    protected void postUpdate(final @Nullable M model) { }
 
-    public abstract Entry<String, VT> getLastVisibilityChange(long principalId);
+    public abstract Map.Entry<String, VT> getLastVisibilityChange(long principalId);
 
     @FunctionalInterface
     interface VisibilityChangeTableConstructor<T extends VisibilityChangeTable> {

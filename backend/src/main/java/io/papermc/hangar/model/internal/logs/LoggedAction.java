@@ -12,7 +12,7 @@ public class LoggedAction<LC extends LogContext<? extends LoggedActionTable, LC>
     private final String newState;
     private final String oldState;
 
-    LoggedAction(LogAction<LC> type, LC context, String newState, String oldState) {
+    LoggedAction(final LogAction<LC> type, final LC context, final String newState, final String oldState) {
         this.type = type;
         this.context = context;
         this.newState = Objects.requireNonNull(newState);
@@ -20,18 +20,18 @@ public class LoggedAction<LC extends LogContext<? extends LoggedActionTable, LC>
     }
 
     public LogAction<LC> getType() {
-        return type;
+        return this.type;
     }
 
     public LC getContext() {
-        return context;
+        return this.context;
     }
 
     public String getNewState() {
-        return newState;
+        return this.newState;
     }
 
     public String getOldState() {
-        return oldState;
+        return this.oldState;
     }
 }

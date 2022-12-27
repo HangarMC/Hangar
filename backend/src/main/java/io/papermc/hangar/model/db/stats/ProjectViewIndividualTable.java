@@ -10,26 +10,26 @@ public class ProjectViewIndividualTable extends IndividualTable implements Proje
 
     private final long projectId;
 
-    public ProjectViewIndividualTable(InetAddress address, String cookie, Long userId, long projectId) {
+    public ProjectViewIndividualTable(final InetAddress address, final String cookie, final Long userId, final long projectId) {
         super(address, cookie, userId);
         this.projectId = projectId;
     }
 
     @JdbiConstructor
-    public ProjectViewIndividualTable(OffsetDateTime createdAt, long id, long projectId, InetAddress address, String cookie, Long userId, int processed) {
+    public ProjectViewIndividualTable(final OffsetDateTime createdAt, final long id, final long projectId, final InetAddress address, final String cookie, final Long userId, final int processed) {
         super(createdAt, id, address, cookie, userId, processed);
         this.projectId = projectId;
     }
 
     @Override
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     @Override
     public String toString() {
         return "ProjectViewIndividualTable{" +
-                "projectId=" + projectId +
+                "projectId=" + this.projectId +
                 "} " + super.toString();
     }
 }

@@ -15,7 +15,7 @@ public abstract class HangarInvite<R extends Role<? extends IRoleTable<R>>> {
     private final String name;
     private final String url;
 
-    protected HangarInvite(long roleTableId, R role, String name, String url) {
+    protected HangarInvite(final long roleTableId, final R role, final String name, final String url) {
         this.role = role;
         this.roleTableId = roleTableId;
         this.name = name;
@@ -23,26 +23,26 @@ public abstract class HangarInvite<R extends Role<? extends IRoleTable<R>>> {
     }
 
     public long getRoleTableId() {
-        return roleTableId;
+        return this.roleTableId;
     }
 
     public R getRole() {
-        return role;
+        return this.role;
     }
 
     public abstract InviteType getType();
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     public static class HangarProjectInvite extends HangarInvite<ProjectRole> {
 
-        public HangarProjectInvite(long roleTableId, ProjectRole role, String name, String url) {
+        public HangarProjectInvite(final long roleTableId, final ProjectRole role, final String name, final String url) {
             super(roleTableId, role, name, url);
         }
 
@@ -54,7 +54,7 @@ public abstract class HangarInvite<R extends Role<? extends IRoleTable<R>>> {
 
     public static class HangarOrganizationInvite extends HangarInvite<OrganizationRole> {
 
-        public HangarOrganizationInvite(long roleTableId, OrganizationRole role, String name, String url) {
+        public HangarOrganizationInvite(final long roleTableId, final OrganizationRole role, final String name, final String url) {
             super(roleTableId, role, name, url);
         }
 

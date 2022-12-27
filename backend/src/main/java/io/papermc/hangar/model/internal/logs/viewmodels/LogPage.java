@@ -8,30 +8,30 @@ public class LogPage {
     private final String name;
     private final String slug;
 
-    public LogPage(@PropagateNull Long id, String name, String slug) {
+    public LogPage(@PropagateNull final Long id, final String name, final String slug) {
         this.id = id;
         this.name = name;
         this.slug = slug;
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getSlug() {
-        return slug;
+        return this.slug;
     }
 
     @Override
     public String toString() {
         return "LogPage{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", slug='" + slug + '\'' +
+                "id=" + this.id +
+                ", name='" + this.name + '\'' +
+                ", slug='" + this.slug + '\'' +
                 '}';
     }
 }

@@ -14,67 +14,67 @@ class BBCodeConverterTest {
 
     @Test
     void testDuplicates() {
-        String result = converter.convertToMarkdown("[b][s][b]Test[b]Tes[/b]t[/s][/b][/b]");
+        final String result = this.converter.convertToMarkdown("[b][s][b]Test[b]Tes[/b]t[/s][/b][/b]");
         Assertions.assertEquals("**~~TestTest~~**", result);
     }
 
     @Test
     void testRemoved() {
-        String result = converter.convertToMarkdown("[list][size=4][color=red][user=kennytv]T[/size][center]e[font=upsidedown][/center]st[/font][/color][/user][/list]");
+        final String result = this.converter.convertToMarkdown("[list][size=4][color=red][user=kennytv]T[/size][center]e[font=upsidedown][/center]st[/font][/color][/user][/list]");
         Assertions.assertEquals("Test", result);
     }
 
     @Test
     void testList() {
-        String result = converter.convertToMarkdown("[list]\n[*]Element 1\n[*]Element 2\n[/list]");
+        final String result = this.converter.convertToMarkdown("[list]\n[*]Element 1\n[*]Element 2\n[/list]");
         Assertions.assertEquals("\n* Element 1\n* Element 2\n", result);
     }
 
     @Test
     void testFormatting() {
-        String result = converter.convertToMarkdown("[b]I am bold [i]and cursive [s]and crossed out[/s][/i][/b]");
+        final String result = this.converter.convertToMarkdown("[b]I am bold [i]and cursive [s]and crossed out[/s][/i][/b]");
         Assertions.assertEquals("**I am bold *and cursive ~~and crossed out~~***", result);
     }
 
     @Test
     void testImageAndUrl() {
-        String result = converter.convertToMarkdown("[img]imagelink[/img], [url=https://github.com/]click here[/url] or [url='https://github.com/']here[/url]");
+        final String result = this.converter.convertToMarkdown("[img]imagelink[/img], [url=https://github.com/]click here[/url] or [url='https://github.com/']here[/url]");
         Assertions.assertEquals("![imagelink](imagelink), [click here](https://github.com/) or [here](https://github.com/)", result);
     }
 
     @Test
     void testCode() {
-        String result = converter.convertToMarkdown("[code]Codeblock![/code]");
+        final String result = this.converter.convertToMarkdown("[code]Codeblock![/code]");
         Assertions.assertEquals("```\nCodeblock!\n```", result);
     }
 
     @Test
     void testInlineCode() {
-        String result = converter.convertToMarkdown("My code is [icode]inline[/icode]!");
+        final String result = this.converter.convertToMarkdown("My code is [icode]inline[/icode]!");
         Assertions.assertEquals("My code is `inline`!", result);
     }
 
     @Test
     void testAttachment() {
-        String result = converter.convertToMarkdown("[attach]100[/attach]");
+        final String result = this.converter.convertToMarkdown("[attach]100[/attach]");
         Assertions.assertEquals("![https://www.spigotmc.org/attachments/100](https://www.spigotmc.org/attachments/100)", result);
     }
 
     @Test
     void testMedia() {
-        String result = converter.convertToMarkdown("[MEDIA=youtube]dQw4w9WgXcQ[/MEDIA]");
+        final String result = this.converter.convertToMarkdown("[MEDIA=youtube]dQw4w9WgXcQ[/MEDIA]");
         Assertions.assertEquals("@[YouTube](https://youtu.be/dQw4w9WgXcQ)", result);
     }
 
     @Test
     void testMediaUnsupportedPlatform() {
-        String result = converter.convertToMarkdown("[MEDIA=vimeo]163721649[/MEDIA]");
+        final String result = this.converter.convertToMarkdown("[MEDIA=vimeo]163721649[/MEDIA]");
         Assertions.assertEquals("[MEDIA=vimeo]163721649[/MEDIA]", result);
     }
 
     @Test
     void testCodeBlocksSameLine() {
-        String result = converter.convertToMarkdown("""
+        final String result = this.converter.convertToMarkdown("""
             [code]{
             }[/code]""");
         Assertions.assertEquals("""
@@ -86,7 +86,7 @@ class BBCodeConverterTest {
 
     @Test
     void testCodeBlocksSameLineTextAfter() {
-        String result = converter.convertToMarkdown("[code]this is a newline[/code]NEWLINE");
+        final String result = this.converter.convertToMarkdown("[code]this is a newline[/code]NEWLINE");
         Assertions.assertEquals("""
             ```
             this is a newline
@@ -96,7 +96,7 @@ class BBCodeConverterTest {
 
     @Test
     void testCodeblockWhitespace() {
-        String result = converter.convertToMarkdown("[code]NEWLINE  [/code]NEWLINE");
+        final String result = this.converter.convertToMarkdown("[code]NEWLINE  [/code]NEWLINE");
         Assertions.assertEquals("```\nNEWLINE  \n```\nNEWLINE", result);
     }
 
@@ -108,7 +108,7 @@ class BBCodeConverterTest {
             MARKDOWN
 
             ```""",
-            converter.convertToMarkdown("""
+                this.converter.convertToMarkdown("""
             [code]
             MARKDOWN
             [/code]"""));
@@ -117,7 +117,7 @@ class BBCodeConverterTest {
             ```
             MARKDOWN
             ```""",
-            converter.convertToMarkdown("[code]MARKDOWN[/code]"));
+                this.converter.convertToMarkdown("[code]MARKDOWN[/code]"));
 
         Assertions.assertEquals("""
                 ```
@@ -126,7 +126,7 @@ class BBCodeConverterTest {
                 ```
                 Codeblock!
                 ```""",
-            converter.convertToMarkdown("[code]Codeblock![/code][code]Codeblock![/code]"));
+                this.converter.convertToMarkdown("[code]Codeblock![/code][code]Codeblock![/code]"));
     }
 
     @Test
@@ -137,7 +137,7 @@ class BBCodeConverterTest {
                TEXT
 
                ```""",
-           converter.convertToMarkdown("""
+               this.converter.convertToMarkdown("""
                [code=Kotlin]
                TEXT
                [/code]"""));
@@ -147,7 +147,7 @@ class BBCodeConverterTest {
                TEXT
 
                ```""",
-            converter.convertToMarkdown("""
+                this.converter.convertToMarkdown("""
                [code=Java]TEXT
                [/code]"""));
 
@@ -155,24 +155,24 @@ class BBCodeConverterTest {
               ```java
               TEXT
               ```""",
-            converter.convertToMarkdown("[code=Java]TEXT[/code]"));
+                this.converter.convertToMarkdown("[code=Java]TEXT[/code]"));
     }
 
     @Test
     void testEscaping() {
-        Assertions.assertEquals("`hi[B]bold[/B]`", converter.convertToMarkdown("[icode]hi[B]bold[/B][/icode]"));
+        Assertions.assertEquals("`hi[B]bold[/B]`", this.converter.convertToMarkdown("[icode]hi[B]bold[/B][/icode]"));
         Assertions.assertEquals("""
             ```
             hi[B]bold[/B]
-            ```""", converter.convertToMarkdown("[code]hi[B]bold[/B][/code]"));
+            ```""", this.converter.convertToMarkdown("[code]hi[B]bold[/B][/code]"));
     }
 
     @Test
     void testComplexExample() throws IOException {
         // Be sure to retest/-generate this output if "breaking" changes are made, for example to spacing
-        String input = Files.readString(PATH.resolve("BBCodeExample.txt"));
-        String expected = Files.readString(PATH.resolve("BBCodeConverted.txt"));
-        String result = converter.convertToMarkdown(input);
+        final String input = Files.readString(PATH.resolve("BBCodeExample.txt"));
+        final String expected = Files.readString(PATH.resolve("BBCodeConverted.txt"));
+        final String result = this.converter.convertToMarkdown(input);
         Assertions.assertEquals(expected, result);
     }
 }

@@ -45,7 +45,7 @@ public class ProjectFactory extends HangarComponent {
     private final FileService fileService;
 
     @Autowired
-    public ProjectFactory(final ProjectsDAO projectDAO, final ProjectService projectService, final ChannelService channelService, final ProjectPageService projectPageService, final ProjectMemberService projectMemberService, final ProjectVisibilityService projectVisibilityService, final UsersApiService usersApiService, final JobService jobService, final ProjectFiles projectFiles, final ValidationService validationService, FileService fileService) {
+    public ProjectFactory(final ProjectsDAO projectDAO, final ProjectService projectService, final ChannelService channelService, final ProjectPageService projectPageService, final ProjectMemberService projectMemberService, final ProjectVisibilityService projectVisibilityService, final UsersApiService usersApiService, final JobService jobService, final ProjectFiles projectFiles, final ValidationService validationService, final FileService fileService) {
         this.projectsDAO = projectDAO;
         this.projectService = projectService;
         this.channelService = channelService;
@@ -61,7 +61,7 @@ public class ProjectFactory extends HangarComponent {
 
     @Transactional
     public ProjectTable createProject(final NewProjectForm newProject) {
-        ProjectOwner projectOwner = this.projectService.getProjectOwner(newProject.getOwnerId());
+        final ProjectOwner projectOwner = this.projectService.getProjectOwner(newProject.getOwnerId());
         if (projectOwner == null) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "error.project.ownerNotFound");
         }
@@ -77,7 +77,7 @@ public class ProjectFactory extends HangarComponent {
             }
             this.projectPageService.createPage(projectTable.getId(), this.config.pages.home().name(), StringUtils.slugify(this.config.pages.home().name()), newPageContent, false, null, true);
             this.jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
-        } catch (Exception exception) {
+        } catch (final Exception exception) {
             if (projectTable != null) {
                 this.projectsDAO.delete(projectTable);
             }
@@ -89,7 +89,7 @@ public class ProjectFactory extends HangarComponent {
     }
 
     public String renameProject(final String author, final String slug, final String newName) {
-        return renameProject(author, slug, newName, false);
+        return this.renameProject(author, slug, newName, false);
     }
 
     @Transactional
@@ -107,7 +107,7 @@ public class ProjectFactory extends HangarComponent {
         this.actionLogger.project(LogAction.PROJECT_RENAMED.create(ProjectContext.of(projectTable.getId()), author + "/" + compactNewName, author + "/" + oldName));
         this.jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
         this.projectService.refreshHomeProjects();
-        projectFiles.renameProject(projectTable.getOwnerName(), oldSlug, newSlug);
+        this.projectFiles.renameProject(projectTable.getOwnerName(), oldSlug, newSlug);
         return newSlug;
     }
 
@@ -121,7 +121,7 @@ public class ProjectFactory extends HangarComponent {
             errorKey = this.validationService.isValidProjectName(name);
         }
         if (errorKey == null) {
-            InvalidProjectReason reason = this.projectsDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));
+            final InvalidProjectReason reason = this.projectsDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));
             if (reason != null) {
                 errorKey = reason.key;
             }

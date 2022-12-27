@@ -24,30 +24,30 @@ public class LogUserFilter implements Filter<LogUserFilterInstance> {
     }
 
     @Override
-    public @NotNull LogUserFilterInstance create(NativeWebRequest webRequest) {
-        return new LogUserFilterInstance(webRequest.getParameter(getSingleQueryParam()));
+    public @NotNull LogUserFilterInstance create(final NativeWebRequest webRequest) {
+        return new LogUserFilterInstance(webRequest.getParameter(this.getSingleQueryParam()));
     }
 
-    static class LogUserFilterInstance implements FilterInstance {
+    static class LogUserFilterInstance implements Filter.FilterInstance {
 
         private final String userName;
 
-        LogUserFilterInstance(String userName) {
+        LogUserFilterInstance(final String userName) {
             this.userName = userName;
         }
 
         @Override
-        public void createSql(StringBuilder sb, SqlStatement<?> q) {
-            if (StringUtils.isNotBlank(userName)) {
+        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
+            if (StringUtils.isNotBlank(this.userName)) {
                 sb.append(" AND la.user_name = :userName");
-                q.bind("userName", userName);
+                q.bind("userName", this.userName);
             }
         }
 
         @Override
         public String toString() {
             return "LogUserFilterInstance{" +
-                    "userName='" + userName + '\'' +
+                    "userName='" + this.userName + '\'' +
                     '}';
         }
     }

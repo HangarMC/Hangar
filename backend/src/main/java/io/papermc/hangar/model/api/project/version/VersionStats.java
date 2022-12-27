@@ -4,18 +4,18 @@ public class VersionStats {
 
     private final long downloads;
 
-    public VersionStats(long downloads) {
+    public VersionStats(final long downloads) {
         this.downloads = downloads;
     }
 
     public long getDownloads() {
-        return downloads;
+        return this.downloads;
     }
 
     @Override
     public String toString() {
         return "VersionStats{" +
-                "downloads=" + downloads +
+                "downloads=" + this.downloads +
                 '}';
     }
 }

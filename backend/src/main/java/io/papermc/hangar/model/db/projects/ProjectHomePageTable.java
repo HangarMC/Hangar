@@ -10,31 +10,31 @@ public class ProjectHomePageTable extends Table {
     private final long projectId;
     private final long pageId;
 
-    public ProjectHomePageTable(long projectId, long pageId) {
+    public ProjectHomePageTable(final long projectId, final long pageId) {
         this.projectId = projectId;
         this.pageId = pageId;
     }
 
     @JdbiConstructor
-    public ProjectHomePageTable(OffsetDateTime createdAt, long id, long projectId, long pageId) {
+    public ProjectHomePageTable(final OffsetDateTime createdAt, final long id, final long projectId, final long pageId) {
         super(createdAt, id);
         this.projectId = projectId;
         this.pageId = pageId;
     }
 
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     public long getPageId() {
-        return pageId;
+        return this.pageId;
     }
 
     @Override
     public String toString() {
         return "ProjectHomePageTable{" +
-                "projectId=" + projectId +
-                ", pageId=" + pageId +
+                "projectId=" + this.projectId +
+                ", pageId=" + this.pageId +
                 "} " + super.toString();
     }
 }

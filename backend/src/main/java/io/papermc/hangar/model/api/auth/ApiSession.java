@@ -5,24 +5,24 @@ public class ApiSession {
     private final String token;
     private final long expiresIn;
 
-    public ApiSession(String token, long expiresIn) {
+    public ApiSession(final String token, final long expiresIn) {
         this.token = token;
         this.expiresIn = expiresIn;
     }
 
     public String getToken() {
-        return token;
+        return this.token;
     }
 
     public long getExpiresIn() {
-        return expiresIn;
+        return this.expiresIn;
     }
 
     @Override
     public String toString() {
         return "ApiSession{" +
-                "token='" + token + '\'' +
-                ", expiresIn=" + expiresIn +
+                "token='" + this.token + '\'' +
+                ", expiresIn=" + this.expiresIn +
                 '}';
     }
 }

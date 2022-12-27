@@ -40,7 +40,7 @@ public class VersionService extends HangarComponent {
     private final FileService fileService;
 
     @Autowired
-    public VersionService(ProjectVersionsDAO projectVersionDAO, HangarVersionsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, ProjectVersionVisibilityService projectVersionVisibilityService, VersionDependencyService versionDependencyService, ProjectFiles projectFiles, final ProjectsDAO projectsDAO, FileService fileService) {
+    public VersionService(final ProjectVersionsDAO projectVersionDAO, final HangarVersionsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final ProjectVersionVisibilityService projectVersionVisibilityService, final VersionDependencyService versionDependencyService, final ProjectFiles projectFiles, final ProjectsDAO projectsDAO, final FileService fileService) {
         this.projectVersionsDAO = projectVersionDAO;
         this.hangarVersionsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
@@ -51,42 +51,40 @@ public class VersionService extends HangarComponent {
         this.fileService = fileService;
     }
 
-    @Nullable
-    public ProjectVersionTable getProjectVersionTable(Long versionId) {
+    public @Nullable ProjectVersionTable getProjectVersionTable(final Long versionId) {
         if (versionId == null) {
             return null;
         }
-        return projectVersionVisibilityService.checkVisibility(projectVersionsDAO.getProjectVersionTable(versionId));
+        return this.projectVersionVisibilityService.checkVisibility(this.projectVersionsDAO.getProjectVersionTable(versionId));
     }
 
-    @Nullable
-    public ProjectVersionTable getProjectVersionTable(String author, String slug, String versionString) {
-        return projectVersionVisibilityService.checkVisibility(projectVersionsDAO.getProjectVersionTable(author, slug, versionString));
+    public @Nullable ProjectVersionTable getProjectVersionTable(final String author, final String slug, final String versionString) {
+        return this.projectVersionVisibilityService.checkVisibility(this.projectVersionsDAO.getProjectVersionTable(author, slug, versionString));
     }
 
-    public void updateProjectVersionTable(ProjectVersionTable projectVersionTable) {
-        projectVersionsDAO.update(projectVersionTable);
+    public void updateProjectVersionTable(final ProjectVersionTable projectVersionTable) {
+        this.projectVersionsDAO.update(projectVersionTable);
     }
 
-    public HangarVersion getHangarVersion(String author, String slug, String versionString) {
-        final HangarVersion version = hangarVersionsDAO.getVersionWithVersionString(author, slug, versionString, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+    public HangarVersion getHangarVersion(final String author, final String slug, final String versionString) {
+        final HangarVersion version = this.hangarVersionsDAO.getVersionWithVersionString(author, slug, versionString, this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
-        versionDependencyService.addDownloadsAndDependencies(author, slug, versionString, version.getId(), version);
+        this.versionDependencyService.addDownloadsAndDependencies(author, slug, versionString, version.getId(), version);
         return version;
     }
 
     @Transactional
-    public void softDeleteVersion(long projectId, ProjectVersionTable pvt, String comment) {
+    public void softDeleteVersion(final long projectId, final ProjectVersionTable pvt, final String comment) {
         if (pvt.getVisibility() == Visibility.SOFTDELETE) {
             return;
         }
 
-        List<ProjectVersionTable> projectVersionTables = projectVersionsDAO.getProjectVersions(projectId);
+        final List<ProjectVersionTable> projectVersionTables = this.projectVersionsDAO.getProjectVersions(projectId);
         if (projectVersionTables.stream().filter(pv -> pv.getVisibility() == Visibility.PUBLIC).count() <= 1 && pvt.getVisibility() == Visibility.PUBLIC) {
-            projectVisibilityService.changeVisibility(projectId, Visibility.NEW, "Visibility reset to new because no public version exists");
+            this.projectVisibilityService.changeVisibility(projectId, Visibility.NEW, "Visibility reset to new because no public version exists");
         }
 
         // Append deletion suffix to allow creation of a new version under the same name
@@ -101,10 +99,10 @@ public class VersionService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Version has been deleted too often");
         }
 
-        Visibility oldVisibility = pvt.getVisibility();
-        projectVersionVisibilityService.changeVisibility(pvt, Visibility.SOFTDELETE, comment);
-        actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Soft Delete: " + comment, oldVisibility.getTitle()));
-        renameVersion(pvt, pvt.getVersionString() + ProjectFactory.SOFT_DELETION_SUFFIX + deletedId);
+        final Visibility oldVisibility = pvt.getVisibility();
+        this.projectVersionVisibilityService.changeVisibility(pvt, Visibility.SOFTDELETE, comment);
+        this.actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Soft Delete: " + comment, oldVisibility.getTitle()));
+        this.renameVersion(pvt, pvt.getVersionString() + ProjectFactory.SOFT_DELETION_SUFFIX + deletedId);
     }
 
     private void renameVersion(final ProjectVersionTable projectVersionTable, final String newName) {
@@ -113,25 +111,25 @@ public class VersionService extends HangarComponent {
         projectVersionTable.setVersionString(compactNewName);
         this.projectVersionsDAO.update(projectVersionTable);
 
-        final ProjectTable project = projectsDAO.getById(projectVersionTable.getProjectId());
-        projectFiles.renameVersion(project.getOwnerName(), project.getSlug(), oldVersion, compactNewName);
+        final ProjectTable project = this.projectsDAO.getById(projectVersionTable.getProjectId());
+        this.projectFiles.renameVersion(project.getOwnerName(), project.getSlug(), oldVersion, compactNewName);
     }
 
     @Transactional
-    public void hardDeleteVersion(ProjectTable pt, ProjectVersionTable pvt, String comment) {
-        List<ProjectVersionTable> projectVersionTables = projectVersionsDAO.getProjectVersions(pt.getId());
-        boolean hasOtherPublicVersion = projectVersionTables.stream().filter(pv -> pv.getId() != pvt.getId()).anyMatch(pv -> pv.getVisibility() == Visibility.PUBLIC);
+    public void hardDeleteVersion(final ProjectTable pt, final ProjectVersionTable pvt, final String comment) {
+        final List<ProjectVersionTable> projectVersionTables = this.projectVersionsDAO.getProjectVersions(pt.getId());
+        final boolean hasOtherPublicVersion = projectVersionTables.stream().filter(pv -> pv.getId() != pvt.getId()).anyMatch(pv -> pv.getVisibility() == Visibility.PUBLIC);
         if (!hasOtherPublicVersion && pt.getVisibility() == Visibility.PUBLIC) {
-            projectVisibilityService.changeVisibility(pt, Visibility.NEW, "Visibility reset to new because no public version exists");
+            this.projectVisibilityService.changeVisibility(pt, Visibility.NEW, "Visibility reset to new because no public version exists");
         }
 
-        actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(pt.getId(), pvt.getId()), "Deleted: " + comment, pvt.getVisibility().getTitle()));
-        projectVersionsDAO.delete(pvt);
-        fileService.deleteDirectory(projectFiles.getVersionDir(pt.getOwnerName(), pt.getSlug(), pvt.getVersionString()));
+        this.actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(pt.getId(), pvt.getId()), "Deleted: " + comment, pvt.getVisibility().getTitle()));
+        this.projectVersionsDAO.delete(pvt);
+        this.fileService.deleteDirectory(this.projectFiles.getVersionDir(pt.getOwnerName(), pt.getSlug(), pvt.getVersionString()));
     }
 
     @Transactional
-    public void restoreVersion(long projectId, ProjectVersionTable pvt) {
+    public void restoreVersion(final long projectId, final ProjectVersionTable pvt) {
         if (pvt.getVisibility() != Visibility.SOFTDELETE) {
             return;
         }
@@ -144,14 +142,14 @@ public class VersionService extends HangarComponent {
                 throw new HangarApiException("version.error.oldNameTaken");
             }
 
-            renameVersion(pvt, newName);
+            this.renameVersion(pvt, newName);
         }
-        projectVersionVisibilityService.changeVisibility(pvt, Visibility.PUBLIC, "Version Restored");
-        actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Version Restored", Visibility.SOFTDELETE.getTitle()));
+        this.projectVersionVisibilityService.changeVisibility(pvt, Visibility.PUBLIC, "Version Restored");
+        this.actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Version Restored", Visibility.SOFTDELETE.getTitle()));
     }
 
-    public void saveDiscourseData(ProjectVersionTable version, long postId) {
+    public void saveDiscourseData(final ProjectVersionTable version, final long postId) {
         version.setPostId(postId);
-        projectVersionsDAO.update(version);
+        this.projectVersionsDAO.update(version);
     }
 }

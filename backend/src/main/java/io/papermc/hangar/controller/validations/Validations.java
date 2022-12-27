@@ -14,43 +14,43 @@ public class Validations {
 
     private final Map<String, Pattern> regexCache = new HashMap<>();
 
-    public boolean regex(String value, String regex) {
-        if (isEmpty(value)) return true;
-        Pattern pattern = regexCache.computeIfAbsent(regex, Pattern::compile);
+    public boolean regex(final String value, final String regex) {
+        if (this.isEmpty(value)) return true;
+        final Pattern pattern = this.regexCache.computeIfAbsent(regex, Pattern::compile);
         return pattern.matcher(value).matches();
     }
 
-    public boolean regex(String value, PatternWrapper regex) {
-        if (isEmpty(value)) return true;
+    public boolean regex(final String value, final PatternWrapper regex) {
+        if (this.isEmpty(value)) return true;
         return regex.test(value);
     }
 
-    public boolean required(String value) {
-        return !isEmpty(value);
+    public boolean required(final String value) {
+        return !this.isEmpty(value);
     }
 
-    public boolean max(Collection<?> value, int max) {
+    public boolean max(final Collection<?> value, final int max) {
         if (value != null) {
             return value.size() <= max;
         }
         return true;
     }
 
-    public boolean max(String value, int max) {
+    public boolean max(final String value, final int max) {
         if (value != null) {
             return value.length() <= max;
         }
         return true;
     }
 
-    public boolean min(String value, int min) {
+    public boolean min(final String value, final int min) {
         if (value != null) {
             return value.length() >= min;
         }
         return true;
     }
 
-    private boolean isEmpty(String value) {
+    private boolean isEmpty(final String value) {
         return value == null || value.isBlank() || value.isEmpty();
     }
 

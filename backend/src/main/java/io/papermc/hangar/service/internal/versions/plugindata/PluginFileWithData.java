@@ -11,28 +11,28 @@ public class PluginFileWithData {
     private final PluginFileData data;
     private final long userId;
 
-    public PluginFileWithData(Path path, PluginFileData data, long userId) {
+    public PluginFileWithData(final Path path, final PluginFileData data, final long userId) {
         this.path = path;
         this.data = data;
         this.userId = userId;
     }
 
     public Path getPath() {
-        return path;
+        return this.path;
     }
 
     public PluginFileData getData() {
-        return data;
+        return this.data;
     }
 
     public long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public String getMd5() {
         try {
             return CryptoUtils.md5ToHex(Files.readAllBytes(this.path));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             return null;
         }

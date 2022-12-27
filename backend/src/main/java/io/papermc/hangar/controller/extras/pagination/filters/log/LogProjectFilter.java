@@ -19,8 +19,8 @@ public class LogProjectFilter implements Filter<LogProjectFilterInstance> {
     }
 
     @Override
-    public boolean supports(NativeWebRequest webRequest) {
-        return getQueryParamNames().stream().anyMatch(webRequest.getParameterMap()::containsKey);
+    public boolean supports(final NativeWebRequest webRequest) {
+        return this.getQueryParamNames().stream().anyMatch(webRequest.getParameterMap()::containsKey);
     }
 
     @Override
@@ -28,24 +28,23 @@ public class LogProjectFilter implements Filter<LogProjectFilterInstance> {
         return "Filters logs by a project namespace";
     }
 
-    @NotNull
     @Override
-    public LogProjectFilterInstance create(NativeWebRequest webRequest) {
+    public @NotNull LogProjectFilterInstance create(final NativeWebRequest webRequest) {
         return new LogProjectFilterInstance(webRequest.getParameter("authorName"), webRequest.getParameter("projectSlug"));
     }
 
-    static class LogProjectFilterInstance implements FilterInstance {
+    static class LogProjectFilterInstance implements Filter.FilterInstance {
 
         private final String authorName;
         private final String projectSlug;
 
-        LogProjectFilterInstance(String authorName, String projectSlug) {
+        LogProjectFilterInstance(final String authorName, final String projectSlug) {
             this.authorName = authorName;
             this.projectSlug = projectSlug;
         }
 
         @Override
-        public void createSql(StringBuilder sb, SqlStatement<?> q) {
+        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             if (StringUtils.isNotBlank(this.authorName)) {
                 sb.append(" AND la.p_owner_name = :authorName");
                 q.bind("authorName", this.authorName);

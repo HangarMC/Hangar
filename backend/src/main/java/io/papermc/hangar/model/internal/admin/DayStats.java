@@ -12,7 +12,7 @@ public class DayStats {
     private final long flagsOpened;
     private final long flagsClosed;
 
-    public DayStats(LocalDate day, long reviews, long uploads, long totalDownloads, long unsafeDownloads, long flagsOpened, long flagsClosed) {
+    public DayStats(final LocalDate day, final long reviews, final long uploads, final long totalDownloads, final long unsafeDownloads, final long flagsOpened, final long flagsClosed) {
         this.day = day;
         this.reviews = reviews;
         this.uploads = uploads;
@@ -23,43 +23,43 @@ public class DayStats {
     }
 
     public LocalDate getDay() {
-        return day;
+        return this.day;
     }
 
     public long getReviews() {
-        return reviews;
+        return this.reviews;
     }
 
     public long getUploads() {
-        return uploads;
+        return this.uploads;
     }
 
     public long getTotalDownloads() {
-        return totalDownloads;
+        return this.totalDownloads;
     }
 
     public long getUnsafeDownloads() {
-        return unsafeDownloads;
+        return this.unsafeDownloads;
     }
 
     public long getFlagsOpened() {
-        return flagsOpened;
+        return this.flagsOpened;
     }
 
     public long getFlagsClosed() {
-        return flagsClosed;
+        return this.flagsClosed;
     }
 
     @Override
     public String toString() {
         return "DayStats{" +
-                "day=" + day +
-                ", reviews=" + reviews +
-                ", uploads=" + uploads +
-                ", totalDownloads=" + totalDownloads +
-                ", unsafeDownloads=" + unsafeDownloads +
-                ", flagsOpened=" + flagsOpened +
-                ", flagsClosed=" + flagsClosed +
+                "day=" + this.day +
+                ", reviews=" + this.reviews +
+                ", uploads=" + this.uploads +
+                ", totalDownloads=" + this.totalDownloads +
+                ", unsafeDownloads=" + this.unsafeDownloads +
+                ", flagsOpened=" + this.flagsOpened +
+                ", flagsClosed=" + this.flagsClosed +
                 '}';
     }
 }

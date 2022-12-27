@@ -6,11 +6,7 @@ import java.util.List;
 
 public class CreateOrganizationForm extends EditMembersForm<OrganizationRole> {
     // @el(root: String)
-    @Validate(SpEL = "@validate.required(#root)", message = "organization.new.error.invalidName")
-    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.org.nameRegex)", message = "organization.new.error.invalidName")
-    @Validate(SpEL = "@validate.max(#root, @hangarConfig.org.maxNameLen)", message = "organization.new.error.invalidName")
-    @Validate(SpEL = "@validate.min(#root, @hangarConfig.org.minNameLen)", message = "organization.new.error.invalidName")
-    private final String name;
+    private final @Validate(SpEL = "@validate.required(#root)", message = "organization.new.error.invalidName") @Validate(SpEL = "@validate.regex(#root, @hangarConfig.org.nameRegex)", message = "organization.new.error.invalidName") @Validate(SpEL = "@validate.max(#root, @hangarConfig.org.maxNameLen)", message = "organization.new.error.invalidName") @Validate(SpEL = "@validate.min(#root, @hangarConfig.org.minNameLen)", message = "organization.new.error.invalidName") String name;
 
     public CreateOrganizationForm(final List<Member<OrganizationRole>> members, final String name) {
         super(members);

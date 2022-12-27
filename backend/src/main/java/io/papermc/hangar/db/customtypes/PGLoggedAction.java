@@ -61,13 +61,13 @@ public class PGLoggedAction extends PGobject {
 
     private String value;
 
-    public PGLoggedAction(String value) {
-        setType("logged_action_type");
+    public PGLoggedAction(final String value) {
+        this.setType("logged_action_type");
         this.value = value;
     }
 
     @Override
-    public void setValue(String value) {
+    public void setValue(final String value) {
         this.value = value;
     }
 
@@ -78,19 +78,19 @@ public class PGLoggedAction extends PGobject {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (obj == null || this.getClass() != obj.getClass()) return false;
         if (!super.equals(obj)) return false;
 
-        PGLoggedAction that = (PGLoggedAction) obj;
+        final PGLoggedAction that = (PGLoggedAction) obj;
         return Objects.equals(this.value, that.value);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (value != null ? value.hashCode() : 0);
+        result = 31 * result + (this.value != null ? this.value.hashCode() : 0);
         return result;
     }
 }

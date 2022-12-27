@@ -17,15 +17,15 @@ public class HangarAnnotationIntrospector extends JacksonAnnotationIntrospector 
     private static final Logger logger = LoggerFactory.getLogger(HangarAnnotationIntrospector.class);
 
     @Override
-    public final boolean _isIgnorable(Annotated a) {
+    public final boolean _isIgnorable(final Annotated a) {
         if (a.hasAnnotation(RequiresPermission.class)) {
             logger.debug("Found {} annotation on {}", RequiresPermission.class, a.getName());
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (!authentication.isAuthenticated() || !(authentication instanceof HangarAuthenticationToken)) {
                 return true;
             }
-            Permission perms = ((HangarAuthenticationToken) authentication).getPrincipal().getGlobalPermissions();
-            NamedPermission[] requiredPerms = a.getAnnotation(RequiresPermission.class).value();
+            final Permission perms = ((HangarAuthenticationToken) authentication).getPrincipal().getGlobalPermissions();
+            final NamedPermission[] requiredPerms = a.getAnnotation(RequiresPermission.class).value();
             if (!perms.hasAll(requiredPerms)) {
                 return true;
             }

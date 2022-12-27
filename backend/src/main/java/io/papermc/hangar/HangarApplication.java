@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ConfigurationPropertiesScan(value = "io.papermc.hangar.config.hangar", basePackageClasses = PagesConfig.class)
 public class HangarApplication {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         SpringApplication.run(HangarApplication.class, args);
     }
 

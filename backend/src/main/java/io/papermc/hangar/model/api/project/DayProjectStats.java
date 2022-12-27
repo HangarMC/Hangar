@@ -5,24 +5,24 @@ public class DayProjectStats {
     private final long views;
     private final long downloads;
 
-    public DayProjectStats(long views, long downloads) {
+    public DayProjectStats(final long views, final long downloads) {
         this.views = views;
         this.downloads = downloads;
     }
 
     public long getViews() {
-        return views;
+        return this.views;
     }
 
     public long getDownloads() {
-        return downloads;
+        return this.downloads;
     }
 
     @Override
     public String toString() {
         return "DayProjectStats{" +
-                "views=" + views +
-                ", downloads=" + downloads +
+                "views=" + this.views +
+                ", downloads=" + this.downloads +
                 '}';
     }
 }

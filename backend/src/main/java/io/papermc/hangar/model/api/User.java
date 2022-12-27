@@ -23,7 +23,7 @@ public class User extends Model implements Named {
     private List<UserNameChange> nameHistory;
 
     @JdbiConstructor
-    public User(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount, boolean locked, @Nullable List<UserNameChange> nameHistory) {
+    public User(final OffsetDateTime createdAt, final String name, final String tagline, final OffsetDateTime joinDate, final List<GlobalRole> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory) {
         super(createdAt);
         this.name = name;
         this.tagline = tagline;
@@ -37,32 +37,32 @@ public class User extends Model implements Named {
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getTagline() {
-        return tagline;
+        return this.tagline;
     }
 
     public OffsetDateTime getJoinDate() {
-        return joinDate;
+        return this.joinDate;
     }
 
     public List<GlobalRole> getRoles() {
-        return roles;
+        return this.roles;
     }
 
     public long getProjectCount() {
-        return projectCount;
+        return this.projectCount;
     }
 
     @JsonProperty("isOrganization")
     public boolean isOrganization() {
-        return isOrganization;
+        return this.isOrganization;
     }
 
     public boolean isLocked() {
-        return locked;
+        return this.locked;
     }
 
     @Nullable
@@ -75,29 +75,29 @@ public class User extends Model implements Named {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        User user = (User) o;
-        return projectCount == user.projectCount && isOrganization == user.isOrganization && locked == user.locked && name.equals(user.name) && Objects.equals(tagline, user.tagline) && joinDate.equals(user.joinDate) && roles.equals(user.roles);
+        final User user = (User) o;
+        return this.projectCount == user.projectCount && this.isOrganization == user.isOrganization && this.locked == user.locked && this.name.equals(user.name) && Objects.equals(this.tagline, user.tagline) && this.joinDate.equals(user.joinDate) && this.roles.equals(user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), name, tagline, joinDate, roles, projectCount, isOrganization, locked);
+        return Objects.hash(super.hashCode(), this.name, this.tagline, this.joinDate, this.roles, this.projectCount, this.isOrganization, this.locked);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
-                ", tagline='" + tagline + '\'' +
-                ", joinDate=" + joinDate +
-                ", roles=" + roles +
-                ", projectCount=" + projectCount +
-                ", isOrganization=" + isOrganization +
-                ", locked=" + locked +
+                "name='" + this.name + '\'' +
+                ", tagline='" + this.tagline + '\'' +
+                ", joinDate=" + this.joinDate +
+                ", roles=" + this.roles +
+                ", projectCount=" + this.projectCount +
+                ", isOrganization=" + this.isOrganization +
+                ", locked=" + this.locked +
                 "} " + super.toString();
     }
 }

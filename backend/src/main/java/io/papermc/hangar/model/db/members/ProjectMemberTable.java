@@ -4,12 +4,12 @@ public class ProjectMemberTable extends MemberTable {
 
     private final long projectId;
 
-    public ProjectMemberTable(long userId, long projectId) {
+    public ProjectMemberTable(final long userId, final long projectId) {
         super(userId);
         this.projectId = projectId;
     }
 
     public long getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 }

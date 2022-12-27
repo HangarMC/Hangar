@@ -19,7 +19,7 @@ public class ProjectCompact extends Model implements Named, Visible {
     protected final OffsetDateTime lastUpdated;
     protected final Visibility visibility;
 
-    public ProjectCompact(OffsetDateTime createdAt, String name, @Nested ProjectNamespace namespace, @Nested ProjectStats stats, @EnumByOrdinal Category category, OffsetDateTime lastUpdated, @EnumByOrdinal Visibility visibility) {
+    public ProjectCompact(final OffsetDateTime createdAt, final String name, @Nested final ProjectNamespace namespace, @Nested final ProjectStats stats, @EnumByOrdinal final Category category, final OffsetDateTime lastUpdated, @EnumByOrdinal final Visibility visibility) {
         super(createdAt);
         this.name = name;
         this.namespace = namespace;
@@ -31,38 +31,38 @@ public class ProjectCompact extends Model implements Named, Visible {
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public ProjectNamespace getNamespace() {
-        return namespace;
+        return this.namespace;
     }
 
     public ProjectStats getStats() {
-        return stats;
+        return this.stats;
     }
 
     public Category getCategory() {
-        return category;
+        return this.category;
     }
 
     public OffsetDateTime getLastUpdated() {
-        return lastUpdated;
+        return this.lastUpdated;
     }
 
     @Override
     public Visibility getVisibility() {
-        return visibility;
+        return this.visibility;
     }
 
     @Override
     public String toString() {
         return "ProjectCompact{" +
-                "name='" + name + '\'' +
-                ", namespace=" + namespace +
-                ", stats=" + stats +
-                ", category=" + category +
-                ", visibility=" + visibility +
+                "name='" + this.name + '\'' +
+                ", namespace=" + this.namespace +
+                ", stats=" + this.stats +
+                ", category=" + this.category +
+                ", visibility=" + this.visibility +
                 "} " + super.toString();
     }
 }

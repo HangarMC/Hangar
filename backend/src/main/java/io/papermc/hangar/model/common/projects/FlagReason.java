@@ -15,18 +15,18 @@ public enum FlagReason {
 
     private final String title;
 
-    FlagReason(String title) {
+    FlagReason(final String title) {
         this.title = title;
     }
 
     @JsonValue
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     @JsonCreator
-    public static FlagReason creator(String name) {
-        return FlagReason.valueOf(name.toUpperCase(Locale.ROOT));
+    public static FlagReason creator(final String name) {
+        return valueOf(name.toUpperCase(Locale.ROOT));
     }
 
     private static final FlagReason[] VALUES = values();

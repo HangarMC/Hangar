@@ -12,14 +12,14 @@ public abstract class IndividualTable extends Table {
     private final Long userId;
     private final int processed;
 
-    protected IndividualTable(InetAddress address, String cookie, Long userId) {
+    protected IndividualTable(final InetAddress address, final String cookie, final Long userId) {
         this.address = address;
         this.cookie = cookie;
         this.userId = userId;
         this.processed = 0;
     }
 
-    protected IndividualTable(OffsetDateTime createdAt, long id, InetAddress address, String cookie, Long userId, int processed) {
+    protected IndividualTable(final OffsetDateTime createdAt, final long id, final InetAddress address, final String cookie, final Long userId, final int processed) {
         super(createdAt, id);
         this.address = address;
         this.cookie = cookie;
@@ -28,28 +28,28 @@ public abstract class IndividualTable extends Table {
     }
 
     public InetAddress getAddress() {
-        return address;
+        return this.address;
     }
 
     public String getCookie() {
-        return cookie;
+        return this.cookie;
     }
 
     public Long getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public int getProcessed() {
-        return processed;
+        return this.processed;
     }
 
     @Override
     public String toString() {
         return "IndividualTable{" +
-                "address=" + address +
-                ", cookie='" + cookie + '\'' +
-                ", userId=" + userId +
-                ", processed=" + processed +
+                "address=" + this.address +
+                ", cookie='" + this.cookie + '\'' +
+                ", userId=" + this.userId +
+                ", processed=" + this.processed +
                 '}';
     }
 }
