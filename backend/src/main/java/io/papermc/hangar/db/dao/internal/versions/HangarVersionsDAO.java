@@ -42,7 +42,7 @@ public interface HangarVersionsDAO {
         "       LEFT JOIN users u ON pv.author_id = u.id" +
         "       LEFT JOIN users ru ON pv.reviewer_id = ru.id" +
         "   WHERE " +
-        "       <!if(!canSeeHidden)>" +
+        "       <if(!canSeeHidden)>" +
         "           (pv.visibility = 0 " +
         "           <if(userId)>" +
         "               OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4) " +
