@@ -37,3 +37,4 @@ build/
 
 ### Unignore Inspection Profiles ###
 !/.idea/inspectionProfiles
+!/.idea/codeStyles
