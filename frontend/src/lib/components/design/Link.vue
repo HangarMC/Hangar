@@ -4,7 +4,7 @@ import { computed } from "vue";
 const props = withDefaults(
   defineProps<{
     to?: string | object;
-    href?: string;
+    href?: string | null;
     activeUnderline?: boolean;
     disabled?: boolean;
   }>(),

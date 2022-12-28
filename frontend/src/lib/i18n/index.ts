@@ -16,11 +16,11 @@ if (!messageImports || Object.keys(messageImports).length === 0) {
   langLog("fallback to fake english import");
 }
 
-function importLocale(locale: string) {
+function importLocale(locale: string): Promise<{ default: any }> | undefined {
   langLog("import locale", locale);
   const [, importLoc] = Object.entries(messageImports).find(([key]) => key.includes(`/${locale}.`)) || [];
   langLog("found", importLoc);
-  return importLoc && importLoc();
+  return importLoc && (importLoc() as Promise<{ default: any }> | undefined);
 }
 
 export const I18n = ref();

@@ -7,6 +7,7 @@ import Link from "~/lib/components/design/Link.vue";
 import Card from "~/lib/components/design/Card.vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import Button from "~/lib/components/design/Button.vue";
+import { Step } from "~/lib/types/components/design/Steps";
 
 const router = useRouter();
 const settings = useSettingsStore();
@@ -19,17 +20,6 @@ const internalValue = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
 });
-
-export interface Step {
-  value: string;
-  header: string;
-  beforeBack?: () => Promise<boolean>;
-  beforeNext?: () => Promise<boolean>;
-  disableBack?: Ref<boolean>;
-  disableNext?: Ref<boolean>;
-  showBack?: Ref<boolean>;
-  showNext?: Ref<boolean>;
-}
 
 const props = defineProps<{
   modelValue: string;

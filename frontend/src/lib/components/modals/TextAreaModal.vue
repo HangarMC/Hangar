@@ -8,7 +8,7 @@ import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 const props = defineProps<{
   title: string;
   label: string;
-  submit: (msg: string) => Promise<void>;
+  submit: (msg: string) => Promise<void> | undefined;
 }>();
 
 const message = ref("");
@@ -18,7 +18,7 @@ const i18n = useI18n();
 
 async function _submit(close: () => void) {
   loading.value = true;
-  await props.submit(message.value);
+  await props?.submit(message.value);
   loading.value = false;
   close();
 }

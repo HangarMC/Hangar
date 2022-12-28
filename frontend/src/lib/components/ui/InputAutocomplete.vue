@@ -3,6 +3,7 @@ import { computed, watch } from "vue";
 import { type ValidationRule } from "@vuelidate/core";
 import { useValidation } from "~/lib/composables/useValidationHelpers";
 import InputWrapper from "~/lib/components/ui/InputWrapper.vue";
+import { Option } from "~/lib/types/components/ui/InputAutocomplete";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: object | string | boolean | number | null | undefined): void;
@@ -12,11 +13,6 @@ const internalVal = computed({
   get: () => props.modelValue,
   set: (val) => emit("update:modelValue", val),
 });
-
-export interface Option {
-  value: object | string | boolean | number;
-  text: string;
-}
 
 const props = withDefaults(
   defineProps<{

@@ -4,6 +4,7 @@ import { type ValidationRule } from "@vuelidate/core";
 import { useI18n } from "vue-i18n";
 import { useValidation } from "~/lib/composables/useValidationHelpers";
 import InputWrapper from "~/lib/components/ui/InputWrapper.vue";
+import { Option } from "~/lib/types/components/ui/InputSelect";
 
 const i18n = useI18n();
 
@@ -15,15 +16,10 @@ const internalVal = computed({
   set: (val) => emit("update:modelValue", val),
 });
 
-export interface Option {
-  value: object | string | boolean | number;
-  text: string;
-}
-
 const props = withDefaults(
   defineProps<{
-    modelValue: object | string | boolean | number | null;
-    values: Option[] | Record<string, any> | string[];
+    modelValue?: object | string | boolean | number | null;
+    values: Option[] | Record<string, any> | string[] | object[];
     itemValue?: string;
     itemText?: string;
     disabled?: boolean;

@@ -2,6 +2,7 @@
 import { computed, watch } from "vue";
 import Button from "~/lib/components/design/Button.vue";
 import Link from "~/lib/components/design/Link.vue";
+import { Tab } from "~/lib/types/components/design/Tabs";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -16,13 +17,6 @@ watch(internalValue, (n) => {
     internalValue.value = props.tabs[0].value;
   }
 });
-
-export interface Tab {
-  value: string;
-  header: string;
-  show?: () => boolean;
-  disable?: () => boolean;
-}
 
 const props = withDefaults(
   defineProps<{
