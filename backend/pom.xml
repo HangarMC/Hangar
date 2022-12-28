@@ -32,7 +32,7 @@
 
         <!-- dependencies -->
         <owasp-html-sanitizer>20220608.1</owasp-html-sanitizer>
-        <springdoc.version>1.6.14</springdoc.version>
+        <springdoc.version>2.0.2</springdoc.version>
         <flexmark-all.version>0.64.0</flexmark-all.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20220924</org-json.version>
@@ -155,7 +155,7 @@
         <!-- SpringDoc dependencies -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
 

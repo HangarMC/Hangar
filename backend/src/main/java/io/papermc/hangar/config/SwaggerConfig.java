@@ -7,8 +7,8 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.parameters.Parameter;
-import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.customizers.OperationCustomizer;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.HandlerMethod;
@@ -54,7 +54,7 @@ public class SwaggerConfig {
             .group("Hangar API")
             .packagesToScan("io.papermc.hangar.controller.api.v1")
             .addOperationCustomizer(customScanner)
-            .addOpenApiCustomiser((this::apiInfo))
+            .addOpenApiCustomizer(this::apiInfo)
             .build();
         // TODO fix
         //.directModelSubstitute(LocalDate.class, java.sql.Date.class)
