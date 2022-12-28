@@ -1,9 +1,10 @@
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { HangarApiException, HangarValidationException, MultiHangarApiException } from "hangar-api";
 import { Composer } from "vue-i18n";
 import { ref } from "vue";
 import { useNotificationStore } from "~/lib/store/notification";
 import { I18n } from "~/lib/i18n";
+import { createError } from "#imports";
 
 export function handleRequestError(err: AxiosError, i18n: Composer = I18n.value, msg: string | undefined = undefined) {
   if (import.meta.env.SSR) {
@@ -11,9 +12,11 @@ export function handleRequestError(err: AxiosError, i18n: Composer = I18n.value,
     return ref();
   }
   const notfication = useNotificationStore();
+  const transformed = transformAxiosError(err);
   if (!err.isAxiosError) {
     // everything should be an AxiosError
-    console.log(err);
+    console.log("no axios request error", transformed);
+    notfication.error(transformed.message?.toString() || "Unknown error");
   } else if (err.response && typeof err.response.data === "object" && err.response.data) {
     if ("isHangarApiException" in err.response.data) {
       for (const errorMsg of collectErrors(err.response.data as HangarApiException, i18n)) {
@@ -30,9 +33,10 @@ export function handleRequestError(err: AxiosError, i18n: Composer = I18n.value,
     } else {
       notfication.error(msg ? `${i18n.t(msg)}: ${err.response.statusText}` : err.response.statusText);
     }
-    console.log("request error", err.response);
+    console.log("request error", transformed);
   } else {
-    console.log(err);
+    console.log("unknown error", transformed);
+    notfication.error(transformed.message?.toString() || "Unknown error");
   }
   return ref();
 }
@@ -41,13 +45,16 @@ function _handleRequestError(err: AxiosError, i18n: Composer) {
   function writeResponse(object: unknown) {
     console.log("writeResponse", object);
     // throw new Error("TODO: Implement me"); // TODO
+    createError({ statusCode: object.status, statusMessage: object.statusText });
   }
+
+  const transformed = transformAxiosError(err);
   if (!err.isAxiosError) {
     // everything should be an AxiosError
     writeResponse({
       status: 500,
     });
-    console.log(err);
+    console.log("handle not axios error", transformed);
   } else if (err.response && typeof err.response.data === "object" && err.response.data) {
     if ("isHangarApiException" in err.response.data) {
       const data =
@@ -70,9 +77,9 @@ function _handleRequestError(err: AxiosError, i18n: Composer) {
     }
   } else {
     writeResponse({
-      statusText: "This shouldn't happen...",
+      status: 500,
+      statusText: "Internal Error: " + transformed.code,
     });
-    console.log(err);
   }
 }
 
@@ -86,4 +93,16 @@ function collectErrors(exception: HangarApiException | MultiHangarApiException, 
     }
     return res;
   }
+}
+
+export function transformAxiosError(err: AxiosError | unknown): Record<string, unknown> {
+  return axios.isAxiosError(err)
+    ? {
+        code: err?.code,
+        requestUrl: err?.request?.path || err?.config?.url,
+        status: err?.response?.status,
+        data: err?.response?.data,
+        message: err?.message,
+      }
+    : (err as Record<string, unknown>);
 }

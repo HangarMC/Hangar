@@ -5,7 +5,10 @@ import { computed } from "vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import { settingsLog } from "~/lib/composables/useLog";
 import { useAuthStore } from "~/store/auth";
-import "regenerator-runtime/runtime"; // popper needs this?
+import { onErrorCaptured, transformAxiosError } from "#imports";
+
+// popper needs this?
+import "regenerator-runtime/runtime";
 
 // keep in sync with error.vue, cause reasons
 const authStore = useAuthStore();
@@ -21,6 +24,10 @@ useHead({
   bodyAttrs: {
     class: "background-body text-[#262626] dark:text-[#E0E6f0]",
   },
+});
+
+onErrorCaptured((err) => {
+  console.log("captured", transformAxiosError(err)); // TODO error handling
 });
 </script>
 

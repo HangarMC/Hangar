@@ -5,6 +5,7 @@ import { defineNuxtPlugin, useAuth, useRequestEvent } from "#imports";
 import { useAuthStore } from "~/store/auth";
 import { authLog, axiosLog } from "~/lib/composables/useLog";
 import { useConfig } from "~/lib/composables/useConfig";
+import { transformAxiosError } from "~/composables/useErrorHandling";
 
 export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
   const config = useConfig();
@@ -58,13 +59,7 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
           }
         }
       } else {
-        const transformedError = {
-          code: err?.code,
-          requestUrl: err?.request?.path,
-          status: err?.response?.status,
-          data: err?.response?.data,
-        };
-        axiosLog("got error", transformedError);
+        axiosLog("got error", transformAxiosError(err));
       }
 
       // Progress bar
@@ -81,7 +76,7 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
   };
 });
 
-function addAuthHeader(config: AxiosRequestConfig, token: string | undefined) {
+function addAuthHeader(config: AxiosRequestConfig, token: string | undefined | null) {
   if (!config.headers) {
     config.headers = {};
   }

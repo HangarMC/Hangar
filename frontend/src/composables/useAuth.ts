@@ -9,6 +9,7 @@ import { useConfig } from "~/lib/composables/useConfig";
 import { handleRequestError, useRequestEvent } from "#imports";
 import { useAxios } from "~/composables/useAxios";
 import { useNotificationStore } from "~/lib/store/notification";
+import { transformAxiosError } from "~/composables/useErrorHandling";
 
 class Auth {
   loginUrl(redirectUrl: string): string {
@@ -25,7 +26,7 @@ class Auth {
     if ("status" in result && result?.status === 200 && result?.data) {
       location.replace(result?.data);
     } else {
-      useNotificationStore().error("Error while logging out?!");
+      await useNotificationStore().error("Error while logging out?!");
     }
   }
 
@@ -92,8 +93,7 @@ class Auth {
       } catch (e) {
         this.refreshPromise = null;
         if ((e as AxiosError).response?.data) {
-          const { trace, ...err } = (e as AxiosError).response?.data as { trace: any };
-          authLog("Refresh failed", err);
+          authLog("Refresh failed", transformAxiosError(e));
         } else {
           authLog("Refresh failed");
         }
@@ -128,7 +128,7 @@ class Auth {
       return;
     }
     const user = await useInternalApi<HangarUser>("users/@me").catch((err) => {
-      authLog("no user, with err", Object.assign({}, err));
+      authLog("no user, with err", transformAxiosError(err));
       return this.invalidate(axios);
     });
     if (user) {
