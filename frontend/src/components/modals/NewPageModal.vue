@@ -71,6 +71,9 @@ async function createPage() {
       parentId: parent.value,
     });
 
+    name.value = "";
+    parent.value = null;
+
     if (updateProjectPagesCallback) {
       updateProjectPagesCallback(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.projectId}`, "get"));
     }

@@ -7,3 +7,4 @@ node_modules
 .nuxt
 src/server/middleware/@proxy/proxy.ts
 .output
+tsconfig.tsbuildinfo

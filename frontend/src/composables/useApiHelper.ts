@@ -116,6 +116,7 @@ export async function useProjectVersionsInternal(user: string, project: string, 
 }
 
 export async function usePage(user: string, project: string, path?: string): Promise<Ref<ProjectPage | null>> {
+  path = path?.toString()?.replaceAll(",", "/");
   return extract(
     await useAsyncData("usePage:" + user + ":" + project + ":" + path, () =>
       useInternalApi<ProjectPage>(`pages/page/${user}/${project}` + (path ? "/" + path : ""))
