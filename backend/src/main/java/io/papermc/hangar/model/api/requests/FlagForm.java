@@ -2,13 +2,15 @@ package io.papermc.hangar.model.api.requests;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.model.common.projects.FlagReason;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class FlagForm {
-    private final @NotBlank String comment;
+    @NotBlank
+    private final String comment;
     private final long projectId;
-    private final @NotNull FlagReason reason;
+    @NotNull
+    private final FlagReason reason;
 
     @JsonCreator
     public FlagForm(final String comment, final long projectId, final FlagReason reason) {

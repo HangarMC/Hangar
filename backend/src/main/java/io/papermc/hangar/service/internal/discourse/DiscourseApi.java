@@ -16,6 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -96,8 +97,8 @@ public class DiscourseApi {
         }
     }
 
-    private DiscourseError createFromStatus(final HttpStatus status, final String message) {
-        if (status.equals(HttpStatus.TOO_MANY_REQUESTS)) {
+    private DiscourseError createFromStatus(final HttpStatusCode status, final String message) {
+        if (status.value() == HttpStatus.TOO_MANY_REQUESTS.value()) {
             if (message != null) {
                 try {
                     final JSONObject json = new JSONObject(message);

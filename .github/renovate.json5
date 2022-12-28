@@ -1,62 +1,71 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
-  ],
-  "schedule": [
-    "before 3am on Monday"
-  ],
-  "ignoreDeps": [
-    "io.awspring.cloud:spring-cloud-aws-starter-s3", // m3 is spring boot 3 only
-  ],
-  "packageRules": [
-    {
-      "matchManagers": ["docker-compose", "dockerfile", "helmv3", "helm-values"],
-      "matchPackagePatterns": [
-        "*"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "groupName": "infra non-major dependencies",
-      "groupSlug": "infra-minor-patch"
-    },
-    {
-      "matchManagers": ["github-actions"],
-      "matchPackagePatterns": [
-        "*"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "groupName": "gh-actions non-major dependencies",
-      "groupSlug": "actions-minor-patch"
-    },
-    {
-      "matchManagers": ["maven", "gradle"],
-      "matchPackagePatterns": [
-        "*"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "groupName": "backend non-major dependencies",
-      "groupSlug": "backend-minor-patch"
-    },
-    {
-      "matchManagers": ["npm"],
-      "matchPackagePatterns": [
-        "*"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "groupName": "frontend non-major dependencies",
-      "groupSlug": "frontend-minor-patch"
-    }
-  ]
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:base"
+    ],
+    "schedule": [
+        "before 3am on Monday"
+    ],
+    "packageRules": [
+        {
+            "matchManagers": [
+                "docker-compose",
+                "dockerfile",
+                "helmv3",
+                "helm-values"
+            ],
+            "matchPackagePatterns": [
+                "*"
+            ],
+            "matchUpdateTypes": [
+                "minor",
+                "patch"
+            ],
+            "groupName": "infra non-major dependencies",
+            "groupSlug": "infra-minor-patch"
+        },
+        {
+            "matchManagers": [
+                "github-actions"
+            ],
+            "matchPackagePatterns": [
+                "*"
+            ],
+            "matchUpdateTypes": [
+                "minor",
+                "patch"
+            ],
+            "groupName": "gh-actions non-major dependencies",
+            "groupSlug": "actions-minor-patch"
+        },
+        {
+            "matchManagers": [
+                "maven",
+                "gradle"
+            ],
+            "matchPackagePatterns": [
+                "*"
+            ],
+            "matchUpdateTypes": [
+                "minor",
+                "patch"
+            ],
+            "groupName": "backend non-major dependencies",
+            "groupSlug": "backend-minor-patch"
+        },
+        {
+            "matchManagers": [
+                "npm"
+            ],
+            "matchPackagePatterns": [
+                "*"
+            ],
+            "matchUpdateTypes": [
+                "minor",
+                "patch"
+            ],
+            "groupName": "frontend non-major dependencies",
+            "groupSlug": "frontend-minor-patch"
+        }
+    ]
 }

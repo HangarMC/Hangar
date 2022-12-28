@@ -11,19 +11,14 @@ import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.projects.ProjectAdminService;
 import io.papermc.hangar.service.internal.projects.ProjectNoteService;
-import java.util.List;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 // @el(projectId: long)
 @Unlocked
@@ -50,14 +45,14 @@ public class ProjectAdminController extends HangarComponent {
     @ResponseStatus(HttpStatus.CREATED)
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     @PostMapping(path = "/notes/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addProjectNote(@PathVariable final long projectId, @RequestBody final @Valid StringContent content) {
+    public void addProjectNote(@PathVariable final long projectId, @RequestBody @Valid final StringContent content) {
         this.projectNoteService.addNote(projectId, content.getContent());
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.REVIEWER)
     @PostMapping(path = "/visibility/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void changeProjectVisibility(@PathVariable final long projectId, @RequestBody final @Valid VisibilityChangeForm visibilityChangeForm) {
+    public void changeProjectVisibility(@PathVariable final long projectId, @RequestBody @Valid final VisibilityChangeForm visibilityChangeForm) {
         this.projectAdminService.changeVisibility(projectId, visibilityChangeForm.getVisibility(), visibilityChangeForm.getComment());
     }
 

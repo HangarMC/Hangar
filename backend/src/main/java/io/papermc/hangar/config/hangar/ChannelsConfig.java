@@ -3,8 +3,8 @@ package io.papermc.hangar.config.hangar;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.internal.api.responses.Validation;
 import io.papermc.hangar.util.PatternWrapper;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 

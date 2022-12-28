@@ -1,11 +1,11 @@
 package io.papermc.hangar.util;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class RequestUtil {
 

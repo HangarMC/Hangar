@@ -1,11 +1,11 @@
 package io.papermc.hangar.util;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.validation.constraints.NotNull;
 
 public final class StringUtils {
 
@@ -126,7 +126,7 @@ public final class StringUtils {
         return input.equals("None") ? null : input;
     }
 
-    public static boolean isAnyEqualIgnoreCase(final @NotNull String lhs, final String @NotNull ... rhs) {
+    public static boolean isAnyEqualIgnoreCase(@NotNull final String lhs, final String @NotNull ... rhs) {
 
         for (final String string : rhs) {
             if (lhs.equalsIgnoreCase(string)) {

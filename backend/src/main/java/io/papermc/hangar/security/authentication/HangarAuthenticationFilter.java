@@ -4,15 +4,11 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.TokenService;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.stream.Stream;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +23,10 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class HangarAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 

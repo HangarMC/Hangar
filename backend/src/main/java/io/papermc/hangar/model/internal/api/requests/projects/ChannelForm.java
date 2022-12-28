@@ -4,15 +4,17 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Color;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.Set;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 public class ChannelForm {
 
     // @el(root: String)
-    private final @NotBlank @Validate(SpEL = "@validations.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName") @Validate(SpEL = "@validations.max(#root, @hangarConfig.channels.maxNameLen)", message = "channel.modal.error.tooLongName") String name;
-    private final @NotNull Color color;
+    @NotBlank
+    private final @Validate(SpEL = "@validations.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName") @Validate(SpEL = "@validations.max(#root, @hangarConfig.channels.maxNameLen)", message = "channel.modal.error.tooLongName") String name;
+    @NotNull
+    private final Color color;
     private final Set<ChannelFlag> flags;
 
     @JsonCreator

@@ -5,12 +5,12 @@ import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.api.project.ProjectSortingStrategy;
 import io.papermc.hangar.model.api.requests.RequestPagination;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
@@ -21,117 +21,117 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Api(tags = "Users", produces = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Users")
 @RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
 public interface IUsersController {
 
-    @ApiOperation(
-        value = "Returns a specific user",
-        nickname = "getUser",
-        notes = "Returns a specific user. Requires the `view_public_info` permission.",
-        authorizations = @Authorization("Session"),
+    @Operation(
+        summary = "Returns a specific user",
+        operationId = "getUser",
+        description = "Returns a specific user. Requires the `view_public_info` permission.",
+        security = @SecurityRequirement(name = "Session"),
         tags = "Users"
     )
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Ok"),
-        @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
-        @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/users/{user}")
-    ResponseEntity<User> getUser(@ApiParam("The name of the user to return") @PathVariable("user") String userName);
+    ResponseEntity<User> getUser(@Parameter(description = "The name of the user to return") @PathVariable("user") String userName);
 
-    @ApiOperation(
-        value = "Searches for users",
-        nickname = "showUsers",
-        notes = "Returns a list of users based on a search query",
-        authorizations = @Authorization("Session"),
+    @Operation(
+        summary = "Searches for users",
+        operationId = "showUsers",
+        description = "Returns a list of users based on a search query",
+        security = @SecurityRequirement(name = "Session"),
         tags = "Users"
     )
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Ok"),
-        @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
-        @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/users")
-    ResponseEntity<PaginatedResult<User>> getUsers(@ApiParam(value = "The search query", required = true) @RequestParam(value = "query", required = false) String query,
-                                                   @ApiParam("Pagination information") @NotNull RequestPagination pagination);
+    ResponseEntity<PaginatedResult<User>> getUsers(@Parameter(description = "The search query", required = true) @RequestParam(defaultValue = "query", required = false) String query,
+                                                   @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
 
-    @ApiOperation(
-        value = "Returns the starred projects for a specific user",
-        nickname = "showStarred",
-        notes = "Returns the starred projects for a specific user. Requires the `view_public_info` permission.",
-        authorizations = @Authorization("Session"),
+    @Operation(
+        summary = "Returns the starred projects for a specific user",
+        operationId = "showStarred",
+        description = "Returns the starred projects for a specific user. Requires the `view_public_info` permission.",
+        security = @SecurityRequirement(name = "Session"),
         tags = "Users"
     )
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Ok"),
-        @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
-        @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/users/{user}/starred")
-    ResponseEntity<PaginatedResult<ProjectCompact>> getUserStarred(@ApiParam("The user to return starred projects for") @PathVariable("user") String userName,
-                                                                   @ApiParam("How to sort the projects") @RequestParam(defaultValue = "updated") ProjectSortingStrategy sort,
-                                                                   @ApiParam("Pagination information") @NotNull RequestPagination pagination);
+    ResponseEntity<PaginatedResult<ProjectCompact>> getUserStarred(@Parameter(description = "The user to return starred projects for") @PathVariable("user") String userName,
+                                                                   @Parameter(description = "How to sort the projects") @RequestParam(defaultValue = "updated") ProjectSortingStrategy sort,
+                                                                   @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
 
-    @ApiOperation(
-        value = "Returns the watched projects for a specific user",
-        nickname = "getUserWatching",
-        notes = "Returns the watched projects for a specific user. Requires the `view_public_info` permission.",
-        authorizations = @Authorization("Session"),
+    @Operation(
+        summary = "Returns the watched projects for a specific user",
+        operationId = "getUserWatching",
+        description = "Returns the watched projects for a specific user. Requires the `view_public_info` permission.",
+        security = @SecurityRequirement(name = "Session"),
         tags = "Users"
     )
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Ok"),
-        @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
-        @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/users/{user}/watching")
-    ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(@ApiParam("The user to return watched projects for") @PathVariable("user") String userName,
-                                                                    @ApiParam("How to sort the projects") @RequestParam(defaultValue = "updated") ProjectSortingStrategy sort,
-                                                                    @ApiParam("Pagination information") @NotNull RequestPagination pagination);
+    ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(@Parameter(description = "The user to return watched projects for") @PathVariable("user") String userName,
+                                                                    @Parameter(description = "How to sort the projects") @RequestParam(defaultValue = "updated") ProjectSortingStrategy sort,
+                                                                    @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
 
-    @ApiOperation(
-        value = "Returns the pinned projects for a specific user",
-        nickname = "getUserPinnedProjects",
-        notes = "Returns the pinned projects for a specific user. Requires the `view_public_info` permission.",
-        authorizations = @Authorization("Session"),
+    @Operation(
+        summary = "Returns the pinned projects for a specific user",
+        operationId = "getUserPinnedProjects",
+        description = "Returns the pinned projects for a specific user. Requires the `view_public_info` permission.",
+        security = @SecurityRequirement(name = "Session"),
         tags = "Users"
     )
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Ok"),
-        @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
-        @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/users/{user}/pinned")
-    ResponseEntity<List<ProjectCompact>> getUserPinnedProjects(@ApiParam("The user to return pinned projects for") @PathVariable("user") String userName);
+    ResponseEntity<List<ProjectCompact>> getUserPinnedProjects(@Parameter(description = "The user to return pinned projects for") @PathVariable("user") String userName);
 
-    @ApiOperation(
-        value = "Returns all users with at least one public project",
-        nickname = "getAuthors",
-        notes = "Returns all users that have at least one public project. Requires the `view_public_info` permission.",
-        authorizations = @Authorization("Session"),
+    @Operation(
+        summary = "Returns all users with at least one public project",
+        operationId = "getAuthors",
+        description = "Returns all users that have at least one public project. Requires the `view_public_info` permission.",
+        security = @SecurityRequirement(name = "Session"),
         tags = "Users"
     )
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Ok"),
-        @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
-        @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/authors")
-    ResponseEntity<PaginatedResult<User>> getAuthors(@ApiParam("Pagination information") @NotNull RequestPagination pagination);
+    ResponseEntity<PaginatedResult<User>> getAuthors(@Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
 
-    @ApiOperation(
-        value = "Returns Hangar staff",
-        nickname = "getStaff",
-        notes = "Returns Hanagr staff. Requires the `view_public_info` permission.",
-        authorizations = @Authorization("Session"),
+    @Operation(
+        summary = "Returns Hangar staff",
+        operationId = "getStaff",
+        description = "Returns Hanagr staff. Requires the `view_public_info` permission.",
+        security = @SecurityRequirement(name = "Session"),
         tags = "Users"
     )
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Ok"),
-        @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
-        @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/staff")
-    ResponseEntity<PaginatedResult<User>> getStaff(@ApiParam("Pagination information") @NotNull RequestPagination pagination);
+    ResponseEntity<PaginatedResult<User>> getStaff(@Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
 }

@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.server.ResponseStatusException;
 
 public class HangarApiException extends ResponseStatusException {
@@ -84,7 +85,7 @@ public class HangarApiException extends ResponseStatusException {
     }
 
     @Override
-    public @NotNull HttpHeaders getResponseHeaders() {
+    public @NotNull HttpHeaders getHeaders() {
         return this.httpHeaders;
     }
 
@@ -93,18 +94,11 @@ public class HangarApiException extends ResponseStatusException {
 
         @Override
         public void serialize(final HangarApiException exception, final JsonGenerator gen, final SerializerProvider provider) throws IOException {
-            String message = exception.getReason();
-            HttpStatus status = null;
+            final String message = exception.getReason();
+            HttpStatusCode status = null;
             try {
-                status = exception.getStatus();
+                status = exception.getStatusCode();
             } catch (final IllegalArgumentException ignored) {
-            }
-            if (message == null || message.isBlank()) {
-                if (status != null) {
-                    message = status.getReasonPhrase();
-                } else {
-                    message = "UNKNOWN";
-                }
             }
             gen.writeStartObject();
             gen.writeStringField("message", message);
@@ -117,10 +111,8 @@ public class HangarApiException extends ResponseStatusException {
             gen.writeObjectFieldStart("httpError");
             if (status != null) {
                 gen.writeNumberField("statusCode", status.value());
-                gen.writeStringField("statusPhrase", status.getReasonPhrase());
             } else {
-                gen.writeNumberField("statusCode", exception.getRawStatusCode());
-                gen.writeStringField("statusPhrase", "UNKNOWN");
+                gen.writeNumberField("statusCode", exception.getStatusCode().value());
             }
             gen.writeEndObject();
         }

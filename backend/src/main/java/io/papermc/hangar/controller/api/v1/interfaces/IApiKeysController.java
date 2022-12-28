@@ -2,14 +2,16 @@ package io.papermc.hangar.controller.api.v1.interfaces;
 
 import io.papermc.hangar.model.api.ApiKey;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
-import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,52 +20,50 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Api(tags = "API Keys")
+@Tag(name = "API Keys")
 @RequestMapping("/api/v1")
 public interface IApiKeysController {
 
-    @ApiOperation(
-        value = "Creates an API key",
-        nickname = "createKey",
-        notes = "Creates an API key. Requires the `edit_api_keys` permission.",
-        response = String.class,
-        authorizations = @Authorization("Session"),
+    @Operation(
+        summary = "Creates an API key",
+        operationId = "createKey",
+        description = "Creates an API key. Requires the `edit_api_keys` permission.",
+        security = @SecurityRequirement(name = "Session"),
         tags = "API Keys"
     )
     @ApiResponses({
-        @ApiResponse(code = 201, message = "Key created", response = String.class),
-        @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
-        @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")})
+        @ApiResponse(responseCode = "201", description = "Key created", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")})
     @PostMapping(path = "/keys", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    String createKey(@ApiParam(value = "Data about the key to create", required = true) @Valid @RequestBody CreateAPIKeyForm apiKeyForm);
+    String createKey(@Parameter(description = "Data about the key to create", required = true) @Valid @RequestBody CreateAPIKeyForm apiKeyForm);
 
-    @ApiOperation(
-        value = "Fetches a list of API Keys",
-        nickname = "getKeys",
-        notes = "Fetches a list of API Keys. Requires the `edit_api_keys` permission.",
-        response = String.class,
-        authorizations = @Authorization("Session"),
+    @Operation(
+        summary = "Fetches a list of API Keys",
+        operationId = "getKeys",
+        description = "Fetches a list of API Keys. Requires the `edit_api_keys` permission.",
+        security = @SecurityRequirement(name = "Session"),
         tags = "API Keys"
     )
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Key created", response = ApiKey.class, responseContainer = "List"),
-        @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
-        @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")})
+        @ApiResponse(responseCode = "200", description = "Key created", content = @Content(schema = @Schema(implementation = ApiKey.class))),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")})
     @GetMapping(path = "/keys", produces = MediaType.APPLICATION_JSON_VALUE)
     List<ApiKey> getKeys();
 
-    @ApiOperation(
-        value = "Deletes an API key",
-        nickname = "deleteKey",
-        notes = "Deletes an API key. Requires the `edit_api_keys` permission.",
-        authorizations = @Authorization("Session"),
+    @Operation(
+        summary = "Deletes an API key",
+        operationId = "deleteKey",
+        description = "Deletes an API key. Requires the `edit_api_keys` permission.",
+        security = @SecurityRequirement(name = "Session"),
         tags = "API Keys"
     )
     @ApiResponses({
-        @ApiResponse(code = 204, message = "Key deleted"),
-        @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
-        @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
+        @ApiResponse(responseCode = "204", description = "Key deleted"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @DeleteMapping("/keys")
-    void deleteKey(@ApiParam(value = "The name of the key to delete", required = true) @RequestParam String name);
+    void deleteKey(@Parameter(description = "The name of the key to delete", required = true) @RequestParam String name);
 }

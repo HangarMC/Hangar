@@ -2,12 +2,14 @@ package io.papermc.hangar.model.internal.api.requests.versions;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public class ReviewMessage {
 
-    private final @NotNull String message;
-    private final @NotNull ObjectNode args;
+    @NotNull
+    private final String message;
+    @NotNull
+    private final ObjectNode args;
 
     @JsonCreator
     public ReviewMessage(final String message, final ObjectNode args) {

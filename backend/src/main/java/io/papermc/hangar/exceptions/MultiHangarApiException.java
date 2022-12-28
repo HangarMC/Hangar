@@ -32,10 +32,7 @@ public class MultiHangarApiException extends ResponseStatusException {
             gen.writeBooleanField("isHangarApiException", true);
             gen.writeArrayFieldStart("exceptions");
             for (final HangarApiException exception : value.exceptions) {
-                String message = exception.getReason();
-                if (message == null || message.isBlank()) {
-                    message = exception.getStatus().getReasonPhrase();
-                }
+                final String message = exception.getReason();
                 gen.writeStartObject();
                 gen.writeStringField("message", message);
                 gen.writeArrayFieldStart("messageArgs");
@@ -45,8 +42,7 @@ public class MultiHangarApiException extends ResponseStatusException {
                 gen.writeEndArray();
                 gen.writeBooleanField("isHangarApiException", true);
                 gen.writeObjectFieldStart("httpError");
-                gen.writeNumberField("statusCode", exception.getStatus().value());
-                gen.writeStringField("statusPhrase", exception.getStatus().getReasonPhrase());
+                gen.writeNumberField("statusCode", exception.getStatusCode().value());
                 gen.writeEndObject();
                 gen.writeEndObject();
             }

@@ -37,25 +37,17 @@ import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.service.internal.users.invites.InviteService;
 import io.papermc.hangar.service.internal.users.invites.OrganizationInviteService;
 import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
-import java.util.List;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @Controller
 @LoggedIn
@@ -124,7 +116,7 @@ public class HangarUserController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
     @PostMapping(path = "/users/{userName}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveTagline(@PathVariable final String userName, @RequestBody final @Valid StringContent content) {
+    public void saveTagline(@PathVariable final String userName, @RequestBody @Valid final StringContent content) {
         final UserTable userTable = this.userService.getUserTable(userName);
         if (userTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);

@@ -29,9 +29,9 @@ import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.uploads.ImageService;
 import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -95,7 +95,7 @@ public class ProjectController extends HangarComponent {
     @Unlocked
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createProject(@RequestBody final @Valid NewProjectForm newProject) {
+    public ResponseEntity<String> createProject(@RequestBody @Valid final NewProjectForm newProject) {
         final ProjectTable projectTable = this.projectFactory.createProject(newProject);
         // need to do this here, outside the transactional
         this.projectService.refreshHomeProjects();
@@ -116,7 +116,7 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/settings", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveProjectSettings(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid ProjectSettingsForm settingsForm) {
+    public void saveProjectSettings(@PathVariable final String author, @PathVariable final String slug, @RequestBody @Valid final ProjectSettingsForm settingsForm) {
         this.projectService.saveSettings(author, slug, settingsForm);
     }
 
@@ -125,7 +125,7 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 5)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/sponsors", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveProjectSettings(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid StringContent content) {
+    public void saveProjectSettings(@PathVariable final String author, @PathVariable final String slug, @RequestBody @Valid final StringContent content) {
         if (content.getContent().length() > this.config.projects.maxSponsorsLen()) {
             throw new HangarApiException("page.new.error.name.maxLength");
         }
@@ -155,7 +155,7 @@ public class ProjectController extends HangarComponent {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#author, #slug}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PostMapping(path = "/project/{author}/{slug}/rename", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> renameProject(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid StringContent nameContent) {
+    public ResponseEntity<String> renameProject(@PathVariable final String author, @PathVariable final String slug, @RequestBody @Valid final StringContent nameContent) {
         return ResponseEntity.ok(this.projectFactory.renameProject(author, slug, nameContent.getContent()));
     }
 
@@ -164,7 +164,7 @@ public class ProjectController extends HangarComponent {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#author, #slug}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PostMapping(path = "/project/{author}/{slug}/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void transferProject(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid StringContent nameContent) {
+    public void transferProject(@PathVariable final String author, @PathVariable final String slug, @RequestBody @Valid final StringContent nameContent) {
         final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
         this.projectInviteService.sendTransferRequest(nameContent.getContent(), projectTable);
     }
@@ -183,7 +183,7 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addProjectMember(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid EditMembersForm.Member<ProjectRole> member) {
+    public void addProjectMember(@PathVariable final String author, @PathVariable final String slug, @RequestBody @Valid final EditMembersForm.Member<ProjectRole> member) {
         final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
         this.projectInviteService.sendInvite(member, projectTable);
     }
@@ -193,7 +193,7 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void editProjectMember(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid EditMembersForm.Member<ProjectRole> member) {
+    public void editProjectMember(@PathVariable final String author, @PathVariable final String slug, @RequestBody @Valid final EditMembersForm.Member<ProjectRole> member) {
         final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
         this.projectMemberService.editMember(member, projectTable);
     }
@@ -202,7 +202,7 @@ public class ProjectController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void removeProjectMember(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid EditMembersForm.Member<ProjectRole> member) {
+    public void removeProjectMember(@PathVariable final String author, @PathVariable final String slug, @RequestBody @Valid final EditMembersForm.Member<ProjectRole> member) {
         final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
         this.projectMemberService.removeMember(member, projectTable);
     }
@@ -252,7 +252,7 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 45)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.DELETE_PROJECT, args = "{#project}")
     @PostMapping(path = "/project/{projectId}/manage/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void softDeleteProject(@PathVariable("projectId") final ProjectTable project, @RequestBody final @Valid StringContent commentContent) {
+    public void softDeleteProject(@PathVariable("projectId") final ProjectTable project, @RequestBody @Valid final StringContent commentContent) {
         this.projectFactory.softDelete(project, commentContent.getContent());
     }
 
@@ -260,7 +260,7 @@ public class ProjectController extends HangarComponent {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PermissionRequired(NamedPermission.HARD_DELETE_PROJECT)
     @PostMapping(path = "/project/{projectId}/manage/hardDelete", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void hardDeleteProject(@PathVariable("projectId") final ProjectTable project, @RequestBody final @Valid StringContent commentContent) {
+    public void hardDeleteProject(@PathVariable("projectId") final ProjectTable project, @RequestBody @Valid final StringContent commentContent) {
         this.projectFactory.hardDelete(project, commentContent.getContent());
     }
 
