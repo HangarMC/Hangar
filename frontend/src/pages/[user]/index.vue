@@ -106,10 +106,10 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
     <div class="flex gap-4 flex-basis-full flex-col md:flex-row">
       <div class="flex-basis-full flex flex-col gap-2 flex-grow md:max-w-2/3 md:min-w-1/3">
         <div class="flex gap-2 items-center">
-          <div class="basis-1/2">
+          <div class="flex-grow">
             <h2 class="text-xl">{{ user.name }} has {{ projects.pagination.count }} projects</h2>
           </div>
-          <div class="basis-1/2">
+          <div class="flex-1">
             <InputSelect v-model="activeSorter" :values="sorters" item-text="label" item-value="id" label="Sort by"></InputSelect>
           </div>
         </div>
