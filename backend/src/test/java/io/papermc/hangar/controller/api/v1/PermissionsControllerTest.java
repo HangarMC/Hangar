@@ -63,14 +63,14 @@ class PermissionsControllerTest {
 
     @Test
     void testHiddenProjectSeeHidden() throws Exception {
-        this.mockMvc.perform(get("/api/v1/permissions/?author=paper&slug=Test")
+        this.mockMvc.perform(get("/api/v1/permissions?author=paper&slug=Test")
                 .header("Authorization", "HangarAuth " + this.getJwt(seeHidden)))
             .andExpect(jsonPath("$.permissionBinString").value("10000000000000000000000000"));
     }
 
     @Test
     void testHiddenProjectProjectOnly() throws Exception {
-        this.mockMvc.perform(get("/api/v1/permissions/?author=paper&slug=Test")
+        this.mockMvc.perform(get("/api/v1/permissions?author=paper&slug=Test")
                 .header("Authorization", "HangarAuth " + this.getJwt(projectOnly)))
             .andExpect(jsonPath("$.permissionBinString").value("100000000"));
     }
