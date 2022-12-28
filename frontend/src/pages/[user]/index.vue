@@ -110,7 +110,7 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
             <h2 class="text-xl">{{ user.name }} has {{ projects.pagination.count }} projects</h2>
           </div>
           <div class="basis-1/2">
-            <InputSelect v-model="activeSorter" :values="sorters" item-text="label" item-value="id"></InputSelect>
+            <InputSelect v-model="activeSorter" :values="sorters" item-text="label" item-value="id" label="Sort by"></InputSelect>
           </div>
         </div>
         <ProjectList :projects="projects"></ProjectList>
