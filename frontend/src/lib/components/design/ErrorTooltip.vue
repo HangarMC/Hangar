@@ -30,7 +30,7 @@ onErrorCaptured((err) => {
 </script>
 
 <template>
-  <Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" class="text-center">
+  <Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" class="text-center reset-popper">
     <slot />
     <template #content>
       {{ formattedError || "error" }}
@@ -50,5 +50,10 @@ onErrorCaptured((err) => {
 :deep(.popper:hover),
 :deep(.popper:hover > #arrow::before) {
   background: #d62e22;
+}
+
+.reset-popper {
+  border: unset !important;
+  margin: unset !important;
 }
 </style>
