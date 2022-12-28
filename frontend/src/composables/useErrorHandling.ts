@@ -1,12 +1,12 @@
 import axios, { AxiosError } from "axios";
 import { HangarApiException, HangarValidationException, MultiHangarApiException } from "hangar-api";
 import { Composer } from "vue-i18n";
-import { ref } from "vue";
 import { useNotificationStore } from "~/lib/store/notification";
 import { I18n } from "~/lib/i18n";
 import { createError } from "#imports";
 
-export function handleRequestError(err: AxiosError | unknown, i18n: Composer = I18n.value, msg: string | undefined = undefined) {
+export function handleRequestError(err: AxiosError | unknown, msg: string | undefined = undefined) {
+  const i18n: Composer = I18n.value;
   if (import.meta.env.SSR) {
     _handleRequestError(err, i18n);
   }
@@ -40,43 +40,37 @@ export function handleRequestError(err: AxiosError | unknown, i18n: Composer = I
 }
 
 function _handleRequestError(err: AxiosError | unknown, i18n: Composer) {
-  function writeResponse(object: unknown) {
-    console.log("writeResponse", object);
-    // throw new Error("TODO: Implement me"); // TODO
-    createError({ statusCode: object.status, statusMessage: object.statusText });
-  }
-
   const transformed = transformAxiosError(err);
   if (!axios.isAxiosError(err)) {
     // everything should be an AxiosError
-    writeResponse({
-      status: 500,
+    createError({
+      statusCode: 500,
     });
     console.log("handle not axios error", transformed);
   } else if (err.response && typeof err.response.data === "object" && err.response.data) {
     if ("isHangarApiException" in err.response.data) {
       const data =
         "isMultiException" in err.response.data ? (err.response.data as MultiHangarApiException).exceptions[0] : (err.response.data as HangarApiException);
-      writeResponse({
-        status: data.httpError.statusCode,
-        statusText: i18n.te(data.message) ? i18n.t(data.message) : data.message,
+      createError({
+        statusCode: data.httpError.statusCode,
+        statusMessage: i18n.te(data.message) ? i18n.t(data.message) : data.message,
       });
     } else if ("isHangarValidationException" in err.response.data) {
       const data = err.response.data as HangarValidationException;
-      writeResponse({
-        status: data.httpError.statusCode,
-        statusText: data.fieldErrors.map((f) => f.errorMsg).join(", "),
+      createError({
+        statusCode: data.httpError.statusCode,
+        statusMessage: data.fieldErrors.map((f) => f.errorMsg).join(", "),
       });
     } else {
-      writeResponse({
-        status: err.response.status,
-        statusText: err.response.statusText,
+      createError({
+        statusCode: err.response.status,
+        statusMessage: err.response.statusText,
       });
     }
   } else {
-    writeResponse({
-      status: 500,
-      statusText: "Internal Error: " + transformed.code,
+    createError({
+      statusCode: 500,
+      statusMessage: "Internal Error: " + transformed.code,
     });
   }
 }

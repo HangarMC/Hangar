@@ -10,12 +10,12 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
 import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
 import { useSeo } from "~/composables/useSeo";
-import Steps, { Step } from "~/lib/components/design/Steps.vue";
+import Steps from "~/lib/components/design/Steps.vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import InputTag from "~/lib/components/ui/InputTag.vue";
-import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
+import Tabs from "~/lib/components/design/Tabs.vue";
 import Button from "~/lib/components/design/Button.vue";
 import Markdown from "~/components/Markdown.vue";
 import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
@@ -25,6 +25,8 @@ import Spinner from "~/lib/components/design/Spinner.vue";
 import Link from "~/lib/components/design/Link.vue";
 import { usePossibleOwners } from "~/composables/useApiHelper";
 import { definePageMeta } from "#imports";
+import { Step } from "~/lib/types/components/design/Steps";
+import { Tab } from "~/lib/types/components/design/Tabs";
 
 interface NewProjectForm extends ProjectSettingsForm {
   ownerId: ProjectOwner["userId"];
@@ -80,7 +82,7 @@ const steps: Step[] = [
   {
     value: "tos",
     header: i18n.t("project.new.step1.title"),
-    showBack: () => false,
+    showBack: false,
   },
   {
     value: "basic",
@@ -98,7 +100,7 @@ const steps: Step[] = [
       return true;
     },
   },
-  { value: "finishing", header: i18n.t("project.new.step5.title"), showNext: () => false, showBack: () => false },
+  { value: "finishing", header: i18n.t("project.new.step5.title"), showNext: false, showBack: false },
 ];
 
 const selectBBCodeTab = ref("convert");
@@ -249,8 +251,8 @@ function createProject() {
           <InputTag
             v-model="form.settings.keywords"
             :label="i18n.t('project.new.step3.keywords')"
-            :rules="[maxLength()(useBackendData.validations.project.keywords.max)]"
-            :maxlength="useBackendData.validations.project.keywords.max"
+            :rules="[maxLength()(useBackendData?.validations?.project?.keywords?.max || 5)]"
+            :maxlength="useBackendData?.validations?.project?.keywords?.max || 5"
           />
         </div>
       </div>

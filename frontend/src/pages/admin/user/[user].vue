@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { PaginatedResult, Project, User } from "hangar-api";
+import { User } from "hangar-api";
 import { useRoute, useRouter } from "vue-router";
 import { OrganizationRoleTable } from "hangar-internal";
 import { computed, ref } from "vue";
@@ -11,7 +11,7 @@ import Link from "~/lib/components/design/Link.vue";
 import Card from "~/lib/components/design/Card.vue";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import SortableTable, { Header } from "~/components/SortableTable.vue";
+import SortableTable from "~/components/SortableTable.vue";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { useSeo } from "~/composables/useSeo";
 import { authUrl, forumUserUrl } from "~/composables/useUrlHelper";
@@ -21,6 +21,7 @@ import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import { useBackendData } from "~/store/backendData";
 import Button from "~/lib/components/design/Button.vue";
 import { definePageMeta } from "#imports";
+import { Header } from "~/types/components/SortableTable";
 
 definePageMeta({
   globalPermsRequired: ["EDIT_ALL_USER_SETTINGS"],
@@ -36,19 +37,19 @@ const orgs = await useInternalApi<{ [key: string]: OrganizationRoleTable }>(`org
 );
 const user = await useUser(route.params.user as string);
 
-const projectsConfig = [
+const projectsConfig: Header[] = [
   { title: i18n.t("userAdmin.project"), name: "name" },
   { title: i18n.t("userAdmin.owner"), name: "owner" },
   { title: i18n.t("userAdmin.role"), name: "role" },
   { title: i18n.t("userAdmin.accepted"), name: "accepted" },
-] as Header[];
+];
 
-const orgConfig = [
+const orgConfig: Header[] = [
   { title: i18n.t("userAdmin.organization"), name: "name" },
   { title: i18n.t("userAdmin.owner"), name: "owner" },
   { title: i18n.t("userAdmin.role"), name: "role" },
   { title: i18n.t("userAdmin.accepted"), name: "accepted" },
-] as Header[];
+];
 
 const orgList = computed(() => {
   return orgs

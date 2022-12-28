@@ -23,7 +23,7 @@ class Auth {
     const result = await useAxios()
       .get(`/logout?returnUrl=${useConfig().publicHost}?loggedOut`)
       .catch((e) => handleRequestError(e));
-    if ("status" in result && result?.status === 200 && result?.data) {
+    if (result?.status === 200 && result?.data) {
       location.replace(result?.data);
     } else {
       await useNotificationStore().error("Error while logging out?!");

@@ -100,7 +100,7 @@ async function savePage(content: string) {
     }
     editingPage.value = false;
   } catch (err) {
-    handleRequestError(err as AxiosError, i18n, "page.new.error.save");
+    handleRequestError(err, "page.new.error.save");
   }
 }
 
@@ -155,7 +155,7 @@ async function restoreVersion() {
 </script>
 
 <template>
-  <div v-if="projectVersion" class="flex <sm:flex-col flex-wrap md:flex-nowrap gap-4">
+  <div v-if="projectVersion && platform" class="flex <sm:flex-col flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-9/12 flex-grow overflow-auto">
       <div class="flex flex-wrap gap-2 justify-between">
         <div>
@@ -340,7 +340,7 @@ async function restoreVersion() {
         </div>
       </Card>
 
-      <Card v-if="projectVersion.pluginDependencies[platform?.name.toUpperCase()] || hasPerms(NamedPermission.EDIT_VERSION)">
+      <Card v-if="(platform?.name && projectVersion?.pluginDependencies[platform?.name.toUpperCase()]) || hasPerms(NamedPermission.EDIT_VERSION)">
         <template #header>
           <div class="inline-flex w-full">
             <h3 class="flex-grow">{{ i18n.t("version.page.dependencies") }}</h3>

@@ -9,7 +9,7 @@ import { remove } from "lodash-es";
 import { type ValidationRule } from "@vuelidate/core";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
-import Steps, { Step } from "~/lib/components/design/Steps.vue";
+import Steps from "~/lib/components/design/Steps.vue";
 import InputFile from "~/lib/components/ui/InputFile.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
@@ -25,10 +25,12 @@ import ChannelModal from "~/components/modals/ChannelModal.vue";
 import { useBackendData } from "~/store/backendData";
 import DependencyTable from "~/components/projects/DependencyTable.vue";
 import InputTag from "~/lib/components/ui/InputTag.vue";
-import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
+import Tabs from "~/lib/components/design/Tabs.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import { useProjectChannels } from "~/composables/useApiHelper";
 import { definePageMeta } from "#imports";
+import { Step } from "~/lib/types/components/design/Steps";
+import { Tab } from "~/lib/types/components/design/Tabs";
 
 definePageMeta({
   projectPermsRequired: ["CREATE_VERSION"],
@@ -302,8 +304,8 @@ useHead(
         </div>
         <div class="basis-full md:(basis-4/12 -ml-2)">
           <ChannelModal :project-id="project.id" @create="addChannel">
-            <template #activator="{ on, attrs }">
-              <Button class="basis-4/12" v-bind="attrs" size="medium" v-on="on">
+            <template #activator="{ on }">
+              <Button class="basis-4/12" size="medium" v-on="on">
                 <IconMdiPlus />
                 {{ t("version.new.form.addChannel") }}
               </Button>
@@ -345,7 +347,7 @@ useHead(
       <p class="mb-4">{{ i18n.t("version.new.form.versionDescription") }}</p>
       <div class="flex flex-wrap mt-2 md:-space-x-2 <md:space-y-2">
         <!-- TODO validate version string against existing versions - now super easy! -->
-        <div class="basis-full md:basis-4/12 items-center">
+        <div v-if="pendingVersion" class="basis-full md:basis-4/12 items-center">
           <InputText
             v-model="pendingVersion.versionString"
             :label="t('version.new.form.versionString')"
@@ -357,7 +359,7 @@ useHead(
       </div>
 
       <p class="mt-8 text-xl">{{ t("version.new.form.addedArtifacts") }}</p>
-      <div v-for="(pendingFile, idx) in pendingVersion.files" :key="idx" class="mb-2">
+      <div v-for="(pendingFile, idx) in pendingVersion?.files" :key="idx" class="mb-2">
         <div class="flex flex-wrap items-center mt-4">
           <div v-if="pendingFile.fileInfo" class="basis-full <md:mt-4 md:basis-4/12">
             <InputText :model-value="pendingFile.fileInfo.name" :label="t('version.new.form.fileName')" disabled />
@@ -383,7 +385,12 @@ useHead(
         <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
           <span class="text-lg inline-flex items-center"><PlatformLogo :platform="platform.enumName" :size="25" class="mr-1" /> {{ platform.name }}</span>
           <div class="mt-2">
-            <InputTag v-model="pendingVersion.platformDependencies[platform.enumName]" :options="platform.possibleVersions" :rules="platformVersionRules" />
+            <InputTag
+              v-if="pendingVersion"
+              v-model="pendingVersion.platformDependencies[platform.enumName]"
+              :options="platform.possibleVersions"
+              :rules="platformVersionRules"
+            />
           </div>
         </div>
       </div>
@@ -392,7 +399,13 @@ useHead(
       <div class="flex flex-wrap space-y-7">
         <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
           <span class="text-lg inline-flex items-center"><PlatformLogo :platform="platform.enumName" :size="25" class="mr-1" /> {{ platform.name }}</span>
-          <DependencyTable ref="dependencyTables" :key="`${platform.name}-deps-table`" :platform="platform.enumName" :version="pendingVersion" />
+          <DependencyTable
+            v-if="pendingVersion"
+            ref="dependencyTables"
+            :key="`${platform.name}-deps-table`"
+            :platform="platform.enumName"
+            :version="pendingVersion"
+          />
         </div>
       </div>
     </template>

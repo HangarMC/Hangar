@@ -34,6 +34,7 @@ import "vue-advanced-cropper/dist/style.css";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 import { definePageMeta } from "#imports";
 import Alert from "~/lib/components/design/Alert.vue";
+import { Tab } from "~/lib/types/components/design/Tabs";
 
 definePageMeta({
   projectPermsRequired: ["EDIT_SUBJECT_SETTINGS"],
@@ -49,7 +50,7 @@ const props = defineProps<{
 }>();
 
 const selectedTab = ref(route.hash.substring(1) || "general");
-const tabs = [
+const tabs: Tab[] = [
   { value: "general", header: i18n.t("project.settings.tabs.general") },
   { value: "links", header: i18n.t("project.settings.tabs.links") },
   { value: "management", header: i18n.t("project.settings.tabs.management") },
@@ -94,7 +95,7 @@ function changeImage({ canvas }: CropperResult) {
   });
 }
 
-const newName = ref<string | null>("");
+const newName = ref<string | null | undefined>("");
 const newNameField = ref<InstanceType<typeof InputText> | null>(null);
 const loading = reactive({
   save: false,
@@ -112,7 +113,7 @@ watch(selectedTab, (val) => history.replaceState({}, "", route.path + "#" + val)
 
 const search = ref<string>("");
 const result = ref<string[]>([]);
-async function doSearch(val: string) {
+async function doSearch(val: unknown) {
   result.value = [];
   const users = await useApi<PaginatedResult<User>>("users", "get", {
     query: val,
@@ -272,8 +273,8 @@ useHead(
             <InputText
               v-model="form.description"
               counter
-              :maxlength="useBackendData.validations?.project?.desc?.max"
-              :rules="[required(), maxLength()(useBackendData.validations?.project?.desc?.max)]"
+              :maxlength="useBackendData.validations?.project?.desc?.max || 120"
+              :rules="[required(), maxLength()(useBackendData.validations?.project?.desc?.max || 120)]"
             />
           </ProjectSettingsSection>
           <!-- todo: forums integration -->
@@ -284,9 +285,9 @@ useHead(
             <InputTag
               v-model="form.settings.keywords"
               counter
-              :maxlength="useBackendData.validations?.project.keywords.max"
+              :maxlength="useBackendData.validations?.project?.keywords?.max || 5"
               :label="i18n.t('project.new.step3.keywords')"
-              :rules="[maxLength()(useBackendData.validations?.project.keywords.max)]"
+              :rules="[maxLength()(useBackendData.validations?.project?.keywords?.max || 5)]"
             />
           </ProjectSettingsSection>
           <ProjectSettingsSection>

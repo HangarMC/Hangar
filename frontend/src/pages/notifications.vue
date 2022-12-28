@@ -18,8 +18,9 @@ import IconMdiInformationOutline from "~icons/mdi/information-outline";
 import IconMdiMessageOutline from "~icons/mdi/message-outline";
 import IconMdiCheck from "~icons/mdi/check";
 import Pagination from "~/lib/components/design/Pagination.vue";
-import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
+import Tabs from "~/lib/components/design/Tabs.vue";
 import { definePageMeta } from "#imports";
+import { Tab } from "~/lib/types/components/design/Tabs";
 
 definePageMeta({
   loginRequired: true,

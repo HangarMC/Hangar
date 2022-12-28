@@ -5,7 +5,6 @@ import { HangarProject, ProjectChannel } from "hangar-internal";
 import { useHead } from "@vueuse/head";
 import { useRoute } from "vue-router";
 import Card from "~/lib/components/design/Card.vue";
-import { Header } from "~/components/SortableTable.vue";
 import { ChannelFlag } from "~/types/enums";
 import { useProjectChannels } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";

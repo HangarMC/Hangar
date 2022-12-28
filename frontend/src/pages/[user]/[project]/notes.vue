@@ -7,7 +7,7 @@ import { useHead } from "@vueuse/head";
 import { useRoute } from "vue-router";
 import Card from "~/lib/components/design/Card.vue";
 import Link from "~/lib/components/design/Link.vue";
-import SortableTable, { Header } from "~/components/SortableTable.vue";
+import SortableTable from "~/components/SortableTable.vue";
 import Alert from "~/lib/components/design/Alert.vue";
 import { useProjectNotes } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -17,6 +17,7 @@ import Button from "~/lib/components/design/Button.vue";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { definePageMeta } from "#imports";
+import { Header } from "~/types/components/SortableTable";
 
 definePageMeta({
   projectPermsRequired: ["MOD_NOTES_AND_FLAGS"],
@@ -32,11 +33,11 @@ const notes = await useProjectNotes(props.project.id);
 const text = ref("");
 const loading = ref(false);
 
-const headers = [
+const headers: Header[] = [
   { title: "Date", name: "createdAt", width: "10%" },
   { title: "User", name: "userName", width: "10%" },
   { title: "Message", name: "message", width: "80%" },
-] as Header[];
+];
 
 useHead(useSeo("Notes | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
 

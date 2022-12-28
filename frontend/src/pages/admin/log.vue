@@ -9,7 +9,7 @@ import { debounce } from "lodash-es";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useActionLogs } from "~/composables/useApiHelper";
 import Card from "~/lib/components/design/Card.vue";
-import SortableTable, { Header } from "~/components/SortableTable.vue";
+import SortableTable from "~/components/SortableTable.vue";
 import Link from "~/lib/components/design/Link.vue";
 import MarkdownModal from "~/components/modals/MarkdownModal.vue";
 import DiffModal from "~/components/modals/DiffModal.vue";
@@ -19,6 +19,7 @@ import { definePageMeta, useInternalApi, watch } from "#imports";
 import InputText from "~/lib/components/ui/InputText.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import { useBackendData } from "~/store/backendData";
+import { Header } from "~/types/components/SortableTable";
 
 definePageMeta({
   globalPermsRequired: ["VIEW_LOGS"],
@@ -29,7 +30,7 @@ const route = useRoute();
 const loggedActions = await useActionLogs();
 
 // TODO add support for sorting
-const headers = [
+const headers: Header[] = [
   { title: i18n.t("userActionLog.user"), name: "user", sortable: false },
   { title: i18n.t("userActionLog.address"), name: "address", sortable: false },
   { title: i18n.t("userActionLog.time"), name: "time", sortable: false },
@@ -37,7 +38,7 @@ const headers = [
   { title: i18n.t("userActionLog.context"), name: "context", sortable: false },
   { title: i18n.t("userActionLog.oldState"), name: "oldState", sortable: false },
   { title: i18n.t("userActionLog.newState"), name: "newState", sortable: false },
-] as Header[];
+];
 
 const page = ref(0);
 const sort = ref<string[]>([]);

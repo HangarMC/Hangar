@@ -6,12 +6,13 @@ import { useHead } from "@vueuse/head";
 import { useRoute } from "vue-router";
 import Card from "~/lib/components/design/Card.vue";
 import Link from "~/lib/components/design/Link.vue";
-import SortableTable, { Header } from "~/components/SortableTable.vue";
+import SortableTable from "~/components/SortableTable.vue";
 import Alert from "~/lib/components/design/Alert.vue";
 import { useProjectFlags } from "~/composables/useApiHelper";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { definePageMeta } from "#imports";
+import { Header } from "~/types/components/SortableTable";
 
 definePageMeta({
   projectPermsRequired: ["MOD_NOTES_AND_FLAGS"],
@@ -25,13 +26,13 @@ const i18n = useI18n();
 const route = useRoute();
 const flags = await useProjectFlags(props.project.id);
 
-const headers = [
+const headers: Header[] = [
   { title: "Submitter", name: "user" },
   { title: "Reason", name: "reason" },
   { title: "Comment", name: "comment" },
   { title: "When", name: "createdAt" },
   { title: "Resolved", name: "resolved" },
-] as Header[];
+];
 
 useHead(useSeo("Flags | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
 </script>

@@ -9,8 +9,9 @@ import InputText from "~/lib/components/ui/InputText.vue";
 import { required } from "~/lib/composables/useValidationHelpers";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 import { useApi } from "~/composables/useApi";
-import Tabs, { Tab } from "~/lib/components/design/Tabs.vue";
-import { watch, ref, useRoute } from "#imports";
+import Tabs from "~/lib/components/design/Tabs.vue";
+import { ref, useRoute } from "#imports";
+import { Tab } from "~/lib/types/components/design/Tabs";
 
 const route = useRoute();
 const i18n = useI18n();

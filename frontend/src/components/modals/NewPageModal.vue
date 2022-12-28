@@ -8,9 +8,10 @@ import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import { useBackendData } from "~/store/backendData";
 import InputText from "~/lib/components/ui/InputText.vue";
-import InputSelect, { Option } from "~/lib/components/ui/InputSelect.vue";
+import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
+import { Option } from "~/lib/types/components/ui/InputSelect";
 
 const props = defineProps<{
   projectId: number;
@@ -41,10 +42,10 @@ watch(name, async () => {
     parentId: parent.value,
   })
     .catch((err: AxiosError) => {
-      if (!err.response?.data.isHangarApiException) {
+      if (!err.response?.data?.isHangarApiException) {
         return handleRequestError(err);
       }
-      nameErrorMessages.value.push(i18n.t(err.response.data.message));
+      nameErrorMessages.value.push(i18n.t(err.response.data?.message));
     })
     .finally(() => {
       validateLoading.value = false;

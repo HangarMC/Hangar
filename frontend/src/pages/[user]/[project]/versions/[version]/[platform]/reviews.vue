@@ -378,7 +378,7 @@ useHead(
         <div v-if="isCurrentReviewOpen && currentUserReview === review" class="space-x-1">
           <TextAreaModal :title="t('reviews.stopReview')" :label="t('general.message')" :submit="stopReview">
             <template #activator="slotProps">
-              <Button size="small" color="error" v-bind="slotProps.attrs" v-on="slotProps.on">
+              <Button size="small" color="error" v-on="slotProps.on">
                 <IconMdiStop />
                 {{ t("reviews.stopReview") }}
               </Button>

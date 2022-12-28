@@ -8,12 +8,13 @@ import PageTitle from "~/lib/components/design/PageTitle.vue";
 import Link from "~/lib/components/design/Link.vue";
 import Tag from "~/components/Tag.vue";
 import { useApi } from "~/composables/useApi";
-import { Header } from "~/components/SortableTable.vue";
 import { useSeo } from "~/composables/useSeo";
 import { definePageMeta, watch } from "#imports";
 import { useUsers } from "~/composables/useApiHelper";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
+import { Header } from "~/types/components/SortableTable";
+import SortableTable from "~/components/SortableTable.vue";
 
 definePageMeta({
   globalPermsRequired: ["EDIT_ALL_USER_SETTINGS"],
@@ -23,7 +24,7 @@ const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
 
-const headers = [
+const headers: Header[] = [
   { name: "pic", title: "", sortable: false },
   { name: "name", title: i18n.t("pages.headers.username"), sortable: true },
   { name: "roles", title: i18n.t("pages.headers.roles"), sortable: true },
@@ -31,7 +32,7 @@ const headers = [
   { name: "projectCount", title: i18n.t("pages.headers.projects"), sortable: true },
   { name: "locked", title: i18n.t("pages.headers.locked"), sortable: true },
   { name: "org", title: i18n.t("pages.headers.organization"), sortable: true },
-] as Header[];
+];
 
 const users = await useUsers();
 const page = ref(0);

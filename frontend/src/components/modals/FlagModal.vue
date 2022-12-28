@@ -37,7 +37,7 @@ async function submit(close: () => void) {
     useNotificationStore().success(i18n.t("project.flag.flagSend"));
     await router.go(0);
   } catch (e) {
-    handleRequestError(e as AxiosError);
+    handleRequestError(e);
   }
 }
 </script>

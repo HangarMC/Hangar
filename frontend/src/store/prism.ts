@@ -17,7 +17,7 @@ export const usePrismStore = defineStore("prism", () => {
 
   async function loadLanguages() {
     const langs = new Set<string>();
-    for (const codeBlock of document.querySelectorAll('code[class*="language-"]')) {
+    for (const codeBlock of document.querySelectorAll('code[class*="language-"]') as any as Element[]) {
       langs.add(codeBlock.className.replace("language-", ""));
     }
     prismLog("Load languages", langs);

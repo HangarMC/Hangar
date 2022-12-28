@@ -37,7 +37,7 @@ const toArray = (input: unknown) => (Array.isArray(input) ? input : input ? [inp
 const filters = ref({
   versions: toArray(route.query.version),
   categories: toArray(route.query.category),
-  platform: route.query.platform || null,
+  platform: (route.query.platform || null) as string | null,
   licenses: toArray(route.query.license),
 });
 

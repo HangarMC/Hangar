@@ -23,9 +23,9 @@ declare module "hangar-api" {
   }
 
   interface License {
-    name: string | null;
-    url: string | null;
-    type: string | null;
+    name?: string | null;
+    url?: string | null;
+    type?: string | null;
   }
 
   interface ProjectSettings {

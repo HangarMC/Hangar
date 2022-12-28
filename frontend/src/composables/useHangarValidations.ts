@@ -2,7 +2,7 @@ import { helpers } from "@vuelidate/validators";
 import { useInternalApi } from "~/composables/useApi";
 import { withOverrideMessage } from "~/lib/composables/useValidationHelpers";
 
-export const validProjectName = withOverrideMessage((ownerId: () => string) =>
+export const validProjectName = withOverrideMessage((ownerId: () => number) =>
   helpers.withParams(
     { ownerId, type: "validProjectName" },
     helpers.withAsync(async (value: string) => {
