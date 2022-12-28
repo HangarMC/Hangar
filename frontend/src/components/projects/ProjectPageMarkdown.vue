@@ -20,7 +20,7 @@ const i18n = useI18n();
 
 const updateProjectPages = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
 
-const { editingPage, changeEditingPage, page, savePage, deletePage } = await useProjectPage(route, router, i18n, props.project);
+const { editingPage, changeEditingPage, page, savePage, deletePage } = await useProjectPage(route, router, props.project);
 if (page) {
   const title = page.value?.name === "Home" ? props.project.name : page.value?.name + " | " + props.project.name;
   useHead(useSeo(title, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
