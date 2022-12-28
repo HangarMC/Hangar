@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, type Ref } from "vue";
+import { computed, ref, unref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useVuelidate } from "@vuelidate/core";
@@ -33,10 +33,10 @@ const activeStep = computed(() => props.steps.find((s) => s.value === internalVa
 const activeStepIndex = computed(() => props.steps.indexOf(activeStep.value as Step) + 1);
 
 const loading = ref(false);
-const disableBack = computed(() => loading.value || (activeStep.value?.disableBack ? activeStep.value?.disableBack.value : false));
-const disableNext = computed(() => loading.value || (activeStep.value?.disableNext ? activeStep.value?.disableNext.value : v.value.$invalid));
-const showBack = computed(() => (activeStep.value?.showBack ? activeStep.value?.showBack.value : true));
-const showNext = computed(() => (activeStep.value?.showNext ? activeStep.value?.showNext.value : true));
+const disableBack = computed(() => loading.value || (activeStep.value?.disableBack ? unref(activeStep.value?.disableBack) : false));
+const disableNext = computed(() => loading.value || (activeStep.value?.disableNext ? unref(activeStep.value?.disableNext) : v.value.$invalid));
+const showBack = computed(() => (activeStep.value?.showBack ? unref(activeStep.value?.showBack) : true));
+const showNext = computed(() => (activeStep.value?.showNext ? unref(activeStep.value?.showNext) : true));
 
 async function back() {
   if (disableBack.value) return;

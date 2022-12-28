@@ -45,6 +45,7 @@ const notificationStore = useNotificationStore();
   animation-duration: 7s;
   animation-timing-function: linear;
 }
+
 @keyframes progress {
   0% {
     width: 100%;

@@ -22,7 +22,10 @@ const classes = computed<string>(() => "font-bold " + (props.disabled ? "color-g
   <router-link v-if="to" :to="to" :class="classes" v-bind="$attrs" :active-class="props.activeUnderline ? 'underline' : ''">
     <slot></slot>
   </router-link>
-  <a v-else :href="href" :class="classes" v-bind="$attrs">
+  <a v-else-if="href" :href="href" :class="classes" v-bind="$attrs">
     <slot></slot>
   </a>
+  <span v-else :class="classes" v-bind="$attrs">
+    <slot></slot>
+  </span>
 </template>
