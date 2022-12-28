@@ -1,17 +1,17 @@
 package io.papermc.hangar.model.internal.api.requests;
 
 import io.papermc.hangar.model.common.NamedPermission;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.util.List;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 public class CreateAPIKeyForm {
 
-    @ApiModelProperty(allowableValues = "range[5,256)", required = true)
+    @Schema(allowableValues = "range[5,256)", requiredMode = Schema.RequiredMode.REQUIRED)
     private final @NotBlank @Size(min = 5, max = 255) String name;
 
-    @ApiModelProperty(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final @Size(min = 1) List<NamedPermission> permissions;
 
     public CreateAPIKeyForm(final String name, final List<NamedPermission> permissions) {

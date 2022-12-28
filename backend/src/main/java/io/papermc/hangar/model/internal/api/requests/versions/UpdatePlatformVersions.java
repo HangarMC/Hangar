@@ -2,15 +2,17 @@ package io.papermc.hangar.model.internal.api.requests.versions;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.model.common.Platform;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.Set;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 public class UpdatePlatformVersions {
 
-    private final @NotNull Platform platform;
-    private final @Size(min = 1, message = "version.edit.error.noPlatformVersions") Set<@NotBlank(message = "version.new.error.invalidPlatformVersion") String> versions;
+    @NotNull
+    private final Platform platform;
+    @Size(min = 1, message = "version.edit.error.noPlatformVersions")
+    private final Set<@NotBlank(message = "version.new.error.invalidPlatformVersion") String> versions;
 
     @JsonCreator
     public UpdatePlatformVersions(final Platform platform, final Set<String> versions) {

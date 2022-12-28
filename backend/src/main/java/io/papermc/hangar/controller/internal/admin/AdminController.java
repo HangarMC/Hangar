@@ -33,9 +33,9 @@ import io.papermc.hangar.service.internal.admin.HealthService;
 import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.users.UserService;
+import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
-import javax.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -80,7 +80,7 @@ public class AdminController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "/platformVersions", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
-    public void changePlatformVersions(@RequestBody final @Valid ChangePlatformVersionsForm form) {
+    public void changePlatformVersions(@RequestBody @Valid final ChangePlatformVersionsForm form) {
         this.platformService.updatePlatformVersions(form);
     }
 
@@ -115,7 +115,7 @@ public class AdminController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.IS_STAFF)
     @PostMapping(value = "/lock-user/{user}/{locked}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void setUserLock(@PathVariable final UserTable user, @PathVariable final boolean locked, @RequestBody final @Valid StringContent comment) {
+    public void setUserLock(@PathVariable final UserTable user, @PathVariable final boolean locked, @RequestBody @Valid final StringContent comment) {
         this.userService.setLocked(user, locked, comment.getContent());
     }
 

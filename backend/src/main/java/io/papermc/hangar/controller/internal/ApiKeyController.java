@@ -12,20 +12,13 @@ import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.APIKeyService;
 import io.papermc.hangar.service.PermissionService;
-import java.util.List;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 // @el(user: io.papermc.hangar.model.db.UserTable)
 @LoggedIn
@@ -70,14 +63,14 @@ public class ApiKeyController {
     @CurrentUser("#user")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
     @PostMapping(path = "/create-key/{user}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    public String createApiKey(@PathVariable final UserTable user, @RequestBody final @Valid CreateAPIKeyForm apiKeyForm) {
+    public String createApiKey(@PathVariable final UserTable user, @RequestBody @Valid final CreateAPIKeyForm apiKeyForm) {
         return this.apiKeyService.createApiKey(user, apiKeyForm, this.permissionService.getAllPossiblePermissions(user.getId()));
     }
 
     @ResponseBody
     @CurrentUser("#user")
     @PostMapping(path = "/delete-key/{user}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteApiKey(@PathVariable final UserTable user, @RequestBody final @Valid StringContent nameContent) {
+    public void deleteApiKey(@PathVariable final UserTable user, @RequestBody @Valid final StringContent nameContent) {
         this.apiKeyService.deleteApiKey(user, nameContent.getContent());
     }
 }

@@ -3,20 +3,21 @@ package io.papermc.hangar.model.internal.api.requests.versions;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 public class UpdatePluginDependencies {
 
-    private final @NotNull Platform platform;
+    @NotNull
+    private final Platform platform;
     private final Map<String, @Valid PluginDependency> pluginDependencies;
 
     @JsonCreator
-    public UpdatePluginDependencies(final @NotNull Platform platform, final Set<@Valid PluginDependency> pluginDependencies) {
+    public UpdatePluginDependencies(@NotNull final Platform platform, final Set<@Valid PluginDependency> pluginDependencies) {
         this.platform = platform;
         this.pluginDependencies = pluginDependencies.stream().collect(Collectors.toMap(PluginDependency::getName, Function.identity()));
     }

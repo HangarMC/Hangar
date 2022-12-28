@@ -2,11 +2,12 @@ package io.papermc.hangar.model.internal.api.requests.projects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.model.common.projects.Visibility;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public class VisibilityChangeForm {
 
-    private final @NotNull Visibility visibility;
+    @NotNull
+    private final Visibility visibility;
     private final String comment;
 
     @JsonCreator

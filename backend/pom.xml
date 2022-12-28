@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.7</version>
+        <version>3.0.1</version>
         <relativePath/>
     </parent>
 
@@ -28,11 +28,11 @@
         <!-- dependency management -->
         <jdbi3-bom.version>3.35.0</jdbi3-bom.version>
         <configurate.version>4.1.2</configurate.version>
-        <spring-cloud-aws.version>3.0.0-M2</spring-cloud-aws.version>
+        <spring-cloud-aws.version>3.0.0-M3</spring-cloud-aws.version>
 
         <!-- dependencies -->
         <owasp-html-sanitizer>20220608.1</owasp-html-sanitizer>
-        <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+        <springdoc.version>2.0.2</springdoc.version>
         <flexmark-all.version>0.64.0</flexmark-all.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20220924</org-json.version>
@@ -47,6 +47,18 @@
         <!-- plugins -->
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
     </properties>
+
+    <!-- spring-cloud-aws requires this rn -->
+    <repositories>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/libs-milestone-local</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -68,6 +80,11 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-properties-migrator</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -135,24 +152,17 @@
             <artifactId>configurate-yaml</artifactId>
         </dependency>
 
-        <!--SpringFox dependencies -->
+        <!-- SpringDoc dependencies -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>${springfox-boot-starter.version}</version>
-            <exclusions>
-                <exclusion>
-                    <!-- old version -->
-                    <groupId>io.github.classgraph</groupId>
-                    <artifactId>classgraph</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc.version}</version>
         </dependency>
 
         <!-- Bean Validation API support -->
         <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
         </dependency>
 
         <!-- config stuff -->
@@ -313,8 +323,8 @@
             </plugin>
 
             <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <phase>generate-resources</phase>

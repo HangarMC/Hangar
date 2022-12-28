@@ -2,8 +2,8 @@ package io.papermc.hangar.model.internal.versions;
 
 import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.model.common.Platform;
+import jakarta.validation.constraints.Size;
 import java.util.List;
-import javax.validation.constraints.Size;
 import org.jetbrains.annotations.Nullable;
 
 // @el(root: String) // can't figure out how to apply this to just the one record component

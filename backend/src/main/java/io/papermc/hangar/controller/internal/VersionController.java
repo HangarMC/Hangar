@@ -24,10 +24,10 @@ import io.papermc.hangar.service.internal.versions.PinnedVersionService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.versions.VersionFactory;
 import io.papermc.hangar.service.internal.versions.VersionService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.util.List;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -79,9 +79,9 @@ public class VersionController extends HangarComponent {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PendingVersion> create(@PathVariable("id") final long projectId,
-                                                 @RequestPart(required = false) final @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
-                                                 @RequestPart final @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFileOrUrl> data,
-                                                 @RequestPart final @NotBlank String channel) {
+                                                 @RequestPart(required = false) @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") final List<@Valid MultipartFile> files,
+                                                 @RequestPart @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms") final List<@Valid MultipartFileOrUrl> data,
+                                                 @RequestPart @NotBlank final String channel) {
         // Use separate lists to hack around multipart form data limitations
         return ResponseEntity.ok(this.versionFactory.createPendingVersion(projectId, data, files, channel));
     }
@@ -91,7 +91,7 @@ public class VersionController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{id}/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createVersion(@PathVariable("id") final long projectId, @RequestBody final @Valid PendingVersion pendingVersion) {
+    public void createVersion(@PathVariable("id") final long projectId, @RequestBody @Valid final PendingVersion pendingVersion) {
         this.versionFactory.publishPendingVersion(projectId, pendingVersion);
     }
 
@@ -100,7 +100,7 @@ public class VersionController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{projectId}/{versionId}/saveDescription", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveDescription(@PathVariable final long projectId, @PathVariable final long versionId, @RequestBody final @Valid StringContent stringContent) {
+    public void saveDescription(@PathVariable final long projectId, @PathVariable final long versionId, @RequestBody @Valid final StringContent stringContent) {
         if (stringContent.getContent().length() > this.config.pages.maxLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
@@ -121,7 +121,7 @@ public class VersionController extends HangarComponent {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping(path = "/version/{projectId}/{versionId}/savePlatformVersions", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void savePlatformVersions(@PathVariable final long projectId, @PathVariable final long versionId, @RequestBody final @Valid UpdatePlatformVersions updatePlatformVersions) {
+    public void savePlatformVersions(@PathVariable final long projectId, @PathVariable final long versionId, @RequestBody @Valid final UpdatePlatformVersions updatePlatformVersions) {
         this.versionDependencyService.updateVersionPlatformVersions(projectId, versionId, updatePlatformVersions);
     }
 
@@ -130,7 +130,7 @@ public class VersionController extends HangarComponent {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping(path = "/version/{projectId}/{versionId}/savePluginDependencies", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void savePluginDependencies(@PathVariable final long projectId, @PathVariable final long versionId, @RequestBody final @Valid UpdatePluginDependencies updatePluginDependencies) {
+    public void savePluginDependencies(@PathVariable final long projectId, @PathVariable final long versionId, @RequestBody @Valid final UpdatePluginDependencies updatePluginDependencies) {
         this.versionDependencyService.updateVersionPluginDependencies(projectId, versionId, updatePluginDependencies);
     }
 
@@ -152,7 +152,7 @@ public class VersionController extends HangarComponent {
     @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 30)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.DELETE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{projectId}/{versionId}/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void softDeleteVersion(@PathVariable final long projectId, @PathVariable("versionId") final ProjectVersionTable version, @RequestBody final @Valid StringContent commentContent) {
+    public void softDeleteVersion(@PathVariable final long projectId, @PathVariable("versionId") final ProjectVersionTable version, @RequestBody @Valid final StringContent commentContent) {
         this.versionService.softDeleteVersion(projectId, version, commentContent.getContent());
     }
 
@@ -160,7 +160,7 @@ public class VersionController extends HangarComponent {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PermissionRequired(NamedPermission.HARD_DELETE_VERSION)
     @PostMapping(path = "/version/{projectId}/{versionId}/hardDelete", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void hardDeleteVersion(@PathVariable("projectId") final ProjectTable projectTable, @PathVariable("versionId") final ProjectVersionTable projectVersionTable, @RequestBody final @Valid StringContent commentContent) {
+    public void hardDeleteVersion(@PathVariable("projectId") final ProjectTable projectTable, @PathVariable("versionId") final ProjectVersionTable projectVersionTable, @RequestBody @Valid final StringContent commentContent) {
         this.versionService.hardDeleteVersion(projectTable, projectVersionTable, commentContent.getContent());
     }
 

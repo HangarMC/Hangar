@@ -2,20 +2,20 @@ package io.papermc.hangar.model.internal.discourse;
 
 import java.time.Duration;
 import java.util.Map;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 public class DiscourseError extends RuntimeException {
 
     public static class StatusError extends DiscourseError {
-        private final HttpStatus status;
+        private final HttpStatusCode status;
         private final String message;
 
-        public StatusError(final HttpStatus status, final String message) {
+        public StatusError(final HttpStatusCode status, final String message) {
             this.status = status;
             this.message = message;
         }
 
-        public HttpStatus getStatus() {
+        public HttpStatusCode getStatus() {
             return this.status;
         }
 

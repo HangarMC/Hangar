@@ -3,14 +3,15 @@ package io.papermc.hangar.model.internal.api.requests.projects;
 import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.model.api.project.ProjectSettings;
 import io.papermc.hangar.model.common.projects.Category;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public class NewProjectForm extends ProjectSettingsForm {
 
     private final long ownerId;
 
     // @el(root: String)
-    private final @NotNull(message = "project.new.error.invalidName") @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxNameLen)", message = "project.new.error.tooLongName") @Validate(SpEL = "@validate.regex(#root, @hangarConfig.projects.nameRegex)", message = "project.new.error.invalidName") String name;
+    @NotNull(message = "project.new.error.invalidName")
+    private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxNameLen)", message = "project.new.error.tooLongName") @Validate(SpEL = "@validate.regex(#root, @hangarConfig.projects.nameRegex)", message = "project.new.error.invalidName") String name;
 
     // @el(root: String)
     private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxLen)", message = "page.new.error.maxLength") String pageContent;

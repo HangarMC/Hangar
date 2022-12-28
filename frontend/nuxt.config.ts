@@ -95,7 +95,7 @@ export default defineNuxtConfig({
       "/handle-logout": defineProxyBackend(),
       "/refresh": defineProxyBackend(),
       "/invalidate": defineProxyBackend(),
-      "/v2/api-docs/": defineProxyBackend(),
+      "/v3/api-docs": defineProxyBackend(),
       "/robots.txt": defineProxyBackend(),
       "/sitemap.xml": defineProxyBackend(),
       "/global-sitemap.xml": defineProxyBackend(),

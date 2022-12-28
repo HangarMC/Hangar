@@ -6,6 +6,11 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesAnnotationIntrospec
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimitInterceptor;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,11 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,7 +169,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
             }
             final ClientHttpResponse response = ex.execute(req, reqBody);
             if (interceptorLogger.isDebugEnabled()) {
-                final int code = response.getRawStatusCode();
+                final int code = response.getStatusCode().value();
                 final HttpStatus status = HttpStatus.resolve(code);
 
                 final InputStreamReader isr = new InputStreamReader(response.getBody(), StandardCharsets.UTF_8);

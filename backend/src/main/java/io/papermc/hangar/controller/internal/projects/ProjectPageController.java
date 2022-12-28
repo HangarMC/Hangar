@@ -17,8 +17,8 @@ import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.internal.MarkdownService;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
 import io.papermc.hangar.util.BBCodeConverter;
+import jakarta.validation.Valid;
 import java.util.Collection;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -54,7 +54,7 @@ public class ProjectPageController extends HangarComponent {
     @Anyone
     @RateLimit(overdraft = 20, refillTokens = 3, refillSeconds = 5, greedy = true)
     @PostMapping(path = "/render", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> renderMarkdown(@RequestBody final @Valid StringContent content) {
+    public ResponseEntity<String> renderMarkdown(@RequestBody @Valid final StringContent content) {
         if (content.getContent().length() > this.config.projects.contentMaxLen()) {
             throw new HangarApiException("page.new.error.name.maxLength");
         }
@@ -65,7 +65,7 @@ public class ProjectPageController extends HangarComponent {
     @RateLimit(overdraft = 10, refillTokens = 3, refillSeconds = 5)
     @ResponseBody
     @PostMapping(path = "/convert-bbcode", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    public String convertBBCode(@RequestBody final @Valid StringContent bbCodeContent) {
+    public String convertBBCode(@RequestBody @Valid final StringContent bbCodeContent) {
         if (bbCodeContent.getContent().length() > this.config.projects.maxBBCodeLen()) {
             throw new HangarApiException("page.new.error.name.maxLength");
         }
@@ -100,7 +100,7 @@ public class ProjectPageController extends HangarComponent {
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#projectId}")
     @PostMapping(value = "/create/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> createProjectPage(@PathVariable final long projectId, @RequestBody final @Valid NewProjectPage newProjectPage) {
+    public ResponseEntity<String> createProjectPage(@PathVariable final long projectId, @RequestBody @Valid final NewProjectPage newProjectPage) {
         return ResponseEntity.ok(this.projectPageService.createProjectPage(projectId, newProjectPage));
     }
 
@@ -109,7 +109,7 @@ public class ProjectPageController extends HangarComponent {
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#projectId}")
     @PostMapping(value = "/save/{projectId}/{pageId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void saveProjectPage(@PathVariable final long projectId, @PathVariable final long pageId, @RequestBody final @Valid StringContent content) {
+    public void saveProjectPage(@PathVariable final long projectId, @PathVariable final long pageId, @RequestBody @Valid final StringContent content) {
         this.projectPageService.saveProjectPage(projectId, pageId, content.getContent());
     }
 

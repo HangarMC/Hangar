@@ -5,9 +5,9 @@ import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.roles.GlobalRole;
+import jakarta.annotation.Nullable;
 import java.time.OffsetDateTime;
 import java.util.List;
-import javax.annotation.Nullable;
 
 public class HangarUser extends User implements Identified {
 

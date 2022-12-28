@@ -4,16 +4,19 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.model.api.project.ProjectSettings;
 import io.papermc.hangar.model.common.projects.Category;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 public class ProjectSettingsForm {
 
-    private final @Valid ProjectSettings settings;
-    private final @NotNull(message = "project.new.error.noCategory") Category category;
+    @Valid
+    private final ProjectSettings settings;
+    @NotNull(message = "project.new.error.noCategory")
+    private final Category category;
 
     // @el(root: String)
-    private final @NotNull(message = "project.new.error.noDescription") @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxDescLen)", message = "project.new.error.tooLongDesc") String description;
+    @NotNull(message = "project.new.error.noDescription")
+    private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxDescLen)", message = "project.new.error.tooLongDesc") String description;
 
     @JsonCreator
     public ProjectSettingsForm(final ProjectSettings settings, final Category category, final String description) {

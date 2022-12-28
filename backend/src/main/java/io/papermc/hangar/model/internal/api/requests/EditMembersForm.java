@@ -5,9 +5,9 @@ import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 
 public class EditMembersForm<R extends Role<? extends ExtendedRoleTable<R, ?>>> {
@@ -32,7 +32,8 @@ public class EditMembersForm<R extends Role<? extends ExtendedRoleTable<R, ?>>> 
 
     public static class Member<R extends Role<? extends ExtendedRoleTable<R, ?>>> {
 
-        private final @NotBlank String name;
+        @NotBlank
+        private final String name;
 
         // @el(root: Role)
         private final @Validate(SpEL = "#root.assignable") R role;

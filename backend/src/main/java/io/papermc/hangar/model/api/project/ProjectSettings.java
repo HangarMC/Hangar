@@ -2,9 +2,9 @@ package io.papermc.hangar.model.api.project;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.controller.validations.Validate;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,11 +24,14 @@ public class ProjectSettings {
 
     // @el(root: String)
     private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl") String wiki;
-    private final @Valid ProjectLicense license;
-    private final @Valid ProjectDonationSettings donation;
+    @Valid
+    private final ProjectLicense license;
+    @Valid
+    private final ProjectDonationSettings donation;
 
     // @el(root: Collection<String>)
-    private final @NotNull @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywords)", message = "project.new.error.tooManyKeywords") Collection<String> keywords;
+    @NotNull
+    private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywords)", message = "project.new.error.tooManyKeywords") Collection<String> keywords;
     private final boolean forumSync;
 
     // @el(root: String)

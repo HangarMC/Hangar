@@ -6,7 +6,7 @@ import io.papermc.hangar.exceptions.MultiHangarApiException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,16 +26,16 @@ public class HangarEntityExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(HangarApiException.class)
     public ResponseEntity<HangarApiException> handleException(final HangarApiException exception) {
-        return new ResponseEntity<>(exception, exception.getResponseHeaders(), exception.getRawStatusCode());
+        return new ResponseEntity<>(exception, exception.getHeaders(), exception.getStatusCode().value());
     }
 
     @ExceptionHandler(MultiHangarApiException.class)
     public ResponseEntity<MultiHangarApiException> handleException(final MultiHangarApiException exception) {
-        return new ResponseEntity<>(exception, exception.getResponseHeaders(), exception.getRawStatusCode());
+        return new ResponseEntity<>(exception, exception.getHeaders(), exception.getStatusCode().value());
     }
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(final Exception ex, final Object body, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(final Exception ex, final Object body, final HttpHeaders headers, final HttpStatusCode status, final WebRequest request) {
         if (this.config.isDev()) {
             return new ResponseEntity<>(new HangarApiException(ex.getMessage()), status);
         } else {
@@ -44,7 +44,7 @@ public class HangarEntityExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @Override
-    protected @NotNull ResponseEntity<Object> handleMethodArgumentNotValid(final @NotNull MethodArgumentNotValidException ex, final @NotNull HttpHeaders headers, final @NotNull HttpStatus status, final @NotNull WebRequest request) {
+    protected @NotNull ResponseEntity<Object> handleMethodArgumentNotValid(final @NotNull MethodArgumentNotValidException ex, final @NotNull HttpHeaders headers, final @NotNull HttpStatusCode status, final @NotNull WebRequest request) {
         return new ResponseEntity<>(ex, headers, status);
     }
 }
