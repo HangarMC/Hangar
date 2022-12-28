@@ -3,7 +3,6 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
 import { useHealthReport } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
 import Card from "~/lib/components/design/Card.vue";
 import Link from "~/lib/components/design/Link.vue";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
@@ -16,7 +15,7 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute();
-const healthReport = await useHealthReport().catch((e) => handleRequestError(e));
+const healthReport = await useHealthReport();
 
 useHead(useSeo(i18n.t("health.title"), null, route, null));
 </script>

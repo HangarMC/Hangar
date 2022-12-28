@@ -8,7 +8,7 @@ import { usePage } from "~/composables/useApiHelper";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 
 export async function useProjectPage(route: RouteLocationNormalizedLoaded, router: Router, i18n: ReturnType<typeof useI18n>, project: HangarProject) {
-  const page = await usePage(route.params.user as string, route.params.project as string, route.params.all as string).catch((e) => handleRequestError(e));
+  const page = await usePage(route.params.user as string, route.params.project as string, route.params.all as string);
   if (!page) {
     throw useErrorRedirect(route, 404, "Not found");
   }

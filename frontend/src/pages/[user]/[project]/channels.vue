@@ -30,7 +30,7 @@ const props = defineProps<{
 }>();
 const i18n = useI18n();
 const route = useRoute();
-const channels = await useProjectChannels(props.project.namespace.owner, props.project.namespace.slug).catch((e) => handleRequestError(e));
+const channels = await useProjectChannels(props.project.namespace.owner, props.project.namespace.slug);
 const validations = useBackendData.validations;
 const notifications = useNotificationStore();
 
@@ -42,7 +42,7 @@ async function refreshChannels() {
   const newChannels = await useInternalApi<ProjectChannel[]>(`channels/${props.project.namespace.owner}/${props.project.namespace.slug}`).catch((e) =>
     handleRequestError(e)
   );
-  if (channels && newChannels) {
+  if (channels?.value && newChannels) {
     channels.value = newChannels;
   }
 }

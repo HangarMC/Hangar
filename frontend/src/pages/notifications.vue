@@ -30,11 +30,11 @@ const route = useRoute();
 const notificationStore = useNotificationStore();
 
 // TODO send in one
-const unreadNotifications = (await useUnreadNotifications().catch((e) => handleRequestError(e))) as Ref<PaginatedResult<HangarNotification>>;
-const readNotifications = (await useReadNotifications().catch((e) => handleRequestError(e))) as Ref<PaginatedResult<HangarNotification>>;
-const allNotifications = (await useNotifications().catch((e) => handleRequestError(e))) as Ref<PaginatedResult<HangarNotification>>;
-const notifications: Ref<PaginatedResult<HangarNotification>> = ref(unreadNotifications.value);
-const invites = (await useInvites().catch((e) => handleRequestError(e))) as Ref<Invites>;
+const unreadNotifications = await useUnreadNotifications();
+const readNotifications = await useReadNotifications();
+const allNotifications = await useNotifications();
+const notifications: Ref<PaginatedResult<HangarNotification> | null> = ref(unreadNotifications.value);
+const invites = await useInvites();
 
 const selectedTab = ref("unread");
 const selectedTabs: Tab[] = [
@@ -66,6 +66,7 @@ useHead(useSeo("Notifications", null, route, null));
 
 async function markAllAsRead() {
   await useInternalApi(`markallread`, "post").catch((e) => handleRequestError(e));
+  if (!unreadNotifications.value) return;
   unreadNotifications.value.result = [];
   unreadNotifications.value.pagination.limit = 0;
   unreadNotifications.value.pagination.offset = 0;
@@ -75,6 +76,7 @@ async function markAllAsRead() {
 async function markNotificationRead(notification: HangarNotification, router = true) {
   await useInternalApi(`notifications/${notification.id}`, "post").catch((e) => handleRequestError(e));
   notification.read = true;
+  if (!notifications.value) return;
   notifications.value.result = notifications.value.result.filter((n) => n !== notification);
   if (notification.action && router) {
     await useRouter().push(notification.action);
@@ -86,6 +88,7 @@ async function updateInvite(invite: Invite, status: "accept" | "decline") {
   if (status === "accept") {
     invite.accepted = true;
   } else {
+    if (!invites.value) return;
     invites.value[invite.type] = invites.value[invite.type].filter((i) => i.roleTableId !== invite.roleTableId);
   }
   notificationStore.success(i18n.t(`notifications.invite.msgs.${status}`, [invite.name]));
@@ -112,11 +115,11 @@ function updateSelectedNotifications() {
 
       <!-- Abuse tabs a little -->
       <Tabs v-model="selectedTab" :tabs="selectedTabs" :vertical="false" @click="updateSelectedNotifications()" />
-      <div v-if="notifications.result.length === 0" class="text-lg">
+      <div v-if="notifications?.result.length === 0" class="text-lg">
         {{ i18n.t(`notifications.empty.${selectedTab}`) }}
       </div>
 
-      <Pagination v-if="notifications.result.length !== 0" :items="notifications.result">
+      <Pagination v-if="notifications?.result.length !== 0" :items="notifications?.result">
         <template #default="{ item }">
           <div class="p-1 mb-1 flex items-center">
             <div class="inline-flex items-center flex-grow">
@@ -139,7 +142,7 @@ function updateSelectedNotifications() {
           </div>
         </template>
       </Pagination>
-      <Button v-if="notifications.result.length > 1 && selectedTab === 'unread'" size="small" @click="markAllAsRead">
+      <Button v-if="notifications?.result.length > 1 && selectedTab === 'unread'" size="small" @click="markAllAsRead">
         {{ i18n.t("notifications.readAll") }}
       </Button>
     </Card>

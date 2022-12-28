@@ -6,7 +6,6 @@ import { useRoute } from "vue-router";
 import SortableTable, { Header } from "~/components/SortableTable.vue";
 import { ReviewAction } from "~/types/enums";
 import { useVersionApprovals } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
 import Card from "~/lib/components/design/Card.vue";
 import Link from "~/lib/components/design/Link.vue";
 import Tag from "~/components/Tag.vue";
@@ -20,7 +19,7 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute();
-const data = await useVersionApprovals().catch((e) => handleRequestError(e));
+const data = await useVersionApprovals();
 
 const actions = {
   ongoing: [ReviewAction.START, ReviewAction.MESSAGE, ReviewAction.UNDO_APPROVAL, ReviewAction.REOPEN],

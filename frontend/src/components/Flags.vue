@@ -20,7 +20,7 @@ const props = defineProps<{
 
 const i18n = useI18n();
 const route = useRoute();
-const flags = await (props.resolved ? useResolvedFlags() : useUnresolvedFlags()).catch((e) => handleRequestError(e));
+const flags = await (props.resolved ? useResolvedFlags() : useUnresolvedFlags());
 const loading = ref<{ [key: number]: boolean }>({});
 
 function resolve(flag: Flag) {
@@ -45,6 +45,7 @@ function resolve(flag: Flag) {
 // TODO: bake into hangarflag?
 const notifications = ref<HangarFlagNotification[]>([]);
 const currentId = ref(-1);
+
 async function getNotifications(flag: Flag) {
   if (currentId.value === flag.id) {
     return;
@@ -83,7 +84,10 @@ async function getNotifications(flag: Flag) {
 
             <template v-if="resolved">
               <Button v-if="currentId !== item.id" @click="getNotifications(item)">Load notifications</Button>
-              <Button :disabled="loading[item.id]" @click="resolve(item)"><IconMdiCheck class="mr-1" /> {{ i18n.t("flagReview.markUnresolved") }}</Button>
+              <Button :disabled="loading[item.id]" @click="resolve(item)">
+                <IconMdiCheck class="mr-1" />
+                {{ i18n.t("flagReview.markUnresolved") }}
+              </Button>
             </template>
             <template v-else>
               <div class="flex flex-col space-y-1">
@@ -91,7 +95,10 @@ async function getNotifications(flag: Flag) {
                 <ReportNotificationModal :flag="item" :send-to-reporter="true" />
               </div>
               <VisibilityChangerModal :prop-visibility="item.projectVisibility" type="project" :post-url="`projects/visibility/${item.projectId}`" />
-              <Button :disabled="loading[item.id]" @click="resolve(item)"><IconMdiCheck class="mr-1" /> {{ i18n.t("flagReview.markResolved") }}</Button>
+              <Button :disabled="loading[item.id]" @click="resolve(item)">
+                <IconMdiCheck class="mr-1" />
+                {{ i18n.t("flagReview.markResolved") }}
+              </Button>
             </template>
           </div>
 

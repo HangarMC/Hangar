@@ -9,7 +9,6 @@ import Link from "~/lib/components/design/Link.vue";
 import SortableTable, { Header } from "~/components/SortableTable.vue";
 import Alert from "~/lib/components/design/Alert.vue";
 import { useProjectFlags } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { definePageMeta } from "#imports";
@@ -24,7 +23,7 @@ const props = defineProps<{
 }>();
 const i18n = useI18n();
 const route = useRoute();
-const flags = await useProjectFlags(props.project.id).catch((e) => handleRequestError(e));
+const flags = await useProjectFlags(props.project.id);
 
 const headers = [
   { title: "Submitter", name: "user" },

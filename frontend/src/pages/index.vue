@@ -9,7 +9,6 @@ import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { useBackendData, useVisibleCategories, useVisiblePlatforms } from "~/store/backendData";
 import ProjectList from "~/components/projects/ProjectList.vue";
 import { useProjects } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
 import Card from "~/lib/components/design/Card.vue";
 import Container from "~/lib/components/design/Container.vue";
 import { useSeo } from "~/composables/useSeo";
@@ -67,7 +66,7 @@ const requestParams = computed(() => {
 
   return params;
 });
-const p = await useProjects(requestParams.value).catch((e) => handleRequestError(e));
+const p = await useProjects(requestParams.value);
 if (p && p.value) {
   projects.value = p.value;
   await checkOffsetLargerCount();
@@ -141,7 +140,7 @@ const script = {
 if (isRef(meta.script)) {
   meta.script.value.push(script);
 } else {
-  meta.script = meta.script || [];
+  meta.script = (meta.script || []) as [];
   meta.script.push(script);
 }
 useHead(meta);

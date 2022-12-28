@@ -37,7 +37,8 @@ const props = defineProps<{
 const i18n = useI18n();
 
 const route = useRoute();
-const { starred, watching, projects, organizations, pinned } = (await useUserData(props.user.name)).value || {};
+const userData = await useUserData(props.user.name);
+const { starred, watching, projects, organizations, pinned } = userData.value || { starred: null };
 let organizationVisibility = null;
 if (props.user.name === useAuthStore().user?.name) {
   organizationVisibility = await useOrgVisibility(props.user.name);

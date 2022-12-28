@@ -8,7 +8,6 @@ import { LoggedAction, LoggedActionType } from "hangar-internal";
 import { debounce } from "lodash-es";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useActionLogs } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
 import Card from "~/lib/components/design/Card.vue";
 import SortableTable, { Header } from "~/components/SortableTable.vue";
 import Link from "~/lib/components/design/Link.vue";
@@ -27,7 +26,7 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute();
-const loggedActions = await useActionLogs().catch((e) => handleRequestError(e));
+const loggedActions = await useActionLogs();
 
 // TODO add support for sorting
 const headers = [

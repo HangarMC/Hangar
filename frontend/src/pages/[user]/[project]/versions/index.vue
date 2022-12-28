@@ -48,10 +48,10 @@ const requestOptions = computed(() => {
   };
 });
 
-const channels = await useProjectChannels(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e));
-const versions = await useProjectVersions(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e));
+const channels = await useProjectChannels(route.params.user as string, route.params.project as string);
+const versions = await useProjectVersions(route.params.user as string, route.params.project as string);
 
-if (channels) {
+if (channels.value) {
   filter.channels.push(...(channels.value?.map((c) => c.name) || []));
   filter.platforms.push(...platforms.value.map((p) => p.enumName));
 }

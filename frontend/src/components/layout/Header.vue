@@ -122,25 +122,23 @@ function updateNotifications() {
       unreadNotifications.value = v.value;
     }
   });
-  useRecentNotifications(30)
-    .then((v) => {
-      if (v && v.value) {
-        // Only show notifications that are recent or unread (from the last 30 notifications)
-        let filteredAmount = 0;
-        notifications.value = v.value.filter((notification: HangarNotification) => {
-          if (filteredAmount < 8 && (!notification.read || isRecent(notification.createdAt))) {
-            if (!notification.read) {
-              loadedUnreadNotifications.value++;
-            }
-
-            filteredAmount++;
-            return true;
+  useRecentNotifications(30).then((v) => {
+    if (v && v.value) {
+      // Only show notifications that are recent or unread (from the last 30 notifications)
+      let filteredAmount = 0;
+      notifications.value = v.value.filter((notification: HangarNotification) => {
+        if (filteredAmount < 8 && (!notification.read || isRecent(notification.createdAt))) {
+          if (!notification.read) {
+            loadedUnreadNotifications.value++;
           }
-          return false;
-        });
-      }
-    })
-    .catch((e) => handleRequestError(e));
+
+          filteredAmount++;
+          return true;
+        }
+        return false;
+      });
+    }
+  });
 }
 
 function isRecent(date: string): boolean {

@@ -2,7 +2,6 @@
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { HangarProject } from "hangar-internal";
-import { handleRequestError } from "~/composables/useErrorHandling";
 import { useProjectVersionsInternal } from "~/composables/useApiHelper";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 import { Platform } from "~/types/enums";
@@ -14,10 +13,8 @@ const props = defineProps<{
   project: HangarProject;
 }>();
 
-const version = await useProjectVersionsInternal(route.params.user as string, route.params.project as string, route.params.version as string).catch((e) =>
-  handleRequestError(e)
-);
-if (!version || !version.value) {
+const version = await useProjectVersionsInternal(route.params.user as string, route.params.project as string, route.params.version as string);
+if (!version?.value) {
   throw useErrorRedirect(route, 404, "Not found");
 }
 

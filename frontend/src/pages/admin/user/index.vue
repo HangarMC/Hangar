@@ -10,7 +10,7 @@ import Tag from "~/components/Tag.vue";
 import { useApi } from "~/composables/useApi";
 import { Header } from "~/components/SortableTable.vue";
 import { useSeo } from "~/composables/useSeo";
-import { definePageMeta, handleRequestError, watch } from "#imports";
+import { definePageMeta, watch } from "#imports";
 import { useUsers } from "~/composables/useApiHelper";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
@@ -33,7 +33,7 @@ const headers = [
   { name: "org", title: i18n.t("pages.headers.organization"), sortable: true },
 ] as Header[];
 
-const users = await useUsers().catch((e) => handleRequestError(e));
+const users = await useUsers();
 const page = ref(0);
 const sort = ref<string[]>([]);
 const query = ref();

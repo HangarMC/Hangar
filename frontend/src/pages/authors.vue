@@ -32,7 +32,7 @@ const requestParams = computed(() => {
     sort: sort.value,
   };
 });
-const authors = await useAuthors(requestParams.value).catch((e) => handleRequestError(e));
+const authors = await useAuthors(requestParams.value);
 
 async function updateSort(col: string, sorter: Record<string, number>) {
   sort.value = [...Object.keys(sorter)]

@@ -6,14 +6,13 @@ import { useNotificationStore } from "~/lib/store/notification";
 import { I18n } from "~/lib/i18n";
 import { createError } from "#imports";
 
-export function handleRequestError(err: AxiosError, i18n: Composer = I18n.value, msg: string | undefined = undefined) {
+export function handleRequestError(err: AxiosError | unknown, i18n: Composer = I18n.value, msg: string | undefined = undefined) {
   if (import.meta.env.SSR) {
     _handleRequestError(err, i18n);
-    return ref();
   }
   const notfication = useNotificationStore();
   const transformed = transformAxiosError(err);
-  if (!err.isAxiosError) {
+  if (!axios.isAxiosError(err)) {
     // everything should be an AxiosError
     console.log("no axios request error", transformed);
     notfication.error(transformed.message?.toString() || "Unknown error");
@@ -38,10 +37,9 @@ export function handleRequestError(err: AxiosError, i18n: Composer = I18n.value,
     console.log("unknown error", transformed);
     notfication.error(transformed.message?.toString() || "Unknown error");
   }
-  return ref();
 }
 
-function _handleRequestError(err: AxiosError, i18n: Composer) {
+function _handleRequestError(err: AxiosError | unknown, i18n: Composer) {
   function writeResponse(object: unknown) {
     console.log("writeResponse", object);
     // throw new Error("TODO: Implement me"); // TODO
@@ -49,7 +47,7 @@ function _handleRequestError(err: AxiosError, i18n: Composer) {
   }
 
   const transformed = transformAxiosError(err);
-  if (!err.isAxiosError) {
+  if (!axios.isAxiosError(err)) {
     // everything should be an AxiosError
     writeResponse({
       status: 500,

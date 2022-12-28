@@ -3,8 +3,6 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { ref } from "vue";
 import { useHead } from "@vueuse/head";
-import { useUnresolvedFlags } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
 import Flags from "~/components/Flags.vue";
@@ -17,7 +15,6 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute();
-const flags = await useUnresolvedFlags().catch((e) => handleRequestError(e));
 const loading = ref<{ [key: number]: boolean }>({});
 
 const selectedTab = ref("unresolved");

@@ -15,7 +15,7 @@ import SortableTable, { Header } from "~/components/SortableTable.vue";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { useSeo } from "~/composables/useSeo";
 import { authUrl, forumUserUrl } from "~/composables/useUrlHelper";
-import { useUser } from "~/composables/useApiHelper";
+import { useProjects, useUser } from "~/composables/useApiHelper";
 import Tag from "~/components/Tag.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import { useBackendData } from "~/store/backendData";
@@ -30,13 +30,11 @@ const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
 
-const projects = await useApi<PaginatedResult<Project>>("projects", "get", {
-  owner: route.params.user,
-}).catch((e) => handleRequestError(e));
+const projects = await useProjects({ owner: route.params.user });
 const orgs = await useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${route.params.user}/userOrganizations`).catch((e) =>
   handleRequestError(e)
 );
-const user = await useUser(route.params.user as string).catch((e) => handleRequestError(e));
+const user = await useUser(route.params.user as string);
 
 const projectsConfig = [
   { title: i18n.t("userAdmin.project"), name: "name" },
@@ -67,7 +65,7 @@ const selectedRole = ref();
 async function processRole(add: boolean) {
   try {
     await useInternalApi("/admin/user/" + route.params.user + "/" + selectedRole.value, add ? "POST" : "DELETE");
-    if (user) {
+    if (user?.value) {
       user.value = await useApi<User>(("users/" + route.params.user) as string);
     }
   } catch (e) {
@@ -90,7 +88,7 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
       <Card class="basis-full md:basis-8/12">
         <template #header>{{ i18n.t("userAdmin.roles") }}</template>
         <div class="space-x-1">
-          <Tag v-for="role in user.roles" :key="role.value" :color="{ background: role.color }" :name="role.title" />
+          <Tag v-for="role in user?.roles" :key="role.value" :color="{ background: role.color }" :name="role.title" />
         </div>
 
         <div class="flex mt-2">
@@ -98,12 +96,12 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
             <InputSelect v-model="selectedRole" :values="useBackendData.globalRoles" item-text="title" item-value="value"></InputSelect>
           </div>
           <div>
-            <Button size="medium" :disabled="!selectedRole || user.roles.some((r) => r.value === selectedRole)" @click="processRole(true)">
+            <Button size="medium" :disabled="!selectedRole || user?.roles.some((r) => r.value === selectedRole)" @click="processRole(true)">
               {{ i18n.t("general.add") }}
             </Button>
           </div>
           <div class="ml-2">
-            <Button size="medium" :disabled="!selectedRole || !user.roles.some((r) => r.value === selectedRole)" @click="processRole(false)">
+            <Button size="medium" :disabled="!selectedRole || !user?.roles.some((r) => r.value === selectedRole)" @click="processRole(false)">
               {{ i18n.t("general.delete") }}
             </Button>
           </div>

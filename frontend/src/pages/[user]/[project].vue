@@ -5,7 +5,6 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { HangarProjectPage } from "hangar-internal";
 import { useProject } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 import ProjectHeader from "~/components/projects/ProjectHeader.vue";
 import ProjectNav from "~/components/projects/ProjectNav.vue";
@@ -19,7 +18,7 @@ defineProps({
 
 const i18n = useI18n();
 const route = useRoute();
-const project = await useProject(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e));
+const project = await useProject(route.params.user as string, route.params.project as string);
 if (!project || !project.value) {
   throw useErrorRedirect(route, 404, "Not found");
 }
