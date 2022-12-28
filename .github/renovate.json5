@@ -6,6 +6,9 @@
     "schedule": [
         "before 3am on Monday"
     ],
+    "baseBranches": [
+        "staging"
+    ],
     "packageRules": [
         {
             "matchManagers": [
