@@ -39,6 +39,9 @@ spring:
       secrets:
         enableApi: true
 
+springdoc:
+  pathsToMatch: "/api/v1/**"
+
 #############
 # Fake User #
 #############

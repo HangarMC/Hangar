@@ -3,12 +3,11 @@ package io.papermc.hangar.config;
 import io.papermc.hangar.controller.extras.pagination.FilterRegistry;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
-import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.parameters.Parameter;
+import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.customizers.OperationCustomizer;
-import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.HandlerMethod;
@@ -20,8 +19,9 @@ public class SwaggerConfig {
         io.swagger.v3.core.jackson.ModelResolver.enumsAsRef = true;
     }
 
-    OpenAPI apiInfo(final OpenAPI openAPI) {
-        return openAPI
+    @Bean
+    OpenApiCustomizer apiInfo() {
+        return (openApi) -> openApi
             .info(new Info().title("Hangar API")
                 .description("This page describes the format for the current Hangar REST API, in addition to common questions when using it.<br>" +
                     "Note that all routes **not** listed here should be considered **internal**, and can change at a moment's notice. **Do not use them**." +
@@ -48,18 +48,9 @@ public class SwaggerConfig {
                 .version("1.0"));
     }
 
-    @Bean
-    public GroupedOpenApi customImplementation(final CustomScanner customScanner) {
-        return GroupedOpenApi.builder()
-            .group("Hangar API")
-            .packagesToScan("io.papermc.hangar.controller.api.v1")
-            .addOperationCustomizer(customScanner)
-            .addOpenApiCustomizer(this::apiInfo)
-            .build();
-        // TODO fix
-        //.directModelSubstitute(LocalDate.class, java.sql.Date.class)
-        //.directModelSubstitute(OffsetDateTime.class, Date.class)
-    }
+    // TODO fix
+    //.directModelSubstitute(LocalDate.class, java.sql.Date.class)
+    //.directModelSubstitute(OffsetDateTime.class, Date.class)
 
     @Bean
     public CustomScanner customScanner(final FilterRegistry filterRegistry) {
