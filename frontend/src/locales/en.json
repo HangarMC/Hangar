@@ -140,7 +140,8 @@
       "newest": "Newest",
       "recentlyUpdated": "Recently Updated",
       "recentViews": "Recent Views",
-      "recentDownloads": "Recent Downloads"
+      "recentDownloads": "Recent Downloads",
+      "slug": "Name"
     },
     "category": {
       "info": "Category",

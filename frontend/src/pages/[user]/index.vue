@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { User } from "hangar-api";
+import { PaginatedResult, Project, User } from "hangar-api";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
 import { Organization } from "hangar-internal";
-import { computed, type FunctionalComponent } from "vue";
+import { computed, type FunctionalComponent, ref, watch } from "vue";
 import ProjectList from "~/components/projects/ProjectList.vue";
 import Card from "~/lib/components/design/Card.vue";
 import { avatarUrl } from "~/composables/useUrlHelper";
@@ -29,6 +29,8 @@ import LockUserModal from "~/components/modals/LockUserModal.vue";
 import ProjectCard from "~/components/projects/ProjectCard.vue";
 import OrgTransferModal from "~/components/modals/OrgTransferModal.vue";
 import OrgDeleteModal from "~/components/modals/OrgDeleteModal.vue";
+import InputSelect from "~/lib/components/ui/InputSelect.vue";
+import { useApi } from "~/composables/useApi";
 
 const props = defineProps<{
   user: User;
@@ -38,7 +40,8 @@ const i18n = useI18n();
 
 const route = useRoute();
 const userData = await useUserData(props.user.name);
-const { starred, watching, projects, organizations, pinned } = userData.value || { starred: null };
+const { starred, watching, organizations, pinned } = userData.value || { starred: null };
+const projects = ref(userData.value?.projects);
 let organizationVisibility = null;
 if (props.user.name === useAuthStore().user?.name) {
   organizationVisibility = await useOrgVisibility(props.user.name);
@@ -75,6 +78,19 @@ const buttons = computed<UserButton[]>(() => {
 
 const isCurrentUser = computed<boolean>(() => authStore.user != null && authStore.user.name === props.user.name);
 
+const sorters = [
+  { id: "-updated", label: i18n.t("project.sorting.recentlyUpdated") },
+  { id: "-newest", label: i18n.t("project.sorting.newest") },
+  { id: "-stars", label: i18n.t("project.sorting.mostStars") },
+  { id: "-downloads", label: i18n.t("project.sorting.mostDownloads") },
+  { id: "-recent_downloads", label: i18n.t("project.sorting.recentDownloads") },
+  { id: "slug", label: i18n.t("project.sorting.slug") },
+];
+const activeSorter = ref("-updated");
+watch(activeSorter, async () => {
+  projects.value = await useApi<PaginatedResult<Project>>("projects", "get", { sort: activeSorter.value, owner: props.user.name });
+});
+
 useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + props.user.tagline, route, avatarUrl(props.user.name)));
 </script>
 
@@ -89,6 +105,14 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
 
     <div class="flex gap-4 flex-basis-full flex-col md:flex-row">
       <div class="flex-basis-full flex flex-col gap-2 flex-grow md:max-w-2/3 md:min-w-1/3">
+        <div class="flex gap-2 items-center">
+          <div class="basis-1/2">
+            <h2 class="text-xl">{{ user.name }} has {{ projects.pagination.count }} projects</h2>
+          </div>
+          <div class="basis-1/2">
+            <InputSelect v-model="activeSorter" :values="sorters" item-text="label" item-value="id"></InputSelect>
+          </div>
+        </div>
         <ProjectList :projects="projects"></ProjectList>
       </div>
       <div class="flex-basis-full flex-grow md:max-w-1/3 md:min-w-1/3">

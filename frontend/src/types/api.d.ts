@@ -1,4 +1,3 @@
-import { ref } from "vue";
 import { NamedPermission, Platform, ProjectCategory, Prompt } from "~/types/enums";
 import { Color, FlagReason, IPlatform, IProjectCategory, IPrompt, IVisibility } from "hangar-internal";
 import { IPermission, Role } from "hangar-api";

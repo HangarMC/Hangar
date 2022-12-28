@@ -20,7 +20,8 @@ public enum SorterRegistry implements Sorter {
     NEWEST("newest", simpleSorter("hp.created_at")),
     UPDATED("updated", simpleSorter("last_updated_double")),
     RECENT_VIEWS("recent_views", simpleSorter("hp.recent_views")),
-    RECENT_DOWNLOADS("recent_downloads", simpleSorter("hp.recent_downloads"));
+    RECENT_DOWNLOADS("recent_downloads", simpleSorter("hp.recent_downloads")),
+    SLUG("slug", simpleSorter("LOWER(hp.slug)"));
 
     private static final Map<String, SorterRegistry> SORTERS = new HashMap<>();
 
