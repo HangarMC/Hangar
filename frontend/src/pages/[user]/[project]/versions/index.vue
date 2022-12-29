@@ -124,10 +124,10 @@ function getVisibilityTitle(visibility: Visibility) {
               <Card :class="getBorderClasses(item)" class="pb-1">
                 <router-link :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${item.name}`">
                   <div class="flex flex-wrap">
-                    <div class="basis-full md:(basis-5/12 pb-4) truncate">
+                    <div class="basis-full lg:(basis-6/15 pb-4) truncate">
                       <div class="flex flex-wrap items-center">
-                        <h2 class="md:basis-full <md:mr-1 text-1.15rem leading-relaxed">{{ item.name }}</h2>
-                        <span class="md:hidden flex-grow"></span>
+                        <h2 class="lg:basis-full <lg:mr-1 text-1.15rem leading-relaxed">{{ item.name }}</h2>
+                        <span class="lg:hidden flex-grow"></span>
                         <Tag :name="item.channel.name" :color="{ background: item.channel.color }" />
                         <IconMdiCancel v-if="item.visibility === Visibility.SOFT_DELETE" class="ml-1"></IconMdiCancel>
                         <span v-else-if="item.visibility !== Visibility.PUBLIC" class="ml-1 inline-flex items-center">
@@ -138,8 +138,8 @@ function getVisibilityTitle(visibility: Visibility) {
                         </span>
                       </div>
                     </div>
-                    <hr class="md:hidden basis-full mt-1 border-gray-400 dark:border-gray-500" />
-                    <div class="basis-5/12 <md:(mt-2 basis-6/12)">
+                    <hr class="lg:hidden basis-full mt-1 border-gray-400 dark:border-gray-500" />
+                    <div class="basis-6/15 <lg:(mt-2 basis-6/12)">
                       <div v-for="(v, p) in item.platformDependenciesFormatted" :key="p" class="basis-full">
                         <div class="inline-flex items-center">
                           <PlatformLogo :platform="p" :size="22" class="mr-1 flex-shrink-0" />
@@ -147,14 +147,14 @@ function getVisibilityTitle(visibility: Visibility) {
                         </div>
                       </div>
                     </div>
-                    <div class="basis-2/12 <md:(mt-2 basis-6/12) text-0.95rem leading-normal">
+                    <div class="basis-3/15 <lg:(mt-2 basis-6/12) text-0.95rem leading-normal">
                       <div class="flex flex-wrap">
                         <span class="basis-full inline-flex items-center">
                           <IconMdiCalendar class="mr-1" />
                           {{ i18n.d(item.createdAt, "date") }}
                         </span>
                         <span class="basis-full inline-flex items-center">
-                          <IconMdiDownload class="mr-1 mb-3" />
+                          <IconMdiDownload class="mr-1" />
                           <ComingSoon>{{ item.stats.downloads }}</ComingSoon>
                         </span>
                       </div>
