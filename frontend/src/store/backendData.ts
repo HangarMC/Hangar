@@ -22,7 +22,7 @@ typedBackendData.platforms = convertToMap(typedBackendData.platforms as unknown 
 typedBackendData.prompts = convertToMap(typedBackendData.prompts as unknown as IPrompt[], (value) => value.name);
 
 // main export
-export const useBackendData = typedBackendData;
+export const useBackendData = { ...typedBackendData } as BackendData;
 
 // helpers
 export const useVisibleCategories = computed<IProjectCategory[]>(() =>
