@@ -17,6 +17,7 @@ public record Validations(
     public record Project(
         Validation name,
         Validation desc,
+        Validation license,
         Validation keywords,
         Validation channels,
         Validation pageName,
@@ -30,6 +31,7 @@ public record Validations(
         final Project project = new Project(
             config.projects.projectName(),
             config.projects.projectDescription(),
+            config.projects.licenseName(),
             config.projects.projectKeywords(),
             config.channels.channelName(),
             config.pages.pageName(),

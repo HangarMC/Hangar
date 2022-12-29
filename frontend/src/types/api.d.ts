@@ -45,6 +45,7 @@ declare module "hangar-api" {
     project: {
       name: Validation;
       desc: Validation;
+      license: Validation;
       keywords: Validation;
       channels: Validation;
       pageName: Validation;

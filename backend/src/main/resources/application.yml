@@ -102,6 +102,7 @@ hangar:
   projects:
     max-name-len: 25
     max-version-name-len: 30
+    max-license-name-len: 15
     max-dependencies: 100
     max-pages: 50
     max-bbcode-len: 20000
@@ -121,6 +122,7 @@ hangar:
     show-unreviewed-download-warning: false
     name-regex: "^[a-zA-Z0-9-_]{3,}$"
     version-name-regex: "^[a-zA-Z0-9-_.+]+$"
+    license-name-regex: "^[a-zA-Z0-9-_.() +]*$"
 
   orgs:
     create-limit: 5

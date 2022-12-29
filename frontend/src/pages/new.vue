@@ -230,12 +230,20 @@ function createProject() {
         {{ i18n.t("project.new.step3.license") }}
         <hr />
       </div>
-      <div class="flex flex-wrap">
+      <div class="flex md:gap-2 <md:flex-wrap">
         <div class="basis-full mt-4" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
           <InputSelect v-model="form.settings.license.type" :values="useLicenseOptions" :label="i18n.t('project.new.step3.type')" :rules="[required()]" />
         </div>
         <div v-if="isCustomLicense" class="basis-full md:basis-8/12 mt-4">
-          <InputText v-model.trim="form.settings.license.name" :label="i18n.t('project.new.step3.customName')" :rules="[requiredIf()(isCustomLicense)]" />
+          <InputText
+            v-model.trim="form.settings.license.name"
+            :label="i18n.t('project.new.step3.customName')"
+            :rules="[
+              requiredIf()(isCustomLicense),
+              maxLength()(useBackendData.validations.project.license.max),
+              pattern()(useBackendData.validations.project.license.regex),
+            ]"
+          />
         </div>
         <div v-if="!licenseUnset" class="basis-full mt-4" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
           <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" :rules="[url()]" />

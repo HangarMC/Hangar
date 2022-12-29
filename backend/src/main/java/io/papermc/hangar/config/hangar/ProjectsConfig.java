@@ -12,8 +12,10 @@ import org.springframework.boot.convert.DurationUnit;
 public record ProjectsConfig( // TODO split into ProjectsConfig and VersionsConfig
                               @DefaultValue("^[a-zA-Z0-9-_]{3,}$") PatternWrapper nameRegex,
                               @DefaultValue("^[a-zA-Z0-9-_.+]+$") PatternWrapper versionNameRegex,
+                              @DefaultValue("^[a-zA-Z0-9-_.() +]*$") PatternWrapper licenseNameRegex,
                               @DefaultValue("25") int maxNameLen,
                               @DefaultValue("30") int maxVersionNameLen,
+                              @DefaultValue("15") int maxLicenseNameLen,
                               @DefaultValue("100") int maxDependencies,
                               @DefaultValue("50") int maxPages,
                               @DefaultValue("5") int maxChannels,
@@ -35,6 +37,10 @@ public record ProjectsConfig( // TODO split into ProjectsConfig and VersionsConf
 
     public Validation projectName() {
         return new Validation(this.nameRegex(), this.maxNameLen(), null);
+    }
+
+    public Validation licenseName() {
+        return new Validation(this.licenseNameRegex(), this.maxLicenseNameLen(), null);
     }
 
     public Validation projectDescription() {

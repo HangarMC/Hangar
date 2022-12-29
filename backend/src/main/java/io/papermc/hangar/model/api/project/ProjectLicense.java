@@ -11,13 +11,17 @@ public class ProjectLicense {
 
     private static final HangarConfig config = StaticContextAccessor.getBean(HangarConfig.class);
 
-    private final String name;
+    // @el(root: String)
+    private final @Validate(SpEL = "@validations.regex(#root, @hangarConfig.projects.licenseNameRegex)", message = "project.new.error.invalidLicense")
+    @Validate(SpEL = "@validations.max(#root, @hangarConfig.projects.maxLicenseNameLen)", message = "project.new.error.tooLongLicense") String name;
 
     // @el(root: String)
     private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl") String url;
 
     // @el(root: String)
-    private final @Validate(SpEL = "@validate.required(#root)") String type;
+    private final @Validate(SpEL = "@validate.required(#root)")
+    @Validate(SpEL = "@validations.regex(#root, @hangarConfig.projects.licenseNameRegex)", message = "project.new.error.invalidLicense")
+    @Validate(SpEL = "@validations.max(#root, @hangarConfig.projects.maxLicenseNameLen)", message = "project.new.error.tooLongLicense") String type;
 
     @JsonCreator
     @JdbiConstructor
@@ -35,7 +39,7 @@ public class ProjectLicense {
         return this.name;
     }
 
-    public String getUrl() {
+    public @Nullable String getUrl() {
         return this.url;
     }
 

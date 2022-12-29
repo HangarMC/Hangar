@@ -27,7 +27,7 @@ import { useNotificationStore } from "~/lib/store/notification";
 import InputTag from "~/lib/components/ui/InputTag.vue";
 import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 import ProjectSettingsSection from "~/components/projects/ProjectSettingsSection.vue";
-import { maxLength, required, requiredIf, url } from "~/lib/composables/useValidationHelpers";
+import { maxLength, required, pattern, requiredIf, url } from "~/lib/composables/useValidationHelpers";
 import { validProjectName } from "~/composables/useHangarValidations";
 
 import "vue-advanced-cropper/dist/style.css";
@@ -352,12 +352,20 @@ useHead(
             <InputText v-model.trim="form.settings.wiki" :label="i18n.t('project.new.step3.wiki')" :rules="[url()]" />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
-            <div class="flex">
+            <div class="flex md:gap-2 <md:flex-wrap">
               <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
                 <InputSelect v-model="form.settings.license.type" :values="useLicenseOptions" :label="i18n.t('project.settings.licenseType')" />
               </div>
               <div v-if="isCustomLicense" class="basis-full md:basis-8/12">
-                <InputText v-model.trim="form.settings.license.name" :label="i18n.t('project.settings.licenseCustom')" />
+                <InputText
+                  v-model.trim="form.settings.license.name"
+                  :label="i18n.t('project.settings.licenseCustom')"
+                  :rules="[
+                    requiredIf()(isCustomLicense),
+                    maxLength()(useBackendData.validations?.project?.license?.max),
+                    pattern()(useBackendData.validations?.project?.license?.regex),
+                  ]"
+                />
               </div>
               <div v-if="!isUnspecifiedLicense" class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
                 <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[url()]" />

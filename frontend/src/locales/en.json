@@ -272,6 +272,8 @@
         "tooLongName": "Project name is too long",
         "tooShortName": "This name is too short",
         "tooLongDesc": "Project description is too long",
+        "tooLongLicense": "License name is too long",
+        "invalidLicense": "License name is invalid",
         "tooLongSponsors": "Project sponsor box is too long",
         "tooManyKeywords": "Project has too many keywords",
         "noCategory": "Project must have a category",
