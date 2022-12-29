@@ -8,7 +8,7 @@ import prettier from "./src/lib/plugins/prettier";
 
 const backendHost = process.env.BACKEND_HOST || "http://localhost:8080";
 const authHost = process.env.AUTH_HOST || "http://localhost:3001";
-const local = false; // set to true if backendData should be fetched from localhost
+const local = false; // set to true if backendData should be fetched from localhost. You might need to hard reload (Ctrl+F5) the next page you're on when changing this value
 const backendDataHost = process.env.BACKEND_DATA_HOST || (local ? "http://localhost:8080" : "https://hangar.papermc.dev");
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config

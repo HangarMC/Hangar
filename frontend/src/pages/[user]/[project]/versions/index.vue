@@ -115,7 +115,7 @@ function getVisibilityTitle(visibility: Visibility) {
 
 <template>
   <div class="flex flex-wrap md:flex-nowrap gap-4">
-    <section class="basis-full md:basis-9/12 flex-grow">
+    <section class="basis-full md:basis-11/15 flex-grow">
       <ul>
         <Alert v-if="!versions || !versions.result || versions.result.length === 0" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
         <Pagination v-else-if="versions" :items="versions.result">
@@ -168,7 +168,7 @@ function getVisibilityTitle(visibility: Visibility) {
       </ul>
     </section>
 
-    <section class="basis-full md:basis-3/12 flex-grow">
+    <section class="basis-full md:basis-4/15 flex-grow">
       <div class="flex flex-col flex-wrap space-y-4">
         <div v-if="hasPerms(NamedPermission.CREATE_VERSION)" class="basis-full flex-grow">
           <router-link :to="route.path + '/new'">
