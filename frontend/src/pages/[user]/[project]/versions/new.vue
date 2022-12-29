@@ -82,6 +82,7 @@ const steps: Step[] = [
     disableNext: computed(() => {
       return versionRules.some((v) => !v.$validator(pendingVersion.value?.versionString, undefined, undefined));
     }),
+    disableBack: true,
   },
   {
     value: "dependencies",
@@ -107,8 +108,7 @@ const steps: Step[] = [
         for (let i = 0; i < selectedPlatforms.value.length; i++) {
           const dependencyTable = dependencyTables.value[i];
           if (
-            dependencyTable.dependencies &&
-            dependencyTable.dependencies.some(
+            dependencyTable?.dependencies?.some(
               (dependency: PluginDependency) =>
                 (dependency.namespace === null && dependency.externalUrl === null) || !dependency.name.length || dependency.name.length === 0
             )
@@ -360,7 +360,7 @@ useHead(
 
       <p class="mt-8 text-xl">{{ t("version.new.form.addedArtifacts") }}</p>
       <div v-for="(pendingFile, idx) in pendingVersion?.files" :key="idx" class="mb-2">
-        <div class="flex flex-wrap items-center mt-4">
+        <div class="flex flex-wrap items-center mt-4 gap-2">
           <div v-if="pendingFile.fileInfo" class="basis-full <md:mt-4 md:basis-4/12">
             <InputText :model-value="pendingFile.fileInfo.name" :label="t('version.new.form.fileName')" disabled />
           </div>
