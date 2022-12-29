@@ -389,7 +389,7 @@ useHead(
                 :label="i18n.t('project.settings.newName')"
                 :rules="[validProjectName()(() => project.owner.userId)]"
               />
-              <Button :disabled="!newName || newNameField.v.$invalid" :loading="loading.rename" class="ml-2" @click="rename">
+              <Button :disabled="!newName || newNameField.validation.$invalid" :loading="loading.rename" class="ml-2" @click="rename">
                 <IconMdiRenameBox class="mr-2" />
                 {{ i18n.t("project.settings.rename") }}
               </Button>
