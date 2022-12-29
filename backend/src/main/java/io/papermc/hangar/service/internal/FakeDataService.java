@@ -82,7 +82,8 @@ public class FakeDataService extends HangarComponent {
     }
 
     public void createProject(final long ownerId) {
-        final ProjectLicense licence = new ProjectLicense(this.config.getLicenses().get(this.faker.random().nextInt(this.config.getLicenses().size())), null);
+        final String type = this.config.getLicenses().get(this.faker.random().nextInt(this.config.getLicenses().size()));
+        final ProjectLicense licence = new ProjectLicense(null, null, type);
         final Set<String> keyWords = new HashSet<>();
         for (int i = 0; i < this.faker.random().nextInt(2, 5); i++) {
             keyWords.add(this.faker.marketing().buzzwords());

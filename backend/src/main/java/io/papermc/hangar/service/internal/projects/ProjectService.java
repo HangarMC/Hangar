@@ -184,7 +184,7 @@ public class ProjectService extends HangarComponent {
         if (licenseName == null) {
             licenseName = settingsForm.getSettings().getLicense().getType();
         }
-        projectTable.setLicenseName(settingsForm.getSettings().getLicense().getType());
+        projectTable.setLicenseType(settingsForm.getSettings().getLicense().getType());
         projectTable.setLicenseName(licenseName);
         projectTable.setLicenseUrl(settingsForm.getSettings().getLicense().getUrl());
         projectTable.setForumSync(settingsForm.getSettings().isForumSync());

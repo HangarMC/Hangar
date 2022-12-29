@@ -19,27 +19,16 @@ public class ProjectLicense {
     // @el(root: String)
     private final @Validate(SpEL = "@validate.required(#root)") String type;
 
-    @JdbiConstructor
-    public ProjectLicense(final @Nullable String name, final @Nullable String url) {
-        final int index = config.getLicenses().indexOf(name);
-        if (name == null) {
-            this.type = null;
-            this.name = null;
-        } else if (index > -1 && index < config.getLicenses().size() - 1) {
-            this.name = null;
-            this.type = name;
-        } else {
-            this.name = name;
-            this.type = "(custom)";
-        }
-        this.url = url;
-    }
-
     @JsonCreator
+    @JdbiConstructor
     public ProjectLicense(final @Nullable String name, final @Nullable String url, final @Nullable String type) {
         this.name = name;
         this.url = url;
-        this.type = type;
+        if (config.getLicenses().contains(type)) {
+            this.type = type;
+        } else {
+            this.type = "(custom)";
+        }
     }
 
     public String getName() {

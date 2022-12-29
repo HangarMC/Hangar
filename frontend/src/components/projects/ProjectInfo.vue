@@ -38,14 +38,21 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
           </tr>
           <tr>
             <th class="text-left">{{ i18n.t("project.info.license") }}</th>
-            <td v-if="!project.settings.license.type || project.settings.license.type === 'Unspecified'" class="text-right">
-              {{ project.settings.license.type }}
-            </td>
-            <td v-else-if="project.settings.license.type === '(custom)'" class="text-right">
-              <Link :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">{{ project.settings.license.name }}</Link>
+            <td v-if="project.settings.license?.type === '(custom)' || project.settings.license?.type === 'Other'" class="text-right">
+              <Link v-if="project.settings.license.url" :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">{{
+                project.settings.license.name
+              }}</Link>
+              <template v-else>
+                {{ project.settings.license.name }}
+              </template>
             </td>
             <td v-else class="text-right">
-              <Link :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">{{ project.settings.license.type }}</Link>
+              <Link v-if="project.settings.license.url" :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">{{
+                project.settings.license.type
+              }}</Link>
+              <template v-else>
+                {{ project.settings.license.type }}
+              </template>
             </td>
           </tr>
           <tr>
