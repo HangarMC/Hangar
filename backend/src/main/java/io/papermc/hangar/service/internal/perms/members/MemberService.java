@@ -95,7 +95,7 @@ public abstract class MemberService<
         final RT roleTable = this.handleEditOrRemoval(member, joinable.getId());
         this.membersDao.delete(roleTable.getPrincipalId(), roleTable.getUserId());
         this.roleService.deleteRole(roleTable);
-        this.joinableNotificationService.removedFrom(roleTable, joinable);
+        this.joinableNotificationService.removedFrom(roleTable, joinable, this.getHangarUserId());
         this.logMemberRemoval(joinable, "Removed: " + member.getName() + " (" + member.getRole().getTitle() + ")");
     }
 
@@ -114,7 +114,7 @@ public abstract class MemberService<
         roleTable.setRole(member.getRole());
 
         this.roleService.updateRole(roleTable);
-        this.joinableNotificationService.roleChanged(roleTable, joinable);
+        this.joinableNotificationService.roleChanged(roleTable, joinable, this.getHangarUserId());
         this.logMemberUpdate(joinable,
             "Old Roles: " + member.getName() + " (" + oldTitle + ")",
             "New Roles: " + member.getName() + " (" + roleTable.getRole().getTitle() + ")");

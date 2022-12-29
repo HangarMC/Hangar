@@ -73,11 +73,11 @@ public class NotificationService extends HangarComponent {
         this.notifyProjectMembers(projectTable.getProjectId(), this.getHangarUserId(), projectTable.getOwnerName(), projectTable.getSlug(), notificationType, message);
     }
 
-    public NotificationTable notify(final long userId, final @Nullable String action, final @Nullable Long originId, final NotificationType notificationType, final String[] message) {
-        return this.notificationsDAO.insert(new NotificationTable(userId, action, originId, message, notificationType));
+    public NotificationTable notify(final long userId, final @Nullable String action, final @Nullable Long originUserId, final NotificationType notificationType, final String[] message) {
+        return this.notificationsDAO.insert(new NotificationTable(userId, action, originUserId, message, notificationType));
     }
 
-    public List<NotificationTable> notifyProjectMembers(final long projectId, final @Nullable Long originId,
+    public List<NotificationTable> notifyProjectMembers(final long projectId, final @Nullable Long originUserId,
                                                         final String owner, final String slug, final NotificationType notificationType, final String[] message) {
         final List<NotificationTable> notifications = new ArrayList<>();
         final List<JoinableMember<ProjectRoleTable>> members = this.hangarProjectsDAO.getProjectMembers(projectId, null, false);
@@ -85,7 +85,7 @@ public class NotificationService extends HangarComponent {
             notifications.add(new NotificationTable(
                 member.getUser().getUserId(),
                 owner + "/" + slug,
-                originId,
+                originUserId,
                 message, notificationType)
             );
         }
@@ -98,7 +98,7 @@ public class NotificationService extends HangarComponent {
             notificationTables.add(new NotificationTable(
                 projectWatcher.getId(),
                 projectTable.getOwnerName() + "/" + projectTable.getSlug() + "/versions/" + projectVersionTable.getVersionString(),
-                projectTable.getId(),
+                this.getHangarUserId(),
                 new String[]{"notifications.project.newVersion", projectTable.getName(), projectVersionTable.getVersionString()}, NotificationType.NEUTRAL)
             );
         }
@@ -113,7 +113,7 @@ public class NotificationService extends HangarComponent {
                 notificationTables.add(new NotificationTable(
                     user.getId(),
                     projectTable.getOwnerName() + "/" + projectTable.getSlug() + "/versions/" + projectVersionTable.getVersionString(),
-                    projectTable.getId(),
+                    this.getHangarUserId(),
                     new String[]{partial ? "notifications.project.reviewedPartial" : "notifications.project.reviewed", projectTable.getSlug(), projectVersionTable.getVersionString()},
                     NotificationType.SUCCESS)
                 );

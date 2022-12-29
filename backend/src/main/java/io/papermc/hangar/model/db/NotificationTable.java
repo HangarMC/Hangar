@@ -46,6 +46,11 @@ public class NotificationTable extends Table {
         return this.read;
     }
 
+    /**
+     * Returns the user id of the user that initiated the notification, if present.
+     *
+     * @return user id of the user that initiated the notification
+     */
     public Long getOriginId() {
         return this.originId;
     }
