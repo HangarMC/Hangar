@@ -6,6 +6,7 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.PaperFileTypeHandler;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.VelocityFileTypeHandler;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.WaterfallFileTypeHandler;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +34,7 @@ class PluginDataServiceTest {
 
     @Test
     void testLoadPaperPluginMetadata() throws Exception {
-        final PluginFileData data = this.classUnderTest.loadMeta(path.resolve("Paper.jar"), -1).getData();
+        final PluginFileData data = this.classUnderTest.loadMeta("Paper.jar", Files.newInputStream(path.resolve("Paper.jar")).readAllBytes(), -1).data();
         data.validate();
         assertEquals("Maintenance", data.getName());
         assertEquals("Enable maintenance mode with a custom maintenance motd and icon.", data.getDescription());
@@ -50,7 +51,7 @@ class PluginDataServiceTest {
 
     @Test
     void testLoadWaterfallPluginMetadata() throws Exception {
-        final PluginFileData data = this.classUnderTest.loadMeta(path.resolve("Waterfall.jar"), -1).getData();
+        final PluginFileData data = this.classUnderTest.loadMeta("Waterfall.jar", Files.newInputStream(path.resolve("Waterfall.jar")).readAllBytes(), -1).data();
 
         data.validate();
         assertEquals("Maintenance", data.getName());
@@ -67,7 +68,7 @@ class PluginDataServiceTest {
 
     @Test
     void testLoadVelocityPluginMetadata() throws Exception {
-        final PluginFileData data = this.classUnderTest.loadMeta(path.resolve("Velocity.jar"), -1).getData();
+        final PluginFileData data = this.classUnderTest.loadMeta("Velocity.jar", Files.newInputStream(path.resolve("Velocity.jar")).readAllBytes(), -1).data();
 
         data.validate();
         assertEquals("Maintenance", data.getName());
@@ -83,7 +84,7 @@ class PluginDataServiceTest {
 
     @Test
     void testLoadPaperPluginZipMetadata() throws Exception {
-        final PluginFileData data = this.classUnderTest.loadMeta(path.resolve("TestZip.zip"), -1).getData();
+        final PluginFileData data = this.classUnderTest.loadMeta("TestZip.zip", Files.newInputStream(path.resolve("TestZip.zip")).readAllBytes(), -1).data();
 
         data.validate();
         assertEquals("Maintenance", data.getName());
@@ -107,7 +108,7 @@ class PluginDataServiceTest {
     void testLoadMetaShouldFail(final String jarName, final String expectedMsg) {
         final Path jarPath = path.resolve(jarName);
         final HangarApiException exception = assertThrows(HangarApiException.class, () -> {
-            this.classUnderTest.loadMeta(jarPath, -1);
+            this.classUnderTest.loadMeta(jarName, Files.newInputStream(jarPath).readAllBytes(), -1);
         });
         assertEquals("400 BAD_REQUEST \"" + expectedMsg + "\"", exception.getMessage());
     }

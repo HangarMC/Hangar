@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.s3.S3Client;
 
 @Service
 @ConditionalOnProperty(value = "hangar.storage.type", havingValue = "object")
@@ -21,11 +22,13 @@ public class S3FileService implements FileService {
     private final StorageConfig config;
     private final ResourceLoader resourceLoader;
     private final S3Template s3Template;
+    private final S3Client s3Client;
 
-    public S3FileService(final StorageConfig config, final ResourceLoader resourceLoader, final S3Template s3Template) {
+    public S3FileService(final StorageConfig config, final ResourceLoader resourceLoader, final S3Template s3Template, final S3Client s3Client) {
         this.config = config;
         this.resourceLoader = resourceLoader;
         this.s3Template = s3Template;
+        this.s3Client = s3Client;
     }
 
     @Override
@@ -39,8 +42,8 @@ public class S3FileService implements FileService {
     }
 
     @Override
-    public void deleteDirectory(final String dir) {
-        this.s3Template.deleteObject(this.config.bucket(), dir);
+    public void deleteDirectory(final String path) {
+        this.s3Template.deleteObject(path);
     }
 
     @Override
@@ -64,7 +67,15 @@ public class S3FileService implements FileService {
     @Override
     public void move(final String oldPath, final String newPath) throws IOException {
         if (!oldPath.startsWith(this.getRoot()) && newPath.startsWith(this.getRoot())) {
+            // upload from file to s3
             this.write(Files.newInputStream(Path.of(oldPath)), newPath);
+        } else if (oldPath.startsWith(this.getRoot()) && newPath.startsWith(this.getRoot())) {
+            // "rename" in s3
+            this.s3Client.copyObject((builder -> builder
+                .sourceBucket(this.config.bucket()).sourceKey(oldPath.replace(this.getRoot(), ""))
+                .destinationBucket(this.config.bucket()).destinationKey(newPath.replace(this.getRoot(), ""))
+            ));
+            this.s3Template.deleteObject(oldPath);
         } else {
             throw new UnsupportedOperationException("cant move " + oldPath + " to " + newPath);
         }

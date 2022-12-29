@@ -141,15 +141,13 @@ public class VersionFactory extends HangarComponent {
         final Set<Platform> processedPlatforms = EnumSet.noneOf(Platform.class);
 
         // Delete old temp data
-        final Path userTempDir = this.projectFiles.getTempDir(this.getHangarPrincipal().getName());
-        if (Files.exists(userTempDir)) {
-            FileUtils.deleteDirectory(userTempDir);
-        }
+        final String userTempDir = this.projectFiles.getTempDir(this.getHangarPrincipal().getName());
+        this.fileService.deleteDirectory(userTempDir);
 
         for (final MultipartFileOrUrl fileOrUrl : data) {
             // Make sure each platform only has one corresponding file/url
             if (!processedPlatforms.addAll(fileOrUrl.platforms())) {
-                FileUtils.deleteDirectory(userTempDir);
+                this.fileService.deleteDirectory(userTempDir);
                 throw new IllegalArgumentException();
             }
 
@@ -161,8 +159,6 @@ public class VersionFactory extends HangarComponent {
             }
         }
 
-        this.tempDirCache.put(userTempDir, DUMMY);
-
         for (final Platform platform : processedPlatforms) {
             platformDependencies.putIfAbsent(platform, Collections.emptySortedSet());
             pluginDependencies.putIfAbsent(platform, Collections.emptySet());
@@ -170,41 +166,41 @@ public class VersionFactory extends HangarComponent {
         return new PendingVersion(versionString, pluginDependencies, platformDependencies, pendingFiles, projectTable.isForumSync());
     }
 
-    private String createPendingFile(final MultipartFile file, final String channel, final ProjectTable projectTable, final Map<Platform, Set<PluginDependency>> pluginDependencies, final Map<Platform, SortedSet<String>> platformDependencies, final List<PendingVersionFile> pendingFiles, String versionString, final Path userTempDir, final MultipartFileOrUrl fileOrUrl) {
+    private String createPendingFile(final MultipartFile file, final String channel, final ProjectTable projectTable, final Map<Platform, Set<PluginDependency>> pluginDependencies, final Map<Platform, SortedSet<String>> platformDependencies, final List<PendingVersionFile> pendingFiles, String versionString, final String userTempDir, final MultipartFileOrUrl fileOrUrl) {
         // check extension
         final String pluginFileName = file.getOriginalFilename();
         if (pluginFileName == null || (!pluginFileName.endsWith(".zip") && !pluginFileName.endsWith(".jar"))) {
-            FileUtils.deleteDirectory(userTempDir);
+            this.fileService.deleteDirectory(userTempDir);
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.fileExtension");
         }
 
         // move file into temp
         final PluginFileWithData pluginDataFile;
-        final Platform platformToResolve = fileOrUrl.platforms().get(0); // Just save it by the first platform
-        final Path tmpDir = userTempDir.resolve(platformToResolve.name());
         try {
-            if (!Files.isDirectory(tmpDir)) {
-                Files.createDirectories(tmpDir);
-            }
+            final Platform platformToResolve = fileOrUrl.platforms().get(0); // Just save it by the first platform
+            // read file
+            final String tmpDir = this.fileService.resolve(userTempDir, platformToResolve.name());
+            final String tmpPluginFile = this.fileService.resolve(tmpDir, pluginFileName);
+            final byte[] bytes = file.getInputStream().readAllBytes();
+            // write
+            this.fileService.write(file.getInputStream(), tmpPluginFile);
+            // load meta
+            pluginDataFile = this.pluginDataService.loadMeta(pluginFileName, bytes, this.getHangarPrincipal().getUserId());
+       } catch (final ConfigurateException configurateException) {
+           this.logger.error("Error while reading file metadata while uploading {} for {}", pluginFileName, this.getHangarPrincipal().getName(), configurateException);
+           this.fileService.deleteDirectory(userTempDir);
+           throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.metaNotFound");
+       } catch (final Exception e) {
+           this.logger.error("Error while uploading {} for {}", pluginFileName, this.getHangarPrincipal().getName(), e);
+           this.fileService.deleteDirectory(userTempDir);
+           throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.unexpected");
+       }
 
-            final Path tmpPluginFile = tmpDir.resolve(pluginFileName);
-            file.transferTo(tmpPluginFile);
-            pluginDataFile = this.pluginDataService.loadMeta(tmpPluginFile, this.getHangarPrincipal().getUserId());
-        } catch (final ConfigurateException configurateException) {
-            this.logger.error("Error while reading file metadata while uploading {} for {}", pluginFileName, this.getHangarPrincipal().getName(), configurateException);
-            FileUtils.deleteDirectory(userTempDir);
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.metaNotFound");
-        } catch (final IOException e) {
-            this.logger.error("Error while uploading {} for {}", pluginFileName, this.getHangarPrincipal().getName(), e);
-            FileUtils.deleteDirectory(userTempDir);
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.unexpected");
+        if (versionString == null && pluginDataFile.data().getVersion() != null) {
+            versionString = StringUtils.slugify(pluginDataFile.data().getVersion());
         }
 
-        if (versionString == null && pluginDataFile.getData().getVersion() != null) {
-            versionString = StringUtils.slugify(pluginDataFile.getData().getVersion());
-        }
-
-        final FileInfo fileInfo = new FileInfo(pluginDataFile.getPath().getFileName().toString(), pluginDataFile.getPath().toFile().length(), pluginDataFile.getMd5());
+        final FileInfo fileInfo = new FileInfo(pluginDataFile.fileName(), pluginDataFile.fileSize(), pluginDataFile.md5());
         pendingFiles.add(new PendingVersionFile(fileOrUrl.platforms(), fileInfo, null));
 
         // setup dependencies
@@ -217,12 +213,12 @@ public class VersionFactory extends HangarComponent {
             }
 
             // If no previous version present, use uploaded version data
-            final Set<PluginDependency> loadedPluginDependencies = pluginDataFile.getData().getDependencies().get(platform);
+            final Set<PluginDependency> loadedPluginDependencies = pluginDataFile.data().getDependencies().get(platform);
             if (loadedPluginDependencies != null) {
                 pluginDependencies.put(platform, loadedPluginDependencies);
             }
 
-            final SortedSet<String> loadedPlatformDependencies = pluginDataFile.getData().getPlatformDependencies().get(platform);
+            final SortedSet<String> loadedPlatformDependencies = pluginDataFile.data().getPlatformDependencies().get(platform);
             if (loadedPlatformDependencies != null) {
                 platformDependencies.put(platform, loadedPlatformDependencies);
             }
@@ -259,7 +255,7 @@ public class VersionFactory extends HangarComponent {
         assert projectTable != null;
 
         // verify that all platform files exist and that platform dependencies are setup correctly
-        final Path userTempDir = this.projectFiles.getTempDir(this.getHangarPrincipal().getName());
+        final String userTempDir = this.projectFiles.getTempDir(this.getHangarPrincipal().getName());
         this.verifyPendingPlatforms(pendingVersion, userTempDir);
 
         ProjectVersionTable projectVersionTable = null;
@@ -368,7 +364,7 @@ public class VersionFactory extends HangarComponent {
         this.projectVersionDependenciesDAO.insertAll(pluginDependencyTables);
     }
 
-    private void processPendingVersionFile(final PendingVersion pendingVersion, final Path userTempDir, final ProjectVersionTable projectVersionTable, final String versionDir, final List<Pair<ProjectVersionDownloadTable, List<Platform>>> downloadsTables, final PendingVersionFile pendingVersionFile) throws IOException {
+    private void processPendingVersionFile(final PendingVersion pendingVersion, final String userTempDir, final ProjectVersionTable projectVersionTable, final String versionDir, final List<Pair<ProjectVersionDownloadTable, List<Platform>>> downloadsTables, final PendingVersionFile pendingVersionFile) throws IOException {
         final FileInfo fileInfo = pendingVersionFile.fileInfo();
         if (fileInfo == null) {
             final ProjectVersionDownloadTable table = new ProjectVersionDownloadTable(projectVersionTable.getVersionId(), null, null, null, pendingVersionFile.externalUrl());
@@ -378,10 +374,10 @@ public class VersionFactory extends HangarComponent {
 
         // Move file for first platform
         final Platform platformToResolve = pendingVersionFile.platforms().get(0);
-        final Path tmpVersionJar = userTempDir.resolve(platformToResolve.name()).resolve(fileInfo.getName());
+        final String tmpVersionJar = this.fileService.resolve(this.fileService.resolve(userTempDir, platformToResolve.name()), fileInfo.getName());
 
-        final String newVersionJarPath = this.fileService.resolve(this.fileService.resolve(versionDir, platformToResolve.name()), tmpVersionJar.getFileName().toString());
-        this.fileService.move(tmpVersionJar.toString(), newVersionJarPath);
+        final String newVersionJarPath = this.fileService.resolve(this.fileService.resolve(versionDir, platformToResolve.name()), fileInfo.getName());
+        this.fileService.move(tmpVersionJar, newVersionJarPath);
 
         // Create links for the other platforms
         for (int i = 1; i < pendingVersionFile.platforms().size(); i++) {
@@ -391,7 +387,7 @@ public class VersionFactory extends HangarComponent {
             }
 
             final String platformPath = this.fileService.resolve(versionDir, platform.name());
-            final String platformJarPath = this.fileService.resolve(platformPath, tmpVersionJar.getFileName().toString());
+            final String platformJarPath = this.fileService.resolve(platformPath, fileInfo.getName());
             if (this.fileService instanceof S3FileService) {
                 // this isn't nice, but we cant link, so what am I supposed to do?
                 // fileService.move(tmpVersionJar.toString(), platformJarPath);
@@ -405,7 +401,7 @@ public class VersionFactory extends HangarComponent {
         downloadsTables.add(ImmutablePair.of(table, pendingVersionFile.platforms()));
     }
 
-    private void verifyPendingPlatforms(final PendingVersion pendingVersion, final Path userTempDir) {
+    private void verifyPendingPlatforms(final PendingVersion pendingVersion, final String userTempDir) {
         final Set<Platform> processedPlatforms = EnumSet.noneOf(Platform.class);
         for (final PendingVersionFile pendingVersionFile : pendingVersion.getFiles()) {
             if (!processedPlatforms.addAll(pendingVersionFile.platforms())) {
@@ -415,13 +411,15 @@ public class VersionFactory extends HangarComponent {
             final FileInfo fileInfo = pendingVersionFile.fileInfo();
             if (fileInfo != null) { // verify file
                 final Platform platform = pendingVersionFile.platforms().get(0); // Use the first platform to resolve
-                final Path tmpVersionJar = userTempDir.resolve(platform.name()).resolve(fileInfo.getName());
+                final String tmpVersionJar = this.fileService.resolve(this.fileService.resolve(userTempDir, platform.name()), fileInfo.getName());
                 try {
-                    if (Files.notExists(tmpVersionJar)) {
+                    if (!this.fileService.exists(tmpVersionJar)) {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.noFile");
-                    } else if (tmpVersionJar.toFile().length() != fileInfo.getSizeBytes()) {
+                    }
+                    final byte[] bytes = this.fileService.bytes(tmpVersionJar);
+                    if (bytes.length != fileInfo.getSizeBytes()) {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.mismatchedFileSize");
-                    } else if (!Objects.equals(CryptoUtils.md5ToHex(Files.readAllBytes(tmpVersionJar)), fileInfo.getMd5Hash())) {
+                    } else if (!Objects.equals(CryptoUtils.md5ToHex(bytes), fileInfo.getMd5Hash())) {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.hashMismatch");
                     }
                 } catch (final IOException e) {

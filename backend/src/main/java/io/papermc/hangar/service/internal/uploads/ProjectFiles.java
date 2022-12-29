@@ -1,36 +1,23 @@
 package io.papermc.hangar.service.internal.uploads;
 
-import io.papermc.hangar.config.hangar.StorageConfig;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.internal.file.FileService;
-import io.papermc.hangar.util.FileUtils;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProjectFiles {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProjectFiles.class);
-
     private final String pluginsDir;
-    private final Path tmpDir;
+    private final String tmpDir;
     private final FileService fileService;
 
     @Autowired
-    public ProjectFiles(final StorageConfig storageConfig, final FileService fileService) {
+    public ProjectFiles(final FileService fileService) {
         this.fileService = fileService;
-        final Path uploadsDir = Path.of(storageConfig.workDir());
         this.pluginsDir = fileService.resolve(fileService.getRoot(), "plugins");
-        this.tmpDir = uploadsDir.resolve("tmp");
-        if (Files.exists(this.tmpDir)) {
-            FileUtils.deleteDirectory(this.tmpDir);
-        }
-        logger.info("Cleaned up tmp files and inited work dir {} ", uploadsDir);
+        this.tmpDir = fileService.resolve(fileService.getRoot(), "tmp");
     }
 
     public String getProjectDir(final String owner, final String slug) {
@@ -91,8 +78,8 @@ public class ProjectFiles {
         return this.fileService.resolve(this.getIconsDir(owner, slug), "icon.png");
     }
 
-    public Path getTempDir(final String owner) {
-        return this.tmpDir.resolve(owner);
+    public String getTempDir(final String owner) {
+        return this.fileService.resolve(this.tmpDir, owner);
     }
 
 }

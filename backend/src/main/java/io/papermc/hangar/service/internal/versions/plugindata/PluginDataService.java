@@ -4,19 +4,19 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.FileTypeHandler;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.EnumMap;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
+import io.papermc.hangar.util.CryptoUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,15 +33,15 @@ public class PluginDataService {
         }
     }
 
-    public @NotNull PluginFileWithData loadMeta(final Path file, final long userId) throws IOException {
-        try (final JarInputStream jarInputStream = this.openJar(file)) {
+    public @NotNull PluginFileWithData loadMeta(final String fileName, final byte[] bytes, final long userId) throws IOException {
+        try (final Jar jar = this.openJar(fileName, new ByteArrayInputStream(bytes))) {
             final Map<Platform, FileTypeHandler.FileData> fileDataMap = new EnumMap<>(Platform.class);
 
             JarEntry jarEntry;
-            while ((jarEntry = jarInputStream.getNextJarEntry()) != null && fileDataMap.size() < Platform.getValues().length) {
+            while ((jarEntry = jar.stream().getNextJarEntry()) != null && fileDataMap.size() < Platform.getValues().length) {
                 final FileTypeHandler<?> fileTypeHandler = this.pluginFileTypeHandlers.get(jarEntry.getName());
                 if (fileTypeHandler != null) {
-                    final BufferedReader reader = new BufferedReader(new InputStreamReader(jarInputStream));
+                    final BufferedReader reader = new BufferedReader(new InputStreamReader(jar.stream()));
                     final FileTypeHandler.FileData fileData = fileTypeHandler.getData(reader);
                     fileDataMap.put(fileTypeHandler.getPlatform(), fileData);
                 }
@@ -52,26 +52,33 @@ public class PluginDataService {
                     throw new HangarApiException("version.new.error.metaNotFound");
                 }
             });
-            return new PluginFileWithData(file, new PluginFileData(fileDataMap), userId);
+            return new PluginFileWithData(jar.fileName(), bytes.length, CryptoUtils.md5ToHex(bytes), new PluginFileData(fileDataMap), userId);
         }
     }
 
-    public JarInputStream openJar(final Path file) throws IOException {
-        if (file.toString().endsWith(".jar")) {
-            return new JarInputStream(Files.newInputStream(file));
+    public Jar openJar(final String fileName, final InputStream file) throws IOException {
+        if (fileName.endsWith(".jar")) {
+            return new Jar(fileName, new JarInputStream(file));
         } else {
-            final ZipFile zipFile = new ZipFile(file.toFile()); // gets closed by closing the input stream?
-            final Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            final ZipInputStream stream = new ZipInputStream(file);
 
-            while (entries.hasMoreElements()) {
-                final ZipEntry zipEntry = entries.nextElement();
+            ZipEntry zipEntry;
+            while ((zipEntry = stream.getNextEntry()) != null) {
                 final String name = zipEntry.getName();
                 if (!zipEntry.isDirectory() && name.split("/").length == 1 && name.endsWith(".jar")) {
-                    return new JarInputStream(zipFile.getInputStream(zipEntry));
+                    // todo what about multiple jars in one zip?
+                    return new Jar(zipEntry.getName(), new JarInputStream(stream));
                 }
             }
 
             throw new HangarApiException("version.new.error.jarNotFound");
+        }
+    }
+
+    record Jar(String fileName, JarInputStream stream) implements AutoCloseable {
+        @Override
+        public void close() throws IOException {
+            this.stream.close();
         }
     }
 }
