@@ -4,4 +4,5 @@
 cd frontend
 pnpm prettier --write src/types/generated/**.*
 git add src/types/generated/**.*
+#pnpm run lint:typecheck TODO uncomment when all tsc errors are fixed
 pnpm lint-staged
