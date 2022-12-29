@@ -19,6 +19,9 @@ export default defineConfig({
       addVariant("input-focused", ({ style }) => {
         return style.wrapSelector((s) => "input:focus ~ " + s);
       });
+      addVariant("input-hover", ({ style }) => {
+        return style.wrapSelector((s) => "input:not(:focus):hover ~ " + s);
+      });
       addVariant("input-focus-visible", ({ style }) => {
         return style.wrapSelector((s) => "input:focus-visible ~ " + s);
       });
