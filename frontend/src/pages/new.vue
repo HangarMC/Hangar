@@ -182,7 +182,7 @@ function createProject() {
             :rules="[required()]"
           />
         </div>
-        <span class="text-3xl <md:hidden mr-2 -ml-4">/</span>
+        <span class="text-3xl <md:hidden ml-2 mr-2">/</span>
         <div class="basis-full md:basis-4/12 <md:mt-4">
           <InputText
             v-model.trim="form.name"

@@ -154,7 +154,7 @@ function getVisibilityTitle(visibility: Visibility) {
                           {{ i18n.d(item.createdAt, "date") }}
                         </span>
                         <span class="basis-full inline-flex items-center">
-                          <IconMdiDownload class="mr-1" />
+                          <IconMdiDownload class="mr-1 mb-3" />
                           <ComingSoon>{{ item.stats.downloads }}</ComingSoon>
                         </span>
                       </div>

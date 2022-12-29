@@ -302,7 +302,7 @@ useHead(
         <div class="basis-full md:basis-4/12">
           <InputSelect v-model="selectedChannel" :values="channels" item-text="name" item-value="name" :label="t('version.new.form.channel')" />
         </div>
-        <div class="basis-full md:(basis-4/12 -ml-2)">
+        <div class="basis-full md:(basis-4/12) ml-2">
           <ChannelModal :project-id="project.id" @create="addChannel">
             <template #activator="{ on }">
               <Button class="basis-4/12" size="medium" v-on="on">
@@ -370,7 +370,7 @@ useHead(
           <div v-else class="basis-full <md:mt-4 md:basis-6/12">
             <InputText v-model="pendingFile.externalUrl" :label="t('version.new.form.externalUrl')" disabled />
           </div>
-          <div class="-ml-2 flex flex-wrap items-center">
+          <div class="ml-2 flex flex-wrap items-center">
             <div v-for="platform in pendingFile.platforms" :key="platform">
               <PlatformLogo :platform="platform" :size="30" class="mr-1" />
             </div>

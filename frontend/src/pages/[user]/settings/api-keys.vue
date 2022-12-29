@@ -87,7 +87,7 @@ async function deleteKey(key: ApiKey) {
         <PageTitle>{{ i18n.t("apiKeys.createNew") }}</PageTitle>
       </template>
       <div class="flex items-center">
-        <div class="flex-grow">
+        <div class="flex-grow mr-2">
           <InputText v-model="name" :label="i18n.t('apiKeys.name')" :rules="[required(), minLength()(5), maxLength()(255), validApiKeyName()(user.name)]" />
         </div>
         <Button size="medium" class="w-max" :disabled="v.$invalid || loadingCreate || v.$pending || selectedPerms.length === 0" @click="create">
