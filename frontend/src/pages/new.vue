@@ -135,6 +135,12 @@ function createProject() {
   if (!form.value.pageContent) {
     form.value.pageContent = "# " + form.value.name + "  \nWelcome to your new project!";
   }
+  if (!isCustomLicense.value) {
+    form.value.settings.license.name = null;
+  }
+  if (licenseUnset.value) {
+    form.value.settings.license.url = null;
+  }
   useInternalApi<string>("projects/create", "post", form.value)
     .then((u) => {
       router.push(u);

@@ -127,6 +127,13 @@ async function save() {
   loading.save = true;
   try {
     if (!(await v.value.$validate())) return;
+    if (!isCustomLicense.value) {
+      form.settings.license.name = null;
+    }
+    if (isUnspecifiedLicense.value) {
+      form.settings.license.url = null;
+    }
+
     await useInternalApi(`projects/project/${route.params.user}/${route.params.project}/settings`, "post", {
       ...form,
     });
