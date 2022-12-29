@@ -59,11 +59,12 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
     :no-error-tooltip="noErrorTooltip"
   >
     <template #default="slotProps">
-      <select v-model="internalVal" :disabled="disabled" :class="slotProps.class" @blur="v.$touch()">
+      <select v-model="internalVal" :disabled="disabled" :class="slotProps.class" class="appearance-none" @blur="v.$touch()">
         <option v-for="val in values" :key="val[itemValue] || val" :value="val[itemValue] || val" class="dark:bg-[#191e28]">
           {{ i18nTextValues ? i18n.t(val[itemText] || val) : val[itemText] || val }}
         </option>
       </select>
+      <IconMdiMenuDown class="absolute flex right-2 self-center -z-index-1" />
     </template>
     <template v-for="(_, name) in $slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData || {}" />
