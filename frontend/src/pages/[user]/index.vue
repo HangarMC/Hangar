@@ -105,15 +105,9 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
 
     <div class="flex gap-4 flex-basis-full flex-col md:flex-row">
       <div class="flex-basis-full flex flex-col gap-2 flex-grow md:max-w-2/3 md:min-w-1/3">
-        <div class="flex gap-2 items-center">
-          <div class="flex-grow">
-            <h2 class="text-xl">{{ user.name }} has {{ projects.pagination.count }} projects</h2>
-          </div>
-          <div class="flex-1">
-            <InputSelect v-model="activeSorter" :values="sorters" item-text="label" item-value="id" label="Sort by"></InputSelect>
-          </div>
-        </div>
-        <ProjectList :projects="projects"></ProjectList>
+        <!-- todo: search field -->
+        <InputSelect v-model="activeSorter" :values="sorters" item-text="label" item-value="id" :label="i18n.t('hangar.projectSearch.sortBy')" />
+        <ProjectList :projects="projects" />
       </div>
       <div class="flex-basis-full flex-grow md:max-w-1/3 md:min-w-1/3">
         <Card v-if="buttons.length !== 0" class="mb-4 border-solid border-top-4 border-top-red-500 dark:border-top-red-500">

@@ -31,14 +31,11 @@ async function fetch() {
   }).catch<any>((e) => handleRequestError(e));
   loading.value = false;
   if (!import.meta.env.SSR) {
-    console.log("before", loading.value, document.querySelectorAll('code[class*="language-"]'));
     await nextTick();
-    console.log("after", loading.value, document.querySelectorAll('code[class*="language-"]'));
     setupAdmonition();
     if (typeof renderedMarkdown.value?.includes === "function" && renderedMarkdown.value?.includes("<code")) {
       await usePrismStore().handlePrism();
     }
-    console.log("after2", loading.value, document.querySelectorAll('code[class*="language-"]'));
   }
 }
 await fetch();
