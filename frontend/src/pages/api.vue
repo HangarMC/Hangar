@@ -8,7 +8,6 @@ import { useAuthStore } from "~/store/auth";
 
 const i18n = useI18n();
 const route = useRoute();
-const authStore = useAuthStore();
 
 onMounted(() => {
   const swaggerUiVersion = "4.15.5";

@@ -4,7 +4,7 @@ import PaperLogo from "~/components/logos/platforms/PaperLogo.vue";
 import VelocityLogo from "~/components/logos/platforms/VelocityLogo.vue";
 import WaterfallLogo from "~/components/logos/platforms/WaterfallLogo.vue";
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     platform: Platform;
     size?: number;

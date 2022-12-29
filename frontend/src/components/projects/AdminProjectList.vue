@@ -7,7 +7,7 @@ import Link from "~/lib/components/design/Link.vue";
 import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
 
 const i18n = useI18n();
-const props = defineProps<{
+defineProps<{
   projects: ProjectApproval[];
 }>();
 </script>

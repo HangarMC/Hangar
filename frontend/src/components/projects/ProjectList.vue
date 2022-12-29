@@ -6,7 +6,7 @@ import ProjectCard from "~/components/projects/ProjectCard.vue";
 
 const i18n = useI18n();
 
-const props = defineProps<{
+defineProps<{
   projects: PaginatedResult<Project>;
 }>();
 

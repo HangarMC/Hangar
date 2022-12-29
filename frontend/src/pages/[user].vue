@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
+import { Ref } from "vue";
+import { Organization } from "hangar-internal";
 import { useOrganization, useUser } from "~/composables/useApiHelper";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 
 const i18n = useI18n();
 const route = useRoute();
 const user = await useUser(route.params.user as string);
-let organization = null;
+let organization: Ref<Organization | null> | undefined;
 if (!user || !user.value) {
   throw useErrorRedirect(useRoute(), 404, "Not found");
 } else if (user.value?.isOrganization) {

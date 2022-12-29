@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ProjectCategory } from "~/types/enums";
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     category: ProjectCategory;
     size?: number;

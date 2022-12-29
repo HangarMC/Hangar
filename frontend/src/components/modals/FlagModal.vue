@@ -3,7 +3,6 @@ import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { HangarProject } from "hangar-internal";
-import { AxiosError } from "axios";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import Tooltip from "~/lib/components/design/Tooltip.vue";

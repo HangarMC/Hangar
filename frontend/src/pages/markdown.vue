@@ -6,7 +6,6 @@ import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
 import Markdown from "~/components/Markdown.vue";
 
-const i18n = useI18n();
 const route = useRoute();
 
 // TODO Finish up and move to docs site

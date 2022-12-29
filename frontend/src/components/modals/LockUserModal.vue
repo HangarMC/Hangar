@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { AxiosError } from "axios";
 import { User } from "hangar-api";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
