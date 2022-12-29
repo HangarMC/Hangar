@@ -45,12 +45,12 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
 }
 
 export function useApi<T>(url: string, method: AxiosRequestConfig["method"] = "get", data: object = {}): Promise<T> {
-  fetchLog("useApi", url);
+  fetchLog("useApi", url, data);
   return request(`v1/${url}`, method, data);
 }
 
 export function useInternalApi<T = void>(url: string, method: AxiosRequestConfig["method"] = "get", data: object = {}): Promise<T> {
-  fetchLog("useInternalApi", url);
+  fetchLog("useInternalApi", url, data);
   return request(`internal/${url}`, method, data);
 }
 

@@ -31,6 +31,8 @@ import OrgTransferModal from "~/components/modals/OrgTransferModal.vue";
 import OrgDeleteModal from "~/components/modals/OrgDeleteModal.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import { useApi } from "~/composables/useApi";
+import { useRouter } from "#imports";
+import InputText from "~/lib/components/ui/InputText.vue";
 
 const props = defineProps<{
   user: User;
@@ -39,7 +41,35 @@ const props = defineProps<{
 const i18n = useI18n();
 
 const route = useRoute();
-const userData = await useUserData(props.user.name);
+const router = useRouter();
+
+const sorters = [
+  { id: "-updated", label: i18n.t("project.sorting.recentlyUpdated") },
+  { id: "-newest", label: i18n.t("project.sorting.newest") },
+  { id: "-stars", label: i18n.t("project.sorting.mostStars") },
+  { id: "-downloads", label: i18n.t("project.sorting.mostDownloads") },
+  { id: "-recent_downloads", label: i18n.t("project.sorting.recentDownloads") },
+  { id: "slug", label: i18n.t("project.sorting.slug") },
+];
+const query = ref((route.query.q as string) || "");
+const page = ref(route.query.page ? Number(route.query.page) : 0);
+const activeSorter = ref((route.query.sort as string) || "-updated");
+const requestParams = computed(() => {
+  const limit = 10;
+  const params: Record<string, any> = {
+    limit,
+    offset: page.value * limit,
+  };
+  if (query.value) {
+    params.q = query.value;
+  }
+  if (activeSorter.value) {
+    params.sort = activeSorter.value;
+  }
+  return params;
+});
+
+const userData = await useUserData(props.user.name, requestParams.value);
 const { starred, watching, organizations, pinned } = userData.value || { starred: null };
 const projects = ref(userData.value?.projects);
 let organizationVisibility = null;
@@ -78,18 +108,19 @@ const buttons = computed<UserButton[]>(() => {
 
 const isCurrentUser = computed<boolean>(() => authStore.user != null && authStore.user.name === props.user.name);
 
-const sorters = [
-  { id: "-updated", label: i18n.t("project.sorting.recentlyUpdated") },
-  { id: "-newest", label: i18n.t("project.sorting.newest") },
-  { id: "-stars", label: i18n.t("project.sorting.mostStars") },
-  { id: "-downloads", label: i18n.t("project.sorting.mostDownloads") },
-  { id: "-recent_downloads", label: i18n.t("project.sorting.recentDownloads") },
-  { id: "slug", label: i18n.t("project.sorting.slug") },
-];
-const activeSorter = ref("-updated");
-watch(activeSorter, async () => {
-  projects.value = await useApi<PaginatedResult<Project>>("projects", "get", { sort: activeSorter.value, owner: props.user.name });
-});
+watch(
+  requestParams,
+  async () => {
+    // dont want limit in url, its hardcoded in frontend
+    // offset we dont want, we set page instead
+    const { limit, offset, ...paramsWithoutLimit } = requestParams.value;
+    // set the request params
+    await router.replace({ query: { page: page.value, ...paramsWithoutLimit } });
+    // do the update
+    projects.value = await useApi<PaginatedResult<Project>>("projects", "get", { owner: props.user.name, ...requestParams.value });
+  },
+  { deep: true }
+);
 
 useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + props.user.tagline, route, avatarUrl(props.user.name)));
 </script>
@@ -106,8 +137,11 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
     <div class="flex gap-4 flex-basis-full flex-col md:flex-row">
       <div class="flex-basis-full flex flex-col gap-2 flex-grow md:max-w-2/3 md:min-w-1/3">
         <!-- todo: search field -->
-        <InputSelect v-model="activeSorter" :values="sorters" item-text="label" item-value="id" :label="i18n.t('hangar.projectSearch.sortBy')" />
-        <ProjectList :projects="projects" />
+        <div class="flex gap-2">
+          <InputText v-model="query" :label="i18n.t('hangar.projectSearch.query')" />
+          <InputSelect v-model="activeSorter" :values="sorters" item-text="label" item-value="id" :label="i18n.t('hangar.projectSearch.sortBy')" />
+        </div>
+        <ProjectList :projects="projects" @update:page="(newPage) => (page = newPage)" />
       </div>
       <div class="flex-basis-full flex-grow md:max-w-1/3 md:min-w-1/3">
         <Card v-if="buttons.length !== 0" class="mb-4 border-solid border-top-4 border-top-red-500 dark:border-top-red-500">
@@ -181,10 +215,10 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
             <template #header>{{ i18n.t("author.watching") }}</template>
 
             <ul>
-              <li v-for="watch in watching?.result" :key="watch.name">
-                <Link :to="'/' + watch.namespace.owner + '/' + watch.namespace.slug"
-                  >{{ watch.namespace.owner }}/<strong>{{ watch.name }}</strong></Link
-                >
+              <li v-for="watched in watching?.result" :key="watched.name">
+                <Link :to="'/' + watched.namespace.owner + '/' + watched.namespace.slug">
+                  {{ watched.namespace.owner }}/<strong>{{ watched.name }}</strong>
+                </Link>
               </li>
 
               <span v-if="!watching || watching?.result?.length === 0">

@@ -154,7 +154,10 @@ export async function useVersionInfo(): Promise<Ref<VersionInfo | null>> {
   return extract(await useAsyncData("useVersionInfo", () => useInternalApi<VersionInfo>(`data/version-info`)));
 }
 
-export async function useUserData(user: string): Promise<
+export async function useUserData(
+  user: string,
+  projectsParams: Record<string, any>
+): Promise<
   Ref<{
     starred: PaginatedResult<ProjectCompact>;
     watching: PaginatedResult<ProjectCompact>;
@@ -171,6 +174,7 @@ export async function useUserData(user: string): Promise<
         useApi<PaginatedResult<ProjectCompact>>(`users/${user}/watching`),
         useApi<PaginatedResult<Project>>(`projects`, "get", {
           owner: user,
+          ...projectsParams,
         }),
         useInternalApi<{ [key: string]: RoleTable }>(`organizations/${user}/userOrganizations`),
         useApi<ProjectCompact[]>(`users/${user}/pinned`),
