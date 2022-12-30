@@ -116,6 +116,7 @@ export default defineConfig({
   shortcuts: {
     "background-body": "bg-gray-100 dark:bg-gray-900",
     "background-default": "bg-gray-50 dark:bg-gray-800",
+    "background-card": "bg-slate-200 dark:bg-slate-700",
     "color-primary": "text-primary-400 dark:text-primary-200",
     "border-top-primary": "border-solid border-t-4 border-t-primary-400",
     "button-primary": "bg-primary-400 enabled:hover:bg-primary-300",

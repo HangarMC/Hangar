@@ -34,7 +34,7 @@ function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
       :class="[
         'relative flex w-full outline-none p-2 border-1px rounded',
         'border-gray-500',
-        'focus:border-primary-400',
+        'focus-within:border-primary-400 focus-within:hover:border-primary-400',
         'hover:border-gray-400',
         'error:border-red-400',
         'transition duration-200 ease',
