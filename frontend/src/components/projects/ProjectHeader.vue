@@ -129,9 +129,11 @@ function requiresConfirmation(): ConfirmationType {
             :to="'/' + project.namespace.owner + '/' + project.name"
             :img-src="imageUrl"
           />
-          <router-link class="!sm:ml-0" :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</router-link>
+          <router-link class="!sm:ml-0 pt-1 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner">{{
+            project.namespace.owner
+          }}</router-link>
           <span class="text-gray-500 dark:text-gray-400"> / </span>
-          <router-link :to="'/' + project.namespace.owner + '/' + project.name">
+          <router-link class="pt-1 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner + '/' + project.name">
             <h1 class="font-semibold">{{ project.name }}</h1>
           </router-link>
         </div>
