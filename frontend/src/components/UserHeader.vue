@@ -37,7 +37,7 @@ const canEditCurrentUser = computed<boolean>(() => {
 <template>
   <Card accent class="overflow-y-hidden">
     <div class="flex mb-4 md:mb-0">
-      <div class="relative">
+      <div class="relative mr-3">
         <UserAvatar :username="user.name" :avatar-url="avatarUrl(user.name)" />
         <AvatarChangeModal
           v-if="user.isOrganization && hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)"
@@ -55,8 +55,8 @@ const canEditCurrentUser = computed<boolean>(() => {
         </AvatarChangeModal>
       </div>
 
-      <div class="ml-2 overflow-clip overflow-hidden">
-        <h1 class="text-2xl text-strong inline-flex items-center">
+      <div class="overflow-clip overflow-hidden">
+        <h1 class="text-2xl px-1 text-strong inline-flex items-center">
           {{ user.name }}
           <!-- todo: forum integration -->
           <!--<a v-if="!user.isOrganization" class="inline-flex mx-1" :href="forumUserUrl(user.name)" :title="i18n.t('author.viewOnForums')">
@@ -78,7 +78,7 @@ const canEditCurrentUser = computed<boolean>(() => {
           </span>
         </h1>
 
-        <div>
+        <div class="ml-1">
           <span v-if="user.tagline">{{ user.tagline }}</span>
           <span v-else-if="canEditCurrentUser">{{ i18n.t("author.addTagline") }}</span>
           <TaglineModal

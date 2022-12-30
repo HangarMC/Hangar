@@ -116,28 +116,28 @@ function requiresConfirmation(): ConfirmationType {
   <Card accent>
     <div class="flex <sm:flex-col">
       <UserAvatar
-        class="flex-shrink-0 mr-4 <sm:hidden"
+        class="flex-shrink-0 mr-3 <sm:hidden"
         :username="project.namespace.owner"
         :to="'/' + project.namespace.owner + '/' + project.name"
         :img-src="imageUrl"
       />
       <div class="flex-grow sm:mr-4 <sm:mb-4 overflow-clip overflow-hidden">
-        <div class="text-2xl <sm:text-lg pb-1 inline-flex space-x-1.2 items-center">
+        <div class="text-2xl <sm:text-lg pb-1 inline-flex space-x-0.3 items-center">
           <UserAvatar
             class="!w-8 !h-8 sm:hidden"
             :username="project.namespace.owner"
             :to="'/' + project.namespace.owner + '/' + project.name"
             :img-src="imageUrl"
           />
-          <router-link class="!sm:ml-0 pt-1 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner">{{
+          <router-link class="!sm:ml-0 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner">{{
             project.namespace.owner
           }}</router-link>
           <span class="text-gray-500 dark:text-gray-400"> / </span>
-          <router-link class="pt-1 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner + '/' + project.name">
+          <router-link class="px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner + '/' + project.name">
             <h1 class="font-semibold">{{ project.name }}</h1>
           </router-link>
         </div>
-        <p>{{ project.description }}</p>
+        <p class="sm:ml-1">{{ project.description }}</p>
       </div>
       <div class="flex flex-col justify-around <sm:items-center space-y-2 items-end justify-between flex-shrink-0">
         <span v-if="Object.keys(project.mainChannelVersions).length !== 0" class="inline-flex items-center">
