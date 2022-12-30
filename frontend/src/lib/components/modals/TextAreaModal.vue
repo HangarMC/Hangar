@@ -9,6 +9,7 @@ const props = defineProps<{
   title: string;
   label: string;
   submit: (msg: string) => Promise<void> | undefined;
+  requireInput?: boolean;
 }>();
 
 const message = ref("");
@@ -28,8 +29,7 @@ async function _submit(close: () => void) {
   <Modal :title="props.title" window-classes="w-150">
     <template #default="{ on }">
       <InputTextarea v-model.trim="message" :label="label" :rows="2" @keydown.enter.prevent="" />
-
-      <Button class="mt-3" :disabled="loading" @click="_submit(on.click)">{{ i18n.t("general.submit") }}</Button>
+      <Button class="mt-3" :disabled="loading || (requireInput && message.length === 0)" @click="_submit(on.click)">{{ i18n.t("general.submit") }}</Button>
     </template>
     <template #activator="{ on }">
       <slot name="activator" :on="on"></slot>
