@@ -2,7 +2,7 @@
 import { ref } from "vue";
 
 defineProps<{
-  values: object[];
+  values: any[];
 }>();
 
 const expanded = ref<Record<number, boolean>>({});

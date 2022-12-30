@@ -5,14 +5,14 @@ import { useValidation } from "~/lib/composables/useValidationHelpers";
 import InputWrapper from "~/lib/components/ui/InputWrapper.vue";
 
 const emit = defineEmits<{
-  (e: "update:modelValue", file: File | undefined): void;
+  (e: "update:modelValue", file: File | null | undefined): void;
 }>();
 const file = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
 });
 const props = defineProps<{
-  modelValue?: File;
+  modelValue?: File | null;
   label?: string;
   disabled?: boolean;
   showSize?: boolean;

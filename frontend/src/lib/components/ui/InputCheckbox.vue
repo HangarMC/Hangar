@@ -4,14 +4,14 @@ import { type ValidationRule } from "@vuelidate/core";
 import { useValidation } from "~/lib/composables/useValidationHelpers";
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: boolean | boolean[] | [] | undefined): void;
+  (e: "update:modelValue", value: boolean | boolean[] | string[] | [] | undefined): void;
 }>();
 const internalVal = computed({
   get: () => props.modelValue,
   set: (val) => emit("update:modelValue", val),
 });
 const props = defineProps<{
-  modelValue?: boolean | boolean[] | [];
+  modelValue?: boolean | boolean[] | string[] | [];
   label?: string;
   disabled?: boolean;
   errorMessages?: string[];
