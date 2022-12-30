@@ -67,7 +67,7 @@ function deletePage() {
   <div class="relative">
     <div class="flex">
       <h1 v-if="props.title" class="mt-3 ml-5 text-xl">{{ props.title }}</h1>
-      <div class="absolute top-2 right-2 space-x-1">
+      <div class="absolute top-2 right-0 space-x-1">
         <Button v-if="!internalEditing" @click="internalEditing = true">
           <IconMdiPencil />
         </Button>

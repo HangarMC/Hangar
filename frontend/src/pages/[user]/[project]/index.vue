@@ -61,6 +61,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
             :deletable="false"
             :saveable="true"
             :cancellable="true"
+            class="mr-4"
             @update:editing="changeEditingPage"
             @save="savePage"
           />
@@ -78,7 +79,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
           :cancellable="true"
           :maxlength="500"
           :title="i18n.t('project.sponsors')"
-          class="pt-0"
+          class="pt-0 mr-4"
           @save="saveSponsors"
         />
         <template v-else>

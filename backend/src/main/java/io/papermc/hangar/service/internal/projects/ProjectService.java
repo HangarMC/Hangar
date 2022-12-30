@@ -198,9 +198,9 @@ public class ProjectService extends HangarComponent {
     }
 
     @Transactional
-    public void saveSponsors(final String author, final String slug, final StringContent content) {
+    public void saveSponsors(final String author, final String slug, final String content) {
         final ProjectTable projectTable = this.getProjectTable(author, slug);
-        projectTable.setSponsors(content.getContent());
+        projectTable.setSponsors(content);
         this.projectsDAO.update(projectTable);
         // TODO what settings changed
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");

@@ -125,11 +125,12 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 5)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/sponsors", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveProjectSettings(@PathVariable final String author, @PathVariable final String slug, @RequestBody @Valid final StringContent content) {
-        if (content.getContent().length() > this.config.projects.maxSponsorsLen()) {
+    public void saveProjectSettings(@PathVariable final String author, @PathVariable final String slug, @RequestBody final StringContent content) {
+        final String trimmedContent = content.getContent() != null ? content.getContent().trim() : "";
+        if (trimmedContent.length() > this.config.projects.maxSponsorsLen()) {
             throw new HangarApiException("page.new.error.name.maxLength");
         }
-        this.projectService.saveSponsors(author, slug, content);
+        this.projectService.saveSponsors(author, slug, trimmedContent);
     }
 
     @Unlocked
