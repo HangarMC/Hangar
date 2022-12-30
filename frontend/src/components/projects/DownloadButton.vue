@@ -87,9 +87,19 @@ const external = computed(() => false);
 
     <a v-else-if="singlePlatform && singleVersion" :href="platformDownloadLink" target="_blank" rel="noopener noreferrer">
       <Button :size="small ? 'medium' : 'large'">
-        <IconMdiDownloadOutline />
-        <span v-if="!small" class="ml-1">{{ external ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}</span>
-        <PlatformLogo :platform="singlePlatform" :size="24" class="mr-1 flex-shrink-0" />
+        <div class="-mb-1.5">
+          <div class="inline-flex items-center">
+            <IconMdiDownloadOutline />
+            <span v-if="!small" class="ml-1">{{ external ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}</span>
+          </div>
+          <br />
+          <div class="inline-flex items-center font-normal text-0.875rem light:text-gray-600">
+            <PlatformLogo :platform="singlePlatform" :size="18" class="mr-1 flex-shrink-0" />
+            <span v-if="singleVersion.platformDependencies && showVersions">
+              {{ singleVersion.platformDependenciesFormatted[singlePlatform] }}
+            </span>
+          </div>
+        </div>
       </Button>
     </a>
 
