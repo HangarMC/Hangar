@@ -2,6 +2,7 @@ import { type ErrorObject, useVuelidate, type ValidationRule } from "@vuelidate/
 import { computed, type Ref } from "vue";
 import * as validators from "@vuelidate/validators";
 import { createI18nMessage, helpers, type ValidatorWrapper } from "@vuelidate/validators";
+import { difference, isEmpty, uniq } from "lodash-es";
 import { I18n } from "~/lib/i18n";
 
 export function isErrorObject(errorObject: string | ErrorObject): errorObject is ErrorObject {
@@ -79,3 +80,9 @@ export const pattern = withOverrideMessage((regex: string) =>
     return { $valid: new RegExp(regex).test(value) };
   })
 );
+
+export function isSame(arrayOne?: any[], arrayTwo?: any[]) {
+  const a = uniq(arrayOne);
+  const b = uniq(arrayTwo);
+  return a.length === b.length && isEmpty(difference(b.sort(), a.sort()));
+}
