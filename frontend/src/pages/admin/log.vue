@@ -89,7 +89,7 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
   <div>
     <PageTitle>{{ i18n.t("userActionLog.title") }}</PageTitle>
     <Card>
-      <div class="flex mb-4">
+      <div class="flex mb-4 gap-2">
         <div class="basis-3/12">
           <InputText v-model="filter.user" label="User" />
         </div>

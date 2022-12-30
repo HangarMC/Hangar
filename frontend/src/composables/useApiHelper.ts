@@ -129,7 +129,7 @@ export async function useHealthReport(): Promise<Ref<HealthReport | null>> {
 }
 
 export async function useActionLogs(): Promise<Ref<PaginatedResult<LoggedAction> | null>> {
-  return extract(await useAsyncData("useActionLogs", () => useInternalApi<PaginatedResult<LoggedAction>>("admin/log/")));
+  return extract(await useAsyncData("useActionLogs", () => useInternalApi<PaginatedResult<LoggedAction>>("admin/log")));
 }
 
 export async function useVersionApprovals(): Promise<Ref<{ underReview: ReviewQueueEntry[]; notStarted: ReviewQueueEntry[] } | null>> {

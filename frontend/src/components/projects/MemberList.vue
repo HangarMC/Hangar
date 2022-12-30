@@ -77,6 +77,10 @@ watch(search, () => {
   addErrors.value = [];
 });
 
+function filteredRoles(currentRole: Role): Role[] {
+  return roles.filter((r) => r.roleId !== currentRole.roleId);
+}
+
 function removeMember(member: JoinableMember) {
   post(convertMember(member), "remove");
 }
@@ -180,7 +184,7 @@ async function doSearch(val: string) {
         <template #button-label>
           <IconMdiPencil />
         </template>
-        <DropdownItem v-for="role of roles" :key="role.title" :disabled="saving" @click="setRole(member, role)">
+        <DropdownItem v-for="role of filteredRoles(member.role.role)" :key="role.title" :disabled="saving" @click="setRole(member, role)">
           {{ role.title }}
         </DropdownItem>
         <hr />

@@ -92,10 +92,14 @@ async function editChannel(channel: ProjectChannel) {
     <Table v-if="channels" class="w-full">
       <thead>
         <tr>
-          <th><IconMdiTag />{{ i18n.t("channel.manage.channelName") }}</th>
-          <th><IconMdiFormatListNumbered />{{ i18n.t("channel.manage.versionCount") }}</th>
-          <th><IconMdiPencil />{{ i18n.t("channel.manage.edit") }}</th>
-          <th v-if="channels.length !== 1"><IconMdiDelete />{{ i18n.t("channel.manage.trash") }}</th>
+          <th>
+            <span class="inline-flex items-center gap-1"><IconMdiTag />{{ i18n.t("channel.manage.channelName") }}</span>
+          </th>
+          <th>
+            <span class="inline-flex items-center gap-1"><IconMdiFormatListNumbered />{{ i18n.t("channel.manage.versionCount") }}</span>
+          </th>
+          <th />
+          <th v-if="channels.length !== 1" />
         </tr>
       </thead>
       <tbody>

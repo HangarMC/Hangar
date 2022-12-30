@@ -85,7 +85,7 @@ useHead(useSeo(i18n.t("userList.title"), null, route, null));
 
     <SortableTable :headers="headers" :items="users?.result" :server-pagination="users?.pagination" @update:sort="updateSort" @update:page="updatePage">
       <template #item_pic="{ item }">
-        <UserAvatar :username="item.name" size="xs"></UserAvatar>
+        <UserAvatar :username="item.name" size="xs" />
       </template>
       <template #item_joinDate="{ item }">{{ i18n.d(item?.joinDate, "date") }}</template>
       <template #item_name="{ item }">

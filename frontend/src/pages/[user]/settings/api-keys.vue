@@ -56,15 +56,16 @@ async function create() {
   }).catch((err) => handleRequestError(err));
   if (key) {
     apiKeys.value.unshift({
-      token: key,
+      tokenIdentifier: key,
       name: name.value,
       permissions: selectedPerms.value,
       createdAt: new Date().toISOString(),
     });
+    const val = name.value;
     name.value = "";
     selectedPerms.value = [];
     v.value.$reset();
-    notification.success(i18n.t("apiKeys.success.create", [name.value]));
+    notification.success(i18n.t("apiKeys.success.create", [val]));
   }
   loadingCreate.value = false;
 }
@@ -81,7 +82,7 @@ async function deleteKey(key: ApiKey) {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <Card>
       <template #header>
         <PageTitle>{{ i18n.t("apiKeys.createNew") }}</PageTitle>
@@ -119,9 +120,7 @@ async function deleteKey(key: ApiKey) {
             <th>
               {{ i18n.t("apiKeys.permissions") }}
             </th>
-            <th>
-              {{ i18n.t("apiKeys.delete") }}
-            </th>
+            <th />
           </tr>
         </thead>
         <tbody>

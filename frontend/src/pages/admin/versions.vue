@@ -77,9 +77,10 @@ const hasChanged = computed(() => !isEqual(platforms.value, originalPlatforms));
       </Table>
 
       <template #footer>
-        <span class="flex justify-end">
+        <span class="flex justify-end items-center gap-2">
+          Updates may take a while to take effect!
           <Button :disabled="!hasChanged" @click="reset">{{ i18n.t("general.reset") }}</Button>
-          <Button :disabled="loading || !hasChanged" class="ml-2" @click="save"> {{ i18n.t("platformVersions.saveChanges") }}</Button>
+          <Button :disabled="loading || !hasChanged" @click="save"> {{ i18n.t("platformVersions.saveChanges") }}</Button>
         </span>
       </template>
     </Card>

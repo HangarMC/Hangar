@@ -229,8 +229,10 @@ function isRecent(date: string): boolean {
       <div class="flex items-center gap-2">
         <div v-if="authStore.user" class="flex items-center <sm:hidden">
           <DropdownButton name="Create">
-            <DropdownItem to="/new">{{ t("nav.new.project") }}</DropdownItem>
-            <DropdownItem to="/neworganization">{{ t("nav.new.organization") }}</DropdownItem>
+            <template #default="{ close }">
+              <DropdownItem to="/new" @click="close()">{{ t("nav.new.project") }}</DropdownItem>
+              <DropdownItem to="/neworganization" @click="close()">{{ t("nav.new.organization") }}</DropdownItem>
+            </template>
           </DropdownButton>
         </div>
         <button class="flex rounded-md p-2" hover="text-primary-400 bg-primary-0" aria-label="Toogle dark mode" @click="settings.toggleDarkMode()">

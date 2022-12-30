@@ -39,9 +39,9 @@ public class PlatformService extends HangarComponent {
                     toBeRemoved.put(version, pvt);
                 }
             });
-            versions.forEach(v -> {
-                if (!platformVersionTables.containsKey(v)) {
-                    toBeAdded.put(v, new PlatformVersionTable(platform, v));
+            versions.forEach(version -> {
+                if (!platformVersionTables.containsKey(version)) {
+                    toBeAdded.put(version, new PlatformVersionTable(platform, version));
                 }
             });
             this.platformVersionDAO.deleteAll(toBeRemoved.values());

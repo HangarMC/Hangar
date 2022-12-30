@@ -262,7 +262,7 @@ useHead(
         <div class="flex justify-between <sm:items-center">
           {{ i18n.t("project.settings.title") }}
           <div class="text-lg">
-            <Button class="ml-2" :disabled="v.$invalid" :loading="loading.save" @click="save">
+            <Button :disabled="v.$invalid" :loading="loading.save" @click="save">
               <IconMdiCheck />
               {{ i18n.t("project.settings.save") }}
             </Button>
