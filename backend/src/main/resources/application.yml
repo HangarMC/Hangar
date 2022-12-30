@@ -69,7 +69,8 @@ hangar:
     - "Other"
 
   announcements:
-    - text: "This is a staging server for testing purposes. Data could be deleted at any time. Please use our production server at (TODO: prod url, lol) for uploading your plugins!"
+    - text: |
+        This is a local server for testing purposes. There is a public staging instance at <a href="https://hangar.papermc.dev" style="text-decoration: underline">https://hangar.papermc.dev</a> and the production site can be found at <a href="https://hangar.papermc.io" style="text-decoration: underline">https://hangar.papermc.io</a>.
       color: "#ff544b"
 
   sponsors:
