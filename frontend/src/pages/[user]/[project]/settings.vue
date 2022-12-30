@@ -414,7 +414,7 @@ useHead(
             description="project.settings.deleteSub"
             class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"
           >
-            <TextAreaModal :title="i18n.t('project.settings.delete')" :label="i18n.t('general.comment')" :submit="softDelete">
+            <TextAreaModal :title="i18n.t('project.settings.delete')" :label="i18n.t('general.comment')" :submit="softDelete" require-input>
               <template #activator="{ on }">
                 <Button button-type="red" v-on="on">{{ i18n.t("project.settings.delete") }}</Button>
               </template>
@@ -426,7 +426,7 @@ useHead(
             description="project.settings.hardDeleteSub"
             class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"
           >
-            <TextAreaModal :title="i18n.t('project.settings.hardDelete')" :label="i18n.t('general.comment')" :submit="hardDelete">
+            <TextAreaModal :title="i18n.t('project.settings.hardDelete')" :label="i18n.t('general.comment')" :submit="hardDelete" require-input>
               <template #activator="{ on }">
                 <Button button-type="red" v-on="on">{{ i18n.t("project.settings.hardDelete") }}</Button>
               </template>

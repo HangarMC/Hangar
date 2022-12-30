@@ -52,7 +52,7 @@ function toggleState(route: string, completedKey: string, revokedKey: string, va
 
       notification.success(i18n.t("project.actions." + (value.value ? completedKey : revokedKey)));
     })
-    .catch((err) => handleRequestError(err, i18n, i18n.t(`project.error.${route}`)));
+    .catch((err) => handleRequestError(err, i18n.t(`project.error.${route}`)));
 }
 
 function toggleStar() {

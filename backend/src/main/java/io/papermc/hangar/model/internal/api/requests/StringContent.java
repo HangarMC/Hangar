@@ -7,8 +7,7 @@ import jakarta.validation.constraints.NotBlank;
  */
 public class StringContent {
 
-    @NotBlank
-    private String content;
+    private @NotBlank(message = "general.error.fieldEmpty") String content;
 
     public String getContent() {
         return this.content;

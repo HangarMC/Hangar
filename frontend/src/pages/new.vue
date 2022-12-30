@@ -153,7 +153,7 @@ function createProject() {
         }
       }
 
-      handleRequestError(err, i18n, "project.new.error.create");
+      handleRequestError(err, "project.new.error.create");
     })
     .finally(() => {
       projectLoading.value = false;
@@ -257,7 +257,7 @@ function createProject() {
       </div>
       <div class="text-lg mt-6 flex gap-2 items-center">
         <IconMdiCloudSearch />
-        {{ i18n.t("project.new.step3.seo") }}
+        {{ i18n.t("project.new.step3.keywords") }}
         <hr />
       </div>
       <div class="flex">
@@ -333,7 +333,7 @@ function createProject() {
           </div>
           <div class="text-center mt-2"><Button @click="createProject"> Retry </Button></div>
         </template>
-        <div v-else class="text-h5 mt-2">
+        <div v-else class="text-h5 mt-2 mb-2">
           {{ i18n.t("project.new.step5.text") }}
         </div>
       </div>

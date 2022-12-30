@@ -127,6 +127,12 @@ const steps: Step[] = [
       await createVersion();
       return false; // createVersion already hijacks the beforeNext logic, cannot move next on final step.
     },
+    beforeBack: () => {
+      if (descriptionEditor.value) {
+        lastDescription.value = descriptionEditor.value.rawEdited;
+      }
+      return true;
+    },
     disableNext: computed(() => {
       return changelogRules.some((v) => {
         return !v.$validator(descriptionEditor.value?.rawEdited ?? "", undefined, undefined);
@@ -161,9 +167,17 @@ const pendingVersion: Ref<PendingVersion | undefined> = ref<PendingVersion>();
 const channels = await useProjectChannels(route.params.user as string, route.params.project as string);
 const selectedPlatforms = ref<Platform[]>([]);
 const descriptionEditor = ref();
+const lastDescription = ref();
 const loading = reactive({
   create: false,
   submit: false,
+});
+
+const descriptionToLoad = computed(() => {
+  if (lastDescription.value) {
+    return lastDescription.value;
+  }
+  return pendingVersion.value?.description ?? "";
 });
 
 const selectedChannel = ref<string>("Release");
@@ -414,7 +428,7 @@ useHead(
       <MarkdownEditor
         ref="descriptionEditor"
         class="mt-2"
-        :raw="pendingVersion?.description ?? ''"
+        :raw="descriptionToLoad"
         editing
         :deletable="false"
         :cancellable="false"

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
@@ -16,7 +15,7 @@ You can learn how to use Markdown here: https://www.markdownguide.org/basic-synt
 The most basic formatting tools are:
 * ### Header: \`### Header\`, one # being the largest, five # being the smallest
 * **Bold text**: \`**Bold**\`
-* Italics text*: \`*Italics*\`
+* *Italics text*: \`*Italics*\`
 * Add line breaks by adding two or more spaces at the end of a line
 * And more, like block quotes (\`> Text\`), lists (\`1. First item\`), unordered lists (\`* Item\`), and code blocks (\\\`Code\\\`)
 * Embedding an image: \`![Alt text](image link)\` ![Snowy](https://i.imgur.com/o1zcXsM.png =32x32)
@@ -24,7 +23,6 @@ The most basic formatting tools are:
 Additionally, Hangar provides the following features on top of basic Markdown syntax:
 * ~~Strikethrough text~~: \`~~This will be striked through~~\`
 * Links and e-mails are converted to clickable links automatically
-* Footnotes[^footnote]: \`text [^footnote]\`, and later \`[^footnote]: footnote text\`
 * Emojis \`:smile:\` :smile:
 * [Tables](https://github.com/vsch/flexmark-java/tree/master/flexmark-ext-tables/src/test/resources)
 
@@ -33,12 +31,6 @@ Resizing images: \`![Alt text](Image URL =8x8)\`, in this case to size an image 
 
 Embedding YouTube videos: \`@[YouTube](https://youtu.be/video-id)\`
 * @[YouTube](https://youtu.be/AG8VFyW61e0?t=3)
-
-Task lists: \`* [ ] First task\`, \`* [x] Completed task\`
-* [ ] Unfinished task
-* [x] Finished task
-
-[^footnote]: May contain traces of soy
 `;
 
 useHead(useSeo("Hangar Markdown", null, route, null));
