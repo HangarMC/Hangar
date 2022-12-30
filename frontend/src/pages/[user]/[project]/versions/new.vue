@@ -300,7 +300,7 @@ useHead(
       <p class="mb-4">{{ t("version.new.form.artifactTitle") }}</p>
       <div class="flex mb-5">
         <div class="basis-full md:basis-4/12">
-          <InputSelect v-model="selectedChannel" :values="channels" item-text="name" item-value="name" :label="t('version.new.form.channel')" />
+          <InputSelect v-if="channels" v-model="selectedChannel" :values="channels" item-text="name" item-value="name" :label="t('version.new.form.channel')" />
         </div>
         <div class="basis-full md:(basis-4/12) ml-2">
           <ChannelModal :project-id="project.id" @create="addChannel">

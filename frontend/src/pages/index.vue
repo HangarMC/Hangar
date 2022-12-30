@@ -192,7 +192,7 @@ useHead(meta);
     </Container>
     <Container class="mt-5" lg="flex items-start gap-6">
       <!-- Projects -->
-      <div class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
+      <div v-if="projects" class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
         <ProjectList :projects="projects" @update:page="(newPage) => (page = newPage)" />
       </div>
       <!-- Sidebar -->

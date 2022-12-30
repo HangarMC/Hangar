@@ -303,10 +303,10 @@ async function restoreVersion() {
               {{ project.settings.license.type }}
             </td>
             <td v-else-if="project.settings.license.type === '(custom)'" class="text-right">
-              <Link :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">{{ project.settings.license.name }}</Link>
+              <Link :href="project.settings.license.url || undefined" target="_blank" rel="noreferrer noopener">{{ project.settings.license.name }}</Link>
             </td>
             <td v-else class="text-right">
-              <Link :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">{{ project.settings.license.type }}</Link>
+              <Link :href="project.settings.license.url || undefined" target="_blank" rel="noreferrer noopener">{{ project.settings.license.type }}</Link>
             </td>
           </tr>
           <tr>
@@ -340,7 +340,7 @@ async function restoreVersion() {
         </div>
       </Card>
 
-      <Card v-if="(platform?.name && projectVersion?.pluginDependencies[platform?.name.toUpperCase()]) || hasPerms(NamedPermission.EDIT_VERSION)">
+      <Card v-if="(platform?.name && projectVersion?.pluginDependencies[platform.enumName]) || hasPerms(NamedPermission.EDIT_VERSION)">
         <template #header>
           <div class="inline-flex w-full">
             <h3 class="flex-grow">{{ i18n.t("version.page.dependencies") }}</h3>

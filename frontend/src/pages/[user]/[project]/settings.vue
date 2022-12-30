@@ -369,8 +369,8 @@ useHead(
                   :label="i18n.t('project.settings.licenseCustom')"
                   :rules="[
                     requiredIf()(isCustomLicense),
-                    maxLength()(useBackendData.validations?.project?.license?.max),
-                    pattern()(useBackendData.validations?.project?.license?.regex),
+                    maxLength()(useBackendData.validations.project.license.max),
+                    pattern()(useBackendData.validations.project.license.regex),
                   ]"
                 />
               </div>
