@@ -33,10 +33,10 @@ const activeStep = computed(() => props.steps.find((s) => s.value === internalVa
 const activeStepIndex = computed(() => props.steps.indexOf(activeStep.value as Step) + 1);
 
 const loading = ref(false);
-const disableBack = computed(() => loading.value || (activeStep.value?.disableBack ? unref(activeStep.value?.disableBack) : false));
-const disableNext = computed(() => loading.value || (activeStep.value?.disableNext ? unref(activeStep.value?.disableNext) : v.value.$invalid));
-const showBack = computed(() => (activeStep.value?.showBack ? unref(activeStep.value?.showBack) : true));
-const showNext = computed(() => (activeStep.value?.showNext ? unref(activeStep.value?.showNext) : true));
+const disableBack = computed(() => loading.value || (activeStep.value?.disableBack !== undefined ? unref(activeStep.value?.disableBack) : false));
+const disableNext = computed(() => loading.value || (activeStep.value?.disableNext !== undefined ? unref(activeStep.value?.disableNext) : v.value.$invalid));
+const showBack = computed(() => (activeStep.value?.showBack !== undefined ? unref(activeStep.value?.showBack) : true));
+const showNext = computed(() => (activeStep.value?.showNext !== undefined ? unref(activeStep.value?.showNext) : true));
 
 async function back() {
   if (disableBack.value) return;
