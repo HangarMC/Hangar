@@ -577,6 +577,7 @@
         "duplicateName": "This project already has a channel with this name",
         "tooLongName": "Channel name is too long",
         "cannotDelete": "You cannot delete this channel",
+        "cannotEdit": "You cannot edit this channel",
         "invalidFlag": "You tried to set an invalid channel flag"
       },
       "success": {

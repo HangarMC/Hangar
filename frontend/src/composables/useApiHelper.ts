@@ -19,7 +19,7 @@ import { AsyncData } from "nuxt/app";
 import { ComputedRef, Ref } from "vue";
 import { NuxtApp } from "@nuxt/schema";
 import { useApi, useInternalApi } from "~/composables/useApi";
-import { ref, useAsyncData } from "#imports";
+import { ref, useAsyncData, createError } from "#imports";
 import { handleRequestError } from "~/composables/useErrorHandling";
 
 export type NonNullAsyncData<T, E = unknown> = { data: Ref<T> } & Pick<AsyncData<T, E>, "pending" | "refresh" | "execute" | "error">;

@@ -1,6 +1,9 @@
 package io.papermc.hangar.model.common;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 @EnumByOrdinal
@@ -10,6 +13,9 @@ public enum ChannelFlag {
     UNSTABLE(true, false),
     PINNED(true, true),
     ;
+
+    public static final Set<ChannelFlag> EDITABLE = Arrays.stream(values()).filter(ChannelFlag::isEditable).collect(Collectors.toUnmodifiableSet());
+    public static final Set<ChannelFlag> ALWAYS_EDITABLE = Arrays.stream(values()).filter(ChannelFlag::isAlwaysEditable).collect(Collectors.toUnmodifiableSet());
 
     private final boolean editable;
     private final boolean alwaysEditable;

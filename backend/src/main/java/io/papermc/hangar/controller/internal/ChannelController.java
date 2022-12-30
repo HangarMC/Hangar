@@ -62,6 +62,7 @@ public class ChannelController extends HangarComponent {
         this.channelService.checkColor(projectId, color, existingColor);
     }
 
+    // @el(author: String, slug: String)
     @Anyone
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
     @GetMapping(path = "/{author}/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -75,7 +76,7 @@ public class ChannelController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 15)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_CHANNEL, args = "{#projectId}")
     @PostMapping(path = "/{projectId}/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createChannel(@PathVariable final long projectId, @RequestBody @Valid final ChannelForm channelForm) {
+    public void createChannel(@PathVariable final long projectId, @RequestBody final @Valid ChannelForm channelForm) {
         final Set<ChannelFlag> flags = channelForm.getFlags();
         flags.retainAll(flags.stream().filter(ChannelFlag::isEditable).collect(Collectors.toSet()));
         this.channelService.createProjectChannel(channelForm.getName(), channelForm.getColor(), projectId, flags);
@@ -86,9 +87,9 @@ public class ChannelController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 15)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_CHANNEL, args = "{#projectId}")
     @PostMapping(path = "/{projectId}/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void editChannel(@PathVariable final long projectId, @RequestBody @Valid final EditChannelForm channelForm) {
+    public void editChannel(@PathVariable final long projectId, @RequestBody final @Valid EditChannelForm channelForm) {
         final Set<ChannelFlag> flags = channelForm.getFlags();
-        flags.retainAll(flags.stream().filter(ChannelFlag::isEditable).collect(Collectors.toSet()));
+        flags.retainAll(ChannelFlag.EDITABLE);
         this.channelService.editProjectChannel(channelForm.getId(), channelForm.getName(), channelForm.getColor(), projectId, flags);
     }
 

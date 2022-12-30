@@ -10,6 +10,7 @@ import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarChannel;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.LongFunction;
@@ -79,32 +80,35 @@ public class ChannelService extends HangarComponent {
         }
 
         if (projectChannelTable.getFlags().contains(ChannelFlag.FROZEN)) {
-            // Allow changing of certain flags
             boolean updated = false;
-            final String old = formatChannelChange(projectChannelTable);
-            for (final ChannelFlag flag : ChannelFlag.values()) {
-                if (!flag.isAlwaysEditable()) {
-                    continue;
-                }
-
-                final boolean added = flags.contains(flag);
-                if (added != projectChannelTable.getFlags().contains(flag)) {
-                    updated = true;
-                    if (added) {
-                        projectChannelTable.getFlags().add(flag);
-                    } else {
-                        projectChannelTable.getFlags().remove(flag);
+            final Iterator<ChannelFlag> currentIter = projectChannelTable.getFlags().iterator();
+            while (currentIter.hasNext()) {
+                final ChannelFlag existingFlag = currentIter.next();
+                if (existingFlag == ChannelFlag.FROZEN) continue;
+                if (!flags.contains(existingFlag)) {
+                    if (!existingFlag.isAlwaysEditable()) {
+                        throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.cannotEdit");
                     }
+                    updated = true;
+                    currentIter.remove();
+                } else {
+                    flags.remove(existingFlag);
                 }
+            }
+            for (final ChannelFlag newFlag : flags) { // should be all "new" flags here
+                if (!newFlag.isAlwaysEditable()) {
+                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.cannotEdit");
+                }
+                projectChannelTable.getFlags().add(newFlag);
+                updated = true;
             }
 
             if (updated) {
+                final String old = formatChannelChange(projectChannelTable);
                 this.projectChannelsDAO.update(projectChannelTable);
                 this.actionLogger.project(LogAction.PROJECT_CHANNEL_EDITED.create(ProjectContext.of(projectId), formatChannelChange(projectChannelTable), old));
-                return;
             }
-
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.cannotEdit");
+            return;
         }
 
         this.validateChannel(name, color, projectId, this.projectChannelsDAO.getProjectChannels(projectId).stream().filter(ch -> ch.getId() != channelId).collect(Collectors.toList()));

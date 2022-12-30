@@ -7,7 +7,7 @@ import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import { useBackendData } from "~/store/backendData";
 import InputText from "~/lib/components/ui/InputText.vue";
-import { required } from "~/lib/composables/useValidationHelpers";
+import { isSame, required } from "~/lib/composables/useValidationHelpers";
 import { validChannelName, validChannelColor } from "~/composables/useHangarValidations";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { ChannelFlag } from "~/types/enums";
@@ -50,6 +50,10 @@ const swatches = computed<string[][]>(() => {
     }
   }
   return result;
+});
+
+const noChange = computed(() => {
+  return props.channel?.name === name.value && props.channel.color === color.value && isSame(props.channel.flags, flags.value);
 });
 
 async function create(close: () => void) {
@@ -113,7 +117,7 @@ reset();
       </div>
       <InputCheckbox v-for="f in possibleFlags" :key="f" v-model="flags" :label="i18n.t(`channel.modal.flags.${f.toLowerCase()}`)" :value="f" />
 
-      <Button class="mt-3" :disabled="v.$invalid" @click="create(on.click)">{{ edit ? i18n.t("general.save") : i18n.t("general.create") }}</Button>
+      <Button class="mt-3" :disabled="noChange || v.$invalid" @click="create(on.click)">{{ edit ? i18n.t("general.save") : i18n.t("general.create") }}</Button>
     </template>
     <template #activator="{ on }">
       <slot name="activator" :on="open(on)"></slot>
