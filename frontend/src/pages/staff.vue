@@ -34,7 +34,8 @@ const requestParams = computed(() => {
     sort: sort.value,
   };
 });
-const staff = await useStaff(requestParams.value);
+const staffData = await useStaff(requestParams);
+const staff = staffData.data;
 
 async function updateSort(col: string, sorter: Record<string, number>) {
   sort.value = [...Object.keys(sorter)]
@@ -46,16 +47,12 @@ async function updateSort(col: string, sorter: Record<string, number>) {
     })
     .filter((v) => v !== null) as string[];
 
-  await update();
+  await staffData.refresh();
 }
 
 async function updatePage(newPage: number) {
   page.value = newPage;
-  await update();
-}
-
-async function update() {
-  staff.value = await useApi<PaginatedResult<User>>("staff", "GET", requestParams.value);
+  await staffData.refresh();
 }
 
 useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));
@@ -66,8 +63,8 @@ useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));
     <PageTitle>Staff</PageTitle>
     <SortableTable
       :headers="headers"
-      :items="staff?.result"
-      :server-pagination="staff?.pagination"
+      :items="staff.result"
+      :server-pagination="staff.pagination"
       :initial-sorter="{ roles: 1 }"
       @update:sort="updateSort"
       @update:page="updatePage"

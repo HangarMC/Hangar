@@ -164,7 +164,7 @@ function removePlatformFile(id: number) {
 
 const dependencyTables = ref();
 const pendingVersion: Ref<PendingVersion | undefined> = ref<PendingVersion>();
-const channels = await useProjectChannels(route.params.user as string, route.params.project as string);
+const channels = (await useProjectChannels(route.params.user as string, route.params.project as string)).data;
 const selectedPlatforms = ref<Platform[]>([]);
 const descriptionEditor = ref();
 const lastDescription = ref();
@@ -181,7 +181,7 @@ const descriptionToLoad = computed(() => {
 });
 
 const selectedChannel = ref<string>("Release");
-const currentChannel = computed(() => channels.value?.find((c) => c.name === selectedChannel.value));
+const currentChannel = computed(() => channels.value.find((c) => c.name === selectedChannel.value));
 
 const platforms = computed<IPlatform[]>(() => {
   return [...useBackendData.platforms.values()];
@@ -282,11 +282,9 @@ async function createVersion() {
 }
 
 function addChannel(channel: ProjectChannel) {
-  if (channels.value) {
-    remove(channels.value, (c) => c.temp);
-    channels.value.push(Object.assign({ temp: true }, channel));
-    selectedChannel.value = channel.name;
-  }
+  remove(channels.value, (c) => c.temp);
+  channels.value.push(Object.assign({ temp: true }, channel));
+  selectedChannel.value = channel.name;
 }
 
 function togglePlatform(platformFile: PlatformFile, platform: Platform) {
@@ -314,7 +312,7 @@ useHead(
       <p class="mb-4">{{ t("version.new.form.artifactTitle") }}</p>
       <div class="flex mb-5">
         <div class="basis-full md:basis-4/12">
-          <InputSelect v-if="channels" v-model="selectedChannel" :values="channels" item-text="name" item-value="name" :label="t('version.new.form.channel')" />
+          <InputSelect v-model="selectedChannel" :values="channels" item-text="name" item-value="name" :label="t('version.new.form.channel')" />
         </div>
         <div class="basis-full md:(basis-4/12) ml-2">
           <ChannelModal :project-id="project.id" @create="addChannel">

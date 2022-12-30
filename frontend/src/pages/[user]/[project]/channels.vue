@@ -29,7 +29,8 @@ const props = defineProps<{
 }>();
 const i18n = useI18n();
 const route = useRoute();
-const channels = await useProjectChannels(props.project.namespace.owner, props.project.namespace.slug);
+const channelData = await useProjectChannels(props.project.namespace.owner, props.project.namespace.slug);
+const channels = channelData.data;
 const validations = useBackendData.validations;
 const notifications = useNotificationStore();
 
@@ -37,19 +38,10 @@ useHead(
   useSeo("Channels | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug))
 );
 
-async function refreshChannels() {
-  const newChannels = await useInternalApi<ProjectChannel[]>(`channels/${props.project.namespace.owner}/${props.project.namespace.slug}`).catch((e) =>
-    handleRequestError(e)
-  );
-  if (channels?.value && newChannels) {
-    channels.value = newChannels;
-  }
-}
-
 async function deleteChannel(channel: ProjectChannel) {
   await useInternalApi(`channels/${props.project.id}/delete/${channel.id}`, "post")
     .then(() => {
-      refreshChannels();
+      channelData.refresh();
       notifications.warn(i18n.t("channel.modal.success.deletedChannel", [channel.name]));
     })
     .catch((e) => handleRequestError(e));
@@ -62,7 +54,7 @@ async function addChannel(channel: ProjectChannel) {
     flags: channel.flags,
   })
     .then(() => {
-      refreshChannels();
+      channelData.refresh();
       notifications.success(i18n.t("channel.modal.success.addedChannel", [channel.name]));
     })
     .catch((e) => handleRequestError(e));
@@ -77,7 +69,7 @@ async function editChannel(channel: ProjectChannel) {
     flags: channel.flags,
   })
     .then(() => {
-      refreshChannels();
+      channelData.refresh();
       notifications.success(i18n.t("channel.modal.success.editedChannel", [channel.name]));
     })
     .catch((e) => handleRequestError(e));

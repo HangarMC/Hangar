@@ -16,10 +16,13 @@ import {
   RoleTable,
 } from "hangar-internal";
 import { AsyncData } from "nuxt/app";
-import { ref, Ref } from "vue";
+import { ComputedRef, Ref } from "vue";
+import { NuxtApp } from "@nuxt/schema";
 import { useApi, useInternalApi } from "~/composables/useApi";
-import { useAsyncData } from "#imports";
+import { ref, useAsyncData } from "#imports";
 import { handleRequestError } from "~/composables/useErrorHandling";
+
+export type NonNullAsyncData<T, E = unknown> = { data: Ref<T> } & Pick<AsyncData<T, E>, "pending" | "refresh" | "execute" | "error">;
 
 export async function useProjects(params: Record<string, any> = { limit: 25, offset: 0 }): Promise<Ref<PaginatedResult<Project> | null>> {
   return extract(await useAsyncData("useProjects", () => useApi<PaginatedResult<Project>>("projects", "get", params)));
@@ -45,8 +48,8 @@ export async function useWatchers(user: string, project: string): Promise<Ref<Pa
   return extract(await useAsyncData("useWatchers:" + user + ":" + project, () => useApi<PaginatedResult<User>>(`projects/${user}/${project}/watchers`)));
 }
 
-export async function useStaff(params?: { offset?: number; limit?: number; sort?: string[] }): Promise<Ref<PaginatedResult<User> | null>> {
-  return extract(await useAsyncData("useStaff", () => useApi<PaginatedResult<User>>("staff", "GET", params)));
+export async function useStaff(params?: ComputedRef<{ offset?: number; limit?: number; sort?: string[] }>): Promise<NonNullAsyncData<PaginatedResult<User>>> {
+  return await useAsyncDataNonNull("useStaff", () => useApi<PaginatedResult<User>>("staff", "GET", params?.value));
 }
 
 export async function useAuthors(params?: { offset?: number; limit?: number; sort?: string[] }): Promise<Ref<PaginatedResult<User> | null>> {
@@ -97,8 +100,8 @@ export async function useProjectNotes(projectId: number): Promise<Ref<Note[] | n
   return extract(await useAsyncData("useProjectNotes:" + projectId, () => useInternalApi<Note[]>("projects/notes/" + projectId)));
 }
 
-export async function useProjectChannels(user: string, project: string): Promise<Ref<ProjectChannel[] | null>> {
-  return extract(await useAsyncData("useProjectChannels:" + user + ":" + project, () => useInternalApi<ProjectChannel[]>(`channels/${user}/${project}`)));
+export async function useProjectChannels(user: string, project: string): Promise<NonNullAsyncData<ProjectChannel[]>> {
+  return await useAsyncDataNonNull("useProjectChannels:" + user + ":" + project, () => useInternalApi<ProjectChannel[]>(`channels/${user}/${project}`));
 }
 
 export async function useProjectVersions(user: string, project: string): Promise<Ref<PaginatedResult<Version> | null>> {
@@ -188,6 +191,22 @@ export async function useUserData(
       };
     })
   );
+}
+
+async function useAsyncDataNonNull<T, E>(key: string, handler: (ctx?: NuxtApp) => Promise<T>): Promise<NonNullAsyncData<T, E>> {
+  const asyncData: AsyncData<T, E> = await useAsyncData(key, handler);
+  if (asyncData.error.value) {
+    handleRequestError(asyncData.error.value, undefined, true);
+    throw new Error(`asyncData request had an error for ${key}`);
+  }
+  if (asyncData.data.value == null) {
+    createError({
+      statusCode: 400,
+      message: `asyncData value was null for ${key}`,
+    });
+    throw new Error(`asyncData value was null for ${key}`);
+  }
+  return asyncData as NonNullAsyncData<T, E>;
 }
 
 function extract<T, E>(asyncData: AsyncData<T, E>): Ref<T | null> {

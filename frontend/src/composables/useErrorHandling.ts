@@ -4,38 +4,39 @@ import { Composer } from "vue-i18n";
 import { useNotificationStore } from "~/lib/store/notification";
 import { I18n } from "~/lib/i18n";
 import { createError } from "#imports";
+import { fetchLog } from "~/lib/composables/useLog";
 
-export function handleRequestError(err: AxiosError | unknown, msg: string | undefined = undefined) {
+export function handleRequestError(err: AxiosError | unknown, msg: string | undefined = undefined, alwaysShowErrorPage = false) {
   const i18n: Composer = I18n.value;
-  if (import.meta.env.SSR) {
+  if (import.meta.env.SSR || alwaysShowErrorPage) {
     _handleRequestError(err, i18n);
   }
-  const notfication = useNotificationStore();
+  const notification = useNotificationStore();
   const transformed = transformAxiosError(err);
   if (!axios.isAxiosError(err)) {
     // everything should be an AxiosError
-    console.log("no axios request error", transformed);
-    notfication.error(transformed.message?.toString() || "Unknown error");
+    fetchLog("no axios request error", transformed);
+    notification.error(transformed.message?.toString() || "Unknown error");
   } else if (err.response && typeof err.response.data === "object" && err.response.data) {
     if ("isHangarApiException" in err.response.data) {
       for (const errorMsg of collectErrors(err.response.data as HangarApiException, i18n)) {
-        notfication.error(msg ? `${i18n.t(msg)}: ${errorMsg}` : errorMsg);
+        notification.error(msg ? `${i18n.t(msg)}: ${errorMsg}` : errorMsg);
       }
     } else if ("isHangarValidationException" in err.response.data) {
       const data = err.response.data as HangarValidationException;
       for (const fieldError of data.fieldErrors) {
-        notfication.error(i18n.te(fieldError.errorMsg) ? i18n.t(fieldError.errorMsg) : fieldError.errorMsg);
+        notification.error(i18n.te(fieldError.errorMsg) ? i18n.t(fieldError.errorMsg) : fieldError.errorMsg);
       }
       if (msg) {
-        notfication.error(i18n.t(msg));
+        notification.error(i18n.t(msg));
       }
     } else {
-      notfication.error(msg ? `${i18n.t(msg)}: ${err.response.statusText}` : err.response.statusText);
+      notification.error(msg ? `${i18n.t(msg)}: ${err.response.statusText}` : err.response.statusText);
     }
-    console.log("request error", transformed);
+    fetchLog("request error", transformed);
   } else {
-    console.log("unknown error", transformed);
-    notfication.error(transformed.message?.toString() || "Unknown error");
+    fetchLog("unknown error", transformed);
+    notification.error(transformed.message?.toString() || "Unknown error");
   }
 }
 
@@ -46,7 +47,7 @@ function _handleRequestError(err: AxiosError | unknown, i18n: Composer) {
     createError({
       statusCode: 500,
     });
-    console.log("handle not axios error", transformed);
+    fetchLog("handle not axios error", transformed);
   } else if (err.response && typeof err.response.data === "object" && err.response.data) {
     if ("isHangarApiException" in err.response.data) {
       const data =

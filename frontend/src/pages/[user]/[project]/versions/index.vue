@@ -48,13 +48,10 @@ const requestOptions = computed(() => {
   };
 });
 
-const channels = await useProjectChannels(route.params.user as string, route.params.project as string);
+const channels = (await useProjectChannels(route.params.user as string, route.params.project as string)).data;
 const versions = await useProjectVersions(route.params.user as string, route.params.project as string);
-
-if (channels.value) {
-  filter.channels.push(...(channels.value?.map((c) => c.name) || []));
-  filter.platforms.push(...platforms.value.map((p) => p.enumName));
-}
+filter.channels.push(...channels.value.map((c) => c.name));
+filter.platforms.push(...platforms.value.map((p) => p.enumName));
 
 useHead(
   useSeo("Versions | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug))
@@ -83,8 +80,7 @@ watch(
 );
 
 function checkAllChannels() {
-  if (!channels) return;
-  filter.channels = filter.allChecked.channels ? channels.value?.map((c) => c.name) || [] : [];
+  filter.channels = filter.allChecked.channels ? channels.value.map((c) => c.name) : [];
 }
 
 function checkAllPlatforms() {
@@ -92,8 +88,7 @@ function checkAllPlatforms() {
 }
 
 function updateChannelCheckAll() {
-  if (!channels) return;
-  filter.allChecked.channels = filter.channels.length === (channels.value?.length || 0);
+  filter.allChecked.channels = filter.channels.length === (channels.value.length || 0);
 }
 
 function updatePlatformCheckAll() {
