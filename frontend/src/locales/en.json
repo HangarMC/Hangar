@@ -501,7 +501,7 @@
     "page": {
       "subheader": "{0} released this version: {1}",
       "dependencies": "Dependencies",
-      "platform": "Platform",
+      "platforms": "Platforms",
       "required": "(required)",
       "adminMsg": "Approved by {0} {1}",
       "reviewLogs": "Review logs",

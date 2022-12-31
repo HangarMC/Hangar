@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { HangarProject, HangarVersion } from "hangar-internal";
+import { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Button from "~/lib/components/design/Button.vue";
@@ -14,26 +14,24 @@ import InputTag from "~/lib/components/ui/InputTag.vue";
 const props = defineProps<{
   project: HangarProject;
   version: HangarVersion;
+  platform: IPlatform;
 }>();
 
 const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
 
-const platform = computed(() => {
-  return useBackendData.platforms?.get((route.params.platform as string).toUpperCase() as Platform);
-});
 const projectVersion = computed(() => {
   return props.version;
 });
 
 const loading = ref(false);
-const selectedVersions = ref(projectVersion.value?.platformDependencies[platform.value?.name.toUpperCase() as Platform]);
+const selectedVersions = ref(projectVersion.value?.platformDependencies[props.platform.name.toUpperCase() as Platform]);
 
 function save() {
   loading.value = true;
   useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/savePlatformVersions`, "post", {
-    platform: platform.value?.name?.toUpperCase(),
+    platform: props.platform.name.toUpperCase(),
     versions: selectedVersions.value,
   })
     .catch((e) => handleRequestError(e))
@@ -47,8 +45,8 @@ function save() {
 </script>
 
 <template>
-  <Modal :title="i18n.t('version.edit.platformVersions', [platform?.name])" window-classes="w-200">
-    <InputTag v-model="selectedVersions" :options="platform?.possibleVersions" />
+  <Modal :title="i18n.t('version.edit.platformVersions', [platform.name])" window-classes="w-200">
+    <InputTag v-model="selectedVersions" :options="platform.possibleVersions" />
 
     <Button class="mt-3" :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
     <template #activator="{ on }">

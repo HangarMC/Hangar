@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { HangarProject } from "hangar-internal";
 import { useProjectVersionsInternal } from "~/composables/useApiHelper";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
@@ -23,18 +23,6 @@ if (version && version.value) {
   for (const platformKey in version.value.platformDependencies) {
     versionPlatforms.add(platformKey as Platform);
   }
-}
-
-if (!route.params.platform) {
-  let path = route.path;
-  if (path.endsWith("/")) {
-    path = path.substring(0, path.length - 1);
-  }
-  const [entry] = versionPlatforms;
-  if (!entry) {
-    throw useErrorRedirect(route, 404, "Not found");
-  }
-  await useRouter().replace({ path: `${path}/${entry.toLowerCase()}` });
 }
 </script>
 

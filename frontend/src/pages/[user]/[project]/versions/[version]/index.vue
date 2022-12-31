@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
+import { HangarProject, HangarVersion } from "hangar-internal";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { User } from "hangar-api";
 import { useHead } from "@vueuse/head";
 import { AxiosError } from "axios";
-import { filesize } from "filesize";
 import { NamedPermission, Platform, ReviewState, Visibility, PinnedStatus } from "~/types/enums";
 import { useBackendData } from "~/store/backendData";
 import { lastUpdated } from "~/lib/composables/useTime";
@@ -23,15 +22,13 @@ import Link from "~/lib/components/design/Link.vue";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useNotificationStore } from "~/lib/store/notification";
-import DropdownButton from "~/lib/components/design/DropdownButton.vue";
-import DropdownItem from "~/lib/components/design/DropdownItem.vue";
-import PlatformVersionEditModal from "~/components/modals/PlatformVersionEditModal.vue";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
 import ComingSoon from "~/lib/components/design/ComingSoon.vue";
+import Spoiler from "~/lib/components/design/Spoiler.vue";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -45,12 +42,10 @@ const props = defineProps<{
   user: User;
 }>();
 
-const p = ref<Platform>(((route.params.platform as string) || "").toUpperCase() as Platform);
 const projectVersion = computed<HangarVersion | undefined>(() => props.version);
 if (!projectVersion.value) {
   throw useErrorRedirect(route, 404, "Not found");
 }
-const platform = ref<IPlatform | undefined>(useBackendData.platforms.get(p.value));
 const isReviewStateChecked = computed<boolean>(
   () => projectVersion.value?.reviewState === ReviewState.PARTIALLY_REVIEWED || projectVersion.value?.reviewState === ReviewState.REVIEWED
 );
@@ -69,12 +64,22 @@ const requiresConfirmation = computed<boolean>(() => {
   return false;
 });
 
-const sortedDependencies = computed(() => {
-  if (platform.value && projectVersion.value && projectVersion.value.pluginDependencies[p.value]) {
-    return [...projectVersion.value.pluginDependencies[p.value]].sort((a, b) => Number(b.required) - Number(a.required));
+const platformsWithDependencies = computed(() => {
+  const platforms = [];
+  for (const platform of props.versionPlatforms) {
+    if ((projectVersion.value && projectVersion.value.pluginDependencies[platform]) || hasPerms(NamedPermission.EDIT_VERSION)) {
+      platforms.push(platform);
+    }
+  }
+  return platforms;
+});
+
+function sortedDependencies(platform: Platform) {
+  if (projectVersion.value && projectVersion.value.pluginDependencies[platform]) {
+    return [...projectVersion.value.pluginDependencies[platform]].sort((a, b) => Number(b.required) - Number(a.required));
   }
   return [];
-});
+}
 
 useHead(
   useSeo(
@@ -84,11 +89,6 @@ useHead(
     projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)
   )
 );
-
-function setPlatform(plat: Platform) {
-  p.value = plat;
-  platform.value = useBackendData.platforms.get(plat);
-}
 
 async function savePage(content: string) {
   try {
@@ -155,8 +155,8 @@ async function restoreVersion() {
 </script>
 
 <template>
-  <div v-if="projectVersion && platform" class="flex <sm:flex-col flex-wrap md:flex-nowrap gap-4">
-    <section class="basis-full md:basis-9/12 flex-grow overflow-auto">
+  <div v-if="projectVersion" class="flex <sm:flex-col flex-wrap md:flex-nowrap gap-4">
+    <section class="basis-full md:basis-11/15 flex-grow">
       <div class="flex flex-wrap gap-2 justify-between">
         <div>
           <h2 class="text-3xl sm:inline-flex items-center gap-x-1">
@@ -166,10 +166,10 @@ async function restoreVersion() {
           <h3>
             <span class="inline-flex <sm:flex-wrap ml-1">
               {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
-              <span v-if="projectVersion.downloads[platform?.enumName]?.fileInfo?.sizeBytes" class="inline-flex items-center sm:ml-3">
+              <!--<span v-if="projectVersion.downloads[platform?.enumName]?.fileInfo?.sizeBytes" class="inline-flex items-center sm:ml-3">
                 <IconMdiFile class="mr-1" />
                 {{ filesize(projectVersion.downloads[platform.enumName].fileInfo.sizeBytes) }}
-              </span>
+              </span>-->
             </span>
           </h3>
           <em v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy" class="text-lg ml-1">
@@ -181,19 +181,7 @@ async function restoreVersion() {
           <Tooltip v-if="requiresConfirmation" :content="i18n.t('version.page.unsafeWarning')">
             <IconMdiAlertCircleOutline class="text-2xl" />
           </Tooltip>
-          <DropdownButton v-if="versionPlatforms.size > 1" class="inline" button-size="large">
-            <template #button-label>
-              <PlatformLogo :platform="platform?.enumName" :size="24" class="mr-1 flex-shrink-0" />
-              {{ platform?.name }}
-            </template>
-            <template #default="{ close }">
-              <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()" class="inline-flex" @click="setPlatform(plat) || close()">
-                <PlatformLogo :platform="plat" :size="24" class="mr-1 flex-shrink-0" />
-                {{ useBackendData.platforms?.get(plat)?.name }}
-              </DropdownItem>
-            </template>
-          </DropdownButton>
-          <DownloadButton :version="projectVersion" :project="project" :platform="p" :show-single-platform="false" />
+          <DownloadButton :version="projectVersion" :project="project" :show-single-platform="false" :show-versions="false" />
         </div>
       </div>
 
@@ -211,7 +199,7 @@ async function restoreVersion() {
         <Markdown v-else :raw="projectVersion.description" />
       </Card>
     </section>
-    <section class="basis-full md:basis-3/12 flex-grow space-y-4">
+    <section class="basis-full md:basis-4/15 flex-grow space-y-4">
       <Card v-if="hasPerms(NamedPermission.DELETE_VERSION) || hasPerms(NamedPermission.VIEW_LOGS) || hasPerms(NamedPermission.REVIEWER)">
         <template #header>
           <h3>{{ i18n.t("version.page.manage") }}</h3>
@@ -328,38 +316,51 @@ async function restoreVersion() {
       <Card>
         <template #header>
           <div class="inline-flex w-full">
-            <h3 class="flex-grow">{{ i18n.t("version.page.platform") }}</h3>
-            <PlatformVersionEditModal v-if="hasPerms(NamedPermission.EDIT_VERSION)" :project="project" :version="version" />
+            <h3 class="flex-grow">{{ i18n.t("version.page.platforms") }}</h3>
           </div>
         </template>
 
-        <div class="flex items-center">
-          <PlatformLogo :platform="platform?.enumName" :size="24" class="mr-1" />
-          {{ platform?.name }}
-          {{ projectVersion?.platformDependenciesFormatted[platform?.enumName] }}
+        <div v-for="platform in versionPlatforms" :key="platform" class="flex items-center">
+          <PlatformLogo :platform="platform" :size="24" class="mr-1" />
+          {{ useBackendData.platforms.get(platform).name }}
+          ({{ projectVersion?.platformDependenciesFormatted[platform] }})
         </div>
       </Card>
 
-      <Card v-if="(platform?.name && projectVersion?.pluginDependencies[platform.enumName]) || hasPerms(NamedPermission.EDIT_VERSION)">
+      <Card>
         <template #header>
           <div class="inline-flex w-full">
             <h3 class="flex-grow">{{ i18n.t("version.page.dependencies") }}</h3>
-            <DependencyEditModal :project="project" :version="version" />
           </div>
         </template>
 
-        <ul>
-          <li v-for="dep in sortedDependencies" :key="dep.name">
-            <Link
-              :href="dep.externalUrl || undefined"
-              :target="dep.externalUrl ? '_blank' : undefined"
-              :to="!!dep.namespace ? { name: 'user-project', params: { user: dep.namespace.owner, project: dep.namespace.slug } } : undefined"
-            >
-              {{ dep.name }}
-              <small v-if="!dep.required">({{ i18n.t("general.optional") }})</small>
-            </Link>
-          </li>
-        </ul>
+        <div v-for="platform in platformsWithDependencies" :key="platform" class="py-1">
+          <Spoiler :with-line="projectVersion?.pluginDependencies[platform] !== undefined">
+            <template #title>
+              <div class="flex inline-flex items-center gap-1">
+                <PlatformLogo :platform="platform" :size="24" />
+                {{ useBackendData.platforms.get(platform).name }}
+                <DependencyEditModal :project="project" :version="version" :platform="useBackendData.platforms.get(platform)" />
+              </div>
+            </template>
+            <template #content>
+              <div>
+                <ul>
+                  <li v-for="dep in sortedDependencies(platform)" :key="dep.name">
+                    <Link
+                      :href="dep.externalUrl || undefined"
+                      :target="dep.externalUrl ? '_blank' : undefined"
+                      :to="!!dep.namespace ? { name: 'user-project', params: { user: dep.namespace.owner, project: dep.namespace.slug } } : undefined"
+                    >
+                      {{ dep.name }}
+                      <small v-if="!dep.required">({{ i18n.t("general.optional") }})</small>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </template>
+          </Spoiler>
+        </div>
       </Card>
     </section>
   </div>
