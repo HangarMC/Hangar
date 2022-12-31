@@ -175,7 +175,9 @@ useHead(meta);
             leave-from-class="transform scale-100 opacity-100"
             leave-to-class="transform scale-95 opacity-0"
           >
-            <MenuItems class="absolute right-0 top-15 flex flex-col z-10 background-default filter drop-shadow-md rounded border-top-primary border-t-2">
+            <MenuItems
+              class="absolute right-0 top-15 flex flex-col z-10 background-default filter shadow-default drop-shadow-md rounded border-top-primary border-t-3"
+            >
               <MenuItem v-for="sorter in sorters" :key="sorter.id" v-slot="{ active }">
                 <button
                   :class="{ 'bg-gray-100 dark:bg-gray-700': active, 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': activeSorter === sorter.id }"

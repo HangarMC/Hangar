@@ -171,7 +171,7 @@ function isRecent(date: string): boolean {
             <!-- dummy diff to make the transition work on pages where template root has multiple elements -->
             <div id="#navbarMenuLinks">
               <PopoverPanel
-                class="fixed z-10 w-9/10 background-default top-1/14 left-1/20 filter drop-shadow-md rounded-md border-top-primary text-sm p-[20px]"
+                class="fixed z-10 w-9/10 background-default top-1/14 left-1/20 filter shadow-default rounded-md border-top-primary text-sm p-[20px]"
                 md="absolute w-max top-10 rounded-none rounded-bl-md rounded-r-md"
               >
                 <p class="text-base font-semibold color-primary mb-4">Hangar</p>
@@ -246,7 +246,7 @@ function isRecent(date: string): boolean {
               <IconMdiBellBadge v-else class="text-[1.2em]" />
             </button>
             <template #content="{ close }">
-              <div class="-mt-1 flex flex-col rounded border-t-2 border-primary-400 background-default filter drop-shadow-md overflow-auto max-w-150">
+              <div class="-mt-1 flex flex-col rounded border-t-2 border-primary-400 background-default filter shadow-default overflow-auto max-w-150">
                 <div v-if="notifications.length === 0">
                   <span class="flex shadow-0 p-2 mt-2 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
                 </div>
@@ -299,7 +299,7 @@ function isRecent(date: string): boolean {
               {{ authStore.user.name }}
             </button>
             <template #content="{ close }">
-              <div class="-mt-2 py-1 rounded border-t-2 border-primary-400 background-default filter drop-shadow-md flex flex-col" @click="close()">
+              <div class="-mt-2 py-1 rounded border-t-2 border-primary-400 background-default filter shadow-default flex flex-col" @click="close()">
                 <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
                 <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
                 <DropdownItem :to="'/' + authStore.user.name + '/settings/api-keys'">{{ t("nav.user.apiKeys") }}</DropdownItem>
