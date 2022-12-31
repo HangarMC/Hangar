@@ -193,7 +193,7 @@ async function restoreVersion() {
               </DropdownItem>
             </template>
           </DropdownButton>
-          <DownloadButton :version="projectVersion" :project="project" :platform="p" />
+          <DownloadButton :version="projectVersion" :project="project" :platform="p" :show-single-platform="false" />
         </div>
       </div>
 

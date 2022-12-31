@@ -22,6 +22,7 @@ const props = withDefaults(
     project: HangarProject;
     small?: boolean;
     showVersions?: boolean;
+    showSinglePlatform?: boolean;
     // Define either version and platform or pinnedVersion, or neither to use main channel versions
     platform?: Platform;
     version?: DownloadableVersion;
@@ -30,6 +31,7 @@ const props = withDefaults(
   {
     small: false,
     showVersions: true,
+    showSinglePlatform: true,
     platform: undefined,
     version: undefined,
     pinnedVersion: undefined,
@@ -93,7 +95,7 @@ const external = computed(() => false);
             <span v-if="!small" class="ml-1">{{ external ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}</span>
           </div>
           <br />
-          <div class="inline-flex items-center font-normal text-0.875rem light:text-gray-600">
+          <div v-if="showSinglePlatform" class="inline-flex items-center font-normal text-0.875rem light:text-gray-600">
             <PlatformLogo :platform="singlePlatform" :size="18" class="mr-1 flex-shrink-0" />
             <span v-if="singleVersion.platformDependencies && showVersions">
               {{ singleVersion.platformDependenciesFormatted[singlePlatform] }}
