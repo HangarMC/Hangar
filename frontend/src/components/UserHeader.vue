@@ -3,9 +3,8 @@ import { Organization } from "hangar-internal";
 import { User } from "hangar-api";
 import { useI18n } from "vue-i18n";
 import { computed } from "vue";
-import { prettyDateTime } from "../lib/composables/useDate";
+import { prettyDateTime } from "~/lib/composables/useDate";
 import UserAvatar from "~/components/UserAvatar.vue";
-import { avatarUrl } from "~/composables/useUrlHelper";
 import Card from "~/lib/components/design/Card.vue";
 import TaglineModal from "~/components/modals/TaglineModal.vue";
 import { NamedPermission } from "~/types/enums";
@@ -38,10 +37,10 @@ const canEditCurrentUser = computed<boolean>(() => {
   <Card accent class="overflow-y-hidden">
     <div class="flex mb-4 md:mb-0">
       <div class="relative mr-3">
-        <UserAvatar :username="user.name" :avatar-url="avatarUrl(user.name)" />
+        <UserAvatar :username="user.name" :avatar-url="user.avatarUrl" />
         <AvatarChangeModal
           v-if="user.isOrganization && hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)"
-          :avatar="avatarUrl(user.name)"
+          :avatar="user.avatarUrl"
           :action="`/organizations/org/${props.user.name}/settings/avatar`"
         >
           <template #activator="{ on }">

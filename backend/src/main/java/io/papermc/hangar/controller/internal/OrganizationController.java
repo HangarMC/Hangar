@@ -23,6 +23,7 @@ import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.service.ValidationService;
+import io.papermc.hangar.service.internal.AvatarService;
 import io.papermc.hangar.service.internal.organizations.OrganizationFactory;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
@@ -36,6 +37,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
@@ -51,17 +53,17 @@ public class OrganizationController extends HangarComponent {
     private final OrganizationService organizationService;
     private final OrganizationMemberService memberService;
     private final OrganizationInviteService inviteService;
-    private final AuthenticationService authenticationService;
+    private final AvatarService avatarService;
     private final ValidationService validationService;
 
     @Autowired
-    public OrganizationController(final UserService userService, final OrganizationFactory organizationFactory, final OrganizationService organizationService, final OrganizationMemberService memberService, final OrganizationInviteService inviteService, final AuthenticationService authenticationService, final ValidationService validationService) {
+    public OrganizationController(final UserService userService, final OrganizationFactory organizationFactory, final OrganizationService organizationService, final OrganizationMemberService memberService, final OrganizationInviteService inviteService, final AvatarService avatarService, final ValidationService validationService) {
         this.userService = userService;
         this.organizationFactory = organizationFactory;
         this.organizationService = organizationService;
         this.memberService = memberService;
         this.inviteService = inviteService;
-        this.authenticationService = authenticationService;
+        this.avatarService = avatarService;
         this.validationService = validationService;
     }
 
@@ -187,7 +189,11 @@ public class OrganizationController extends HangarComponent {
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#orgName}")
     @PostMapping(value = "/org/{orgName}/settings/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void changeAvatar(@PathVariable final String orgName, @RequestParam final MultipartFile avatar) throws IOException {
-        this.authenticationService.changeAvatar(orgName, avatar);
+        final OrganizationTable table = this.organizationService.getOrganizationTable(orgName);
+        if (table == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown org " + orgName);
+        }
+        this.avatarService.changeAvatar("org", table.getOrganizationId() + "", avatar.getBytes());
     }
 
     @Anyone

@@ -21,10 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProjectsApiService extends HangarComponent {
 
     private final ProjectsApiDAO projectsApiDAO;
+    private final UsersApiService usersApiService;
 
     @Autowired
-    public ProjectsApiService(final ProjectsApiDAO projectsApiDAO) {
+    public ProjectsApiService(final ProjectsApiDAO projectsApiDAO, final UsersApiService usersApiService) {
         this.projectsApiDAO = projectsApiDAO;
+        this.usersApiService = usersApiService;
     }
 
     public Project getProject(final String author, final String slug) {
@@ -45,12 +47,14 @@ public class ProjectsApiService extends HangarComponent {
     @Transactional
     public PaginatedResult<User> getProjectStargazers(final String author, final String slug, final RequestPagination pagination) {
         final List<User> stargazers = this.projectsApiDAO.getProjectStargazers(author, slug, pagination.getLimit(), pagination.getOffset());
+        stargazers.forEach(this.usersApiService::supplyAvatarUrl);
         return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectStargazersCount(author, slug), pagination), stargazers);
     }
 
     @Transactional
     public PaginatedResult<User> getProjectWatchers(final String author, final String slug, final RequestPagination pagination) {
         final List<User> watchers = this.projectsApiDAO.getProjectWatchers(author, slug, pagination.getLimit(), pagination.getOffset());
+        watchers.forEach(this.usersApiService::supplyAvatarUrl);
         return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectWatchersCount(author, slug), pagination), watchers);
     }
 

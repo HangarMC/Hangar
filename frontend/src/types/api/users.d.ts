@@ -21,6 +21,7 @@ declare module "hangar-api" {
     isOrganization: boolean;
     locked: boolean;
     nameHistory: { oldName: string; newName: string; date: string }[];
+    avatarUrl: string;
   }
 
   interface ApiKey extends Model, Named {

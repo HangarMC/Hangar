@@ -234,7 +234,7 @@ async function resetIcon() {
     } else {
       useNotificationStore().success(i18n.t("project.settings.success.resetIcon"));
     }
-    imgSrc.value = avatarUrl(props.project.owner.name); // set temporary source so it changes right away
+    imgSrc.value = props.project.owner.avatarUrl; // set temporary source so it changes right away
     projectIcon.value = null;
     cropperInput.value = null;
     cropperResult.value = null;

@@ -13,6 +13,8 @@ import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.api.responses.PossibleProjectOwner;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.LoggedIn;
@@ -20,6 +22,7 @@ import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
+import io.papermc.hangar.service.internal.AvatarService;
 import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
@@ -30,6 +33,7 @@ import io.papermc.hangar.service.internal.uploads.ImageService;
 import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
 
 // @el(author: String, slug: String, projectId: long, project: io.papermc.hangar.model.db.projects.ProjectTable)
@@ -134,22 +139,20 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/saveIcon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String saveProjectIcon(@PathVariable final String author, @PathVariable final String slug, @RequestParam final MultipartFile projectIcon) {
-        return this.projectService.saveIcon(author, slug, projectIcon);
+    public void saveProjectIcon(@PathVariable final String author, @PathVariable final String slug, @RequestParam final MultipartFile projectIcon) throws IOException {
+        this.projectService.changeAvatar(author, slug, projectIcon.getBytes());
     }
 
     @Unlocked
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping("/project/{author}/{slug}/resetIcon")
-    public String resetProjectIcon(@PathVariable final String author, @PathVariable final String slug) {
-        return this.projectService.resetIcon(author, slug);
+    public void resetProjectIcon(@PathVariable final String author, @PathVariable final String slug) {
+        this.projectService.deleteAvatar(author, slug);
     }
 
     @Unlocked

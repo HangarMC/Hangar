@@ -20,6 +20,7 @@ public class User extends Model implements Named {
     private final boolean isOrganization;
     private final boolean locked;
     private List<UserNameChange> nameHistory;
+    private String avatarUrl;
 
     @JdbiConstructor
     public User(final OffsetDateTime createdAt, final String name, final String tagline, final OffsetDateTime joinDate, final List<GlobalRole> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory) {
@@ -71,6 +72,14 @@ public class User extends Model implements Named {
 
     public void setNameHistory(final List<UserNameChange> nameHistory) {
         this.nameHistory = nameHistory;
+    }
+
+    public String getAvatarUrl() {
+        return this.avatarUrl;
+    }
+
+    public void setAvatarUrl(final String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     @Override

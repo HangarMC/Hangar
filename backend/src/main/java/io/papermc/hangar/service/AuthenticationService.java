@@ -28,12 +28,10 @@ public class AuthenticationService extends HangarComponent {
 
     private final UserService userService;
     private final GlobalRoleService globalRoleService;
-    private final RestTemplate restTemplate;
 
     public AuthenticationService(final UserService userService, final GlobalRoleService globalRoleService, final RestTemplate restTemplate) {
         this.userService = userService;
         this.globalRoleService = globalRoleService;
-        this.restTemplate = restTemplate;
     }
 
     public UserTable loginAsFakeUser() {
@@ -56,44 +54,5 @@ public class AuthenticationService extends HangarComponent {
             this.globalRoleService.addRole(GlobalRole.HANGAR_ADMIN.create(null, userTable.getId(), true));
         }
         return userTable;
-    }
-
-    public void changeAvatar(final String org, final MultipartFile avatar) throws IOException {
-        final MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("avatar", new MultipartInputStreamFileResource(avatar.getInputStream(), avatar.getOriginalFilename()));
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        try {
-            final ResponseEntity<Void> response = this.restTemplate.postForEntity(this.config.security.api().url() + "/avatar/org/" + org + "?apiKey=" + this.config.sso.apiKey(), requestEntity, Void.class);
-            if (!response.getStatusCode().is2xxSuccessful()) {
-                throw new ResponseStatusException(response.getStatusCode(), "Error from auth api");
-            }
-        } catch (final HttpStatusCodeException ex) {
-            throw new ResponseStatusException(ex.getStatusCode(), "Error from auth api: " + ex.getMessage(), ex);
-        }
-    }
-
-    static class MultipartInputStreamFileResource extends InputStreamResource {
-
-        private final String filename;
-
-        MultipartInputStreamFileResource(final InputStream inputStream, final String filename) {
-            super(inputStream);
-            this.filename = filename;
-        }
-
-        @Override
-        public String getFilename() {
-            return this.filename;
-        }
-
-        @Override
-        public long contentLength() throws IOException {
-            return -1; // we do not want to generally read the whole stream into memory ...
-        }
     }
 }
