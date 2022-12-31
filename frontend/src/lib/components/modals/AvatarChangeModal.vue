@@ -36,7 +36,6 @@
 </template>
 
 <script lang="ts" setup>
-import { $fetch } from "ohmyfetch";
 import { useI18n } from "vue-i18n";
 import { Cropper, type CropperResult } from "vue-advanced-cropper";
 import { onMounted, ref, watch } from "vue";
@@ -47,6 +46,7 @@ import Modal from "~/lib/components/modals/Modal.vue";
 
 import "vue-advanced-cropper/dist/style.css";
 import { useNotificationStore } from "~/lib/store/notification";
+import { useInternalApi } from "~/composables/useApi";
 
 const { t } = useI18n();
 const notifications = useNotificationStore();
@@ -106,11 +106,7 @@ async function save() {
   }
 
   try {
-    await $fetch(props.action, {
-      method: "POST",
-      body: form,
-      credentials: "include",
-    });
+    await useInternalApi(props.action, "POST", form);
 
     window.location.reload();
   } catch (e) {
