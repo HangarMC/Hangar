@@ -42,7 +42,7 @@ const canEditCurrentUser = computed<boolean>(() => {
         <AvatarChangeModal
           v-if="user.isOrganization && hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)"
           :avatar="avatarUrl(user.name)"
-          :action="`/api/internal/organizations/org/${props.user.name}/settings/avatar`"
+          :action="`/organizations/org/${props.user.name}/settings/avatar`"
         >
           <template #activator="{ on }">
             <Tooltip class="absolute -bottom-3 -right-3">
