@@ -61,7 +61,6 @@ public class ProjectPageController extends HangarComponent {
         return ResponseEntity.ok(this.markdownService.render(content.getContent()));
     }
 
-    @Unlocked
     @RateLimit(overdraft = 10, refillTokens = 3, refillSeconds = 5)
     @ResponseBody
     @PostMapping(path = "/convert-bbcode", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
