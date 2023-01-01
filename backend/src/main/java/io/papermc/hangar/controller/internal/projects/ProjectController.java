@@ -2,7 +2,6 @@ package io.papermc.hangar.controller.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.exceptions.InternalHangarException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.PermissionType;
@@ -13,23 +12,18 @@ import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.api.responses.PossibleProjectOwner;
-import io.papermc.hangar.model.internal.logs.LogAction;
-import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarProject;
-import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
-import io.papermc.hangar.service.internal.AvatarService;
 import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
 import io.papermc.hangar.service.internal.projects.PinnedProjectService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.projects.ProjectService;
-import io.papermc.hangar.service.internal.uploads.ImageService;
 import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
 import jakarta.validation.Valid;
@@ -47,11 +41,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.view.RedirectView;
 
 // @el(author: String, slug: String, projectId: long, project: io.papermc.hangar.model.db.projects.ProjectTable)
 @Controller
@@ -65,19 +56,17 @@ public class ProjectController extends HangarComponent {
     private final ProjectInviteService projectInviteService;
     private final UserService userService;
     private final OrganizationService organizationService;
-    private final ImageService imageService;
     private final StatService statService;
     private final PinnedProjectService pinnedProjectService;
 
     @Autowired
-    public ProjectController(final ProjectFactory projectFactory, final ProjectService projectService, final UserService userService, final OrganizationService organizationService, final ProjectMemberService projectMemberService, final ProjectInviteService projectInviteService, final ImageService imageService, final StatService statService, final PinnedProjectService pinnedProjectService) {
+    public ProjectController(final ProjectFactory projectFactory, final ProjectService projectService, final UserService userService, final OrganizationService organizationService, final ProjectMemberService projectMemberService, final ProjectInviteService projectInviteService, final StatService statService, final PinnedProjectService pinnedProjectService) {
         this.projectFactory = projectFactory;
         this.projectService = projectService;
         this.userService = userService;
         this.organizationService = organizationService;
         this.projectMemberService = projectMemberService;
         this.projectInviteService = projectInviteService;
-        this.imageService = imageService;
         this.statService = statService;
         this.pinnedProjectService = pinnedProjectService;
     }
@@ -266,16 +255,5 @@ public class ProjectController extends HangarComponent {
     @PostMapping(path = "/project/{projectId}/manage/hardDelete", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void hardDeleteProject(@PathVariable("projectId") final ProjectTable project, @RequestBody @Valid final StringContent commentContent) {
         this.projectFactory.hardDelete(project, commentContent.getContent());
-    }
-
-    // Can't put visibility required because the browser image requests don't include the JWT needed for authorization
-    @Anyone
-    @GetMapping(path = "/project/{author}/{slug}/icon", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public Object getProjectIcon(@PathVariable final String author, @PathVariable final String slug) {
-        try {
-            return this.imageService.getProjectIcon(author, slug);
-        } catch (final InternalHangarException e) {
-            return new RedirectView(this.imageService.getUserIcon(author));
-        }
     }
 }
