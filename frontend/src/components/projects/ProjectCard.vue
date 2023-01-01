@@ -4,7 +4,6 @@ import { Project } from "hangar-api";
 import Card from "~/lib/components/design/Card.vue";
 import Link from "~/lib/components/design/Link.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import { lastUpdated } from "~/lib/composables/useTime";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import { Visibility } from "~/types/enums";
@@ -29,12 +28,7 @@ function getBorderClasses(): string {
   <Card :class="getBorderClasses()">
     <div class="flex space-x-4">
       <div>
-        <UserAvatar
-          :username="project.namespace.owner"
-          :to="'/' + project.namespace.owner + '/' + project.name"
-          :img-src="projectIconUrl(project.namespace.owner, project.name)"
-          size="md"
-        />
+        <UserAvatar :username="project.namespace.owner" :to="'/' + project.namespace.owner + '/' + project.name" :img-src="project.avatarUrl" size="md" />
       </div>
       <div class="overflow-clip overflow-hidden min-w-0">
         <h2 class="inline-flex items-center gap-x-1">

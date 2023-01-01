@@ -13,6 +13,7 @@ import io.papermc.hangar.model.common.Permission;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import io.papermc.hangar.service.internal.AvatarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,16 +23,20 @@ public class ProjectsApiService extends HangarComponent {
 
     private final ProjectsApiDAO projectsApiDAO;
     private final UsersApiService usersApiService;
+    private final AvatarService avatarService;
 
     @Autowired
-    public ProjectsApiService(final ProjectsApiDAO projectsApiDAO, final UsersApiService usersApiService) {
+    public ProjectsApiService(final ProjectsApiDAO projectsApiDAO, final UsersApiService usersApiService, final AvatarService avatarService) {
         this.projectsApiDAO = projectsApiDAO;
         this.usersApiService = usersApiService;
+        this.avatarService = avatarService;
     }
 
     public Project getProject(final String author, final String slug) {
         final boolean seeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
-        return this.projectsApiDAO.getProject(author, slug, seeHidden, this.getHangarUserId());
+        final Project project = this.projectsApiDAO.getProject(author, slug, seeHidden, this.getHangarUserId());
+        project.setAvatarUrl(this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner()));
+        return project;
     }
 
     @Transactional
@@ -73,6 +78,7 @@ public class ProjectsApiService extends HangarComponent {
         final boolean seeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
 
         final List<Project> projects = this.projectsApiDAO.getProjects(seeHidden, this.getHangarUserId(), pagination, relevance);
+        projects.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
         return new PaginatedResult<>(new Pagination(this.projectsApiDAO.countProjects(seeHidden, this.getHangarUserId(), pagination), pagination), projects);
     }
 }

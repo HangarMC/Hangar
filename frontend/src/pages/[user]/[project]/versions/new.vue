@@ -8,7 +8,6 @@ import { computed, reactive, type Ref, ref } from "vue";
 import { remove } from "lodash-es";
 import { type ValidationRule } from "@vuelidate/core";
 import { useSeo } from "~/composables/useSeo";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import Steps from "~/lib/components/design/Steps.vue";
 import InputFile from "~/lib/components/ui/InputFile.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
@@ -296,14 +295,7 @@ function togglePlatform(platformFile: PlatformFile, platform: Platform) {
   platformFile.platforms.sort((a, b) => platforms.value.findIndex((p) => p.enumName === a) - platforms.value.findIndex((p) => p.enumName === b));
 }
 
-useHead(
-  useSeo(
-    i18n.t("version.new.title") + " | " + props.project.name,
-    props.project.description,
-    route,
-    projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)
-  )
-);
+useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 </script>
 
 <template>

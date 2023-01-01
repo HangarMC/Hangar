@@ -20,7 +20,6 @@ import Markdown from "~/components/Markdown.vue";
 import Card from "~/lib/components/design/Card.vue";
 import Link from "~/lib/components/design/Link.vue";
 import { useSeo } from "~/composables/useSeo";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useNotificationStore } from "~/lib/store/notification";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
@@ -81,14 +80,7 @@ function sortedDependencies(platform: Platform) {
   return [];
 }
 
-useHead(
-  useSeo(
-    props.project?.name + " " + projectVersion.value?.name,
-    props.project.description,
-    route,
-    projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)
-  )
-);
+useHead(useSeo(props.project?.name + " " + projectVersion.value?.name, props.project.description, route, props.project.avatarUrl));
 
 async function savePage(content: string) {
   try {

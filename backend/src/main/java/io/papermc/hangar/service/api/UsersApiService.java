@@ -87,6 +87,7 @@ public class UsersApiService extends HangarComponent {
         this.getUserRequired(userName, this.usersDAO::getUser, User.class);
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final List<ProjectCompact> projects = this.usersApiDAO.getUserStarred(userName, canSeeHidden, this.getHangarUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
+        projects.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
         final long count = this.usersApiDAO.getUserStarredCount(userName, canSeeHidden, this.getHangarUserId());
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
@@ -96,6 +97,7 @@ public class UsersApiService extends HangarComponent {
         this.getUserRequired(userName, this.usersDAO::getUser, User.class);
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final List<ProjectCompact> projects = this.usersApiDAO.getUserWatching(userName, canSeeHidden, this.getHangarUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
+        projects.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
         final long count = this.usersApiDAO.getUserWatchingCount(userName, canSeeHidden, this.getHangarUserId());
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
@@ -174,6 +176,8 @@ public class UsersApiService extends HangarComponent {
     }
 
     public List<ProjectCompact> getUserPinned(final String userName) {
-        return this.pinnedProjectService.getPinnedVersions(this.getUserRequired(userName, this.usersDAO::getUser, HangarUser.class).getId());
+        List<ProjectCompact> pinnedVersions = this.pinnedProjectService.getPinnedVersions(this.getUserRequired(userName, this.usersDAO::getUser, HangarUser.class).getId());
+        pinnedVersions.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
+        return pinnedVersions;
     }
 }

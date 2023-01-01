@@ -21,6 +21,7 @@ public interface UsersApiDAO {
     @RegisterConstructorMapper(ProjectCompact.class)
     @UseStringTemplateEngine
     @SqlQuery("SELECT hp.created_at," +
+        " hp.id," +
         " hp.name," +
         " hp.owner_name \"owner\"," +
         " hp.slug," +
@@ -57,6 +58,7 @@ public interface UsersApiDAO {
     @RegisterConstructorMapper(ProjectCompact.class)
     @UseStringTemplateEngine
     @SqlQuery("SELECT hp.created_at," +
+        " hp.id," +
         " hp.name," +
         " hp.owner_name \"owner\"," +
         " hp.slug," +

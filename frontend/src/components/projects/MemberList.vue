@@ -10,7 +10,6 @@ import UserAvatar from "~/components/UserAvatar.vue";
 import Link from "~/lib/components/design/Link.vue";
 import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
-import { avatarUrl } from "~/composables/useUrlHelper";
 import { hasPerms } from "~/composables/usePerm";
 import { useBackendData } from "~/store/backendData";
 import { useApi, useInternalApi } from "~/composables/useApi";

@@ -17,8 +17,8 @@ public class Project extends ProjectCompact {
     private final Long postId;
 
     @JdbiConstructor
-    public Project(final OffsetDateTime createdAt, final String name, @Nested final ProjectNamespace namespace, @Nested final ProjectStats stats, @EnumByOrdinal final Category category, final String description, final OffsetDateTime lastUpdated, @EnumByOrdinal final Visibility visibility, @Nested final UserActions userActions, @Nested final ProjectSettings settings, final Long topicId, final Long postId) {
-        super(createdAt, name, namespace, stats, category, lastUpdated, visibility);
+    public Project(final OffsetDateTime createdAt, final long id, final String name, @Nested final ProjectNamespace namespace, @Nested final ProjectStats stats, @EnumByOrdinal final Category category, final String description, final OffsetDateTime lastUpdated, @EnumByOrdinal final Visibility visibility, @Nested final UserActions userActions, @Nested final ProjectSettings settings, final Long topicId, final Long postId) {
+        super(createdAt, id, name, namespace, stats, category, lastUpdated, visibility);
         this.description = description;
         this.userActions = userActions;
         this.settings = settings;
@@ -27,7 +27,7 @@ public class Project extends ProjectCompact {
     }
 
     public Project(final Project other) {
-        super(other.createdAt, other.name, other.namespace, other.stats, other.category, other.lastUpdated, other.visibility);
+        super(other.createdAt, other.id, other.name, other.namespace, other.stats, other.category, other.lastUpdated, other.visibility);
         this.description = other.description;
         this.userActions = other.userActions;
         this.settings = other.settings;

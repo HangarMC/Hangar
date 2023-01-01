@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useHead } from "@vueuse/head";
 import { useRoute, useRouter } from "vue-router";
-import { HangarProject } from "hangar-internal";
+import { HangarProject, HangarUser } from "hangar-internal";
 import { useI18n } from "vue-i18n";
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { cloneDeep } from "lodash-es";
@@ -9,7 +9,6 @@ import { useVuelidate } from "@vuelidate/core";
 import { Cropper, type CropperResult } from "vue-advanced-cropper";
 import { PaginatedResult, User } from "hangar-api";
 import { useSeo } from "~/composables/useSeo";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import Card from "~/lib/components/design/Card.vue";
 import MemberList from "~/components/projects/MemberList.vue";
 import { hasPerms } from "~/composables/usePerm";
@@ -47,6 +46,7 @@ const v = useVuelidate();
 const notificationStore = useNotificationStore();
 const props = defineProps<{
   project: HangarProject;
+  user: HangarUser;
 }>();
 
 const selectedTab = ref(route.hash.substring(1) || "general");
@@ -66,11 +66,11 @@ if (!form.settings.license.type) {
   form.settings.license.type = "Unspecified";
 }
 
-const hasCustomIcon = ref(props.project.customIcon);
+const hasCustomIcon = computed(() => props.project.avatarUrl.includes("project"));
 const projectIcon = ref<File | null>(null);
 const cropperInput = ref();
 const cropperResult = ref();
-const imgSrc = ref(projectIconUrl(props.project.namespace.owner, props.project.namespace.slug));
+const imgSrc = ref(props.project.avatarUrl);
 let reader: FileReader | null = null;
 onMounted(() => {
   reader = new FileReader();
@@ -213,7 +213,6 @@ async function uploadIcon() {
     projectIcon.value = null;
     cropperInput.value = null;
     cropperResult.value = null;
-    hasCustomIcon.value = true;
     if (response) {
       useNotificationStore().success(i18n.t("project.settings.success.changedIconWarn", [response]));
     } else {
@@ -234,25 +233,17 @@ async function resetIcon() {
     } else {
       useNotificationStore().success(i18n.t("project.settings.success.resetIcon"));
     }
-    imgSrc.value = props.project.owner.avatarUrl; // set temporary source so it changes right away
+    imgSrc.value = props.user.avatarUrl; // set temporary source so it changes right away
     projectIcon.value = null;
     cropperInput.value = null;
     cropperResult.value = null;
-    hasCustomIcon.value = false;
   } catch (e: any) {
     handleRequestError(e);
   }
   loading.resetIcon = false;
 }
 
-useHead(
-  useSeo(
-    i18n.t("project.settings.title") + " | " + props.project.name,
-    props.project.description,
-    route,
-    projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)
-  )
-);
+useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 </script>
 
 <template>

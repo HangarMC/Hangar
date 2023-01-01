@@ -64,30 +64,26 @@ public class ProjectService extends HangarComponent {
     private final ProjectVisibilityService projectVisibilityService;
     private final OrganizationService organizationService;
     private final ProjectPageService projectPageService;
-    private final ProjectFiles projectFiles;
     private final PermissionService permissionService;
     private final PinnedVersionService pinnedVersionService;
     private final VersionsApiDAO versionsApiDAO;
     private final HangarVersionsDAO hangarVersionsDAO;
     private final DownloadService downloadService;
-    private final FileService fileService;
     private final AvatarService avatarService;
 
     @Autowired
-    public ProjectService(final ProjectsDAO projectDAO, final HangarUsersDAO hangarUsersDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final ProjectFiles projectFiles, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, final DownloadService downloadService, final FileService fileService, final AvatarService avatarService) {
+    public ProjectService(final ProjectsDAO projectDAO, final HangarUsersDAO hangarUsersDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, final DownloadService downloadService, final AvatarService avatarService) {
         this.projectsDAO = projectDAO;
         this.hangarUsersDAO = hangarUsersDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
         this.organizationService = organizationService;
         this.projectPageService = projectPageService;
-        this.projectFiles = projectFiles;
         this.permissionService = permissionService;
         this.pinnedVersionService = pinnedVersionService;
         this.versionsApiDAO = versionsApiDAO;
         this.hangarVersionsDAO = hangarVersionsDAO;
         this.downloadService = downloadService;
-        this.fileService = fileService;
         this.avatarService = avatarService;
     }
 
@@ -149,7 +145,9 @@ public class ProjectService extends HangarComponent {
             }
         }
 
-        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, mainChannelVersions, this.fileService.exists(this.projectFiles.getIconPath(author, slug)));
+        final HangarProject hangarProject = new HangarProject(project.getRight(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, mainChannelVersions);
+        hangarProject.setAvatarUrl(this.avatarService.getProjectAvatarUrl(hangarProject.getProjectId(), hangarProject.getNamespace().getOwner()));
+        return hangarProject;
     }
 
     public @Nullable HangarVersion getLastVersion(final String author, final String slug, final Platform platform, final @Nullable String channel) {

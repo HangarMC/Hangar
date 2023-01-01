@@ -49,6 +49,7 @@ declare module "hangar-api" {
     stats: ProjectStats;
     category: ProjectCategory;
     lastUpdated: Date;
+    avatarUrl: string;
   }
 
   interface Project extends ProjectCompact {

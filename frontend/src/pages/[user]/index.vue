@@ -7,7 +7,6 @@ import { Organization } from "hangar-internal";
 import { computed, type FunctionalComponent, ref, watch } from "vue";
 import ProjectList from "~/components/projects/ProjectList.vue";
 import Card from "~/lib/components/design/Card.vue";
-import { avatarUrl } from "~/composables/useUrlHelper";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Link from "~/lib/components/design/Link.vue";
 import MemberList from "~/components/projects/MemberList.vue";

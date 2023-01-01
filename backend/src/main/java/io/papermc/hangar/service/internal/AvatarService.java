@@ -11,6 +11,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
+import java.util.UUID;
+import io.papermc.hangar.service.internal.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.InputStreamResource;
@@ -31,7 +33,7 @@ public class AvatarService extends HangarComponent {
     private final RestTemplate restTemplate;
     private final UserDAO userDAO;
 
-    private final Cache<String, String> cache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMillis(30)).build(); // TODO change back to minutes
+    private final Cache<String, String> cache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMinutes(30)).build();
 
     @Autowired
     public AvatarService(@Lazy final RestTemplate restTemplate, final UserDAO userDAO) {
@@ -49,7 +51,7 @@ public class AvatarService extends HangarComponent {
         final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         try {
-            final ResponseEntity<Void> response = this.restTemplate.postForEntity(this.config.security.api().url() + "/avatar/"+ type +"/" + subject + "?apiKey=" + this.config.sso.apiKey(), requestEntity, Void.class);
+            final ResponseEntity<Void> response = this.restTemplate.postForEntity(this.config.security.api().url() + "/avatar/" + type + "/" + subject + "?apiKey=" + this.config.sso.apiKey(), requestEntity, Void.class);
             this.cache.invalidate(type + "-" + subject);
             if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new ResponseStatusException(response.getStatusCode(), "Error from auth api");
@@ -61,7 +63,8 @@ public class AvatarService extends HangarComponent {
 
     public void deleteAvatar(final String type, final String subject) {
         try {
-            this.restTemplate.delete(this.config.security.api().url() + "/avatar/"+ type +"/" + subject + "?apiKey=" + this.config.sso.apiKey());
+            this.restTemplate.delete(this.config.security.api().url() + "/avatar/" + type + "/" + subject + "?apiKey=" + this.config.sso.apiKey());
+            this.cache.invalidate(type + "-" + subject);
         } catch (final HttpStatusCodeException ex) {
             throw new ResponseStatusException(ex.getStatusCode(), "Error from auth api: " + ex.getMessage(), ex);
         }
@@ -79,13 +82,26 @@ public class AvatarService extends HangarComponent {
     }
 
     public String getAvatarUrl(final String type, final String subject) {
-        return this.cache.get(type + "-" + subject, (key) -> {
+        return this.getAvatarUrl(type, subject, null, null);
+    }
+
+    public String getAvatarUrl(final String type, final String subject, final String defaultType, final String defaultSubject) {
+        return this.cache.get(type + "-" + subject + "-" + defaultType + "-" + defaultSubject, (key) -> {
             try {
-                return this.restTemplate.getForObject(this.config.security.api().url() + "/avatar/" + type + "/" + subject + "?apiKey=" + this.config.sso.apiKey(), String.class);
+                return this.restTemplate.getForObject(this.config.security.api().url() + "/avatar/" + type + "/" + subject + (defaultType != null && defaultSubject != null ? "/" + defaultType + "/" + defaultSubject : "") + "?apiKey=" + this.config.sso.apiKey(), String.class);
             } catch (final HttpStatusCodeException ex) {
                 throw new ResponseStatusException(ex.getStatusCode(), "Error from auth api: " + ex.getMessage(), ex);
             }
         });
+    }
+
+    public String getProjectAvatarUrl(final long projectId, final String ownerName) {
+        final UserTable userTable = this.userDAO.getUserTable(ownerName);
+        if (userTable != null) {
+            return this.getAvatarUrl("project", projectId + "", "user", userTable.getUuid().toString());
+        } else {
+            return this.getAvatarUrl("project", projectId + "");
+        }
     }
 
     // no clue why I need an InputStreamResource, ByteArrayResource ends in "Required part 'avatar' is not present." 🤷
