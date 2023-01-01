@@ -1,7 +1,7 @@
 package io.papermc.hangar.model.internal.projects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.config.jackson.RequiresPermission;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.api.project.Project;
@@ -45,7 +45,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         this.mainChannelVersions = mainChannelVersions;
     }
 
-    @JsonInclude
+    @JsonIgnore(false)
     public long getId() {
         return this.id;
     }
