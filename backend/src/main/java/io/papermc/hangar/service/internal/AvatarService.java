@@ -94,22 +94,18 @@ public class AvatarService extends HangarComponent {
      * Get methods
      */
     public String getUserAvatarUrl(final UserTable userTable) {
-        return this.getUserAvatarUrl(USER, userTable.getUuid().toString());
+        return this.getAvatarUrl(USER, userTable.getUuid().toString());
     }
 
     public String getUserAvatarUrl(final User user) {
         if (user instanceof HangarUser hangarUser) {
-            return this.getUserAvatarUrl(USER, hangarUser.getUuid().toString());
+            return this.getAvatarUrl(USER, hangarUser.getUuid().toString());
         }
-        return this.getUserAvatarUrl(USER, this.userDAO.getUserTable(user.getName()).getUuid().toString());
-    }
-
-    private String getUserAvatarUrl(final String type, final String subject) {
-        return this.getAvatarUrl(type, subject, null, null);
+        return this.getAvatarUrl(USER, this.userDAO.getUserTable(user.getName()).getUuid().toString());
     }
 
     public String getOrgAvatar(final UUID orgUserUuid) {
-        return this.getUserAvatarUrl(USER, orgUserUuid.toString());
+        return this.getAvatarUrl(USER, orgUserUuid.toString());
     }
 
     public String getProjectAvatarUrl(final long projectId, final String ownerName) {
@@ -117,8 +113,12 @@ public class AvatarService extends HangarComponent {
         if (userTable != null) {
             return this.getAvatarUrl(PROJECT, projectId + "", USER, userTable.getUuid().toString());
         } else {
-            return this.getUserAvatarUrl(PROJECT, projectId + "");
+            return this.getAvatarUrl(PROJECT, projectId + "");
         }
+    }
+
+    private String getAvatarUrl(final String type, final String subject) {
+        return this.getAvatarUrl(type, subject, null, null);
     }
 
     private String getAvatarUrl(final String type, final String subject, final String defaultType, final String defaultSubject) {
