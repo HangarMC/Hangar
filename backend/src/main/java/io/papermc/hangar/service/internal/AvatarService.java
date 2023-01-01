@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.UUID;
-import io.papermc.hangar.service.internal.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.InputStreamResource;
@@ -30,6 +29,9 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class AvatarService extends HangarComponent {
 
+    public static final String USER = "user";
+    public static final String PROJECT = "project";
+
     private final RestTemplate restTemplate;
     private final UserDAO userDAO;
 
@@ -41,7 +43,18 @@ public class AvatarService extends HangarComponent {
         this.userDAO = userDAO;
     }
 
-    public void changeAvatar(final String type, final String subject, final byte[] avatar) {
+    /*
+     * change methods
+     */
+    public void changeUserAvatar(final UUID uuid, final byte[] avatar) {
+        this.changeAvatar(USER, uuid.toString(), avatar);
+    }
+
+    public void changeProjectAvatar(final long projectId, final byte[] avatar) {
+        this.changeAvatar(PROJECT, projectId + "", avatar);
+    }
+
+    private void changeAvatar(final String type, final String subject, final byte[] avatar) {
         final MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("avatar", new MultipartInputStreamFileResource(new ByteArrayInputStream(avatar), subject + ".webp"));
 
@@ -61,7 +74,14 @@ public class AvatarService extends HangarComponent {
         }
     }
 
-    public void deleteAvatar(final String type, final String subject) {
+    /*
+     * Delete methods
+     */
+    public void deleteProjectAvatar(final long projectId) {
+        this.deleteAvatar(PROJECT, projectId + "");
+    }
+
+    private void deleteAvatar(final String type, final String subject) {
         try {
             this.restTemplate.delete(this.config.security.api().url() + "/avatar/" + type + "/" + subject + "?apiKey=" + this.config.sso.apiKey());
             this.cache.invalidate(type + "-" + subject);
@@ -70,22 +90,38 @@ public class AvatarService extends HangarComponent {
         }
     }
 
-    public String getAvatarUrl(final UserTable userTable) {
-        return this.getAvatarUrl("user", userTable.getUuid().toString());
+    /*
+     * Get methods
+     */
+    public String getUserAvatarUrl(final UserTable userTable) {
+        return this.getUserAvatarUrl(USER, userTable.getUuid().toString());
     }
 
-    public String getAvatarUrl(final User user) {
+    public String getUserAvatarUrl(final User user) {
         if (user instanceof HangarUser hangarUser) {
-            return this.getAvatarUrl("user", hangarUser.getUuid().toString());
+            return this.getUserAvatarUrl(USER, hangarUser.getUuid().toString());
         }
-        return this.getAvatarUrl("user", this.userDAO.getUserTable(user.getName()).getUuid().toString());
+        return this.getUserAvatarUrl(USER, this.userDAO.getUserTable(user.getName()).getUuid().toString());
     }
 
-    public String getAvatarUrl(final String type, final String subject) {
+    private String getUserAvatarUrl(final String type, final String subject) {
         return this.getAvatarUrl(type, subject, null, null);
     }
 
-    public String getAvatarUrl(final String type, final String subject, final String defaultType, final String defaultSubject) {
+    public String getOrgAvatar(final UUID orgUserUuid) {
+        return this.getUserAvatarUrl(USER, orgUserUuid.toString());
+    }
+
+    public String getProjectAvatarUrl(final long projectId, final String ownerName) {
+        final UserTable userTable = this.userDAO.getUserTable(ownerName);
+        if (userTable != null) {
+            return this.getAvatarUrl(PROJECT, projectId + "", USER, userTable.getUuid().toString());
+        } else {
+            return this.getUserAvatarUrl(PROJECT, projectId + "");
+        }
+    }
+
+    private String getAvatarUrl(final String type, final String subject, final String defaultType, final String defaultSubject) {
         return this.cache.get(type + "-" + subject + "-" + defaultType + "-" + defaultSubject, (key) -> {
             try {
                 return this.restTemplate.getForObject(this.config.security.api().url() + "/avatar/" + type + "/" + subject + (defaultType != null && defaultSubject != null ? "/" + defaultType + "/" + defaultSubject : "") + "?apiKey=" + this.config.sso.apiKey(), String.class);
@@ -93,15 +129,6 @@ public class AvatarService extends HangarComponent {
                 throw new ResponseStatusException(ex.getStatusCode(), "Error from auth api: " + ex.getMessage(), ex);
             }
         });
-    }
-
-    public String getProjectAvatarUrl(final long projectId, final String ownerName) {
-        final UserTable userTable = this.userDAO.getUserTable(ownerName);
-        if (userTable != null) {
-            return this.getAvatarUrl("project", projectId + "", "user", userTable.getUuid().toString());
-        } else {
-            return this.getAvatarUrl("project", projectId + "");
-        }
     }
 
     // no clue why I need an InputStreamResource, ByteArrayResource ends in "Required part 'avatar' is not present." 🤷

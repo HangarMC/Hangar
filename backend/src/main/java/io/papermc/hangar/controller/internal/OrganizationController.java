@@ -193,7 +193,7 @@ public class OrganizationController extends HangarComponent {
         if (table == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown org " + orgName);
         }
-        this.avatarService.changeAvatar("user", table.getUserUuid().toString(), avatar.getBytes());
+        this.avatarService.changeUserAvatar(table.getUserUuid(), avatar.getBytes());
     }
 
     @Anyone

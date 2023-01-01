@@ -27,13 +27,10 @@ import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.AvatarService;
-import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
-import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.versions.DownloadService;
 import io.papermc.hangar.service.internal.versions.PinnedVersionService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.EnumMap;
@@ -47,12 +44,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -114,7 +108,7 @@ public class ProjectService extends HangarComponent {
         final Pair<Long, Project> project = this.hangarProjectsDAO.getProject(author, slug, this.getHangarUserId());
         final ProjectOwner projectOwner = this.getProjectOwner(author);
         final List<JoinableMember<ProjectRoleTable>> members = this.hangarProjectsDAO.getProjectMembers(project.getLeft(), this.getHangarUserId(), this.permissionService.getProjectPermissions(this.getHangarUserId(), project.getLeft()).has(Permission.EditProjectSettings));
-        members.forEach((member) -> member.setAvatarUrl(this.avatarService.getAvatarUrl(member.getUser())));
+        members.forEach((member) -> member.setAvatarUrl(this.avatarService.getUserAvatarUrl(member.getUser())));
         String lastVisibilityChangeComment = "";
         String lastVisibilityChangeUserName = "";
         if (project.getRight().getVisibility() == Visibility.NEEDSCHANGES || project.getRight().getVisibility() == Visibility.SOFTDELETE) {
@@ -213,7 +207,7 @@ public class ProjectService extends HangarComponent {
         if (table == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown project " + author + "/" + slug);
         }
-        this.avatarService.changeAvatar("project", table.getProjectId() + "", avatar);
+        this.avatarService.changeProjectAvatar(table.getProjectId(), avatar);
         this.actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(table.getId()),  Base64.getEncoder().encodeToString(avatar), "#unknown"));
     }
 
@@ -222,7 +216,7 @@ public class ProjectService extends HangarComponent {
         if (table == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown project " + author + "/" + slug);
         }
-        this.avatarService.deleteAvatar("project", table.getProjectId() + "");
+        this.avatarService.deleteProjectAvatar(table.getProjectId());
         this.actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(table.getId()), "#empty", "#unknown"));
     }
 
