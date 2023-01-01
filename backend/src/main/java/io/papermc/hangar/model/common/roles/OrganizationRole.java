@@ -7,6 +7,7 @@ import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 
@@ -95,8 +96,8 @@ public enum OrganizationRole implements Role<OrganizationRoleTable> {
     }
 
     @Override
-    public @NotNull OrganizationRoleTable create(final Long organizationId, final long userId, final boolean isAccepted) {
+    public @NotNull OrganizationRoleTable create(final Long organizationId, final UUID uuid, final long userId, final boolean isAccepted) {
         Preconditions.checkNotNull(organizationId, "organization id");
-        return new OrganizationRoleTable(userId, this, isAccepted, organizationId);
+        return new OrganizationRoleTable(userId, this, isAccepted, organizationId, uuid);
     }
 }

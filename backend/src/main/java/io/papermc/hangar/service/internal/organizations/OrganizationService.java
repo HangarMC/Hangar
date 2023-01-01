@@ -13,6 +13,7 @@ import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.HangarOrganization;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.PermissionService;
+import io.papermc.hangar.service.internal.AvatarService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import java.util.List;
 import java.util.Map;
@@ -29,15 +30,17 @@ public class OrganizationService extends HangarComponent {
     private final UserDAO userDAO;
     private final PermissionService permissionService;
     private final OrganizationMemberService organizationMemberService;
+    private final AvatarService avatarService;
 
     @Autowired
-    public OrganizationService(final HangarOrganizationsDAO hangarOrganizationsDAO, final OrganizationRolesDAO organizationRolesDAO, final OrganizationDAO organizationDAO, final UserDAO userDAO, final PermissionService permissionService, final OrganizationMemberService organizationMemberService) {
+    public OrganizationService(final HangarOrganizationsDAO hangarOrganizationsDAO, final OrganizationRolesDAO organizationRolesDAO, final OrganizationDAO organizationDAO, final UserDAO userDAO, final PermissionService permissionService, final OrganizationMemberService organizationMemberService, final AvatarService avatarService) {
         this.hangarOrganizationsDAO = hangarOrganizationsDAO;
         this.organizationRolesDAO = organizationRolesDAO;
         this.organizationDAO = organizationDAO;
         this.userDAO = userDAO;
         this.permissionService = permissionService;
         this.organizationMemberService = organizationMemberService;
+        this.avatarService = avatarService;
     }
 
     public OrganizationTable getOrganizationTable(final long id) {
@@ -63,6 +66,7 @@ public class OrganizationService extends HangarComponent {
         }
         final UserTable owner = this.userDAO.getUserTable(organizationTable.getOwnerId());
         final List<JoinableMember<OrganizationRoleTable>> members = this.hangarOrganizationsDAO.getOrganizationMembers(organizationTable.getId(), this.getHangarUserId(), this.permissionService.getOrganizationPermissions(this.getHangarUserId(), organizationTable.getId()).has(Permission.ManageOrganizationMembers));
+        members.forEach(member -> member.setAvatarUrl(this.avatarService.getAvatarUrl(member.getUser())));
         return new HangarOrganization(organizationTable.getId(), owner, members);
     }
 
@@ -72,6 +76,7 @@ public class OrganizationService extends HangarComponent {
             final Map<String, Boolean> visibility = this.organizationMemberService.getUserOrganizationMembershipVisibility(user);
             roles.keySet().removeIf(org -> Boolean.TRUE.equals(visibility.getOrDefault(org, true)));
         }
+        roles.values().forEach(org -> org.setAvatarUrl(this.avatarService.getAvatarUrl("user", org.getUuid().toString())));
         return roles;
     }
 

@@ -26,13 +26,28 @@ public interface OrganizationDAO {
     @SqlUpdate("DELETE FROM organizations WHERE id = :id")
     void delete(long id);
 
-    @SqlQuery("SELECT * FROM organizations WHERE id = :orgId")
+    @SqlQuery("""
+        SELECT o.*, u.uuid AS userUuid
+        FROM organizations o
+        JOIN users u ON u.id = o.user_id
+        WHERE o.id = :orgId
+    """)
     OrganizationTable getById(long orgId);
 
-    @SqlQuery("SELECT * FROM organizations WHERE user_id = :userId")
+    @SqlQuery("""
+        SELECT o.*, u.uuid AS userUuid
+        FROM organizations o
+        JOIN users u ON u.id = o.user_id
+        WHERE o.user_id = :userId
+    """)
     OrganizationTable getByUserId(long userId);
 
-    @SqlQuery("SELECT * FROM organizations WHERE name = :name")
+    @SqlQuery("""
+        SELECT o.*, u.uuid AS userUuid
+        FROM organizations o
+        JOIN users u ON u.id = o.user_id
+        WHERE o.name = :name
+    """)
     OrganizationTable getByName(String name);
 
     @SqlQuery("SELECT o.*" +

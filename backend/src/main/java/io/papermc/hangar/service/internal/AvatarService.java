@@ -2,18 +2,16 @@ package io.papermc.hangar.service.internal;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.model.api.User;
+import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpEntity;
@@ -33,7 +31,7 @@ public class AvatarService extends HangarComponent {
     private final RestTemplate restTemplate;
     private final UserDAO userDAO;
 
-    private final Cache<String, String> cache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMinutes(30)).build();
+    private final Cache<String, String> cache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMillis(30)).build(); // TODO change back to minutes
 
     @Autowired
     public AvatarService(@Lazy final RestTemplate restTemplate, final UserDAO userDAO) {
@@ -69,13 +67,11 @@ public class AvatarService extends HangarComponent {
         }
     }
 
+    public String getAvatarUrl(final UserTable userTable) {
+        return this.getAvatarUrl("user", userTable.getUuid().toString());
+    }
+
     public String getAvatarUrl(final User user) {
-        if (user.isOrganization()) {
-            if (user instanceof HangarUser hangarUser) {
-                return this.getAvatarUrl("org", hangarUser.getId() + "");
-            }
-            return this.getAvatarUrl("org", this.userDAO.getUserTable(user.getName()).getId() + "");
-        }
         if (user instanceof HangarUser hangarUser) {
             return this.getAvatarUrl("user", hangarUser.getUuid().toString());
         }

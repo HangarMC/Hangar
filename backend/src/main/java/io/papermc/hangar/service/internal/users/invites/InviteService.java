@@ -53,7 +53,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
             throw new HangarApiException(this.errorPrefix + "invalidUser", invitee.getName());
         }
 
-        final RT roleTable = this.roleService.addRole(invitee.getRole().create(joinable.getId(), userTable.getId(), false), true);
+        final RT roleTable = this.roleService.addRole(invitee.getRole().create(joinable.getId(), null, userTable.getId(), false), true);
         if (roleTable == null) {
             throw new HangarApiException(this.errorPrefix + "alreadyInvited", invitee.getName());
         }
@@ -75,7 +75,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
             throw new HangarApiException(this.errorPrefix + "pendingTransfer");
         }
 
-        final RT roleTable = this.roleService.addRole(this.getOwnerRole().create(joinable.getId(), userTable.getId(), false), true);
+        final RT roleTable = this.roleService.addRole(this.getOwnerRole().create(joinable.getId(), null, userTable.getId(), false), true);
         if (roleTable == null) {
             throw new HangarApiException(this.errorPrefix + "alreadyInvited", user);
         }
@@ -129,7 +129,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
                 oldRole.setAccepted(true);
                 this.roleService.updateRole(oldRole);
             } else {
-                final RT roleTable = this.roleService.addRole(this.getOwnerRole().create(joinable.getId(), userTable.getId(), true), false);
+                final RT roleTable = this.roleService.addRole(this.getOwnerRole().create(joinable.getId(), null, userTable.getId(), true), false);
                 this.memberService.addMember(roleTable);
             }
         }

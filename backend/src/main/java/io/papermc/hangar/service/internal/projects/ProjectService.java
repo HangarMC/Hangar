@@ -118,6 +118,7 @@ public class ProjectService extends HangarComponent {
         final Pair<Long, Project> project = this.hangarProjectsDAO.getProject(author, slug, this.getHangarUserId());
         final ProjectOwner projectOwner = this.getProjectOwner(author);
         final List<JoinableMember<ProjectRoleTable>> members = this.hangarProjectsDAO.getProjectMembers(project.getLeft(), this.getHangarUserId(), this.permissionService.getProjectPermissions(this.getHangarUserId(), project.getLeft()).has(Permission.EditProjectSettings));
+        members.forEach((member) -> member.setAvatarUrl(this.avatarService.getAvatarUrl(member.getUser())));
         String lastVisibilityChangeComment = "";
         String lastVisibilityChangeUserName = "";
         if (project.getRight().getVisibility() == Visibility.NEEDSCHANGES || project.getRight().getVisibility() == Visibility.SOFTDELETE) {

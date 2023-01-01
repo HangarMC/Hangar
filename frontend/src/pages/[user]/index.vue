@@ -122,7 +122,7 @@ watch(
   { deep: true }
 );
 
-useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + props.user.tagline, route, avatarUrl(props.user.name)));
+useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + props.user.tagline, route, props.user.avatarUrl));
 </script>
 
 <template>
@@ -166,7 +166,7 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
           <LockUserModal v-if="!isCurrentUser && !user.isOrganization && hasPerms(NamedPermission.IS_STAFF)" :user="user" />
         </Card>
 
-        <template v-if="!user.isOrganization">
+        <template v-if="!user.isOrganization && organizations">
           <Card class="mb-4" accent>
             <template #header>
               <div class="inline-flex w-full">
@@ -181,7 +181,7 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
             <ul>
               <li v-for="(orgRole, orgName) in organizations" :key="orgName">
                 <router-link :to="'/' + orgName" class="flex items-center mb-2">
-                  <UserAvatar :username="orgName" :avatar-url="avatarUrl(orgName)" size="xs" :disable-link="true" class="flex-shrink-0 mr-2" />
+                  <UserAvatar :username="orgName" :avatar-url="orgRole.avatarUrl" size="xs" :disable-link="true" class="flex-shrink-0 mr-2" />
                   {{ orgName }} ({{ orgRole.role.title }})
                   <span class="flex-grow"></span>
                   <IconMdiEyeOffOutline v-if="organizationVisibility && organizationVisibility[orgName]" class="ml-1" />

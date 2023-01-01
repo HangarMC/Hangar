@@ -5,23 +5,11 @@ import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.users.UserService;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthenticationService extends HangarComponent {
@@ -51,7 +39,7 @@ public class AuthenticationService extends HangarComponent {
 
             userTable = this.userService.insertUser(userTable);
 
-            this.globalRoleService.addRole(GlobalRole.HANGAR_ADMIN.create(null, userTable.getId(), true));
+            this.globalRoleService.addRole(GlobalRole.HANGAR_ADMIN.create(null, userTable.getUuid(), userTable.getId(), true));
         }
         return userTable;
     }

@@ -56,9 +56,9 @@ public class OrganizationFactory extends HangarComponent {
 
         final String dummyEmail = name.replaceAll("[^a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]", "") + '@' + this.config.org.dummyEmailDomain();
         final UserTable userTable = this.userDAO.create(UUID.randomUUID(), name, dummyEmail, "", "", List.of(), false, null);
-        final OrganizationTable organizationTable = this.organizationDAO.insert(new OrganizationTable(userTable.getId(), name, this.getHangarPrincipal().getId(), userTable.getId()));
-        this.globalRoleService.addRole(GlobalRole.ORGANIZATION.create(null, userTable.getId(), false));
-        this.organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_OWNER.create(organizationTable.getId(), this.getHangarPrincipal().getId(), true));
+        final OrganizationTable organizationTable = this.organizationDAO.insert(new OrganizationTable(userTable.getId(), name, this.getHangarPrincipal().getId(), userTable.getId(), userTable.getUuid()));
+        this.globalRoleService.addRole(GlobalRole.ORGANIZATION.create(null, userTable.getUuid(), userTable.getId(), false));
+        this.organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_OWNER.create(organizationTable.getId(), userTable.getUuid(), this.getHangarPrincipal().getId(), true));
     }
 
     @Transactional

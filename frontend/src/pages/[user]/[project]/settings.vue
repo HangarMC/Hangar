@@ -9,7 +9,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { Cropper, type CropperResult } from "vue-advanced-cropper";
 import { PaginatedResult, User } from "hangar-api";
 import { useSeo } from "~/composables/useSeo";
-import { avatarUrl, projectIconUrl } from "~/composables/useUrlHelper";
+import { projectIconUrl } from "~/composables/useUrlHelper";
 import Card from "~/lib/components/design/Card.vue";
 import MemberList from "~/components/projects/MemberList.vue";
 import { hasPerms } from "~/composables/usePerm";

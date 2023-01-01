@@ -13,15 +13,18 @@ public interface HangarUsersDAO {
 
     @RegisterConstructorMapper(UserTable.class)
     @RegisterConstructorMapper(value = OrganizationTable.class, prefix = "o_")
-    @SqlQuery("SELECT u.*," +
-        "   o.id o_id," +
-        "   o.created_at o_created_at," +
-        "   o.name o_name," +
-        "   o.owner_id o_owner_id," +
-        "   o.user_id o_user_id" +
-        "   FROM users u " +
-        "       LEFT JOIN organizations o ON u.id = o.user_id" +
-        "   WHERE u.name = :userName")
+    @SqlQuery("""
+        SELECT u.*,
+           o.id o_id,
+           o.created_at o_created_at,
+           o.name o_name,
+           o.owner_id o_owner_id,
+           o.user_id o_user_id,
+           u.uuid o_user_uuid
+           FROM users u
+               LEFT JOIN organizations o ON u.id = o.user_id
+           WHERE u.name = :userName
+        """)
     Pair<UserTable, OrganizationTable> getUserAndOrg(String userName);
 
     @SqlUpdate("INSERT INTO project_stars VALUES (:userId, :projectId)")

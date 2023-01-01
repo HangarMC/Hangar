@@ -6,6 +6,7 @@ import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.IRoleTable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,5 +45,5 @@ public interface Role<T extends IRoleTable<? extends Role<T>>> {
     @Nullable Integer getRank();
 
     @NotNull
-    T create(@Nullable Long principalId, long userId, boolean isAccepted);
+    T create(@Nullable Long principalId, @Nullable UUID principalUuid, long userId, boolean isAccepted);
 }
