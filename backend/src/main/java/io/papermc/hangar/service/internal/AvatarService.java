@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.user.HangarUser;
@@ -55,6 +56,8 @@ public class AvatarService extends HangarComponent {
     }
 
     private void changeAvatar(final String type, final String subject, final byte[] avatar) {
+        this.checkEnabled();
+
         final MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("avatar", new MultipartInputStreamFileResource(new ByteArrayInputStream(avatar), subject + ".webp"));
 
@@ -82,6 +85,8 @@ public class AvatarService extends HangarComponent {
     }
 
     private void deleteAvatar(final String type, final String subject) {
+        this.checkEnabled();
+
         try {
             this.restTemplate.delete(this.config.security.api().url() + "/avatar/" + type + "/" + subject + "?apiKey=" + this.config.sso.apiKey());
             this.cache.invalidate(type + "-" + subject);
@@ -122,6 +127,10 @@ public class AvatarService extends HangarComponent {
     }
 
     private String getAvatarUrl(final String type, final String subject, final String defaultType, final String defaultSubject) {
+        if (this.config.fakeUser.enabled()) {
+            return "https://docs.papermc.io/img/paper.png";
+        }
+
         return this.cache.get(type + "-" + subject + "-" + defaultType + "-" + defaultSubject, (key) -> {
             try {
                 return this.restTemplate.getForObject(this.config.security.api().url() + "/avatar/" + type + "/" + subject + (defaultType != null && defaultSubject != null ? "/" + defaultType + "/" + defaultSubject : "") + "?apiKey=" + this.config.sso.apiKey(), String.class);
@@ -129,6 +138,12 @@ public class AvatarService extends HangarComponent {
                 throw new ResponseStatusException(ex.getStatusCode(), "Error from auth api: " + ex.getMessage(), ex);
             }
         });
+    }
+
+    private void checkEnabled() {
+        if (this.config.fakeUser.enabled()) {
+            throw new HangarApiException("Disabled since fake user is enabled!");
+        }
     }
 
     // no clue why I need an InputStreamResource, ByteArrayResource ends in "Required part 'avatar' is not present." 🤷

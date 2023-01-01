@@ -27,37 +27,45 @@ public interface OrganizationDAO {
     void delete(long id);
 
     @SqlQuery("""
-        SELECT o.*, u.uuid AS userUuid
-        FROM organizations o
-        JOIN users u ON u.id = o.user_id
-        WHERE o.id = :orgId
-    """)
+            SELECT o.*, u.uuid AS useruuid
+            FROM organizations o
+            JOIN users u ON u.id = o.user_id
+            WHERE o.id = :orgId
+        """)
     OrganizationTable getById(long orgId);
 
     @SqlQuery("""
-        SELECT o.*, u.uuid AS userUuid
-        FROM organizations o
-        JOIN users u ON u.id = o.user_id
-        WHERE o.user_id = :userId
-    """)
+            SELECT o.*, u.uuid AS useruuid
+            FROM organizations o
+            JOIN users u ON u.id = o.user_id
+            WHERE o.user_id = :userId
+        """)
     OrganizationTable getByUserId(long userId);
 
     @SqlQuery("""
-        SELECT o.*, u.uuid AS userUuid
-        FROM organizations o
-        JOIN users u ON u.id = o.user_id
-        WHERE o.name = :name
-    """)
+            SELECT o.*, u.uuid AS useruuid
+            FROM organizations o
+            JOIN users u ON u.id = o.user_id
+            WHERE o.name = :name
+        """)
     OrganizationTable getByName(String name);
 
-    @SqlQuery("SELECT o.*" +
-        "   FROM organization_trust ot" +
-        "       JOIN organizations o ON ot.organization_id = o.id" +
-        "   WHERE ot.user_id = :userId" +
-        "       AND (ot.permission & :permission::bit(64)) = :permission::bit(64)")
+    @SqlQuery("""
+            SELECT o.*, u.uuid AS userUuid
+               FROM organization_trust ot
+                   JOIN organizations o ON ot.organization_id = o.id
+                   JOIN users u ON o.user_id = u.id
+               WHERE ot.user_id = :userId
+                   AND (ot.permission & :permission::bit(64)) = :permission::bit(64)
+        """)
     List<OrganizationTable> getOrganizationsWithPermission(long userId, Permission permission);
 
-    @SqlQuery("SELECT * FROM organizations WHERE owner_id = :ownerId")
+    @SqlQuery("""
+            SELECT o.*, u.uuid AS userUuid
+                FROM organizations o
+                    JOIN users u ON u.id = o.user_id
+                WHERE o.owner_id = :ownerId
+        """)
     List<OrganizationTable> getOrganizationsOwnedBy(long ownerId);
 
     @SqlQuery("SELECT count(id) FROM organizations WHERE owner_id = :userId")
