@@ -131,7 +131,7 @@ public class AvatarService extends HangarComponent {
             return "https://docs.papermc.io/img/paper.png";
         }
 
-        return this.cache.get(type + "-" + subject + "-" + defaultType + "-" + defaultSubject, (key) -> {
+        return this.cache.get(type + "-" + subject, (key) -> {
             try {
                 return this.restTemplate.getForObject(this.config.security.api().url() + "/avatar/" + type + "/" + subject + (defaultType != null && defaultSubject != null ? "/" + defaultType + "/" + defaultSubject : "") + "?apiKey=" + this.config.sso.apiKey(), String.class);
             } catch (final HttpStatusCodeException ex) {
