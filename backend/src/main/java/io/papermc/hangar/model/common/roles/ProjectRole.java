@@ -7,7 +7,10 @@ import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
@@ -95,7 +98,7 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
     }
 
     @Override
-    public @NotNull ProjectRoleTable create(final Long projectId, final long userId, final boolean isAccepted) {
+    public @NotNull ProjectRoleTable create(final Long projectId, final @Nullable UUID principalUuid, final long userId, final boolean isAccepted) {
         Preconditions.checkNotNull(projectId, "project id");
         return new ProjectRoleTable(userId, this, isAccepted, projectId);
     }

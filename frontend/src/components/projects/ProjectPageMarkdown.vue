@@ -8,7 +8,6 @@ import { useProjectPage } from "~/composables/useProjectPage";
 import { useSeo } from "~/composables/useSeo";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 
 const props = defineProps<{
   project: HangarProject;
@@ -23,7 +22,7 @@ const updateProjectPages = inject<(pages: HangarProjectPage[]) => void>("updateP
 const { editingPage, changeEditingPage, page, savePage, deletePage } = await useProjectPage(route, router, props.project);
 if (page) {
   const title = page.value?.name === "Home" ? props.project.name : page.value?.name + " | " + props.project.name;
-  useHead(useSeo(title, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
+  useHead(useSeo(title, props.project.description, route, props.project.avatarUrl));
 }
 
 async function deletePageAndUpdateProject() {

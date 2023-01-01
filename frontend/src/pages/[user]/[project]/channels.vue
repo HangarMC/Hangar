@@ -15,7 +15,6 @@ import Button from "~/lib/components/design/Button.vue";
 import { useBackendData } from "~/store/backendData";
 import ChannelModal from "~/components/modals/ChannelModal.vue";
 import { useSeo } from "~/composables/useSeo";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useNotificationStore } from "~/lib/store/notification";
 import { definePageMeta } from "#imports";
 
@@ -34,9 +33,7 @@ const channels = channelData.data;
 const validations = useBackendData.validations;
 const notifications = useNotificationStore();
 
-useHead(
-  useSeo("Channels | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug))
-);
+useHead(useSeo("Channels | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 
 async function deleteChannel(channel: ProjectChannel) {
   await useInternalApi(`channels/${props.project.id}/delete/${channel.id}`, "post")

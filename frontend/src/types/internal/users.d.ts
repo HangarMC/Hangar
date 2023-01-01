@@ -67,12 +67,14 @@ declare module "hangar-internal" {
     role: Role;
     ownerName: string;
     ownerId: number;
+    avatarUrl?: string;
   }
 
   interface JoinableMember {
     user: UserTable;
     role: RoleTable;
     hidden: boolean;
+    avatarUrl: string;
   }
 
   interface Joinable {

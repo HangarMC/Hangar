@@ -8,19 +8,22 @@ import io.papermc.hangar.model.common.roles.GlobalRole;
 import jakarta.annotation.Nullable;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public class HangarUser extends User implements Identified {
 
     private final long id;
+    private final UUID uuid;
     private HeaderData headerData;
     private final List<Integer> readPrompts;
     private final String language;
     private final String theme;
     private String accessToken;
 
-    public HangarUser(final OffsetDateTime createdAt, final String name, final String tagline, final OffsetDateTime joinDate, final List<GlobalRole> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory, final long id, final List<Integer> readPrompts, final String language, final String theme) {
+    public HangarUser(final OffsetDateTime createdAt, final String name, final String tagline, final OffsetDateTime joinDate, final List<GlobalRole> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory, final long id, final UUID uuid, final List<Integer> readPrompts, final String language, final String theme) {
         super(createdAt, name, tagline, joinDate, roles, projectCount, locked, nameHistory);
         this.id = id;
+        this.uuid = uuid;
         this.readPrompts = readPrompts;
         this.language = language;
         this.theme = theme;
@@ -57,6 +60,10 @@ public class HangarUser extends User implements Identified {
 
     public void setAccessToken(final String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public UUID getUuid() {
+        return this.uuid;
     }
 
     public User toUser() {

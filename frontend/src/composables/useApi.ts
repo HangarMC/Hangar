@@ -53,11 +53,3 @@ export function useInternalApi<T = void>(url: string, method: AxiosRequestConfig
   fetchLog("useInternalApi", url, data);
   return request(`internal/${url}`, method, data);
 }
-
-export async function fetchIfNeeded<T>(func: () => Promise<T>, ref: Ref<T>) {
-  if (!isEmpty(ref.value)) {
-    return ref;
-  }
-  ref.value = await func();
-  return ref;
-}

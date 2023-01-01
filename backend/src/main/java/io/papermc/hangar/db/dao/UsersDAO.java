@@ -21,25 +21,28 @@ import org.springframework.stereotype.Repository;
 @RegisterColumnMapperFactory(RoleColumnMapperFactory.class)
 public interface UsersDAO {
 
-    @SqlQuery("SELECT u.id, " +
-        "       u.created_at," +
-        "       u.name," +
-        "       u.tagline," +
-        "       u.join_date, " +
-        "       array(SELECT role_id FROM user_global_roles WHERE u.id = user_id) AS roles," +
-        "       (SELECT count(*)" +
-        "           FROM project_members_all pma" +
-        "           WHERE pma.user_id = u.id" +
-        "       ) AS project_count," +
-        "       u.read_prompts," +
-        "       u.locked," +
-        "       u.language," +
-        "       u.theme," +
-        "       exists(SELECT 1 FROM organizations o WHERE u.id = o.user_id) AS is_organization" +
-        "   FROM users u" +
-        "   WHERE u.name = :name" +
-        "       OR u.id = :id" +
-        "   GROUP BY u.id")
+    @SqlQuery("""
+            SELECT u.id,
+                   u.uuid,
+                   u.created_at,
+                   u.name,
+                   u.tagline,
+                   u.join_date,
+                   array(SELECT role_id FROM user_global_roles WHERE u.id = user_id) AS roles,
+                   (SELECT count(*)
+                       FROM project_members_all pma
+                       WHERE pma.user_id = u.id
+                   ) AS project_count,
+                   u.read_prompts,
+                   u.locked,
+                   u.language,
+                   u.theme,
+                   exists(SELECT 1 FROM organizations o WHERE u.id = o.user_id) AS is_organization
+               FROM users u
+               WHERE u.name = :name
+                   OR u.id = :id
+               GROUP BY u.id
+     """)
     <T extends User> T _getUser(String name, Long id, @MapTo Class<T> type);
 
     default <T extends User> T getUser(final String name, final Class<T> type) {

@@ -8,7 +8,6 @@ import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
-import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
@@ -19,7 +18,6 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
-import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
@@ -28,13 +26,11 @@ import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.internal.file.FileService;
+import io.papermc.hangar.service.internal.AvatarService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
-import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.versions.DownloadService;
 import io.papermc.hangar.service.internal.versions.PinnedVersionService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.EnumMap;
@@ -44,19 +40,14 @@ import java.util.Objects;
 import java.util.SortedSet;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ProjectService extends HangarComponent {
@@ -67,31 +58,27 @@ public class ProjectService extends HangarComponent {
     private final ProjectVisibilityService projectVisibilityService;
     private final OrganizationService organizationService;
     private final ProjectPageService projectPageService;
-    private final ProjectFiles projectFiles;
     private final PermissionService permissionService;
     private final PinnedVersionService pinnedVersionService;
     private final VersionsApiDAO versionsApiDAO;
     private final HangarVersionsDAO hangarVersionsDAO;
-    private final RestTemplate restTemplate;
     private final DownloadService downloadService;
-    private final FileService fileService;
+    private final AvatarService avatarService;
 
     @Autowired
-    public ProjectService(final ProjectsDAO projectDAO, final HangarUsersDAO hangarUsersDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final ProjectFiles projectFiles, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, @Lazy final RestTemplate restTemplate, final DownloadService downloadService, final FileService fileService) {
+    public ProjectService(final ProjectsDAO projectDAO, final HangarUsersDAO hangarUsersDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, final DownloadService downloadService, final AvatarService avatarService) {
         this.projectsDAO = projectDAO;
         this.hangarUsersDAO = hangarUsersDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
         this.organizationService = organizationService;
         this.projectPageService = projectPageService;
-        this.projectFiles = projectFiles;
         this.permissionService = permissionService;
         this.pinnedVersionService = pinnedVersionService;
         this.versionsApiDAO = versionsApiDAO;
         this.hangarVersionsDAO = hangarVersionsDAO;
-        this.restTemplate = restTemplate;
         this.downloadService = downloadService;
-        this.fileService = fileService;
+        this.avatarService = avatarService;
     }
 
     public @Nullable ProjectTable getProjectTable(final @Nullable Long projectId) {
@@ -121,6 +108,7 @@ public class ProjectService extends HangarComponent {
         final Pair<Long, Project> project = this.hangarProjectsDAO.getProject(author, slug, this.getHangarUserId());
         final ProjectOwner projectOwner = this.getProjectOwner(author);
         final List<JoinableMember<ProjectRoleTable>> members = this.hangarProjectsDAO.getProjectMembers(project.getLeft(), this.getHangarUserId(), this.permissionService.getProjectPermissions(this.getHangarUserId(), project.getLeft()).has(Permission.EditProjectSettings));
+        members.forEach((member) -> member.setAvatarUrl(this.avatarService.getUserAvatarUrl(member.getUser())));
         String lastVisibilityChangeComment = "";
         String lastVisibilityChangeUserName = "";
         if (project.getRight().getVisibility() == Visibility.NEEDSCHANGES || project.getRight().getVisibility() == Visibility.SOFTDELETE) {
@@ -151,7 +139,9 @@ public class ProjectService extends HangarComponent {
             }
         }
 
-        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, mainChannelVersions, this.fileService.exists(this.projectFiles.getIconPath(author, slug)));
+        final HangarProject hangarProject = new HangarProject(project.getRight(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, mainChannelVersions);
+        hangarProject.setAvatarUrl(this.avatarService.getProjectAvatarUrl(hangarProject.getProjectId(), hangarProject.getNamespace().getOwner()));
+        return hangarProject;
     }
 
     public @Nullable HangarVersion getLastVersion(final String author, final String slug, final Platform platform, final @Nullable String channel) {
@@ -212,57 +202,22 @@ public class ProjectService extends HangarComponent {
         this.projectsDAO.update(projectTable);
     }
 
-    public String saveIcon(final String author, final String slug, final MultipartFile icon) {
-        final ProjectTable projectTable = this.getProjectTable(author, slug);
-        if (!StringUtils.equalsAny(icon.getContentType(), MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE)) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.error.invalidFile", icon.getContentType());
+    public void changeAvatar(final String author, final String slug, final byte[] avatar) {
+        final ProjectTable table = this.getProjectTable(author, slug);
+        if (table == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown project " + author + "/" + slug);
         }
-        if (StringUtils.isBlank(icon.getOriginalFilename())) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.error.noFile");
-        }
-        try {
-            final String iconPath = this.projectFiles.getIconPath(author, slug);
-            final String oldBase64 = this.getBase64(author, slug, "old", iconPath);
-            this.fileService.write(icon.getInputStream(), iconPath);
-            final String newBase64 = this.getBase64(author, slug, "new", iconPath);
-            this.actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), newBase64, oldBase64));
-        } catch (final IOException e) {
-            e.printStackTrace();
-            throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return this.evictIconCache(author, slug);
+        this.avatarService.changeProjectAvatar(table.getProjectId(), avatar);
+        this.actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(table.getId()),  Base64.getEncoder().encodeToString(avatar), "#unknown"));
     }
 
-    public String resetIcon(final String author, final String slug) {
-        final ProjectTable projectTable = this.getProjectTable(author, slug);
-        final String base64 = this.getBase64(author, slug, "old", this.projectFiles.getIconPath(author, slug));
-        if (this.fileService.delete(this.projectFiles.getIconPath(author, slug))) {
-            this.actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), "#empty", base64));
+    public void deleteAvatar(final String author, final String slug) {
+        final ProjectTable table = this.getProjectTable(author, slug);
+        if (table == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown project " + author + "/" + slug);
         }
-        return this.evictIconCache(author, slug);
-    }
-
-    private String evictIconCache(final String author, final String slug) {
-        try {
-            final String url = this.config.getBaseUrl() + "/api/internal/projects/project/" + author + "/" + slug + "/icon";
-            this.restTemplate.delete(this.config.security.api().url() + "/image/" + url + "?apiKey=" + this.config.sso.apiKey());
-            return "dum";
-        } catch (final HttpClientErrorException e) {
-            return e.getMessage();
-        }
-    }
-
-    private String getBase64(final String author, final String slug, final String old, final String path) {
-        String base64 = "#empty";
-        if (path == null || !this.fileService.exists(path)) {
-            return base64;
-        }
-        try {
-            base64 = Base64.getEncoder().encodeToString(this.fileService.bytes(path));
-        } catch (final IOException e) {
-            this.logger.warn("Error while loading {} icon for project {}/{}: {}:{}", old, author, slug, e.getClass().getSimpleName(), e.getMessage());
-        }
-        return base64;
+        this.avatarService.deleteProjectAvatar(table.getProjectId());
+        this.actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(table.getId()), "#empty", "#unknown"));
     }
 
     public List<UserTable> getProjectWatchers(final long projectId) {

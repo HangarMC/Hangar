@@ -17,6 +17,7 @@ import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.PermissionService;
+import io.papermc.hangar.service.internal.AvatarService;
 import io.papermc.hangar.service.internal.admin.FlagService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.projects.PinnedProjectService;
@@ -50,9 +51,10 @@ public class UsersApiService extends HangarComponent {
     private final ReviewService reviewService;
     private final ProjectAdminService projectAdminService;
     private final FlagService flagService;
+    private final AvatarService avatarService;
 
     @Autowired
-    public UsersApiService(final UsersDAO usersDAO, final UsersApiDAO usersApiDAO, final NotificationsDAO notificationsDAO, final PermissionService permissionService, final OrganizationService organizationService, final PinnedProjectService pinnedProjectService, final ReviewService reviewService, @Lazy final ProjectAdminService projectAdminService, final FlagService flagService) {
+    public UsersApiService(final UsersDAO usersDAO, final UsersApiDAO usersApiDAO, final NotificationsDAO notificationsDAO, final PermissionService permissionService, final OrganizationService organizationService, final PinnedProjectService pinnedProjectService, final ReviewService reviewService, @Lazy final ProjectAdminService projectAdminService, final FlagService flagService, final AvatarService avatarService) {
         this.usersDAO = usersDAO;
         this.usersApiDAO = usersApiDAO;
         this.notificationsDAO = notificationsDAO;
@@ -62,11 +64,13 @@ public class UsersApiService extends HangarComponent {
         this.reviewService = reviewService;
         this.projectAdminService = projectAdminService;
         this.flagService = flagService;
+        this.avatarService = avatarService;
     }
 
     public <T extends User> T getUser(final String name, final Class<T> type) {
         final T user = this.getUserRequired(name, this.usersDAO::getUser, type);
         this.supplyNameHistory(user);
+        this.supplyAvatarUrl(user);
         return user instanceof HangarUser ? (T) this.supplyHeaderData((HangarUser) user) : user;
     }
 
@@ -74,6 +78,7 @@ public class UsersApiService extends HangarComponent {
     public <T extends User> PaginatedResult<T> getUsers(final String query, final RequestPagination pagination, final Class<T> type) {
         final boolean hasQuery = !StringUtils.isBlank(query);
         final List<T> users = this.usersDAO.getUsers(hasQuery, query, pagination, type);
+        users.forEach(u -> u.setAvatarUrl(this.avatarService.getUserAvatarUrl(u)));
         return new PaginatedResult<>(new Pagination(this.usersDAO.getUsersCount(hasQuery, query), pagination), users);
     }
 
@@ -82,6 +87,7 @@ public class UsersApiService extends HangarComponent {
         this.getUserRequired(userName, this.usersDAO::getUser, User.class);
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final List<ProjectCompact> projects = this.usersApiDAO.getUserStarred(userName, canSeeHidden, this.getHangarUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
+        projects.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
         final long count = this.usersApiDAO.getUserStarredCount(userName, canSeeHidden, this.getHangarUserId());
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
@@ -91,6 +97,7 @@ public class UsersApiService extends HangarComponent {
         this.getUserRequired(userName, this.usersDAO::getUser, User.class);
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final List<ProjectCompact> projects = this.usersApiDAO.getUserWatching(userName, canSeeHidden, this.getHangarUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
+        projects.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
         final long count = this.usersApiDAO.getUserWatchingCount(userName, canSeeHidden, this.getHangarUserId());
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
@@ -104,6 +111,7 @@ public class UsersApiService extends HangarComponent {
     @Transactional
     public PaginatedResult<User> getAuthors(final RequestPagination pagination) {
         final List<User> users = this.usersApiDAO.getAuthors(pagination);
+        users.forEach(u -> u.setAvatarUrl(this.avatarService.getUserAvatarUrl(u)));
         final long count = this.usersApiDAO.getAuthorsCount();
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
@@ -117,6 +125,7 @@ public class UsersApiService extends HangarComponent {
     @Transactional
     public PaginatedResult<User> getStaff(final RequestPagination pagination) {
         final List<User> users = this.usersApiDAO.getStaff(this.config.user.staffRoles(), pagination);
+        users.forEach(u -> u.setAvatarUrl(this.avatarService.getUserAvatarUrl(u)));
         final long count = this.usersApiDAO.getStaffCount(this.config.user.staffRoles());
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
@@ -162,7 +171,13 @@ public class UsersApiService extends HangarComponent {
         user.setNameHistory(userNameHistory);
     }
 
+    public void supplyAvatarUrl(final User user) {
+        user.setAvatarUrl(this.avatarService.getUserAvatarUrl(user));
+    }
+
     public List<ProjectCompact> getUserPinned(final String userName) {
-        return this.pinnedProjectService.getPinnedVersions(this.getUserRequired(userName, this.usersDAO::getUser, HangarUser.class).getId());
+        List<ProjectCompact> pinnedVersions = this.pinnedProjectService.getPinnedVersions(this.getUserRequired(userName, this.usersDAO::getUser, HangarUser.class).getId());
+        pinnedVersions.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
+        return pinnedVersions;
     }
 }

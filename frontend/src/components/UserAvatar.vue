@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { avatarUrl } from "~/composables/useUrlHelper";
 
 const props = withDefaults(
   defineProps<{
@@ -51,8 +50,6 @@ const src = computed(() => {
     return props.imgSrc;
   } else if (props.avatarUrl) {
     return props.avatarUrl;
-  } else if (props.username) {
-    return avatarUrl(props.username);
   } else {
     return "https://docs.papermc.io/img/paper.png";
   }

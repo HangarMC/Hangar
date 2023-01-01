@@ -7,7 +7,6 @@ import { computed, reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { useSeo } from "~/composables/useSeo";
 import { Platform, ReviewAction, ReviewState } from "~/types/enums";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import Button from "~/lib/components/design/Button.vue";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
@@ -321,9 +320,7 @@ function sendReviewRequest(
     .finally(final);
 }
 
-useHead(
-  useSeo("Reviews | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug))
-);
+useHead(useSeo("Reviews | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 </script>
 
 <template>

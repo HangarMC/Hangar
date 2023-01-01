@@ -15,7 +15,6 @@ import Table from "~/lib/components/design/Table.vue";
 import Alert from "~/lib/components/design/Alert.vue";
 import Card from "~/lib/components/design/Card.vue";
 import { useSeo } from "~/composables/useSeo";
-import { avatarUrl } from "~/composables/useUrlHelper";
 import { useNotificationStore } from "~/lib/store/notification";
 import { maxLength, minLength, required } from "~/lib/composables/useValidationHelpers";
 import { validApiKeyName } from "~/composables/useHangarValidations";
@@ -45,7 +44,7 @@ const loadingCreate = ref(false);
 const loadingDelete = reactive<Record<string, boolean>>({});
 const selectedPerms = ref([]);
 
-useHead(useSeo(i18n.t("apiKeys.title") + " | " + props.user.name, null, route, avatarUrl(props.user.name)));
+useHead(useSeo(i18n.t("apiKeys.title") + " | " + props.user.name, null, route, props.user.avatarUrl));
 
 async function create() {
   if (!(await v.value.$validate())) return;

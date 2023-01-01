@@ -9,6 +9,7 @@ import {
   LoggedAction,
   Note,
   Organization,
+  OrganizationRoleTable,
   ProjectChannel,
   ProjectOwner,
   ProjectPage,
@@ -165,7 +166,7 @@ export async function useUserData(
     starred: PaginatedResult<ProjectCompact>;
     watching: PaginatedResult<ProjectCompact>;
     projects: PaginatedResult<Project>;
-    organizations: { [key: string]: RoleTable };
+    organizations: { [key: string]: OrganizationRoleTable };
     pinned: ProjectCompact[];
   } | null>
 > {
@@ -186,7 +187,7 @@ export async function useUserData(
         starred: data[0] as PaginatedResult<ProjectCompact>,
         watching: data[1] as PaginatedResult<ProjectCompact>,
         projects: data[2] as PaginatedResult<Project>,
-        organizations: data[3] as { [key: string]: RoleTable },
+        organizations: data[3] as { [key: string]: OrganizationRoleTable },
         pinned: data[4] as ProjectCompact[],
       };
     })

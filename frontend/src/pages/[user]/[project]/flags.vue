@@ -10,7 +10,6 @@ import SortableTable from "~/components/SortableTable.vue";
 import Alert from "~/lib/components/design/Alert.vue";
 import { useProjectFlags } from "~/composables/useApiHelper";
 import { useSeo } from "~/composables/useSeo";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import { definePageMeta } from "#imports";
 import { Header } from "~/types/components/SortableTable";
 
@@ -34,7 +33,7 @@ const headers: Header[] = [
   { title: "Resolved", name: "resolved" },
 ];
 
-useHead(useSeo("Flags | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
+useHead(useSeo("Flags | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 </script>
 
 <template>

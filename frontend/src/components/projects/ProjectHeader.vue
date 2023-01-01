@@ -7,7 +7,6 @@ import { useRouter } from "vue-router";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Button from "~/lib/components/design/Button.vue";
 import Card from "~/lib/components/design/Card.vue";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
@@ -29,9 +28,6 @@ const props = defineProps<{
 
 const user = useAuthStore().user;
 const slug = computed(() => props.project.namespace.owner + "/" + props.project.name);
-const imageUrl = computed(() => {
-  return projectIconUrl(props.project.namespace.owner, props.project.name);
-});
 
 const starred = ref(props.project.userActions.starred);
 const watching = ref(props.project.userActions.watching);
@@ -119,7 +115,7 @@ function requiresConfirmation(): ConfirmationType {
         class="flex-shrink-0 mr-3 <sm:hidden"
         :username="project.namespace.owner"
         :to="'/' + project.namespace.owner + '/' + project.name"
-        :img-src="imageUrl"
+        :img-src="project.avatarUrl"
       />
       <div class="flex-grow sm:mr-4 <sm:mb-4 overflow-clip overflow-hidden">
         <div class="text-2xl <sm:text-lg pb-1 inline-flex space-x-0.3 items-center">
@@ -127,7 +123,7 @@ function requiresConfirmation(): ConfirmationType {
             class="!w-8 !h-8 sm:hidden"
             :username="project.namespace.owner"
             :to="'/' + project.namespace.owner + '/' + project.name"
-            :img-src="imageUrl"
+            :img-src="project.avatarUrl"
           />
           <router-link class="!sm:ml-0 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner">{{
             project.namespace.owner

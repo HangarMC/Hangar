@@ -15,7 +15,6 @@ import { useInternalApi } from "~/composables/useApi";
 import InputText from "~/lib/components/ui/InputText.vue";
 import Button from "~/lib/components/design/Button.vue";
 import { useSeo } from "~/composables/useSeo";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import { definePageMeta } from "#imports";
 import { Header } from "~/types/components/SortableTable";
 
@@ -39,7 +38,7 @@ const headers: Header[] = [
   { title: "Message", name: "message", width: "80%" },
 ];
 
-useHead(useSeo("Notes | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
+useHead(useSeo("Notes | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 
 async function addNote() {
   if (!text.value) {

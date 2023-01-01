@@ -10,7 +10,6 @@ import UserAvatar from "~/components/UserAvatar.vue";
 import Link from "~/lib/components/design/Link.vue";
 import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
-import { avatarUrl } from "~/composables/useUrlHelper";
 import { hasPerms } from "~/composables/usePerm";
 import { useBackendData } from "~/store/backendData";
 import { useApi, useInternalApi } from "~/composables/useApi";
@@ -166,7 +165,7 @@ async function doSearch(val: string) {
       :key="member.user.name"
       class="p-2 w-full border border-gray-100 dark:border-gray-800 rounded inline-flex flex-row space-x-4"
     >
-      <UserAvatar :username="member.user.name" :avatar-url="avatarUrl(member.user.name)" size="sm" class="flex-shrink-0" />
+      <UserAvatar :username="member.user.name" :avatar-url="member.avatarUrl" size="sm" class="flex-shrink-0" />
       <div class="flex-grow truncate">
         <p class="font-semibold">
           <Link :to="'/' + member.user.name">{{ member.user.name }}</Link>

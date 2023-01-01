@@ -70,14 +70,6 @@ public class ProjectFiles {
         }
     }
 
-    public String getIconsDir(final String owner, final String slug) {
-        return this.fileService.resolve(this.getProjectDir(owner, slug), "icons");
-    }
-
-    public String getIconPath(final String owner, final String slug) {
-        return this.fileService.resolve(this.getIconsDir(owner, slug), "icon.png");
-    }
-
     public String getTempDir(final String owner) {
         return this.fileService.resolve(this.tmpDir, owner);
     }

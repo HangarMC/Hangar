@@ -69,7 +69,7 @@ useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));
       @update:sort="updateSort"
       @update:page="updatePage"
     >
-      <template #item_pic="{ item }"><UserAvatar :username="item.name" size="xs"></UserAvatar></template>
+      <template #item_pic="{ item }"><UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs"></UserAvatar></template>
       <template #item_joinDate="{ item }">{{ i18n.d(item.joinDate, "date") }}</template>
       <template #item_roles="{ item }">
         <div class="space-x-1">

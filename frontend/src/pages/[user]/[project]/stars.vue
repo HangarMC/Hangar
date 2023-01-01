@@ -6,7 +6,6 @@ import { HangarProject } from "hangar-internal";
 import Card from "~/lib/components/design/Card.vue";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
-import { avatarUrl, projectIconUrl } from "~/composables/useUrlHelper";
 import Alert from "~/lib/components/design/Alert.vue";
 import { useStargazers } from "~/composables/useApiHelper";
 import Link from "~/lib/components/design/Link.vue";
@@ -20,14 +19,7 @@ const props = defineProps<{
   project: HangarProject;
 }>();
 
-useHead(
-  useSeo(
-    i18n.t("project.stargazers") + " | " + props.project.name,
-    props.project.description,
-    route,
-    projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)
-  )
-);
+useHead(useSeo(i18n.t("project.stargazers") + " | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 </script>
 
 <template>
@@ -38,7 +30,7 @@ useHead(
 
     <div v-if="stargazers?.result?.length > 0" class="flex flex-wrap gap-4">
       <div v-for="stargazer in stargazers?.result" :key="stargazer.name">
-        <UserAvatar size="xs" :username="stargazer.name" :avatar-url="avatarUrl(stargazer.name)" />
+        <UserAvatar size="xs" :username="stargazer.name" :avatar-url="stargazer.avatarUrl" />
         <Link :to="'/' + stargazer.name">{{ stargazer.name }}</Link>
       </div>
     </div>

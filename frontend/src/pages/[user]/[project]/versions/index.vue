@@ -17,7 +17,6 @@ import { useProjectChannels, useProjectVersions } from "~/composables/useApiHelp
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useApi } from "~/composables/useApi";
 import { useSeo } from "~/composables/useSeo";
-import { projectIconUrl } from "~/composables/useUrlHelper";
 import Alert from "~/lib/components/design/Alert.vue";
 import Pagination from "~/lib/components/design/Pagination.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
@@ -53,9 +52,7 @@ const versions = await useProjectVersions(route.params.user as string, route.par
 filter.channels.push(...channels.value.map((c) => c.name));
 filter.platforms.push(...platforms.value.map((p) => p.enumName));
 
-useHead(
-  useSeo("Versions | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug))
-);
+useHead(useSeo("Versions | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 
 watch(
   filter,

@@ -1,6 +1,7 @@
 package io.papermc.hangar.model.internal.projects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.papermc.hangar.config.jackson.RequiresPermission;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.api.project.Project;
@@ -23,7 +24,6 @@ import org.jdbi.v3.core.mapper.Nested;
 
 public class HangarProject extends Project implements Joinable<ProjectRoleTable>, ProjectIdentified {
 
-    private final long id;
     private final ProjectOwner owner;
     private final List<JoinableMember<ProjectRoleTable>> members;
     private final String lastVisibilityChangeComment;
@@ -32,11 +32,9 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     private final Collection<HangarProjectPage> pages;
     private final List<PinnedVersion> pinnedVersions;
     private final Map<Platform, HangarVersion> mainChannelVersions;
-    private final boolean customIcon;
 
-    public HangarProject(final Project project, final long id, final ProjectOwner owner, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, HangarVersion> mainChannelVersions, final boolean customIcon) {
+    public HangarProject(final Project project, final ProjectOwner owner, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, HangarVersion> mainChannelVersions) {
         super(project);
-        this.id = id;
         this.owner = owner;
         this.members = members;
         this.lastVisibilityChangeComment = lastVisibilityChangeComment;
@@ -45,9 +43,9 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         this.pages = pages;
         this.pinnedVersions = pinnedVersions;
         this.mainChannelVersions = mainChannelVersions;
-        this.customIcon = customIcon;
     }
 
+    @JsonInclude
     public long getId() {
         return this.id;
     }
@@ -107,12 +105,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
             ", info=" + this.info +
             ", pages=" + this.pages +
             ", pinnedVersions=" + this.pinnedVersions +
-            ", customIcon=" + this.customIcon +
             "} " + super.toString();
-    }
-
-    public boolean isCustomIcon() {
-        return this.customIcon;
     }
 
     public static class HangarProjectInfo {

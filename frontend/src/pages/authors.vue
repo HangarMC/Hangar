@@ -70,7 +70,7 @@ useHead(useSeo(i18n.t("pages.authorsTitle"), "Hangar Project Authors", route, nu
       @update:sort="updateSort"
       @update:page="updatePage"
     >
-      <template #item_pic="{ item }"><UserAvatar :username="item.name" size="xs"></UserAvatar></template>
+      <template #item_pic="{ item }"><UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs"></UserAvatar></template>
       <template #item_joinDate="{ item }">{{ i18n.d(item?.joinDate, "date") }}</template>
       <template #item_name="{ item }">
         <Link :to="'/' + item.name">{{ item.name }}</Link>
