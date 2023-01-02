@@ -107,7 +107,7 @@ hangar:
     max-dependencies: 100
     max-pages: 50
     max-bbcode-len: 20000
-    max-sponsors-len: 500
+    max-sponsors-len: 1500
     max-channels: 5
     init-load: 25
     init-version-load: 10
