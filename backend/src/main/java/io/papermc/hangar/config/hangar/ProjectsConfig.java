@@ -54,4 +54,8 @@ public record ProjectsConfig( // TODO split into ProjectsConfig and VersionsConf
     public Validation versionName() {
         return new Validation(this.versionNameRegex(), this.maxVersionNameLen(), null);
     }
+
+    public Validation sponsorsContent() {
+        return Validation.max(this.maxSponsorsLen());
+    }
 }

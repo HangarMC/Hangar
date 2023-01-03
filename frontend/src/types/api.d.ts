@@ -56,6 +56,7 @@ declare module "hangar-api" {
       channels: Validation;
       pageName: Validation;
       pageContent: Validation;
+      sponsorsContent: Validation;
       maxPageCount: number;
       maxChannelCount: number;
     };

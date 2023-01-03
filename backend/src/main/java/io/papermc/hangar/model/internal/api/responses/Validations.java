@@ -22,6 +22,7 @@ public record Validations(
         Validation channels,
         Validation pageName,
         Validation pageContent,
+        Validation sponsorsContent,
         int maxPageCount,
         int maxChannelCount
     ) {
@@ -36,6 +37,7 @@ public record Validations(
             config.channels.channelName(),
             config.pages.pageName(),
             config.pages.pageContent(),
+            config.projects.sponsorsContent(),
             config.projects.maxPages(),
             config.projects.maxChannels()
         );

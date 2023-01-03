@@ -19,6 +19,7 @@ import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
 import { useOpenProjectPages } from "~/composables/useOpenProjectPages";
 import ProjectPageMarkdown from "~/components/projects/ProjectPageMarkdown.vue";
+import { useBackendData } from "~/store/backendData";
 
 const props = defineProps<{
   user: User;
@@ -77,7 +78,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
           :deletable="false"
           :saveable="true"
           :cancellable="true"
-          :maxlength="500"
+          :maxlength="useBackendData.validations.project.sponsorsContent.max"
           :title="i18n.t('project.sponsors')"
           class="pt-0 mr-4"
           @save="saveSponsors"
