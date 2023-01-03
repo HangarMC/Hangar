@@ -20,27 +20,9 @@ export default defineNuxtModule({
   },
   setup(moduleOptions, nuxt) {
     nuxt.hook("prepare:types", async () => {
-      let state = {} as BackendData;
-      try {
-        const data = await fs.readFile(moduleOptions.path, "utf8");
-        state = JSON.parse(data);
-      } catch {
-        // File doesn't exist, create folder
-        await fs.mkdir("./generated", { recursive: true });
-      }
+      const state = await loadState(moduleOptions.path);
 
-      if (
-        // Skip regeneration if within TTL...
-        state?.meta?.lastGenerated &&
-        new Date(state.meta.lastGenerated).getTime() + moduleOptions.ttl > Date.now() &&
-        // ...but only if the API URL is the same
-        state.meta.apiUrl === moduleOptions.serverUrl &&
-        // ...and the version is the same
-        state.meta.version === moduleOptions.version
-      ) {
-        backendDataLog("Not generating backend data since its still valid, lastGenerated was", new Date(state.meta.lastGenerated));
-        return;
-      }
+      if (!needsRefresh(state, moduleOptions.ttl, moduleOptions.serverUrl, moduleOptions.version)) return;
 
       backendDataLog("Generating backend data...");
       state.meta = {
@@ -49,47 +31,90 @@ export default defineNuxtModule({
         version: moduleOptions.version,
       };
 
-      const axiosInstance = axios.create({
-        headers: {
-          "user-agent": `Hangar Backend Data Generator (bots@papermc.io)`,
-        },
-        baseURL: moduleOptions.serverUrl + "/api/internal/data",
-      });
-      axiosInstance.interceptors.response.use(undefined, (err) => {
-        if (axios.isAxiosError(err)) {
-          if (err.response?.status === 404) {
-            backendDataLog("Couldn't load " + err.request?.path + ", skipping");
-            return null;
-          }
-        }
-        throw err;
-      });
-
-      try {
-        await loadData(state, axiosInstance);
-
-        backendDataLog("state", state);
-
-        await fs.writeFile(moduleOptions.path, JSON.stringify(state));
-
-        backendDataLog("Backend data generated!");
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          const transformedError = {
-            code: err?.code,
-            requestUrl: err?.request?.path,
-            status: err?.response?.status,
-            data: err?.response?.data,
-          };
-          backendDataLog("Axios error while generating backend data:", transformedError);
-        } else {
-          backendDataLog("Unknown error while generating backend data:", err);
-        }
-        await fs.writeFile(moduleOptions.path, JSON.stringify({}));
-      }
+      await generateBackendData(state, moduleOptions.path);
     });
   },
 });
+
+async function generateBackendData(state: BackendData, path: string, retry = true) {
+  const axiosInstance = prepareAxios(state.meta.apiUrl);
+
+  try {
+    await loadData(state, axiosInstance);
+
+    backendDataLog("state", state);
+
+    await fs.writeFile(path, JSON.stringify(state));
+
+    backendDataLog("Backend data generated!");
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      const transformedError = {
+        code: err?.code,
+        requestUrl: err?.request?.path,
+        status: err?.response?.status,
+        data: err?.response?.data,
+      };
+      backendDataLog("Axios error while generating backend data:", transformedError);
+    } else {
+      backendDataLog("Unknown error while generating backend data:", err);
+    }
+    if (retry) {
+      backendDataLog("Try running against production...");
+      state.meta.apiUrl = "https://hangar.papermc.io";
+      await generateBackendData(state, path, false);
+    } else {
+      await fs.writeFile(path, JSON.stringify({}));
+    }
+  }
+}
+
+async function loadState(path: string): Promise<BackendData> {
+  let state = {} as BackendData;
+  try {
+    const data = await fs.readFile(path, "utf8");
+    state = JSON.parse(data);
+  } catch {
+    // File doesn't exist, create folder
+    await fs.mkdir("./generated", { recursive: true });
+  }
+  return state;
+}
+
+function needsRefresh(state: BackendData, ttl: number, serverUrl: string, version: number) {
+  if (
+    // Skip regeneration if within TTL...
+    state?.meta?.lastGenerated &&
+    new Date(state.meta.lastGenerated).getTime() + ttl > Date.now() &&
+    // ...but only if the API URL is the same
+    state.meta.apiUrl === serverUrl &&
+    // ...and the version is the same
+    state.meta.version === version
+  ) {
+    backendDataLog("Not generating backend data since its still valid, lastGenerated was", new Date(state.meta.lastGenerated));
+    return false;
+  }
+  return true;
+}
+
+function prepareAxios(serverUrl: string): AxiosInstance {
+  const axiosInstance = axios.create({
+    headers: {
+      "user-agent": `Hangar Backend Data Generator (bots@papermc.io)`,
+    },
+    baseURL: serverUrl + "/api/internal/data",
+  });
+  axiosInstance.interceptors.response.use(undefined, (err) => {
+    if (axios.isAxiosError(err)) {
+      if (err.response?.status === 404) {
+        backendDataLog("Couldn't load " + err.request?.path + ", skipping");
+        return null;
+      }
+    }
+    throw err;
+  });
+  return axiosInstance;
+}
 
 async function loadData(state: BackendData, axiosInstance: AxiosInstance) {
   const [

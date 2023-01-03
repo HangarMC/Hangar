@@ -6,10 +6,10 @@ import { IPlatform, IProjectCategory, IPrompt } from "hangar-internal";
 import backendData from "~/generated/backendData.json";
 import { Option } from "~/lib/types/components/ui/InputAutocomplete";
 
-const typedBackendData = backendData as unknown as BackendData;
+const typedBackendData = { ...backendData } as unknown as BackendData;
 
 // convert to bigint
-const permissionResult = (typedBackendData.permissions as unknown as IPermission[]).map(({ value, frontendName, permission }) => ({
+const permissionResult = (typedBackendData.permissions as unknown as IPermission[])?.map(({ value, frontendName, permission }) => ({
   value,
   frontendName,
   permission: BigInt("0b" + permission),
@@ -22,7 +22,7 @@ typedBackendData.platforms = convertToMap(typedBackendData.platforms as unknown 
 typedBackendData.prompts = convertToMap(typedBackendData.prompts as unknown as IPrompt[], (value) => value.name);
 
 // main export
-export const useBackendData = { ...typedBackendData } as BackendData;
+export const useBackendData = typedBackendData;
 
 // helpers
 export const useVisibleCategories = computed<IProjectCategory[]>(() =>
@@ -33,7 +33,7 @@ export const useVisiblePlatforms = computed(() => (useBackendData.platforms ? [.
 export const useLicenseOptions = computed<Option[]>(() => useBackendData.licenses.map<Option>((l) => ({ value: l, text: l })));
 export const useCategoryOptions = computed<Option[]>(() => useVisibleCategories.value.map<Option>((c) => ({ value: c.apiName, text: c.title })));
 
-function convertToMap<E, T>(values: T[], toStringFunc: (value: T) => string): Map<E, T> {
+function convertToMap<E, T>(values: T[] = [], toStringFunc: (value: T) => string): Map<E, T> {
   const map = new Map<E, T>();
   for (const value of values) {
     const key: E = toStringFunc(value) as unknown as E;
