@@ -5,10 +5,12 @@ import { computed } from "vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import { settingsLog } from "~/lib/composables/useLog";
 import { useAuthStore } from "~/store/auth";
-import { onErrorCaptured, transformAxiosError } from "#imports";
+import { onErrorCaptured, transformAxiosError, useRoute } from "#imports";
 
 // popper needs this?
 import "regenerator-runtime/runtime";
+
+const route = useRoute();
 
 // keep in sync with error.vue, cause reasons
 const authStore = useAuthStore();
@@ -33,6 +35,6 @@ onErrorCaptured((err) => {
 
 <template>
   <NuxtLayout>
-    <NuxtPage />
+    <NuxtPage :page-key="route.params.user + '-' + route.params.project" />
   </NuxtLayout>
 </template>
