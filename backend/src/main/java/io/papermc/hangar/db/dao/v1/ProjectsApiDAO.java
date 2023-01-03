@@ -48,6 +48,7 @@ public interface ProjectsApiDAO {
         "       p.wiki," +
         "       p.license_name," +
         "       p.license_url," +
+        "       p.license_type," +
         "       p.keywords," +
         "       p.forum_sync," +
         "       p.topic_id," +
