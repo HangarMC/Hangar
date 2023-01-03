@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, ref, watch, watchPostEffect } from "vue";
 import { useI18n } from "vue-i18n";
 import { debounce } from "lodash-es";
 import { useInternalApi } from "~/composables/useApi";
@@ -30,15 +30,17 @@ async function fetch() {
     content: props.raw,
   }).catch<any>((e) => handleRequestError(e));
   loading.value = false;
+}
+await fetch();
+
+watchPostEffect(async () => {
   if (!import.meta.env.SSR) {
-    await nextTick();
     setupAdmonition();
     if (typeof renderedMarkdown.value?.includes === "function" && renderedMarkdown.value?.includes("<code")) {
       await usePrismStore().handlePrism();
     }
   }
-}
-await fetch();
+});
 
 function setupAdmonition() {
   /** @licence

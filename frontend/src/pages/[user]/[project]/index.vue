@@ -78,7 +78,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
           :deletable="false"
           :saveable="true"
           :cancellable="true"
-          :maxlength="useBackendData.validations.project.sponsorsContent.max"
+          :maxlength="useBackendData.validations.project.sponsorsContent?.max"
           :title="i18n.t('project.sponsors')"
           class="pt-0 mr-4"
           @save="saveSponsors"
