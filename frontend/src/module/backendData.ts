@@ -24,7 +24,6 @@ export default defineNuxtModule({
 
       if (!needsRefresh(state, moduleOptions.ttl, moduleOptions.serverUrl, moduleOptions.version)) return;
 
-      backendDataLog("Generating backend data...");
       state.meta = {
         lastGenerated: new Date().toISOString(),
         apiUrl: moduleOptions.serverUrl,
@@ -40,6 +39,7 @@ async function generateBackendData(state: BackendData, path: string, retry = tru
   const axiosInstance = prepareAxios(state.meta.apiUrl);
 
   try {
+    backendDataLog("Generating backend data (" + state.meta.apiUrl + ")...");
     await loadData(state, axiosInstance);
 
     backendDataLog("state", state);
