@@ -51,18 +51,17 @@ const isReviewStateChecked = computed<boolean>(
 const isUnderReview = computed<boolean>(() => projectVersion.value?.reviewState === ReviewState.UNDER_REVIEW);
 const currentVisibility = computed(() => useBackendData.visibilities.find((v) => v.name === projectVersion.value?.visibility));
 const editingPage = ref(false);
-const requiresConfirmation = computed<boolean>(() => {
+const confirmationWarningKey = computed<string | null>(() => {
   if (projectVersion.value?.reviewState !== ReviewState.REVIEWED) {
-    return true;
+    return "version.page.unsafeWarning";
   }
   for (const platform in projectVersion.value?.downloads) {
     if (projectVersion.value.downloads[platform as Platform].externalUrl !== null) {
-      return true;
+      return "version.page.unsafeWarningExternal";
     }
   }
-  return false;
+  return null;
 });
-
 const platformsWithDependencies = computed(() => {
   const platforms = [];
   for (const platform of props.versionPlatforms) {
@@ -170,7 +169,7 @@ async function restoreVersion() {
         </div>
         <div class="inline-flex items-center flex-grow space-x-2">
           <div class="flex-grow" />
-          <Tooltip v-if="requiresConfirmation" :content="i18n.t('version.page.unsafeWarning')">
+          <Tooltip v-if="confirmationWarningKey" :content="i18n.t(confirmationWarningKey)">
             <IconMdiAlertCircleOutline class="text-2xl" />
           </Tooltip>
           <DownloadButton :version="projectVersion" :project="project" :show-single-platform="false" :show-versions="false" />
@@ -247,6 +246,7 @@ async function restoreVersion() {
             :title="i18n.t('version.page.delete')"
             :label="i18n.t('general.comment')"
             :submit="deleteVersion"
+            require-input
           >
             <template #activator="{ on }">
               <Button button-type="red" v-on="on">{{ i18n.t("version.page.delete") }}</Button>
@@ -257,6 +257,7 @@ async function restoreVersion() {
             :title="i18n.t('version.page.hardDelete')"
             :label="i18n.t('general.comment')"
             :submit="hardDeleteVersion"
+            require-input
           >
             <template #activator="{ on }">
               <Button button-type="red" v-on="on">{{ i18n.t("version.page.hardDelete") }}</Button>
@@ -298,7 +299,7 @@ async function restoreVersion() {
           <tr>
             <th class="text-left">{{ i18n.t("project.info.totalDownloads", 0) }}</th>
             <td class="text-right">
-              <!-- version downloads instead -->
+              <!-- todo: Version downloads instead of project downloads -->
               <ComingSoon>{{ project.stats.downloads }}</ComingSoon>
             </td>
           </tr>
@@ -329,9 +330,10 @@ async function restoreVersion() {
         <div v-for="platform in platformsWithDependencies" :key="platform" class="py-1">
           <Spoiler :with-line="projectVersion?.pluginDependencies[platform] !== undefined">
             <template #title>
-              <div class="flex inline-flex items-center gap-1">
+              <div class="flex inline-flex items-center gap-1 w-full">
                 <PlatformLogo :platform="platform" :size="24" />
                 {{ useBackendData.platforms.get(platform).name }}
+                <span class="flex-grow" />
                 <DependencyEditModal :project="project" :version="version" :platform="useBackendData.platforms.get(platform)" />
               </div>
             </template>
