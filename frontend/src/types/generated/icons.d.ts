@@ -44,6 +44,7 @@ declare module "@vue/runtime-core" {
     IconMdiEye: typeof import("~icons/mdi/eye")["default"];
     IconMdiEyeOff: typeof import("~icons/mdi/eye-off")["default"];
     IconMdiFeather: typeof import("~icons/mdi/feather")["default"];
+    IconMdiFile: typeof import("~icons/mdi/file")["default"];
     IconMdiFlag: typeof import("~icons/mdi/flag")["default"];
     IconMdiFormatListNumbered: typeof import("~icons/mdi/format-list-numbered")["default"];
     IconMdiGamepadRoundLeft: typeof import("~icons/mdi/gamepad-round-left")["default"];

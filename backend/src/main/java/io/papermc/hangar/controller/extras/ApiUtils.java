@@ -6,6 +6,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.NativeWebRequest;
 
 @DefaultQualifier(NonNull.class)
@@ -45,7 +46,7 @@ public final class ApiUtils {
 
     public static <T> @Nullable T mapParameter(final NativeWebRequest webRequest, final String param, final Function<String, T> map) {
         final @Nullable String value = webRequest.getParameter(param);
-        if (value != null) {
+        if (StringUtils.hasText(value)) {
             return map.apply(value);
         }
         return null;

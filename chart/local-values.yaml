@@ -1,8 +1,3 @@
-frontend:
-  ingress:
-    enabled: true
-    hosts:
-      - host: hangar.test
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
+ingress:
+  enabled: true
+  host: hangar.test
