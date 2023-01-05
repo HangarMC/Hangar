@@ -78,6 +78,7 @@ export default defineNuxtConfig({
     // typeCheck: "build", // TODO enable typechecking on build
   },
   nitro: {
+    preset: "node-cluster",
     compressPublicAssets: true,
   },
   vue: {
