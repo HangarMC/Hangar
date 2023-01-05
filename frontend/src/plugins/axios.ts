@@ -9,8 +9,9 @@ import { transformAxiosError } from "~/composables/useErrorHandling";
 
 export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
   const config = useConfig();
-  const options = {
+  const options: AxiosRequestConfig = {
     baseURL: import.meta.env.SSR ? config.proxyHost : config.publicHost,
+    timeout: 2000,
   };
   axiosLog("axios options", options);
   const axiosInstance = axios.create(options);
