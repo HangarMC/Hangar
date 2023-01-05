@@ -45,6 +45,14 @@ jobs:
           CI: true
         run: (cd frontend && pnpm install --frozen-lockfile)
 
+      - name: Set environment for branch
+        run: |
+          if [[ $GITHUB_REF == 'refs/heads/master' ]]; then
+              echo "BACKEND_DATA_HOST=https://hangar.papermc.io" >> $GITHUB_ENV
+          else
+              echo "BACKEND_DATA_HOST=https://hangar.papermc.dev" >> $GITHUB_ENV
+          fi
+
       - name: Lint frontend
         env:
           CI: true
