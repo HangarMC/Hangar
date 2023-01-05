@@ -99,10 +99,13 @@ jobs:
       - name: Set environment for branch
         run: |
           if [[ $GITHUB_REF == 'refs/heads/master' ]]; then
-              echo "BACKEND_DATA_HOST=https://hangar.papermc.io" >> "$GITHUB_ENV"
+              echo "BACKEND_DATA_HOST=https://hangar.papermc.io" >> $GITHUB_ENV
           else
-              echo "BACKEND_DATA_HOST=https://hangar.papermc.dev" >> "$GITHUB_ENV"
+              echo "BACKEND_DATA_HOST=https://hangar.papermc.dev" >> $GITHUB_ENV
           fi
+
+      - name: Test
+        run: echo "Using $BACKEND_DATA_HOST for backend data"
 
       - name: Build frontend
         env:
