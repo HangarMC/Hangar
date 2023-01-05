@@ -78,6 +78,14 @@ jobs:
       - name: Install frontend deps
         run: (cd frontend && pnpm install --frozen-lockfile)
 
+      - name: Set environment for branch
+        run: |
+          if [[ $GITHUB_REF == 'refs/heads/master' ]]; then
+              echo "BACKEND_DATA_HOST=https://hangar.papermc.io" >> $GITHUB_ENV
+          else
+              echo "BACKEND_DATA_HOST=https://hangar.papermc.dev" >> $GITHUB_ENV
+          fi
+
       - name: Lint frontend
         env:
           DEBUG: "hangar:*"
@@ -95,17 +103,6 @@ jobs:
       #     crowdin_branch_name: master
       #   env:
       #     CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
-
-      - name: Set environment for branch
-        run: |
-          if [[ $GITHUB_REF == 'refs/heads/master' ]]; then
-              echo "BACKEND_DATA_HOST=https://hangar.papermc.io" >> $GITHUB_ENV
-          else
-              echo "BACKEND_DATA_HOST=https://hangar.papermc.dev" >> $GITHUB_ENV
-          fi
-
-      - name: Test
-        run: echo "Using $BACKEND_DATA_HOST for backend data"
 
       - name: Build frontend
         env:
