@@ -14,3 +14,8 @@ spec:
   selector:
     {{- include "hangar.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: "backend"
+  topologyKeys:
+    - "kubernetes.io/hostname"
+    - "topology.kubernetes.io/zone"
+    - "topology.kubernetes.io/region"
+    - "*"
