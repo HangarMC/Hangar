@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 public class OrganizationTable extends Table implements Visitable, ProjectOwner, OrganizationLoggable, Owned {
 
@@ -18,7 +18,7 @@ public class OrganizationTable extends Table implements Visitable, ProjectOwner,
     private final UUID userUuid;
 
     @JdbiConstructor
-    public OrganizationTable(final OffsetDateTime createdAt, @PropagateNull final long id, final String name, final long ownerId, final long userId, final @Nullable UUID userUuid) {
+    public OrganizationTable(final OffsetDateTime createdAt, @PropagateNull final long id, final String name, final long ownerId, final long userId, @Nullable final UUID userUuid) {
         super(createdAt, id);
         this.name = name;
         this.ownerId = ownerId;

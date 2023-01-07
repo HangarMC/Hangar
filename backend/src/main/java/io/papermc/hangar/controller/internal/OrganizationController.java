@@ -69,6 +69,7 @@ public class OrganizationController extends HangarComponent {
 
     @Anyone
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 20, refillTokens = 10, refillSeconds = 1)
     @GetMapping("/validate")
     public void validateName(@RequestParam final String name) {
         if (!this.validationService.isValidOrgName(name)) {
