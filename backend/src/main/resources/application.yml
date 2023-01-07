@@ -45,6 +45,7 @@ springdoc:
 
 management:
   tracing:
+    enabled: false # set this to true if you have zipkin running locally
     sampling:
       probability: 1.0
   endpoints:

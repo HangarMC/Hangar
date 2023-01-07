@@ -99,6 +99,14 @@ All contributions are very welcome, we will not be able to finish this alone!
 
 Updating the frontend dependencies can be done best by running `npx npm-check -u` and going thru the changelogs. Notice that package.json might contain some hints of which deps are broken.
 
+## Tracing
+
+if you wanna have traces available locally, you can run zipkin via docker like this:
+```shell
+docker run -d -p 9411:9411 openzipkin/zipkin
+```
+then just enable it in the application.yml (search for tracing).
+
 ## License
 
 Most of the frontend is a fork of Ore, licensed under MIT [here](https://github.com/SpongePowered/Ore/blob/staging/LICENSE.txt).
