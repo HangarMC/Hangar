@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
 @Component
-public class ProjectMCVersionFilter implements Filter<ProjectMCVersionFilter.ProjectMCVersionFilterInstance> {
+public class ProjectMCVersionFilter implements Filter<ProjectMCVersionFilter.ProjectMCVersionFilterInstance, String[]> {
 
     private final ConversionService conversionService;
 
@@ -31,8 +31,13 @@ public class ProjectMCVersionFilter implements Filter<ProjectMCVersionFilter.Pro
     }
 
     @Override
+    public String[] getValue(final NativeWebRequest webRequest) {
+        return webRequest.getParameterValues(this.getSingleQueryParam());
+    }
+
+    @Override
     public @NotNull ProjectMCVersionFilterInstance create(final NativeWebRequest webRequest) {
-        return new ProjectMCVersionFilterInstance(this.conversionService.convert(webRequest.getParameterValues(this.getSingleQueryParam()), String[].class));
+        return new ProjectMCVersionFilterInstance(this.conversionService.convert(this.getValue(webRequest), String[].class));
     }
 
     static class ProjectMCVersionFilterInstance implements Filter.FilterInstance {

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
 @Component
-public class ProjectPlatformFilter implements Filter<ProjectPlatformFilter.ProjectPlatformFilterInstance> {
+public class ProjectPlatformFilter implements Filter<ProjectPlatformFilter.ProjectPlatformFilterInstance, String[]> {
 
     private final ConversionService conversionService;
 
@@ -32,8 +32,13 @@ public class ProjectPlatformFilter implements Filter<ProjectPlatformFilter.Proje
     }
 
     @Override
+    public String[] getValue(final NativeWebRequest webRequest) {
+        return webRequest.getParameterValues(this.getSingleQueryParam());
+    }
+
+    @Override
     public @NotNull ProjectPlatformFilterInstance create(final NativeWebRequest webRequest) {
-        return new ProjectPlatformFilterInstance(this.conversionService.convert(webRequest.getParameterValues(this.getSingleQueryParam()), Platform[].class));
+        return new ProjectPlatformFilterInstance(this.conversionService.convert(this.getValue(webRequest), Platform[].class));
     }
 
     static class ProjectPlatformFilterInstance implements Filter.FilterInstance {

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
 @Component
-public class ProjectLicenseFilter implements Filter<ProjectLicenseFilter.ProjectLicenseFilterInstance> {
+public class ProjectLicenseFilter implements Filter<ProjectLicenseFilter.ProjectLicenseFilterInstance, String[]> {
 
     private final ConversionService conversionService;
 
@@ -31,8 +31,13 @@ public class ProjectLicenseFilter implements Filter<ProjectLicenseFilter.Project
     }
 
     @Override
+    public String[] getValue(final NativeWebRequest webRequest) {
+        return webRequest.getParameterValues(this.getSingleQueryParam());
+    }
+
+    @Override
     public @NotNull ProjectLicenseFilterInstance create(final NativeWebRequest webRequest) {
-        return new ProjectLicenseFilterInstance(this.conversionService.convert(webRequest.getParameterValues(this.getSingleQueryParam()), String[].class));
+        return new ProjectLicenseFilterInstance(this.conversionService.convert(this.getValue(webRequest), String[].class));
     }
 
     static class ProjectLicenseFilterInstance implements Filter.FilterInstance {

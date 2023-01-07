@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
 @Component
-public class VersionChannelFilter implements Filter<VersionChannelFilterInstance> {
+public class VersionChannelFilter implements Filter<VersionChannelFilterInstance, String[]> {
 
     @Override
     public Set<String> getQueryParamNames() {
@@ -23,8 +23,13 @@ public class VersionChannelFilter implements Filter<VersionChannelFilterInstance
     }
 
     @Override
+    public String[] getValue(final NativeWebRequest webRequest) {
+        return webRequest.getParameterValues(this.getSingleQueryParam());
+    }
+
+    @Override
     public @NotNull VersionChannelFilterInstance create(final NativeWebRequest webRequest) {
-        return new VersionChannelFilterInstance(webRequest.getParameterValues(this.getSingleQueryParam()));
+        return new VersionChannelFilterInstance(this.getValue(webRequest));
     }
 
     public static class VersionChannelFilterInstance implements Filter.FilterInstance {

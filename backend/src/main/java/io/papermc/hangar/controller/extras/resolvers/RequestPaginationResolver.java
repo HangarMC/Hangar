@@ -97,12 +97,21 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
 
         // find filters
         final Set<String> paramNames = new HashSet<>(webRequest.getParameterMap().keySet());
-        final Class<? extends Filter<? extends Filter.FilterInstance>>[] applicableFilters = Optional.ofNullable(parameter.getMethodAnnotation(ApplicableFilters.class)).map(ApplicableFilters::value).orElse(null);
+        final Class<? extends Filter<? extends Filter.FilterInstance, ?>>[] applicableFilters = Optional.ofNullable(parameter.getMethodAnnotation(ApplicableFilters.class)).map(ApplicableFilters::value).orElse(null);
         if (applicableFilters != null) {
-            for (final Class<? extends Filter<? extends Filter.FilterInstance>> filterClass : applicableFilters) {
-                final Filter<? extends Filter.FilterInstance> f = this.filterRegistry.get(filterClass);
+            for (final Class<? extends Filter<? extends Filter.FilterInstance, ?>> filterClass : applicableFilters) {
+                final Filter<? extends Filter.FilterInstance, ?> f = this.filterRegistry.get(filterClass);
                 if (f.supports(webRequest)) {
-                    pagination.getFilters().put(f.getSingleQueryParam(), f.create(webRequest));
+                    // construct key, will be used in cache later
+                    String key = f.getSingleQueryParam() + "-";
+                    final Object value = f.getValue(webRequest);
+                    if (value instanceof String[] array) {
+                        key += Arrays.toString(array);
+                    } else {
+                        key += value.toString();
+                    }
+                    // then create the filter instance and remove the params from the method invocation
+                    pagination.getFilters().put(key, f.create(webRequest));
                     paramNames.removeAll(f.getQueryParamNames());
                 }
             }

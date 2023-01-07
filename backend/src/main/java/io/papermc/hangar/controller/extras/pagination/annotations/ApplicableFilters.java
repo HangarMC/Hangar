@@ -15,5 +15,5 @@ public @interface ApplicableFilters {
     /**
      * Set of applicable filters for this request
      */
-    Class<? extends Filter<? extends Filter.FilterInstance>>[] value();
+    Class<? extends Filter<? extends Filter.FilterInstance, ?>>[] value();
 }

@@ -11,20 +11,20 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("unchecked")
 public class FilterRegistry {
 
-    private final Map<Class<? extends Filter<?>>, Filter<?>> filters = new HashMap<>();
+    private final Map<Class<? extends Filter<?, ?>>, Filter<?, ?>> filters = new HashMap<>();
 
     @Autowired
-    public FilterRegistry(final List<? extends Filter<? extends Filter.FilterInstance>> filters) {
+    public FilterRegistry(final List<? extends Filter<? extends Filter.FilterInstance, ?>> filters) {
         filters.forEach(f -> {
-            final Class<? extends Filter<?>> filterClass = (Class<? extends Filter<? extends Filter.FilterInstance>>) f.getClass();
+            final Class<? extends Filter<?, ?>> filterClass = (Class<? extends Filter<? extends Filter.FilterInstance, ?>>) f.getClass();
             if (this.filters.containsKey((filterClass))) {
                 throw new IllegalArgumentException(filterClass + " is already registered as filter");
             }
         });
-        filters.forEach(f -> this.filters.put((Class<? extends Filter<?>>) f.getClass(), f));
+        filters.forEach(f -> this.filters.put((Class<? extends Filter<?, ?>>) f.getClass(), f));
     }
 
-    public @NotNull <T extends Filter<? extends Filter.FilterInstance>> T get(final Class<T> filterClass) {
+    public @NotNull <T extends Filter<? extends Filter.FilterInstance, ?>> T get(final Class<T> filterClass) {
         if (this.filters.containsKey(filterClass)) {
             return (T) this.filters.get(filterClass);
         }

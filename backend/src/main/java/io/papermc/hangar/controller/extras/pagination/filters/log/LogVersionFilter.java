@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
 @Component
-public class LogVersionFilter implements Filter<LogVersionFilterInstance> {
+public class LogVersionFilter implements Filter<LogVersionFilterInstance, String[]> {
 
     private final ConversionService conversionService;
 
@@ -37,8 +37,14 @@ public class LogVersionFilter implements Filter<LogVersionFilterInstance> {
     }
 
     @Override
+    public String[] getValue(final NativeWebRequest webRequest) {
+        return new String[]{webRequest.getParameter("versionString"), webRequest.getParameter("platform")};
+    }
+
+    @Override
     public @NotNull LogVersionFilterInstance create(final NativeWebRequest webRequest) {
-        return new LogVersionFilterInstance(webRequest.getParameter("versionString"), this.conversionService.convert(webRequest.getParameter("platform"), Platform.class));
+        final String[] value = this.getValue(webRequest);
+        return new LogVersionFilterInstance(value[0], this.conversionService.convert(value[1], Platform.class));
     }
 
     static class LogVersionFilterInstance implements Filter.FilterInstance {

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
 @Component
-public class LogActionFilter implements Filter<LogActionFilterInstance> {
+public class LogActionFilter implements Filter<LogActionFilterInstance, String> {
 
     @Override
     public Set<String> getQueryParamNames() {
@@ -23,13 +23,18 @@ public class LogActionFilter implements Filter<LogActionFilterInstance> {
     }
 
     @Override
+    public String getValue(final NativeWebRequest webRequest) {
+        return webRequest.getParameter(this.getSingleQueryParam());
+    }
+
+    @Override
     public boolean supports(final NativeWebRequest webRequest) {
-        return Filter.super.supports(webRequest) && LogAction.LOG_REGISTRY.containsKey(webRequest.getParameter(this.getSingleQueryParam()));
+        return Filter.super.supports(webRequest) && LogAction.LOG_REGISTRY.containsKey(this.getValue(webRequest));
     }
 
     @Override
     public @NotNull LogActionFilterInstance create(final NativeWebRequest webRequest) {
-        return new LogActionFilterInstance(LogAction.LOG_REGISTRY.get(webRequest.getParameter(this.getSingleQueryParam())));
+        return new LogActionFilterInstance(LogAction.LOG_REGISTRY.get(this.getValue(webRequest)));
     }
 
     static class LogActionFilterInstance implements Filter.FilterInstance {

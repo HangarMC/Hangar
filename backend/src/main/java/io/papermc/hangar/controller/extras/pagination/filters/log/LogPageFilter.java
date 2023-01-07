@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
 @Component
-public class LogPageFilter implements Filter<LogPageFilterInstance> {
+public class LogPageFilter implements Filter<LogPageFilterInstance, String> {
 
     @Override
     public Set<String> getQueryParamNames() {
@@ -24,12 +24,17 @@ public class LogPageFilter implements Filter<LogPageFilterInstance> {
 
     @Override
     public boolean supports(final NativeWebRequest webRequest) {
-        return Filter.super.supports(webRequest) && NumberUtils.isDigits(webRequest.getParameter(this.getSingleQueryParam()));
+        return Filter.super.supports(webRequest) && NumberUtils.isDigits(this.getValue(webRequest));
+    }
+
+    @Override
+    public String getValue(final NativeWebRequest webRequest) {
+        return webRequest.getParameter(this.getSingleQueryParam());
     }
 
     @Override
     public @NotNull LogPageFilterInstance create(final NativeWebRequest webRequest) {
-        return new LogPageFilterInstance(Long.parseLong(webRequest.getParameter(this.getSingleQueryParam())));
+        return new LogPageFilterInstance(Long.parseLong(this.getValue(webRequest)));
     }
 
     static class LogPageFilterInstance implements Filter.FilterInstance {

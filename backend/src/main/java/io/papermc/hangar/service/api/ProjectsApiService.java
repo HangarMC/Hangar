@@ -67,7 +67,7 @@ public class ProjectsApiService extends HangarComponent {
 
     @Transactional
     @Cacheable(CacheConfig.PROJECTS)
-    public PaginatedResult<Project> getProjects(final String query, final boolean orderWithRelevance, final RequestPagination pagination) {
+    public PaginatedResult<Project> getProjects(final String query, final boolean orderWithRelevance, final RequestPagination pagination, final boolean seeHidden) {
         String relevance = "";
         if (orderWithRelevance && query != null && !query.isEmpty()) {
             if (query.endsWith(" ")) {
@@ -77,8 +77,6 @@ public class ProjectsApiService extends HangarComponent {
             }
             pagination.getSorters().put("relevance", sb -> sb.append(" relevance DESC"));
         }
-
-        final boolean seeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
 
         final List<Project> projects = this.projectsApiDAO.getProjects(seeHidden, this.getHangarUserId(), pagination, relevance);
         projects.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));

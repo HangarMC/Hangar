@@ -6,13 +6,15 @@ import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.context.request.NativeWebRequest;
 
-public interface Filter<F extends FilterInstance> {
+public interface Filter<F extends FilterInstance, V> {
 
     Set<String> getQueryParamNames();
 
     default @NotNull String getSingleQueryParam() {
         return this.getQueryParamNames().stream().findFirst().orElseThrow();
     }
+
+    V getValue(final NativeWebRequest webRequest);
 
     String getDescription();
 

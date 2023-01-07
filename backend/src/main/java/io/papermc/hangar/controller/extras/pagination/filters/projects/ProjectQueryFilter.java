@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
 @Component
-public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance> {
+public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance, String> {
 
     @Override
     public Set<String> getQueryParamNames() {
@@ -22,8 +22,13 @@ public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance> {
     }
 
     @Override
+    public String getValue(final NativeWebRequest webRequest) {
+        return webRequest.getParameter(this.getSingleQueryParam());
+    }
+
+    @Override
     public @NotNull ProjectQueryFilterInstance create(final NativeWebRequest webRequest) {
-        return new ProjectQueryFilterInstance(webRequest.getParameter(this.getSingleQueryParam()));
+        return new ProjectQueryFilterInstance(this.getValue(webRequest));
     }
 
     static class ProjectQueryFilterInstance implements Filter.FilterInstance {
