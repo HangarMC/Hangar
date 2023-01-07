@@ -211,6 +211,7 @@ backend:
       cdnEndpoint: ""
       cdnIncludeBucket: true
     announcement: "This is a staging server for testing purposes. Data could be deleted at any time. That said, signups are open, please test stuff and report and feedback on github or discord!"
+    zipkinEndpoint: "http://hangar-zipkin:9411/api/v2/spans"
 
 zipkin:
   image:
