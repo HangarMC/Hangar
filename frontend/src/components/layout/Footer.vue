@@ -12,7 +12,7 @@ const { t } = useI18n();
           <router-link :to="{ name: 'guidelines' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
             {{ t("hangar.footer.resourceGuidelines") }}
           </router-link>
-          <router-link :to="{ name: 'api' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
+          <router-link :to="{ name: 'api-docs' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
             {{ t("hangar.footer.api") }}
           </router-link>
           <a

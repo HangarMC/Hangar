@@ -109,7 +109,7 @@ function markNotificationRead(notification: HangarNotification) {
 }
 
 function updateNavData() {
-  useInternalApi<HangarUser>("/users/@me")
+  useInternalApi<HangarUser>("users/@me")
     .catch((e) => handleRequestError(e))
     .then((user) => {
       return (authStore.user = unref(user));
