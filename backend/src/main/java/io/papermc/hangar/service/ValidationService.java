@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ValidationService {
 
-    private static final Set<String> BANNED_ROUTES = Set.of("api", "authors", "linkout", "logged-out", "new", "unread", "notifications", "staff", "admin", "organizations", "tools", "recommended", "null", "undefined", "privacy", "terms", "tos", "settings");
+    private static final Set<String> BANNED_ROUTES = Set.of("actuator", "admin", "api", "authors", "guidelines", "markdown","neworganization", "linkout", "logged-out", "new", "notifications", "null", "organizations", "privacy", "recommended", "settings", "staff", "terms", "tools", "tos", "undefined", "unread", "version");
     private final HangarConfig config;
 
     public ValidationService(final HangarConfig config) {

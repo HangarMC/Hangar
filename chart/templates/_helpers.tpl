@@ -69,3 +69,10 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
+{{- define "hangar.zipkin.serviceAccountName" -}}
+{{- if .Values.zipkin.serviceAccount.create }}
+{{- default (printf "%s-zipkin" (include "hangar.fullname" .)) .Values.zipkin.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.zipkin.serviceAccount.name }}
+{{- end }}
+{{- end }}

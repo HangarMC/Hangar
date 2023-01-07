@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hangar.fullname" . }}-zipkin
+  labels:
+    {{- include "hangar.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      {{- include "hangar.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: "zipkin"
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secret-hangar-zipkin.yaml") . | sha256sum }}
+      {{- with .Values.backend.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "hangar.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: "zipkin"
+    spec:
+      {{- with .Values.zipkin.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "hangar.zipkin.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.zipkin.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.zipkin.securityContext | nindent 12 }}
+          image: "{{ .Values.zipkin.image.repository }}:{{ .Values.zipkin.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.zipkin.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 9411
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          envFrom:
+            - secretRef:
+                name: hangar-zipkin
+          resources:
+            {{- toYaml .Values.zipkin.resources | nindent 12 }}
+      {{- with .Values.zipkin.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.zipkin.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.zipkin.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -5,6 +5,8 @@ server:
   port: 8080
 
 spring:
+  application:
+    name: "Hangar Backend"
   ############
   # DataBase #
   ############
@@ -30,7 +32,6 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
     date-format: com.fasterxml.jackson.databind.util.StdDateFormat
 
-
   cloud:
     aws:
       s3:
@@ -41,6 +42,17 @@ spring:
 
 springdoc:
   pathsToMatch: "/api/v1/**"
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "health"
+        # include: "*" # for local you can include all for more info
 
 #############
 # Fake User #

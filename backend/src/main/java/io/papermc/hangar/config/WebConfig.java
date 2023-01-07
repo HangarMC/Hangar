@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -146,14 +147,16 @@ public class WebConfig extends WebMvcConfigurationSupport {
     }
 
     @Bean
-    public RestTemplate restTemplate(final List<HttpMessageConverter<?>> messageConverters) {
+    public RestTemplate restTemplate(final List<HttpMessageConverter<?>> messageConverters, final RestTemplateBuilder builder) {
         final RestTemplate restTemplate;
         if (interceptorLogger.isDebugEnabled()) {
             final ClientHttpRequestFactory factory = new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory());
-            restTemplate = new RestTemplate(factory);
-            restTemplate.setInterceptors(List.of(new LoggingInterceptor()));
+            restTemplate = builder
+                .requestFactory(() -> factory)
+                .interceptors(new LoggingInterceptor())
+                .build();
         } else {
-            restTemplate = new RestTemplate();
+            restTemplate = builder.build();
         }
         this.addDefaultHttpMessageConverters(messageConverters);
         restTemplate.setMessageConverters(messageConverters);

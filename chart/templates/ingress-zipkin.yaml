@@ -1,0 +1,44 @@
+{{- if .Values.zipkin.ingress.enabled -}}
+{{- $fullName := include "hangar.fullname" . -}}
+{{- $svcPort := .Values.zipkin.service.port -}}
+{{- if and .Values.zipkin.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.zipkin.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.zipkin.ingress.annotations "kubernetes.io/ingress.class" .Values.zipkin.ingress.className}}
+  {{- end }}
+{{- end }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "hangar.labels" . | nindent 4 }}
+  {{- with .Values.zipkin.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.zipkin.ingress.className }}
+  {{- if .Values.zipkin.ingress.tls }}
+  tls:
+    {{- range .Values.zipkin.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.zipkin.ingress.host | quote }}
+      http:
+        paths:
+          {{- range .Values.zipkin.ingress.paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ $fullName }}-zipkin
+                port:
+                  number: {{ $svcPort }}
+          {{- end }}
+{{- end }}
