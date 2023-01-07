@@ -302,7 +302,7 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
   <Steps v-model="selectedStep" :steps="steps" button-lang-key="version.new.steps.">
     <template #artifact>
       <p class="mb-4">{{ t("version.new.form.artifactTitle") }}</p>
-      <div class="flex mb-5">
+      <div class="flex mb-8 items-center">
         <div class="basis-full md:basis-4/12">
           <InputSelect v-model="selectedChannel" :values="channels" item-text="name" item-value="name" :label="t('version.new.form.channel')" />
         </div>
@@ -319,8 +319,11 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
       </div>
 
       <div v-for="(platformFile, idx) in platformFiles" :key="idx" class="mb-6">
-        <span class="text-xl">{{ t("version.new.form.artifactNumber", [idx + 1]) }}</span>
-        <div class="md:(flex flex-row) items-center">
+        <div class="space-x-2 inline-flex items-center">
+          <span class="text-xl">{{ t("version.new.form.artifactNumber", [idx + 1]) }}</span>
+          <Button v-if="platformFiles.length !== 1" button-type="red" @click="removePlatformFile(idx)"><IconMdiDelete /></Button>
+        </div>
+        <div class="items-center">
           <Tabs v-model="platformFile.selectedTab" :tabs="selectedUploadTabs" :vertical="false" class="max-w-150">
             <template #file>
               <InputFile v-model="platformFile.file" accept=".jar,.zip" />
@@ -329,7 +332,7 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
               <InputText v-model="platformFile.url" :label="t('version.new.form.externalUrl')" :rules="artifactURLRules" />
             </template>
           </Tabs>
-          <div class="mt-6 md:ml-8">
+          <div class="mt-4">
             <div v-for="platform in platforms" :key="platform.name">
               <InputCheckbox
                 :model-value="platformFile.platforms.includes(platform.enumName)"
@@ -340,7 +343,6 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
               </InputCheckbox>
             </div>
           </div>
-          <Button v-if="platformFiles.length !== 1" class="md:ml-4 mt-4" @click="removePlatformFile(idx)"><IconMdiDelete /></Button>
         </div>
       </div>
       <Button :disabled="useBackendData.platforms.size !== 0 && platformFiles.length >= useBackendData.platforms.size" @click="addPlatformFile()">

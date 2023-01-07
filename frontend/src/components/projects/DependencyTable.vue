@@ -153,9 +153,7 @@ defineExpose({ dependencies, reset });
           </Tabs>
         </td>
         <td v-if="!noEditing">
-          <Button icon color="error" @click="deleteDep(index)">
-            <IconMdiDelete />
-          </Button>
+          <Button button-type="red" @click="deleteDep(index)"><IconMdiDelete /></Button>
         </td>
       </tr>
     </tbody>

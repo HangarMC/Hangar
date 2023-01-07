@@ -157,7 +157,8 @@ function updateSelectedNotifications() {
         {{ i18n.t(!invite.accepted ? "notifications.invited" : "notifications.inviteAccepted", [invite.type]) }}:
         <router-link :to="invite.url" exact>{{ invite.name }}</router-link>
         <template v-if="!invite.accepted">
-          <Button class="mr-2 ml-2" @click="updateInvite(invite, 'accept')">{{ i18n.t("notifications.invite.btns.accept") }}</Button>
+          <br />
+          <Button class="mr-2" @click="updateInvite(invite, 'accept')">{{ i18n.t("notifications.invite.btns.accept") }}</Button>
           <Button @click="updateInvite(invite, 'decline')">{{ i18n.t("notifications.invite.btns.decline") }}</Button>
         </template>
       </Card>
