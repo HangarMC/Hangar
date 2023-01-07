@@ -9,7 +9,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $fullName }}-zipkin
   labels:
     {{- include "hangar.labels" . | nindent 4 }}
   {{- with .Values.zipkin.ingress.annotations }}
