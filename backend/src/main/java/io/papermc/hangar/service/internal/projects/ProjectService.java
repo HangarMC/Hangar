@@ -146,10 +146,10 @@ public class ProjectService extends HangarComponent {
 
     public @Nullable HangarVersion getLastVersion(final String author, final String slug, final Platform platform, final @Nullable String channel) {
         final RequestPagination pagination = new RequestPagination(1L, 0L);
-        pagination.getFilters().add(new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
+        pagination.getFilters().put("platform", new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
         if (channel != null) {
             // Find the last version with the specified channel
-            pagination.getFilters().add(new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
+            pagination.getFilters().put("channel", new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
         }
 
         final Long versionId = this.versionsApiDAO.getVersions(author, slug, false, this.getHangarUserId(), pagination).keySet().stream().findAny().orElse(null);

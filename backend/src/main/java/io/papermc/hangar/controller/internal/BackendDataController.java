@@ -70,13 +70,13 @@ public class BackendDataController {
     }
 
     @GetMapping("/categories")
-    @Cacheable("categories")
+    @Cacheable(CacheConfig.CATEGORIES)
     public ResponseEntity<ArrayNode> getCategories() {
         return ResponseEntity.ok(this.objectMapper.valueToTree(Category.getValues()));
     }
 
     @GetMapping("/permissions")
-    @Cacheable("permissions")
+    @Cacheable(CacheConfig.PERMISSIONS)
     public ResponseEntity<ArrayNode> getPermissions() {
         final ArrayNode arrayNode = this.objectMapper.createArrayNode();
         for (final NamedPermission namedPermission : NamedPermission.getValues()) {
@@ -102,7 +102,7 @@ public class BackendDataController {
     }
 
     @GetMapping("/channelColors")
-    @Cacheable("channelColors")
+    @Cacheable(CacheConfig.CHANNEL_COLORS)
     public ResponseEntity<ArrayNode> getColors() {
         final ArrayNode arrayNode = this.objectMapper.createArrayNode();
         for (final Color color : Color.getNonTransparentValues()) {
@@ -116,7 +116,7 @@ public class BackendDataController {
 
     @Secured("ROLE_USER")
     @GetMapping("/flagReasons")
-    @Cacheable("flagReasons")
+    @Cacheable(CacheConfig.FLAG_REASONS)
     public ResponseEntity<ArrayNode> getFlagReasons() {
         final ArrayNode arrayNode = this.objectMapper.createArrayNode();
         for (final FlagReason flagReason : FlagReason.getValues()) {
@@ -129,48 +129,49 @@ public class BackendDataController {
     }
 
     @GetMapping("/sponsor")
-    @Cacheable("sponsor")
+    @Cacheable(CacheConfig.SPONSOR)
     @ResponseBody
     public HangarConfig.Sponsor getSponsor() {
         return this.config.getSponsors().get(ThreadLocalRandom.current().nextInt(this.config.getSponsors().size()));
     }
 
     @GetMapping("/announcements")
+    @Cacheable(CacheConfig.ANNOUNCEMENTS)
     @ResponseBody
     public List<Announcement> getAnnouncements() {
         return this.config.getAnnouncements();
     }
 
     @GetMapping("/projectRoles")
-    @Cacheable("projectRoles")
+    @Cacheable(CacheConfig.PROJECT_ROLES)
     @ResponseBody
     public List<ProjectRole> getAssignableProjectRoles() {
         return ProjectRole.getAssignableRoles();
     }
 
     @GetMapping("/globalRoles")
-    @Cacheable("globalRoles")
+    @Cacheable(CacheConfig.GLOBAL_ROLES)
     @ResponseBody
     public GlobalRole[] getGlobalRoles() {
         return GlobalRole.getValues();
     }
 
     @GetMapping("/orgRoles")
-    @Cacheable("orgRoles")
+    @Cacheable(CacheConfig.ORG_ROLES)
     @ResponseBody
     public List<OrganizationRole> getAssignableOrganizationRoles() {
         return OrganizationRole.getAssignableRoles();
     }
 
     @GetMapping("/licenses")
-    @Cacheable("licenses")
+    @Cacheable(CacheConfig.LICENSES)
     @ResponseBody
     public List<String> getLicenses() {
         return this.config.getLicenses();
     }
 
     @GetMapping("/visibilities")
-    @Cacheable("visibilities")
+    @Cacheable(CacheConfig.VISIBILITIES)
     public ResponseEntity<ArrayNode> getVisibilities() {
         final ArrayNode arrayNode = this.objectMapper.createArrayNode();
         for (final Visibility value : Visibility.getValues()) {
@@ -186,13 +187,14 @@ public class BackendDataController {
 
     @ResponseBody
     @GetMapping("/prompts")
-    @Cacheable("prompts")
+    @Cacheable(CacheConfig.PROMPTS)
     public Prompt[] getPrompts() {
         return Prompt.getValues();
     }
 
     @ResponseBody
     @GetMapping("/version-info")
+    @Cacheable(CacheConfig.VERSION_INFO)
     public Map<String, String> info() {
         return Map.of(
             "version", this.get("build.version", -1),
@@ -211,14 +213,14 @@ public class BackendDataController {
     }
 
     @GetMapping("/validations")
-    @Cacheable("validations")
+    @Cacheable(CacheConfig.VALIDATIONS)
     @ResponseBody
     public Validations getValidations() {
         return Validations.create(this.config);
     }
 
     @GetMapping("/loggedActions")
-    @Cacheable("loggedActions")
+    @Cacheable(CacheConfig.LOGGED_ACTIONS)
     @ResponseBody
     public Set<String> getLoggedActions() {
         return LogAction.LOG_REGISTRY.keySet();

@@ -4,6 +4,7 @@ import cz.jiripinkas.jsitemapgenerator.ChangeFreq;
 import cz.jiripinkas.jsitemapgenerator.WebPage;
 import cz.jiripinkas.jsitemapgenerator.generator.SitemapGenerator;
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectPagesDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -33,7 +34,7 @@ public class SitemapService extends HangarComponent {
         this.hangarProjectPagesDAO = hangarProjectPagesDAO;
     }
 
-    @Cacheable("indexSitemap")
+    @Cacheable(CacheConfig.INDEX_SITEMAP)
     public String getSitemap() {
         final SitemapGenerator generator = SitemapGenerator.of(this.config.getBaseUrl())
             .addPage(WebPage.builder().name("global-sitemap.xml").build());
@@ -42,7 +43,7 @@ public class SitemapService extends HangarComponent {
         return generator.toString();
     }
 
-    @Cacheable("globalSitemap")
+    @Cacheable(CacheConfig.GLOBAL_SITEMAP)
     public String getGlobalSitemap() {
         return SitemapGenerator.of(this.config.getBaseUrl())
             .addPage(WebPage.builder().name("").changeFreq(ChangeFreq.HOURLY).build())
@@ -52,7 +53,7 @@ public class SitemapService extends HangarComponent {
             .toString();
     }
 
-    @Cacheable(value = "userSitemap", key = "#username")
+    @Cacheable(value = CacheConfig.USER_SITEMAP, key = "#username")
     public String getUserSitemap(final String username) {
         final UserTable userTable = this.userDAO.getUserTable(username);
         final SitemapGenerator generator = SitemapGenerator.of(this.config.getBaseUrl());

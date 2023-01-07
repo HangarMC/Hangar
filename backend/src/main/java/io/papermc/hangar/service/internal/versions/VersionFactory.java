@@ -1,8 +1,5 @@
 package io.papermc.hangar.service.internal.versions;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.RemovalCause;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
@@ -49,12 +46,8 @@ import io.papermc.hangar.service.internal.versions.plugindata.PluginDataService;
 import io.papermc.hangar.service.internal.versions.plugindata.PluginFileWithData;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.CryptoUtils;
-import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -69,7 +62,6 @@ import java.util.SortedSet;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,13 +73,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class VersionFactory extends HangarComponent {
 
-    private static final Object DUMMY = new Object();
-    private final Cache<Path, Object> tempDirCache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMinutes(30)).evictionListener((@Nullable Path path, @Nullable Object o, @NonNull RemovalCause cause) -> {
-        // Clean up temp user dirs
-        if (path != null && Files.exists(path)) {
-            FileUtils.deleteDirectory(path);
-        }
-    }).build();
     private final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependenciesDAO;
     private final ProjectVersionDependenciesDAO projectVersionDependenciesDAO;
     private final PlatformVersionDAO platformVersionDAO;
@@ -437,10 +422,10 @@ public class VersionFactory extends HangarComponent {
     public @Nullable LastDependencies getLastVersionDependencies(final String author, final String slug, final @Nullable String channel, final Platform platform) {
         // TODO optimize with specific query
         final RequestPagination pagination = new RequestPagination(1L, 0L);
-        pagination.getFilters().add(new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
+        pagination.getFilters().put("platform", new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
         if (channel != null) {
             // Find the last version with the specified channel
-            pagination.getFilters().add(new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
+            pagination.getFilters().put("channel", new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
         }
 
         final Long versionId = this.versionsApiDAO.getVersions(author, slug, false, this.getHangarUserId(), pagination).keySet().stream().findAny().orElse(null);

@@ -48,7 +48,7 @@ public @interface BindPagination {
 
         private void filter(final RequestPagination pagination, final SqlStatement<?> q) {
             final StringBuilder sb = new StringBuilder();
-            pagination.getFilters().forEach(filter -> filter.createSql(sb, q));
+            pagination.getFilters().values().forEach(filter -> filter.createSql(sb, q));
             q.define("filters", sb.toString());
         }
 

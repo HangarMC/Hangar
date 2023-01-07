@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.dao.v1.ProjectsApiDAO;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import io.papermc.hangar.service.internal.AvatarService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +66,7 @@ public class ProjectsApiService extends HangarComponent {
     }
 
     @Transactional
+    @Cacheable(CacheConfig.PROJECTS)
     public PaginatedResult<Project> getProjects(final String query, final boolean orderWithRelevance, final RequestPagination pagination) {
         String relevance = "";
         if (orderWithRelevance && query != null && !query.isEmpty()) {

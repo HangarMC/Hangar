@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
@@ -22,7 +23,7 @@ public class RequestPagination {
 
     @JsonIgnore
     @Schema(accessMode = READ_ONLY)
-    private final List<Filter.FilterInstance> filters;
+    private final Map<String, Filter.FilterInstance> filters;
 
     @JsonIgnore
     @Schema(accessMode = READ_ONLY)
@@ -34,7 +35,7 @@ public class RequestPagination {
     public RequestPagination(final Long limit, final Long offset) {
         this.limit = limit;
         this.offset = offset;
-        this.filters = new ArrayList<>();
+        this.filters = new LinkedHashMap<>();
         this.sorters = new LinkedHashMap<>();
     }
 
@@ -46,7 +47,7 @@ public class RequestPagination {
         return this.offset;
     }
 
-    public List<Filter.FilterInstance> getFilters() {
+    public Map<String, Filter.FilterInstance> getFilters() {
         return this.filters;
     }
 
@@ -59,8 +60,21 @@ public class RequestPagination {
         return "RequestPagination{" +
             "limit=" + this.limit +
             ", offset=" + this.offset +
-            ", filters=" + this.filters +
+            ", filters=" + this.filters.keySet() +
             ", sorters=" + this.sorters.keySet() +
             '}';
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        final RequestPagination that = (RequestPagination) o;
+        return this.limit == that.limit && this.offset == that.offset && Objects.equals(this.filters.keySet(), that.filters.keySet()) && Objects.equals(this.sorters.keySet(), that.sorters.keySet());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.limit, this.offset, this.filters.keySet(), this.sorters.keySet());
     }
 }
