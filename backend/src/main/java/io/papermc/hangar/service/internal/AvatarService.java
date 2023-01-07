@@ -99,27 +99,35 @@ public class AvatarService extends HangarComponent {
      * Get methods
      */
     public String getUserAvatarUrl(final UserTable userTable) {
-        return this.getAvatarUrl(USER, userTable.getUuid().toString());
+        return this.cache.get("user-" + userTable.getUuid().toString(), (key) ->
+            this.getAvatarUrl(USER, userTable.getUuid().toString())
+        );
     }
 
     public String getUserAvatarUrl(final User user) {
-        if (user instanceof HangarUser hangarUser) {
-            return this.getAvatarUrl(USER, hangarUser.getUuid().toString());
-        }
-        return this.getAvatarUrl(USER, this.userDAO.getUserTable(user.getName()).getUuid().toString());
+        return this.cache.get("user-" + user.getName(), (key) -> {
+            if (user instanceof HangarUser hangarUser) {
+                return this.getAvatarUrl(USER, hangarUser.getUuid().toString());
+            }
+            return this.getAvatarUrl(USER, this.userDAO.getUserTable(user.getName()).getUuid().toString());
+        });
     }
 
     public String getOrgAvatar(final UUID orgUserUuid) {
-        return this.getAvatarUrl(USER, orgUserUuid.toString());
+        return this.cache.get("org-" + orgUserUuid.toString(), (key) ->
+            this.getAvatarUrl(USER, orgUserUuid.toString())
+        );
     }
 
     public String getProjectAvatarUrl(final long projectId, final String ownerName) {
-        final UserTable userTable = this.userDAO.getUserTable(ownerName);
-        if (userTable != null) {
-            return this.getAvatarUrl(PROJECT, projectId + "", USER, userTable.getUuid().toString());
-        } else {
-            return this.getAvatarUrl(PROJECT, projectId + "");
-        }
+        return this.cache.get("project-" + projectId, (key) -> {
+            final UserTable userTable = this.userDAO.getUserTable(ownerName);
+            if (userTable != null) {
+                return this.getAvatarUrl(PROJECT, projectId + "", USER, userTable.getUuid().toString());
+            } else {
+                return this.getAvatarUrl(PROJECT, projectId + "");
+            }
+        });
     }
 
     private String getAvatarUrl(final String type, final String subject) {
@@ -131,13 +139,11 @@ public class AvatarService extends HangarComponent {
             return "https://docs.papermc.io/img/paper.png";
         }
 
-        return this.cache.get(type + "-" + subject, (key) -> {
-            try {
-                return this.restTemplate.getForObject(this.config.security.api().url() + "/avatar/" + type + "/" + subject + (defaultType != null && defaultSubject != null ? "/" + defaultType + "/" + defaultSubject : "") + "?apiKey=" + this.config.sso.apiKey(), String.class);
-            } catch (final HttpStatusCodeException ex) {
-                throw new ResponseStatusException(ex.getStatusCode(), "Error from auth api: " + ex.getMessage(), ex);
-            }
-        });
+        try {
+            return this.restTemplate.getForObject(this.config.security.api().url() + "/avatar/" + type + "/" + subject + (defaultType != null && defaultSubject != null ? "/" + defaultType + "/" + defaultSubject : "") + "?apiKey=" + this.config.sso.apiKey(), String.class);
+        } catch (final HttpStatusCodeException ex) {
+            throw new ResponseStatusException(ex.getStatusCode(), "Error from auth api: " + ex.getMessage(), ex);
+        }
     }
 
     private void checkEnabled() {
