@@ -158,6 +158,12 @@ public class HangarUserController extends HangarComponent {
         if (userTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
+        // if nothing changed, then nothing changed!
+        if (userTable.getLanguage().equals(settings.getLanguage()) && userTable.getTheme().equals(settings.getTheme())) {
+            setThemeCookie(settings, response);
+            return;
+        }
+
         userTable.setLanguage(settings.getLanguage());
         userTable.setTheme(settings.getTheme());
         // TODO user action logging
