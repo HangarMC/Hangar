@@ -79,9 +79,20 @@ useHead(useSeo(i18n.t("apiDocs.title"), "API Docs for the Hangar REST API", rout
     }
 
     .description h2 {
-      padding-top: 1.5rem;
-      margin: 1.5rem 0 0;
+      padding-top: 1rem;
+      margin-top: 1rem;
+      font-size: 30px;
       border-top: 3px solid #333333;
+    }
+
+    .description h3 {
+      padding-top: 1rem;
+      font-size: 25px;
+    }
+
+    .description h4 {
+      padding-top: 0.5rem;
+      font-size: 20px;
     }
 
     .scheme-container {
