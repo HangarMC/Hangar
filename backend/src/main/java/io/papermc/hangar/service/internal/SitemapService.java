@@ -3,6 +3,7 @@ package io.papermc.hangar.service.internal;
 import cz.jiripinkas.jsitemapgenerator.ChangeFreq;
 import cz.jiripinkas.jsitemapgenerator.WebPage;
 import cz.jiripinkas.jsitemapgenerator.generator.SitemapGenerator;
+import cz.jiripinkas.jsitemapgenerator.generator.SitemapIndexGenerator;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectPagesDAO;
@@ -36,7 +37,7 @@ public class SitemapService extends HangarComponent {
 
     @Cacheable(CacheConfig.INDEX_SITEMAP)
     public String getSitemap() {
-        final SitemapGenerator generator = SitemapGenerator.of(this.config.getBaseUrl())
+        final SitemapIndexGenerator generator = SitemapIndexGenerator.of(this.config.getBaseUrl())
             .addPage(WebPage.builder().name("global-sitemap.xml").build());
 
         this.userDAO.getAuthorNames().forEach(name -> generator.addPage(name + "/sitemap.xml"));
