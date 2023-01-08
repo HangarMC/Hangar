@@ -49,7 +49,11 @@ public class SitemapService extends HangarComponent {
             .addPage(WebPage.builder().name("").changeFreq(ChangeFreq.HOURLY).build())
             .addPage(WebPage.builder().name("authors").changeFreq(ChangeFreq.WEEKLY).build())
             .addPage(WebPage.builder().name("staff").changeFreq(ChangeFreq.WEEKLY).build())
-            .addPage(WebPage.builder().name("api").build())
+            .addPage(WebPage.builder().name("guidelines").changeFreq(ChangeFreq.WEEKLY).build())
+            .addPage(WebPage.builder().name("terms").changeFreq(ChangeFreq.WEEKLY).build())
+            .addPage(WebPage.builder().name("privacy").changeFreq(ChangeFreq.WEEKLY).build())
+            .addPage(WebPage.builder().name("version").changeFreq(ChangeFreq.DAILY).build())
+            .addPage(WebPage.builder().name("api-docs").build())
             .toString();
     }
 

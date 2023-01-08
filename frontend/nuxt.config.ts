@@ -3,7 +3,7 @@ import VueI18n from "@intlify/vite-plugin-vue-i18n";
 import IconsResolver from "unplugin-icons/resolver";
 import Icons from "unplugin-icons/vite";
 import Components from "unplugin-vue-components/vite";
-import { ProxyOptions } from "@nuxtjs-alt/proxy";
+import { ProxyOptions } from "@nuxt-alt/proxy";
 import prettier from "./src/lib/plugins/prettier";
 
 const backendHost = process.env.BACKEND_HOST || "http://localhost:8080";
@@ -24,7 +24,7 @@ export default defineNuxtConfig({
   modules: [
     "nuxt-windicss",
     "@pinia/nuxt",
-    "@nuxtjs-alt/proxy",
+    "@nuxt-alt/proxy",
     "unplugin-icons/nuxt",
     [
       "./src/module/backendData",
@@ -105,7 +105,7 @@ export default defineNuxtConfig({
       "/robots.txt": defineProxyBackend(),
       "/sitemap.xml": defineProxyBackend(),
       "/global-sitemap.xml": defineProxyBackend(),
-      "/*/sitemap.xml": defineProxyBackend(),
+      "^/.*/sitemap.xml": defineProxyBackend(),
       "/statusz": defineProxyBackend(),
       // auth
       "/avatar": defineProxyAuth(),
