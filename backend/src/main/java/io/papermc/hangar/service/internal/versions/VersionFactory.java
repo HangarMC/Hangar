@@ -3,7 +3,6 @@ package io.papermc.hangar.service.internal.versions;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
-import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionPlatformDependenciesDAO;
@@ -75,7 +74,6 @@ public class VersionFactory extends HangarComponent {
 
     private final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependenciesDAO;
     private final ProjectVersionDependenciesDAO projectVersionDependenciesDAO;
-    private final PlatformVersionDAO platformVersionDAO;
     private final ProjectVersionsDAO projectVersionsDAO;
     private final ProjectFiles projectFiles;
     private final PluginDataService pluginDataService;
@@ -92,10 +90,9 @@ public class VersionFactory extends HangarComponent {
     private final FileService fileService;
 
     @Autowired
-    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final PlatformVersionDAO platformVersionDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final JobService jobService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService) {
+    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final JobService jobService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
-        this.platformVersionDAO = platformVersionDAO;
         this.projectVersionsDAO = projectVersionDAO;
         this.projectFiles = projectFiles;
         this.pluginDataService = pluginDataService;
@@ -325,7 +322,7 @@ public class VersionFactory extends HangarComponent {
         final List<ProjectVersionPlatformDependencyTable> platformDependencyTables = new ArrayList<>();
         for (final Map.Entry<Platform, SortedSet<String>> entry : pendingVersion.getPlatformDependencies().entrySet()) {
             for (final String version : entry.getValue()) {
-                final PlatformVersionTable platformVersionTable = this.platformVersionDAO.getByPlatformAndVersion(entry.getKey(), version);
+                final PlatformVersionTable platformVersionTable = this.platformService.getByPlatformAndVersion(entry.getKey(), version);
                 platformDependencyTables.add(new ProjectVersionPlatformDependencyTable(versionId, platformVersionTable.getId()));
             }
         }

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ public class PlatformService extends HangarComponent {
         this.platformVersionDAO = platformVersionDAO;
     }
 
+    @Cacheable(CacheConfig.PLATFORMS)
     public List<String> getVersionsForPlatform(final Platform platform) {
         return this.platformVersionDAO.getVersionsForPlatform(platform);
     }
@@ -48,5 +50,10 @@ public class PlatformService extends HangarComponent {
             this.platformVersionDAO.insertAll(toBeAdded.values());
         });
         // TODO user action logging
+    }
+
+    @Cacheable(CacheConfig.PLATFORMS)
+    public PlatformVersionTable getByPlatformAndVersion(final Platform platform, final String version) {
+        return this.platformVersionDAO.getByPlatformAndVersion(platform, version);
     }
 }

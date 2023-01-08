@@ -53,7 +53,7 @@ public class CacheConfig {
 
     @Bean(PLATFORMS)
     Cache platformsCache() {
-        return this.createCache(PLATFORMS, Duration.ofHours(1), 1);
+        return this.createCache(PLATFORMS, Duration.ofHours(12), 100);
     }
 
     @Bean(PROJECTS)

@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionPlatformDependenciesDAO;
@@ -18,6 +17,7 @@ import io.papermc.hangar.model.internal.api.requests.versions.UpdatePlatformVers
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDependencies;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
+import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.util.StringUtils;
 import java.util.ArrayList;
@@ -39,17 +39,17 @@ public class VersionDependencyService extends HangarComponent {
     private final VersionsApiDAO versionsApiDAO;
     private final ProjectsDAO projectsDAO;
     private final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependenciesDAO;
-    private final PlatformVersionDAO platformVersionDAO;
+    private final PlatformService platformService;
     private final ProjectService projectService;
     private final DownloadService downloadService;
 
     @Autowired
-    public VersionDependencyService(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final VersionsApiDAO versionsApiDAO, final ProjectsDAO projectsDAO, final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final PlatformVersionDAO platformVersionDAO, final ProjectService projectService, final DownloadService downloadService) {
+    public VersionDependencyService(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final VersionsApiDAO versionsApiDAO, final ProjectsDAO projectsDAO, final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final PlatformService platformService, final ProjectService projectService, final DownloadService downloadService) {
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.versionsApiDAO = versionsApiDAO;
         this.projectsDAO = projectsDAO;
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
-        this.platformVersionDAO = platformVersionDAO;
+        this.platformService = platformService;
         this.projectService = projectService;
         this.downloadService = downloadService;
     }
@@ -93,7 +93,7 @@ public class VersionDependencyService extends HangarComponent {
         });
         form.getVersions().forEach(version -> {
             if (!platformDependencyTables.containsKey(version)) {
-                final PlatformVersionTable platformVersionTable = this.platformVersionDAO.getByPlatformAndVersion(form.getPlatform(), version);
+                final PlatformVersionTable platformVersionTable = this.platformService.getByPlatformAndVersion(form.getPlatform(), version);
                 if (platformVersionTable == null) {
                     throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidVersionForPlatform", version, form.getPlatform().getName());
                 }
