@@ -8,6 +8,7 @@ base:
   sso:
     clientId: "my-client"
     apiKey: "some-id"
+  allowIndexing: "true"
 
 ingress:
   enabled: false

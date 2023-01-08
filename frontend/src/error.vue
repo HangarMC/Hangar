@@ -24,6 +24,7 @@ useHead({
   bodyAttrs: {
     class: "background-body text-[#262626] dark:text-[#E0E6f0]",
   },
+  meta: [{ name: "robots", content: "noindex,nofollow" }], // never index error page
 });
 
 // custom

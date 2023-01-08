@@ -70,6 +70,7 @@ hangar:
   dev: true
   base-url: "http://localhost:3333"
   ga-code: "UA-38006759-9"
+  allow-indexing: true
 
   licenses:
     - "Unspecified"

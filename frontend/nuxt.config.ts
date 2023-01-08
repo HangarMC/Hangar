@@ -10,6 +10,7 @@ const backendHost = process.env.BACKEND_HOST || "http://localhost:8080";
 const authHost = process.env.AUTH_HOST || "http://localhost:3001";
 const local = true; // set to false if backendData should be fetched from staging. You might need to hard reload (Ctrl+F5) the next page you're on when changing this value
 const backendDataHost = process.env.BACKEND_DATA_HOST || (local ? "http://localhost:8080" : "https://hangar.papermc.dev");
+const allowIndexing = process.env.HANGAR_ALLOW_INDEXING || "true";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
@@ -20,6 +21,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     authHost,
     backendHost,
+    public: {
+      allowIndexing,
+    },
   },
   modules: [
     "nuxt-windicss",

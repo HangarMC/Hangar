@@ -15,6 +15,13 @@ public class ApplicationController extends HangarComponent {
     @GetMapping(path = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String robots() {
+        if (!this.config.isAllowIndexing()) {
+            return new RobotsBuilder()
+                .group("*")
+                .disallow("/")
+                .endGroup()
+                .build();
+        }
         return new RobotsBuilder()
             .group("*")
             .disallow("/invalidate")
@@ -31,7 +38,7 @@ public class ApplicationController extends HangarComponent {
             .disallow("/error")
             .disallow("/version-info")
             .disallow("/api")
-            .allow("/api$")
+            .disallow("/zipkin")
             .disallow("/notifications")
             .disallow("/*/settings")
             .disallow("/*/*/channels")
