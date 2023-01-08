@@ -73,9 +73,7 @@ public class SitemapService extends HangarComponent {
             final List<ProjectVersionTable> projectVersions = this.projectVersionsDAO.getProjectVersions(p.getId());
 
             projectVersions.forEach(pv -> {
-                final List<Platform> platforms = this.projectVersionsDAO.getVersionPlatforms(pv.getId());
-                platforms.forEach(platform -> generator.addPage(this.path(userTable.getName(), p.getSlug(), "versions", pv.getVersionString(), platform.name().toLowerCase(Locale.ROOT))));
-
+                generator.addPage(this.path(userTable.getName(), p.getSlug(), "versions", pv.getVersionString()));
             });
         });
 
