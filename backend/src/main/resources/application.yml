@@ -52,8 +52,7 @@ management:
     enabled-by-default: true
     web:
       exposure:
-        include: "health"
-        # include: "*" # for local you can include all for more info
+        include: "*"
 
 #############
 # Fake User #
