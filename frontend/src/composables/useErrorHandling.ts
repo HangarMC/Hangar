@@ -54,7 +54,7 @@ function _handleRequestError(err: AxiosError | unknown, i18n: Composer) {
         "isMultiException" in err.response.data ? (err.response.data as MultiHangarApiException).exceptions[0] : (err.response.data as HangarApiException);
       createError({
         statusCode: data.httpError.statusCode,
-        statusMessage: i18n.te(data.message) ? i18n.t(data.message) : data.message,
+        statusMessage: data.message ? (i18n.te(data.message) ? i18n.t(data.message) : data.message) : null,
       });
     } else if ("isHangarValidationException" in err.response.data) {
       const data = err.response.data as HangarValidationException;
@@ -78,7 +78,7 @@ function _handleRequestError(err: AxiosError | unknown, i18n: Composer) {
 
 function collectErrors(exception: HangarApiException | MultiHangarApiException, i18n: Composer): string[] {
   if (!exception.isMultiException) {
-    return [i18n.te(exception.message) ? i18n.t(exception.message, [exception.messageArgs]) : exception.message];
+    return exception.message ? [i18n.te(exception.message) ? i18n.t(exception.message, [exception.messageArgs]) : exception.message] : [];
   } else {
     const res: string[] = [];
     for (const ex of exception.exceptions) {
