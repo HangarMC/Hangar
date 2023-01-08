@@ -53,5 +53,5 @@ const notificationStore = useNotificationStore();
   100% {
     width: 0;
   }
-} ;
+}
 </style>
