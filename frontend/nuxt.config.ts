@@ -30,6 +30,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@nuxt-alt/proxy",
     "unplugin-icons/nuxt",
+    "@unlighthouse/nuxt",
     [
       "./src/module/backendData",
       {
