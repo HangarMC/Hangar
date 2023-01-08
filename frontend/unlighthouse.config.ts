@@ -12,4 +12,7 @@ export default {
     showURL: true,
     open: false,
   },
+  puppeteerClusterOptions: {
+    maxConcurrency: 2,
+  },
 };
