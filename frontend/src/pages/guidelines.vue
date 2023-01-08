@@ -40,6 +40,11 @@ Examples of names that are **allowed**:
 The category you choose should be accurate. Your project should use the most fitting category rather than any category
 that only slightly applies. If no category appears accurate, the Miscellaneous category should be used.
 
+## Platform Selection
+
+A plugin's selected platforms must be able to load it when put into the platform's plugin directory, provided its
+dependencies and configuration have been set up properly.
+
 ## Resource Updates
 
 While the rate-limit for uploading new versions is very lenient to allow sometimes necessary hotfixes, you should not
@@ -48,12 +53,12 @@ flood watching users with notifications.
 
 ## Monetization / Advertising
 
-Additional features or addons may not be hidden behind a paywall; this includes directly linking to off-site addons or
-"full" versions of a "lite" plugin version. Advertisements and other revenue generating links (e.g. adfly) are not
-permitted.
+Functionality may not be hidden behind a paywall or an author-granted license key; this includes directly linking to paid
+off-site addons or "full" versions of a "lite" plugin version. Hooks into paid software are allowed if they exist for
+compatibility reasons or are part of a feature that is also usable through other, not similarly restricted means.
 
-All functionality present in your plugin should be usable without restriction and cannot require a license key to
-operate. Plugins may not be used to display advertisements - informative mentions of (optional) platform or plugin dependencies are allowed.
+Advertisements and other revenue generating links (such as adfly) are not permitted. Informative mentions of (optional)
+platform or plugin dependencies are exempt from this.
 
 On the resource page, you may link to the following:
 
@@ -113,7 +118,7 @@ Other malicious actions, such as deleting a server's data or banning random play
 These guidelines are loosely based on [Ore's plugin submission guidelines](https://docs.spongepowered.org/stable/en/ore/guidelines.html),
 licensed under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
-Last updated: December 25, 2022
+Last updated: January 08, 2023
 `;
 
 useHead(useSeo(i18n.t("pages.guidelinesTitle"), null, route, null));
