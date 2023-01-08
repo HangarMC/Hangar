@@ -1,8 +1,8 @@
 package io.papermc.hangar.service.internal;
 
 import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.User;
@@ -11,9 +11,9 @@ import io.papermc.hangar.model.internal.user.HangarUser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Duration;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpEntity;
@@ -36,12 +36,14 @@ public class AvatarService extends HangarComponent {
     private final RestTemplate restTemplate;
     private final UserDAO userDAO;
 
-    private final Cache<String, String> cache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMinutes(30)).build();
+    private final Cache<String, String> cache;
 
     @Autowired
-    public AvatarService(@Lazy final RestTemplate restTemplate, final UserDAO userDAO) {
+    public AvatarService(@Lazy final RestTemplate restTemplate, final UserDAO userDAO, @Qualifier(CacheConfig.AVATARS) final org.springframework.cache.Cache avatarsCache) {
         this.restTemplate = restTemplate;
         this.userDAO = userDAO;
+        //noinspection unchecked
+        this.cache = (Cache<String, String>) avatarsCache.getNativeCache();
     }
 
     /*

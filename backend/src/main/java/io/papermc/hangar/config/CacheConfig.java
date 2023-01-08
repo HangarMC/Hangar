@@ -2,11 +2,15 @@ package io.papermc.hangar.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import java.time.Duration;
+import io.micrometer.core.instrument.Tag;
+import jakarta.annotation.PostConstruct;
+import org.springframework.boot.actuate.metrics.cache.CacheMetricsRegistrar;
 import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 @Configuration
 @EnableCaching
@@ -34,10 +38,13 @@ public class CacheConfig {
     public static final String INDEX_SITEMAP = "indexSitemap-cache";
     public static final String GLOBAL_SITEMAP = "globalSitemap-cache";
     public static final String USER_SITEMAP = "userSitemap-cache";
+    public static final String AVATARS = "avatars-cache";
 
+    private final CacheMetricsRegistrar cacheMetricsRegistrar;
     private final CaffeineCacheManager cacheManager;
 
-    public CacheConfig() {
+    public CacheConfig(@Lazy final CacheMetricsRegistrar cacheMetricsRegistrar) {
+        this.cacheMetricsRegistrar = cacheMetricsRegistrar;
         this.cacheManager = new CaffeineCacheManager();
     }
 
@@ -151,11 +158,25 @@ public class CacheConfig {
         return this.createCache(USER_SITEMAP, Duration.ofHours(1), 20);
     }
 
+    @Bean(AVATARS)
+    Cache avatarsCache() {
+        return this.createCache(AVATARS, Duration.ofMinutes(30), 200);
+    }
+
+    @PostConstruct
+    public void init() {
+        for (final String cacheName : this.cacheManager.getCacheNames()) {
+            final Cache cache = this.cacheManager.getCache(cacheName);
+            this.cacheMetricsRegistrar.bindCacheToRegistry(cache);
+        }
+    }
+
     private Cache createCache(final String name, final Duration ttl, final long maxSize) {
         final var caffineCache = Caffeine.newBuilder()
             .expireAfterWrite(ttl)
             .expireAfterAccess(ttl)
             .maximumSize(maxSize)
+            .recordStats()
             .build();
         this.cacheManager.registerCustomCache(name, caffineCache);
         return this.cacheManager.getCache(name);
