@@ -81,6 +81,10 @@ export default defineNuxtConfig({
     preset: "node-cluster",
     compressPublicAssets: true,
   },
+  sourcemap: {
+    server: true,
+    client: true,
+  },
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => ["lottie-player"].includes(tag),
