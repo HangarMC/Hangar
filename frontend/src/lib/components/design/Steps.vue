@@ -91,7 +91,7 @@ async function goto(step: Step) {
       <ul class="flex flex-row justify-around items-center">
         <template v-for="(step, count) in steps" :key="step.value">
           <div>
-            <div class="bg-primary-100 text-white rounded-full w-[24px] h-[24px] inline-flex justify-center align-center" m="r-0 md:r-2">
+            <div class="bg-primary-400 text-white rounded-full w-[24px] h-[24px] inline-flex justify-center align-center" m="r-0 md:r-2">
               {{ count + 1 }}
             </div>
             <Link

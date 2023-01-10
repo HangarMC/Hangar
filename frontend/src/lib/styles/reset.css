@@ -1,0 +1,226 @@
+*,
+:after,
+:before {
+  border: 0 solid #e4e4e7;
+  box-sizing: border-box;
+}
+
+* {
+  --tw-ring-inset: var(--tw-empty);
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+}
+
+:root {
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+}
+
+:-moz-focusring {
+  outline: 1px dotted ButtonText;
+}
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+::moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  font: inherit;
+}
+
+[type="search"] {
+  -webkit-appearance: textfield;
+  outline-offset: -2px;
+}
+
+abbr[title] {
+  -webkit-text-decoration: underline dotted;
+  text-decoration: underline dotted;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+body {
+  font-family: inherit;
+  line-height: inherit;
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  color: inherit;
+  font-family: inherit;
+  font-size: 100%;
+  line-height: 1.15;
+  line-height: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+button,
+select {
+  text-transform: none;
+}
+
+[type="button"],
+[type="reset"],
+[type="submit"],
+button {
+  -webkit-appearance: button;
+}
+
+button {
+  background-color: transparent;
+  background-image: none;
+}
+
+[role="button"],
+button {
+  cursor: pointer;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+  font-size: 1em;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji,
+    Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  line-height: 1.5;
+}
+
+hr {
+  border-top-width: 1px;
+  color: inherit;
+  height: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+hr,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+img {
+  border-style: solid;
+  height: auto;
+  max-width: 100%;
+}
+
+input::placeholder {
+  color: #a1a1aa;
+  opacity: 1;
+}
+
+input::webkit-input-placeholder {
+  color: #a1a1aa;
+  opacity: 1;
+}
+
+input::-moz-placeholder {
+  color: #a1a1aa;
+  opacity: 1;
+}
+
+input:-ms-input-placeholder {
+  color: #a1a1aa;
+  opacity: 1;
+}
+
+input::-ms-input-placeholder {
+  color: #a1a1aa;
+  opacity: 1;
+}
+
+img,
+svg {
+  display: block;
+  vertical-align: middle;
+}
+
+strong {
+  font-weight: bolder;
+}
+
+small {
+  font-size: 80%;
+}
+
+table {
+  border-collapse: collapse;
+  border-color: inherit;
+  text-indent: 0;
+}
+
+textarea {
+  resize: vertical;
+}
+
+textarea::placeholder {
+  color: #a1a1aa;
+  opacity: 1;
+}
+
+textarea::webkit-input-placeholder {
+  color: #a1a1aa;
+  opacity: 1;
+}
+
+textarea::-moz-placeholder {
+  color: #a1a1aa;
+  opacity: 1;
+}
+
+textarea:-ms-input-placeholder {
+  color: #a1a1aa;
+  opacity: 1;
+}
+
+textarea::-ms-input-placeholder {
+  color: #a1a1aa;
+  opacity: 1;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
