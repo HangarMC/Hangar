@@ -42,13 +42,13 @@ function getBorderClasses(): string {
         </h2>
 
         <h3 v-if="project.description" class="mb-1">{{ project.description }}</h3>
-        <span class="<sm:hidden text-gray-500 dark:text-gray-400 flex flex-row items-center">
+        <span class="lt-sm:hidden text-gray-500 dark:text-gray-400 flex flex-row items-center">
           <CategoryLogo :category="project.category" :size="16" class="mr-1" />
           {{ i18n.t("project.category." + project.category) }}
         </span>
       </div>
       <div class="flex-grow"></div>
-      <div class="<sm:hidden flex flex-col flex-shrink-0 min-w-40">
+      <div class="lt-sm:hidden flex flex-col flex-shrink-0 min-w-40">
         <span class="inline-flex items-center">
           <IconMdiStar class="mx-1" /> {{ project.stats.stars }} {{ i18n.t("project.info.stars", project.stats.stars) }}
         </span>

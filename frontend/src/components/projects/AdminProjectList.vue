@@ -17,7 +17,7 @@ defineProps<{
     <template v-for="project in projects" :key="project.projectId">
       <hr />
       <li>
-        <div class="flex <md:flex-col items-center">
+        <div class="flex lt-md:flex-col items-center">
           <div class="basis-full md:basis-3/12">
             {{ i18n.t("projectApproval.description", [project.changeRequester, `${project.namespace.owner}/${project.namespace.slug}`]) }}
             <Link :to="`/${project.namespace.owner}/${project.namespace.slug}`" target="_blank">
