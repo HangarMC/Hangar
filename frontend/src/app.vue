@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import "./lib/styles/main.css";
+// eslint-disable-next-line import/no-unresolved
+import "uno.css";
 import { useHead } from "@vueuse/head";
 import { computed } from "vue";
 import { useSettingsStore } from "~/store/useSettingsStore";

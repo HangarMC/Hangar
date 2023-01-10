@@ -5,6 +5,7 @@ import Icons from "unplugin-icons/vite";
 import Components from "unplugin-vue-components/vite";
 import { ProxyOptions } from "@nuxt-alt/proxy";
 import prettier from "./src/lib/plugins/prettier";
+import unocss from "./src/lib/config/unocss.config";
 
 const backendHost = process.env.BACKEND_HOST || "http://localhost:8080";
 const authHost = process.env.AUTH_HOST || "http://localhost:3001";
@@ -25,8 +26,9 @@ export default defineNuxtConfig({
       allowIndexing,
     },
   },
+  unocss,
   modules: [
-    "nuxt-windicss",
+    "@unocss/nuxt",
     "@pinia/nuxt",
     "@nuxt-alt/proxy",
     "unplugin-icons/nuxt",

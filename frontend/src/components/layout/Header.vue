@@ -218,7 +218,7 @@ function isRecent(date: string): boolean {
             :key="navBarLink.label"
             :to="{ name: navBarLink.link }"
             class="relative"
-            after="absolute content-DEFAULT block w-0 top-30px left-1/10 h-4px rounded-8px"
+            after="absolute content-empty block w-0 top-30px left-1/10 h-4px rounded-8px"
           >
             {{ navBarLink.label }}
           </router-link>
