@@ -5,15 +5,18 @@ import { hasSlotContent } from "~/lib/composables/useSlot";
 const props = withDefaults(
   defineProps<{
     accent?: boolean;
+    alternateBackground?: boolean;
   }>(),
   {
     accent: false,
+    alternateBackground: false,
   }
 );
 
 const clazz = computed(() => {
   return {
-    "background-default": true,
+    "background-default": !props.alternateBackground,
+    "background-card": props.alternateBackground,
     border: true,
     "dark:border-gray-800": true,
     "!border-top-primary": props.accent,
