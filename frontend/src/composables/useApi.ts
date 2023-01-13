@@ -1,13 +1,13 @@
 import type { AxiosError, AxiosRequestConfig } from "axios";
 import qs from "qs";
 import Cookies from "universal-cookie";
-import { isEmpty } from "lodash-es";
-import type { Ref } from "vue";
 import { useCookies } from "~/composables/useCookies";
 import { authLog, fetchLog } from "~/lib/composables/useLog";
 import { useAxios } from "~/composables/useAxios";
 
-function request<T>(url: string, method: AxiosRequestConfig["method"], data: object): Promise<T> {
+type FilteredAxiosConfig = Omit<AxiosRequestConfig, "method" | "url" | "data" | "params" | "baseURL">;
+
+function request<T>(url: string, method: AxiosRequestConfig["method"], data: object, axiosOptions: FilteredAxiosConfig = {}): Promise<T> {
   const cookies = useCookies();
   return new Promise<T>((resolve, reject) => {
     return useAxios()
@@ -16,6 +16,7 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
         url: `/api/${url}`,
         data: method?.toLowerCase() !== "get" ? data : {},
         params: method?.toLowerCase() === "get" ? data : {},
+        ...axiosOptions,
         paramsSerializer: (params) => {
           return qs.stringify(params, {
             arrayFormat: "repeat",
@@ -44,12 +45,17 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
   });
 }
 
-export function useApi<T>(url: string, method: AxiosRequestConfig["method"] = "get", data: object = {}): Promise<T> {
+export function useApi<T>(url: string, method: AxiosRequestConfig["method"] = "get", data: object = {}, axiosOptions: FilteredAxiosConfig = {}): Promise<T> {
   fetchLog("useApi", url, data);
-  return request(`v1/${url}`, method, data);
+  return request(`v1/${url}`, method, data, axiosOptions);
 }
 
-export function useInternalApi<T = void>(url: string, method: AxiosRequestConfig["method"] = "get", data: object = {}): Promise<T> {
+export function useInternalApi<T = void>(
+  url: string,
+  method: AxiosRequestConfig["method"] = "get",
+  data: object = {},
+  axiosOptions: FilteredAxiosConfig = {}
+): Promise<T> {
   fetchLog("useInternalApi", url, data);
-  return request(`internal/${url}`, method, data);
+  return request(`internal/${url}`, method, data, axiosOptions);
 }
