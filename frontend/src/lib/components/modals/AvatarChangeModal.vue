@@ -106,7 +106,7 @@ async function save() {
   }
 
   try {
-    await useInternalApi(props.action, "POST", form, {timeout: 10000});
+    await useInternalApi(props.action, "POST", form, { timeout: 10000 });
 
     window.location.reload();
   } catch (e) {
