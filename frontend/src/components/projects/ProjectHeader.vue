@@ -110,15 +110,15 @@ function requiresConfirmation(): ConfirmationType {
     </Alert>
   </div>
   <Card accent>
-    <div class="flex <sm:flex-col">
+    <div class="flex lt-sm:flex-col">
       <UserAvatar
-        class="flex-shrink-0 mr-3 <sm:hidden"
+        class="flex-shrink-0 mr-3 lt-sm:hidden"
         :username="project.namespace.owner"
         :to="'/' + project.namespace.owner + '/' + project.name"
         :img-src="project.avatarUrl"
       />
-      <div class="flex-grow sm:mr-4 <sm:mb-4 overflow-clip overflow-hidden">
-        <div class="text-2xl <sm:text-lg pb-1 inline-flex space-x-0.3 items-center">
+      <div class="flex-grow sm:mr-4 lt-sm:mb-4 overflow-clip overflow-hidden">
+        <div class="text-2xl lt-sm:text-lg pb-1 inline-flex space-x-0.3 items-center">
           <UserAvatar
             class="!w-8 !h-8 sm:hidden"
             :username="project.namespace.owner"
@@ -135,7 +135,7 @@ function requiresConfirmation(): ConfirmationType {
         </div>
         <p class="sm:ml-1">{{ project.description }}</p>
       </div>
-      <div class="flex flex-col justify-around <sm:items-center space-y-2 items-end justify-between flex-shrink-0">
+      <div class="flex flex-col justify-around lt-sm:items-center space-y-2 items-end justify-between flex-shrink-0">
         <span v-if="Object.keys(project.mainChannelVersions).length !== 0" class="inline-flex items-center">
           <Tooltip v-if="requiresConfirmation() !== ConfirmationType.NO" :content="i18n.t(requiresConfirmation())">
             <IconMdiAlertCircleOutline class="mr-2 text-2xl" />

@@ -88,7 +88,7 @@ const canEditCurrentUser = computed<boolean>(() => {
         </div>
       </div>
       <div class="flex-grow" />
-      <div class="<md:hidden flex flex-col space-y-1 items-end flex-shrink-0">
+      <div class="lt-md:hidden flex flex-col space-y-1 items-end flex-shrink-0">
         <span>{{ i18n.t("author.memberSince", [i18n.d(user.joinDate, "date")]) }}</span>
         <span>{{ i18n.t("author.numProjects", [user.projectCount], user.projectCount) }}</span>
         <span class="inline-flex space-x-1">

@@ -147,7 +147,7 @@ async function restoreVersion() {
 </script>
 
 <template>
-  <div v-if="projectVersion" class="flex <sm:flex-col flex-wrap md:flex-nowrap gap-4">
+  <div v-if="projectVersion" class="flex lt-sm:flex-col flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-11/15 flex-grow">
       <div class="flex flex-wrap gap-2 justify-between">
         <div>
@@ -156,7 +156,7 @@ async function restoreVersion() {
             {{ projectVersion.name }}
           </h2>
           <h3>
-            <span class="inline-flex <sm:flex-wrap ml-1">
+            <span class="inline-flex lt-sm:flex-wrap ml-1">
               {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
               <!--<span v-if="projectVersion.downloads[platform?.enumName]?.fileInfo?.sizeBytes" class="inline-flex items-center sm:ml-3">
                 <IconMdiFile class="mr-1" />

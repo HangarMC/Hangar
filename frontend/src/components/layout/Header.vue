@@ -227,7 +227,7 @@ function isRecent(date: string): boolean {
 
       <!-- Right side items -->
       <div class="flex items-center gap-2">
-        <div v-if="authStore.user" class="flex items-center <sm:hidden">
+        <div v-if="authStore.user" class="flex items-center lt-sm:hidden">
           <DropdownButton name="Create">
             <template #default="{ close }">
               <DropdownItem to="/new" @click="close()">{{ t("nav.new.project") }}</DropdownItem>

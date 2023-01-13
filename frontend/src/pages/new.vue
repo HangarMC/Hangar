@@ -182,8 +182,8 @@ function createProject() {
             :rules="[required()]"
           />
         </div>
-        <span class="text-3xl <md:hidden ml-2 mr-2">/</span>
-        <div class="basis-full md:basis-4/12 <md:mt-4">
+        <span class="text-3xl lt-md:hidden ml-2 mr-2">/</span>
+        <div class="basis-full md:basis-4/12 lt-md:mt-4">
           <InputText
             v-model.trim="form.name"
             :label="i18n.t('project.new.step2.projectName')"
@@ -236,7 +236,7 @@ function createProject() {
         {{ i18n.t("project.new.step3.license") }}
         <hr />
       </div>
-      <div class="flex md:gap-2 <md:flex-wrap">
+      <div class="flex md:gap-2 lt-md:flex-wrap">
         <div class="basis-full mt-4" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
           <InputSelect v-model="form.settings.license.type" :values="useLicenseOptions" :label="i18n.t('project.new.step3.type')" :rules="[required()]" />
         </div>

@@ -57,8 +57,8 @@ Functionality may not be hidden behind a paywall or an author-granted license ke
 off-site addons or "full" versions of a "lite" plugin version. Hooks into paid software are allowed if they exist for
 compatibility reasons or are part of a feature that is also usable through other, not similarly restricted means.
 
-Advertisements and other revenue generating links (such as adfly) are not permitted. Informative mentions of (optional)
-platform or plugin dependencies are exempt from this.
+Advertisements are not allowed, with the exception of informative mentions of (optional) platform or plugin dependencies.
+Revenue generating links (such as adfly) are not permitted.
 
 On the resource page, you may link to the following:
 

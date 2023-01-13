@@ -351,7 +351,7 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
     </template>
     <template #basic>
       <p class="mb-4">{{ i18n.t("version.new.form.versionDescription") }}</p>
-      <div class="flex flex-wrap mt-2 md:-space-x-2 <md:space-y-2">
+      <div class="flex flex-wrap mt-2 md:-space-x-2 lt-md:space-y-2">
         <!-- TODO validate version string against existing versions - now super easy! -->
         <div v-if="pendingVersion" class="basis-full md:basis-4/12 items-center">
           <InputText
@@ -367,13 +367,13 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
       <p class="mt-8 text-xl">{{ t("version.new.form.addedArtifacts") }}</p>
       <div v-for="(pendingFile, idx) in pendingVersion?.files" :key="idx" class="mb-2">
         <div class="flex flex-wrap items-center mt-4 gap-2">
-          <div v-if="pendingFile.fileInfo" class="basis-full <md:mt-4 md:basis-4/12">
+          <div v-if="pendingFile.fileInfo" class="basis-full lt-md:mt-4 md:basis-4/12">
             <InputText :model-value="pendingFile.fileInfo.name" :label="t('version.new.form.fileName')" disabled />
           </div>
-          <div v-if="pendingFile.fileInfo" class="basis-full <md:mt-4 md:(basis-2/12)">
+          <div v-if="pendingFile.fileInfo" class="basis-full lt-md:mt-4 md:(basis-2/12)">
             <InputText :model-value="String(formatSize(pendingFile.fileInfo.sizeBytes))" :label="t('version.new.form.fileSize')" disabled />
           </div>
-          <div v-else class="basis-full <md:mt-4 md:basis-6/12">
+          <div v-else class="basis-full lt-md:mt-4 md:basis-6/12">
             <InputText v-model="pendingFile.externalUrl" :label="t('version.new.form.externalUrl')" disabled />
           </div>
           <div class="ml-2 flex flex-wrap items-center">

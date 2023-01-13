@@ -250,7 +250,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
   <div class="flex gap-4 flex-col md:flex-row">
     <Card class="basis-full md:basis-9/12">
       <template #header>
-        <div class="flex justify-between <sm:items-center">
+        <div class="flex justify-between lt-sm:items-center">
           {{ i18n.t("project.settings.title") }}
           <div class="text-lg">
             <Button :disabled="v.$invalid" :loading="loading.save" @click="save">
@@ -350,7 +350,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
             <InputText v-model.trim="form.settings.wiki" :label="i18n.t('project.new.step3.wiki')" :rules="[url()]" />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
-            <div class="flex md:gap-2 <md:flex-wrap">
+            <div class="flex md:gap-2 lt-md:flex-wrap">
               <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
                 <InputSelect v-model="form.settings.license.type" :values="useLicenseOptions" :label="i18n.t('project.settings.licenseType')" />
               </div>

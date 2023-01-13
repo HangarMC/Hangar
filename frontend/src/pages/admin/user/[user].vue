@@ -85,7 +85,7 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
         {{ $route.params.user }}
       </Link>
     </PageTitle>
-    <div class="flex <md:flex-col mb-2 gap-2">
+    <div class="flex lt-md:flex-col mb-2 gap-2">
       <Card class="basis-full md:basis-8/12">
         <template #header>{{ i18n.t("userAdmin.roles") }}</template>
         <div class="space-x-1">
