@@ -56,7 +56,7 @@ const ccColor = computed(() => {
         background: ccColor?.background,
         'border-color': ccColor?.background,
       }"
-      class="tag flex rounded px-2 py-1 text-0.8em"
+      class="flex rounded px-2 py-0.5 text-0.8em"
     >
       {{ name }}
     </span>
