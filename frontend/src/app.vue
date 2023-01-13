@@ -35,10 +35,20 @@ useHead({
 onErrorCaptured((err) => {
   console.log("captured", transformAxiosError(err)); // TODO error handling
 });
+
+const pageKey = computed(() => {
+  if (route?.params?.user && route?.params?.project) {
+    return route.params.user + "-" + route.params.project;
+  } else if (route?.params?.user) {
+    return route.params.user;
+  } else {
+    return route.path;
+  }
+});
 </script>
 
 <template>
   <NuxtLayout>
-    <NuxtPage :page-key="route.params.user + '-' + route.params.project" />
+    <NuxtPage :page-key="pageKey" />
   </NuxtLayout>
 </template>
