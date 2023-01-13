@@ -93,7 +93,7 @@ const filteredOptions = computed(() => {
     :no-error-tooltip="noErrorTooltip"
   >
     <div class="flex flex-wrap flex-grow gap-2 mt-2">
-      <span v-for="t in tags" :key="t" class="bg-primary-light-400 rounded-4xl px-1 py-1 h-30px inline-flex items-center dark:bg-gray-600">
+      <span v-for="t in tags" :key="t" class="bg-primary-light-400 rounded-xl px-1 py-1 h-30px inline-flex items-center dark:bg-gray-600">
         {{ t }}
         <span class="text-gray-400 ml-1 inline-flex pointer-events-auto cursor-pointer hover:text-gray-500" @click="remove(t)">
           <icon-mdi-close-circle />

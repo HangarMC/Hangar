@@ -11,7 +11,7 @@ const notificationStore = useNotificationStore();
     <div>
       <div v-for="notification in notificationStore.notifications" :key="notification.addedAt" class="mb-3">
         <div
-          class="rounded-t p-4 pb-2 px-3 pointer-events-auto text-right border-left-5px bg-gray-300 dark:bg-slate-700"
+          class="rounded-t p-4 pb-2 px-3 pointer-events-auto text-right border-l-5px bg-gray-300 dark:bg-slate-700"
           :style="{ 'border-color': notification.color }"
         >
           <div class="inline-flex items-center">
