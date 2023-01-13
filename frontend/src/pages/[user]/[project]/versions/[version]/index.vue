@@ -28,6 +28,7 @@ import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
 import ComingSoon from "~/lib/components/design/ComingSoon.vue";
 import Spoiler from "~/lib/components/design/Spoiler.vue";
+import PlatformVersionEditModal from "~/components/modals/PlatformVersionEditModal.vue";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -317,6 +318,13 @@ async function restoreVersion() {
           <PlatformLogo :platform="platform" :size="24" class="mr-1" />
           {{ useBackendData.platforms.get(platform).name }}
           ({{ projectVersion?.platformDependenciesFormatted[platform] }})
+          <PlatformVersionEditModal
+            class="ml-2"
+            v-if="hasPerms(NamedPermission.EDIT_VERSION)"
+            :project="project"
+            :version="version"
+            :platform="useBackendData.platforms.get(platform)"
+          />
         </div>
       </Card>
 
