@@ -10,8 +10,11 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.service.internal.JobService;
 import java.util.Map;
+
+import io.papermc.hangar.service.internal.projects.ProjectService;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,15 +23,15 @@ public class ProjectVisibilityService extends VisibilityService<ProjectContext, 
     private final ProjectsDAO projectsDAO;
     private final VisibilityDAO visibilityDAO;
     private final JobService jobService;
-    private final HangarProjectsDAO hangarProjectsDAO;
+    private final ProjectService projectService;
 
     @Autowired
-    public ProjectVisibilityService(final VisibilityDAO visibilityDAO, final ProjectsDAO projectsDAO, final JobService jobService, final HangarProjectsDAO hangarProjectsDAO) {
+    public ProjectVisibilityService(final VisibilityDAO visibilityDAO, final ProjectsDAO projectsDAO, final JobService jobService, @Lazy final ProjectService projectService) {
         super(ProjectVisibilityChangeTable::new, LogAction.PROJECT_VISIBILITY_CHANGED);
         this.projectsDAO = projectsDAO;
         this.visibilityDAO = visibilityDAO;
         this.jobService = jobService;
-        this.hangarProjectsDAO = hangarProjectsDAO;
+        this.projectService = projectService;
     }
 
     @Override
@@ -56,7 +59,7 @@ public class ProjectVisibilityService extends VisibilityService<ProjectContext, 
         if (model != null) {
             this.jobService.save(new UpdateDiscourseProjectTopicJob(model.getId()));
         }
-        this.hangarProjectsDAO.refreshHomeProjects();
+        this.projectService.refreshHomeProjects();
     }
 
     @Override

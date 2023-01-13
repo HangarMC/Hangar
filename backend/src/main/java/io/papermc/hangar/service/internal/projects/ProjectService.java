@@ -45,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -224,6 +225,7 @@ public class ProjectService extends HangarComponent {
         return this.projectsDAO.getProjectWatchers(projectId);
     }
 
+    @Async
     public void refreshHomeProjects() {
         this.hangarProjectsDAO.refreshHomeProjects();
     }
