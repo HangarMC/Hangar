@@ -14,7 +14,6 @@ import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -38,17 +37,16 @@ public class VersionsApiService extends HangarComponent {
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        this.versionDependencyService.addDownloadsAndDependencies(author, slug, versionString, version.getKey(), version.getValue());
-        return version.getValue();
+        return this.versionDependencyService.addDownloadsAndDependencies(author, slug, versionString, version.getKey()).applyTo(version.getValue());
     }
 
     @Transactional
     public PaginatedResult<Version> getVersions(final String author, final String slug, final RequestPagination pagination) {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final List<Version> versions = this.versionsApiDAO.getVersions(author, slug, canSeeHidden, this.getHangarUserId(), pagination).entrySet().stream()
-            .map(entry -> this.versionDependencyService.addDownloadsAndDependencies(author, slug, entry.getValue().getName(), entry.getKey(), entry.getValue()))
+            .map(entry -> this.versionDependencyService.addDownloadsAndDependencies(author, slug, entry.getValue().getName(), entry.getKey()).applyTo(entry.getValue()))
             .sorted((v1, v2) -> v2.getCreatedAt().compareTo(v1.getCreatedAt()))
-            .collect(Collectors.toList());
+            .toList();
         final Long versionCount = this.versionsApiDAO.getVersionCount(author, slug, canSeeHidden, this.getHangarUserId(), pagination);
         return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount, pagination), versions);
     }

@@ -1,11 +1,13 @@
 package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionPlatformDependenciesDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.api.project.version.PlatformVersionDownload;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.common.Platform;
@@ -17,10 +19,12 @@ import io.papermc.hangar.model.internal.api.requests.versions.UpdatePlatformVers
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDependencies;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
+import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.util.StringUtils;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +32,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,34 +60,49 @@ public class VersionDependencyService extends HangarComponent {
         this.downloadService = downloadService;
     }
 
-    public List<ProjectVersionDependencyTable> getProjectVersionDependencyTables(final long versionId) {
-        return this.projectVersionDependenciesDAO.getForVersion(versionId);
-    }
-
-    public List<ProjectVersionPlatformDependencyTable> getProjectVersionPlatformDependencyTable(final long versionId) {
-        return this.projectVersionPlatformDependenciesDAO.getForVersion(versionId);
-    }
-
-    public <T extends Version> T addDownloadsAndDependencies(final String user, final String project, final String versionName, final long versionId, final T version) {
+    @Cacheable(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p3") // versionId is key
+    public DownloadsAndDependencies addDownloadsAndDependencies(final String user, final String project, final String versionName, final long versionId) {
         final Map<Platform, SortedSet<String>> platformDependencies = this.versionsApiDAO.getPlatformDependencies(versionId);
-        version.getPlatformDependencies().putAll(platformDependencies);
+        final Map<Platform, String> platformDependenciesFormatted = new EnumMap<>(Platform.class);
         for (final Map.Entry<Platform, SortedSet<String>> entry : platformDependencies.entrySet()) {
-            version.getPlatformDependenciesFormatted().put(entry.getKey(), StringUtils.formatVersionNumbers(new ArrayList<>(entry.getValue())));
+            platformDependenciesFormatted.put(entry.getKey(), StringUtils.formatVersionNumbers(new ArrayList<>(entry.getValue())));
         }
 
         // TODO into one query
+        final Map<Platform, Set<PluginDependency>> pluginDependencies = new EnumMap<>(Platform.class);
         for (final Platform platform : Platform.getValues()) {
             final Set<PluginDependency> pluginDependencySet = this.versionsApiDAO.getPluginDependencies(versionId, platform);
             if (!pluginDependencySet.isEmpty()) {
-                version.getPluginDependencies().put(platform, pluginDependencySet);
+                pluginDependencies.put(platform, pluginDependencySet);
             }
         }
 
-        this.downloadService.addDownloads(user, project, versionName, versionId, version.getDownloads());
-        return version;
+        final Map<Platform, PlatformVersionDownload> downloads = this.downloadService.getDownloads(user, project, versionName, versionId);
+        return new DownloadsAndDependencies(pluginDependencies, platformDependencies, platformDependenciesFormatted, downloads);
+    }
+
+    public record DownloadsAndDependencies(Map<Platform, Set<PluginDependency>> pluginDependencies,
+                                    Map<Platform, SortedSet<String>> platformDependencies,
+                                    Map<Platform, String> platformDependenciesFormatted,
+                                    Map<Platform, PlatformVersionDownload> downloads
+    ) {
+        public <T extends Version> T applyTo(final T version) {
+            version.getPluginDependencies().putAll(this.pluginDependencies);
+            version.getPlatformDependencies().putAll(this.platformDependencies);
+            version.getPlatformDependenciesFormatted().putAll(this.platformDependenciesFormatted);
+            version.getDownloads().putAll(this.downloads);
+            return version;
+        }
+
+        public HangarProject.PinnedVersion applyTo(final HangarProject.PinnedVersion version) {
+            version.getPlatformDependenciesFormatted().putAll(this.platformDependenciesFormatted);
+            version.getDownloads().putAll(this.downloads);
+            return version;
+        }
     }
 
     @Transactional
+    @CacheEvict(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p1") // versionId is key
     public void updateVersionPlatformVersions(final long projectId, final long versionId, final UpdatePlatformVersions form) {
         final Map<String, ProjectVersionPlatformDependencyTable> platformDependencyTables = this.projectVersionPlatformDependenciesDAO.getPlatformVersions(versionId, form.getPlatform());
         final Map<String, ProjectVersionPlatformDependencyTable> toBeRemoved = new HashMap<>();
@@ -114,6 +135,7 @@ public class VersionDependencyService extends HangarComponent {
     }
 
     @Transactional
+    @CacheEvict(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p1") // versionId is key
     public void updateVersionPluginDependencies(final long projectId, final long versionId, final UpdatePluginDependencies form) {
         if (form.getPluginDependencies().size() > this.config.projects.maxDependencies()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.tooManyDependencies");

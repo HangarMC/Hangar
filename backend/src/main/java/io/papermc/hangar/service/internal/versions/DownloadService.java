@@ -26,6 +26,7 @@ import jakarta.servlet.http.Cookie;
 import java.net.InetAddress;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -174,7 +175,8 @@ public class DownloadService extends HangarComponent {
         return true;
     }
 
-    public void addDownloads(final String user, final String project, final String version, final long versionId, final Map<Platform, PlatformVersionDownload> versionDownloadsMap) {
+    public Map<Platform, PlatformVersionDownload> getDownloads(final String user, final String project, final String version, final long versionId) {
+        final Map<Platform, PlatformVersionDownload> versionDownloadsMap = new EnumMap<>(Platform.class);
         // TODO into one query
         final List<ProjectVersionDownloadTable> versionDownloads = this.downloadsDAO.getDownloads(versionId);
         final List<ProjectVersionPlatformDownloadTable> platformDownloads = this.downloadsDAO.getPlatformDownloads(versionId);
@@ -192,5 +194,6 @@ public class DownloadService extends HangarComponent {
             downloads.put(platformDownload.getDownloadId(), download);
             versionDownloadsMap.put(platformDownload.getPlatform(), download);
         }
+        return versionDownloadsMap;
     }
 }

@@ -2,12 +2,12 @@ package io.papermc.hangar.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import java.time.Duration;
-import io.micrometer.core.instrument.Tag;
 import jakarta.annotation.PostConstruct;
 import org.springframework.boot.actuate.metrics.cache.CacheMetricsRegistrar;
 import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.cache.interceptor.BeanFactoryCacheOperationSourceAdvisor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -39,12 +39,16 @@ public class CacheConfig {
     public static final String GLOBAL_SITEMAP = "globalSitemap-cache";
     public static final String USER_SITEMAP = "userSitemap-cache";
     public static final String AVATARS = "avatars-cache";
+    public static final String VERSION_DEPENDENCIES = "version-dependencies-cache";
 
     private final CacheMetricsRegistrar cacheMetricsRegistrar;
     private final CaffeineCacheManager cacheManager;
+    // don't ask me why we need this bean, without it, caching doesn't work for some methods, as the advisor is still in creation.
+    private final BeanFactoryCacheOperationSourceAdvisor beanFactoryCacheOperationSourceAdvisor;
 
-    public CacheConfig(@Lazy final CacheMetricsRegistrar cacheMetricsRegistrar) {
+    public CacheConfig(@Lazy final CacheMetricsRegistrar cacheMetricsRegistrar, final BeanFactoryCacheOperationSourceAdvisor beanFactoryCacheOperationSourceAdvisor) {
         this.cacheMetricsRegistrar = cacheMetricsRegistrar;
+        this.beanFactoryCacheOperationSourceAdvisor = beanFactoryCacheOperationSourceAdvisor;
         this.cacheManager = new CaffeineCacheManager();
     }
 
@@ -161,6 +165,11 @@ public class CacheConfig {
     @Bean(AVATARS)
     Cache avatarsCache() {
         return this.createCache(AVATARS, Duration.ofMinutes(30), 200);
+    }
+
+    @Bean(VERSION_DEPENDENCIES)
+    Cache versionDependenciesCache() {
+        return this.createCache(VERSION_DEPENDENCIES, Duration.ofMinutes(30), 200);
     }
 
     @PostConstruct

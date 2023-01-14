@@ -28,22 +28,21 @@ import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.AvatarService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
-import io.papermc.hangar.service.internal.versions.DownloadService;
 import io.papermc.hangar.service.internal.versions.PinnedVersionService;
+import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.SortedSet;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -63,11 +62,11 @@ public class ProjectService extends HangarComponent {
     private final PinnedVersionService pinnedVersionService;
     private final VersionsApiDAO versionsApiDAO;
     private final HangarVersionsDAO hangarVersionsDAO;
-    private final DownloadService downloadService;
     private final AvatarService avatarService;
+    private final VersionDependencyService versionDependencyService;
 
     @Autowired
-    public ProjectService(final ProjectsDAO projectDAO, final HangarUsersDAO hangarUsersDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, final DownloadService downloadService, final AvatarService avatarService) {
+    public ProjectService(final ProjectsDAO projectDAO, final HangarUsersDAO hangarUsersDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, final AvatarService avatarService, @Lazy final VersionDependencyService versionDependencyService) {
         this.projectsDAO = projectDAO;
         this.hangarUsersDAO = hangarUsersDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
@@ -78,8 +77,8 @@ public class ProjectService extends HangarComponent {
         this.pinnedVersionService = pinnedVersionService;
         this.versionsApiDAO = versionsApiDAO;
         this.hangarVersionsDAO = hangarVersionsDAO;
-        this.downloadService = downloadService;
         this.avatarService = avatarService;
+        this.versionDependencyService = versionDependencyService;
     }
 
     public @Nullable ProjectTable getProjectTable(final @Nullable Long projectId) {
@@ -127,15 +126,7 @@ public class ProjectService extends HangarComponent {
         for (final Platform platform : Platform.getValues()) {
             final HangarVersion version = this.getLastVersion(author, slug, platform, this.config.channels.nameDefault());
             if (version != null) {
-                if (version.getPlatformDependencies().isEmpty()) {
-                    final Map<Platform, SortedSet<String>> platformDependencies = this.versionsApiDAO.getPlatformDependencies(version.getId());
-                    version.getPlatformDependencies().putAll(platformDependencies);
-                    for (final Map.Entry<Platform, SortedSet<String>> entry : platformDependencies.entrySet()) {
-                        version.getPlatformDependenciesFormatted().put(entry.getKey(), io.papermc.hangar.util.StringUtils.formatVersionNumbers(new ArrayList<>(entry.getValue())));
-                    }
-                    this.downloadService.addDownloads(project.getRight().getNamespace().getOwner(), project.getRight().getNamespace().getSlug(), version.getName(), version.getId(), version.getDownloads());
-                }
-
+                this.versionDependencyService.addDownloadsAndDependencies(author, slug, version.getName(), version.getId()).applyTo(version);
                 mainChannelVersions.put(platform, version);
             }
         }
