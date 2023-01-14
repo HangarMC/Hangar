@@ -8,6 +8,7 @@ import { useProject } from "~/composables/useApiHelper";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 import ProjectHeader from "~/components/projects/ProjectHeader.vue";
 import ProjectNav from "~/components/projects/ProjectNav.vue";
+import { createError, navigateTo } from "#imports";
 
 defineProps({
   user: {
@@ -21,6 +22,11 @@ const route = useRoute();
 const project = await useProject(route.params.user as string, route.params.project as string);
 if (!project || !project.value) {
   throw useErrorRedirect(route, 404, "Not found");
+} else if (route.params.project !== project.value?.namespace.slug) {
+  const newPath = route.fullPath.replace(route.params.project as string, project.value?.namespace.slug);
+  console.log("redirect to " + newPath + " from (" + route.fullPath + ")");
+  await navigateTo(newPath);
+  throw createError("dummy");
 }
 
 provide("updateProjectPages", function (pages: HangarProjectPage[]) {

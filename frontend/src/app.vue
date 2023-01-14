@@ -33,6 +33,9 @@ useHead({
 });
 
 onErrorCaptured((err) => {
+  if (err?.message === "dummy") {
+    return;
+  }
   console.log("captured", transformAxiosError(err)); // TODO error handling
 });
 

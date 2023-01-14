@@ -10,28 +10,30 @@ import { useAuthStore } from "~/store/auth";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import { settingsLog } from "~/lib/composables/useLog";
 
-// keep in sync with app.vue, cause reasons
-const authStore = useAuthStore();
-const settingsStore = useSettingsStore();
-settingsStore.loadSettingsClient();
-settingsStore.setupMobile();
-settingsLog("render for user", authStore.user?.name, "with darkmode", settingsStore.darkMode);
-useHead({
-  htmlAttrs: {
-    class: computed(() => (settingsStore.darkMode ? "dark" : "light")),
-    lang: "en", // TODO load from user locale
-  },
-  bodyAttrs: {
-    class: "background-body text-[#262626] dark:text-[#E0E6f0]",
-  },
-  meta: [{ name: "robots", content: "noindex,nofollow" }], // never index error page
-});
-
-// custom
 const props = defineProps<{
   error: NuxtError;
 }>();
 
+if (props.error?.message !== "dummy") {
+  // keep in sync with app.vue, cause reasons
+  const authStore = useAuthStore();
+  const settingsStore = useSettingsStore();
+  settingsStore.loadSettingsClient();
+  settingsStore.setupMobile();
+  settingsLog("render for user", authStore.user?.name, "with darkmode", settingsStore.darkMode);
+  useHead({
+    htmlAttrs: {
+      class: computed(() => (settingsStore.darkMode ? "dark" : "light")),
+      lang: "en", // TODO load from user locale
+    },
+    bodyAttrs: {
+      class: "background-body text-[#262626] dark:text-[#E0E6f0]",
+    },
+    meta: [{ name: "robots", content: "noindex,nofollow" }], // never index error page
+  });
+}
+
+// custom
 const { t } = useI18n();
 
 const statusCode = computed(() => {
@@ -63,7 +65,10 @@ const title = computed(() => {
       return t("error.unknown");
   }
 });
-console.log("error", text.value, title.value, props.error);
+
+if (props.error?.message !== "dummy") {
+  console.log("error", text.value, title.value, props.error);
+}
 useHead(useSeo(title.value, null, useRoute(), null));
 </script>
 

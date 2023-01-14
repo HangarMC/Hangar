@@ -5,6 +5,7 @@ import { Ref } from "vue";
 import { Organization } from "hangar-internal";
 import { useOrganization, useUser } from "~/composables/useApiHelper";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
+import { createError, navigateTo } from "#imports";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -12,6 +13,11 @@ const user = await useUser(route.params.user as string);
 let organization: Ref<Organization | null> | undefined;
 if (!user || !user.value) {
   throw useErrorRedirect(useRoute(), 404, "Not found");
+} else if (route.params.user !== user.value?.name) {
+  const newPath = route.fullPath.replace(route.params.user as string, user.value?.name);
+  console.log("redirect to " + newPath + " from (" + route.fullPath + ")");
+  await navigateTo(newPath);
+  throw createError("dummy");
 } else if (user.value?.isOrganization) {
   organization = await useOrganization(route.params.user as string);
 }
