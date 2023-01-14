@@ -8,7 +8,6 @@ const props = withDefaults(
     imgSrc?: string;
     to?: string;
     size?: "xs" | "sm" | "md" | "lg" | "xl";
-    background?: boolean;
     disableLink?: boolean;
   }>(),
   {
@@ -16,7 +15,6 @@ const props = withDefaults(
     imgSrc: undefined,
     size: "lg",
     to: "",
-    background: true,
     disableLink: false,
   }
 );
@@ -37,10 +35,6 @@ const sizeClass = computed(() => {
   }
 
   return "w-200px h-200px";
-});
-
-const backgroundClass = computed(() => {
-  return props.background ? "bg-light-300 dark:bg-dark-500 " : "";
 });
 
 const src = computed(() => {
@@ -67,7 +61,7 @@ const url = computed(() => {
 </script>
 
 <template>
-  <div :class="'rounded-lg ' + backgroundClass + sizeClass">
+  <div :class="'rounded-lg ' + sizeClass">
     <component :is="disableLink ? 'span' : 'router-link'" :key="url" :to="url">
       <img class="rounded-lg w-full h-full" :title="username" :src="src" :alt="username" @error="errored = true" />
     </component>

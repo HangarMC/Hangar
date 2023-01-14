@@ -295,7 +295,7 @@ function isRecent(date: string): boolean {
         <div v-if="authStore.user">
           <Popper placement="bottom-end">
             <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)" @click="updateNavData">
-              <UserAvatar :username="authStore.user.name" :avatar-url="authStore.user.avatarUrl" size="xs" :background="false" :disable-link="true" />
+              <UserAvatar :username="authStore.user.name" :avatar-url="authStore.user.avatarUrl" size="xs" :disable-link="true" />
               {{ authStore.user.name }}
             </button>
             <template #content="{ close }">
