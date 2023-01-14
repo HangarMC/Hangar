@@ -55,9 +55,6 @@ public interface UserDAO {
         return this._getUserTable(null, null, uuid);
     }
 
-    @SqlQuery("SELECT * FROM users WHERE email = :email")
-    UserTable getUserTableByEmail(String email);
-
     @SqlQuery("""
         SELECT u.name
         FROM users u

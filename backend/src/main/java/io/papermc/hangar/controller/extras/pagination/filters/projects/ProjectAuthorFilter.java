@@ -41,7 +41,7 @@ public class ProjectAuthorFilter implements Filter<ProjectAuthorFilterInstance, 
 
         @Override
         public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
-            sb.append(" AND ").append("p.owner_name").append(" = ").append(":ownerName");
+            sb.append(" AND ").append("lower(p.owner_name)").append(" = ").append("lower(:ownerName)");
             q.bind("ownerName", this.ownerName);
         }
 

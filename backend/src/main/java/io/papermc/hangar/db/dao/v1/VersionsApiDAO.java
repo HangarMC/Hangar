@@ -194,8 +194,8 @@ public interface VersionsApiDAO {
         "           JOIN platform_versions plv ON pvpd.platform_version_id = plv.id," +
         "         (SELECT generate_series(:fromDate::date, :toDate::date, INTERVAL '1 DAY') AS day) dates" +
         "             LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day" +
-        "    WHERE p.owner_name = :author" +
-        "      AND p.slug = :slug" +
+        "    WHERE lower(p.owner_name) = lower(:author)" +
+        "      AND lower(p.slug) = lower(:slug)" +
         "      AND pv.version_string = :versionString" +
         "      AND plv.platform = :platform" +
         "      AND (pvd IS NULL OR (pvd.project_id = p.id AND pvd.version_id = pv.id));")

@@ -62,7 +62,7 @@ public interface OrganizationRolesDAO extends IRolesDAO<OrganizationRoleTable> {
                JOIN users u ON uor.user_id = u.id
                JOIN users ou ON ou.id = o.user_id
                JOIN users ow ON o.owner_id = ow.id
-           WHERE u.name = :user AND uor.accepted IS TRUE
+           WHERE lower(u.name) = lower(:user) AND uor.accepted IS TRUE
         """)
     Map<String, OrganizationRoleTable> getUserOrganizationRoles(String user, Long userId);
 }

@@ -51,11 +51,11 @@ public class LogProjectFilter implements Filter<LogProjectFilterInstance, String
         @Override
         public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             if (StringUtils.isNotBlank(this.authorName)) {
-                sb.append(" AND la.p_owner_name = :authorName");
+                sb.append(" AND lower(la.p_owner_name) = lower(:authorName)");
                 q.bind("authorName", this.authorName);
             }
             if (StringUtils.isNotBlank(this.projectSlug)) {
-                sb.append(" AND la.p_slug = :projectSlug");
+                sb.append(" AND lower(la.p_slug) = lower(:projectSlug)");
                 q.bind("projectSlug", this.projectSlug);
             }
         }

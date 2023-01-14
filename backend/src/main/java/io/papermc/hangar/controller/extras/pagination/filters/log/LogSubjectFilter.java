@@ -43,7 +43,7 @@ public class LogSubjectFilter implements Filter<LogSubjectFilterInstance, String
         @Override
         public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             if (StringUtils.isNotBlank(this.subjectName)) {
-                sb.append(" AND la.s_name = :subjectName");
+                sb.append(" AND lower(la.s_name) = lower(:subjectName)");
                 q.bind("subjectName", this.subjectName);
             }
         }

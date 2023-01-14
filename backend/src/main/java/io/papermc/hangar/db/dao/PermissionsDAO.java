@@ -15,7 +15,7 @@ public interface PermissionsDAO {
     @SqlQuery("SELECT coalesce(gt.permission, B'0'::bit(64))::bigint perm_value" +
         " FROM users u " +
         "     LEFT JOIN global_trust gt ON u.id = gt.user_id" +
-        " WHERE u.id = :userId OR u.name = :userName")
+        " WHERE u.id = :userId OR lower(u.name) = lower(:userName)")
     Permission _getGlobalPermission(Long userId, String userName);
 
     default Permission getGlobalPermission(final long userId) {
@@ -29,7 +29,7 @@ public interface PermissionsDAO {
     @SqlQuery("SELECT (coalesce(gt.permission, B'0'::bit(64)) | coalesce(pt.permission, B'0'::bit(64)) | coalesce(ot.permission, B'0'::bit(64)))::bigint AS perm_value" +
         " FROM users u " +
         "     LEFT JOIN global_trust gt ON u.id = gt.user_id" +
-        "     LEFT JOIN projects p ON (lower(p.owner_name) = lower(:author) AND p.slug = :slug) OR p.id = :projectId" +
+        "     LEFT JOIN projects p ON (lower(p.owner_name) = lower(:author) AND lower(p.slug) = lower(:slug)) OR p.id = :projectId" +
         "     LEFT JOIN project_trust pt ON u.id = pt.user_id AND pt.project_id = p.id" +
         "     LEFT JOIN organization_trust ot ON u.id = ot.user_id AND ot.organization_id = p.owner_id" +
         " WHERE u.id = :userId")

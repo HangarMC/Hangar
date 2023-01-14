@@ -134,7 +134,7 @@ public interface ProjectsApiDAO {
         "       JOIN user_project_roles upr ON p.id = upr.project_id " +
         "       JOIN users u ON upr.user_id = u.id " +
         "       JOIN roles r ON upr.role_type = r.name " +
-        "   WHERE p.slug = :slug AND p.owner_name = :author " +
+        "   WHERE lower(p.slug) = lower(:slug) AND lower(p.owner_name) = lower(:author) " +
         "   GROUP BY u.name ORDER BY max(r.permission::bigint) DESC " +
         "   <offsetLimit>")
     List<ProjectMember> getProjectMembers(String author, String slug, @BindPagination RequestPagination pagination);
@@ -143,7 +143,7 @@ public interface ProjectsApiDAO {
         "   FROM projects p " +
         "       JOIN user_project_roles upr ON p.id = upr.project_id " +
         "       JOIN users u ON upr.user_id = u.id " +
-        "   WHERE p.slug = :slug AND p.owner_name = :author " +
+        "   WHERE lower(p.slug) = lower(:slug) AND lower(p.owner_name) = lower(:author) " +
         "   GROUP BY u.name")
     long getProjectMembersCount(String author, String slug);
 
@@ -164,7 +164,7 @@ public interface ProjectsApiDAO {
         "       JOIN users u ON ps.user_id = u.id " +
         "       LEFT JOIN user_global_roles ugr ON u.id = ugr.user_id" +
         "       LEFT JOIN roles r ON ugr.role_id = r.id" +
-        "   WHERE p.slug = :slug AND p.owner_name = :author " +
+        "   WHERE lower(p.slug) = lower(:slug) AND lower(p.owner_name) = lower(:author) " +
         "   GROUP BY u.id" +
         "   LIMIT :limit OFFSET :offset")
     List<User> getProjectStargazers(String author, String slug, long limit, long offset);
@@ -172,7 +172,7 @@ public interface ProjectsApiDAO {
     @SqlQuery("SELECT count(ps.user_id) " +
         "   FROM projects p " +
         "       JOIN project_stars ps ON p.id = ps.project_id " +
-        "   WHERE p.slug = :slug AND p.owner_name = :author " +
+        "   WHERE lower(p.slug) = lower(:slug) AND lower(p.owner_name) = lower(:author) " +
         "   GROUP BY ps.user_id")
     Long getProjectStargazersCount(String author, String slug);
 
@@ -193,7 +193,7 @@ public interface ProjectsApiDAO {
         "       JOIN users u ON pw.user_id = u.id " +
         "       LEFT JOIN user_global_roles ugr ON u.id = ugr.user_id" +
         "       LEFT JOIN roles r ON ugr.role_id = r.id" +
-        "   WHERE p.slug = :slug AND p.owner_name = :author" +
+        "   WHERE lower(p.slug) = lower(:slug) AND lower(p.owner_name) = lower(:author)" +
         "   GROUP BY u.id" +
         "   LIMIT :limit OFFSET :offset")
     List<User> getProjectWatchers(String author, String slug, long limit, long offset);
@@ -201,7 +201,7 @@ public interface ProjectsApiDAO {
     @SqlQuery("SELECT count(pw.user_id) " +
         "   FROM projects p " +
         "       JOIN project_watchers pw ON p.id = pw.project_id " +
-        "   WHERE p.slug = :slug AND p.owner_name = :author " +
+        "   WHERE lower(p.slug) = lower(:slug) AND lower(p.owner_name) = lower(:author) " +
         "   GROUP BY pw.user_id")
     Long getProjectWatchersCount(String author, String slug);
 
@@ -213,8 +213,8 @@ public interface ProjectsApiDAO {
         "       LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day" +
         "       LEFT JOIN project_views pv ON dates.day = pv.day AND pvd.project_id = pv.project_id" +
         "   WHERE " +
-        "       p.owner_name = :author AND " +
-        "       p.slug = :slug AND" +
+        "       lower(p.owner_name) = lower(:author) AND " +
+        "       lower(p.slug) = lower(:slug) AND" +
         "       (pvd IS NULL OR pvd.project_id = p.id)" +
         "   GROUP BY pv.views, dates.day")
     Map<String, DayProjectStats> getProjectStats(String author, String slug, OffsetDateTime fromDate, OffsetDateTime toDate);

@@ -37,6 +37,6 @@ public interface OrganizationMembersDAO extends MembersDAO<OrganizationMemberTab
         "   FROM organization_members uom" +
         "       JOIN organizations o ON o.id = uom.organization_id" +
         "       JOIN users u ON uom.user_id = u.id" +
-        "   WHERE u.name = :user")
+        "   WHERE lower(u.name) = lower(:user)")
     Map<String, Boolean> getUserOrganizationMembershipVisibility(String user);
 }

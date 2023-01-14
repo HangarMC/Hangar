@@ -40,7 +40,7 @@ public interface UsersApiDAO {
         " WHERE " +
         "     <if(!canSeeHidden)> (hp.visibility = 0" +
         "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND<endif>" +
-        "     u.name = :user" +
+        "     lower(u.name) = lower(:user)" +
         " ORDER BY <sortOrder> LIMIT :limit OFFSET :offset")
     List<ProjectCompact> getUserStarred(String user, @Define boolean canSeeHidden, @Define Long userId, @Define String sortOrder, long limit, long offset);
 
@@ -52,7 +52,7 @@ public interface UsersApiDAO {
         " WHERE " +
         "     <if(!canSeeHidden)> (hp.visibility = 0" +
         "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND<endif>" +
-        "     u.name = :user")
+        "     lower(u.name) = lower(:user)")
     long getUserStarredCount(String user, @Define boolean canSeeHidden, @Define Long userId);
 
     @RegisterConstructorMapper(ProjectCompact.class)
@@ -77,7 +77,7 @@ public interface UsersApiDAO {
         " WHERE " +
         "     <if(!canSeeHidden)> (hp.visibility = 0" +
         "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND<endif>" +
-        "     u.name = :user" +
+        "     lower(u.name) = lower(:user)" +
         " ORDER BY <sortOrder> LIMIT :limit OFFSET :offset")
     List<ProjectCompact> getUserWatching(String user, @Define boolean canSeeHidden, @Define Long userId, @Define String sortOrder, long limit, long offset);
 
@@ -89,7 +89,7 @@ public interface UsersApiDAO {
         " WHERE " +
         "     <if(!canSeeHidden)> (hp.visibility = 0" +
         "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND<endif>" +
-        "     u.name = :user")
+        "     lower(u.name) = lower(:user)")
     long getUserWatchingCount(String user, @Define boolean canSeeHidden, @Define Long userId);
 
     @RegisterConstructorMapper(User.class)
@@ -140,7 +140,7 @@ public interface UsersApiDAO {
             SELECT uh.old_name, uh.new_name, uh.date
             FROM users_history uh
                      JOIN users u ON uh.uuid = u.uuid
-            WHERE u.name = :name AND uh.date >= :date
+            WHERE lower(u.name) = lower(:name) AND uh.date >= :date
             ORDER BY date DESC
         """)
     List<UserNameChange> getUserNameHistory(@NotNull String name, @NotNull OffsetDateTime date);

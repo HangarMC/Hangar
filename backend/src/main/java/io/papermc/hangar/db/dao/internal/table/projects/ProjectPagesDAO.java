@@ -41,7 +41,7 @@ public interface ProjectPagesDAO {
     @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND parent_id = :parentId AND name = :name")
     ProjectPageTable getChildPage(long projectId, long parentId, String name);
 
-    @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND parent_id IS NULL AND slug = :slug")
+    @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND parent_id IS NULL AND lower(slug) = lower(:slug)")
     ProjectPageTable getRootPage(long projectId, String slug);
 
     @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND id = :pageId")

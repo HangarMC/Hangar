@@ -39,7 +39,7 @@ public interface UsersDAO {
                    u.theme,
                    exists(SELECT 1 FROM organizations o WHERE u.id = o.user_id) AS is_organization
                FROM users u
-               WHERE u.name = :name
+               WHERE lower(u.name) = lower(:name)
                    OR u.id = :id
                GROUP BY u.id
      """)

@@ -23,7 +23,7 @@ public interface HangarUsersDAO {
            u.uuid o_user_uuid
            FROM users u
                LEFT JOIN organizations o ON u.id = o.user_id
-           WHERE u.name = :userName
+           WHERE lower(u.name) = lower(:userName)
         """)
     Pair<UserTable, OrganizationTable> getUserAndOrg(String userName);
 

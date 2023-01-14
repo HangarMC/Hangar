@@ -43,7 +43,7 @@ public class LogUserFilter implements Filter<LogUserFilterInstance, String> {
         @Override
         public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             if (StringUtils.isNotBlank(this.userName)) {
-                sb.append(" AND la.user_name = :userName");
+                sb.append(" AND lower(la.user_name) = lower(:userName)");
                 q.bind("userName", this.userName);
             }
         }
