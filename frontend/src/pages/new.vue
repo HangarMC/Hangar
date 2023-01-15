@@ -158,10 +158,8 @@ function createProject() {
 <template>
   <Steps v-model="selectedStep" :steps="steps" button-lang-key="project.new.step">
     <template #tos>
-      <!-- eslint-disable-next-line vue/no-v-html -->
-      <p v-html="i18n.t('project.new.step1.text1')" />
-      <!-- eslint-disable-next-line vue/no-v-html -->
-      <Link to="/guidelines"><p v-html="i18n.t('project.new.step1.text2')" /></Link>
+      <p v-dompurify-html="i18n.t('project.new.step1.text1')" />
+      <Link to="/guidelines"><p v-dompurify-html="i18n.t('project.new.step1.text2')" /></Link>
     </template>
     <template #basic>
       <div class="flex flex-wrap">

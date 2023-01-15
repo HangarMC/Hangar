@@ -70,6 +70,7 @@ specifiers:
   vite-plugin-eslint: 1.8.1
   vue: 3.2.45
   vue-advanced-cropper: 2.8.6
+  vue-dompurify-html: ^3.1.2
   vue-i18n: 9.2.2
   vue-tsc: 1.0.24
   vue3-popper: 1.5.0
@@ -103,6 +104,7 @@ dependencies:
   universal-cookie: 4.0.4
   vue: 3.2.45
   vue-advanced-cropper: 2.8.6_vue@3.2.45
+  vue-dompurify-html: 3.1.2_vue@3.2.45
   vue-i18n: 9.2.2_vue@3.2.45
   vue3-popper: 1.5.0_vue@3.2.45
 
@@ -8616,6 +8618,18 @@ packages:
   /vue-devtools-stub/0.1.0:
     resolution: {integrity: sha512-RutnB7X8c5hjq39NceArgXg28WZtZpGc3+J16ljMiYnFhKvd8hITxSWQSQ5bvldxMDU6gG5mkxl1MTQLXckVSQ==}
     dev: true
+
+  /vue-dompurify-html/3.1.2_vue@3.2.45:
+    resolution: {integrity: sha512-2xCnSuog5+OPUtmeAwPZY/6oV9YKuLhjgcl5EUw3jKbmhnyPo8YyCczCeRNGBorVcz1fCGm6PEOIUSXNS8I0ZA==}
+    peerDependencies:
+      vue: ^2.7.0 || ^3.0.0
+    dependencies:
+      dompurify: 2.4.3
+      vue: 3.2.45
+      vue-demi: 0.13.11_vue@3.2.45
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+    dev: false
 
   /vue-eslint-parser/9.1.0_eslint@8.31.0:
     resolution: {integrity: sha512-NGn/iQy8/Wb7RrRa4aRkokyCZfOUWk19OP5HP6JEozQFX5AoS/t+Z0ZN7FY4LlmWc4FNI922V7cvX28zctN8dQ==}

@@ -49,8 +49,7 @@ const prettyDiff = computed(() => {
 
 <template>
   <Modal :title="props.title" window-classes="w-250">
-    <!-- eslint-disable-next-line vue/no-v-html -->
-    <div v-html="prettyDiff"></div>
+    <div v-dompurify-html="prettyDiff"></div>
     <template #activator="{ on }">
       <slot name="activator" :on="on"></slot>
     </template>

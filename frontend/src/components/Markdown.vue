@@ -28,8 +28,7 @@ watchPostEffect(async () => {
 
 <template>
   <div class="prose max-w-full rounded markdown break-words" :class="{ 'p-4': !inline, inline: inline }">
-    <!-- eslint-disable-next-line vue/no-v-html -->
-    <div v-html="renderedMarkdown" />
+    <div v-dompurify-html="renderedMarkdown" />
   </div>
 </template>
 
