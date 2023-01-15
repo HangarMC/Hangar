@@ -7,6 +7,18 @@ import { authLog, axiosLog } from "~/lib/composables/useLog";
 import { useConfig } from "~/lib/composables/useConfig";
 import { transformAxiosError } from "~/composables/useErrorHandling";
 
+let progressBarTimeout: any;
+
+const startProgressBar = () => {
+  clearTimeout(progressBarTimeout);
+  progressBarTimeout = setTimeout(NProgress.start, 350);
+};
+
+const stopProgressBar = () => {
+  clearTimeout(progressBarTimeout);
+  NProgress.done();
+};
+
 export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
   const config = useConfig();
   const options: AxiosRequestConfig = {
@@ -25,7 +37,7 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
       forwardRequestHeaders(config, nuxtApp);
       // axiosLog("calling with headers", config.headers);
       // Progress bar
-      if (process.client) NProgress.start();
+      if (process.client) startProgressBar();
       return config;
     },
     (error) => {
@@ -38,7 +50,7 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
       // forward cookies and stuff to browser
       forwardResponseHeaders(res, nuxtApp);
       // Progress bar
-      if (process.client) NProgress.done();
+      if (process.client) stopProgressBar();
       return res;
     },
     async (err) => {
@@ -64,7 +76,7 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
       }
 
       // Progress bar
-      if (process.client) NProgress.done();
+      if (process.client) startProgressBar();
 
       throw err;
     }
