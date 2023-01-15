@@ -58,6 +58,7 @@ declare module "@vue/runtime-core" {
     IconMdiKeyOutline: typeof import("~icons/mdi/key-outline")["default"];
     IconMdiLicense: typeof import("~icons/mdi/license")["default"];
     IconMdiLink: typeof import("~icons/mdi/link")["default"];
+    IconMdiLinkVariant: typeof import("~icons/mdi/link-variant")["default"];
     IconMdiListStatus: typeof import("~icons/mdi/list-status")["default"];
     IconMdiLockOpenOutline: typeof import("~icons/mdi/lock-open-outline")["default"];
     IconMdiLockOutline: typeof import("~icons/mdi/lock-outline")["default"];
