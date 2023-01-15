@@ -1,18 +1,27 @@
 <script setup lang="ts">
-withDefaults(
+import { ref } from "#imports";
+
+const props = withDefaults(
   defineProps<{
     withLine?: boolean;
+    title?: string;
+    open?: boolean;
   }>(),
   {
     withLine: true,
+    title: undefined,
+    open: false,
   }
 );
+const open = ref(props.open);
 </script>
 
 <template>
-  <details open class="spoiler-details">
+  <details :open="open" class="spoiler-details">
     <summary>
-      <slot name="title" />
+      <slot name="title">
+        {{ title }}
+      </slot>
     </summary>
     <hr v-if="withLine" class="py-1" />
     <slot name="content" />
