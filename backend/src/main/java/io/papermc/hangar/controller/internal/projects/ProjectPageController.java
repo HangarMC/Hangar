@@ -14,7 +14,6 @@ import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.service.ValidationService;
-import io.papermc.hangar.service.internal.MarkdownService;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
 import io.papermc.hangar.util.BBCodeConverter;
 import jakarta.validation.Valid;
@@ -41,24 +40,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ProjectPageController extends HangarComponent {
 
     private final ProjectPageService projectPageService;
-    private final MarkdownService markdownService;
     private final ValidationService validationService;
 
     @Autowired
-    public ProjectPageController(final ProjectPageService projectPageService, final MarkdownService markdownService, final ValidationService validationService) {
+    public ProjectPageController(final ProjectPageService projectPageService, final ValidationService validationService) {
         this.projectPageService = projectPageService;
-        this.markdownService = markdownService;
         this.validationService = validationService;
-    }
-
-    @Anyone
-    @RateLimit(overdraft = 20, refillTokens = 3, refillSeconds = 5, greedy = true)
-    @PostMapping(path = "/render", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> renderMarkdown(@RequestBody @Valid final StringContent content) {
-        if (content.getContent().length() > this.config.projects.contentMaxLen()) {
-            throw new HangarApiException("page.new.error.name.maxLength");
-        }
-        return ResponseEntity.ok(this.markdownService.render(content.getContent()));
     }
 
     @RateLimit(overdraft = 10, refillTokens = 3, refillSeconds = 5)

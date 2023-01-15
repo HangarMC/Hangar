@@ -1,6 +1,5 @@
 package io.papermc.hangar.util;
 
-import com.google.common.primitives.Ints;
 import java.util.HashMap;
 import java.util.Map;
 import org.jetbrains.annotations.Nullable;
@@ -41,8 +40,13 @@ public class BBCodeConverter {
                 return content;
             }
 
-            Integer size = Ints.tryParse(tagArg);
-            if (size == null || size == 4) { // 4 is the default size
+            int size;
+            try {
+                size = Integer.parseInt(tagArg);
+                if (size == 4) { // 4 is the default size
+                    return content;
+                }
+            } catch (final NumberFormatException ignored) {
                 return content;
             }
 

@@ -4,11 +4,12 @@ import io.papermc.hangar.model.Owned;
 import io.papermc.hangar.model.Visitable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.loggable.OrganizationLoggable;
-import java.time.OffsetDateTime;
-import java.util.UUID;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-import javax.annotation.Nullable;
+
+import java.time.OffsetDateTime;
+import java.util.UUID;
 
 public class OrganizationTable extends Table implements Visitable, ProjectOwner, OrganizationLoggable, Owned {
 
@@ -18,7 +19,8 @@ public class OrganizationTable extends Table implements Visitable, ProjectOwner,
     private final UUID userUuid;
 
     @JdbiConstructor
-    public OrganizationTable(final OffsetDateTime createdAt, @PropagateNull final long id, final String name, final long ownerId, final long userId, @Nullable final UUID userUuid) {
+    public OrganizationTable(final OffsetDateTime createdAt, @PropagateNull final long id, final String name, final long ownerId, final long userId,
+                             @jakarta.annotation.Nullable @org.springframework.lang.Nullable final @Nullable @org.jetbrains.annotations.Nullable UUID userUuid) { // TODO Surely one of them will work
         super(createdAt, id);
         this.name = name;
         this.ownerId = ownerId;

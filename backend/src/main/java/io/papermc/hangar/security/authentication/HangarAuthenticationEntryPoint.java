@@ -5,7 +5,7 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import org.apache.pdfbox.util.Charsets;
+import java.nio.charset.StandardCharsets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,7 +37,7 @@ public class HangarAuthenticationEntryPoint implements AuthenticationEntryPoint 
         }
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(status.value());
-        response.setCharacterEncoding(Charsets.UTF_8.name());
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.getWriter().write(this.mapper.writeValueAsString(new HangarApiException(status, failed.getMessage())));
     }
 }
