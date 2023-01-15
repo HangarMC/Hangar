@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ProjectOwner, ProjectSettingsForm, NewProjectForm } from "hangar-internal";
+import { ProjectSettingsForm, NewProjectForm } from "hangar-internal";
 import { computed, type Ref, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
@@ -15,10 +15,7 @@ import { useSettingsStore } from "~/store/useSettingsStore";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import InputTag from "~/lib/components/ui/InputTag.vue";
-import Tabs from "~/lib/components/design/Tabs.vue";
 import Button from "~/lib/components/design/Button.vue";
-import Markdown from "~/components/Markdown.vue";
-import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 import { required, maxLength, pattern, url, requiredIf } from "~/lib/composables/useValidationHelpers";
 import { validProjectName } from "~/composables/useHangarValidations";
 import Spinner from "~/lib/components/design/Spinner.vue";
@@ -26,7 +23,7 @@ import Link from "~/lib/components/design/Link.vue";
 import { usePossibleOwners } from "~/composables/useApiHelper";
 import { definePageMeta } from "#imports";
 import { Step } from "~/lib/types/components/design/Steps";
-import { Tab } from "~/lib/types/components/design/Tabs";
+import IconMdiFileCodumentAlert from "~icons/mdi/file-document-alert";
 
 definePageMeta({
   loginRequired: true,
@@ -85,43 +82,18 @@ const steps: Step[] = [
       return !form.value.name || !form.value.description;
     }),
   },
-  { value: "additional", header: i18n.t("project.new.step3.title") },
   {
-    value: "import",
-    header: i18n.t("project.new.step4.title"),
+    value: "additional",
+    header: i18n.t("project.new.step3.title"),
     beforeNext: () => {
       createProject();
       return true;
     },
   },
-  { value: "finishing", header: i18n.t("project.new.step5.title"), showNext: false, showBack: false },
+  { value: "finishing", header: i18n.t("project.new.step4.title"), showNext: false, showBack: false },
 ];
-
-const selectBBCodeTab = ref("convert");
-const bbCodeTabs: Tab[] = [
-  { value: "convert", header: i18n.t("project.new.step4.convert") },
-  { value: "preview", header: i18n.t("project.new.step4.preview"), disable: () => !converter.value.markdown },
-  { value: "tutorial", header: i18n.t("project.new.step4.tutorial") },
-];
-function saveButtonDisabled() {
-  return form.value.pageContent === converter.value.markdown || (!form.value.pageContent && converter.value.markdown.length === 0);
-}
 
 useHead(useSeo("New Project", null, route, null));
-
-function convertBBCode() {
-  converter.value.loading = true;
-  useInternalApi<string>("pages/convert-bbcode", "post", {
-    content: converter.value.bbCode,
-  })
-    .then((markdown) => {
-      converter.value.markdown = markdown;
-    })
-    .catch((e) => handleRequestError(e))
-    .finally(() => {
-      converter.value.loading = false;
-    });
-}
 
 function createProject() {
   projectCreationErrors.value = [];
@@ -158,8 +130,21 @@ function createProject() {
 <template>
   <Steps v-model="selectedStep" :steps="steps" button-lang-key="project.new.step">
     <template #tos>
-      <p v-dompurify-html="i18n.t('project.new.step1.text1')" />
-      <Link to="/guidelines"><p v-dompurify-html="i18n.t('project.new.step1.text2')" /></Link>
+      <div class="flex-col flex inline-flex">
+        <p>{{ i18n.t("project.new.step1.text1") }}</p>
+        <p class="inline-flex items-center space-x-2">
+          <IconMdiFileCodumentAlert />
+          <Link to="/guidelines">
+            {{ i18n.t("project.new.step1.text2") }}
+          </Link>
+        </p>
+        <p class="inline-flex items-center space-x-2">
+          <IconMdiFolderPlusOutline />
+          <Link to="/tools/importer">
+            {{ i18n.t("project.new.step1.text3") }}
+          </Link>
+        </p>
+      </div>
     </template>
     <template #basic>
       <div class="flex flex-wrap">
@@ -263,58 +248,6 @@ function createProject() {
         </div>
       </div>
     </template>
-    <template #import>
-      <p class="mb-4">{{ i18n.t("project.new.step4.description") }}</p>
-      <Tabs v-model="selectBBCodeTab" :tabs="bbCodeTabs" :vertical="false">
-        <template #convert>
-          <div class="flex flex-wrap">
-            <div class="basis-full"><InputTextarea v-model="converter.bbCode" :rows="6" :label="i18n.t('project.new.step4.convertLabels.bbCode')" /></div>
-            <div class="basis-full flex justify-center my-4">
-              <Button :disabled="converter.loading" size="large" @click="convertBBCode">
-                <IconMdiChevronDoubleDown />
-                {{ i18n.t("project.new.step4.convert") }}
-                <IconMdiChevronDoubleDown />
-              </Button>
-            </div>
-            <div class="basis-full"><InputTextarea v-model="converter.markdown" :rows="6" :label="i18n.t('project.new.step4.convertLabels.output')" /></div>
-          </div>
-
-          <div class="inline-flex items-center gap-2">
-            <Button block class="my-2" :disabled="saveButtonDisabled()" @click="form.pageContent = converter.markdown">
-              <IconMdiContentSave />
-              {{ i18n.t("project.new.step4.saveAsHomePage") }}
-            </Button>
-            <transition>
-              <span v-if="form.pageContent === converter.markdown" class="inline-flex items-center"
-                >{{ i18n.t("project.new.step4.saved") }} <IconMdiCheck
-              /></span>
-            </transition>
-          </div>
-        </template>
-        <template #preview>
-          <Markdown :raw="converter.markdown" />
-          <div class="inline-flex items-center gap-2">
-            <Button block class="my-2" :disabled="saveButtonDisabled()" @click="form.pageContent = converter.markdown">
-              <IconMdiContentSave />
-              {{ i18n.t("project.new.step4.saveAsHomePage") }}
-            </Button>
-            <transition>
-              <span v-if="form.pageContent === converter.markdown" class="inline-flex items-center"
-                >{{ i18n.t("project.new.step4.saved") }} <IconMdiCheck
-              /></span>
-            </transition>
-          </div>
-        </template>
-        <template #tutorial>
-          {{ i18n.t("project.new.step4.tutorialInstructions.line1") }}<br />
-          {{ i18n.t("project.new.step4.tutorialInstructions.line2") }}<br />
-          <img src="https://i.imgur.com/8CyLMf3.png" alt="Edit Project" /><br />
-          {{ i18n.t("project.new.step4.tutorialInstructions.line3") }}<br />
-          <img src="https://i.imgur.com/FLVIuQK.png" width="425" height="198" alt="Show BBCode" /><br />
-          {{ i18n.t("project.new.step4.tutorialInstructions.line4") }}<br />
-        </template>
-      </Tabs>
-    </template>
     <template #finishing>
       <div class="flex flex-col">
         <div v-if="projectLoading" class="text-center my-8"><Spinner class="stroke-red-500" :diameter="90" :stroke="6" /></div>
@@ -326,7 +259,7 @@ function createProject() {
           <div class="text-center mt-2"><Button @click="createProject"> Retry </Button></div>
         </template>
         <div v-else class="text-h5 mt-2 mb-2">
-          {{ i18n.t("project.new.step5.text") }}
+          {{ i18n.t("project.new.step4.text") }}
         </div>
       </div>
     </template>

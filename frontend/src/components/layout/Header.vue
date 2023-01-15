@@ -18,7 +18,6 @@ import IconMdiCodeBraces from "~icons/mdi/code-braces";
 import IconMdiBookOpen from "~icons/mdi/book-open";
 import IconMdiLanguageJava from "~icons/mdi/language-java";
 import IconMdiDownloadCircle from "~icons/mdi/download-circle";
-import IconMdiKey from "~icons/mdi/key";
 import IconMdiFileCodumentAlert from "~icons/mdi/file-document-alert";
 import IconMdiBellOutline from "~icons/mdi/bell-outline";
 import IconMdiBellBadge from "~icons/mdi/bell-badge";
@@ -73,16 +72,19 @@ const navBarMenuLinksHangar = [
   { link: "guidelines", label: "Resource Guidelines", icon: IconMdiFileCodumentAlert },
   { link: "new", label: "Create Project", icon: IconMdiFolderPlusOutline },
   { link: "neworganization", label: "Create Organization", icon: IconMdiFolderPlusOutline },
-  { link: "tools-importer", label: "Import Projects", icon: IconMdiFolderPlusOutline },
-  { link: "tools-bbcode", label: "BBCode Converter", icon: IconMdiFolderWrenchOutline },
-  { link: "tools-markdown", label: "Markdown Editor", icon: IconMdiFolderWrenchOutline },
-  { link: "version", label: "Hangar Version Info", icon: IconMdiFolderInformationOutline },
   { link: "authors", label: "Authors", icon: IconMdiAccountGroup },
   { link: "staff", label: "Team", icon: IconMdiAccountGroup },
 ];
 if (!authStore.user) {
   navBarMenuLinksHangar.splice(2, 2);
 }
+
+const navBarMenuLinksTools = [
+  { link: "tools-importer", label: t("nav.tools.importer"), icon: IconMdiFolderPlusOutline },
+  { link: "tools-bbcode", label: t("nav.tools.bbcode"), icon: IconMdiFolderWrenchOutline },
+  { link: "tools-markdown", label: t("nav.tools.markdown"), icon: IconMdiFolderWrenchOutline },
+  { link: "version", label: t("nav.tools.version"), icon: IconMdiFolderInformationOutline },
+];
 
 const auth = useAuth;
 const authHost = useConfig().authHost;
@@ -95,8 +97,6 @@ const navBarMenuLinksMoreFromPaper = [
   { link: "https://docs.papermc.io/", label: t("nav.hangar.docs"), icon: IconMdiBookOpen },
   { link: "https://papermc.io/javadocs", label: t("nav.hangar.javadocs"), icon: IconMdiLanguageJava },
   { link: "https://papermc.io/downloads", label: t("nav.hangar.downloads"), icon: IconMdiDownloadCircle },
-  { link: "https://papermc.io/community", label: t("nav.hangar.community"), icon: IconMdiAccountGroup },
-  { link: authHost, label: t("nav.hangar.auth"), icon: IconMdiKey },
 ];
 
 function markNotificationsRead() {
@@ -176,11 +176,12 @@ function isRecent(date: string): boolean {
           >
             <!-- dummy diff to make the transition work on pages where template root has multiple elements -->
             <div id="#navbarMenuLinks">
+              <!-- todo: Use Popper -->
               <PopoverPanel
-                class="fixed z-10 w-9/10 background-default top-1/14 left-1/20 filter shadow-default rounded-md border-top-primary text-sm p-[20px]"
-                md="absolute w-max top-10 rounded-none rounded-bl-md rounded-r-md"
+                class="fixed z-10 w-9/10 lt-sm:mt-4 background-default left-1/20 filter shadow-default rounded-r-md border-top-primary text-sm p-[20px]"
+                sm="absolute w-max top-10 rounded-bl-md"
               >
-                <p class="text-base font-semibold color-primary mb-4">Hangar</p>
+                <p class="text-base font-semibold color-primary mb-3">Hangar</p>
                 <div class="grid grid-cols-2">
                   <router-link
                     v-for="link in navBarMenuLinksHangar"
@@ -195,7 +196,22 @@ function isRecent(date: string): boolean {
                   </router-link>
                 </div>
 
-                <p class="text-base font-semibold color-primary mb-4 mt-10">{{ t("nav.hangar.title") }}</p>
+                <p class="text-base font-semibold color-primary mb-3 mt-6">{{ t("nav.hangar.tools") }}</p>
+                <div class="grid grid-cols-2">
+                  <router-link
+                    v-for="link in navBarMenuLinksTools"
+                    :key="link.label"
+                    :to="{ name: link.link }"
+                    class="flex items-center rounded-md px-6 py-2"
+                    hover="text-primary-400 bg-primary-0"
+                    @click="close()"
+                  >
+                    <component :is="link.icon" class="mr-3 text-[1.2em]" />
+                    {{ link.label }}
+                  </router-link>
+                </div>
+
+                <p class="text-base font-semibold color-primary mb-3 mt-6">{{ t("nav.hangar.moreFrom") }}</p>
                 <div class="grid grid-cols-2">
                   <a
                     v-for="link in navBarMenuLinksMoreFromPaper"
@@ -228,20 +244,6 @@ function isRecent(date: string): boolean {
           >
             {{ navBarLink.label }}
           </router-link>
-
-          <Popper placement="bottom-end">
-            <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0) lt-md:hidden">
-              {{ t("nav.tools.title") }}
-            </button>
-            <template #content="{ close }">
-              <div class="-mt-2 py-1 rounded border-t-2 border-primary-400 background-default filter shadow-default flex flex-col" @click="close()">
-                <DropdownItem to="/tools/importer">{{ t("nav.tools.importer") }}</DropdownItem>
-                <DropdownItem to="/tools/bbcode">{{ t("nav.tools.bbcode") }}</DropdownItem>
-                <DropdownItem to="/tools/markdown">{{ t("nav.tools.markdown") }}</DropdownItem>
-                <DropdownItem to="/version">{{ t("nav.tools.version") }}</DropdownItem>
-              </div>
-            </template>
-          </Popper>
         </div>
       </div>
 
@@ -252,7 +254,6 @@ function isRecent(date: string): boolean {
             <template #default="{ close }">
               <DropdownItem to="/new" @click="close()">{{ t("nav.new.project") }}</DropdownItem>
               <DropdownItem to="/neworganization" @click="close()">{{ t("nav.new.organization") }}</DropdownItem>
-              <DropdownItem to="/tools/importer" @click="close()">{{ t("nav.new.importer") }}</DropdownItem>
             </template>
           </DropdownButton>
         </div>

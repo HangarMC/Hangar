@@ -26,6 +26,7 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import Spinner from "~/lib/components/design/Spinner.vue";
 import { reactive } from "#imports";
 import Alert from "~/lib/components/design/Alert.vue";
+import IconMdiFileCodumentAlert from "~icons/mdi/file-document-alert";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -127,17 +128,20 @@ useHead(useSeo(t("importer.title"), null, route, null));
     <Steps v-model="selectedStep" :steps="steps" button-lang-key="importer.step">
       <template #intro>
         <p>{{ t("importer.step1.text1") }}</p>
-        <Link to="/guidelines">
-          <p>{{ t("importer.step1.text2") }}</p>
-        </Link>
+        <p class="inline-flex items-center space-x-2">
+          <IconMdiFileCodumentAlert />
+          <Link to="/guidelines">
+            {{ t("importer.step1.text2") }}
+          </Link>
+        </p>
       </template>
       <template #userSelection>
         <p class="mb-2">{{ t("importer.step2.text") }}</p>
         <InputText v-model="username" label="Username" />
         <div v-if="spigotAuthor" class="flex items-center mt-2">
-          <UserAvatar :username="spigotAuthor.username" :avatar-url="spigotAuthor.avatar" />
+          <UserAvatar :username="spigotAuthor.username" :avatar-url="spigotAuthor.avatar" size="md" />
           <div class="ml-4">
-            <div class="text-xl">{{ spigotAuthor.username }} (#{{ spigotAuthor.id }}):</div>
+            <div class="text-xl">{{ spigotAuthor.username }} (#{{ spigotAuthor.id }})</div>
             {{ spigotAuthor.resource_count }} resources
           </div>
         </div>

@@ -40,8 +40,7 @@
     "loggedOut": "You have been logged out!",
     "footer": {
       "api": "API",
-      "resourceGuidelines": "Resource Guidelines",
-      "org": "GitHub Organization",
+      "org": "GitHub",
       "terms": "Terms and Conditions",
       "privacypolicy": "Privacy Policy",
       "status": "Status"
@@ -109,8 +108,7 @@
     "new": {
       "title": "Create",
       "project": "New Project",
-      "organization": "New Organization",
-      "importer": "Import Projects"
+      "organization": "New Organization"
     },
     "tools": {
       "title": "Tools",
@@ -120,16 +118,15 @@
       "version": "Hangar Version Info"
     },
     "hangar": {
-      "title": "More from PaperMC",
+      "tools": "Hangar Tools",
+      "moreFrom": "More from PaperMC",
       "home": "Homepage",
       "forums": "Forums",
-      "code": "Code",
+      "code": "GitHub",
       "docs": "Docs",
       "javadocs": "JavaDocs",
-      "hangar": "Hangar (Plugins)",
       "downloads": "Downloads",
-      "community": "Community",
-      "auth": "Authentication Portal"
+      "community": "Community"
     }
   },
   "guidelines": {
@@ -215,6 +212,7 @@
         "title": "User Agreement",
         "text1": "A project contains your downloads and the documentation for your plugin.",
         "text2": "Before continuing, please review the Hangar Submission Guideline.",
+        "text3": "You can also check out the importer tool to import your projects from other platforms.",
         "continue": "Agree",
         "back": "Abort"
       },
@@ -247,28 +245,6 @@
         "keywords": "Keywords"
       },
       "step4": {
-        "title": "Import from Spigot",
-        "description": "Optional: You can convert an existing description for your project from the Spigot resource forums. You can safely skip this and design your description from scratch once you created the project.",
-        "continue": "Create",
-        "back": "Back",
-        "optional": "Optional",
-        "convert": "Convert",
-        "saveAsHomePage": "Save as Home Page",
-        "saved": "Saved",
-        "convertLabels": {
-          "bbCode": "Paste your BBCode here",
-          "output": "Markdown Output"
-        },
-        "preview": "Preview",
-        "tutorial": "How to get the BBCode",
-        "tutorialInstructions": {
-          "line1": "To get the BBCode of your Spigot project, do the following:",
-          "line2": "1. Go to your project and click on \"Edit Resource\".",
-          "line3": "2. Click on the wrench symbol in the description editor.",
-          "line4": "3. Copy paste the new contents into the upper converter textbox, do changes to the output if you like, and hit save!"
-        }
-      },
-      "step5": {
         "title": "Finishing",
         "text": "Creating..."
       },
@@ -901,7 +877,7 @@
     },
     "step2": {
       "title": "User selection",
-      "text": "Enter the spigot username to search for your profile.",
+      "text": "Enter the Spigot username to search for your profile.",
       "continue": "Load Projects"
     },
     "step3": {

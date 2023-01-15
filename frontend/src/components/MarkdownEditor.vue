@@ -99,7 +99,7 @@ function deletePage() {
       </div>
     </div>
     <div v-if="!props.title && internalEditing && !preview" class="mt-11"></div>
-    <div v-if="internalEditing && !preview" class="pl-6 mt-1">
+    <div v-if="internalEditing && !preview" class="pl-4 mt-1">
       <InputTextarea v-model="rawEdited" :extra-rows="3" :maxlength="maxlength" counter></InputTextarea>
     </div>
     <div v-if="props.title && (!internalEditing || preview)" class="-mt-5"></div>
