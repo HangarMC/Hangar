@@ -27,6 +27,8 @@ import IconMdiInformationOutline from "~icons/mdi/information-outline";
 import IconMdiMessageOutline from "~icons/mdi/message-outline";
 import IconMdiCheck from "~icons/mdi/check";
 import IconMdiFolderPlusOutline from "~icons/mdi/folder-plus-outline";
+import IconMdiFolderWrenchOutline from "~icons/mdi/folder-wrench-outline";
+import IconMdiFolderInformationOutline from "~icons/mdi/folder-information-outline";
 
 import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
@@ -71,6 +73,10 @@ const navBarMenuLinksHangar = [
   { link: "guidelines", label: "Resource Guidelines", icon: IconMdiFileCodumentAlert },
   { link: "new", label: "Create Project", icon: IconMdiFolderPlusOutline },
   { link: "neworganization", label: "Create Organization", icon: IconMdiFolderPlusOutline },
+  { link: "tools-importer", label: "Import Projects", icon: IconMdiFolderPlusOutline },
+  { link: "tools-bbcode", label: "BBCode Converter", icon: IconMdiFolderWrenchOutline },
+  { link: "tools-markdown", label: "Markdown Editor", icon: IconMdiFolderWrenchOutline },
+  { link: "version", label: "Hangar Version Info", icon: IconMdiFolderInformationOutline },
   { link: "authors", label: "Authors", icon: IconMdiAccountGroup },
   { link: "staff", label: "Team", icon: IconMdiAccountGroup },
 ];
@@ -212,7 +218,7 @@ function isRecent(date: string): boolean {
         </router-link>
 
         <!-- Desktop links -->
-        <div class="gap-4 hidden sm:flex">
+        <div class="gap-4 hidden sm:flex sm:items-center">
           <router-link
             v-for="navBarLink in navBarLinks"
             :key="navBarLink.label"
@@ -222,16 +228,31 @@ function isRecent(date: string): boolean {
           >
             {{ navBarLink.label }}
           </router-link>
+
+          <Popper placement="bottom-end">
+            <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0) lt-md:hidden">
+              {{ t("nav.tools.title") }}
+            </button>
+            <template #content="{ close }">
+              <div class="-mt-2 py-1 rounded border-t-2 border-primary-400 background-default filter shadow-default flex flex-col" @click="close()">
+                <DropdownItem to="/tools/importer">{{ t("nav.tools.importer") }}</DropdownItem>
+                <DropdownItem to="/tools/bbcode">{{ t("nav.tools.bbcode") }}</DropdownItem>
+                <DropdownItem to="/tools/markdown">{{ t("nav.tools.markdown") }}</DropdownItem>
+                <DropdownItem to="/version">{{ t("nav.tools.version") }}</DropdownItem>
+              </div>
+            </template>
+          </Popper>
         </div>
       </div>
 
       <!-- Right side items -->
       <div class="flex items-center gap-2">
         <div v-if="authStore.user" class="flex items-center lt-sm:hidden">
-          <DropdownButton name="Create">
+          <DropdownButton :name="t('nav.new.title')">
             <template #default="{ close }">
               <DropdownItem to="/new" @click="close()">{{ t("nav.new.project") }}</DropdownItem>
               <DropdownItem to="/neworganization" @click="close()">{{ t("nav.new.organization") }}</DropdownItem>
+              <DropdownItem to="/tools/importer" @click="close()">{{ t("nav.new.importer") }}</DropdownItem>
             </template>
           </DropdownButton>
         </div>

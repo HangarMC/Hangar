@@ -107,8 +107,17 @@
     "darkModeOn": "Turn on Dark Mode",
     "darkModeOff": "Turn off Dark Mode",
     "new": {
+      "title": "Create",
       "project": "New Project",
-      "organization": "New Organization"
+      "organization": "New Organization",
+      "importer": "Import Projects"
+    },
+    "tools": {
+      "title": "Tools",
+      "bbcode": "BBCode Converter",
+      "markdown": "Markdown Editor",
+      "importer": "Project Importer",
+      "version": "Hangar Version Info"
     },
     "hangar": {
       "title": "More from PaperMC",
