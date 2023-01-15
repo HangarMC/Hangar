@@ -81,14 +81,13 @@ watch(selectedFile, (newValue) => {
 });
 
 async function openModal() {
-  console.log("attempt to load old avatar into selector");
   try {
     const response = await fetch(props.avatar);
     const data = await response.blob();
     reader?.readAsDataURL(data);
   } catch (e) {
     notifications.error("Error while fetching existing avatar");
-    console.log("error while fetching existing avatar", e);
+    console.error("error while fetching existing avatar", e);
   }
 }
 
@@ -111,7 +110,7 @@ async function save() {
     window.location.reload();
   } catch (e) {
     notifications.error("Error while saving avatar");
-    console.log("Error while saving avatar", e);
+    console.error("Error while saving avatar", e);
     modal.value.close();
   }
 }
