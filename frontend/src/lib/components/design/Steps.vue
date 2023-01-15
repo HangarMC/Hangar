@@ -85,7 +85,6 @@ async function goto(step: Step) {
 </script>
 
 <template>
-  <!-- todo style active, next and past step headers differently -->
   <div>
     <div class="w-full">
       <ul class="flex flex-row justify-around items-center">
@@ -115,10 +114,10 @@ async function goto(step: Step) {
         <div v-for="step in steps" :key="step.value">
           <slot v-if="internalValue === step.value" :name="step.value" />
         </div>
-        <Button v-if="showBack" :disabled="disableBack" size="medium" class="mt-6 mr-2" @click="back">
+        <Button v-if="showBack" :disabled="disableBack" size="medium" class="mt-4 mr-2" @click="back">
           {{ i18n.t(buttonLangKey + activeStepIndex + ".back") }}
         </Button>
-        <Button v-if="showNext" :disabled="disableNext" size="medium" class="mt-6" @click="next">
+        <Button v-if="showNext" :disabled="disableNext" size="medium" class="mt-4" @click="next">
           {{ i18n.t(buttonLangKey + activeStepIndex + ".continue") }}
         </Button>
       </Card>
