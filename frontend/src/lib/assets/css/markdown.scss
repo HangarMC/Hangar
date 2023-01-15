@@ -2,6 +2,7 @@
 @import "markdown-dark";
 
 .markdown {
+  margin-top: -10px;
   table tr > th {
     padding: 5px;
   }
@@ -13,6 +14,8 @@
   h5,
   h6 {
     display: flex;
+    margin-top: 20px;
+    margin-bottom: 0;
   }
 
   img {
