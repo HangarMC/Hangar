@@ -19,7 +19,7 @@ public record ProjectsConfig( // TODO split into ProjectsConfig and VersionsConf
                               @DefaultValue("100") int maxDependencies,
                               @DefaultValue("50") int maxPages,
                               @DefaultValue("5") int maxChannels,
-                              @DefaultValue("30000") int maxBBCodeLen,
+                              @DefaultValue("40000") int maxBBCodeLen,
                               @DefaultValue("25") int initLoad,
                               @DefaultValue("10") int initVersionLoad,
                               @DefaultValue("120") int maxDescLen,

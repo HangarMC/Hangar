@@ -119,7 +119,7 @@ hangar:
     max-license-name-len: 15
     max-dependencies: 100
     max-pages: 50
-    max-bbcode-len: 20000
+    max-bbcode-len: 40000
     max-sponsors-len: 1500
     max-channels: 5
     init-load: 25
