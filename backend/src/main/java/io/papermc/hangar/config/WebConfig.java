@@ -148,19 +148,19 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Bean
     public RestTemplate restTemplate(final List<HttpMessageConverter<?>> messageConverters, final RestTemplateBuilder builder) {
-        final RestTemplate restTemplate;
         if (interceptorLogger.isDebugEnabled()) {
             final ClientHttpRequestFactory factory = new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory());
-            restTemplate = builder
+            builder
                 .requestFactory(() -> factory)
-                .interceptors(new LoggingInterceptor())
-                .build();
-        } else {
-            restTemplate = builder.build();
+                .interceptors(new LoggingInterceptor());
         }
+
+        builder.defaultHeader("User-Agent", "Hangar <hangar@papermc.io>");
+
         this.addDefaultHttpMessageConverters(messageConverters);
-        restTemplate.setMessageConverters(messageConverters);
-        return restTemplate;
+        builder.messageConverters(messageConverters);
+
+        return builder.build();
     }
 
     static class LoggingInterceptor implements ClientHttpRequestInterceptor {

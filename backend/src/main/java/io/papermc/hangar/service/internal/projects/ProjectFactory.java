@@ -15,6 +15,7 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.api.UsersApiService;
+import io.papermc.hangar.service.internal.AvatarService;
 import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
@@ -43,9 +44,10 @@ public class ProjectFactory extends HangarComponent {
     private final ProjectFiles projectFiles;
     private final ValidationService validationService;
     private final FileService fileService;
+    private final AvatarService avatarService;
 
     @Autowired
-    public ProjectFactory(final ProjectsDAO projectDAO, final ProjectService projectService, final ChannelService channelService, final ProjectPageService projectPageService, final ProjectMemberService projectMemberService, final ProjectVisibilityService projectVisibilityService, final UsersApiService usersApiService, final JobService jobService, final ProjectFiles projectFiles, final ValidationService validationService, final FileService fileService) {
+    public ProjectFactory(final ProjectsDAO projectDAO, final ProjectService projectService, final ChannelService channelService, final ProjectPageService projectPageService, final ProjectMemberService projectMemberService, final ProjectVisibilityService projectVisibilityService, final UsersApiService usersApiService, final JobService jobService, final ProjectFiles projectFiles, final ValidationService validationService, final FileService fileService, final AvatarService avatarService) {
         this.projectsDAO = projectDAO;
         this.projectService = projectService;
         this.channelService = channelService;
@@ -57,6 +59,7 @@ public class ProjectFactory extends HangarComponent {
         this.projectFiles = projectFiles;
         this.validationService = validationService;
         this.fileService = fileService;
+        this.avatarService = avatarService;
     }
 
     @Transactional
@@ -77,6 +80,9 @@ public class ProjectFactory extends HangarComponent {
             }
             this.projectPageService.createPage(projectTable.getId(), this.config.pages.home().name(), StringUtils.slugify(this.config.pages.home().name()), newPageContent, false, null, true);
             this.jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
+            if (newProject.getAvatarUrl() != null) {
+                this.avatarService.importProjectAvatar(projectTable.getId(), newProject.getAvatarUrl());
+            }
         } catch (final Exception exception) {
             if (projectTable != null) {
                 this.projectsDAO.delete(projectTable);

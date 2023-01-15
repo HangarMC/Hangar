@@ -1,4 +1,5 @@
 import { PlatformVersionDownload } from "hangar-api";
+import { ComputedRef } from "vue";
 
 declare module "hangar-internal" {
   import type { Joinable, Table } from "hangar-internal";
@@ -106,6 +107,18 @@ declare module "hangar-internal" {
     };
     category: ProjectCategory;
     description: string;
+  }
+
+  interface NewProjectForm extends ProjectSettingsForm {
+    ownerId: ProjectOwner["userId"];
+    name: string;
+    pageContent: string | null;
+    avatarUrl?: string;
+    externalId?: string;
+    util: {
+      isCustomLicense: ComputedRef<boolean>;
+      licenseUnset: ComputedRef<boolean>;
+    };
   }
 
   interface ProjectApproval {

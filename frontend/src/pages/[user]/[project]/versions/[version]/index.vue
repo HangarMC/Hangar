@@ -319,8 +319,8 @@ async function restoreVersion() {
           {{ useBackendData.platforms.get(platform).name }}
           ({{ projectVersion?.platformDependenciesFormatted[platform] }})
           <PlatformVersionEditModal
-            class="ml-2"
             v-if="hasPerms(NamedPermission.EDIT_VERSION)"
+            class="ml-2"
             :project="project"
             :version="version"
             :platform="useBackendData.platforms.get(platform)"

@@ -4,6 +4,7 @@ import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.model.api.project.ProjectSettings;
 import io.papermc.hangar.model.common.projects.Category;
 import jakarta.validation.constraints.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class NewProjectForm extends ProjectSettingsForm {
 
@@ -16,11 +17,14 @@ public class NewProjectForm extends ProjectSettingsForm {
     // @el(root: String)
     private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxLen)", message = "page.new.error.maxLength") String pageContent;
 
-    public NewProjectForm(final ProjectSettings settings, final Category category, final String description, final long ownerId, final String name, final String pageContent) {
+    private final @Nullable String avatarUrl;
+
+    public NewProjectForm(final ProjectSettings settings, final Category category, final String description, final long ownerId, final String name, final String pageContent, final @Nullable String avatarUrl) {
         super(settings, category, description);
         this.ownerId = ownerId;
         this.name = name;
         this.pageContent = pageContent;
+        this.avatarUrl = avatarUrl;
     }
 
     public long getOwnerId() {
@@ -33,6 +37,10 @@ public class NewProjectForm extends ProjectSettingsForm {
 
     public String getPageContent() {
         return this.pageContent;
+    }
+
+    public String getAvatarUrl() {
+        return this.avatarUrl;
     }
 
     @Override

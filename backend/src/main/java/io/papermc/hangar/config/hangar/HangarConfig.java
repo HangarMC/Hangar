@@ -52,6 +52,8 @@ public class HangarConfig {
     public JobsConfig jobs;
     @NestedConfigurationProperty
     public StorageConfig storage;
+    @NestedConfigurationProperty
+    public CorsConfig cors;
 
     @Component
     public static class Sponsor {
@@ -85,7 +87,7 @@ public class HangarConfig {
     }
 
     @Autowired
-    public HangarConfig(final FakeUserConfig fakeUser, final HomepageConfig homepage, final ChannelsConfig channels, final PagesConfig pages, final ProjectsConfig projects, final UserConfig user, final OrganizationsConfig org, final ApiConfig api, final SSOConfig sso, final HangarSecurityConfig security, final QueueConfig queue, final DiscourseConfig discourse, final JobsConfig jobs, final StorageConfig storage) {
+    public HangarConfig(final FakeUserConfig fakeUser, final HomepageConfig homepage, final ChannelsConfig channels, final PagesConfig pages, final ProjectsConfig projects, final UserConfig user, final OrganizationsConfig org, final ApiConfig api, final SSOConfig sso, final HangarSecurityConfig security, final QueueConfig queue, final DiscourseConfig discourse, final JobsConfig jobs, final StorageConfig storage, final CorsConfig cors) {
         this.fakeUser = fakeUser;
         this.homepage = homepage;
         this.channels = channels;
@@ -100,6 +102,7 @@ public class HangarConfig {
         this.discourse = discourse;
         this.jobs = jobs;
         this.storage = storage;
+        this.cors = cors;
     }
 
     public void checkDev() {

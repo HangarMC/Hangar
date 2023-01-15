@@ -105,7 +105,7 @@ public class FakeDataService extends HangarComponent {
             quote.substring(0, Math.min(quote.length(), 254)),
             ownerId,
             projectName.substring(0, Math.min(projectName.length(), 24)),
-            "# " + projectName + "\n\n" + "> " + this.faker.leagueOfLegends().quote());
+            "# " + projectName + "\n\n" + "> " + this.faker.leagueOfLegends().quote(), null);
         final ProjectTable projectTable = this.projectFactory.createProject(newProject);
 
         projectTable.setVisibility(Visibility.PUBLIC);

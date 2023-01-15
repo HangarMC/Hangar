@@ -890,6 +890,29 @@
   "apiDocs": {
     "title": "API Docs"
   },
+  "importer": {
+    "title": "Import Projects",
+    "step1": {
+      "title": "Intro",
+      "text1": "This page allows you to import projects from other platforms.",
+      "text2": "Before continuing, please review the Hangar Submission Guideline.",
+      "continue": "Agree",
+      "back": "Abort"
+    },
+    "step2": {
+      "title": "User selection",
+      "text": "Enter the spigot username to search for your profile.",
+      "continue": "Load Projects"
+    },
+    "step3": {
+      "title": "Project selection",
+      "continue": "Create Projects",
+      "back": "Back"
+    },
+    "step4": {
+      "title": "Finishing"
+    }
+  },
   "platformVersions": {
     "title": "Configure Platform Versions",
     "platform": "Platform",

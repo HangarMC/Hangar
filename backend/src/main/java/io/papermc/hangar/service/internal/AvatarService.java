@@ -46,6 +46,19 @@ public class AvatarService extends HangarComponent {
         this.cache = (Cache<String, String>) avatarsCache.getNativeCache();
     }
 
+    public void importProjectAvatar(final long projectId, final String avatarUrl) {
+        try {
+            final ResponseEntity<byte[]> avatar = this.restTemplate.getForEntity(avatarUrl, byte[].class);
+            if (avatar.getStatusCode().is2xxSuccessful()) {
+                this.changeProjectAvatar(projectId, avatar.getBody());
+            } else {
+                this.logger.warn("Couldn't import project avatar from {}, {}", avatarUrl, avatar.getStatusCode());
+            }
+        } catch (final Exception ex) {
+            this.logger.warn("Couldn't import project avatar from " + avatarUrl, ex);
+        }
+    }
+
     /*
      * change methods
      */

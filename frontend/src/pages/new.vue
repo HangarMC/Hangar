@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ProjectOwner, ProjectSettingsForm } from "hangar-internal";
+import { ProjectOwner, ProjectSettingsForm, NewProjectForm } from "hangar-internal";
 import { computed, type Ref, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
@@ -27,12 +27,6 @@ import { usePossibleOwners } from "~/composables/useApiHelper";
 import { definePageMeta } from "#imports";
 import { Step } from "~/lib/types/components/design/Steps";
 import { Tab } from "~/lib/types/components/design/Tabs";
-
-interface NewProjectForm extends ProjectSettingsForm {
-  ownerId: ProjectOwner["userId"];
-  name: string;
-  pageContent: string | null;
-}
 
 definePageMeta({
   loginRequired: true,

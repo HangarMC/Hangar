@@ -222,6 +222,10 @@ hangar:
     cdn-endpoint: "http://127.0.0.1:9000"
     cdn-include-bucket: true
 
+  cors:
+    allowed-hosts:
+      - api.spigotmc.org
+
 #################
 # Debug Logging #
 #################
