@@ -5,6 +5,7 @@ import { HangarProject } from "hangar-internal";
 import { useProjectVersionsInternal } from "~/composables/useApiHelper";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 import { Platform } from "~/types/enums";
+import Delayed from "~/lib/components/design/Delayed.vue";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -30,7 +31,7 @@ if (version && version.value) {
   <router-view v-slot="{ Component }">
     <Suspense>
       <component :is="Component" :project="project" :version="version" :version-platforms="versionPlatforms" />
-      <template #fallback> Loading... </template>
+      <template #fallback> <Delayed> Loading... </Delayed> </template>
     </Suspense>
   </router-view>
 </template>

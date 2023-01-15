@@ -6,6 +6,7 @@ import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import Spinner from "~/lib/components/design/Spinner.vue";
 import { usePrismStore } from "~/store/prism";
+import Delayed from "~/lib/components/design/Delayed.vue";
 
 const i18n = useI18n();
 const props = withDefaults(
@@ -31,7 +32,8 @@ async function fetch() {
   }).catch<any>((e) => handleRequestError(e));
   loading.value = false;
 }
-await fetch();
+
+fetch();
 
 watchPostEffect(async () => {
   if (!import.meta.env.SSR) {
@@ -98,10 +100,14 @@ function setupAdmonition() {
 </script>
 
 <template>
-  <div :class="{ 'prose max-w-full rounded markdown break-words': true, 'p-4': !inline, inline: inline }">
+  <div class="prose max-w-full rounded markdown break-words" :class="{ 'p-4': !inline, inline: inline }">
     <!-- eslint-disable-next-line vue/no-v-html -->
     <div v-if="!loading" v-bind="$attrs" v-html="renderedMarkdown" />
-    <div v-else><Spinner class="stroke-gray-400" /></div>
+    <div v-else>
+      <Delayed>
+        <Spinner class="stroke-gray-400" />
+      </Delayed>
+    </div>
   </div>
 </template>
 

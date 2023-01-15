@@ -9,6 +9,7 @@ import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 import ProjectHeader from "~/components/projects/ProjectHeader.vue";
 import ProjectNav from "~/components/projects/ProjectNav.vue";
 import { createError, navigateTo } from "#imports";
+import Delayed from "~/lib/components/design/Delayed.vue";
 
 defineProps({
   user: {
@@ -24,7 +25,7 @@ if (!project || !project.value) {
   throw useErrorRedirect(route, 404, "Not found");
 } else if (route.params.project !== project.value?.namespace.slug) {
   const newPath = route.fullPath.replace(route.params.project as string, project.value?.namespace.slug);
-  console.log("redirect to " + newPath + " from (" + route.fullPath + ")");
+  console.debug("Redirect to " + newPath + " from (" + route.fullPath + ")");
   await navigateTo(newPath);
   throw createError("dummy");
 }
@@ -41,7 +42,9 @@ provide("updateProjectPages", function (pages: HangarProjectPage[]) {
     <router-view v-slot="{ Component }">
       <Suspense>
         <component :is="Component" v-model:project="project" :user="user" />
-        <template #fallback> Loading... </template>
+        <template #fallback>
+          <Delayed> Loading... </Delayed>
+        </template>
       </Suspense>
     </router-view>
   </div>
