@@ -56,7 +56,7 @@ class BBCodeConverterTest {
     @Test
     void testAttachment() {
         final String result = this.converter.convertToMarkdown("[attach]100[/attach]");
-        Assertions.assertEquals("![https://www.spigotmc.org/attachments/100](https://www.spigotmc.org/attachments/100)", result);
+        Assertions.assertEquals("", result);
     }
 
     @Test

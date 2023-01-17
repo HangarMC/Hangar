@@ -28,7 +28,7 @@ public class BBCodeConverter {
         REPLACERS.put("font", (tag, tagArg, content) -> content);
         REPLACERS.put("user", (tag, tagArg, content) -> content);
         REPLACERS.put("list", (tag, tagArg, content) -> content);
-        REPLACERS.put("attach", (tag, tagArg, content) -> content);
+        REPLACERS.put("attach", (tag, tagArg, content) -> "");
 
         REPLACERS.put("spoiler", (tag, tagArg, content) -> "<details>\n<summary>%s</summary>\n\n%s\n</details>\n".formatted(removeQuotes(tagArg), content));
         REPLACERS.put("b", (tag, tagArg, content) -> "**" + content + "**");
