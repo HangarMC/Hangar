@@ -28,6 +28,7 @@ public class BBCodeConverter {
         REPLACERS.put("font", (tag, tagArg, content) -> content);
         REPLACERS.put("user", (tag, tagArg, content) -> content);
         REPLACERS.put("list", (tag, tagArg, content) -> content);
+        REPLACERS.put("attach", (tag, tagArg, content) -> content);
 
         REPLACERS.put("spoiler", (tag, tagArg, content) -> "<details>\n<summary>%s</summary>\n\n%s\n</details>\n".formatted(removeQuotes(tagArg), content));
         REPLACERS.put("b", (tag, tagArg, content) -> "**" + content + "**");
@@ -103,10 +104,6 @@ public class BBCodeConverter {
                 return true;
             }
         });
-        REPLACERS.put("attach", ((tag, tagArg, content) -> {
-            final String imageUrl = "https://www.spigotmc.org/attachments/" + content;
-            return "![" + imageUrl + "](" + imageUrl + ")";
-        }));
 
         // Unordered list entries (do not have closing tags)
         SIMPLE_SINGLETON_REPLACERS.put("*", "* ");
