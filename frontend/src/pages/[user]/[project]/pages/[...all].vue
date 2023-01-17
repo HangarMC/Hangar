@@ -28,7 +28,12 @@ const open = await useOpenProjectPages(route, props.project);
 <template>
   <div class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-9/12 flex-grow overflow-auto">
-      <ProjectPageMarkdown :key="route.fullPath" v-slot="{ page, editingPage, changeEditingPage, savePage, deletePage }" :project="props.project">
+      <ProjectPageMarkdown
+        :key="route.fullPath"
+        v-slot="{ page, editingPage, changeEditingPage, savePage, deletePage }"
+        :project="props.project"
+        :main-page="false"
+      >
         <Card v-if="page" class="p-0 overflow-clip overflow-hidden">
           <MarkdownEditor
             v-if="hasPerms(NamedPermission.EDIT_PAGE)"

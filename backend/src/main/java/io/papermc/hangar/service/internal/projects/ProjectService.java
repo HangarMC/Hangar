@@ -21,6 +21,7 @@ import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
+import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.model.internal.user.JoinableMember;
@@ -131,7 +132,8 @@ public class ProjectService extends HangarComponent {
             }
         }
 
-        final HangarProject hangarProject = new HangarProject(project.getRight(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, mainChannelVersions);
+        final ExtendedProjectPage projectPage = projectPageService.getProjectPage(project.getRight().getId());
+        final HangarProject hangarProject = new HangarProject(project.getRight(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, mainChannelVersions, projectPage);
         hangarProject.setAvatarUrl(this.avatarService.getProjectAvatarUrl(hangarProject.getProjectId(), hangarProject.getNamespace().getOwner()));
         return hangarProject;
     }

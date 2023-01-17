@@ -43,6 +43,7 @@ declare module "hangar-internal" {
     lastVisibilityChangeUserName: string;
     info: HangarProjectInfo;
     pages: HangarProjectPage[];
+    mainPage: ProjectPage;
     pinnedVersions: PinnedVersion[];
     mainChannelVersions: Record<Platform, HangarVersion>;
   }

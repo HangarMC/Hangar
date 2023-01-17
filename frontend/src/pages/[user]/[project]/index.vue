@@ -53,7 +53,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
 <template>
   <div class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-11/15 flex-grow overflow-auto">
-      <ProjectPageMarkdown v-slot="{ page, editingPage, changeEditingPage, savePage }" :project="props.project">
+      <ProjectPageMarkdown v-slot="{ page, editingPage, changeEditingPage, savePage }" :project="props.project" main-page>
         <Card v-if="page?.contents" class="p-0 pb-6 overflow-clip overflow-hidden">
           <MarkdownEditor
             v-if="hasPerms(NamedPermission.EDIT_PAGE)"

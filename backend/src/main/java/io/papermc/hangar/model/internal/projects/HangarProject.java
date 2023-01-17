@@ -30,10 +30,11 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     private final String lastVisibilityChangeUserName;
     private final HangarProjectInfo info;
     private final Collection<HangarProjectPage> pages;
+    private final ExtendedProjectPage mainPage;
     private final List<PinnedVersion> pinnedVersions;
     private final Map<Platform, HangarVersion> mainChannelVersions;
 
-    public HangarProject(final Project project, final ProjectOwner owner, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, HangarVersion> mainChannelVersions) {
+    public HangarProject(final Project project, final ProjectOwner owner, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, HangarVersion> mainChannelVersions, final ExtendedProjectPage mainPage) {
         super(project);
         this.owner = owner;
         this.members = members;
@@ -43,6 +44,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         this.pages = pages;
         this.pinnedVersions = pinnedVersions;
         this.mainChannelVersions = mainChannelVersions;
+        this.mainPage = mainPage;
     }
 
     @JsonIgnore(false)
@@ -94,6 +96,10 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         return this.mainChannelVersions;
     }
 
+    public ExtendedProjectPage getMainPage() {
+        return this.mainPage;
+    }
+
     @Override
     public String toString() {
         return "HangarProject{" +
@@ -104,6 +110,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
             ", lastVisibilityChangeUserName='" + this.lastVisibilityChangeUserName + '\'' +
             ", info=" + this.info +
             ", pages=" + this.pages +
+            ", mainPage=" + this.mainPage +
             ", pinnedVersions=" + this.pinnedVersions +
             "} " + super.toString();
     }

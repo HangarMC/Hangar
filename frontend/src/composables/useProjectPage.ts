@@ -6,8 +6,8 @@ import { useInternalApi } from "~/composables/useApi";
 import { usePage } from "~/composables/useApiHelper";
 import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 
-export async function useProjectPage(route: RouteLocationNormalizedLoaded, router: Router, project: HangarProject) {
-  const page = await usePage(route.params.user as string, route.params.project as string, route.params.all as string);
+export async function useProjectPage(route: RouteLocationNormalizedLoaded, router: Router, project: HangarProject, mainPage: boolean) {
+  const page = mainPage ? ref(project.mainPage) : await usePage(route.params.user as string, route.params.project as string, route.params.all as string);
   if (!page?.value) {
     throw useErrorRedirect(route, 404, "Not found");
   }

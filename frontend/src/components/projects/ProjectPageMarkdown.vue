@@ -11,6 +11,7 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 
 const props = defineProps<{
   project: HangarProject;
+  mainPage: boolean;
 }>();
 
 const route = useRoute();
@@ -19,9 +20,9 @@ const i18n = useI18n();
 
 const updateProjectPages = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
 
-const { editingPage, changeEditingPage, page, savePage, deletePage } = await useProjectPage(route, router, props.project);
+const { editingPage, changeEditingPage, page, savePage, deletePage } = await useProjectPage(route, router, props.project, props.mainPage);
 if (page) {
-  const title = page.value?.name === "Home" ? props.project.name : page.value?.name + " | " + props.project.name;
+  const title = props.mainPage ? props.project.name : page.value?.name + " | " + props.project.name;
   useHead(useSeo(title, props.project.description, route, props.project.avatarUrl));
 }
 
