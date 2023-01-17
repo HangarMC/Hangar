@@ -44,6 +44,8 @@
     "jwt-decode": "3.1.2",
     "lodash-es": "4.17.21",
     "marked": "^4.2.12",
+    "marked-extended-tables": "^1.0.5",
+    "marked-linkify-it": "^3.0.1",
     "nprogress": "0.2.0",
     "pinia": "2.0.28",
     "prism-theme-vars": "0.2.4",
