@@ -22,22 +22,30 @@ async function loadRoutePerms(to: RouteLocationNormalized) {
   const authStore = useAuthStore();
   if (to.params.user && to.params.project) {
     if (authStore.authenticated) {
+      if (to.params.user === authStore.routePermissionsUser && to.params.project === authStore.routePermissionsProject) {
+        return;
+      }
+
       const perms = await useApi<UserPermissions>("permissions", "get", {
         author: to.params.user,
         slug: to.params.project,
       }).catch(() => authStore.setRoutePerms(null));
       if (perms) {
-        authStore.setRoutePerms(perms.permissionBinString);
+        authStore.setRoutePerms(perms.permissionBinString, to.params.user as string, to.params.project as string);
       }
       return;
     }
   } else if (to.params.user) {
     if (authStore.authenticated) {
+      if (to.params.user === authStore.routePermissionsUser && to.params.project === null) {
+        return;
+      }
+
       const perms = await useApi<UserPermissions>("permissions", "get", {
         organization: to.params.user,
       }).catch(() => authStore.setRoutePerms(null));
       if (perms) {
-        authStore.setRoutePerms(perms.permissionBinString);
+        authStore.setRoutePerms(perms.permissionBinString, to.params.user as string);
       }
       return;
     }
