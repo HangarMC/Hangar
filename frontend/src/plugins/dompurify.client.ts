@@ -1,7 +1,12 @@
 import { NuxtApp } from "nuxt/app";
-import VueDOMPurifyHTML from "vue-dompurify-html";
+import DOMPurify from "dompurify";
 import { defineNuxtPlugin } from "#imports";
 
 export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
-  nuxtApp.vueApp.use(VueDOMPurifyHTML);
+  const purify = DOMPurify();
+  return {
+    provide: {
+      dompurify: purify,
+    },
+  };
 });
