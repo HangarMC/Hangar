@@ -31,6 +31,14 @@ public interface HangarProjectPagesDAO {
         "   WHERE pp.id = :id")
     ExtendedProjectPage getProjectPage(long id);
 
+    @SqlQuery("""
+        SELECT pp.*, true as home
+        FROM project_pages pp
+            JOIN project_home_pages php ON pp.id = php.page_id
+        WHERE php.project_id = :projectId
+    """)
+    ExtendedProjectPage getProjectHomePage(long projectId);
+
     @SqlQuery("SELECT pp.*, TRUE AS home " +
         "   FROM project_pages pp" +
         "       JOIN projects p ON pp.project_id = p.id" +

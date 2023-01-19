@@ -130,6 +130,10 @@ public class ProjectPageService extends HangarComponent {
         return this.hangarProjectPagesDAO.getProjectPage(id);
     }
 
+    public ExtendedProjectPage getProjectHomePage(final long projectId) {
+        return this.hangarProjectPagesDAO.getProjectHomePage(projectId);
+    }
+
     @Transactional
     public String createProjectPage(final long projectId, final NewProjectPage newProjectPage) {
         String slug = StringUtils.slugify(newProjectPage.getName());

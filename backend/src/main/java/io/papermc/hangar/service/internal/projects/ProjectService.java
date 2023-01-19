@@ -132,7 +132,7 @@ public class ProjectService extends HangarComponent {
             }
         }
 
-        final ExtendedProjectPage projectPage = projectPageService.getProjectPage(project.getRight().getId());
+        final ExtendedProjectPage projectPage = this.projectPageService.getProjectHomePage(project.getRight().getId());
         final HangarProject hangarProject = new HangarProject(project.getRight(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, mainChannelVersions, projectPage);
         hangarProject.setAvatarUrl(this.avatarService.getProjectAvatarUrl(hangarProject.getProjectId(), hangarProject.getNamespace().getOwner()));
         return hangarProject;
