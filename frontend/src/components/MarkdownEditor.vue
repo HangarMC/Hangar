@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from "vue";
+import { ValidationRule } from "@vuelidate/core";
 import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 import Markdown from "~/components/Markdown.vue";
 import Button from "~/lib/components/design/Button.vue";
 import DeletePageModal from "~/components/modals/DeletePageModal.vue";
+import { useValidation } from "~/lib/composables/useValidationHelpers";
+import ErrorTooltip from "~/lib/components/design/ErrorTooltip.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -14,10 +17,14 @@ const props = withDefaults(
     saveable: boolean;
     maxlength?: number;
     title?: string;
+    errorMessages?: string[];
+    rules?: ValidationRule<string | undefined>[];
   }>(),
   {
     maxlength: 30_000,
     title: undefined,
+    errorMessages: undefined,
+    rules: undefined,
   }
 );
 
@@ -37,6 +44,9 @@ const internalEditing = computed({
   get: () => props.editing,
   set: (value) => emit("update:editing", value),
 });
+
+const errorMessages = computed(() => props.errorMessages);
+const { v, errors } = useValidation(props.title, props.rules, rawEdited, errorMessages);
 
 defineExpose({ rawEdited });
 
@@ -105,5 +115,8 @@ function deletePage() {
     <div v-if="props.title && (!internalEditing || preview)" class="-mt-5"></div>
     <Markdown v-if="!internalEditing" :raw="raw" class="pl-4" />
     <Markdown v-if="preview" :raw="rawEdited" class="pl-4" />
+    <ErrorTooltip :error-messages="errors" class="w-full">
+      <slot />
+    </ErrorTooltip>
   </div>
 </template>

@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { PluginDependency } from "hangar-api";
 import { useHead } from "@vueuse/head";
 import { HangarProject, IPlatform, PendingVersion, ProjectChannel } from "hangar-internal";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { computed, reactive, type Ref, ref } from "vue";
 import { remove } from "lodash-es";
-import { type ValidationRule } from "@vuelidate/core";
+import { useVuelidate } from "@vuelidate/core";
 import { useSeo } from "~/composables/useSeo";
 import Steps from "~/lib/components/design/Steps.vue";
 import InputFile from "~/lib/components/ui/InputFile.vue";
@@ -15,7 +14,7 @@ import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import Button from "~/lib/components/design/Button.vue";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import MarkdownEditor from "~/components/MarkdownEditor.vue";
-import { required, url as validUrl } from "~/lib/composables/useValidationHelpers";
+import { minLength, noDuplicated, required, requiredIf, url as validUrl } from "~/lib/composables/useValidationHelpers";
 import { useInternalApi } from "~/composables/useApi";
 import { Platform } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -30,6 +29,8 @@ import { useProjectChannels } from "~/composables/useApiHelper";
 import { definePageMeta } from "#imports";
 import { Step } from "~/lib/types/components/design/Steps";
 import { Tab } from "~/lib/types/components/design/Tabs";
+import InputGroup from "~/lib/components/ui/InputGroup.vue";
+import { useNotificationStore } from "~/lib/store/notification";
 
 definePageMeta({
   projectPermsRequired: ["CREATE_VERSION"],
@@ -39,6 +40,7 @@ const route = useRoute();
 const router = useRouter();
 const i18n = useI18n();
 const t = i18n.t;
+const notification = useNotificationStore();
 const props = defineProps<{
   project: HangarProject;
 }>();
@@ -48,46 +50,31 @@ const steps: Step[] = [
   {
     value: "artifact",
     header: t("version.new.steps.1.header"),
-    beforeNext: () => {
+    beforeNext: async () => {
+      if (!(await v.value.$validate())) {
+        return false;
+      }
       return createPendingVersion();
     },
-    disableNext: computed(() => {
-      const selectedPlatforms = new Set();
-      for (const platformFile of platformFiles.value) {
-        // Make sure it has at least one platform
-        if (platformFile.platforms.length === 0) {
-          return true;
-        }
-
-        // Make sure there's either a file or a (valid) URL
-        if (!platformFile.file && (!platformFile.url || artifactURLRules.some((v) => !v.$validator(platformFile.url, undefined, undefined)))) {
-          return true;
-        }
-
-        // Check for duplicated platforms
-        for (const platform of platformFile.platforms) {
-          if (selectedPlatforms.has(platform)) {
-            return true;
-          }
-          selectedPlatforms.add(platform);
-        }
-      }
-      return false;
-    }),
+    disableNext: computed(() => v.value.$errors.length > 0 || v.value.$pending),
   },
   {
     value: "basic",
     header: t("version.new.steps.2.header"),
-    disableNext: computed(() => {
-      return versionRules.some((v) => !v.$validator(pendingVersion.value?.versionString, undefined, undefined));
-    }),
-    disableBack: true,
+    disableNext: computed(() => v.value.$errors.length > 0 || v.value.$pending),
+    beforeNext: async () => await v.value.$validate(),
+    showBack: false,
   },
   {
     value: "dependencies",
     header: t("version.new.steps.3.header"),
-    beforeNext: () => {
+    beforeNext: async () => {
+      if (!(await v.value.$validate())) {
+        return false;
+      }
+
       if (!pendingVersion.value || !dependencyTables.value) {
+        await notification.error("No pending version?!");
         return false;
       }
 
@@ -99,44 +86,25 @@ const steps: Step[] = [
 
       return true;
     },
-    disableNext: computed(() => {
-      if (selectedPlatformsData.value.some((p) => (pendingVersion.value?.platformDependencies[p.enumName].length ?? 0) < 1)) {
-        return true;
-      }
-      if (dependencyTables.value) {
-        for (let i = 0; i < selectedPlatforms.value.length; i++) {
-          const dependencyTable = dependencyTables.value[i];
-          if (
-            dependencyTable?.dependencies?.some(
-              (dependency: PluginDependency) =>
-                (dependency.namespace === null && dependency.externalUrl === null) || !dependency.name.length || dependency.name.length === 0
-            )
-          ) {
-            return true;
-          }
-        }
-      }
-      return false;
-    }),
+    disableNext: computed(() => v.value.$errors.length > 0 || v.value.$pending),
   },
   {
     value: "changelog",
     header: t("version.new.steps.4.header"),
     beforeNext: async () => {
+      if (!(await v.value.$validate())) {
+        return false;
+      }
       await createVersion();
       return false; // createVersion already hijacks the beforeNext logic, cannot move next on final step.
     },
+    disableNext: computed(() => v.value.$errors.length > 0 || v.value.$pending),
     beforeBack: () => {
       if (descriptionEditor.value) {
         lastDescription.value = descriptionEditor.value.rawEdited;
       }
       return true;
     },
-    disableNext: computed(() => {
-      return changelogRules.some((v) => {
-        return !v.$validator(descriptionEditor.value?.rawEdited ?? "", undefined, undefined);
-      });
-    }),
   },
 ];
 
@@ -196,12 +164,14 @@ const selectedPlatformsData = computed<IPlatform[]>(() => {
   return result;
 });
 
-const artifactURLRules = [validUrl()];
+const artifactURLRules = (platformFile: PlatformFile) => [validUrl(), requiredIf()(() => platformFile.selectedTab === "url")];
+const fileRules = (platformFile: PlatformFile) => [requiredIf("File is required")(() => platformFile.selectedTab === "file")];
+const platformRules = [required("Select at least one platform!"), minLength()(1), noDuplicated()(() => platformFiles.value.flatMap((f) => f.platforms))];
 const versionRules = [required()];
-const platformVersionRules = computed<ValidationRule<string[] | undefined>[]>(() => {
-  return [(v) => !!v && !!v.length];
-});
-const changelogRules = [required(t("version.new.form.release.bulletin"))];
+const platformVersionRules = [required("Select at least one platform version!"), minLength()(1)];
+const changelogRules = [requiredIf()(() => selectedStep.value === "changelog")];
+
+const v = useVuelidate();
 
 async function createPendingVersion() {
   selectedPlatforms.value.splice(0);
@@ -304,7 +274,14 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
       <p class="mb-4">{{ t("version.new.form.artifactTitle") }}</p>
       <div class="flex mb-8 items-center">
         <div class="basis-full md:basis-4/12">
-          <InputSelect v-model="selectedChannel" :values="channels" item-text="name" item-value="name" :label="t('version.new.form.channel')" />
+          <InputSelect
+            v-model="selectedChannel"
+            :values="channels"
+            item-text="name"
+            item-value="name"
+            :label="t('version.new.form.channel')"
+            :rules="[required()]"
+          />
         </div>
         <div class="basis-full md:(basis-4/12) ml-2">
           <ChannelModal :project-id="project.id" @create="addChannel">
@@ -326,22 +303,24 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
         <div class="items-center">
           <Tabs v-model="platformFile.selectedTab" :tabs="selectedUploadTabs" :vertical="false" class="max-w-150">
             <template #file>
-              <InputFile v-model="platformFile.file" accept=".jar,.zip" />
+              <InputFile v-model="platformFile.file" accept=".jar,.zip" :rules="fileRules(platformFile)" />
             </template>
             <template #url>
-              <InputText v-model="platformFile.url" :label="t('version.new.form.externalUrl')" :rules="artifactURLRules" />
+              <InputText v-model="platformFile.url" :label="t('version.new.form.externalUrl')" :rules="artifactURLRules(platformFile)" />
             </template>
           </Tabs>
           <div class="mt-4">
-            <div v-for="platform in platforms" :key="platform.name">
-              <InputCheckbox
-                :model-value="platformFile.platforms.includes(platform.enumName)"
-                :label="platform.name"
-                @update:model-value="togglePlatform(platformFile, platform.enumName)"
-              >
-                <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
-              </InputCheckbox>
-            </div>
+            <InputGroup v-model="platformFile.platforms" label="Platforms" :rules="platformRules" :silent-errors="false">
+              <div v-for="platform in platforms" :key="platform.name">
+                <InputCheckbox
+                  :model-value="platformFile.platforms.includes(platform.enumName)"
+                  :label="platform.name"
+                  @update:model-value="togglePlatform(platformFile, platform.enumName)"
+                >
+                  <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
+                </InputCheckbox>
+              </div>
+            </InputGroup>
           </div>
         </div>
       </div>
@@ -419,6 +398,7 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
       <h2 class="text-xl mt-2">{{ t("version.new.form.changelogTitle") }}</h2>
       <MarkdownEditor
         ref="descriptionEditor"
+        :title="t('version.new.form.release.bulletin')"
         class="mt-2"
         :raw="descriptionToLoad"
         editing

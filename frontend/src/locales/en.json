@@ -1042,6 +1042,7 @@
     "maxLength": "Maximum length is {max}",
     "minLength": "Minimum length is {min}",
     "pattern": "{property} is invalid",
+    "noDuplicated": "Can only select each {property} once!",
     "url": "Invalid URL format"
   },
   "prompts": {
