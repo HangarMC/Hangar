@@ -33,6 +33,23 @@ export interface SpigotResource {
   external_download_url?: string;
 }
 
+export async function getAllSpigotResourcesByAuthor(authorId: string) {
+  const result = [] as SpigotResource[];
+
+  let page = 1;
+  while (true) {
+    const curr = await getSpigotResourcesByAuthor(authorId, page);
+    if (curr?.length > 0) {
+      result.push(...curr);
+      page++;
+    } else {
+      break;
+    }
+  }
+
+  return result;
+}
+
 export async function getSpigotResourcesByAuthor(authorId: string, page = 1) {
   return (await useInternalApi("cors/", "GET", {
     url: buildSpigotUrl({
@@ -89,9 +106,13 @@ export async function convertSpigotProjects(spigotResources: SpigotResource[], o
       avatarUrl: spigotResource.icon_link,
       util: {},
     } as NewProjectForm;
-    hangarResource.pageContent = await useInternalApi<string>("pages/convert-bbcode", "post", {
-      content: spigotResource.description,
-    });
+    try {
+      hangarResource.pageContent = await useInternalApi<string>("pages/convert-bbcode", "post", {
+        content: spigotResource.description,
+      });
+    } catch (e) {
+      console.log("failed to convert", hangarResource, e);
+    }
 
     hangarResource.category = categoryMapping[spigotResource.category.id] || ProjectCategory.UNDEFINED;
 

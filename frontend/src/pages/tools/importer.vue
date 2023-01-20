@@ -4,12 +4,13 @@ import { useHead } from "@vueuse/head";
 import { useRoute } from "vue-router";
 import { computed, ref, watch } from "vue";
 import { NewProjectForm } from "hangar-internal";
+import { useVuelidate } from "@vuelidate/core";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
 import Steps from "~/lib/components/design/Steps.vue";
 import { Step } from "~/lib/types/components/design/Steps";
 import Link from "~/lib/components/design/Link.vue";
-import { convertSpigotProjects, getSpigotAuthor, getSpigotResourcesByAuthor, SpigotAuthor } from "~/composables/useProjectImporter";
+import { convertSpigotProjects, getAllSpigotResourcesByAuthor, getSpigotAuthor, SpigotAuthor, SpigotResource } from "~/composables/useProjectImporter";
 import InputText from "~/lib/components/ui/InputText.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
@@ -27,6 +28,7 @@ import Spinner from "~/lib/components/design/Spinner.vue";
 import { reactive } from "#imports";
 import Alert from "~/lib/components/design/Alert.vue";
 import IconMdiFileCodumentAlert from "~icons/mdi/file-document-alert";
+import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -45,11 +47,9 @@ const steps: Step[] = [
     showBack: false,
     disableNext: computed(() => !spigotAuthor.value),
     beforeNext: async () => {
-      hangarResources.value = [];
-      if (spigotAuthor.value && auth.user) {
-        // todo allow selecting owner id
-        const ownerId = auth.user.id;
-        hangarResources.value = await convertSpigotProjects(await getSpigotResourcesByAuthor(spigotAuthor.value.id), ownerId);
+      spigotResources.value = [];
+      if (spigotAuthor.value) {
+        spigotResources.value = await getAllSpigotResourcesByAuthor(spigotAuthor.value.id);
         return true;
       } else {
         return false;
@@ -59,20 +59,43 @@ const steps: Step[] = [
   {
     value: "projectSelection",
     header: t("importer.step3.title"),
+    showBack: true,
+    disableNext: computed(() => !selectedStep.value),
+    beforeNext: async () => {
+      hangarResources.value = [];
+      if (auth.user) {
+        // todo allow selecting owner id
+        const ownerId = auth.user.id;
+        const selected = spigotResources.value.filter((r) => selectedSpigotResources.value.includes(r.id));
+        hangarResources.value = await convertSpigotProjects(selected, ownerId);
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
+  {
+    value: "projectConversion",
+    header: t("importer.step4.title"),
     beforeNext: () => {
       createProjects();
       return true;
     },
   },
-  { value: "finishing", header: t("importer.step4.title"), showNext: false, showBack: false },
+  { value: "finishing", header: t("importer.step5.title"), showNext: false, showBack: false },
 ];
 
 const username = ref();
 const spigotAuthor = ref<SpigotAuthor | null>(null);
+const spigotResources = ref<SpigotResource[]>([]);
+const selectedSpigotResources = ref<string[]>([]);
 const hangarResources = ref<NewProjectForm[]>([]);
+
+const v = useVuelidate();
 
 watch(username, async () => {
   spigotAuthor.value = null;
+  // TODO we need a debounce here but for some reason it doesn't work
   spigotAuthor.value = await getSpigotAuthor(username.value);
 });
 
@@ -109,6 +132,8 @@ function createProject(project: NewProjectForm) {
         for (const e of err.response.data.fieldErrors) {
           status[project.name].errors.push(t(e.errorMsg));
         }
+      } else {
+        status[project.name].errors.push("Unknown error");
       }
 
       handleRequestError(err, "project.new.error.create");
@@ -148,6 +173,13 @@ useHead(useSeo(t("importer.title"), null, route, null));
         <div v-else-if="username" class="mt-2">Nothing found...</div>
       </template>
       <template #projectSelection>
+        <div class="grid gap-2" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))">
+          <div v-for="project in spigotResources" :key="project.id">
+            <InputCheckbox v-model="selectedSpigotResources" :label="project.title" :value="project.id" />
+          </div>
+        </div>
+      </template>
+      <template #projectConversion>
         <div v-for="project in hangarResources" :key="project.externalId" class="flex mb-4 pb-4 border-b-2px">
           <div>
             <UserAvatar :username="project.name" :avatar-url="project.avatarUrl" class="flex-shrink-0" />

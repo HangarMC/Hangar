@@ -882,10 +882,15 @@
     },
     "step3": {
       "title": "Project selection",
-      "continue": "Create Projects",
+      "continue": "Convert Projects",
       "back": "Back"
     },
     "step4": {
+      "title": "Project conversion",
+      "continue": "Create Projects",
+      "back": "Back"
+    },
+    "step5": {
       "title": "Finishing"
     }
   },
