@@ -17,14 +17,14 @@ export function useValidation<T, V = any>(
   name: string | undefined,
   rules: ValidationRule<T | undefined>[] | undefined,
   state: Ref<V>,
-  errorMessages: Ref<string[] | undefined>,
+  errorMessages: Ref<string[] | undefined> | undefined,
   silentErrors = false
 ) {
   const n = name || "val";
   const v = useVuelidate(constructValidators(rules, n), { [n]: state });
   const errors = computed(() => {
     const e = [];
-    if (errorMessages.value) {
+    if (errorMessages?.value) {
       e.push(...errorMessages.value);
     }
     if (silentErrors) {
@@ -36,7 +36,7 @@ export function useValidation<T, V = any>(
     }
     return e;
   });
-  const hasError = computed(() => (errorMessages.value && errorMessages.value.length > 0) || v.value.$error);
+  const hasError = computed(() => (errorMessages?.value && errorMessages.value.length > 0) || v.value.$error);
 
   return { v, errors, hasError };
 }

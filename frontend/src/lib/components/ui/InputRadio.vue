@@ -13,13 +13,10 @@ const internalVal = computed({
 const props = defineProps<{
   modelValue?: string;
   label?: string;
-  errorMessages?: string[];
-  rules?: ValidationRule<string | undefined>[];
 }>();
 
-const errorMessages = computed(() => props.errorMessages);
-// TODO error handling
-const { v /*, errors, hasError */ } = useValidation(props.label, props.rules, internalVal, errorMessages);
+// uses InputGroup for validation
+const { v } = useValidation(props.label, undefined, internalVal, undefined);
 </script>
 
 <template>

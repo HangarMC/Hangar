@@ -11,15 +11,25 @@ const value = computed({
   get: () => props.modelValue,
   set: (val) => emit("update:modelValue", val),
 });
-const props = defineProps<{
-  modelValue?: string[] | boolean[] | number[] | object[];
-  label?: string;
-  errorMessages?: string[];
-  rules?: ValidationRule<string | undefined>[];
-}>();
+const props = withDefaults(
+  defineProps<{
+    modelValue?: string[] | boolean[] | number[] | object[];
+    label?: string;
+    errorMessages?: string[];
+    rules?: ValidationRule<string | undefined>[];
+    silentErrors?: boolean;
+  }>(),
+  {
+    modelValue: undefined,
+    label: undefined,
+    errorMessages: undefined,
+    rules: undefined,
+    silentErrors: true,
+  }
+);
 
 const errorMessages = computed(() => props.errorMessages);
-const { v, errors } = useValidation(props.label, props.rules, value, errorMessages, true);
+const { v, errors } = useValidation(props.label, props.rules, value, errorMessages, props.silentErrors);
 </script>
 
 <template>

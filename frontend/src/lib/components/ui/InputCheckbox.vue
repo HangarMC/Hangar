@@ -14,14 +14,11 @@ const props = defineProps<{
   modelValue?: boolean | boolean[] | string[] | [];
   label?: string;
   disabled?: boolean;
-  errorMessages?: string[];
   value?: string;
-  rules?: ValidationRule<string | undefined>[];
 }>();
 
-const errorMessages = computed(() => props.errorMessages);
-// TODO error handling
-const { v /*, errors, hasError */ } = useValidation(props.label, props.rules, internalVal, errorMessages);
+// uses InputGroup for validation
+const { v } = useValidation(props.label, undefined, internalVal, undefined);
 </script>
 
 <template>
