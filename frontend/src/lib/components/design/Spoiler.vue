@@ -37,6 +37,10 @@ const open = ref(props.open);
   min-width: 300px;
 }
 
+.spoiler-details:has(.error) {
+  border-color: rgba(248, 113, 113); /* red-400 */
+}
+
 .spoiler-details summary {
   cursor: pointer;
   list-style: none;
