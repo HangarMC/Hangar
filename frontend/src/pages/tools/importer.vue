@@ -30,6 +30,7 @@ import { reactive } from "#imports";
 import Alert from "~/lib/components/design/Alert.vue";
 import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
+import InputGroup from "~/lib/components/ui/InputGroup.vue";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -201,11 +202,18 @@ useHead(useSeo(t("importer.title"), null, route, null));
       </template>
       <template #projectSelection>
         <Alert v-if="spigotResources.length === 0">No projects found!</Alert>
-        <div class="grid gap-2" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))">
-          <div v-for="project in spigotResources" :key="project.id">
-            <InputCheckbox v-model="selectedSpigotResources" :label="project.title" :value="project.id" :rules="[required(), minLength()(1)]" />
+        <InputGroup
+          v-model="selectedSpigotResources"
+          :rules="[required('Select at least one project!'), minLength()(1)]"
+          label="Projects"
+          :silent-errors="false"
+        >
+          <div class="grid gap-2" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))">
+            <div v-for="project in spigotResources" :key="project.id">
+              <InputCheckbox v-model="selectedSpigotResources" :label="project.title" :value="project.id" />
+            </div>
           </div>
-        </div>
+        </InputGroup>
       </template>
       <template #projectConversion>
         <div v-for="project in hangarResources" :key="project.externalId" class="flex mb-4 pb-4 border-b-2px">
