@@ -23,7 +23,7 @@ import Link from "~/lib/components/design/Link.vue";
 import { usePossibleOwners } from "~/composables/useApiHelper";
 import { definePageMeta } from "#imports";
 import { Step } from "~/lib/types/components/design/Steps";
-import IconMdiFileCodumentAlert from "~icons/mdi/file-document-alert";
+import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
 
 definePageMeta({
   loginRequired: true,
@@ -136,7 +136,7 @@ function createProject() {
       <div class="flex-col flex inline-flex">
         <p>{{ i18n.t("project.new.step1.text1") }}</p>
         <p class="inline-flex items-center space-x-2">
-          <IconMdiFileCodumentAlert />
+          <IconMdiFileDocumentAlert />
           <Link to="/guidelines">
             {{ i18n.t("project.new.step1.text2") }}
           </Link>
