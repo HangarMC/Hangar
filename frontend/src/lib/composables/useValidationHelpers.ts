@@ -4,6 +4,7 @@ import * as validators from "@vuelidate/validators";
 import { createI18nMessage, helpers, type ValidatorWrapper } from "@vuelidate/validators";
 import { difference, isEmpty, uniq } from "lodash-es";
 import { I18n } from "~/lib/i18n";
+import { unref } from "#imports";
 
 export function isErrorObject(errorObject: string | ErrorObject): errorObject is ErrorObject {
   return typeof errorObject === "object" && "$message" in errorObject;
@@ -66,6 +67,7 @@ export function withOverrideMessage<T extends ValidationRule | ValidatorWrapper>
 // basic
 export const required = withOverrideMessage(validators.required);
 export const requiredIf = withOverrideMessage(validators.requiredIf);
+export const requiredUnless = withOverrideMessage(validators.requiredUnless);
 export const minLength = withOverrideMessage(validators.minLength);
 export const maxLength = withOverrideMessage(validators.maxLength);
 export const url = withOverrideMessage(validators.url);
@@ -78,6 +80,13 @@ export const pattern = withOverrideMessage((regex: string) =>
       return { $valid: true };
     }
     return { $valid: new RegExp(regex).test(value) };
+  })
+);
+
+export const noDuplicated = withOverrideMessage((elements: any[] | (() => any[])) =>
+  helpers.withParams({ elements, type: "noDuplicated" }, () => {
+    const els = typeof elements === "function" ? elements() : unref(elements);
+    return { $valid: new Set(els).size === els.length };
   })
 );
 
