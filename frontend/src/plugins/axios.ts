@@ -76,7 +76,7 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
       }
 
       // Progress bar
-      if (process.client) startProgressBar();
+      if (process.client) stopProgressBar();
 
       throw err;
     }
