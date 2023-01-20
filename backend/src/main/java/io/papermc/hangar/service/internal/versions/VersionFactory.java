@@ -130,7 +130,7 @@ public class VersionFactory extends HangarComponent {
             // Make sure each platform only has one corresponding file/url
             if (!processedPlatforms.addAll(fileOrUrl.platforms())) {
                 this.fileService.deleteDirectory(userTempDir);
-                throw new IllegalArgumentException();
+                throw new HangarApiException("Only one file per platform!");
             }
 
             if (fileOrUrl.isUrl()) {
