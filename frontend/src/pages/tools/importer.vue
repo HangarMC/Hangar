@@ -5,6 +5,7 @@ import { useRoute } from "vue-router";
 import { computed, ref, watch } from "vue";
 import { NewProjectForm } from "hangar-internal";
 import { useVuelidate } from "@vuelidate/core";
+import { AxiosError } from "axios";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
 import Steps from "~/lib/components/design/Steps.vue";
@@ -19,7 +20,7 @@ import MarkdownEditor from "~/components/MarkdownEditor.vue";
 import InputTag from "~/lib/components/ui/InputTag.vue";
 import { useAuthStore } from "~/store/auth";
 import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
-import { maxLength, pattern, required, requiredIf, url } from "~/lib/composables/useValidationHelpers";
+import { minLength, maxLength, pattern, required, requiredIf, url } from "~/lib/composables/useValidationHelpers";
 import { validProjectName } from "~/composables/useHangarValidations";
 import Button from "~/lib/components/design/Button.vue";
 import { useInternalApi } from "~/composables/useApi";
@@ -45,8 +46,11 @@ const steps: Step[] = [
     value: "userSelection",
     header: t("importer.step2.title"),
     showBack: false,
-    disableNext: computed(() => !spigotAuthor.value),
+    disableNext: computed(() => v.value.$errors.length > 0 || v.value.$pending),
     beforeNext: async () => {
+      if (!(await v.value.$validate())) {
+        return false;
+      }
       spigotResources.value = [];
       if (spigotAuthor.value) {
         spigotResources.value = await getAllSpigotResourcesByAuthor(spigotAuthor.value.id);
@@ -60,8 +64,12 @@ const steps: Step[] = [
     value: "projectSelection",
     header: t("importer.step3.title"),
     showBack: true,
-    disableNext: computed(() => !selectedStep.value),
+    disableNext: computed(() => v.value.$errors.length > 0 || v.value.$pending),
+    showNext: computed(() => spigotResources.value?.length > 0),
     beforeNext: async () => {
+      if (!(await v.value.$validate())) {
+        return false;
+      }
       hangarResources.value = [];
       if (auth.user) {
         // todo allow selecting owner id
@@ -77,7 +85,11 @@ const steps: Step[] = [
   {
     value: "projectConversion",
     header: t("importer.step4.title"),
-    beforeNext: () => {
+    disableNext: computed(() => v.value.$errors.length > 0 || v.value.$pending),
+    beforeNext: async () => {
+      if (!(await v.value.$validate())) {
+        return false;
+      }
       createProjects();
       return true;
     },
@@ -91,12 +103,27 @@ const spigotResources = ref<SpigotResource[]>([]);
 const selectedSpigotResources = ref<string[]>([]);
 const hangarResources = ref<NewProjectForm[]>([]);
 
-const v = useVuelidate();
+const additionalRules = {
+  spigotAuthor: {
+    required,
+  },
+};
+const additionalModel = {
+  spigotAuthor: spigotAuthor.value,
+};
+const v = useVuelidate(additionalRules, additionalModel);
 
 watch(username, async () => {
   spigotAuthor.value = null;
   // TODO we need a debounce here but for some reason it doesn't work
-  spigotAuthor.value = await getSpigotAuthor(username.value);
+  try {
+    spigotAuthor.value = await getSpigotAuthor(username.value);
+  } catch (e: AxiosError) {
+    // don't need popup about not found and wrong format
+    if (!e.message?.includes("404") && !e.message?.includes("400")) {
+      handleRequestError(e);
+    }
+  }
 });
 
 function remove(project: NewProjectForm) {
@@ -162,9 +189,9 @@ useHead(useSeo(t("importer.title"), null, route, null));
       </template>
       <template #userSelection>
         <p class="mb-2">{{ t("importer.step2.text") }}</p>
-        <InputText v-model="username" label="Username" />
+        <InputText v-model="username" label="Username" :rules="[required()]" />
         <div v-if="spigotAuthor" class="flex items-center mt-2">
-          <UserAvatar :username="spigotAuthor.username" :avatar-url="spigotAuthor.avatar" size="md" />
+          <UserAvatar :username="spigotAuthor.username" :avatar-url="spigotAuthor.avatar" disable-link size="md" />
           <div class="ml-4">
             <div class="text-xl">{{ spigotAuthor.username }} (#{{ spigotAuthor.id }})</div>
             {{ spigotAuthor.resource_count }} resources
@@ -173,16 +200,17 @@ useHead(useSeo(t("importer.title"), null, route, null));
         <div v-else-if="username" class="mt-2">Nothing found...</div>
       </template>
       <template #projectSelection>
+        <Alert v-if="spigotResources.length === 0">No projects found!</Alert>
         <div class="grid gap-2" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))">
           <div v-for="project in spigotResources" :key="project.id">
-            <InputCheckbox v-model="selectedSpigotResources" :label="project.title" :value="project.id" />
+            <InputCheckbox v-model="selectedSpigotResources" :label="project.title" :value="project.id" :rules="[required(), minLength()(1)]" />
           </div>
         </div>
       </template>
       <template #projectConversion>
         <div v-for="project in hangarResources" :key="project.externalId" class="flex mb-4 pb-4 border-b-2px">
           <div>
-            <UserAvatar :username="project.name" :avatar-url="project.avatarUrl" class="flex-shrink-0" />
+            <UserAvatar :username="project.name" :avatar-url="project.avatarUrl" disable-link class="flex-shrink-0" />
             <div class="text-xl mt-4"><Button @click="remove(project)">Remove</Button></div>
           </div>
           <div class="ml-4 flex-grow">
