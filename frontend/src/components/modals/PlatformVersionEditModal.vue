@@ -50,7 +50,7 @@ function save() {
 
     <Button class="mt-3" :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
     <template #activator="{ on }">
-      <Button class="text-sm" v-on="on" v-bind="$attrs"><IconMdiPencil /></Button>
+      <Button class="text-sm" v-bind="$attrs" v-on="on"><IconMdiPencil /></Button>
     </template>
   </Modal>
 </template>

@@ -18,7 +18,7 @@ import IconMdiCodeBraces from "~icons/mdi/code-braces";
 import IconMdiBookOpen from "~icons/mdi/book-open";
 import IconMdiLanguageJava from "~icons/mdi/language-java";
 import IconMdiDownloadCircle from "~icons/mdi/download-circle";
-import IconMdiFileCodumentAlert from "~icons/mdi/file-document-alert";
+import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
 import IconMdiBellOutline from "~icons/mdi/bell-outline";
 import IconMdiBellBadge from "~icons/mdi/bell-badge";
 import IconMdiAlertOutline from "~icons/mdi/alert-outline";
@@ -69,7 +69,7 @@ const navBarLinks = [
 
 const navBarMenuLinksHangar = [
   { link: "index", label: "Home", icon: IconMdiHome },
-  { link: "guidelines", label: "Resource Guidelines", icon: IconMdiFileCodumentAlert },
+  { link: "guidelines", label: "Resource Guidelines", icon: IconMdiFileDocumentAlert },
   { link: "new", label: "Create Project", icon: IconMdiFolderPlusOutline },
   { link: "neworganization", label: "Create Organization", icon: IconMdiFolderPlusOutline },
   { link: "authors", label: "Authors", icon: IconMdiAccountGroup },

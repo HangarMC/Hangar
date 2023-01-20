@@ -27,7 +27,7 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import Spinner from "~/lib/components/design/Spinner.vue";
 import { reactive } from "#imports";
 import Alert from "~/lib/components/design/Alert.vue";
-import IconMdiFileCodumentAlert from "~icons/mdi/file-document-alert";
+import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 
 const { t } = useI18n();
@@ -154,7 +154,7 @@ useHead(useSeo(t("importer.title"), null, route, null));
       <template #intro>
         <p>{{ t("importer.step1.text1") }}</p>
         <p class="inline-flex items-center space-x-2">
-          <IconMdiFileCodumentAlert />
+          <IconMdiFileDocumentAlert />
           <Link to="/guidelines">
             {{ t("importer.step1.text2") }}
           </Link>
