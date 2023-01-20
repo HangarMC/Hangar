@@ -50,12 +50,6 @@ if (projectOwners.value) {
   form.value.ownerId = projectOwners.value[0].userId;
 }
 
-const converter = ref({
-  bbCode: "",
-  markdown: "",
-  loading: false,
-});
-
 const rules = {
   name: {
     required,
@@ -79,13 +73,22 @@ const steps: Step[] = [
     value: "basic",
     header: i18n.t("project.new.step2.title"),
     disableNext: computed(() => {
-      return !form.value.name || !form.value.description;
+      return v.value.$errors.length > 0 || v.value.$pending;
     }),
+    beforeNext: async () => {
+      return await v.value.$validate();
+    },
   },
   {
     value: "additional",
     header: i18n.t("project.new.step3.title"),
-    beforeNext: () => {
+    disableNext: computed(() => {
+      return v.value.$errors.length > 0 || v.value.$pending;
+    }),
+    beforeNext: async () => {
+      if (!(await v.value.$validate())) {
+        return false;
+      }
       createProject();
       return true;
     },
