@@ -9,13 +9,21 @@ import { Header } from "~/types/components/SortableTable";
 
 type T = Record<string, any>; // remove when https://github.com/vuejs/rfcs/discussions/436 lands or when using volar
 
-const props = defineProps<{
-  headers: Header[];
-  items: T[];
-  expandable?: boolean;
-  serverPagination?: Pagination;
-  initialSorter?: Record<string, number>;
-}>();
+const props = withDefaults(
+  defineProps<{
+    headers: Header[];
+    items: T[];
+    expandable?: boolean;
+    serverPagination?: Pagination;
+    initialSorter?: Record<string, number>;
+    maxSorters?: number;
+  }>(),
+  {
+    maxSorters: 1,
+    serverPagination: undefined,
+    initialSorter: undefined,
+  }
+);
 
 const expanded = ref<Record<number, boolean>>({});
 const sorter = reactive<Record<string, number>>(props.initialSorter || {});
@@ -41,13 +49,25 @@ function sort() {
 
 watch(() => props.items, sort);
 
+function checkReset() {
+  const keys = Object.keys(sorter);
+  if (keys.length >= props.maxSorters) {
+    for (const k of keys) {
+      delete sorter[k];
+    }
+  }
+}
+
 function click(header: Header) {
   if (header.sortable) {
     if (sorter[header.name] === 1) {
+      checkReset();
       sorter[header.name] = -1;
     } else if (sorter[header.name] === -1) {
+      checkReset();
       sorter[header.name] = 0;
     } else {
+      checkReset();
       sorter[header.name] = 1;
     }
     sort();
