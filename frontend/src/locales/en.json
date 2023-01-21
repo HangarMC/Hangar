@@ -212,7 +212,7 @@
         "title": "User Agreement",
         "text1": "A project contains your downloads and the documentation for your plugin.",
         "text2": "Before continuing, please review the Hangar Submission Guideline.",
-        "text3": "You can also check out the importer tool to import your projects from other platforms.",
+        "importer_text": "Want to import projects from other platforms? Check out the importer!",
         "continue": "Agree",
         "back": "Abort"
       },

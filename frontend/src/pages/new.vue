@@ -24,6 +24,7 @@ import { usePossibleOwners } from "~/composables/useApiHelper";
 import { definePageMeta } from "#imports";
 import { Step } from "~/lib/types/components/design/Steps";
 import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
+import Alert from "~/lib/components/design/Alert.vue";
 
 definePageMeta({
   loginRequired: true,
@@ -134,17 +135,19 @@ function createProject() {
   <Steps v-model="selectedStep" :steps="steps" button-lang-key="project.new.step">
     <template #tos>
       <div class="flex-col flex inline-flex">
+        <Alert class="mb-4">
+          <template #icon="{ clazz }">
+            <IconMdiFolderPlusOutline :class="clazz" />
+          </template>
+          <Link to="/tools/importer">
+            {{ i18n.t("project.new.step1.importer_text") }}
+          </Link>
+        </Alert>
         <p>{{ i18n.t("project.new.step1.text1") }}</p>
-        <p class="inline-flex items-center space-x-2">
+        <p class="inline-flex items-center space-x-2 mb-2">
           <IconMdiFileDocumentAlert />
           <Link to="/guidelines">
             {{ i18n.t("project.new.step1.text2") }}
-          </Link>
-        </p>
-        <p class="inline-flex items-center space-x-2">
-          <IconMdiFolderPlusOutline />
-          <Link to="/tools/importer">
-            {{ i18n.t("project.new.step1.text3") }}
           </Link>
         </p>
       </div>
