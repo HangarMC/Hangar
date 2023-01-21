@@ -23,10 +23,12 @@ const color = computed(() => {
 
 <template>
   <div :class="'flex flex-row items-center rounded-md p-4 text-white border-l-6 border-solid ' + color">
-    <IconMdiAlert v-if="props.type === 'danger'" class="mr-3 w-8 h-8 min-w-8" />
-    <IconMdiAlertBox v-else-if="props.type === 'warning'" class="mr-3 w-8 h-8 min-w-8" />
-    <IconMdiInformation v-else-if="props.type === 'info'" class="mr-3 w-8 h-8 min-w-8" />
-    <IconMdiTrophy v-else-if="props.type === 'success'" class="mr-3 w-8 h-8 min-w-8" />
+    <slot name="icon" clazz="mr-3 w-8 h-8 min-w-8">
+      <IconMdiAlert v-if="props.type === 'danger'" class="mr-3 w-8 h-8 min-w-8" />
+      <IconMdiAlertBox v-else-if="props.type === 'warning'" class="mr-3 w-8 h-8 min-w-8" />
+      <IconMdiInformation v-else-if="props.type === 'info'" class="mr-3 w-8 h-8 min-w-8" />
+      <IconMdiTrophy v-else-if="props.type === 'success'" class="mr-3 w-8 h-8 min-w-8" />
+    </slot>
     <slot></slot>
   </div>
 </template>
