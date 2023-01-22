@@ -23,7 +23,7 @@ const open = ref(props.open);
         {{ title }}
       </slot>
     </summary>
-    <hr v-if="withLine" class="py-1" />
+    <hr v-if="withLine" class="mt-0.4rem py-1" />
     <slot name="content" />
   </details>
 </template>
@@ -32,7 +32,7 @@ const open = ref(props.open);
 .spoiler-details {
   border: 1px solid #bbb;
   border-radius: 5px;
-  padding: 0.6rem 0.6rem 0.4rem;
+  padding: 0.4rem 0.4rem 0.4rem;
   max-width: 50%;
   min-width: 300px;
 }
@@ -44,6 +44,6 @@ const open = ref(props.open);
 .spoiler-details summary {
   cursor: pointer;
   list-style: none;
-  padding: 0.25rem;
+  padding: 0.2rem;
 }
 </style>

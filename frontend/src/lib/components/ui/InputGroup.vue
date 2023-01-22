@@ -33,8 +33,8 @@ const { v, errors } = useValidation(props.label, props.rules, value, errorMessag
 </script>
 
 <template>
+  <label v-if="label" class="block mb-2" @click="v.$validate()">{{ label }}</label>
   <div class="w-min">
-    <label v-if="label" class="block" @click="v.$validate()">{{ label }}</label>
     <ErrorTooltip :error-messages="errors" class="w-full">
       <slot />
     </ErrorTooltip>
