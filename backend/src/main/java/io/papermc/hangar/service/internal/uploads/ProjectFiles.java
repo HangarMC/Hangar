@@ -45,7 +45,7 @@ public class ProjectFiles {
         final String newProjectDir = this.getProjectDir(newOwner, slug);
         try {
             this.fileService.move(oldProjectDir, newProjectDir);
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }
@@ -55,7 +55,7 @@ public class ProjectFiles {
         final String newProjectDir = this.getProjectDir(owner, newSlug);
         try {
             this.fileService.move(oldProjectDir, newProjectDir);
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }
@@ -65,7 +65,7 @@ public class ProjectFiles {
         final String newVersionDir = this.getVersionDir(owner, slug, newVersionName);
         try {
             this.fileService.move(oldVersionDir, newVersionDir);
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }
