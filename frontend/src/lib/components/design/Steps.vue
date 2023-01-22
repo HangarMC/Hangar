@@ -90,7 +90,7 @@ async function goto(step: Step) {
       <ul class="flex flex-row justify-around items-center">
         <template v-for="(step, count) in steps" :key="step.value">
           <div>
-            <div class="bg-primary-400 text-white rounded-full w-[24px] h-[24px] inline-flex justify-center align-center" m="r-0 md:r-2">
+            <div class="lt-sm:hidden bg-primary-400 text-white rounded-full w-[24px] h-[24px] inline-flex justify-center align-center" m="r-2">
               {{ count + 1 }}
             </div>
             <Link
@@ -102,7 +102,7 @@ async function goto(step: Step) {
               {{ step.header }}
             </Link>
           </div>
-          <hr class="flex-grow flex-shrink mx-1 md:mx-2" />
+          <hr class="flex-grow flex-shrink mx-2" />
         </template>
       </ul>
     </div>
@@ -114,10 +114,10 @@ async function goto(step: Step) {
         <div v-for="step in steps" :key="step.value">
           <slot v-if="internalValue === step.value" :name="step.value" />
         </div>
-        <Button v-if="showBack" :disabled="disableBack" size="medium" class="mt-4 mr-2" @click="back">
+        <Button v-if="showBack" :disabled="disableBack" size="medium" class="mt-3 mr-2" @click="back">
           {{ i18n.t(buttonLangKey + activeStepIndex + ".back") }}
         </Button>
-        <Button v-if="showNext" :disabled="disableNext" size="medium" class="mt-4" @click="next">
+        <Button v-if="showNext" :disabled="disableNext" size="medium" class="mt-3" @click="next">
           {{ i18n.t(buttonLangKey + activeStepIndex + ".continue") }}
         </Button>
       </Card>
