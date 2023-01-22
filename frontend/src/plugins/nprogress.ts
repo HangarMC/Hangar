@@ -7,7 +7,7 @@ let progressBarTimeout: any;
 
 const startProgressBar = () => {
   clearTimeout(progressBarTimeout);
-  progressBarTimeout = setTimeout(NProgress.start, 350);
+  progressBarTimeout = setTimeout(NProgress.start, 400);
 };
 
 const stopProgressBar = () => {

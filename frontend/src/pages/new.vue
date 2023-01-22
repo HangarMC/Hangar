@@ -140,7 +140,9 @@ function createProject() {
             <IconMdiFolderPlusOutline :class="clazz" />
           </template>
           <Link to="/tools/importer">
-            {{ i18n.t("project.new.step1.importer_text") }}
+            <span class="text-white font-normal">
+              {{ i18n.t("project.new.step1.importer_text") }}
+            </span>
           </Link>
         </Alert>
         <p>{{ i18n.t("project.new.step1.text1") }}</p>

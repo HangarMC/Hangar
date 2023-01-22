@@ -95,7 +95,6 @@ public class HangarUserController extends HangarComponent {
                 name = refreshResponse.userTable().getName();
             } catch (final HangarApiException ex) {
                 // no token + no valid refresh token -> no content
-                System.out.println("getCurrentUser failed: " + ex.getMessage());
                 return ResponseEntity.noContent().build();
             }
         } else {

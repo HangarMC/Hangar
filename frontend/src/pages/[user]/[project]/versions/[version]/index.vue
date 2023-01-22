@@ -314,10 +314,11 @@ async function restoreVersion() {
           </div>
         </template>
 
-        <div v-for="platform in versionPlatforms" :key="platform" class="flex items-center">
+        <div v-for="platform in versionPlatforms" :key="platform" class="flex items-center space-y-1">
           <PlatformLogo :platform="platform" :size="24" class="mr-1" />
           {{ useBackendData.platforms.get(platform).name }}
           ({{ projectVersion?.platformDependenciesFormatted[platform] }})
+          <span class="flex-grow" />
           <PlatformVersionEditModal
             v-if="hasPerms(NamedPermission.EDIT_VERSION)"
             class="ml-2"
@@ -336,7 +337,7 @@ async function restoreVersion() {
         </template>
 
         <div v-for="platform in platformsWithDependencies" :key="platform" class="py-1">
-          <Spoiler :with-line="projectVersion?.pluginDependencies[platform] !== undefined">
+          <Spoiler :with-line="projectVersion?.pluginDependencies[platform] !== undefined" open>
             <template #title>
               <div class="flex inline-flex items-center gap-1 w-full">
                 <PlatformLogo :platform="platform" :size="24" />

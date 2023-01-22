@@ -178,8 +178,7 @@ function isRecent(date: string): boolean {
             <div id="#navbarMenuLinks">
               <!-- todo: Use Popper -->
               <PopoverPanel
-                class="fixed z-10 w-9/10 lt-sm:mt-4 background-default left-1/20 filter shadow-default rounded-r-md border-top-primary text-sm p-[20px]"
-                sm="absolute w-max top-10 rounded-bl-md"
+                class="absolute top-10 z-10 w-max lt-sm:w-90vw background-default left-1/20 filter shadow-default rounded-r-md rounded-bl-md border-top-primary text-sm p-[20px]"
               >
                 <p class="text-base font-semibold color-primary mb-3">Hangar</p>
                 <div class="grid grid-cols-2">

@@ -8,7 +8,7 @@ const { t } = useI18n();
   <footer class="relative flex items-end mt-10 background-default px-8 pb-2 text-light-10 min-h-10">
     <div class="w-screen">
       <div class="flex flex-col gap-4 md:(flex-row-reverse gap-0) items-center justify-around mt-4 max-w-1200px m-auto text-sm">
-        <div class="flex flex-col md:flex-row">
+        <div class="flex flex-row flex-wrap justify-center">
           <a
             href="https://github.com/HangarMC"
             class="flex items-center rounded-md px-6 py-2"
