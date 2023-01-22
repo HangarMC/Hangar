@@ -882,6 +882,7 @@
     },
     "step3": {
       "title": "Project selection",
+      "label": "Select the projects you want to import.",
       "continue": "Convert Projects",
       "back": "Back"
     },

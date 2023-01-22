@@ -31,6 +31,7 @@ import Alert from "~/lib/components/design/Alert.vue";
 import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import InputGroup from "~/lib/components/ui/InputGroup.vue";
+import { ProjectCategory } from "~/types/enums";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -205,12 +206,12 @@ useHead(useSeo(t("importer.title"), null, route, null));
         <InputGroup
           v-model="selectedSpigotResources"
           :rules="[required('Select at least one project!'), minLength()(1)]"
-          label="Projects"
+          :label="t('importer.step3.label')"
           :silent-errors="false"
         >
-          <div class="grid gap-2" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))">
-            <div v-for="project in spigotResources" :key="project.id">
-              <InputCheckbox v-model="selectedSpigotResources" :label="project.title" :value="project.id" />
+          <div class="grid gap-1" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))">
+            <div v-for="project in spigotResources" :key="project.id" class="inline-flex">
+              <InputCheckbox v-model="selectedSpigotResources" :label="project.title" :value="project.id" class="flex-shrink-0" />
             </div>
           </div>
         </InputGroup>
@@ -247,7 +248,13 @@ useHead(useSeo(t("importer.title"), null, route, null));
               />
             </div>
             <div class="mt-2">
-              <InputSelect v-model="project.category" :values="useCategoryOptions" label="Category" :rules="[required()]" i18n-text-values />
+              <InputSelect
+                v-model="project.category"
+                :values="useCategoryOptions"
+                label="Category"
+                :rules="[required(), (category) => category !== ProjectCategory.UNDEFINED]"
+                i18n-text-values
+              />
             </div>
             <Spoiler title="Description" :open="false" class="!max-w-full mt-2">
               <template #content>

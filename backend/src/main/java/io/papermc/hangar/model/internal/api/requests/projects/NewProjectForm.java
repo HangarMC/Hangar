@@ -1,6 +1,7 @@
 package io.papermc.hangar.model.internal.api.requests.projects;
 
 import io.papermc.hangar.controller.validations.Validate;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.ProjectSettings;
 import io.papermc.hangar.model.common.projects.Category;
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +22,9 @@ public class NewProjectForm extends ProjectSettingsForm {
 
     public NewProjectForm(final ProjectSettings settings, final Category category, final String description, final long ownerId, final String name, final String pageContent, final @Nullable String avatarUrl) {
         super(settings, category, description);
+        if (category == Category.UNDEFINED) {
+            throw new HangarApiException("Category must be defined");
+        }
         this.ownerId = ownerId;
         this.name = name;
         this.pageContent = pageContent;
