@@ -18,6 +18,7 @@ const props = withDefaults(
     errorMessages?: string[];
     rules?: ValidationRule<string | undefined>[];
     silentErrors?: boolean;
+    fullWidth?: boolean;
   }>(),
   {
     modelValue: undefined,
@@ -25,6 +26,7 @@ const props = withDefaults(
     errorMessages: undefined,
     rules: undefined,
     silentErrors: true,
+    fullWidth: false,
   }
 );
 
@@ -33,8 +35,8 @@ const { v, errors } = useValidation(props.label, props.rules, value, errorMessag
 </script>
 
 <template>
-  <label v-if="label" class="block mb-2" @click="v.$validate()">{{ label }}</label>
-  <div class="w-min">
+  <label v-if="label" class="block mb-2" v-bind="$attrs" @click="v.$validate()">{{ label }}</label>
+  <div :class="fullWidth ? 'w-full' : 'w-min'">
     <ErrorTooltip :error-messages="errors" class="w-full">
       <slot />
     </ErrorTooltip>
