@@ -13,19 +13,23 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.internal.versions.VersionUpload;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
+import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.service.api.VersionsApiService;
 import io.papermc.hangar.service.internal.versions.DownloadService;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Anyone
 @Controller
@@ -40,6 +44,14 @@ public class VersionsController implements IVersionsController {
     public VersionsController(final DownloadService downloadService, final VersionsApiService versionsApiService) {
         this.downloadService = downloadService;
         this.versionsApiService = versionsApiService;
+    }
+
+    @Unlocked
+    @Override
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#author, #slug}")
+    public void uploadVersion(final String author, final String slug, final List<MultipartFile> files, final VersionUpload versionUpload) {
+        this.versionsApiService.uploadVersion(author, slug, files, versionUpload);
     }
 
     @Override

@@ -83,7 +83,7 @@ public class VersionController extends HangarComponent {
                                                  @RequestPart @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms") final List<@Valid MultipartFileOrUrl> data,
                                                  @RequestPart @NotBlank final String channel) {
         // Use separate lists to hack around multipart form data limitations
-        return ResponseEntity.ok(this.versionFactory.createPendingVersion(projectId, data, files, channel));
+        return ResponseEntity.ok(this.versionFactory.createPendingVersion(projectId, data, files, channel, true));
     }
 
     @Unlocked

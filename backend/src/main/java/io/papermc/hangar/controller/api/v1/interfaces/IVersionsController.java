@@ -5,6 +5,7 @@ import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.internal.versions.VersionUpload;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,34 +13,42 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Map;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Versions")
 @RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
 public interface IVersionsController {
 
-    // TODO implement version creation via API
-    /*@Operation(
-            summary ="Creates a new version",
-            operationId = "deployVersion",
-            notes = "Creates a new version for a project. Requires the `create_version` permission in the project or owning organization.",
-            security = @SecurityRequirement(name = "Session"),
-            tags = "Versions"
+    @Operation(
+        summary ="Creates a new version",
+        operationId = "uploadVersion",
+        description = "Creates a new version for a project. Requires the `create_version` permission in the project or owning organization.",
+        security = @SecurityRequirement(name = "Session"),
+        tags = "Versions"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = 201, description = "Ok"),
-            @ApiResponse(responseCode = 401, description = "Api session missing, invalid or expired"),
-            @ApiResponse(responseCode = 403, description = "Not enough permissions to use this endpoint")
+        @ApiResponse(responseCode = "201", description = "Ok"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @PostMapping(path = "/projects/{author}/{slug}/versions", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<Version> deployVersion()*/
+    @PostMapping(path = "/projects/{author}/{slug}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    void uploadVersion(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
+                       @Parameter(description = "The slug of the project to return versions for") @PathVariable String slug,
+                       @Parameter(description = "The version files in order of selected platforms, if any") @RequestPart(required = false) @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
+                       @Parameter(description = "Version data") @RequestPart @Valid VersionUpload versionUpload);
 
     @Operation(
         summary = "Returns a specific version of a project",

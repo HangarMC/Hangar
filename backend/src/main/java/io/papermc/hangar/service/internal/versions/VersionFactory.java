@@ -110,7 +110,7 @@ public class VersionFactory extends HangarComponent {
     }
 
     @Transactional
-    public PendingVersion createPendingVersion(final long projectId, final List<MultipartFileOrUrl> data, final List<MultipartFile> files, final String channel) {
+    public PendingVersion createPendingVersion(final long projectId, final List<MultipartFileOrUrl> data, final List<MultipartFile> files, final String channel, final boolean prefillDependencies) {
         final ProjectTable projectTable = this.projectService.getProjectTable(projectId);
         if (projectTable == null) {
             throw new IllegalArgumentException();
@@ -135,9 +135,12 @@ public class VersionFactory extends HangarComponent {
 
             if (fileOrUrl.isUrl()) {
                 // Handle external url
-                this.createPendingUrl(channel, projectTable, pluginDependencies, platformDependencies, pendingFiles, fileOrUrl);
+                pendingFiles.add(new PendingVersionFile(fileOrUrl.platforms(), null, fileOrUrl.externalUrl()));
+                if (prefillDependencies) {
+                    this.createPendingUrl(channel, projectTable, pluginDependencies, platformDependencies, fileOrUrl);
+                }
             } else {
-                versionString = this.createPendingFile(files.remove(0), channel, projectTable, pluginDependencies, platformDependencies, pendingFiles, versionString, userTempDir, fileOrUrl);
+                versionString = this.createPendingFile(files.remove(0), channel, projectTable, pluginDependencies, platformDependencies, pendingFiles, versionString, userTempDir, fileOrUrl, prefillDependencies);
             }
         }
 
@@ -148,7 +151,9 @@ public class VersionFactory extends HangarComponent {
         return new PendingVersion(versionString, pluginDependencies, platformDependencies, pendingFiles, projectTable.isForumSync());
     }
 
-    private String createPendingFile(final MultipartFile file, final String channel, final ProjectTable projectTable, final Map<Platform, Set<PluginDependency>> pluginDependencies, final Map<Platform, SortedSet<String>> platformDependencies, final List<PendingVersionFile> pendingFiles, String versionString, final String userTempDir, final MultipartFileOrUrl fileOrUrl) {
+    private String createPendingFile(final MultipartFile file, final String channel, final ProjectTable projectTable, final Map<Platform, Set<PluginDependency>> pluginDependencies,
+                                     final Map<Platform, SortedSet<String>> platformDependencies, final List<PendingVersionFile> pendingFiles, String versionString,
+                                     final String userTempDir, final MultipartFileOrUrl fileOrUrl, final boolean prefillDependencies) {
         // check extension
         final String pluginFileName = file.getOriginalFilename();
         if (pluginFileName == null || (!pluginFileName.endsWith(".zip") && !pluginFileName.endsWith(".jar"))) {
@@ -186,30 +191,31 @@ public class VersionFactory extends HangarComponent {
         pendingFiles.add(new PendingVersionFile(fileOrUrl.platforms(), fileInfo, null));
 
         // setup dependencies
-        for (final Platform platform : fileOrUrl.platforms()) {
-            final LastDependencies lastDependencies = this.getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), channel, platform);
-            if (lastDependencies != null) {
-                pluginDependencies.put(platform, lastDependencies.pluginDependencies());
-                platformDependencies.put(platform, lastDependencies.platformDependencies());
-                continue;
-            }
+        if (prefillDependencies) {
+            for (final Platform platform : fileOrUrl.platforms()) {
+                final LastDependencies lastDependencies = this.getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), channel, platform);
+                if (lastDependencies != null) {
+                    pluginDependencies.put(platform, lastDependencies.pluginDependencies());
+                    platformDependencies.put(platform, lastDependencies.platformDependencies());
+                    continue;
+                }
 
-            // If no previous version present, use uploaded version data
-            final Set<PluginDependency> loadedPluginDependencies = pluginDataFile.data().getDependencies().get(platform);
-            if (loadedPluginDependencies != null) {
-                pluginDependencies.put(platform, loadedPluginDependencies);
-            }
+                // If no previous version present, use uploaded version data
+                final Set<PluginDependency> loadedPluginDependencies = pluginDataFile.data().getDependencies().get(platform);
+                if (loadedPluginDependencies != null) {
+                    pluginDependencies.put(platform, loadedPluginDependencies);
+                }
 
-            final SortedSet<String> loadedPlatformDependencies = pluginDataFile.data().getPlatformDependencies().get(platform);
-            if (loadedPlatformDependencies != null) {
-                platformDependencies.put(platform, loadedPlatformDependencies);
+                final SortedSet<String> loadedPlatformDependencies = pluginDataFile.data().getPlatformDependencies().get(platform);
+                if (loadedPlatformDependencies != null) {
+                    platformDependencies.put(platform, loadedPlatformDependencies);
+                }
             }
         }
         return versionString;
     }
 
-    private void createPendingUrl(final String channel, final ProjectTable projectTable, final Map<Platform, Set<PluginDependency>> pluginDependencies, final Map<Platform, SortedSet<String>> platformDependencies, final List<PendingVersionFile> pendingFiles, final MultipartFileOrUrl fileOrUrl) {
-        pendingFiles.add(new PendingVersionFile(fileOrUrl.platforms(), null, fileOrUrl.externalUrl()));
+    private void createPendingUrl(final String channel, final ProjectTable projectTable, final Map<Platform, Set<PluginDependency>> pluginDependencies, final Map<Platform, SortedSet<String>> platformDependencies, final MultipartFileOrUrl fileOrUrl) {
         for (final Platform platform : fileOrUrl.platforms()) {
             final LastDependencies lastDependencies = this.getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), channel, platform);
             if (lastDependencies != null) {
@@ -244,8 +250,12 @@ public class VersionFactory extends HangarComponent {
         final String versionDir = this.projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getSlug(), pendingVersion.getVersionString());
         try {
             // find channel
-            ProjectChannelTable projectChannelTable = this.channelService.getProjectChannel(projectId, pendingVersion.getChannelName(), pendingVersion.getChannelColor());
+            ProjectChannelTable projectChannelTable = this.channelService.getProjectChannel(projectId, pendingVersion.getChannelName());
             if (projectChannelTable == null) {
+                if (pendingVersion.getChannelColor() == null) {
+                    throw new HangarApiException("version.new.error.channel.noColor");
+                }
+
                 projectChannelTable = this.channelService.createProjectChannel(pendingVersion.getChannelName(), pendingVersion.getChannelColor(), projectId, pendingVersion.getChannelFlags().stream().filter(ChannelFlag::isEditable).collect(Collectors.toSet()));
             }
 

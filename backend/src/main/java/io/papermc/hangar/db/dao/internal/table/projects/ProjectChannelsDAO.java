@@ -33,6 +33,9 @@ public interface ProjectChannelsDAO {
     @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId AND name = :name AND color = :color")
     ProjectChannelTable getProjectChannel(long projectId, String name, @EnumByOrdinal Color color);
 
+    @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId AND name = :name")
+    ProjectChannelTable getProjectChannel(long projectId, String name);
+
     @SqlQuery("SELECT * FROM project_channels WHERE id = :channelId")
     ProjectChannelTable getProjectChannel(long channelId);
 
