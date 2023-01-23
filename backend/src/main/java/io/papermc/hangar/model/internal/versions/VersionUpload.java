@@ -13,7 +13,7 @@ public class VersionUpload {
 
     // @el(root: String)
     @NotBlank(message = "version.new.error.invalidVersionString")
-    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.projects.versionNameRegex)", message = "version.new.error.invalidVersionString") String versionString;
+    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.projects.versionNameRegex)", message = "version.new.error.invalidVersionString") String version;
     private final Map<Platform, Set<@Valid PluginDependency>> pluginDependencies;
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
     private final Map<Platform, @Size(min = 1, message = "version.edit.error.noPlatformVersions") SortedSet<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
@@ -29,8 +29,8 @@ public class VersionUpload {
     private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName") String channel;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public VersionUpload(final String versionString, final Map<Platform, Set<PluginDependency>> pluginDependencies, final EnumMap<Platform, SortedSet<String>> platformDependencies, final String description, final List<MultipartFileOrUrl> files, final String channel) {
-        this.versionString = versionString;
+    public VersionUpload(final String version, final Map<Platform, Set<PluginDependency>> pluginDependencies, final EnumMap<Platform, SortedSet<String>> platformDependencies, final String description, final List<MultipartFileOrUrl> files, final String channel) {
+        this.version = version;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
         this.description = description;
@@ -38,8 +38,8 @@ public class VersionUpload {
         this.channel = channel;
     }
 
-    public String getVersionString() {
-        return this.versionString;
+    public String getVersion() {
+        return this.version;
     }
 
     public Map<Platform, Set<PluginDependency>> getPluginDependencies() {
@@ -63,7 +63,7 @@ public class VersionUpload {
     }
 
     public PendingVersion toPendingVersion(final List<PendingVersionFile> files) {
-        return new PendingVersion(this.versionString,
+        return new PendingVersion(this.version,
             this.pluginDependencies,
             (EnumMap<Platform, SortedSet<String>>) this.platformDependencies,
             this.description,
@@ -78,12 +78,12 @@ public class VersionUpload {
     @Override
     public String toString() {
         return "VersionUpload{" +
-            "versionString='" + this.versionString + '\'' +
+            "version='" + this.version + '\'' +
             ", pluginDependencies=" + this.pluginDependencies +
             ", platformDependencies=" + this.platformDependencies +
             ", description='" + this.description + '\'' +
             ", files=" + this.files +
-            ", channelName='" + this.channel + '\'' +
+            ", channel='" + this.channel + '\'' +
             '}';
     }
 }
