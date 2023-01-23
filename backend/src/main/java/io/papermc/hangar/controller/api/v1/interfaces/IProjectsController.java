@@ -31,7 +31,7 @@ public interface IProjectsController {
         summary = "Returns info on a specific project",
         operationId = "getProject",
         description = "Returns info on a specific project. Requires the `view_public_info` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
         tags = "Projects"
     )
     @ApiResponses({
@@ -47,7 +47,7 @@ public interface IProjectsController {
         summary = "Returns the members of a project",
         operationId = "getProjectMembers",
         description = "Returns the members of a project. Requires the `view_public_info` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
         tags = "Projects"
     )
     @ApiResponses({
@@ -66,7 +66,7 @@ public interface IProjectsController {
         summary = "Searches the projects on Hangar",
         operationId = "getProjects",
         description = "Searches all the projects on Hangar, or for a single user. Requires the `view_public_info` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
         tags = "Projects"
     )
     @ApiResponses({
@@ -85,7 +85,7 @@ public interface IProjectsController {
         summary = "Returns the stats for a project",
         operationId = "showProjectStats",
         description = "Returns the stats (downloads and views) for a project per day for a certain date range. Requires the `is_subject_member` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "is_subject_member"),
         tags = "Projects"
     )
     @ApiResponses({
@@ -104,7 +104,7 @@ public interface IProjectsController {
         summary = "Returns the stargazers of a project",
         operationId = "getProjectStargazers",
         description = "Returns the stargazers of a project. Requires the `view_public_info` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
         tags = "Projects"
     )
     @ApiResponses({
@@ -123,7 +123,7 @@ public interface IProjectsController {
         summary = "Returns the watchers of a project",
         operationId = "getProjectWatchers",
         description = "Returns the watchers of a project. Requires the `view_public_info` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
         tags = "Projects"
     )
     @ApiResponses({

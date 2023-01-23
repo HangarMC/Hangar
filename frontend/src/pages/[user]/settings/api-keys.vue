@@ -94,7 +94,7 @@ async function deleteKey(key: ApiKey) {
           {{ i18n.t("apiKeys.createKey") }}
         </Button>
       </div>
-      <InputGroup v-model="selectedPerms" :label="i18n.t('apiKeys.permissions')" class="w-full mt-2">
+      <InputGroup v-model="selectedPerms" :label="i18n.t('apiKeys.permissions')" class="w-full mt-2 text-xl font-bold" full-width>
         <div class="grid autofix mt-2">
           <InputCheckbox v-for="perm in possiblePerms" :key="perm" v-model="selectedPerms" :label="perm" :value="perm" />
         </div>

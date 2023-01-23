@@ -29,7 +29,7 @@ public interface IUsersController {
         summary = "Returns a specific user",
         operationId = "getUser",
         description = "Returns a specific user. Requires the `view_public_info` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
         tags = "Users"
     )
     @ApiResponses({
@@ -43,8 +43,8 @@ public interface IUsersController {
     @Operation(
         summary = "Searches for users",
         operationId = "showUsers",
-        description = "Returns a list of users based on a search query",
-        security = @SecurityRequirement(name = "Session"),
+        description = "Returns a list of users based on a search query. Requires the `view_public_info` permission.",
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
         tags = "Users"
     )
     @ApiResponses({
@@ -60,7 +60,7 @@ public interface IUsersController {
         summary = "Returns the starred projects for a specific user",
         operationId = "showStarred",
         description = "Returns the starred projects for a specific user. Requires the `view_public_info` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
         tags = "Users"
     )
     @ApiResponses({
@@ -77,7 +77,7 @@ public interface IUsersController {
         summary = "Returns the watched projects for a specific user",
         operationId = "getUserWatching",
         description = "Returns the watched projects for a specific user. Requires the `view_public_info` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
         tags = "Users"
     )
     @ApiResponses({
@@ -94,7 +94,7 @@ public interface IUsersController {
         summary = "Returns the pinned projects for a specific user",
         operationId = "getUserPinnedProjects",
         description = "Returns the pinned projects for a specific user. Requires the `view_public_info` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
         tags = "Users"
     )
     @ApiResponses({
@@ -109,7 +109,7 @@ public interface IUsersController {
         summary = "Returns all users with at least one public project",
         operationId = "getAuthors",
         description = "Returns all users that have at least one public project. Requires the `view_public_info` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
         tags = "Users"
     )
     @ApiResponses({
@@ -124,7 +124,7 @@ public interface IUsersController {
         summary = "Returns Hangar staff",
         operationId = "getStaff",
         description = "Returns Hanagr staff. Requires the `view_public_info` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
         tags = "Users"
     )
     @ApiResponses({

@@ -25,7 +25,7 @@ public interface IPermissionsController {
         summary = "Checks whether you have all the provided permissions",
         operationId = "hasAll",
         description = "Checks whether you have all the provided permissions in the given context",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth"),
         tags = "Permissions"
     )
     @ApiResponses({
@@ -44,7 +44,7 @@ public interface IPermissionsController {
         summary = "Checks whether you have at least one of the provided permissions",
         operationId = "hasAny",
         description = "Checks whether you have at least one of the provided permissions in the given context",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth"),
         tags = "Permissions"
     )
     @ApiResponses({
@@ -63,7 +63,7 @@ public interface IPermissionsController {
         summary = "Returns your permissions",
         operationId = "showPermissions",
         description = "Returns a list of permissions you have in the given context",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth"),
         tags = "Permissions"
     )
     @ApiResponses({

@@ -28,7 +28,7 @@ public interface IApiKeysController {
         summary = "Creates an API key",
         operationId = "createKey",
         description = "Creates an API key. Requires the `edit_api_keys` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "edit_api_keys"),
         tags = "API Keys"
     )
     @ApiResponses({
@@ -42,7 +42,7 @@ public interface IApiKeysController {
         summary = "Fetches a list of API Keys",
         operationId = "getKeys",
         description = "Fetches a list of API Keys. Requires the `edit_api_keys` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "edit_api_keys"),
         tags = "API Keys"
     )
     @ApiResponses({
@@ -56,7 +56,7 @@ public interface IApiKeysController {
         summary = "Deletes an API key",
         operationId = "deleteKey",
         description = "Deletes an API key. Requires the `edit_api_keys` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "edit_api_keys"),
         tags = "API Keys"
     )
     @ApiResponses({

@@ -36,7 +36,7 @@ public interface IVersionsController {
         summary ="Creates a new version",
         operationId = "uploadVersion",
         description = "Creates a new version for a project. Requires the `create_version` permission in the project or owning organization.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "create_version"),
         tags = "Versions"
     )
     @ApiResponses({
@@ -54,8 +54,8 @@ public interface IVersionsController {
         summary = "Returns a specific version of a project",
         operationId = "showVersion",
         description = "Returns a specific version of a project. Requires the `view_public_info` permission in the project or owning organization.",
-        security = @SecurityRequirement(name = "Session"),
-        tags = "Version"
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
+        tags = "Versions"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Ok"),
@@ -71,7 +71,7 @@ public interface IVersionsController {
         summary = "Returns all versions of a project",
         operationId = "listVersions",
         description = "Returns all versions of a project. Requires the `view_public_info` permission in the project or owning organization.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
         tags = "Versions"
     )
     @ApiResponses({
@@ -88,7 +88,7 @@ public interface IVersionsController {
         summary = "Returns the stats for a version",
         operationId = "showVersionStats",
         description = "Returns the stats (downloads) for a version per day for a certain date range. Requires the `is_subject_member` permission.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "is_subject_member"),
         tags = "Versions"
     )
     @ApiResponses({
@@ -108,7 +108,7 @@ public interface IVersionsController {
         summary = "Downloads a version",
         operationId = "downloadVersion",
         description = "Downloads the file for a specific platform of a version. Requires visibility of the project and version.",
-        security = @SecurityRequirement(name = "Session"),
+        security = @SecurityRequirement(name = "HangarAuth"),
         tags = "Versions"
     )
     @ApiResponses({

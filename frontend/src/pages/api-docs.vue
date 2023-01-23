@@ -37,6 +37,10 @@ onMounted(() => {
           if (req.url.startsWith("http://localhost:8080")) {
             req.url = req.url.replace("http://localhost:8080", "http://localhost:3333");
           }
+          if (req.headers?.Authorization) {
+              req.headers.Authorization = req.headers?.Authorization.replace("Bearer", "HangarAuth")
+          }
+          console.log(req)
         }
         return req;
       }
@@ -86,12 +90,10 @@ useHead(useSeo(i18n.t("apiDocs.title"), "API Docs for the Hangar REST API", rout
     }
 
     .description h3 {
-      padding-top: 1rem;
       font-size: 25px;
     }
 
     .description h4 {
-      padding-top: 0.5rem;
       font-size: 20px;
     }
 
