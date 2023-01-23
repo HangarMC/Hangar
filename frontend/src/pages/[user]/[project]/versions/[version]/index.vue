@@ -294,8 +294,7 @@ async function restoreVersion() {
           <tr>
             <th class="text-left">{{ i18n.t("project.info.totalDownloads", 0) }}</th>
             <td class="text-right">
-              <!-- todo: Version downloads instead of project downloads -->
-              <ComingSoon>{{ project.stats.downloads }}</ComingSoon>
+              <ComingSoon>{{ version.stats.downloads }}</ComingSoon>
             </td>
           </tr>
         </table>
