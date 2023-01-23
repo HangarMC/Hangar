@@ -34,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Anyone
 @Controller
 @ResponseBody
-@RateLimit(path = "apiversions", overdraft = 200, refillTokens = 50, greedy = true)
+@RateLimit(path = "apiversions", greedy = true)
 public class VersionsController implements IVersionsController {
 
     private final DownloadService downloadService;

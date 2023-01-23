@@ -34,7 +34,7 @@ import org.springframework.stereotype.Controller;
 
 @Anyone
 @Controller
-@RateLimit(path = "apiprojects", overdraft = 200, refillTokens = 50, greedy = true)
+@RateLimit(path = "apiprojects", greedy = true)
 public class ProjectsController extends HangarComponent implements IProjectsController {
 
     private final ProjectsApiService projectsApiService;
