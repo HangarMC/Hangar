@@ -26,16 +26,16 @@ public class VersionUpload {
 
     // @el(root: String)
     @NotBlank(message = "version.new.error.channel.noName")
-    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName") String channelName;
+    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName") String channel;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public VersionUpload(final String versionString, final Map<Platform, Set<PluginDependency>> pluginDependencies, final EnumMap<Platform, SortedSet<String>> platformDependencies, final String description, final List<MultipartFileOrUrl> files, final String channelName) {
+    public VersionUpload(final String versionString, final Map<Platform, Set<PluginDependency>> pluginDependencies, final EnumMap<Platform, SortedSet<String>> platformDependencies, final String description, final List<MultipartFileOrUrl> files, final String channel) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
         this.description = description;
         this.files = files;
-        this.channelName = channelName;
+        this.channel = channel;
     }
 
     public String getVersionString() {
@@ -58,8 +58,8 @@ public class VersionUpload {
         return this.files;
     }
 
-    public String getChannelName() {
-        return this.channelName;
+    public String getChannel() {
+        return this.channel;
     }
 
     public PendingVersion toPendingVersion(final List<PendingVersionFile> files) {
@@ -68,7 +68,7 @@ public class VersionUpload {
             (EnumMap<Platform, SortedSet<String>>) this.platformDependencies,
             this.description,
             files,
-            this.channelName,
+            this.channel,
             null,
             null,
             false
@@ -83,7 +83,7 @@ public class VersionUpload {
             ", platformDependencies=" + this.platformDependencies +
             ", description='" + this.description + '\'' +
             ", files=" + this.files +
-            ", channelName='" + this.channelName + '\'' +
+            ", channelName='" + this.channel + '\'' +
             '}';
     }
 }

@@ -48,7 +48,7 @@ public class VersionsApiService extends HangarComponent {
         }
 
         // TODO Do the upload in one step
-        final PendingVersion preparedPendingVersion = this.versionFactory.createPendingVersion(project.getId(), versionUpload.getFiles(), files, versionUpload.getChannelName(), false);
+        final PendingVersion preparedPendingVersion = this.versionFactory.createPendingVersion(project.getId(), versionUpload.getFiles(), files, versionUpload.getChannel(), false);
         final PendingVersion pendingVersion = versionUpload.toPendingVersion(preparedPendingVersion.getFiles());
         this.versionFactory.publishPendingVersion(project.getId(), pendingVersion);
     }

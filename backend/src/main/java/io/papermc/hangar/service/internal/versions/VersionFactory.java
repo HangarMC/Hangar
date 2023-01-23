@@ -55,7 +55,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
@@ -304,6 +303,8 @@ public class VersionFactory extends HangarComponent {
             // cache purging
             this.projectService.refreshHomeProjects();
             this.usersApiService.clearAuthorsCache();
+        } catch (final HangarApiException e) {
+            throw e;
         } catch (final Exception e) {
             this.logger.error("Unable to create version {} for {}", pendingVersion.getVersionString(), this.getHangarPrincipal().getName(), e);
             if (projectVersionTable != null) {
@@ -344,11 +345,11 @@ public class VersionFactory extends HangarComponent {
             for (final PluginDependency pluginDependency : platformListEntry.getValue()) {
                 Long depProjectId = null;
                 if (pluginDependency.getNamespace() != null) {
-                    final Optional<ProjectTable> depProjectTable = Optional.ofNullable(this.projectService.getProjectTable(pluginDependency.getNamespace().getOwner(), pluginDependency.getNamespace().getSlug()));
-                    if (depProjectTable.isEmpty()) {
+                    final ProjectTable depProjectTable = this.projectService.getProjectTable(pluginDependency.getNamespace().getOwner(), pluginDependency.getNamespace().getSlug());
+                    if (depProjectTable == null) {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPluginDependencyNamespace");
                     }
-                    depProjectId = depProjectTable.get().getProjectId();
+                    depProjectId = depProjectTable.getProjectId();
                 }
                 pluginDependencyTables.add(new ProjectVersionDependencyTable(versionId, platformListEntry.getKey(), pluginDependency.getName(), pluginDependency.isRequired(), depProjectId, pluginDependency.getExternalUrl()));
             }
