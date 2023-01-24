@@ -104,6 +104,27 @@ const external = computed(() => false);
       </Button>
     </a>
 
+    <DropdownButton v-else-if="version" :button-size="small ? 'medium' : 'large'">
+      <template #button-label>
+        <span class="items-center inline-flex">
+          <IconMdiDownloadOutline />
+          <span v-if="!small" class="ml-1">{{ i18n.t("version.page.download") }}</span>
+        </span>
+      </template>
+      <DropdownItem
+        v-for="(v, p) in version.downloads"
+        :key="p"
+        :href="downloadLink(p, version)"
+        class="flex items-center"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
+        {{ useBackendData.platforms.get(p)?.name }}
+        <span v-if="showVersions && version.platformDependencies" class="ml-1">({{ version.platformDependenciesFormatted[p] }})</span>
+      </DropdownItem>
+    </DropdownButton>
+
     <DropdownButton v-else :button-size="small ? 'medium' : 'large'">
       <template #button-label>
         <span class="items-center inline-flex">

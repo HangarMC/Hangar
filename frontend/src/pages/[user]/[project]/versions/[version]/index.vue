@@ -147,16 +147,16 @@ async function restoreVersion() {
 </script>
 
 <template>
-  <div v-if="projectVersion" class="flex lt-sm:flex-col flex-wrap md:flex-nowrap gap-4">
-    <section class="basis-full md:basis-11/15 flex-grow">
-      <div class="flex flex-wrap gap-2 justify-between">
+  <div v-if="projectVersion" class="flex lt-md:flex-col flex-wrap lg:flex-nowrap gap-4">
+    <section class="basis-full lg:basis-11/15 flex-grow">
+      <div class="flex gap-2 justify-between">
         <div>
           <h2 class="text-3xl sm:inline-flex items-center gap-x-1">
             <TagComponent class="mr-1" :name="projectVersion.channel.name" :color="{ background: projectVersion.channel.color }" :short-form="true" />
             {{ projectVersion.name }}
           </h2>
           <h3>
-            <span class="inline-flex lt-sm:flex-wrap ml-1">
+            <span class="inline-flex lt-md:flex-wrap">
               {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
               <!--<span v-if="projectVersion.downloads[platform?.enumName]?.fileInfo?.sizeBytes" class="inline-flex items-center sm:ml-3">
                 <IconMdiFile class="mr-1" />
@@ -191,7 +191,7 @@ async function restoreVersion() {
         <Markdown v-else :raw="projectVersion.description" />
       </Card>
     </section>
-    <section class="basis-full md:basis-4/15 flex-grow space-y-4">
+    <section class="basis-full lg:basis-4/15 flex-grow space-y-4">
       <Card v-if="hasPerms(NamedPermission.DELETE_VERSION) || hasPerms(NamedPermission.VIEW_LOGS) || hasPerms(NamedPermission.REVIEWER)">
         <template #header>
           <h3>{{ i18n.t("version.page.manage") }}</h3>
@@ -321,7 +321,7 @@ async function restoreVersion() {
         </div>
       </Card>
 
-      <Card>
+      <Card v-if="hasPerms(NamedPermission.EDIT_VERSION) || platformsWithDependencies.length !== 0">
         <template #header>
           <div class="inline-flex w-full">
             <h3 class="flex-grow">{{ i18n.t("version.page.dependencies") }}</h3>
@@ -346,6 +346,7 @@ async function restoreVersion() {
                       :href="dep.externalUrl || undefined"
                       :target="dep.externalUrl ? '_blank' : undefined"
                       :to="!!dep.namespace ? { name: 'user-project', params: { user: dep.namespace.owner, project: dep.namespace.slug } } : undefined"
+                      class="font-normal ml-1"
                     >
                       {{ dep.name }}
                       <small v-if="!dep.required">({{ i18n.t("general.optional") }})</small>

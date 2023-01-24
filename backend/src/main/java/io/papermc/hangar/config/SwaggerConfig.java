@@ -42,8 +42,9 @@ public class SwaggerConfig {
                 API keys allow you to impersonate yourself, so they should be handled like passwords. **Do not share them with anyone else!**
 
                 #### Getting and Using a JWT
-                Once you have an API key, you need to authenticate yourself: Send a `POST` request with your API key identifier (a UUID) to `/api/v1/authenticate?apiKey=yourKey`. The response will contain your JWT as well as an expiration time.
-                Put this JWT into the `Authentication` header of every request and make sure to request a new JWT after the expiration time has passed.
+                Once you have an API key, you need to authenticate yourself: Send a `POST` request with your API key identifier to `/api/v1/authenticate?apiKey=yourKey`.
+                The response will contain your JWT as well as an expiration time.
+                Put this JWT into the `Authorization` header of every request and make sure to request a new JWT after the expiration time has passed.
 
                 Please also set a meaningful `User-Agent` header. This allows us to better identify loads and needs for potentially new endpoints.
 
