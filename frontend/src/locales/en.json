@@ -847,11 +847,10 @@
     "createNew": "Create new key",
     "existing": "Existing keys",
     "name": "Name",
-    "key": "Key",
-    "keyIdentifier": "Key Identifier",
+    "created": "Copy the created key before creating another one or refreshing the page. Do not share this with anyone else.",
+    "keyIdentifier": "Identifier",
     "permissions": "Permissions",
     "delete": "Delete",
-    "deleteKey": "Delete Key",
     "createKey": "Create key",
     "noKeys": "You haven't created any api keys yet",
     "success": {

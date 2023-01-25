@@ -43,6 +43,7 @@ const name = ref("");
 const loadingCreate = ref(false);
 const loadingDelete = reactive<Record<string, boolean>>({});
 const selectedPerms = ref([]);
+const createdKey = ref<string | null>(null);
 
 useHead(useSeo(i18n.t("apiKeys.title") + " | " + props.user.name, null, route, props.user.avatarUrl));
 
@@ -54,8 +55,9 @@ async function create() {
     permissions: selectedPerms.value,
   }).catch((err) => handleRequestError(err));
   if (key) {
+    createdKey.value = key;
     apiKeys.value.unshift({
-      tokenIdentifier: key,
+      tokenIdentifier: key.substring(0, key.indexOf(".")),
       name: name.value,
       permissions: selectedPerms.value,
       createdAt: new Date().toISOString(),
@@ -81,7 +83,12 @@ async function deleteKey(key: ApiKey) {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+  <div class="space-y-2">
+    <Alert v-if="createdKey" type="info">
+      {{ i18n.t("apiKeys.created") }}
+      <br />
+      {{ createdKey }}
+    </Alert>
     <Card>
       <template #header>
         <PageTitle>{{ i18n.t("apiKeys.createNew") }}</PageTitle>
@@ -94,7 +101,7 @@ async function deleteKey(key: ApiKey) {
           {{ i18n.t("apiKeys.createKey") }}
         </Button>
       </div>
-      <InputGroup v-model="selectedPerms" :label="i18n.t('apiKeys.permissions')" class="w-full mt-2 text-xl font-bold" full-width>
+      <InputGroup v-model="selectedPerms" :label="i18n.t('apiKeys.permissions')" class="mt-4 text-xl font-bold" full-width>
         <div class="grid autofix mt-2">
           <InputCheckbox v-for="perm in possiblePerms" :key="perm" v-model="selectedPerms" :label="perm" :value="perm" />
         </div>
@@ -111,9 +118,6 @@ async function deleteKey(key: ApiKey) {
               {{ i18n.t("apiKeys.name") }}
             </th>
             <th>
-              {{ i18n.t("apiKeys.key") }}
-            </th>
-            <th>
               {{ i18n.t("apiKeys.keyIdentifier") }}
             </th>
             <th>
@@ -125,11 +129,10 @@ async function deleteKey(key: ApiKey) {
         <tbody>
           <tr v-for="key in apiKeys" :key="key.name">
             <td>{{ key.name }}</td>
-            <td>{{ key.token }}</td>
             <td>{{ key.tokenIdentifier }}</td>
             <td>{{ key.permissions.join(", ") }}</td>
             <td>
-              <Button :loading="loadingDelete[key.name]" @click="deleteKey(key)">{{ i18n.t("apiKeys.deleteKey") }}</Button>
+              <Button button-type="red" :loading="loadingDelete[key.name]" @click="deleteKey(key)"><IconMdiDelete /></Button>
             </td>
           </tr>
           <tr v-if="apiKeys.length === 0">
