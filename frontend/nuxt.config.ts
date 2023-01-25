@@ -1,5 +1,5 @@
 import path from "node:path";
-import VueI18n from "@intlify/vite-plugin-vue-i18n";
+import VueI18n from "@intlify/unplugin-vue-i18n";
 import IconsResolver from "unplugin-icons/resolver";
 import Icons from "unplugin-icons/vite";
 import Components from "unplugin-vue-components/vite";
@@ -63,7 +63,7 @@ export default defineNuxtConfig({
       }),
 
       // https://github.com/intlify/bundle-tools/tree/main/packages/vite-plugin-vue-i18n
-      VueI18n({
+      VueI18n.vite({
         include: [path.resolve(__dirname, "src/locales/*.json")],
       }),
 
