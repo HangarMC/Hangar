@@ -139,6 +139,10 @@ public class VersionFactory extends HangarComponent {
                     this.createPendingUrl(channel, projectTable, pluginDependencies, platformDependencies, fileOrUrl);
                 }
             } else {
+                if (files == null || files.isEmpty()) {
+                    throw new HangarApiException("Missing a file for platform(s): " + fileOrUrl.platforms());
+                }
+
                 versionString = this.createPendingFile(files.remove(0), channel, projectTable, pluginDependencies, platformDependencies, pendingFiles, versionString, userTempDir, fileOrUrl, prefillDependencies);
             }
         }

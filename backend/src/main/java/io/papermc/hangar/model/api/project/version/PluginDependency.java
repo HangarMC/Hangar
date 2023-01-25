@@ -2,9 +2,9 @@ package io.papermc.hangar.model.api.project.version;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.controller.validations.AtLeastOneNotNull;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.api.project.ProjectNamespace;
-import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 @AtLeastOneNotNull(fieldNames = {"namespace", "externalUrl"}, includeBlankStrings = true, message = "Must specify a projectId or external URL for a dependency")
 public class PluginDependency implements Named {
 
-    @NotBlank(message = "Must have a dependency name")
     private final String name;
     private final boolean required;
     private final ProjectNamespace namespace;
@@ -21,8 +20,11 @@ public class PluginDependency implements Named {
 
     @JdbiConstructor
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PluginDependency(final String name, final boolean required, @Nested("pn") final @Nullable ProjectNamespace namespace, final String externalUrl) {
-        this.name = name;
+    public PluginDependency(final @Nullable String name, final boolean required, @Nested("pn") final @Nullable ProjectNamespace namespace, final String externalUrl) {
+        if (name == null && namespace == null) {
+            throw new HangarApiException("Must have a dependency name or a Hangar project namespace");
+        }
+        this.name = namespace != null ? null : name;
         this.required = required;
         this.namespace = namespace;
         this.externalUrl = externalUrl;
@@ -37,7 +39,7 @@ public class PluginDependency implements Named {
 
     @Override
     public String getName() {
-        return this.name;
+        return this.namespace != null ? this.namespace.getSlug() : this.name;
     }
 
     public boolean isRequired() {

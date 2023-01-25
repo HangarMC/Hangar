@@ -8,6 +8,7 @@ import java.util.*;
 import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class VersionUpload {
 
@@ -19,7 +20,6 @@ public class VersionUpload {
     private final Map<Platform, @Size(min = 1, message = "version.edit.error.noPlatformVersions") SortedSet<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
 
     // @el(root: String)
-    @NotBlank(message = "version.new.error.noDescription")
     private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxLen)", message = "page.new.error.maxLength") String description;
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
     private final List<@Valid MultipartFileOrUrl> files;
@@ -29,11 +29,11 @@ public class VersionUpload {
     private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName") String channel;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public VersionUpload(final String version, final Map<Platform, Set<PluginDependency>> pluginDependencies, final EnumMap<Platform, SortedSet<String>> platformDependencies, final String description, final List<MultipartFileOrUrl> files, final String channel) {
+    public VersionUpload(final String version, final Map<Platform, Set<PluginDependency>> pluginDependencies, final EnumMap<Platform, SortedSet<String>> platformDependencies, final @Nullable String description, final List<MultipartFileOrUrl> files, final String channel) {
         this.version = version;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
-        this.description = description;
+        this.description = description != null ? description : "*No description provided*";
         this.files = files;
         this.channel = channel;
     }
