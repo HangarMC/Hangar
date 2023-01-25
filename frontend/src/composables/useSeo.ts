@@ -1,6 +1,7 @@
 import type { HeadObject } from "@vueuse/head";
 import type { TranslateResult } from "vue-i18n";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
+import { useSeoMeta } from "@vueuse/head";
 import { useConfig } from "~/lib/composables/useConfig";
 
 export function useSeo(
@@ -15,6 +16,25 @@ export function useSeo(
   image = image || "https://docs.papermc.io/img/paper.png";
   image = image.startsWith("http") ? image : config.publicHost + image;
   title = title ? title + " | Hangar" : "Hangar";
+
+  useSeoMeta({
+    title,
+    description,
+    ogUrl: canonical,
+    ogTitle: title,
+    twitterTitle: title,
+    ogDescription: description,
+    twitterDescription: description,
+    ogType: "website",
+    ogSiteName: "Hangar",
+    ogImage: image,
+    twitterImage: image,
+    msapplicationTileImage: image,
+    themeColor: "#ffffff",
+    msapplicationTileColor: "#ffffff",
+    msapplicationConfig: "/favicon/browserconfig.xml",
+  });
+
   const seo = {
     title,
     link: [
@@ -26,47 +46,7 @@ export function useSeo(
       { rel: "mask-icon", href: "/favicon/safari-pinned-tab.svg", color: "#686868" },
       { rel: "shortcut icon", href: "/favicon/favicon.ico" },
     ],
-    meta: [
-      { property: "description", name: "description", content: description },
-      {
-        property: "og:description",
-        name: "og:description",
-        content: description,
-      },
-      {
-        property: "twitter:description",
-        name: "twitter:description",
-        content: description,
-      },
-      {
-        property: "og:title",
-        name: "og:title",
-        content: title,
-      },
-      {
-        property: "twitter:title",
-        name: "twitter:title",
-        content: title,
-      },
-      {
-        property: "og:url",
-        name: "og:url",
-        content: canonical,
-      },
-      {
-        property: "twitter:url",
-        name: "twitter:url",
-        content: canonical,
-      },
-      {
-        property: "og:image",
-        name: "og:image",
-        content: image,
-      },
-      { property: "msapplication-TileColor", name: "msapplication-TileColor", content: "#da532c" },
-      { property: "msapplication-config", name: "msapplication-config", content: "/favicon/browserconfig.xml" },
-      { property: "theme-color", name: "theme-color", content: "#ffffff" },
-    ],
+    meta: [],
     script: [
       {
         type: "application/ld+json",
