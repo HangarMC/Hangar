@@ -2,7 +2,7 @@
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { ref, watch } from "vue";
-import Chartist, { IChartistSeriesData, ILineChartOptions } from "chartist";
+import { LineChartData, LineChartOptions, FixedScaleAxis } from "chartist";
 import { useHead } from "@vueuse/head";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { fromISOString, toISODateString } from "~/lib/composables/useDate";
@@ -62,54 +62,30 @@ for (const statDay of data) {
   closedFlags.push({ x: day, y: statDay.flagsClosed });
 }
 
-const pluginData = ref({
-  series: [
-    {
-      name: i18n.t("stats.reviews") as string,
-      data: reviews,
-    },
-    {
-      name: i18n.t("stats.uploads") as string,
-      data: uploads,
-    },
-  ],
+const pluginData = ref<LineChartData>({
+  labels: [i18n.t("stats.reviews"), i18n.t("stats.uploads")],
+  series: [reviews, uploads],
 });
 
-const downloadData = ref({
-  series: [
-    {
-      name: i18n.t("stats.totalDownloads") as string,
-      data: totalDownloads,
-    },
-    {
-      name: i18n.t("stats.unsafeDownloads") as string,
-      data: unsafeDownloads,
-    },
-  ],
+const downloadData = ref<LineChartData>({
+  labels: [i18n.t("stats.totalDownloads"), i18n.t("stats.unsafeDownloads")],
+  series: [totalDownloads, unsafeDownloads],
 });
 
-const flagData = ref({
-  series: [
-    {
-      name: i18n.t("stats.openedFlags") as string,
-      data: openedFlags,
-    },
-    {
-      name: i18n.t("stats.closedFlags") as string,
-      data: closedFlags,
-    },
-  ],
+const flagData = ref<LineChartData>({
+  labels: [i18n.t("stats.openedFlags"), i18n.t("stats.closedFlags")],
+  series: [openedFlags, closedFlags],
 });
 
-const options: ILineChartOptions = {
+const options: LineChartOptions = {
   axisX: {
-    type: Chartist.FixedScaleAxis,
+    type: FixedScaleAxis,
     divisor: 5,
     labelInterpolationFnc: (value: string | Date) => {
       return i18n.d(value, "date");
     },
   },
-  plugins: [Chartist.plugins.legend()],
+  // plugins: [Chartist.plugins.legend()],
 };
 
 useHead(useSeo(i18n.t("stats.title"), null, route, null));
@@ -140,12 +116,12 @@ async function updateDate() {
     openedFlags.push({ x: day, y: statDay.flagsOpened });
     closedFlags.push({ x: day, y: statDay.flagsClosed });
   }
-  (pluginData.value.series[0] as IChartistSeriesData).data = reviews;
-  (pluginData.value.series[1] as IChartistSeriesData).data = uploads;
-  (downloadData.value.series[0] as IChartistSeriesData).data = totalDownloads;
-  (downloadData.value.series[1] as IChartistSeriesData).data = unsafeDownloads;
-  (flagData.value.series[0] as IChartistSeriesData).data = openedFlags;
-  (flagData.value.series[1] as IChartistSeriesData).data = closedFlags;
+  pluginData.value.series[0] = reviews;
+  pluginData.value.series[1] = uploads;
+  downloadData.value.series[0] = totalDownloads;
+  downloadData.value.series[1] = unsafeDownloads;
+  flagData.value.series[0] = openedFlags;
+  flagData.value.series[1] = closedFlags;
 }
 </script>
 

@@ -1,16 +1,27 @@
 <script lang="ts" setup>
 import { onMounted, watch } from "vue";
-import * as Chartist from "chartist";
 import "chartist-plugin-legend";
+import {
+  BarChart,
+  BarChartData,
+  BarChartOptions,
+  LineChart,
+  LineChartData,
+  LineChartOptions,
+  PieChart,
+  PieChartData,
+  PieChartOptions,
+  BaseChart,
+} from "chartist";
 
 const props = defineProps<{
   id: string;
-  barType: "Pie" | "Bar" | "Line" | "Candle";
-  data: Chartist.IChartistData;
-  options: Chartist.IChartOptions;
+  barType: "Pie" | "Bar" | "Line";
+  data: PieChartData | BarChartData | LineChartData;
+  options: PieChartOptions | BarChartOptions | LineChartOptions;
 }>();
 
-let chart: Chartist.IChartistBase<Chartist.IChartOptions> | null = null;
+let chart: BaseChart | null = null;
 
 onMounted(draw);
 watch(props.data, draw, { deep: true });
@@ -19,7 +30,17 @@ function draw() {
   if (chart) {
     chart.update(props.data, props.options);
   } else {
-    chart = new Chartist[props.barType]("#" + props.id, props.data, props.options);
+    switch (props.barType) {
+      case "Pie":
+        chart = new PieChart("#" + props.id, props.data as PieChartData, props.options);
+        break;
+      case "Bar":
+        chart = new BarChart("#" + props.id, props.data as BarChartData, props.options);
+        break;
+      case "Line":
+        chart = new LineChart("#" + props.id, props.data as LineChartData, props.options);
+        break;
+    }
   }
 }
 </script>
@@ -29,7 +50,7 @@ function draw() {
 </template>
 
 <style lang="scss">
-@import "chartist/dist/scss/chartist";
+@import "chartist/dist/index.scss";
 
 .ct-label {
   stroke: rgba(0, 0, 0, 0.7);
