@@ -66,7 +66,7 @@ public class PluginDependency implements Named {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
         final PluginDependency that = (PluginDependency) o;
-        return this.required == that.required && this.name.equals(that.name) && Objects.equals(this.namespace, that.namespace) && Objects.equals(this.externalUrl, that.externalUrl);
+        return this.required == that.required && Objects.equals(this.name, that.name) && Objects.equals(this.namespace, that.namespace) && Objects.equals(this.externalUrl, that.externalUrl);
     }
 
     @Override
