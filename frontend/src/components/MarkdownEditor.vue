@@ -23,6 +23,7 @@ const props = withDefaults(
     errorMessages?: string[];
     rules?: ValidationRule<string | undefined>[];
     noPaddingTop?: boolean;
+    maxHeight?: string;
   }>(),
   {
     maxlength: 30_000,
@@ -30,6 +31,7 @@ const props = withDefaults(
     errorMessages: undefined,
     rules: undefined,
     noPaddingTop: false,
+    maxHeight: "500px",
   }
 );
 
@@ -90,10 +92,17 @@ async function startEditing() {
     forceSync: true,
     indentWithTabs: false,
     spellChecker: false,
+    promptURLs: true,
+    showIcons: ["strikethrough", "code", "table"],
+    shortcuts: {
+      drawTable: "Cmd-Alt-T",
+      toggleStrikethrough: "Cmd-Alt-S",
+    },
     sideBySideFullscreen: false,
     autoRefresh: {
       delay: 300,
     },
+    maxHeight: props.maxHeight,
     previewClass: ["prose", "markdown", "background-default"],
     previewRender: (markdownPlaintext, previewElement) => {
       const html = useDomPurify().sanitize(parseMarkdown(markdownPlaintext));
