@@ -18,6 +18,8 @@ useHead(useSeo("Markdown Editor", null, route, null));
   <div>
     <PageTitle>Markdown Editor</PageTitle>
 
-    <MarkdownEditor :saveable="false" :cancellable="false" :deletable="false" :raw="markdown" :editing="true" />
+    <ClientOnly>
+      <MarkdownEditor :saveable="false" :cancellable="false" :deletable="false" :raw="markdown" :editing="true" />
+    </ClientOnly>
   </div>
 </template>
