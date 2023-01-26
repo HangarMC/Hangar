@@ -142,7 +142,10 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
         <ProjectList :projects="projects" @update:page="(newPage) => (page = newPage)" />
       </div>
       <div class="flex-basis-full flex-grow md:max-w-1/3 md:min-w-1/3">
-        <Card v-if="buttons.length !== 0" class="mb-4 border-solid border-top-4 border-top-red-500 dark:border-top-red-500">
+        <Card
+          v-if="buttons.length !== 0 || (organization && hasPerms(NamedPermission.IS_SUBJECT_OWNER))"
+          class="mb-4 border-solid border-top-4 border-top-red-500 dark:border-top-red-500"
+        >
           <template #header>{{ i18n.t("author.management") }}</template>
           <template v-if="organization && hasPerms(NamedPermission.IS_SUBJECT_OWNER)">
             <Tooltip :content="i18n.t('author.tooltips.transfer')">
