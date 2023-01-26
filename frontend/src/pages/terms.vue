@@ -106,7 +106,7 @@ terms, in whole or in part, please stop using the website and the Service.
 Contact Us
 ----------
 
-If you have any questions about these Terms and Conditions, You can contact via email at admin@papermc.io.
+If you have any questions about these Terms and Conditions, You can contact Us via email at admin@papermc.io.
 
 Last updated: December 25, 2022
 `;

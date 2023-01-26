@@ -57,7 +57,7 @@ We may use Personal Data for the following purposes:
 * **To provide and maintain our Service**, including to monitor the usage of our Service.
 * **To manage Your Account:** to manage Your registration as a user of the Service. The Personal Data You provide can give You access to different
   functionalities of the Service that are available to You as a registered user.
-* **To contact You:** To contact You by email regarding updates or informative communications related to the functionalities, products or contracted services,
+* **To contact You:** to contact You by email regarding updates or informative communications related to the functionalities, products or contracted services,
   including the security updates, when necessary or reasonable for their implementation.
 * **For other purposes**: We may use Your information for other purposes, such as data analysis, identifying usage trends, and to evaluate and improve our
   Service, products, services, and your experience.

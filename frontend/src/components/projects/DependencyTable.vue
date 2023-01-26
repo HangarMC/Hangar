@@ -10,7 +10,7 @@ import { required } from "~/lib/composables/useValidationHelpers";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 import { useApi } from "~/composables/useApi";
 import Tabs from "~/lib/components/design/Tabs.vue";
-import { ref, useRoute } from "#imports";
+import { ref, useRoute, watch } from "#imports";
 import { Tab } from "~/lib/types/components/design/Tabs";
 
 const route = useRoute();
@@ -111,19 +111,36 @@ defineExpose({ dependencies, reset });
         <th>{{ t("general.name") }}</th>
         <th>{{ t("general.required") }}</th>
         <th>{{ t("general.link") }}</th>
-        <th v-if="!noEditing">
-          {{ t("general.delete") }}
-        </th>
+        <th v-if="!noEditing" />
       </tr>
     </thead>
     <tbody>
       <tr v-for="(dep, index) in dependencies" :key="`${platform}-${index}`">
         <td>
-          <InputText v-model.trim="dep.name" dense hide-details flat :label="t('general.name')" :rules="[required(t('general.name'))]" :disabled="noEditing" />
+          <InputText
+            v-if="selectedTab[index] !== 'url'"
+            v-model.trim="dep.namespace.slug"
+            dense
+            hide-details
+            flat
+            :label="t('general.name')"
+            :rules="[required(t('general.name'))]"
+            disabled
+          />
+          <InputText
+            v-else
+            v-model.trim="dep.name"
+            dense
+            hide-details
+            flat
+            :label="t('general.name')"
+            :rules="[required(t('general.name'))]"
+            :disabled="noEditing"
+          />
         </td>
         <td><InputCheckbox v-model="dep.required" :ripple="false" :disabled="noEditing" /></td>
         <td class="flex flex-wrap gap-2">
-          <Tabs v-model="selectedTab[index]" :tabs="selectedUploadTabs" class="items-center" compact @update:model-value="changeTabs($event, index)">
+          <Tabs v-model="selectedTab[index]" :tabs="selectedUploadTabs" class="items-center -ml-2" compact @update:model-value="changeTabs($event, index)">
             <template #file>
               <InputAutocomplete
                 :id="dep.name"
