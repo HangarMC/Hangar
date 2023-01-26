@@ -35,18 +35,22 @@ const open = await useOpenProjectPages(route, props.project);
         :main-page="false"
       >
         <Card v-if="page" class="p-0 overflow-clip overflow-hidden">
-          <MarkdownEditor
-            v-if="hasPerms(NamedPermission.EDIT_PAGE)"
-            ref="editor"
-            :editing="editingPage"
-            :raw="page.contents"
-            :deletable="page.deletable"
-            :saveable="true"
-            :cancellable="true"
-            @update:editing="changeEditingPage"
-            @save="savePage"
-            @delete="deletePage"
-          />
+          <ClientOnly v-if="hasPerms(NamedPermission.EDIT_PAGE)">
+            <MarkdownEditor
+              ref="editor"
+              :editing="editingPage"
+              :raw="page.contents"
+              :deletable="page.deletable"
+              :saveable="true"
+              :cancellable="true"
+              @update:editing="changeEditingPage"
+              @save="savePage"
+              @delete="deletePage"
+            />
+            <template #fallback>
+              <Markdown :raw="page.contents" />
+            </template>
+          </ClientOnly>
           <Markdown v-else :raw="page.contents" />
         </Card>
       </ProjectPageMarkdown>

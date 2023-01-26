@@ -142,7 +142,7 @@ function stopEditing() {
     </div>
     <div v-if="!props.title && internalEditing && !noPaddingTop" class="mt-11"></div>
     <div v-if="internalEditing" class="pl-4 mt-1">
-      <textarea id="markdown-editor" v-model="rawEdited" class="text-left" :maxlength="maxlength" ref="dum"></textarea>
+      <textarea id="markdown-editor" v-model="rawEdited" class="text-left" :maxlength="maxlength"></textarea>
     </div>
     <div v-if="props.title && !internalEditing" class="-mt-5"></div>
     <Markdown v-if="!internalEditing" :raw="raw" class="pl-4" />

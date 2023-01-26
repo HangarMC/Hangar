@@ -396,17 +396,19 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
     </template>
     <template #changelog>
       <h2 class="text-xl mt-2">{{ t("version.new.form.changelogTitle") }}</h2>
-      <MarkdownEditor
-        ref="descriptionEditor"
-        :title="t('version.new.form.release.bulletin')"
-        class="mt-2"
-        :raw="descriptionToLoad"
-        editing
-        :deletable="false"
-        :cancellable="false"
-        :saveable="false"
-        :rules="changelogRules"
-      />
+      <ClientOnly>
+        <MarkdownEditor
+          ref="descriptionEditor"
+          :title="t('version.new.form.release.bulletin')"
+          class="mt-2"
+          :raw="descriptionToLoad"
+          editing
+          :deletable="false"
+          :cancellable="false"
+          :saveable="false"
+          :rules="changelogRules"
+        />
+      </ClientOnly>
     </template>
   </Steps>
 </template>

@@ -55,34 +55,42 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
     <section class="basis-full md:basis-11/15 flex-grow overflow-auto">
       <ProjectPageMarkdown v-slot="{ page, editingPage, changeEditingPage, savePage }" :project="props.project" main-page>
         <Card v-if="page?.contents" class="p-0 pb-6 overflow-clip overflow-hidden">
-          <MarkdownEditor
-            v-if="hasPerms(NamedPermission.EDIT_PAGE)"
-            :editing="editingPage"
-            :raw="page.contents"
-            :deletable="false"
-            :saveable="true"
-            :cancellable="true"
-            class="mr-4"
-            @update:editing="changeEditingPage"
-            @save="savePage"
-          />
+          <ClientOnly v-if="hasPerms(NamedPermission.EDIT_PAGE)">
+            <MarkdownEditor
+              :editing="editingPage"
+              :raw="page.contents"
+              :deletable="false"
+              :saveable="true"
+              :cancellable="true"
+              class="mr-4"
+              @update:editing="changeEditingPage"
+              @save="savePage"
+            />
+            <template #fallback>
+              <Markdown :raw="page.contents" />
+            </template>
+          </ClientOnly>
           <!--We have to blow up v-model:editing into :editing and @update:editing as we are inside a scope--->
           <Markdown v-else :raw="page.contents" />
         </Card>
       </ProjectPageMarkdown>
       <Card v-if="sponsors || hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" class="mt-2 p-0 pb-6 overflow-clip overflow-hidden">
-        <MarkdownEditor
-          v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)"
-          v-model:editing="editingSponsors"
-          :raw="sponsors"
-          :deletable="false"
-          :saveable="true"
-          :cancellable="true"
-          :maxlength="useBackendData.validations.project.sponsorsContent?.max"
-          :title="i18n.t('project.sponsors')"
-          class="pt-0 mr-4"
-          @save="saveSponsors"
-        />
+        <ClientOnly v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)">
+          <MarkdownEditor
+            v-model:editing="editingSponsors"
+            :raw="sponsors"
+            :deletable="false"
+            :saveable="true"
+            :cancellable="true"
+            :maxlength="useBackendData.validations.project.sponsorsContent?.max"
+            :title="i18n.t('project.sponsors')"
+            class="pt-0 mr-4"
+            @save="saveSponsors"
+          />
+          <template #fallback>
+            <Markdown :raw="sponsors" />
+          </template>
+        </ClientOnly>
         <template v-else>
           <h2 class="mt-3 ml-5 text-xl">{{ i18n.t("project.sponsors") }}</h2>
           <Markdown :raw="sponsors" class="pt-0" />

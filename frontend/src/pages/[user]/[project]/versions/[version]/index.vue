@@ -178,16 +178,20 @@ async function restoreVersion() {
       </div>
 
       <Card class="relative mt-4 overflow-clip overflow-hidden">
-        <MarkdownEditor
-          v-if="hasPerms(NamedPermission.EDIT_VERSION)"
-          ref="editor"
-          v-model:editing="editingPage"
-          :raw="projectVersion.description"
-          :deletable="false"
-          :cancellable="true"
-          :saveable="true"
-          @save="savePage"
-        />
+        <ClientOnly v-if="hasPerms(NamedPermission.EDIT_VERSION)">
+          <MarkdownEditor
+            ref="editor"
+            v-model:editing="editingPage"
+            :raw="projectVersion.description"
+            :deletable="false"
+            :cancellable="true"
+            :saveable="true"
+            @save="savePage"
+          />
+          <template #fallback>
+            <Markdown :raw="projectVersion.description" />
+          </template>
+        </ClientOnly>
         <Markdown v-else :raw="projectVersion.description" />
       </Card>
     </section>
