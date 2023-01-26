@@ -37,6 +37,7 @@ specifiers:
   debug: 4.3.4
   diff-match-patch: 1.0.5
   dompurify: ^2.4.3
+  easymde: ^2.18.0
   eslint: 8.32.0
   eslint-config-prettier: 8.6.0
   eslint-import-resolver-alias: 1.1.2
@@ -95,6 +96,7 @@ dependencies:
   debug: 4.3.4
   diff-match-patch: 1.0.5
   dompurify: 2.4.3
+  easymde: 2.18.0
   filesize: 10.0.6
   jsdom: 21.1.0
   jwt-decode: 3.1.2
@@ -1767,6 +1769,12 @@ packages:
       '@types/responselike': 1.0.0
     dev: true
 
+  /@types/codemirror/5.60.7:
+    resolution: {integrity: sha512-QXIC+RPzt/1BGSuD6iFn6UMC9TDp+9hkOANYNPVsjjrDdzKphfRkwQDKGp2YaC54Yhz0g6P5uYTCCibZZEiMAA==}
+    dependencies:
+      '@types/tern': 0.23.4
+    dev: false
+
   /@types/cookie/0.3.3:
     resolution: {integrity: sha512-LKVP3cgXBT9RYj+t+9FDKwS5tdI+rPBXaNSkma7hvqy35lc7mAokC2zsqWJH0LaqIt3B962nuYI77hsJoT1gow==}
     dev: false
@@ -1854,6 +1862,10 @@ packages:
       '@types/mdurl': 1.0.2
     dev: true
 
+  /@types/marked/4.0.8:
+    resolution: {integrity: sha512-HVNzMT5QlWCOdeuBsgXP8EZzKUf0+AXzN+sLmjvaB3ZlLqO+e4u0uXrdw9ub69wBKFs+c6/pA4r9sy6cCDvImw==}
+    dev: false
+
   /@types/mdurl/1.0.2:
     resolution: {integrity: sha512-eC4U9MlIcu2q0KQmXszyn5Akca/0jrQmwDRgpAMJai7qBWq4amIQhZyNau4VYGtCeALvW1/NtjzJJ567aZxfKA==}
     dev: true
@@ -1903,6 +1915,12 @@ packages:
   /@types/swagger-ui-dist/3.30.1:
     resolution: {integrity: sha512-wWojDensMF33dSrhak4iWSPOsWBbvf+rSJ6VWQ7ohQbGdKAiT2IwUexrDZkMvf3+vVAPVnNFDRDtxADFszbh+Q==}
     dev: true
+
+  /@types/tern/0.23.4:
+    resolution: {integrity: sha512-JAUw1iXGO1qaWwEOzxTKJZ/5JxVeON9kvGZ/osgZaJImBnyjyn0cjovPsf6FNLmyGY8Vw9DoXZCMlfMkMwHRWg==}
+    dependencies:
+      '@types/estree': 1.0.0
+    dev: false
 
   /@types/tough-cookie/4.0.2:
     resolution: {integrity: sha512-Q5vtl1W5ue16D+nIaW8JWebSSraJVlK+EthKn7e7UcD4KWsaSJ8BqGPXNaPghgtcn/fhvrN17Tv8ksUsQpiplw==}
@@ -3487,6 +3505,16 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
+  /codemirror-spell-checker/1.1.2:
+    resolution: {integrity: sha512-2Tl6n0v+GJRsC9K3MLCdLaMOmvWL0uukajNJseorZJsslaxZyZMgENocPU8R0DyoTAiKsyqiemSOZo7kjGV0LQ==}
+    dependencies:
+      typo-js: 1.2.2
+    dev: false
+
+  /codemirror/5.65.11:
+    resolution: {integrity: sha512-Gp62g2eKSCHYt10axmGhKq3WoJSvVpvhXmowNq7pZdRVowwtvBR/hi2LSP5srtctKkRT33T6/n8Kv1UGp7JW4A==}
+    dev: false
+
   /color-convert/1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
     dependencies:
@@ -4079,6 +4107,16 @@ packages:
 
   /easy-bem/1.1.1:
     resolution: {integrity: sha512-GJRqdiy2h+EXy6a8E6R+ubmqUM08BK0FWNq41k24fup6045biQ8NXxoXimiwegMQvFFV3t1emADdGNL1TlS61A==}
+    dev: false
+
+  /easymde/2.18.0:
+    resolution: {integrity: sha512-IxVVUxNWIoXLeqtBU4BLc+eS/ScYhT1Dcb6yF5Wchoj1iXAV+TIIDWx+NCaZhY7RcSHqDPKllbYq7nwGKILnoA==}
+    dependencies:
+      '@types/codemirror': 5.60.7
+      '@types/marked': 4.0.8
+      codemirror: 5.65.11
+      codemirror-spell-checker: 1.1.2
+      marked: 4.2.12
     dev: false
 
   /ee-first/1.1.1:
@@ -8542,6 +8580,10 @@ packages:
     resolution: {integrity: sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+
+  /typo-js/1.2.2:
+    resolution: {integrity: sha512-C7pYBQK17EjSg8tVNY91KHdUt5Nf6FMJ+c3js076quPmBML57PmNMzAcIq/2kf/hSYtFABNDIYNYlJRl5BJhGw==}
+    dev: false
 
   /uc.micro/1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}

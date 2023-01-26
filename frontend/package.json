@@ -41,6 +41,7 @@
     "debug": "4.3.4",
     "diff-match-patch": "1.0.5",
     "dompurify": "^2.4.3",
+    "easymde": "^2.18.0",
     "filesize": "10.0.6",
     "jsdom": "^21.1.0",
     "jwt-decode": "3.1.2",
