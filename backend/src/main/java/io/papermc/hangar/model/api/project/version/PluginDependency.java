@@ -2,7 +2,6 @@ package io.papermc.hangar.model.api.project.version;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.controller.validations.AtLeastOneNotNull;
-import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.api.project.ProjectNamespace;
 import java.util.Objects;
@@ -10,7 +9,8 @@ import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.jetbrains.annotations.Nullable;
 
-@AtLeastOneNotNull(fieldNames = {"namespace", "externalUrl"}, includeBlankStrings = true, message = "Must specify a projectId or external URL for a dependency")
+@AtLeastOneNotNull(fieldNames = {"namespace", "externalUrl"}, includeBlankStrings = true, message = "Must specify a namespace or external URL for a dependency")
+@AtLeastOneNotNull(fieldNames = {"name", "namespace"}, includeBlankStrings = true, message = "Must specify a name or namespace for a dependency")
 public class PluginDependency implements Named {
 
     private final String name;
@@ -21,9 +21,6 @@ public class PluginDependency implements Named {
     @JdbiConstructor
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PluginDependency(final @Nullable String name, final boolean required, @Nested("pn") final @Nullable ProjectNamespace namespace, final String externalUrl) {
-        if (name == null && namespace == null) {
-            throw new HangarApiException("Must have a dependency name or a Hangar project namespace");
-        }
         this.name = namespace != null ? null : name;
         this.required = required;
         this.namespace = namespace;

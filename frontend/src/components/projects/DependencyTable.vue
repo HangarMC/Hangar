@@ -10,7 +10,7 @@ import { required } from "~/lib/composables/useValidationHelpers";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 import { useApi } from "~/composables/useApi";
 import Tabs from "~/lib/components/design/Tabs.vue";
-import { ref, useRoute, watch } from "#imports";
+import { ref, useRoute } from "#imports";
 import { Tab } from "~/lib/types/components/design/Tabs";
 
 const route = useRoute();

@@ -7,6 +7,7 @@ import jakarta.validation.Payload;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -16,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = AtLeastOneNotNull.Validator.class)
 @Documented
+@Repeatable(AtLeastOneNotNull.List.class)
 public @interface AtLeastOneNotNull {
     String[] fieldNames();
 
@@ -62,5 +64,12 @@ public @interface AtLeastOneNotNull {
                 return false;
             }
         }
+    }
+
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    @interface List {
+        AtLeastOneNotNull[] value();
     }
 }
