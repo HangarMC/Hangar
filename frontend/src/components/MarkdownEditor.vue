@@ -3,7 +3,6 @@ import { computed, reactive, ref, watch } from "vue";
 import { ValidationRule } from "@vuelidate/core";
 import type Easymde from "easymde";
 import EasyMDE from "easymde";
-import { useI18n } from "vue-i18n";
 import Markdown from "~/components/Markdown.vue";
 import Button from "~/lib/components/design/Button.vue";
 import DeletePageModal from "~/components/modals/DeletePageModal.vue";
@@ -53,8 +52,6 @@ const internalEditing = computed({
 
 const errorMessages = computed(() => props.errorMessages);
 const { v, errors } = useValidation(undefined, props.rules, rawEdited, errorMessages);
-
-const i18n = useI18n();
 
 if (process.client && props.editing) {
   startEditing();
