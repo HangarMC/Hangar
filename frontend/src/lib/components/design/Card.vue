@@ -31,11 +31,11 @@ const clazz = computed(() => {
 <template>
   <div :class="clazz">
     <div v-if="hasSlotContent($slots.header)" class="text-xl font-bold mb-2">
-      <slot name="header"></slot>
+      <slot name="header" />
     </div>
-    <slot name="default"></slot>
+    <slot name="default" />
     <div v-if="hasSlotContent($slots.footer)" class="mt-2">
-      <slot name="footer"></slot>
+      <slot name="footer" />
     </div>
   </div>
 </template>
