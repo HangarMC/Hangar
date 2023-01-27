@@ -20,6 +20,7 @@ import DownloadButton from "~/components/projects/DownloadButton.vue";
 import { useOpenProjectPages } from "~/composables/useOpenProjectPages";
 import ProjectPageMarkdown from "~/components/projects/ProjectPageMarkdown.vue";
 import { useBackendData } from "~/store/backendData";
+import Tooltip from "~/lib/components/design/Tooltip.vue";
 
 const props = defineProps<{
   user: User;
@@ -54,7 +55,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
   <div class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-11/15 flex-grow overflow-auto">
       <ProjectPageMarkdown v-slot="{ page, editingPage, changeEditingPage, savePage }" :project="props.project" main-page>
-        <Card v-if="page?.contents" class="p-0 pb-6 overflow-clip overflow-hidden">
+        <Card v-if="page?.contents" class="pb-0 overflow-clip overflow-hidden">
           <ClientOnly v-if="hasPerms(NamedPermission.EDIT_PAGE)">
             <MarkdownEditor
               :editing="editingPage"
@@ -62,7 +63,6 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
               :deletable="false"
               :saveable="true"
               :cancellable="true"
-              class="mr-4"
               @update:editing="changeEditingPage"
               @save="savePage"
             />
@@ -74,7 +74,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
           <Markdown v-else :raw="page.contents" />
         </Card>
       </ProjectPageMarkdown>
-      <Card v-if="sponsors || hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" class="mt-2 p-0 pb-6 overflow-clip overflow-hidden">
+      <Card v-if="sponsors || hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" class="mt-2 pb-0 overflow-clip overflow-hidden">
         <ClientOnly v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)">
           <MarkdownEditor
             v-model:editing="editingSponsors"
@@ -83,17 +83,26 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
             :saveable="true"
             :cancellable="true"
             :maxlength="useBackendData.validations.project.sponsorsContent?.max"
-            :title="i18n.t('project.sponsors')"
             max-height="200px"
-            class="pt-0 mr-4"
             @save="saveSponsors"
-          />
+          >
+            <template #title>
+              <div class="inline-flex items-center mt-3 gap-1.5 -mb-3">
+                <h1 class="ml-4 text-2xl">{{ i18n.t("project.sponsors") }}</h1>
+                <Tooltip>
+                  <template #content> {{ i18n.t("project.sponsorsTooltip") }} </template>
+                  <IconMdiInformation class="mt-1 text-xl" />
+                </Tooltip>
+              </div>
+            </template>
+          </MarkdownEditor>
           <template #fallback>
+            <h2 class="mt-3 ml-4 text-2xl">{{ i18n.t("project.sponsors") }}</h2>
             <Markdown :raw="sponsors" />
           </template>
         </ClientOnly>
         <template v-else>
-          <h2 class="mt-3 ml-5 text-xl">{{ i18n.t("project.sponsors") }}</h2>
+          <h2 class="mt-3 ml-4 text-2xl">{{ i18n.t("project.sponsors") }}</h2>
           <Markdown :raw="sponsors" class="pt-0" />
         </template>
       </Card>

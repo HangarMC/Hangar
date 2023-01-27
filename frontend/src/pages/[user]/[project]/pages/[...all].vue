@@ -34,7 +34,7 @@ const open = await useOpenProjectPages(route, props.project);
         :project="props.project"
         :main-page="false"
       >
-        <Card v-if="page" class="p-0 overflow-clip overflow-hidden">
+        <Card v-if="page" class="pb-0 overflow-clip overflow-hidden">
           <ClientOnly v-if="hasPerms(NamedPermission.EDIT_PAGE)">
             <MarkdownEditor
               ref="editor"

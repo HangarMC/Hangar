@@ -3,6 +3,7 @@ import { computed, reactive, ref, watch } from "vue";
 import { ValidationRule } from "@vuelidate/core";
 import type Easymde from "easymde";
 import EasyMDE from "easymde";
+import { useI18n } from "vue-i18n";
 import Markdown from "~/components/Markdown.vue";
 import Button from "~/lib/components/design/Button.vue";
 import DeletePageModal from "~/components/modals/DeletePageModal.vue";
@@ -19,7 +20,6 @@ const props = withDefaults(
     cancellable: boolean;
     saveable: boolean;
     maxlength?: number;
-    title?: string;
     errorMessages?: string[];
     rules?: ValidationRule<string | undefined>[];
     noPaddingTop?: boolean;
@@ -27,7 +27,6 @@ const props = withDefaults(
   }>(),
   {
     maxlength: 30_000,
-    title: undefined,
     errorMessages: undefined,
     rules: undefined,
     noPaddingTop: false,
@@ -53,7 +52,9 @@ const internalEditing = computed({
 });
 
 const errorMessages = computed(() => props.errorMessages);
-const { v, errors } = useValidation(props.title, props.rules, rawEdited, errorMessages);
+const { v, errors } = useValidation(undefined, props.rules, rawEdited, errorMessages);
+
+const i18n = useI18n();
 
 if (process.client && props.editing) {
   startEditing();
@@ -129,32 +130,31 @@ function stopEditing() {
 <template>
   <div class="relative">
     <div class="flex">
-      <h1 v-if="props.title" class="mt-3 ml-5 text-xl">{{ props.title }}</h1>
+      <slot name="title" />
       <div class="absolute top-2 right-0 space-x-1">
         <Button v-if="!internalEditing" @click="startEditing()">
           <IconMdiPencil />
         </Button>
-        <Button v-if="internalEditing && saveable" :disabled="loading.save" @click="savePage">
-          <IconMdiContentSave />
-        </Button>
         <DeletePageModal @delete="deletePage">
           <template #activator="{ on }">
-            <Button v-if="internalEditing && deletable" :disabled="loading.delete" v-on="on">
+            <Button button-type="red" v-if="internalEditing && deletable" :disabled="loading.delete" v-on="on">
               <IconMdiDelete />
             </Button>
           </template>
         </DeletePageModal>
+        <Button v-if="internalEditing && saveable" :disabled="loading.save" @click="savePage">
+          <IconMdiContentSave />
+        </Button>
         <Button v-if="internalEditing && cancellable" @click="stopEditing()">
           <IconMdiClose />
         </Button>
       </div>
     </div>
-    <div v-if="!props.title && internalEditing && !noPaddingTop" class="mt-11"></div>
-    <div v-if="internalEditing" class="pl-4 mt-1">
+    <div v-if="internalEditing && !noPaddingTop" class="mt-11" />
+    <div v-if="internalEditing">
       <textarea id="markdown-editor" v-model="rawEdited" class="text-left" :maxlength="maxlength"></textarea>
     </div>
-    <div v-if="props.title && !internalEditing" class="-mt-5"></div>
-    <Markdown v-if="!internalEditing" :raw="raw" class="pl-4" />
+    <Markdown v-if="!internalEditing" :raw="raw" />
     <ErrorTooltip :error-messages="errors" class="w-full">
       <slot />
     </ErrorTooltip>

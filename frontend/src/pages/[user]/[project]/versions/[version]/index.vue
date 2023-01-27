@@ -177,7 +177,7 @@ async function restoreVersion() {
         </div>
       </div>
 
-      <Card class="relative mt-4 overflow-clip overflow-hidden">
+      <Card class="relative mt-4 pb-0 overflow-clip overflow-hidden">
         <ClientOnly v-if="hasPerms(NamedPermission.EDIT_VERSION)">
           <MarkdownEditor
             ref="editor"

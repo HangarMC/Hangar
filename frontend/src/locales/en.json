@@ -279,6 +279,7 @@
     },
     "pinnedVersions": "Pinned Versions",
     "sponsors": "Sponsors",
+    "sponsorsTooltip": "This field is meant for donators and software license sponsors. It is only shown to users if filled.",
     "license": {
       "link": "Licensed under "
     },

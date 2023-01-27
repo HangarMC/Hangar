@@ -400,12 +400,14 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
         <MarkdownEditor
           ref="descriptionEditor"
           :title="t('version.new.form.release.bulletin')"
-          class="mt-2"
           :raw="descriptionToLoad"
           editing
+          no-padding-top
           :deletable="false"
           :cancellable="false"
           :saveable="false"
+          class="mt-4"
+          max-height="250px"
           :rules="changelogRules"
         />
       </ClientOnly>
