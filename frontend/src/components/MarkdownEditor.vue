@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from "vue";
-import { ValidationRule } from "@vuelidate/core";
+import { useVuelidate, ValidationRule } from "@vuelidate/core";
 import type Easymde from "easymde";
 import EasyMDE from "easymde";
 import Markdown from "~/components/Markdown.vue";
@@ -10,6 +10,7 @@ import { useValidation } from "~/lib/composables/useValidationHelpers";
 import ErrorTooltip from "~/lib/components/design/ErrorTooltip.vue";
 import { nextTick, parseMarkdown, useDomPurify } from "#imports";
 import { usePrismStore } from "~/store/prism";
+import { hasSlotContent } from "~/lib/composables/useSlot";
 
 const props = withDefaults(
   defineProps<{
@@ -97,6 +98,7 @@ async function startEditing() {
       toggleStrikethrough: "Cmd-Alt-S",
     },
     sideBySideFullscreen: false,
+    syncSideBySidePreviewScroll: false,
     autoRefresh: {
       delay: 300,
     },
@@ -126,8 +128,8 @@ function stopEditing() {
 
 <template>
   <div class="relative">
+    <slot name="title" />
     <div class="flex">
-      <slot name="title" />
       <div class="absolute top-2 right-0 space-x-1">
         <Button v-if="!internalEditing" @click="startEditing()">
           <IconMdiPencil />
@@ -139,7 +141,7 @@ function stopEditing() {
             </Button>
           </template>
         </DeletePageModal>
-        <Button v-if="internalEditing && saveable" :disabled="loading.save" @click="savePage">
+        <Button v-if="internalEditing && saveable" :disabled="loading.save || v.$invalid" @click="savePage">
           <IconMdiContentSave />
         </Button>
         <Button v-if="internalEditing && cancellable" @click="stopEditing()">
@@ -147,7 +149,7 @@ function stopEditing() {
         </Button>
       </div>
     </div>
-    <div v-if="internalEditing && !noPaddingTop" class="mt-11" />
+    <div v-if="internalEditing && !noPaddingTop" class="mt-11" :class="{ 'mt-2': hasSlotContent($slots.title) }" />
     <div v-if="internalEditing">
       <textarea id="markdown-editor" v-model="rawEdited" class="text-left" :maxlength="maxlength"></textarea>
     </div>

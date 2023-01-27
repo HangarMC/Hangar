@@ -53,7 +53,7 @@ public class ProjectPageController extends HangarComponent {
     @PostMapping(path = "/convert-bbcode", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     public String convertBBCode(@RequestBody @Valid final StringContent bbCodeContent) {
         if (bbCodeContent.getContent().length() > this.config.projects.maxBBCodeLen()) {
-            throw new HangarApiException("page.new.error.name.maxLength");
+            throw new HangarApiException("page.new.error.maxLength");
         }
         final BBCodeConverter bbCodeConverter = new BBCodeConverter();
         return bbCodeConverter.convertToMarkdown(bbCodeContent.getContent());

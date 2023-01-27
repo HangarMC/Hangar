@@ -122,7 +122,7 @@ public class ProjectController extends HangarComponent {
     public void saveProjectSettings(@PathVariable final String author, @PathVariable final String slug, @RequestBody final StringContent content) {
         final String trimmedContent = content.getContent() != null ? content.getContent().trim() : "";
         if (trimmedContent.length() > this.config.projects.maxSponsorsLen()) {
-            throw new HangarApiException("page.new.error.name.maxLength");
+            throw new HangarApiException("page.new.error.maxLength");
         }
         this.projectService.saveSponsors(author, slug, trimmedContent);
     }

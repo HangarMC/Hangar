@@ -21,6 +21,7 @@ import { useOpenProjectPages } from "~/composables/useOpenProjectPages";
 import ProjectPageMarkdown from "~/components/projects/ProjectPageMarkdown.vue";
 import { useBackendData } from "~/store/backendData";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
+import { required } from "~/lib/composables/useValidationHelpers";
 
 const props = defineProps<{
   user: User;
@@ -63,6 +64,8 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
               :deletable="false"
               :saveable="true"
               :cancellable="true"
+              :maxlength="useBackendData.validations.project.pageContent?.max"
+              :rules="[required()]"
               @update:editing="changeEditingPage"
               @save="savePage"
             />
@@ -74,7 +77,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
           <Markdown v-else :raw="page.contents" />
         </Card>
       </ProjectPageMarkdown>
-      <Card v-if="sponsors || hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" class="mt-2 pb-0 overflow-clip overflow-hidden">
+      <Card v-if="sponsors || hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" class="mt-2 pb-0 overflow-clip overflow-visible">
         <ClientOnly v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)">
           <MarkdownEditor
             v-model:editing="editingSponsors"
@@ -87,9 +90,9 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
             @save="saveSponsors"
           >
             <template #title>
-              <div class="inline-flex items-center mt-2 gap-1.5 -mb-3">
+              <div class="inline-flex items-center mt-2 gap-1.5">
                 <h1 class="ml-4 text-2xl">{{ i18n.t("project.sponsors") }}</h1>
-                <Tooltip>
+                <Tooltip class="overflow-visible">
                   <template #content> {{ i18n.t("project.sponsorsTooltip") }} </template>
                   <IconMdiInformation class="mt-1 text-xl" />
                 </Tooltip>
