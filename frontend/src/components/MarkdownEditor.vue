@@ -134,7 +134,7 @@ function stopEditing() {
         </Button>
         <DeletePageModal @delete="deletePage">
           <template #activator="{ on }">
-            <Button button-type="red" v-if="internalEditing && deletable" :disabled="loading.delete" v-on="on">
+            <Button v-if="internalEditing && deletable" button-type="red" :disabled="loading.delete" v-on="on">
               <IconMdiDelete />
             </Button>
           </template>
@@ -152,7 +152,7 @@ function stopEditing() {
       <textarea id="markdown-editor" v-model="rawEdited" class="text-left" :maxlength="maxlength"></textarea>
     </div>
     <Markdown v-if="!internalEditing" :raw="raw" />
-    <ErrorTooltip :error-messages="errors" class="w-full">
+    <ErrorTooltip :error-messages="errors" class="w-full absolute">
       <slot />
     </ErrorTooltip>
   </div>

@@ -87,7 +87,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
             @save="saveSponsors"
           >
             <template #title>
-              <div class="inline-flex items-center mt-3 gap-1.5 -mb-3">
+              <div class="inline-flex items-center mt-2 gap-1.5 -mb-3">
                 <h1 class="ml-4 text-2xl">{{ i18n.t("project.sponsors") }}</h1>
                 <Tooltip>
                   <template #content> {{ i18n.t("project.sponsorsTooltip") }} </template>
