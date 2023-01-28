@@ -3,9 +3,7 @@ package io.papermc.hangar.model.api.requests;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -15,10 +13,10 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.NOT_REQUIR
 
 public class RequestPagination {
 
-    @Schema(description = "The maximum amount of items to return", example = "1", requiredMode = NOT_REQUIRED, allowableValues = "range[1, 25]")
+    @Schema(description = "The maximum amount of items to return", example = "1", requiredMode = NOT_REQUIRED, minimum = "1", maximum = "25")
     private final long limit;
 
-    @Schema(description = "Where to start searching", example = "0", requiredMode = NOT_REQUIRED, allowableValues = "range[0, infinity]")
+    @Schema(description = "Where to start searching", example = "0", requiredMode = NOT_REQUIRED, minimum = "0")
     private final long offset;
 
     @JsonIgnore

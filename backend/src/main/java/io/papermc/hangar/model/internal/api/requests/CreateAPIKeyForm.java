@@ -8,7 +8,7 @@ import java.util.List;
 
 public class CreateAPIKeyForm {
 
-    @Schema(allowableValues = "range[5,256)", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(minimum = "5", maximum = "255", requiredMode = Schema.RequiredMode.REQUIRED)
     private final @NotBlank @Size(min = 5, max = 255) String name;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
