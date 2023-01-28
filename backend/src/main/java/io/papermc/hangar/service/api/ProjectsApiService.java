@@ -2,6 +2,8 @@ package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.config.CacheConfig;
+import io.papermc.hangar.controller.extras.pagination.Filter;
+import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectQueryFilter;
 import io.papermc.hangar.db.dao.v1.ProjectsApiDAO;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
@@ -67,7 +69,16 @@ public class ProjectsApiService extends HangarComponent {
 
     @Transactional
     @Cacheable(CacheConfig.PROJECTS)
-    public PaginatedResult<Project> getProjects(final String query, final boolean orderWithRelevance, final RequestPagination pagination, final boolean seeHidden) {
+    public PaginatedResult<Project> getProjects(final boolean orderWithRelevance, final RequestPagination pagination, final boolean seeHidden) {
+        // get query from filter
+        String query = null;
+        for (final Filter.FilterInstance filterInstance : pagination.getFilters().values()) {
+            if (filterInstance instanceof final ProjectQueryFilter.ProjectQueryFilterInstance queryFilter) {
+                query = queryFilter.query();
+            }
+        }
+
+        // handle relevance
         String relevance = "";
         if (orderWithRelevance && query != null && !query.isEmpty()) {
             if (query.endsWith(" ")) {

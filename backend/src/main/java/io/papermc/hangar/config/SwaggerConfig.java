@@ -91,7 +91,7 @@ public class SwaggerConfig {
                     .name("sort")
                     .in("query")
                     .description("Used to sort the result")
-                    .style(Parameter.StyleEnum.SIMPLE)
+                    .style(Parameter.StyleEnum.FORM)
                     .schema(allowedValues)
                 );
             }
@@ -104,7 +104,7 @@ public class SwaggerConfig {
                         .name(filter.getSingleQueryParam()) // TODO multi-param filters
                         .in("query")
                         .description(filter.getDescription())
-                        .style(Parameter.StyleEnum.SIMPLE)
+                        .style(Parameter.StyleEnum.FORM)
                         .schema(new StringSchema()));
                 }
             }

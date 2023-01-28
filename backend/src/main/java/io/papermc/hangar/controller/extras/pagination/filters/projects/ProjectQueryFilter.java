@@ -31,29 +31,23 @@ public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance, St
         return new ProjectQueryFilterInstance(this.getValue(webRequest));
     }
 
-    static class ProjectQueryFilterInstance implements Filter.FilterInstance {
-
-        private final String query;
-
-        ProjectQueryFilterInstance(final String query) {
-            this.query = query;
-        }
+    public record ProjectQueryFilterInstance(String query) implements Filter.FilterInstance {
 
         @Override
-        public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
-            sb.append(" AND (hp.search_words @@ websearch_to_tsquery");
-            if (!this.query.endsWith(" ")) {
-                sb.append("_postfix");
+            public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
+                sb.append(" AND (hp.search_words @@ websearch_to_tsquery");
+                if (!this.query.endsWith(" ")) {
+                    sb.append("_postfix");
+                }
+                sb.append("('english', :query)").append(")");
+                q.bind("query", this.query.trim());
             }
-            sb.append("('english', :query)").append(")");
-            q.bind("query", this.query.trim());
-        }
 
-        @Override
-        public String toString() {
-            return "ProjectQueryFilterInstance{" +
-                "query='" + this.query + '\'' +
-                '}';
+            @Override
+            public String toString() {
+                return "ProjectQueryFilterInstance{" +
+                        "query='" + this.query + '\'' +
+                        '}';
+            }
         }
-    }
 }
