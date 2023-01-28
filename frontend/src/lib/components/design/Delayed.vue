@@ -4,7 +4,7 @@ import Transitioned from "~/lib/components/design/Transitioned.vue";
 
 const props = withDefaults(
   defineProps<{
-    delay: number;
+    delay?: number;
   }>(),
   {
     delay: 300,
