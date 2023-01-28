@@ -4,6 +4,7 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.HangarStatsDAO;
 import io.papermc.hangar.db.dao.internal.table.stats.ProjectVersionDownloadStatsDAO;
 import io.papermc.hangar.db.dao.internal.table.stats.ProjectViewsDAO;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.stats.ProjectVersionDownloadIndividualTable;
 import io.papermc.hangar.model.db.stats.ProjectViewIndividualTable;
 import io.papermc.hangar.model.identified.ProjectIdentified;
@@ -53,12 +54,13 @@ public class StatService extends HangarComponent {
         this.setCookie(cookie);
     }
 
-    public <T extends VersionIdentified & ProjectIdentified> void addVersionDownload(final T versionIdentified) {
+    @Transactional
+    public <T extends VersionIdentified & ProjectIdentified> void addVersionDownload(final T versionIdentified, final Platform platform) {
         final Long userId = this.getHangarUserId();
         final InetAddress address = RequestUtil.getRemoteInetAddress(this.request);
-        final Optional<String> existingCookie = this.projectVersionDownloadStatsDAO.getIndividualView(userId, address).map(ProjectVersionDownloadIndividualTable::getCookie);
+        final Optional<String> existingCookie = this.projectVersionDownloadStatsDAO.getIndividualDownload(userId, address).map(ProjectVersionDownloadIndividualTable::getCookie);
         final String cookie = existingCookie.orElse(Optional.ofNullable(WebUtils.getCookie(this.request, STAT_TRACKING_COOKIE)).map(Cookie::getValue).orElse(UUID.randomUUID().toString()));
-        this.projectVersionDownloadStatsDAO.insert(new ProjectVersionDownloadIndividualTable(address, cookie, userId, versionIdentified.getProjectId(), versionIdentified.getVersionId()));
+        this.projectVersionDownloadStatsDAO.insert(new ProjectVersionDownloadIndividualTable(address, cookie, userId, versionIdentified.getProjectId(), versionIdentified.getVersionId(), platform));
         this.setCookie(cookie);
     }
 
@@ -73,10 +75,10 @@ public class StatService extends HangarComponent {
         );
     }
 
-    private void processStats(final String individualTable, final String dayTable, final String statColumn, final boolean includeVersionId) {
+    private void processStats(final String individualTable, final String dayTable, final String statColumn, final boolean downloads) {
         this.hangarStatsDAO.fillStatsUserIdsFromOthers(individualTable);
-        this.hangarStatsDAO.processStatsMain(individualTable, dayTable, statColumn, true, includeVersionId);
-        this.hangarStatsDAO.processStatsMain(individualTable, dayTable, statColumn, false, includeVersionId);
+        this.hangarStatsDAO.processStatsMain(individualTable, dayTable, statColumn, true, downloads);
+        this.hangarStatsDAO.processStatsMain(individualTable, dayTable, statColumn, false, downloads);
         this.hangarStatsDAO.deleteOldIndividual(individualTable);
     }
 

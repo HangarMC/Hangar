@@ -15,9 +15,9 @@ import org.springframework.stereotype.Repository;
 public interface ProjectVersionDownloadStatsDAO {
 
     @Timestamped
-    @SqlUpdate("INSERT INTO project_versions_downloads_individual (created_at, project_id, version_id, address, cookie, user_id) VALUES (:now, :projectId, :versionId, :address, :cookie, :userId)")
+    @SqlUpdate("INSERT INTO project_versions_downloads_individual (created_at, project_id, version_id, address, cookie, user_id, platform) VALUES (:now, :projectId, :versionId, :address, :cookie, :userId, :platform)")
     void insert(@BindBean ProjectVersionDownloadIndividualTable projectVersionDownloadIndividualTable);
 
     @SqlQuery("SELECT * FROM project_versions_downloads_individual WHERE address = :address OR (:userId IS NOT NULL AND user_id = :userId) LIMIT 1")
-    Optional<ProjectVersionDownloadIndividualTable> getIndividualView(Long userId, InetAddress address);
+    Optional<ProjectVersionDownloadIndividualTable> getIndividualDownload(Long userId, InetAddress address);
 }

@@ -196,4 +196,11 @@ public class VersionController extends HangarComponent {
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
+    @GetMapping("/version/{versionId}/{platform}/track")
+    public void trackDownload(@PathVariable final long versionId, @PathVariable final Platform platform) {
+        this.versionService.trackDownload(versionId, platform);
+    }
 }

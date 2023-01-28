@@ -26,7 +26,6 @@ import DownloadButton from "~/components/projects/DownloadButton.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
-import ComingSoon from "~/lib/components/design/ComingSoon.vue";
 import Spoiler from "~/lib/components/design/Spoiler.vue";
 import PlatformVersionEditModal from "~/components/modals/PlatformVersionEditModal.vue";
 
@@ -296,9 +295,15 @@ async function restoreVersion() {
             </td>
           </tr>
           <tr>
-            <th class="text-left">{{ i18n.t("project.info.totalDownloads", 0) }}</th>
+            <th class="text-left">Total {{ i18n.t("project.info.totalDownloads", 0) }}</th>
             <td class="text-right">
-              <ComingSoon>{{ version.stats.downloads }}</ComingSoon>
+              {{ version.stats.totalDownloads }}
+            </td>
+          </tr>
+          <tr v-for="platform in Object.keys(version.stats.platformDownloads)" :key="platform">
+            <th class="text-left">{{ useBackendData.platforms.get(platform).name }} {{ i18n.t("project.info.totalDownloads", 0) }}</th>
+            <td class="text-right">
+              {{ version.stats.platformDownloads[platform] }}
             </td>
           </tr>
         </table>

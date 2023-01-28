@@ -11,7 +11,6 @@ import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import DonationModal from "~/components/donation/DonationModal.vue";
 import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
-import ComingSoon from "~/lib/components/design/ComingSoon.vue";
 
 const props = defineProps<{
   project: HangarProject;
@@ -64,7 +63,7 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
           <tr>
             <th class="text-left">{{ i18n.t("project.info.totalDownloads", 0) }}</th>
             <td class="text-right">
-              <ComingSoon>{{ project.stats.downloads }}</ComingSoon>
+              {{ project.stats.downloads }}
             </td>
           </tr>
           <tr>

@@ -11,7 +11,8 @@ declare module "hangar-api" {
   }
 
   interface VersionStats {
-    downloads: number;
+    totalDownloads: number;
+    platformDownloads: Record<Platform, number>;
   }
 
   interface FileInfo {

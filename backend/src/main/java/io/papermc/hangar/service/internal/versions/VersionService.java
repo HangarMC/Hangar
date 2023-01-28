@@ -6,12 +6,14 @@ import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
+import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
@@ -36,9 +38,10 @@ public class VersionService extends HangarComponent {
     private final ProjectFiles projectFiles;
     private final ProjectsDAO projectsDAO;
     private final FileService fileService;
+    private final StatService statService;
 
     @Autowired
-    public VersionService(final ProjectVersionsDAO projectVersionDAO, final HangarVersionsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final ProjectVersionVisibilityService projectVersionVisibilityService, final VersionDependencyService versionDependencyService, final ProjectFiles projectFiles, final ProjectsDAO projectsDAO, final FileService fileService) {
+    public VersionService(final ProjectVersionsDAO projectVersionDAO, final HangarVersionsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final ProjectVersionVisibilityService projectVersionVisibilityService, final VersionDependencyService versionDependencyService, final ProjectFiles projectFiles, final ProjectsDAO projectsDAO, final FileService fileService, final StatService statService) {
         this.projectVersionsDAO = projectVersionDAO;
         this.hangarVersionsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
@@ -47,6 +50,7 @@ public class VersionService extends HangarComponent {
         this.projectFiles = projectFiles;
         this.projectsDAO = projectsDAO;
         this.fileService = fileService;
+        this.statService = statService;
     }
 
     public @Nullable ProjectVersionTable getProjectVersionTable(final Long versionId) {
@@ -148,5 +152,13 @@ public class VersionService extends HangarComponent {
     public void saveDiscourseData(final ProjectVersionTable version, final long postId) {
         version.setPostId(postId);
         this.projectVersionsDAO.update(version);
+    }
+
+    public void trackDownload(final long versionId, final Platform platform) {
+        final ProjectVersionTable pvt = this.projectVersionsDAO.getProjectVersionTable(versionId);
+        if (pvt == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+        this.statService.addVersionDownload(pvt, platform);
     }
 }

@@ -9,6 +9,7 @@ import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import { useBackendData } from "~/store/backendData";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
+import { useInternalApi } from "~/composables/useApi";
 
 const i18n = useI18n();
 
@@ -62,6 +63,13 @@ const singleVersion = computed<DownloadableVersion | undefined>(() => {
 const platformDownloadLink = computed(() => downloadLink(singlePlatform.value, singleVersion.value));
 
 const external = computed(() => false);
+
+function trackDownload(platform: Platform, version: DownloadableVersion & { id?: number; versionId: number }) {
+  // hangar version has id, pinned version has versionId...
+  const id = version.id || version.versionId;
+  console.log("track", id, platform, version);
+  useInternalApi(`versions/version/${id}/${platform}/track`);
+}
 </script>
 
 <template>
@@ -80,6 +88,8 @@ const external = computed(() => false);
         :href="downloadLink(p, pinnedVersion)"
         target="_blank"
         rel="noopener noreferrer"
+        @click="trackDownload(p, pinnedVersion)"
+        @click.middle="trackDownload(p, pinnedVersion)"
       >
         <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
         {{ useBackendData.platforms.get(p)?.name }}
@@ -87,7 +97,14 @@ const external = computed(() => false);
       </DropdownItem>
     </DropdownButton>
 
-    <a v-else-if="singlePlatform && singleVersion" :href="platformDownloadLink" target="_blank" rel="noopener noreferrer">
+    <a
+      v-else-if="singlePlatform && singleVersion"
+      :href="platformDownloadLink"
+      target="_blank"
+      rel="noopener noreferrer"
+      @click="trackDownload(singlePlatform, singleVersion)"
+      @click.middle="trackDownload(singlePlatform, singleVersion)"
+    >
       <Button :size="small ? 'medium' : 'large'">
         <div class="flex flex-col" :class="{ '-mb-0.5': showSinglePlatform }">
           <div class="inline-flex items-center">
@@ -118,6 +135,8 @@ const external = computed(() => false);
         class="flex items-center"
         target="_blank"
         rel="noopener noreferrer"
+        @click="trackDownload(p, version)"
+        @click.middle="trackDownload(p, version)"
       >
         <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
         {{ useBackendData.platforms.get(p)?.name }}
@@ -139,6 +158,8 @@ const external = computed(() => false);
         :href="downloadLink(p, v)"
         target="_blank"
         rel="noopener noreferrer"
+        @click="trackDownload(p, v)"
+        @click.middle="trackDownload(p, v)"
       >
         <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
         {{ useBackendData.platforms.get(p)?.name }}

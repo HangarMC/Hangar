@@ -1,6 +1,7 @@
 package io.papermc.hangar.db.dao.v1;
 
 import io.papermc.hangar.db.extras.BindPagination;
+import io.papermc.hangar.db.mappers.VersionStatsMapper;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
@@ -14,6 +15,7 @@ import java.util.SortedSet;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.enums.EnumStrategy;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
+import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.UseEnumStrategy;
 import org.jdbi.v3.sqlobject.config.ValueColumn;
@@ -29,116 +31,126 @@ import org.springframework.stereotype.Repository;
 public interface VersionsApiDAO {
 
     @KeyColumn("id")
-    @SqlQuery("SELECT pv.id," +
-        "       pv.created_at," +
-        "       pv.version_string," +
-        "       pv.visibility," +
-        "       pv.description," +
-        "       coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_downloads," +
-        "       u.name author," +
-        "       pv.review_state," +
-        "       pv.post_id," +
-        "       pc.created_at pc_created_at," +
-        "       pc.name pc_name," +
-        "       pc.color pc_color," +
-        "       pc.flags pc_flags," +
-        "       CASE" +
-        "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'" +
-        "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
-        "           ELSE 'NONE'" +
-        "       END AS pinnedStatus" +
-        "   FROM project_versions pv" +
-        "       JOIN project_channels pc ON pv.channel_id = pc.id" +
-        "       JOIN projects p ON pv.project_id = p.id" +
-        "       LEFT JOIN users u ON pv.author_id = u.id" +
-        "   WHERE " +
-        "       <if(!canSeeHidden)>" +
-        "           (pv.visibility = 0 " +
-        "           <if(userId)>" +
-        "               OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4) " +
-        "           <endif>)" +
-        "           AND" +
-        "       <endif>" +
-        "       pv.id = :versionId" +
-        "   ORDERED BY pv.created_at DESC"
-    )
+    @RegisterColumnMapper(VersionStatsMapper.class)
+    @SqlQuery("""
+        SELECT pv.id,
+               pv.created_at,
+               pv.version_string,
+               pv.visibility,
+               pv.description,
+               coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_totalDownloads,
+               (select array_agg(d) from (SELECT pvd.platform, pvd.downloads FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id) d) vs_platformDownloads,
+               u.name author,
+               pv.review_state,
+               pv.post_id,
+               pc.created_at pc_created_at,
+               pc.name pc_name,
+               pc.color pc_color,
+               pc.flags pc_flags,
+               CASE
+                   WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'
+                   WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'
+                   ELSE 'NONE'
+               END AS pinnedStatus
+           FROM project_versions pv
+               JOIN project_channels pc ON pv.channel_id = pc.id
+               JOIN projects p ON pv.project_id = p.id
+               LEFT JOIN users u ON pv.author_id = u.id
+           WHERE
+               <if(!canSeeHidden)>
+                   (pv.visibility = 0
+                   <if(userId)>
+                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)
+                   <endif>)
+                   AND
+               <endif>
+               pv.id = :versionId
+           ORDERED BY pv.created_at DESC
+    """)
     Map.Entry<Long, Version> getVersion(long versionId, @Define boolean canSeeHidden, @Define Long userId);
 
     @KeyColumn("id")
-    @SqlQuery("SELECT pv.id," +
-        "       pv.created_at," +
-        "       pv.version_string," +
-        "       pv.visibility," +
-        "       pv.description," +
-        "       coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_downloads," +
-        "       u.name author," +
-        "       pv.review_state," +
-        "       pv.post_id," +
-        "       pc.created_at pc_created_at," +
-        "       pc.name pc_name," +
-        "       pc.color pc_color," +
-        "       pc.flags pc_flags," +
-        "       CASE" +
-        "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'" +
-        "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
-        "           ELSE 'NONE'" +
-        "       END AS pinnedStatus" +
-        "   FROM project_versions pv" +
-        "       JOIN project_channels pc ON pv.channel_id = pc.id" +
-        "       JOIN projects p ON pv.project_id = p.id" +
-        "       LEFT JOIN users u ON pv.author_id = u.id" +
-        "   WHERE " +
-        "       <if(!canSeeHidden)>" +
-        "           (pv.visibility = 0 " +
-        "           <if(userId)>" +
-        "               OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4) " +
-        "           <endif>)" +
-        "           AND" +
-        "       <endif>" +
-        "       lower(p.owner_name) = lower(:author) AND" +
-        "       lower(p.slug) = lower(:slug) AND" +
-        "       pv.version_string = :versionString"
-    )
+    @RegisterColumnMapper(VersionStatsMapper.class)
+    @SqlQuery("""
+        SELECT pv.id,
+               pv.created_at,
+               pv.version_string,
+               pv.visibility,
+               pv.description,
+               coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_totalDownloads,
+               (select array_agg(d) from (SELECT pvd.platform, pvd.downloads FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id) d) vs_platformDownloads,
+               u.name author,
+               pv.review_state,
+               pv.post_id,
+               pc.created_at pc_created_at,
+               pc.name pc_name,
+               pc.color pc_color,
+               pc.flags pc_flags,
+               CASE
+                   WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'
+                   WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'
+                   ELSE 'NONE'
+               END AS pinnedStatus
+           FROM project_versions pv
+               JOIN project_channels pc ON pv.channel_id = pc.id
+               JOIN projects p ON pv.project_id = p.id
+               LEFT JOIN users u ON pv.author_id = u.id
+           WHERE
+               <if(!canSeeHidden)>
+                   (pv.visibility = 0
+                   <if(userId)>
+                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)
+                   <endif>)
+                   AND
+               <endif>
+               lower(p.owner_name) = lower(:author) AND
+               lower(p.slug) = lower(:slug) AND
+               pv.version_string = :versionString
+    """)
     Map.Entry<Long, Version> getVersionWithVersionString(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
 
     @KeyColumn("id")
-    @SqlQuery("SELECT pv.id," +
-        "       pv.created_at," +
-        "       pv.version_string," +
-        "       pv.visibility," +
-        "       pv.description," +
-        "       coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_downloads," +
-        "       u.name author," +
-        "       pv.review_state," +
-        "       pv.post_id," +
-        "       pc.created_at pc_created_at," +
-        "       pc.name pc_name," +
-        "       pc.color pc_color," +
-        "       pc.flags pc_flags," +
-        "       CASE" +
-        "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'" +
-        "           WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'" +
-        "           ELSE 'NONE'" +
-        "       END AS pinnedStatus" +
-        "   FROM project_versions pv" +
-        "       JOIN projects p ON pv.project_id = p.id" +
-        "       JOIN project_channels pc ON pv.channel_id = pc.id" +
-        "       LEFT JOIN users u ON pv.author_id = u.id" +
-        "       INNER JOIN (SELECT array_agg(DISTINCT plv.platform) platforms, pvpd.version_id" +
-        "           FROM project_version_platform_dependencies pvpd" +
-        "               JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
-        "           GROUP BY pvpd.version_id" +
-        "       ) sq ON pv.id = sq.version_id" +
-        "   WHERE TRUE <filters>" +
-        "       <if(!canSeeHidden)>" +
-        "           AND (pv.visibility = 0 " +
-        "           <if(userId)>" +
-        "               OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4) " +
-        "           <endif>)" +
-        "       <endif>" +
-        "       AND lower(p.owner_name) = lower(:author) AND" +
-        "       lower(p.slug) = lower(:slug) " +
-        " GROUP BY pv.id, p.id, u.name, pc.id, pv.created_at ORDER BY pv.created_at DESC <offsetLimit>")
+    @RegisterColumnMapper(VersionStatsMapper.class)
+    @SqlQuery("""
+        SELECT pv.id,
+               pv.created_at,
+               pv.version_string,
+               pv.visibility,
+               pv.description,
+               coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_totalDownloads,
+               (select array_agg(d) from (SELECT pvd.platform, pvd.downloads FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id) d) vs_platformDownloads,
+               u.name author,
+               pv.review_state,
+               pv.post_id,
+               pc.created_at pc_created_at,
+               pc.name pc_name,
+               pc.color pc_color,
+               pc.flags pc_flags,
+               CASE
+                   WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'
+                   WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'
+                   ELSE 'NONE'
+               END AS pinnedStatus
+           FROM project_versions pv
+               JOIN projects p ON pv.project_id = p.id
+               JOIN project_channels pc ON pv.channel_id = pc.id
+               LEFT JOIN users u ON pv.author_id = u.id
+               INNER JOIN (SELECT array_agg(DISTINCT plv.platform) platforms, pvpd.version_id
+                   FROM project_version_platform_dependencies pvpd
+                       JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
+                   GROUP BY pvpd.version_id
+               ) sq ON pv.id = sq.version_id
+           WHERE TRUE <filters>
+               <if(!canSeeHidden)>
+                   AND (pv.visibility = 0
+                   <if(userId)>
+                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)
+                   <endif>)
+               <endif>
+               AND lower(p.owner_name) = lower(:author) AND
+               lower(p.slug) = lower(:slug)
+         GROUP BY pv.id, p.id, u.name, pc.id, pv.created_at ORDER BY pv.created_at DESC <offsetLimit>
+    """)
     SortedMap<Long, Version> getVersions(String author, String slug, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
     @SqlQuery("SELECT count(DISTINCT pv.id)" +
@@ -184,20 +196,19 @@ public interface VersionsApiDAO {
         "   GROUP BY pv.platform")
     Map<Platform, SortedSet<String>> getPlatformDependencies(long versionId);
 
-    // TODO this might be totally screwed up by adding the platform check
     @KeyColumn("date")
     @RegisterConstructorMapper(value = VersionStats.class, prefix = "vs")
-    @SqlQuery("SELECT cast(dates.day AS date) date, coalesce(pvd.downloads, 0) vs_downloads" +
-        "    FROM projects p," +
-        "         project_versions pv" +
-        "           JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
-        "           JOIN platform_versions plv ON pvpd.platform_version_id = plv.id," +
-        "         (SELECT generate_series(:fromDate::date, :toDate::date, INTERVAL '1 DAY') AS day) dates" +
-        "             LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day" +
-        "    WHERE lower(p.owner_name) = lower(:author)" +
-        "      AND lower(p.slug) = lower(:slug)" +
-        "      AND pv.version_string = :versionString" +
-        "      AND plv.platform = :platform" +
-        "      AND (pvd IS NULL OR (pvd.project_id = p.id AND pvd.version_id = pv.id));")
+    @SqlQuery("""
+        SELECT cast(dates.day AS date) date, coalesce(pvd.downloads, 0) vs_totalDownloads
+        FROM projects p,
+             project_versions pv,
+             (SELECT generate_series(:fromDate::date, :toDate::date, INTERVAL '1 DAY') AS day) dates
+                 LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day
+        WHERE lower(p.owner_name) = lower(:author)
+          AND lower(p.slug) = lower(:slug)
+          AND pv.version_string = :versionString
+          AND pvd.platform = :platform
+          AND (pvd IS NULL OR (pvd.project_id = p.id AND pvd.version_id = pv.id));
+    """)
     Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, @EnumByOrdinal Platform platform, OffsetDateTime fromDate, OffsetDateTime toDate);
 }

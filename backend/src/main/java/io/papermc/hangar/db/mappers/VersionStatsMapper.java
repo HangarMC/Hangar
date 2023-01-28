@@ -1,0 +1,29 @@
+package io.papermc.hangar.db.mappers;
+
+import io.papermc.hangar.model.common.Platform;
+import org.jdbi.v3.core.mapper.ColumnMapper;
+import org.jdbi.v3.core.statement.StatementContext;
+import org.postgresql.util.PGobject;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.EnumMap;
+import java.util.Map;
+
+public class VersionStatsMapper implements ColumnMapper<Map<Platform, Long>> {
+    @Override
+    public Map<Platform, Long> map(final ResultSet r, final int columnNumber, final StatementContext ctx) throws SQLException {
+        final Map<Platform, Long> result = new EnumMap<>(Platform.class);
+        final Object[] array = (Object[]) r.getArray(columnNumber).getArray();
+        for (final Object entry : array) {
+            final PGobject pgObject = (PGobject) entry;
+            if (pgObject.getValue() == null) {
+                continue;
+            }
+            final String val = pgObject.getValue().substring(1, pgObject.getValue().length() -1);
+            final String[] split = val.split(",");
+            result.put(Platform.values()[Integer.parseInt(split[0])], Long.parseLong(split[1]));
+        }
+        return result;
+    }
+}

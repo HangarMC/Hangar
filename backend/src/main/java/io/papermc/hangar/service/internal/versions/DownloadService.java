@@ -123,7 +123,6 @@ public class DownloadService extends HangarComponent {
             }
         }
 
-        this.statService.addVersionDownload(pvt);
         this.response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + download.getFileName() + "\"");
         return this.fileService.getResource(path);
     }
