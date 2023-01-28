@@ -10,10 +10,12 @@ const props = withDefaults(
     items: T[];
     itemsPerPage?: number;
     serverPagination?: Pagination;
+    alwaysShow?: boolean;
   }>(),
   {
     itemsPerPage: 10,
     serverPagination: undefined,
+    alwaysShow: false,
   }
 );
 
@@ -63,7 +65,7 @@ function updatePage(newPage: number) {
 
 <template>
   <slot v-for="(item, idx) in slicedItems" :key="idx" :item="item" :idx="idx" />
-  <slot name="pagination" :page="page" :update-page="updatePage" :pages="pageCount">
+  <slot v-if="alwaysShow || pageCount > 1" name="pagination" :page="page" :update-page="updatePage" :pages="pageCount">
     <PaginationButtons :page="page" :pages="pageCount" @update:page="updatePage" />
   </slot>
 </template>
