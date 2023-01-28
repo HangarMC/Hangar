@@ -101,7 +101,7 @@ public class FakeDataService extends HangarComponent {
         final String projectName = this.normalize(this.faker.funnyName().name() + "_" + this.faker.minecraft().animalName());
         final String quote = this.faker.theItCrowd().quotes();
         final NewProjectForm newProject = new NewProjectForm(settings,
-            Category.values()[this.faker.random().nextInt(Category.values().length)],
+            Category.VALID_CATEGORIES.get(this.faker.random().nextInt(Category.VALID_CATEGORIES.size())),
             quote.substring(0, Math.min(quote.length(), 254)),
             ownerId,
             projectName.substring(0, Math.min(projectName.length(), 24)),

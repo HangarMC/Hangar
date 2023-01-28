@@ -26,6 +26,8 @@ public enum Category {
     MISC(9, "mdi-asterisk", "misc"),
     UNDEFINED(10, "", "undefined", false);
 
+    public static final List<Category> VALID_CATEGORIES = Arrays.stream(Category.values()).filter(c -> c != UNDEFINED).toList();
+
     private final int value;
     private final String icon;
     private final boolean isVisible;
