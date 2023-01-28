@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
 import { computed, isRef, ref, watch } from "vue";
 import { useHead } from "@vueuse/head";
@@ -26,11 +25,11 @@ const route = useRoute();
 const router = useRouter();
 
 const sorters = [
-  { id: "-updated", label: i18n.t("project.sorting.recentlyUpdated") },
-  { id: "-newest", label: i18n.t("project.sorting.newest") },
   { id: "-stars", label: i18n.t("project.sorting.mostStars") },
   { id: "-downloads", label: i18n.t("project.sorting.mostDownloads") },
   { id: "-recent_downloads", label: i18n.t("project.sorting.recentDownloads") },
+  { id: "-newest", label: i18n.t("project.sorting.newest") },
+  { id: "-updated", label: i18n.t("project.sorting.recentlyUpdated") },
 ];
 
 const toArray = (input: unknown) => (Array.isArray(input) ? input : input ? [input] : []);
@@ -41,7 +40,7 @@ const filters = ref({
   licenses: toArray(route.query.license),
 });
 
-const activeSorter = ref<string>((route.query.sort as string) || "-updated");
+const activeSorter = ref<string>((route.query.sort as string) || "-stars");
 const page = ref(route.query.page ? Number(route.query.page) : 0);
 const query = ref<string>((route.query.q as string) || "");
 const loggedOut = ref<boolean>("loggedOut" in route.query);
@@ -157,42 +156,25 @@ useHead(meta);
         <!-- Text Input -->
         <input
           v-model="query"
-          class="rounded-l-md p-4 basis-full min-w-0 dark:bg-gray-700"
+          class="rounded-md p-4 basis-full min-w-0 dark:bg-gray-700"
           type="text"
           :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
         />
+      </div>
+      <div class="justify-center inline-flex gap-1">
         <!-- Sorting Button -->
-        <Menu>
-          <MenuButton class="bg-gradient-to-r from-[#004ee9] to-[#367aff] rounded-r-md text-left font-semibold flex items-center gap-2 text-white p-2">
-            <span class="whitespace-nowrap">{{ i18n.t("hangar.projectSearch.sortBy") }}</span>
-            <icon-mdi-sort-variant class="text-xl pointer-events-none" />
-          </MenuButton>
-          <transition
-            enter-active-class="transition duration-100 ease-out"
-            enter-from-class="transform scale-95 opacity-0"
-            enter-to-class="transform scale-100 opacity-100"
-            leave-active-class="transition duration-75 ease-out"
-            leave-from-class="transform scale-100 opacity-100"
-            leave-to-class="transform scale-95 opacity-0"
+        <div v-for="sorter in sorters" :key="sorter.id">
+          <button
+            :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': activeSorter === sorter.id }"
+            class="rounded-lg px-4 py-2 text-left hover:(bg-gray-100 dark:bg-gray-700)"
+            @click="activeSorter = sorter.id"
           >
-            <MenuItems
-              class="absolute right-0 top-15 flex flex-col z-10 background-default filter shadow-default drop-shadow-md rounded border-top-primary border-t-3"
-            >
-              <MenuItem v-for="sorter in sorters" :key="sorter.id" v-slot="{ active }">
-                <button
-                  :class="{ 'bg-gray-100 dark:bg-gray-700': active, 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': activeSorter === sorter.id }"
-                  class="px-4 py-2 text-left"
-                  @click="activeSorter = sorter.id"
-                >
-                  {{ sorter.label }}
-                </button>
-              </MenuItem>
-            </MenuItems>
-          </transition>
-        </Menu>
+            {{ sorter.label }}
+          </button>
+        </div>
       </div>
     </Container>
-    <Container class="mt-5" lg="flex items-start gap-6">
+    <Container class="mt-4" lg="flex items-start gap-6">
       <!-- Projects -->
       <div v-if="projects" class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
         <ProjectList :projects="projects" @update:page="(newPage) => (page = newPage)" />
