@@ -82,7 +82,7 @@ watch(selectedFile, (newValue) => {
 
 async function openModal() {
   try {
-    const response = await fetch(props.avatar);
+    const response = await fetch(props.avatar, { cache: "no-cache" });
     const data = await response.blob();
     reader?.readAsDataURL(data);
   } catch (e) {
