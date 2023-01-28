@@ -5,6 +5,7 @@ import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.postgresql.util.PGobject;
 
+import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.EnumMap;
@@ -14,7 +15,11 @@ public class VersionStatsMapper implements ColumnMapper<Map<Platform, Long>> {
     @Override
     public Map<Platform, Long> map(final ResultSet r, final int columnNumber, final StatementContext ctx) throws SQLException {
         final Map<Platform, Long> result = new EnumMap<>(Platform.class);
-        final Object[] array = (Object[]) r.getArray(columnNumber).getArray();
+        Array arr = r.getArray(columnNumber);
+        if (arr == null) {
+            return result;
+        }
+        final Object[] array = (Object[]) arr.getArray();
         for (final Object entry : array) {
             final PGobject pgObject = (PGobject) entry;
             if (pgObject.getValue() == null) {
