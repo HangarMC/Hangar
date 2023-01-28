@@ -50,10 +50,18 @@ function visibleCss(value: boolean) {
 
 <template>
   <div class="flex gap-2 justify-center">
-    <Button :style="visibleCss(page > 0)" :disabled="page <= 0" aria-label="First page" @click="gotoPage(0)">&lt;&lt;</Button>
-    <Button :style="visibleCss(page > 0)" :disabled="page <= 0" aria-label="Prev page" @click="gotoPage(page - 1)">&lt;</Button>
-    <Button v-for="index in options" :key="index" :disabled="page === index - 1" :aria-label="'Page ' + index" @click="gotoPage(index - 1)">{{ index }}</Button>
-    <Button :style="visibleCss(page < pages - 1)" :disabled="page >= pages - 1" aria-label="Next page" @click="gotoPage(page + 1)">&gt;</Button>
-    <Button :style="visibleCss(page < pages - 1)" :disabled="page >= pages - 1" aria-label="Last page" @click="gotoPage(pages - 1)">&gt;&gt;</Button>
+    <Button :style="visibleCss(page > 0)" :disabled="page <= 0" aria-label="First page" @click="gotoPage(0)">«</Button>
+    <Button :style="visibleCss(page > 0)" :disabled="page <= 0" aria-label="Prev page" @click="gotoPage(page - 1)">‹</Button>
+    <Button
+      v-for="index in options"
+      :key="index"
+      :aria-label="'Page ' + index"
+      :class="{ 'bg-slate-500 dark:bg-slate-700 cursor-not-allowed': page === index - 1 }"
+      @click="gotoPage(index - 1)"
+    >
+      {{ index }}
+    </Button>
+    <Button :style="visibleCss(page < pages - 1)" :disabled="page >= pages - 1" aria-label="Next page" @click="gotoPage(page + 1)">›</Button>
+    <Button :style="visibleCss(page < pages - 1)" :disabled="page >= pages - 1" aria-label="Last page" @click="gotoPage(pages - 1)">»</Button>
   </div>
 </template>
