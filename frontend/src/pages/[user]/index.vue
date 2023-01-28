@@ -126,7 +126,7 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
 
 <template>
   <div>
-    <UserHeader :user="user" :organization="organization" />
+    <UserHeader :viewing-user="user" :organization="organization" />
     <div class="flex-basis-full flex flex-col gap-2 flex-grow md:max-w-2/3 md:min-w-1/3">
       <div v-for="project in pinned" :key="project.namespace">
         <ProjectCard :project="project"></ProjectCard>
@@ -181,11 +181,12 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
             </template>
 
             <ul>
-              <li v-for="(orgRole, orgName) in organizations" :key="orgName">
+              <li v-for="(org, orgName) in organizations" :key="orgName">
                 <router-link :to="'/' + orgName" class="flex items-center mb-2">
-                  <UserAvatar :username="orgName" :avatar-url="orgRole.avatarUrl" size="xs" :disable-link="true" class="flex-shrink-0 mr-2" />
-                  {{ orgName }} ({{ orgRole.role.title }})
+                  <UserAvatar :username="orgName" :avatar-url="org.avatarUrl" size="xs" :disable-link="true" class="flex-shrink-0 mr-2" />
+                  {{ orgName }}
                   <span class="flex-grow"></span>
+                  <Tag :color="{ background: org.role.color }" :name="org.role.title" class="ml-1" />
                   <IconMdiEyeOffOutline v-if="organizationVisibility && organizationVisibility[orgName]" class="ml-1" />
                 </router-link>
               </li>
