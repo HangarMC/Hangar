@@ -21,7 +21,7 @@ function updatePage(newPage: number) {
 <template>
   <Pagination v-if="projects?.result" :items="projects.result" :server-pagination="projects.pagination" @update:page="updatePage">
     <template #default="{ item }">
-      <ProjectCard :project="item"></ProjectCard>
+      <ProjectCard :project="item" />
     </template>
   </Pagination>
   <div v-if="projects?.result.length === 0">{{ i18n.t("hangar.projectSearch.noProjects") }}</div>
