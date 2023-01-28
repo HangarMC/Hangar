@@ -283,25 +283,19 @@ async function restoreVersion() {
             <td class="text-right">{{ i18n.d(version.createdAt, "date") }}</td>
           </tr>
           <tr>
-            <th class="text-left">{{ i18n.t("project.info.license") }}</th>
-            <td v-if="!project.settings.license.type || project.settings.license.type === 'Unspecified'" class="text-right">
-              {{ project.settings.license.type }}
-            </td>
-            <td v-else-if="project.settings.license.type === '(custom)'" class="text-right">
-              <Link :href="project.settings.license.url || undefined" target="_blank" rel="noreferrer noopener">{{ project.settings.license.name }}</Link>
-            </td>
-            <td v-else class="text-right">
-              <Link :href="project.settings.license.url || undefined" target="_blank" rel="noreferrer noopener">{{ project.settings.license.type }}</Link>
-            </td>
-          </tr>
-          <tr>
-            <th class="text-left">Total {{ i18n.t("project.info.totalDownloads", 0) }}</th>
+            <th class="text-left">
+              {{ i18n.t(hasPerms(NamedPermission.IS_SUBJECT_MEMBER) ? "project.info.totalTotalDownloads" : "project.info.totalDownloads", 0) }}
+            </th>
             <td class="text-right">
               {{ version.stats.totalDownloads }}
             </td>
           </tr>
-          <tr v-for="platform in Object.keys(version.stats.platformDownloads)" :key="platform">
-            <th class="text-left">{{ useBackendData.platforms.get(platform).name }} {{ i18n.t("project.info.totalDownloads", 0) }}</th>
+          <!-- Only show per platform downloads to project members, otherwise not too relevant and only adding to height -->
+          <tr v-for="platform in hasPerms(NamedPermission.IS_SUBJECT_MEMBER) ? Object.keys(version.stats.platformDownloads) : []" :key="platform">
+            <th class="text-left inline-flex">
+              <PlatformLogo :platform="platform" :size="24" class="mr-1" />
+              {{ i18n.t("project.info.totalDownloads", 0) }}
+            </th>
             <td class="text-right">
               {{ version.stats.platformDownloads[platform] }}
             </td>

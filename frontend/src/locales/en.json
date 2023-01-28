@@ -272,6 +272,8 @@
       "license": "License",
       "views": "Views | View | Views",
       "totalDownloads": "Downloads | Download | Downloads",
+      "totalTotalDownloads": "Total Downloads | Total Download | Total Downloads",
+      "perPlatformDownloads": "Platform downloads",
       "stars": "Stars | Star | Stars",
       "watchers": "Watchers | Watcher | Watchers",
       "lastUpdatedTooltip": "Last updated {0}",

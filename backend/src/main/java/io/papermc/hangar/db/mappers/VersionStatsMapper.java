@@ -15,19 +15,23 @@ public class VersionStatsMapper implements ColumnMapper<Map<Platform, Long>> {
     @Override
     public Map<Platform, Long> map(final ResultSet r, final int columnNumber, final StatementContext ctx) throws SQLException {
         final Map<Platform, Long> result = new EnumMap<>(Platform.class);
-        Array arr = r.getArray(columnNumber);
+        final Array arr = r.getArray(columnNumber);
         if (arr == null) {
             return result;
         }
+
         final Object[] array = (Object[]) arr.getArray();
         for (final Object entry : array) {
             final PGobject pgObject = (PGobject) entry;
             if (pgObject.getValue() == null) {
                 continue;
             }
-            final String val = pgObject.getValue().substring(1, pgObject.getValue().length() -1);
+
+            final String val = pgObject.getValue().substring(1, pgObject.getValue().length() - 1);
             final String[] split = val.split(",");
-            result.put(Platform.values()[Integer.parseInt(split[0])], Long.parseLong(split[1]));
+            final int platformIndex = Integer.parseInt(split[0]);
+            final long downloads = Long.parseLong(split[1]);
+            result.put(Platform.getValues()[platformIndex], downloads);
         }
         return result;
     }

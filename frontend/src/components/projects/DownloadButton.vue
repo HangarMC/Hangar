@@ -67,7 +67,7 @@ const external = computed(() => false);
 function trackDownload(platform: Platform, version: DownloadableVersion & { id?: number; versionId: number }) {
   // hangar version has id, pinned version has versionId...
   const id = version.id || version.versionId;
-  console.log("track", id, platform, version);
+  console.debug("track", id, platform, version);
   useInternalApi(`versions/version/${id}/${platform}/track`);
 }
 </script>

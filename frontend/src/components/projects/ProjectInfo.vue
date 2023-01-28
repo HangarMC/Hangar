@@ -46,22 +46,22 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
               </template>
             </td>
             <td v-else class="text-right">
-              <Link v-if="project.settings.license.url" :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">{{
-                project.settings.license.type
-              }}</Link>
+              <Link v-if="project.settings.license.url" :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">
+                {{ project.settings.license.type }}
+              </Link>
               <template v-else>
                 {{ project.settings.license.type }}
               </template>
             </td>
           </tr>
-          <tr>
-            <th class="text-left">{{ i18n.t("project.info.views", 0) }}</th>
+          <tr v-if="hasPerms(NamedPermission.IS_SUBJECT_MEMBER)">
+            <th class="text-left">{{ i18n.t("project.info.views", project.stats.views) }}</th>
             <td class="text-right">
               {{ project.stats.views }}
             </td>
           </tr>
           <tr>
-            <th class="text-left">{{ i18n.t("project.info.totalDownloads", 0) }}</th>
+            <th class="text-left">{{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}</th>
             <td class="text-right">
               {{ project.stats.downloads }}
             </td>
