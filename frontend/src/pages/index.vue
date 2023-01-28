@@ -166,7 +166,7 @@ useHead(meta);
         <div v-for="sorter in sorters" :key="sorter.id">
           <button
             :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': activeSorter === sorter.id }"
-            class="rounded-lg px-4 py-2 text-left hover:(bg-gray-100 dark:bg-gray-700)"
+            class="rounded-lg py-2 lt-sm:px-1 sm:px-2 md:px-4 hover:(bg-gray-300 dark:bg-gray-700)"
             @click="activeSorter = sorter.id"
           >
             {{ sorter.label }}
