@@ -258,7 +258,9 @@ useHead(useSeo(t("importer.title"), null, route, null));
             </div>
             <Spoiler title="Description" :open="false" class="!max-w-full mt-2">
               <template #content>
-                <MarkdownEditor :raw="project.pageContent" :editing="true" :deletable="false" :saveable="false" :cancellable="false" noPaddingTop />
+                <ClientOnly>
+                  <MarkdownEditor :raw="project.pageContent" :editing="true" :deletable="false" :saveable="false" :cancellable="false" noPaddingTop />
+                </ClientOnly>
               </template>
             </Spoiler>
             <Spoiler title="Additional Information" :open="false" class="!max-w-full mt-2">

@@ -127,21 +127,21 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
 <template>
   <div>
     <UserHeader :viewing-user="user" :organization="organization" />
-    <div class="flex-basis-full flex flex-col gap-2 flex-grow md:max-w-2/3 md:min-w-1/3">
+    <div class="flex-basis-full flex flex-col gap-2 flex-grow lg:max-w-7/10 lg:min-w-6/10">
       <div v-for="project in pinned" :key="project.namespace">
-        <ProjectCard :project="project"></ProjectCard>
+        <ProjectCard :project="project" />
       </div>
     </div>
 
-    <div class="flex gap-4 flex-basis-full flex-col md:flex-row">
-      <div class="flex-basis-full flex flex-col gap-2 flex-grow md:max-w-2/3 md:min-w-1/3">
+    <div class="flex gap-4 flex-basis-full flex-col lg:flex-row">
+      <div class="flex-basis-full flex flex-col gap-2 flex-grow lg:max-w-7/10 lg:min-w-6/10">
         <div class="flex gap-2">
           <InputText v-model="query" :label="i18n.t('hangar.projectSearch.query')" />
           <InputSelect v-model="activeSorter" :values="sorters" item-text="label" item-value="id" :label="i18n.t('hangar.projectSearch.sortBy')" />
         </div>
         <ProjectList :projects="projects" @update:page="(newPage) => (page = newPage)" />
       </div>
-      <div class="flex-basis-full flex-grow md:max-w-1/3 md:min-w-1/3">
+      <div class="flex-basis-full flex-grow lg:max-w-3/10 lg:min-w-2/10">
         <Card
           v-if="buttons.length !== 0 || (organization && hasPerms(NamedPermission.IS_SUBJECT_OWNER))"
           class="mb-4 border-solid border-top-4 border-top-red-500 dark:border-top-red-500"

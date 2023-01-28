@@ -150,7 +150,7 @@ useHead(meta);
     <Container class="flex flex-col items-center gap-4">
       <Alert v-if="loggedOut" type="success">{{ i18n.t("hangar.loggedOut") }}</Alert>
       <h1 class="text-3xl font-bold uppercase text-center mt-4">{{ i18n.t("hangar.projectSearch.title") }}</h1>
-      <h2 class="text-1xl text-center my-2">{{ i18n.t("hangar.projectSearch.subTitle") }}</h2>
+      <h2 class="text-1xl text-center mb-2">{{ i18n.t("hangar.projectSearch.subTitle") }}</h2>
       <!-- Search Bar -->
       <div class="relative rounded-md flex shadow-md w-full max-w-screen-md">
         <!-- Text Input -->
@@ -174,7 +174,7 @@ useHead(meta);
         </div>
       </div>
     </Container>
-    <Container class="mt-4" lg="flex items-start gap-6">
+    <Container lg="flex items-start gap-6">
       <!-- Projects -->
       <div v-if="projects" class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
         <ProjectList :projects="projects" @update:page="(newPage) => (page = newPage)" />
