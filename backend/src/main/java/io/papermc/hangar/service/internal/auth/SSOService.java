@@ -168,10 +168,12 @@ public class SSOService {
         }
         // check that last change was long ago
         final List<UserNameChange> userNameHistory = this.userDAO.getUserNameHistory(user.getUuid());
-        userNameHistory.sort(Comparator.comparing(UserNameChange::date).reversed());
-        final OffsetDateTime nextChange = userNameHistory.get(0).date().plus(this.hangarConfig.user.nameChangeInterval(), ChronoUnit.DAYS);
-        if (!userNameHistory.isEmpty() && nextChange.isAfter(OffsetDateTime.now())) {
-            throw WebHookException.of("You can't change your name that soon! You have to wait till " + nextChange.format(DateTimeFormatter.RFC_1123_DATE_TIME));
+        if (!userNameHistory.isEmpty()) {
+            userNameHistory.sort(Comparator.comparing(UserNameChange::date).reversed());
+            final OffsetDateTime nextChange = userNameHistory.get(0).date().plus(this.hangarConfig.user.nameChangeInterval(), ChronoUnit.DAYS);
+            if (nextChange.isAfter(OffsetDateTime.now())) {
+                throw WebHookException.of("You can't change your name that soon! You have to wait till " + nextChange.format(DateTimeFormatter.RFC_1123_DATE_TIME));
+            }
         }
         // record the change into the db
         this.userDAO.recordNameChange(user.getUuid(), user.getName(), newName);
