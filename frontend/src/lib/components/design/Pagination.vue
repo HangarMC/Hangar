@@ -1,6 +1,6 @@
 <script lang="ts" setup generic="T extends Record<string, any>">
-import { computed, ref, watch } from "vue";
 import { type Pagination } from "hangar-api";
+import { computed, ref, watch } from "vue";
 import PaginationButtons from "~/lib/components/design/PaginationButtons.vue";
 
 type T = Record<string, any>; // remove when https://github.com/vuejs/rfcs/discussions/436 lands or when using volar
@@ -11,11 +11,13 @@ const props = withDefaults(
     itemsPerPage?: number;
     serverPagination?: Pagination;
     alwaysShow?: boolean;
+    resetAnchor?: Element;
   }>(),
   {
     itemsPerPage: 10,
     serverPagination: undefined,
     alwaysShow: false,
+    resetAnchor: undefined,
   }
 );
 
@@ -59,6 +61,9 @@ const emit = defineEmits<{
 }>();
 function updatePage(newPage: number) {
   page.value = newPage;
+  if (process.client && props.resetAnchor) {
+    window.scrollBy(0, props.resetAnchor.getBoundingClientRect().y);
+  }
   emit("update:page", newPage);
 }
 </script>
