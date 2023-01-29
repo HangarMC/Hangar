@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.model.api.project.ProjectDonationSettings;
@@ -26,6 +27,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import net.datafaker.Faker;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +52,7 @@ public class FakeDataService extends HangarComponent {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = CacheConfig.PROJECTS, allEntries = true)
     public void generate(final int users, final int projectsPerUser) {
         final HangarAuthenticationToken oldAuth = (HangarAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         try {

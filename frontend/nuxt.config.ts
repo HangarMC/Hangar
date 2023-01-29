@@ -4,6 +4,7 @@ import IconsResolver from "unplugin-icons/resolver";
 import Icons from "unplugin-icons/vite";
 import Components from "unplugin-vue-components/vite";
 import { ProxyOptions } from "@nuxt-alt/proxy";
+import { defineNuxtConfig } from "nuxt/config";
 import prettier from "./src/lib/plugins/prettier";
 import unocss from "./src/lib/config/unocss.config";
 
@@ -32,7 +33,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@nuxt-alt/proxy",
     "unplugin-icons/nuxt",
-    "@unlighthouse/nuxt",
+    // "@unlighthouse/nuxt",
     [
       "./src/module/backendData",
       {

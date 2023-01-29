@@ -8,6 +8,7 @@ const i18n = useI18n();
 
 defineProps<{
   projects: PaginatedResult<Project>;
+  resetAnchor?: Element;
 }>();
 
 const emit = defineEmits<{
@@ -19,7 +20,7 @@ function updatePage(newPage: number) {
 </script>
 
 <template>
-  <Pagination v-if="projects?.result" :items="projects.result" :server-pagination="projects.pagination" @update:page="updatePage">
+  <Pagination v-if="projects?.result" :items="projects.result" :server-pagination="projects.pagination" :reset-anchor="resetAnchor" @update:page="updatePage">
     <template #default="{ item }">
       <ProjectCard :project="item" />
     </template>

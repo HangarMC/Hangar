@@ -25,7 +25,7 @@ public class FakeDataController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/")
+    @GetMapping
     @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
     public void generateFakeData(@RequestParam final int users, @RequestParam final int projectsPerUser) {
         this.fakeDataService.generate(users, projectsPerUser);

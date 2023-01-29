@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
-import { computed, isRef, ref, watch } from "vue";
+import { computed, isRef, Ref, ref, watch } from "vue";
 import { useHead } from "@vueuse/head";
 import { useRoute, useRouter } from "vue-router";
 import { PaginatedResult, Project } from "hangar-api";
@@ -143,6 +143,9 @@ if (isRef(meta.script)) {
   meta.script = (meta.script || []) as [];
   meta.script.push(script);
 }
+
+const pageChangeScrollAnchor: Ref<Element | null> = ref(null);
+
 useHead(meta);
 </script>
 
@@ -150,7 +153,7 @@ useHead(meta);
   <div>
     <Container class="flex flex-col items-center gap-4">
       <Alert v-if="loggedOut" type="success">{{ i18n.t("hangar.loggedOut") }}</Alert>
-      <h1 class="text-3xl font-bold uppercase text-center mt-4">{{ i18n.t("hangar.projectSearch.title") }}</h1>
+      <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4">{{ i18n.t("hangar.projectSearch.title") }}</h1>
       <h2 class="text-1xl text-center mb-2">{{ i18n.t("hangar.projectSearch.subTitle") }}</h2>
       <!-- Search Bar -->
       <div class="relative rounded-md flex shadow-md w-full max-w-screen-md">
@@ -207,7 +210,7 @@ useHead(meta);
     <Container lg="flex items-start gap-6">
       <!-- Projects -->
       <div v-if="projects" class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
-        <ProjectList :projects="projects" @update:page="(newPage) => (page = newPage)" />
+        <ProjectList :projects="projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage) => (page = newPage)" />
       </div>
       <!-- Sidebar -->
       <Card accent class="min-w-300px flex flex-col gap-4">
