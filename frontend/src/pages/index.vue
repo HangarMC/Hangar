@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
 import { computed, isRef, ref, watch } from "vue";
 import { useHead } from "@vueuse/head";
@@ -156,17 +157,46 @@ useHead(meta);
         <!-- Text Input -->
         <input
           v-model="query"
-          class="rounded-md p-4 basis-full min-w-0 dark:bg-gray-700"
+          class="rounded-l-md md:rounded-md p-4 basis-full min-w-0 dark:bg-gray-700"
           type="text"
           :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
         />
+        <div class="md:hidden flex">
+          <Menu>
+            <MenuButton class="bg-gradient-to-r from-[#004ee9] to-[#367aff] rounded-r-md text-left font-semibold flex items-center gap-2 text-white p-2">
+              <span class="whitespace-nowrap">{{ i18n.t("hangar.projectSearch.sortBy") }}</span>
+              <icon-mdi-sort-variant class="text-xl pointer-events-none" />
+            </MenuButton>
+            <transition
+              enter-active-class="transition duration-100 ease-out"
+              enter-from-class="transform scale-95 opacity-0"
+              enter-to-class="transform scale-100 opacity-100"
+              leave-active-class="transition duration-75 ease-out"
+              leave-from-class="transform scale-100 opacity-100"
+              leave-to-class="transform scale-95 opacity-0"
+            >
+              <MenuItems
+                class="absolute right-0 top-15 flex flex-col z-10 background-default filter shadow-default drop-shadow-md rounded border-top-primary border-t-3"
+              >
+                <MenuItem v-for="sorter in sorters" :key="sorter.id" v-slot="{ active }">
+                  <button
+                    :class="{ 'bg-gray-100 dark:bg-gray-700': active, 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': activeSorter === sorter.id }"
+                    class="px-4 py-2 text-left"
+                    @click="activeSorter = sorter.id"
+                  >
+                    {{ sorter.label }}
+                  </button>
+                </MenuItem>
+              </MenuItems>
+            </transition>
+          </Menu>
+        </div>
       </div>
-      <div class="justify-center inline-flex gap-1">
-        <!-- Sorting Button -->
+      <div class="justify-center inline-flex gap-1 lt-md:hidden">
         <div v-for="sorter in sorters" :key="sorter.id">
           <button
             :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': activeSorter === sorter.id }"
-            class="rounded-lg py-2 lt-sm:px-1 sm:px-2 md:px-4 hover:(bg-gray-300 dark:bg-gray-700)"
+            class="rounded-lg py-2 px-4 hover:(bg-gray-300 dark:bg-gray-700)"
             @click="activeSorter = sorter.id"
           >
             {{ sorter.label }}
