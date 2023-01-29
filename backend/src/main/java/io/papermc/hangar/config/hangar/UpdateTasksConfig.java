@@ -7,5 +7,9 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.boot.convert.DurationUnit;
 
 @ConfigurationProperties(prefix = "hangar.homepage")
-public record HomepageConfig(@DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration updateInterval) {
+public record UpdateTasksConfig(
+    @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration homepage,
+    @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("5") Duration versionDownloads,
+    @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("20") Duration projectViews
+) {
 }

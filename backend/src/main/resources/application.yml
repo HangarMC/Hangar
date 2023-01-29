@@ -94,8 +94,10 @@ hangar:
       image: /images/sponsors/minidigger.png
       link: https://benndorf.dev
 
-  homepage:
-    update-interval: 10m
+  update-tasks:
+    homepage: 10m
+    version-downloads: 5m
+    project-views: 20m
 
   channels:
     max-name-len: 15

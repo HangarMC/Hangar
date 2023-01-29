@@ -47,6 +47,6 @@ public interface HangarStatsDAO {
     """)
     void processStatsMain(@Define String individualTable, @Define String dayTable, @Define String statColumn, @Define boolean withUserId, @Define boolean downloads);
 
-    @SqlUpdate("DELETE FROM <table> WHERE processed != 0 AND created_at < now() - '10 days'::INTERVAL")
+    @SqlUpdate("DELETE FROM <table> WHERE processed != 0 AND created_at < now() - '7 days'::INTERVAL")
     void deleteOldIndividual(@Define String table);
 }

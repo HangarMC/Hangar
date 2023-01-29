@@ -75,7 +75,8 @@ public class StatService extends HangarComponent {
         );
     }
 
-    private void processStats(final String individualTable, final String dayTable, final String statColumn, final boolean downloads) {
+    @Transactional
+    void processStats(final String individualTable, final String dayTable, final String statColumn, final boolean downloads) {
         this.hangarStatsDAO.fillStatsUserIdsFromOthers(individualTable);
         this.hangarStatsDAO.processStatsMain(individualTable, dayTable, statColumn, true, downloads);
         this.hangarStatsDAO.processStatsMain(individualTable, dayTable, statColumn, false, downloads);

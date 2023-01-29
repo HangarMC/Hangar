@@ -18,14 +18,18 @@ public class DbUpdateTask {
         this.statService = statService;
     }
 
-    @Scheduled(fixedRateString = "#{@hangarConfig.homepage.updateInterval.toMillis()}")
+    @Scheduled(fixedRateString = "#{@hangarConfig.updateTasks.homepage.toMillis()}")
     public void refreshHomePage() {
         this.projectService.refreshHomeProjects();
     }
 
-    @Scheduled(fixedRateString = "#{@hangarConfig.homepage.updateInterval.toMillis()}", initialDelay = 1000)
-    public void updateStats() {
-        this.statService.processProjectViews();
+    @Scheduled(fixedRateString = "#{@hangarConfig.updateTasks.versionDownloads.toMillis()}", initialDelay = 1000)
+    public void updateVersionDownloads() {
         this.statService.processVersionDownloads();
+    }
+
+    @Scheduled(fixedRateString = "#{@hangarConfig.updateTasks.projectViews.toMillis()}", initialDelay = 1000)
+    public void updateProjectViews() {
+        this.statService.processProjectViews();
     }
 }
