@@ -119,7 +119,7 @@ defineExpose({ dependencies, reset });
         <td>
           <InputText
             v-if="selectedTab[index] !== 'url'"
-            v-model.trim="dep.namespace.slug"
+            :model-value="dep.namespace?.slug"
             dense
             hide-details
             flat
