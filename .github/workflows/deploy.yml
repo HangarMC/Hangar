@@ -130,7 +130,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push frontend Dockerfile
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: chart/dockerfiles/frontend/Dockerfile
@@ -150,7 +150,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push backend Dockerfile
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: chart/dockerfiles/backend/Dockerfile
