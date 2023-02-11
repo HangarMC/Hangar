@@ -60,7 +60,13 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
   >
     <template #default="slotProps">
       <select v-model="internalVal" :disabled="disabled" :class="slotProps.class" class="appearance-none" @blur="v.$touch()">
-        <option v-for="val in values" :key="val[itemValue] || val" :value="val[itemValue] || val" class="dark:bg-[#191e28]">
+        <option
+          v-for="val in values"
+          :key="val[itemValue] || val"
+          :value="val[itemValue] || val"
+          class="dark:bg-[#191e28]"
+          :selected="internalVal === val[itemValue] || internalVal === val"
+        >
           {{ i18nTextValues ? i18n.t(val[itemText] || val) : val[itemText] || val }}
         </option>
       </select>
