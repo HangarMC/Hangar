@@ -32,6 +32,7 @@ import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import { useApi } from "~/composables/useApi";
 import { useRouter } from "#imports";
 import InputText from "~/lib/components/ui/InputText.vue";
+import Tag from "~/components/Tag.vue";
 
 const props = defineProps<{
   user: User;
