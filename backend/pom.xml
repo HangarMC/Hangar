@@ -35,7 +35,7 @@
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20220924</org-json.version>
         <bucket4j.version>7.6.0</bucket4j.version>
-        <datafaker.version>1.7.0</datafaker.version>
+        <datafaker.version>1.8.0</datafaker.version>
         <apache-commons-lang.version>3.12.0</apache-commons-lang.version>
         <jwt.version>4.2.2</jwt.version>
         <jetbrains-annotations.version>24.0.0</jetbrains-annotations.version>
