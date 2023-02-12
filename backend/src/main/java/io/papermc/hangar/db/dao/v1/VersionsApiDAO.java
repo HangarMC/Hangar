@@ -135,7 +135,7 @@ public interface VersionsApiDAO {
                JOIN projects p ON pv.project_id = p.id
                JOIN project_channels pc ON pv.channel_id = pc.id
                LEFT JOIN users u ON pv.author_id = u.id
-               INNER JOIN (SELECT array_agg(DISTINCT plv.platform) platforms, pvpd.version_id
+               INNER JOIN (SELECT array_agg(DISTINCT plv.platform) platforms, array_agg(DISTINCT plv.version) versions, pvpd.version_id
                    FROM project_version_platform_dependencies pvpd
                        JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
                    GROUP BY pvpd.version_id
@@ -157,7 +157,7 @@ public interface VersionsApiDAO {
         "   FROM project_versions pv" +
         "       JOIN projects p ON pv.project_id = p.id" +
         "       JOIN project_channels pc ON pv.channel_id = pc.id" +
-        "       INNER JOIN (SELECT array_agg(DISTINCT plv.platform) platforms, pvpd.version_id" +
+        "       INNER JOIN (SELECT array_agg(DISTINCT plv.platform) platforms, array_agg(DISTINCT plv.version) versions, pvpd.version_id" +
         "           FROM project_version_platform_dependencies pvpd" +
         "               JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
         "           GROUP BY pvpd.version_id" +
