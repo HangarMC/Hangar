@@ -6,10 +6,9 @@ import { useRoute, useRouter } from "vue-router";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import { Platform } from "~/types/enums";
-import { useBackendData } from "~/store/backendData";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
-import InputTag from "~/lib/components/ui/InputTag.vue";
+import VersionSelector from "~/components/VersionSelector.vue";
 
 const props = defineProps<{
   project: HangarProject;
@@ -46,7 +45,9 @@ function save() {
 
 <template>
   <Modal :title="i18n.t('version.edit.platformVersions', [platform.name])" window-classes="w-200">
-    <InputTag v-model="selectedVersions" :options="platform.possibleVersions" />
+    <div class="flex flex-row flex-wrap gap-5">
+      <VersionSelector v-model="selectedVersions" :versions="platform.possibleVersions" open />
+    </div>
 
     <Button class="mt-3" :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
     <template #activator="{ on }">

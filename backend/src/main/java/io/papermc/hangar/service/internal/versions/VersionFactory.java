@@ -424,7 +424,7 @@ public class VersionFactory extends HangarComponent {
                 }
             }
 
-            if (pendingVersion.getPlatformDependencies().entrySet().stream().anyMatch(en -> !new HashSet<>(this.platformService.getVersionsForPlatform(en.getKey())).containsAll(en.getValue()))) {
+            if (pendingVersion.getPlatformDependencies().entrySet().stream().anyMatch(en -> !new HashSet<>(this.platformService.getFullVersionsForPlatform(en.getKey())).containsAll(en.getValue()))) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPlatformVersion");
             }
         }

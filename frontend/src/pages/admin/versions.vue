@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import { computed, ref } from "vue";
+import { computed, Ref, ref } from "vue";
 import { cloneDeep, isEqual } from "lodash-es";
 import { useHead } from "@vueuse/head";
+import { PlatformVersion } from "hangar-internal";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useBackendData } from "~/store/backendData";
 import { useInternalApi } from "~/composables/useApi";
@@ -15,6 +16,7 @@ import Table from "~/lib/components/design/Table.vue";
 import { useSeo } from "~/composables/useSeo";
 import { useNotificationStore } from "~/lib/store/notification";
 import { definePageMeta } from "#imports";
+import { Platform } from "~/types/enums";
 
 definePageMeta({
   globalPermsRequired: ["MANUAL_VALUE_CHANGES"],
@@ -26,17 +28,31 @@ const router = useRouter();
 const notification = useNotificationStore();
 
 const platformMap = useBackendData.platforms;
-const originalPlatforms = platformMap ? [...platformMap.values()] : [];
-const platforms = ref(cloneDeep(originalPlatforms));
+const platforms = platformMap ? [...platformMap.values()] : [];
 const loading = ref<boolean>(false);
 
 useHead(useSeo(i18n.t("platformVersions.title"), null, route, null));
 
+const fullVersions: Ref<Record<Platform, string[]>> = ref({
+  PAPER: [],
+  WATERFALL: [],
+  VELOCITY: [],
+});
+reset();
+
+function versions(versions: PlatformVersion[]): string[] {
+  const fullVersions = [];
+  for (const version of versions) {
+    fullVersions.push(version.version, ...version.subVersions);
+  }
+  return fullVersions;
+}
+
 async function save() {
   loading.value = true;
   const data: { [key: string]: string[] } = {};
-  for (const pl of platforms.value || []) {
-    data[pl.enumName] = pl.possibleVersions;
+  for (const pl of platforms || []) {
+    data[pl.enumName] = fullVersions.value[pl.enumName];
   }
   try {
     await useInternalApi("admin/platformVersions", "post", data);
@@ -49,10 +65,10 @@ async function save() {
 }
 
 function reset() {
-  platforms.value = cloneDeep(originalPlatforms);
+  for (const platform of useBackendData.platforms.values()) {
+    fullVersions.value[platform.enumName] = versions(platform.possibleVersions);
+  }
 }
-
-const hasChanged = computed(() => !isEqual(platforms.value, originalPlatforms));
 </script>
 
 <template>
@@ -70,7 +86,7 @@ const hasChanged = computed(() => !isEqual(platforms.value, originalPlatforms));
           <tr v-for="platform in platforms" :key="platform.name">
             <td>{{ platform.name }}</td>
             <td>
-              <InputTag v-model="platform.possibleVersions"></InputTag>
+              <InputTag v-model="fullVersions[platform.enumName]"></InputTag>
             </td>
           </tr>
         </tbody>
@@ -79,8 +95,8 @@ const hasChanged = computed(() => !isEqual(platforms.value, originalPlatforms));
       <template #footer>
         <span class="flex justify-end items-center gap-2">
           Updates may take a while to take effect!
-          <Button :disabled="!hasChanged" @click="reset">{{ i18n.t("general.reset") }}</Button>
-          <Button :disabled="loading || !hasChanged" @click="save"> {{ i18n.t("platformVersions.saveChanges") }}</Button>
+          <Button @click="reset">{{ i18n.t("general.reset") }}</Button>
+          <Button :disabled="loading" @click="save"> {{ i18n.t("platformVersions.saveChanges") }}</Button>
         </span>
       </template>
     </Card>

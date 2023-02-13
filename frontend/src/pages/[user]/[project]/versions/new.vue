@@ -22,7 +22,7 @@ import { formatSize } from "~/lib/composables/useFile";
 import ChannelModal from "~/components/modals/ChannelModal.vue";
 import { useBackendData } from "~/store/backendData";
 import DependencyTable from "~/components/projects/DependencyTable.vue";
-import InputTag from "~/lib/components/ui/InputTag.vue";
+import VersionSelector from "~/components/VersionSelector.vue";
 import Tabs from "~/lib/components/design/Tabs.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import { useProjectChannels } from "~/composables/useApiHelper";
@@ -369,12 +369,13 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
       <div class="flex flex-wrap space-y-5 mb-8">
         <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
           <span class="text-lg inline-flex items-center"><PlatformLogo :platform="platform.enumName" :size="25" class="mr-1" /> {{ platform.name }}</span>
-          <div class="mt-2">
-            <InputTag
+          <div class="ml-1 flex flex-row flex-wrap gap-5">
+            <VersionSelector
               v-if="pendingVersion"
               v-model="pendingVersion.platformDependencies[platform.enumName]"
-              :options="platform.possibleVersions"
+              :versions="platform.possibleVersions"
               :rules="platformVersionRules"
+              open
             />
           </div>
         </div>

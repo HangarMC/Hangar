@@ -5,6 +5,7 @@ import { computed, isRef, Ref, ref, watch } from "vue";
 import { useHead } from "@vueuse/head";
 import { useRoute, useRouter } from "vue-router";
 import { PaginatedResult, Project } from "hangar-api";
+import { PlatformVersion } from "hangar-internal";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { useBackendData, useVisibleCategories, useVisiblePlatforms } from "~/store/backendData";
 import ProjectList from "~/components/projects/ProjectList.vue";
@@ -20,6 +21,7 @@ import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
 import LicenseLogo from "~/components/logos/licenses/LicenseLogo.vue";
 import { useConfig } from "~/lib/composables/useConfig";
+import VersionSelector from "~/components/VersionSelector.vue";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -102,23 +104,21 @@ async function checkOffsetLargerCount() {
   }
 }
 
-function versions(platform: Platform) {
+function versions(platform: Platform): PlatformVersion[] {
   const platformData = useBackendData.platforms?.get(platform);
   if (!platformData) {
     return [];
   }
 
-  return [...platformData.possibleVersions].reverse().map((k) => {
-    return { version: k };
-  });
+  return platformData.possibleVersions;
 }
 
 function updatePlatform(platform: any) {
   filters.value.platform = platform;
 
-  const allowedVersion = versions(platform);
+  const allowedVersion: PlatformVersion[] = versions(platform);
   filters.value.versions = filters.value.versions.filter((existingVersion) => {
-    return allowedVersion.find((allowedNewVersion) => allowedNewVersion.version === existingVersion);
+    return allowedVersion.find((allowedNewVersion) => allowedNewVersion === existingVersion);
   });
 }
 
@@ -233,14 +233,8 @@ useHead(meta);
         </div>
         <div v-if="filters.platform" class="versions">
           <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions") }}</h4>
-          <div class="flex flex-col gap-1 max-h-30 overflow-auto">
-            <InputCheckbox
-              v-for="version in versions(filters.platform)"
-              :key="version.version"
-              v-model="filters.versions"
-              :value="version.version"
-              :label="version.version"
-            />
+          <div class="flex flex-col gap-1 max-h-40 overflow-auto">
+            <VersionSelector v-model="filters.versions" :versions="versions(filters.platform)" :open="false" />
           </div>
         </div>
         <div class="categories">
