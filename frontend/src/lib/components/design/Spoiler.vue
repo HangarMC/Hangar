@@ -46,4 +46,8 @@ const open = ref(props.open);
   list-style: none;
   padding: 0.2rem;
 }
+
+.spoiler-details summary::-webkit-details-marker {
+  display: none;
+}
 </style>

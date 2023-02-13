@@ -34,7 +34,7 @@ const { v } = useValidation(props.label, undefined, internalVal, undefined);
       @blur="v.$touch()"
     />
     <icon-mdi-check-bold class="absolute h-4 w-4 opacity-0 text-white" />
-    <slot></slot>
+    <slot />
     <slot name="label">
       <template v-if="props.label">{{ props.label }}</template>
     </slot>
