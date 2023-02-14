@@ -41,12 +41,24 @@ const props = withDefaults(
   }
 );
 
-function getValue(val: Record<string, string>) {
-  return typeof props.itemValue === "function" ? props.itemValue(val) : val[props.itemValue];
+function getValue(val: any) {
+  if (typeof props.itemValue === "function") {
+    return props.itemValue(val);
+  } else if (val[props.itemValue]) {
+    return val[props.itemValue];
+  } else {
+    return val as string;
+  }
 }
 
-function getText(val: Record<string, string>) {
-  return typeof props.itemText === "function" ? props.itemText(val) : val[props.itemText];
+function getText(val: any) {
+  if (typeof props.itemText === "function") {
+    return props.itemText(val);
+  } else if (val[props.itemText]) {
+    return val[props.itemText];
+  } else {
+    return val as string;
+  }
 }
 
 watch(internalVal, (val) => emit("search", val));
