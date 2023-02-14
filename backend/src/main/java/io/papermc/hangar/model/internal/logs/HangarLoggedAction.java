@@ -8,6 +8,7 @@ import io.papermc.hangar.model.internal.logs.viewmodels.LogSubject;
 import io.papermc.hangar.model.internal.logs.viewmodels.LogVersion;
 import java.net.InetAddress;
 import java.time.OffsetDateTime;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 
@@ -15,7 +16,6 @@ public class HangarLoggedAction extends Model {
 
     private final Long userId;
     private final String userName;
-    private final InetAddress address;
     private final LogAction<?> action;
     private final Context contextType;
     private final String newState;
@@ -24,6 +24,7 @@ public class HangarLoggedAction extends Model {
     private final LogVersion version;
     private final LogPage page;
     private final LogSubject subject;
+    private InetAddress address;
 
     public HangarLoggedAction(final OffsetDateTime createdAt, final Long userId, final String userName, final InetAddress address, final LogAction<?> action, @EnumByOrdinal final Context contextType, final String newState, final String oldState, @Nested("p_") final LogProject project, @Nested("pv_") final LogVersion version, @Nested("pp_") final LogPage page, @Nested("s_") final LogSubject subject) {
         super(createdAt);
@@ -48,8 +49,12 @@ public class HangarLoggedAction extends Model {
         return this.userName;
     }
 
-    public InetAddress getAddress() {
+    public @Nullable InetAddress getAddress() {
         return this.address;
+    }
+
+    public void hideAddress() {
+        this.address = null;
     }
 
     public LogAction<?> getAction() {

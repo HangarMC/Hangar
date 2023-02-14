@@ -5,6 +5,7 @@ import io.papermc.hangar.db.dao.internal.LoggedActionsDAO;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
 import io.papermc.hangar.model.api.requests.RequestPagination;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.log.LoggedActionTable;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
 import io.papermc.hangar.model.internal.logs.LoggedAction;
@@ -15,6 +16,7 @@ import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.util.RequestUtil;
+import java.util.List;
 import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,6 +63,12 @@ public class UserActionLogService extends HangarComponent {
 
     @Transactional
     public PaginatedResult<HangarLoggedAction> getLogs(final RequestPagination pagination) {
-        return new PaginatedResult<>(new Pagination(this.loggedActionsDAO.getLogCount(pagination), pagination), this.loggedActionsDAO.getLog(pagination));
+        final List<HangarLoggedAction> log = this.loggedActionsDAO.getLog(pagination);
+        if (!this.getHangarPrincipal().isAllowedGlobal(Permission.SeeIPAdresses)) {
+            for (final HangarLoggedAction hangarLoggedAction : log) {
+                hangarLoggedAction.hideAddress();
+            }
+        }
+        return new PaginatedResult<>(new Pagination(this.loggedActionsDAO.getLogCount(pagination), pagination), log);
     }
 }

@@ -19,7 +19,6 @@ import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.JobTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
-import io.papermc.hangar.model.db.roles.RoleTable;
 import io.papermc.hangar.model.internal.admin.health.MissingFileCheck;
 import io.papermc.hangar.model.internal.admin.health.UnhealthyProject;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
