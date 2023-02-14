@@ -10,6 +10,9 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 import { useNotificationStore } from "~/lib/store/notification";
+import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
+import { hasPerms } from "~/composables/usePerm";
+import { NamedPermission } from "~/types/enums";
 
 const props = defineProps<{
   user: User;
@@ -19,10 +22,11 @@ const i18n = useI18n();
 const router = useRouter();
 
 const comment = ref<string>("");
+const toggleProjectDeletion = ref<boolean>(false);
 
 async function confirm(close: () => void) {
   try {
-    await useInternalApi(`admin/lock-user/${props.user.name}/${!props.user.locked}`, "post", {
+    await useInternalApi(`admin/lock-user/${props.user.name}?locked=${!props.user.locked}&toggleProjectDeletion=${toggleProjectDeletion.value}`, "post", {
       content: comment.value,
     });
     close();
@@ -38,7 +42,11 @@ async function confirm(close: () => void) {
   <Modal :title="i18n.t(`author.lock.confirm${user.locked ? 'Unlock' : 'Lock'}`, [user.name])">
     <template #default="{ on }">
       <InputTextarea v-model="comment" />
-
+      <InputCheckbox
+        v-if="hasPerms(NamedPermission.DELETE_PROJECT)"
+        v-model="toggleProjectDeletion"
+        :label="props.user.locked ? 'Reinstate ALL deleted projects of user' : 'Delete ALL projects of user'"
+      />
       <Button button-type="primary" class="mt-3" @click="confirm(on.click)">{{ i18n.t("general.confirm") }}</Button>
     </template>
     <template #activator="{ on }">

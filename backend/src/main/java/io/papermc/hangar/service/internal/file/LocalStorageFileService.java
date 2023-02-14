@@ -68,9 +68,11 @@ public class LocalStorageFileService implements FileService {
             Files.createDirectories(newPath.getParent());
         }
 
-        Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
-        if (Files.notExists(newPath)) {
-            throw new IOException("Didn't successfully move");
+        if (Files.exists(oldPath)) {
+            Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
+            if (Files.notExists(newPath)) {
+                throw new IOException("Didn't successfully move");
+            }
         }
     }
 

@@ -166,7 +166,7 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
             </Link>
           </Tooltip>
 
-          <LockUserModal v-if="!isCurrentUser && !user.isOrganization && hasPerms(NamedPermission.IS_STAFF)" :user="user" />
+          <LockUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.IS_STAFF)" :user="user" />
         </Card>
 
         <template v-if="!user.isOrganization && organizations">

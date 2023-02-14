@@ -15,9 +15,12 @@ import io.papermc.hangar.db.dao.internal.table.roles.RolesDAO;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.NamedPermission;
+import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.JobTable;
 import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
 import io.papermc.hangar.model.internal.admin.health.MissingFileCheck;
 import io.papermc.hangar.model.internal.admin.health.UnhealthyProject;
@@ -34,6 +37,9 @@ import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.admin.HealthService;
 import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
+import io.papermc.hangar.service.internal.projects.ProjectAdminService;
+import io.papermc.hangar.service.internal.projects.ProjectFactory;
+import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.users.UserService;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
@@ -68,10 +74,13 @@ public class AdminController extends HangarComponent {
     private final UserService userService;
     private final ObjectMapper mapper;
     private final GlobalRoleService globalRoleService;
+    private final ProjectFactory projectFactory;
+    private final ProjectService projectService;
+    private final ProjectAdminService projectAdminService;
     private final RolesDAO rolesDAO;
 
     @Autowired
-    public AdminController(final PlatformService platformService, final StatService statService, final HealthService healthService, final JobService jobService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final RolesDAO rolesDAO) {
+    public AdminController(final PlatformService platformService, final StatService statService, final HealthService healthService, final JobService jobService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectService projectService, final ProjectAdminService projectAdminService, final RolesDAO rolesDAO) {
         this.platformService = platformService;
         this.statService = statService;
         this.healthService = healthService;
@@ -79,6 +88,9 @@ public class AdminController extends HangarComponent {
         this.userService = userService;
         this.mapper = mapper;
         this.globalRoleService = globalRoleService;
+        this.projectFactory = projectFactory;
+        this.projectService = projectService;
+        this.projectAdminService = projectAdminService;
         this.rolesDAO = rolesDAO;
     }
 
@@ -95,7 +107,6 @@ public class AdminController extends HangarComponent {
     @Transactional
     public void changeRoles(@RequestBody final List<@Valid ChangeRoleForm> roles) {
         for (final ChangeRoleForm role : roles) {
-            System.out.println(role.roleId());
             this.rolesDAO.update(role.roleId(), role.title(), role.color(), role.rank());
         }
     }
@@ -130,9 +141,20 @@ public class AdminController extends HangarComponent {
 
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.IS_STAFF)
-    @PostMapping(value = "/lock-user/{user}/{locked}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void setUserLock(@PathVariable final UserTable user, @PathVariable final boolean locked, @RequestBody @Valid final StringContent comment) {
+    @PostMapping(value = "/lock-user/{user}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void setUserLock(@PathVariable final UserTable user, @RequestParam final boolean locked, @RequestParam(required = false, defaultValue = "false") final boolean toggleProjectDeletion, @RequestBody @Valid final StringContent comment) {
         this.userService.setLocked(user, locked, comment.getContent());
+        if (!toggleProjectDeletion || !this.getHangarPrincipal().isAllowedGlobal(Permission.DeleteProject)) {
+            return;
+        }
+
+        for (final ProjectTable projectTable : this.projectService.getProjectTables(user.getUserId())) {
+            if (locked) {
+                this.projectFactory.softDelete(projectTable, comment.getContent());
+            } else {
+                this.projectAdminService.changeVisibility(projectTable.getProjectId(), Visibility.PUBLIC, comment.getContent());
+            }
+        }
     }
 
     @ResponseBody

@@ -90,6 +90,10 @@ public class ProjectService extends HangarComponent {
         return this.getProjectTable(author, slug, this.projectsDAO::getBySlug);
     }
 
+    public List<ProjectTable> getProjectTables(final long userId) {
+        return this.projectsDAO.getUserProjects(userId, true);
+    }
+
     public @Nullable ProjectOwner getProjectOwner(final long userId) {
         if (Objects.equals(this.getHangarUserId(), userId)) {
             return this.getHangarPrincipal();
