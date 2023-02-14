@@ -43,7 +43,11 @@ reset();
 function versions(versions: PlatformVersion[]): string[] {
   const fullVersions = [];
   for (const version of versions) {
-    fullVersions.push(version.version, ...version.subVersions);
+    if (version.subVersions.length !== 0) {
+      fullVersions.push(...version.subVersions);
+    } else {
+      fullVersions.push(version.version);
+    }
   }
   return fullVersions;
 }
