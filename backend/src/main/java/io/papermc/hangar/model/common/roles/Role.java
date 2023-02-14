@@ -10,39 +10,40 @@ import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+// TODO Remove this and the enums to keep everything data driven (see RoleData)
 public interface Role<T extends IRoleTable<? extends Role<T>>> {
 
     Map<String, Role<?>> VALUE_ROLES = new HashMap<>();
     Map<Long, Role<?>> ID_ROLES = new HashMap<>();
 
     static <C extends Enum<C> & Role<?>> void registerRole(final C roleEnum) {
-        if (ID_ROLES.containsKey(roleEnum.getRoleId()) || VALUE_ROLES.containsKey(roleEnum.getValue())) {
+        if (ID_ROLES.containsKey(roleEnum.roleId()) || VALUE_ROLES.containsKey(roleEnum.value())) {
             throw new IllegalArgumentException(roleEnum + " has a duplicate role ID or value");
         }
-        ID_ROLES.put(roleEnum.getRoleId(), roleEnum);
-        VALUE_ROLES.put(roleEnum.getValue(), roleEnum);
+        ID_ROLES.put(roleEnum.roleId(), roleEnum);
+        VALUE_ROLES.put(roleEnum.value(), roleEnum);
     }
 
     @NotNull
-    String getValue();
+    String value();
 
-    long getRoleId();
-
-    @NotNull
-    RoleCategory getRoleCategory();
+    long roleId();
 
     @NotNull
-    Permission getPermissions();
+    RoleCategory roleCategory();
 
     @NotNull
-    String getTitle();
+    Permission permissions();
 
     @NotNull
-    Color getColor();
+    String title();
 
-    boolean isAssignable();
+    @NotNull
+    Color color();
 
-    @Nullable Integer getRank();
+    boolean assignable();
+
+    @Nullable Integer rank();
 
     @NotNull
     T create(@Nullable Long principalId, @Nullable UUID principalUuid, long userId, boolean isAccepted);

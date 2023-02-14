@@ -59,7 +59,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
         }
 
         this.joinableNotificationService.invited(List.of(roleTable), joinable, this.getHangarUserId());
-        this.logInvitesSent(joinable, "Invited: " + userTable.getName() + " (" + invitee.getRole().getTitle() + ")");
+        this.logInvitesSent(joinable, "Invited: " + userTable.getName() + " (" + invitee.getRole().title() + ")");
     }
 
     @Transactional
@@ -115,7 +115,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
         this.memberService.addMember(roleTable);
         this.logInviteAccepted(roleTable, userTable);
 
-        if (roleTable.getRole().getRoleId() == this.getOwnerRole().getRoleId()) {
+        if (roleTable.getRole().roleId() == this.getOwnerRole().roleId()) {
             this.setOwner(this.getJoinable(roleTable.getPrincipalId()), userTable, false);
         }
     }
@@ -150,7 +150,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
     abstract LogAction<LC> getInviteAcceptAction();
 
     protected void logInviteAccepted(final RT roleTable, final UserTable userTable) {
-        roleTable.logAction(this.actionLogger, this.getInviteAcceptAction(), userTable.getName() + " accepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME));
+        roleTable.logAction(this.actionLogger, this.getInviteAcceptAction(), userTable.getName() + " accepted an invite for " + roleTable.getRole().title(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME));
     }
 
     @Transactional
@@ -162,7 +162,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
     abstract LogAction<LC> getInviteDeclineAction();
 
     protected void logInviteDeclined(final RT roleTable, final UserTable userTable) {
-        roleTable.logAction(this.actionLogger, this.getInviteDeclineAction(), userTable.getName() + " declined an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME));
+        roleTable.logAction(this.actionLogger, this.getInviteDeclineAction(), userTable.getName() + " declined an invite for " + roleTable.getRole().title(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME));
     }
 
 }

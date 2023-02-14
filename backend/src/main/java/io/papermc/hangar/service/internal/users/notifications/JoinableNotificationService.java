@@ -31,7 +31,7 @@ public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?
     public void invited(final Collection<RT> inviteeRoleTables, final J joinable, final long inviterId) {
         final Collection<NotificationTable> notificationTables = new HashSet<>();
         for (final RT rt : inviteeRoleTables) {
-            notificationTables.add(new NotificationTable(rt.getUserId(), "notifications", inviterId, new String[]{this.msgPrefix + "invite", rt.getRole().getTitle(), joinable.getName()}, NotificationType.INFO));
+            notificationTables.add(new NotificationTable(rt.getUserId(), "notifications", inviterId, new String[]{this.msgPrefix + "invite", rt.getRole().title(), joinable.getName()}, NotificationType.INFO));
         }
         this.notificationsDAO.insert(notificationTables);
     }
@@ -43,12 +43,12 @@ public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?
     public void removedFrom(final RT removedFromRoleTable, final J joinable, final @Nullable Long byUserId) {
         final String msgKey = this.msgPrefix + (removedFromRoleTable.isAccepted() ? "removed" : "inviteRescinded");
         this.notificationsDAO.insert(new NotificationTable(removedFromRoleTable.getUserId(), null, byUserId,
-            new String[]{msgKey, removedFromRoleTable.getRole().getTitle(), joinable.getName()}, NotificationType.WARNING));
+            new String[]{msgKey, removedFromRoleTable.getRole().title(), joinable.getName()}, NotificationType.WARNING));
     }
 
     public void roleChanged(final RT changedRoleTable, final J joinable, final @Nullable Long byUserId) {
         this.notificationsDAO.insert(new NotificationTable(changedRoleTable.getUserId(), null, byUserId,
-            new String[]{this.msgPrefix + "roleChanged", changedRoleTable.getRole().getTitle(), joinable.getName()}, NotificationType.INFO));
+            new String[]{this.msgPrefix + "roleChanged", changedRoleTable.getRole().title(), joinable.getName()}, NotificationType.INFO));
     }
 
 

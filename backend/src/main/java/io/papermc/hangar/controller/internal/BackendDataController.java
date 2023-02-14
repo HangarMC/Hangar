@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.customtypes.RoleCategory;
+import io.papermc.hangar.db.dao.internal.table.roles.RolesDAO;
 import io.papermc.hangar.model.Announcement;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.NamedPermission;
@@ -16,9 +18,7 @@ import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.common.projects.Visibility;
-import io.papermc.hangar.model.common.roles.GlobalRole;
-import io.papermc.hangar.model.common.roles.OrganizationRole;
-import io.papermc.hangar.model.common.roles.ProjectRole;
+import io.papermc.hangar.model.common.roles.RoleData;
 import io.papermc.hangar.model.internal.api.responses.Validations;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.security.annotations.Anyone;
@@ -50,13 +50,15 @@ public class BackendDataController {
     private final HangarConfig config;
     private final PlatformService platformService;
     private final Optional<GitProperties> gitProperties;
+    private final RolesDAO rolesDAO;
 
     @Autowired
-    public BackendDataController(final ObjectMapper mapper, final HangarConfig config, final PlatformService platformService, final Optional<GitProperties> gitProperties) {
+    public BackendDataController(final ObjectMapper mapper, final HangarConfig config, final PlatformService platformService, final Optional<GitProperties> gitProperties, final RolesDAO rolesDAO) {
         this.config = config;
         this.objectMapper = mapper.copy();
         this.platformService = platformService;
         this.gitProperties = gitProperties;
+        this.rolesDAO = rolesDAO;
         this.objectMapper.setAnnotationIntrospector(new JacksonAnnotationIntrospector() {
             @Override
             protected <A extends Annotation> A _findAnnotation(final Annotated annotated, final Class<A> annoClass) {
@@ -144,22 +146,22 @@ public class BackendDataController {
     @GetMapping("/projectRoles")
     @Cacheable(CacheConfig.PROJECT_ROLES)
     @ResponseBody
-    public List<ProjectRole> getAssignableProjectRoles() {
-        return ProjectRole.getAssignableRoles();
+    public List<RoleData> getAssignableProjectRoles() {
+        return this.rolesDAO.getAssignableRoles(RoleCategory.PROJECT);
     }
 
     @GetMapping("/globalRoles")
     @Cacheable(CacheConfig.GLOBAL_ROLES)
     @ResponseBody
-    public GlobalRole[] getGlobalRoles() {
-        return GlobalRole.getValues();
+    public List<RoleData> getGlobalRoles() {
+        return this.rolesDAO.getRoles(RoleCategory.GLOBAL);
     }
 
     @GetMapping("/orgRoles")
     @Cacheable(CacheConfig.ORG_ROLES)
     @ResponseBody
-    public List<OrganizationRole> getAssignableOrganizationRoles() {
-        return OrganizationRole.getAssignableRoles();
+    public List<RoleData> getAssignableOrganizationRoles() {
+        return this.rolesDAO.getAssignableRoles(RoleCategory.ORGANIZATION);
     }
 
     @GetMapping("/licenses")

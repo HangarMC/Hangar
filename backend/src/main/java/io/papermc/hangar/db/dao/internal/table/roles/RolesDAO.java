@@ -1,6 +1,9 @@
 package io.papermc.hangar.db.dao.internal.table.roles;
 
+import io.papermc.hangar.db.customtypes.RoleCategory;
+import io.papermc.hangar.model.common.roles.RoleData;
 import io.papermc.hangar.model.db.roles.RoleTable;
+import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -17,9 +20,17 @@ public interface RolesDAO {
     @SqlUpdate("INSERT INTO roles VALUES (:id, :now, :name, :category, :title, :color, :assignable, :rank, cast(:permission AS bit(64)))")
     void insert(@BindBean RoleTable roleTable);
 
-    @SqlUpdate("UPDATE roles VALUES SET title = :title, color = :color, rank = :rank WHERE id = :id")
+    @SqlUpdate("UPDATE roles values SET title = :title, color = :color, rank = :rank WHERE id = :id")
     void update(long id, String title, String color, @Nullable Integer rank);
 
     @SqlQuery("SELECT id, created_at, name, category, title, color, assignable, rank, permission::bigint FROM roles WHERE id = :id")
     RoleTable getById(long id);
+
+    @SqlQuery("SELECT id AS roleid, created_at, name AS value, category AS rolecategory, title, color, assignable, rank, permission::bigint AS permissions FROM roles WHERE category = :category")
+    @RegisterConstructorMapper(RoleData.class)
+    List<RoleData> getRoles(RoleCategory category);
+
+    @SqlQuery("SELECT id AS roleid, created_at, name AS value, category AS rolecategory, title, color, assignable, rank, permission::bigint AS permissions FROM roles WHERE category = :category AND assignable")
+    @RegisterConstructorMapper(RoleData.class)
+    List<RoleData> getAssignableRoles(RoleCategory category);
 }

@@ -72,14 +72,14 @@ public class RoleTable extends Table implements Named {
 
     public static RoleTable fromRole(final Role<?> role) {
         return new RoleTable(
-            role.getRoleId(),
-            role.getValue(),
-            role.getRoleCategory(),
-            role.getTitle(),
-            role.getColor().getHex(),
-            role.isAssignable(),
-            role.getRank(),
-            role.getPermissions()
+            role.roleId(),
+            role.value(),
+            role.roleCategory(),
+            role.title(),
+            role.color().getHex(),
+            role.assignable(),
+            role.rank(),
+            role.permissions()
         );
     }
 

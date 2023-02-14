@@ -30,12 +30,12 @@ public class GlobalRoleTable implements IRoleTable<GlobalRole> {
 
     @Override
     public long getRoleId() {
-        return this.role.getRoleId();
+        return this.role.roleId();
     }
 
     @Override
     public String getRoleType() {
-        return this.role.getValue();
+        return this.role.value();
     }
 
     @Override

@@ -21,9 +21,7 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
 
     DUMMY("Dummy", 42, Permission.ViewPublicInfo, "Dummy", Color.CHARTREUSE, 42),
 
-    ORGANIZATION("Organization", 100, OrganizationRole.ORGANIZATION_OWNER.getPermissions(), "Organization", Color.PURPLE);
-
-    private static final GlobalRole[] VALUES = values();
+    ORGANIZATION("Organization", 100, OrganizationRole.ORGANIZATION_OWNER.permissions(), "Organization", Color.PURPLE);
 
     private final String value;
     private final long roleId;
@@ -47,42 +45,42 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
     }
 
     @Override
-    public @NotNull String getValue() {
+    public @NotNull String value() {
         return this.value;
     }
 
     @Override
-    public long getRoleId() {
+    public long roleId() {
         return this.roleId;
     }
 
     @Override
-    public @NotNull RoleCategory getRoleCategory() {
+    public @NotNull RoleCategory roleCategory() {
         return RoleCategory.GLOBAL;
     }
 
     @Override
-    public @NotNull Permission getPermissions() {
+    public @NotNull Permission permissions() {
         return this.permissions;
     }
 
     @Override
-    public @NotNull String getTitle() {
+    public @NotNull String title() {
         return this.title;
     }
 
     @Override
-    public @NotNull Color getColor() {
+    public @NotNull Color color() {
         return this.color;
     }
 
     @Override
-    public boolean isAssignable() {
+    public boolean assignable() {
         return false;
     }
 
     @Override
-    public @Nullable Integer getRank() {
+    public @Nullable Integer rank() {
         return this.rank;
     }
 
@@ -98,9 +96,5 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
             }
         }
         throw new IllegalArgumentException("No GlobalRole '" + apiValue + "'");
-    }
-
-    public static GlobalRole[] getValues() {
-        return VALUES;
     }
 }
