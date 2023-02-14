@@ -14,7 +14,7 @@ import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import Button from "~/lib/components/design/Button.vue";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import MarkdownEditor from "~/components/MarkdownEditor.vue";
-import { minLength, noDuplicated, required, requiredIf, url as validUrl } from "~/lib/composables/useValidationHelpers";
+import { maxFileSize, minLength, noDuplicated, required, requiredIf, url as validUrl } from "~/lib/composables/useValidationHelpers";
 import { useInternalApi } from "~/composables/useApi";
 import { Platform } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -165,7 +165,10 @@ const selectedPlatformsData = computed<IPlatform[]>(() => {
 });
 
 const artifactURLRules = (platformFile: PlatformFile) => [validUrl(), requiredIf()(() => platformFile.selectedTab === "url")];
-const fileRules = (platformFile: PlatformFile) => [requiredIf("File is required")(() => platformFile.selectedTab === "file")];
+const fileRules = (platformFile: PlatformFile) => [
+  requiredIf("File is required")(() => platformFile.selectedTab === "file"),
+  maxFileSize()(useBackendData.validations.project.maxFileSize),
+];
 const platformRules = [required("Select at least one platform!"), minLength()(1), noDuplicated()(() => platformFiles.value.flatMap((f) => f.platforms))];
 const versionRules = [required()];
 const platformVersionRules = [required("Select at least one platform version!"), minLength()(1)];

@@ -1,8 +1,13 @@
 package io.papermc.hangar.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class VersionFormatter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(VersionFormatter.class);
 
     private VersionFormatter() {
     }

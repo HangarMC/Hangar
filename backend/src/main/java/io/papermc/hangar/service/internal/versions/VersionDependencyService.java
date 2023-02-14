@@ -65,7 +65,8 @@ public class VersionDependencyService extends HangarComponent {
         final Map<Platform, SortedSet<String>> platformDependencies = this.versionsApiDAO.getPlatformDependencies(versionId);
         final Map<Platform, String> platformDependenciesFormatted = new EnumMap<>(Platform.class);
         for (final Map.Entry<Platform, SortedSet<String>> entry : platformDependencies.entrySet()) {
-            final String formattedVersionRange = VersionFormatter.formatVersionRange(new ArrayList<>(entry.getValue()), this.platformService.getFullVersionsForPlatform(entry.getKey()));
+            final List<String> fullVersionsForPlatform = this.platformService.getFullVersionsForPlatform(entry.getKey());
+            final String formattedVersionRange = VersionFormatter.formatVersionRange(new ArrayList<>(entry.getValue()), fullVersionsForPlatform);
             platformDependenciesFormatted.put(entry.getKey(), formattedVersionRange);
         }
 

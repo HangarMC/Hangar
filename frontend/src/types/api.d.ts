@@ -59,6 +59,7 @@ declare module "hangar-api" {
       sponsorsContent: Validation;
       maxPageCount: number;
       maxChannelCount: number;
+      maxFileSize: number;
     };
     org: Validation;
     userTagline: Validation;

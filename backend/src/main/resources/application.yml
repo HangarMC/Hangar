@@ -127,6 +127,7 @@ hangar:
     init-load: 25
     init-version-load: 10
     max-desc-len: 120
+    max-file-size: 10000000
     content-max-len: 1000000
     file-validate: true
     stale-age: 28d

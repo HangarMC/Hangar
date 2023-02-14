@@ -604,6 +604,7 @@
       }
     },
     "settings": {
+      "changeAvatar": "Change avatar",
       "members": {
         "invalidUser": "{0} is not a valid user",
         "alreadyInvited": "{0} is already invited to the organization",
@@ -1045,7 +1046,8 @@
     "minLength": "Minimum length is {min}",
     "pattern": "{property} is invalid",
     "noDuplicated": "Can only select each {property} once!",
-    "url": "Invalid URL format"
+    "url": "Invalid URL format",
+    "maxFileSize": "File is too large, max size is 10mb"
   },
   "prompts": {
     "confirm": "Got it!",

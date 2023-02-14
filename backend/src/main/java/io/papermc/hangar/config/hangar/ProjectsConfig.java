@@ -26,6 +26,7 @@ public record ProjectsConfig( // TODO split into ProjectsConfig and VersionsConf
                               @DefaultValue("1500") int maxSponsorsLen,
                               @DefaultValue("5") int maxKeywords,
                               @DefaultValue("1000000") int contentMaxLen,
+                              @DefaultValue("10000000") int maxFileSize,
                               @DefaultValue("true") boolean fileValidate, // TODO implement or remove
                               @DefaultValue("28") @DurationUnit(ChronoUnit.DAYS) Duration staleAge,
                               @DefaultValue("1h") String checkInterval, // TODO implement or remove

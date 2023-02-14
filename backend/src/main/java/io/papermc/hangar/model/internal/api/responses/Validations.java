@@ -24,7 +24,8 @@ public record Validations(
         Validation pageContent,
         Validation sponsorsContent,
         int maxPageCount,
-        int maxChannelCount
+        int maxChannelCount,
+        int maxFileSize
     ) {
     }
 
@@ -39,7 +40,8 @@ public record Validations(
             config.pages.pageContent(),
             config.projects.sponsorsContent(),
             config.projects.maxPages(),
-            config.projects.maxChannels()
+            config.projects.maxChannels(),
+            config.projects.maxFileSize()
         );
         return new Validations(
             project,
