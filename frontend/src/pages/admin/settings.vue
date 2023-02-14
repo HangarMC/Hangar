@@ -132,6 +132,7 @@ async function saveRoles() {
               <th>Category</th>
               <th>Color</th>
               <th>Rank</th>
+              <th>As tag</th>
             </tr>
           </thead>
           <tbody>
@@ -145,6 +146,9 @@ async function saveRoles() {
               </td>
               <td>
                 <InputText v-model="role.rank" :rules="[integer()]" />
+              </td>
+              <td>
+                <Tag :color="{ background: role.color }" :name="role.title" class="ml-1" />
               </td>
             </tr>
           </tbody>
