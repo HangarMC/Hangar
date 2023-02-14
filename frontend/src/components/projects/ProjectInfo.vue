@@ -93,7 +93,7 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
         <DropdownItem :to="`/${slug}/notes`">
           {{ i18n.t("project.actions.staffNotes", [project.info.noteCount]) }}
         </DropdownItem>
-        <DropdownItem :to="`/admin/log/?projectFilter=/${slug}`">
+        <DropdownItem :to="`/admin/log?projectFilter=/${slug}`">
           {{ i18n.t("project.actions.userActionLogs") }}
         </DropdownItem>
         <DropdownItem v-if="project.topicId" :href="forumUrl(project.topicId)">

@@ -57,7 +57,7 @@ public class APIKeyService extends HangarComponent {
         final String token = UUID.randomUUID().toString();
         final String hashedToken = CryptoUtils.hmacSha256(this.config.security.tokenSecret(), token.getBytes(StandardCharsets.UTF_8));
         this.apiKeyDAO.insert(new ApiKeyTable(apiKeyForm.getName(), userIdentified.getUserId(), tokenIdentifier, hashedToken, keyPermission));
-        this.actionLogger.user(LogAction.USER_APIKEY_CREATED.create(UserContext.of(userIdentified.getUserId()), "Key Name: " + apiKeyForm.getName() + "<br>" + apiKeyForm.getPermissions().stream().map(NamedPermission::getFrontendName).collect(Collectors.joining(",<br>")), ""));
+        this.actionLogger.user(LogAction.USER_APIKEY_CREATED.create(UserContext.of(userIdentified.getUserId()), "Key '" + apiKeyForm.getName() + "': " + apiKeyForm.getPermissions().stream().map(NamedPermission::getFrontendName).collect(Collectors.joining(", ")), ""));
         return tokenIdentifier + "." + token;
     }
 
@@ -66,7 +66,7 @@ public class APIKeyService extends HangarComponent {
         if (this.apiKeyDAO.delete(keyName, userIdentified.getUserId()) == 0) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        this.actionLogger.user(LogAction.USER_APIKEY_DELETED.create(UserContext.of(userIdentified.getUserId()), "", "Key Name: " + keyName));
+        this.actionLogger.user(LogAction.USER_APIKEY_DELETED.create(UserContext.of(userIdentified.getUserId()), "", "Key '" + keyName + "'"));
     }
 
 }

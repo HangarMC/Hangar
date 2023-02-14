@@ -222,8 +222,8 @@ public class BackendDataController {
     @GetMapping("/loggedActions")
     @Cacheable(CacheConfig.LOGGED_ACTIONS)
     @ResponseBody
-    public Set<String> getLoggedActions() {
-        return LogAction.LOG_REGISTRY.keySet();
+    public List<String> getLoggedActions() {
+        return LogAction.LOG_REGISTRY.keySet().stream().sorted().toList();
     }
 }
 

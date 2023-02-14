@@ -45,7 +45,8 @@ public enum NamedPermission {
     RESTORE_PROJECT("restore_project", Permission.DeleteVersion, "RestoreProject"),
     HARD_DELETE_PROJECT("hard_delete_project", Permission.HardDeleteProject, "HardDeleteProject"),
     HARD_DELETE_VERSION("hard_delete_version", Permission.HardDeleteVersion, "HardDeleteVersion"),
-    EDIT_ALL_USER_SETTINGS("edit_all_user_settings", Permission.EditAllUserSettings, "EditAllUserSettings");
+    EDIT_ALL_USER_SETTINGS("edit_all_user_settings", Permission.EditAllUserSettings, "EditAllUserSettings"),
+    SEE_IP_ADDRESSES("see_ip_addresses", Permission.SeeIPAdresses, "SeeIpAddresses");
 
     private final String value;
     private final Permission permission;

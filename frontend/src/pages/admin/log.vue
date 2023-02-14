@@ -2,9 +2,9 @@
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
-import { PaginatedResult } from "hangar-api";
+import { PaginatedResult, Project, User } from "hangar-api";
 import { computed, ref } from "vue";
-import { LoggedAction, LoggedActionType } from "hangar-internal";
+import { LoggedAction } from "hangar-internal";
 import { debounce } from "lodash-es";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useActionLogs } from "~/composables/useApiHelper";
@@ -15,11 +15,13 @@ import MarkdownModal from "~/components/modals/MarkdownModal.vue";
 import DiffModal from "~/components/modals/DiffModal.vue";
 import Button from "~/lib/components/design/Button.vue";
 import { useSeo } from "~/composables/useSeo";
-import { definePageMeta, useInternalApi, watch } from "#imports";
+import { definePageMeta, hasPerms, useApi, useInternalApi, useRouter, watch } from "#imports";
 import InputText from "~/lib/components/ui/InputText.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import { useBackendData } from "~/store/backendData";
 import { Header } from "~/types/components/SortableTable";
+import { NamedPermission } from "~/types/enums";
+import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 
 definePageMeta({
   globalPermsRequired: ["VIEW_LOGS"],
@@ -40,14 +42,19 @@ const headers: Header[] = [
   { title: i18n.t("userActionLog.newState"), name: "newState", sortable: false },
 ];
 
+if (!hasPerms(NamedPermission.SEE_IP_ADDRESSES)) {
+  headers.splice(1, 1);
+}
+
 const page = ref(0);
 const sort = ref<string[]>([]);
 const filter = ref<{
   user?: string;
-  logAction?: LoggedActionType;
+  logAction?: string;
   authorName?: string;
   projectSlug?: string;
 }>({});
+
 const requestParams = computed(() => {
   const limit = 25;
   return {
@@ -78,8 +85,45 @@ async function updatePage(newPage: number) {
   await update();
 }
 
+const router = useRouter();
 async function update() {
-  loggedActions.value = await useInternalApi<PaginatedResult<LoggedAction>>("admin/log/", "GET", requestParams.value);
+  loggedActions.value = await useInternalApi<PaginatedResult<LoggedAction>>("admin/log", "GET", requestParams.value);
+  const { limit, offset, ...paramsWithoutLimit } = requestParams.value;
+  await router.replace({ query: { ...paramsWithoutLimit } });
+}
+
+const userSearchResult = ref<string[]>([]);
+const authorSearchResult = ref<string[]>([]);
+const projectSearchResult = ref<string[]>([]);
+
+async function searchUser(val: string) {
+  userSearchResult.value = [];
+  const users = await useApi<PaginatedResult<User>>("users", "get", {
+    query: val,
+    limit: 25,
+    offset: 0,
+  });
+  userSearchResult.value = users.result.filter((u) => !u.isOrganization).map((u) => u.name);
+}
+
+async function searchAuthor(val: string) {
+  authorSearchResult.value = [];
+  const authors = await useApi<PaginatedResult<User>>("users", "get", {
+    query: val,
+    limit: 25,
+    offset: 0,
+  });
+  authorSearchResult.value = authors.result.map((u) => u.name);
+}
+
+async function searchProject(val: string) {
+  projectSearchResult.value = [];
+  const projects = await useApi<PaginatedResult<Project>>("projects", "get", {
+    q: val,
+    limit: 25,
+    offset: 0,
+  });
+  projectSearchResult.value = projects.result.map((u) => u.namespace.slug);
 }
 
 useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
@@ -91,16 +135,23 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
     <Card>
       <div class="flex mb-4 gap-2">
         <div class="basis-3/12">
-          <InputText v-model="filter.user" label="User" />
+          <InputAutocomplete
+            id="userfilter"
+            v-model="filter.user"
+            :values="userSearchResult"
+            :label="i18n.t('organization.settings.transferModal.transferTo')"
+            @search="searchUser"
+          />
         </div>
         <div class="basis-3/12">
           <InputSelect v-model="filter.logAction" :values="useBackendData.loggedActions" label="Action" />
+          <span v-if="filter.logAction" class="flex justify-center" cursor="pointer" @click="filter.logAction = undefined"> Clear selected action </span>
         </div>
         <div class="basis-3/12">
-          <InputText v-model="filter.authorName" label="Author Name" />
+          <InputAutocomplete id="authorfilter" v-model="filter.authorName" :values="authorSearchResult" label="Author Name" @search="searchAuthor" />
         </div>
         <div class="basis-3/12">
-          <InputText v-model="filter.projectSlug" label="Project Slug" />
+          <InputAutocomplete id="projectfilter" v-model="filter.projectSlug" :values="projectSearchResult" label="Project Slug" @search="searchProject" />
         </div>
       </div>
 

@@ -76,6 +76,7 @@ export enum NamedPermission {
   HARD_DELETE_PROJECT = "hard_delete_project",
   HARD_DELETE_VERSION = "hard_delete_version",
   EDIT_ALL_USER_SETTINGS = "edit_all_user_settings",
+  SEE_IP_ADDRESSES = "see_ip_addresses",
 }
 
 export enum Platform {
