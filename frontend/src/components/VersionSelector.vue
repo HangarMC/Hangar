@@ -20,10 +20,14 @@ const selected = computed({
 
 // TODO All of this is horrible
 watch(selected, (oldValue, newValue) => {
-  const removedVersions = [...newValue.filter((x) => !oldValue.includes(x))];
-  const addedVersions = [...oldValue.filter((x) => !newValue.includes(x))];
+  handleRemoved([...newValue.filter((x) => !oldValue.includes(x))]);
+  handleAdded([...oldValue.filter((x) => !newValue.includes(x))]);
+});
+
+function handleRemoved(removedVersions: string[]) {
   for (const version of removedVersions) {
     if (!version.endsWith(".x")) {
+      handleRemovedSubVersion(version);
       continue;
     }
 
@@ -33,13 +37,17 @@ watch(selected, (oldValue, newValue) => {
       continue;
     }
 
+    // Remove all sub versions
     for (const subVersion of platformVersion.subVersions) {
       selected.value.splice(selected.value.indexOf(subVersion), 1);
     }
   }
+}
 
+function handleAdded(addedVersions: string[]) {
   for (const version of addedVersions) {
     if (!version.endsWith(".x")) {
+      handleAddedSubVersion(version);
       continue;
     }
 
@@ -49,13 +57,57 @@ watch(selected, (oldValue, newValue) => {
       continue;
     }
 
+    // Add all sub versions
     for (const subVersion of platformVersion.subVersions) {
       if (!selected.value.includes(subVersion)) {
         selected.value.push(subVersion);
       }
     }
   }
-});
+}
+
+function handleRemovedSubVersion(version: string) {
+  const lastSeparator = version.lastIndexOf(".");
+  if (lastSeparator === -1) {
+    return;
+  }
+
+  const cutVersion = version.substring(0, lastSeparator);
+  const platformVersion = props.versions.find((v) => v.version === cutVersion || v.version === version);
+  if (!platformVersion || !selected.value.includes(platformVersion.version + ".x")) {
+    return;
+  }
+
+  for (const subVersion of platformVersion.subVersions) {
+    if (selected.value.includes(subVersion)) {
+      // Uncheck parent box
+      selected.value.splice(selected.value.indexOf(platformVersion.version + ".x"), 1);
+      return;
+    }
+  }
+}
+
+function handleAddedSubVersion(version: string) {
+  const lastSeparator = version.lastIndexOf(".");
+  if (lastSeparator === -1) {
+    return;
+  }
+
+  const cutVersion = version.substring(0, lastSeparator);
+  const platformVersion = props.versions.find((v) => v.version === cutVersion || v.version === version);
+  if (!platformVersion || selected.value.includes(platformVersion.version + ".x")) {
+    return;
+  }
+
+  for (const subVersion of platformVersion.subVersions) {
+    if (!selected.value.includes(subVersion)) {
+      return;
+    }
+  }
+
+  // Check parent box
+  selected.value.push(platformVersion.version + ".x");
+}
 </script>
 
 <template>
