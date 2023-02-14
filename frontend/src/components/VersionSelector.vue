@@ -21,6 +21,29 @@ const selected = computed({
 
 const selectedParents: Ref<string[]> = ref([]);
 const selectedSub: Ref<string[]> = ref([]);
+for (const version of selected.value) {
+  selectedSub.value.push(version);
+
+  const lastSeparator = version.lastIndexOf(".");
+  if (lastSeparator === -1) {
+    continue;
+  }
+  const cutVersion = version.substring(0, lastSeparator);
+  const platformVersion = props.versions.find((v) => v.version === cutVersion || v.version === version);
+  if (!platformVersion) {
+    continue;
+  }
+  let selectedAll = true;
+  for (const v of platformVersion.subVersions) {
+    if (!selectedSub.value.includes(v)) {
+      selectedAll = false;
+      break;
+    }
+  }
+  if (selectedAll) {
+    selectedParents.value.push(platformVersion.version);
+  }
+}
 
 // TODO All of this is horrible
 watch(selectedParents, (oldValue, newValue) => {
@@ -64,6 +87,10 @@ function handleAddedParent(addedVersions: string[]) {
 
 function handleRemovedSub(removedVersions: string[]) {
   for (const version of removedVersions) {
+    if (selected.value.includes(version)) {
+      selected.value.splice(selected.value.indexOf(version), 1);
+    }
+
     const lastSeparator = version.lastIndexOf(".");
     if (lastSeparator === -1) {
       continue;
@@ -79,14 +106,15 @@ function handleRemovedSub(removedVersions: string[]) {
     if (selectedParents.value.includes(platformVersion.version)) {
       selectedParents.value.splice(selectedParents.value.indexOf(platformVersion.version), 1);
     }
-    if (selected.value.includes(platformVersion.version)) {
-      selected.value.splice(selected.value.indexOf(platformVersion.version), 1);
-    }
   }
 }
 
 function handleAddedSub(removedVersions: string[]) {
   for (const version of removedVersions) {
+    if (!selected.value.includes(version)) {
+      selected.value.push(version);
+    }
+
     const lastSeparator = version.lastIndexOf(".");
     if (lastSeparator === -1) {
       continue;
@@ -121,8 +149,7 @@ function handleAddedSub(removedVersions: string[]) {
 
 <template>
   <div v-for="version in versions" :key="version.version">
-    <div v-if="!version.subVersions">HUH {{ version }}</div>
-    <div v-else-if="version.subVersions.length !== 0">
+    <div v-if="version.subVersions?.length !== 0">
       <ArrowSpoiler :open="open">
         <template #title>
           <div class="mr-8">
