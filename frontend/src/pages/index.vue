@@ -217,7 +217,12 @@ useHead(meta);
         <div class="platforms">
           <h4 class="font-bold mb-1">
             {{ i18n.t("hangar.projectSearch.platforms") }}
-            <span v-if="filters.platform" class="font-normal text-sm hover:(underline) text-gray-600 dark:text-gray-400" @click="filters.platform = null">
+            <span
+              v-if="filters.platform"
+              class="font-normal text-sm hover:(underline) text-gray-600 dark:text-gray-400"
+              cursor="pointer"
+              @click="filters.platform = null"
+            >
               {{ i18n.t("hangar.projectSearch.clear") }}
             </span>
           </h4>
