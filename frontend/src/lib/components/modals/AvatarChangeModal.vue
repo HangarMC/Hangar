@@ -1,13 +1,18 @@
 <template>
-  <Modal ref="modal" title="Change avatar" window-classes="w-125" @open="openModal">
+  <Modal ref="modal" :title="t('organization.settings.changeAvatar')" window-classes="w-125" @open="openModal">
     <template #activator="{ on }">
       <slot name="activator" :on="on">
-        <Button button-type="primary" @click="on.click">Change avatar</Button>
+        <Button button-type="primary" @click="on.click">{{ t("organization.settings.changeAvatar") }}</Button>
       </slot>
     </template>
 
     <div class="mb-2">
-      <InputFile v-model="selectedFile" :placeholder="t('settings.avatar.inputPlaceholder')" :rules="[required()]" accept="image/png,image/jpeg" />
+      <InputFile
+        v-model="selectedFile"
+        :placeholder="t('settings.avatar.inputPlaceholder')"
+        :rules="[required(), maxFileSize()(useBackendData.validations.project.maxFileSize)]"
+        accept="image/png,image/jpeg"
+      />
     </div>
     <cropper
       v-if="cropperInput"
@@ -41,12 +46,13 @@ import { Cropper, type CropperResult } from "vue-advanced-cropper";
 import { onMounted, ref, watch } from "vue";
 import Button from "~/lib/components/design/Button.vue";
 import InputFile from "~/lib/components/ui/InputFile.vue";
-import { required } from "~/lib/composables/useValidationHelpers";
+import { maxFileSize, required } from "~/lib/composables/useValidationHelpers";
 import Modal from "~/lib/components/modals/Modal.vue";
 
 import "vue-advanced-cropper/dist/style.css";
 import { useNotificationStore } from "~/lib/store/notification";
 import { useInternalApi } from "~/composables/useApi";
+import { useBackendData } from "~/store/backendData";
 
 const { t } = useI18n();
 const notifications = useNotificationStore();
@@ -75,7 +81,14 @@ onMounted(() => {
 });
 
 watch(selectedFile, (newValue) => {
-  if (!newValue) return null;
+  if (!newValue) {
+    return null;
+  }
+  if (newValue.size <= useBackendData.validations.project.maxFileSize) {
+    notifications.error(t("validation.maxFileSize"));
+    return null;
+  }
+
   cropperResult.value = newValue;
   reader?.readAsDataURL(newValue);
 });

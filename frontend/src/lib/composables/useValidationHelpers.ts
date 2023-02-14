@@ -84,6 +84,12 @@ export const pattern = withOverrideMessage((regex: string) =>
   })
 );
 
+export const maxFileSize = withOverrideMessage((maxSize: number) =>
+  helpers.withParams({ maxSize, type: "maxFileSize" }, (file: File) => {
+    return { $valid: !file || file.size <= maxSize };
+  })
+);
+
 export const noDuplicated = withOverrideMessage((elements: any[] | (() => any[])) =>
   helpers.withParams({ elements, type: "noDuplicated" }, () => {
     const els = typeof elements === "function" ? elements() : unref(elements);
