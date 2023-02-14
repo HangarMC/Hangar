@@ -30,7 +30,7 @@ public class RoleTable extends Table implements Named {
         this.permission = permission;
     }
 
-    private RoleTable(final long id, final String name, final RoleCategory category, final String title, final String color, final boolean assignable, final Integer rank, final Permission permission) {
+    public RoleTable(final long id, final String name, final RoleCategory category, final String title, final String color, final boolean assignable, final Integer rank, final Permission permission) {
         super(id);
         this.name = name;
         this.category = category;

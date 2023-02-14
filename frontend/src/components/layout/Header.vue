@@ -341,8 +341,8 @@ function isRecent(date: string): boolean {
                 <DropdownItem v-if="hasPerms(NamedPermission.VIEW_STATS)" to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.VIEW_HEALTH)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.VIEW_LOGS)" to="/admin/log">{{ t("nav.user.log") }}</DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.MANUAL_VALUE_CHANGES)" to="/admin/versions">
-                  {{ t("nav.user.platformVersions") }}
+                <DropdownItem v-if="hasPerms(NamedPermission.MANUAL_VALUE_CHANGES)" to="/admin/settings">
+                  {{ t("nav.user.adminSettings") }}
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)" to="/admin/user/">
                   {{ t("nav.user.userList") }}

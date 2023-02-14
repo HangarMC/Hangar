@@ -7,7 +7,7 @@ declare module "hangar-api" {
     rank?: number | null;
     value: string;
     roleId: number;
-    category: RoleCategory;
+    roleCategory: RoleCategory;
     permissions: string;
     title: string;
     color: string;

@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import { computed, Ref, ref } from "vue";
-import { cloneDeep, isEqual } from "lodash-es";
+import { Ref, ref } from "vue";
 import { useHead } from "@vueuse/head";
 import { PlatformVersion } from "hangar-internal";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -17,6 +16,8 @@ import { useSeo } from "~/composables/useSeo";
 import { useNotificationStore } from "~/lib/store/notification";
 import { definePageMeta } from "#imports";
 import { Platform } from "~/types/enums";
+import InputText from "~/lib/components/ui/InputText.vue";
+import { integer } from "~/lib/composables/useValidationHelpers";
 
 definePageMeta({
   globalPermsRequired: ["MANUAL_VALUE_CHANGES"],
@@ -38,7 +39,7 @@ const fullVersions: Ref<Record<Platform, string[]>> = ref({
   WATERFALL: [],
   VELOCITY: [],
 });
-reset();
+resetPlatformVersions();
 
 function versions(versions: PlatformVersion[]): string[] {
   const fullVersions = [];
@@ -52,7 +53,7 @@ function versions(versions: PlatformVersion[]): string[] {
   return fullVersions;
 }
 
-async function save() {
+async function savePlatformVersions() {
   loading.value = true;
   const data: { [key: string]: string[] } = {};
   for (const pl of platforms || []) {
@@ -68,9 +69,26 @@ async function save() {
   }
 }
 
-function reset() {
+function resetPlatformVersions() {
   for (const platform of useBackendData.platforms.values()) {
     fullVersions.value[platform.enumName] = versions(platform.possibleVersions);
+  }
+}
+
+const roles = ref([...useBackendData.orgRoles, ...useBackendData.globalRoles, ...useBackendData.projectRoles]);
+async function saveRoles() {
+  loading.value = true;
+  const data = [];
+  for (const role of roles.value) {
+    data.push({ roleId: role.roleId, title: role.title, color: role.color, rank: role.rank });
+  }
+  try {
+    await useInternalApi("admin/roles", "post", roles.value);
+    notification.success("Updated roles!");
+    router.go(0);
+  } catch (e: any) {
+    loading.value = false;
+    handleRequestError(e);
   }
 }
 </script>
@@ -99,10 +117,45 @@ function reset() {
       <template #footer>
         <span class="flex justify-end items-center gap-2">
           Updates may take a while to take effect!
-          <Button @click="reset">{{ i18n.t("general.reset") }}</Button>
-          <Button :disabled="loading" @click="save"> {{ i18n.t("platformVersions.saveChanges") }}</Button>
+          <Button @click="resetPlatformVersions">{{ i18n.t("general.reset") }}</Button>
+          <Button :disabled="loading" @click="savePlatformVersions"> {{ i18n.t("platformVersions.saveChanges") }}</Button>
         </span>
       </template>
     </Card>
+    <div class="mt-5">
+      <Card>
+        <PageTitle>Roles</PageTitle>
+        <Table class="w-full">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Color</th>
+              <th>Rank</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="role in roles" :key="role.roleId">
+              <td>
+                <InputText v-model="role.title" />
+              </td>
+              <td>{{ role.roleCategory }}</td>
+              <td>
+                <InputText v-model="role.color" />
+              </td>
+              <td>
+                <InputText v-model="role.rank" :rules="[integer()]" />
+              </td>
+            </tr>
+          </tbody>
+        </Table>
+
+        <template #footer>
+          <span class="flex justify-end items-center gap-2">
+            <Button :disabled="loading" @click="saveRoles"> {{ i18n.t("platformVersions.saveChanges") }}</Button>
+          </span>
+        </template>
+      </Card>
+    </div>
   </div>
 </template>

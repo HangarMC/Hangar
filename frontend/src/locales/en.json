@@ -91,7 +91,7 @@
       "stats": "Stats",
       "health": "Hangar Health",
       "log": "User Action Log",
-      "platformVersions": "Platform Versions",
+      "adminSettings": "Admin settings",
       "userList": "User List",
       "logout": "Sign out",
       "error": {

@@ -11,6 +11,7 @@ import io.papermc.hangar.controller.extras.pagination.filters.log.LogProjectFilt
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogSubjectFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogUserFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogVersionFilter;
+import io.papermc.hangar.db.dao.internal.table.roles.RolesDAO;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.NamedPermission;
@@ -18,10 +19,12 @@ import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.JobTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
+import io.papermc.hangar.model.db.roles.RoleTable;
 import io.papermc.hangar.model.internal.admin.health.MissingFileCheck;
 import io.papermc.hangar.model.internal.admin.health.UnhealthyProject;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.admin.ChangePlatformVersionsForm;
+import io.papermc.hangar.model.internal.api.requests.admin.ChangeRoleForm;
 import io.papermc.hangar.model.internal.api.responses.HealthReport;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
@@ -42,6 +45,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,9 +69,10 @@ public class AdminController extends HangarComponent {
     private final UserService userService;
     private final ObjectMapper mapper;
     private final GlobalRoleService globalRoleService;
+    private final RolesDAO rolesDAO;
 
     @Autowired
-    public AdminController(final PlatformService platformService, final StatService statService, final HealthService healthService, final JobService jobService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService) {
+    public AdminController(final PlatformService platformService, final StatService statService, final HealthService healthService, final JobService jobService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final RolesDAO rolesDAO) {
         this.platformService = platformService;
         this.statService = statService;
         this.healthService = healthService;
@@ -75,6 +80,7 @@ public class AdminController extends HangarComponent {
         this.userService = userService;
         this.mapper = mapper;
         this.globalRoleService = globalRoleService;
+        this.rolesDAO = rolesDAO;
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -82,6 +88,17 @@ public class AdminController extends HangarComponent {
     @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
     public void changePlatformVersions(@RequestBody @Valid final ChangePlatformVersionsForm form) {
         this.platformService.updatePlatformVersions(form);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(path = "/roles", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
+    @Transactional
+    public void changeRoles(@RequestBody final List<@Valid ChangeRoleForm> roles) {
+        for (final ChangeRoleForm role : roles) {
+            System.out.println(role.roleId());
+            this.rolesDAO.update(role.roleId(), role.title(), role.color(), role.rank());
+        }
     }
 
     @ResponseBody
