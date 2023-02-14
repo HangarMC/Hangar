@@ -22,7 +22,6 @@ import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
-import io.papermc.hangar.util.StringUtils;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -31,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
+import io.papermc.hangar.util.VersionFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -65,7 +65,8 @@ public class VersionDependencyService extends HangarComponent {
         final Map<Platform, SortedSet<String>> platformDependencies = this.versionsApiDAO.getPlatformDependencies(versionId);
         final Map<Platform, String> platformDependenciesFormatted = new EnumMap<>(Platform.class);
         for (final Map.Entry<Platform, SortedSet<String>> entry : platformDependencies.entrySet()) {
-            platformDependenciesFormatted.put(entry.getKey(), StringUtils.formatVersionNumbers(new ArrayList<>(entry.getValue())));
+            final String formattedVersionRange = VersionFormatter.formatVersionRange(new ArrayList<>(entry.getValue()), this.platformService.getFullVersionsForPlatform(entry.getKey()));
+            platformDependenciesFormatted.put(entry.getKey(), formattedVersionRange);
         }
 
         // TODO into one query

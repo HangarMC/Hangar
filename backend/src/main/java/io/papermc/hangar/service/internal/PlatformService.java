@@ -39,7 +39,7 @@ public class PlatformService extends HangarComponent {
     }
 
     @Cacheable(CacheConfig.PLATFORMS)
-    public List<PlatformVersion> getVersionsForPlatform(final Platform platform) {
+    public List<PlatformVersion> getDescendingVersionsForPlatform(final Platform platform) {
         final List<String> versions = this.platformVersionDAO.getVersionsForPlatform(platform);
         final Map<String, List<String>> platformVersions = new LinkedHashMap<>();
         for (final String version : versions) {

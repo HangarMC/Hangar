@@ -28,7 +28,6 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.GitProperties;
@@ -95,7 +94,7 @@ public class BackendDataController {
         final ArrayNode arrayNode = this.objectMapper.createArrayNode();
         for (final Platform platform : Platform.getValues()) {
             final ObjectNode objectNode = this.objectMapper.valueToTree(platform);
-            objectNode.set("possibleVersions", this.objectMapper.valueToTree(this.platformService.getVersionsForPlatform(platform)));
+            objectNode.set("possibleVersions", this.objectMapper.valueToTree(this.platformService.getDescendingVersionsForPlatform(platform)));
             arrayNode.add(objectNode);
         }
         return ResponseEntity.ok(arrayNode);
