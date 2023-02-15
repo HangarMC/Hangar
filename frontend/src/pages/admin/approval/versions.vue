@@ -46,6 +46,7 @@ const notStartedHeaders: Header[] = [
 
 useHead(useSeo(i18n.t("versionApproval.title"), null, route, null));
 
+// TODO There's no actual endpoint with filters
 function getRouteParams(entry: ReviewQueueEntry) {
   return {
     user: entry.namespace.owner,
@@ -105,8 +106,9 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
           <span class="start-date">{{ i18n.d(item.versionCreatedAt, "time") }}</span>
         </template>
         <template #item_version="{ item }">
-          <Link :to="{ name: 'user-project-versions-version-platform', params: getRouteParams(item) }">
+          <Link :to="`/${item.namespace.owner}/${item.namespace.slug}/versions/${item.versionString}`">
             <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" />
+            {{ item.versionString }}
           </Link>
         </template>
         <template #item_queuedBy="{ item }">
@@ -115,7 +117,7 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
           </Link>
         </template>
         <template #item_startBtn="{ item }">
-          <Link :to="{ name: 'user-project-versions-version-platform-reviews', params: getRouteParams(item) }" nuxt>
+          <Link :to="`/${item.namespace.owner}/${item.namespace.slug}/versions/${item.versionString}/reviews`">
             <Button>
               <IconMdiPlay />
               {{ i18n.t("version.page.reviewStart") }}
@@ -135,9 +137,7 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
           </Link>
         </template>
         <template #item_version="{ item }">
-          <Link :to="{ name: 'user-project-versions-version-platform', params: getRouteParams(item) }">
-            <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" />
-          </Link>
+          <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" />
         </template>
         <template #item_queuedBy="{ item }">
           <Link :to="`/${item.versionAuthor}`">
@@ -157,11 +157,9 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
           <br />
           <span class="text-green-400"> {{ i18n.t("versionApproval.statuses.approved", [getApprovedCount(item)]) }}</span>
         </template>
-        <template #item_reviewLogs="{ item }">
-          <Link :to="{ name: 'user-project-versions-version-platform-reviews', params: getRouteParams(item) }">
-            <IconMdiListStatus />
-            {{ i18n.t("version.page.reviewLogs") }}
-          </Link>
+        <template>
+          <IconMdiListStatus />
+          {{ i18n.t("version.page.reviewLogs") }}
         </template>
         <template #expanded-item="{ item, headers }">
           <td :colspan="headers.length">
