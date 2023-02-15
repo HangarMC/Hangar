@@ -99,7 +99,7 @@ public class LoginController extends HangarComponent {
             this.response.addCookie(new Cookie("url", returnUrl));
             final Optional<HangarPrincipal> principal = this.getOptionalHangarPrincipal();
             if (principal.isPresent()) {
-                return this.ssoService.getLogoutUrl(this.config.getBaseUrl() + "/handle-logout", principal.get()).getUrl();
+                return this.ssoService.getLogoutUrl(this.config.getBaseUrl() + "/handle-logout", principal.get()).url();
             } else {
                 this.tokenService.invalidateToken(null);
                 return this.addBase(returnUrl);
@@ -193,7 +193,7 @@ public class LoginController extends HangarComponent {
         if (!this.config.sso.enabled()) {
             throw new HangarApiException("nav.user.error.loginDisabled");
         }
-        this.ssoService.insert(urlWithNonce.getNonce());
-        return new RedirectView(urlWithNonce.getUrl());
+        this.ssoService.insert(urlWithNonce.nonce());
+        return new RedirectView(urlWithNonce.url());
     }
 }

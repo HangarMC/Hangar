@@ -1,6 +1,5 @@
 package io.papermc.hangar.service.internal.visibility;
 
-import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.VisibilityDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.model.db.projects.ProjectTable;

@@ -10,13 +10,11 @@ import io.papermc.hangar.db.dao.internal.projects.HangarProjectPagesDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
-import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import java.util.List;
-import java.util.Locale;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -71,10 +69,7 @@ public class SitemapService extends HangarComponent {
         // add all versions of said projects
         projects.forEach(p -> {
             final List<ProjectVersionTable> projectVersions = this.projectVersionsDAO.getProjectVersions(p.getId());
-
-            projectVersions.forEach(pv -> {
-                generator.addPage(this.path(userTable.getName(), p.getSlug(), "versions", pv.getVersionString()));
-            });
+            projectVersions.forEach(pv -> generator.addPage(this.path(userTable.getName(), p.getSlug(), "versions", pv.getVersionString())));
         });
 
         // add all pages of said projects

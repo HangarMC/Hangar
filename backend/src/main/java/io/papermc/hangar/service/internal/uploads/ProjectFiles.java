@@ -2,7 +2,6 @@ package io.papermc.hangar.service.internal.uploads;
 
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.internal.file.FileService;
-import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

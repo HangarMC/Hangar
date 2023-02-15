@@ -115,53 +115,16 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
             "} " + super.toString();
     }
 
-    public static class HangarProjectInfo {
-
-        private final int publicVersions;
-        private final int flagCount;
-        private final int noteCount;
-        private final long starCount;
-        private final long watcherCount;
-
-        public HangarProjectInfo(final int publicVersions, final int flagCount, final int noteCount, final long starCount, final long watcherCount) {
-            this.publicVersions = publicVersions;
-            this.flagCount = flagCount;
-            this.noteCount = noteCount;
-            this.starCount = starCount;
-            this.watcherCount = watcherCount;
-        }
-
-        public int getPublicVersions() {
-            return this.publicVersions;
-        }
+    public record HangarProjectInfo(int publicVersions, int flagCount, int noteCount, long starCount, long watcherCount) {
 
         @RequiresPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
-        public int getFlagCount() {
+        public int flagCount() {
             return this.flagCount;
         }
 
         @RequiresPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
-        public int getNoteCount() {
+        public int noteCount() {
             return this.noteCount;
-        }
-
-        public long getStarCount() {
-            return this.starCount;
-        }
-
-        public long getWatcherCount() {
-            return this.watcherCount;
-        }
-
-        @Override
-        public String toString() {
-            return "HangarProjectInfo{" +
-                "publicVersions=" + this.publicVersions +
-                ", flagCount=" + this.flagCount +
-                ", noteCount=" + this.noteCount +
-                ", starCount=" + this.starCount +
-                ", watcherCount=" + this.watcherCount +
-                '}';
         }
     }
 

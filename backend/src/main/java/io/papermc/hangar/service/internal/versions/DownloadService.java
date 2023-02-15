@@ -18,7 +18,6 @@ import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadWarningTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionUnsafeDownloadTable;
-import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.util.RequestUtil;
@@ -44,7 +43,6 @@ import org.springframework.web.util.WebUtils;
 @Service
 public class DownloadService extends HangarComponent {
 
-    private final StatService statService;
     private final ProjectFiles projectFiles;
     private final ProjectsDAO projectsDAO;
     private final ProjectVersionsDAO projectVersionsDAO;
@@ -54,8 +52,7 @@ public class DownloadService extends HangarComponent {
     private final FileService fileService;
 
     @Autowired
-    public DownloadService(final StatService statService, final ProjectFiles projectFiles, final ProjectsDAO projectsDAO, final ProjectVersionsDAO projectVersionsDAO, final ProjectVersionUnsafeDownloadsDAO projectVersionUnsafeDownloadsDAO, final ProjectVersionDownloadWarningsDAO projectVersionDownloadWarningsDAO, final ProjectVersionDownloadsDAO downloadsDAO, final FileService fileService) {
-        this.statService = statService;
+    public DownloadService(final ProjectFiles projectFiles, final ProjectsDAO projectsDAO, final ProjectVersionsDAO projectVersionsDAO, final ProjectVersionUnsafeDownloadsDAO projectVersionUnsafeDownloadsDAO, final ProjectVersionDownloadWarningsDAO projectVersionDownloadWarningsDAO, final ProjectVersionDownloadsDAO downloadsDAO, final FileService fileService) {
         this.projectFiles = projectFiles;
         this.projectsDAO = projectsDAO;
         this.projectVersionsDAO = projectVersionsDAO;

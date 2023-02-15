@@ -106,19 +106,19 @@ public class VersionDependencyService extends HangarComponent {
     @Transactional
     @CacheEvict(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p1") // versionId is key
     public void updateVersionPlatformVersions(final long projectId, final long versionId, final UpdatePlatformVersions form) {
-        final Map<String, ProjectVersionPlatformDependencyTable> platformDependencyTables = this.projectVersionPlatformDependenciesDAO.getPlatformVersions(versionId, form.getPlatform());
+        final Map<String, ProjectVersionPlatformDependencyTable> platformDependencyTables = this.projectVersionPlatformDependenciesDAO.getPlatformVersions(versionId, form.platform());
         final Map<String, ProjectVersionPlatformDependencyTable> toBeRemoved = new HashMap<>();
         final Map<String, ProjectVersionPlatformDependencyTable> toBeAdded = new HashMap<>();
         platformDependencyTables.forEach((version, table) -> {
-            if (!form.getVersions().contains(version)) {
+            if (!form.versions().contains(version)) {
                 toBeRemoved.put(version, table);
             }
         });
-        form.getVersions().forEach(version -> {
+        form.versions().forEach(version -> {
             if (!platformDependencyTables.containsKey(version)) {
-                final PlatformVersionTable platformVersionTable = this.platformService.getByPlatformAndVersion(form.getPlatform(), version);
+                final PlatformVersionTable platformVersionTable = this.platformService.getByPlatformAndVersion(form.platform(), version);
                 if (platformVersionTable == null) {
-                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidVersionForPlatform", version, form.getPlatform().getName());
+                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidVersionForPlatform", version, form.platform().getName());
                 }
                 toBeAdded.put(version, new ProjectVersionPlatformDependencyTable(versionId, platformVersionTable.getId()));
             }

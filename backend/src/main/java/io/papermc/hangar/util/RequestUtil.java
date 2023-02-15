@@ -7,7 +7,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class RequestUtil {
+public final class RequestUtil {
 
     private RequestUtil() {
     }

@@ -71,45 +71,7 @@ public class HangarReviewQueueEntry {
         return this.reviews;
     }
 
-    public static class Review {
-
-        private final String reviewerName;
-        private final OffsetDateTime reviewStarted;
-        private final OffsetDateTime reviewEnded;
-        private final ReviewAction lastAction;
-
-        public Review(final String reviewerName, final OffsetDateTime reviewStarted, final @Nullable OffsetDateTime reviewEnded, @EnumByOrdinal final ReviewAction lastAction) {
-            this.reviewerName = reviewerName;
-            this.reviewStarted = reviewStarted;
-            this.reviewEnded = reviewEnded;
-            this.lastAction = lastAction;
-        }
-
-        public String getReviewerName() {
-            return this.reviewerName;
-        }
-
-        public OffsetDateTime getReviewStarted() {
-            return this.reviewStarted;
-        }
-
-        public OffsetDateTime getReviewEnded() {
-            return this.reviewEnded;
-        }
-
-        public ReviewAction getLastAction() {
-            return this.lastAction;
-        }
-
-        @Override
-        public String toString() {
-            return "Review{" +
-                "reviewerName='" + this.reviewerName + '\'' +
-                ", reviewStarted=" + this.reviewStarted +
-                ", reviewEnded=" + this.reviewEnded +
-                ", lastAction=" + this.lastAction +
-                '}';
-        }
+    public record Review(String reviewerName, OffsetDateTime reviewStarted, @Nullable OffsetDateTime reviewEnded, @EnumByOrdinal ReviewAction lastAction) {
     }
 
     @Override

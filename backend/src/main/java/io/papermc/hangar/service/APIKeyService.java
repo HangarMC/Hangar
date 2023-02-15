@@ -46,18 +46,18 @@ public class APIKeyService extends HangarComponent {
 
     @Transactional
     public String createApiKey(final UserIdentified userIdentified, final CreateAPIKeyForm apiKeyForm, final Permission possiblePermissions) {
-        final Permission keyPermission = apiKeyForm.getPermissions().stream().map(NamedPermission::getPermission).reduce(Permission::add).orElse(Permission.None);
+        final Permission keyPermission = apiKeyForm.permissions().stream().map(NamedPermission::getPermission).reduce(Permission::add).orElse(Permission.None);
         if (!possiblePermissions.has(keyPermission)) {
             throw new HangarApiException("apiKeys.error.notEnoughPerms");
         }
 
-        this.checkName(userIdentified, apiKeyForm.getName());
+        this.checkName(userIdentified, apiKeyForm.name());
 
         final String tokenIdentifier = UUID.randomUUID().toString();
         final String token = UUID.randomUUID().toString();
         final String hashedToken = CryptoUtils.hmacSha256(this.config.security.tokenSecret(), token.getBytes(StandardCharsets.UTF_8));
-        this.apiKeyDAO.insert(new ApiKeyTable(apiKeyForm.getName(), userIdentified.getUserId(), tokenIdentifier, hashedToken, keyPermission));
-        this.actionLogger.user(LogAction.USER_APIKEY_CREATED.create(UserContext.of(userIdentified.getUserId()), "Key '" + apiKeyForm.getName() + "': " + apiKeyForm.getPermissions().stream().map(NamedPermission::getFrontendName).collect(Collectors.joining(", ")), ""));
+        this.apiKeyDAO.insert(new ApiKeyTable(apiKeyForm.name(), userIdentified.getUserId(), tokenIdentifier, hashedToken, keyPermission));
+        this.actionLogger.user(LogAction.USER_APIKEY_CREATED.create(UserContext.of(userIdentified.getUserId()), "Key '" + apiKeyForm.name() + "': " + apiKeyForm.permissions().stream().map(NamedPermission::getFrontendName).collect(Collectors.joining(", ")), ""));
         return tokenIdentifier + "." + token;
     }
 

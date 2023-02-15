@@ -8,7 +8,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 
-public class CryptoUtils {
+public final class CryptoUtils {
 
     private CryptoUtils() {
     }

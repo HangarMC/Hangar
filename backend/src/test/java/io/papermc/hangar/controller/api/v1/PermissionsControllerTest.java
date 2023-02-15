@@ -30,7 +30,7 @@ class PermissionsControllerTest {
     private String getJwt(final String apiKey) throws Exception {
         final String response = this.mockMvc.perform(post("/api/v1/authenticate?apiKey=" + apiKey)).andReturn().getResponse().getContentAsString();
         final ApiSession apiSession = this.objectMapper.readValue(response, ApiSession.class);
-        return apiSession.getToken();
+        return apiSession.token();
     }
 
     @Test

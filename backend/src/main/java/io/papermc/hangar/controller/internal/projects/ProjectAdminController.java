@@ -53,7 +53,7 @@ public class ProjectAdminController extends HangarComponent {
     @PermissionRequired(NamedPermission.REVIEWER)
     @PostMapping(path = "/visibility/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void changeProjectVisibility(@PathVariable final long projectId, @RequestBody @Valid final VisibilityChangeForm visibilityChangeForm) {
-        this.projectAdminService.changeVisibility(projectId, visibilityChangeForm.getVisibility(), visibilityChangeForm.getComment());
+        this.projectAdminService.changeVisibility(projectId, visibilityChangeForm.visibility(), visibilityChangeForm.comment());
     }
 
     @ResponseStatus(HttpStatus.OK)

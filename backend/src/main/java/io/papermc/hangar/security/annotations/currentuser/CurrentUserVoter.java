@@ -26,7 +26,7 @@ public class CurrentUserVoter extends HangarDecisionVoter<CurrentUserMetadataExt
             return ACCESS_GRANTED;
         }
         final String userName;
-        final Object user = attribute.getExpression().getValue(this.getMethodEvaluationContext(methodInvocation));
+        final Object user = attribute.expression().getValue(this.getMethodEvaluationContext(methodInvocation));
         if (user instanceof UserTable) {
             userName = ((UserTable) user).getName();
         } else if (user instanceof String) {

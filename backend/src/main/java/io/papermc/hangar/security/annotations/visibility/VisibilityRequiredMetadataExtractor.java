@@ -19,27 +19,11 @@ public class VisibilityRequiredMetadataExtractor implements AnnotationMetadataEx
         return Set.of(new VisibilityRequiredAttribute(securityAnnotation.type(), this.expressionParser.parseExpression(securityAnnotation.args())));
     }
 
-    static class VisibilityRequiredAttribute implements ConfigAttribute {
-
-        private final VisibilityRequired.Type type;
-        private final Expression expression;
-
-        VisibilityRequiredAttribute(final VisibilityRequired.Type type, final Expression expression) {
-            this.type = type;
-            this.expression = expression;
-        }
-
-        public VisibilityRequired.Type getType() {
-            return this.type;
-        }
-
-        public Expression getExpression() {
-            return this.expression;
-        }
+    record VisibilityRequiredAttribute(VisibilityRequired.Type type, Expression expression) implements ConfigAttribute {
 
         @Override
-        public String getAttribute() {
-            return null;
+            public String getAttribute() {
+                return null;
+            }
         }
-    }
 }

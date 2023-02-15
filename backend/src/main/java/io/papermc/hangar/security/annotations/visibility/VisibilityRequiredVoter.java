@@ -26,12 +26,12 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
 
     @Override
     public int vote(final Authentication authentication, final MethodInvocation method, final @NotNull VisibilityRequiredMetadataExtractor.VisibilityRequiredAttribute attribute) {
-        final Object[] arguments = attribute.getExpression().getValue(this.getMethodEvaluationContext(method), Object[].class);
-        if (arguments == null || !attribute.getType().getArgCount().contains(arguments.length)) {
+        final Object[] arguments = attribute.expression().getValue(this.getMethodEvaluationContext(method), Object[].class);
+        if (arguments == null || !attribute.type().getArgCount().contains(arguments.length)) {
             throw new IllegalStateException("Bad annotation configuration");
         }
         this.logger.debug("Resolved arguments: {}", Arrays.toString(arguments));
-        switch (attribute.getType()) {
+        switch (attribute.type()) {
             case PROJECT:
                 if (arguments.length == 1 && this.projectService.getProjectTable((long) arguments[0]) != null) {
                     return ACCESS_GRANTED;

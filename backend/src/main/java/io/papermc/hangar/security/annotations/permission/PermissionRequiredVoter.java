@@ -33,15 +33,15 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         for (final PermissionRequiredMetadataExtractor.PermissionRequiredAttribute attribute : attributes) {
-            final Object[] arguments = attribute.getExpression().getValue(this.getMethodEvaluationContext(methodInvocation), Object[].class);
-            if (arguments == null || !attribute.getPermissionType().getArgCounts().contains(arguments.length)) {
+            final Object[] arguments = attribute.expression().getValue(this.getMethodEvaluationContext(methodInvocation), Object[].class);
+            if (arguments == null || !attribute.permissionType().getArgCounts().contains(arguments.length)) {
                 throw new IllegalStateException("Bad annotation configuration");
             }
-            final Permission requiredPerm = Arrays.stream(attribute.getPermissions()).map(NamedPermission::getPermission).reduce(Permission::add).orElse(Permission.None);
+            final Permission requiredPerm = Arrays.stream(attribute.permissions()).map(NamedPermission::getPermission).reduce(Permission::add).orElse(Permission.None);
             this.logger.debug("Possible permissions: {}", hangarAuthenticationToken.getPrincipal().getPossiblePermissions());
             this.logger.debug("Required permissions: {}", requiredPerm);
             final Permission currentPerm;
-            switch (attribute.getPermissionType()) {
+            switch (attribute.permissionType()) {
                 case PROJECT:
                     if (arguments.length == 1) {
                         final long projectId;

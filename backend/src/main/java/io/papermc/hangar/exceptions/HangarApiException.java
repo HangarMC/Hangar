@@ -109,11 +109,7 @@ public class HangarApiException extends ResponseStatusException {
             gen.writeEndArray();
             gen.writeBooleanField("isHangarApiException", true);
             gen.writeObjectFieldStart("httpError");
-            if (status != null) {
-                gen.writeNumberField("statusCode", status.value());
-            } else {
-                gen.writeNumberField("statusCode", exception.getStatusCode().value());
-            }
+            gen.writeNumberField("statusCode", status != null ? status.value() :  exception.getStatusCode().value());
             gen.writeEndObject();
         }
     }

@@ -21,7 +21,6 @@ import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
-import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.internal.AvatarService;
 import io.papermc.hangar.service.internal.organizations.OrganizationFactory;

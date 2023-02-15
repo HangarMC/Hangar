@@ -19,21 +19,11 @@ public class CurrentUserMetadataExtractor implements AnnotationMetadataExtractor
         return Set.of(new CurrentUserAttribute(this.expressionParser.parseExpression(securityAnnotation.userArgument())));
     }
 
-    static class CurrentUserAttribute implements ConfigAttribute {
-
-        private final Expression expression;
-
-        public CurrentUserAttribute(final Expression expression) {
-            this.expression = expression;
-        }
-
-        public Expression getExpression() {
-            return this.expression;
-        }
+    record CurrentUserAttribute(Expression expression) implements ConfigAttribute {
 
         @Override
-        public String getAttribute() {
-            return null;
+            public String getAttribute() {
+                return null;
+            }
         }
-    }
 }

@@ -58,14 +58,14 @@ public class ReviewService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "reviews.error.onlyOneReview");
         }
         final ProjectVersionReviewTable projectVersionReviewTable = this.projectVersionReviewsDAO.insert(new ProjectVersionReviewTable(versionId, this.getHangarPrincipal().getUserId()));
-        this.projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(projectVersionReviewTable.getId(), msg.getMessage(), new JSONB(msg.getArgs()), ReviewAction.START));
+        this.projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(projectVersionReviewTable.getId(), msg.message(), new JSONB(msg.args()), ReviewAction.START));
         this.changeVersionReviewState(versionId, ReviewState.UNDER_REVIEW, false);
     }
 
     @Transactional
     public void addReviewMessage(final long versionId, final ReviewMessage msg) {
         final ProjectVersionReviewTable latestUnfinishedReview = this.getLatestUnfinishedReviewAndValidate(versionId);
-        this.projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(latestUnfinishedReview.getId(), msg.getMessage(), new JSONB(msg.getArgs()), ReviewAction.MESSAGE));
+        this.projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(latestUnfinishedReview.getId(), msg.message(), new JSONB(msg.args()), ReviewAction.MESSAGE));
     }
 
     @Transactional
@@ -75,7 +75,7 @@ public class ReviewService extends HangarComponent {
         if (this.projectVersionReviewsDAO.getUnfinishedReviews(versionId).size() == 1) { // only unfinished is the one about to be finished
             this.changeVersionReviewState(versionId, ReviewState.UNREVIEWED, false);
         }
-        this.projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(latestUnfinishedReview.getId(), msg.getMessage(), new JSONB(msg.getArgs()), ReviewAction.STOP));
+        this.projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(latestUnfinishedReview.getId(), msg.message(), new JSONB(msg.args()), ReviewAction.STOP));
         this.projectVersionReviewsDAO.update(latestUnfinishedReview);
     }
 
@@ -90,7 +90,7 @@ public class ReviewService extends HangarComponent {
         }
         projectVersionReviewTable.setEndedAt(null);
         this.changeVersionReviewState(versionId, ReviewState.UNDER_REVIEW, false);
-        this.projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(projectVersionReviewTable.getId(), msg.getMessage(), new JSONB(msg.getArgs()), reviewAction));
+        this.projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(projectVersionReviewTable.getId(), msg.message(), new JSONB(msg.args()), reviewAction));
         this.projectVersionReviewsDAO.update(projectVersionReviewTable);
     }
 
@@ -102,7 +102,7 @@ public class ReviewService extends HangarComponent {
         if (isLastUnfinished) { // only unfinished is the one about to be finished
             this.changeVersionReviewState(versionId, reviewState, true);
         }
-        this.projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(latestUnfinishedReview.getId(), msg.getMessage(), new JSONB(msg.getArgs()), reviewAction));
+        this.projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(latestUnfinishedReview.getId(), msg.message(), new JSONB(msg.args()), reviewAction));
         this.projectVersionReviewsDAO.update(latestUnfinishedReview);
         final ProjectVersionTable projectVersionTable = this.projectVersionsDAO.getProjectVersionTable(versionId);
         if (isLastUnfinished) {

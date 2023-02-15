@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import org.jdbi.v3.core.argument.Argument;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.jdbi.v3.core.statement.StatementContext;
@@ -119,7 +118,7 @@ public class Permission implements Comparable<Permission>, Argument {
     }
 
     public List<NamedPermission> toNamed() {
-        return Arrays.stream(NamedPermission.values()).filter(perm -> this.has(perm.getPermission())).collect(Collectors.toUnmodifiableList());
+        return Arrays.stream(NamedPermission.values()).filter(perm -> this.has(perm.getPermission())).toList();
     }
 
     public long getValue() {

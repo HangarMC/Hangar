@@ -394,7 +394,7 @@ public class VersionFactory extends HangarComponent {
             }
         }
 
-        final ProjectVersionDownloadTable table = new ProjectVersionDownloadTable(projectVersionTable.getVersionId(), fileInfo.getSizeBytes(), fileInfo.getMd5Hash(), fileInfo.getName(), null);
+        final ProjectVersionDownloadTable table = new ProjectVersionDownloadTable(projectVersionTable.getVersionId(), fileInfo.sizeBytes(), fileInfo.md5Hash(), fileInfo.getName(), null);
         downloadsTables.add(ImmutablePair.of(table, pendingVersionFile.platforms()));
     }
 
@@ -414,9 +414,9 @@ public class VersionFactory extends HangarComponent {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.noFile");
                     }
                     final byte[] bytes = this.fileService.bytes(tmpVersionJar);
-                    if (bytes.length != fileInfo.getSizeBytes()) {
+                    if (bytes.length != fileInfo.sizeBytes()) {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.mismatchedFileSize");
-                    } else if (!Objects.equals(CryptoUtils.md5ToHex(bytes), fileInfo.getMd5Hash())) {
+                    } else if (!Objects.equals(CryptoUtils.md5ToHex(bytes), fileInfo.md5Hash())) {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.hashMismatch");
                     }
                 } catch (final IOException e) {

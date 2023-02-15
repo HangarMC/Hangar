@@ -26,41 +26,11 @@ public class PermissionRequiredMetadataExtractor implements AnnotationMetadataEx
         ));
     }
 
-    static class PermissionRequiredAttribute implements ConfigAttribute {
-
-        private final PermissionType permissionType;
-        private final NamedPermission[] permissions;
-        private final Expression expression;
-
-        PermissionRequiredAttribute(final PermissionType permissionType, final NamedPermission[] permissions, final Expression expression) {
-            this.permissionType = permissionType;
-            this.permissions = permissions;
-            this.expression = expression;
-        }
-
-        public PermissionType getPermissionType() {
-            return this.permissionType;
-        }
-
-        public NamedPermission[] getPermissions() {
-            return this.permissions;
-        }
-
-        public Expression getExpression() {
-            return this.expression;
-        }
+    record PermissionRequiredAttribute(PermissionType permissionType, NamedPermission[] permissions, Expression expression) implements ConfigAttribute {
 
         @Override
-        public String getAttribute() {
-            return null;
+            public String getAttribute() {
+                return null;
+            }
         }
-
-        @Override
-        public String toString() {
-            return "PermissionRequiredAttribute{" +
-                "permissionType=" + this.permissionType +
-                ", permissions=" + Arrays.toString(this.permissions) +
-                '}';
-        }
-    }
 }

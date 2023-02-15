@@ -176,7 +176,7 @@ public class UsersApiService extends HangarComponent {
     }
 
     public List<ProjectCompact> getUserPinned(final String userName) {
-        List<ProjectCompact> pinnedVersions = this.pinnedProjectService.getPinnedVersions(this.getUserRequired(userName, this.usersDAO::getUser, HangarUser.class).getId());
+        final List<ProjectCompact> pinnedVersions = this.pinnedProjectService.getPinnedVersions(this.getUserRequired(userName, this.usersDAO::getUser, HangarUser.class).getId());
         pinnedVersions.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
         return pinnedVersions;
     }

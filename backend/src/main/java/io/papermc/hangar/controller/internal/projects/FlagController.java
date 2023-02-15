@@ -39,7 +39,7 @@ public class FlagController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void flag(@RequestBody @Valid final FlagForm form) {
-        this.flagService.createFlag(form.getProjectId(), form.getReason(), form.getComment());
+        this.flagService.createFlag(form.projectId(), form.reason(), form.comment());
     }
 
     @Unlocked
