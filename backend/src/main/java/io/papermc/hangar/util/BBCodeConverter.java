@@ -21,7 +21,6 @@ public class BBCodeConverter {
         // Remove tags
         REPLACERS.put("color", (tag, tagArg, content) -> content);
         REPLACERS.put("left", (tag, tagArg, content) -> content);
-        REPLACERS.put("center", (tag, tagArg, content) -> content);
         REPLACERS.put("right", (tag, tagArg, content) -> content);
         REPLACERS.put("u", (tag, tagArg, content) -> content);
         REPLACERS.put("quote", (tag, tagArg, content) -> content);
@@ -36,6 +35,7 @@ public class BBCodeConverter {
         REPLACERS.put("s", (tag, tagArg, content) -> "~~" + content + "~~");
         REPLACERS.put("img", (tag, tagArg, content) -> "![" + content + "](" + content + ")");
         REPLACERS.put("media", (tag, tagArg, content) -> "youtube".equals(tagArg) ? "@[YouTube](https://youtu.be/" + content + ")" : null);
+        REPLACERS.put("center", (tag, tagArg, content) -> "<center>" + content + "</center>");
         REPLACERS.put("size", (tag, tagArg, content) -> {
             if (content.isBlank()) {
                 return content;
@@ -57,6 +57,22 @@ public class BBCodeConverter {
 
             final int headerLevel = 8 - size;
             return "#".repeat(headerLevel) + " " + content;
+        });
+        REPLACERS.put("heading", (tag, tagArg, content) -> {
+            if (content.isBlank()) {
+                return content;
+            }
+
+            final int heading;
+            try {
+                heading = Integer.parseInt(tagArg);
+            } catch (final NumberFormatException ignored) {
+                return content;
+            }
+            if (heading < 1 || heading > 3) {
+                return content;
+            }
+            return "#".repeat(heading) + " " + content;
         });
         REPLACERS.put("url", (tag, tagArg, content) -> {
             String url = tagArg == null ? content : tagArg;
