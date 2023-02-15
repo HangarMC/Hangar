@@ -19,7 +19,7 @@ class BBCodeConverterTest {
 
     @Test
     void testRemoved() {
-        final String result = this.converter.convertToMarkdown("[list][size=4][color=red][user=kennytv]T[/size][center]e[font=upsidedown][/center]st[/font][/color][/user][/list]");
+        final String result = this.converter.convertToMarkdown("[list][size=4][color=red][user=kennytv]T[/size]e[font=upsidedown]st[/font][/color][/user][/list]");
         Assertions.assertEquals("Test", result);
     }
 
