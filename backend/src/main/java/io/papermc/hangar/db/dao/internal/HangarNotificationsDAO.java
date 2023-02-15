@@ -38,7 +38,7 @@ public interface HangarNotificationsDAO {
     List<HangarNotification> getNotifications(long userId, boolean read, @BindPagination RequestPagination pagination);
 
     @RegisterConstructorMapper(HangarInvite.HangarProjectInvite.class)
-    @SqlQuery("SELECT upr.id roletableid," +
+    @SqlQuery("SELECT upr.id roleId," +
         "   upr.role_type AS role," +
         "   p.name," +
         "   '/' || p.owner_name || '/' || p.slug url" +
