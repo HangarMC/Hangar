@@ -98,7 +98,7 @@ public interface UsersApiDAO {
         "       u.tagline," +
         "       u.join_date," +
         "       u.locked," +
-        "       array(SELECT r.name FROM roles r JOIN user_global_roles ugr ON r.id = ugr.role_id WHERE u.id = ugr.user_id ORDER BY r.permission::bigint DESC) AS roles," +
+        "       array(SELECT r.id FROM roles r JOIN user_global_roles ugr ON r.id = ugr.role_id WHERE u.id = ugr.user_id ORDER BY r.permission::bigint DESC) AS roles," +
         "       (SELECT count(*) FROM project_members_all pma WHERE pma.user_id = u.id) AS project_count" +
         "   FROM users u" +
         "   WHERE u.id IN " +
@@ -117,7 +117,7 @@ public interface UsersApiDAO {
         "       u.tagline," +
         "       u.join_date," +
         "       u.locked," +
-        "       array_agg(r.name ORDER BY r.permission::bigint DESC) AS roles," +
+        "       array_agg(r.id ORDER BY r.permission::bigint DESC) AS roles," +
         "       (SELECT count(*) FROM project_members_all pma WHERE pma.user_id = u.id) AS project_count" +
         "   FROM users u" +
         "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +

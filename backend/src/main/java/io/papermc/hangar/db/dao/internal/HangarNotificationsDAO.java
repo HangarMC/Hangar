@@ -50,8 +50,7 @@ public interface HangarNotificationsDAO {
     List<HangarInvite.HangarProjectInvite> getProjectInvites(long userId);
 
     @RegisterConstructorMapper(HangarInvite.HangarOrganizationInvite.class)
-    @SqlQuery("SELECT uor.id roletableid," +
-        "   uor.role_type AS role," +
+    @SqlQuery("SELECT uor.id AS roleId," +
         "   o.name," +
         "   '/' || o.name url" +
         "   FROM user_organization_roles uor" +

@@ -13,6 +13,7 @@ import Link from "~/lib/components/design/Link.vue";
 import Tag from "~/components/Tag.vue";
 import { useApi } from "~/composables/useApi";
 import { Header } from "~/types/components/SortableTable";
+import { getRole } from "~/store/backendData";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -73,7 +74,7 @@ useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));
       <template #item_joinDate="{ item }">{{ i18n.d(item.joinDate, "date") }}</template>
       <template #item_roles="{ item }">
         <div class="space-x-1">
-          <Tag v-for="role in item.roles" :key="role.roleId" :color="{ background: role.color }" :name="role.title" />
+          <Tag v-for="roleId in item.roles" :key="roleId" :color="{ background: getRole(roleId).color }" :name="getRole(roleId).title" />
         </div>
       </template>
       <template #item_name="{ item }">

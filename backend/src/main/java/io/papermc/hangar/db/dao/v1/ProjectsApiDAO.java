@@ -154,7 +154,7 @@ public interface ProjectsApiDAO {
         "       u.tagline," +
         "       u.join_date," +
         "       u.locked," +
-        "       array_agg(r.name) AS roles," +
+        "       array_agg(r.id) AS roles," +
         "       (SELECT count(*)" +
         "           FROM project_members_all pma" +
         "           WHERE pma.user_id = u.id" +
@@ -183,7 +183,7 @@ public interface ProjectsApiDAO {
         "       u.tagline," +
         "       u.join_date," +
         "       u.locked," +
-        "       array_agg(r.name) AS roles," +
+        "       array_agg(r.id) AS roles," +
         "       (SELECT count(*)" +
         "           FROM project_members_all pma" +
         "           WHERE pma.user_id = u.id" +

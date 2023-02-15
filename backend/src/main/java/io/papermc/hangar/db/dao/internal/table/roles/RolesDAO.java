@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RegisterConstructorMapper(RoleTable.class)
+@RegisterConstructorMapper(RoleData.class)
 public interface RolesDAO {
 
     @Timestamped
@@ -26,11 +27,6 @@ public interface RolesDAO {
     @SqlQuery("SELECT id, created_at, name, category, title, color, assignable, rank, permission::bigint FROM roles WHERE id = :id")
     RoleTable getById(long id);
 
-    @SqlQuery("SELECT id AS roleid, created_at, name AS value, category AS rolecategory, title, color, assignable, rank, permission::bigint AS permissions FROM roles WHERE category = :category")
-    @RegisterConstructorMapper(RoleData.class)
+    @SqlQuery("SELECT id AS roleid, created_at, name AS value, category AS rolecategory, title, color, assignable, rank, permission::bigint AS permissions FROM roles WHERE category = :category ORDER BY rank DESC")
     List<RoleData> getRoles(RoleCategory category);
-
-    @SqlQuery("SELECT id AS roleid, created_at, name AS value, category AS rolecategory, title, color, assignable, rank, permission::bigint AS permissions FROM roles WHERE category = :category AND assignable")
-    @RegisterConstructorMapper(RoleData.class)
-    List<RoleData> getAssignableRoles(RoleCategory category);
 }

@@ -85,12 +85,12 @@ async function markNotificationRead(notification: HangarNotification, router = t
 }
 
 async function updateInvite(invite: Invite, status: "accept" | "decline") {
-  await useInternalApi(`invites/${invite.type}/${invite.roleTableId}/${status}`, "post").catch((e) => handleRequestError(e));
+  await useInternalApi(`invites/${invite.type}/${invite.roleId}/${status}`, "post").catch((e) => handleRequestError(e));
   if (status === "accept") {
     invite.accepted = true;
   } else {
     if (!invites.value) return;
-    invites.value[invite.type] = invites.value[invite.type].filter((i) => i.roleTableId !== invite.roleTableId);
+    invites.value[invite.type] = invites.value[invite.type].filter((i) => i.roleId !== invite.roleId);
   }
   notificationStore.success(i18n.t(`notifications.invite.msgs.${status}`, [invite.name]));
   await useRouter().go(0);

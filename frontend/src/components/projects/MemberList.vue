@@ -11,7 +11,7 @@ import Link from "~/lib/components/design/Link.vue";
 import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import { hasPerms } from "~/composables/usePerm";
-import { useBackendData } from "~/store/backendData";
+import { getRole, useBackendData } from "~/store/backendData";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import IconMdiClock from "~icons/mdi/clock";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
@@ -44,20 +44,22 @@ const props = withDefaults(
 );
 
 const sortedMembers = [...props.members].sort((r1, r2) => {
-  if (r1.role.role.rank) {
-    if (r2.role.role.rank) {
-      return r1.role.role.rank - r2.role.role.rank;
+  const role1 = getRole(r1.role.roleId);
+  const role2 = getRole(r2.role.roleId);
+  if (role1?.rank) {
+    if (role2?.rank) {
+      return role1.rank - role2.rank;
     }
     return 1;
   }
-  return r2.role.role.rank ? -1 : 1;
+  return role2?.rank ? -1 : 1;
 });
 
 const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
-const roles: Role[] = props.organization ? useBackendData.orgRoles : useBackendData.projectRoles;
+const roles: Role[] = (props.organization ? useBackendData.orgRoles : useBackendData.projectRoles).filter((role) => role.assignable);
 
 const canLeave = computed<boolean>(() => {
   if (!authStore.user) {
@@ -76,8 +78,8 @@ watch(search, () => {
   addErrors.value = [];
 });
 
-function filteredRoles(currentRole: Role): Role[] {
-  return roles.filter((r) => r.roleId !== currentRole.roleId);
+function filteredRoles(currentRole: number): Role[] {
+  return roles.filter((r) => r.roleId !== currentRole);
 }
 
 function removeMember(member: JoinableMember) {
@@ -136,7 +138,7 @@ function post(member: EditableMember, action: "edit" | "add" | "remove") {
 function convertMember(member: JoinableMember): EditableMember {
   return {
     name: member.user.name,
-    roleId: member.role.role.roleId,
+    roleId: member.role.roleId,
   };
 }
 
@@ -172,24 +174,24 @@ async function doSearch(val: string) {
         </p>
         <Tooltip v-if="!member.role.accepted">
           <template #content>
-            {{ i18n.t("form.memberList.invitedAs", [member.role.role.title]) }}
+            {{ i18n.t("form.memberList.invitedAs", [getRole(member.role.roleId).title]) }}
           </template>
-          <span class="items-center inline-flex"> {{ member.role.role.title }} <IconMdiClock class="ml-1" /> </span>
+          <span class="items-center inline-flex"> {{ getRole(member.role.roleId).title }} <IconMdiClock class="ml-1" /> </span>
         </Tooltip>
-        <span v-else class="items-center inline-flex"> {{ member.role.role.title }}</span>
+        <span v-else class="items-center inline-flex"> {{ getRole(member.role.roleId).title }}</span>
       </div>
       <!-- todo confirmation modal -->
-      <DropdownButton v-if="canEdit && member.role.role.assignable" :name="i18n.t('general.edit')">
+      <DropdownButton v-if="canEdit && getRole(member.role.roleId).assignable" :name="i18n.t('general.edit')">
         <template #button-label>
           <IconMdiPencil />
         </template>
-        <DropdownItem v-for="role of filteredRoles(member.role.role)" :key="role.title" :disabled="saving" @click="setRole(member, role)">
+        <DropdownItem v-for="role of filteredRoles(member.role.roleId)" :key="role.title" :disabled="saving" @click="setRole(member, role)">
           {{ role.title }}
         </DropdownItem>
         <hr />
         <DropdownItem @click="removeMember(member)">{{ i18n.t("form.memberList.remove") }}</DropdownItem>
       </DropdownButton>
-      <DropdownButton v-if="canEdit && !member.role.role.assignable && !member.role.accepted" :name="i18n.t('general.edit')">
+      <DropdownButton v-if="canEdit && !getRole(member.role.roleId).assignable && !member.role.accepted" :name="i18n.t('general.edit')">
         <template #button-label>
           <IconMdiPencil />
         </template>
@@ -209,7 +211,7 @@ async function doSearch(val: string) {
         <template #button-label>
           <IconMdiAccountPlus class="ml-1" />
         </template>
-        <DropdownItem v-for="role of roles" :key="role.title" :disabled="saving" @click="invite(search, role)">
+        <DropdownItem v-for="role of roles" :key="role.value" :disabled="saving" @click="invite(search, role)">
           {{ role.title }}
         </DropdownItem>
       </DropdownButton>

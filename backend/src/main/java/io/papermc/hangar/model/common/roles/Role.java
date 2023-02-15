@@ -17,31 +17,31 @@ public interface Role<T extends IRoleTable<? extends Role<T>>> {
     Map<Long, Role<?>> ID_ROLES = new HashMap<>();
 
     static <C extends Enum<C> & Role<?>> void registerRole(final C roleEnum) {
-        if (ID_ROLES.containsKey(roleEnum.roleId()) || VALUE_ROLES.containsKey(roleEnum.value())) {
+        if (ID_ROLES.containsKey(roleEnum.getRoleId()) || VALUE_ROLES.containsKey(roleEnum.getValue())) {
             throw new IllegalArgumentException(roleEnum + " has a duplicate role ID or value");
         }
-        ID_ROLES.put(roleEnum.roleId(), roleEnum);
-        VALUE_ROLES.put(roleEnum.value(), roleEnum);
+        ID_ROLES.put(roleEnum.getRoleId(), roleEnum);
+        VALUE_ROLES.put(roleEnum.getValue(), roleEnum);
     }
 
     @NotNull
-    String value();
+    String getValue();
 
-    long roleId();
-
-    @NotNull
-    RoleCategory roleCategory();
+    long getRoleId();
 
     @NotNull
-    Permission permissions();
+    RoleCategory getRoleCategory();
 
     @NotNull
-    String title();
+    Permission getPermissions();
 
     @NotNull
-    Color color();
+    String getTitle();
 
-    boolean assignable();
+    @NotNull
+    Color getColor();
+
+    boolean isAssignable();
 
     @Nullable Integer rank();
 

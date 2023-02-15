@@ -21,7 +21,7 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
 
     DUMMY("Dummy", 42, Permission.ViewPublicInfo, "Dummy", Color.CHARTREUSE, 42),
 
-    ORGANIZATION("Organization", 100, OrganizationRole.ORGANIZATION_OWNER.permissions(), "Organization", Color.PURPLE);
+    ORGANIZATION("Organization", 100, OrganizationRole.ORGANIZATION_OWNER.getPermissions(), "Organization", Color.PURPLE);
 
     private final String value;
     private final long roleId;
@@ -45,37 +45,37 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
     }
 
     @Override
-    public @NotNull String value() {
+    public @NotNull String getValue() {
         return this.value;
     }
 
     @Override
-    public long roleId() {
+    public long getRoleId() {
         return this.roleId;
     }
 
     @Override
-    public @NotNull RoleCategory roleCategory() {
+    public @NotNull RoleCategory getRoleCategory() {
         return RoleCategory.GLOBAL;
     }
 
     @Override
-    public @NotNull Permission permissions() {
+    public @NotNull Permission getPermissions() {
         return this.permissions;
     }
 
     @Override
-    public @NotNull String title() {
+    public @NotNull String getTitle() {
         return this.title;
     }
 
     @Override
-    public @NotNull Color color() {
+    public @NotNull Color getColor() {
         return this.color;
     }
 
     @Override
-    public boolean assignable() {
+    public boolean isAssignable() {
         return false;
     }
 

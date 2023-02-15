@@ -46,15 +46,14 @@ public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>,
     }
 
     @Override
-    @JsonIgnore
     public long getRoleId() {
-        return this.role.roleId();
+        return this.role.getRoleId();
     }
 
     @Override
     @JsonIgnore
     public String getRoleType() {
-        return this.role.value();
+        return this.role.getValue();
     }
 
     @Override

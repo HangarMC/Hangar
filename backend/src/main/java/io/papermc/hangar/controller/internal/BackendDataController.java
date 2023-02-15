@@ -146,8 +146,8 @@ public class BackendDataController {
     @GetMapping("/projectRoles")
     @Cacheable(CacheConfig.PROJECT_ROLES)
     @ResponseBody
-    public List<RoleData> getAssignableProjectRoles() {
-        return this.rolesDAO.getAssignableRoles(RoleCategory.PROJECT);
+    public List<RoleData> getProjectRoles() {
+        return this.rolesDAO.getRoles(RoleCategory.PROJECT);
     }
 
     @GetMapping("/globalRoles")
@@ -160,8 +160,8 @@ public class BackendDataController {
     @GetMapping("/orgRoles")
     @Cacheable(CacheConfig.ORG_ROLES)
     @ResponseBody
-    public List<RoleData> getAssignableOrganizationRoles() {
-        return this.rolesDAO.getAssignableRoles(RoleCategory.ORGANIZATION);
+    public List<RoleData> getOrganizationRoles() {
+        return this.rolesDAO.getRoles(RoleCategory.ORGANIZATION);
     }
 
     @GetMapping("/licenses")

@@ -14,11 +14,11 @@ import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 public enum ProjectRole implements Role<ProjectRoleTable> {
 
     PROJECT_SUPPORT("Project_Support", 30, Permission.IsProjectMember, "Support", Color.TRANSPARENT, 60),
-    PROJECT_EDITOR("Project_Editor", 31, Permission.EditPage.add(PROJECT_SUPPORT.permissions()), "Editor", Color.TRANSPARENT, 50),
-    PROJECT_DEVELOPER("Project_Developer", 32, PROJECT_EDITOR.permissions(), "Developer", Color.TRANSPARENT, 40),
-    PROJECT_MAINTAINER("Project_Maintainer", 33, Permission.CreateVersion.add(Permission.EditVersion).add(Permission.DeleteVersion).add(Permission.EditTags).add(PROJECT_DEVELOPER.permissions()), "Maintainer", Color.TRANSPARENT, 30),
-    PROJECT_ADMIN("Project_Admin", 34, Permission.IsProjectAdmin.add(Permission.EditApiKeys).add(PROJECT_MAINTAINER.permissions()), "Admin", Color.TRANSPARENT, 20),
-    PROJECT_OWNER("Project_Owner", 35, Permission.IsProjectOwner.add(PROJECT_ADMIN.permissions()), "Owner", Color.TRANSPARENT, 10, false);
+    PROJECT_EDITOR("Project_Editor", 31, Permission.EditPage.add(PROJECT_SUPPORT.getPermissions()), "Editor", Color.TRANSPARENT, 50),
+    PROJECT_DEVELOPER("Project_Developer", 32, PROJECT_EDITOR.getPermissions(), "Developer", Color.TRANSPARENT, 40),
+    PROJECT_MAINTAINER("Project_Maintainer", 33, Permission.CreateVersion.add(Permission.EditVersion).add(Permission.DeleteVersion).add(Permission.EditTags).add(PROJECT_DEVELOPER.getPermissions()), "Maintainer", Color.TRANSPARENT, 30),
+    PROJECT_ADMIN("Project_Admin", 34, Permission.IsProjectAdmin.add(Permission.EditApiKeys).add(PROJECT_MAINTAINER.getPermissions()), "Admin", Color.TRANSPARENT, 20),
+    PROJECT_OWNER("Project_Owner", 35, Permission.IsProjectOwner.add(PROJECT_ADMIN.getPermissions()), "Owner", Color.TRANSPARENT, 10, false);
 
     private final String value;
     private final long roleId;
@@ -44,37 +44,37 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
     }
 
     @Override
-    public @NotNull String value() {
+    public @NotNull String getValue() {
         return this.value;
     }
 
     @Override
-    public long roleId() {
+    public long getRoleId() {
         return this.roleId;
     }
 
     @Override
-    public @NotNull RoleCategory roleCategory() {
+    public @NotNull RoleCategory getRoleCategory() {
         return RoleCategory.PROJECT;
     }
 
     @Override
-    public @NotNull Permission permissions() {
+    public @NotNull Permission getPermissions() {
         return this.permissions;
     }
 
     @Override
-    public @NotNull String title() {
+    public @NotNull String getTitle() {
         return this.title;
     }
 
     @Override
-    public @NotNull Color color() {
+    public @NotNull Color getColor() {
         return this.color;
     }
 
     @Override
-    public boolean assignable() {
+    public boolean isAssignable() {
         return this.isAssignable;
     }
 

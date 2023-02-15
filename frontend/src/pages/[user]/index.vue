@@ -11,7 +11,7 @@ import UserAvatar from "~/components/UserAvatar.vue";
 import Link from "~/lib/components/design/Link.vue";
 import MemberList from "~/components/projects/MemberList.vue";
 import { useOrgVisibility, useUserData } from "~/composables/useApiHelper";
-import { useBackendData } from "~/store/backendData";
+import { getRole, useBackendData } from "~/store/backendData";
 import { useAuthStore } from "~/store/auth";
 import { useSeo } from "~/composables/useSeo";
 import UserHeader from "~/components/UserHeader.vue";
@@ -76,7 +76,7 @@ let organizationVisibility = null;
 if (props.user.name === useAuthStore().user?.name) {
   organizationVisibility = await useOrgVisibility(props.user.name);
 }
-const orgRoles = useBackendData.orgRoles;
+const orgRoles = useBackendData.orgRoles.filter((role) => role.assignable);
 const authStore = useAuthStore();
 
 interface UserButton {
@@ -186,8 +186,8 @@ useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + 
                 <router-link :to="'/' + orgName" class="flex items-center mb-2">
                   <UserAvatar :username="orgName" :avatar-url="org.avatarUrl" size="xs" :disable-link="true" class="flex-shrink-0 mr-2" />
                   {{ orgName }}
-                  <span class="flex-grow"></span>
-                  <Tag :color="{ background: org.role.color }" :name="org.role.title" class="ml-1" />
+                  <span class="flex-grow" />
+                  <Tag :color="{ background: getRole(org.role.roleId).color }" :name="getRole(org.role.roleId).title" class="ml-1" />
                   <IconMdiEyeOffOutline v-if="organizationVisibility && organizationVisibility[orgName]" class="ml-1" />
                 </router-link>
               </li>

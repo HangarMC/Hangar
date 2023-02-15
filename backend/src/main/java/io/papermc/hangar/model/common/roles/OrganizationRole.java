@@ -13,11 +13,11 @@ import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 public enum OrganizationRole implements Role<OrganizationRoleTable> {
 
     ORGANIZATION_SUPPORT("Organization_Support", 20, Permission.PostAsOrganization.add(Permission.IsOrganizationMember), "Support", Color.TRANSPARENT, 60),
-    ORGANIZATION_EDITOR("Organization_Editor", 21, ProjectRole.PROJECT_EDITOR.permissions().add(ORGANIZATION_SUPPORT.permissions), "Editor", Color.TRANSPARENT, 50),
-    ORGANIZATION_DEVELOPER("Organization_Developer", 22, ProjectRole.PROJECT_DEVELOPER.permissions().add(ORGANIZATION_EDITOR.permissions), "Developer", Color.TRANSPARENT, 40),
-    ORGANIZATION_MAINTAINER("Organization_Maintainer", 23, Permission.CreateProject.add(Permission.EditProjectSettings).add(ProjectRole.PROJECT_MAINTAINER.permissions()).add(ORGANIZATION_DEVELOPER.permissions), "Maintainer", Color.TRANSPARENT, 30),
-    ORGANIZATION_ADMIN("Organization_Admin", 24, Permission.IsOrganizationAdmin.add(ORGANIZATION_MAINTAINER.permissions).add(ProjectRole.PROJECT_ADMIN.permissions()), "Owner", Color.TRANSPARENT, 20),
-    ORGANIZATION_OWNER("Organization_Owner", 25, Permission.IsOrganizationOwner.add(ProjectRole.PROJECT_OWNER.permissions()).add(ORGANIZATION_ADMIN.permissions), "Owner", Color.PURPLE, 10, false);
+    ORGANIZATION_EDITOR("Organization_Editor", 21, ProjectRole.PROJECT_EDITOR.getPermissions().add(ORGANIZATION_SUPPORT.permissions), "Editor", Color.TRANSPARENT, 50),
+    ORGANIZATION_DEVELOPER("Organization_Developer", 22, ProjectRole.PROJECT_DEVELOPER.getPermissions().add(ORGANIZATION_EDITOR.permissions), "Developer", Color.TRANSPARENT, 40),
+    ORGANIZATION_MAINTAINER("Organization_Maintainer", 23, Permission.CreateProject.add(Permission.EditProjectSettings).add(ProjectRole.PROJECT_MAINTAINER.getPermissions()).add(ORGANIZATION_DEVELOPER.permissions), "Maintainer", Color.TRANSPARENT, 30),
+    ORGANIZATION_ADMIN("Organization_Admin", 24, Permission.IsOrganizationAdmin.add(ORGANIZATION_MAINTAINER.permissions).add(ProjectRole.PROJECT_ADMIN.getPermissions()), "Owner", Color.TRANSPARENT, 20),
+    ORGANIZATION_OWNER("Organization_Owner", 25, Permission.IsOrganizationOwner.add(ProjectRole.PROJECT_OWNER.getPermissions()).add(ORGANIZATION_ADMIN.permissions), "Owner", Color.PURPLE, 10, false);
 
     private final String value;
     private final long roleId;
@@ -43,37 +43,37 @@ public enum OrganizationRole implements Role<OrganizationRoleTable> {
     }
 
     @Override
-    public @NotNull String value() {
+    public @NotNull String getValue() {
         return this.value;
     }
 
     @Override
-    public long roleId() {
+    public long getRoleId() {
         return this.roleId;
     }
 
     @Override
-    public @NotNull RoleCategory roleCategory() {
+    public @NotNull RoleCategory getRoleCategory() {
         return RoleCategory.ORGANIZATION;
     }
 
     @Override
-    public @NotNull Permission permissions() {
+    public @NotNull Permission getPermissions() {
         return this.permissions;
     }
 
     @Override
-    public @NotNull String title() {
+    public @NotNull String getTitle() {
         return this.title;
     }
 
     @Override
-    public @NotNull Color color() {
+    public @NotNull Color getColor() {
         return this.color;
     }
 
     @Override
-    public boolean assignable() {
+    public boolean isAssignable() {
         return this.isAssignable;
     }
 

@@ -15,6 +15,7 @@ import AvatarChangeModal from "~/lib/components/modals/AvatarChangeModal.vue";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import Button from "~/lib/components/design/Button.vue";
 import Popper from "~/lib/components/design/Popper.vue";
+import { getRole } from "~/store/backendData";
 
 const props = defineProps<{
   viewingUser: User;
@@ -92,14 +93,14 @@ const canEditCurrentUser = computed<boolean>(() => {
         <span>{{ i18n.t("author.memberSince", [i18n.d(viewingUser.joinDate, "date")]) }}</span>
         <span>{{ i18n.t("author.numProjects", [viewingUser.projectCount], viewingUser.projectCount) }}</span>
         <span class="inline-flex space-x-1">
-          <Tag v-for="role in viewingUser.roles" :key="role.roleId" :color="{ background: role.color }" :name="role.title" />
+          <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId).color }" :name="getRole(roleId).title" />
         </span>
       </div>
     </div>
     <div class="md:hidden flex flex-col items-center space-y-1 flex-shrink-0">
       <span>{{ i18n.t("author.memberSince", [i18n.d(viewingUser.joinDate, "date")]) }}</span>
       <span>{{ i18n.t("author.numProjects", [viewingUser.projectCount], viewingUser.projectCount) }}</span>
-      <Tag v-for="role in viewingUser.roles" :key="role.roleId" :color="{ background: role.color }" :name="role.title" />
+      <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId).color }" :name="getRole(roleId).title" />
     </div>
   </Card>
   <hr class="border-gray-400 dark:border-gray-500 my-4 mb-4" />

@@ -82,12 +82,12 @@ public abstract class MemberService<
     public void leave(final J joinable) {
         final RT role = this.roleService.getRole(joinable.getId(), this.getHangarUserId());
         if (this.invalidRolesToChange().contains(role.getRole())) {
-            throw new HangarApiException(this.errorPrefix + "invalidRole", role.getRole().title());
+            throw new HangarApiException(this.errorPrefix + "invalidRole", role.getRole().getTitle());
         }
 
         this.membersDao.delete(role.getPrincipalId(), role.getUserId());
         this.roleService.deleteRole(role);
-        this.logMemberRemoval(role, "Left:" + this.getHangarPrincipal().getName() + " (" + role.getRole().title() + ")");
+        this.logMemberRemoval(role, "Left:" + this.getHangarPrincipal().getName() + " (" + role.getRole().getTitle() + ")");
     }
 
     @Transactional
@@ -96,7 +96,7 @@ public abstract class MemberService<
         this.membersDao.delete(roleTable.getPrincipalId(), roleTable.getUserId());
         this.roleService.deleteRole(roleTable);
         this.joinableNotificationService.removedFrom(roleTable, joinable, this.getHangarUserId());
-        this.logMemberRemoval(joinable, "Removed: " + member.getName() + " (" + member.getRole().title() + ")");
+        this.logMemberRemoval(joinable, "Removed: " + member.getName() + " (" + member.getRole().getTitle() + ")");
     }
 
     private void logMemberRemoval(final Loggable<LC> loggable, final String logEntry) {
@@ -110,14 +110,14 @@ public abstract class MemberService<
             return;
         }
 
-        final String oldTitle = roleTable.getRole().title();
+        final String oldTitle = roleTable.getRole().getTitle();
         roleTable.setRole(member.getRole());
 
         this.roleService.updateRole(roleTable);
         this.joinableNotificationService.roleChanged(roleTable, joinable, this.getHangarUserId());
         this.logMemberUpdate(joinable,
             "Old Roles: " + member.getName() + " (" + oldTitle + ")",
-            "New Roles: " + member.getName() + " (" + roleTable.getRole().title() + ")");
+            "New Roles: " + member.getName() + " (" + roleTable.getRole().getTitle() + ")");
     }
 
     private void logMemberUpdate(final Loggable<LC> loggable, final String oldState, final String newState) {
@@ -135,10 +135,10 @@ public abstract class MemberService<
             throw new HangarApiException(this.errorPrefix + "notMember", member.getName());
         }
         if (this.invalidRolesToChange().contains(member.getRole())) {
-            throw new HangarApiException(this.errorPrefix + "invalidRole", member.getRole().title());
+            throw new HangarApiException(this.errorPrefix + "invalidRole", member.getRole().getTitle());
         }
         if (this.invalidRolesToChange().contains(roleTable.getRole())) {
-            throw new HangarApiException(this.errorPrefix + "invalidRole", roleTable.getRole().title());
+            throw new HangarApiException(this.errorPrefix + "invalidRole", roleTable.getRole().getTitle());
         }
         return roleTable;
     }

@@ -15,7 +15,7 @@ public class User extends Model implements Named {
     private final String name;
     private final String tagline;
     private final OffsetDateTime joinDate;
-    private final List<GlobalRole> roles;
+    private final List<Long> roles;
     private final long projectCount;
     private final boolean isOrganization;
     private final boolean locked;
@@ -23,14 +23,14 @@ public class User extends Model implements Named {
     private String avatarUrl;
 
     @JdbiConstructor
-    public User(final OffsetDateTime createdAt, final String name, final String tagline, final OffsetDateTime joinDate, final List<GlobalRole> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory) {
+    public User(final OffsetDateTime createdAt, final String name, final String tagline, final OffsetDateTime joinDate, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory) {
         super(createdAt);
         this.name = name;
         this.tagline = tagline;
         this.joinDate = joinDate;
         this.roles = roles;
         this.projectCount = projectCount;
-        this.isOrganization = roles.contains(GlobalRole.ORGANIZATION);
+        this.isOrganization = roles.contains(GlobalRole.ORGANIZATION.getRoleId());
         this.locked = locked;
         this.nameHistory = nameHistory;
     }
@@ -48,7 +48,7 @@ public class User extends Model implements Named {
         return this.joinDate;
     }
 
-    public List<GlobalRole> getRoles() {
+    public List<Long> getRoles() {
         return this.roles;
     }
 

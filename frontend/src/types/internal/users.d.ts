@@ -14,8 +14,7 @@ declare module "hangar-internal" {
   }
 
   interface Invite {
-    roleTableId: number;
-    role: Role;
+    roleId: number;
     type: "project" | "organization";
     name: string;
     url: string;
@@ -57,14 +56,11 @@ declare module "hangar-internal" {
     accepted: boolean;
     principalId: number;
     userId: number;
+    roleId: number;
     role: Role;
   }
 
   interface OrganizationRoleTable extends RoleTable {
-    accepted: boolean;
-    principalId: number;
-    userId: number;
-    role: Role;
     ownerName: string;
     ownerId: number;
     avatarUrl?: string;

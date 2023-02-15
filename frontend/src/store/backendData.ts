@@ -1,4 +1,4 @@
-import { BackendData, IPermission } from "hangar-api";
+import { BackendData, IPermission, Role } from "hangar-api";
 import { computed } from "vue";
 import { IPlatform, IProjectCategory, IPrompt } from "hangar-internal";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -23,6 +23,16 @@ typedBackendData.prompts = convertToMap(typedBackendData.prompts as unknown as I
 
 // main export
 export const useBackendData = typedBackendData;
+
+export function getRole(id: number): Role | undefined {
+  return (
+    getRoleFromRoles(id, typedBackendData.globalRoles) || getRoleFromRoles(id, typedBackendData.projectRoles) || getRoleFromRoles(id, typedBackendData.orgRoles)
+  );
+}
+
+function getRoleFromRoles(id: number, roles: Role[]): Role | undefined {
+  return roles.find((r) => r.roleId === id);
+}
 
 // helpers
 export const useVisibleCategories = computed<IProjectCategory[]>(() =>

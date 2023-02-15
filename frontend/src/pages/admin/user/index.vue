@@ -15,6 +15,7 @@ import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import { Header } from "~/types/components/SortableTable";
 import SortableTable from "~/components/SortableTable.vue";
+import { getRole } from "~/store/backendData";
 
 definePageMeta({
   globalPermsRequired: ["EDIT_ALL_USER_SETTINGS"],
@@ -99,7 +100,7 @@ useHead(useSeo(i18n.t("userList.title"), null, route, null));
       </template>
       <template #item_roles="{ item }">
         <div class="space-x-1">
-          <Tag v-for="role in item.roles" :key="role.roleId" :color="{ background: role.color }" :name="role.title" />
+          <Tag v-for="roleId in item.roles" :key="roleId" :color="{ background: getRole(roleId).color }" :name="getRole(roleId).title" />
         </div>
       </template>
     </SortableTable>

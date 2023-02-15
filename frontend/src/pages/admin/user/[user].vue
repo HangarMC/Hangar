@@ -18,7 +18,7 @@ import { authUrl, forumUserUrl } from "~/composables/useUrlHelper";
 import { useProjects, useUser } from "~/composables/useApiHelper";
 import Tag from "~/components/Tag.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
-import { useBackendData } from "~/store/backendData";
+import { getRole, useBackendData } from "~/store/backendData";
 import Button from "~/lib/components/design/Button.vue";
 import { definePageMeta } from "#imports";
 import { Header } from "~/types/components/SortableTable";
@@ -89,20 +89,20 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
       <Card class="basis-full md:basis-8/12">
         <template #header>{{ i18n.t("userAdmin.roles") }}</template>
         <div class="space-x-1">
-          <Tag v-for="role in user?.roles" :key="role.value" :color="{ background: role.color }" :name="role.title" />
+          <Tag v-for="roleId in user?.roles" :key="roleId" :color="{ background: getRole(roleId).color }" :name="getRole(roleId).title" />
         </div>
 
         <div class="flex mt-2">
           <div class="flex-grow">
-            <InputSelect v-model="selectedRole" :values="useBackendData.globalRoles" item-text="title" item-value="value"></InputSelect>
+            <InputSelect v-model="selectedRole" :values="useBackendData.globalRoles.filter((role) => role.assignable)" item-text="title" item-value="value" />
           </div>
           <div>
-            <Button size="medium" :disabled="!selectedRole || user?.roles.some((r) => r.value === selectedRole)" @click="processRole(true)">
+            <Button size="medium" :disabled="!selectedRole || user?.roles.some((r) => getRole(r).value === selectedRole)" @click="processRole(true)">
               {{ i18n.t("general.add") }}
             </Button>
           </div>
           <div class="ml-2">
-            <Button size="medium" :disabled="!selectedRole || !user?.roles.some((r) => r.value === selectedRole)" @click="processRole(false)">
+            <Button size="medium" :disabled="!selectedRole || !user?.roles.some((r) => getRole(r).value === selectedRole)" @click="processRole(false)">
               {{ i18n.t("general.delete") }}
             </Button>
           </div>
@@ -136,7 +136,7 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
           </Link>
         </template>
         <template #item_role="{ item }">
-          {{ orgs[item.name].role.title }}
+          {{ getRole(orgs[item.name].roleId).title }}
         </template>
         <template #item_accepted="{ item }">
           <InputCheckbox v-model="orgs[item.name].accepted" :disabled="true" />

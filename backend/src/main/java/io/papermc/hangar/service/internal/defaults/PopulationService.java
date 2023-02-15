@@ -39,15 +39,16 @@ public class PopulationService {
     }
 
     private void populateRoles() {
+        GlobalRole.values();
+        ProjectRole.values();
+        OrganizationRole.values();
+
         final RoleTable admin = this.rolesDAO.getById(1);
         if (admin != null && admin.getPermission().has(Permission.All)) {
             log.info("The 'roles' table is already populated");
             return;
         }
 
-        GlobalRole.values();
-        ProjectRole.values();
-        OrganizationRole.values();
         log.info("Populating 'roles' table with initial values");
         for (final Role<?> role : Role.ID_ROLES.values()) {
             this.rolesDAO.insert(RoleTable.fromRole(role));
