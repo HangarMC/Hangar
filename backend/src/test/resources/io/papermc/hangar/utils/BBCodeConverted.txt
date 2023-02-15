@@ -25,13 +25,13 @@ Its features include:
 IMPORTANT: If using the plugin on a Spigot server, the plugin **[ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/)** is required to use Maintenance to its full extend.
 
 
+<center></center>
 
-
-### Did you find a bug? Use the [**issue tracker**](https://github.com/kennytv/maintenance/issues)
+<center>### Did you find a bug? Use the [**issue tracker**](https://github.com/kennytv/maintenance/issues)
 Other questions or problems? Click the wonderful icon below ✨
 
 [](https://discord.gg/vgcuzhq)
-
+</center>
 
 
 *Arguments in < > are necessary, those in [ ] aren't (can be omitted).*

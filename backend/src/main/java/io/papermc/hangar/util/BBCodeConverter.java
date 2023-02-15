@@ -18,24 +18,24 @@ public class BBCodeConverter {
     private String currentContent;
 
     static {
-        // Remove tags
-        REPLACERS.put("color", (tag, tagArg, content) -> content);
-        REPLACERS.put("left", (tag, tagArg, content) -> content);
-        REPLACERS.put("right", (tag, tagArg, content) -> content);
-        REPLACERS.put("u", (tag, tagArg, content) -> content);
-        REPLACERS.put("quote", (tag, tagArg, content) -> content);
-        REPLACERS.put("font", (tag, tagArg, content) -> content);
-        REPLACERS.put("user", (tag, tagArg, content) -> content);
-        REPLACERS.put("list", (tag, tagArg, content) -> content);
+        final TagReplacer removeTag = (tag, tagArg, content) -> content;
+        REPLACERS.put("color", removeTag);
+        REPLACERS.put("left", removeTag);
+        REPLACERS.put("right", removeTag);
+        REPLACERS.put("u", removeTag);
+        REPLACERS.put("quote", removeTag);
+        REPLACERS.put("font", removeTag);
+        REPLACERS.put("user", removeTag);
+        REPLACERS.put("list", removeTag);
         REPLACERS.put("attach", (tag, tagArg, content) -> "");
 
+        REPLACERS.put("b", encaseIfNotBlank("**", "**"));
+        REPLACERS.put("i", encaseIfNotBlank("*", "*"));
+        REPLACERS.put("s", encaseIfNotBlank("~~", "~~"));
+        REPLACERS.put("center", encaseIfNotBlank("<center>", "</center>"));
         REPLACERS.put("spoiler", (tag, tagArg, content) -> "<details>\n<summary>%s</summary>\n\n%s\n</details>\n".formatted(removeQuotes(tagArg), content));
-        REPLACERS.put("b", (tag, tagArg, content) -> "**" + content + "**");
-        REPLACERS.put("i", (tag, tagArg, content) -> "*" + content + "*");
-        REPLACERS.put("s", (tag, tagArg, content) -> "~~" + content + "~~");
         REPLACERS.put("img", (tag, tagArg, content) -> "![" + content + "](" + content + ")");
         REPLACERS.put("media", (tag, tagArg, content) -> "youtube".equals(tagArg) ? "@[YouTube](https://youtu.be/" + content + ")" : null);
-        REPLACERS.put("center", (tag, tagArg, content) -> "<center>" + content + "</center>");
         REPLACERS.put("size", (tag, tagArg, content) -> {
             if (content.isBlank()) {
                 return content;
@@ -123,6 +123,10 @@ public class BBCodeConverter {
 
         // Unordered list entries (do not have closing tags)
         SIMPLE_SINGLETON_REPLACERS.put("*", "* ");
+    }
+
+    private static TagReplacer encaseIfNotBlank(final String prefix, final String suffix) {
+        return (tag, tagArg, content) -> content.isBlank() ? content : prefix + content + suffix;
     }
 
     /**
