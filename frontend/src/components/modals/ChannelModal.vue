@@ -7,7 +7,7 @@ import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import { useBackendData } from "~/store/backendData";
 import InputText from "~/lib/components/ui/InputText.vue";
-import { isSame, required } from "~/lib/composables/useValidationHelpers";
+import { isSame, maxLength, minLength, pattern, required } from "~/lib/composables/useValidationHelpers";
 import { validChannelName, validChannelColor } from "~/composables/useHangarValidations";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { ChannelFlag } from "~/types/enums";
@@ -90,7 +90,16 @@ reset();
   <Modal :title="edit ? i18n.t('channel.modal.titleEdit') : i18n.t('channel.modal.titleNew')" window-classes="w-150">
     <template #default="{ on }">
       <div v-if="!frozen">
-        <InputText v-model.trim="name" :label="i18n.t('channel.modal.name')" :rules="[required(), validChannelName()(props.projectId, props.channel?.name)]" />
+        <InputText
+          v-model.trim="name"
+          :label="i18n.t('channel.modal.name')"
+          :rules="[
+            required(),
+            maxLength()(useBackendData.validations.project.channels.max),
+            pattern()(useBackendData.validations.project.channels.regex),
+            validChannelName()(props.projectId, props.channel?.name),
+          ]"
+        />
         <p class="text-lg font-bold mt-3 mb-1">{{ i18n.t("channel.modal.color") }}</p>
         <div v-for="(arr, arrIndex) in swatches" :key="arrIndex" class="flex">
           <div v-for="(c, n) in arr" :key="n" class="flex-grow-0 flex-shrink-1 pa-2 pr-1 mb-1">

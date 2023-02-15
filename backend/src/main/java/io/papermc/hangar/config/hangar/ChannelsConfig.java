@@ -10,17 +10,18 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @ConfigurationProperties(prefix = "hangar.channels")
 public record ChannelsConfig(
-    @Min(1) @DefaultValue("15") int maxNameLen,
+    @DefaultValue("15") int maxNameLen,
+    @DefaultValue("1") int minNameLen,
     @DefaultValue("^[a-zA-Z0-9]+$") PatternWrapper nameRegex,
     @DefaultValue("cyan") Color colorDefault,
     @Size(min = 1, max = 15) @DefaultValue("Release") String nameDefault
 ) {
 
     public boolean isValidChannelName(final String name) {
-        return name.length() >= 1 && name.length() <= this.maxNameLen() && this.nameRegex().test(name);
+        return name.length() >= this.minNameLen() && name.length() <= this.maxNameLen() && this.nameRegex().test(name);
     }
 
     public Validation channelName() {
-        return new Validation(this.nameRegex(), this.maxNameLen(), null);
+        return new Validation(this.nameRegex(), this.maxNameLen(), this.minNameLen());
     }
 }
