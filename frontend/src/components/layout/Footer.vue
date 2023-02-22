@@ -5,9 +5,9 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <footer class="relative flex items-end mt-10 background-default px-8 pb-2 text-light-10 min-h-10">
-    <div class="w-screen">
-      <div class="flex flex-col gap-4 md:(flex-row-reverse gap-0) items-center justify-around mt-4 max-w-1200px m-auto text-sm">
+  <footer class="relative flex mt-10 background-default px-8 text-light-10">
+    <div class="mt-3 mb-3 flex flex-column flex-grow-1 justify-center">
+      <div class="flex flex-wrap flex-row-reverse flex-grow-1 gap-4 justify-around items-center max-w-1200px text-sm">
         <div class="flex flex-row flex-wrap justify-center">
           <a
             href="https://github.com/HangarMC"
