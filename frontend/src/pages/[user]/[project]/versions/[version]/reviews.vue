@@ -13,7 +13,6 @@ import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
 import Alert from "~/lib/components/design/Alert.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useAuthStore } from "~/store/auth";
-import { prettyDate, prettyDateTime } from "~/lib/composables/useDate";
 import { useBackendData } from "~/store/backendData";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import Tag from "~/components/Tag.vue";
@@ -21,6 +20,7 @@ import Accordeon from "~/lib/components/design/Accordeon.vue";
 import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
 import { definePageMeta } from "#imports";
+import PrettyTime from "~/lib/components/design/PrettyTime.vue";
 
 definePageMeta({
   globalPermsRequired: ["REVIEWER"],
@@ -160,7 +160,7 @@ function getLastUpdateDate(review: HangarReview): string {
   const lastMsg = review.messages.at(-1);
   if (!lastMsg) return "error";
 
-  return prettyDateTime(lastMsg.createdAt);
+  return lastMsg.createdAt;
 }
 
 function startReview() {
@@ -338,7 +338,8 @@ useHead(useSeo("Reviews | " + props.project.name, props.project.description, rou
     <h2 class="my-3 text-2xl">
       {{ t("reviews.title") }}
       <span class="text-base">
-        {{ t("reviews.headline", [projectVersion.author, projectVersion.name, prettyDate(projectVersion.createdAt)]) }}
+        {{ t("reviews.headline", [projectVersion.author, projectVersion.name]) }}
+        <PrettyTime :time="projectVersion.createdAt" long />
       </span>
     </h2>
     <div class="my-1 flex space-x-2">
@@ -366,7 +367,8 @@ useHead(useSeo("Reviews | " + props.project.name, props.project.description, rou
             {{ t("reviews.presets.reviewTitle", { name: review.userName }) }}
             <Tag :name="t(`reviews.state.${getReviewStateString(review)}`)" :color="{ background: getReviewStateColor(review) }" class="ml-2" />
             <span class="text-xs ml-2 text-gray-400">
-              {{ t("reviews.state.lastUpdate", [getLastUpdateDate(review)]) }}
+              {{ t("reviews.state.lastUpdate") }}
+              <PrettyTime :time="getLastUpdateDate(review)" />
             </span>
           </div>
         </div>
@@ -413,7 +415,7 @@ useHead(useSeo("Reviews | " + props.project.name, props.project.description, rou
           <li v-for="(msg, mIndex) in review.messages" :key="`review-${index}-msg-${mIndex}`">
             <div :style="'color: ' + getReviewMessageColor(msg)" :class="{ 'ml-4': msg.action === ReviewAction.MESSAGE }">
               <span>{{ t(msg.message, msg.args) }}</span>
-              <span class="text-xs ml-4 text-gray-400"> {{ prettyDateTime(msg.createdAt) }}</span>
+              <span class="text-xs ml-4 text-gray-400"><PrettyTime :time="msg.createdAt" long /></span>
             </div>
           </li>
           <li v-if="isCurrentReviewOpen && currentUserReview === review">

@@ -8,6 +8,7 @@ import { lastUpdated } from "~/lib/composables/useTime";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
 import { Visibility } from "~/types/enums";
 import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
+import PrettyTime from "~/lib/components/design/PrettyTime.vue";
 
 const i18n = useI18n();
 
@@ -56,17 +57,15 @@ function getBorderClasses(): string {
           {{ project.stats.downloads }} {{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}
         </span>
         <Tooltip>
-          <template #content>
-            {{ i18n.t("project.info.lastUpdatedTooltip", [i18n.d(project.lastUpdated, "datetime")]) }}
-          </template>
-          <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" />{{ lastUpdated(project.lastUpdated) }}</span>
+          <template #content> {{ i18n.t("project.info.lastUpdatedTooltip") }}<PrettyTime :time="project.lastUpdated" long /> </template>
+          <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" /><PrettyTime :time="project.lastUpdated" short-relative /></span>
         </Tooltip>
       </div>
     </div>
     <div class="sm:hidden space-x-1 text-center mt-2">
       <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" />{{ lastUpdated(project.lastUpdated) }}</span>
-      <span class="inline-flex items-center"> <IconMdiStar class="mx-1" /> {{ project.stats.stars }} </span>
-      <span class="inline-flex items-center"> <IconMdiDownload class="mx-1" />{{ project.stats.downloads }} </span>
+      <span class="inline-flex items-center"><IconMdiStar class="mx-1" /> {{ project.stats.stars }}</span>
+      <span class="inline-flex items-center"><IconMdiDownload class="mx-1" />{{ project.stats.downloads }}</span>
     </div>
   </Card>
 </template>

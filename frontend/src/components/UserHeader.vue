@@ -3,7 +3,6 @@ import { Organization } from "hangar-internal";
 import { User } from "hangar-api";
 import { useI18n } from "vue-i18n";
 import { computed } from "vue";
-import { prettyDateTime } from "~/lib/composables/useDate";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Card from "~/lib/components/design/Card.vue";
 import TaglineModal from "~/components/modals/TaglineModal.vue";
@@ -16,6 +15,7 @@ import Tooltip from "~/lib/components/design/Tooltip.vue";
 import Button from "~/lib/components/design/Button.vue";
 import Popper from "~/lib/components/design/Popper.vue";
 import { getRole } from "~/store/backendData";
+import PrettyTime from "~/lib/components/design/PrettyTime.vue";
 
 const props = defineProps<{
   viewingUser: User;
@@ -71,7 +71,7 @@ const canEditCurrentUser = computed<boolean>(() => {
               <template #content="{ close }">
                 <div class="-mt-2 p-2 rounded border-t-2 border-primary-400 background-default filter drop-shadow-xl flex flex-col text-lg" @click="close()">
                   <div class="font-bold">Was known as:</div>
-                  <div v-for="(history, idx) of viewingUser.nameHistory" :key="idx">{{ history.oldName }} till {{ prettyDateTime(history.date) }}</div>
+                  <div v-for="(history, idx) of viewingUser.nameHistory" :key="idx">{{ history.oldName }} till <PrettyTime :time="history.date" long /></div>
                 </div>
               </template>
             </Popper>

@@ -30,6 +30,7 @@
     "confirm": "Confirm",
     "today": "Today",
     "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow",
     "error": {
       "invalidUrl": "Invalid URL format",
       "nameEmpty": "Name cannot be empty",
@@ -275,7 +276,7 @@
       "totalTotalDownloads": "Total Downloads | Total Download | Total Downloads",
       "stars": "Stars | Star | Stars",
       "watchers": "Watchers | Watcher | Watchers",
-      "lastUpdatedTooltip": "Last updated {0}",
+      "lastUpdatedTooltip": "Last updated",
       "lastVersionUnreviewed": "The latest release version has not been reviewed by our staff yet"
     },
     "pinnedVersions": "Pinned Versions",
@@ -806,7 +807,7 @@
     "empty": "Empty! All good!"
   },
   "reviews": {
-    "headline": "{0} released {1} on {2}",
+    "headline": "{0} released {1} on ",
     "title": "Review logs",
     "projectPage": "Project Page",
     "downloadFile": "Download File",
@@ -842,7 +843,7 @@
       "stopped": "Stopped",
       "approved": "Approved",
       "partiallyApproved": "Partially Approved",
-      "lastUpdate": "Last Update: {0}"
+      "lastUpdate": "Last Update: "
     }
   },
   "apiKeys": {
