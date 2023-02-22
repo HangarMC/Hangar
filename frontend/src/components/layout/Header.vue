@@ -247,7 +247,7 @@ function isRecent(date: string): boolean {
       </div>
 
       <!-- Gap between the sides -->
-      <div class="d-none d-sm-block flex-grow-1" />
+      <div class="flex-grow-1" />
 
       <!-- Right side items -->
       <div class="flex items-center gap-2">
