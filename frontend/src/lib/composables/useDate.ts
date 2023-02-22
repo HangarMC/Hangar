@@ -1,27 +1,3 @@
-export function prettyDate(date: Date | string | number): string {
-  if (typeof date === "string" || typeof date === "number") {
-    date = new Date(date);
-  }
-  return date.toLocaleDateString(undefined, {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
-
-export function prettyDateTime(date: Date | string | number): string {
-  if (typeof date === "string" || typeof date === "number") {
-    date = new Date(date);
-  }
-  return date.toLocaleDateString(undefined, {
-    day: "numeric",
-    month: "2-digit",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  });
-}
-
 /**
  * Requires yyyy-MM-DD format
  * @param dateString
