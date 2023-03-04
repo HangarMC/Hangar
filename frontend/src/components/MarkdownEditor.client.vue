@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from "vue";
-import { useVuelidate, ValidationRule } from "@vuelidate/core";
+import { ValidationRule } from "@vuelidate/core";
 import type Easymde from "easymde";
 import EasyMDE from "easymde";
 import Markdown from "~/components/Markdown.vue";

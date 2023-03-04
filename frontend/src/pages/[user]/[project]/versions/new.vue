@@ -13,7 +13,8 @@ import InputText from "~/lib/components/ui/InputText.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import Button from "~/lib/components/design/Button.vue";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
-import MarkdownEditor from "~/components/MarkdownEditor.vue";
+// eslint-disable-next-line import/no-unresolved
+import { MarkdownEditor } from "#components";
 import { maxFileSize, minLength, noDuplicated, required, requiredIf, url as validUrl } from "~/lib/composables/useValidationHelpers";
 import { useInternalApi } from "~/composables/useApi";
 import { Platform } from "~/types/enums";

@@ -16,7 +16,8 @@ import InputText from "~/lib/components/ui/InputText.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Spoiler from "~/lib/components/design/Spoiler.vue";
-import MarkdownEditor from "~/components/MarkdownEditor.vue";
+// eslint-disable-next-line import/no-unresolved
+import { MarkdownEditor } from "#components";
 import InputTag from "~/lib/components/ui/InputTag.vue";
 import { useAuthStore } from "~/store/auth";
 import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";

@@ -19,7 +19,8 @@
     "types": ["vite/client", "unplugin-icons/types/vue", "nuxt-windicss"],
     "paths": {
       "~/*": ["src/*"],
-      "#imports": [".nuxt/imports"]
+      "#imports": [".nuxt/imports"],
+      "#components": [".nuxt/components"]
     }
   },
   "vueCompilerOptions": {
