@@ -6,6 +6,7 @@ import {
   HangarVersion,
   HealthReport,
   Invites,
+  JarScanResult,
   LoggedAction,
   Note,
   Organization,
@@ -156,6 +157,12 @@ export async function useOrgVisibility(user: string): Promise<Ref<{ [key: string
 
 export async function useVersionInfo(): Promise<Ref<VersionInfo | null>> {
   return extract(await useAsyncData("useVersionInfo", () => useInternalApi<VersionInfo>(`data/version-info`)));
+}
+
+export async function useJarScan(versionId: number, platform: string): Promise<Ref<JarScanResult | null>> {
+  return extract(
+    await useAsyncData("useJarScan:" + versionId + ":" + platform, () => useInternalApi<ProjectPage>(`jarscanning/result/${platform}/${versionId}`))
+  );
 }
 
 export async function useUserData(
