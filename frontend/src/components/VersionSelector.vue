@@ -1,14 +1,17 @@
 <script lang="ts" setup>
 import { computed, Ref, watch } from "vue";
 import { PlatformVersion } from "hangar-internal";
+import { ValidationRule } from "@vuelidate/core";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import ArrowSpoiler from "~/lib/components/design/ArrowSpoiler.vue";
 import { ref } from "#imports";
+import InputGroup from "~/lib/components/ui/InputGroup.vue";
 
 const props = defineProps<{
   versions: PlatformVersion[];
   modelValue: string[];
   open: boolean;
+  rules?: ValidationRule<string | undefined>[];
 }>();
 
 const emit = defineEmits<{
@@ -148,21 +151,23 @@ function handleAddedSub(removedVersions: string[]) {
 </script>
 
 <template>
-  <div v-for="version in versions" :key="version.version">
-    <div v-if="version.subVersions?.length !== 0">
-      <ArrowSpoiler :open="open">
-        <template #title>
-          <div class="mr-8">
-            <InputCheckbox v-model="selectedParents" :value="version.version" :label="version.version" />
-          </div>
-        </template>
-        <template #content>
-          <div class="ml-5">
-            <InputCheckbox v-for="subversion in version.subVersions" :key="subversion" v-model="selectedSub" :value="subversion" :label="subversion" />
-          </div>
-        </template>
-      </ArrowSpoiler>
+  <InputGroup v-model="selected" :rules="rules" :silent-errors="false">
+    <div v-for="version in versions" :key="version.version">
+      <div v-if="version.subVersions?.length !== 0">
+        <ArrowSpoiler :open="open">
+          <template #title>
+            <div class="mr-8">
+              <InputCheckbox v-model="selectedParents" :value="version.version" :label="version.version" />
+            </div>
+          </template>
+          <template #content>
+            <div class="ml-5">
+              <InputCheckbox v-for="subversion in version.subVersions" :key="subversion" v-model="selectedSub" :value="subversion" :label="subversion" />
+            </div>
+          </template>
+        </ArrowSpoiler>
+      </div>
+      <InputCheckbox v-else v-model="selectedSub" :value="version.version" :label="version.version" />
     </div>
-    <InputCheckbox v-else v-model="selectedSub" :value="version.version" :label="version.version" />
-  </div>
+  </InputGroup>
 </template>
