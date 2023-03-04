@@ -84,7 +84,7 @@ watch(selectedFile, (newValue) => {
   if (!newValue) {
     return null;
   }
-  if (newValue.size <= useBackendData.validations.project.maxFileSize) {
+  if (newValue.size >= useBackendData.validations.project.maxFileSize) {
     notifications.error(t("validation.maxFileSize"));
     return null;
   }
