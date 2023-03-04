@@ -122,3 +122,8 @@
 .prose.markdown code {
   font-weight: 400;
 }
+
+// don't want display table on code stuff
+.token.table {
+  display: inline;
+}
