@@ -40,6 +40,7 @@ import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -158,7 +159,7 @@ public class HangarUserController extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         // if nothing changed, then nothing changed!
-        if (userTable.getLanguage().equals(settings.getLanguage()) && userTable.getTheme().equals(settings.getTheme())) {
+        if (Objects.equals(userTable.getLanguage(),settings.getLanguage()) && Objects.equals(userTable.getTheme(), settings.getTheme())) {
             setThemeCookie(settings, response);
             return;
         }
