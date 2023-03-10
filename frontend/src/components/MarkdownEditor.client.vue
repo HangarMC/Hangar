@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, reactive, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { ValidationRule } from "@vuelidate/core";
 import type Easymde from "easymde";
 import EasyMDE from "easymde";
@@ -55,7 +55,7 @@ const errorMessages = computed(() => props.errorMessages);
 const { v, errors } = useValidation(undefined, props.rules, rawEdited, errorMessages);
 
 if (process.client && props.editing) {
-  startEditing();
+  onMounted(startEditing);
 }
 
 defineExpose({ rawEdited });
