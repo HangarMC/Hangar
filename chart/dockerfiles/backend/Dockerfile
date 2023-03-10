@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17.0.5_8-jre-alpine
+FROM eclipse-temurin:17.0.6_10-jre-alpine
 
 RUN addgroup -g 1000 java \
   && adduser -Ss /bin/false -u 1000 -G java -h /home/java java
