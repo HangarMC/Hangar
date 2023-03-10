@@ -5,6 +5,7 @@ import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
 import { Organization } from "hangar-internal";
 import { computed, type FunctionalComponent, ref, watch } from "vue";
+import { watchDebounced } from "@vueuse/core";
 import ProjectList from "~/components/projects/ProjectList.vue";
 import Card from "~/lib/components/design/Card.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
@@ -108,7 +109,7 @@ const buttons = computed<UserButton[]>(() => {
 
 const isCurrentUser = computed<boolean>(() => authStore.user != null && authStore.user.name === props.user.name);
 
-watch(
+watchDebounced(
   requestParams,
   async () => {
     // dont want limit in url, its hardcoded in frontend
@@ -119,7 +120,7 @@ watch(
     // do the update
     projects.value = await useApi<PaginatedResult<Project>>("projects", "get", { owner: props.user.name, ...requestParams.value });
   },
-  { deep: true }
+  { deep: true, debounce: 250 }
 );
 
 useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + props.user.tagline, route, props.user.avatarUrl));

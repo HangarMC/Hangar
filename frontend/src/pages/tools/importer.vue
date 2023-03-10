@@ -6,6 +6,7 @@ import { computed, ref, watch } from "vue";
 import { NewProjectForm } from "hangar-internal";
 import { useVuelidate } from "@vuelidate/core";
 import { AxiosError } from "axios";
+import { watchDebounced } from "@vueuse/core";
 import PageTitle from "~/lib/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
 import Steps from "~/lib/components/design/Steps.vue";
@@ -16,7 +17,7 @@ import InputText from "~/lib/components/ui/InputText.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Spoiler from "~/lib/components/design/Spoiler.vue";
-// eslint-disable-next-line import/no-unresolved
+
 import { MarkdownEditor } from "#components";
 import InputTag from "~/lib/components/ui/InputTag.vue";
 import { useAuthStore } from "~/store/auth";
@@ -116,18 +117,21 @@ const additionalModel = {
 };
 const v = useVuelidate(additionalRules, additionalModel);
 
-watch(username, async () => {
-  spigotAuthor.value = null;
-  // TODO we need a debounce here but for some reason it doesn't work
-  try {
-    spigotAuthor.value = await getSpigotAuthor(username.value);
-  } catch (e: AxiosError) {
-    // don't need popup about not found and wrong format
-    if (!e.message?.includes("404") && !e.message?.includes("400")) {
-      handleRequestError(e);
+watchDebounced(
+  username,
+  async () => {
+    spigotAuthor.value = null;
+    try {
+      spigotAuthor.value = await getSpigotAuthor(username.value);
+    } catch (e: AxiosError) {
+      // don't need popup about not found and wrong format
+      if (!e.message?.includes("404") && !e.message?.includes("400")) {
+        handleRequestError(e);
+      }
     }
-  }
-});
+  },
+  { debounce: 250 }
+);
 
 function remove(project: NewProjectForm) {
   hangarResources.value = hangarResources.value.filter((p) => p !== project);

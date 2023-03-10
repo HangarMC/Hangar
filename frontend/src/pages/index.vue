@@ -6,6 +6,7 @@ import { useHead } from "@vueuse/head";
 import { useRoute, useRouter } from "vue-router";
 import { PaginatedResult, Project } from "hangar-api";
 import { PlatformVersion } from "hangar-internal";
+import { watchDebounced } from "@vueuse/core";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { useBackendData, useVisibleCategories, useVisiblePlatforms } from "~/store/backendData";
 import ProjectList from "~/components/projects/ProjectList.vue";
@@ -77,7 +78,7 @@ if (p && p.value) {
 watch(filters, () => (page.value = 0), { deep: true });
 watch(query, () => (page.value = 0));
 watch(activeSorter, () => (page.value = 0));
-watch(
+watchDebounced(
   requestParams,
   async () => {
     // dont want limit in url, its hardcoded in frontend
@@ -88,7 +89,7 @@ watch(
     // do the update
     return updateProjects();
   },
-  { deep: true }
+  { deep: true, debounce: 250 }
 );
 
 async function updateProjects() {
