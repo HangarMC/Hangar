@@ -149,7 +149,7 @@ defineExpose({ dependencies, reset });
           <Tabs v-model="selectedTab[index]" :tabs="selectedUploadTabs" class="items-center -ml-2" compact @update:model-value="changeTabs($event, index)">
             <template #file>
               <InputAutocomplete
-                :id="dep.name"
+                :id="dep.name || 'new'"
                 :model-value="toString(dep.namespace)"
                 :placeholder="t('version.new.form.hangarProject')"
                 :values="completionResults[index]"
@@ -159,7 +159,10 @@ defineExpose({ dependencies, reset });
                 :rules="!!dep.externalUrl ? [] : [required(t('version.new.form.hangarProject'))]"
                 @search="onSearch($event, index)"
                 @change="dep.externalUrl = null"
-                @update:model-value="dep.namespace = fromString($event)"
+                @update:model-value="
+                  dep.namespace = fromString($event);
+                  dep.name = dep.namespace?.slug;
+                "
               />
               <!-- todo rules good? -->
             </template>
