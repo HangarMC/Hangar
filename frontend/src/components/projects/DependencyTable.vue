@@ -33,12 +33,18 @@ const dependencies = ref<PluginDependency[]>(props.version.pluginDependencies[pr
 const selectedTab = ref<string[]>([]);
 for (let i = 0; i < dependencies.value.length; i++) {
   const dependency = dependencies.value[i];
-  selectedTab.value.push(dependency.externalUrl !== null ? "url" : "file");
+  if (dependency.externalUrl) {
+    selectedTab.value.push("url");
+  } else if (dependency.namespace) {
+    selectedTab.value.push("file");
+  } else {
+    selectedTab.value.push("url");
+  }
   completionResults.value.push([]);
 }
 
 function addDep() {
-  selectedTab.value.push("file");
+  selectedTab.value.push("url");
   dependencies.value.push({
     name: "",
     required: false,
