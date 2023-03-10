@@ -2,6 +2,8 @@ package io.papermc.hangar.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 public class BBCodeConverter {
@@ -12,6 +14,11 @@ public class BBCodeConverter {
     private static final char TAG_PREFIX = '[';
     private static final char TAG_SUFFIX = ']';
     private static final char ARG_PREFIX = '=';
+
+    // https://regex101.com/r/MWDUfk/1
+    private static final Pattern headlinePattern = Pattern.compile("([^#]+)(#+ )(.+)");
+    // https://regex101.com/r/s4Nxgc/1
+    private static final Pattern boldNewlinePattern = Pattern.compile("(\\*\\*)(.*?)(\\n)?(.*?)(\\*\\*)");
 
     private String currentTag;
     private String currentArg;
@@ -202,7 +209,7 @@ public class BBCodeConverter {
             }
         }
 
-        return s;
+        return cleanup(s);
     }
 
     private @Nullable String removeTrailingWhitespaces(String s) {
@@ -332,5 +339,35 @@ public class BBCodeConverter {
             }
         }
         return s;
+    }
+
+    private static String cleanup( String input) {
+        final String[] lines = input.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            final String line = lines[i];
+            // move headlines to the start
+            if (!line.startsWith("#") && line.contains("#")) {
+                lines[i] = headlinePattern.matcher(line).replaceAll("$2$1$3");
+            }
+        }
+        input = String.join("\n", lines);
+
+        // make bold wrap around newlines correctly
+        input = boldNewlinePattern.matcher(input).replaceAll((matchResult) -> {
+            // $1$2$1$3$5$4$5
+            StringBuilder sb = new StringBuilder();
+            if (StringUtils.isNotBlank(matchResult.group(2))) {
+                sb.append(matchResult.group(1)).append(matchResult.group(2)).append(matchResult.group(1));
+            }
+            if (matchResult.group(3) != null) {
+                sb.append(matchResult.group(3));
+            }
+            if (StringUtils.isNotBlank(matchResult.group(4))) {
+                sb.append(matchResult.group(5)).append(matchResult.group(4)).append(matchResult.group(5));
+            }
+            return sb.toString();
+        });
+
+        return input;
     }
 }

@@ -1,5 +1,5 @@
-**
-This plugin lets you activate a maintenance mode on your BungeeCord as well as Spigot server, which will prevent players without a permission to join the server.**
+
+**This plugin lets you activate a maintenance mode on your BungeeCord as well as Spigot server, which will prevent players without a permission to join the server.**
 **Whatever version you want to use, just place the plugin inside your plugin folder of your server running Spigot or BungeeCord!**
 
 
@@ -27,7 +27,7 @@ IMPORTANT: If using the plugin on a Spigot server, the plugin **[ProtocolLib](ht
 
 <center></center>
 
-<center>### Did you find a bug? Use the [**issue tracker**](https://github.com/kennytv/maintenance/issues)
+### <center>Did you find a bug? Use the [**issue tracker**](https://github.com/kennytv/maintenance/issues)
 Other questions or problems? Click the wonderful icon below ✨
 
 [](https://discord.gg/vgcuzhq)

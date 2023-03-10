@@ -26,7 +26,7 @@ class BBCodeConverterTest {
     @Test
     void testList() {
         final String result = this.converter.convertToMarkdown("[list]\n[*]Element 1\n[*]Element 2\n[/list]");
-        Assertions.assertEquals("\n* Element 1\n* Element 2\n", result);
+        Assertions.assertEquals("\n* Element 1\n* Element 2", result);
     }
 
     @Test
@@ -171,6 +171,40 @@ class BBCodeConverterTest {
         // Be sure to retest/-generate this output if "breaking" changes are made, for example to spacing
         final String input = Files.readString(PATH.resolve("BBCodeExample.txt"));
         final String expected = Files.readString(PATH.resolve("BBCodeConverted.txt"));
+        final String result = this.converter.convertToMarkdown(input);
+        Assertions.assertEquals(expected, result);
+    }
+
+    @Test
+    void testMoveHeadingToFront() {
+        final String input = "[B][SIZE=5]Dum[/SIZE][/B]";
+        final String expected = "### **Dum**";
+        final String result = this.converter.convertToMarkdown(input);
+        Assertions.assertEquals(expected, result);
+    }
+
+    @Test
+    void testWrapBoldAroundNewline() {
+        final String input = "[B]Dum\nDum[/B]";
+        final String expected = "**Dum**\n**Dum**";
+        final String result = this.converter.convertToMarkdown(input);
+        Assertions.assertEquals(expected, result);
+    }
+
+    @Test
+    void testBoldList() {
+        final String input = """
+                [LIST]
+                [*][B]bold[/B] not
+                [*][B]bold[/B] not
+                [*][B]bold[/B] not
+                [/LIST]
+                """;
+        final String expected = """
+
+                * **bold** not
+                * **bold** not
+                * **bold** not""";
         final String result = this.converter.convertToMarkdown(input);
         Assertions.assertEquals(expected, result);
     }
