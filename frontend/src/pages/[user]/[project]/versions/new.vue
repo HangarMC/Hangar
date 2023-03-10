@@ -201,7 +201,7 @@ async function createPendingVersion() {
     })
   );
 
-  pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project.id}/upload`, "post", formData, { timeout: 10000 }).catch<any>(
+  pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project.id}/upload`, "post", formData, { timeout: 15000 }).catch<any>(
     (e) => handleRequestError(e)
   );
   loading.create = false;
