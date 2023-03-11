@@ -14,7 +14,17 @@ const remoteUrl = Array.isArray(route.query.remoteUrl) ? route.query.remoteUrl[0
 const i18n = useI18n();
 
 const trustedHosts = useLocalStorage("trustedHosts", [] as string[]);
-const host = computed<string | null>(() => (remoteUrl ? new URL(remoteUrl as string).host : null));
+const host = computed<string | null>(() => {
+  if (remoteUrl) {
+    try {
+      return new URL(remoteUrl as string).host;
+    } catch {
+      return null;
+    }
+  } else {
+    return null;
+  }
+});
 
 if (host.value && trustedHosts.value.includes(host.value)) {
   go();
