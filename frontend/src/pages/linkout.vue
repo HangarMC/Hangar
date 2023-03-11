@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useHead } from "@vueuse/head";
 import { useI18n } from "vue-i18n";
 import { useLocalStorage } from "@vueuse/core";
@@ -12,6 +12,7 @@ import Link from "~/lib/components/design/Link.vue";
 const route = useRoute();
 const remoteUrl = Array.isArray(route.query.remoteUrl) ? route.query.remoteUrl[0] : route.query.remoteUrl;
 const i18n = useI18n();
+const router = useRouter();
 
 const trustedHosts = useLocalStorage("trustedHosts", [] as string[]);
 const host = computed<string | null>(() => {
@@ -41,6 +42,14 @@ function go() {
   location.href = remoteUrl as string;
 }
 
+async function back() {
+  if (!window.history.state.back) {
+    window.close(); // close tab
+  } else {
+    await router.back();
+  }
+}
+
 useHead(useSeo(i18n.t("linkout.title"), null, route, null));
 </script>
 <template>
@@ -56,7 +65,7 @@ useHead(useSeo(i18n.t("linkout.title"), null, route, null));
       <Link class="ml-2" :href="remoteUrl" target="_self" rel="noopener noreferrer">
         <Button size="medium">{{ i18n.t("linkout.continue") }}</Button>
       </Link>
-      <Button button-type="secondary" size="medium" class="ml-2" @click="$router.back()">{{ i18n.t("linkout.abort") }}</Button>
+      <Button button-type="secondary" size="medium" class="ml-2" @click="back">{{ i18n.t("linkout.abort") }}</Button>
     </template>
   </Card>
 </template>
