@@ -34,7 +34,7 @@ specifiers:
   '@vueuse/head': 1.1.23
   '@vueuse/integrations': 9.13.0
   accept-language-parser: 1.5.0
-  axios: 0.27.2
+  axios: 1.3.4
   chartist: 1.3.0
   chartist-plugin-legend: 0.6.2
   debug: 4.3.4
@@ -91,9 +91,9 @@ dependencies:
   '@vueuse/components': 9.13.0_vue@3.2.47
   '@vueuse/core': 9.13.0_vue@3.2.47
   '@vueuse/head': 1.1.23_vue@3.2.47
-  '@vueuse/integrations': 9.13.0_bpwstxgrhk5syx3nuvpqrdojku
+  '@vueuse/integrations': 9.13.0_jobzmqqexznestw5gqcrhcsejy
   accept-language-parser: 1.5.0
-  axios: 0.27.2_debug@4.3.4
+  axios: 1.3.4_debug@4.3.4
   chartist: 1.3.0
   chartist-plugin-legend: 0.6.2
   debug: 4.3.4
@@ -3174,7 +3174,7 @@ packages:
       vue: 3.2.47
     dev: false
 
-  /@vueuse/integrations/9.13.0_bpwstxgrhk5syx3nuvpqrdojku:
+  /@vueuse/integrations/9.13.0_jobzmqqexznestw5gqcrhcsejy:
     resolution: {integrity: sha512-I1kX/tsfcvWWLZD7HZaP0LsSfchK13YxReLfharXhk72SFXp87doLbRaTfIF5w8m/gr/vPtcNyQPAXW7Ubpuww==}
     peerDependencies:
       async-validator: '*'
@@ -3214,7 +3214,7 @@ packages:
     dependencies:
       '@vueuse/core': 9.13.0_vue@3.2.47
       '@vueuse/shared': 9.13.0_vue@3.2.47
-      axios: 0.27.2_debug@4.3.4
+      axios: 1.3.4_debug@4.3.4
       jwt-decode: 3.1.2
       nprogress: 0.2.0
       universal-cookie: 4.0.4
@@ -3512,15 +3512,6 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /axios/0.27.2_debug@4.3.4:
-    resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
-    dependencies:
-      follow-redirects: 1.15.2_debug@4.3.4
-      form-data: 4.0.0
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
   /axios/1.2.4_debug@4.3.4:
     resolution: {integrity: sha512-lIQuCfBJvZB/Bv7+RWUqEJqNShGOVpk9v7P0ZWx5Ip0qY6u7JBAU6dzQPMLasU9vHL2uD8av/1FDJXj7n6c39w==}
     dependencies:
@@ -3530,6 +3521,16 @@ packages:
     transitivePeerDependencies:
       - debug
     dev: true
+
+  /axios/1.3.4_debug@4.3.4:
+    resolution: {integrity: sha512-toYm+Bsyl6VC5wSkfkbbNB6ROv7KY93PEBBL6xyDczaIHasAiv4wPqQ/c4RjoQzipxRD2W5g21cOqQulZ7rHwQ==}
+    dependencies:
+      follow-redirects: 1.15.2_debug@4.3.4
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /balanced-match/1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -8133,7 +8134,6 @@ packages:
 
   /proxy-from-env/1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
-    dev: true
 
   /prr/1.0.1:
     resolution: {integrity: sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw==}
