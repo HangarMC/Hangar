@@ -1,7 +1,6 @@
 import NProgress from "nprogress";
 import { nextTick } from "vue";
-import { NuxtApp } from "nuxt/app";
-import { defineNuxtPlugin } from "#imports";
+import { defineNuxtPlugin, useRouter } from "#imports";
 
 let progressBarTimeout: any;
 
@@ -15,12 +14,12 @@ const stopProgressBar = () => {
   NProgress.done();
 };
 
-export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
+export default defineNuxtPlugin(() => {
   if (!process.server) {
-    nuxtApp.$router.beforeEach(() => {
+    useRouter().beforeEach(() => {
       startProgressBar();
     });
-    nuxtApp.$router.afterEach(async () => {
+    useRouter().afterEach(async () => {
       await nextTick(() => stopProgressBar());
     });
   }
