@@ -127,3 +127,8 @@
 .token.table {
   display: inline;
 }
+
+// ff is dum
+.prose :where(table):not(:where(.not-prose, .not-prose *)) {
+  padding-left: 1px;
+}
