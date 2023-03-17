@@ -25,6 +25,7 @@ module.exports = {
       node: {
         extensions: [".js", ".ts", ".d.ts"],
       },
+      typescript: true,
       alias: {
         map: [["~", "./src/"]],
         extensions: [".js", ".ts", ".d.ts", ".vue"],
