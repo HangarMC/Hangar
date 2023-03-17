@@ -22,7 +22,13 @@
     ]
   },
   "eslintConfig": {
-    "extends": "./src/lib/config/eslint.config.js"
+    "extends": "./src/lib/config/eslint.config.js",
+    "overrides": [{
+      "files": "src/module/backendData.ts",
+      "rules": {
+        "import/namespace": "off"
+      }
+    }]
   },
   "dependencies": {
     "@headlessui/vue": "1.7.12",
@@ -79,12 +85,13 @@
     "@types/qs": "6.9.7",
     "@types/swagger-ui-dist": "3.30.1",
     "@unlighthouse/nuxt": "^0.4.9",
-    "@unocss/nuxt": "^0.50.4",
+    "@unocss/nuxt": "^0.50.6",
     "@vue/compiler-sfc": "3.2.47",
     "@vue/eslint-config-typescript": "11.0.2",
     "eslint": "8.36.0",
     "eslint-config-prettier": "8.7.0",
     "eslint-import-resolver-alias": "1.1.2",
+    "eslint-import-resolver-typescript": "3.5.3",
     "eslint-plugin-eslint-comments": "3.2.0",
     "eslint-plugin-import": "2.27.5",
     "eslint-plugin-unicorn": "46.0.0",
@@ -92,16 +99,16 @@
     "husky": "8.0.3",
     "lint-staged": "13.2.0",
     "nuxt": "^3.3.1",
-    "pnpm": "7.29.1",
+    "pnpm": "7.29.3",
     "prettier": "2.8.4",
     "puppeteer": "^19.7.5",
     "regenerator-runtime": "0.13.11",
-    "sass": "1.59.2",
-    "typescript": "4.9.5",
+    "sass": "1.59.3",
+    "typescript": "5.0.2",
     "unplugin-auto-import": "0.15.1",
     "unplugin-icons": "0.15.3",
     "unplugin-vue-components": "0.24.1",
-    "vite": "4.1.4",
+    "vite": "4.2.0",
     "vite-plugin-eslint": "1.8.1",
     "vue-tsc": "1.2.0"
   },

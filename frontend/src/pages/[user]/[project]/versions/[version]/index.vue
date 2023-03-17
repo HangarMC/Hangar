@@ -15,7 +15,7 @@ import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
 import TagComponent from "~/components/Tag.vue";
 import { hasPerms } from "~/composables/usePerm";
 import Button from "~/lib/components/design/Button.vue";
-// eslint-disable-next-line import/no-unresolved
+
 import { MarkdownEditor } from "#components";
 import Markdown from "~/components/Markdown.vue";
 import Card from "~/lib/components/design/Card.vue";

@@ -5,7 +5,7 @@ import { User } from "hangar-api";
 import { HangarProject } from "hangar-internal";
 import ProjectPageList from "~/components/projects/ProjectPageList.vue";
 import Markdown from "~/components/Markdown.vue";
-// eslint-disable-next-line import/no-unresolved
+
 import { MarkdownEditor } from "#components";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
