@@ -1,9 +1,6 @@
 package io.papermc.hangar.config.hangar;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -34,45 +31,5 @@ public record HangarSecurityConfig(
 
     public boolean checkSafe(final String url) {
         return this.safeDownloadHosts.contains(URI.create(url).getHost());
-    }
-
-    public boolean isSafeHost(final String host) {
-        for (final String safeHost : this.safeDownloadHosts) {
-            // Make sure it's the full host or a subdomain
-            if (host.equals(safeHost) || host.endsWith("." + safeHost)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isSafe(final String urlString) {
-        try {
-            final URI uri = new URI(urlString);
-            final String host = uri.getHost();
-            if (uri.getScheme() != null && host == null) {
-                if (uri.getScheme().equals("mailto")) {
-                    return true;
-                }
-            } else if (host == null || this.isSafeHost(host)) {
-                return true;
-            }
-        } catch (final URISyntaxException ignored) {
-        }
-        return false;
-    }
-
-    public String makeSafe(final String urlString) {
-        if (this.isSafe(urlString)) {
-            return urlString;
-        }
-        return "/linkout?remoteUrl=" + URLEncoder.encode(urlString, StandardCharsets.UTF_8);
-    }
-
-    public String proxyImage(final String urlString) {
-        if (this.isSafe(urlString)) {
-            return urlString;
-        }
-        return String.format(this.imageProxyUrl(), urlString);
     }
 }

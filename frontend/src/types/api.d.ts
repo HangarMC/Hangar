@@ -68,6 +68,11 @@ declare module "hangar-api" {
     urlRegex: string;
   }
 
+  interface Security {
+    safeDownloadHosts: string[];
+    imageProxyUrl: string;
+  }
+
   interface BackendData {
     meta: {
       lastGenerated: string;
@@ -88,5 +93,6 @@ declare module "hangar-api" {
     channelColors: Color[];
     flagReasons: FlagReason[];
     loggedActions: string[];
+    security: Security;
   }
 }

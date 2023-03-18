@@ -185,6 +185,7 @@ hangar:
       timeout: 10000
     safe-download-hosts:
       - "github.com"
+      - "githubusercontent.com"
       - "gitlab.com"
       - "youtu.be"
       - "youtube.com"

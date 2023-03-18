@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.customtypes.RoleCategory;
@@ -19,6 +20,7 @@ import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.common.roles.RoleData;
+import io.papermc.hangar.model.internal.api.responses.Security;
 import io.papermc.hangar.model.internal.api.responses.Validations;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.security.annotations.Anyone;
@@ -44,7 +46,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Anyone
 @RateLimit(path = "backenddata")
 @RequestMapping(path = "/api/internal/data", produces = MediaType.APPLICATION_JSON_VALUE)
-public class BackendDataController {
+public class BackendDataController extends HangarComponent {
 
     private final ObjectMapper objectMapper; // ignores JsonValue annotations
     private final HangarConfig config;
@@ -226,5 +228,10 @@ public class BackendDataController {
     public List<String> getLoggedActions() {
         return LogAction.LOG_REGISTRY.keySet().stream().sorted().toList();
     }
-}
 
+    @GetMapping("/security")
+    @ResponseBody
+    public Security getSecurity() {
+        return new Security(this.config.security.safeDownloadHosts(), this.config.security.imageProxyUrl());
+    }
+}

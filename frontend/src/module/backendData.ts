@@ -132,6 +132,7 @@ async function loadData(state: BackendData, axiosInstance: AxiosInstance) {
     channelColors,
     flagReasons,
     loggedActions,
+    security,
   ] = (
     await Promise.all([
       axiosInstance.get<typeof state.projectCategories>("/categories"),
@@ -148,6 +149,7 @@ async function loadData(state: BackendData, axiosInstance: AxiosInstance) {
       axiosInstance.get<typeof state.channelColors>("/channelColors"),
       axiosInstance.get<typeof state.flagReasons>("/flagReasons"),
       axiosInstance.get<typeof state.loggedActions>("/loggedActions"),
+      axiosInstance.get<typeof state.security>("/security"),
     ])
   ).map((it) => it?.data || it);
 
@@ -169,4 +171,5 @@ async function loadData(state: BackendData, axiosInstance: AxiosInstance) {
   state.channelColors = channelColors as typeof state.channelColors;
   state.flagReasons = flagReasons as typeof state.flagReasons;
   state.loggedActions = loggedActions as typeof state.loggedActions;
+  state.security = security as typeof state.security;
 }
