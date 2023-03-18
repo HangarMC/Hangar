@@ -107,7 +107,8 @@ public class ProjectPageService extends HangarComponent {
     }
 
     public ExtendedProjectPage getProjectPage(final String author, final String slug, final String requestUri) {
-        String path = requestUri.replace("/api/internal/pages/page/" + author + "/" + slug, "");
+        String path = requestUri.replace("/api/internal/pages/page/" + author + "/" + slug, "")
+            .replace("/api/v1/pages/" + author + "/" + slug, "");
         final ExtendedProjectPage pageTable;
         if (path.isEmpty() || path.equals("/")) {
             pageTable = this.hangarProjectPagesDAO.getHomePage(author, slug);
