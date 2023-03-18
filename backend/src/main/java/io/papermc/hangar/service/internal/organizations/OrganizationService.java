@@ -76,7 +76,7 @@ public class OrganizationService extends HangarComponent {
             final Map<String, Boolean> visibility = this.organizationMemberService.getUserOrganizationMembershipVisibility(user);
             roles.keySet().removeIf(org -> Boolean.TRUE.equals(visibility.getOrDefault(org, true)));
         }
-        roles.values().forEach(org -> org.setAvatarUrl(this.avatarService.getOrgAvatar(org.getUuid())));
+        roles.values().forEach(org -> org.setAvatarUrl(this.avatarService.getUserAvatarUrl(org.getUuid())));
         return roles;
     }
 

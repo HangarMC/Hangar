@@ -9,6 +9,7 @@ base:
     clientId: "my-client"
     apiKey: "some-id"
   allowIndexing: "true"
+  namespace: "default"
 
 ingress:
   enabled: false

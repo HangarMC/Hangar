@@ -27,6 +27,7 @@ spec:
       labels:
         {{- include "hangar.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: "backend"
+        app.kubernetes.io/jgroups: "true"
     spec:
       {{- with .Values.backend.imagePullSecrets }}
       imagePullSecrets:
@@ -55,6 +56,8 @@ spec:
           env:
             - name: spring.config.location
               value: "classpath:/application.yml,/hangar/config/application.yaml"
+            - name: KUBERNETES_NAMESPACE
+              value: {{ .Values.base.namespace }}
           volumeMounts:
             - name: {{ include "hangar.fullname" . }}-backend-config-volume
               mountPath: /hangar/config

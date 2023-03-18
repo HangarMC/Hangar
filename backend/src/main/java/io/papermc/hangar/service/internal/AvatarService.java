@@ -37,13 +37,16 @@ public class AvatarService extends HangarComponent {
     private final UserDAO userDAO;
 
     private final Cache<String, String> cache;
+    private final Cache<String, String> usernameCache;
 
     @Autowired
-    public AvatarService(@Lazy final RestTemplate restTemplate, final UserDAO userDAO, @Qualifier(CacheConfig.AVATARS) final org.springframework.cache.Cache avatarsCache) {
+    public AvatarService(@Lazy final RestTemplate restTemplate, final UserDAO userDAO, @Qualifier(CacheConfig.AVATARS) final org.springframework.cache.Cache avatarsCache, @Qualifier(CacheConfig.USERNAME) final org.springframework.cache.Cache usernameCache) {
         this.restTemplate = restTemplate;
         this.userDAO = userDAO;
         //noinspection unchecked
         this.cache = (Cache<String, String>) avatarsCache.getNativeCache();
+        //noinspection unchecked
+        this.usernameCache = (Cache<String, String>) usernameCache.getNativeCache();
     }
 
     public void importProjectAvatar(final long projectId, final String avatarUrl) {
@@ -96,7 +99,7 @@ public class AvatarService extends HangarComponent {
      * Delete methods
      */
     public void deleteProjectAvatar(final long projectId) {
-        this.deleteAvatar(PROJECT, projectId + "");
+        this.deleteAvatar(PROJECT, String.valueOf(projectId));
     }
 
     private void deleteAvatar(final String type, final String subject) {
@@ -120,16 +123,20 @@ public class AvatarService extends HangarComponent {
     }
 
     public String getUserAvatarUrl(final User user) {
-        return this.cache.get("user-" + user.getName(), (key) -> {
-            if (user instanceof HangarUser hangarUser) {
-                return this.getAvatarUrl(USER, hangarUser.getUuid().toString());
-            }
-            return this.getAvatarUrl(USER, this.userDAO.getUserTable(user.getName()).getUuid().toString());
-        });
+        final String uuid;
+        if (user instanceof final HangarUser hangarUser) {
+            uuid = hangarUser.getUuid().toString();
+        } else {
+            uuid = this.usernameCache.get(user.getName(), (key) -> this.userDAO.getUserTable(user.getName()).getUuid().toString());
+        }
+
+        return this.cache.get("user-" + uuid, (key) ->
+            this.getAvatarUrl(USER, uuid)
+        );
     }
 
-    public String getOrgAvatar(final UUID orgUserUuid) {
-        return this.cache.get("org-" + orgUserUuid.toString(), (key) ->
+    public String getUserAvatarUrl(final UUID orgUserUuid) {
+        return this.cache.get("user-" + orgUserUuid.toString(), (key) ->
             this.getAvatarUrl(USER, orgUserUuid.toString())
         );
     }
@@ -138,9 +145,9 @@ public class AvatarService extends HangarComponent {
         return this.cache.get("project-" + projectId, (key) -> {
             final UserTable userTable = this.userDAO.getUserTable(ownerName);
             if (userTable != null) {
-                return this.getAvatarUrl(PROJECT, projectId + "", USER, userTable.getUuid().toString());
+                return this.getAvatarUrl(PROJECT, String.valueOf(projectId), USER, userTable.getUuid().toString());
             } else {
-                return this.getAvatarUrl(PROJECT, projectId + "");
+                return this.getAvatarUrl(PROJECT, String.valueOf(projectId));
             }
         });
     }

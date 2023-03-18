@@ -1,6 +1,8 @@
 package io.papermc.hangar.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import io.papermc.hangar.service.ReplicationService;
+import io.papermc.hangar.util.CacheWrapper;
 import java.time.Duration;
 import jakarta.annotation.PostConstruct;
 import org.springframework.boot.actuate.metrics.cache.CacheMetricsRegistrar;
@@ -39,15 +41,18 @@ public class CacheConfig {
     public static final String GLOBAL_SITEMAP = "globalSitemap-cache";
     public static final String USER_SITEMAP = "userSitemap-cache";
     public static final String AVATARS = "avatars-cache";
+    public static final String USERNAME = "username-cache";
     public static final String VERSION_DEPENDENCIES = "version-dependencies-cache";
 
     private final CacheMetricsRegistrar cacheMetricsRegistrar;
     private final CaffeineCacheManager cacheManager;
+    private final ReplicationService replicationService;
     // don't ask me why we need this bean, without it, caching doesn't work for some methods, as the advisor is still in creation.
     private final BeanFactoryCacheOperationSourceAdvisor beanFactoryCacheOperationSourceAdvisor;
 
-    public CacheConfig(@Lazy final CacheMetricsRegistrar cacheMetricsRegistrar, final BeanFactoryCacheOperationSourceAdvisor beanFactoryCacheOperationSourceAdvisor) {
+    public CacheConfig(@Lazy final CacheMetricsRegistrar cacheMetricsRegistrar, final ReplicationService replicationService, final BeanFactoryCacheOperationSourceAdvisor beanFactoryCacheOperationSourceAdvisor) {
         this.cacheMetricsRegistrar = cacheMetricsRegistrar;
+        this.replicationService = replicationService;
         this.beanFactoryCacheOperationSourceAdvisor = beanFactoryCacheOperationSourceAdvisor;
         this.cacheManager = new CaffeineCacheManager();
     }
@@ -167,6 +172,11 @@ public class CacheConfig {
         return this.createCache(AVATARS, Duration.ofMinutes(30), 200);
     }
 
+    @Bean(USERNAME)
+    Cache usernameCache() {
+        return this.createCache(AVATARS, Duration.ofHours(2), 500);
+    }
+
     @Bean(VERSION_DEPENDENCIES)
     Cache versionDependenciesCache() {
         return this.createCache(VERSION_DEPENDENCIES, Duration.ofMinutes(30), 200);
@@ -180,6 +190,11 @@ public class CacheConfig {
         }
     }
 
+    @Bean
+    public CaffeineCacheManager caffeineCacheManager() {
+        return this.cacheManager;
+    }
+
     private Cache createCache(final String name, final Duration ttl, final long maxSize) {
         final var caffineCache = Caffeine.newBuilder()
             .expireAfterWrite(ttl)
@@ -187,7 +202,8 @@ public class CacheConfig {
             .maximumSize(maxSize)
             .recordStats()
             .build();
-        this.cacheManager.registerCustomCache(name, caffineCache);
+
+        this.cacheManager.registerCustomCache(name, new CacheWrapper(name,caffineCache, this.replicationService));
         return this.cacheManager.getCache(name);
     }
 }
