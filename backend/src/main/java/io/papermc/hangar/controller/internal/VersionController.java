@@ -15,6 +15,7 @@ import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.model.internal.versions.MultipartFileOrUrl;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
+import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -197,6 +198,7 @@ public class VersionController extends HangarComponent {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Anyone
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @GetMapping("/version/{versionId}/{platform}/track")
