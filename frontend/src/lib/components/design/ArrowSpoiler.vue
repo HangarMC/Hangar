@@ -20,7 +20,6 @@ const open = ref(props.open);
 <style lang="scss" scoped>
 summary {
   position: relative;
-  width: 90%;
 }
 
 summary::marker {
