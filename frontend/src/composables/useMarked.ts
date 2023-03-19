@@ -1,35 +1,7 @@
 import { marked } from "marked";
 import markedLinkifyIt from "marked-linkify-it";
 import markedExtendedTables from "marked-extended-tables";
-import { useBackendData } from "~/store/backendData";
-
-const isSafeHost = (host: string) => {
-  for (const safeHost of useBackendData.security.safeDownloadHosts) {
-    // Make sure it's the full host or a subdomain
-    if (host === safeHost || host.endsWith("." + safeHost)) {
-      return true;
-    }
-  }
-  return false;
-};
-
-const isSafe = (urlString: string) => {
-  try {
-    const url = new URL(urlString);
-    const host = url.hostname;
-    if (url.protocol?.startsWith("mailto")) {
-      return true;
-    } else if (!host || isSafeHost(host)) {
-      return true;
-    }
-  } catch {}
-
-  return false;
-};
-
-const makeSafe = (urlString: string) => (isSafe(urlString) ? urlString : "/linkout?remoteUrl=" + encodeURIComponent(urlString));
-
-const proxyImage = (urlString: string) => (isSafe(urlString) ? urlString : useBackendData.security.imageProxyUrl.replace("%s", urlString));
+import { linkout, proxyImage } from "~/composables/useUrlHelper";
 
 const renderer = {
   heading(text: string, level: number) {
@@ -47,7 +19,7 @@ const renderer = {
     return `<img src="${proxyImage(href)}" alt="${alt}"` + (title ? ` title="${title}">` : ">");
   },
   link(href: string, title: string, text: string) {
-    return `<a href="${makeSafe(href)}"` + (title ? ` title="${title}">` : ">") + text + "</a>";
+    return `<a href="${linkout(href)}"` + (title ? ` title="${title}">` : ">") + text + "</a>";
   },
 };
 marked.use({ renderer });
