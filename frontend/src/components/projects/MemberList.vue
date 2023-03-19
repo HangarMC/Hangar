@@ -154,7 +154,7 @@ async function doSearch(val: string) {
 </script>
 
 <template>
-  <Card :class="props.class">
+  <Card :class="props.class" v-if="sortedMembers.length > 0 || canEdit">
     <template #header>
       <div class="inline-flex w-full flex-cols space-between">
         <h3 class="flex-grow">{{ i18n.t("project.members") }}</h3>
