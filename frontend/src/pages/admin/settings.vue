@@ -116,7 +116,7 @@ async function saveRoles() {
 
       <template #footer>
         <span class="flex justify-end items-center gap-2">
-          Updates may take a while to take effect!
+          Updates need a rebuild + redeploy to take affect!
           <Button @click="resetPlatformVersions">{{ i18n.t("general.reset") }}</Button>
           <Button :disabled="loading" @click="savePlatformVersions"> {{ i18n.t("platformVersions.saveChanges") }}</Button>
         </span>
