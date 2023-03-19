@@ -55,7 +55,7 @@ const tabs: Tab[] = [
   { value: "general", header: i18n.t("project.settings.tabs.general") },
   { value: "links", header: i18n.t("project.settings.tabs.links") },
   { value: "management", header: i18n.t("project.settings.tabs.management") },
-  { value: "donation", header: i18n.t("project.settings.tabs.donation") },
+  // { value: "donation", header: i18n.t("project.settings.tabs.donation") },
 ];
 
 const form = reactive({
