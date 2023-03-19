@@ -80,14 +80,22 @@ async function deleteKey(key: ApiKey) {
   notification.success(i18n.t("apiKeys.success.delete", [key.name]));
   loadingDelete[key.name] = false;
 }
+
+function copy(event: any) {
+  const clipboardData = event.clipboardData || event.originalEvent?.clipboardData || navigator.clipboard;
+  clipboardData.writeText(createdKey.value as string);
+}
 </script>
 
 <template>
   <div class="space-y-2">
-    <Alert v-if="createdKey" type="info">
+    <Alert v-if="createdKey" type="info" class="flex">
       {{ i18n.t("apiKeys.created") }}
       <br />
       {{ createdKey }}
+      <span class="flex-grow" />
+      <!-- todo: show tooltip/change button text when copied -->
+      <Button button-type="secondary" size="large" @click="copy">{{ i18n.t("apiKeys.copy") }}</Button>
     </Alert>
     <Card>
       <template #header>
@@ -106,6 +114,7 @@ async function deleteKey(key: ApiKey) {
           <InputCheckbox v-for="perm in possiblePerms" :key="perm" v-model="selectedPerms" :label="perm" :value="perm" />
         </div>
       </InputGroup>
+      <div class="mt-2">{{ i18n.t("apiKeys.permissionRequired") }}</div>
     </Card>
     <Card>
       <template #header>

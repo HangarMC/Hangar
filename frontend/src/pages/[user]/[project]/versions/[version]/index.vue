@@ -312,7 +312,7 @@ async function restoreVersion() {
         </template>
 
         <div v-for="platform in versionPlatforms" :key="platform" class="flex items-center mb-1">
-          <PlatformLogo :platform="platform" :size="24" class="mr-1" />
+          <PlatformLogo :platform="platform" :size="24" class="mr-1 flex-shrink-0" />
           {{ useBackendData.platforms.get(platform).name }}
           ({{ projectVersion?.platformDependenciesFormatted[platform] }})
           <span class="flex-grow" />
@@ -336,7 +336,7 @@ async function restoreVersion() {
           <Spoiler :with-line="projectVersion?.pluginDependencies[platform] !== undefined" open>
             <template #title>
               <div class="flex gap-1 w-full">
-                <PlatformLogo :platform="platform" :size="24" />
+                <PlatformLogo :platform="platform" :size="24" class="flex-shrink-0" />
                 {{ useBackendData.platforms.get(platform).name }}
                 <span class="flex-grow" />
                 <DependencyEditModal :project="project" :version="version" :platform="useBackendData.platforms.get(platform)" />
