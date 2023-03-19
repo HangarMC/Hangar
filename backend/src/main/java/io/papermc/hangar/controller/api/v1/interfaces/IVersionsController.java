@@ -48,7 +48,7 @@ public interface IVersionsController {
     void uploadVersion(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
                        @Parameter(description = "The slug of the project to return versions for") @PathVariable String slug,
                        @Parameter(description = "The version files in order of selected platforms, if any") @RequestPart(required = false) @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
-                       @Parameter(description = "Version data") @RequestPart @Valid VersionUpload versionUpload);
+                       @Parameter(description = "Version data. Note that platform versions accept version ranges, e.g. '1.16.4-1.19' and wildcards, e.g '1.19.x'") @RequestPart @Valid VersionUpload versionUpload);
 
     @Operation(
         summary = "Returns a specific version of a project",
