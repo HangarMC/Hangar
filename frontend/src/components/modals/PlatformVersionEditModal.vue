@@ -3,12 +3,14 @@ import { useI18n } from "vue-i18n";
 import { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useVuelidate } from "@vuelidate/core";
 import Button from "~/lib/components/design/Button.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import { Platform } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
 import VersionSelector from "~/components/VersionSelector.vue";
+import { minLength, required } from "~/lib/composables/useValidationHelpers";
 
 const props = defineProps<{
   project: HangarProject;
@@ -26,8 +28,10 @@ const projectVersion = computed(() => {
 
 const loading = ref(false);
 const selectedVersions = ref(projectVersion.value?.platformDependencies[props.platform.name.toUpperCase() as Platform]);
+const v = useVuelidate();
 
-function save() {
+async function save() {
+  if (!(await v.value.$validate())) return;
   loading.value = true;
   useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/savePlatformVersions`, "post", {
     platform: props.platform.name.toUpperCase(),
@@ -46,7 +50,12 @@ function save() {
 <template>
   <Modal :title="i18n.t('version.edit.platformVersions', [platform.name])" window-classes="w-200">
     <div class="flex flex-row flex-wrap gap-5">
-      <VersionSelector v-model="selectedVersions" :versions="platform.possibleVersions" open />
+      <VersionSelector
+        v-model="selectedVersions"
+        :versions="platform.possibleVersions"
+        open
+        :rules="[required('Select at least one platform version!'), minLength()(1)]"
+      />
     </div>
 
     <Button class="mt-3" :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
