@@ -40,16 +40,16 @@ onErrorCaptured((err) => {
 
 <style scoped>
 :deep(.popper) {
-  background: #d62e22;
   padding: 0.4rem;
   border-radius: 0.375rem;
   color: #fff;
 }
 
+:deep(.popper),
 :deep(.popper #arrow::before),
 :deep(.popper:hover),
 :deep(.popper:hover > #arrow::before) {
-  background: #d62e22;
+  background: #d62e22 !important;
 }
 
 .reset-popper {
