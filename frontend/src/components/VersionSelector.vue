@@ -12,6 +12,7 @@ const props = defineProps<{
   modelValue: string[];
   open: boolean;
   rules?: ValidationRule<string | undefined>[];
+  col?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -152,22 +153,24 @@ function handleAddedSub(removedVersions: string[]) {
 
 <template>
   <InputGroup v-model="selected" :rules="rules" :silent-errors="false">
-    <div v-for="version in versions" :key="version.version">
-      <div v-if="version.subVersions?.length !== 0">
-        <ArrowSpoiler :open="open">
-          <template #title>
-            <div class="mr-8">
-              <InputCheckbox v-model="selectedParents" :value="version.version" :label="version.version" />
-            </div>
-          </template>
-          <template #content>
-            <div class="ml-5">
-              <InputCheckbox v-for="subversion in version.subVersions" :key="subversion" v-model="selectedSub" :value="subversion" :label="subversion" />
-            </div>
-          </template>
-        </ArrowSpoiler>
+    <div :class="{ 'flex gap-2 items-start': true, 'flex-col': col }">
+      <div v-for="version in versions" :key="version.version">
+        <template v-if="version.subVersions?.length !== 0">
+          <ArrowSpoiler :open="open">
+            <template #title>
+              <div class="mr-8">
+                <InputCheckbox v-model="selectedParents" :value="version.version" :label="version.version" />
+              </div>
+            </template>
+            <template #content>
+              <div class="ml-5">
+                <InputCheckbox v-for="subversion in version.subVersions" :key="subversion" v-model="selectedSub" :value="subversion" :label="subversion" />
+              </div>
+            </template>
+          </ArrowSpoiler>
+        </template>
+        <InputCheckbox v-else v-model="selectedSub" :value="version.version" :label="version.version" />
       </div>
-      <InputCheckbox v-else v-model="selectedSub" :value="version.version" :label="version.version" />
     </div>
   </InputGroup>
 </template>

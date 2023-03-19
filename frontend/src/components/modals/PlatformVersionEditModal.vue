@@ -49,14 +49,12 @@ async function save() {
 
 <template>
   <Modal :title="i18n.t('version.edit.platformVersions', [platform.name])" window-classes="w-200">
-    <div class="flex flex-row flex-wrap gap-5">
-      <VersionSelector
-        v-model="selectedVersions"
-        :versions="platform.possibleVersions"
-        open
-        :rules="[required('Select at least one platform version!'), minLength()(1)]"
-      />
-    </div>
+    <VersionSelector
+      v-model="selectedVersions"
+      :versions="platform.possibleVersions"
+      open
+      :rules="[required('Select at least one platform version!'), minLength()(1)]"
+    />
 
     <Button class="mt-3" :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
     <template #activator="{ on }">

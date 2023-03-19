@@ -373,7 +373,7 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
       <div class="flex flex-wrap space-y-5 mb-8">
         <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
           <span class="text-lg inline-flex items-center"><PlatformLogo :platform="platform.enumName" :size="25" class="mr-1" /> {{ platform.name }}</span>
-          <div class="ml-1 flex flex-row flex-wrap gap-5">
+          <div class="ml-1">
             <VersionSelector
               v-if="pendingVersion"
               v-model="pendingVersion.platformDependencies[platform.enumName]"
