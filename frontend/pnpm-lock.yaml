@@ -82,6 +82,7 @@ specifiers:
   vue-i18n: 9.2.2
   vue-tsc: 1.2.0
   vue3-popper: 1.5.0
+  vuedraggable: ^4.1.0
 
 dependencies:
   '@headlessui/vue': 1.7.12_vue@3.2.47
@@ -119,6 +120,7 @@ dependencies:
   vue-advanced-cropper: 2.8.8_vue@3.2.47
   vue-i18n: 9.2.2_vue@3.2.47
   vue3-popper: 1.5.0_vue@3.2.47
+  vuedraggable: 4.1.0_vue@3.2.47
 
 devDependencies:
   '@iconify-json/mdi': 1.1.50
@@ -8287,6 +8289,10 @@ packages:
     resolution: {integrity: sha512-V21+XeNni+tTyiST1MHsa84AQhT1aFZipzPpOFAVB8DkHzwJyjjAmt9bgwnuZiZWnIbMo2duE29wybxv/7HWUw==}
     dev: true
 
+  /sortablejs/1.14.0:
+    resolution: {integrity: sha512-pBXvQCs5/33fdN1/39pPL0NZF20LeRbLQ5jtnheIPN9JQAaufGjKdWduZn4U7wCtVuzKhmRkI0DFYHYRbB2H1w==}
+    dev: false
+
   /source-map-js/1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
     engines: {node: '>=0.10.0'}
@@ -9447,6 +9453,15 @@ packages:
     dependencies:
       '@popperjs/core': 2.11.6
       debounce: 1.2.1
+      vue: 3.2.47
+    dev: false
+
+  /vuedraggable/4.1.0_vue@3.2.47:
+    resolution: {integrity: sha512-FU5HCWBmsf20GpP3eudURW3WdWTKIbEIQxh9/8GE806hydR9qZqRRxRE3RjqX7PkuLuMQG/A7n3cfj9rCEchww==}
+    peerDependencies:
+      vue: ^3.0.1
+    dependencies:
+      sortablejs: 1.14.0
       vue: 3.2.47
     dev: false
 

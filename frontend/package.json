@@ -23,12 +23,14 @@
   },
   "eslintConfig": {
     "extends": "./src/lib/config/eslint.config.js",
-    "overrides": [{
-      "files": "src/module/backendData.ts",
-      "rules": {
-        "import/namespace": "off"
+    "overrides": [
+      {
+        "files": "src/module/backendData.ts",
+        "rules": {
+          "import/namespace": "off"
+        }
       }
-    }]
+    ]
   },
   "dependencies": {
     "@headlessui/vue": "1.7.12",
@@ -65,7 +67,8 @@
     "vue": "3.2.47",
     "vue-advanced-cropper": "2.8.8",
     "vue-i18n": "9.2.2",
-    "vue3-popper": "1.5.0"
+    "vue3-popper": "1.5.0",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@iconify-json/mdi": "1.1.50",

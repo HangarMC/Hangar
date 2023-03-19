@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -163,11 +164,10 @@ public class ProjectService extends HangarComponent {
         final ProjectTable projectTable = this.getProjectTable(author, slug);
         projectTable.setCategory(settingsForm.getCategory());
         projectTable.setKeywords(settingsForm.getSettings().getKeywords());
-        projectTable.setHomepage(settingsForm.getSettings().getHomepage());
-        projectTable.setIssues(settingsForm.getSettings().getIssues());
-        projectTable.setSource(settingsForm.getSettings().getSource());
-        projectTable.setSupport(settingsForm.getSettings().getSupport());
-        projectTable.setWiki(settingsForm.getSettings().getWiki());
+        // TODO fixme
+        if (true) {
+            throw new NotImplementedException("dum");
+        }
         String licenseName = org.apache.commons.lang3.StringUtils.stripToNull(settingsForm.getSettings().getLicense().getName());
         if (licenseName == null) {
             licenseName = settingsForm.getSettings().getLicense().getType();

@@ -39,20 +39,12 @@ function childRoute(route = ""): string {
     <ProjectNavItem v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" :to="childRoute('/settings')">
       {{ i18n.t("project.tabs.settings") }}
     </ProjectNavItem>
-    <ProjectNavItem v-if="props.project.settings.homepage" :href="linkout(props.project.settings.homepage)">
-      {{ i18n.t("project.tabs.homepage") }}
-    </ProjectNavItem>
-    <ProjectNavItem v-if="props.project.settings.issues" :href="linkout(props.project.settings.issues)">
-      {{ i18n.t("project.tabs.issues") }}
-    </ProjectNavItem>
-    <ProjectNavItem v-if="props.project.settings.source" :href="linkout(props.project.settings.source)">
-      {{ i18n.t("project.tabs.source") }}
-    </ProjectNavItem>
-    <ProjectNavItem v-if="props.project.settings.support" :href="linkout(props.project.settings.support)">
-      {{ i18n.t("project.tabs.support") }}
-    </ProjectNavItem>
-    <ProjectNavItem v-if="props.project.settings.wiki" :href="linkout(props.project.settings.wiki)">
-      {{ i18n.t("project.tabs.wiki") }}
-    </ProjectNavItem>
+    <template v-for="section in props.project.settings.links">
+      <template v-if="section.type === 'top'">
+        <ProjectNavItem v-for="item in section.links" :key="item.id" :href="linkout(item.url)">
+          {{ item.name }}
+        </ProjectNavItem>
+      </template>
+    </template>
   </nav>
 </template>

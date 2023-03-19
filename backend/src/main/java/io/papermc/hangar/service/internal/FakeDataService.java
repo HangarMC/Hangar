@@ -91,11 +91,7 @@ public class FakeDataService extends HangarComponent {
         for (int i = 0; i < this.faker.random().nextInt(2, 5); i++) {
             keyWords.add(this.faker.marketing().buzzwords());
         }
-        final ProjectSettings settings = new ProjectSettings(this.faker.internet().domainName(),
-            null,
-            null,
-            null,
-            null,
+        final ProjectSettings settings = new ProjectSettings(
             licence,
             new ProjectDonationSettings(false, "d"),
             keyWords,

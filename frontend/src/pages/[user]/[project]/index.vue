@@ -7,7 +7,6 @@ import { ref } from "vue";
 import Card from "~/lib/components/design/Card.vue";
 import ProjectInfo from "~/components/projects/ProjectInfo.vue";
 import MemberList from "~/components/projects/MemberList.vue";
-
 import { MarkdownEditor } from "#components";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
@@ -22,7 +21,9 @@ import { useOpenProjectPages } from "~/composables/useOpenProjectPages";
 import ProjectPageMarkdown from "~/components/projects/ProjectPageMarkdown.vue";
 import { useBackendData } from "~/store/backendData";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
+import Link from "~/lib/components/design/Link.vue";
 import { required } from "~/lib/composables/useValidationHelpers";
+import { linkout } from "~/composables/useUrlHelper";
 
 const props = defineProps<{
   user: User;
@@ -148,6 +149,20 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
         </ul>
       </Card>
       <ProjectPageList :project="project" :open="openProjectPages" />
+
+      <template v-for="section in project.settings.links">
+        <Card v-if="section.type === 'sidebar'" :key="section.id">
+          <template #header>
+            <h3>{{ section.title }}</h3>
+          </template>
+          <div class="flex flex-col">
+            <template v-for="link in section.links" :key="link.id">
+              <Link :href="linkout(link.url)">{{ link.name }}</Link>
+            </template>
+          </div>
+        </Card>
+      </template>
+
       <MemberList :members="project.members" :author="project.owner.name" :slug="project.name" :owner="project.owner.userId" class="overflow-visible" />
     </section>
   </div>

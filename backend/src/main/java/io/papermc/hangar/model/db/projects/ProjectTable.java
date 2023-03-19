@@ -50,11 +50,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.category = form.getCategory();
         this.description = form.getDescription();
         this.visibility = Visibility.NEW;
-        this.homepage = form.getSettings().getHomepage();
-        this.issues = form.getSettings().getIssues();
-        this.source = form.getSettings().getSource();
-        this.support = form.getSettings().getSupport();
-        this.wiki = form.getSettings().getWiki();
+        // TODO fixme
         this.keywords = form.getSettings().getKeywords();
         this.licenseType = form.getSettings().getLicense().getType();
         this.licenseName = form.getSettings().getLicense().getName();

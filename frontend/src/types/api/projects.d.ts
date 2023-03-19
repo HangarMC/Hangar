@@ -28,12 +28,15 @@ declare module "hangar-api" {
     type?: string | null;
   }
 
+  interface LinkSection {
+    id: number;
+    type: "top" | "sidebar";
+    title: string;
+    links: { id: number; name: string; url: string }[];
+  }
+
   interface ProjectSettings {
-    homepage: string | null;
-    issues: string | null;
-    source: string | null;
-    support: string | null;
-    wiki: string | null;
+    links: LinkSection[];
     license: License;
     keywords: string[];
     forumSync: boolean;

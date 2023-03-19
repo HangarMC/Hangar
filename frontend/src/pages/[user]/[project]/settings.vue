@@ -34,6 +34,7 @@ import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 import { definePageMeta } from "#imports";
 import Alert from "~/lib/components/design/Alert.vue";
 import { Tab } from "~/lib/types/components/design/Tabs";
+import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
 
 definePageMeta({
   projectPermsRequired: ["EDIT_SUBJECT_SETTINGS"],
@@ -64,6 +65,9 @@ const form = reactive({
 });
 if (!form.settings.license.type) {
   form.settings.license.type = "Unspecified";
+}
+if (!form.settings.links) {
+  form.settings.links = [];
 }
 
 const hasCustomIcon = computed(() => props.project.avatarUrl.includes("project"));
@@ -288,6 +292,27 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
               :rules="[maxLength()(useBackendData.validations?.project?.keywords?.max || 5)]"
             />
           </ProjectSettingsSection>
+          <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
+            <div class="flex md:gap-2 lt-md:flex-wrap">
+              <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
+                <InputSelect v-model="form.settings.license.type" :values="useLicenseOptions" :label="i18n.t('project.settings.licenseType')" />
+              </div>
+              <div v-if="isCustomLicense" class="basis-full md:basis-8/12">
+                <InputText
+                  v-model.trim="form.settings.license.name"
+                  :label="i18n.t('project.settings.licenseCustom')"
+                  :rules="[
+                    requiredIf()(isCustomLicense),
+                    maxLength()(useBackendData.validations.project.license.max),
+                    pattern()(useBackendData.validations.project.license.regex),
+                  ]"
+                />
+              </div>
+              <div v-if="!isUnspecifiedLicense" class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
+                <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[url()]" />
+              </div>
+            </div>
+          </ProjectSettingsSection>
           <ProjectSettingsSection>
             <div class="grid grid-cols-3 grid-rows-[1fr,1fr,min-content] gap-2 w-full">
               <div class="col-span-2 row-span-1">
@@ -334,41 +359,8 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
           </ProjectSettingsSection>
         </template>
         <template #links>
-          <ProjectSettingsSection title="project.settings.homepage" description="project.settings.homepageSub">
-            <InputText v-model.trim="form.settings.homepage" :label="i18n.t('project.new.step3.homepage')" :rules="[url()]"></InputText>
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.issues" description="project.settings.issuesSub">
-            <InputText v-model.trim="form.settings.issues" :label="i18n.t('project.new.step3.issues')" :rules="[url()]" />
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.source" description="project.settings.sourceSub">
-            <InputText v-model.trim="form.settings.source" :label="i18n.t('project.new.step3.source')" :rules="[url()]" />
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.support" description="project.settings.supportSub">
-            <InputText v-model.trim="form.settings.support" :label="i18n.t('project.new.step3.support')" :rules="[url()]" />
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.wiki" description="project.settings.wikiSub">
-            <InputText v-model.trim="form.settings.wiki" :label="i18n.t('project.new.step3.wiki')" :rules="[url()]" />
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
-            <div class="flex md:gap-2 lt-md:flex-wrap">
-              <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
-                <InputSelect v-model="form.settings.license.type" :values="useLicenseOptions" :label="i18n.t('project.settings.licenseType')" />
-              </div>
-              <div v-if="isCustomLicense" class="basis-full md:basis-8/12">
-                <InputText
-                  v-model.trim="form.settings.license.name"
-                  :label="i18n.t('project.settings.licenseCustom')"
-                  :rules="[
-                    requiredIf()(isCustomLicense),
-                    maxLength()(useBackendData.validations.project.license.max),
-                    pattern()(useBackendData.validations.project.license.regex),
-                  ]"
-                />
-              </div>
-              <div v-if="!isUnspecifiedLicense" class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
-                <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[url()]" />
-              </div>
-            </div>
+          <ProjectSettingsSection title="project.settings.links" description="project.settings.linksSub">
+            <ProjectLinksForm v-model="form.settings.links" />
           </ProjectSettingsSection>
         </template>
         <template #management>
