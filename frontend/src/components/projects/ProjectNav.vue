@@ -41,7 +41,7 @@ function childRoute(route = ""): string {
     </ProjectNavItem>
     <template v-for="section in props.project.settings.links">
       <template v-if="section.type === 'top'">
-        <ProjectNavItem v-for="item in section.links" :key="item.id" :href="linkout(item.url)">
+        <ProjectNavItem v-for="item in section.links" :key="item.id" :href="item.url">
           {{ item.name }}
         </ProjectNavItem>
       </template>

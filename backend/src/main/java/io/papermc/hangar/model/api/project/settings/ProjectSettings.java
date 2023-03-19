@@ -1,33 +1,21 @@
-package io.papermc.hangar.model.api.project;
+package io.papermc.hangar.model.api.project.settings;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.core.type.TypeReference;
 import io.papermc.hangar.controller.validations.Validate;
+import io.papermc.hangar.db.customtypes.JSONB;
+import io.papermc.hangar.model.api.project.ProjectDonationSettings;
+import io.papermc.hangar.model.api.project.ProjectLicense;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 import org.jdbi.v3.core.mapper.Nested;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectSettings {
 
-    // TODO fixme
-    private final @Valid List<LinkSection> links = List.of(
-            new LinkSection(0, "top", "Top", List.of(
-                    new Link(0, "Wiki", "https://github.com"),
-                    new Link(0, "Homepage", "https://google.com")
-            )),
-            new LinkSection(0, "sidebar", "Donations", List.of(
-                    new Link(0, "Paypal", "https://paypal.com"),
-                    new Link(0, "OpenCollective", "https://opencollective.com")
-            ))
-    );
-
-    record LinkSection(long id, String type, String title, List<Link> links) {
-    }
-
-    record Link(long id, String name, String url) {
-    }
-
+    private final @Valid List<LinkSection> links;
     private final @Valid ProjectLicense license;
     private final @Valid ProjectDonationSettings donation;
 
@@ -38,8 +26,20 @@ public class ProjectSettings {
     // @el(root: String)
     private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxSponsorsLen)", message = "project.new.error.tooLongSponsors") String sponsors;
 
+    @JdbiConstructor
+    public ProjectSettings(final JSONB links, @Nested("license") final ProjectLicense license, @Nested("donation") final ProjectDonationSettings donation, final Collection<String> keywords, final boolean forumSync, final String sponsors) {
+        this.links = links.get(new TypeReference<>() {
+        });
+        this.license = license;
+        this.donation = donation;
+        this.keywords = keywords;
+        this.forumSync = forumSync;
+        this.sponsors = sponsors;
+    }
+
     @JsonCreator
-    public ProjectSettings(@Nested("license") final ProjectLicense license, @Nested("donation") final ProjectDonationSettings donation, final Collection<String> keywords, final boolean forumSync, final String sponsors) {
+    public ProjectSettings(@Nested("links") final List<LinkSection> links, @Nested("license") final ProjectLicense license, @Nested("donation") final ProjectDonationSettings donation, final Collection<String> keywords, final boolean forumSync, final String sponsors) {
+        this.links = links;
         this.license = license;
         this.donation = donation;
         this.keywords = keywords;

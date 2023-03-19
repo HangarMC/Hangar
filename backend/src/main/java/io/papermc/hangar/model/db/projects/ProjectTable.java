@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.db.projects;
 
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.ModelVisible;
 import io.papermc.hangar.model.Owned;
 import io.papermc.hangar.model.Visitable;
@@ -26,11 +27,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
     private String description;
     private Visibility visibility;
     private Collection<String> keywords;
-    private String homepage;
-    private String issues;
-    private String source;
-    private String support;
-    private String wiki;
+    private JSONB links;
     private String licenseType;
     private String licenseName;
     private String licenseUrl;
@@ -50,7 +47,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.category = form.getCategory();
         this.description = form.getDescription();
         this.visibility = Visibility.NEW;
-        // TODO fixme
+        this.links = new JSONB(form.getSettings().getLinks());
         this.keywords = form.getSettings().getKeywords();
         this.licenseType = form.getSettings().getLicense().getType();
         this.licenseName = form.getSettings().getLicense().getName();
@@ -71,11 +68,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.description = other.description;
         this.visibility = other.visibility;
         this.keywords = other.keywords;
-        this.homepage = other.homepage;
-        this.issues = other.issues;
-        this.source = other.source;
-        this.support = other.support;
-        this.wiki = other.wiki;
+        this.links = other.links;
         this.licenseType = other.licenseType;
         this.licenseName = other.licenseName;
         this.licenseUrl = other.licenseUrl;
@@ -88,7 +81,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
     @JdbiConstructor
     public ProjectTable(final OffsetDateTime createdAt, final long id, final String name, final String slug, final String ownerName, final long ownerId, final Long topicId,
                         final Long postId, @EnumByOrdinal final Category category, final String description, @EnumByOrdinal final Visibility visibility, final Collection<String> keywords,
-                        final String homepage, final String issues, final String source, final String support, final String wiki, final String licenseType, final String licenseName, final String licenseUrl, final boolean forumSync,
+                        final JSONB links, final String licenseType, final String licenseName, final String licenseUrl, final boolean forumSync,
                         final boolean donationEnabled, final String donationSubject, final String sponsors) {
         super(createdAt, id);
         this.name = name;
@@ -101,11 +94,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.description = description;
         this.visibility = visibility;
         this.keywords = keywords;
-        this.homepage = homepage;
-        this.issues = issues;
-        this.source = source;
-        this.support = support;
-        this.wiki = wiki;
+        this.links = links;
         this.licenseType = licenseType;
         this.licenseName = licenseName;
         this.licenseUrl = licenseUrl;
@@ -203,44 +192,12 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.keywords = keywords;
     }
 
-    public String getHomepage() {
-        return this.homepage;
+    public JSONB getLinks() {
+        return this.links;
     }
 
-    public void setHomepage(final String homepage) {
-        this.homepage = homepage;
-    }
-
-    public String getIssues() {
-        return this.issues;
-    }
-
-    public void setIssues(final String issues) {
-        this.issues = issues;
-    }
-
-    public String getSource() {
-        return this.source;
-    }
-
-    public void setSource(final String source) {
-        this.source = source;
-    }
-
-    public String getSupport() {
-        return this.support;
-    }
-
-    public void setSupport(final String support) {
-        this.support = support;
-    }
-
-    public String getWiki() {
-        return this.wiki;
-    }
-
-    public void setWiki(final String wiki) {
-        this.wiki = wiki;
+    public void setLinks(final JSONB links) {
+        this.links = links;
     }
 
     public String getLicenseType() {
@@ -322,11 +279,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
             ", description='" + this.description + '\'' +
             ", visibility=" + this.visibility +
             ", keywords=" + this.keywords +
-            ", homepage='" + this.homepage + '\'' +
-            ", issues='" + this.issues + '\'' +
-            ", source='" + this.source + '\'' +
-            ", support='" + this.support + '\'' +
-            ", wiki='" + this.wiki + '\'' +
+            ", links='" + this.links + '\'' +
             ", licenseType='" + this.licenseType + '\'' +
             ", licenseName='" + this.licenseName + '\'' +
             ", licenseUrl='" + this.licenseUrl + '\'' +

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import { computed } from "vue";
+import { linkout } from "~/composables/useUrlHelper";
 
 const props = defineProps<{
   to?: string;
@@ -24,11 +25,11 @@ const clazz = computed(() => {
 </script>
 
 <template>
-  <div class="mb-[-2px] mr-1">
+  <div v-if="to || href" class="mb-[-2px] mr-1">
     <router-link v-if="to" :to="to" :class="clazz">
       <slot></slot>
     </router-link>
-    <a v-if="href" :href="props.href" :class="clazz" target="_blank">
+    <a v-if="href" :href="linkout(href)" :class="clazz" target="_blank">
       <span class="mx-1">
         <slot></slot>
       </span>

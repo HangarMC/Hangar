@@ -41,11 +41,7 @@ public interface ProjectsApiDAO {
         "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred, " +
         "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching, " +
         "       exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) AS flagged," +
-        "       p.homepage," +
-        "       p.issues," +
-        "       p.source," +
-        "       p.support," +
-        "       p.wiki," +
+        "       p.links," +
         "       p.license_name," +
         "       p.license_url," +
         "       p.license_type," +
@@ -87,11 +83,7 @@ public interface ProjectsApiDAO {
             EXISTS(SELECT * FROM project_stars ps WHERE ps.project_id = p.id AND ps.user_id = :requesterId) AS starred,
             EXISTS(SELECT * FROM project_watchers pw WHERE pw.project_id = p.id AND pw.user_id = :requesterId) AS watching,
             EXISTS(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) AS flagged,
-            p.homepage,
-            p.issues,
-            p.source,
-            p.support,
-            p.wiki,
+            p.links,
             p.license_name,
             p.license_type,
             p.license_url,

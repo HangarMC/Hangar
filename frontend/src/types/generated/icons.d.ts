@@ -35,7 +35,6 @@ declare module "@vue/runtime-core" {
     IconMdiCodeBracesBox: typeof import("~icons/mdi/code-braces-box")["default"];
     IconMdiCogTransfer: typeof import("~icons/mdi/cog-transfer")["default"];
     IconMdiComment: typeof import("~icons/mdi/comment")["default"];
-    IconMdiContentCopy: typeof import("~icons/mdi/content-copy")["default"];
     IconMdiContentSave: typeof import("~icons/mdi/content-save")["default"];
     IconMdiController: typeof import("~icons/mdi/controller")["default"];
     IconMdiDelete: typeof import("~icons/mdi/delete")["default"];

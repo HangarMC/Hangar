@@ -6,7 +6,9 @@ import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.model.api.project.ProjectDonationSettings;
 import io.papermc.hangar.model.api.project.ProjectLicense;
-import io.papermc.hangar.model.api.project.ProjectSettings;
+import io.papermc.hangar.model.api.project.settings.Link;
+import io.papermc.hangar.model.api.project.settings.LinkSection;
+import io.papermc.hangar.model.api.project.settings.ProjectSettings;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
@@ -92,6 +94,16 @@ public class FakeDataService extends HangarComponent {
             keyWords.add(this.faker.marketing().buzzwords());
         }
         final ProjectSettings settings = new ProjectSettings(
+            List.of(
+                new LinkSection(0, "top", "Top", List.of(
+                    new Link(0, "Wiki", "https://github.com"),
+                    new Link(0, "Homepage", this.faker.internet().domainName())
+                )),
+                new LinkSection(0, "sidebar", "Donations", List.of(
+                    new Link(0, "Paypal", "https://paypal.com"),
+                    new Link(0, "OpenCollective", "https://opencollective.com")
+                ))
+            ),
             licence,
             new ProjectDonationSettings(false, "d"),
             keyWords,

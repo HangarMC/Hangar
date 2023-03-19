@@ -39,11 +39,7 @@ public interface HangarProjectsDAO {
         "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS starred," +
         "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS watching," +
         "       exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :currentUserId AND pf.resolved IS FALSE) AS flagged," +
-        "       ps.homepage," +
-        "       ps.issues," +
-        "       ps.source," +
-        "       ps.support," +
-        "       ps.wiki," +
+        "       ps.links," +
         "       ps.license_name," +
         "       ps.license_type," +
         "       ps.license_url," +

@@ -3,6 +3,7 @@ package io.papermc.hangar.service.internal.projects;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -164,10 +165,7 @@ public class ProjectService extends HangarComponent {
         final ProjectTable projectTable = this.getProjectTable(author, slug);
         projectTable.setCategory(settingsForm.getCategory());
         projectTable.setKeywords(settingsForm.getSettings().getKeywords());
-        // TODO fixme
-        if (true) {
-            throw new NotImplementedException("dum");
-        }
+        projectTable.setLinks(new JSONB(settingsForm.getSettings().getLinks()));
         String licenseName = org.apache.commons.lang3.StringUtils.stripToNull(settingsForm.getSettings().getLicense().getName());
         if (licenseName == null) {
             licenseName = settingsForm.getSettings().getLicense().getType();

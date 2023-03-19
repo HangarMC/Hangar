@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.api.project;
 
+import io.papermc.hangar.model.api.project.settings.ProjectSettings;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
 import java.time.OffsetDateTime;

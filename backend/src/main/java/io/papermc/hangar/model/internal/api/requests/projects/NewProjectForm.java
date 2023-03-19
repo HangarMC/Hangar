@@ -2,7 +2,7 @@ package io.papermc.hangar.model.internal.api.requests.projects;
 
 import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.api.project.ProjectSettings;
+import io.papermc.hangar.model.api.project.settings.ProjectSettings;
 import io.papermc.hangar.model.common.projects.Category;
 import jakarta.validation.constraints.NotNull;
 import org.jetbrains.annotations.Nullable;
