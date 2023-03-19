@@ -21,6 +21,7 @@ import { validApiKeyName } from "~/composables/useHangarValidations";
 import InputGroup from "~/lib/components/ui/InputGroup.vue";
 import { NamedPermission } from "~/types/enums";
 import { definePageMeta } from "#imports";
+import Tooltip from "~/lib/components/design/Tooltip.vue";
 
 definePageMeta({
   currentUserRequired: true,
@@ -81,9 +82,12 @@ async function deleteKey(key: ApiKey) {
   loadingDelete[key.name] = false;
 }
 
+const copied = ref(false);
 function copy(event: any) {
   const clipboardData = event.clipboardData || event.originalEvent?.clipboardData || navigator.clipboard;
   clipboardData.writeText(createdKey.value as string);
+  copied.value = true;
+  setTimeout(() => (copied.value = false), 2000);
 }
 </script>
 
@@ -94,8 +98,15 @@ function copy(event: any) {
       <br />
       {{ createdKey }}
       <span class="flex-grow" />
-      <!-- todo: show tooltip/change button text when copied -->
-      <Button button-type="secondary" size="large" @click="copy">{{ i18n.t("apiKeys.copy") }}</Button>
+      <Tooltip :hover="false" :show="copied">
+        <template #content>
+          {{ i18n.t("apiKeys.copied") }}
+        </template>
+        <Button button-type="secondary" size="large" @click="copy">
+          {{ i18n.t("apiKeys.copy") }}
+          <IconMdiContentCopy class="ml-1" />
+        </Button>
+      </Tooltip>
     </Alert>
     <Card>
       <template #header>

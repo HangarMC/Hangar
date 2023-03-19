@@ -849,6 +849,7 @@
     "permissionRequired": "At least one permission needs to be set.",
     "delete": "Delete",
     "copy": "Click to copy key to clipboard",
+    "copied": "Copied to clipboard!",
     "createKey": "Create key",
     "noKeys": "You haven't created any api keys yet",
     "success": {
