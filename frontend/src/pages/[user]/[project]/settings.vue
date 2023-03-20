@@ -128,9 +128,9 @@ async function doSearch(val: unknown) {
 }
 
 async function save() {
+  if (!(await v.value.$validate())) return;
   loading.save = true;
   try {
-    if (!(await v.value.$validate())) return;
     if (!isCustomLicense.value) {
       form.settings.license.name = null;
     }
@@ -154,7 +154,7 @@ async function transfer() {
     await useInternalApi<string>(`projects/project/${route.params.user}/${route.params.project}/transfer`, "post", {
       content: search.value,
     });
-    notificationStore.success(i18n.t("project.settings.success.transferRequest", [search.value]));
+    await notificationStore.success(i18n.t("project.settings.success.transferRequest", [search.value]));
   } catch (e: any) {
     handleRequestError(e);
   }
@@ -167,7 +167,7 @@ async function rename() {
     const newSlug = await useInternalApi<string>(`projects/project/${route.params.user}/${route.params.project}/rename`, "post", {
       content: newName.value,
     });
-    notificationStore.success(i18n.t("project.settings.success.rename", [newName.value]));
+    await notificationStore.success(i18n.t("project.settings.success.rename", [newName.value]));
     await router.push("/" + route.params.user + "/" + newSlug);
   } catch (e: any) {
     handleRequestError(e);
@@ -180,7 +180,7 @@ async function softDelete(comment: string) {
     await useInternalApi(`projects/project/${props.project.id}/manage/delete`, "post", {
       content: comment,
     });
-    useNotificationStore().success(i18n.t("project.settings.success.softDelete"));
+    await notificationStore.success(i18n.t("project.settings.success.softDelete"));
     if (hasPerms(NamedPermission.HARD_DELETE_PROJECT)) {
       router.go(0);
     } else {
@@ -196,7 +196,7 @@ async function hardDelete(comment: string) {
     await useInternalApi(`projects/project/${props.project.id}/manage/hardDelete`, "post", {
       content: comment,
     });
-    notificationStore.success(i18n.t("project.settings.success.hardDelete"));
+    await notificationStore.success(i18n.t("project.settings.success.hardDelete"));
     await router.push("/");
   } catch (e: any) {
     handleRequestError(e);
@@ -217,11 +217,9 @@ async function uploadIcon() {
     projectIcon.value = null;
     cropperInput.value = null;
     cropperResult.value = null;
-    if (response) {
-      useNotificationStore().success(i18n.t("project.settings.success.changedIconWarn", [response]));
-    } else {
-      useNotificationStore().success(i18n.t("project.settings.success.changedIcon"));
-    }
+    await (response
+      ? notificationStore.success(i18n.t("project.settings.success.changedIconWarn", [response]))
+      : notificationStore.success(i18n.t("project.settings.success.changedIcon")));
   } catch (e: any) {
     handleRequestError(e);
   }
@@ -232,11 +230,9 @@ async function resetIcon() {
   loading.resetIcon = true;
   try {
     const response = await useInternalApi<string | null>(`projects/project/${route.params.user}/${route.params.project}/resetIcon`, "post");
-    if (response) {
-      useNotificationStore().success(i18n.t("project.settings.success.resetIconWarn", [response]));
-    } else {
-      useNotificationStore().success(i18n.t("project.settings.success.resetIcon"));
-    }
+    await (response
+      ? notificationStore.success(i18n.t("project.settings.success.resetIconWarn", [response]))
+      : notificationStore.success(i18n.t("project.settings.success.resetIcon")));
     imgSrc.value = props.user.avatarUrl; // set temporary source so it changes right away
     projectIcon.value = null;
     cropperInput.value = null;
@@ -257,7 +253,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
         <div class="flex justify-between lt-sm:items-center">
           {{ i18n.t("project.settings.title") }}
           <div class="text-lg">
-            <Button :disabled="v.$invalid" :loading="loading.save" @click="save">
+            <Button :disabled="v.$error" :loading="loading.save" @click="save">
               <IconMdiCheck />
               {{ i18n.t("project.settings.save") }}
             </Button>
@@ -416,7 +412,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
             </TextAreaModal>
           </ProjectSettingsSection>
         </template>
-        <template #donation>
+        <!--<template #donation>
           <Alert type="info" class="my-4">Coming Soon!</Alert>
           <ProjectSettingsSection title="project.settings.donation.enable">
             <InputCheckbox v-model="form.settings.donation.enable" :label="i18n.t('project.settings.donation.enableSub')" disabled />
@@ -429,7 +425,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
               disabled
             />
           </ProjectSettingsSection>
-        </template>
+        </template>-->
       </Tabs>
     </Card>
     <MemberList
