@@ -105,7 +105,6 @@ public class FakeDataService extends HangarComponent {
                 ))
             ),
             licence,
-            new ProjectDonationSettings(false, "d"),
             keyWords,
             false,
             "# Sponsored by " + this.faker.beer().style() + " " + this.faker.beer().name());

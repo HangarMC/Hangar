@@ -15,9 +15,9 @@ import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectSettings {
 
-    private final @Valid List<LinkSection> links;
+    private final @NotNull @Validate(SpEL = "@validate.max(#root, 4)", message = "Too many link sections") List<@Valid LinkSection> links;
     private final @Valid ProjectLicense license;
-    private final @Valid ProjectDonationSettings donation;
+    //private final @Valid ProjectDonationSettings donation;
 
     // @el(root: Collection<String>)
     private final @NotNull @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywords)", message = "project.new.error.tooManyKeywords") Collection<String> keywords;
@@ -27,21 +27,21 @@ public class ProjectSettings {
     private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxSponsorsLen)", message = "project.new.error.tooLongSponsors") String sponsors;
 
     @JdbiConstructor
-    public ProjectSettings(final JSONB links, @Nested("license") final ProjectLicense license, @Nested("donation") final ProjectDonationSettings donation, final Collection<String> keywords, final boolean forumSync, final String sponsors) {
+    public ProjectSettings(final JSONB links, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final boolean forumSync, final String sponsors) {
         this.links = links.get(new TypeReference<>() {
         });
         this.license = license;
-        this.donation = donation;
+        //this.donation = donation;
         this.keywords = keywords;
         this.forumSync = forumSync;
         this.sponsors = sponsors;
     }
 
     @JsonCreator
-    public ProjectSettings(@Nested("links") final List<LinkSection> links, @Nested("license") final ProjectLicense license, @Nested("donation") final ProjectDonationSettings donation, final Collection<String> keywords, final boolean forumSync, final String sponsors) {
+    public ProjectSettings(@Nested("links") final List<LinkSection> links, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final boolean forumSync, final String sponsors) {
         this.links = links;
         this.license = license;
-        this.donation = donation;
+        //this.donation = donation;
         this.keywords = keywords;
         this.forumSync = forumSync;
         this.sponsors = sponsors;
@@ -55,8 +55,9 @@ public class ProjectSettings {
         return this.license;
     }
 
+    @Deprecated
     public ProjectDonationSettings getDonation() {
-        return this.donation;
+        return new ProjectDonationSettings(false, "");
     }
 
     public Collection<String> getKeywords() {
@@ -76,7 +77,6 @@ public class ProjectSettings {
         return "ProjectSettings{" +
             "links=" + this.links +
             ", license=" + this.license +
-            ", donation=" + this.donation +
             ", keywords=" + this.keywords +
             ", forumSync=" + this.forumSync +
             ", sponsors='" + this.sponsors + '\'' +

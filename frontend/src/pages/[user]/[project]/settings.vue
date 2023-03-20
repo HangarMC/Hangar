@@ -359,7 +359,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
           </ProjectSettingsSection>
         </template>
         <template #links>
-          <ProjectSettingsSection title="project.settings.links" description="project.settings.linksSub">
+          <ProjectSettingsSection title="project.settings.links.title" description="project.settings.links.sub">
             <ProjectLinksForm v-model="form.settings.links" />
           </ProjectSettingsSection>
         </template>

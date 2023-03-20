@@ -2,6 +2,7 @@
 import Draggable from "vuedraggable";
 import { useVModel } from "@vueuse/core";
 import { LinkSection } from "hangar-api";
+import { useI18n } from "vue-i18n";
 import InputText from "~/lib/components/ui/InputText.vue";
 import Button from "~/lib/components/design/Button.vue";
 import { maxLength, minLength, required, url } from "~/lib/composables/useValidationHelpers";
@@ -10,6 +11,7 @@ import { useBackendData } from "~/store/backendData";
 const props = defineProps<{ modelValue: LinkSection["links"] }>();
 const emit = defineEmits(["update:modelValue"]);
 const model = useVModel(props, "modelValue", emit);
+const i18n = useI18n();
 
 function remove(index: number) {
   model.value.splice(index, 1);
@@ -31,16 +33,16 @@ function add() {
 
         <InputText
           v-model="element.name"
-          label="Name"
+          :label="i18n.t('project.settings.links.nameField')"
           :rules="[required(), maxLength()(useBackendData.validations.project.pageName.max), minLength()(useBackendData.validations.project.pageName.min)]"
         />
-        <InputText v-model="element.url" label="URL" :rules="[url(), required()]" />
+        <InputText v-model="element.url" :label="i18n.t('project.settings.links.urlField')" :rules="[url(), required()]" />
 
         <IconMdiClose class="flex-shrink-0 cursor-pointer" @click="remove(index)" />
       </li>
     </template>
     <template #footer>
-      <Button @click="add">Add</Button>
+      <Button @click="add">{{ i18n.t("project.settings.links.addLink") }}</Button>
     </template>
   </Draggable>
 </template>

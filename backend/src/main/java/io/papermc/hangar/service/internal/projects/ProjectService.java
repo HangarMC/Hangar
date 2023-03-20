@@ -9,7 +9,10 @@ import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.Project;
+import io.papermc.hangar.model.api.project.settings.LinkSection;
+import io.papermc.hangar.model.api.project.settings.LinkSectionType;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
@@ -36,11 +39,11 @@ import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import java.util.Base64;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -162,6 +165,8 @@ public class ProjectService extends HangarComponent {
     }
 
     public void saveSettings(final String author, final String slug, final ProjectSettingsForm settingsForm) {
+        this.validateLinks(settingsForm.getSettings().getLinks());
+
         final ProjectTable projectTable = this.getProjectTable(author, slug);
         projectTable.setCategory(settingsForm.getCategory());
         projectTable.setKeywords(settingsForm.getSettings().getKeywords());
@@ -181,6 +186,30 @@ public class ProjectService extends HangarComponent {
         this.refreshHomeProjects();
         // TODO what settings changed
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
+    }
+
+    private void validateLinks(final List<LinkSection> sections) {
+        int topSections = 0;
+        for (final LinkSection section : sections) {
+            final LinkSectionType type;
+            try {
+                type = LinkSectionType.valueOf(section.type().toUpperCase(Locale.ROOT));
+            } catch (final IllegalArgumentException e) {
+                throw new HangarApiException("Invalid link type " + section.type());
+            }
+
+            if (section.links().size() > type.maxLinks()) {
+                throw new HangarApiException("Cannot have more than " + type.maxLinks() + " links in a " + type.name() + " section");
+            }
+
+            if (section.title() == null && type.hasTitle()) {
+                throw new HangarApiException("Section " + type.name() + " must have a title");
+            }
+
+            if (type == LinkSectionType.TOP && ++topSections > 1) {
+                throw new HangarApiException("Cannot have multiple top sections");
+            }
+        }
     }
 
     @Transactional

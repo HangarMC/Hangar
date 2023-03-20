@@ -41,10 +41,10 @@ declare module "hangar-api" {
     keywords: string[];
     forumSync: boolean;
     sponsors: string | null;
-    donation: {
+    /*donation: {
       enable: false;
       subject: string;
-    };
+    };*/
   }
 
   interface ProjectCompact extends Model, Named, Visible {

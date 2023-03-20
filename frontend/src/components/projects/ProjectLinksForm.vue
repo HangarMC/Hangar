@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Draggable from "vuedraggable";
-import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { LinkSection } from "hangar-api";
 import { useVModel } from "@vueuse/core";
 import InputText from "~/lib/components/ui/InputText.vue";
@@ -14,13 +14,14 @@ import { useBackendData } from "~/store/backendData";
 const props = defineProps<{ modelValue: LinkSection[] }>();
 const emit = defineEmits(["update:modelValue"]);
 const sections = useVModel(props, "modelValue", emit);
+const i18n = useI18n();
 
 function addSection() {
   let nextId = Math.max(...sections.value.map((l) => l.id)) + 1;
   if (nextId === -Infinity) {
     nextId = 0;
   }
-  sections.value.push({ id: nextId, type: "sidebar", title: "", links: [] });
+  sections.value.push({ id: nextId, type: "top", title: "", links: [] });
 }
 
 function removeSection(index: number) {
@@ -35,11 +36,19 @@ function removeSection(index: number) {
         <Card alternate-background class="mb-2">
           <div class="flex items-center gap-2 mb-2">
             <IconMdiMenu class="handle flex-shrink-0 cursor-grab" />
-
-            <InputSelect v-model="section.type" :values="['top', 'sidebar']" label="Type" :rules="[required()]" />
+            <InputSelect
+              v-model="section.type"
+              :values="[
+                { value: 'top', text: i18n.t('project.settings.links.top') },
+                { value: 'sidebar', text: i18n.t('project.settings.links.sidebar') },
+              ]"
+              :label="i18n.t('project.settings.links.typeField')"
+              :rules="[required()]"
+            />
             <InputText
+              v-if="section.type !== 'top'"
               v-model="section.title"
-              label="Title"
+              :label="i18n.t('project.settings.links.titleField')"
               :rules="[required(), maxLength()(useBackendData.validations.project.pageName.max), minLength()(useBackendData.validations.project.pageName.min)]"
             />
 
@@ -53,7 +62,7 @@ function removeSection(index: number) {
       </li>
     </template>
     <template #footer>
-      <Button @click="addSection">Add section</Button>
+      <Button @click="addSection">{{ i18n.t("project.settings.links.addSection") }}</Button>
     </template>
   </Draggable>
 </template>
