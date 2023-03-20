@@ -412,6 +412,7 @@
         "fileSize": "File size",
         "externalUrl": "External URL",
         "hangarProject": "Hangar Project",
+        "linkOrProject": "Link or project",
         "channel": "Channel",
         "addChannel": "Create channel",
         "unstable": "Unstable",

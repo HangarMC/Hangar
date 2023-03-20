@@ -114,37 +114,14 @@ defineExpose({ dependencies, reset });
   <Table v-if="dependencies.length !== 0">
     <thead>
       <tr>
+        <th>{{ t("version.new.form.linkOrProject") }}</th>
         <th>{{ t("general.name") }}</th>
         <th>{{ t("general.required") }}</th>
-        <th>{{ t("general.link") }}</th>
         <th v-if="!noEditing" />
       </tr>
     </thead>
     <tbody>
       <tr v-for="(dep, index) in dependencies" :key="`${platform}-${index}`">
-        <td>
-          <InputText
-            v-if="selectedTab[index] !== 'url'"
-            :model-value="dep.namespace?.slug"
-            dense
-            hide-details
-            flat
-            :label="t('general.name')"
-            :rules="[required(t('general.name'))]"
-            disabled
-          />
-          <InputText
-            v-else
-            v-model.trim="dep.name"
-            dense
-            hide-details
-            flat
-            :label="t('general.name')"
-            :rules="[required(t('general.name'))]"
-            :disabled="noEditing"
-          />
-        </td>
-        <td><InputCheckbox v-model="dep.required" :ripple="false" :disabled="noEditing" /></td>
         <td class="flex flex-wrap gap-2">
           <Tabs v-model="selectedTab[index]" :tabs="selectedUploadTabs" class="items-center -ml-2" compact @update:model-value="changeTabs($event, index)">
             <template #file>
@@ -164,7 +141,6 @@ defineExpose({ dependencies, reset });
                   dep.name = dep.namespace?.slug;
                 "
               />
-              <!-- todo rules good? -->
             </template>
             <template #url>
               <InputText
@@ -178,6 +154,11 @@ defineExpose({ dependencies, reset });
             </template>
           </Tabs>
         </td>
+        <td v-if="selectedTab[index] === 'url'">
+          <InputText v-model.trim="dep.name" dense hide-details flat :label="t('general.name')" :rules="[required(t('general.name'))]" :disabled="noEditing" />
+        </td>
+        <td v-else />
+        <td><InputCheckbox v-model="dep.required" :ripple="false" :disabled="noEditing" /></td>
         <td v-if="!noEditing">
           <Button button-type="red" @click="deleteDep(index)"><IconMdiDelete /></Button>
         </td>
