@@ -152,8 +152,8 @@ function handleAddedSub(removedVersions: string[]) {
 </script>
 
 <template>
-  <InputGroup v-model="selected" :rules="rules" :silent-errors="false">
-    <div :class="{ 'flex items-start': true, 'flex-col': col, 'gap-4': !col }">
+  <InputGroup v-model="selected" :rules="rules" :silent-errors="false" full-width>
+    <div :class="{ 'flex items-start flex-wrap': true, 'flex-col': col, 'gap-4': !col }">
       <div v-for="version in versions" :key="version.version">
         <template v-if="version.subVersions?.length !== 0">
           <ArrowSpoiler :open="open">
