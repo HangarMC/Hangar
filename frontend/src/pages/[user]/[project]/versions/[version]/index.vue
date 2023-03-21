@@ -158,13 +158,9 @@ async function restoreVersion() {
           <h3>
             <span class="inline-flex lt-md:flex-wrap">
               {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
-              <!--<span v-if="projectVersion.downloads[platform?.enumName]?.fileInfo?.sizeBytes" class="inline-flex items-center sm:ml-3">
-                <IconMdiFile class="mr-1" />
-                {{ filesize(projectVersion.downloads[platform.enumName].fileInfo.sizeBytes) }}
-              </span>-->
             </span>
           </h3>
-          <em v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy" class="text-lg ml-1">
+          <em v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy">
             {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
           </em>
         </div>
@@ -173,7 +169,7 @@ async function restoreVersion() {
           <Tooltip v-if="confirmationWarningKey" :content="i18n.t(confirmationWarningKey)">
             <IconMdiAlertCircleOutline class="text-2xl" />
           </Tooltip>
-          <DownloadButton :version="projectVersion" :project="project" :show-single-platform="false" :show-versions="false" />
+          <DownloadButton :version="projectVersion" :project="project" :show-single-platform="false" :show-versions="false" show-file-size />
         </div>
       </div>
 

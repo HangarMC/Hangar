@@ -87,9 +87,10 @@ public class VersionFactory extends HangarComponent {
     private final ProjectVersionDownloadsDAO downloadsDAO;
     private final VersionsApiDAO versionsApiDAO;
     private final FileService fileService;
+    private final JarScanningService jarScanningService;
 
     @Autowired
-    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final JobService jobService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService) {
+    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final JobService jobService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.projectVersionsDAO = projectVersionDAO;
@@ -106,6 +107,7 @@ public class VersionFactory extends HangarComponent {
         this.downloadsDAO = downloadsDAO;
         this.versionsApiDAO = versionsApiDAO;
         this.fileService = fileService;
+        this.jarScanningService = jarScanningService;
     }
 
     @Transactional
@@ -307,6 +309,14 @@ public class VersionFactory extends HangarComponent {
             // cache purging
             this.projectService.refreshHomeProjects();
             this.usersApiService.clearAuthorsCache();
+
+            final List<Platform> platformsToScan = new ArrayList<>();
+            for (final PendingVersionFile file : pendingVersion.getFiles()) {
+                if (file.fileInfo() != null) {
+                    platformsToScan.add(file.platforms().get(0));
+                }
+            }
+            this.jarScanningService.scanAsync(projectVersionTable.getVersionId(), platformsToScan);
         } catch (final HangarApiException e) {
             throw e;
         } catch (final Exception e) {

@@ -10,6 +10,7 @@ import { useBackendData } from "~/store/backendData";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import { useInternalApi } from "~/composables/useApi";
+import { formatSize } from "~/lib/composables/useFile";
 
 const i18n = useI18n();
 
@@ -28,6 +29,7 @@ const props = withDefaults(
     platform?: Platform;
     version?: DownloadableVersion;
     pinnedVersion?: PinnedVersion;
+    showFileSize?: boolean;
   }>(),
   {
     small: false,
@@ -36,6 +38,7 @@ const props = withDefaults(
     platform: undefined,
     version: undefined,
     pinnedVersion: undefined,
+    showFileSize: false,
   }
 );
 
@@ -141,6 +144,7 @@ function trackDownload(platform: Platform, version: DownloadableVersion & { id?:
         <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
         {{ useBackendData.platforms.get(p)?.name }}
         <span v-if="showVersions && version.platformDependencies" class="ml-1">({{ version.platformDependenciesFormatted[p] }})</span>
+        <span v-if="v.fileInfo?.sizeBytes" class="ml-1"> ({{ formatSize(v.fileInfo.sizeBytes) }}) </span>
       </DropdownItem>
     </DropdownButton>
 

@@ -47,6 +47,10 @@ public class UserService extends HangarComponent {
         return this.getUserTable(userName, this.userDAO::getUserTable);
     }
 
+    public @Nullable UserTable getUserTable(final UUID uuid) {
+        return this.getUserTable(uuid, this.userDAO::getUserTable);
+    }
+
     public @Nullable UserTable getUserTable(final @Nullable Long userId) {
         return this.getUserTable(userId, this.userDAO::getUserTable);
     }

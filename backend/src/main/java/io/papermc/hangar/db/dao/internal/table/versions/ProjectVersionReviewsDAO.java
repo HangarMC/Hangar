@@ -18,7 +18,7 @@ public interface ProjectVersionReviewsDAO {
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO project_version_reviews (created_at, version_id, user_id) VALUES (:now, :versionId, :userId)")
+    @SqlUpdate("INSERT INTO project_version_reviews (created_at, version_id, user_id, ended_at) VALUES (:now, :versionId, :userId, :endedAt)")
     ProjectVersionReviewTable insert(@BindBean ProjectVersionReviewTable projectVersionReviewTable);
 
     @Timestamped

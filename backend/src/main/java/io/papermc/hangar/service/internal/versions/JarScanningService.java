@@ -21,47 +21,79 @@ import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.utils.ThreadFactoryBuilder;
 
 @Service
 public class JarScanningService {
 
+    public static final UUID JAR_SCANNER_USER = new UUID(952332837L, -376012533328L);
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(new ThreadFactoryBuilder().threadNamePrefix("Scanner").build());
     private final HangarJarScanner scanner = new HangarJarScanner();
-
     private final JarScanResultDAO dao;
     private final ProjectVersionsDAO projectVersionsDAO;
     private final ProjectVersionDownloadsDAO downloadsDAO;
     private final ProjectsDAO projectsDAO;
     private final ProjectFiles projectFiles;
     private final FileService fileService;
+    private final ReviewService reviewService;
 
-    public JarScanningService(final JarScanResultDAO dao, final ProjectVersionsDAO projectVersionsDAO, final ProjectVersionDownloadsDAO downloadsDAO, final ProjectsDAO projectsDAO, final ProjectFiles projectFiles, final FileService fileService) {
+    public JarScanningService(final JarScanResultDAO dao, final ProjectVersionsDAO projectVersionsDAO, final ProjectVersionDownloadsDAO downloadsDAO, final ProjectsDAO projectsDAO, final ProjectFiles projectFiles, final FileService fileService, final ReviewService reviewService) {
         this.dao = dao;
         this.projectVersionsDAO = projectVersionsDAO;
         this.downloadsDAO = downloadsDAO;
         this.projectsDAO = projectsDAO;
         this.projectFiles = projectFiles;
         this.fileService = fileService;
+        this.reviewService = reviewService;
     }
 
-    public void scan(final long versionId, final Platform platform) {
+    public void scanAsync(final long versionId, final Collection<Platform> platforms) {
+        EXECUTOR_SERVICE.execute(() -> {
+            Severity highestSeverity = Severity.UNKNOWN;
+            for (final Platform platform : platforms) {
+                final Severity severity = this.scan(versionId, platform);
+                if (highestSeverity.compareTo(severity) < 0) {
+                    highestSeverity = severity;
+                }
+            }
+
+            this.applyReview(highestSeverity, versionId);
+        });
+    }
+
+    @Transactional
+    void applyReview(final Severity severity, final long versionId) {
+        if (Severity.HIGH.compareTo(severity) < 0) {
+            this.reviewService.autoReview(versionId);
+        } else if (severity == Severity.HIGHEST) {
+            // TODO: state for requires changes or requires manual review
+        }
+    }
+
+    public Severity scan(final long versionId, final Platform platform) {
         final Resource resource = this.getFile(versionId, platform);
 
         final List<ScanResult> scanResults;
-        try (final InputStream inputStream = resource.getInputStream()){
+        try (final InputStream inputStream = resource.getInputStream()) {
             scanResults = this.scanner.scanJar(inputStream, resource.getFilename());
         } catch (final IOException e) {
-            return;
+            return Severity.UNKNOWN;
         }
 
         // find the highest severity
         Severity highestSeverity = Severity.UNKNOWN;
         for (final ScanResult scanResult : scanResults) {
             for (final Check.CheckResult result : scanResult.results()) {
-                if (highestSeverity.compareTo(result.severity()) > 0) {
+                if (highestSeverity.compareTo(result.severity()) < 0) {
                     highestSeverity = result.severity();
                 }
             }
@@ -75,6 +107,7 @@ public class JarScanningService {
         }
 
         this.dao.save(new JarScanResultTable(versionId, platform, highestSeverity.name(), new JSONB(formattedResults)));
+        return highestSeverity;
     }
 
     private Resource getFile(final long versionId, final Platform platform) {
