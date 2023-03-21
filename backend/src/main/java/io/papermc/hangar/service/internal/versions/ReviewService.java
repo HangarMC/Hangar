@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,10 +52,10 @@ public class ReviewService extends HangarComponent {
         this.projectVersionVisibilityService = projectVersionVisibilityService;
         this.notificationService = notificationService;
         this.userService = userService;
-        this.initJarScannerUser();
     }
 
-    private void initJarScannerUser() {
+    @EventListener(ApplicationReadyEvent.class)
+    public void initJarScannerUser() {
         if (this.userService.getUserTable(JarScanningService.JAR_SCANNER_USER) != null) {
             return;
         }
