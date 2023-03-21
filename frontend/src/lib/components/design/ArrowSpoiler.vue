@@ -27,18 +27,15 @@ summary::marker {
 }
 
 summary::after {
-  content: "🢒";
+  content: "▶";
   position: absolute;
-  font-size: 2em;
-  font-weight: bold;
   margin: auto;
-  bottom: -9px;
   right: 0;
   transition: all 0.5s;
 }
 
 details[open] summary::after {
-  transform: translate(2px, 5px) rotate(90deg);
+  transform: rotate(90deg);
 }
 
 details {
