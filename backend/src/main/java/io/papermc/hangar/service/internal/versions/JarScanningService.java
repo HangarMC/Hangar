@@ -50,7 +50,7 @@ public class JarScanningService {
     public void scan(final long versionId, final Platform platform) {
         final Resource resource = this.getFile(versionId, platform);
 
-        List<ScanResult> scanResults = null;
+        final List<ScanResult> scanResults;
         try (final InputStream inputStream = resource.getInputStream()){
             scanResults = this.scanner.scanJar(inputStream, resource.getFilename());
         } catch (final IOException e) {

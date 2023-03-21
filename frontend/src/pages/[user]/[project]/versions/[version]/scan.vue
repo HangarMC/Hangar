@@ -30,7 +30,7 @@ async function scan() {
   for (const platform of props.versionPlatforms) {
     await useInternalApi(`jarscanning/scan/${platform}/${props.version.id}`, "POST");
   }
-  await useNotificationStore.success("Scheduled scan");
+  await useNotificationStore().success("Scheduled scan");
 }
 
 useHead(useSeo("Scan | " + props.project.name, props.project.description, route, props.project.avatarUrl));
