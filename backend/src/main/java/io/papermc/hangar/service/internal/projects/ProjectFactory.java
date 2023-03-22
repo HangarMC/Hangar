@@ -102,10 +102,10 @@ public class ProjectFactory extends HangarComponent {
     public String renameProject(final String author, final String slug, final String newName, final boolean skipNameCheck) {
         final String compactNewName = StringUtils.compact(newName);
         final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
-        final String oldName = projectTable.getName();
-        final String oldSlug = projectTable.getSlug();
         this.checkProjectAvailability(projectTable.getOwnerId(), compactNewName, skipNameCheck);
 
+        final String oldName = projectTable.getName();
+        final String oldSlug = projectTable.getSlug();
         final String newSlug = StringUtils.slugify(compactNewName);
         projectTable.setName(compactNewName);
         projectTable.setSlug(newSlug);

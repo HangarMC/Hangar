@@ -132,7 +132,9 @@ public class HangarUserController extends HangarComponent {
         this.actionLogger.user(LogAction.USER_TAGLINE_CHANGED.create(UserContext.of(userTable.getId()), userTable.getTagline(), oldTagline));
     }
 
+    // @el(userName: String)
     @Unlocked
+    @CurrentUser("#userName")
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
     @PostMapping("/users/{userName}/settings/resetTagline")
@@ -150,7 +152,9 @@ public class HangarUserController extends HangarComponent {
         this.actionLogger.user(LogAction.USER_TAGLINE_CHANGED.create(UserContext.of(userTable.getId()), "", oldTagline));
     }
 
+    // @el(userName: String)
     @Unlocked
+    @CurrentUser("#userName")
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 5, refillTokens = 2)
     @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)

@@ -213,7 +213,12 @@ public class ProjectService extends HangarComponent {
     }
 
     @Transactional
-    public void saveSponsors(final String author, final String slug, final String content) {
+    public void saveSponsors(final String author, final String slug, final @Nullable String content) {
+        final String trimmedContent = content != null ? content.trim() : "";
+        if (trimmedContent.length() > this.config.projects.maxSponsorsLen()) {
+            throw new HangarApiException("page.new.error.maxLength");
+        }
+
         final ProjectTable projectTable = this.getProjectTable(author, slug);
         projectTable.setSponsors(content);
         this.projectsDAO.update(projectTable);
