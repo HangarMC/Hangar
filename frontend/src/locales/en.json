@@ -478,7 +478,8 @@
           "noName": "Must have a channel name specified",
           "noColor": "Must have a channel color specified"
         }
-      }
+      },
+      "gradle-plugin-info": "Did you know? You can upload a new version to hangar right from your IDE/CI using the"
     },
     "edit": {
       "platformVersions": "Edit Platform Versions: {0}",

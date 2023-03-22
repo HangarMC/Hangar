@@ -32,6 +32,8 @@ import { Step } from "~/lib/types/components/design/Steps";
 import { Tab } from "~/lib/types/components/design/Tabs";
 import InputGroup from "~/lib/components/ui/InputGroup.vue";
 import { useNotificationStore } from "~/lib/store/notification";
+import Alert from "~/lib/components/design/Alert.vue";
+import Link from "~/lib/components/design/Link.vue";
 
 definePageMeta({
   projectPermsRequired: ["CREATE_VERSION"],
@@ -273,149 +275,154 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
 </script>
 
 <template>
-  <Steps v-model="selectedStep" :steps="steps" button-lang-key="version.new.steps.">
-    <template #artifact>
-      <p class="mb-4">{{ t("version.new.form.artifactTitle") }}</p>
-      <div class="flex mb-8 items-center">
-        <div class="basis-full md:basis-4/12">
-          <InputSelect
-            v-model="selectedChannel"
-            :values="channels"
-            item-text="name"
-            item-value="name"
-            :label="t('version.new.form.channel')"
-            :rules="[required()]"
-          />
+  <div>
+    <Steps v-model="selectedStep" :steps="steps" button-lang-key="version.new.steps.">
+      <template #artifact>
+        <p class="mb-4">{{ t("version.new.form.artifactTitle") }}</p>
+        <div class="flex mb-8 items-center">
+          <div class="basis-full md:basis-4/12">
+            <InputSelect
+              v-model="selectedChannel"
+              :values="channels"
+              item-text="name"
+              item-value="name"
+              :label="t('version.new.form.channel')"
+              :rules="[required()]"
+            />
+          </div>
+          <div class="basis-full md:(basis-4/12) ml-2">
+            <ChannelModal :project-id="project.id" @create="addChannel">
+              <template #activator="{ on }">
+                <Button class="basis-4/12" size="medium" v-on="on">
+                  <IconMdiPlus />
+                  {{ t("version.new.form.addChannel") }}
+                </Button>
+              </template>
+            </ChannelModal>
+          </div>
         </div>
-        <div class="basis-full md:(basis-4/12) ml-2">
-          <ChannelModal :project-id="project.id" @create="addChannel">
-            <template #activator="{ on }">
-              <Button class="basis-4/12" size="medium" v-on="on">
-                <IconMdiPlus />
-                {{ t("version.new.form.addChannel") }}
-              </Button>
-            </template>
-          </ChannelModal>
-        </div>
-      </div>
 
-      <div v-for="(platformFile, idx) in platformFiles" :key="idx" class="mb-6">
-        <div class="space-x-2 inline-flex items-center">
-          <span class="text-xl">{{ t("version.new.form.artifactNumber", [idx + 1]) }}</span>
-          <Button v-if="platformFiles.length !== 1" button-type="red" @click="removePlatformFile(idx)"><IconMdiDelete /></Button>
-        </div>
-        <div class="items-center">
-          <Tabs v-model="platformFile.selectedTab" :tabs="selectedUploadTabs" :vertical="false" class="max-w-150">
-            <template #file>
-              <InputFile v-model="platformFile.file" accept=".jar,.zip" :rules="fileRules(platformFile)" />
-            </template>
-            <template #url>
-              <InputText v-model="platformFile.url" :label="t('version.new.form.externalUrl')" :rules="artifactURLRules(platformFile)" />
-            </template>
-          </Tabs>
-          <div class="mt-4">
-            <InputGroup v-model="platformFile.platforms" label="Platforms" :rules="platformRules" :silent-errors="false">
-              <div v-for="platform in platforms" :key="platform.name">
-                <InputCheckbox
-                  :model-value="platformFile.platforms.includes(platform.enumName)"
-                  :label="platform.name"
-                  @update:model-value="togglePlatform(platformFile, platform.enumName)"
-                >
-                  <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
-                </InputCheckbox>
-              </div>
-            </InputGroup>
+        <div v-for="(platformFile, idx) in platformFiles" :key="idx" class="mb-6">
+          <div class="space-x-2 inline-flex items-center">
+            <span class="text-xl">{{ t("version.new.form.artifactNumber", [idx + 1]) }}</span>
+            <Button v-if="platformFiles.length !== 1" button-type="red" @click="removePlatformFile(idx)"><IconMdiDelete /></Button>
           </div>
-        </div>
-      </div>
-      <Button :disabled="useBackendData.platforms.size !== 0 && platformFiles.length >= useBackendData.platforms.size" @click="addPlatformFile()">
-        <IconMdiPlus /> Add file/url for another platform
-      </Button>
-    </template>
-    <template #basic>
-      <p class="mb-4">{{ i18n.t("version.new.form.versionDescription") }}</p>
-      <div class="flex flex-wrap mt-2 md:-space-x-2 lt-md:space-y-2">
-        <!-- TODO validate version string against existing versions - now super easy! -->
-        <div v-if="pendingVersion" class="basis-full md:basis-4/12 items-center">
-          <InputText
-            v-model="pendingVersion.versionString"
-            :label="t('version.new.form.versionString')"
-            :rules="versionRules"
-            :maxlength="useBackendData.validations.version.max"
-            counter
-          />
-        </div>
-      </div>
-
-      <p class="mt-8 text-xl">{{ t("version.new.form.addedArtifacts") }}</p>
-      <div v-for="(pendingFile, idx) in pendingVersion?.files" :key="idx" class="mb-2">
-        <div class="flex flex-wrap items-center mt-4 gap-2">
-          <div v-if="pendingFile.fileInfo" class="basis-full lt-md:mt-4 md:basis-4/12">
-            <InputText :model-value="pendingFile.fileInfo.name" :label="t('version.new.form.fileName')" disabled />
-          </div>
-          <div v-if="pendingFile.fileInfo" class="basis-full lt-md:mt-4 md:(basis-2/12)">
-            <InputText :model-value="String(formatSize(pendingFile.fileInfo.sizeBytes))" :label="t('version.new.form.fileSize')" disabled />
-          </div>
-          <div v-else class="basis-full lt-md:mt-4 md:basis-6/12">
-            <InputText v-model="pendingFile.externalUrl" :label="t('version.new.form.externalUrl')" disabled />
-          </div>
-          <div class="ml-2 flex flex-wrap items-center">
-            <div v-for="platform in pendingFile.platforms" :key="platform">
-              <PlatformLogo :platform="platform" :size="30" class="mr-1" />
+          <div class="items-center">
+            <Tabs v-model="platformFile.selectedTab" :tabs="selectedUploadTabs" :vertical="false" class="max-w-150">
+              <template #file>
+                <InputFile v-model="platformFile.file" accept=".jar,.zip" :rules="fileRules(platformFile)" />
+              </template>
+              <template #url>
+                <InputText v-model="platformFile.url" :label="t('version.new.form.externalUrl')" :rules="artifactURLRules(platformFile)" />
+              </template>
+            </Tabs>
+            <div class="mt-4">
+              <InputGroup v-model="platformFile.platforms" label="Platforms" :rules="platformRules" :silent-errors="false">
+                <div v-for="platform in platforms" :key="platform.name">
+                  <InputCheckbox
+                    :model-value="platformFile.platforms.includes(platform.enumName)"
+                    :label="platform.name"
+                    @update:model-value="togglePlatform(platformFile, platform.enumName)"
+                  >
+                    <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
+                  </InputCheckbox>
+                </div>
+              </InputGroup>
             </div>
           </div>
         </div>
-      </div>
-    </template>
-    <template #dependencies>
-      <p class="mb-4">{{ i18n.t("version.new.form.platformVersionsDescription") }}</p>
-      <h2 class="text-xl mt-2 mb-2">{{ t("version.new.form.platformVersions") }}</h2>
-      <div class="flex flex-wrap space-y-5 mb-8">
-        <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
-          <span class="text-lg inline-flex items-center"><PlatformLogo :platform="platform.enumName" :size="25" class="mr-1" /> {{ platform.name }}</span>
-          <div class="ml-1">
-            <VersionSelector
-              v-if="pendingVersion"
-              v-model="pendingVersion.platformDependencies[platform.enumName]"
-              :versions="platform.possibleVersions"
-              :rules="platformVersionRules"
-              open
+        <Button :disabled="useBackendData.platforms.size !== 0 && platformFiles.length >= useBackendData.platforms.size" @click="addPlatformFile()">
+          <IconMdiPlus /> Add file/url for another platform
+        </Button>
+      </template>
+      <template #basic>
+        <p class="mb-4">{{ i18n.t("version.new.form.versionDescription") }}</p>
+        <div class="flex flex-wrap mt-2 md:-space-x-2 lt-md:space-y-2">
+          <!-- TODO validate version string against existing versions - now super easy! -->
+          <div v-if="pendingVersion" class="basis-full md:basis-4/12 items-center">
+            <InputText
+              v-model="pendingVersion.versionString"
+              :label="t('version.new.form.versionString')"
+              :rules="versionRules"
+              :maxlength="useBackendData.validations.version.max"
+              counter
             />
           </div>
         </div>
-      </div>
 
-      <h2 class="text-xl mb-3">{{ t("version.new.form.dependencies") }}</h2>
-      <div class="flex flex-wrap space-y-7">
-        <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
-          <span class="text-lg inline-flex items-center"><PlatformLogo :platform="platform.enumName" :size="25" class="mr-1" /> {{ platform.name }}</span>
-          <DependencyTable
-            v-if="pendingVersion"
-            ref="dependencyTables"
-            :key="`${platform.name}-deps-table`"
-            :platform="platform.enumName"
-            :version="pendingVersion"
-          />
+        <p class="mt-8 text-xl">{{ t("version.new.form.addedArtifacts") }}</p>
+        <div v-for="(pendingFile, idx) in pendingVersion?.files" :key="idx" class="mb-2">
+          <div class="flex flex-wrap items-center mt-4 gap-2">
+            <div v-if="pendingFile.fileInfo" class="basis-full lt-md:mt-4 md:basis-4/12">
+              <InputText :model-value="pendingFile.fileInfo.name" :label="t('version.new.form.fileName')" disabled />
+            </div>
+            <div v-if="pendingFile.fileInfo" class="basis-full lt-md:mt-4 md:(basis-2/12)">
+              <InputText :model-value="String(formatSize(pendingFile.fileInfo.sizeBytes))" :label="t('version.new.form.fileSize')" disabled />
+            </div>
+            <div v-else class="basis-full lt-md:mt-4 md:basis-6/12">
+              <InputText v-model="pendingFile.externalUrl" :label="t('version.new.form.externalUrl')" disabled />
+            </div>
+            <div class="ml-2 flex flex-wrap items-center">
+              <div v-for="platform in pendingFile.platforms" :key="platform">
+                <PlatformLogo :platform="platform" :size="30" class="mr-1" />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </template>
-    <template #changelog>
-      <h2 class="text-xl mt-2">{{ t("version.new.form.changelogTitle") }}</h2>
-      <ClientOnly>
-        <MarkdownEditor
-          ref="descriptionEditor"
-          :title="t('version.new.form.release.bulletin')"
-          :raw="descriptionToLoad"
-          editing
-          no-padding-top
-          :deletable="false"
-          :cancellable="false"
-          :saveable="false"
-          class="mt-4"
-          max-height="250px"
-          :rules="changelogRules"
-        />
-      </ClientOnly>
-    </template>
-  </Steps>
+      </template>
+      <template #dependencies>
+        <p class="mb-4">{{ i18n.t("version.new.form.platformVersionsDescription") }}</p>
+        <h2 class="text-xl mt-2 mb-2">{{ t("version.new.form.platformVersions") }}</h2>
+        <div class="flex flex-wrap space-y-5 mb-8">
+          <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
+            <span class="text-lg inline-flex items-center"><PlatformLogo :platform="platform.enumName" :size="25" class="mr-1" /> {{ platform.name }}</span>
+            <div class="ml-1">
+              <VersionSelector
+                v-if="pendingVersion"
+                v-model="pendingVersion.platformDependencies[platform.enumName]"
+                :versions="platform.possibleVersions"
+                :rules="platformVersionRules"
+                open
+              />
+            </div>
+          </div>
+        </div>
+
+        <h2 class="text-xl mb-3">{{ t("version.new.form.dependencies") }}</h2>
+        <div class="flex flex-wrap space-y-7">
+          <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
+            <span class="text-lg inline-flex items-center"><PlatformLogo :platform="platform.enumName" :size="25" class="mr-1" /> {{ platform.name }}</span>
+            <DependencyTable
+              v-if="pendingVersion"
+              ref="dependencyTables"
+              :key="`${platform.name}-deps-table`"
+              :platform="platform.enumName"
+              :version="pendingVersion"
+            />
+          </div>
+        </div>
+      </template>
+      <template #changelog>
+        <h2 class="text-xl mt-2">{{ t("version.new.form.changelogTitle") }}</h2>
+        <ClientOnly>
+          <MarkdownEditor
+            ref="descriptionEditor"
+            :title="t('version.new.form.release.bulletin')"
+            :raw="descriptionToLoad"
+            editing
+            no-padding-top
+            :deletable="false"
+            :cancellable="false"
+            :saveable="false"
+            class="mt-4"
+            max-height="250px"
+            :rules="changelogRules"
+          />
+        </ClientOnly>
+      </template>
+    </Steps>
+    <Alert type="neutral" class="mt-4">
+      {{ t("version.new.gradle-plugin-info") }}&nbsp; <Link href="https://github.com/HangarMC/hangar-publish-plugin">hangar-publish-plugin</Link>!
+    </Alert>
+  </div>
 </template>
