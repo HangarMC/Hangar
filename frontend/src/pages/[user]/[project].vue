@@ -18,6 +18,8 @@ defineProps({
   },
 });
 
+console.log("[project].vue");
+
 const i18n = useI18n();
 const route = useRoute();
 const project = await useProject(route.params.user as string, route.params.project as string);

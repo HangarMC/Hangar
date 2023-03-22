@@ -10,6 +10,7 @@ import Delayed from "~/lib/components/design/Delayed.vue";
 
 const i18n = useI18n();
 const route = useRoute();
+console.log("[user].vue");
 const user = await useUser(route.params.user as string);
 let organization: Ref<Organization | null> | undefined;
 if (!user || !user.value) {

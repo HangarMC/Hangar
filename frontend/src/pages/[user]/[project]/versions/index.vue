@@ -32,6 +32,7 @@ const filter = reactive({
     platforms: true,
   },
 });
+console.log("[project]/versions/index.vue");
 const props = defineProps<{
   project: HangarProject;
 }>();

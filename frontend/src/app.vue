@@ -3,16 +3,18 @@ import "./lib/styles/main.css";
 // eslint-disable-next-line import/no-unresolved
 import "uno.css";
 import { useHead } from "@vueuse/head";
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import { RouteLocationNormalized } from "vue-router";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import { settingsLog } from "~/lib/composables/useLog";
 import { useAuthStore } from "~/store/auth";
-import { nextTick, onErrorCaptured, transformAxiosError, useRoute, useRuntimeConfig, watch } from "#imports";
+import { onErrorCaptured, transformAxiosError, useRoute, useRouter, useRuntimeConfig, watch } from "#imports";
 
 // popper needs this?
 import "regenerator-runtime/runtime";
 
 const route = useRoute();
+console.log("app.vue");
 
 // keep in sync with error.vue, cause reasons
 const runtimeConfig = useRuntimeConfig();
@@ -45,19 +47,28 @@ onErrorCaptured((err) => {
   console.log("captured", transformAxiosError(err)); // TODO error handling
 });
 
-const pageKey = computed(() => {
-  if (route?.params?.user && route?.params?.project) {
-    return route.params.user + "-" + route.params.project;
-  } else if (route?.params?.user) {
-    return route.params.user;
-  } else {
-    return route.path;
-  }
+const pageKey = ref("");
+const router = useRouter();
+router.beforeEach((route) => {
+  updatePageKey(route);
 });
+updatePageKey(route);
+function updatePageKey(route: RouteLocationNormalized) {
+  console.log("update page key", pageKey.value);
+  if (route?.params?.user && route?.params?.project) {
+    pageKey.value = route.params.user + "-" + route.params.project;
+  } else if (route?.params?.user) {
+    pageKey.value = route.params.user + "";
+  } else {
+    pageKey.value = route.path;
+  }
+  console.log("new key", pageKey.value);
+}
 </script>
 
 <template>
   <NuxtLayout>
-    <NuxtPage :page-key="pageKey" />
+    {{ pageKey }}
+    <NuxtPage />
   </NuxtLayout>
 </template>
