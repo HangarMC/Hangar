@@ -33,6 +33,7 @@ public class PlatformService extends HangarComponent {
         this.platformVersionDAO = platformVersionDAO;
     }
 
+    @Cacheable(CacheConfig.PLATFORMS_FULL)
     public List<String> getFullVersionsForPlatform(final Platform platform) {
         return this.platformVersionDAO.getVersionsForPlatform(platform);
     }

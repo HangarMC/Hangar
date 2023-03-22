@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
+import java.util.Set;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +34,7 @@ public interface IPermissionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired")
     })
     @GetMapping("/permissions/hasAll")
-    ResponseEntity<PermissionCheck> hasAllPermissions(@Parameter(description = "The permissions to check", required = true) @RequestParam List<NamedPermission> permissions,
+    ResponseEntity<PermissionCheck> hasAllPermissions(@Parameter(description = "The permissions to check", required = true) @RequestParam Set<NamedPermission> permissions,
                                                       @Parameter(description = "The owner of the project to check permissions in. Must not be used together with `organizationName`") @RequestParam(required = false) String author,
                                                       @Parameter(description = "The project slug of the project to check permissions in. Must not be used together with `organizationName`") @RequestParam(required = false) String slug,
                                                       @Parameter(description = "The organization to check permissions in. Must not be used together with `projectOwner` and `projectSlug`") @RequestParam(required = false) String organization
@@ -53,7 +53,7 @@ public interface IPermissionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired")
     })
     @GetMapping("/permissions/hasAny")
-    ResponseEntity<PermissionCheck> hasAny(@Parameter(description = "The permissions to check", required = true) @RequestParam List<NamedPermission> permissions,
+    ResponseEntity<PermissionCheck> hasAny(@Parameter(description = "The permissions to check", required = true) @RequestParam Set<NamedPermission> permissions,
                                            @Parameter(description = "The owner of the project to check permissions in. Must not be used together with `organizationName") @RequestParam(required = false) String author,
                                            @Parameter(description = "The slug of the project to check permissions in. Must not be used together with `organizationName`") @RequestParam(required = false) String slug,
                                            @Parameter(description = "The organization to check permissions in. Must not be used together with `projectOwner` and `projectSlug`") @RequestParam(required = false) String organization

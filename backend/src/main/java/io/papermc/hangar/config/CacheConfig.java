@@ -21,6 +21,7 @@ public class CacheConfig {
     public static final String AUTHORS = "authors-cache";
     public static final String STAFF = "staff-cache";
     public static final String PLATFORMS = "platforms-cache";
+    public static final String PLATFORMS_FULL = "platforms-full-cache";
     public static final String PROJECTS = "projects-cache";
     public static final String CATEGORIES = "categories-cache";
     public static final String PERMISSIONS = "permissions-cache";

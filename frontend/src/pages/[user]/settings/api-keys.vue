@@ -114,7 +114,7 @@ function copy(event: any) {
       </template>
       <div class="flex items-center">
         <div class="flex-grow mr-2">
-          <InputText v-model="name" :label="i18n.t('apiKeys.name')" :rules="[required(), minLength()(5), maxLength()(255), validApiKeyName()(user.name)]" />
+          <InputText v-model="name" :label="i18n.t('apiKeys.name')" :rules="[required(), minLength()(5), maxLength()(36), validApiKeyName()(user.name)]" />
         </div>
         <Button size="medium" class="w-max" :disabled="v.$invalid || loadingCreate || v.$pending || selectedPerms.length === 0" @click="create">
           {{ i18n.t("apiKeys.createKey") }}

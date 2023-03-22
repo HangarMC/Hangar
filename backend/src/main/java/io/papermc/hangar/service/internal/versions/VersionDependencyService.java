@@ -106,15 +106,20 @@ public class VersionDependencyService extends HangarComponent {
     @Transactional
     @CacheEvict(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p1") // versionId is key
     public void updateVersionPlatformVersions(final long projectId, final long versionId, final UpdatePlatformVersions form) {
+        if (form.versions().size() > this.platformService.getFullVersionsForPlatform(form.platform()).size()) {
+            throw new HangarApiException("Too many platform versions");
+        }
+
         final Map<String, ProjectVersionPlatformDependencyTable> platformDependencyTables = this.projectVersionPlatformDependenciesDAO.getPlatformVersions(versionId, form.platform());
         final Map<String, ProjectVersionPlatformDependencyTable> toBeRemoved = new HashMap<>();
         final Map<String, ProjectVersionPlatformDependencyTable> toBeAdded = new HashMap<>();
-        platformDependencyTables.forEach((version, table) -> {
-            if (!form.versions().contains(version)) {
-                toBeRemoved.put(version, table);
+        for (final Map.Entry<String, ProjectVersionPlatformDependencyTable> entry : platformDependencyTables.entrySet()) {
+            final String key = entry.getKey();
+            if (!form.versions().contains(key)) {
+                toBeRemoved.put(key, entry.getValue());
             }
-        });
-        form.versions().forEach(version -> {
+        }
+        for (final String version : form.versions()) {
             if (!platformDependencyTables.containsKey(version)) {
                 final PlatformVersionTable platformVersionTable = this.platformService.getByPlatformAndVersion(form.platform(), version);
                 if (platformVersionTable == null) {
@@ -122,7 +127,7 @@ public class VersionDependencyService extends HangarComponent {
                 }
                 toBeAdded.put(version, new ProjectVersionPlatformDependencyTable(versionId, platformVersionTable.getId()));
             }
-        });
+        }
 
         if (!toBeAdded.isEmpty()) {
             this.projectVersionPlatformDependenciesDAO.insertAll(toBeAdded.values());

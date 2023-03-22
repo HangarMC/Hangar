@@ -11,7 +11,9 @@ import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.PermissionService;
-import java.util.List;
+import jakarta.validation.constraints.Size;
+import java.util.Collection;
+import java.util.Set;
 import java.util.function.BiPredicate;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -33,12 +35,12 @@ public class PermissionsController extends HangarComponent implements IPermissio
     }
 
     @Override
-    public ResponseEntity<PermissionCheck> hasAllPermissions(final List<NamedPermission> permissions, final String author, final String slug, final String organization) {
+    public ResponseEntity<PermissionCheck> hasAllPermissions(final @Size(max = 50) Set<NamedPermission> permissions, final String author, final String slug, final String organization) {
         return this.has(permissions, author, slug, organization, (namedPerms, perm) -> namedPerms.stream().allMatch(p -> perm.has(p.getPermission())));
     }
 
     @Override
-    public ResponseEntity<PermissionCheck> hasAny(final List<NamedPermission> permissions, final String author, final String slug, final String organization) {
+    public ResponseEntity<PermissionCheck> hasAny(final Set<NamedPermission> permissions, final String author, final String slug, final String organization) {
         return this.has(permissions, author, slug, organization, (namedPerms, perm) -> namedPerms.stream().anyMatch(p -> perm.has(p.getPermission())));
     }
 
@@ -66,7 +68,7 @@ public class PermissionsController extends HangarComponent implements IPermissio
         }
     }
 
-    private ResponseEntity<PermissionCheck> has(final List<NamedPermission> perms, final String author, final String slug, final String organization, final BiPredicate<List<NamedPermission>, Permission> check) {
+    private ResponseEntity<PermissionCheck> has(final Collection<NamedPermission> perms, final String author, final String slug, final String organization, final BiPredicate<Collection<NamedPermission>, Permission> check) {
         final Pair<PermissionType, Permission> scopedPerms = this.getPermissionsInScope(author, slug, organization);
         return ResponseEntity.ok(new PermissionCheck(scopedPerms.getLeft(), check.test(perms, scopedPerms.getRight())));
     }
