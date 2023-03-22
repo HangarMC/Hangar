@@ -78,7 +78,7 @@ public class ChannelController extends HangarComponent {
     @PostMapping(path = "/{projectId}/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createChannel(@PathVariable final long projectId, @RequestBody final @Valid ChannelForm channelForm) {
         final Set<ChannelFlag> flags = channelForm.getFlags();
-        flags.retainAll(flags.stream().filter(ChannelFlag::isEditable).collect(Collectors.toSet()));
+        flags.retainAll(ChannelFlag.EDITABLE);
         this.channelService.createProjectChannel(channelForm.getName(), channelForm.getColor(), projectId, flags);
     }
 

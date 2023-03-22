@@ -169,14 +169,16 @@ public class OrganizationController extends HangarComponent {
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#orgName}")
     @PostMapping(path = "/org/{orgName}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveTagline(@PathVariable final String orgName, @RequestBody @Valid final StringContent content) {
+        if (content.getContent().length() > this.config.user.maxTaglineLen()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "author.error.invalidTagline");
+        }
+
         final UserTable userTable = this.userService.getUserTable(orgName);
         final OrganizationTable organizationTable = this.organizationService.getOrganizationTable(orgName);
         if (userTable == null || organizationTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        if (content.getContent().length() > this.config.user.maxTaglineLen()) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "author.error.invalidTagline");
-        }
+
         final String oldTagline = userTable.getTagline() == null ? "" : userTable.getTagline();
         userTable.setTagline(content.getContent());
         this.userService.updateUser(userTable);

@@ -130,7 +130,7 @@ public class ChannelService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.cannotDelete");
         }
         if (hangarChannel.getVersionCount() != 0 || this.getProjectChannels(projectId).size() == 1) {
-            // Cannot delete channels with versions or if its the last channel
+            // Cannot delete channels with versions or if it's the last channel
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.cannotDelete");
         }
         this.projectChannelsDAO.delete(hangarChannel);

@@ -117,13 +117,15 @@ public class HangarUserController extends HangarComponent {
     @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
     @PostMapping(path = "/users/{userName}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveTagline(@PathVariable final String userName, @RequestBody @Valid final StringContent content) {
+        if (content.getContent().length() > this.config.user.maxTaglineLen()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "author.error.invalidTagline");
+        }
+
         final UserTable userTable = this.userService.getUserTable(userName);
         if (userTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        if (content.getContent().length() > this.config.user.maxTaglineLen()) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "author.error.invalidTagline");
-        }
+
         final String oldTagline = userTable.getTagline() == null ? "" : userTable.getTagline();
         userTable.setTagline(content.getContent());
         this.userService.updateUser(userTable);
@@ -159,7 +161,7 @@ public class HangarUserController extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         // if nothing changed, then nothing changed!
-        if (Objects.equals(userTable.getLanguage(),settings.getLanguage()) && Objects.equals(userTable.getTheme(), settings.getTheme())) {
+        if (Objects.equals(userTable.getLanguage(), settings.getLanguage()) && Objects.equals(userTable.getTheme(), settings.getTheme())) {
             setThemeCookie(settings, response);
             return;
         }
@@ -264,9 +266,10 @@ public class HangarUserController extends HangarComponent {
 
     private <RT extends ExtendedRoleTable<? extends Role<RT>, ?>, RS extends RoleService<RT, ?, ?>, IS extends InviteService<?, ?, RT, ?>> void updateRole(final RS roleService, final IS inviteService, final long id, final InviteStatus status) {
         final RT table = roleService.getRole(id);
-        if (table == null) {
+        if (table == null || table.getUserId() != this.getHangarPrincipal().getId()) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
+
         switch (status) {
             case DECLINE -> inviteService.declineInvite(table);
             case ACCEPT -> inviteService.acceptInvite(table);

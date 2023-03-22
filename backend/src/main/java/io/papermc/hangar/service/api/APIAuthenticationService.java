@@ -30,7 +30,7 @@ public class APIAuthenticationService extends HangarComponent {
     }
 
     public ApiSession createJWTForApiKey(final String apiKey) {
-        if (apiKey.length() != API_KEY_LENGTH || apiKey.charAt(UUID_LENGTH + 1) != '.') {
+        if (apiKey.length() != API_KEY_LENGTH || apiKey.charAt(UUID_LENGTH) != '.') {
             throw new HangarApiException("Badly formatted API Key");
         }
 
