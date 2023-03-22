@@ -139,6 +139,10 @@ public class ProjectFactory extends HangarComponent {
 
     @Transactional
     public void softDelete(final ProjectTable projectTable, final String comment) {
+        if (comment.length() > 300) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "Comment is too long");
+        }
+
         if (projectTable.getVisibility() == Visibility.NEW) {
             this.hardDelete(projectTable, comment);
         } else if (projectTable.getVisibility() != Visibility.SOFTDELETE) {
@@ -165,6 +169,10 @@ public class ProjectFactory extends HangarComponent {
 
     @Transactional
     public void hardDelete(final ProjectTable projectTable, final String comment) {
+        if (comment.length() > 300) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "Comment is too long");
+        }
+
         this.actionLogger.project(LogAction.PROJECT_VISIBILITY_CHANGED.create(ProjectContext.of(projectTable.getId()), "Deleted: " + comment, projectTable.getVisibility().getTitle()));
         this.jobService.save(new DeleteDiscourseTopicJob(projectTable.getId()));
         this.projectsDAO.delete(projectTable);

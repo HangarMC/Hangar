@@ -7,6 +7,7 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
+import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.APIKeyService;
 import io.papermc.hangar.service.PermissionService;
 import java.util.List;
@@ -32,6 +33,7 @@ public class ApiKeysController extends HangarComponent implements IApiKeysContro
 
     @Override
     @ResponseBody
+    @Unlocked
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 15)
     @ResponseStatus(HttpStatus.CREATED)
     public String createKey(final CreateAPIKeyForm apiKeyForm) {

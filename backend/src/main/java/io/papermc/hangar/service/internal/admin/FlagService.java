@@ -50,6 +50,9 @@ public class FlagService extends HangarComponent {
         if (this.hasUnresolvedFlag(projectId, this.getHangarPrincipal().getId())) {
             throw new HangarApiException("project.flag.error.alreadyOpen");
         }
+        if (comment.length() > 500) {
+            throw new HangarApiException("project.flag.error.commentTooLong");
+        }
         this.projectFlagsDAO.insert(new ProjectFlagTable(projectId, this.getHangarPrincipal().getId(), reason, comment));
         this.actionLogger.project(LogAction.PROJECT_FLAGGED.create(ProjectContext.of(projectId), "Flagged by " + this.getHangarPrincipal().getName(), ""));
     }

@@ -3,6 +3,7 @@ package io.papermc.hangar.service.internal.projects;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectNotesDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectNotesDAO;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.projects.ProjectNoteTable;
 import io.papermc.hangar.model.internal.projects.HangarProjectNote;
 import java.util.List;
@@ -26,6 +27,9 @@ public class ProjectNoteService extends HangarComponent {
     }
 
     public void addNote(final long projectId, final String msg) {
+        if (msg.length() > 500) {
+            throw new HangarApiException("Note is too long");
+        }
         this.projectNotesDAO.insert(new ProjectNoteTable(projectId, msg, this.getHangarPrincipal().getId()));
     }
 }

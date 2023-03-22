@@ -12,6 +12,7 @@ import io.papermc.hangar.controller.extras.pagination.filters.log.LogSubjectFilt
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogUserFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogVersionFilter;
 import io.papermc.hangar.db.dao.internal.table.roles.RolesDAO;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.NamedPermission;
@@ -143,6 +144,10 @@ public class AdminController extends HangarComponent {
     @PermissionRequired(NamedPermission.IS_STAFF)
     @PostMapping(value = "/lock-user/{user}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void setUserLock(@PathVariable final UserTable user, @RequestParam final boolean locked, @RequestParam(required = false, defaultValue = "false") final boolean toggleProjectDeletion, @RequestBody @Valid final StringContent comment) {
+        if (comment.getContent().length() > 500) {
+            throw new HangarApiException("Comment too long");
+        }
+
         this.userService.setLocked(user, locked, comment.getContent());
         if (!toggleProjectDeletion || !this.getHangarPrincipal().isAllowedGlobal(Permission.DeleteProject)) {
             return;

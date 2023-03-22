@@ -193,7 +193,8 @@
       },
       "error": {
         "alreadyOpen": "You can only have 1 unresolved report on a project",
-        "alreadyResolved": "This report is already resolved"
+        "alreadyResolved": "This report is already resolved",
+        "commentTooLong": "Report comment is too long"
       }
     },
     "tabs": {
