@@ -7,6 +7,7 @@ import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionCh
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformVersionFilter;
 import io.papermc.hangar.model.api.PaginatedResult;
+import io.papermc.hangar.model.api.project.version.UploadedVersion;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.api.requests.RequestPagination;
@@ -50,8 +51,8 @@ public class VersionsController implements IVersionsController {
     @Override
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#author, #slug}")
-    public void uploadVersion(final String author, final String slug, final List<MultipartFile> files, final VersionUpload versionUpload) {
-        this.versionsApiService.uploadVersion(author, slug, files, versionUpload);
+    public UploadedVersion uploadVersion(final String author, final String slug, final List<MultipartFile> files, final VersionUpload versionUpload) {
+        return this.versionsApiService.uploadVersion(author, slug, files, versionUpload);
     }
 
     @Override

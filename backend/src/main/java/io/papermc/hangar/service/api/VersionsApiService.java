@@ -6,6 +6,7 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
 import io.papermc.hangar.model.api.project.Project;
+import io.papermc.hangar.model.api.project.version.UploadedVersion;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.api.requests.RequestPagination;
@@ -48,7 +49,7 @@ public class VersionsApiService extends HangarComponent {
     }
 
     @Transactional
-    public void uploadVersion(final String author, final String slug, final List<MultipartFile> files, final VersionUpload versionUpload) {
+    public UploadedVersion uploadVersion(final String author, final String slug, final List<MultipartFile> files, final VersionUpload versionUpload) {
         final Project project = this.projectsApiService.getProject(author, slug);
         if (project == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
@@ -60,6 +61,7 @@ public class VersionsApiService extends HangarComponent {
         final PendingVersion preparedPendingVersion = this.versionFactory.createPendingVersion(project.getId(), versionUpload.getFiles(), files, versionUpload.getChannel(), false);
         final PendingVersion pendingVersion = versionUpload.toPendingVersion(preparedPendingVersion.getFiles());
         this.versionFactory.publishPendingVersion(project.getId(), pendingVersion);
+        return new UploadedVersion(this.config.getBaseUrl() + "/" + project.getNamespace().toString() + "/versions/" + pendingVersion.getVersionString());
     }
 
     private void matchVersionRanges(final Map<Platform, SortedSet<String>> versions) {

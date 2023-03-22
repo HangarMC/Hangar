@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.api.v1.interfaces;
 
 import io.papermc.hangar.model.api.PaginatedResult;
+import io.papermc.hangar.model.api.project.version.UploadedVersion;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.api.requests.RequestPagination;
@@ -33,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface IVersionsController {
 
     @Operation(
-        summary ="Creates a new version",
+        summary ="Creates a new version and returns parts of its metadata",
         operationId = "uploadVersion",
         description = "Creates a new version for a project. Requires the `create_version` permission in the project or owning organization.",
         security = @SecurityRequirement(name = "HangarAuth", scopes = "create_version"),
@@ -45,7 +46,7 @@ public interface IVersionsController {
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @PostMapping(path = "/projects/{author}/{slug}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    void uploadVersion(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
+    UploadedVersion uploadVersion(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
                        @Parameter(description = "The slug of the project to return versions for") @PathVariable String slug,
                        @Parameter(description = "The version files in order of selected platforms, if any") @RequestPart(required = false) @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
                        @Parameter(description = "Version data. Note that platform versions accept version ranges, e.g. '1.16.4-1.19' and wildcards, e.g '1.19.x'") @RequestPart @Valid VersionUpload versionUpload);
