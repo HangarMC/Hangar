@@ -53,7 +53,12 @@ function isExternal(platform: Platform | undefined, version: DownloadableVersion
 }
 
 const singlePlatform = computed<Platform | undefined>(() => {
-  if (props.project?.mainChannelVersions) {
+  if (props.version) {
+    const keys = Object.keys(props.version.downloads);
+    if (keys.length === 1) {
+      return keys[0] as Platform;
+    }
+  } else if (props.project?.mainChannelVersions) {
     const keys = Object.keys(props.project.mainChannelVersions);
     if (keys.length === 1) {
       return keys[0] as Platform;
@@ -73,36 +78,56 @@ const platformDownloadLink = computed(() => downloadLink(singlePlatform.value, s
 function trackDownload(platform: Platform, version: DownloadableVersion & { id?: number; versionId: number }) {
   // hangar version has id, pinned version has versionId...
   const id = version.id || version.versionId;
-  console.debug("track", id, platform, version);
   useInternalApi(`versions/version/${id}/${platform}/track`);
 }
 </script>
 
 <template>
   <div class="flex items-center">
-    <DropdownButton v-if="pinnedVersion" :button-size="small ? 'medium' : 'large'">
-      <template #button-label>
-        <span class="items-center inline-flex">
-          <IconMdiDownloadOutline />
-          <span v-if="!small" class="ml-1">{{ i18n.t("version.page.download") }}</span>
-        </span>
-      </template>
-      <DropdownItem
-        v-for="(v, p) in pinnedVersion.platformDependenciesFormatted"
-        :key="p"
-        class="flex items-center"
-        :href="downloadLink(p, pinnedVersion)"
-        target="_blank"
-        rel="noopener noreferrer"
-        @click="trackDownload(p, pinnedVersion)"
-        @click.middle="trackDownload(p, pinnedVersion)"
-      >
-        <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
-        {{ useBackendData.platforms.get(p)?.name }}
-        <span v-if="showVersions" class="ml-1">({{ v }})</span>
-        <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" class="ml-0.5 text-sm pb-0.5" />
-      </DropdownItem>
-    </DropdownButton>
+    <div v-if="pinnedVersion">
+      <div v-if="Object.keys(props.pinnedVersion.downloads).length === 1">
+        <a
+          v-for="(v, p) in pinnedVersion.platformDependenciesFormatted"
+          :key="p"
+          class="flex items-center"
+          :href="downloadLink(p, pinnedVersion)"
+          target="_blank"
+          rel="noopener noreferrer"
+          @click="trackDownload(p, pinnedVersion)"
+          @click.middle="trackDownload(p, pinnedVersion)"
+        >
+          <Button :size="small ? 'medium' : 'large'">
+            <IconMdiDownloadOutline />
+            <span v-if="!small" class="ml-1">{{ i18n.t("version.page.download") }}</span>
+            <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" class="text-lg pb-1.75" />
+          </Button>
+        </a>
+      </div>
+
+      <DropdownButton v-else :button-size="small ? 'medium' : 'large'">
+        <template #button-label>
+          <span class="items-center inline-flex">
+            <IconMdiDownloadOutline />
+            <span v-if="!small" class="ml-1">{{ i18n.t("version.page.download") }}</span>
+          </span>
+        </template>
+        <DropdownItem
+          v-for="(v, p) in pinnedVersion.platformDependenciesFormatted"
+          :key="p"
+          class="flex items-center"
+          :href="downloadLink(p, pinnedVersion)"
+          target="_blank"
+          rel="noopener noreferrer"
+          @click="trackDownload(p, pinnedVersion)"
+          @click.middle="trackDownload(p, pinnedVersion)"
+        >
+          <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
+          {{ useBackendData.platforms.get(p)?.name }}
+          <span v-if="showVersions" class="ml-1">({{ v }})</span>
+          <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" class="ml-0.5 text-sm pb-0.5" />
+        </DropdownItem>
+      </DropdownButton>
+    </div>
 
     <a
       v-else-if="singlePlatform && singleVersion"
