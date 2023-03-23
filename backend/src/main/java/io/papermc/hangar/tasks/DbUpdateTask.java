@@ -18,7 +18,7 @@ public class DbUpdateTask {
         this.statService = statService;
     }
 
-    @Scheduled(fixedRateString = "#{@hangarConfig.updateTasks.homepage.toMillis()}")
+    @Scheduled(fixedRateString = "#{@hangarConfig.updateTasks.homepage.toMillis()}", initialDelay = 5_000)
     public void refreshHomePage() {
         this.projectService.refreshHomeProjects();
     }

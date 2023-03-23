@@ -22,38 +22,38 @@ public interface HangarProjectsDAO {
 
     @RegisterConstructorMapper(Project.class)
     @SqlQuery("SELECT p.id," +
-        "       ps.created_at," +
-        "       ps.name," +
-        "       ps.owner_name AS owner," +
-        "       ps.slug," +
-        "       p.views," +
-        "       p.downloads," +
-        "       p.recent_views," +
-        "       p.recent_downloads," +
+        "       p.created_at," +
+        "       p.name," +
+        "       p.owner_name AS owner," +
+        "       p.slug," +
+        "       hp.views," +
+        "       hp.downloads," +
+        "       hp.recent_views," +
+        "       hp.recent_downloads," +
         "       p.stars," +
         "       p.watchers," +
-        "       ps.category," +
-        "       ps.description," +
-        "       coalesce(p.last_updated, ps.created_at) AS last_updated," +
-        "       ps.visibility, " +
+        "       p.category," +
+        "       p.description," +
+        "       coalesce(p.last_updated, p.created_at) AS last_updated," +
+        "       p.visibility, " +
         "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS starred," +
         "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS watching," +
         "       exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :currentUserId AND pf.resolved IS FALSE) AS flagged," +
-        "       ps.links," +
-        "       ps.license_name," +
-        "       ps.license_type," +
-        "       ps.license_url," +
-        "       ps.keywords," +
-        "       ps.forum_sync," +
-        "       ps.donation_enabled," +
-        "       ps.donation_subject," +
-        "       ps.topic_id," +
-        "       ps.post_id," +
-        "       ps.sponsors" +
-        "  FROM home_projects p" +
-        "         JOIN projects ps ON p.id = ps.id" +
-        "         JOIN users u ON ps.owner_id = u.id" +
-        "         WHERE lower(ps.slug) = lower(:slug) AND lower(ps.owner_name) = lower(:author)")
+        "       p.links," +
+        "       p.license_name," +
+        "       p.license_type," +
+        "       p.license_url," +
+        "       p.keywords," +
+        "       p.forum_sync," +
+        "       p.donation_enabled," +
+        "       p.donation_subject," +
+        "       p.topic_id," +
+        "       p.post_id," +
+        "       p.sponsors" +
+        "  FROM home_projects hp" +
+        "         JOIN projects_extra p ON hp.id = p.id" +
+        "         JOIN users u ON p.owner_id = u.id" +
+        "         WHERE lower(p.slug) = lower(:slug) AND lower(p.owner_name) = lower(:author)")
     Pair<Long, Project> getProject(String author, String slug, Long currentUserId);
 
     @RegisterRowMapperFactory(JoinableRowMapperFactory.class)

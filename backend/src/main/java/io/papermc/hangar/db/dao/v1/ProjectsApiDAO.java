@@ -23,7 +23,7 @@ import org.springframework.stereotype.Repository;
 public interface ProjectsApiDAO {
 
     @UseStringTemplateEngine
-    @SqlQuery("SELECT hp.id," +
+    @SqlQuery("SELECT p.id," +
         "       p.created_at," +
         "       p.name," +
         "       p.owner_name \"owner\"," +
@@ -32,11 +32,11 @@ public interface ProjectsApiDAO {
         "       hp.downloads," +
         "       hp.recent_views," +
         "       hp.recent_downloads," +
-        "       hp.stars," +
-        "       hp.watchers," +
+        "       p.stars," +
+        "       p.watchers," +
         "       p.category," +
         "       p.description," +
-        "       coalesce(hp.last_updated, p.created_at) AS last_updated," +
+        "       coalesce(p.last_updated, p.created_at) AS last_updated," +
         "       p.visibility, " +
         "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred, " +
         "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching, " +
@@ -53,10 +53,10 @@ public interface ProjectsApiDAO {
         "       p.donation_subject," +
         "       p.sponsors" +
         "  FROM home_projects hp" +
-        "         JOIN projects p ON hp.id = p.id" +
+        "         JOIN projects_extra p ON hp.id = p.id" +
         "         WHERE lower(p.slug) = lower(:slug) AND" +
         "           lower(p.owner_name) = lower(:author)" +
-        "         <if(!canSeeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND p.visibility != 4)<endif>) <endif>")
+        "         <if(!canSeeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(p.project_members) AND p.visibility != 4)<endif>) <endif>")
     Project getProject(String author, String slug, @Define boolean canSeeHidden, @Define @Bind Long requesterId);
 
     @UseStringTemplateEngine
@@ -107,7 +107,7 @@ public interface ProjectsApiDAO {
     List<Project> getProjects(@Define boolean seeHidden, Long requesterId,
                               @BindPagination RequestPagination pagination, @Define String relevance);
 
-    // This query can be shorter because it doesnt need all those column values as above does, just a single column for the amount of rows to be counted
+    // This query can be shorter because it doesn't need all those column values as above does, just a single column for the amount of rows to be counted
     @UseStringTemplateEngine
     @SqlQuery("SELECT count(DISTINCT hp.id) " +
         "  FROM home_projects hp" +
