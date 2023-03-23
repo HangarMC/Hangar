@@ -47,6 +47,11 @@ function downloadLink(platform: Platform | undefined, version: DownloadableVersi
   return version.downloads[platform]?.externalUrl ? version.downloads[platform].externalUrl : version.downloads[platform].downloadUrl;
 }
 
+function isExternal(platform: Platform | undefined, version: DownloadableVersion | undefined): boolean {
+  if (!version || !platform) return false;
+  return !!version.downloads[platform]?.externalUrl;
+}
+
 const singlePlatform = computed<Platform | undefined>(() => {
   if (props.project?.mainChannelVersions) {
     const keys = Object.keys(props.project.mainChannelVersions);
@@ -65,8 +70,6 @@ const singleVersion = computed<DownloadableVersion | undefined>(() => {
 
 const platformDownloadLink = computed(() => downloadLink(singlePlatform.value, singleVersion.value));
 
-const external = computed(() => false);
-
 function trackDownload(platform: Platform, version: DownloadableVersion & { id?: number; versionId: number }) {
   // hangar version has id, pinned version has versionId...
   const id = version.id || version.versionId;
@@ -81,7 +84,7 @@ function trackDownload(platform: Platform, version: DownloadableVersion & { id?:
       <template #button-label>
         <span class="items-center inline-flex">
           <IconMdiDownloadOutline />
-          <span v-if="!small" class="ml-1">{{ external ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}</span>
+          <span v-if="!small" class="ml-1">{{ i18n.t("version.page.download") }}</span>
         </span>
       </template>
       <DropdownItem
@@ -97,6 +100,7 @@ function trackDownload(platform: Platform, version: DownloadableVersion & { id?:
         <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
         {{ useBackendData.platforms.get(p)?.name }}
         <span v-if="showVersions" class="ml-1">({{ v }})</span>
+        <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" class="ml-0.5 text-sm pb-0.5" />
       </DropdownItem>
     </DropdownButton>
 
@@ -112,7 +116,9 @@ function trackDownload(platform: Platform, version: DownloadableVersion & { id?:
         <div class="flex flex-col" :class="{ '-mb-0.5': showSinglePlatform }">
           <div class="inline-flex items-center">
             <IconMdiDownloadOutline />
-            <span v-if="!small" class="ml-1">{{ external ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}</span>
+            <span v-if="!small" class="ml-1">
+              {{ !!singleVersion.downloads[singlePlatform]?.externalUrl ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}
+            </span>
           </div>
           <div v-if="showSinglePlatform" class="inline-flex justify-center items-center font-normal text-0.75rem">
             <PlatformLogo :platform="singlePlatform" :size="15" class="mr-1 flex-shrink-0" />
@@ -145,6 +151,7 @@ function trackDownload(platform: Platform, version: DownloadableVersion & { id?:
         {{ useBackendData.platforms.get(p)?.name }}
         <span v-if="showVersions && version.platformDependencies" class="ml-1">({{ version.platformDependenciesFormatted[p] }})</span>
         <span v-if="v.fileInfo?.sizeBytes" class="ml-1"> ({{ formatSize(v.fileInfo.sizeBytes) }}) </span>
+        <IconMdiOpenInNew v-if="v.externalUrl" class="ml-0.5 text-sm pb-0.5" />
       </DropdownItem>
     </DropdownButton>
 
@@ -168,6 +175,7 @@ function trackDownload(platform: Platform, version: DownloadableVersion & { id?:
         <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
         {{ useBackendData.platforms.get(p)?.name }}
         <span v-if="v.platformDependencies && showVersions" class="ml-1">({{ v.platformDependenciesFormatted[p] }})</span>
+        <IconMdiOpenInNew v-if="v.downloads[p]?.externalUrl" class="ml-0.5 text-sm pb-0.5" />
       </DropdownItem>
     </DropdownButton>
   </div>

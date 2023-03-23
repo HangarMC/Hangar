@@ -78,10 +78,11 @@ enum ConfirmationType {
 function requiresConfirmation(): ConfirmationType {
   for (const platform in props.project.mainChannelVersions) {
     const version = props.project.mainChannelVersions[platform as Platform];
-    const download = version.downloads[platform as Platform];
     if (version.reviewState !== ReviewState.REVIEWED && version.reviewState !== ReviewState.PARTIALLY_REVIEWED) {
       return ConfirmationType.REQUIRED;
     }
+
+    const download = version.downloads[platform as Platform];
     if (download && download.externalUrl !== null) {
       return ConfirmationType.EXTERNAL_URL;
     }
@@ -138,7 +139,7 @@ function requiresConfirmation(): ConfirmationType {
       <div class="flex flex-col justify-around lt-sm:items-center space-y-2 items-end justify-between flex-shrink-0">
         <span v-if="Object.keys(project.mainChannelVersions).length !== 0" class="inline-flex items-center">
           <Tooltip v-if="requiresConfirmation() !== ConfirmationType.NO" :content="i18n.t(requiresConfirmation())">
-            <IconMdiAlertCircleOutline class="mr-2 text-2xl" />
+            <IconMdiAlert class="mr-2 text-2xl" />
           </Tooltip>
           <DownloadButton :project="project" />
         </span>
