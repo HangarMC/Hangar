@@ -29,7 +29,7 @@ const props = defineProps<{
   user: User;
   project: HangarProject;
 }>();
-console.log("[project]/index.vue");
+
 const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();

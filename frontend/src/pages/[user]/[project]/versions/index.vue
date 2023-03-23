@@ -32,10 +32,11 @@ const filter = reactive({
     platforms: true,
   },
 });
-console.log("[project]/versions/index.vue");
+
 const props = defineProps<{
   project: HangarProject;
 }>();
+
 const options = reactive({ page: 1, itemsPerPage: 10 });
 const platforms = computed(() => [...(useBackendData.platforms?.values() || [])]);
 const requestOptions = computed(() => {
