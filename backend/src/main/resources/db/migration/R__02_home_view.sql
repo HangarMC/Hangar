@@ -2,21 +2,13 @@ DROP MATERIALIZED VIEW IF EXISTS home_projects CASCADE;
 
 CREATE MATERIALIZED VIEW home_projects AS
     SELECT p.id,
-           p.owner_name,
            array_agg(DISTINCT pm.user_id)                    AS project_members,
-           p.slug,
-           p.visibility,
            coalesce(pva.views::bigint, 0::bigint)            AS views,
            coalesce(pda.downloads::bigint, 0::bigint)        AS downloads,
            coalesce(pvr.recent_views::bigint, 0::bigint)     AS recent_views,
            coalesce(pdr.recent_downloads::bigint, 0::bigint) AS recent_downloads,
            coalesce(ps.stars::bigint, 0::bigint)             AS stars,
            coalesce(pw.watchers::bigint, 0::bigint)          AS watchers,
-           p.category,
-           p.description,
-           p.name,
-           p.created_at,
-           p.license_type,
            max(lv.created_at)                                AS last_updated,
            ((setweight((to_tsvector('english'::regconfig, p.name::text) ||
                         to_tsvector('english'::regconfig, regexp_replace(p.name::text, '([a-z])([A-Z]+)'::text,

@@ -63,7 +63,6 @@ public class ProjectInviteService extends InviteService<ProjectContext, ProjectR
         project.setOwnerName(newOwner.getName());
         this.projectsDAO.updateOwner(project);
         this.projectFiles.transferProject(oldOwnerName, newOwner.getName(), project.getSlug());
-        this.projectService.refreshHomeProjects();
     }
 
     @Override

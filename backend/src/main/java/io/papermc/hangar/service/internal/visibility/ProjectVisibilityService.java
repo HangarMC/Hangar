@@ -58,7 +58,6 @@ public class ProjectVisibilityService extends VisibilityService<ProjectContext, 
         if (model != null) {
             this.jobService.save(new UpdateDiscourseProjectTopicJob(model.getId()));
         }
-        this.projectService.refreshHomeProjects();
     }
 
     @Override

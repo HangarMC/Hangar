@@ -137,8 +137,6 @@ public class VersionDependencyService extends HangarComponent {
             this.projectVersionPlatformDependenciesDAO.deleteAll(toBeRemoved.values());
             this.actionLogger.version(LogAction.VERSION_PLATFORM_DEPENDENCIES_REMOVED.create(VersionContext.of(projectId, versionId), "Removed: " + String.join(", ", toBeRemoved.keySet()), String.join(", ", platformDependencyTables.keySet())));
         }
-
-        this.projectService.refreshHomeProjects();
     }
 
     @Transactional

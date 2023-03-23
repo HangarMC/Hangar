@@ -22,20 +22,20 @@ public interface HangarProjectsDAO {
 
     @RegisterConstructorMapper(Project.class)
     @SqlQuery("SELECT p.id," +
-        "       p.created_at," +
-        "       p.name," +
-        "       p.owner_name AS owner," +
-        "       p.slug," +
+        "       ps.created_at," +
+        "       ps.name," +
+        "       ps.owner_name AS owner," +
+        "       ps.slug," +
         "       p.views," +
         "       p.downloads," +
         "       p.recent_views," +
         "       p.recent_downloads," +
         "       p.stars," +
         "       p.watchers," +
-        "       p.category," +
-        "       p.description," +
-        "       coalesce(p.last_updated, p.created_at) AS last_updated," +
-        "       p.visibility, " +
+        "       ps.category," +
+        "       ps.description," +
+        "       coalesce(p.last_updated, ps.created_at) AS last_updated," +
+        "       ps.visibility, " +
         "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS starred," +
         "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS watching," +
         "       exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :currentUserId AND pf.resolved IS FALSE) AS flagged," +
@@ -53,7 +53,7 @@ public interface HangarProjectsDAO {
         "  FROM home_projects p" +
         "         JOIN projects ps ON p.id = ps.id" +
         "         JOIN users u ON ps.owner_id = u.id" +
-        "         WHERE lower(p.slug) = lower(:slug) AND lower(p.owner_name) = lower(:author)")
+        "         WHERE lower(ps.slug) = lower(:slug) AND lower(ps.owner_name) = lower(:author)")
     Pair<Long, Project> getProject(String author, String slug, Long currentUserId);
 
     @RegisterRowMapperFactory(JoinableRowMapperFactory.class)

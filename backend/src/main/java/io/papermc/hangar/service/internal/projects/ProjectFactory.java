@@ -112,7 +112,6 @@ public class ProjectFactory extends HangarComponent {
         this.projectsDAO.update(projectTable);
         this.actionLogger.project(LogAction.PROJECT_RENAMED.create(ProjectContext.of(projectTable.getId()), author + "/" + compactNewName, author + "/" + oldName));
         this.jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
-        this.projectService.refreshHomeProjects();
         this.projectFiles.renameProject(projectTable.getOwnerName(), oldSlug, newSlug);
         return newSlug;
     }

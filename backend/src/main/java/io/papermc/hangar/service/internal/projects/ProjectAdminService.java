@@ -24,16 +24,14 @@ public class ProjectAdminService extends HangarComponent {
     private final ProjectVisibilityService projectVisibilityService;
     private final ProjectFactory projectFactory;
     private final NotificationService notificationService;
-    private final ProjectService projectService;
 
     @Autowired
-    public ProjectAdminService(final ProjectsDAO projectsDAO, final HangarProjectsAdminDAO hangarProjectsAdminDAO, final ProjectVisibilityService projectVisibilityService, final ProjectFactory projectFactory, final NotificationService notificationService, final ProjectService projectService) {
+    public ProjectAdminService(final ProjectsDAO projectsDAO, final HangarProjectsAdminDAO hangarProjectsAdminDAO, final ProjectVisibilityService projectVisibilityService, final ProjectFactory projectFactory, final NotificationService notificationService) {
         this.projectsDAO = projectsDAO;
         this.hangarProjectsAdminDAO = hangarProjectsAdminDAO;
         this.projectVisibilityService = projectVisibilityService;
         this.projectFactory = projectFactory;
         this.notificationService = notificationService;
-        this.projectService = projectService;
     }
 
     public void sendProjectForApproval(final long projectId) {
@@ -68,7 +66,6 @@ public class ProjectAdminService extends HangarComponent {
 
         if (oldVisibility != visibility) {
             this.notificationService.notifyVisibilityChange(projectTable, visibility, comment);
-            this.projectService.refreshHomeProjects();
         }
     }
 

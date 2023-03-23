@@ -168,6 +168,9 @@ public class ProjectService extends HangarComponent {
         this.validateLinks(settingsForm.getSettings().getLinks());
 
         final ProjectTable projectTable = this.getProjectTable(author, slug);
+        //final boolean requiresHomepageUpdate = !projectTable.getKeywords().equals(settingsForm.getSettings().getKeywords())
+        //    || !projectTable.getDescription().equals(settingsForm.getDescription());
+
         projectTable.setCategory(settingsForm.getCategory());
         projectTable.setKeywords(settingsForm.getSettings().getKeywords());
         projectTable.setLinks(new JSONB(settingsForm.getSettings().getLinks()));
@@ -183,7 +186,11 @@ public class ProjectService extends HangarComponent {
         projectTable.setDonationEnabled(settingsForm.getSettings().getDonation().isEnable());
         projectTable.setDonationSubject(settingsForm.getSettings().getDonation().getSubject());
         this.projectsDAO.update(projectTable);
-        this.refreshHomeProjects();
+
+        /*if (requiresHomepageUpdate) {
+            this.refreshHomeProjects();
+        }*/
+
         // TODO what settings changed
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
     }

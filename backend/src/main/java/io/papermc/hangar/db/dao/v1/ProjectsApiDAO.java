@@ -24,20 +24,20 @@ public interface ProjectsApiDAO {
 
     @UseStringTemplateEngine
     @SqlQuery("SELECT hp.id," +
-        "       hp.created_at," +
-        "       hp.name," +
-        "       hp.owner_name \"owner\"," +
-        "       hp.slug," +
+        "       p.created_at," +
+        "       p.name," +
+        "       p.owner_name \"owner\"," +
+        "       p.slug," +
         "       hp.views," +
         "       hp.downloads," +
         "       hp.recent_views," +
         "       hp.recent_downloads," +
         "       hp.stars," +
         "       hp.watchers," +
-        "       hp.category," +
-        "       hp.description," +
-        "       coalesce(hp.last_updated, hp.created_at) AS last_updated," +
-        "       hp.visibility, " +
+        "       p.category," +
+        "       p.description," +
+        "       coalesce(hp.last_updated, p.created_at) AS last_updated," +
+        "       p.visibility, " +
         "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred, " +
         "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching, " +
         "       exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) AS flagged," +
@@ -54,31 +54,31 @@ public interface ProjectsApiDAO {
         "       p.sponsors" +
         "  FROM home_projects hp" +
         "         JOIN projects p ON hp.id = p.id" +
-        "         WHERE lower(hp.slug) = lower(:slug) AND" +
-        "           lower(hp.owner_name) = lower(:author)" +
-        "         <if(!canSeeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif>")
+        "         WHERE lower(p.slug) = lower(:slug) AND" +
+        "           lower(p.owner_name) = lower(:author)" +
+        "         <if(!canSeeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND p.visibility != 4)<endif>) <endif>")
     Project getProject(String author, String slug, @Define boolean canSeeHidden, @Define @Bind Long requesterId);
 
     @UseStringTemplateEngine
     @SqlQuery("""
         SELECT DISTINCT (hp.id),
-            hp.created_at,
-            hp.name,
-            hp.owner_name "owner",
-            hp.slug,
+            p.created_at,
+            p.name,
+            p.owner_name "owner",
+            p.slug,
             hp.views,
             hp.downloads,
             hp.recent_views,
             hp.recent_downloads,
             hp.stars,
             hp.watchers,
-            hp.category,
-            hp.description,
+            p.category,
+            p.description,
             hp.last_updated AS dum, --- need to add this so we can use it in order by, special constraint on distinct queries
-            LOWER(hp.slug) AS dum2,
-            coalesce(hp.last_updated, hp.created_at) AS last_updated,
-            ((extract(EPOCH FROM coalesce(hp.last_updated, hp.created_at)) - 1609459200) / 604800) *1 AS last_updated_double, --- We can order with this. That "dum" does not work. It only orders it with this.
-            hp.visibility,
+            LOWER(p.slug) AS dum2,
+            coalesce(hp.last_updated, p.created_at) AS last_updated,
+            ((extract(EPOCH FROM coalesce(hp.last_updated, p.created_at)) - 1609459200) / 604800) *1 AS last_updated_double, --- We can order with this. That "dum" does not work. It only orders it with this.
+            p.visibility,
             <relevance>
             EXISTS(SELECT * FROM project_stars ps WHERE ps.project_id = p.id AND ps.user_id = :requesterId) AS starred,
             EXISTS(SELECT * FROM project_watchers pw WHERE pw.project_id = p.id AND pw.user_id = :requesterId) AS watching,
@@ -100,7 +100,7 @@ public interface ProjectsApiDAO {
             LEFT JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id
             LEFT JOIN platform_versions v ON pvpd.platform_version_id = v.id
             WHERE TRUE <filters> -- Not sure how else to get here a single Where
-            <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif>
+            <if(!seeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND p.visibility != 4)<endif>) <endif>
             <sorters>
             <offsetLimit>""")
     @DefineNamedBindings
@@ -116,7 +116,7 @@ public interface ProjectsApiDAO {
         "         LEFT JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id " +
         "         LEFT JOIN platform_versions v ON pvpd.platform_version_id = v.id " +
         "         WHERE TRUE <filters>" + // Not sure how else to get here a single Where
-        "         <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif> ")
+        "         <if(!seeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) <endif> ")
     long countProjects(@Define boolean seeHidden, @Define Long requesterId,
                        @BindPagination(isCount = true) RequestPagination pagination);
 
