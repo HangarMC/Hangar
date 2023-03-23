@@ -25,6 +25,7 @@ import { definePageMeta } from "#imports";
 import { Step } from "~/lib/types/components/design/Steps";
 import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
 import Alert from "~/lib/components/design/Alert.vue";
+import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
 
 definePageMeta({
   loginRequired: true,
@@ -44,6 +45,7 @@ const form = ref<NewProjectForm>({
     license: {} as ProjectSettingsForm["settings"]["license"],
     donation: {} as ProjectSettingsForm["settings"]["donation"],
     keywords: [],
+    links: [],
   } as unknown as ProjectSettingsForm["settings"],
 } as NewProjectForm);
 
@@ -209,13 +211,7 @@ function createProject() {
         {{ i18n.t("project.new.step3.links") }}
         <hr />
       </div>
-      <div class="flex flex-wrap">
-        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.homepage" :label="i18n.t('project.new.step3.homepage')" :rules="[url()]" /></div>
-        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.issues" :label="i18n.t('project.new.step3.issues')" :rules="[url()]" /></div>
-        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.source" :label="i18n.t('project.new.step3.source')" :rules="[url()]" /></div>
-        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.support" :label="i18n.t('project.new.step3.support')" :rules="[url()]" /></div>
-        <div class="basis-full mt-4"><InputText v-model.trim="form.settings.wiki" :label="i18n.t('project.new.step3.wiki')" :rules="[url()]" /></div>
-      </div>
+      <ProjectLinksForm v-model="form.settings.links" />
       <div class="text-lg mt-6 flex gap-2 items-center">
         <IconMdiLicense />
         {{ i18n.t("project.new.step3.license") }}

@@ -1,4 +1,4 @@
-import { PlatformVersionDownload } from "hangar-api";
+import { LinkSection, PlatformVersionDownload } from "hangar-api";
 import { ComputedRef } from "vue";
 
 declare module "hangar-internal" {
@@ -86,11 +86,7 @@ declare module "hangar-internal" {
 
   interface ProjectSettingsForm {
     settings: {
-      homepage: string | null;
-      issues: string | null;
-      source: string | null;
-      support: string | null;
-      wiki: string | null;
+      links: LinkSection[];
       keywords: string[];
       license: {
         type?: string | null;
