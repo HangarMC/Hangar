@@ -221,21 +221,26 @@ async function restoreVersion() {
 
           <!--todo route for user action log, with filtering-->
           <Button v-if="hasPerms(NamedPermission.VIEW_LOGS)" @click="router.push('/admin/log')">
+            <IconMdiFileDocument />
             {{ i18n.t("version.page.userAdminLogs") }}
           </Button>
 
           <template v-if="hasPerms(NamedPermission.REVIEWER)">
-            <Button v-if="isReviewStateChecked" color="success" :to="route.path + '/reviews'">
+            <Button v-if="isReviewStateChecked" :to="route.path + '/reviews'">
               <IconMdiListStatus />
               {{ i18n.t("version.page.reviewLogs") }}
             </Button>
-            <Button v-else-if="isUnderReview" color="info" :to="route.path + '/reviews'">
+            <Button v-else-if="isUnderReview" :to="route.path + '/reviews'">
               <IconMdiListStatus />
               {{ i18n.t("version.page.reviewLogs") }}
             </Button>
-            <Button v-else color="success" :to="route.path + '/reviews'">
+            <Button v-else :to="route.path + '/reviews'">
               <IconMdiPlay />
               {{ i18n.t("version.page.reviewStart") }}
+            </Button>
+            <Button :to="route.path + '/scan'">
+              <IconMdiAlertDecagram />
+              {{ i18n.t("version.page.scans") }}
             </Button>
           </template>
 

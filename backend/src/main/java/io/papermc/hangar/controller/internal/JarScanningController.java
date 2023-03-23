@@ -7,7 +7,7 @@ import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.versions.JarScanningService;
-import org.springframework.http.HttpStatus;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,13 +32,8 @@ public class JarScanningController {
 
     @ResponseBody
     @GetMapping("/result/{platform}/{versionId}")
-    public JarScanResultTable getResult(@PathVariable final Platform platform, @PathVariable final long versionId)  {
-        final JarScanResultTable lastResult = this.jarScanningService.getLastResult(versionId, platform);
-        if (lastResult != null) {
-            return lastResult;
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+    public @Nullable JarScanResultTable getResult(@PathVariable final Platform platform, @PathVariable final long versionId)  {
+        return this.jarScanningService.getLastResult(versionId, platform);
     }
 
     @ResponseBody

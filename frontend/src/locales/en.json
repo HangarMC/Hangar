@@ -498,7 +498,8 @@
       "required": "(required)",
       "adminMsg": "Approved by {0} {1}",
       "reviewLogs": "Review logs",
-      "reviewStart": "Start review",
+      "reviewStart": "Review",
+      "scans": "Scans",
       "manage": "Management",
       "visibility": "Visibility: {0}",
       "pinned": {
@@ -525,7 +526,7 @@
       "adminActions": "Admin actions",
       "partiallyApproved": "Partially approved",
       "approved": "Approved",
-      "userAdminLogs": "User Admin Logs",
+      "userAdminLogs": "User Logs",
       "unsafeWarning": "This version has not been reviewed by our staff and may not be safe to download",
       "unsafeWarningExternal": "External downloads are not under our control and may not be safe to use",
       "downloadUrlCopied": "Copied!",

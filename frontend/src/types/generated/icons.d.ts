@@ -13,6 +13,7 @@ declare module "@vue/runtime-core" {
     IconMdiAlert: typeof import("~icons/mdi/alert")["default"];
     IconMdiAlertBox: typeof import("~icons/mdi/alert-box")["default"];
     IconMdiAlertCircleOutline: typeof import("~icons/mdi/alert-circle-outline")["default"];
+    IconMdiAlertDecagram: typeof import("~icons/mdi/alert-decagram")["default"];
     IconMdiAlertOutline: typeof import("~icons/mdi/alert-outline")["default"];
     IconMdiBell: typeof import("~icons/mdi/bell")["default"];
     IconMdiBellOutline: typeof import("~icons/mdi/bell-outline")["default"];
@@ -46,6 +47,8 @@ declare module "@vue/runtime-core" {
     IconMdiEye: typeof import("~icons/mdi/eye")["default"];
     IconMdiEyeOff: typeof import("~icons/mdi/eye-off")["default"];
     IconMdiFeather: typeof import("~icons/mdi/feather")["default"];
+    IconMdiFileDocument: typeof import("~icons/mdi/file-document")["default"];
+    IconMdiFileDocumentOutline: typeof import("~icons/mdi/file-document-outline")["default"];
     IconMdiFlag: typeof import("~icons/mdi/flag")["default"];
     IconMdiFolderPlusOutline: typeof import("~icons/mdi/folder-plus-outline")["default"];
     IconMdiFormatListNumbered: typeof import("~icons/mdi/format-list-numbered")["default"];

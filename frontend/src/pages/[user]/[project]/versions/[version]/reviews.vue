@@ -331,7 +331,11 @@ useHead(useSeo("Reviews | " + props.project.name, props.project.description, rou
           <IconMdiHome />
           {{ t("reviews.projectPage") }}
         </Button>
-        <DownloadButton :project="project" :version="projectVersion" class="ml-2" />
+        <Button class="ml-1" size="large" :to="route.path.replace('/reviews', '/scan')">
+          <IconMdiAlertDecagram class="mr-1" />
+          {{ i18n.t("version.page.scans") }}
+        </Button>
+        <DownloadButton :project="project" :version="projectVersion" class="ml-1" />
       </template>
     </div>
 
@@ -344,13 +348,13 @@ useHead(useSeo("Reviews | " + props.project.name, props.project.description, rou
     </h2>
     <div class="my-1 flex space-x-2">
       <div v-if="!currentUserReview" class="flex-grow-0">
-        <Button color="success" :loading="loadingValues.start" @click="startReview">
+        <Button :loading="loadingValues.start" @click="startReview">
           <IconMdiPlay />
           {{ t("reviews.startReview") }}
         </Button>
       </div>
       <div class="flex-grow-0">
-        <Button button-type="primary" @click="refresh">
+        <Button @click="refresh">
           <IconMdiRefresh />
           {{ t("general.refresh") }}
         </Button>
