@@ -211,14 +211,14 @@ function createProject() {
         {{ i18n.t("project.new.step3.links") }}
         <hr />
       </div>
-      <ProjectLinksForm v-model="form.settings.links" />
+      <ProjectLinksForm v-model="form.settings.links" class="mt-2" />
       <div class="text-lg mt-6 flex gap-2 items-center">
         <IconMdiLicense />
         {{ i18n.t("project.new.step3.license") }}
         <hr />
       </div>
       <div class="flex md:gap-2 lt-md:flex-wrap">
-        <div class="basis-full mt-4" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
+        <div class="basis-full mt-2" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
           <InputSelect v-model="form.settings.license.type" :values="useLicenseOptions" :label="i18n.t('project.new.step3.type')" :rules="[required()]" />
         </div>
         <div v-if="isCustomLicense" class="basis-full md:basis-8/12 mt-4">
@@ -236,13 +236,13 @@ function createProject() {
           <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" :rules="[url()]" />
         </div>
       </div>
-      <div class="text-lg mt-6 flex gap-2 items-center">
+      <div class="text-lg mt-4 flex gap-2 items-center">
         <IconMdiCloudSearch />
         {{ i18n.t("project.new.step3.keywords") }}
         <hr />
       </div>
       <div class="flex">
-        <div class="mt-4 basis-full">
+        <div class="mt-2 basis-full">
           <InputTag
             v-model="form.settings.keywords"
             :label="i18n.t('project.new.step3.keywords')"

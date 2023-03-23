@@ -124,8 +124,8 @@ function copy(event: any) {
         <div class="grid autofix mt-2">
           <InputCheckbox v-for="perm in possiblePerms" :key="perm" v-model="selectedPerms" :label="perm" :value="perm" />
         </div>
+        <div v-if="selectedPerms.length === 0" class="text-red font-bold mt-2">{{ i18n.t("apiKeys.permissionRequired") }}</div>
       </InputGroup>
-      <div class="mt-2">{{ i18n.t("apiKeys.permissionRequired") }}</div>
     </Card>
     <Card>
       <template #header>
