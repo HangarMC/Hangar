@@ -148,7 +148,7 @@ async function restoreVersion() {
 
 <template>
   <div v-if="projectVersion" class="flex lt-md:flex-col flex-wrap lg:flex-nowrap gap-4">
-    <section class="basis-full lg:basis-11/15 flex-grow">
+    <section class="basis-full lg:basis-11/15 overflow-auto">
       <div class="flex gap-2 justify-between">
         <div>
           <h2 class="text-3xl sm:inline-flex items-center gap-x-1">
