@@ -49,6 +49,7 @@ public class CacheConfig {
     private final CaffeineCacheManager cacheManager;
     private final ReplicationService replicationService;
     // don't ask me why we need this bean, without it, caching doesn't work for some methods, as the advisor is still in creation.
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final BeanFactoryCacheOperationSourceAdvisor beanFactoryCacheOperationSourceAdvisor;
 
     public CacheConfig(@Lazy final CacheMetricsRegistrar cacheMetricsRegistrar, final ReplicationService replicationService, final BeanFactoryCacheOperationSourceAdvisor beanFactoryCacheOperationSourceAdvisor) {

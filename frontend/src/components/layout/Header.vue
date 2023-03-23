@@ -288,7 +288,13 @@ function isRecent(date: string): boolean {
                     <IconMdiMessageOutline v-else-if="notification.type === 'neutral'" />
                   </span>
 
-                  <router-link v-if="notification.action" :to="'/' + notification.action" active-class="" @click="markNotificationRead(notification)">
+                  <router-link
+                    v-if="notification.action"
+                    :to="'/' + notification.action"
+                    active-class=""
+                    @click="markNotificationRead(notification)"
+                    @click.middle="markNotificationRead(notification)"
+                  >
                     {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
                     <div class="text-xs mt-1">{{ lastUpdated(new Date(notification.createdAt)) }}</div>
                   </router-link>
