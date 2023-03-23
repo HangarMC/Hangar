@@ -25,11 +25,11 @@ Definitions
 
 Acceptable Conduct
 ------------------
-Our [Resource Guidelines](guidelines) of this Website and Our [Community Guidelines](https://papermc.io/community-guidelines) apply.
+Our [Resource Guidelines](/guidelines) of this Website and Our [Community Guidelines](https://papermc.io/community-guidelines) apply.
 
 Privacy
 -------
-See Our [Privacy Policy](privacy).
+See Our [Privacy Policy](/privacy).
 
 Content and Copyright
 ---------

@@ -25,6 +25,9 @@ const isSafeHost = (host: string) => {
 };
 
 const isSafe = (urlString: string) => {
+  if (urlString.startsWith("#") || urlString.startsWith("/")) {
+    return true;
+  }
   try {
     const url = new URL(urlString);
     const host = url.hostname;
