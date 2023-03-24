@@ -95,9 +95,9 @@ hangar:
       link: https://benndorf.dev
 
   update-tasks:
-    homepage: 10m
-    version-downloads: 5m
-    project-views: 20m
+    homepage: 2m
+    version-downloads: 2m
+    project-views: 10m
 
   channels:
     max-name-len: 15
@@ -116,7 +116,7 @@ hangar:
     min-name-len: 3
 
   projects:
-    max-name-len: 25
+    max-name-len: 28
     max-version-name-len: 30
     max-license-name-len: 15
     max-dependencies: 100
