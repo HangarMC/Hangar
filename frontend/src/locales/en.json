@@ -301,15 +301,18 @@
         "title": "Tags",
         "SUPPORTS_FOLIA": {
           "title": "Supports Folia",
-          "description": "Marks that this project is explicitly built against Folia, a multi-threaded fork of Paper"
+          "description": "Marks that this project is explicitly built against Folia, a multi-threaded fork of Paper",
+          "tooltip": "This project supports Folia"
         },
         "ADDON": {
           "title": "Addon",
-          "description": "This project is an addon to another project, providing additional functionality"
+          "description": "This project is an addon to another project, providing additional functionality",
+          "tooltip": "This project is an addon"
         },
         "LIBRARY": {
           "title": "Library",
-          "description": "This project does not do anything on its own and is meant to be used/depended on by other projects"
+          "description": "This project does not do anything on its own and is meant to be used/depended on by other projects",
+          "tooltip": "This project is a library"
         }
       },
       "tagsSub": "Tags are used to further categorize your project for users.",

@@ -6,7 +6,7 @@ import Link from "~/lib/components/design/Link.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import { lastUpdated } from "~/lib/composables/useTime";
 import Tooltip from "~/lib/components/design/Tooltip.vue";
-import { Visibility } from "~/types/enums";
+import { Tag, Visibility } from "~/types/enums";
 import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
 import PrettyTime from "~/lib/components/design/PrettyTime.vue";
 
@@ -42,10 +42,23 @@ function getBorderClasses(): string {
         </h2>
 
         <h3 v-if="project.description" class="mb-1">{{ project.description }}</h3>
-        <span class="lt-sm:hidden text-gray-500 dark:text-gray-400 flex flex-row items-center">
+        <div class="inline-flex items-center text-gray-500 dark:text-gray-400 lt-sm:hidden">
           <CategoryLogo :category="project.category" :size="16" class="mr-1" />
           {{ i18n.t("project.category." + project.category) }}
-        </span>
+          <div v-if="project.settings" class="inline-flex ml-2 space-x-1">
+            <span class="border-l-1 border-gray-500 dark:border-gray-400" />
+            <span v-for="tag in project.settings.tags" :key="tag" class="inline-flex items-center">
+              <Tooltip>
+                <template #content>
+                  {{ i18n.t("project.settings.tags." + tag + ".tooltip") }}
+                </template>
+                <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
+                <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
+                <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
+              </Tooltip>
+            </span>
+          </div>
+        </div>
       </div>
       <div class="flex-grow"></div>
       <div class="lt-sm:hidden flex flex-col flex-shrink-0 min-w-40">

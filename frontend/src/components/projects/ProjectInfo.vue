@@ -8,7 +8,7 @@ import Link from "~/lib/components/design/Link.vue";
 import DropdownButton from "~/lib/components/design/DropdownButton.vue";
 import DropdownItem from "~/lib/components/design/DropdownItem.vue";
 import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission } from "~/types/enums";
+import { NamedPermission, Tag } from "~/types/enums";
 import DonationModal from "~/components/donation/DonationModal.vue";
 import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
 
@@ -38,9 +38,9 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
           <tr>
             <th class="text-left">{{ i18n.t("project.info.license") }}</th>
             <td v-if="project.settings.license?.type === '(custom)' || project.settings.license?.type === 'Other'" class="text-right">
-              <Link v-if="project.settings.license.url" :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">{{
-                project.settings.license.name
-              }}</Link>
+              <Link v-if="project.settings.license.url" :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">
+                {{ project.settings.license.name }}
+              </Link>
               <template v-else>
                 {{ project.settings.license.name }}
               </template>
@@ -84,6 +84,15 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
           </tr>
         </tbody>
       </table>
+
+      <div v-for="tag in project.settings.tags" :key="tag">
+        <div class="inline-flex items-center">
+          <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
+          <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
+          <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
+          <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
+        </div>
+      </div>
     </template>
     <template #footer>
       <DropdownButton v-if="hasPerms(NamedPermission.IS_STAFF)" :name="i18n.t('project.actions.adminActions')" class="mb-2">
