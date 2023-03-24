@@ -16,6 +16,7 @@ declare module "@vue/runtime-core" {
     IconMdiAlertOutline: typeof import("~icons/mdi/alert-outline")["default"];
     IconMdiBell: typeof import("~icons/mdi/bell")["default"];
     IconMdiBellOutline: typeof import("~icons/mdi/bell-outline")["default"];
+    IconMdiBookshelf: typeof import("~icons/mdi/bookshelf")["default"];
     IconMdiCached: typeof import("~icons/mdi/cached")["default"];
     IconMdiCalendar: typeof import("~icons/mdi/calendar")["default"];
     IconMdiCancel: typeof import("~icons/mdi/cancel")["default"];
@@ -58,6 +59,7 @@ declare module "@vue/runtime-core" {
     IconMdiInformation: typeof import("~icons/mdi/information")["default"];
     IconMdiInformationOutline: typeof import("~icons/mdi/information-outline")["default"];
     IconMdiKeyOutline: typeof import("~icons/mdi/key-outline")["default"];
+    IconMdiLeaf: typeof import("~icons/mdi/leaf")["default"];
     IconMdiLicense: typeof import("~icons/mdi/license")["default"];
     IconMdiLink: typeof import("~icons/mdi/link")["default"];
     IconMdiListStatus: typeof import("~icons/mdi/list-status")["default"];
@@ -71,6 +73,7 @@ declare module "@vue/runtime-core" {
     IconMdiPinOff: typeof import("~icons/mdi/pin-off")["default"];
     IconMdiPlay: typeof import("~icons/mdi/play")["default"];
     IconMdiPlus: typeof import("~icons/mdi/plus")["default"];
+    IconMdiPuzzleOutline: typeof import("~icons/mdi/puzzle-outline")["default"];
     IconMdiRefresh: typeof import("~icons/mdi/refresh")["default"];
     IconMdiRenameBox: typeof import("~icons/mdi/rename-box")["default"];
     IconMdiSend: typeof import("~icons/mdi/send")["default"];

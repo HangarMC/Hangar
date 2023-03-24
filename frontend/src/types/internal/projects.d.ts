@@ -1,5 +1,6 @@
 import { LinkSection, PlatformVersionDownload } from "hangar-api";
 import { ComputedRef } from "vue";
+import { Tag } from "~/types/enums";
 
 declare module "hangar-internal" {
   import type { Joinable, Table } from "hangar-internal";
@@ -88,6 +89,7 @@ declare module "hangar-internal" {
     settings: {
       links: LinkSection[];
       keywords: string[];
+      tags: Tag[];
       license: {
         type?: string | null;
         url: string | null;

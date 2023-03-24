@@ -4,7 +4,6 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
-import io.papermc.hangar.model.api.project.ProjectDonationSettings;
 import io.papermc.hangar.model.api.project.ProjectLicense;
 import io.papermc.hangar.model.api.project.settings.Link;
 import io.papermc.hangar.model.api.project.settings.LinkSection;
@@ -104,6 +103,7 @@ public class FakeDataService extends HangarComponent {
                     new Link(0, "OpenCollective", "https://opencollective.com")
                 ))
             ),
+            List.of(),
             licence,
             keyWords,
             false,

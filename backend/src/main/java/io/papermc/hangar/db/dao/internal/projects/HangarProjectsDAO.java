@@ -43,6 +43,7 @@ public interface HangarProjectsDAO {
         "       p.license_name," +
         "       p.license_type," +
         "       p.license_url," +
+        "       p.tags," +
         "       p.keywords," +
         "       p.forum_sync," +
         "       p.donation_enabled," +

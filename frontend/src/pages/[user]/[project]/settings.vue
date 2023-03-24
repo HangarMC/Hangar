@@ -12,13 +12,12 @@ import { useSeo } from "~/composables/useSeo";
 import Card from "~/lib/components/design/Card.vue";
 import MemberList from "~/components/projects/MemberList.vue";
 import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission, Visibility } from "~/types/enums";
+import { NamedPermission, Tag, Visibility } from "~/types/enums";
 import Button from "~/lib/components/design/Button.vue";
 import Tabs from "~/lib/components/design/Tabs.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
 import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
 import InputText from "~/lib/components/ui/InputText.vue";
-import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import InputFile from "~/lib/components/ui/InputFile.vue";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -32,9 +31,9 @@ import { validProjectName } from "~/composables/useHangarValidations";
 import "vue-advanced-cropper/dist/style.css";
 import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
 import { definePageMeta } from "#imports";
-import Alert from "~/lib/components/design/Alert.vue";
 import { Tab } from "~/lib/types/components/design/Tabs";
 import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
+import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 
 definePageMeta({
   projectPermsRequired: ["EDIT_SUBJECT_SETTINGS"],
@@ -287,6 +286,16 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
               :label="i18n.t('project.new.step3.keywords')"
               :rules="[maxLength()(useBackendData.validations?.project?.keywords?.max || 5)]"
             />
+          </ProjectSettingsSection>
+          <ProjectSettingsSection title="project.settings.tags.title" description="project.settings.tagsSub">
+            <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="form.settings.tags" :value="tag">
+              <template #label>
+                <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
+                <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
+                <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
+                <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
+              </template>
+            </InputCheckbox>
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
             <div class="flex md:gap-2 lt-md:flex-wrap">

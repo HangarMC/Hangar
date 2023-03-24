@@ -24,7 +24,9 @@ public record ProjectsConfig( // TODO split into ProjectsConfig and VersionsConf
                               @DefaultValue("10") int initVersionLoad,
                               @DefaultValue("120") int maxDescLen,
                               @DefaultValue("1500") int maxSponsorsLen,
+                              @DefaultValue("15") int maxKeywordLen,
                               @DefaultValue("5") int maxKeywords,
+                              @DefaultValue("5") int maxTags,
                               @DefaultValue("1000000") int contentMaxLen,
                               @DefaultValue("10000000") int maxFileSize,
                               @DefaultValue("true") boolean fileValidate, // TODO implement or remove
@@ -50,6 +52,10 @@ public record ProjectsConfig( // TODO split into ProjectsConfig and VersionsConf
 
     public Validation projectKeywords() {
         return Validation.max(this.maxKeywords());
+    }
+
+    public Validation projectTags() {
+        return Validation.max(this.maxTags());
     }
 
     public Validation versionName() {

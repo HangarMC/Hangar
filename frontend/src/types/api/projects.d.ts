@@ -1,6 +1,7 @@
 declare module "hangar-api" {
   import type { Model, Named, Visible } from "hangar-api";
   import type { ProjectCategory } from "~/types/enums";
+  import { Tag } from "~/types/enums";
 
   interface ProjectNamespace {
     owner: string;
@@ -38,6 +39,7 @@ declare module "hangar-api" {
   interface ProjectSettings {
     links: LinkSection[];
     license: License;
+    tags: Tag[];
     keywords: string[];
     forumSync: boolean;
     sponsors: string | null;

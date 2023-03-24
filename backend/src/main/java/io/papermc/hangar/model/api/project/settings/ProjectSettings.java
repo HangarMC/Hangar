@@ -15,9 +15,11 @@ import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ProjectSettings {
 
+    // @el(root: List<String>)
     private final @NotNull @Validate(SpEL = "@validate.max(#root, 4)", message = "Too many link sections") List<@Valid LinkSection> links;
+    // @el(root: Collection<String>)
+    private final @NotNull @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxTags)", message = "project.new.error.tooManyTags") Collection<String> tags;
     private final @Valid ProjectLicense license;
-    //private final @Valid ProjectDonationSettings donation;
 
     // @el(root: Collection<String>)
     private final @NotNull @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywords)", message = "project.new.error.tooManyKeywords") Collection<String> keywords;
@@ -27,21 +29,21 @@ public class ProjectSettings {
     private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxSponsorsLen)", message = "project.new.error.tooLongSponsors") String sponsors;
 
     @JdbiConstructor
-    public ProjectSettings(final JSONB links, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final boolean forumSync, final String sponsors) {
+    public ProjectSettings(final JSONB links, final List<String> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final boolean forumSync, final String sponsors) {
         this.links = links.get(new TypeReference<>() {
         });
+        this.tags = tags;
         this.license = license;
-        //this.donation = donation;
         this.keywords = keywords;
         this.forumSync = forumSync;
         this.sponsors = sponsors;
     }
 
     @JsonCreator
-    public ProjectSettings(@Nested("links") final List<LinkSection> links, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final boolean forumSync, final String sponsors) {
+    public ProjectSettings(@Nested("links") final List<LinkSection> links, final Collection<String> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final boolean forumSync, final String sponsors) {
         this.links = links;
+        this.tags = tags;
         this.license = license;
-        //this.donation = donation;
         this.keywords = keywords;
         this.forumSync = forumSync;
         this.sponsors = sponsors;
@@ -53,6 +55,10 @@ public class ProjectSettings {
 
     public ProjectLicense getLicense() {
         return this.license;
+    }
+
+    public Collection<String> getTags() {
+        return this.tags;
     }
 
     @Deprecated
@@ -76,6 +82,7 @@ public class ProjectSettings {
     public String toString() {
         return "ProjectSettings{" +
             "links=" + this.links +
+            ", tags=" + this.tags +
             ", license=" + this.license +
             ", keywords=" + this.keywords +
             ", forumSync=" + this.forumSync +

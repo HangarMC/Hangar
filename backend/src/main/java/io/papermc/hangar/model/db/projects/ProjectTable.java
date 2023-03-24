@@ -26,6 +26,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
     private Category category;
     private String description;
     private Visibility visibility;
+    private Collection<String> tags;
     private Collection<String> keywords;
     private JSONB links;
     private String licenseType;
@@ -34,7 +35,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
     private boolean forumSync;
     private boolean donationEnabled;
     private String donationSubject;
-
     private String sponsors;
 
     public ProjectTable(final ProjectOwner projectOwner, final NewProjectForm form) {
@@ -48,6 +48,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.description = form.getDescription();
         this.visibility = Visibility.NEW;
         this.links = new JSONB(form.getSettings().getLinks());
+        this.tags = form.getSettings().getTags();
         this.keywords = form.getSettings().getKeywords();
         this.licenseType = form.getSettings().getLicense().getType();
         this.licenseName = form.getSettings().getLicense().getName();
@@ -67,6 +68,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.category = other.category;
         this.description = other.description;
         this.visibility = other.visibility;
+        this.tags = other.tags;
         this.keywords = other.keywords;
         this.links = other.links;
         this.licenseType = other.licenseType;
@@ -80,9 +82,9 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
 
     @JdbiConstructor
     public ProjectTable(final OffsetDateTime createdAt, final long id, final String name, final String slug, final String ownerName, final long ownerId, final Long topicId,
-                        final Long postId, @EnumByOrdinal final Category category, final String description, @EnumByOrdinal final Visibility visibility, final Collection<String> keywords,
-                        final JSONB links, final String licenseType, final String licenseName, final String licenseUrl, final boolean forumSync,
-                        final boolean donationEnabled, final String donationSubject, final String sponsors) {
+                        final Long postId, @EnumByOrdinal final Category category, final String description, @EnumByOrdinal final Visibility visibility, final Collection<String> tags,
+                        final Collection<String> keywords, final JSONB links, final String licenseType, final String licenseName, final String licenseUrl,
+                        final boolean forumSync, final boolean donationEnabled, final String donationSubject, final String sponsors) {
         super(createdAt, id);
         this.name = name;
         this.slug = slug;
@@ -93,6 +95,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.category = category;
         this.description = description;
         this.visibility = visibility;
+        this.tags = tags;
         this.keywords = keywords;
         this.links = links;
         this.licenseType = licenseType;
@@ -182,6 +185,14 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
     @Override
     public void setVisibility(final Visibility visibility) {
         this.visibility = visibility;
+    }
+
+    public Collection<String> getTags() {
+        return this.tags;
+    }
+
+    public void setTags(final Collection<String> tags) {
+        this.tags = tags;
     }
 
     public Collection<String> getKeywords() {
@@ -278,6 +289,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
             ", category=" + this.category +
             ", description='" + this.description + '\'' +
             ", visibility=" + this.visibility +
+            ", tags=" + this.tags +
             ", keywords=" + this.keywords +
             ", links='" + this.links + '\'' +
             ", licenseType='" + this.licenseType + '\'' +

@@ -95,6 +95,12 @@ export enum ReviewAction {
   UNDO_APPROVAL = "UNDO_APPROVAL",
 }
 
+export enum Tag {
+  ADDON = "ADDON",
+  LIBRARY = "LIBRARY",
+  SUPPORTS_FOLIA = "SUPPORTS_FOLIA",
+}
+
 export enum LogContext {
   PROJECT = "PROJECT",
   VERSION = "VERSION",

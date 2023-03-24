@@ -296,6 +296,24 @@
       "categorySub": "Categorize your project into one of 10 categories. Appropriately categorizing your project makes it easier for people to find.",
       "keywords": "Keywords",
       "keywordsSub": "These are special words that will return your project when people add them to their searches.",
+      "keywordTooLong": "Keyword is too long",
+      "tags": {
+        "title": "Tags",
+        "SUPPORTS_FOLIA": {
+          "title": "Supports Folia",
+          "description": "Marks that this project is explicitly built against Folia, a multi-threaded fork of Paper"
+        },
+        "ADDON": {
+          "title": "Addon",
+          "description": "This project is an addon to another project, providing additional functionality"
+        },
+        "LIBRARY": {
+          "title": "Library",
+          "description": "This project does not do anything on its own and is meant to be used/depended on by other projects"
+        }
+      },
+      "tagsSub": "Tags are used to further categorize your project for users.",
+      "invalidTag": "Invalid tag",
       "links": {
         "title": "Links",
         "sub": "You can define sections of links here and where they are displayed.",

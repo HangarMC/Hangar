@@ -13,6 +13,7 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.settings.LinkSection;
 import io.papermc.hangar.model.api.project.settings.LinkSectionType;
+import io.papermc.hangar.model.api.project.settings.Tag;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
@@ -38,10 +39,12 @@ import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import java.util.Base64;
 import java.util.EnumMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.apache.commons.lang3.tuple.Pair;
@@ -166,12 +169,21 @@ public class ProjectService extends HangarComponent {
 
     public void saveSettings(final String author, final String slug, final ProjectSettingsForm settingsForm) {
         this.validateLinks(settingsForm.getSettings().getLinks());
+        if (settingsForm.getSettings().getKeywords().stream().anyMatch(s -> s.length() > this.config.projects.maxKeywordLen())) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordTooLong");
+        }
+
+        final Set<String> tags = new LinkedHashSet<>(settingsForm.getSettings().getTags());
+        if (tags.stream().anyMatch(s-> Tag.byName(s) == null)) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.invalidTag");
+        }
 
         final ProjectTable projectTable = this.getProjectTable(author, slug);
         //final boolean requiresHomepageUpdate = !projectTable.getKeywords().equals(settingsForm.getSettings().getKeywords())
         //    || !projectTable.getDescription().equals(settingsForm.getDescription());
 
         projectTable.setCategory(settingsForm.getCategory());
+        projectTable.setTags(tags);
         projectTable.setKeywords(settingsForm.getSettings().getKeywords());
         projectTable.setLinks(new JSONB(settingsForm.getSettings().getLinks()));
         String licenseName = org.apache.commons.lang3.StringUtils.stripToNull(settingsForm.getSettings().getLicense().getName());
