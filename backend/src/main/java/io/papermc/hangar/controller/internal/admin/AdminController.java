@@ -44,7 +44,6 @@ import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.service.internal.versions.VersionService;
 import jakarta.validation.Valid;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -122,11 +121,7 @@ public class AdminController extends HangarComponent {
     @RateLimit(overdraft = 1, refillSeconds = RateLimit.MAX_REFILL_DELAY, refillTokens = 1)
     @ResponseBody
     public List<String> updateHashes() {
-        try {
-            return this.versionService.updateFileHashes();
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.versionService.updateFileHashes();
     }
 
     @ResponseBody

@@ -95,7 +95,7 @@ async function saveRoles() {
 async function updateHashes() {
   loading.value = true;
   try {
-    const errors = await useInternalApi("admin/updateHashes", "post", undefined, { timeout: 30000 });
+    const errors = await useInternalApi("admin/updateHashes", "post", undefined, { timeout: 240000 });
     console.log(errors);
     notification.success("Updated hashes!");
   } catch (e: any) {
