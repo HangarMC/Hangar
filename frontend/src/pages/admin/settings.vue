@@ -95,7 +95,8 @@ async function saveRoles() {
 async function updateHashes() {
   loading.value = true;
   try {
-    await useInternalApi("admin/updateHashes", "post");
+    const errors = await useInternalApi("admin/updateHashes", "post", undefined, { timeout: 30000 });
+    console.log(errors);
     notification.success("Updated hashes!");
   } catch (e: any) {
     loading.value = false;
@@ -174,7 +175,7 @@ async function updateHashes() {
       <PageTitle>Update file hashes</PageTitle>
       Update file hashes stored in db from md5 to sha256.
       <br />
-      <Button button-type="red" @click="updateHashes" :disabled="loading">Run</Button>
+      <Button button-type="red" :disabled="loading" @click="updateHashes">Run</Button>
     </Card>
   </div>
 </template>

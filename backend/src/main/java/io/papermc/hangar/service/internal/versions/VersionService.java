@@ -25,8 +25,8 @@ import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.CryptoUtils;
 import io.papermc.hangar.util.StringUtils;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,22 +62,39 @@ public class VersionService extends HangarComponent {
     }
 
     @Transactional
-    public void updateFileHashes() throws IOException {
+    public List<String> updateFileHashes() throws IOException {
+        final List<String> errors = new ArrayList<>();
         for (final ProjectVersionDownloadTable downloadTable : this.projectVersionDownloadsDAO.getDownloads()) {
-            if (downloadTable.getHash() == null) {
+            if (downloadTable.getHash() == null || downloadTable.getFileName() == null) {
                 continue;
             }
 
             final ProjectVersionTable versionTable = this.projectVersionsDAO.getProjectVersionTable(downloadTable.getVersionId());
             final ProjectTable projectTable = this.projectsDAO.getById(versionTable.getProjectId());
             final List<ProjectVersionPlatformDownloadTable> platformDownloads = this.projectVersionDownloadsDAO.getPlatformDownloads(versionTable.getVersionId(), downloadTable.getId());
-            final Platform platform = platformDownloads.get(0).getPlatform();
+            if (platformDownloads.isEmpty()) {
+                errors.add("No platform downloads for " + projectTable.getOwnerName() + "/" + projectTable.getSlug() + "/" + versionTable.getVersionString() + "/" + downloadTable.getFileName());
+                continue;
+            }
 
-            final byte[] bytes = this.fileService.bytes(this.projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getSlug(),
-                versionTable.getVersionString(), platform, downloadTable.getFileName()));
+            final Platform platform = platformDownloads.get(0).getPlatform();
+            final String versionPath = this.projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getSlug(),
+                versionTable.getVersionString(), platform, downloadTable.getFileName());
+            if (!this.fileService.exists(versionPath)) {
+                errors.add("File does not exist at path " + versionPath);
+                continue;
+            }
+
+            final byte[] bytes = this.fileService.bytes(versionPath);
             final String hash = CryptoUtils.sha256ToHex(bytes);
+            if (hash == null) {
+                errors.add("Could not generate hash for " + versionPath);
+                continue;
+            }
+
             this.projectVersionDownloadsDAO.updateHash(downloadTable.getId(), hash);
         }
+        return errors;
     }
 
     public @Nullable ProjectVersionTable getProjectVersionTable(final Long versionId) {

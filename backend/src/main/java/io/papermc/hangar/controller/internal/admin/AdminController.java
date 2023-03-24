@@ -120,9 +120,10 @@ public class AdminController extends HangarComponent {
     @PostMapping(path = "/updateHashes")
     @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
     @RateLimit(overdraft = 1, refillSeconds = RateLimit.MAX_REFILL_DELAY, refillTokens = 1)
-    public void updateHashes() {
+    @ResponseBody
+    public List<String> updateHashes() {
         try {
-            this.versionService.updateFileHashes();
+            return this.versionService.updateFileHashes();
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
