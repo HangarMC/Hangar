@@ -52,7 +52,7 @@ public class PluginDataService {
                     throw new HangarApiException("version.new.error.metaNotFound");
                 }
             });
-            return new PluginFileWithData(jar.fileName(), bytes.length, CryptoUtils.md5ToHex(bytes), new PluginFileData(fileDataMap), userId);
+            return new PluginFileWithData(jar.fileName(), bytes.length, CryptoUtils.sha256ToHex(bytes), new PluginFileData(fileDataMap), userId);
         }
     }
 

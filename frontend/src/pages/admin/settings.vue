@@ -91,6 +91,17 @@ async function saveRoles() {
     handleRequestError(e);
   }
 }
+
+async function updateHashes() {
+  loading.value = true;
+  try {
+    await useInternalApi("admin/updateHashes", "post");
+    notification.success("Updated hashes!");
+  } catch (e: any) {
+    loading.value = false;
+    handleRequestError(e);
+  }
+}
 </script>
 
 <template>
@@ -122,44 +133,48 @@ async function saveRoles() {
         </span>
       </template>
     </Card>
-    <div class="mt-5">
-      <Card>
-        <PageTitle>Roles</PageTitle>
-        <Table class="w-full">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Category</th>
-              <th>Color</th>
-              <th>Rank</th>
-              <th>As tag</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="role in roles" :key="role.roleId">
-              <td>
-                <InputText v-model="role.title" />
-              </td>
-              <td>{{ role.roleCategory }}</td>
-              <td>
-                <InputText v-model="role.color" />
-              </td>
-              <td>
-                <InputText v-model="role.rank" :rules="[integer()]" />
-              </td>
-              <td>
-                <Tag :color="{ background: role.color }" :name="role.title" class="ml-1" />
-              </td>
-            </tr>
-          </tbody>
-        </Table>
+    <Card class="mt-5">
+      <PageTitle>Roles</PageTitle>
+      <Table class="w-full">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Color</th>
+            <th>Rank</th>
+            <th>As tag</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="role in roles" :key="role.roleId">
+            <td>
+              <InputText v-model="role.title" />
+            </td>
+            <td>{{ role.roleCategory }}</td>
+            <td>
+              <InputText v-model="role.color" />
+            </td>
+            <td>
+              <InputText v-model="role.rank" :rules="[integer()]" />
+            </td>
+            <td>
+              <Tag :color="{ background: role.color }" :name="role.title" class="ml-1" />
+            </td>
+          </tr>
+        </tbody>
+      </Table>
 
-        <template #footer>
-          <span class="flex justify-end items-center gap-2">
-            <Button :disabled="loading" @click="saveRoles"> {{ i18n.t("platformVersions.saveChanges") }}</Button>
-          </span>
-        </template>
-      </Card>
-    </div>
+      <template #footer>
+        <span class="flex justify-end items-center gap-2">
+          <Button :disabled="loading" @click="saveRoles"> {{ i18n.t("platformVersions.saveChanges") }}</Button>
+        </span>
+      </template>
+    </Card>
+    <Card class="mt-5">
+      <PageTitle>Update file hashes</PageTitle>
+      Update file hashes stored in db from md5 to sha256.
+      <br />
+      <Button button-type="red" @click="updateHashes" :disabled="loading">Run</Button>
+    </Card>
   </div>
 </template>

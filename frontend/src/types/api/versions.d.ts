@@ -18,7 +18,7 @@ declare module "hangar-api" {
   interface FileInfo {
     name: string;
     sizeBytes: number;
-    md5Hash: string;
+    sha256Hash: string;
   }
 
   interface ProjectChannel extends Model, Named {

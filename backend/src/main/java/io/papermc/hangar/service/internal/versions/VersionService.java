@@ -3,6 +3,7 @@ package io.papermc.hangar.service.internal.versions;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
+import io.papermc.hangar.db.dao.internal.table.versions.downloads.ProjectVersionDownloadsDAO;
 import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Permission;
@@ -10,6 +11,8 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
+import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable;
+import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
@@ -19,8 +22,11 @@ import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilityService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
+import io.papermc.hangar.util.CryptoUtils;
 import io.papermc.hangar.util.StringUtils;
+import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +40,7 @@ public class VersionService extends HangarComponent {
     private final HangarVersionsDAO hangarVersionsDAO;
     private final ProjectVisibilityService projectVisibilityService;
     private final ProjectVersionVisibilityService projectVersionVisibilityService;
+    private final ProjectVersionDownloadsDAO projectVersionDownloadsDAO;
     private final VersionDependencyService versionDependencyService;
     private final ProjectFiles projectFiles;
     private final ProjectsDAO projectsDAO;
@@ -41,16 +48,36 @@ public class VersionService extends HangarComponent {
     private final StatService statService;
 
     @Autowired
-    public VersionService(final ProjectVersionsDAO projectVersionDAO, final HangarVersionsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final ProjectVersionVisibilityService projectVersionVisibilityService, final VersionDependencyService versionDependencyService, final ProjectFiles projectFiles, final ProjectsDAO projectsDAO, final FileService fileService, final StatService statService) {
+    public VersionService(final ProjectVersionsDAO projectVersionDAO, final HangarVersionsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final ProjectVersionVisibilityService projectVersionVisibilityService, final ProjectVersionDownloadsDAO projectVersionDownloadsDAO, final VersionDependencyService versionDependencyService, final ProjectFiles projectFiles, final ProjectsDAO projectsDAO, final FileService fileService, final StatService statService) {
         this.projectVersionsDAO = projectVersionDAO;
         this.hangarVersionsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
         this.projectVersionVisibilityService = projectVersionVisibilityService;
+        this.projectVersionDownloadsDAO = projectVersionDownloadsDAO;
         this.versionDependencyService = versionDependencyService;
         this.projectFiles = projectFiles;
         this.projectsDAO = projectsDAO;
         this.fileService = fileService;
         this.statService = statService;
+    }
+
+    @Transactional
+    public void updateFileHashes() throws IOException {
+        for (final ProjectVersionDownloadTable downloadTable : this.projectVersionDownloadsDAO.getDownloads()) {
+            if (downloadTable.getHash() == null) {
+                continue;
+            }
+
+            final ProjectVersionTable versionTable = this.projectVersionsDAO.getProjectVersionTable(downloadTable.getVersionId());
+            final ProjectTable projectTable = this.projectsDAO.getById(versionTable.getProjectId());
+            final List<ProjectVersionPlatformDownloadTable> platformDownloads = this.projectVersionDownloadsDAO.getPlatformDownloads(versionTable.getVersionId(), downloadTable.getId());
+            final Platform platform = platformDownloads.get(0).getPlatform();
+
+            final byte[] bytes = this.fileService.bytes(this.projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getSlug(),
+                versionTable.getVersionString(), platform, downloadTable.getFileName()));
+            final String hash = CryptoUtils.sha256ToHex(bytes);
+            this.projectVersionDownloadsDAO.updateHash(downloadTable.getId(), hash);
+        }
     }
 
     public @Nullable ProjectVersionTable getProjectVersionTable(final Long versionId) {

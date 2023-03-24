@@ -13,7 +13,7 @@ public final class CryptoUtils {
     private CryptoUtils() {
     }
 
-    private static final char[] hexArray = "0123456789abcdef".toCharArray();
+    private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
 
     public static byte[] hmac(final String algo, final byte[] secret, final byte[] data) {
         Preconditions.checkArgument(secret.length != 0, "empty secret");
@@ -38,17 +38,17 @@ public final class CryptoUtils {
         int j = 0;
         while (j < bytes.length) {
             final int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
 
             j++;
         }
         return new String(hexChars);
     }
 
-    public static String md5ToHex(final byte[] bytes) {
+    public static String sha256ToHex(final byte[] bytes) {
         try {
-            return bytesToHex(MessageDigest.getInstance("MD5").digest(bytes));
+            return bytesToHex(MessageDigest.getInstance("SHA-256").digest(bytes));
         } catch (final NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
