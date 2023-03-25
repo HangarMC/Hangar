@@ -75,9 +75,14 @@ if (p && p.value) {
   await checkOffsetLargerCount();
 }
 
-watch(filters, () => (page.value = 0), { deep: true });
-watch(query, () => (page.value = 0));
-watch(activeSorter, () => (page.value = 0));
+const projectList = ref();
+function resetPage() {
+  projectList.value.updatePage(0);
+}
+
+watch(filters, resetPage, { deep: true });
+watch(query, resetPage);
+watch(activeSorter, resetPage);
 watchDebounced(
   requestParams,
   async () => {
@@ -211,7 +216,7 @@ useHead(meta);
     <Container lg="flex items-start gap-6">
       <!-- Projects -->
       <div v-if="projects" class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
-        <ProjectList :projects="projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage) => (page = newPage)" />
+        <ProjectList ref="projectList" :projects="projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage) => (page = newPage)" />
       </div>
       <!-- Sidebar -->
       <Card accent class="min-w-300px flex flex-col gap-4">
