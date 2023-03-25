@@ -96,7 +96,7 @@ public class JarScanningService {
         Severity highestSeverity = Severity.UNKNOWN;
         for (final ScanResult scanResult : scanResults) {
             for (final Check.CheckResult result : scanResult.results()) {
-                if (highestSeverity.compareTo(result.severity()) < 0) {
+                if (result.severity().compareTo(highestSeverity) < 0) {
                     highestSeverity = result.severity();
                 }
             }
