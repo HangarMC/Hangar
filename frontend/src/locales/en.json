@@ -231,10 +231,12 @@
       "step3": {
         "title": "Additional Settings",
         "description": "Optional: You can provide these additional settings, or change them in your project settings at any time after the project creation.",
+        "description2": "Selecting misleading tags or keywords can lead to your project being delisted.",
         "continue": "Continue",
         "back": "Back",
         "optional": "Optional",
         "links": "Links",
+        "tags": "Tags",
         "homepage": "Homepage",
         "issues": "Issue Tracker",
         "source": "Source Code",

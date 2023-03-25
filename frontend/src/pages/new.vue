@@ -5,7 +5,7 @@ import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { useHead } from "@vueuse/head";
 import { useVuelidate } from "@vuelidate/core";
-import { ProjectCategory } from "~/types/enums";
+import { ProjectCategory, Tag } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
 import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
@@ -26,6 +26,7 @@ import { Step } from "~/lib/types/components/design/Steps";
 import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
 import Alert from "~/lib/components/design/Alert.vue";
 import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
+import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 
 definePageMeta({
   loginRequired: true,
@@ -46,6 +47,7 @@ const form = ref<NewProjectForm>({
     donation: {} as ProjectSettingsForm["settings"]["donation"],
     keywords: [],
     links: [],
+    tags: [],
   } as unknown as ProjectSettingsForm["settings"],
 } as NewProjectForm);
 
@@ -206,6 +208,7 @@ function createProject() {
     </template>
     <template #additional>
       <p>{{ i18n.t("project.new.step3.description") }}</p>
+      <p class="font-bold">{{ i18n.t("project.new.step3.description2") }}</p>
       <div class="text-lg mt-4 flex gap-2 items-center">
         <IconMdiLink />
         {{ i18n.t("project.new.step3.links") }}
@@ -236,6 +239,19 @@ function createProject() {
           <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" :rules="[url()]" />
         </div>
       </div>
+      <div class="text-lg mt-6 flex gap-2 items-center">
+        <IconMdiTag />
+        {{ i18n.t("project.new.step3.tags") }}
+        <hr />
+      </div>
+      <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="form.settings.tags" :value="tag">
+        <template #label>
+          <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
+          <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
+          <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
+          <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
+        </template>
+      </InputCheckbox>
       <div class="text-lg mt-4 flex gap-2 items-center">
         <IconMdiCloudSearch />
         {{ i18n.t("project.new.step3.keywords") }}
