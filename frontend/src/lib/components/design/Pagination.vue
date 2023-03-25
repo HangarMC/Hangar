@@ -54,7 +54,7 @@ watch(
   }
 );
 
-defineExpose({ recalcPage, page });
+defineExpose({ recalcPage, page, updatePage });
 
 const emit = defineEmits<{
   (e: "update:page", value: number): void;
