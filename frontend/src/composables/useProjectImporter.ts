@@ -99,6 +99,8 @@ export async function convertSpigotProjects(spigotResources: SpigotResource[], o
         license: { type: "Unspecified" } as NewProjectForm["settings"]["license"],
         donation: {} as NewProjectForm["settings"]["donation"],
         keywords: [],
+        links: [],
+        tags: [],
       } as unknown as NewProjectForm["settings"],
       externalId: spigotResource.id,
       name: spigotResource.title,

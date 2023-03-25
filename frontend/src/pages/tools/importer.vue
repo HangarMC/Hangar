@@ -2,7 +2,7 @@
 import { useI18n } from "vue-i18n";
 import { useHead } from "@vueuse/head";
 import { useRoute } from "vue-router";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { NewProjectForm } from "hangar-internal";
 import { useVuelidate } from "@vuelidate/core";
 import { AxiosError } from "axios";
@@ -33,7 +33,8 @@ import Alert from "~/lib/components/design/Alert.vue";
 import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import InputGroup from "~/lib/components/ui/InputGroup.vue";
-import { ProjectCategory } from "~/types/enums";
+import { ProjectCategory, Tag } from "~/types/enums";
+import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -228,7 +229,6 @@ useHead(useSeo(t("importer.title"), null, route, null));
             <div class="text-xl mt-4"><Button @click="remove(project)">Remove</Button></div>
           </div>
           <div class="ml-4 flex-grow">
-            <!-- todo rules and shit -->
             <div class="text-xl">
               <InputText
                 v-model="project.name"
@@ -276,21 +276,22 @@ useHead(useSeo(t("importer.title"), null, route, null));
                   {{ t("project.new.step3.links") }}
                   <hr />
                 </div>
-                <div class="flex flex-wrap">
-                  <div class="basis-full mt-4">
-                    <InputText v-model.trim="project.settings.homepage" :label="t('project.new.step3.homepage')" :rules="[url()]" />
-                  </div>
-                  <div class="basis-full mt-4">
-                    <InputText v-model.trim="project.settings.issues" :label="t('project.new.step3.issues')" :rules="[url()]" />
-                  </div>
-                  <div class="basis-full mt-4">
-                    <InputText v-model.trim="project.settings.source" :label="t('project.new.step3.source')" :rules="[url()]" />
-                  </div>
-                  <div class="basis-full mt-4">
-                    <InputText v-model.trim="project.settings.support" :label="t('project.new.step3.support')" :rules="[url()]" />
-                  </div>
-                  <div class="basis-full mt-4"><InputText v-model.trim="project.settings.wiki" :label="t('project.new.step3.wiki')" :rules="[url()]" /></div>
+                <ProjectLinksForm v-model="project.settings.links" />
+
+                <div class="text-lg mt-6 flex gap-2 items-center">
+                  <IconMdiTag />
+                  {{ t("project.new.step3.tags") }}
+                  <hr />
                 </div>
+                <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="project.settings.tags" :value="tag">
+                  <template #label>
+                    <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
+                    <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
+                    <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
+                    <span class="ml-1">{{ t("project.settings.tags." + tag + ".title") }}</span>
+                  </template>
+                </InputCheckbox>
+
                 <div class="text-lg mt-6 flex gap-2 items-center">
                   <IconMdiLicense />
                   {{ t("project.new.step3.license") }}
