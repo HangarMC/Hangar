@@ -5,7 +5,6 @@ import { useAuthStore } from "~/store/auth";
 import { useCookies } from "~/composables/useCookies";
 import { useInternalApi } from "~/composables/useApi";
 import { authLog } from "~/lib/composables/useLog";
-import { useConfig } from "~/lib/composables/useConfig";
 import { handleRequestError, useRequestEvent } from "#imports";
 import { useAxios } from "~/composables/useAxios";
 import { useNotificationStore } from "~/lib/store/notification";
@@ -16,12 +15,12 @@ class Auth {
     if (redirectUrl.endsWith("?loggedOut")) {
       redirectUrl = redirectUrl.replace("?loggedOut", "");
     }
-    return `/login?returnUrl=${useConfig().publicHost}${redirectUrl}`;
+    return `/login?returnUrl=${redirectUrl}`;
   }
 
   async logout() {
     const result = await useAxios()
-      .get(`/logout?returnUrl=${useConfig().publicHost}?loggedOut`)
+      .get(`/logout?returnUrl=/?loggedOut`)
       .catch((e) => handleRequestError(e));
     if (result?.status === 200 && result?.data) {
       location.replace(result?.data);

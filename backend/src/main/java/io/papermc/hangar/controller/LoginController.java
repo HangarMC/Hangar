@@ -17,6 +17,8 @@ import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.internal.auth.SSOService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,9 +53,9 @@ public class LoginController extends HangarComponent {
 
             final UserTable fakeUser = this.authenticationService.loginAsFakeUser();
             this.tokenService.issueRefreshToken(fakeUser);
-            return this.addBaseAndRedirect(returnUrl);
+            return this.addBaseAndRedirect(this.cutoffAbsoluteUrls(returnUrl));
         } else {
-            this.response.addCookie(new Cookie("url", returnUrl));
+            this.response.addCookie(new Cookie("url", this.cutoffAbsoluteUrls(returnUrl)));
             return this.redirectToSso(this.ssoService.getLoginUrl(this.config.getBaseUrl() + "/login"));
         }
     }
@@ -70,7 +72,18 @@ public class LoginController extends HangarComponent {
             throw new HangarApiException("nav.user.error.invalidUsername");
         }
         this.tokenService.issueRefreshToken(user);
-        return this.addBaseAndRedirect(url);
+        return this.addBaseAndRedirect(this.cutoffAbsoluteUrls(url));
+    }
+
+    private String cutoffAbsoluteUrls(final String url) {
+        try {
+            if (!new URI(url).isAbsolute()) {
+                return url;
+            }
+        } catch (final URISyntaxException ignored) {
+            // ignored
+        }
+        return "/";
     }
 
     @ResponseBody
@@ -93,16 +106,16 @@ public class LoginController extends HangarComponent {
     @GetMapping(path = "/logout", params = "returnUrl")
     public String logout(@RequestParam(defaultValue = "/?loggedOut") final String returnUrl) {
         if (this.config.fakeUser.enabled()) {
-            this.response.addCookie(new Cookie("url", returnUrl));
+            this.response.addCookie(new Cookie("url", this.cutoffAbsoluteUrls(returnUrl)));
             return "/fake-logout";
         } else {
-            this.response.addCookie(new Cookie("url", returnUrl));
+            this.response.addCookie(new Cookie("url", this.cutoffAbsoluteUrls(returnUrl)));
             final Optional<HangarPrincipal> principal = this.getOptionalHangarPrincipal();
             if (principal.isPresent()) {
                 return this.ssoService.getLogoutUrl(this.config.getBaseUrl() + "/handle-logout", principal.get()).url();
             } else {
                 this.tokenService.invalidateToken(null);
-                return this.addBase(returnUrl);
+                return this.addBase(this.cutoffAbsoluteUrls(returnUrl));
             }
         }
     }
@@ -118,7 +131,7 @@ public class LoginController extends HangarComponent {
         if (session != null) {
             session.invalidate();
         }
-        return this.addBaseAndRedirect(returnUrl);
+        return this.addBaseAndRedirect(this.cutoffAbsoluteUrls(returnUrl));
     }
 
     @GetMapping(path = "/handle-logout", params = "state")
@@ -143,7 +156,7 @@ public class LoginController extends HangarComponent {
         if (session != null) {
             session.invalidate();
         }
-        return this.addBaseAndRedirect(returnUrl);
+        return this.addBaseAndRedirect(this.cutoffAbsoluteUrls(returnUrl));
     }
 
     @GetMapping("/signup")
@@ -151,7 +164,7 @@ public class LoginController extends HangarComponent {
         if (this.config.fakeUser.enabled()) {
             throw new HangarApiException("nav.user.error.fakeUserEnabled", "Signup");
         }
-        return new RedirectView(this.ssoService.getSignupUrl(returnUrl));
+        return new RedirectView(this.ssoService.getSignupUrl(this.cutoffAbsoluteUrls(returnUrl)));
     }
 
     @PostMapping("/sync")
