@@ -65,7 +65,7 @@ const _authUrl = computed(() => authUrl(route.params.user as string));
 const selectedRole = ref();
 async function processRole(add: boolean) {
   try {
-    await useInternalApi("/admin/user/" + route.params.user + "/" + selectedRole.value, add ? "POST" : "DELETE");
+    await useInternalApi("admin/user/" + route.params.user + "/" + selectedRole.value, add ? "POST" : "DELETE");
     if (user?.value) {
       user.value = await useApi<User>(("users/" + route.params.user) as string);
     }
