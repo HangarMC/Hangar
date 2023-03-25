@@ -34,6 +34,7 @@ import { definePageMeta } from "#imports";
 import { Tab } from "~/lib/types/components/design/Tabs";
 import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
+import Tooltip from "~/lib/components/design/Tooltip.vue";
 
 definePageMeta({
   projectPermsRequired: ["EDIT_SUBJECT_SETTINGS"],
@@ -294,6 +295,10 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
                 <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
                 <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
                 <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
+                <Tooltip>
+                  <template #content> {{ i18n.t("project.settings.tags." + tag + ".description") }} </template>
+                  <IconMdiHelpCircleOutline class="ml-1 text-gray-500 dark:text-gray-400 text-sm" />
+                </Tooltip>
               </template>
             </InputCheckbox>
           </ProjectSettingsSection>

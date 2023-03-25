@@ -27,6 +27,7 @@ import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
 import Alert from "~/lib/components/design/Alert.vue";
 import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
+import Tooltip from "~/lib/components/design/Tooltip.vue";
 
 definePageMeta({
   loginRequired: true,
@@ -208,7 +209,6 @@ function createProject() {
     </template>
     <template #additional>
       <p>{{ i18n.t("project.new.step3.description") }}</p>
-      <p class="font-bold">{{ i18n.t("project.new.step3.description2") }}</p>
       <div class="text-lg mt-4 flex gap-2 items-center">
         <IconMdiLink />
         {{ i18n.t("project.new.step3.links") }}
@@ -244,12 +244,17 @@ function createProject() {
         {{ i18n.t("project.new.step3.tags") }}
         <hr />
       </div>
+      <p class="mb-1">{{ i18n.t("project.new.step3.description2") }}</p>
       <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="form.settings.tags" :value="tag">
         <template #label>
           <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
           <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
           <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
           <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
+          <Tooltip>
+            <template #content> {{ i18n.t("project.settings.tags." + tag + ".description") }} </template>
+            <IconMdiHelpCircleOutline class="ml-1 text-gray-500 dark:text-gray-400 text-sm" />
+          </Tooltip>
         </template>
       </InputCheckbox>
       <div class="text-lg mt-4 flex gap-2 items-center">
