@@ -61,7 +61,7 @@ public class JarScanningService {
             Severity highestSeverity = Severity.UNKNOWN;
             for (final Platform platform : platforms) {
                 final Severity severity = this.scan(versionId, platform);
-                if (highestSeverity.compareTo(severity) < 0) {
+                if (severity.compareTo(highestSeverity) < 0) {
                     highestSeverity = severity;
                 }
             }
@@ -80,11 +80,11 @@ public class JarScanningService {
     }
 
     public Severity scan(final long versionId, final Platform platform) {
-        final Resource resource = this.getFile(versionId, platform);
+        final NamedResource resource = this.getFile(versionId, platform);
 
         final List<ScanResult> scanResults;
-        try (final InputStream inputStream = resource.getInputStream()) {
-            scanResults = this.scanner.scanJar(inputStream, resource.getFilename());
+        try (final InputStream inputStream = resource.resource().getInputStream()) {
+            scanResults = this.scanner.scanJar(inputStream, resource.name());
         } catch (final IOException e) {
             return Severity.UNKNOWN;
         }
@@ -110,7 +110,7 @@ public class JarScanningService {
         return highestSeverity;
     }
 
-    private Resource getFile(final long versionId, final Platform platform) {
+    private NamedResource getFile(final long versionId, final Platform platform) {
         final ProjectVersionTable pvt = this.projectVersionsDAO.getProjectVersionTable(versionId);
         if (pvt == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
@@ -127,10 +127,13 @@ public class JarScanningService {
         if (!this.fileService.exists(path)) {
             throw new HangarApiException("Couldn't find a file for version " + versionId);
         }
-        return this.fileService.getResource(path);
+        return new NamedResource(this.fileService.getResource(path), download.getFileName());
     }
 
     public JarScanResultTable getLastResult(final long versionId, final Platform platform) {
         return this.dao.getLastResult(versionId, platform);
+    }
+
+    private record NamedResource(Resource resource, String name) {
     }
 }
