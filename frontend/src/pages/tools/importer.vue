@@ -178,14 +178,17 @@ function createProject(project: NewProjectForm) {
     });
 }
 
+const loggedIn = useAuthStore().user !== null;
+
 useHead(useSeo(t("importer.title"), null, route, null));
 </script>
 
 <template>
   <div>
     <PageTitle>{{ t("importer.title") }}</PageTitle>
+    <p v-if="!loggedIn">{{ t("importer.notLoggedIn") }}</p>
 
-    <Steps v-model="selectedStep" :steps="steps" button-lang-key="importer.step">
+    <Steps v-else v-model="selectedStep" :steps="steps" button-lang-key="importer.step">
       <template #intro>
         <p>{{ t("importer.step1.text1") }}</p>
         <p class="inline-flex items-center space-x-2">

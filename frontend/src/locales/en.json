@@ -904,6 +904,7 @@
   },
   "importer": {
     "title": "Import Projects",
+    "notLoggedIn": "You need to be logged in to use the project importer.",
     "step1": {
       "title": "Intro",
       "text1": "This page allows you to import projects from other platforms.",
