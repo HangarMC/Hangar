@@ -86,38 +86,33 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
       </Link>
     </PageTitle>
     <div class="flex lt-md:flex-col mb-2 gap-2">
-      <Card class="basis-full md:basis-8/12">
+      <Card class="basis-full">
         <template #header>{{ i18n.t("userAdmin.roles") }}</template>
         <div class="space-x-1">
           <Tag v-for="roleId in user?.roles" :key="roleId" :color="{ background: getRole(roleId).color }" :name="getRole(roleId).title" />
         </div>
 
-        <div class="flex mt-2">
+        <div class="flex mt-2 items-center">
           <div class="flex-grow">
-            <InputSelect v-model="selectedRole" :values="useBackendData.globalRoles.filter((role) => role.assignable)" item-text="title" item-value="value" />
+            <InputSelect
+              v-model="selectedRole"
+              :values="useBackendData.globalRoles.filter((r) => r.value !== 'Organization')"
+              item-text="title"
+              item-value="value"
+            />
           </div>
-          <div>
-            <Button size="medium" :disabled="!selectedRole || user?.roles.some((r) => getRole(r).value === selectedRole)" @click="processRole(true)">
-              {{ i18n.t("general.add") }}
-            </Button>
-          </div>
-          <div class="ml-2">
-            <Button size="medium" :disabled="!selectedRole || !user?.roles.some((r) => getRole(r).value === selectedRole)" @click="processRole(false)">
-              {{ i18n.t("general.delete") }}
-            </Button>
-          </div>
+          <Button size="medium" :disabled="!selectedRole || user?.roles.some((r) => getRole(r).value === selectedRole)" class="ml-1" @click="processRole(true)">
+            {{ i18n.t("general.add") }}
+          </Button>
+          <Button
+            size="medium"
+            :disabled="!selectedRole || !user?.roles.some((r) => getRole(r).value === selectedRole)"
+            @click="processRole(false)"
+            class="ml-1"
+          >
+            {{ i18n.t("general.delete") }}
+          </Button>
         </div>
-      </Card>
-      <Card class="basis-full md:basis-4/12">
-        <template #header>{{ i18n.t("userAdmin.sidebar") }}</template>
-        <ul>
-          <li>
-            <Link :href="_authUrl">{{ i18n.t("userAdmin.hangarAuth") }}</Link>
-          </li>
-          <li>
-            <Link :href="_forumUserUrl">{{ i18n.t("userAdmin.forum") }}</Link>
-          </li>
-        </ul>
       </Card>
     </div>
 
@@ -139,7 +134,8 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
           {{ getRole(orgs[item.name].roleId).title }}
         </template>
         <template #item_accepted="{ item }">
-          <InputCheckbox v-model="orgs[item.name].accepted" :disabled="true" />
+          <IconMdiCheck v-if="orgs[item.name].accepted" class="text-green" />
+          <IconMdiClose v-else class="text-red" />
         </template>
       </SortableTable>
     </Card>
@@ -157,12 +153,13 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
             {{ item.namespace.owner }}
           </Link>
         </template>
-        <template #item_role="{ item }">
-          <!-- todo add role -->
-          &lt;{{ item.name }}'s role&gt;
-        </template>
+        <!-- todo -->
+        <!--<template #item_role="{ item }">
+          {{ item.name }}
+        </template>-->
         <template #item_accepted="{ item }">
-          <InputCheckbox :model-value="item.visibility === 'public'" :disabled="true" />
+          <IconMdiCheck v-if="item.visibility === 'public'" class="text-green" />
+          <IconMdiClose v-else class="text-red" />
         </template>
       </SortableTable>
     </Card>
