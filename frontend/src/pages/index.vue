@@ -16,7 +16,7 @@ import Container from "~/lib/components/design/Container.vue";
 import { useSeo } from "~/composables/useSeo";
 import { useApi } from "~/composables/useApi";
 import Alert from "~/lib/components/design/Alert.vue";
-import { Platform } from "~/types/enums";
+import { Platform, Tag } from "~/types/enums";
 import InputRadio from "~/lib/components/ui/InputRadio.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
@@ -42,6 +42,7 @@ const filters = ref({
   categories: toArray(route.query.category),
   platform: (route.query.platform || null) as string | null,
   licenses: toArray(route.query.license),
+  tags: toArray(route.query.tag),
 });
 
 const activeSorter = ref<string>((route.query.sort as string) || "-stars");
@@ -59,6 +60,7 @@ const requestParams = computed(() => {
     category: filters.value.categories,
     platform: filters.value.platform !== null ? [filters.value.platform] : [],
     license: filters.value.licenses,
+    tag: filters.value.tags,
   };
   if (query.value) {
     params.q = query.value;
@@ -246,6 +248,19 @@ useHead(meta);
           <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions") }}</h4>
           <div class="max-h-40 overflow-auto">
             <VersionSelector v-model="filters.versions" :versions="versions(filters.platform)" :open="false" col />
+          </div>
+        </div>
+        <div class="tags">
+          <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.tags") }}</h4>
+          <div class="flex flex-col gap-1">
+            <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="filters.tags" :value="tag">
+              <template #label>
+                <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
+                <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
+                <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
+                <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
+              </template>
+            </InputCheckbox>
           </div>
         </div>
         <div class="categories">

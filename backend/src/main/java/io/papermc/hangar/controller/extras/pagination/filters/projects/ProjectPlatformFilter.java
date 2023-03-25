@@ -64,7 +64,7 @@ public class ProjectPlatformFilter implements Filter<ProjectPlatformFilter.Proje
 
         @Override
         public String toString() {
-            return "ProjectCategoryFilterInstance{" +
+            return "ProjectPlatformFilterInstance{" +
                 "platforms=" + Arrays.toString(this.platforms) +
                 '}';
         }

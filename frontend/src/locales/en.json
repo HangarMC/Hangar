@@ -58,7 +58,8 @@
       "categories": "Categories",
       "licenses": "Licenses",
       "versions": "Minecraft versions",
-      "platforms": "Platforms"
+      "platforms": "Platforms",
+      "tags": "Tags"
     },
     "subtitle": "A Minecraft package repository",
     "sponsoredBy": "Sponsored by"
