@@ -7,6 +7,7 @@ import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.versions.JarScanningService;
+import java.io.IOException;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -39,6 +40,10 @@ public class JarScanningController {
     @ResponseBody
     @PostMapping("/scan/{platform}/{versionId}")
     public void scan(@PathVariable final Platform platform, @PathVariable final long versionId)  {
-        this.jarScanningService.scan(versionId, platform);
+        try {
+            this.jarScanningService.scan(versionId, platform);
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

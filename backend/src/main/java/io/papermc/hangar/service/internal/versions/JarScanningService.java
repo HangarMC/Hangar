@@ -60,7 +60,12 @@ public class JarScanningService {
         EXECUTOR_SERVICE.execute(() -> {
             Severity highestSeverity = Severity.UNKNOWN;
             for (final Platform platform : platforms) {
-                final Severity severity = this.scan(versionId, platform);
+                Severity severity = Severity.HIGH;
+                try {
+                    severity = this.scan(versionId, platform);
+                } catch (final IOException ignored) {
+                }
+
                 if (severity.compareTo(highestSeverity) < 0) {
                     highestSeverity = severity;
                 }
@@ -79,14 +84,12 @@ public class JarScanningService {
         }
     }
 
-    public Severity scan(final long versionId, final Platform platform) {
+    public Severity scan(final long versionId, final Platform platform) throws IOException {
         final NamedResource resource = this.getFile(versionId, platform);
 
         final List<ScanResult> scanResults;
         try (final InputStream inputStream = resource.resource().getInputStream()) {
             scanResults = this.scanner.scanJar(inputStream, resource.name());
-        } catch (final IOException e) {
-            return Severity.UNKNOWN;
         }
 
         // find the highest severity
