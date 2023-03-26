@@ -53,7 +53,7 @@ const isUnderReview = computed<boolean>(() => projectVersion.value?.reviewState 
 const currentVisibility = computed(() => useBackendData.visibilities.find((v) => v.name === projectVersion.value?.visibility));
 const editingPage = ref(false);
 const confirmationWarningKey = computed<string | null>(() => {
-  if (projectVersion.value?.reviewState !== ReviewState.REVIEWED && projectVersion.value?.reviewState !== ReviewState.PARTIALLY_REVIEWED) {
+  if (projectVersion.value?.reviewState !== ReviewState.REVIEWED) {
     return "version.page.unsafeWarning";
   }
   for (const platform in projectVersion.value?.downloads) {

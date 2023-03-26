@@ -89,7 +89,7 @@ public class ReviewService extends HangarComponent {
     }
 
     @Transactional
-    public void autoReview(final long versionId) {
+    public void autoReview(final long versionId, final boolean partial) {
         final UserTable jarScannerUser = this.userService.getUserTable(JarScanningService.JAR_SCANNER_USER);
         ProjectVersionReviewTable projectVersionReviewTable = new ProjectVersionReviewTable(versionId, jarScannerUser.getUserId());
         projectVersionReviewTable.setEndedAt(OffsetDateTime.now());
@@ -98,13 +98,13 @@ public class ReviewService extends HangarComponent {
             projectVersionReviewTable.getId(),
             "[AUTO] Automated review",
             new JSONB("{}"),
-            ReviewAction.PARTIALLY_APPROVE
+            partial ? ReviewAction.PARTIALLY_APPROVE : ReviewAction.APPROVE
         ));
 
         final ProjectVersionTable projectVersionTable = this.projectVersionsDAO.getProjectVersionTable(versionId);
         final ReviewState oldState = projectVersionTable.getReviewState();
         if (oldState != ReviewState.REVIEWED) {
-            projectVersionTable.setReviewState(ReviewState.PARTIALLY_REVIEWED);
+            projectVersionTable.setReviewState(partial ? ReviewState.PARTIALLY_REVIEWED : ReviewState.REVIEWED);
             this.projectVersionsDAO.update(projectVersionTable);
         }
     }

@@ -56,7 +56,7 @@ public class JarScanningService {
         this.reviewService = reviewService;
     }
 
-    public void scanAsync(final long versionId, final Collection<Platform> platforms) {
+    public void scanAsync(final long versionId, final Collection<Platform> platforms, final boolean partial) {
         EXECUTOR_SERVICE.execute(() -> {
             Severity highestSeverity = Severity.UNKNOWN;
             for (final Platform platform : platforms) {
@@ -71,14 +71,14 @@ public class JarScanningService {
                 }
             }
 
-            this.applyReview(highestSeverity, versionId);
+            this.applyReview(highestSeverity, versionId, partial);
         });
     }
 
     @Transactional
-    void applyReview(final Severity severity, final long versionId) {
+    void applyReview(final Severity severity, final long versionId, final boolean partial) {
         if (Severity.HIGH.compareTo(severity) < 0) {
-            this.reviewService.autoReview(versionId);
+            this.reviewService.autoReview(versionId, partial);
         } else if (severity == Severity.HIGHEST) {
             // TODO: state for requires changes or requires manual review
         }

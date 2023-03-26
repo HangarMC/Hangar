@@ -79,7 +79,7 @@ enum ConfirmationType {
 function requiresConfirmation(): ConfirmationType {
   for (const platform in props.project.mainChannelVersions) {
     const version = props.project.mainChannelVersions[platform as Platform];
-    if (version.reviewState !== ReviewState.REVIEWED && version.reviewState !== ReviewState.PARTIALLY_REVIEWED) {
+    if (version.reviewState !== ReviewState.REVIEWED) {
       return ConfirmationType.REQUIRED;
     }
 

@@ -311,12 +311,18 @@ public class VersionFactory extends HangarComponent {
             this.usersApiService.clearAuthorsCache();
 
             final List<Platform> platformsToScan = new ArrayList<>();
+            boolean hasExternalLink = false;
             for (final PendingVersionFile file : pendingVersion.getFiles()) {
                 if (file.fileInfo() != null) {
                     platformsToScan.add(file.platforms().get(0));
+                } else {
+                    hasExternalLink = true;
                 }
             }
-            this.jarScanningService.scanAsync(projectVersionTable.getVersionId(), platformsToScan);
+
+            if (!platformsToScan.isEmpty()) {
+                this.jarScanningService.scanAsync(projectVersionTable.getVersionId(), platformsToScan, hasExternalLink);
+            }
         } catch (final HangarApiException e) {
             throw e;
         } catch (final Exception e) {
