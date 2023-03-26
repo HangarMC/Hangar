@@ -22,15 +22,13 @@ public class ProjectVisibilityService extends VisibilityService<ProjectContext, 
     private final ProjectsDAO projectsDAO;
     private final VisibilityDAO visibilityDAO;
     private final JobService jobService;
-    private final ProjectService projectService;
 
     @Autowired
-    public ProjectVisibilityService(final VisibilityDAO visibilityDAO, final ProjectsDAO projectsDAO, final JobService jobService, @Lazy final ProjectService projectService) {
+    public ProjectVisibilityService(final VisibilityDAO visibilityDAO, final ProjectsDAO projectsDAO, final JobService jobService) {
         super(ProjectVisibilityChangeTable::new, LogAction.PROJECT_VISIBILITY_CHANGED);
         this.projectsDAO = projectsDAO;
         this.visibilityDAO = visibilityDAO;
         this.jobService = jobService;
-        this.projectService = projectService;
     }
 
     @Override

@@ -34,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface IVersionsController {
 
     @Operation(
-        summary ="Creates a new version and returns parts of its metadata",
+        summary = "Creates a new version and returns parts of its metadata",
         operationId = "uploadVersion",
         description = "Creates a new version for a project. Requires the `create_version` permission in the project or owning organization.",
         security = @SecurityRequirement(name = "HangarAuth", scopes = "create_version"),
