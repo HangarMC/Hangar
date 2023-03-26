@@ -96,11 +96,13 @@ async function savePage(content: string) {
   }
 }
 
+const pinnedStatus = ref(projectVersion.value?.pinnedStatus);
+
 async function setPinned(value: boolean) {
   try {
     await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/pinned?value=${value}`, "post");
+    pinnedStatus.value = value ? PinnedStatus.VERSION : PinnedStatus.NONE;
     notification.success(i18n.t(`version.page.pinned.request.${value}`));
-    router.go(0);
   } catch (e) {
     handleRequestError(e as AxiosError);
   }
@@ -205,17 +207,13 @@ async function restoreVersion() {
         <div class="flex gap-2 flex-wrap mt-2">
           <Tooltip>
             <template #content>
-              <span v-if="projectVersion.pinnedStatus === PinnedStatus.CHANNEL">{{ i18n.t("version.page.pinned.tooltip.channel") }}</span>
-              <span v-else>{{ i18n.t(`version.page.pinned.tooltip.${projectVersion.pinnedStatus.toLowerCase()}`) }}</span>
+              <span v-if="pinnedStatus === PinnedStatus.CHANNEL">{{ i18n.t("version.page.pinned.tooltip.channel") }}</span>
+              <span v-else>{{ i18n.t(`version.page.pinned.tooltip.${pinnedStatus.toLowerCase()}`) }}</span>
             </template>
-            <Button
-              size="small"
-              :disabled="projectVersion.pinnedStatus === PinnedStatus.CHANNEL"
-              @click="setPinned(projectVersion.pinnedStatus === PinnedStatus.NONE)"
-            >
-              <IconMdiPinOff v-if="projectVersion.pinnedStatus !== PinnedStatus.NONE" class="mr-1" />
+            <Button size="small" :disabled="pinnedStatus === PinnedStatus.CHANNEL" @click="setPinned(pinnedStatus === PinnedStatus.NONE)">
+              <IconMdiPinOff v-if="pinnedStatus !== PinnedStatus.NONE" class="mr-1" />
               <IconMdiPin v-else class="mr-1" />
-              {{ i18n.t(`version.page.pinned.button.${projectVersion.pinnedStatus.toLowerCase()}`) }}
+              {{ i18n.t(`version.page.pinned.button.${pinnedStatus.toLowerCase()}`) }}
             </Button>
           </Tooltip>
 

@@ -121,6 +121,6 @@ export enum ChannelFlag {
 
 export enum PinnedStatus {
   CHANNEL = "CHANNEL",
-  RELEASE = "RELEASE",
+  VERSION = "VERSION",
   NONE = "NONE",
 }
