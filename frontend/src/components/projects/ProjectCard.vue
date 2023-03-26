@@ -9,37 +9,43 @@ import Tooltip from "~/lib/components/design/Tooltip.vue";
 import { Tag, Visibility } from "~/types/enums";
 import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
 import PrettyTime from "~/lib/components/design/PrettyTime.vue";
+import IconMdiPuzzleOutline from "~icons/mdi/puzzle-outline";
+import IconMdiBookshelf from "~icons/mdi/bookshelf";
+import IconMdiLeaf from "~icons/mdi/leaf";
+import IconMdiStar from "~icons/mdi/star";
+import IconMdiDownload from "~icons/mdi/download";
+import IconMdiCalendar from "~icons/mdi/calendar";
+import IconMdiCancel from "~icons/mdi/cancel";
+import IconMdiEyeOff from "~icons/mdi/eye-off";
 
 const i18n = useI18n();
 
 const props = defineProps<{
   project: Project;
 }>();
-
-function getBorderClasses(): string {
-  if (props.project.visibility === Visibility.SOFT_DELETE) {
-    return "!border-red-500 border-1px";
-  }
-  return props.project.visibility === Visibility.PUBLIC ? "!border-gray-300 !dark:border-gray-700 border-1px" : "";
-}
 </script>
 
 <template>
-  <Card :class="getBorderClasses()">
+  <Card
+    :class="{
+      '!border-red-500 border-1px': project.visibility === Visibility.SOFT_DELETE,
+      '!border-gray-300 !dark:border-gray-700 border-1px': project.visibility === Visibility.PUBLIC,
+    }"
+  >
     <div class="flex space-x-4">
       <div>
         <UserAvatar :username="project.namespace.owner" :to="'/' + project.namespace.owner + '/' + project.name" :img-src="project.avatarUrl" size="md" />
       </div>
       <div class="overflow-clip overflow-hidden min-w-0">
-        <h2 class="inline-flex items-center gap-x-1">
-          <span>
+        <div class="inline-flex items-center gap-x-1">
+          <h2 class="inline-flex items-center gap-x-1">
             <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">{{ project.name }}</Link>
             by
             <Link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</Link>
-          </span>
-          <IconMdiCancel v-if="project.visibility === Visibility.SOFT_DELETE"></IconMdiCancel>
-          <IconMdiEyeOff v-else-if="project.visibility !== Visibility.PUBLIC"></IconMdiEyeOff>
-        </h2>
+          </h2>
+          <IconMdiCancel v-show="project.visibility === Visibility.SOFT_DELETE" />
+          <IconMdiEyeOff v-show="project.visibility !== Visibility.PUBLIC" />
+        </div>
 
         <h3 v-if="project.description" class="mb-1">{{ project.description }}</h3>
         <div class="inline-flex items-center text-gray-500 dark:text-gray-400 lt-sm:hidden">
