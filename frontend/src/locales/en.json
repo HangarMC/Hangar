@@ -171,6 +171,7 @@
       "watched": "You are now watching the resource",
       "unwatched": "You are no longer watching the resource",
       "flag": "Report",
+      "openReport": "You still have an unresolved report on this resource",
       "star": "Star",
       "unstar": "Unstar",
       "starred": "You starred the resource",
@@ -183,7 +184,7 @@
     },
     "flag": {
       "flagProject": "Report {0}?",
-      "flagSend": "Successfully reported, thanks for making this community a better place!",
+      "flagSend": "Your report has been submitted",
       "flagSent": "Report submitted for review",
       "flags": {
         "inappropriateContent": "Inappropriate Content",

@@ -33,6 +33,7 @@ const starred = ref(props.project.userActions.starred);
 const watching = ref(props.project.userActions.watching);
 const starredCount = ref(props.project.stats.stars);
 const watchingCount = ref(props.project.stats.watchers);
+const reported = ref(props.project.userActions.flagged);
 
 const isOwn = computed(() => !user || user.name === props.project.namespace.owner);
 
@@ -126,9 +127,9 @@ function requiresConfirmation(): ConfirmationType {
             :to="'/' + project.namespace.owner + '/' + project.name"
             :img-src="project.avatarUrl"
           />
-          <router-link class="!sm:ml-0 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner">{{
-            project.namespace.owner
-          }}</router-link>
+          <router-link class="!sm:ml-0 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner">
+            {{ project.namespace.owner }}
+          </router-link>
           <span class="text-gray-500 dark:text-gray-400"> / </span>
           <router-link class="px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner + '/' + project.name">
             <h1 class="font-semibold">{{ project.name }}</h1>
@@ -171,7 +172,7 @@ function requiresConfirmation(): ConfirmationType {
             </Button>
           </Tooltip>
           <div class="px-1"></div>
-          <FlagModal :project="project" :disabled="isOwn" />
+          <FlagModal :project="project" :disabled="isOwn" :open-report="reported" @reported="reported = true" />
         </div>
       </div>
     </div>

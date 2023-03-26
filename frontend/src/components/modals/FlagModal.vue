@@ -16,7 +16,12 @@ import { useNotificationStore } from "~/lib/store/notification";
 
 const props = defineProps<{
   project: HangarProject;
+  openReport: boolean;
   disabled?: boolean;
+}>();
+
+const emit = defineEmits<{
+  (e: "reported"): void;
 }>();
 
 const i18n = useI18n();
@@ -32,9 +37,9 @@ async function submit(close: () => void) {
       reason: flagReason.value,
       comment: flagComment.value,
     });
+    emit("reported");
     close();
     useNotificationStore().success(i18n.t("project.flag.flagSend"));
-    await router.go(0);
   } catch (e) {
     handleRequestError(e);
   }
@@ -45,15 +50,22 @@ async function submit(close: () => void) {
   <Modal :title="i18n.t('project.flag.flagProject', [project.name])" window-classes="w-150">
     <template #default="{ on }">
       <InputRadio v-for="(reason, index) in useBackendData.flagReasons" :key="index" v-model="flagReason" :label="i18n.t(reason.title)" :value="reason.type" />
-      <div class="py-2"></div>
+      <div class="py-2" />
       <InputTextarea v-model.trim="flagComment" rows="3" :rules="[required()]" :label="i18n.t('general.comment')" />
 
       <Button class="mt-3" @click="submit(on.click)">{{ i18n.t("general.submit") }}</Button>
     </template>
     <template #activator="{ on }">
       <Tooltip>
-        <template #content> {{ i18n.t("project.actions.flag") }} </template>
-        <Button button-type="secondary" size="small" :disabled="project.userActions.flagged || disabled" v-on="on">
+        <template #content>
+          <span v-if="openReport">
+            {{ i18n.t("project.actions.openReport") }}
+          </span>
+          <span v-else>
+            {{ i18n.t("project.actions.flag") }}
+          </span>
+        </template>
+        <Button button-type="secondary" size="small" :disabled="openReport || disabled" v-on="on">
           <IconMdiFlag />
           <span class="w-0 overflow-hidden !m-0">0</span>
         </Button>
