@@ -34,8 +34,8 @@ useHead(useSeo(i18n.t("project.watchers") + " | " + props.project.name, props.pr
         <Link :to="'/' + watcher.name">{{ watcher.name }}</Link>
       </div>
     </div>
-    <Alert v-else type="warning">
+    <div v-else>
       {{ i18n.t("project.noWatchers") }}
-    </Alert>
+    </div>
   </Card>
 </template>

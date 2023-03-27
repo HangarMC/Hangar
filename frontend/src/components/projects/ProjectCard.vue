@@ -38,10 +38,14 @@ const props = defineProps<{
       </div>
       <div class="overflow-clip overflow-hidden min-w-0">
         <div class="inline-flex items-center gap-x-1">
-          <h2 class="inline-flex items-center gap-x-1">
-            <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">{{ project.name }}</Link>
-            by
-            <Link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</Link>
+          <h2>
+            <router-link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
+              <span class="text-lg font-bold">{{ project.name }}</span>
+            </router-link>
+            <span class="text-sm">
+              by
+              <Link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</Link>
+            </span>
           </h2>
           <IconMdiCancel v-show="project.visibility === Visibility.SOFT_DELETE" />
           <IconMdiEyeOff v-show="project.visibility !== Visibility.PUBLIC" />

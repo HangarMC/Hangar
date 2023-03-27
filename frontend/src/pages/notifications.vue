@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import { HangarNotification, Invite, Invites } from "hangar-internal";
+import { HangarNotification, Invite } from "hangar-internal";
 import { computed, ref, type Ref } from "vue";
 import { useHead } from "@vueuse/head";
 import { PaginatedResult } from "hangar-api";
@@ -28,6 +28,7 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute();
+const router = useRouter();
 const notificationStore = useNotificationStore();
 
 // TODO send in one
@@ -74,13 +75,13 @@ async function markAllAsRead() {
   unreadNotifications.value.pagination.count = 0;
 }
 
-async function markNotificationRead(notification: HangarNotification, router = true) {
+async function markNotificationRead(notification: HangarNotification, push = true) {
   await useInternalApi(`notifications/${notification.id}`, "post").catch((e) => handleRequestError(e));
   notification.read = true;
   if (!notifications.value) return;
   notifications.value.result = notifications.value.result.filter((n) => n !== notification);
-  if (notification.action && router) {
-    await useRouter().push(notification.action);
+  if (notification.action && push) {
+    await router.push(notification.action);
   }
 }
 
@@ -93,7 +94,6 @@ async function updateInvite(invite: Invite, status: "accept" | "decline") {
     invites.value[invite.type] = invites.value[invite.type].filter((i) => i.roleId !== invite.roleId);
   }
   notificationStore.success(i18n.t(`notifications.invite.msgs.${status}`, [invite.name]));
-  await useRouter().go(0);
 }
 
 function updateSelectedNotifications() {

@@ -30,12 +30,14 @@ useHead(useSeo(i18n.t("project.stargazers") + " | " + props.project.name, props.
 
     <div v-if="stargazers?.result?.length > 0" class="flex flex-wrap gap-4">
       <div v-for="stargazer in stargazers?.result" :key="stargazer.name">
-        <UserAvatar size="xs" :username="stargazer.name" :avatar-url="stargazer.avatarUrl" />
-        <Link :to="'/' + stargazer.name">{{ stargazer.name }}</Link>
+        <div class="inline-flex items-center space-x-1">
+          <UserAvatar size="xs" :username="stargazer.name" :avatar-url="stargazer.avatarUrl" />
+          <Link :to="'/' + stargazer.name">{{ stargazer.name }}</Link>
+        </div>
       </div>
     </div>
-    <Alert v-else type="warning">
+    <div v-else>
       {{ i18n.t("project.noStargazers") }}
-    </Alert>
+    </div>
   </Card>
 </template>
