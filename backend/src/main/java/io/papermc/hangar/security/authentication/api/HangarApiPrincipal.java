@@ -9,7 +9,7 @@ public class HangarApiPrincipal extends HangarPrincipal {
     private final ApiKeyTable apiKeyTable;
 
     public HangarApiPrincipal(final long id, final String name, final boolean locked, final Permission globalPermissions, final ApiKeyTable apiKeyTable) {
-        super(id, name, locked, globalPermissions);
+        super(id, name, locked, globalPermissions, null);
         this.apiKeyTable = apiKeyTable;
     }
 

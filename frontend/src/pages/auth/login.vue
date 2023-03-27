@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useHead } from "@vueuse/head";
 import { useRoute, useRouter } from "vue-router";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useSeo } from "~/composables/useSeo";
 import InputText from "~/lib/components/ui/InputText.vue";
 import Button from "~/lib/components/design/Button.vue";
@@ -9,11 +9,14 @@ import { useAxios } from "~/composables/useAxios";
 import { useAuth } from "~/composables/useAuth";
 import { useInternalApi } from "~/composables/useApi";
 import { encodeBase64Url, getAssertionOptions } from "~/composables/useWebAuthN";
+import { useAuthStore } from "~/store/auth";
 
 const route = useRoute();
 const router = useRouter();
+const authStore = useAuthStore();
 
-const aal = ref(2);
+// todo hack for now, need to do this proper
+const aal = computed(() => (authStore.authenticated ? 2 : 1));
 // aal1
 const username = ref("");
 const password = ref("");

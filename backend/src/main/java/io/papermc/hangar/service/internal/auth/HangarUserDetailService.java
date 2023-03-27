@@ -2,7 +2,7 @@ package io.papermc.hangar.service.internal.auth;
 
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
-import io.papermc.hangar.security.authentication.user.HangarUserPrincipal;
+import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.internal.users.UserService;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,7 +21,7 @@ public class HangarUserDetailService implements UserDetailsService {
     }
 
     @Override
-    public HangarUserPrincipal loadUserByUsername(final String username) throws UsernameNotFoundException {
+    public HangarPrincipal loadUserByUsername(final String username) throws UsernameNotFoundException {
         if (username == null) {
             throw new UsernameNotFoundException("no user with null username");
         }
@@ -31,6 +31,7 @@ public class HangarUserDetailService implements UserDetailsService {
             throw new UsernameNotFoundException("no user in table");
         }
         // TODO store PW in db properly
-        return new HangarUserPrincipal(userTable, this.passwordEncoder.encode("admin123"), Permission.ViewPublicInfo);
+        // TODO load proper perms
+        return new HangarPrincipal(userTable.getUserId(), userTable.getName(), userTable.isLocked(), Permission.ViewPublicInfo, this.passwordEncoder.encode("admin123"));
     }
 }

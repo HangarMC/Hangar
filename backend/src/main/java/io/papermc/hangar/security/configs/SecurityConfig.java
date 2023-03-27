@@ -93,7 +93,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider(final UserDetailsService userDetailsService){
+    public DaoAuthenticationProvider daoAuthenticationProvider(final UserDetailsService userDetailsService) {
         final DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(this.passwordEncoder());

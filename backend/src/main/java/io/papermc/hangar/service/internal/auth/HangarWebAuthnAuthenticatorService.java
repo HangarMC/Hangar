@@ -35,6 +35,7 @@ public class HangarWebAuthnAuthenticatorService implements WebAuthnAuthenticator
     @Override
     public WebAuthnAuthenticator loadAuthenticatorByCredentialId(final byte[] credentialId) throws CredentialIdNotFoundException {
         final WebAuthnAuthenticator auth = this.getByCredId(credentialId);
+        // TODO we need to make sure to load the proper hangar user principal here
         System.out.println("loadAuthenticatorByCredentialId " + Arrays.toString(credentialId) + " " + auth.getUserPrincipal());
         return auth;
     }

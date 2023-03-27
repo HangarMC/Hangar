@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RateLimit(path = "auth")
-@RequestMapping(path = "/api/internal", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/internal/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthController extends HangarComponent {
 
     private final HangarWebAuthnAuthenticatorService hangarWebAuthnAuthenticatorService;
@@ -29,7 +28,7 @@ public class AuthController extends HangarComponent {
         this.hangarWebAuthnAuthenticatorService = hangarWebAuthnAuthenticatorService;
     }
 
-    @PostMapping("/auth/signup")
+    @PostMapping("/signup")
     public void signup() {
 
     }

@@ -25,7 +25,7 @@ async function addAuthenticator() {
   const publicKeyCredential = credential as PublicKeyCredential;
   console.log("credential", credential);
   const name = "DummyAuth";
-  await useInternalApi("webauthn/register", "POST", {
+  await useInternalApi("auth/webauthn/register", "POST", {
     name,
     credentialId: credential.id,
     clientData: encodeBase64Url(publicKeyCredential.response.clientDataJSON),

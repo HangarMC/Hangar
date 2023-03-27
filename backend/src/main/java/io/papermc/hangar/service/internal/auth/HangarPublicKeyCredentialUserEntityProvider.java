@@ -2,7 +2,7 @@ package io.papermc.hangar.service.internal.auth;
 
 import com.webauthn4j.data.PublicKeyCredentialUserEntity;
 import com.webauthn4j.springframework.security.options.PublicKeyCredentialUserEntityProvider;
-import io.papermc.hangar.security.authentication.user.HangarUserPrincipal;
+import io.papermc.hangar.security.authentication.HangarPrincipal;
 import java.math.BigInteger;
 import org.springframework.security.core.Authentication;
 
@@ -22,7 +22,7 @@ public class HangarPublicKeyCredentialUserEntityProvider implements PublicKeyCre
         System.out.println("load public key " + authentication);
 
         final String username = authentication.getName();
-        final HangarUserPrincipal principal = this.userDetailService.loadUserByUsername(username);
+        final HangarPrincipal principal = this.userDetailService.loadUserByUsername(username);
         return new PublicKeyCredentialUserEntity(
             BigInteger.valueOf(principal.getUserId()).toByteArray(), // TODO this isn't a good id I guess?
                 principal.getUsername(),

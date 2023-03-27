@@ -52,7 +52,7 @@ export function encodeBase64Url(arrayBuffer: ArrayBuffer) {
 }
 
 export async function getAttestationOptions() {
-  const response = await useInternalApi<PublicKeyCredentialCreationOptions>("webauthn/attestation/options");
+  const response = await useInternalApi<PublicKeyCredentialCreationOptions>("auth/webauthn/attestation/options");
   console.log("response", response);
 
   // TODO error handling
@@ -85,7 +85,7 @@ export async function getAttestationOptions() {
 }
 
 export async function getAssertionOptions() {
-  const response = await useInternalApi<PublicKeyCredentialRequestOptions>("webauthn/assertion/options");
+  const response = await useInternalApi<PublicKeyCredentialRequestOptions>("auth/webauthn/assertion/options");
   console.log("response", response);
 
   // TODO error handling

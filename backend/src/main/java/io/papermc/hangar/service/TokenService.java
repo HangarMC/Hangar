@@ -53,8 +53,8 @@ public class TokenService extends HangarComponent {
         return this.getVerifier().verify(token);
     }
 
-    public void issueRefreshToken(final UserTable userTable, final HttpServletResponse response) {
-        final UserRefreshToken userRefreshToken = this.userRefreshTokenDAO.insert(new UserRefreshToken(userTable.getId(), UUID.randomUUID(), UUID.randomUUID()));
+    public void issueRefreshToken(final long userId, final HttpServletResponse response) {
+        final UserRefreshToken userRefreshToken = this.userRefreshTokenDAO.insert(new UserRefreshToken(userId, UUID.randomUUID(), UUID.randomUUID()));
         this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), this.config.security.refreshTokenExpiry().toSeconds(), true, response);
     }
 
@@ -147,7 +147,7 @@ public class TokenService extends HangarComponent {
             }
             return new HangarApiPrincipal(userId, subject, locked, globalPermission, apiKeyTable);
         } else {
-            return new HangarPrincipal(userId, subject, locked, globalPermission);
+            return new HangarPrincipal(userId, subject, locked, globalPermission, null);
         }
     }
 

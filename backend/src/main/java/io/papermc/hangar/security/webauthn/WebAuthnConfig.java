@@ -27,7 +27,7 @@ import com.webauthn4j.springframework.security.options.RpIdProvider;
 import com.webauthn4j.springframework.security.options.RpIdProviderImpl;
 import com.webauthn4j.springframework.security.server.ServerPropertyProvider;
 import io.papermc.hangar.security.authentication.HangarAuthenticationEntryPoint;
-import io.papermc.hangar.security.authentication.user.HangarUserPrincipal;
+import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.TokenService;
 import io.papermc.hangar.service.internal.auth.HangarPublicKeyCredentialUserEntityProvider;
 import io.papermc.hangar.service.internal.auth.HangarUserDetailService;
@@ -51,20 +51,26 @@ public class WebAuthnConfig {
         this.entryPoint = entryPoint;
     }
 
+    // TODO do we need to save aal into jwt?
+    // prolly update the jwp in response to login endpoint
+
+    // TODO need to figure out how to handle aal + api keys
+
     public void configure(final HttpSecurity http, final AuthenticationManager authenticationManager) throws Exception {
         http.apply(WebAuthnLoginConfigurer.webAuthnLogin())
             .loginProcessingUrl("/api/internal/auth/login")
             .successHandler((request, response, authentication) -> {
                 if (authentication instanceof final UsernamePasswordAuthenticationToken token) {
-                    if (token.getPrincipal() instanceof final HangarUserPrincipal principal) {
-                        this.tokenService.issueRefreshToken(principal.getUserTable(), response);
-                        principal.setAal(1); // check if email verified, if not, aal = 0
+                    if (token.getPrincipal() instanceof final HangarPrincipal principal) {
+                        this.tokenService.issueRefreshToken(principal.getUserId(), response);
+                        principal.setAal(1); // todo check if email verified, if not, aal = 0
+                        System.out.println("woooo 1");
                         return;
                     }
                 } else if (authentication instanceof final WebAuthnAuthenticationToken token) {
-                    if (token.getPrincipal() instanceof final HangarUserPrincipal principal) {
+                    if (token.getPrincipal() instanceof final HangarPrincipal principal) {
                         principal.setAal(2);
-                        System.out.println("woooo");
+                        System.out.println("woooo 2");
                         return;
                     }
                 }
@@ -73,7 +79,7 @@ public class WebAuthnConfig {
             })
             .failureHandler(new AuthenticationEntryPointFailureHandler(this.entryPoint))
             .attestationOptionsEndpoint()
-            .processingUrl("/api/internal/webauthn/attestation/options")
+            .processingUrl("/api/internal/auth/webauthn/attestation/options")
             .attestation(AttestationConveyancePreference.NONE)
             .timeout(60000L)
             .rp()
@@ -90,7 +96,7 @@ public class WebAuthnConfig {
             .credProps(true)
             .and()
             .assertionOptionsEndpoint()
-            .processingUrl("/api/internal/webauthn/assertion/options")
+            .processingUrl("/api/internal/auth/webauthn/assertion/options")
             .timeout(60000L)
             .and().and()
             .authenticationManager(authenticationManager);

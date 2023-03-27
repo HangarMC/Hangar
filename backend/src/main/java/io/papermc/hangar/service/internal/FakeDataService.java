@@ -59,7 +59,7 @@ public class FakeDataService extends HangarComponent {
         try {
             for (int udx = 0; udx < users; udx++) {
                 final UserTable user = this.createUser();
-                SecurityContextHolder.getContext().setAuthentication(HangarAuthenticationToken.createVerifiedToken(new HangarPrincipal(user.getUserId(), user.getName(), false, Permission.All), oldAuth.getCredentials()));
+                SecurityContextHolder.getContext().setAuthentication(HangarAuthenticationToken.createVerifiedToken(new HangarPrincipal(user.getUserId(), user.getName(), false, Permission.All, null), oldAuth.getCredentials()));
                 for (int pdx = 0; pdx < projectsPerUser; pdx++) {
                     this.createProject(user.getUserId());
                 }

@@ -52,7 +52,7 @@ public class LoginController extends HangarComponent {
             this.config.checkDev();
 
             final UserTable fakeUser = this.authenticationService.loginAsFakeUser();
-            this.tokenService.issueRefreshToken(fakeUser, this.response);
+            this.tokenService.issueRefreshToken(fakeUser.getUserId(), this.response);
             return this.addBaseAndRedirect(this.cutoffAbsoluteUrls(returnUrl));
         } else {
             this.response.addCookie(new Cookie("url", this.cutoffAbsoluteUrls(returnUrl)));
@@ -71,7 +71,7 @@ public class LoginController extends HangarComponent {
         if (!this.validationService.isValidUsername(user.getName())) {
             throw new HangarApiException("nav.user.error.invalidUsername");
         }
-        this.tokenService.issueRefreshToken(user, this.response);
+        this.tokenService.issueRefreshToken(user.getUserId(), this.response);
         return this.addBaseAndRedirect(this.cutoffAbsoluteUrls(url));
     }
 
