@@ -199,6 +199,7 @@ hangar:
       - "ko-fi.com"
       - "crowdin.com"
       - "kyori.net"
+      - "modrinth.com"
     # image-proxy-url: "%s"
     image-proxy-url: "http://localhost:3001/image/%s" # only comment in if you run auth locally
 

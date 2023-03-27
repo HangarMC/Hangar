@@ -88,9 +88,10 @@ public class VersionFactory extends HangarComponent {
     private final VersionsApiDAO versionsApiDAO;
     private final FileService fileService;
     private final JarScanningService jarScanningService;
+    private final ReviewService reviewService;
 
     @Autowired
-    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final JobService jobService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService) {
+    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final JobService jobService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.projectVersionsDAO = projectVersionDAO;
@@ -108,6 +109,7 @@ public class VersionFactory extends HangarComponent {
         this.versionsApiDAO = versionsApiDAO;
         this.fileService = fileService;
         this.jarScanningService = jarScanningService;
+        this.reviewService = reviewService;
     }
 
     @Transactional
@@ -178,15 +180,15 @@ public class VersionFactory extends HangarComponent {
             this.fileService.write(file.getInputStream(), tmpPluginFile);
             // load meta
             pluginDataFile = this.pluginDataService.loadMeta(pluginFileName, bytes, this.getHangarPrincipal().getUserId());
-       } catch (final ConfigurateException configurateException) {
-           this.logger.error("Error while reading file metadata while uploading {} for {}", pluginFileName, this.getHangarPrincipal().getName(), configurateException);
-           this.fileService.deleteDirectory(userTempDir);
-           throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.metaNotFound");
-       } catch (final Exception e) {
-           this.logger.error("Error while uploading {} for {}", pluginFileName, this.getHangarPrincipal().getName(), e);
-           this.fileService.deleteDirectory(userTempDir);
-           throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.unexpected");
-       }
+        } catch (final ConfigurateException configurateException) {
+            this.logger.error("Error while reading file metadata while uploading {} for {}", pluginFileName, this.getHangarPrincipal().getName(), configurateException);
+            this.fileService.deleteDirectory(userTempDir);
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.metaNotFound");
+        } catch (final Exception e) {
+            this.logger.error("Error while uploading {} for {}", pluginFileName, this.getHangarPrincipal().getName(), e);
+            this.fileService.deleteDirectory(userTempDir);
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.unexpected");
+        }
 
         if (versionString == null && pluginDataFile.data().getVersion() != null) {
             versionString = StringUtils.slugify(pluginDataFile.data().getVersion());
@@ -311,16 +313,23 @@ public class VersionFactory extends HangarComponent {
 
             final List<Platform> platformsToScan = new ArrayList<>();
             boolean hasExternalLink = false;
+            boolean safeLinks = true;
             for (final PendingVersionFile file : pendingVersion.getFiles()) {
                 if (file.fileInfo() != null) {
                     platformsToScan.add(file.platforms().get(0));
-                } else {
-                    hasExternalLink = true;
+                    continue;
                 }
+
+                hasExternalLink = true;
+                safeLinks = safeLinks && this.config.security.checkSafe(file.externalUrl());
             }
 
+            final boolean hasUnsafeLinks = hasExternalLink && !safeLinks;
             if (!platformsToScan.isEmpty()) {
-                this.jarScanningService.scanAsync(projectVersionTable.getVersionId(), platformsToScan, hasExternalLink);
+                this.jarScanningService.scanAsync(projectVersionTable.getVersionId(), platformsToScan, hasUnsafeLinks);
+            } else if (!hasUnsafeLinks) {
+                // External links will always show a secondary warning, even if from a safe website, so approving is ok
+                this.reviewService.autoReviewLinks(projectVersionTable.getVersionId(), this.jarScanningService.getJarScannerUser().getUserId());
             }
         } catch (final HangarApiException e) {
             throw e;

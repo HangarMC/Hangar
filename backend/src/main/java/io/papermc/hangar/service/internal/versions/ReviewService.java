@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ReviewService extends HangarComponent {
 
+    private static final JSONB EMPTY_JSON = new JSONB("{}");
     private final ProjectVersionReviewsDAO projectVersionReviewsDAO;
     private final HangarReviewsDAO hangarReviewsDAO;
     private final ProjectVersionsDAO projectVersionsDAO;
@@ -63,7 +64,7 @@ public class ReviewService extends HangarComponent {
     }
 
     @Transactional
-    public void autoReview(final VersionToScan version, final boolean partial, final long scannerUserId) {
+    public void autoReviewFiles(final VersionToScan version, final boolean partial, final long scannerUserId) {
         final ReviewState oldReviewState = version.reviewState();
         if (oldReviewState == ReviewState.REVIEWED) {
             return;
@@ -74,17 +75,31 @@ public class ReviewService extends HangarComponent {
             return;
         }
 
-
         final ProjectVersionReviewTable projectVersionReviewTable = this.insertOrUpdateReview(version.versionId(), scannerUserId);
         this.projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(
             projectVersionReviewTable.getId(),
-            "[AUTO] Automated review",
-            new JSONB("{}"),
+            "[AUTO] Automated review via jar scan",
+            EMPTY_JSON,
             partial ? ReviewAction.PARTIALLY_APPROVE : ReviewAction.APPROVE
         ));
 
         final ProjectVersionTable projectVersionTable = this.projectVersionsDAO.getProjectVersionTable(version.versionId());
         projectVersionTable.setReviewState(reviewState);
+        this.projectVersionsDAO.update(projectVersionTable);
+    }
+
+    @Transactional
+    public void autoReviewLinks(final long versionId, final long scannerUserId) {
+        final ProjectVersionReviewTable projectVersionReviewTable = this.insertOrUpdateReview(versionId, scannerUserId);
+        this.projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(
+            projectVersionReviewTable.getId(),
+            "[AUTO] Automated review via safe link check",
+            EMPTY_JSON,
+            ReviewAction.APPROVE
+        ));
+
+        final ProjectVersionTable projectVersionTable = this.projectVersionsDAO.getProjectVersionTable(versionId);
+        projectVersionTable.setReviewState(ReviewState.REVIEWED);
         this.projectVersionsDAO.update(projectVersionTable);
     }
 

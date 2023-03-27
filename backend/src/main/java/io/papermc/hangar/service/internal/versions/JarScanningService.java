@@ -127,7 +127,7 @@ public class JarScanningService {
     @Transactional
     void applyReview(final Severity severity, final VersionToScan version, final boolean partial) {
         if (Severity.HIGH.compareTo(severity) < 0) {
-            this.reviewService.autoReview(version, partial, this.jarScannerUser.getUserId());
+            this.reviewService.autoReviewFiles(version, partial, this.jarScannerUser.getUserId());
         } else if (severity == Severity.HIGHEST) {
             // TODO: state for requires manual review
         }
@@ -189,6 +189,10 @@ public class JarScanningService {
 
     public JarScanResultTable getLastResult(final long versionId, final Platform platform) {
         return this.dao.getLastResult(versionId, platform);
+    }
+
+    public UserTable getJarScannerUser() {
+        return this.jarScannerUser;
     }
 
     private record NamedResource(Resource resource, String name) {

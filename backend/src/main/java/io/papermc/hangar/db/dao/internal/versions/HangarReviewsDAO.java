@@ -50,7 +50,7 @@ public interface HangarReviewsDAO {
     @UseRowReducer(ReviewQueueReducer.class)
     @RegisterConstructorMapper(HangarReviewQueueEntry.class)
     @RegisterConstructorMapper(value = HangarReviewQueueEntry.Review.class, prefix = "r_")
-    @SqlQuery("SELECT pv.id version_id," +
+    @SqlQuery("SELECT pv.id AS version_id," +
         "       p.owner_name pn_owner," +
         "       p.slug pn_slug," +
         "       pv.version_string," +
