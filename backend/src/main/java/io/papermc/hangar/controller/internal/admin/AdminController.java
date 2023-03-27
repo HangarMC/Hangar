@@ -144,12 +144,10 @@ public class AdminController extends HangarComponent {
     @PermissionRequired(NamedPermission.VIEW_HEALTH)
     @GetMapping(path = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
     public HealthReport getHealthReport() {
-        final List<UnhealthyProject> noTopicProjects = this.healthService.getProjectsWithoutTopic();
         final List<UnhealthyProject> staleProjects = this.healthService.getStaleProjects();
-        final List<UnhealthyProject> nonPublicProjects = this.healthService.getNonPublicProjects();
         final List<MissingFileCheck> missingFiles = this.healthService.getVersionsWithMissingFiles();
         final List<JobTable> erroredJobs = this.jobService.getErroredJobs();
-        return new HealthReport(noTopicProjects, staleProjects, nonPublicProjects, missingFiles, erroredJobs);
+        return new HealthReport(staleProjects, missingFiles, erroredJobs);
     }
 
     @ResponseStatus(HttpStatus.OK)

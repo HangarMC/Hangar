@@ -56,11 +56,9 @@ declare module "hangar-internal" {
   }
 
   interface MissingFile {
-    platform: Platform;
-    versionString: string;
-    fileName: string;
     namespace: ProjectNamespace;
-    name: string;
+    versionString: string;
+    platforms: Platform[];
   }
 
   interface UnhealthyProject {

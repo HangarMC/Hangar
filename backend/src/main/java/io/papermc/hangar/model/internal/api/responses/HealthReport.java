@@ -5,9 +5,7 @@ import io.papermc.hangar.model.internal.admin.health.MissingFileCheck;
 import io.papermc.hangar.model.internal.admin.health.UnhealthyProject;
 import java.util.List;
 
-public record HealthReport(List<UnhealthyProject> noTopicProjects,
-                           List<UnhealthyProject> staleProjects,
-                           List<UnhealthyProject> nonPublicProjects,
+public record HealthReport(List<UnhealthyProject> staleProjects,
                            List<MissingFileCheck> missingFiles,
                            List<JobTable> erroredJobs) {
 }

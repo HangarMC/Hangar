@@ -91,18 +91,6 @@ async function saveRoles() {
     handleRequestError(e);
   }
 }
-
-async function updateHashes() {
-  loading.value = true;
-  try {
-    const errors = await useInternalApi("admin/updateHashes", "post", undefined, { timeout: 240000 });
-    console.log(errors);
-    notification.success("Updated hashes!");
-  } catch (e: any) {
-    loading.value = false;
-    handleRequestError(e);
-  }
-}
 </script>
 
 <template>
@@ -170,12 +158,6 @@ async function updateHashes() {
           <Button :disabled="loading" @click="saveRoles"> {{ i18n.t("platformVersions.saveChanges") }}</Button>
         </span>
       </template>
-    </Card>
-    <Card class="mt-5">
-      <PageTitle>Update file hashes</PageTitle>
-      Update file hashes stored in db from md5 to sha256.
-      <br />
-      <Button button-type="red" :disabled="loading" @click="updateHashes">Run</Button>
     </Card>
   </div>
 </template>

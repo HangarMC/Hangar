@@ -20,19 +20,6 @@ public interface HealthDAO {
         "          p.post_id," +
         "          coalesce(hp.last_updated, p.created_at) AS last_updated," +
         "          p.visibility" +
-        "   FROM projects p" +
-        "       JOIN home_projects hp ON p.id = hp.id" +
-        "   WHERE p.topic_id IS NULL OR " +
-        "         p.post_id IS NULL" +
-        "   ORDER BY p.created_at DESC")
-    List<UnhealthyProject> getProjectsWithoutTopic();
-
-    @SqlQuery(" SELECT p.owner_name \"owner\"," +
-        "          p.slug," +
-        "          p.topic_id," +
-        "          p.post_id," +
-        "          coalesce(hp.last_updated, p.created_at) AS last_updated," +
-        "          p.visibility" +
         "   FROM projects p " +
         "       JOIN home_projects hp ON p.id = hp.id" +
         "   WHERE hp.last_updated < (now() - interval <age>)" +
@@ -55,18 +42,20 @@ public interface HealthDAO {
     @RegisterConstructorMapper(MissingFileCheck.class)
     @SqlQuery("""
         SELECT pv.version_string,
-               pvd.file_name,
                p.owner_name "owner",
                p.slug,
-               p.name,
-               pq.platform
+               array_agg(pvpd.file_name) as fileNames,
+               array_agg(DISTINCT pvpd.platform) AS platforms
         FROM project_versions pv
-                 JOIN projects p ON pv.project_id = p.id
-                 JOIN (SELECT DISTINCT plv.platform, pvpd.version_id
-                       FROM project_version_platform_dependencies pvpd
-                                JOIN platform_versions plv ON pvpd.platform_version_id = plv.id) pq ON pv.id = pq.version_id
-                 JOIN project_version_downloads pvd ON pvd.version_id = pq.version_id
-        WHERE pvd.file_name IS NOT NULL
-        ORDER BY pv.created_at DESC""")
+        JOIN projects p ON p.id = pv.project_id
+        LEFT JOIN (
+            SELECT DISTINCT ON (pvpd.download_id) pvpd.id, pvpd.version_id, pvpd.platform, pvd.file_name
+            FROM project_version_platform_downloads pvpd
+            LEFT JOIN project_version_downloads pvd ON pvd.id = pvpd.download_id AND pvd.file_name IS NOT NULL
+            WHERE pvd.id IS NOT NULL
+            ORDER BY pvpd.download_id
+        ) pvpd ON pvpd.version_id = pv.id
+        WHERE pvpd.id IS NOT NULL
+        GROUP BY p.id, pv.id""")
     List<MissingFileCheck> getVersionsForMissingFiles();
 }
