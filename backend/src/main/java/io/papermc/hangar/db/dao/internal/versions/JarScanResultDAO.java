@@ -35,7 +35,7 @@ public interface JarScanResultDAO {
             WHERE pvd.id IS NOT NULL
             ORDER BY pvpd.download_id
         ) pvpd ON pvpd.version_id = pv.id
-        WHERE pv.review_state != 1 AND pvpd.id IS NOT NULL
+        WHERE pv.review_state != 1 AND pv.visibility = 0 AND pvpd.id IS NOT NULL
         AND NOT EXISTS (
             SELECT 1
             FROM jar_scan_result jsr
