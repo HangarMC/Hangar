@@ -29,7 +29,7 @@ useHead(useSeo(i18n.t("health.title"), null, route, null));
 
         <ul class="max-h-xs overflow-auto">
           <li v-for="project in healthReport.missingFiles" :key="project.namespace.slug + project.namespace.owner">
-            <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug + '/' + project.versionString">
+            <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug + '/versions/' + project.versionString">
               {{ project.namespace.owner + "/" + project.namespace.slug + "/" + project.versionString + " (" + project.platforms + ")" }}
             </Link>
           </li>
