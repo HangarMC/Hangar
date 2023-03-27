@@ -49,9 +49,14 @@ public class ProjectPageService extends HangarComponent {
         if (!isHome && contents.length() < this.config.pages.minLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.minLength");
         }
-
         if (contents.length() > this.config.pages.maxLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
+        }
+        if (slug.length() > this.config.pages.maxSlugLen()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxSlugLength");
+        }
+        if (org.apache.commons.lang3.StringUtils.countMatches(slug, '/') > this.config.pages.maxNestingLevel()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxSlugLength");
         }
 
         this.validationService.testPageName(name);

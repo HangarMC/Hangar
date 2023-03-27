@@ -14,6 +14,8 @@ public record PagesConfig(
     @DefaultValue("^[a-zA-Z0-9-_ ]+$") PatternWrapper nameRegex,
     @DefaultValue("3") int minNameLen,
     @DefaultValue("25") int maxNameLen,
+    @DefaultValue("75") int maxSlugLen,
+    @DefaultValue("4") int maxNestingLevel,
     @DefaultValue("15") int minLen,
     @DefaultValue("32000") int maxLen
 ) {

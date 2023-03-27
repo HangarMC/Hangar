@@ -407,6 +407,7 @@
       "error": {
         "minLength": "Page contents are too short",
         "maxLength": "Page contents are too long",
+        "maxSlugLength": "Page slug is too long",
         "duplicateName": "A page with that name already exists",
         "invalidName": "Invalid name",
         "name": {
