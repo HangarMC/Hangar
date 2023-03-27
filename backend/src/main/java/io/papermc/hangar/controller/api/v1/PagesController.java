@@ -2,6 +2,7 @@ package io.papermc.hangar.controller.api.v1;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.api.v1.interfaces.IPagesController;
+import io.papermc.hangar.model.api.project.PageEditForm;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
@@ -34,8 +35,8 @@ public class PagesController extends HangarComponent implements IPagesController
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.VIEW_PUBLIC_INFO, args = "{#author, #slug}")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public String getPage(final String author, final String slug) {
-        final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(author, slug, this.request.getRequestURI());
+    public String getPage(final String author, final String slug, final String path) {
+        final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(author, slug, path);
         if (projectPage == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -47,8 +48,8 @@ public class PagesController extends HangarComponent implements IPagesController
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#author, #slug}")
     @ResponseStatus(HttpStatus.OK)
-    public void changePage(final String author, final String slug, final String content) {
-        final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(author, slug, this.request.getRequestURI());
-        this.projectPageService.saveProjectPage(projectPage.getProjectId(), projectPage.getProjectId(), content);
+    public void changePage(final String author, final String slug, final PageEditForm pageEditForm) {
+        final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(author, slug, pageEditForm.path());
+        this.projectPageService.saveProjectPage(projectPage.getProjectId(), projectPage.getProjectId(), pageEditForm.content());
     }
 }

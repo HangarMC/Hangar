@@ -70,7 +70,7 @@ public class ProjectPageController extends HangarComponent {
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
     @GetMapping(path = "/page/{author}/{slug}/**", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ExtendedProjectPage> getProjectPage(@PathVariable final String author, @PathVariable final String slug) {
-        return ResponseEntity.ok(this.projectPageService.getProjectPage(author, slug, this.request.getRequestURI()));
+        return ResponseEntity.ok(this.projectPageService.getProjectPageFromURI(author, slug, this.request.getRequestURI()));
     }
 
     @Unlocked
