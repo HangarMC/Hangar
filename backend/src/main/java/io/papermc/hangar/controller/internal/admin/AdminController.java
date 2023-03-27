@@ -42,6 +42,7 @@ import io.papermc.hangar.service.internal.projects.ProjectAdminService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.users.UserService;
+import io.papermc.hangar.service.internal.versions.ReviewService;
 import io.papermc.hangar.service.internal.versions.VersionService;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
@@ -80,10 +81,11 @@ public class AdminController extends HangarComponent {
     private final ProjectService projectService;
     private final ProjectAdminService projectAdminService;
     private final VersionService versionService;
+    private final ReviewService reviewService;
     private final RolesDAO rolesDAO;
 
     @Autowired
-    public AdminController(final PlatformService platformService, final StatService statService, final HealthService healthService, final JobService jobService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectService projectService, final ProjectAdminService projectAdminService, final VersionService versionService, final RolesDAO rolesDAO) {
+    public AdminController(final PlatformService platformService, final StatService statService, final HealthService healthService, final JobService jobService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectService projectService, final ProjectAdminService projectAdminService, final VersionService versionService, final ReviewService reviewService, final RolesDAO rolesDAO) {
         this.platformService = platformService;
         this.statService = statService;
         this.healthService = healthService;
@@ -95,6 +97,7 @@ public class AdminController extends HangarComponent {
         this.projectService = projectService;
         this.projectAdminService = projectAdminService;
         this.versionService = versionService;
+        this.reviewService = reviewService;
         this.rolesDAO = rolesDAO;
     }
 
@@ -122,6 +125,15 @@ public class AdminController extends HangarComponent {
     @ResponseBody
     public List<String> updateHashes() {
         return this.versionService.updateFileHashes();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(path = "/scanSafeLinks")
+    @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
+    @RateLimit(overdraft = 1, refillSeconds = RateLimit.MAX_REFILL_DELAY, refillTokens = 1)
+    @ResponseBody
+    public void approveVersionsWithSafeLinks() {
+        this.reviewService.approveVersionsWithSafeLinks();
     }
 
     @ResponseBody

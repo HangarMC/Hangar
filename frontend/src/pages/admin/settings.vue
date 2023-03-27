@@ -91,6 +91,18 @@ async function saveRoles() {
     handleRequestError(e);
   }
 }
+
+async function rescanSafeLinks() {
+  loading.value = true;
+  try {
+    const errors = await useInternalApi("admin/scanSafeLinks", "post", undefined, { timeout: 120_000 });
+    console.log(errors);
+    notification.success("Updated!");
+  } catch (e: any) {
+    loading.value = false;
+    handleRequestError(e);
+  }
+}
 </script>
 
 <template>
@@ -158,6 +170,12 @@ async function saveRoles() {
           <Button :disabled="loading" @click="saveRoles"> {{ i18n.t("platformVersions.saveChanges") }}</Button>
         </span>
       </template>
+    </Card>
+    <Card class="mt-5">
+      <PageTitle>Rescan versions for safe links</PageTitle>
+      Approves all versions with only external links that are safe as per config
+      <br />
+      <Button button-type="red" :disabled="loading" @click="rescanSafeLinks">Run</Button>
     </Card>
   </div>
 </template>

@@ -130,7 +130,7 @@ export async function usePage(user: string, project: string, path?: string): Pro
 }
 
 export async function useHealthReport(): Promise<Ref<HealthReport | null>> {
-  return extract(await useAsyncData("useHealthReport", () => useInternalApi<HealthReport>("admin/health")));
+  return extract(await useAsyncData("useHealthReport", () => useInternalApi<HealthReport>("admin/health", "GET", undefined, { timeout: 60_000 })));
 }
 
 export async function useActionLogs(): Promise<Ref<PaginatedResult<LoggedAction> | null>> {
