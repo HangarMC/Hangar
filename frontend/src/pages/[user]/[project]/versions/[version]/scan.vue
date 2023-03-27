@@ -32,6 +32,10 @@ for (const platform of props.versionPlatforms) {
 
 async function scan() {
   for (const platform of props.versionPlatforms) {
+    if (!props.version.downloads[platform]?.fileInfo) {
+      continue;
+    }
+
     await useInternalApi(`jarscanning/scan/${platform}/${props.version.id}`, "POST");
   }
   await useNotificationStore().success("Scheduled scan");
