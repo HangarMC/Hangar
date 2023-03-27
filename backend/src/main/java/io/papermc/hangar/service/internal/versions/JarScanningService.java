@@ -112,7 +112,8 @@ public class JarScanningService {
             Severity severity = Severity.HIGH;
             try {
                 severity = this.scanPlatform(versionToScan, platform);
-            } catch (final IOException ignored) {
+            } catch (final Exception e) {
+                e.printStackTrace();
             }
 
             if (severity.compareTo(highestSeverity) < 0) {
