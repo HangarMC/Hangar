@@ -182,7 +182,7 @@ public class JarScanningService {
         final ProjectTable project = this.projectsDAO.getById(version.projectId());
         final String path = this.projectFiles.getVersionDir(project.getOwnerName(), project.getSlug(), version.versionString(), platform, download.getFileName());
         if (!this.fileService.exists(path)) {
-            throw new HangarApiException("Couldn't find a file for version " + version.versionString());
+            throw new HangarApiException("Couldn't find a file for version " + version);
         }
         return new NamedResource(this.fileService.getResource(path), download.getFileName());
     }
