@@ -48,4 +48,16 @@ public final class ProjectVersionDownloadTable extends Table {
     public String getExternalUrl() {
         return this.externalUrl;
     }
+
+    @Override
+    public String toString() {
+        return "ProjectVersionDownloadTable{" +
+            "versionId=" + versionId +
+            ", fileSize=" + fileSize +
+            ", hash='" + hash + '\'' +
+            ", fileName='" + fileName + '\'' +
+            ", externalUrl='" + externalUrl + '\'' +
+            ", id=" + id +
+            '}';
+    }
 }

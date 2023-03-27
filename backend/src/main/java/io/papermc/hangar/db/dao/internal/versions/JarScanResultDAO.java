@@ -1,7 +1,9 @@
 package io.papermc.hangar.db.dao.internal.versions;
 
+import io.papermc.hangar.model.api.project.version.VersionToScan;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.JarScanResultTable;
+import java.util.List;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -14,10 +16,31 @@ import org.springframework.stereotype.Repository;
 public interface JarScanResultDAO {
 
     @Timestamped
-    @SqlUpdate("INSERT INTO jar_scan_result(version_id, platform, data, highest_severity, created_at) VALUES (:versionId, :platform, :data, :highestSeverity, :now)")
+    @SqlUpdate("INSERT INTO jar_scan_result(version_id, scanner_version, platform, data, highest_severity, created_at) VALUES (:versionId, :scannerVersion, :platform, :data, :highestSeverity, :now)")
     void save(@BindBean JarScanResultTable table);
 
     @RegisterConstructorMapper(JarScanResultTable.class)
     @SqlQuery("SELECT * FROM jar_scan_result WHERE version_id = :versionId AND platform = :platform ORDER BY created_at DESC LIMIT 1")
     JarScanResultTable getLastResult(long versionId, @EnumByOrdinal final Platform platform);
+
+    @RegisterConstructorMapper(VersionToScan.class)
+    @SqlQuery("""
+        SELECT pv.id AS version_id, pv.project_id, pv.review_state, pv.version_string, array_agg(DISTINCT pvpd.platform) AS platforms
+        FROM project_versions pv
+        LEFT JOIN (
+            SELECT DISTINCT ON (pvpd.download_id) pvpd.id, pvpd.version_id, pvpd.platform
+            FROM project_version_platform_downloads pvpd
+            LEFT JOIN project_version_downloads pvd ON pvd.id = pvpd.download_id AND pvd.file_name IS NOT NULL
+            WHERE pvd.id IS NOT NULL
+            ORDER BY pvpd.download_id
+        ) pvpd ON pvpd.version_id = pv.id
+        WHERE pvpd.id IS NOT NULL
+        AND NOT EXISTS (
+            SELECT 1
+            FROM jar_scan_result jsr
+            WHERE jsr.version_id = pv.id AND jsr.scanner_version >= :scannerVersion
+        )
+        GROUP BY pv.id;
+                        """)
+    List<VersionToScan> versionsRequiringScans(int scannerVersion);
 }

@@ -6,7 +6,9 @@ import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.downloads.ProjectVersionDownloadsDAO;
 import io.papermc.hangar.db.dao.internal.versions.JarScanResultDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.api.project.version.VersionToScan;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.JarScanResultTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
@@ -18,16 +20,18 @@ import io.papermc.hangar.scanner.model.ScanResult;
 import io.papermc.hangar.scanner.model.Severity;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
+import io.papermc.hangar.service.internal.users.UserService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.utils.ThreadFactoryBuilder;
@@ -45,8 +49,10 @@ public class JarScanningService {
     private final ProjectFiles projectFiles;
     private final FileService fileService;
     private final ReviewService reviewService;
+    private final UserService userService;
+    private UserTable jarScannerUser;
 
-    public JarScanningService(final JarScanResultDAO dao, final ProjectVersionsDAO projectVersionsDAO, final ProjectVersionDownloadsDAO downloadsDAO, final ProjectsDAO projectsDAO, final ProjectFiles projectFiles, final FileService fileService, final ReviewService reviewService) {
+    public JarScanningService(final JarScanResultDAO dao, final ProjectVersionsDAO projectVersionsDAO, final ProjectVersionDownloadsDAO downloadsDAO, final ProjectsDAO projectsDAO, final ProjectFiles projectFiles, final FileService fileService, final ReviewService reviewService, final UserService userService) {
         this.dao = dao;
         this.projectVersionsDAO = projectVersionsDAO;
         this.downloadsDAO = downloadsDAO;
@@ -54,38 +60,86 @@ public class JarScanningService {
         this.projectFiles = projectFiles;
         this.fileService = fileService;
         this.reviewService = reviewService;
+        this.userService = userService;
     }
 
-    public void scanAsync(final long versionId, final Collection<Platform> platforms, final boolean partial) {
-        EXECUTOR_SERVICE.execute(() -> {
-            Severity highestSeverity = Severity.UNKNOWN;
-            for (final Platform platform : platforms) {
-                Severity severity = Severity.HIGH;
-                try {
-                    severity = this.scan(versionId, platform);
-                } catch (final IOException ignored) {
-                }
-
-                if (severity.compareTo(highestSeverity) < 0) {
-                    highestSeverity = severity;
-                }
-            }
-
-            this.applyReview(highestSeverity, versionId, partial);
-        });
-    }
-
+    @EventListener(ApplicationReadyEvent.class)
     @Transactional
-    void applyReview(final Severity severity, final long versionId, final boolean partial) {
-        if (Severity.HIGH.compareTo(severity) < 0) {
-            this.reviewService.autoReview(versionId, partial);
-        } else if (severity == Severity.HIGHEST) {
-            // TODO: state for requires changes or requires manual review
+    public void rescanProjectVersions() {
+        this.jarScannerUser = this.createUser();
+
+        for (final VersionToScan version : this.dao.versionsRequiringScans(this.scanner.version())) {
+            this.scan(version, false); // TODO partial parameter
         }
     }
 
-    public Severity scan(final long versionId, final Platform platform) throws IOException {
-        final NamedResource resource = this.getFile(versionId, platform);
+    private UserTable createUser() {
+        final UserTable jarScannerUser = this.userService.getUserTable(JAR_SCANNER_USER);
+        if (jarScannerUser != null) {
+            return jarScannerUser;
+        }
+
+        final UserTable userTable = new UserTable(
+            -1,
+            JAR_SCANNER_USER,
+            "JarScanner",
+            "automated@test.test",
+            List.of(),
+            false,
+            Locale.ENGLISH.toLanguageTag(),
+            "white"
+        );
+        return this.userService.insertUser(userTable);
+    }
+
+    public void scanAsync(final long versionId, final List<Platform> platforms, final boolean partial) {
+        EXECUTOR_SERVICE.execute(() -> {
+            final ProjectVersionTable pvt = this.projectVersionsDAO.getProjectVersionTable(versionId);
+            if (pvt == null) {
+                return;
+            }
+
+            this.scan(new VersionToScan(pvt.getVersionId(), pvt.getProjectId(), pvt.getReviewState(), pvt.getVersionString(), platforms), partial);
+        });
+    }
+
+    private void scan(final VersionToScan versionToScan, final boolean partial) {
+        Severity highestSeverity = Severity.UNKNOWN;
+        for (final Platform platform : versionToScan.platforms()) {
+            Severity severity = Severity.HIGH;
+            try {
+                severity = this.scanPlatform(versionToScan, platform);
+            } catch (final IOException ignored) {
+            }
+
+            if (severity.compareTo(highestSeverity) < 0) {
+                highestSeverity = severity;
+            }
+        }
+
+        this.applyReview(highestSeverity, versionToScan, partial);
+    }
+
+    @Transactional
+    void applyReview(final Severity severity, final VersionToScan version, final boolean partial) {
+        if (Severity.HIGH.compareTo(severity) < 0) {
+            this.reviewService.autoReview(version, partial, this.jarScannerUser.getUserId());
+        } else if (severity == Severity.HIGHEST) {
+            // TODO: state for requires manual review
+        }
+    }
+
+    public Severity scanPlatform(final long versionId, final Platform platform) throws IOException {
+        final ProjectVersionTable pvt = this.projectVersionsDAO.getProjectVersionTable(versionId);
+        if (pvt == null) {
+            throw new HangarApiException("Version not found");
+        }
+
+        return this.scanPlatform(new VersionToScan(pvt.getVersionId(), pvt.getProjectId(), pvt.getReviewState(), pvt.getVersionString(), List.of(platform)), platform);
+    }
+
+    public Severity scanPlatform(final VersionToScan versionToScan, final Platform platform) throws IOException {
+        final NamedResource resource = this.getFile(versionToScan, platform);
 
         final List<ScanResult> scanResults;
         try (final InputStream inputStream = resource.resource().getInputStream()) {
@@ -109,26 +163,22 @@ public class JarScanningService {
             formattedResults.add(formattedChecks);
         }
 
-        this.dao.save(new JarScanResultTable(versionId, platform, highestSeverity.name(), new JSONB(formattedResults)));
+        this.dao.save(new JarScanResultTable(versionToScan.versionId(), this.scanner.version(), platform, highestSeverity.name(), new JSONB(formattedResults)));
         return highestSeverity;
     }
 
-    private NamedResource getFile(final long versionId, final Platform platform) {
-        final ProjectVersionTable pvt = this.projectVersionsDAO.getProjectVersionTable(versionId);
-        if (pvt == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
-
-        final ProjectVersionPlatformDownloadTable platformDownload = this.downloadsDAO.getPlatformDownload(pvt.getVersionId(), platform);
-        final ProjectVersionDownloadTable download = this.downloadsDAO.getDownload(platformDownload.getVersionId(), platformDownload.getDownloadId());
+    private NamedResource getFile(final VersionToScan version, final Platform platform) {
+        final long versionId = version.versionId();
+        final ProjectVersionPlatformDownloadTable platformDownload = this.downloadsDAO.getPlatformDownload(versionId, platform);
+        final ProjectVersionDownloadTable download = this.downloadsDAO.getDownload(versionId, platformDownload.getDownloadId());
         if (download.getFileName() == null) {
-            throw new HangarApiException("Couldn't find a file for version " + versionId);
+            throw new HangarApiException("Couldn't find a file for version " + version + " in download " + download);
         }
 
-        final ProjectTable project = this.projectsDAO.getById(pvt.getProjectId());
-        final String path = this.projectFiles.getVersionDir(project.getOwnerName(), project.getSlug(), pvt.getVersionString(), platform, download.getFileName());
+        final ProjectTable project = this.projectsDAO.getById(version.projectId());
+        final String path = this.projectFiles.getVersionDir(project.getOwnerName(), project.getSlug(), version.versionString(), platform, download.getFileName());
         if (!this.fileService.exists(path)) {
-            throw new HangarApiException("Couldn't find a file for version " + versionId);
+            throw new HangarApiException("Couldn't find a file for version " + version.versionString());
         }
         return new NamedResource(this.fileService.getResource(path), download.getFileName());
     }

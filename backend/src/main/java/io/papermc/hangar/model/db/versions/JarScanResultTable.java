@@ -11,21 +11,24 @@ import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 public class JarScanResultTable extends Table {
 
     private long versionId;
+    private int scannerVersion;
     private Platform platform;
     private String highestSeverity;
     private JSONB data;
 
     @JdbiConstructor
-    public JarScanResultTable(final OffsetDateTime createdAt, final long id, final long versionId,  @EnumByOrdinal final Platform platform, final String highestSeverity, final JSONB data) {
+    public JarScanResultTable(final OffsetDateTime createdAt, final long id, final long versionId, final int scannerVersion, @EnumByOrdinal final Platform platform, final String highestSeverity, final JSONB data) {
         super(createdAt, id);
         this.versionId = versionId;
+        this.scannerVersion = scannerVersion;
         this.platform = platform;
         this.highestSeverity = highestSeverity;
         this.data = data;
     }
 
-    public JarScanResultTable(final long versionId, final Platform platform, final String highestSeverity, final JSONB data) {
+    public JarScanResultTable(final long versionId, final int scannerVersion, final Platform platform, final String highestSeverity, final JSONB data) {
         this.versionId = versionId;
+        this.scannerVersion = scannerVersion;
         this.platform = platform;
         this.highestSeverity = highestSeverity;
         this.data = data;
@@ -37,6 +40,14 @@ public class JarScanResultTable extends Table {
 
     public void setVersionId(final long versionId) {
         this.versionId = versionId;
+    }
+
+    public int getScannerVersion() {
+        return this.scannerVersion;
+    }
+
+    public void setScannerVersion(final int scannerVersion) {
+        this.scannerVersion = scannerVersion;
     }
 
     @EnumByOrdinal
@@ -68,6 +79,7 @@ public class JarScanResultTable extends Table {
     public String toString() {
         return new StringJoiner(", ", JarScanResultTable.class.getSimpleName() + "[", "]")
             .add("versionId=" + this.versionId)
+            .add("scannerVersion=" + this.scannerVersion)
             .add("platform=" + this.platform)
             .add("highestSeverity='" + this.highestSeverity + "'")
             .add("id=" + this.id)

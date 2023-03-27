@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.server.ResponseStatusException;
 
 @Unlocked
 @Controller
@@ -41,7 +40,7 @@ public class JarScanningController {
     @PostMapping("/scan/{platform}/{versionId}")
     public void scan(@PathVariable final Platform platform, @PathVariable final long versionId)  {
         try {
-            this.jarScanningService.scan(versionId, platform);
+            this.jarScanningService.scanPlatform(versionId, platform);
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }

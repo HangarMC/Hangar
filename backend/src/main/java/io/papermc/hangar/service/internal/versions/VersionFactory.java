@@ -299,7 +299,6 @@ public class VersionFactory extends HangarComponent {
             this.actionLogger.version(LogAction.VERSION_CREATED.create(VersionContext.of(projectId, projectVersionTable.getId()), "published", ""));
 
             if (projectTable.getVisibility() == Visibility.NEW) {
-                // TODO automatic checks for malicious code or files => set visibility to NEEDSAPPROVAL
                 this.projectVisibilityService.changeVisibility(projectTable, Visibility.PUBLIC, "First version");
             }
 
