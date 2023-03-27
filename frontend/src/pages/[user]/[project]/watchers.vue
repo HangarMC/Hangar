@@ -30,8 +30,10 @@ useHead(useSeo(i18n.t("project.watchers") + " | " + props.project.name, props.pr
 
     <div v-if="watchers?.result?.length > 0" class="flex flex-wrap gap-4">
       <div v-for="watcher in watchers?.result" :key="watcher.name">
-        <UserAvatar size="xs" :username="watcher.name" :avatar-url="watcher.avatarUrl" />
-        <Link :to="'/' + watcher.name">{{ watcher.name }}</Link>
+        <div class="inline-flex items-center space-x-1">
+          <UserAvatar size="xs" :username="watcher.name" :avatar-url="watcher.avatarUrl" />
+          <Link :to="'/' + watcher.name">{{ watcher.name }}</Link>
+        </div>
       </div>
     </div>
     <div v-else>
