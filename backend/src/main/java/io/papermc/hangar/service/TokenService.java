@@ -16,6 +16,7 @@ import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.security.authentication.api.HangarApiPrincipal;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.internal.users.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -52,13 +53,13 @@ public class TokenService extends HangarComponent {
         return this.getVerifier().verify(token);
     }
 
-    public void issueRefreshToken(final UserTable userTable) {
+    public void issueRefreshToken(final UserTable userTable, final HttpServletResponse response) {
         final UserRefreshToken userRefreshToken = this.userRefreshTokenDAO.insert(new UserRefreshToken(userTable.getId(), UUID.randomUUID(), UUID.randomUUID()));
-        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), this.config.security.refreshTokenExpiry().toSeconds(), true);
+        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), this.config.security.refreshTokenExpiry().toSeconds(), true, response);
     }
 
-    private void addCookie(final String name, final String value, final long maxAge, final boolean httpOnly) {
-        this.response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, value).path("/").secure(this.config.security.secure()).maxAge(maxAge).sameSite("Lax").httpOnly(httpOnly).build().toString());
+    private void addCookie(final String name, final String value, final long maxAge, final boolean httpOnly, final HttpServletResponse response) {
+        response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, value).path("/").secure(this.config.security.secure()).maxAge(maxAge).sameSite("Lax").httpOnly(httpOnly).build().toString());
     }
 
     public record RefreshResponse(String accessToken, UserTable userTable) {}
@@ -92,7 +93,7 @@ public class TokenService extends HangarComponent {
             userRefreshToken = this.userRefreshTokenDAO.update(userRefreshToken);
         }
         // in any case, refreshing the cookie is good
-        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), this.config.security.refreshTokenExpiry().toSeconds(), true);
+        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), this.config.security.refreshTokenExpiry().toSeconds(), true, this.response);
         // then issue a new access token
         return new RefreshResponse(this.newToken0(userTable), userTable);
     }
@@ -101,8 +102,8 @@ public class TokenService extends HangarComponent {
         if (refreshToken != null) {
             this.userRefreshTokenDAO.delete(UUID.fromString(refreshToken));
         }
-        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, null, 0, true);
-        this.addCookie(SecurityConfig.AUTH_NAME, null, 0, false);
+        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, null, 0, true, this.response);
+        this.addCookie(SecurityConfig.AUTH_NAME, null, 0, false, this.response);
     }
 
     private String newToken0(final UserTable userTable) {

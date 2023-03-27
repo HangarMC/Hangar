@@ -2,8 +2,9 @@ package io.papermc.hangar.security.authentication;
 
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
+import java.io.Serializable;
 
-public class HangarPrincipal implements ProjectOwner {
+public class HangarPrincipal implements ProjectOwner, Serializable {
 
     private final long id;
     private final String name;

@@ -157,7 +157,7 @@ public class AvatarService extends HangarComponent {
     }
 
     private String getAvatarUrl(final String type, final String subject, final String defaultType, final String defaultSubject) {
-        if (this.config.fakeUser.enabled()) {
+        if (true || this.config.fakeUser.enabled()) {
             return "https://docs.papermc.io/img/paper.png";
         }
 

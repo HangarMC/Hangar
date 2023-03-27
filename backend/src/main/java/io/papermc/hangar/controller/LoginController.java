@@ -46,13 +46,13 @@ public class LoginController extends HangarComponent {
         this.validationService = validationService;
     }
 
-    @GetMapping(path = "/login", params = "returnUrl")
+    //@GetMapping(path = "/login", params = "returnUrl")
     public RedirectView loginFromFrontend(@RequestParam(defaultValue = "/") final String returnUrl) {
         if (this.config.fakeUser.enabled()) {
             this.config.checkDev();
 
             final UserTable fakeUser = this.authenticationService.loginAsFakeUser();
-            this.tokenService.issueRefreshToken(fakeUser);
+            this.tokenService.issueRefreshToken(fakeUser, this.response);
             return this.addBaseAndRedirect(this.cutoffAbsoluteUrls(returnUrl));
         } else {
             this.response.addCookie(new Cookie("url", this.cutoffAbsoluteUrls(returnUrl)));
@@ -61,7 +61,7 @@ public class LoginController extends HangarComponent {
     }
 
     @RateLimit(overdraft = 5, refillTokens = 5, refillSeconds = 10)
-    @GetMapping(path = "/login", params = {"code", "state"})
+    //@GetMapping(path = "/login", params = {"code", "state"})
     public RedirectView loginFromAuth(@RequestParam final String code, @RequestParam final String state, @CookieValue final String url) {
         final UserTable user = this.ssoService.authenticate(code, state, this.config.getBaseUrl() + "/login");
         if (user == null) {
@@ -71,7 +71,7 @@ public class LoginController extends HangarComponent {
         if (!this.validationService.isValidUsername(user.getName())) {
             throw new HangarApiException("nav.user.error.invalidUsername");
         }
-        this.tokenService.issueRefreshToken(user);
+        this.tokenService.issueRefreshToken(user, this.response);
         return this.addBaseAndRedirect(this.cutoffAbsoluteUrls(url));
     }
 
