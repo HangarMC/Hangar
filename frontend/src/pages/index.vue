@@ -45,7 +45,7 @@ const filters = ref({
   tags: toArray(route.query.tag),
 });
 
-const activeSorter = ref<string>((route.query.sort as string) || "-stars");
+const activeSorter = ref<string>((route.query.sort as string) || "-recent_downloads");
 const page = ref(route.query.page ? Number(route.query.page) : 0);
 const query = ref<string>((route.query.q as string) || "");
 const loggedOut = ref<boolean>("loggedOut" in route.query);
