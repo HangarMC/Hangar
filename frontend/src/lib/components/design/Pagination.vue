@@ -60,6 +60,10 @@ const emit = defineEmits<{
   (e: "update:page", value: number): void;
 }>();
 function updatePage(newPage: number) {
+  if (newPage === page.value) {
+    return;
+  }
+
   page.value = newPage;
   if (process.client && props.resetAnchor) {
     window.scrollBy(0, props.resetAnchor.getBoundingClientRect().y);
