@@ -61,6 +61,35 @@ async function unlinkTotp() {
   hasTotp.value = false;
 }
 
+const hasCodes = ref(true); // TODO implement getting aal methods
+const showCodes = ref(false);
+const codes = ref();
+async function setupCodes() {
+  const data = await useInternalApi("auth/codes/setup", "POST");
+  console.log("data", data);
+  codes.value = data;
+}
+
+async function confirmCodes() {
+  await useInternalApi("auth/codes/register", "POST");
+  hasCodes.value = true;
+  showCodes.value = false;
+}
+
+async function revealCodes() {
+  if (!codes.value) {
+    const data = await useInternalApi("auth/codes/show", "POST");
+    codes.value = data;
+  }
+  showCodes.value = true;
+}
+
+async function generateNewCodes() {
+  const data = await useInternalApi("auth/codes/regenerate", "POST");
+  hasCodes.value = false;
+  codes.value = data;
+}
+
 function saveAccount() {
   //
 }
@@ -122,9 +151,17 @@ useHead(useSeo("Settings", null, route, null));
     <Card>
       <template #header>backup codes</template>
       <div>codes</div>
-      <Button>Add</Button>
-      <Button>Reveal</Button>
-      <Button>Revoke</Button>
+      <div v-if="(hasCodes && showCodes) || (!hasCodes && codes)" class="flex flex-wrap mt-2 mb-2">
+        <div v-for="code in codes" :key="code.code" class="basis-3/12">
+          <code>{{ code["used_at"] ? "Used" : code.code }}</code>
+        </div>
+      </div>
+      <template v-if="hasCodes">
+        <Button v-if="!showCodes" @click="revealCodes">Reveal</Button>
+        <Button @click="generateNewCodes">Generate new codes</Button>
+      </template>
+      <Button v-else-if="!codes" @click="setupCodes">Add</Button>
+      <Button v-else @click="confirmCodes">Confirm codes</Button>
     </Card>
 
     <Card>

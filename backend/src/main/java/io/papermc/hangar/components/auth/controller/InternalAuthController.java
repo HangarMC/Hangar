@@ -11,8 +11,10 @@ import dev.samstevens.totp.qr.QrGenerator;
 import dev.samstevens.totp.recovery.RecoveryCodeGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.auth.model.credential.BackupCodeCredential;
 import io.papermc.hangar.components.auth.model.credential.CredentialType;
 import io.papermc.hangar.components.auth.model.credential.TotpCredential;
+import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.components.auth.model.dto.TotpForm;
 import io.papermc.hangar.components.auth.model.dto.TotpSetupResponse;
@@ -26,6 +28,8 @@ import io.papermc.hangar.components.auth.service.WebAuthNService;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.TokenService;
 import jakarta.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
@@ -166,10 +170,47 @@ public class InternalAuthController extends HangarComponent {
     }
 
     @Unlocked
-    @PostMapping("/code/register")
-    public void registerBackupCodes() {
-        // TODO backup codes
-        this.recoveryCodeGenerator.generateCodes(10);
-        // TODO return one and force the user to confirm?
+    @PostMapping("/codes/setup")
+    public List<BackupCodeCredential.BackupCode> setupBackupCodes() {
+        // TODO check if there are unregistered one in db first
+        final List<BackupCodeCredential.BackupCode> codes = Arrays.stream(this.recoveryCodeGenerator.generateCodes(12)).map(s -> new BackupCodeCredential.BackupCode(s, null)).toList();
+        this.authService.registerCredential(this.getHangarPrincipal().getUserId(), new BackupCodeCredential(codes, true));
+        return codes;
+    }
+
+    @Unlocked
+    @PostMapping("/codes/show")
+    public ResponseEntity<?> showBackupCodes() {
+        // TODO security protection
+        final UserCredentialTable table = this.authService.getCredential(this.getHangarPrincipal().getId(), CredentialType.BACKUP_CODES);
+        if (table == null) {
+            return ResponseEntity.notFound().build();
+        }
+        final BackupCodeCredential cred = table.getCredential().get(BackupCodeCredential.class);
+        if (cred == null || cred.unconfirmed()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(cred.backupCodes());
+    }
+
+    @Unlocked
+    @PostMapping("/codes/register")
+    public ResponseEntity<?> registerBackupCodes() {
+        final UserCredentialTable table = this.authService.getCredential(this.getHangarPrincipal().getId(), CredentialType.BACKUP_CODES);
+        if (table == null) {
+            return ResponseEntity.notFound().build();
+        }
+        BackupCodeCredential cred = table.getCredential().get(BackupCodeCredential.class);
+        cred = new BackupCodeCredential(cred.backupCodes(), false);
+        this.authService.updateCredential(this.getHangarPrincipal().getId(), cred);
+        return ResponseEntity.ok().build();
+    }
+
+    @Unlocked
+    @PostMapping("/codes/regenerate")
+    public List<BackupCodeCredential.BackupCode> regenerateBackupCodes() {
+        // TODO security protection
+        this.authService.removeCredential(this.getHangarPrincipal().getId(), CredentialType.BACKUP_CODES);
+        return this.setupBackupCodes();
     }
 }

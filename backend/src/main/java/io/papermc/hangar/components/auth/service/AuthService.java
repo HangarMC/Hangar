@@ -2,10 +2,10 @@ package io.papermc.hangar.components.auth.service;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.dao.UserCredentialDAO;
+import io.papermc.hangar.components.auth.model.credential.BackupCodeCredential;
 import io.papermc.hangar.components.auth.model.credential.Credential;
 import io.papermc.hangar.components.auth.model.credential.CredentialType;
 import io.papermc.hangar.components.auth.model.credential.PasswordCredential;
-import io.papermc.hangar.components.auth.model.credential.TotpCredential;
 import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
@@ -15,6 +15,7 @@ import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import java.util.List;
 import java.util.UUID;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,6 +51,14 @@ public class AuthService extends HangarComponent implements UserDetailsService {
 
     public void removeCredential(final long userId, final CredentialType type) {
         this.userCredentialDAO.remove(userId, type);
+    }
+
+    public void updateCredential(final long userId, final Credential credential) {
+        this.userCredentialDAO.update(userId, new JSONB(credential), credential.type());
+    }
+
+    public @Nullable UserCredentialTable getCredential(final long userId, final CredentialType type) {
+        return this.userCredentialDAO.getByType(type, userId);
     }
 
     @Override

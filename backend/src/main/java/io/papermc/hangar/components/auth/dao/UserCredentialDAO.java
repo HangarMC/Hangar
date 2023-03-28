@@ -1,5 +1,6 @@
 package io.papermc.hangar.components.auth.dao;
 
+import io.papermc.hangar.components.auth.model.credential.Credential;
 import io.papermc.hangar.components.auth.model.credential.CredentialType;
 import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
 import io.papermc.hangar.db.customtypes.JSONB;
@@ -25,4 +26,8 @@ public interface UserCredentialDAO {
 
     @SqlUpdate("DELETE FROM user_credentials WHERE type = :type and user_id = :userId")
     void remove(long userId, @EnumByOrdinal CredentialType type);
+
+    @Timestamped
+    @SqlUpdate("UPDATE user_credentials set credential = :credential, updated_at = :now WHERE type = :type and user_id = :userId")
+    void update(long userId, JSONB credential, @EnumByOrdinal CredentialType type);
 }
