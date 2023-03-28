@@ -35,6 +35,7 @@ declare module "hangar-internal" {
   interface IVisibility {
     name: Visibility;
     showModal: boolean;
+    canChangeTo: boolean;
     cssClass: string;
     title: string;
   }

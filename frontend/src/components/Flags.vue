@@ -13,6 +13,7 @@ import Button from "~/lib/components/design/Button.vue";
 import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
 import ReportNotificationModal from "~/components/modals/ReportNotificationModal.vue";
 import Pagination from "~/lib/components/design/Pagination.vue";
+import Link from "~/lib/components/design/Link.vue";
 
 const props = defineProps<{
   resolved: boolean;
@@ -67,16 +68,15 @@ async function getNotifications(flag: Flag) {
             <UserAvatar :username="item.reportedByName" size="sm" class="flex-shrink-0"></UserAvatar>
             <div class="flex flex-col flex-grow">
               <h2>
-                {{
-                  i18n.t("flagReview.line1", [
-                    item.reportedByName,
-                    `${item.projectNamespace.owner}/${item.projectNamespace.slug}`,
-                    i18n.d(item.createdAt, "time"),
-                  ])
-                }}
-                <router-link :to="`/${item.projectNamespace.owner}/${item.projectNamespace.slug}`" target="_blank">
-                  <icon-mdi-open-in-new class="inline ml-1"></icon-mdi-open-in-new>
-                </router-link>
+                <Link :to="'/' + item.reportedByName" target="_blank">
+                  {{ item.reportedByName }}
+                </Link>
+
+                reported
+                <Link :to="`/${item.projectNamespace.owner}/${item.projectNamespace.slug}`" target="_blank">
+                  {{ `${item.projectNamespace.owner}/${item.projectNamespace.slug}` }}
+                </Link>
+                ({{ i18n.d(item.createdAt, "time") }})
               </h2>
               <small>{{ i18n.t("flagReview.line2", [i18n.t(item.reason)]) }}</small>
               <small>{{ i18n.t("flagReview.line3", [item.comment]) }}</small>
@@ -90,10 +90,7 @@ async function getNotifications(flag: Flag) {
               </Button>
             </template>
             <template v-else>
-              <div class="flex flex-col space-y-1">
-                <ReportNotificationModal :flag="item" :send-to-reporter="false" />
-                <ReportNotificationModal :flag="item" :send-to-reporter="true" />
-              </div>
+              <span class="pr-1">Currently {{ item.projectVisibility }}</span>
               <VisibilityChangerModal :prop-visibility="item.projectVisibility" type="project" :post-url="`projects/visibility/${item.projectId}`" />
               <Button :disabled="loading[item.id]" @click="resolve(item)">
                 <IconMdiCheck class="mr-1" />
@@ -103,9 +100,13 @@ async function getNotifications(flag: Flag) {
           </div>
 
           <!-- todo: make this actually look good and work well -->
-          <div class="flex-col">
-            <Button v-if="currentId !== item.id && !resolved" @click="getNotifications(item)">Load notifications</Button>
-            <ul v-else-if="currentId === item.id">
+          <div class="flex-col mt-2">
+            <div class="inline-flex items-center">
+              <ReportNotificationModal :flag="item" :send-to-reporter="false" />
+              <ReportNotificationModal :flag="item" :send-to-reporter="true" />
+              <Button v-if="currentId !== item.id && !resolved" @click="getNotifications(item)">Load notifications</Button>
+            </div>
+            <ul v-if="currentId === item.id" class="mt-1">
               <li v-if="notifications.length === 0">Empty!</li>
               <li v-for="notification in notifications" v-else :key="notification.id" class="text-xs">
                 <span class="inline-flex">

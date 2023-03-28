@@ -180,7 +180,8 @@ public class BackendDataController extends HangarComponent {
         for (final Visibility value : Visibility.getValues()) {
             final ObjectNode objectNode = this.objectMapper.createObjectNode();
             objectNode.put("name", value.getName())
-                .put("showModal", value.getShowModal())
+                .put("showModal", value.shouldShowModal())
+                .put("canChangeTo", value.canChangeTo())
                 .put("cssClass", value.getCssClass())
                 .put("title", value.getTitle());
             arrayNode.add(objectNode);

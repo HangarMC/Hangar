@@ -53,7 +53,7 @@ async function submit(close: () => void) {
       <div class="py-2" />
       <InputTextarea v-model.trim="flagComment" rows="3" :rules="[required()]" :label="i18n.t('general.comment')" />
 
-      <Button class="mt-3" @click="submit(on.click)">{{ i18n.t("general.submit") }}</Button>
+      <Button class="mt-3" :disabled="!flagReason || !flagComment" @click="submit(on.click)">{{ i18n.t("general.submit") }}</Button>
     </template>
     <template #activator="{ on }">
       <Tooltip>

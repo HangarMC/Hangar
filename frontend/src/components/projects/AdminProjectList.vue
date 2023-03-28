@@ -19,9 +19,9 @@ defineProps<{
       <li>
         <div class="flex lt-md:flex-col items-center">
           <div class="basis-full md:basis-3/12">
-            {{ i18n.t("projectApproval.description", [project.changeRequester, `${project.namespace.owner}/${project.namespace.slug}`]) }}
+            {{ project.changeRequester }} Requested changes on
             <Link :to="`/${project.namespace.owner}/${project.namespace.slug}`" target="_blank">
-              <IconMdiOpenInNew />
+              {{ `${project.namespace.owner}/${project.namespace.slug}` }}
             </Link>
           </div>
           <div class="basis-full md:basis-6/12 flex-grow">

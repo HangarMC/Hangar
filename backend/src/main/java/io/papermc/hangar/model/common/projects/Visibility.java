@@ -4,24 +4,26 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Visibility {
-    PUBLIC("public", false, "", "visibility.name.public"),
+    PUBLIC("public", false, true, "", "visibility.name.public"),
 
-    NEW("new", false, "project-new", "visibility.name.new"),
+    NEW("new", false, false, "project-new", "visibility.name.new"),
 
-    NEEDSCHANGES("needsChanges", true, "striped project-needsChanges", "visibility.name.needsChanges"),
+    NEEDSCHANGES("needsChanges", true, true, "striped project-needsChanges", "visibility.name.needsChanges"),
 
-    NEEDSAPPROVAL("needsApproval", false, "striped project-needsChanges", "visibility.name.needsApproval"),
+    NEEDSAPPROVAL("needsApproval", false, false, "striped project-needsChanges", "visibility.name.needsApproval"),
 
-    SOFTDELETE("softDelete", true, "striped project-hidden", "visibility.name.softDelete");
+    SOFTDELETE("softDelete", true, true, "striped project-hidden", "visibility.name.softDelete");
 
     private final String name;
     private final boolean showModal;
+    private final boolean canChangeTo;
     private final String cssClass;
     private final String title;
 
-    Visibility(final String name, final boolean showModal, final String cssClass, final String title) {
+    Visibility(final String name, final boolean showModal, final boolean canChangeTo, final String cssClass, final String title) {
         this.name = name;
         this.showModal = showModal;
+        this.canChangeTo = canChangeTo;
         this.cssClass = cssClass;
         this.title = title;
     }
@@ -30,8 +32,12 @@ public enum Visibility {
         return this.name;
     }
 
-    public boolean getShowModal() {
+    public boolean shouldShowModal() {
         return this.showModal;
+    }
+
+    public boolean canChangeTo() {
+        return this.canChangeTo;
     }
 
     public String getCssClass() {
