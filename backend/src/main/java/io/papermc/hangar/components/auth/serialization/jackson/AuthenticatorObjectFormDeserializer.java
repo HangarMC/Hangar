@@ -1,10 +1,10 @@
-package io.papermc.hangar.security.webauthn.jackson;
+package io.papermc.hangar.components.auth.serialization.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.webauthn4j.springframework.security.converter.Base64UrlStringToAttestationObjectConverter;
-import io.papermc.hangar.security.webauthn.model.AttestationObjectForm;
+import io.papermc.hangar.components.auth.model.dto.webauthn.AttestationObjectForm;
 import java.io.IOException;
 import org.springframework.boot.jackson.JsonComponent;
 

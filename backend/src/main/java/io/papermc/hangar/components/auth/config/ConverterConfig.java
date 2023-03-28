@@ -1,4 +1,4 @@
-package io.papermc.hangar.security.webauthn;
+package io.papermc.hangar.components.auth.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
@@ -7,8 +7,8 @@ import com.webauthn4j.metadata.converter.jackson.WebAuthnMetadataJSONModule;
 import com.webauthn4j.springframework.security.converter.Base64UrlStringToAttestationObjectConverter;
 import com.webauthn4j.springframework.security.converter.Base64UrlStringToCollectedClientDataConverter;
 import com.webauthn4j.springframework.security.converter.jackson.WebAuthn4JSpringSecurityJSONModule;
-import io.papermc.hangar.security.webauthn.formatter.AttestationObjectFormFormatter;
-import io.papermc.hangar.security.webauthn.formatter.CollectedClientDataFormFormatter;
+import io.papermc.hangar.components.auth.serialization.formatter.AttestationObjectFormFormatter;
+import io.papermc.hangar.components.auth.serialization.formatter.CollectedClientDataFormFormatter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

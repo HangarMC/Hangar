@@ -69,6 +69,15 @@ public class JSONB extends PGobject {
         return null;
     }
 
+    public <T> T get(final Class<T> ref) {
+        try {
+            return new ObjectMapper().readValue(this.value, ref);
+        } catch (final JsonProcessingException | ClassCastException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public void setValue(final String value) {
         this.value = value;

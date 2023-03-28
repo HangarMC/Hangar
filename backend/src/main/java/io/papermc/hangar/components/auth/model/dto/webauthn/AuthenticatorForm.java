@@ -1,4 +1,4 @@
-package io.papermc.hangar.security.webauthn.model;
+package io.papermc.hangar.components.auth.model.dto.webauthn;
 
 import jakarta.validation.constraints.NotEmpty;
 import java.util.Set;

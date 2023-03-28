@@ -369,11 +369,11 @@ function isRecent(date: string): boolean {
 
         <!-- Login/register buttons -->
         <div v-else class="flex gap-2">
-          <a class="flex items-center rounded-md p-2 hover:(text-primary-400 bg-primary-0)" :href="auth.loginUrl($route.fullPath)" rel="nofollow">
+          <NuxtLink class="flex items-center rounded-md p-2 hover:(text-primary-400 bg-primary-0)" :to="auth.loginUrl($route.fullPath)" rel="nofollow">
             <icon-mdi-key-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.login") }}
-          </a>
-          <a class="flex items-center rounded-md p-2 hover:(text-primary-400 bg-primary-0)" href="/signup">
+          </NuxtLink>
+          <a class="flex items-center rounded-md p-2 hover:(text-primary-400 bg-primary-0)" href="/auth/signup">
             <icon-mdi-clipboard-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.signup") }}
           </a>

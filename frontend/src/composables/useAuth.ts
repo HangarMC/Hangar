@@ -15,15 +15,15 @@ class Auth {
     if (redirectUrl.endsWith("?loggedOut")) {
       redirectUrl = redirectUrl.replace("?loggedOut", "");
     }
-    return `/login?returnUrl=${redirectUrl}`;
+    return `/auth/login?returnUrl=${redirectUrl}`;
   }
 
   async logout() {
     const result = await useAxios()
-      .get(`/logout?returnUrl=/?loggedOut`)
+      .get(`/api/internal/auth/logout`)
       .catch((e) => handleRequestError(e));
-    if (result?.status === 200 && result?.data) {
-      location.replace(result?.data);
+    if (result?.status === 200) {
+      location.replace("/?loggedOut");
     } else {
       await useNotificationStore().error("Error while logging out?!");
     }

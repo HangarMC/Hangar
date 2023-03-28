@@ -1,4 +1,4 @@
-package io.papermc.hangar.security.webauthn;
+package io.papermc.hangar.components.auth.config;
 
 import com.webauthn4j.WebAuthnManager;
 import com.webauthn4j.converter.util.ObjectConverter;
@@ -29,8 +29,6 @@ import com.webauthn4j.springframework.security.server.ServerPropertyProvider;
 import io.papermc.hangar.security.authentication.HangarAuthenticationEntryPoint;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.TokenService;
-import io.papermc.hangar.service.internal.auth.HangarPublicKeyCredentialUserEntityProvider;
-import io.papermc.hangar.service.internal.auth.HangarUserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -115,11 +113,6 @@ public class WebAuthnConfig {
     @Bean
     public AuthenticationTrustResolver authenticationTrustResolver() {
         return new AuthenticationTrustResolverImpl();
-    }
-
-    @Bean
-    public PublicKeyCredentialUserEntityProvider webAuthnUserEntityProvider(final HangarUserDetailService hangarUserDetailService) {
-        return new HangarPublicKeyCredentialUserEntityProvider(hangarUserDetailService);
     }
 
     @Bean

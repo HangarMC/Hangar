@@ -23,9 +23,14 @@ const loading = ref(false);
 
 async function submit() {
   loading.value = true;
-  // TODO validation
-  await useInternalApi("auth/signup", "POST", form);
-  // TODO error handling
+  try {
+    // TODO validation
+    await useInternalApi("auth/signup", "POST", form);
+    // TODO error handling
+    await router.push("/auth/settings");
+  } catch (e) {
+    console.log("error", e);
+  }
   loading.value = false;
 }
 

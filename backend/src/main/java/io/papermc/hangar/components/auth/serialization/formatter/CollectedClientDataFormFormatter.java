@@ -1,8 +1,8 @@
-package io.papermc.hangar.security.webauthn.formatter;
+package io.papermc.hangar.components.auth.serialization.formatter;
 
 import com.webauthn4j.data.client.CollectedClientData;
 import com.webauthn4j.springframework.security.converter.Base64UrlStringToCollectedClientDataConverter;
-import io.papermc.hangar.security.webauthn.model.CollectedClientDataForm;
+import io.papermc.hangar.components.auth.model.dto.webauthn.CollectedClientDataForm;
 import java.text.ParseException;
 import java.util.Locale;
 import org.jetbrains.annotations.NotNull;

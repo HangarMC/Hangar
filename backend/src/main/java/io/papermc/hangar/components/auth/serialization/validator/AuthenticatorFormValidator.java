@@ -1,8 +1,8 @@
-package io.papermc.hangar.security.webauthn.validator;
+package io.papermc.hangar.components.auth.serialization.validator;
 
 import com.webauthn4j.springframework.security.WebAuthnRegistrationRequestValidator;
 import com.webauthn4j.validator.exception.ValidationException;
-import io.papermc.hangar.security.webauthn.model.AuthenticatorForm;
+import io.papermc.hangar.components.auth.model.dto.webauthn.AuthenticatorForm;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

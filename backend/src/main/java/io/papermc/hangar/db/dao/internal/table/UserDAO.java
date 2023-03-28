@@ -40,7 +40,7 @@ public interface UserDAO {
     @SqlUpdate("UPDATE users SET name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language, theme = :theme WHERE id = :id")
     UserTable update(@BindBean UserTable user);
 
-    @SqlQuery("SELECT * FROM users WHERE id = :id OR lower(name) = lower(:name) OR uuid = :uuid")
+    @SqlQuery("SELECT * FROM users WHERE id = :id OR lower(name) = lower(:name) OR lower(email) = lower(:name) OR uuid = :uuid")
     UserTable _getUserTable(Long id, String name, UUID uuid);
 
     default UserTable getUserTable(final long id) {
