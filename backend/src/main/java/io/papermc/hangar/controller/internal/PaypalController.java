@@ -20,11 +20,10 @@ public class PaypalController extends HangarComponent {
         this.paypalService = paypalService;
     }
 
-    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 3)
+    /*@RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 3)
     @PostMapping("/ipn")
     public ResponseEntity<Object> ipn(@RequestBody final String ipn) throws URISyntaxException {
         this.paypalService.handle(ipn);
         return ResponseEntity.ok().build();
-    }
-
+    }*/
 }

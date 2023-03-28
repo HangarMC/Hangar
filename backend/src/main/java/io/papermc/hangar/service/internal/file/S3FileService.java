@@ -7,6 +7,8 @@ import io.papermc.hangar.model.common.Platform;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -19,6 +21,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 @ConditionalOnProperty(value = "hangar.storage.type", havingValue = "object")
 public class S3FileService implements FileService {
 
+    private static final String URL_FORMAT = "%s/plugins/%s/%s/versions/%s/%s/%s";
     private final StorageConfig config;
     private final ResourceLoader resourceLoader;
     private final S3Template s3Template;
@@ -102,6 +105,9 @@ public class S3FileService implements FileService {
 
     @Override
     public String getDownloadUrl(final String user, final String project, final String version, final Platform platform, final String fileName) {
-        return this.config.cdnEndpoint() + (this.config.cdnIncludeBucket() ? "/" + this.config.bucket() : "") + "/plugins/" + user + "/" + project + "/versions/" + version + "/" + platform.name() + "/" + fileName;
+        final String encodedVersion = URLEncoder.encode(version, StandardCharsets.UTF_8);
+        final String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+        final String endpoint = this.config.cdnIncludeBucket() ? this.config.cdnEndpoint() + "/" + this.config.bucket() : this.config.cdnEndpoint();
+        return URL_FORMAT.formatted(endpoint, user, project, encodedVersion, platform.name(), encodedFileName);
     }
 }
