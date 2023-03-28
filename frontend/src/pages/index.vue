@@ -20,7 +20,6 @@ import { Platform, Tag } from "~/types/enums";
 import InputRadio from "~/lib/components/ui/InputRadio.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
-import LicenseLogo from "~/components/logos/licenses/LicenseLogo.vue";
 import { useConfig } from "~/lib/composables/useConfig";
 import VersionSelector from "~/components/VersionSelector.vue";
 
@@ -41,7 +40,6 @@ const filters = ref({
   versions: toArray(route.query.version),
   categories: toArray(route.query.category),
   platform: (route.query.platform || null) as string | null,
-  licenses: toArray(route.query.license),
   tags: toArray(route.query.tag),
 });
 
@@ -59,7 +57,6 @@ const requestParams = computed(() => {
     version: filters.value.versions,
     category: filters.value.categories,
     platform: filters.value.platform !== null ? [filters.value.platform] : [],
-    license: filters.value.licenses,
     tag: filters.value.tags,
   };
   if (query.value) {
@@ -274,14 +271,6 @@ useHead(meta);
               :label="i18n.t(category.title)"
             >
               <CategoryLogo :category="category.apiName" :size="22" class="mr-1" />
-            </InputCheckbox>
-          </div>
-        </div>
-        <div class="licenses">
-          <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.licenses") }}</h4>
-          <div class="flex flex-col gap-1">
-            <InputCheckbox v-for="license in useBackendData.licenses" :key="license" v-model="filters.licenses" :value="license" :label="license">
-              <LicenseLogo :license="license" :size="22" class="mr-1" />
             </InputCheckbox>
           </div>
         </div>
