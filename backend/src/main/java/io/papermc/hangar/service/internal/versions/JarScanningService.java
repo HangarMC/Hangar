@@ -29,6 +29,8 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
@@ -41,6 +43,7 @@ public class JarScanningService {
 
     public static final UUID JAR_SCANNER_USER = new UUID(952332837L, -376012533328L);
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(new ThreadFactoryBuilder().threadNamePrefix("Scanner").build());
+    private static final Logger LOGGER = LoggerFactory.getLogger(JarScanningService.class);
     private final HangarJarScanner scanner = new HangarJarScanner();
     private final JarScanResultDAO dao;
     private final ProjectVersionsDAO projectVersionsDAO;
@@ -71,7 +74,9 @@ public class JarScanningService {
 
     @Transactional
     public void scanRemainingProjectVersions() {
-        for (final VersionToScan version : this.dao.versionsRequiringScans(this.scanner.version())) {
+        final List<VersionToScan> versionToScans = this.dao.versionsRequiringScans(this.scanner.version());
+        LOGGER.info("Rescanning " + versionToScans.size() + " versions");
+        for (final VersionToScan version : versionToScans) {
             this.scan(version, false); // TODO partial parameter
         }
     }
