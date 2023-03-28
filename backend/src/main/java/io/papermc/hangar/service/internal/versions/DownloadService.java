@@ -186,7 +186,8 @@ public class DownloadService extends HangarComponent {
 
             final ProjectVersionDownloadTable downloadTable = versionDownloads.stream().filter(table -> table.getId() == platformDownload.getDownloadId()).findAny().orElseThrow(NullPointerException::new);
             final FileInfo fileInfo = downloadTable.getFileName() != null ? new FileInfo(downloadTable.getFileName(), downloadTable.getFileSize(), downloadTable.getHash()) : null;
-            download = new PlatformVersionDownload(fileInfo, downloadTable.getExternalUrl(), this.fileService.getDownloadUrl(user, project, version, platformDownload.getPlatform(), fileInfo != null ? fileInfo.getName() : null));
+            final String downloadUrl = fileInfo != null ? this.fileService.getDownloadUrl(user, project, version, platformDownload.getPlatform(), fileInfo.getName()) : null;
+            download = new PlatformVersionDownload(fileInfo, downloadTable.getExternalUrl(), downloadUrl);
             downloads.put(platformDownload.getDownloadId(), download);
             versionDownloadsMap.put(platformDownload.getPlatform(), download);
         }
