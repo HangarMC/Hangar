@@ -264,8 +264,12 @@ function isRecent(date: string): boolean {
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
         <div v-if="authStore.user">
-          <Popper placement="bottom-end" @click="updateNotifications">
-            <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)" aria-label="Notifications">
+          <Popper placement="bottom-end">
+            <button
+              class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)"
+              aria-label="Notifications"
+              @click="updateNotifications"
+            >
               <IconMdiBellOutline v-if="unreadNotifications === 0" class="text-[1.2em]" />
               <IconMdiBellBadge v-else class="text-[1.2em]" />
             </button>
