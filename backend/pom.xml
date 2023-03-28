@@ -43,7 +43,7 @@
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
         <jgroups.version>5.2.13.Final</jgroups.version>
         <jgroups-kube.version>2.0.1.Final</jgroups-kube.version>
-        <totp.version>1.7.1</totp.version>
+        <totp.version>1.7.2-SNAPSHOT</totp.version>
         <webauthn4j.version>0.9.0.RELEASE</webauthn4j.version>
 
         <!-- test -->
@@ -288,13 +288,11 @@
             <version>${jarscanner.version}</version>
         </dependency>
 
-        <!-- spring starter is on boot 2.x -->
         <dependency>
             <groupId>dev.samstevens.totp</groupId>
-            <artifactId>totp</artifactId>
+            <artifactId>totp-spring-boot-starter-hangar</artifactId>
             <version>${totp.version}</version>
         </dependency>
-        <!-- switch to spring impl later -->
         <dependency>
             <groupId>com.webauthn4j</groupId>
             <artifactId>webauthn4j-spring-security-core</artifactId>

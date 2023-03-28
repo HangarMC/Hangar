@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import { useHead } from "@vueuse/head";
 import { useRoute } from "vue-router";
+import { ref } from "vue";
 import { useSeo } from "~/composables/useSeo";
 import { useAuthStore } from "~/store/auth";
 import Button from "~/lib/components/design/Button.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { encodeBase64Url, getAttestationOptions } from "~/composables/useWebAuthN";
+import Card from "~/lib/components/design/Card.vue";
 
 const route = useRoute();
 
@@ -33,6 +35,13 @@ async function addAuthenticator() {
   });
 }
 
+const totpData = ref<{ secret: string; qrCode: string } | undefined>();
+async function setupTotp() {
+  const data = await useInternalApi<{ secret: string; qrCode: string }>("auth/totp/setup");
+  console.log("data", data);
+  totpData.value = data;
+}
+
 useHead(useSeo("Settings", null, route, null));
 </script>
 
@@ -40,5 +49,14 @@ useHead(useSeo("Settings", null, route, null));
   <div>
     <h1>Hello {{ auth.user.name }}</h1>
     <Button @click="addAuthenticator">Add authenticator</Button>
+
+    <Card>
+      <template #header>Totp</template>
+      <Button v-if="!totpData" @click="setupTotp">Setup totp</Button>
+      <template v-else>
+        <img :src="totpData.qrCode" />
+        <small>{{ totpData.secret }}</small>
+      </template>
+    </Card>
   </div>
 </template>

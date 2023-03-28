@@ -1,11 +1,13 @@
 package io.papermc.hangar.security.configs;
 
 import com.webauthn4j.springframework.security.WebAuthnProcessingFilter;
+import dev.samstevens.totp.spring.autoconfigure.TotpAutoConfiguration;
 import io.papermc.hangar.security.authentication.HangarAuthenticationFilter;
 import io.papermc.hangar.security.webauthn.WebAuthnConfig;
 import io.papermc.hangar.service.TokenService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +33,7 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
+@ImportAutoConfiguration(TotpAutoConfiguration.class)
 public class SecurityConfig {
 
     public static final String AUTH_NAME = "HangarAuth";
