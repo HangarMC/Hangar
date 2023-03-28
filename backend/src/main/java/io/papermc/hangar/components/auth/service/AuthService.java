@@ -2,8 +2,10 @@ package io.papermc.hangar.components.auth.service;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.dao.UserCredentialDAO;
+import io.papermc.hangar.components.auth.model.credential.Credential;
 import io.papermc.hangar.components.auth.model.credential.CredentialType;
 import io.papermc.hangar.components.auth.model.credential.PasswordCredential;
+import io.papermc.hangar.components.auth.model.credential.TotpCredential;
 import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
@@ -37,9 +39,17 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         // TODO check if user exists and shit
         final UserTable userTable = this.userDAO.create(UUID.randomUUID(), form.username(), form.email(), null, "en", List.of(), false, "light");
 
-        this.userCredentialDAO.insert(userTable.getUserId(), new JSONB(new PasswordCredential(this.passwordEncoder.encode(form.password()))), CredentialType.PASSWORD);
+        this.registerCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(form.password())));
 
         return userTable;
+    }
+
+    public void registerCredential(final long userId, final Credential credential) {
+        this.userCredentialDAO.insert(userId, new JSONB(credential), credential.type());
+    }
+
+    public void removeCredential(final long userId, final CredentialType type) {
+        this.userCredentialDAO.remove(userId, type);
     }
 
     @Override

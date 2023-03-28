@@ -1,7 +1,5 @@
 package io.papermc.hangar.components.auth.controller;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.webauthn4j.data.AuthenticatorTransport;
 import com.webauthn4j.data.attestation.AttestationObject;
 import com.webauthn4j.springframework.security.authenticator.WebAuthnAuthenticatorImpl;
@@ -13,10 +11,12 @@ import dev.samstevens.totp.qr.QrGenerator;
 import dev.samstevens.totp.recovery.RecoveryCodeGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.auth.model.credential.CredentialType;
+import io.papermc.hangar.components.auth.model.credential.TotpCredential;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
+import io.papermc.hangar.components.auth.model.dto.TotpForm;
 import io.papermc.hangar.components.auth.model.dto.TotpSetupResponse;
 import io.papermc.hangar.components.auth.service.AuthService;
-import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
@@ -37,10 +37,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.view.RedirectView;
 
 import static dev.samstevens.totp.util.Utils.getDataUriForImage;
 
@@ -69,17 +67,14 @@ public class InternalAuthController extends HangarComponent {
         this.authService = authService;
         this.tokenService = tokenService;
     }
-
-    // TODO have a table with credentials (type pw, backup code, totp, webauthn)
-
     @Anyone
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody final SignupForm signupForm) {
-        // TODO signup
         final UserTable userTable = this.authService.registerUser(signupForm);
         if (userTable == null) {
             return ResponseEntity.badRequest().build();
         }
+        // TODO proper session handling with devices list and shit
         this.tokenService.issueRefreshToken(userTable.getUserId(), this.response);
         return ResponseEntity.ok().build();
     }
@@ -118,13 +113,10 @@ public class InternalAuthController extends HangarComponent {
     public TotpSetupResponse setupTotp() throws QrGenerationException {
         final String secret = this.secretGenerator.generate();
 
-        // TODO store the secret
-
-        // TODO proper data
         final QrData data = this.qrDataFactory.newBuilder()
-            .label("example@example.com")
+            .label(this.getHangarPrincipal().getName())
             .secret(secret)
-            .issuer("AppName")
+            .issuer("Hangar")
             .build();
 
         final String qrCodeImage = getDataUriForImage(
@@ -137,14 +129,28 @@ public class InternalAuthController extends HangarComponent {
 
     @Unlocked
     @PostMapping("/totp/register")
-    public void registerTotp() {
-        // TODO totp
+    public ResponseEntity<?> registerTotp(@RequestBody final TotpForm form) {
+        if (!this.codeVerifier.isValidCode(form.secret(), form.code())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        final String totpUrl = this.qrDataFactory.newBuilder()
+            .label(this.getHangarPrincipal().getName())
+            .secret(form.secret())
+            .issuer("Hangar")
+            .build().getUri();
+
+        this.authService.registerCredential(this.getHangarPrincipal().getUserId(), new TotpCredential(totpUrl));
+
+        return ResponseEntity.ok().build();
     }
 
     @Unlocked
     @PostMapping("/totp/remove")
+    @ResponseStatus(HttpStatus.OK)
     public void removeTotp() {
-        // TODO totp
+        // TODO security protection
+        this.authService.removeCredential(this.getHangarPrincipal().getId(), CredentialType.TOTP);
     }
 
     @Unlocked

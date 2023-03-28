@@ -22,4 +22,7 @@ public interface UserCredentialDAO {
     @Nullable
     @SqlQuery("SELECT * FROM user_credentials where type = :type and user_id = :userId")
     UserCredentialTable getByType(@EnumByOrdinal CredentialType type, long userId);
+
+    @SqlUpdate("DELETE FROM user_credentials WHERE type = :type and user_id = :userId")
+    void remove(long userId, @EnumByOrdinal CredentialType type);
 }
