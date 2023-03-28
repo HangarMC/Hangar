@@ -49,6 +49,9 @@
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        
+        <!-- todo override spring, remove later -->
+        <micrometer-tracing.version>1.0.3</micrometer-tracing.version>
     </properties>
 
     <repositories>
