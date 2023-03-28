@@ -66,11 +66,11 @@ public class JarScanningService {
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
         this.jarScannerUser = this.createUser();
-        this.rescanProjectVersions();
+        EXECUTOR_SERVICE.execute(this::scanRemainingProjectVersions);
     }
 
     @Transactional
-    public void rescanProjectVersions() {
+    public void scanRemainingProjectVersions() {
         for (final VersionToScan version : this.dao.versionsRequiringScans(this.scanner.version())) {
             this.scan(version, false); // TODO partial parameter
         }

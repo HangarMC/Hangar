@@ -24,6 +24,7 @@ public interface JarScanResultDAO {
     JarScanResultTable getLastResult(long versionId, @EnumByOrdinal final Platform platform);
 
     //TODO Don't skip approved versions if HIGHEST severity should unlist it
+    // WHERE jsr.version_id = pv.id AND jsr.scanner_version >= :scannerVersion
     @RegisterConstructorMapper(VersionToScan.class)
     @SqlQuery("""
         SELECT pv.id AS version_id, pv.project_id, pv.review_state, pv.version_string, array_agg(DISTINCT pvpd.platform) AS platforms
@@ -39,7 +40,7 @@ public interface JarScanResultDAO {
         AND NOT EXISTS (
             SELECT 1
             FROM jar_scan_result jsr
-            WHERE jsr.version_id = pv.id AND jsr.scanner_version >= :scannerVersion
+            WHERE jsr.version_id = pv.id
         )
         GROUP BY pv.id;
                         """)
