@@ -47,7 +47,7 @@ public interface IPagesController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @PatchMapping("/pages/edit/{author}/{slug}")
+    @PatchMapping(path = "/pages/edit/{author}/{slug}", consumes = MediaType.APPLICATION_JSON_VALUE)
     void changePage(@Parameter(description = "The author of the project to change the page for") @PathVariable String author,
                     @Parameter(description = "The slug of the project to change the page for") @PathVariable String slug,
                     @Parameter(description = "The path and new contents of the page") @RequestBody PageEditForm pageEditForm);
