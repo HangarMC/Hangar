@@ -44,5 +44,5 @@ public interface JarScanResultDAO {
         )
         GROUP BY pv.id;
                         """)
-    List<VersionToScan> versionsRequiringScans(int scannerVersion);
+    List<VersionToScan> versionsRequiringScans();
 }

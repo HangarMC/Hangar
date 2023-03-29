@@ -74,7 +74,8 @@ public class JarScanningService {
 
     @Transactional
     public void scanRemainingProjectVersions() {
-        final List<VersionToScan> versionToScans = this.dao.versionsRequiringScans(this.scanner.version());
+        // TODO Pass this.scanner.version()
+        final List<VersionToScan> versionToScans = this.dao.versionsRequiringScans();
         LOGGER.info("Rescanning " + versionToScans.size() + " versions");
         for (final VersionToScan version : versionToScans) {
             this.scan(version, false); // TODO partial parameter
