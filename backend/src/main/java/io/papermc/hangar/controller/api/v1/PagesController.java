@@ -2,6 +2,7 @@ package io.papermc.hangar.controller.api.v1;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.api.v1.interfaces.IPagesController;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.PageEditForm;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
@@ -13,7 +14,6 @@ import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,7 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Anyone
 @Controller
 @RateLimit(path = "projectpage")
-public class PagesController extends HangarComponent implements IPagesController{
+public class PagesController extends HangarComponent implements IPagesController {
 
     private final ProjectPageService projectPageService;
 
@@ -50,6 +50,10 @@ public class PagesController extends HangarComponent implements IPagesController
     @ResponseStatus(HttpStatus.OK)
     public void changePage(final String author, final String slug, final PageEditForm pageEditForm) {
         final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(author, slug, pageEditForm.path());
-        this.projectPageService.saveProjectPage(projectPage.getProjectId(), projectPage.getProjectId(), pageEditForm.content());
+        if (projectPage == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Project page not found");
+        }
+
+        this.projectPageService.saveProjectPage(projectPage.getProjectId(), projectPage.getId(), pageEditForm.content());
     }
 }
