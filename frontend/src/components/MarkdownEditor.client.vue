@@ -129,7 +129,7 @@ function stopEditing() {
 <template>
   <div class="relative">
     <slot name="title" />
-    <div class="flex">
+    <div class="flex h-[1px]">
       <div class="absolute top-2 right-0 space-x-1">
         <Button v-if="!internalEditing" @click="startEditing()">
           <IconMdiPencil />
