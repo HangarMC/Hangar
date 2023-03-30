@@ -26,6 +26,10 @@ summary::marker {
   color: transparent;
 }
 
+summary::-webkit-details-marker {
+  display: none;
+}
+
 summary::after {
   content: "▶";
   position: absolute;
