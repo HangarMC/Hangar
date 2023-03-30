@@ -6,6 +6,7 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.PageEditForm;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
+import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
@@ -35,6 +36,15 @@ public class PagesController extends HangarComponent implements IPagesController
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.VIEW_PUBLIC_INFO, args = "{#author, #slug}")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
+    public String getMainPage(final String author, final String slug) {
+        return this.getPage(author, slug, "");
+    }
+
+    @Override
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.VIEW_PUBLIC_INFO, args = "{#author, #slug}")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     public String getPage(final String author, final String slug, final String path) {
         final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(author, slug, path);
         if (projectPage == null) {
@@ -48,7 +58,16 @@ public class PagesController extends HangarComponent implements IPagesController
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#author, #slug}")
     @ResponseStatus(HttpStatus.OK)
-    public void changePage(final String author, final String slug, final PageEditForm pageEditForm) {
+    public void editMainPage(final String author, final String slug, final StringContent pageEditForm) {
+        this.editPage(author, slug, new PageEditForm("", pageEditForm.getContent()));
+    }
+
+    @Unlocked
+    @Override
+    @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 20)
+    @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#author, #slug}")
+    @ResponseStatus(HttpStatus.OK)
+    public void editPage(final String author, final String slug, final PageEditForm pageEditForm) {
         final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(author, slug, pageEditForm.path());
         if (projectPage == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "Project page not found");

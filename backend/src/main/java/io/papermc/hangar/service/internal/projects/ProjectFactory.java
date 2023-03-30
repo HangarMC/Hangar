@@ -78,7 +78,9 @@ public class ProjectFactory extends HangarComponent {
             if (newPageContent == null) {
                 newPageContent = "# " + projectTable.getName() + "\n\n" + this.config.pages.home().message();
             }
-            this.projectPageService.createPage(projectTable.getId(), this.config.pages.home().name(), StringUtils.slugify(this.config.pages.home().name()), newPageContent, false, null, true);
+
+            final String defaultName = this.config.pages.home().name();
+            this.projectPageService.createPage(projectTable.getId(), defaultName, StringUtils.slugify(defaultName), newPageContent, false, null, true);
             this.jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
             if (newProject.getAvatarUrl() != null) {
                 this.avatarService.importProjectAvatar(projectTable.getId(), newProject.getAvatarUrl());
