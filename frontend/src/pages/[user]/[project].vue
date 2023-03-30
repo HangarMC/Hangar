@@ -37,8 +37,8 @@ provide("updateProjectPages", function (pages: HangarProjectPage[]) {
 
 <template>
   <div v-if="project">
-    <ProjectHeader :project="project"></ProjectHeader>
-    <ProjectNav :project="project"></ProjectNav>
+    <ProjectHeader :project="project" />
+    <ProjectNav :project="project" />
     <router-view v-slot="{ Component }">
       <Suspense>
         <component :is="Component" v-model:project="project" :user="user" />
