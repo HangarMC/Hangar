@@ -202,6 +202,14 @@ hangar:
     quality: 0.35
     size: 256
 
+  mail:
+    from: noreply@mail.papermc.dev
+    user: dum
+    pass: dum
+    host: localhost
+    port: 1025
+    dev: true
+
 #################
 # Debug Logging #
 #################
@@ -219,3 +227,4 @@ logging:
     # org.springframework.security: TRACE
     # com.webauthn4j: TRACE
     # org.postgresql: TRACE
+    # com.sun.mail: TRACE
