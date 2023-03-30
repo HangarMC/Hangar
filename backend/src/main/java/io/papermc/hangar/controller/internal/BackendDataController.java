@@ -233,6 +233,6 @@ public class BackendDataController extends HangarComponent {
     @GetMapping("/security")
     @ResponseBody
     public Security getSecurity() {
-        return new Security(this.config.security.safeDownloadHosts(), this.config.security.imageProxyUrl());
+        return new Security(this.config.security.safeDownloadHosts());
     }
 }

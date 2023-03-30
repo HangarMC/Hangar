@@ -30,13 +30,11 @@ public class UserService extends HangarComponent {
 
     private final UserDAO userDAO;
     private final HangarUsersDAO hangarUsersDAO;
-    private final RestTemplate restTemplate;
 
     @Autowired
-    public UserService(final UserDAO userDAO, final HangarUsersDAO hangarUsersDAO, @Lazy final RestTemplate restTemplate) {
+    public UserService(final UserDAO userDAO, final HangarUsersDAO hangarUsersDAO) {
         this.userDAO = userDAO;
         this.hangarUsersDAO = hangarUsersDAO;
-        this.restTemplate = restTemplate;
     }
 
     public UserTable insertUser(final UserTable userTable) {
@@ -105,21 +103,5 @@ public class UserService extends HangarComponent {
             return null;
         }
         return userTableFunction.apply(identifier);
-    }
-
-    public void updateSSO(final UUID uuid, final Traits traits) {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        final HttpEntity<Traits> requestEntity = new HttpEntity<>(traits, headers);
-
-        try {
-            final ResponseEntity<Void> response = this.restTemplate.postForEntity(this.config.security.api().url() + "/sync/user/" + uuid.toString() + "?apiKey=" + this.config.sso.apiKey(), requestEntity, Void.class);
-            if (!response.getStatusCode().is2xxSuccessful()) {
-                throw new ResponseStatusException(response.getStatusCode(), "Error from auth api");
-            }
-        } catch (final HttpStatusCodeException ex) {
-            throw new ResponseStatusException(ex.getStatusCode(), "Error from auth api: " + ex.getMessage(), ex);
-        }
     }
 }

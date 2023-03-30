@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.file;
 
+import io.awspring.cloud.s3.ObjectMetadata;
 import io.awspring.cloud.s3.S3Resource;
 import io.awspring.cloud.s3.S3Template;
 import io.papermc.hangar.config.hangar.StorageConfig;
@@ -11,6 +12,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -61,8 +63,10 @@ public class S3FileService implements FileService {
     }
 
     @Override
-    public void write(final InputStream inputStream, final String path) throws IOException {
-        try (final OutputStream outputStream = ((S3Resource) this.getResource(path)).getOutputStream()) {
+    public void write(final InputStream inputStream, final String path, final @Nullable String contentType) throws IOException {
+        final S3Resource resource = (S3Resource) this.getResource(path);
+        resource.setObjectMetadata(ObjectMetadata.builder().contentType(contentType).build());
+        try (final OutputStream outputStream = resource.getOutputStream()) {
             outputStream.write(inputStream.readAllBytes());
         }
     }
@@ -71,7 +75,7 @@ public class S3FileService implements FileService {
     public void move(final String oldPath, final String newPath) throws IOException {
         if (!oldPath.startsWith(this.getRoot()) && newPath.startsWith(this.getRoot())) {
             // upload from file to s3
-            this.write(Files.newInputStream(Path.of(oldPath)), newPath);
+            this.write(Files.newInputStream(Path.of(oldPath)), newPath, null);
         } else if (oldPath.startsWith(this.getRoot()) && newPath.startsWith(this.getRoot())) {
             // "rename" in s3
             this.s3Client.copyObject((builder -> builder
@@ -104,10 +108,15 @@ public class S3FileService implements FileService {
     }
 
     @Override
-    public String getDownloadUrl(final String user, final String project, final String version, final Platform platform, final String fileName) {
+    public String getVersionDownloadUrl(final String user, final String project, final String version, final Platform platform, final String fileName) {
         final String encodedVersion = URLEncoder.encode(version, StandardCharsets.UTF_8);
         final String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
         final String endpoint = this.config.cdnIncludeBucket() ? this.config.cdnEndpoint() + "/" + this.config.bucket() : this.config.cdnEndpoint();
         return URL_FORMAT.formatted(endpoint, user, project, encodedVersion, platform.name(), encodedFileName);
+    }
+
+    @Override
+    public String getAvatarUrl(final String type, final String subject, final int version) {
+        return this.config.cdnEndpoint() + (this.config.cdnIncludeBucket() ? "/" + this.config.bucket() : "") + "/avatars/" + type + "/" + subject + ".webp?v=" + version;
     }
 }

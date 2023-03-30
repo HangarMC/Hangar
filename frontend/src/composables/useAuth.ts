@@ -69,7 +69,7 @@ class Auth {
           headers.cookie = "HangarAuth_REFRESH=" + refreshToken;
           authLog("pass refresh cookie", refreshToken);
         }
-        const response = await useAxios().get("/refresh", { headers });
+        const response = await useAxios().get("/api/internal/auth/refresh", { headers });
         if (response.status === 299) {
           authLog("had no cookie");
           resolve(false);
@@ -110,7 +110,7 @@ class Auth {
       token: null,
     });
     if (!store.invalidated) {
-      await axios.get("/invalidate").catch((e) => authLog("Invalidate failed", e.message));
+      await axios.get("/api/internal/auth/invalidate").catch((e) => authLog("Invalidate failed", e.message));
     }
     store.invalidated = true;
   }

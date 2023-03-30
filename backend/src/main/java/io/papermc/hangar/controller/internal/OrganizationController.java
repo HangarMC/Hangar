@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
@@ -22,7 +23,6 @@ import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.ValidationService;
-import io.papermc.hangar.service.internal.AvatarService;
 import io.papermc.hangar.service.internal.organizations.OrganizationFactory;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;

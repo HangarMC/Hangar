@@ -28,13 +28,17 @@ import Button from "~/lib/components/design/Button.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import Spinner from "~/lib/components/design/Spinner.vue";
-import { reactive } from "#imports";
+import { definePageMeta, reactive } from "#imports";
 import Alert from "~/lib/components/design/Alert.vue";
 import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
 import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import InputGroup from "~/lib/components/ui/InputGroup.vue";
 import { ProjectCategory, Tag } from "~/types/enums";
 import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
+
+definePageMeta({
+  currentUserRequired: true,
+});
 
 const { t } = useI18n();
 const route = useRoute();

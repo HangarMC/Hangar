@@ -14,20 +14,11 @@ public record HangarSecurityConfig(
     @DefaultValue("true") boolean secure,
     @DefaultValue("600000") long unsafeDownloadMaxAge, // TODO implement or remove
     @DefaultValue List<String> safeDownloadHosts,
-    @DefaultValue("http://localhost:3001/image/%s") String imageProxyUrl,
     String tokenIssuer,
     String tokenSecret,
     @DurationUnit(ChronoUnit.SECONDS) Duration tokenExpiry,
-    @DurationUnit(ChronoUnit.DAYS) Duration refreshTokenExpiry,
-    @NestedConfigurationProperty SecurityApiConfig api
+    @DurationUnit(ChronoUnit.DAYS) Duration refreshTokenExpiry
 ) {
-    @ConfigurationProperties(prefix = "hangar.security.api")
-    public record SecurityApiConfig(
-        @DefaultValue("http://localhost:8081") String url,
-        @DefaultValue("http://localhost:8081/avatar/%s") String avatarUrl,
-        @DefaultValue("10000") long timeout // TODO implement or remove
-    ) {
-    }
 
     public boolean checkSafe(final String url) {
         return this.safeDownloadHosts.contains(URI.create(url).getHost());

@@ -74,10 +74,17 @@ type handlersType = {
   ) => Promise<RouteLocationNamedRaw | undefined> | RouteLocationNamedRaw | undefined;
 };
 const handlers: handlersType = {
+  loginRequired,
   currentUserRequired,
   globalPermsRequired,
   projectPermsRequired,
 };
+
+function loginRequired(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
+  routePermLog("route loginRequired");
+  checkLogin(authStore, to, 401);
+  return undefined;
+}
 
 function currentUserRequired(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
   routePermLog("route currentUserRequired");

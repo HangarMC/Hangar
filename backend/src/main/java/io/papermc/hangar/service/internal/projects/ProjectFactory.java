@@ -13,7 +13,7 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.api.UsersApiService;
-import io.papermc.hangar.service.internal.AvatarService;
+import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;

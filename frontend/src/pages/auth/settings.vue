@@ -10,9 +10,13 @@ import { encodeBase64Url, getAttestationOptions } from "~/composables/useWebAuth
 import Card from "~/lib/components/design/Card.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import AvatarChangeModal from "~/lib/components/modals/AvatarChangeModal.vue";
+import { definePageMeta } from "#imports";
+
+definePageMeta({
+  loginRequired: true,
+});
 
 const route = useRoute();
-
 const auth = useAuthStore();
 
 async function addAuthenticator() {

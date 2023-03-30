@@ -13,11 +13,12 @@ import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.HangarOrganization;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.internal.AvatarService;
+import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class OrganizationService extends HangarComponent {
     private final AvatarService avatarService;
 
     @Autowired
-    public OrganizationService(final HangarOrganizationsDAO hangarOrganizationsDAO, final OrganizationRolesDAO organizationRolesDAO, final OrganizationDAO organizationDAO, final UserDAO userDAO, final PermissionService permissionService, final OrganizationMemberService organizationMemberService, final AvatarService avatarService) {
+    public OrganizationService(final HangarOrganizationsDAO hangarOrganizationsDAO, final OrganizationRolesDAO organizationRolesDAO, final OrganizationDAO organizationDAO, final UserDAO userDAO, final PermissionService permissionService, final OrganizationMemberService organizationMemberService, @Lazy final AvatarService avatarService) {
         this.hangarOrganizationsDAO = hangarOrganizationsDAO;
         this.organizationRolesDAO = organizationRolesDAO;
         this.organizationDAO = organizationDAO;

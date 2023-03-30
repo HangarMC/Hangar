@@ -96,6 +96,22 @@ public class InternalAuthController extends HangarComponent {
         }
     }
 
+    @ResponseBody
+    @GetMapping("/refresh")
+    public String refreshAccessToken(@CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) final String refreshToken) {
+        return this.tokenService.refreshAccessToken(refreshToken).accessToken();
+    }
+
+    @GetMapping("/invalidate")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void invalidateRefreshToken(@CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) final String refreshToken) {
+        this.tokenService.invalidateToken(refreshToken);
+        final HttpSession session = this.request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+    }
+
     @Unlocked
     @PostMapping("/webauthn/register")
     @ResponseStatus(HttpStatus.OK)

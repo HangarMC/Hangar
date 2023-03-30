@@ -3,6 +3,7 @@ package io.papermc.hangar.controller.internal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.requests.RequestPagination;
@@ -15,7 +16,6 @@ import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.UserSettings;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
-import io.papermc.hangar.model.internal.sso.Traits;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.model.internal.user.notifications.HangarInvite;
 import io.papermc.hangar.model.internal.user.notifications.HangarNotification;
@@ -40,6 +40,8 @@ import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +49,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @LoggedIn
@@ -65,9 +77,10 @@ public class HangarUserController extends HangarComponent {
     private final ProjectInviteService projectInviteService;
     private final OrganizationInviteService organizationInviteService;
     private final TokenService tokenService;
+    private final AvatarService avatarService;
 
     @Autowired
-    public HangarUserController(final ObjectMapper mapper, final UsersApiService usersApiService, final UserService userService, final NotificationService notificationService, final ProjectRoleService projectRoleService, final OrganizationRoleService organizationRoleService, final ProjectInviteService projectInviteService, final OrganizationInviteService organizationInviteService, final TokenService tokenService) {
+    public HangarUserController(final ObjectMapper mapper, final UsersApiService usersApiService, final UserService userService, final NotificationService notificationService, final ProjectRoleService projectRoleService, final OrganizationRoleService organizationRoleService, final ProjectInviteService projectInviteService, final OrganizationInviteService organizationInviteService, final TokenService tokenService, final AvatarService avatarService) {
         this.mapper = mapper;
         this.usersApiService = usersApiService;
         this.userService = userService;
@@ -77,6 +90,7 @@ public class HangarUserController extends HangarComponent {
         this.projectInviteService = projectInviteService;
         this.organizationInviteService = organizationInviteService;
         this.tokenService = tokenService;
+        this.avatarService = avatarService;
     }
 
     @Anyone
@@ -155,6 +169,22 @@ public class HangarUserController extends HangarComponent {
     // @el(userName: String)
     @Unlocked
     @CurrentUser("#userName")
+    @ResponseBody
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
+    @PostMapping(value = "/users/{userName}/settings/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void changeAvatar(@PathVariable final String userName, @RequestParam final MultipartFile avatar) throws IOException {
+        final UserTable table = this.userService.getUserTable(userName);
+        if (table == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown org " + userName);
+        }
+        this.avatarService.changeUserAvatar(table.getUuid(), avatar.getBytes());
+    }
+
+    // @el(userName: String)
+    @Unlocked
+    @CurrentUser("#userName")
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 5, refillTokens = 2)
     @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
@@ -174,10 +204,6 @@ public class HangarUserController extends HangarComponent {
         userTable.setTheme(settings.getTheme());
         // TODO user action logging
         this.userService.updateUser(userTable);
-
-        if (this.config.sso.enabled()) {
-            this.userService.updateSSO(userTable.getUuid(), new Traits(userTable.getEmail(), null, null, settings.getLanguage(), userTable.getName(), settings.getTheme()));
-        }
 
         setThemeCookie(settings, response);
     }

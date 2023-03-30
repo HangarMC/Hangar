@@ -173,7 +173,7 @@ public class VersionFactory extends HangarComponent {
             final String tmpPluginFile = this.fileService.resolve(tmpDir, pluginFileName);
             final byte[] bytes = file.getInputStream().readAllBytes();
             // write
-            this.fileService.write(file.getInputStream(), tmpPluginFile);
+            this.fileService.write(file.getInputStream(), tmpPluginFile, null);
             // load meta
             pluginDataFile = this.pluginDataService.loadMeta(pluginFileName, bytes, this.getHangarPrincipal().getUserId());
         } catch (final ConfigurateException configurateException) {

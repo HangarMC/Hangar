@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -52,7 +53,7 @@ public class LocalStorageFileService implements FileService {
     }
 
     @Override
-    public void write(final InputStream inputStream, final String path) throws IOException {
+    public void write(final InputStream inputStream, final String path, final @Nullable String contentType) throws IOException {
         final Path p = Path.of(path);
         if (Files.notExists(p)) {
             Files.createDirectories(p.getParent());
@@ -97,7 +98,12 @@ public class LocalStorageFileService implements FileService {
     }
 
     @Override
-    public String getDownloadUrl(final String user, final String project, final String version, final Platform platform, final String fileName) {
+    public String getVersionDownloadUrl(final String user, final String project, final String version, final Platform platform, final String fileName) {
         return this.hangarConfig.getBaseUrl() + "/api/v1/projects/" + user + "/" + project + "/versions/" + version + "/" + platform.name() + "/download";
+    }
+
+    @Override
+    public String getAvatarUrl(final String type, final String subject, final int version) {
+        return this.hangarConfig.getBaseUrl() + "/api/internal/avatar/" + type + "/" + subject + ".webp?v=" + version;
     }
 }

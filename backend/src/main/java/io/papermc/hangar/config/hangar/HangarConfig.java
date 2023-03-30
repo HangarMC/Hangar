@@ -25,8 +25,6 @@ public class HangarConfig {
     private boolean allowIndexing = true;
 
     @NestedConfigurationProperty
-    public final FakeUserConfig fakeUser;
-    @NestedConfigurationProperty
     public UpdateTasksConfig updateTasks;
     @NestedConfigurationProperty
     public ChannelsConfig channels;
@@ -41,8 +39,6 @@ public class HangarConfig {
     @NestedConfigurationProperty
     public ApiConfig api;
     @NestedConfigurationProperty
-    public SSOConfig sso;
-    @NestedConfigurationProperty
     public HangarSecurityConfig security;
     @NestedConfigurationProperty
     public QueueConfig queue;
@@ -54,6 +50,8 @@ public class HangarConfig {
     public StorageConfig storage;
     @NestedConfigurationProperty
     public CorsConfig cors;
+    @NestedConfigurationProperty
+    public ImageConfig image;
 
     @Component
     public static class Sponsor {
@@ -87,8 +85,7 @@ public class HangarConfig {
     }
 
     @Autowired
-    public HangarConfig(final FakeUserConfig fakeUser, final UpdateTasksConfig updateTasks, final ChannelsConfig channels, final PagesConfig pages, final ProjectsConfig projects, final UserConfig user, final OrganizationsConfig org, final ApiConfig api, final SSOConfig sso, final HangarSecurityConfig security, final QueueConfig queue, final DiscourseConfig discourse, final JobsConfig jobs, final StorageConfig storage, final CorsConfig cors) {
-        this.fakeUser = fakeUser;
+    public HangarConfig(final UpdateTasksConfig updateTasks, final ChannelsConfig channels, final PagesConfig pages, final ProjectsConfig projects, final UserConfig user, final OrganizationsConfig org, final ApiConfig api, final HangarSecurityConfig security, final QueueConfig queue, final DiscourseConfig discourse, final JobsConfig jobs, final StorageConfig storage, final CorsConfig cors, final ImageConfig image) {
         this.updateTasks = updateTasks;
         this.channels = channels;
         this.pages = pages;
@@ -96,13 +93,13 @@ public class HangarConfig {
         this.user = user;
         this.org = org;
         this.api = api;
-        this.sso = sso;
         this.security = security;
         this.queue = queue;
         this.discourse = discourse;
         this.jobs = jobs;
         this.storage = storage;
         this.cors = cors;
+        this.image = image;
     }
 
     public void checkDev() {
