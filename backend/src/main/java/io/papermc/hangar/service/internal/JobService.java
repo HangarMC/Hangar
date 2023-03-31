@@ -40,7 +40,7 @@ public class JobService extends HangarComponent {
 
     public void checkAndProcess() {
         final long awaitingJobs = this.jobsDAO.countAwaitingJobs();
-        this.logger.debug("Found {} awaiting jobs", awaitingJobs);
+        this.logger.trace("Found {} awaiting jobs", awaitingJobs);
         if (awaitingJobs > 0) {
             final long numberToProcess = Math.max(1, Math.min(awaitingJobs, this.config.jobs.maxConcurrentJobs()));
             for (long i = 0; i < numberToProcess; i++) {

@@ -85,7 +85,7 @@ useHead(useSeo("Login", null, route, null));
     <div v-if="aal === 1">
       <InputText v-model="username" label="Username" name="useranme" />
       <!-- todo copy InputPassword from auth -->
-      <InputText v-model="password" label="Password" name="password" type="password" />
+      <InputText v-model="password" label="Password" name="password" type="password" autocomplete="current-password" />
       <Button @click="loginPassword">Login</Button>
       <Button to="/auth/signup">Signup</Button>
       <Button to="/auth/reset">Forgot</Button>

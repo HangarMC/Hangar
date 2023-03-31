@@ -178,7 +178,7 @@ hangar:
     category: 5 # hangar category
 
   jobs:
-    check-interval: 30s
+    check-interval: 5s
     unknown-error-timeout: 15m
     status-error-timeout: 5m
     not-available-timeout: 2m

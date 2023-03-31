@@ -13,8 +13,10 @@ import dev.samstevens.totp.secret.SecretGenerator;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.model.credential.BackupCodeCredential;
 import io.papermc.hangar.components.auth.model.credential.CredentialType;
+import io.papermc.hangar.components.auth.model.credential.PasswordCredential;
 import io.papermc.hangar.components.auth.model.credential.TotpCredential;
 import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
+import io.papermc.hangar.components.auth.model.dto.ResetForm;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.components.auth.model.dto.TotpForm;
 import io.papermc.hangar.components.auth.model.dto.TotpSetupResponse;
@@ -27,6 +29,7 @@ import io.papermc.hangar.components.auth.model.dto.webauthn.AuthenticatorForm;
 import io.papermc.hangar.components.auth.service.WebAuthNService;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.TokenService;
+import io.papermc.hangar.service.internal.users.UserService;
 import jakarta.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +38,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,8 +64,10 @@ public class InternalAuthController extends HangarComponent {
     private final CodeVerifier codeVerifier;
     private final AuthService authService;
     private final TokenService tokenService;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    public InternalAuthController(final WebAuthNService webAuthNService, final SecretGenerator secretGenerator, final QrDataFactory qrDataFactory, final QrGenerator qrGenerator, final RecoveryCodeGenerator recoveryCodeGenerator, final CodeVerifier codeVerifier, final AuthService authService, final TokenService tokenService) {
+    public InternalAuthController(final WebAuthNService webAuthNService, final SecretGenerator secretGenerator, final QrDataFactory qrDataFactory, final QrGenerator qrGenerator, final RecoveryCodeGenerator recoveryCodeGenerator, final CodeVerifier codeVerifier, final AuthService authService, final TokenService tokenService, final UserService userService, final PasswordEncoder passwordEncoder) {
         this.webAuthNService = webAuthNService;
         this.secretGenerator = secretGenerator;
         this.qrDataFactory = qrDataFactory;
@@ -70,7 +76,10 @@ public class InternalAuthController extends HangarComponent {
         this.codeVerifier = codeVerifier;
         this.authService = authService;
         this.tokenService = tokenService;
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
+
     @Anyone
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody final SignupForm signupForm) {
@@ -83,6 +92,7 @@ public class InternalAuthController extends HangarComponent {
         return ResponseEntity.ok().build();
     }
 
+    @Anyone
     @GetMapping("/logout")
     public void loggedOut(@CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) final String refreshToken) {
         // invalidate refresh token
@@ -96,12 +106,14 @@ public class InternalAuthController extends HangarComponent {
         }
     }
 
+    @Anyone
     @ResponseBody
     @GetMapping("/refresh")
     public String refreshAccessToken(@CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) final String refreshToken) {
         return this.tokenService.refreshAccessToken(refreshToken).accessToken();
     }
 
+    @Anyone
     @GetMapping("/invalidate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void invalidateRefreshToken(@CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) final String refreshToken) {
@@ -228,5 +240,35 @@ public class InternalAuthController extends HangarComponent {
         // TODO security protection
         this.authService.removeCredential(this.getHangarPrincipal().getId(), CredentialType.BACKUP_CODES);
         return this.setupBackupCodes();
+    }
+
+    @Anyone
+    @PostMapping("/reset/send")
+    @ResponseStatus(HttpStatus.OK)
+    public void sendResetMail(@RequestBody final ResetForm form) {
+        this.authService.sendResetCode(form.email());
+    }
+
+    @Anyone
+    @PostMapping("/reset/verify")
+    public ResponseEntity<Object> verifyResetCode(@RequestBody final ResetForm form) {
+        if (this.authService.verifyResetCode(form.email(), form.code(), false)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @Anyone
+    @PostMapping("/reset/set")
+    public ResponseEntity<Object> setNewPassword(@RequestBody final ResetForm form) {
+        if (this.authService.validPassword(form.password()) && this.authService.verifyResetCode(form.email(), form.code(), true)) {
+            final UserTable userTable = this.userService.getUserTable(form.email());
+            if (userTable != null) {
+                this.authService.updateCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(form.password())));
+                return ResponseEntity.ok().build();
+            }
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

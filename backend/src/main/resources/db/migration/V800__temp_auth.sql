@@ -29,3 +29,15 @@ CREATE TABLE avatars
         UNIQUE (subject, type)
 );
 
+CREATE TABLE verification_codes
+(
+    id         bigserial
+        CONSTRAINT verification_codes_pk
+            PRIMARY KEY,
+    user_id    integer                  NOT NULL
+        CONSTRAINT verification_codes_users_id_fk
+            REFERENCES users,
+    created_at timestamp WITH TIME ZONE NOT NULL,
+    type       integer                  NOT NULL,
+    code       varchar(16)              NOT NULL
+)
