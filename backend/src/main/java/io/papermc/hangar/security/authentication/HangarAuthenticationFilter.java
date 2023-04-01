@@ -3,7 +3,7 @@ package io.papermc.hangar.security.authentication;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import io.papermc.hangar.security.configs.SecurityConfig;
-import io.papermc.hangar.service.TokenService;
+import io.papermc.hangar.components.auth.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

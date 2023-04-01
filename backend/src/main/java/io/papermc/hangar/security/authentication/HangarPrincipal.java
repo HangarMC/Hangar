@@ -13,17 +13,21 @@ public class HangarPrincipal implements ProjectOwner, UserDetails, Serializable 
 
     private final long id;
     private final String name;
+    private final String email;
     private final boolean locked;
     private final Permission globalPermissions;
     private int aal = -1;
     private final String password;
+    private boolean emailVerified;
 
-    public HangarPrincipal(final long id, final String name, final boolean locked, final Permission globalPermissions, final String password) {
+    public HangarPrincipal(final long id, final String name, final String email, final boolean locked, final Permission globalPermissions, final String password, final boolean emailVerified) {
         this.id = id;
         this.name = name;
+        this.email = email;
         this.locked = locked;
         this.globalPermissions = globalPermissions;
         this.password = password;
+        this.emailVerified = emailVerified;
     }
 
     @Override
@@ -39,6 +43,10 @@ public class HangarPrincipal implements ProjectOwner, UserDetails, Serializable 
     @Override
     public long getUserId() {
         return this.id;
+    }
+
+    public String getEmail() {
+        return this.email;
     }
 
     public final boolean isLocked() {
@@ -59,6 +67,14 @@ public class HangarPrincipal implements ProjectOwner, UserDetails, Serializable 
 
     public void setAal(final int aal) {
         this.aal = aal;
+    }
+
+    public boolean isEmailVerified() {
+        return this.emailVerified;
+    }
+
+    public void setEmailVerified(final boolean emailVerified) {
+        this.emailVerified = emailVerified;
     }
 
     public final boolean isAllowedGlobal(final Permission requiredPermission) {

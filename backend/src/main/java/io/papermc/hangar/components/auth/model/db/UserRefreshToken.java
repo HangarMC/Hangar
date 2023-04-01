@@ -1,4 +1,4 @@
-package io.papermc.hangar.model.db.auth;
+package io.papermc.hangar.components.auth.model.db;
 
 import io.papermc.hangar.model.db.Table;
 import java.time.OffsetDateTime;

@@ -16,11 +16,14 @@ import io.papermc.hangar.components.auth.model.credential.CredentialType;
 import io.papermc.hangar.components.auth.model.credential.PasswordCredential;
 import io.papermc.hangar.components.auth.model.credential.TotpCredential;
 import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
+import io.papermc.hangar.components.auth.model.db.VerificationCodeTable;
 import io.papermc.hangar.components.auth.model.dto.ResetForm;
+import io.papermc.hangar.components.auth.model.dto.SettingsResponse;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.components.auth.model.dto.TotpForm;
 import io.papermc.hangar.components.auth.model.dto.TotpSetupResponse;
 import io.papermc.hangar.components.auth.service.AuthService;
+import io.papermc.hangar.components.auth.service.VerificationService;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
@@ -28,7 +31,7 @@ import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.components.auth.model.dto.webauthn.AuthenticatorForm;
 import io.papermc.hangar.components.auth.service.WebAuthNService;
 import io.papermc.hangar.security.configs.SecurityConfig;
-import io.papermc.hangar.service.TokenService;
+import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.service.internal.users.UserService;
 import jakarta.servlet.http.HttpSession;
 import java.util.Arrays;
@@ -47,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import static dev.samstevens.totp.util.Utils.getDataUriForImage;
 
@@ -66,8 +70,9 @@ public class InternalAuthController extends HangarComponent {
     private final TokenService tokenService;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final VerificationService verificationService;
 
-    public InternalAuthController(final WebAuthNService webAuthNService, final SecretGenerator secretGenerator, final QrDataFactory qrDataFactory, final QrGenerator qrGenerator, final RecoveryCodeGenerator recoveryCodeGenerator, final CodeVerifier codeVerifier, final AuthService authService, final TokenService tokenService, final UserService userService, final PasswordEncoder passwordEncoder) {
+    public InternalAuthController(final WebAuthNService webAuthNService, final SecretGenerator secretGenerator, final QrDataFactory qrDataFactory, final QrGenerator qrGenerator, final RecoveryCodeGenerator recoveryCodeGenerator, final CodeVerifier codeVerifier, final AuthService authService, final TokenService tokenService, final UserService userService, final PasswordEncoder passwordEncoder, final VerificationService verificationService) {
         this.webAuthNService = webAuthNService;
         this.secretGenerator = secretGenerator;
         this.qrDataFactory = qrDataFactory;
@@ -78,6 +83,7 @@ public class InternalAuthController extends HangarComponent {
         this.tokenService = tokenService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.verificationService = verificationService;
     }
 
     @Anyone
@@ -124,6 +130,7 @@ public class InternalAuthController extends HangarComponent {
         }
     }
 
+    // TODO redo webauth, needs to use credentials system, we prolly dont care about the default spring shit, just do it like totp, manually
     @Unlocked
     @PostMapping("/webauthn/register")
     @ResponseStatus(HttpStatus.OK)
@@ -188,19 +195,23 @@ public class InternalAuthController extends HangarComponent {
     @Unlocked
     @PostMapping("/totp/verify")
     public ResponseEntity<?> verifyTotp(@RequestBody final String code) {
-        final String secret = "";
-        // TODO load secret
-        if (this.codeVerifier.isValidCode(secret, code)) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        final UserCredentialTable credential = this.authService.getCredential(this.getHangarPrincipal().getUserId(), CredentialType.TOTP);
+        if (credential != null) {
+            final String totpUrl = credential.getCredential().get(TotpCredential.class).totpUrl();
+            final UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(totpUrl);
+            final String secret = builder.build().getQueryParams().getFirst("secret");
+            if (this.codeVerifier.isValidCode(secret, code)) {
+                return ResponseEntity.ok().build();
+            }
         }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @Unlocked
     @PostMapping("/codes/setup")
     public List<BackupCodeCredential.BackupCode> setupBackupCodes() {
-        // TODO check if there are unregistered one in db first
+        // TODO check if there are unconfirmed one in db first
         final List<BackupCodeCredential.BackupCode> codes = Arrays.stream(this.recoveryCodeGenerator.generateCodes(12)).map(s -> new BackupCodeCredential.BackupCode(s, null)).toList();
         this.authService.registerCredential(this.getHangarPrincipal().getUserId(), new BackupCodeCredential(codes, true));
         return codes;
@@ -246,13 +257,13 @@ public class InternalAuthController extends HangarComponent {
     @PostMapping("/reset/send")
     @ResponseStatus(HttpStatus.OK)
     public void sendResetMail(@RequestBody final ResetForm form) {
-        this.authService.sendResetCode(form.email());
+        this.verificationService.sendResetCode(form.email());
     }
 
     @Anyone
     @PostMapping("/reset/verify")
     public ResponseEntity<Object> verifyResetCode(@RequestBody final ResetForm form) {
-        if (this.authService.verifyResetCode(form.email(), form.code(), false)) {
+        if (this.verificationService.verifyResetCode(form.email(), form.code(), false)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();
@@ -262,7 +273,7 @@ public class InternalAuthController extends HangarComponent {
     @Anyone
     @PostMapping("/reset/set")
     public ResponseEntity<Object> setNewPassword(@RequestBody final ResetForm form) {
-        if (this.authService.validPassword(form.password()) && this.authService.verifyResetCode(form.email(), form.code(), true)) {
+        if (this.authService.validPassword(form.password()) && this.verificationService.verifyResetCode(form.email(), form.code(), true)) {
             final UserTable userTable = this.userService.getUserTable(form.email());
             if (userTable != null) {
                 this.authService.updateCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(form.password())));
@@ -270,5 +281,33 @@ public class InternalAuthController extends HangarComponent {
             }
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @Unlocked
+    @PostMapping(value = "/email/verify", consumes = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<Object> verifyEmail(@RequestBody final String code) {
+        if (this.verificationService.verifyEmailCode(this.getHangarPrincipal().getId(), code)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @Unlocked
+    @PostMapping("/email/send")
+    @ResponseStatus(HttpStatus.OK)
+    public void sendEmailCode() {
+        this.verificationService.sendVerificationCode(this.getHangarPrincipal().getId(), this.getHangarPrincipal().getEmail(), this.getHangarPrincipal().getName());
+    }
+
+    @Unlocked
+    @PostMapping("/settings")
+    public SettingsResponse settings() {
+        // TODO more (authenticators for example)
+        final boolean hasBackupCodes = this.authService.getCredential(this.getHangarPrincipal().getUserId(), CredentialType.BACKUP_CODES) != null;
+        final boolean hasTotp = this.authService.getCredential(this.getHangarPrincipal().getUserId(), CredentialType.TOTP) != null;
+        final boolean emailVerified = this.getHangarPrincipal().isEmailVerified();
+        final boolean emailPending = this.verificationService.getVerificationCode(this.getHangarPrincipal().getUserId(), VerificationCodeTable.VerificationCodeType.EMAIL_VERIFICATION) != null;
+        return new SettingsResponse(hasBackupCodes, hasTotp, emailVerified, emailPending);
     }
 }

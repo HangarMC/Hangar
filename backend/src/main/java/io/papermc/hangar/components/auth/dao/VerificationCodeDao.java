@@ -7,6 +7,7 @@ import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,6 +19,7 @@ public interface VerificationCodeDao {
     void insert(@BindBean VerificationCodeTable table);
 
     @SqlQuery("SELECT * FROM verification_codes WHERE type = :type AND user_id = :userId")
+    @Nullable
     VerificationCodeTable get(@EnumByOrdinal VerificationCodeTable.VerificationCodeType type, long userId);
 
     @SqlUpdate("DELETE FROM verification_codes WHERE id = :id")

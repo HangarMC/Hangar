@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -96,7 +97,9 @@ public class JarScanningService {
             List.of(),
             false,
             Locale.ENGLISH.toLanguageTag(),
-            "white"
+            "white",
+            true,
+            new JSONB(Map.of())
         );
         return this.userService.insertUser(userTable);
     }

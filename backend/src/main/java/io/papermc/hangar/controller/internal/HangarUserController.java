@@ -27,7 +27,7 @@ import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import io.papermc.hangar.security.configs.SecurityConfig;
-import io.papermc.hangar.service.TokenService;
+import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.perms.roles.OrganizationRoleService;
 import io.papermc.hangar.service.internal.perms.roles.ProjectRoleService;

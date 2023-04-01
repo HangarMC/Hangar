@@ -7,7 +7,7 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.auth.ApiSession;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.auth.ApiKeyTable;
-import io.papermc.hangar.service.TokenService;
+import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.util.CryptoUtils;
 import java.nio.charset.StandardCharsets;
 import org.springframework.beans.factory.annotation.Autowired;

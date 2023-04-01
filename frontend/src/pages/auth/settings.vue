@@ -1,23 +1,46 @@
 <script lang="ts" setup>
 import { useHead } from "@vueuse/head";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
 import { useSeo } from "~/composables/useSeo";
 import { useAuthStore } from "~/store/auth";
 import Button from "~/lib/components/design/Button.vue";
 import { useInternalApi } from "~/composables/useApi";
+import { useAuthSettings } from "~/composables/useApiHelper";
 import { encodeBase64Url, getAttestationOptions } from "~/composables/useWebAuthN";
 import Card from "~/lib/components/design/Card.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import AvatarChangeModal from "~/lib/components/modals/AvatarChangeModal.vue";
 import { definePageMeta } from "#imports";
+import Alert from "~/lib/components/design/Alert.vue";
+import Modal from "~/lib/components/modals/Modal.vue";
 
 definePageMeta({
   loginRequired: true,
 });
 
 const route = useRoute();
+const router = useRouter();
 const auth = useAuthStore();
+
+const settings = await useAuthSettings();
+
+const emailConfirmModal = ref();
+const emailCodeHasBeenSend = ref(settings.value?.emailPending);
+const emailCode = ref();
+
+async function sendEmailCode() {
+  await useInternalApi("auth/email/send", "POST");
+  emailCodeHasBeenSend.value = true;
+}
+
+async function verifyEmail() {
+  if (!settings.value) return;
+  await useInternalApi("auth/email/verify", "POST", emailCode.value, { headers: { "content-type": "text/plain" } });
+  settings.value!.emailConfirmed = true;
+  settings.value!.emailPending = false;
+  emailConfirmModal.value.isOpen = false;
+}
 
 async function addAuthenticator() {
   const options = await getAttestationOptions();
@@ -41,7 +64,7 @@ async function addAuthenticator() {
   });
 }
 
-const hasTotp = ref(true); // TODO implement getting aal methods
+const hasTotp = ref(settings.value?.hasTotp);
 const totpData = ref<{ secret: string; qrCode: string } | undefined>();
 async function setupTotp() {
   // TODO loading
@@ -65,7 +88,7 @@ async function unlinkTotp() {
   hasTotp.value = false;
 }
 
-const hasCodes = ref(true); // TODO implement getting aal methods
+const hasCodes = ref(settings.value?.hasBackupCodes);
 const showCodes = ref(false);
 const codes = ref();
 async function setupCodes() {
@@ -95,11 +118,11 @@ async function generateNewCodes() {
 }
 
 function saveAccount() {
-  //
+  // todo saveAccount
 }
 
 function saveProfile() {
-  //
+  // todo saveProfile
 }
 
 useHead(useSeo("Settings", null, route, null));
@@ -110,11 +133,31 @@ useHead(useSeo("Settings", null, route, null));
     <h1>Hello {{ auth.user.name }}</h1>
     <!-- todo tabs -->
 
+    <Alert v-if="settings?.emailPending">
+      Got your email confirmation? Enter the code <Button size="small" @click="emailConfirmModal.isOpen = true">here</Button>!
+    </Alert>
+    <Alert v-else-if="!settings?.emailConfirmed">
+      You haven't verified your email yet, click <Button size="small" @click="emailConfirmModal.isOpen = true">here</Button> to change that!
+    </Alert>
+
+    <Modal ref="emailConfirmModal" title="Confirm email" @close="emailConfirmModal.isOpen = false">
+      <template v-if="!emailCodeHasBeenSend">
+        <p>We will send you a code via email</p>
+        <Button @click="sendEmailCode">Send</Button>
+      </template>
+      <template v-else>
+        <p>Enter the code you received via email here</p>
+        <InputText v-model="emailCode" label="Code" />
+        <Button @click="verifyEmail">Verify Code</Button>
+      </template>
+    </Modal>
+
     <Card>
       <template #header>account</template>
       <form>
         <InputText label="username" />
-        <InputText label="email" /> (status: confirmed)
+        <InputText label="email" /> (status: {{ settings?.emailConfirmed ? "confirmed" : "unconfirmed!" }})
+        <Button v-if="!settings?.emailConfirmed" size="small" @click.prevent="emailConfirmModal.isOpen = true"> Confirm </Button>
         <!-- todo port password -->
         <InputText type="password" label="current-password" name="current-password" autofill="current-password" />
         <InputText type="password" label="new-password (optional)" name="new-password" autofill="new-password" />
@@ -126,7 +169,7 @@ useHead(useSeo("Settings", null, route, null));
       <template #profile>profile</template>
       <form>
         <InputText label="tagline" />
-        <AvatarChangeModal />
+        <AvatarChangeModal :avatar="auth.user?.avatarUrl!" :action="`users/${auth.user?.name}/settings/avatar`" />
         <InputText label="discord" />
         <InputText label="github" />
         <Button type="submit" @click.prevent="saveProfile">Save</Button>

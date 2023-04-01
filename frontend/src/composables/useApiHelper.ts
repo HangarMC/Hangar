@@ -1,5 +1,6 @@
 import { PaginatedResult, Project, ProjectCompact, User, Version, VersionInfo } from "hangar-api";
 import {
+  AuthSettings,
   Flag,
   HangarNotification,
   HangarProject,
@@ -163,6 +164,10 @@ export async function useJarScan(versionId: number, platform: string): Promise<R
   return extract(
     await useAsyncData("useJarScan:" + versionId + ":" + platform, () => useInternalApi<ProjectPage>(`jarscanning/result/${platform}/${versionId}`))
   );
+}
+
+export async function useAuthSettings(): Promise<Ref<AuthSettings | null>> {
+  return extract(await useAsyncData("useAuthSettings", () => useInternalApi<ProjectPage>(`auth/settings`, "POST")));
 }
 
 export async function useUserData(

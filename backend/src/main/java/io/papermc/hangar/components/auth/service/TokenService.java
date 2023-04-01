@@ -1,4 +1,4 @@
-package io.papermc.hangar.service;
+package io.papermc.hangar.components.auth.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -6,15 +6,16 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
-import io.papermc.hangar.db.dao.internal.table.auth.UserRefreshTokenDAO;
+import io.papermc.hangar.components.auth.dao.UserRefreshTokenDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.auth.ApiKeyTable;
-import io.papermc.hangar.model.db.auth.UserRefreshToken;
+import io.papermc.hangar.components.auth.model.db.UserRefreshToken;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.security.authentication.api.HangarApiPrincipal;
 import io.papermc.hangar.security.configs.SecurityConfig;
+import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.users.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
@@ -37,20 +38,21 @@ public class TokenService extends HangarComponent {
     private final UserRefreshTokenDAO userRefreshTokenDAO;
     private final UserService userService;
     private final PermissionService permissionService;
-
-    private JWTVerifier verifier;
-    private Algorithm algo;
+    private final JWTVerifier verifier;
+    private final Algorithm algo;
 
     @Autowired
-    public TokenService(final ApiKeyDAO apiKeyDAO, final UserRefreshTokenDAO userRefreshTokenDAO, final UserService userService, final PermissionService permissionService) {
+    public TokenService(final ApiKeyDAO apiKeyDAO, final UserRefreshTokenDAO userRefreshTokenDAO, final UserService userService, final PermissionService permissionService, final JWTVerifier verifier, final Algorithm algo) {
         this.apiKeyDAO = apiKeyDAO;
         this.userRefreshTokenDAO = userRefreshTokenDAO;
         this.userService = userService;
         this.permissionService = permissionService;
+        this.verifier = verifier;
+        this.algo = algo;
     }
 
     public DecodedJWT verify(final String token) {
-        return this.getVerifier().verify(token);
+        return this.verifier.verify(token);
     }
 
     public void issueRefreshToken(final long userId, final HttpServletResponse response) {
@@ -114,21 +116,15 @@ public class TokenService extends HangarComponent {
     public String expiring(final UserTable userTable, final Permission globalPermission, final @Nullable String apiKeyIdentifier) {
         return JWT.create()
             .withIssuer(this.config.security.tokenIssuer())
-            .withExpiresAt(new Date(Instant.now().plus(this.config.security.tokenExpiry()).toEpochMilli()))
+            .withExpiresAt(Instant.now().plus(this.config.security.tokenExpiry()))
             .withSubject(userTable.getName())
             .withClaim("id", userTable.getId())
             .withClaim("permissions", globalPermission.toBinString())
             .withClaim("locked", userTable.isLocked())
             .withClaim("apiKeyIdentifier", apiKeyIdentifier)
-            .sign(this.getAlgo());
-    }
-
-    public String simple(final String username) {
-        return JWT.create()
-            .withIssuer(this.config.security.tokenIssuer())
-            .withExpiresAt(new Date(Instant.now().plus(this.config.security.tokenExpiry()).toEpochMilli()))
-            .withSubject(username)
-            .sign(this.getAlgo());
+            .withClaim("emailVerified", userTable.isEmailVerified())
+            .withClaim("email", userTable.getEmail())
+            .sign(this.algo);
     }
 
     public HangarPrincipal parseHangarPrincipal(final DecodedJWT decodedJWT) {
@@ -137,6 +133,8 @@ public class TokenService extends HangarComponent {
         final boolean locked = decodedJWT.getClaim("locked").asBoolean();
         final Permission globalPermission = Permission.fromBinString(decodedJWT.getClaim("permissions").asString());
         final String apiKeyIdentifier = decodedJWT.getClaim("apiKeyIdentifier").asString();
+        final boolean emailVerified = decodedJWT.getClaim("emailVerified").asBoolean();
+        final String email = decodedJWT.getClaim("email").asString();
         if (subject == null || userId == null || globalPermission == null) {
             throw new BadCredentialsException("Malformed jwt");
         }
@@ -145,26 +143,9 @@ public class TokenService extends HangarComponent {
             if (apiKeyTable == null) {
                 throw new BadCredentialsException("Invalid api key identifier");
             }
-            return new HangarApiPrincipal(userId, subject, locked, globalPermission, apiKeyTable);
+            return new HangarApiPrincipal(userId, subject, email, locked, globalPermission, apiKeyTable, emailVerified);
         } else {
-            return new HangarPrincipal(userId, subject, locked, globalPermission, null);
+            return new HangarPrincipal(userId, subject, email, locked, globalPermission, null, emailVerified);
         }
-    }
-
-    private JWTVerifier getVerifier() {
-        if (this.verifier == null) {
-            this.verifier = JWT.require(this.getAlgo())
-                .acceptLeeway(10)
-                .withIssuer(this.config.security.tokenIssuer())
-                .build();
-        }
-        return this.verifier;
-    }
-
-    private Algorithm getAlgo() {
-        if (this.algo == null) {
-            this.algo = Algorithm.HMAC256(this.config.security.tokenSecret());
-        }
-        return this.algo;
     }
 }

@@ -1,6 +1,6 @@
-package io.papermc.hangar.db.dao.internal.table.auth;
+package io.papermc.hangar.components.auth.dao;
 
-import io.papermc.hangar.model.db.auth.UserRefreshToken;
+import io.papermc.hangar.components.auth.model.db.UserRefreshToken;
 import java.util.UUID;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;

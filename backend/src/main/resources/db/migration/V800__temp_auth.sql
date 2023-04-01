@@ -40,4 +40,13 @@ CREATE TABLE verification_codes
     created_at timestamp WITH TIME ZONE NOT NULL,
     type       integer                  NOT NULL,
     code       varchar(16)              NOT NULL
-)
+);
+
+DROP TABLE user_oauth_token;
+
+DROP TABLE user_sign_ons;
+
+ALTER TABLE users
+    ADD email_verified bool DEFAULT FALSE NOT NULL;
+ALTER TABLE users
+    ADD socials jsonb DEFAULT '{}' NOT NULL;

@@ -28,7 +28,7 @@ import com.webauthn4j.springframework.security.options.RpIdProviderImpl;
 import com.webauthn4j.springframework.security.server.ServerPropertyProvider;
 import io.papermc.hangar.security.authentication.HangarAuthenticationEntryPoint;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
-import io.papermc.hangar.service.TokenService;
+import io.papermc.hangar.components.auth.service.TokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

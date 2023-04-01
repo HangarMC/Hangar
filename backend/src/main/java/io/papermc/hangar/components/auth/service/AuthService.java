@@ -2,12 +2,10 @@ package io.papermc.hangar.components.auth.service;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.dao.UserCredentialDAO;
-import io.papermc.hangar.components.auth.dao.VerificationCodeDao;
 import io.papermc.hangar.components.auth.model.credential.Credential;
 import io.papermc.hangar.components.auth.model.credential.CredentialType;
 import io.papermc.hangar.components.auth.model.credential.PasswordCredential;
 import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
-import io.papermc.hangar.components.auth.model.db.VerificationCodeTable;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -18,13 +16,12 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.ValidationService;
-import io.papermc.hangar.service.internal.MailService;
-import java.security.SecureRandom;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,17 +37,14 @@ public class AuthService extends HangarComponent implements UserDetailsService {
     private final UserCredentialDAO userCredentialDAO;
     private final PasswordEncoder passwordEncoder;
     private final ValidationService validationService;
-    private final MailService mailService;
-    private final VerificationCodeDao verificationCodeDao;
-    private final SecureRandom secureRandom = new SecureRandom();
+    private final VerificationService verificationService;
 
-    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final MailService mailService, final VerificationCodeDao verificationCodeDao) {
+    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService) {
         this.userDAO = userDAO;
         this.userCredentialDAO = userCredentialDAO;
         this.passwordEncoder = passwordEncoder;
         this.validationService = validationService;
-        this.mailService = mailService;
-        this.verificationCodeDao = verificationCodeDao;
+        this.verificationService = verificationService;
     }
 
     @Transactional
@@ -62,15 +56,15 @@ public class AuthService extends HangarComponent implements UserDetailsService {
             throw new HangarApiException("dum");
         }
         // TODO check if user exists and shit
-        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), form.username(), form.email(), null, "en", List.of(), false, "light");
-
+        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), form.username(), form.email(), null, "en", List.of(), false, "light", false, new JSONB(Map.of()));
         this.registerCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(form.password())));
+        this.verificationService.sendVerificationCode(userTable.getUserId(), userTable.getEmail(), userTable.getName());
 
         return userTable;
     }
 
     public boolean validPassword(final String password) {
-        return true; // TODO valid passowrd
+        return true; // TODO validate password against pw rules and hibp and shit
     }
 
     public void registerCredential(final long userId, final Credential credential) {
@@ -105,9 +99,10 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         }
         final String password = passwordCredential.getCredential().get(PasswordCredential.class).hashedPassword();
         // TODO load proper perms
-        return new HangarPrincipal(userTable.getUserId(), userTable.getName(), userTable.isLocked(), Permission.ViewPublicInfo, password);
+        return new HangarPrincipal(userTable.getUserId(), userTable.getName(), userTable.getEmail(), userTable.isLocked(), Permission.ViewPublicInfo, password, userTable.isEmailVerified());
     }
 
+    // TODO call this
     private void handleUsernameChange(final UserTable user, final String newName) {
         // make sure a user with that name doesn't exist yet
         if (this.userDAO.getUserTable(newName) != null) {
@@ -126,43 +121,8 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         this.userDAO.recordNameChange(user.getUuid(), user.getName(), newName);
     }
 
-    public boolean verifyResetCode(final String email, final String code, boolean delete) {
-        final UserTable userTable = this.userDAO.getUserTable(email);
-        if (userTable == null) {
-            return false;
-        }
-
-        final VerificationCodeTable table = this.verificationCodeDao.get(VerificationCodeTable.VerificationCodeType.PASSWORD_RESET, userTable.getUserId());
-        if (table.getCreatedAt().plus(10, ChronoUnit.MINUTES).isBefore(OffsetDateTime.now())) {
-            return false; // TODO expired
-        }
-
-        if (!table.getCode().equals(code)) {
-            return false;
-        }
-
-        if (delete) {
-            this.verificationCodeDao.delete(table.getId());
-        }
-
-        return true;
-    }
-
-    public void sendResetCode(final String email) {
-        final UserTable userTable = this.userDAO.getUserTable(email);
-        if (userTable == null) {
-            return;
-        }
-
-        this.verificationCodeDao.deleteOld(VerificationCodeTable.VerificationCodeType.PASSWORD_RESET, userTable.getUserId());
-
-        final String code = String.format("%06d", this.secureRandom.nextInt(999999));
-        this.verificationCodeDao.insert(new VerificationCodeTable(userTable.getUserId(), VerificationCodeTable.VerificationCodeType.PASSWORD_RESET, code));
-
-        this.mailService.queueEmail("Hangar Password Reset", userTable.getEmail(), """
-            Hi %s,
-            you dum dum did forget your password, enter %s to reset.
-            if you did not request this email, ignore it.
-            """.formatted(userTable.getName(), code));
+    // TODO call this
+    private void handleEmailChange() {
+        // todo set email to unconfirmed and send email
     }
 }

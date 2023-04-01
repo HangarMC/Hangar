@@ -1,6 +1,7 @@
 package io.papermc.hangar.model.db;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -20,9 +21,11 @@ public class UserTable extends Table implements ProjectOwner {
     private boolean locked;
     private String language;
     private String theme;
+    private boolean emailVerified;
+    private JSONB socials;
 
     @JdbiConstructor
-    public UserTable(final OffsetDateTime createdAt, @PropagateNull final long id, final UUID uuid, final String name, final String email, final String tagline, final OffsetDateTime joinDate, final List<Integer> readPrompts, final boolean locked, final String language, final String theme) {
+    public UserTable(final OffsetDateTime createdAt, @PropagateNull final long id, final UUID uuid, final String name, final String email, final String tagline, final OffsetDateTime joinDate, final List<Integer> readPrompts, final boolean locked, final String language, final String theme, final boolean emailVerified, final JSONB socials) {
         super(createdAt, id);
         this.uuid = uuid;
         this.name = name;
@@ -33,9 +36,11 @@ public class UserTable extends Table implements ProjectOwner {
         this.locked = locked;
         this.language = language;
         this.theme = theme;
+        this.emailVerified = emailVerified;
+        this.socials = socials;
     }
 
-    public UserTable(final long id, final UUID uuid, final String name, final String email, final List<Integer> readPrompts, final boolean locked, final String language, final String theme) {
+    public UserTable(final long id, final UUID uuid, final String name, final String email, final List<Integer> readPrompts, final boolean locked, final String language, final String theme, final boolean emailVerified, final JSONB socials) {
         super(id);
         this.uuid = uuid;
         this.name = name;
@@ -44,6 +49,8 @@ public class UserTable extends Table implements ProjectOwner {
         this.locked = locked;
         this.language = language;
         this.theme = theme;
+        this.emailVerified = emailVerified;
+        this.socials = socials;
     }
 
     public UUID getUuid() {
@@ -120,6 +127,22 @@ public class UserTable extends Table implements ProjectOwner {
         this.theme = theme;
     }
 
+    public boolean isEmailVerified() {
+        return this.emailVerified;
+    }
+
+    public void setEmailVerified(final boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public JSONB getSocials() {
+        return this.socials;
+    }
+
+    public void setSocials(final JSONB socials) {
+        this.socials = socials;
+    }
+
     @Override
     public long getUserId() {
         return this.id;
@@ -137,6 +160,8 @@ public class UserTable extends Table implements ProjectOwner {
             ", locked=" + this.locked +
             ", language='" + this.language + '\'' +
             ", theme='" + this.theme + '\'' +
+            ", socials='" + this.socials.getValue() + '\'' +
+            ", emailVerified='" + this.emailVerified + '\'' +
             "} " + super.toString();
     }
 }
