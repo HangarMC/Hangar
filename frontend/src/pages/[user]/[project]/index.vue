@@ -143,7 +143,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
                 </div>
               </router-link>
               <div class="ml-1 space-y-2 flex flex-col mt-1">
-                <DownloadButton :project="project" :pinned-version="version" small :show-versions="false" class="self-end"></DownloadButton>
+                <DownloadButton :project="project" :pinned-version="version" small :show-versions="false" class="self-end" />
               </div>
             </div>
           </li>

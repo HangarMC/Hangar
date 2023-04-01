@@ -29,15 +29,15 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
         <tbody>
           <tr>
             <th class="text-left">{{ i18n.t("project.category.info") }}</th>
-            <td class="text-right">{{ i18n.t("project.category." + project.category) }}</td>
+            <td>{{ i18n.t("project.category." + project.category) }}</td>
           </tr>
           <tr>
             <th class="text-left">{{ i18n.t("project.info.publishDate") }}</th>
-            <td class="text-right">{{ i18n.d(project.createdAt, "date") }}</td>
+            <td>{{ i18n.d(project.createdAt, "date") }}</td>
           </tr>
           <tr>
             <th class="text-left">{{ i18n.t("project.info.license") }}</th>
-            <td v-if="project.settings.license?.type === '(custom)' || project.settings.license?.type === 'Other'" class="text-right">
+            <td v-if="project.settings.license?.type === '(custom)' || project.settings.license?.type === 'Other'">
               <Link v-if="project.settings.license.url" :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">
                 {{ project.settings.license.name }}
               </Link>
@@ -45,7 +45,7 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
                 {{ project.settings.license.name }}
               </template>
             </td>
-            <td v-else class="text-right">
+            <td v-else>
               <Link v-if="project.settings.license.url" :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">
                 {{ project.settings.license.type }}
               </Link>
@@ -56,13 +56,13 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
           </tr>
           <tr v-if="hasPerms(NamedPermission.IS_SUBJECT_MEMBER)">
             <th class="text-left">{{ i18n.t("project.info.views", project.stats.views) }}</th>
-            <td class="text-right">
+            <td>
               {{ project.stats.views }}
             </td>
           </tr>
           <tr>
             <th class="text-left">{{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}</th>
-            <td class="text-right">
+            <td>
               {{ project.stats.downloads }}
             </td>
           </tr>
@@ -72,7 +72,7 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
                 {{ i18n.t("project.info.stars", 0) }}
               </Link>
             </th>
-            <td class="text-right">{{ project.stats.stars }}</td>
+            <td>{{ project.stats.stars }}</td>
           </tr>
           <tr>
             <th class="text-left">
@@ -80,7 +80,7 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
                 {{ i18n.t("project.info.watchers", 0) }}
               </Link>
             </th>
-            <td class="text-right">{{ project.stats.watchers }}</td>
+            <td>{{ project.stats.watchers }}</td>
           </tr>
         </tbody>
       </table>
