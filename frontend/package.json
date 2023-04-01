@@ -33,6 +33,7 @@
     ]
   },
   "dependencies": {
+    "@github/webauthn-json": "^2.1.1",
     "@headlessui/vue": "1.7.12",
     "@intlify/unplugin-vue-i18n": "^0.10.0",
     "@pinia/nuxt": "0.4.7",

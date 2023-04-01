@@ -2,7 +2,6 @@ package io.papermc.hangar.components.auth.service;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.dao.UserCredentialDAO;
-import io.papermc.hangar.components.auth.model.credential.Credential;
 import io.papermc.hangar.components.auth.model.credential.CredentialType;
 import io.papermc.hangar.components.auth.model.credential.PasswordCredential;
 import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
@@ -23,7 +22,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,13 +36,15 @@ public class AuthService extends HangarComponent implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final ValidationService validationService;
     private final VerificationService verificationService;
+    private final CredentialsService credentialsService;
 
-    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService) {
+    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService) {
         this.userDAO = userDAO;
         this.userCredentialDAO = userCredentialDAO;
         this.passwordEncoder = passwordEncoder;
         this.validationService = validationService;
         this.verificationService = verificationService;
+        this.credentialsService = credentialsService;
     }
 
     @Transactional
@@ -57,7 +57,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         }
         // TODO check if user exists and shit
         final UserTable userTable = this.userDAO.create(UUID.randomUUID(), form.username(), form.email(), null, "en", List.of(), false, "light", false, new JSONB(Map.of()));
-        this.registerCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(form.password())));
+        this.credentialsService.registerCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(form.password())));
         this.verificationService.sendVerificationCode(userTable.getUserId(), userTable.getEmail(), userTable.getName());
 
         return userTable;
@@ -65,22 +65,6 @@ public class AuthService extends HangarComponent implements UserDetailsService {
 
     public boolean validPassword(final String password) {
         return true; // TODO validate password against pw rules and hibp and shit
-    }
-
-    public void registerCredential(final long userId, final Credential credential) {
-        this.userCredentialDAO.insert(userId, new JSONB(credential), credential.type());
-    }
-
-    public void removeCredential(final long userId, final CredentialType type) {
-        this.userCredentialDAO.remove(userId, type);
-    }
-
-    public void updateCredential(final long userId, final Credential credential) {
-        this.userCredentialDAO.update(userId, new JSONB(credential), credential.type());
-    }
-
-    public @Nullable UserCredentialTable getCredential(final long userId, final CredentialType type) {
-        return this.userCredentialDAO.getByType(type, userId);
     }
 
     @Override

@@ -1,79 +1,213 @@
 package io.papermc.hangar.components.auth.service;
 
-import com.webauthn4j.data.PublicKeyCredentialUserEntity;
-import com.webauthn4j.springframework.security.authenticator.WebAuthnAuthenticator;
-import com.webauthn4j.springframework.security.authenticator.WebAuthnAuthenticatorService;
-import com.webauthn4j.springframework.security.exception.CredentialIdNotFoundException;
-import com.webauthn4j.springframework.security.options.PublicKeyCredentialUserEntityProvider;
-import io.papermc.hangar.security.authentication.HangarPrincipal;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashMap;
+import com.yubico.webauthn.CredentialRepository;
+import com.yubico.webauthn.RegisteredCredential;
+import com.yubico.webauthn.data.ByteArray;
+import com.yubico.webauthn.data.PublicKeyCredentialDescriptor;
+import com.yubico.webauthn.data.UserIdentity;
+import io.papermc.hangar.components.auth.model.credential.CredentialType;
+import io.papermc.hangar.components.auth.model.credential.WebAuthNCredential;
+import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
+import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.service.internal.users.UserService;
+import java.security.SecureRandom;
 import java.util.List;
-import java.util.Map;
-import org.springframework.security.core.Authentication;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
-public class WebAuthNService implements WebAuthnAuthenticatorService, PublicKeyCredentialUserEntityProvider {
+public class WebAuthNService implements CredentialRepository {
 
-    private final AuthService authService;
+    private final SecureRandom random = new SecureRandom();
+    private final CredentialsService credentialsService;
+    private final UserService userService;
 
-    // TODO persist properly
-    private final Map<String, WebAuthnAuthenticator> dum = new HashMap<>();
-
-    public WebAuthNService(final AuthService authService) {
-        this.authService = authService;
+    public WebAuthNService(final CredentialsService credentialsService, final UserService userService) {
+        this.credentialsService = credentialsService;
+        this.userService = userService;
     }
 
-    public void store(final String name, final WebAuthnAuthenticator auth) {
-        System.out.println("store " + name + " " + auth);
-        this.dum.put(name, auth);
+    public void addDevice(final long userId, final WebAuthNCredential.WebAuthNDevice device) {
+        final WebAuthNCredential webAuthNCredential = this.getWebAuthNCredential(userId);
+        webAuthNCredential.credentials().add(device);
+        this.credentialsService.updateCredential(userId, webAuthNCredential);
     }
 
-    @Override
-    public void updateCounter(final byte[] credentialId, final long counter) throws CredentialIdNotFoundException {
-        System.out.println("update counter " + Arrays.toString(credentialId) + " " + counter);
-        final WebAuthnAuthenticator auth = this.getByCredId(credentialId);
-        auth.setCounter(counter);
+    public void removeDevice(final long userId, final String id) {
+        final WebAuthNCredential webAuthNCredential = this.getWebAuthNCredential(userId);
+        webAuthNCredential.credentials().removeIf(e -> e.id().equals(id));
+        this.credentialsService.updateCredential(userId, webAuthNCredential);
     }
 
-    private WebAuthnAuthenticator getByCredId(final byte[] credId) {
-        return this.dum.values().stream().filter(a -> Arrays.equals(a.getAttestedCredentialData().getCredentialId(), credId))
-            .findFirst().orElseThrow(() -> new CredentialIdNotFoundException("not found"));
-    }
-
-    @Override
-    public WebAuthnAuthenticator loadAuthenticatorByCredentialId(final byte[] credentialId) throws CredentialIdNotFoundException {
-        final WebAuthnAuthenticator auth = this.getByCredId(credentialId);
-        // TODO we need to make sure to load the proper hangar user principal here
-        System.out.println("loadAuthenticatorByCredentialId " + Arrays.toString(credentialId) + " " + auth.getUserPrincipal());
-        return auth;
-    }
-
-    @Override
-    public List<WebAuthnAuthenticator> loadAuthenticatorsByUserPrincipal(final Object principal) {
-        final WebAuthnAuthenticator e1 = this.dum.get(principal.toString());
-        System.out.println("loadAuthenticatorsByUserPrincipal " + principal + " " + e1);
-        if (e1 == null) {
-            return List.of();
+    public UserIdentity getExistingUserOrCreate(final long userId, final String name) {
+        final UserCredentialTable credential = this.credentialsService.getCredential(userId, CredentialType.WEBAUTHN);
+        if (credential == null) {
+            return this.createNewUser(userId, name);
         }
-        return List.of(e1);
+
+        final WebAuthNCredential webAuthNCredential = credential.getCredential().get(WebAuthNCredential.class);
+        if (webAuthNCredential == null) {
+            return this.createNewUser(userId, name);
+        }
+
+        return UserIdentity.builder().name(name).displayName(name).id(ByteArray.fromBase64(webAuthNCredential.userHandle())).build();
+    }
+
+    private UserIdentity createNewUser(final long userId, final String name) {
+        final UserIdentity userIdentity = UserIdentity.builder()
+            .name(name)
+            .displayName(name)
+            .id(this.generateRandom(32))
+            .build();
+
+        this.credentialsService.registerCredential(userId, new WebAuthNCredential(userIdentity.getId().getBase64(), List.of(), null, null));
+
+        return userIdentity;
+    }
+
+    public ByteArray generateRandom(final int length) {
+        final byte[] bytes = new byte[length];
+        this.random.nextBytes(bytes);
+        return new ByteArray(bytes);
+    }
+
+    public void storeSetupRequest(final long userId, final String publicKeyCredentialCreationOptions, final String authenticatorName) {
+        final WebAuthNCredential webAuthNCredential = this.getWebAuthNCredential(userId);
+
+        final WebAuthNCredential updated = new WebAuthNCredential(webAuthNCredential.userHandle(), webAuthNCredential.credentials(), new WebAuthNCredential.PendingSetup(authenticatorName, publicKeyCredentialCreationOptions), webAuthNCredential.pendingLogin());
+        this.credentialsService.updateCredential(userId, updated);
+    }
+
+    public WebAuthNCredential.PendingSetup retrieveSetupRequest(final long userId) {
+        final WebAuthNCredential webAuthNCredential = this.getWebAuthNCredential(userId);
+
+        if (webAuthNCredential.pendingSetup() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No pending");
+        }
+
+        final WebAuthNCredential updated = new WebAuthNCredential(webAuthNCredential.userHandle(), webAuthNCredential.credentials(), null, webAuthNCredential.pendingLogin());
+        this.credentialsService.updateCredential(userId, updated);
+
+        return webAuthNCredential.pendingSetup();
+    }
+
+    public void storeLoginRequest(final long userId, final String json) {
+        final WebAuthNCredential webAuthNCredential = this.getWebAuthNCredential(userId);
+
+        final WebAuthNCredential updated = new WebAuthNCredential(webAuthNCredential.userHandle(), webAuthNCredential.credentials(), webAuthNCredential.pendingSetup(), new WebAuthNCredential.PendingLogin(json));
+        this.credentialsService.updateCredential(userId, updated);
+    }
+
+    public WebAuthNCredential.PendingLogin retrieveLoginRequest(final long userId) {
+        final WebAuthNCredential webAuthNCredential = this.getWebAuthNCredential(userId);
+
+        if (webAuthNCredential.pendingLogin() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No pending");
+        }
+
+        final WebAuthNCredential updated = new WebAuthNCredential(webAuthNCredential.userHandle(), webAuthNCredential.credentials(), webAuthNCredential.pendingSetup(), null);
+        this.credentialsService.updateCredential(userId, updated);
+
+        return webAuthNCredential.pendingLogin();
+    }
+
+    private WebAuthNCredential getWebAuthNCredential(final long userId) {
+        final UserCredentialTable credential = this.credentialsService.getCredential(userId, CredentialType.WEBAUTHN);
+        if (credential == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No credential");
+        }
+
+        final WebAuthNCredential webAuthNCredential = credential.getCredential().get(WebAuthNCredential.class);
+        if (webAuthNCredential == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Malformed credential");
+        }
+
+        return webAuthNCredential;
     }
 
     @Override
-    public PublicKeyCredentialUserEntity provide(final Authentication authentication) {
-        if (authentication == null) {
-            return null;
+    public Set<PublicKeyCredentialDescriptor> getCredentialIdsForUsername(final String username) {
+        final UserTable userTable = this.userService.getUserTable(username);
+        if (userTable == null) {
+            return Set.of();
         }
-        System.out.println("load public key " + authentication);
+        final UserCredentialTable credential = this.credentialsService.getCredential(userTable.getUserId(), CredentialType.WEBAUTHN);
+        if (credential == null) {
+            return Set.of();
+        }
 
-        final String username = authentication.getName();
-        final HangarPrincipal principal = this.authService.loadUserByUsername(username);
-        return new PublicKeyCredentialUserEntity(
-            BigInteger.valueOf(principal.getUserId()).toByteArray(), // TODO this isn't a good id I guess?
-            principal.getUsername(),
-            principal.getUsername()
-        );
+        final WebAuthNCredential webAuthNCredential = credential.getCredential().get(WebAuthNCredential.class);
+        if (webAuthNCredential == null) {
+            return Set.of();
+        }
+
+        return webAuthNCredential.credentials().stream()
+            .map((device) ->  PublicKeyCredentialDescriptor.builder().id(ByteArray.fromBase64(device.id())).build())
+            .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Optional<String> getUsernameForUserHandle(final ByteArray userHandle) {
+        final UserCredentialTable userCredentialTable = this.credentialsService.getCredentialByUserHandle(userHandle);
+        if (userCredentialTable == null) {
+            return Optional.empty();
+        }
+        final UserTable userTable = this.userService.getUserTable(userCredentialTable.getUserId());
+        if (userTable == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(userTable.getName());
+    }
+
+    @Override
+    public Optional<ByteArray> getUserHandleForUsername(final String username) {
+        final UserTable userTable = this.userService.getUserTable(username);
+        if (userTable == null) {
+            return Optional.empty();
+        }
+        final UserCredentialTable credential = this.credentialsService.getCredential(userTable.getUserId(), CredentialType.WEBAUTHN);
+        if (credential == null) {
+            return Optional.empty();
+        }
+
+        final WebAuthNCredential webAuthNCredential = credential.getCredential().get(WebAuthNCredential.class);
+        if (webAuthNCredential == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(ByteArray.fromBase64(webAuthNCredential.userHandle()));
+    }
+
+    @Override
+    public Optional<RegisteredCredential> lookup(final ByteArray credentialId, final ByteArray userHandle) {
+        final UserCredentialTable userCredentialTable = this.credentialsService.getCredentialByUserHandle(userHandle);
+        if (userCredentialTable == null) {
+            return Optional.empty();
+        }
+
+        final WebAuthNCredential webAuthNCredential = userCredentialTable.getCredential().get(WebAuthNCredential.class);
+        if (webAuthNCredential == null) {
+            return Optional.empty();
+        }
+
+        final var maybe = webAuthNCredential.credentials().stream().filter(c -> c.id().equals(credentialId.getBase64())).findAny();
+        return maybe.map(
+            registration ->
+                RegisteredCredential.builder()
+                    .credentialId(ByteArray.fromBase64(registration.id()))
+                    .userHandle(ByteArray.fromBase64(webAuthNCredential.userHandle()))
+                    .publicKeyCose(ByteArray.fromBase64(registration.publicKey()))
+                    .signatureCount(registration.authenticator().signCount())
+                    .build());
+    }
+
+    @Override
+    public Set<RegisteredCredential> lookupAll(final ByteArray credentialId) {
+        return Set.of(); // we dont care about this
     }
 }

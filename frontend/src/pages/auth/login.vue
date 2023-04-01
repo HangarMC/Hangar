@@ -1,80 +1,77 @@
 <script lang="ts" setup>
 import { useHead } from "@vueuse/head";
 import { useRoute, useRouter } from "vue-router";
-import { computed, ref } from "vue";
+import { ref } from "vue";
+import * as webauthnJson from "@github/webauthn-json";
 import { useSeo } from "~/composables/useSeo";
 import InputText from "~/lib/components/ui/InputText.vue";
 import Button from "~/lib/components/design/Button.vue";
-import { useAxios } from "~/composables/useAxios";
-import { useAuth } from "~/composables/useAuth";
 import { useInternalApi } from "~/composables/useApi";
-import { encodeBase64Url, getAssertionOptions } from "~/composables/useWebAuthN";
 import { useAuthStore } from "~/store/auth";
+import { useAuth } from "~/composables/useAuth";
 
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 
-// todo hack for now, need to do this proper
-const aal = computed(() => (authStore.authenticated ? 2 : 1));
+const supportedMethods = ref([]);
+
 // aal1
 const username = ref("");
 const password = ref("");
 
-// aal2
-
 async function loginPassword() {
-  const result = await useAxios()
-    .post("/api/internal/auth/login", new URLSearchParams({ username: username.value, password: password.value }), {
-      headers: { "content-type": "application/x-www-form-urlencoded" },
-    })
-    .catch((r) => {
-      console.log("dum", r);
-      return r;
-    });
-
-  if (result.status === 200) {
-    console.log("login success!");
-    await useAuth.updateUser();
-    // TODO redirect to where you started
-    await router.push("/auth/settings");
+  const response = await useInternalApi<{ aal: number; types: string[] }>("auth/login/password", "POST", {
+    usernameOrEmail: username.value,
+    password: password.value,
+  });
+  if (response.types?.length > 0) {
+    supportedMethods.value.push(...response.types);
   } else {
-    console.log("login fail", result);
+    await finish(response.aal);
   }
 }
 
+// aal2
+
 async function loginWebAuthN() {
-  const options = await getAssertionOptions();
-  const credential = await navigator.credentials.get({ publicKey: options });
-  if (!credential) {
-    console.log("no credential");
-    return;
-  }
-  if (credential.type !== "public-key") {
-    console.log("Unexpected credential type");
-    return;
-  }
-  const publicKeyCredential = credential as PublicKeyCredential;
-  const assertionResponse = publicKeyCredential.response as AuthenticatorAssertionResponse;
-  console.log("assertion", publicKeyCredential);
-  const result = await useInternalApi(
-    "auth/login",
-    "POST",
-    new URLSearchParams({
-      credentialId: encodeBase64Url(new Uint8Array(publicKeyCredential.rawId)),
-      clientDataJSON: encodeBase64Url(new Uint8Array(assertionResponse.clientDataJSON)),
-      authenticatorData: encodeBase64Url(new Uint8Array(assertionResponse.authenticatorData)),
-      signature: encodeBase64Url(new Uint8Array(assertionResponse.signature)),
-      clientExtensionsJSON: JSON.stringify(publicKeyCredential.getClientExtensionResults()),
-    }),
-    {
-      headers: { "content-type": "application/x-www-form-urlencoded" },
-    }
-  ).catch((r) => {
-    console.log("dum", r);
-    return r;
+  const credentialGetOptions = await useInternalApi<string>("auth/webauthn/assert", "POST", username.value, { headers: { "content-type": "text/plain" } });
+  const parsed = JSON.parse(credentialGetOptions);
+  console.log("response", parsed);
+  const publicKeyCredential = await webauthnJson.get(parsed);
+  const response = await useInternalApi<{ aal: number }>("auth/login/webauthn", "POST", {
+    usernameOrEmail: username.value,
+    password: password.value,
+    publicKeyCredentialJson: JSON.stringify(publicKeyCredential),
   });
-  console.log("result", result);
+  await finish(response.aal);
+}
+
+const totpCode = ref();
+async function loginTotp() {
+  const response = await useInternalApi<{ aal: number }>("auth/login/totp", "POST", {
+    usernameOrEmail: username.value,
+    password: password.value,
+    totpCode: totpCode.value,
+  });
+  await finish(response.aal);
+}
+
+const backupCode = ref();
+async function loginBackupCode() {
+  const response = await useInternalApi<{ aal: number }>("auth/login/backup", "POST", {
+    usernameOrEmail: username.value,
+    password: password.value,
+    backupCode: backupCode.value,
+  });
+  await finish(response.aal);
+}
+
+async function finish(aal: number) {
+  authStore.aal = aal;
+  await useAuth.updateUser(); // todo maybe return user in login response?
+  // TODO redirect to where you started
+  await router.push("/auth/settings");
 }
 
 useHead(useSeo("Login", null, route, null));
@@ -82,17 +79,25 @@ useHead(useSeo("Login", null, route, null));
 
 <template>
   <div>
-    <div v-if="aal === 1">
+    <div v-if="supportedMethods.length === 0">
       <InputText v-model="username" label="Username" name="useranme" />
       <!-- todo copy InputPassword from auth -->
       <InputText v-model="password" label="Password" name="password" type="password" autocomplete="current-password" />
-      <Button @click="loginPassword">Login</Button>
+      <Button @click.prevent="loginPassword">Login</Button>
       <Button to="/auth/signup">Signup</Button>
       <Button to="/auth/reset">Forgot</Button>
     </div>
 
-    <div v-if="aal === 2">
-      <Button @click="loginWebAuthN">Use WebAuthN</Button>
+    <div v-if="supportedMethods.length > 0">
+      <Button v-if="supportedMethods.includes('WEBAUTHN')" @click.prevent="loginWebAuthN">Use WebAuthN</Button>
+      <template v-if="supportedMethods.includes('TOTP')">
+        <InputText v-model="totpCode" label="Totp code" />
+        <Button @click.prevent="loginTotp">Use totp</Button>
+      </template>
+      <template v-if="supportedMethods.includes('BACKUP_CODES')">
+        <InputText v-model="backupCode" label="Backup code" />
+        <Button @click.prevent="loginBackupCode">Use backup code</Button>
+      </template>
     </div>
   </div>
 </template>

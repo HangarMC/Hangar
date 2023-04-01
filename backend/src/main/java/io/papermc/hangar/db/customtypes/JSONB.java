@@ -6,12 +6,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.Map;
 import org.postgresql.util.PGobject;
 
 public class JSONB extends PGobject {
 
     private static final String TYPE_STRING = "jsonb";
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private transient JsonNode json;
     private transient Map<String, String> map;
@@ -25,7 +27,7 @@ public class JSONB extends PGobject {
     public JSONB(final Object value) {
         this.setType(TYPE_STRING);
         try {
-            this.value = new ObjectMapper().writeValueAsString(value);
+            this.value = objectMapper.writeValueAsString(value);
         } catch (final JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -51,7 +53,7 @@ public class JSONB extends PGobject {
     public Map<String, String> getMap() {
         if (this.map == null) {
             try {
-                this.map = new ObjectMapper().readValue(this.value, new TypeReference<>() {
+                this.map = objectMapper.readValue(this.value, new TypeReference<>() {
                 });
             } catch (final JsonProcessingException | ClassCastException e) {
                 e.printStackTrace();
@@ -62,7 +64,7 @@ public class JSONB extends PGobject {
 
     public <T> T get(final TypeReference<T> ref) {
         try {
-            return new ObjectMapper().readValue(this.value, ref);
+            return objectMapper.readValue(this.value, ref);
         } catch (final JsonProcessingException | ClassCastException e) {
             e.printStackTrace();
         }
@@ -71,7 +73,7 @@ public class JSONB extends PGobject {
 
     public <T> T get(final Class<T> ref) {
         try {
-            return new ObjectMapper().readValue(this.value, ref);
+            return objectMapper.readValue(this.value, ref);
         } catch (final JsonProcessingException | ClassCastException e) {
             e.printStackTrace();
         }
@@ -86,7 +88,7 @@ public class JSONB extends PGobject {
 
     private void parseJson() {
         try {
-            this.json = new ObjectMapper().readTree(this.value);
+            this.json = objectMapper.readTree(this.value);
         } catch (final JsonProcessingException | ClassCastException e) {
             e.printStackTrace();
         }

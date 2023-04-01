@@ -167,7 +167,7 @@ export async function useJarScan(versionId: number, platform: string): Promise<R
 }
 
 export async function useAuthSettings(): Promise<Ref<AuthSettings | null>> {
-  return extract(await useAsyncData("useAuthSettings", () => useInternalApi<ProjectPage>(`auth/settings`, "POST")));
+  return extract(await useAsyncData("useAuthSettings", () => useInternalApi<AuthSettings>(`auth/settings`, "POST")));
 }
 
 export async function useUserData(

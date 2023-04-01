@@ -1,4 +1,8 @@
 package io.papermc.hangar.components.auth.model.dto;
 
-public record SettingsResponse(boolean hasBackupCodes, boolean hasTotp, boolean emailConfirmed, boolean emailPending) {
+import java.util.List;
+
+public record SettingsResponse(List<Authenticator> authenticators, boolean hasBackupCodes, boolean hasTotp, boolean emailConfirmed, boolean emailPending) {
+
+    public record Authenticator(String addedAt, String displayName, String id) {}
 }

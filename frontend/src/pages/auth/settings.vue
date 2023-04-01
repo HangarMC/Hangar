@@ -2,12 +2,13 @@
 import { useHead } from "@vueuse/head";
 import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
+import * as webauthnJson from "@github/webauthn-json";
+import { AuthSettings } from "hangar-internal";
 import { useSeo } from "~/composables/useSeo";
 import { useAuthStore } from "~/store/auth";
 import Button from "~/lib/components/design/Button.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useAuthSettings } from "~/composables/useApiHelper";
-import { encodeBase64Url, getAttestationOptions } from "~/composables/useWebAuthN";
 import Card from "~/lib/components/design/Card.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import AvatarChangeModal from "~/lib/components/modals/AvatarChangeModal.vue";
@@ -42,38 +43,37 @@ async function verifyEmail() {
   emailConfirmModal.value.isOpen = false;
 }
 
+const authenticatorName = ref<string>();
 async function addAuthenticator() {
-  const options = await getAttestationOptions();
-  const credential = await navigator.credentials.create({ publicKey: options });
-  if (!credential) {
-    console.log("no credential");
-    return;
-  }
-  if (credential.type !== "public-key") {
-    console.log("Unexpected credential type");
-    return;
-  }
-  const publicKeyCredential = credential as PublicKeyCredential;
-  console.log("credential", credential);
-  const name = "DummyAuth";
-  await useInternalApi("auth/webauthn/register", "POST", {
-    name,
-    credentialId: credential.id,
-    clientData: encodeBase64Url(publicKeyCredential.response.clientDataJSON),
-    attestationObject: encodeBase64Url(publicKeyCredential.response.attestationObject),
+  const credentialCreateOptions = await useInternalApi<string>("auth/webauthn/setup", "POST", authenticatorName.value, {
+    headers: { "content-type": "text/plain" },
   });
+  const parsed = JSON.parse(credentialCreateOptions);
+  console.log("credentialCreateOptions", parsed);
+  const publicKeyCredential = await webauthnJson.create(parsed);
+  console.log("publicKeyCredential", publicKeyCredential);
+  await useInternalApi("auth/webauthn/register", "POST", JSON.stringify(publicKeyCredential), { headers: { "content-type": "text/plain" } });
+  authenticatorName.value = "";
+  settings.value = await useInternalApi<AuthSettings>("auth/settings", "POST");
+}
+async function unregisterAuthenticator(authenticator: AuthSettings["authenticators"][0]) {
+  await useInternalApi("auth/webauthn/unregister", "POST", authenticator.id, { headers: { "content-type": "text/plain" } });
+  settings.value = await useInternalApi<AuthSettings>("auth/settings", "POST");
 }
 
 const hasTotp = ref(settings.value?.hasTotp);
 const totpData = ref<{ secret: string; qrCode: string } | undefined>();
+
 async function setupTotp() {
   // TODO loading
-  const data = await useInternalApi<{ secret: string; qrCode: string }>("auth/totp/setup");
+  const data = await useInternalApi<{ secret: string; qrCode: string }>("auth/totp/setup", "POST");
   console.log("data", data);
   // TODO error handling
   totpData.value = data;
 }
+
 const totpCode = ref();
+
 async function addTotp() {
   // TODO loading
   await useInternalApi("auth/totp/register", "POST", { secret: totpData.value?.secret, code: totpCode.value });
@@ -91,6 +91,7 @@ async function unlinkTotp() {
 const hasCodes = ref(settings.value?.hasBackupCodes);
 const showCodes = ref(false);
 const codes = ref();
+
 async function setupCodes() {
   const data = await useInternalApi("auth/codes/setup", "POST");
   console.log("data", data);
@@ -130,14 +131,18 @@ useHead(useSeo("Settings", null, route, null));
 
 <template>
   <div>
-    <h1>Hello {{ auth.user.name }}</h1>
+    <h1>Hello {{ auth.user?.name }}</h1>
     <!-- todo tabs -->
 
     <Alert v-if="settings?.emailPending">
-      Got your email confirmation? Enter the code <Button size="small" @click="emailConfirmModal.isOpen = true">here</Button>!
+      Got your email confirmation? Enter the code
+      <Button size="small" @click="emailConfirmModal.isOpen = true">here</Button>
+      !
     </Alert>
     <Alert v-else-if="!settings?.emailConfirmed">
-      You haven't verified your email yet, click <Button size="small" @click="emailConfirmModal.isOpen = true">here</Button> to change that!
+      You haven't verified your email yet, click
+      <Button size="small" @click="emailConfirmModal.isOpen = true">here</Button>
+      to change that!
     </Alert>
 
     <Modal ref="emailConfirmModal" title="Confirm email" @close="emailConfirmModal.isOpen = false">
@@ -156,8 +161,9 @@ useHead(useSeo("Settings", null, route, null));
       <template #header>account</template>
       <form>
         <InputText label="username" />
-        <InputText label="email" /> (status: {{ settings?.emailConfirmed ? "confirmed" : "unconfirmed!" }})
-        <Button v-if="!settings?.emailConfirmed" size="small" @click.prevent="emailConfirmModal.isOpen = true"> Confirm </Button>
+        <InputText label="email" />
+        (status: {{ settings?.emailConfirmed ? "confirmed" : "unconfirmed!" }})
+        <Button v-if="!settings?.emailConfirmed" size="small" @click.prevent="emailConfirmModal.isOpen = true"> Confirm</Button>
         <!-- todo port password -->
         <InputText type="password" label="current-password" name="current-password" autofill="current-password" />
         <InputText type="password" label="new-password (optional)" name="new-password" autofill="new-password" />
@@ -191,7 +197,13 @@ useHead(useSeo("Settings", null, route, null));
     <Card>
       <template #header>webauthn</template>
       <div>authenticators</div>
-      <InputText label="Name" />
+      <ul>
+        <li v-for="authenticator in settings?.authenticators" :key="authenticator.id">
+          {{ authenticator.displayName }} (added at {{ authenticator.addedAt }})
+          <Button size="small" @click.prevent="unregisterAuthenticator(authenticator)">Unregister</Button>
+        </li>
+      </ul>
+      <InputText v-model="authenticatorName" label="Name" />
       <Button @click="addAuthenticator">Add authenticator</Button>
     </Card>
 

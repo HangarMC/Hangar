@@ -1,27 +1,21 @@
 package io.papermc.hangar.security.configs;
 
-import com.webauthn4j.springframework.security.WebAuthnProcessingFilter;
 import dev.samstevens.totp.spring.autoconfigure.TotpAutoConfiguration;
-import io.papermc.hangar.security.authentication.HangarAuthenticationFilter;
-import io.papermc.hangar.components.auth.config.WebAuthnConfig;
 import io.papermc.hangar.components.auth.service.TokenService;
-import java.util.List;
+import io.papermc.hangar.security.authentication.HangarAuthenticationFilter;
+import io.papermc.hangar.security.authentication.HangarAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
@@ -47,18 +41,18 @@ public class SecurityConfig {
 
     private final TokenService tokenService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
-    private final WebAuthnConfig webAuthnConfig;
+    private final HangarAuthenticationProvider authenticationProvider;
 
     @Autowired
-    public SecurityConfig(final TokenService tokenService, final AuthenticationEntryPoint authenticationEntryPoint, final WebAuthnConfig webAuthnConfig) {
+    public SecurityConfig(final TokenService tokenService, final AuthenticationEntryPoint authenticationEntryPoint, final HangarAuthenticationProvider authenticationProvider) {
         this.tokenService = tokenService;
         this.authenticationEntryPoint = authenticationEntryPoint;
-        this.webAuthnConfig = webAuthnConfig;
+        this.authenticationProvider = authenticationProvider;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http, final AuthenticationManager authenticationManagerBean) throws Exception {
-        this.webAuthnConfig.configure(http, authenticationManagerBean);
+        //this.webAuthnConfig.configure(http, authenticationManagerBean);
 
         http
             // Disable default configurations
@@ -81,7 +75,7 @@ public class SecurityConfig {
                     this.tokenService,
                     authenticationManagerBean,
                     this.authenticationEntryPoint),
-                WebAuthnProcessingFilter.class
+                AnonymousAuthenticationFilter.class
             )
 
             // Permit all (use method security for controller access)
@@ -91,21 +85,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider(final UserDetailsService userDetailsService) {
-        final DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        daoAuthenticationProvider.setPasswordEncoder(this.passwordEncoder());
-        return daoAuthenticationProvider;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManagerBean(final List<AuthenticationProvider> providers) {
-        return new ProviderManager(providers);
+    public AuthenticationManager authenticationManagerBean() {
+        return new ProviderManager(this.authenticationProvider);
     }
 
     @Bean

@@ -44,8 +44,8 @@
         <jgroups.version>5.2.13.Final</jgroups.version>
         <jgroups-kube.version>2.0.1.Final</jgroups-kube.version>
         <totp.version>1.7.2-SNAPSHOT</totp.version>
-        <webauthn4j.version>0.9.0.RELEASE</webauthn4j.version>
         <webp.version>0.1.6</webp.version>
+        <webauthn.version>2.4.0</webauthn.version>
 
         <!-- test -->
         <pg.version>1.17.6</pg.version>
@@ -295,9 +295,9 @@
             <version>${totp.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.webauthn4j</groupId>
-            <artifactId>webauthn4j-spring-security-core</artifactId>
-            <version>${webauthn4j.version}</version>
+            <groupId>com.yubico</groupId>
+            <artifactId>webauthn-server-core</artifactId>
+            <version>${webauthn.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>

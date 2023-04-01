@@ -7,6 +7,7 @@ export const useAuthStore = defineStore("auth", () => {
   const token = ref<string | null>(null);
   const authenticated = ref<boolean>(false);
   const user = ref<HangarUser | null>(null);
+  const aal = ref(-1);
   const routePermissions = ref<string | null>(null);
   const routePermissionsUser = ref<string | null>(null);
   const routePermissionsProject = ref<string | null>(null);
@@ -20,5 +21,5 @@ export const useAuthStore = defineStore("auth", () => {
     routePermissionsProject.value = routePermsProject;
   }
 
-  return { token, authenticated, user, routePermissions, invalidated, setRoutePerms, routePermissionsUser, routePermissionsProject };
+  return { token, authenticated, user, routePermissions, invalidated, setRoutePerms, routePermissionsUser, routePermissionsProject, aal };
 });

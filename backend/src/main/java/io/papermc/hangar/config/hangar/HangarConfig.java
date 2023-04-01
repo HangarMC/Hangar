@@ -23,6 +23,7 @@ public class HangarConfig {
     private String urlRegex = "^(https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})";
     private List<String> licenses = new ArrayList<>();
     private boolean allowIndexing = true;
+    private boolean disableJGroups = false;
 
     @NestedConfigurationProperty
     public UpdateTasksConfig updateTasks;
@@ -181,5 +182,13 @@ public class HangarConfig {
 
     public void setAllowIndexing(final boolean allowIndexing) {
         this.allowIndexing = allowIndexing;
+    }
+
+    public boolean isDisableJGroups() {
+        return this.disableJGroups;
+    }
+
+    public void setDisableJGroups(final boolean disableJGroups) {
+        this.disableJGroups = disableJGroups;
     }
 }
