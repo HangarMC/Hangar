@@ -115,6 +115,20 @@ public class WebAuthNService implements CredentialRepository {
         return webAuthNCredential.pendingLogin();
     }
 
+    public void updateCredential(final long userId, final String credentialId, final long signatureCount) {
+        final WebAuthNCredential webAuthNCredential = this.getWebAuthNCredential(userId);
+        final var any = webAuthNCredential.credentials().stream().filter(c -> c.id().equals(credentialId)).findAny();
+        if (any.isPresent()) {
+            final WebAuthNCredential.WebAuthNDevice oldDevice = any.get();
+            final WebAuthNCredential.Authenticator patchedAuthenticator = new WebAuthNCredential.Authenticator(oldDevice.authenticator().aaguid(), signatureCount, oldDevice.authenticator().cloneWarning());
+            final WebAuthNCredential.WebAuthNDevice patchedDevice = new WebAuthNCredential.WebAuthNDevice(oldDevice.id(), oldDevice.addedAt(), oldDevice.publicKey(), oldDevice.displayName(), patchedAuthenticator, oldDevice.isPasswordLess(), oldDevice.attestationType());
+            webAuthNCredential.credentials().remove(oldDevice);
+            webAuthNCredential.credentials().add(patchedDevice);
+            this.credentialsService.updateCredential(userId, webAuthNCredential);
+        }
+
+    }
+
     private WebAuthNCredential getWebAuthNCredential(final long userId) {
         final UserCredentialTable credential = this.credentialsService.getCredential(userId, CredentialType.WEBAUTHN);
         if (credential == null) {

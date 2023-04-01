@@ -79,6 +79,8 @@ public class LoginController extends HangarComponent {
                 .response(pkc)
                 .build());
 
+            this.webAuthNService.updateCredential(userTable.getUserId(), result.getCredential().getCredentialId().getBase64(), result.getSignatureCount());
+
             if (result.isSuccess()) {
                 return this.setAalAndLogin(userTable, 2);
             }
