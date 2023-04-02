@@ -56,6 +56,14 @@ public final class CryptoUtils {
         }
     }
 
+    public static String sha1ToHex(final byte[] bytes) {
+        try {
+            return bytesToHex(MessageDigest.getInstance("SHA-1").digest(bytes));
+        } catch (final NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static @NotNull String md5ToHex(final byte[] bytes) {
         try {
             return bytesToHex(MessageDigest.getInstance("MD5").digest(bytes));

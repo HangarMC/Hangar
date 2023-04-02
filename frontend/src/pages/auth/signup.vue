@@ -22,14 +22,20 @@ const form = reactive<SignupForm>({});
 const repeatedPassword = ref<string>();
 const loading = ref(false);
 
+const errorMessage = ref<string | undefined>();
+
 async function submit() {
   loading.value = true;
+  errorMessage.value = undefined;
   try {
     // TODO validation
     await useInternalApi("auth/signup", "POST", form);
     // TODO error handling
     await router.push("/auth/settings");
   } catch (e) {
+    if (e.response?.data?.message) {
+      errorMessage.value = e.response.data.message;
+    }
     console.log("error", e);
   }
   loading.value = false;
@@ -54,7 +60,7 @@ useHead(useSeo("Signup", null, route, null));
       <InputPassword v-model="form.password" label="Password" name="new-password" />
       <!-- todo check password matching -->
       <InputPassword v-model="repeatedPassword" label="Password (repeated)" name="repeated-password" />
-
+      <div v-if="errorMessage" class="c-red">{{ errorMessage }}</div>
       <Button type="submit" :disabled="loading" @click.prevent="submit">Sign up</Button>
       <Button type="button" button-type="secondary" @click="login">Login</Button>
     </form>

@@ -37,14 +37,16 @@ public class AuthService extends HangarComponent implements UserDetailsService {
     private final ValidationService validationService;
     private final VerificationService verificationService;
     private final CredentialsService credentialsService;
+    private final HibpService hibpService;
 
-    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService) {
+    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService, final HibpService hibpService) {
         this.userDAO = userDAO;
         this.userCredentialDAO = userCredentialDAO;
         this.passwordEncoder = passwordEncoder;
         this.validationService = validationService;
         this.verificationService = verificationService;
         this.credentialsService = credentialsService;
+        this.hibpService = hibpService;
     }
 
     @Transactional
@@ -64,7 +66,13 @@ public class AuthService extends HangarComponent implements UserDetailsService {
     }
 
     public boolean validPassword(final String password) {
-        return true; // TODO validate password against pw rules and hibp and shit
+        // TODO validate password against pw rules
+
+        final int breachAmount = this.hibpService.getBreachAmount(password);
+        if (breachAmount > 0) {
+            throw new HangarApiException("ur password sucks and was leaked " + breachAmount + " times, use something better!");
+        }
+        return true;
     }
 
     @Override
