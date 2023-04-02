@@ -7,6 +7,7 @@ import Card from "~/lib/components/design/Card.vue";
 import InputText from "~/lib/components/ui/InputText.vue";
 import Button from "~/lib/components/design/Button.vue";
 import { useInternalApi } from "~/composables/useApi";
+import InputPassword from "~/lib/components/ui/InputPassword.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -50,10 +51,9 @@ useHead(useSeo("Signup", null, route, null));
     <form>
       <InputText v-model="form.username" label="Username" name="username" autocomplete="username" />
       <InputText v-model="form.email" type="email" label="E-Mail" name="email" autocomplete="email" />
-      <!-- todo port password input -->
-      <InputText v-model="form.password" type="password" label="Password" name="new-password" />
+      <InputPassword v-model="form.password" label="Password" name="new-password" />
       <!-- todo check password matching -->
-      <InputText v-model="repeatedPassword" type="password" label="Password (repeated)" name="repeated-password" />
+      <InputPassword v-model="repeatedPassword" label="Password (repeated)" name="repeated-password" />
 
       <Button type="submit" :disabled="loading" @click.prevent="submit">Sign up</Button>
       <Button type="button" button-type="secondary" @click="login">Login</Button>

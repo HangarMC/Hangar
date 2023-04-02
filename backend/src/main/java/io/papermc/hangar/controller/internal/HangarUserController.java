@@ -220,7 +220,6 @@ public class HangarUserController extends HangarComponent {
         final Cookie cookie = new Cookie("HANGAR_theme", settings.getTheme());
         cookie.setPath("/");
         cookie.setMaxAge((int) (60 * 60 * 24 * 356.24 * 1000));
-        // TODO make sure this cookie is cross hangar and auth
         response.addCookie(cookie);
     }
 

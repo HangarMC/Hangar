@@ -15,6 +15,7 @@ import AvatarChangeModal from "~/lib/components/modals/AvatarChangeModal.vue";
 import { definePageMeta } from "#imports";
 import Alert from "~/lib/components/design/Alert.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
+import InputPassword from "~/lib/components/ui/InputPassword.vue";
 
 definePageMeta({
   loginRequired: true,
@@ -164,9 +165,8 @@ useHead(useSeo("Settings", null, route, null));
         <InputText label="email" />
         (status: {{ settings?.emailConfirmed ? "confirmed" : "unconfirmed!" }})
         <Button v-if="!settings?.emailConfirmed" size="small" @click.prevent="emailConfirmModal.isOpen = true"> Confirm</Button>
-        <!-- todo port password -->
-        <InputText type="password" label="current-password" name="current-password" autofill="current-password" />
-        <InputText type="password" label="new-password (optional)" name="new-password" autofill="new-password" />
+        <InputPassword label="current-password" name="current-password" autofill="current-password" />
+        <InputPassword label="new-password (optional)" name="new-password" autofill="new-password" />
         <Button type="submit" @click.prevent="saveAccount">Save</Button>
       </form>
     </Card>

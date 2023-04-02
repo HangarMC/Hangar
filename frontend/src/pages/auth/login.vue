@@ -9,6 +9,7 @@ import Button from "~/lib/components/design/Button.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
+import InputPassword from "~/lib/components/ui/InputPassword.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -81,8 +82,7 @@ useHead(useSeo("Login", null, route, null));
   <div>
     <div v-if="supportedMethods.length === 0">
       <InputText v-model="username" label="Username" name="useranme" />
-      <!-- todo copy InputPassword from auth -->
-      <InputText v-model="password" label="Password" name="password" type="password" autocomplete="current-password" />
+      <InputPassword v-model="password" label="Password" name="password" autocomplete="current-password" />
       <Button @click.prevent="loginPassword">Login</Button>
       <Button to="/auth/signup">Signup</Button>
       <Button to="/auth/reset">Forgot</Button>

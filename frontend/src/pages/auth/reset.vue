@@ -9,6 +9,7 @@ import InputText from "~/lib/components/ui/InputText.vue";
 import Button from "~/lib/components/design/Button.vue";
 import { email as emailRule, required } from "~/lib/composables/useValidationHelpers";
 import { useInternalApi } from "~/composables/useApi";
+import InputPassword from "~/lib/components/ui/InputPassword.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -68,8 +69,7 @@ useHead(useSeo("Reset your password", null, route, null));
     <form v-else-if="!passwordUpdated">
       <p>Enter your new password</p>
       <input id="email" v-model="email" type="hidden" name="email" />
-      <!-- todo password -->
-      <InputText v-model="password" type="password" label="new password" name="new-password" autocomplete="new-password" />
+      <InputPassword v-model="password" label="new password" name="new-password" autocomplete="new-password" />
       <Button @click.prevent="sendNewPassword">Update password</Button>
     </form>
     <template v-else>
