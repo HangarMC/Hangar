@@ -16,6 +16,7 @@ import { definePageMeta } from "#imports";
 import Alert from "~/lib/components/design/Alert.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import InputPassword from "~/lib/components/ui/InputPassword.vue";
+import { useNotificationStore } from "~/lib/store/notification";
 
 definePageMeta({
   loginRequired: true,
@@ -31,17 +32,24 @@ const emailConfirmModal = ref();
 const emailCodeHasBeenSend = ref(settings.value?.emailPending);
 const emailCode = ref();
 
+if (process.client && route.query.verify) {
+  // no await, we dont need to block
+  verifyEmail(route.query.verify as string);
+}
+
 async function sendEmailCode() {
   await useInternalApi("auth/email/send", "POST");
   emailCodeHasBeenSend.value = true;
 }
 
-async function verifyEmail() {
+async function verifyEmail(emailCode: string) {
   if (!settings.value) return;
-  await useInternalApi("auth/email/verify", "POST", emailCode.value, { headers: { "content-type": "text/plain" } });
+  await useInternalApi("auth/email/verify", "POST", emailCode, { headers: { "content-type": "text/plain" } });
   settings.value!.emailConfirmed = true;
   settings.value!.emailPending = false;
   emailConfirmModal.value.isOpen = false;
+  await useNotificationStore().success("Email verified!");
+  await router.replace({ query: { verify: undefined } });
 }
 
 const authenticatorName = ref<string>();
@@ -154,7 +162,7 @@ useHead(useSeo("Settings", null, route, null));
       <template v-else>
         <p>Enter the code you received via email here</p>
         <InputText v-model="emailCode" label="Code" />
-        <Button @click="verifyEmail">Verify Code</Button>
+        <Button @click="verifyEmail(emailCode)">Verify Code</Button>
       </template>
     </Modal>
 

@@ -1,5 +1,6 @@
 package io.papermc.hangar.components.auth.service;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.dao.VerificationCodeDao;
 import io.papermc.hangar.components.auth.model.db.VerificationCodeTable;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
@@ -12,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class VerificationService {
+public class VerificationService extends HangarComponent {
 
     private final SecureRandom secureRandom = new SecureRandom();
     private final UserDAO userDAO;
@@ -67,7 +68,7 @@ public class VerificationService {
 
         this.mailService.queueEmail("Hangar Password Reset", userTable.getEmail(), """
             Hi %s,
-            you dum dum did forget your password, enter %s to reset.
+            you dum dum did forget your password, enter %s to reset. <br>
             if you did not request this email, ignore it.
             """.formatted(userTable.getName(), code));
     }
@@ -78,10 +79,13 @@ public class VerificationService {
         final String code = String.format("%06d", this.secureRandom.nextInt(999999));
         this.verificationCodeDao.insert(new VerificationCodeTable(userId, VerificationCodeTable.VerificationCodeType.EMAIL_VERIFICATION, code));
 
+        final String link = this.config.getBaseUrl() + "/auth/settings?verify=" + code;
+
         this.mailService.queueEmail("Hangar email verification", email, """
             Hi %s,
-            here is ya email verification code: %s
-            """.formatted(name, code));
+            here is ya email verification code: %s <br>
+            heres a link you prolly shouldn't link: <a href="%s">%s</a>
+            """.formatted(name, code, link, link));
     }
 
     public boolean verifyEmailCode(final long id, final String code) {
