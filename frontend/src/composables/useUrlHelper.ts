@@ -1,9 +1,4 @@
-import { useConfig } from "~/lib/composables/useConfig";
 import { useBackendData } from "~/store/backendData";
-
-export function authUrl(user: string) {
-  return useConfig().authHost + "/" + user;
-}
 
 export function forumUrl(topicId: number) {
   return `https://forums.papermc.io/threads/` + topicId;

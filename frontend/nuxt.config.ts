@@ -9,7 +9,6 @@ import prettier from "./src/lib/plugins/prettier";
 import unocss from "./src/lib/config/unocss.config";
 
 const backendHost = process.env.BACKEND_HOST || "http://localhost:8080";
-const authHost = process.env.AUTH_HOST || "http://localhost:3001";
 const local = true; // set to false if backendData should be fetched from staging. You might need to hard reload (Ctrl+F5) the next page you're on when changing this value
 const backendDataHost = process.env.BACKEND_DATA_HOST || (local ? "http://localhost:8080" : "https://hangar.papermc.dev");
 const allowIndexing = process.env.HANGAR_ALLOW_INDEXING || "true";
@@ -21,7 +20,6 @@ export default defineNuxtConfig({
   },
   srcDir: "src",
   runtimeConfig: {
-    authHost,
     backendHost,
     public: {
       allowIndexing,
@@ -116,9 +114,6 @@ export default defineNuxtConfig({
       "/global-sitemap.xml": defineProxyBackend(),
       "^/.*/sitemap.xml": defineProxyBackend(),
       "/statusz": defineProxyBackend(),
-      // auth
-      "/avatar": defineProxyAuth(),
-      "/oauth/logout": defineProxyAuth(),
     },
   },
   // cache statics for a year
@@ -133,14 +128,6 @@ export default defineNuxtConfig({
   },
 });
 
-function defineProxyAuth(): ProxyOptions {
-  return {
-    configure: (proxy, options) => {
-      options.target = process.env.AUTH_HOST || process.env.NITRO_AUTH_HOST || "http://localhost:3001";
-    },
-    changeOrigin: true,
-  };
-}
 function defineProxyBackend(): ProxyOptions {
   return {
     configure: (proxy, options) => {

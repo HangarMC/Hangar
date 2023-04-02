@@ -91,7 +91,7 @@ useHead(useSeo("Login", null, route, null));
     <div v-if="supportedMethods.length > 0">
       <Button v-if="supportedMethods.includes('WEBAUTHN')" @click.prevent="loginWebAuthN">Use WebAuthN</Button>
       <template v-if="supportedMethods.includes('TOTP')">
-        <InputText v-model="totpCode" label="Totp code" />
+        <InputText v-model="totpCode" label="Totp code" inputmode="numeric" />
         <Button @click.prevent="loginTotp">Use totp</Button>
       </template>
       <template v-if="supportedMethods.includes('BACKUP_CODES')">

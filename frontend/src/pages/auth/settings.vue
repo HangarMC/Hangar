@@ -189,7 +189,7 @@ useHead(useSeo("Settings", null, route, null));
       <template v-else>
         <img :src="totpData.qrCode" alt="totp qr code" />
         <small>{{ totpData.secret }}</small>
-        <InputText v-model="totpCode" label="Code" />
+        <InputText v-model="totpCode" label="Code" inputmode="numeric" />
         <Button @click="addTotp">Verify code and activate</Button>
       </template>
     </Card>
@@ -197,8 +197,8 @@ useHead(useSeo("Settings", null, route, null));
     <Card>
       <template #header>webauthn</template>
       <div>authenticators</div>
-      <ul>
-        <li v-for="authenticator in settings?.authenticators" :key="authenticator.id">
+      <ul v-if="settings?.authenticators">
+        <li v-for="authenticator in settings.authenticators" :key="authenticator.id">
           {{ authenticator.displayName }} (added at {{ authenticator.addedAt }})
           <Button size="small" @click.prevent="unregisterAuthenticator(authenticator)">Unregister</Button>
         </li>

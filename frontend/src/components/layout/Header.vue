@@ -87,7 +87,6 @@ const navBarMenuLinksTools = [
 ];
 
 const auth = useAuth;
-const authHost = useConfig().authHost;
 authLog("render with user " + authStore.user?.name);
 
 const navBarMenuLinksMoreFromPaper = [

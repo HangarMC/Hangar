@@ -4,7 +4,6 @@ services:
   postgres:
     build: ./postgres
     environment:
-      POSTGRES_MULTIPLE_DATABASES: hydra,kratos
       POSTGRES_DB: hangar
       POSTGRES_USER: hangar
       POSTGRES_PASSWORD: 'hangar'
