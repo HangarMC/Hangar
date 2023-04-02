@@ -57,7 +57,10 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         if (!this.validPassword(form.password())) {
             throw new HangarApiException("dum");
         }
-        // TODO check if user exists and shit
+        if (this.userDAO.getUserTable(form.username()) != null) {
+            throw new HangarApiException("nav.user.error.invalidUsername");
+        }
+
         final UserTable userTable = this.userDAO.create(UUID.randomUUID(), form.username(), form.email(), null, "en", List.of(), false, "light", false, new JSONB(Map.of()));
         this.credentialsService.registerCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(form.password())));
         this.verificationService.sendVerificationCode(userTable.getUserId(), userTable.getEmail(), userTable.getName());
