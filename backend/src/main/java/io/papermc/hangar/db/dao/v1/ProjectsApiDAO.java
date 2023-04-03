@@ -47,9 +47,6 @@ public interface ProjectsApiDAO {
         "       p.license_url," +
         "       p.license_type," +
         "       p.keywords," +
-        "       p.forum_sync," +
-        "       p.topic_id," +
-        "       p.post_id," +
         "       p.donation_enabled," +
         "       p.donation_subject," +
         "       p.sponsors" +
@@ -90,9 +87,6 @@ public interface ProjectsApiDAO {
             p.license_type,
             p.license_url,
             p.keywords,
-            p.forum_sync,
-            p.topic_id,
-            p.post_id,
             p.donation_enabled,
             p.donation_subject,
             p.sponsors

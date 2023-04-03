@@ -70,8 +70,7 @@ public class VersionUpload {
             files,
             this.channel,
             null,
-            null,
-            false
+            null
         );
     }
 

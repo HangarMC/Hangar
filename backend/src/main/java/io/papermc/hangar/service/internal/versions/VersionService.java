@@ -199,11 +199,6 @@ public class VersionService extends HangarComponent {
         this.actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Version Restored", Visibility.SOFTDELETE.getTitle()));
     }
 
-    public void saveDiscourseData(final ProjectVersionTable version, final long postId) {
-        version.setPostId(postId);
-        this.projectVersionsDAO.update(version);
-    }
-
     public void trackDownload(final long versionId, final Platform platform) {
         final ProjectVersionTable pvt = this.projectVersionsDAO.getProjectVersionTable(versionId);
         if (pvt == null) {

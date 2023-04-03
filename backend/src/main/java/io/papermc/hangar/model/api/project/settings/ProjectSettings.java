@@ -23,29 +23,26 @@ public class ProjectSettings {
 
     // @el(root: Collection<String>)
     private final @NotNull @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywords)", message = "project.new.error.tooManyKeywords") Collection<String> keywords;
-    private final boolean forumSync;
 
     // @el(root: String)
     private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxSponsorsLen)", message = "project.new.error.tooLongSponsors") String sponsors;
 
     @JdbiConstructor
-    public ProjectSettings(final JSONB links, final List<String> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final boolean forumSync, final String sponsors) {
+    public ProjectSettings(final JSONB links, final List<String> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final String sponsors) {
         this.links = links.get(new TypeReference<>() {
         });
         this.tags = tags;
         this.license = license;
         this.keywords = keywords;
-        this.forumSync = forumSync;
         this.sponsors = sponsors;
     }
 
     @JsonCreator
-    public ProjectSettings(@Nested("links") final List<LinkSection> links, final Collection<String> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final boolean forumSync, final String sponsors) {
+    public ProjectSettings(@Nested("links") final List<LinkSection> links, final Collection<String> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final String sponsors) {
         this.links = links;
         this.tags = tags;
         this.license = license;
         this.keywords = keywords;
-        this.forumSync = forumSync;
         this.sponsors = sponsors;
     }
 
@@ -70,10 +67,6 @@ public class ProjectSettings {
         return this.keywords;
     }
 
-    public boolean isForumSync() {
-        return this.forumSync;
-    }
-
     public String getSponsors() {
         return this.sponsors;
     }
@@ -85,7 +78,6 @@ public class ProjectSettings {
             ", tags=" + this.tags +
             ", license=" + this.license +
             ", keywords=" + this.keywords +
-            ", forumSync=" + this.forumSync +
             ", sponsors='" + this.sponsors + '\'' +
             '}';
     }

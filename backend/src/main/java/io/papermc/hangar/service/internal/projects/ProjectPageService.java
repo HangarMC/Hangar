@@ -7,13 +7,11 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.projects.ProjectHomePageTable;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectPage;
-import io.papermc.hangar.model.internal.job.UpdateDiscourseProjectTopicJob;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.PageContext;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.service.ValidationService;
-import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.util.StringUtils;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,13 +26,11 @@ public class ProjectPageService extends HangarComponent {
 
     private final ProjectPagesDAO projectPagesDAO;
     private final HangarProjectPagesDAO hangarProjectPagesDAO;
-    private final JobService jobService;
     private final ValidationService validationService;
 
-    public ProjectPageService(final ProjectPagesDAO projectPagesDAO, final HangarProjectPagesDAO hangarProjectPagesDAO, final JobService jobService, final ValidationService validationService) {
+    public ProjectPageService(final ProjectPagesDAO projectPagesDAO, final HangarProjectPagesDAO hangarProjectPagesDAO, final ValidationService validationService) {
         this.projectPagesDAO = projectPagesDAO;
         this.hangarProjectPagesDAO = hangarProjectPagesDAO;
-        this.jobService = jobService;
         this.validationService = validationService;
     }
 
@@ -74,7 +70,6 @@ public class ProjectPageService extends HangarComponent {
         projectPageTable = this.projectPagesDAO.insert(projectPageTable);
         if (isHome) {
             this.projectPagesDAO.insertHomePage(new ProjectHomePageTable(projectPageTable.getProjectId(), projectPageTable.getId()));
-            this.jobService.save(new UpdateDiscourseProjectTopicJob(projectId));
         }
         this.actionLogger.projectPage(LogAction.PROJECT_PAGE_CREATED.create(PageContext.of(projectPageTable.getProjectId(), projectPageTable.getId()), contents, ""));
         return projectPageTable;

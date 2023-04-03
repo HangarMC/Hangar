@@ -36,10 +36,9 @@ public class PendingVersion {
     private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName") String channelName;
     private final Color channelColor;
     private final Set<ChannelFlag> channelFlags;
-    private final boolean forumSync;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PendingVersion(final String versionString, final Map<Platform, Set<PluginDependency>> pluginDependencies, final EnumMap<Platform, SortedSet<String>> platformDependencies, final String description, final List<PendingVersionFile> files, final String channelName, final @Nullable Color channelColor, final Set<ChannelFlag> channelFlags, final boolean forumSync) {
+    public PendingVersion(final String versionString, final Map<Platform, Set<PluginDependency>> pluginDependencies, final EnumMap<Platform, SortedSet<String>> platformDependencies, final String description, final List<PendingVersionFile> files, final String channelName, final @Nullable Color channelColor, final Set<ChannelFlag> channelFlags) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
@@ -48,15 +47,13 @@ public class PendingVersion {
         this.channelName = channelName;
         this.channelColor = channelColor;
         this.channelFlags = channelFlags;
-        this.forumSync = forumSync;
     }
 
-    public PendingVersion(final @Nullable String versionString, final Map<Platform, Set<PluginDependency>> pluginDependencies, final Map<Platform, SortedSet<String>> platformDependencies, final List<PendingVersionFile> files, final boolean forumSync) {
+    public PendingVersion(final @Nullable String versionString, final Map<Platform, Set<PluginDependency>> pluginDependencies, final Map<Platform, SortedSet<String>> platformDependencies, final List<PendingVersionFile> files) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
         this.description = null;
-        this.forumSync = forumSync;
         this.files = files;
         // Keep data from frontend
         this.channelName = "";
@@ -96,10 +93,6 @@ public class PendingVersion {
         return this.channelFlags;
     }
 
-    public boolean isForumSync() {
-        return this.forumSync;
-    }
-
     @Override
     public String toString() {
         return "PendingVersion{" +
@@ -111,7 +104,6 @@ public class PendingVersion {
             ", channelName='" + this.channelName + '\'' +
             ", channelColor=" + this.channelColor +
             ", channelFlags=" + this.channelFlags +
-            ", forumSync=" + this.forumSync +
             '}';
     }
 }

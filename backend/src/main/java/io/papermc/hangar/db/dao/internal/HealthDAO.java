@@ -16,8 +16,6 @@ public interface HealthDAO {
 
     @SqlQuery(" SELECT p.owner_name \"owner\"," +
         "          p.slug," +
-        "          p.topic_id," +
-        "          p.post_id," +
         "          coalesce(hp.last_updated, p.created_at) AS last_updated," +
         "          p.visibility" +
         "   FROM projects p " +
@@ -28,8 +26,6 @@ public interface HealthDAO {
 
     @SqlQuery(" SELECT p.owner_name \"owner\"," +
         "          p.slug," +
-        "          p.topic_id," +
-        "          p.post_id," +
         "          coalesce(hp.last_updated, p.created_at) AS last_updated," +
         "          p.visibility" +
         "   FROM projects p " +

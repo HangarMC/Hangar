@@ -52,7 +52,7 @@ public class VersionsApiService extends HangarComponent {
     public UploadedVersion uploadVersion(final String author, final String slug, final List<MultipartFile> files, final VersionUpload versionUpload) {
         final Project project = this.projectsApiService.getProject(author, slug);
         if (project == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Project not found");
         }
 
         this.matchVersionRanges(versionUpload.getPlatformDependencies());
@@ -66,10 +66,11 @@ public class VersionsApiService extends HangarComponent {
 
     private void matchVersionRanges(final Map<Platform, SortedSet<String>> versions) {
         for (final Map.Entry<Platform, SortedSet<String>> entry : versions.entrySet()) {
-            final List<String> fullPlatformVersions = this.platformService.getFullVersionsForPlatform(entry.getKey());
+            final Platform platform = entry.getKey();
+            final List<String> fullPlatformVersions = this.platformService.getFullVersionsForPlatform(platform);
             final SortedSet<String> selectedVersions = entry.getValue();
             if (selectedVersions.size() > fullPlatformVersions.size()) {
-                throw new HangarApiException(HttpStatus.BAD_REQUEST, "Too many versions");
+                throw new HangarApiException("Too many versions selected for platform " + platform.getName());
             }
 
             final Map<String, Integer> platformVersionIndexes = new HashMap<>();

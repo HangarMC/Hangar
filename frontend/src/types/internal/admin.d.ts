@@ -63,8 +63,6 @@ declare module "hangar-internal" {
 
   interface UnhealthyProject {
     namespace: ProjectNamespace;
-    topicId: number | null;
-    postId: number | null;
     lastUpdated: string;
     visibility: Visibility;
   }

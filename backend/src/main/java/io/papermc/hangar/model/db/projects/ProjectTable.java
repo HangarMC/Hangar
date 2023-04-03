@@ -21,8 +21,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
     private String slug;
     private String ownerName;
     private long ownerId;
-    private Long topicId;
-    private Long postId;
     private Category category;
     private String description;
     private Visibility visibility;
@@ -32,7 +30,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
     private String licenseType;
     private String licenseName;
     private String licenseUrl;
-    private boolean forumSync;
     private boolean donationEnabled;
     private String donationSubject;
     private String sponsors;
@@ -42,8 +39,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.slug = StringUtils.slugify(this.name);
         this.ownerName = projectOwner.getName();
         this.ownerId = projectOwner.getUserId();
-        this.topicId = null;
-        this.postId = null;
         this.category = form.getCategory();
         this.description = form.getDescription();
         this.visibility = Visibility.NEW;
@@ -63,8 +58,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.slug = other.slug;
         this.ownerName = other.ownerName;
         this.ownerId = other.ownerId;
-        this.topicId = other.topicId;
-        this.postId = other.postId;
         this.category = other.category;
         this.description = other.description;
         this.visibility = other.visibility;
@@ -74,24 +67,21 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.licenseType = other.licenseType;
         this.licenseName = other.licenseName;
         this.licenseUrl = other.licenseUrl;
-        this.forumSync = other.forumSync;
         this.donationEnabled = other.donationEnabled;
         this.donationSubject = other.donationSubject;
         this.sponsors = other.sponsors;
     }
 
     @JdbiConstructor
-    public ProjectTable(final OffsetDateTime createdAt, final long id, final String name, final String slug, final String ownerName, final long ownerId, final Long topicId,
-                        final Long postId, @EnumByOrdinal final Category category, final String description, @EnumByOrdinal final Visibility visibility, final Collection<String> tags,
+    public ProjectTable(final OffsetDateTime createdAt, final long id, final String name, final String slug, final String ownerName, final long ownerId,
+                        @EnumByOrdinal final Category category, final String description, @EnumByOrdinal final Visibility visibility, final Collection<String> tags,
                         final Collection<String> keywords, final JSONB links, final String licenseType, final String licenseName, final String licenseUrl,
-                        final boolean forumSync, final boolean donationEnabled, final String donationSubject, final String sponsors) {
+                        final boolean donationEnabled, final String donationSubject, final String sponsors) {
         super(createdAt, id);
         this.name = name;
         this.slug = slug;
         this.ownerName = ownerName;
         this.ownerId = ownerId;
-        this.topicId = topicId;
-        this.postId = postId;
         this.category = category;
         this.description = description;
         this.visibility = visibility;
@@ -101,7 +91,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.licenseType = licenseType;
         this.licenseName = licenseName;
         this.licenseUrl = licenseUrl;
-        this.forumSync = forumSync;
         this.donationEnabled = donationEnabled;
         this.donationSubject = donationSubject;
         this.sponsors = sponsors;
@@ -141,22 +130,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
 
     public void setOwnerId(final long ownerId) {
         this.ownerId = ownerId;
-    }
-
-    public Long getTopicId() {
-        return this.topicId;
-    }
-
-    public void setTopicId(final Long topicId) {
-        this.topicId = topicId;
-    }
-
-    public Long getPostId() {
-        return this.postId;
-    }
-
-    public void setPostId(final Long postId) {
-        this.postId = postId;
     }
 
     @EnumByOrdinal
@@ -235,14 +208,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.licenseUrl = licenseUrl;
     }
 
-    public boolean isForumSync() {
-        return this.forumSync;
-    }
-
-    public void setForumSync(final boolean forumSync) {
-        this.forumSync = forumSync;
-    }
-
     public boolean isDonationEnabled() {
         return this.donationEnabled;
     }
@@ -284,8 +249,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
             ", slug='" + this.slug + '\'' +
             ", ownerName='" + this.ownerName + '\'' +
             ", ownerId=" + this.ownerId +
-            ", topicId=" + this.topicId +
-            ", postId=" + this.postId +
             ", category=" + this.category +
             ", description='" + this.description + '\'' +
             ", visibility=" + this.visibility +
@@ -294,8 +257,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
             ", links='" + this.links + '\'' +
             ", licenseType='" + this.licenseType + '\'' +
             ", licenseName='" + this.licenseName + '\'' +
-            ", licenseUrl='" + this.licenseUrl + '\'' +
-            ", forumSync=" + this.forumSync +
             ", donationEnabled=" + this.donationEnabled +
             ", donationEmail='" + this.donationSubject + '\'' +
             ", sponsors='" + this.sponsors + '\'' +

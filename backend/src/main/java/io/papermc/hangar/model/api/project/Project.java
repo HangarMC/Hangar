@@ -14,17 +14,13 @@ public class Project extends ProjectCompact {
     private final String description;
     private final UserActions userActions;
     private final ProjectSettings settings;
-    private final Long topicId;
-    private final Long postId;
 
     @JdbiConstructor
-    public Project(final OffsetDateTime createdAt, final long id, final String name, @Nested final ProjectNamespace namespace, @Nested final ProjectStats stats, @EnumByOrdinal final Category category, final String description, final OffsetDateTime lastUpdated, @EnumByOrdinal final Visibility visibility, @Nested final UserActions userActions, @Nested final ProjectSettings settings, final Long topicId, final Long postId) {
+    public Project(final OffsetDateTime createdAt, final long id, final String name, @Nested final ProjectNamespace namespace, @Nested final ProjectStats stats, @EnumByOrdinal final Category category, final String description, final OffsetDateTime lastUpdated, @EnumByOrdinal final Visibility visibility, @Nested final UserActions userActions, @Nested final ProjectSettings settings) {
         super(createdAt, id, name, namespace, stats, category, lastUpdated, visibility);
         this.description = description;
         this.userActions = userActions;
         this.settings = settings;
-        this.topicId = topicId;
-        this.postId = postId;
     }
 
     public Project(final Project other) {
@@ -32,8 +28,6 @@ public class Project extends ProjectCompact {
         this.description = other.description;
         this.userActions = other.userActions;
         this.settings = other.settings;
-        this.topicId = other.topicId;
-        this.postId = other.postId;
     }
 
     public String getDescription() {
@@ -46,14 +40,6 @@ public class Project extends ProjectCompact {
 
     public ProjectSettings getSettings() {
         return this.settings;
-    }
-
-    public @Nullable Long getTopicId() {
-        return this.topicId;
-    }
-
-    public @Nullable Long getPostId() {
-        return this.postId;
     }
 
     @Override

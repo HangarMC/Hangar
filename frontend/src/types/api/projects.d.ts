@@ -41,7 +41,6 @@ declare module "hangar-api" {
     license: License;
     tags: Tag[];
     keywords: string[];
-    forumSync: boolean;
     sponsors: string | null;
     /*donation: {
       enable: false;
@@ -61,7 +60,5 @@ declare module "hangar-api" {
     description: string;
     userActions: UserActions;
     settings: ProjectSettings;
-    postId: number;
-    topicId: number;
   }
 }

@@ -18,8 +18,8 @@ public class Version extends VersionCompact {
     private final Map<Platform, Set<String>> platformDependencies = new EnumMap<>(Platform.class);
     private final Map<Platform, String> platformDependenciesFormatted = new EnumMap<>(Platform.class);
 
-    public Version(final OffsetDateTime createdAt, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final PinnedStatus pinnedStatus, final Long postId) {
-        super(createdAt, name, visibility, description, stats, author, reviewState, channel, pinnedStatus, postId);
+    public Version(final OffsetDateTime createdAt, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final PinnedStatus pinnedStatus) {
+        super(createdAt, name, visibility, description, stats, author, reviewState, channel, pinnedStatus);
     }
 
     public Map<Platform, Set<PluginDependency>> getPluginDependencies() {

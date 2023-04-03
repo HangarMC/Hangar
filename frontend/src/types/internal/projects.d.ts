@@ -102,7 +102,6 @@ declare module "hangar-internal" {
         oneTimeAmounts: Array<string>;
         monthlyAmounts: Array<string>;
       };
-      forumSync: false;
     };
     category: ProjectCategory;
     description: string;

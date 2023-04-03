@@ -106,7 +106,6 @@ public class FakeDataService extends HangarComponent {
             List.of(),
             licence,
             keyWords,
-            false,
             "# Sponsored by " + this.faker.beer().style() + " " + this.faker.beer().name());
         final String projectName = this.normalize(this.faker.funnyName().name() + "_" + this.faker.minecraft().animalName());
         final String quote = this.faker.theItCrowd().quotes();

@@ -9,14 +9,11 @@ import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
-import io.papermc.hangar.model.internal.job.DeleteDiscourseTopicJob;
-import io.papermc.hangar.model.internal.job.UpdateDiscourseProjectTopicJob;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.AvatarService;
-import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
@@ -40,14 +37,13 @@ public class ProjectFactory extends HangarComponent {
     private final ProjectMemberService projectMemberService;
     private final ProjectVisibilityService projectVisibilityService;
     private final UsersApiService usersApiService;
-    private final JobService jobService;
     private final ProjectFiles projectFiles;
     private final ValidationService validationService;
     private final FileService fileService;
     private final AvatarService avatarService;
 
     @Autowired
-    public ProjectFactory(final ProjectsDAO projectDAO, final ProjectService projectService, final ChannelService channelService, final ProjectPageService projectPageService, final ProjectMemberService projectMemberService, final ProjectVisibilityService projectVisibilityService, final UsersApiService usersApiService, final JobService jobService, final ProjectFiles projectFiles, final ValidationService validationService, final FileService fileService, final AvatarService avatarService) {
+    public ProjectFactory(final ProjectsDAO projectDAO, final ProjectService projectService, final ChannelService channelService, final ProjectPageService projectPageService, final ProjectMemberService projectMemberService, final ProjectVisibilityService projectVisibilityService, final UsersApiService usersApiService, final ProjectFiles projectFiles, final ValidationService validationService, final FileService fileService, final AvatarService avatarService) {
         this.projectsDAO = projectDAO;
         this.projectService = projectService;
         this.channelService = channelService;
@@ -55,7 +51,6 @@ public class ProjectFactory extends HangarComponent {
         this.projectMemberService = projectMemberService;
         this.projectVisibilityService = projectVisibilityService;
         this.usersApiService = usersApiService;
-        this.jobService = jobService;
         this.projectFiles = projectFiles;
         this.validationService = validationService;
         this.fileService = fileService;
@@ -81,7 +76,6 @@ public class ProjectFactory extends HangarComponent {
 
             final String defaultName = this.config.pages.home().name();
             this.projectPageService.createPage(projectTable.getId(), defaultName, StringUtils.slugify(defaultName), newPageContent, false, null, true);
-            this.jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
             if (newProject.getAvatarUrl() != null) {
                 this.avatarService.importProjectAvatar(projectTable.getId(), newProject.getAvatarUrl());
             }
@@ -113,7 +107,6 @@ public class ProjectFactory extends HangarComponent {
         projectTable.setSlug(newSlug);
         this.projectsDAO.update(projectTable);
         this.actionLogger.project(LogAction.PROJECT_RENAMED.create(ProjectContext.of(projectTable.getId()), author + "/" + compactNewName, author + "/" + oldName));
-        this.jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
         this.projectFiles.renameProject(projectTable.getOwnerName(), oldSlug, newSlug);
         return newSlug;
     }
@@ -175,7 +168,6 @@ public class ProjectFactory extends HangarComponent {
         }
 
         this.actionLogger.project(LogAction.PROJECT_VISIBILITY_CHANGED.create(ProjectContext.of(projectTable.getId()), "Deleted: " + comment, projectTable.getVisibility().getTitle()));
-        this.jobService.save(new DeleteDiscourseTopicJob(projectTable.getId()));
         this.projectsDAO.delete(projectTable);
         this.projectService.refreshHomeProjects();
         this.fileService.deleteDirectory(this.projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getSlug()));

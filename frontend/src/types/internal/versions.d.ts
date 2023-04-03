@@ -12,7 +12,6 @@ declare module "hangar-internal" {
     channelName: string;
     channelColor: string;
     channelFlags: ChannelFlag[];
-    forumSync: boolean;
   }
 
   interface PendingVersionFile {

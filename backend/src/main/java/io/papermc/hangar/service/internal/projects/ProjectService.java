@@ -193,7 +193,6 @@ public class ProjectService extends HangarComponent {
         projectTable.setLicenseType(settingsForm.getSettings().getLicense().getType());
         projectTable.setLicenseName(licenseName);
         projectTable.setLicenseUrl(settingsForm.getSettings().getLicense().getUrl());
-        projectTable.setForumSync(settingsForm.getSettings().isForumSync());
         projectTable.setDescription(settingsForm.getDescription());
         projectTable.setDonationEnabled(settingsForm.getSettings().getDonation().isEnable());
         projectTable.setDonationSubject(settingsForm.getSettings().getDonation().getSubject());
@@ -243,12 +242,6 @@ public class ProjectService extends HangarComponent {
         this.projectsDAO.update(projectTable);
         // TODO what settings changed
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
-    }
-
-    public void saveDiscourseData(final ProjectTable projectTable, final long topicId, final long postId) {
-        projectTable.setTopicId(topicId);
-        projectTable.setPostId(postId);
-        this.projectsDAO.update(projectTable);
     }
 
     public void changeAvatar(final String author, final String slug, final byte[] avatar) {

@@ -1,4 +1,3 @@
-DROP VIEW IF EXISTS projects_extra;
 CREATE OR REPLACE VIEW projects_extra AS
     SELECT p.*,
            array_agg(DISTINCT pm.user_id)           AS project_members,

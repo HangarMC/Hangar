@@ -23,8 +23,6 @@ import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionDependency
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionPlatformDependencyTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
-import io.papermc.hangar.model.internal.job.UpdateDiscourseProjectTopicJob;
-import io.papermc.hangar.model.internal.job.UpdateDiscourseVersionPostJob;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.LastDependencies;
@@ -33,7 +31,6 @@ import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.model.internal.versions.PendingVersionFile;
 import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.api.UsersApiService;
-import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.file.S3FileService;
@@ -82,7 +79,6 @@ public class VersionFactory extends HangarComponent {
     private final NotificationService notificationService;
     private final PlatformService platformService;
     private final UsersApiService usersApiService;
-    private final JobService jobService;
     private final ValidationService validationService;
     private final ProjectVersionDownloadsDAO downloadsDAO;
     private final VersionsApiDAO versionsApiDAO;
@@ -91,7 +87,7 @@ public class VersionFactory extends HangarComponent {
     private final ReviewService reviewService;
 
     @Autowired
-    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final JobService jobService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService) {
+    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.projectVersionsDAO = projectVersionDAO;
@@ -103,7 +99,6 @@ public class VersionFactory extends HangarComponent {
         this.notificationService = notificationService;
         this.platformService = platformService;
         this.usersApiService = usersApiService;
-        this.jobService = jobService;
         this.validationService = validationService;
         this.downloadsDAO = downloadsDAO;
         this.versionsApiDAO = versionsApiDAO;
@@ -116,7 +111,7 @@ public class VersionFactory extends HangarComponent {
     public PendingVersion createPendingVersion(final long projectId, final List<MultipartFileOrUrl> data, final List<MultipartFile> files, final String channel, final boolean prefillDependencies) {
         final ProjectTable projectTable = this.projectService.getProjectTable(projectId);
         if (projectTable == null) {
-            throw new IllegalArgumentException();
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Project not found");
         }
 
         final Map<Platform, Set<PluginDependency>> pluginDependencies = new EnumMap<>(Platform.class);
@@ -133,7 +128,7 @@ public class VersionFactory extends HangarComponent {
             // Make sure each platform only has one corresponding file/url
             if (!processedPlatforms.addAll(fileOrUrl.platforms())) {
                 this.fileService.deleteDirectory(userTempDir);
-                throw new HangarApiException("Only one file per platform!");
+                throw new HangarApiException("Overlapping platforms defined");
             }
 
             if (fileOrUrl.isUrl()) {
@@ -147,7 +142,8 @@ public class VersionFactory extends HangarComponent {
                     throw new HangarApiException("Missing a file for platform(s): " + fileOrUrl.platforms());
                 }
 
-                versionString = this.createPendingFile(files.remove(0), channel, projectTable, pluginDependencies, platformDependencies, pendingFiles, versionString, userTempDir, fileOrUrl, prefillDependencies);
+                final MultipartFile file = files.remove(0);
+                versionString = this.createPendingFile(file, channel, projectTable, pluginDependencies, platformDependencies, pendingFiles, versionString, userTempDir, fileOrUrl, prefillDependencies);
             }
         }
 
@@ -155,7 +151,7 @@ public class VersionFactory extends HangarComponent {
             platformDependencies.putIfAbsent(platform, Collections.emptySortedSet());
             pluginDependencies.putIfAbsent(platform, Collections.emptySet());
         }
-        return new PendingVersion(versionString, pluginDependencies, platformDependencies, pendingFiles, projectTable.isForumSync());
+        return new PendingVersion(versionString, pluginDependencies, platformDependencies, pendingFiles);
     }
 
     private String createPendingFile(final MultipartFile file, final String channel, final ProjectTable projectTable, final Map<Platform, Set<PluginDependency>> pluginDependencies,
@@ -247,9 +243,11 @@ public class VersionFactory extends HangarComponent {
 
         // get project
         final ProjectTable projectTable = this.projectService.getProjectTable(projectId);
-        assert projectTable != null;
+        if (projectTable == null) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "Project not found");
+        }
 
-        // verify that all platform files exist and that platform dependencies are setup correctly
+        // verify that all platform files exist and that platform dependencies are set up correctly
         final String userTempDir = this.projectFiles.getTempDir(this.getHangarPrincipal().getName());
         this.verifyPendingPlatforms(pendingVersion, userTempDir);
 
@@ -272,8 +270,7 @@ public class VersionFactory extends HangarComponent {
                 pendingVersion.getDescription(),
                 projectId,
                 projectChannelTable.getId(),
-                this.getHangarPrincipal().getUserId(),
-                pendingVersion.isForumSync()
+                this.getHangarPrincipal().getUserId()
             ));
 
             // insert dependencies
@@ -303,9 +300,6 @@ public class VersionFactory extends HangarComponent {
             if (projectTable.getVisibility() == Visibility.NEW) {
                 this.projectVisibilityService.changeVisibility(projectTable, Visibility.PUBLIC, "First version");
             }
-
-            // forum stuff
-            this.processJobs(projectId, projectVersionTable.getId(), pendingVersion, projectTable);
 
             // cache purging
             this.projectService.refreshHomeProjects();
@@ -344,15 +338,6 @@ public class VersionFactory extends HangarComponent {
             } else {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.unknown");
             }
-        }
-    }
-
-    private void processJobs(final long projectId, final long versionId, final PendingVersion pendingVersion, final ProjectTable projectTable) {
-        if (pendingVersion.isForumSync()) {
-            if (projectTable.getVisibility() == Visibility.NEW) {
-                this.jobService.save(new UpdateDiscourseProjectTopicJob(projectId));
-            }
-            this.jobService.save(new UpdateDiscourseVersionPostJob(versionId));
         }
     }
 

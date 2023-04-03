@@ -45,11 +45,8 @@ public interface HangarProjectsDAO {
         "       p.license_url," +
         "       p.tags," +
         "       p.keywords," +
-        "       p.forum_sync," +
         "       p.donation_enabled," +
         "       p.donation_subject," +
-        "       p.topic_id," +
-        "       p.post_id," +
         "       p.sponsors" +
         "  FROM home_projects hp" +
         "         JOIN projects_extra p ON hp.id = p.id" +

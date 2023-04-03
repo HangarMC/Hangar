@@ -275,10 +275,6 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
               :rules="[required(), maxLength()(useBackendData.validations?.project?.desc?.max || 120)]"
             />
           </ProjectSettingsSection>
-          <!-- todo: forums integration -->
-          <!--<ProjectSettingsSection title="project.settings.forum">
-            <InputCheckbox v-model="form.settings.forumSync" :label="i18n.t('project.settings.forumSub')" />
-          </ProjectSettingsSection>-->
           <ProjectSettingsSection title="project.settings.keywords" description="project.settings.keywordsSub">
             <InputTag
               v-model="form.settings.keywords"

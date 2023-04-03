@@ -27,11 +27,9 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
     private final long authorId;
     private Visibility visibility = Visibility.PUBLIC;
     private ReviewState reviewState = ReviewState.UNREVIEWED;
-    private boolean createForumPost;
-    private Long postId;
 
     @JdbiConstructor
-    public ProjectVersionTable(final OffsetDateTime createdAt, final long id, final String versionString, final String description, final long projectId, final long channelId, final Long reviewerId, final OffsetDateTime approvedAt, final long authorId, @EnumByOrdinal final Visibility visibility, @EnumByOrdinal final ReviewState reviewState, final boolean createForumPost, final Long postId) {
+    public ProjectVersionTable(final OffsetDateTime createdAt, final long id, final String versionString, final String description, final long projectId, final long channelId, final Long reviewerId, final OffsetDateTime approvedAt, final long authorId, @EnumByOrdinal final Visibility visibility, @EnumByOrdinal final ReviewState reviewState) {
         super(createdAt, id);
         this.versionString = versionString;
         this.description = description;
@@ -42,17 +40,14 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
         this.authorId = authorId;
         this.visibility = visibility;
         this.reviewState = reviewState;
-        this.createForumPost = createForumPost;
-        this.postId = postId;
     }
 
-    public ProjectVersionTable(final String versionString, final String description, final long projectId, final long channelId, final long authorId, final boolean createForumPost) {
+    public ProjectVersionTable(final String versionString, final String description, final long projectId, final long channelId, final long authorId) {
         this.versionString = versionString;
         this.description = description;
         this.projectId = projectId;
         this.channelId = channelId;
         this.authorId = authorId;
-        this.createForumPost = createForumPost;
     }
 
     public String getVersionString() {
@@ -124,22 +119,6 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
         this.reviewState = reviewState;
     }
 
-    public boolean isCreateForumPost() {
-        return this.createForumPost;
-    }
-
-    public void setCreateForumPost(final boolean createForumPost) {
-        this.createForumPost = createForumPost;
-    }
-
-    public Long getPostId() {
-        return this.postId;
-    }
-
-    public void setPostId(final Long postId) {
-        this.postId = postId;
-    }
-
     @Override
     public String getName() {
         return this.versionString;
@@ -172,8 +151,6 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
             ", authorId=" + this.authorId +
             ", visibility=" + this.visibility +
             ", reviewState=" + this.reviewState +
-            ", createForumPost=" + this.createForumPost +
-            ", postId=" + this.postId +
             "} " + super.toString();
     }
 }

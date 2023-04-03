@@ -27,9 +27,8 @@ public class VersionCompact extends Model implements Named, Visible {
     private final ProjectChannel channel;
     private final PinnedStatus pinnedStatus;
     private final Map<Platform, PlatformVersionDownload> downloads = new EnumMap<>(Platform.class);
-    private final Long postId;
 
-    protected VersionCompact(final OffsetDateTime createdAt, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final PinnedStatus pinnedStatus, final Long postId) {
+    protected VersionCompact(final OffsetDateTime createdAt, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final PinnedStatus pinnedStatus) {
         super(createdAt);
         this.name = name;
         this.visibility = visibility;
@@ -39,7 +38,6 @@ public class VersionCompact extends Model implements Named, Visible {
         this.reviewState = reviewState;
         this.channel = channel;
         this.pinnedStatus = pinnedStatus;
-        this.postId = postId;
     }
 
     @Override
@@ -78,10 +76,6 @@ public class VersionCompact extends Model implements Named, Visible {
 
     public PinnedStatus getPinnedStatus() {
         return this.pinnedStatus;
-    }
-
-    public Long getPostId() {
-        return this.postId;
     }
 
     @EnumByName

@@ -21,13 +21,13 @@ public interface ProjectVersionsDAO {
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("INSERT INTO project_versions " +
-        "(created_at, version_string, description, project_id, channel_id, author_id, visibility, create_forum_post) VALUES " +
-        "(:now, :versionString, :description, :projectId, :channelId, :authorId, :visibility, :createForumPost)")
+        "(created_at, version_string, description, project_id, channel_id, author_id, visibility) VALUES " +
+        "(:now, :versionString, :description, :projectId, :channelId, :authorId, :visibility)")
     ProjectVersionTable insert(@BindBean ProjectVersionTable projectVersionTable);
 
     @GetGeneratedKeys
     @SqlUpdate("UPDATE project_versions SET version_string = :versionString, visibility = :visibility, reviewer_id = :reviewerId, approved_at = :approvedAt, " +
-        "description = :description, review_state = :reviewState, post_id = :postId " +
+        "description = :description, review_state = :reviewState " +
         "WHERE id = :id")
     ProjectVersionTable update(@BindBean ProjectVersionTable projectVersionsTable);
 
