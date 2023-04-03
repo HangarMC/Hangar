@@ -17,6 +17,7 @@ import Alert from "~/lib/components/design/Alert.vue";
 import Modal from "~/lib/components/modals/Modal.vue";
 import InputPassword from "~/lib/components/ui/InputPassword.vue";
 import { useNotificationStore } from "~/lib/store/notification";
+import ComingSoon from "~/lib/components/design/ComingSoon.vue";
 
 definePageMeta({
   loginRequired: true,
@@ -139,16 +140,15 @@ useHead(useSeo("Settings", null, route, null));
 </script>
 
 <template>
-  <div>
-    <h1>Hello {{ auth.user?.name }}</h1>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <!-- todo tabs -->
 
-    <Alert v-if="settings?.emailPending">
+    <Alert v-if="settings?.emailPending" class="col-span-1 md:col-span-2">
       Got your email confirmation? Enter the code
       <Button size="small" @click="emailConfirmModal.isOpen = true">here</Button>
       !
     </Alert>
-    <Alert v-else-if="!settings?.emailConfirmed">
+    <Alert v-else-if="!settings?.emailConfirmed" class="col-span-1 md:col-span-2">
       You haven't verified your email yet, click
       <Button size="small" @click="emailConfirmModal.isOpen = true">here</Button>
       to change that!
@@ -156,86 +156,96 @@ useHead(useSeo("Settings", null, route, null));
 
     <Modal ref="emailConfirmModal" title="Confirm email" @close="emailConfirmModal.isOpen = false">
       <template v-if="!emailCodeHasBeenSend">
-        <p>We will send you a code via email</p>
+        <p class="mb-2">We will send you a code via email</p>
         <Button @click="sendEmailCode">Send</Button>
       </template>
-      <template v-else>
+      <div v-else class="flex flex-col gap-2">
         <p>Enter the code you received via email here</p>
         <InputText v-model="emailCode" label="Code" />
-        <Button @click="verifyEmail(emailCode)">Verify Code</Button>
-      </template>
+        <Button class="w-max" @click="verifyEmail(emailCode)">Verify Code</Button>
+      </div>
     </Modal>
 
     <Card>
-      <template #header>account</template>
-      <form>
+      <template #header>Manage Account</template>
+      <form class="flex flex-col gap-2">
         <InputText label="username" />
         <InputText label="email" />
         (status: {{ settings?.emailConfirmed ? "confirmed" : "unconfirmed!" }})
-        <Button v-if="!settings?.emailConfirmed" size="small" @click.prevent="emailConfirmModal.isOpen = true"> Confirm</Button>
+        <Button v-if="!settings?.emailConfirmed" class="w-max" size="small" @click.prevent="emailConfirmModal.isOpen = true"> Confirm</Button>
         <InputPassword label="current-password" name="current-password" autofill="current-password" />
         <InputPassword label="new-password (optional)" name="new-password" autofill="new-password" />
-        <Button type="submit" @click.prevent="saveAccount">Save</Button>
+        <Button type="submit" class="w-max" @click.prevent="saveAccount">Save</Button>
       </form>
     </Card>
 
     <Card>
-      <template #profile>profile</template>
-      <form>
+      <template #header>Manage Profile</template>
+      <form class="flex flex-col gap-2">
         <InputText label="tagline" />
-        <AvatarChangeModal :avatar="auth.user?.avatarUrl!" :action="`users/${auth.user?.name}/settings/avatar`" />
+        <!-- todo make avatar change nicer, use the old stuff from old settings maybe? -->
+        <AvatarChangeModal class="w-max" :avatar="auth.user?.avatarUrl!" :action="`users/${auth.user?.name}/settings/avatar`" />
         <InputText label="discord" />
         <InputText label="github" />
-        <Button type="submit" @click.prevent="saveProfile">Save</Button>
+        <Button type="submit" class="w-max" @click.prevent="saveProfile">Save</Button>
       </form>
     </Card>
 
     <Card>
-      <template #header>Totp</template>
+      <template #header>Manage TOTP</template>
       <Button v-if="hasTotp" @click="unlinkTotp">Unlink totp</Button>
       <Button v-else-if="!totpData" @click="setupTotp">Setup totp</Button>
-      <template v-else>
-        <img :src="totpData.qrCode" alt="totp qr code" />
-        <small>{{ totpData.secret }}</small>
-        <InputText v-model="totpCode" label="Code" inputmode="numeric" />
-        <Button @click="addTotp">Verify code and activate</Button>
-      </template>
+      <div v-else class="flex gap-2">
+        <div class="flex flex-col gap-2 basis-1/2">
+          <p>Scan the code on the right using your favorite authenticator app</p>
+          <p>Can't scan? enter the code listed below the image!</p>
+          <InputText v-model="totpCode" label="Code" inputmode="numeric" />
+          <Button @click="addTotp">Verify code and activate</Button>
+        </div>
+        <div class="basis-1/2">
+          <img :src="totpData.qrCode" alt="totp qr code" class="w-60" />
+          <small>{{ totpData.secret }}</small>
+        </div>
+      </div>
     </Card>
 
     <Card>
-      <template #header>webauthn</template>
-      <div>authenticators</div>
+      <template #header>Manage Security Keys (WebAuthN)</template>
+      <div>Authenticators:</div>
       <ul v-if="settings?.authenticators">
-        <li v-for="authenticator in settings.authenticators" :key="authenticator.id">
-          {{ authenticator.displayName }} (added at {{ authenticator.addedAt }})
+        <li v-for="authenticator in settings.authenticators" :key="authenticator.id" class="my-1">
+          {{ authenticator.displayName }} <small class="mr-2">(added at {{ authenticator.addedAt }})</small>
           <Button size="small" @click.prevent="unregisterAuthenticator(authenticator)">Unregister</Button>
         </li>
       </ul>
-      <InputText v-model="authenticatorName" label="Name" />
+      <div class="my-2">
+        <InputText v-model="authenticatorName" label="Name" />
+      </div>
       <Button @click="addAuthenticator">Add authenticator</Button>
     </Card>
 
     <Card>
-      <template #header>backup codes</template>
-      <div>codes</div>
+      <template #header>Manage Backup Codes</template>
       <div v-if="(hasCodes && showCodes) || (!hasCodes && codes)" class="flex flex-wrap mt-2 mb-2">
         <div v-for="code in codes" :key="code.code" class="basis-3/12">
           <code>{{ code["used_at"] ? "Used" : code.code }}</code>
         </div>
       </div>
-      <template v-if="hasCodes">
+      <div v-if="hasCodes" class="flex gap-2">
         <Button v-if="!showCodes" @click="revealCodes">Reveal</Button>
         <Button @click="generateNewCodes">Generate new codes</Button>
-      </template>
+      </div>
       <Button v-else-if="!codes" @click="setupCodes">Add</Button>
       <Button v-else @click="confirmCodes">Confirm codes</Button>
     </Card>
 
     <Card>
-      <template #header>devices</template>
-      last login on
-      <Button>revoke iphone</Button>
-      <Button>revoke all</Button>
+      <template #header>Manage Devices</template>
+      <ComingSoon>
+        last login<br />
+        on revoke iphone<br />
+        revoke all
+      </ComingSoon>
     </Card>
   </div>
 </template>

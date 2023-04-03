@@ -56,25 +56,25 @@ useHead(useSeo("Reset your password", null, route, null));
 <template>
   <Card>
     <template #header> Reset your password </template>
-    <form v-if="!codeSend">
+    <form v-if="!codeSend" class="flex flex-col gap-2">
       <p>Enter your email here to receive a verification code to your email address</p>
       <InputText v-model="email" type="email" label="email" name="email" autocomplete="email" :rules="[required(), emailRule()]" />
-      <Button @click.prevent="sendCode">Send code</Button>
+      <Button class="w-max" @click.prevent="sendCode">Send code</Button>
     </form>
-    <form v-else-if="!codeVerified">
+    <form v-else-if="!codeVerified" class="flex flex-col gap-2">
       <p>Enter the code you got via email here</p>
       <InputText v-model="code" type="text" inputmode="numeric" pattern="[0-9]" label="code" :rules="[required()]" :error-messages="codeError" />
-      <Button @click.prevent="verifyCode">Verify Code</Button>
+      <Button class="w-max" @click.prevent="verifyCode">Verify Code</Button>
     </form>
-    <form v-else-if="!passwordUpdated">
+    <form v-else-if="!passwordUpdated" class="flex flex-col gap-2">
       <p>Enter your new password</p>
       <input id="email" v-model="email" type="hidden" name="email" />
-      <InputPassword v-model="password" label="new password" name="new-password" autocomplete="new-password" />
-      <Button @click.prevent="sendNewPassword">Update password</Button>
+      <InputPassword v-model="password" label="new password" name="new-password" autocomplete="new-password" :rules="[required()]" />
+      <Button class="w-max" @click.prevent="sendNewPassword">Update password</Button>
     </form>
-    <template v-else>
+    <div v-else class="flex flex-col gap-2">
       <p>Password updated!</p>
-      <Button @click="gotoLogin">Go to Login</Button>
-    </template>
+      <Button class="w-max" @click="gotoLogin">Go to Login</Button>
+    </div>
   </Card>
 </template>

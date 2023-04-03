@@ -51,6 +51,9 @@ public class AuthService extends HangarComponent implements UserDetailsService {
 
     @Transactional
     public UserTable registerUser(final SignupForm form) {
+        if (!form.tos()) {
+            throw new HangarApiException("nav.user.error.tos");
+        }
         if (!this.validationService.isValidUsername(form.username())) {
             throw new HangarApiException("nav.user.error.invalidUsername");
         }
@@ -58,6 +61,9 @@ public class AuthService extends HangarComponent implements UserDetailsService {
             throw new HangarApiException("dum");
         }
         if (this.userDAO.getUserTable(form.username()) != null) {
+            throw new HangarApiException("nav.user.error.invalidUsername");
+        }
+        if (this.userDAO.getUserTable(form.email()) != null) {
             throw new HangarApiException("nav.user.error.invalidUsername");
         }
 

@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -57,6 +58,10 @@ public class CredentialsService extends HangarComponent {
     }
 
     public void verifyPassword(final long userId, final String password) {
+        if (!StringUtils.hasText(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
+        }
+
         final UserCredentialTable credential = this.getCredential(userId, CredentialType.PASSWORD);
         if (credential == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No credentials");
@@ -73,6 +78,10 @@ public class CredentialsService extends HangarComponent {
     }
 
     public void verifyTotp(final long userId, final String code) {
+        if (!StringUtils.hasText(code)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
+        }
+
         final UserCredentialTable credential = this.getCredential(userId, CredentialType.TOTP);
         if (credential == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No credentials");
@@ -92,6 +101,10 @@ public class CredentialsService extends HangarComponent {
     }
 
     public void verifyBackupCode(final long userId, final String code) {
+        if (!StringUtils.hasText(code)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
+        }
+
         final UserCredentialTable credential = this.getCredential(userId, CredentialType.BACKUP_CODES);
         if (credential == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No credentials");

@@ -372,10 +372,10 @@ function isRecent(date: string): boolean {
             <icon-mdi-key-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.login") }}
           </NuxtLink>
-          <a class="flex items-center rounded-md p-2 hover:(text-primary-400 bg-primary-0)" href="/auth/signup">
+          <NuxtLink class="flex items-center rounded-md p-2 hover:(text-primary-400 bg-primary-0)" :to="auth.signupUrl($route.fullPath)">
             <icon-mdi-clipboard-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.signup") }}
-          </a>
+          </NuxtLink>
         </div>
       </div>
     </nav>

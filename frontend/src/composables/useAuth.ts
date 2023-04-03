@@ -11,11 +11,22 @@ import { useNotificationStore } from "~/lib/store/notification";
 import { transformAxiosError } from "~/composables/useErrorHandling";
 
 class Auth {
-  loginUrl(redirectUrl: string): string {
-    if (redirectUrl.endsWith("?loggedOut")) {
+  loginUrl(redirectUrl: string | undefined): string {
+    return this.buildUrl(redirectUrl, "/auth/login");
+  }
+
+  signupUrl(redirectUrl: string | undefined): string {
+    return this.buildUrl(redirectUrl, "/auth/signup");
+  }
+
+  private buildUrl(redirectUrl: string | undefined, url: string) {
+    if (redirectUrl?.endsWith("?loggedOut")) {
       redirectUrl = redirectUrl.replace("?loggedOut", "");
     }
-    return `/auth/login?returnUrl=${redirectUrl}`;
+    if (redirectUrl?.startsWith("/auth") && !redirectUrl.startsWith("/auth/settings")) {
+      redirectUrl = undefined;
+    }
+    return redirectUrl ? `${url}?returnUrl=${redirectUrl}` : url;
   }
 
   async logout() {
