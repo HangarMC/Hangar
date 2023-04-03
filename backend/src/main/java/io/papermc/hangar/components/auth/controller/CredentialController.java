@@ -297,9 +297,9 @@ public class CredentialController extends HangarComponent {
     @Anyone
     @PostMapping("/reset/set")
     public ResponseEntity<Object> setNewPassword(@RequestBody final ResetForm form) {
-        if (this.authService.validPassword(form.password()) && this.verificationService.verifyResetCode(form.email(), form.code(), true)) {
-            final UserTable userTable = this.userService.getUserTable(form.email());
-            if (userTable != null) {
+        final UserTable userTable = this.userService.getUserTable(form.email());
+        if (userTable != null) {
+            if (this.authService.validPassword(form.password(), userTable.getName()) && this.verificationService.verifyResetCode(form.email(), form.code(), true)) {
                 this.credentialsService.updateCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(form.password())));
                 return ResponseEntity.ok().build();
             }

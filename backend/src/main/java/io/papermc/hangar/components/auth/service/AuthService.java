@@ -27,6 +27,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 public class AuthService extends HangarComponent implements UserDetailsService {
@@ -57,7 +58,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         if (!this.validationService.isValidUsername(form.username())) {
             throw new HangarApiException("nav.user.error.invalidUsername");
         }
-        if (!this.validPassword(form.password())) {
+        if (!this.validPassword(form.password(), form.username())) {
             throw new HangarApiException("dum");
         }
         if (this.userDAO.getUserTable(form.username()) != null) {
@@ -74,11 +75,23 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         return userTable;
     }
 
-    public boolean validPassword(final String password) {
-        // TODO validate password against pw rules
+    public boolean validPassword(final String password, final String username) {
+        if (!StringUtils.hasText(password) || password.length() < 8) {
+            throw new HangarApiException("password needs to be at least 8 chars long");
+        }
+
+        // https://github.com/ory/kratos/blob/40ab76af4f36c671fc1d1108c3b6a15adcdb6125/selfservice/strategy/password/validator.go#L185
+        final String lowerPass = password.toLowerCase();
+        final String lowerUser = username.toLowerCase();
+        //noinspection deprecation
+        final int dist = org.apache.commons.lang3.StringUtils.getLevenshteinDistance(lowerUser, lowerPass);
+        final float lcs = ((float) io.papermc.hangar.util.StringUtils.lcs(lowerUser, lowerPass).length()) / lowerPass.length();
+        if (dist < 5 || lcs > 0.5) {
+            throw new HangarApiException("username and password are too similar");
+        }
 
         final int breachAmount = this.hibpService.getBreachAmount(password);
-        if (breachAmount > 0) {
+        if (breachAmount > 10) {
             throw new HangarApiException("ur password sucks and was leaked " + breachAmount + " times, use something better!");
         }
         return true;
