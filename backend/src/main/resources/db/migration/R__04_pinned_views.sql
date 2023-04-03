@@ -1,4 +1,6 @@
 DROP VIEW IF EXISTS pinned_versions;
+DROP VIEW IF EXISTS pinned_projects;
+
 CREATE OR REPLACE VIEW pinned_versions AS
     SELECT *
     FROM (SELECT DISTINCT ON (version_id) version_id,
@@ -41,7 +43,6 @@ CREATE OR REPLACE VIEW pinned_versions AS
                  ORDER BY pv.created_at DESC)) AS pvs) AS t
     ORDER BY t.created_at DESC;
 
-DROP VIEW IF EXISTS pinned_projects;
 CREATE OR REPLACE VIEW pinned_projects AS
     SELECT DISTINCT ON (project_id) project_id,
                                     user_id,
