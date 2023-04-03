@@ -6,6 +6,7 @@ import io.papermc.hangar.controller.extras.pagination.annotations.ConfigurePagin
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformVersionFilter;
+import io.papermc.hangar.controller.internal.config.VersionControllerConfig;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.project.version.UploadedVersion;
 import io.papermc.hangar.model.api.project.version.Version;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Anyone
 @Controller
 @ResponseBody
+@ServletComponentScan(basePackageClasses = VersionControllerConfig.class)
 @RateLimit(path = "apiversions", greedy = true)
 public class VersionsController implements IVersionsController {
 

@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.controller.internal.config.VersionControllerConfig;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
@@ -30,6 +31,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,6 +53,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @Secured("ROLE_USER")
 @RateLimit(path = "version")
+@ServletComponentScan(basePackageClasses = VersionControllerConfig.class)
 @RequestMapping(path = "/api/internal/versions")
 public class VersionController extends HangarComponent {
 

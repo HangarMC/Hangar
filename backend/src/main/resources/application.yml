@@ -22,8 +22,8 @@ spring:
       order: 1000
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 11MB
+      max-file-size: 5MB
+      max-request-size: 5MB
   devtools:
     restart:
       additional-exclude: work/**
