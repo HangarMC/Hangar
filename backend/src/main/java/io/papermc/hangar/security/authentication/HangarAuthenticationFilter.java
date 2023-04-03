@@ -9,6 +9,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -23,15 +27,11 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class HangarAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String AUTH_TOKEN_ATTR = SecurityConfig.AUTH_NAME + "JWTToken";
-    private static final Logger logger = LoggerFactory.getLogger(HangarAuthenticationFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HangarAuthenticationFilter.class);
 
     private final TokenService tokenService;
 
@@ -45,19 +45,29 @@ public class HangarAuthenticationFilter extends AbstractAuthenticationProcessing
     @Override
     protected boolean requiresAuthentication(final HttpServletRequest request, final HttpServletResponse response) {
         if (super.requiresAuthentication(request, response)) {
-            final Optional<String> token = Stream.of(
-                Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION)).map(value -> value.replace(SecurityConfig.AUTH_NAME, "").trim()),
-                Optional.ofNullable(request.getParameter("t")),
-                Optional.ofNullable(request.getCookies()).flatMap(cookies -> Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConfig.AUTH_NAME)).map(Cookie::getValue).findFirst())
-            ).flatMap(Optional::stream).findFirst();
-            if (token.isEmpty()) {
-                logger.trace("Couldn't find a {} token on the request {}", SecurityConfig.AUTH_NAME, request.getRequestURI());
+            final String token = this.token(request);
+            if (token == null) {
+                LOGGER.trace("Couldn't find a {} token on the request {}", SecurityConfig.AUTH_NAME, request.getRequestURI());
                 return false;
             }
-            request.setAttribute(AUTH_TOKEN_ATTR, token.get());
+            request.setAttribute(AUTH_TOKEN_ATTR, token);
             return true;
         }
         return false;
+    }
+
+    private @Nullable String token(final HttpServletRequest request) {
+        final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authorizationHeader != null) {
+            return authorizationHeader.replace(SecurityConfig.AUTH_NAME, "").trim();
+        }
+
+        final String parameter = request.getParameter("t");
+        if (parameter != null) {
+            return parameter;
+        }
+
+        return Optional.ofNullable(request.getCookies()).flatMap(cookies -> Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConfig.AUTH_NAME)).map(Cookie::getValue).findFirst()).orElse(null);
     }
 
     @Override
@@ -79,7 +89,7 @@ public class HangarAuthenticationFilter extends AbstractAuthenticationProcessing
     @Override
     protected void successfulAuthentication(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain, final Authentication authResult) throws IOException, ServletException {
         SecurityContextHolder.getContext().setAuthentication(authResult);
-        logger.debug("Set SecurityContextHolder to {}", authResult);
+        LOGGER.debug("Set SecurityContextHolder to {}", authResult);
         chain.doFilter(request, response);
     }
 }

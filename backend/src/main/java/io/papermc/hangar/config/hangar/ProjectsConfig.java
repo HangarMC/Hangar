@@ -28,7 +28,8 @@ public record ProjectsConfig( // TODO split into ProjectsConfig and VersionsConf
                               @DefaultValue("5") int maxKeywords,
                               @DefaultValue("5") int maxTags,
                               @DefaultValue("1000000") int contentMaxLen,
-                              @DefaultValue("10000000") int maxFileSize,
+                              @DefaultValue("7000000") int maxFileSize,
+                              @DefaultValue("15000000") int maxTotalFilesSize,
                               @DefaultValue("true") boolean fileValidate, // TODO implement or remove
                               @DefaultValue("28") @DurationUnit(ChronoUnit.DAYS) Duration staleAge,
                               @DefaultValue("1h") String checkInterval, // TODO implement or remove
@@ -64,5 +65,13 @@ public record ProjectsConfig( // TODO split into ProjectsConfig and VersionsConf
 
     public Validation sponsorsContent() {
         return Validation.max(this.maxSponsorsLen());
+    }
+
+    public int maxFileSizeMB() {
+        return this.maxFileSize() / 1000 / 1000;
+    }
+
+    public int maxTotalFilesSizeMB() {
+        return this.maxTotalFilesSize() / 1000 / 1000;
     }
 }
