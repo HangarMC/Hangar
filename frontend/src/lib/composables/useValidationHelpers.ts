@@ -73,6 +73,7 @@ export const maxLength = withOverrideMessage(validators.maxLength);
 export const integer = withOverrideMessage(validators.integer);
 export const url = withOverrideMessage(validators.url);
 export const email = withOverrideMessage(validators.email);
+export const sameAs = withOverrideMessage(validators.sameAs);
 
 // custom
 export const pattern = withOverrideMessage((regex: string) =>
