@@ -101,15 +101,8 @@ public class JarScanningService {
         return this.userService.insertUser(userTable);
     }
 
-    public void scanAsync(final long versionId, final List<Platform> platforms, final boolean partial) {
-        EXECUTOR_SERVICE.execute(() -> {
-            final ProjectVersionTable pvt = this.projectVersionsDAO.getProjectVersionTable(versionId);
-            if (pvt == null) {
-                return;
-            }
-
-            this.scan(new VersionToScan(pvt.getVersionId(), pvt.getProjectId(), pvt.getReviewState(), pvt.getVersionString(), platforms), partial);
-        });
+    public void scanAsync(final ProjectVersionTable pvt, final List<Platform> platforms, final boolean partial) {
+        EXECUTOR_SERVICE.execute(() -> this.scan(new VersionToScan(pvt.getVersionId(), pvt.getProjectId(), pvt.getReviewState(), pvt.getVersionString(), platforms), partial));
     }
 
     private void scan(final VersionToScan versionToScan, final boolean partial) {
@@ -130,8 +123,7 @@ public class JarScanningService {
         this.applyReview(highestSeverity, versionToScan, partial);
     }
 
-    @Transactional
-    void applyReview(final Severity severity, final VersionToScan version, final boolean partial) {
+    private void applyReview(final Severity severity, final VersionToScan version, final boolean partial) {
         if (Severity.HIGH.compareTo(severity) < 0) {
             this.reviewService.autoReviewFiles(version, partial, this.jarScannerUser.getUserId());
         } else if (severity == Severity.HIGHEST) {

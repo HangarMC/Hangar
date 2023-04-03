@@ -320,10 +320,10 @@ public class VersionFactory extends HangarComponent {
 
             final boolean hasUnsafeLinks = hasExternalLink && !safeLinks;
             if (!platformsToScan.isEmpty()) {
-                this.jarScanningService.scanAsync(projectVersionTable.getVersionId(), platformsToScan, hasUnsafeLinks);
+                this.jarScanningService.scanAsync(projectVersionTable, platformsToScan, hasUnsafeLinks);
             } else if (!hasUnsafeLinks) {
                 // External links will always show a secondary warning, even if from a safe website, so approving is ok
-                this.reviewService.autoReviewLinks(projectVersionTable.getVersionId(), this.jarScanningService.getJarScannerUser().getUserId());
+                this.reviewService.autoReviewLinks(projectVersionTable, this.jarScanningService.getJarScannerUser().getUserId());
             }
         } catch (final HangarApiException e) {
             throw e;

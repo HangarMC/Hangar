@@ -102,8 +102,8 @@ public class ReviewService extends HangarComponent {
     }
 
     @Transactional
-    public void autoReviewLinks(final long versionId, final long scannerUserId) {
-        final ProjectVersionReviewTable projectVersionReviewTable = this.insertOrUpdateReview(versionId, scannerUserId);
+    public void autoReviewLinks(final ProjectVersionTable projectVersionTable, final long scannerUserId) {
+        final ProjectVersionReviewTable projectVersionReviewTable = this.insertOrUpdateReview(projectVersionTable.getVersionId(), scannerUserId);
         this.projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(
             projectVersionReviewTable.getId(),
             "[AUTO] Automated review via safe link check",
@@ -111,7 +111,6 @@ public class ReviewService extends HangarComponent {
             ReviewAction.APPROVE
         ));
 
-        final ProjectVersionTable projectVersionTable = this.projectVersionsDAO.getProjectVersionTable(versionId);
         projectVersionTable.setReviewState(ReviewState.REVIEWED);
         this.projectVersionsDAO.update(projectVersionTable);
     }
@@ -235,7 +234,7 @@ public class ReviewService extends HangarComponent {
                 continue;
             }
 
-            this.autoReviewLinks(projectVersionTable.getVersionId(), jarScannerUser.getUserId());
+            this.autoReviewLinks(projectVersionTable, jarScannerUser.getUserId());
         }
     }
 }
