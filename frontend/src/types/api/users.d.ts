@@ -22,6 +22,10 @@ declare module "hangar-api" {
     locked: boolean;
     nameHistory: { oldName: string; newName: string; date: string }[];
     avatarUrl: string;
+    socials?: {
+      discord?: string;
+      github?: string;
+    };
   }
 
   interface ApiKey extends Model, Named {
