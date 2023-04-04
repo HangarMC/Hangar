@@ -2,7 +2,7 @@
   <Modal ref="modal" :title="t('organization.settings.changeAvatar')" window-classes="w-125" @open="openModal">
     <template #activator="{ on }">
       <slot name="activator" :on="on">
-        <Button button-type="primary" @click.prevent="on.click">{{ t("organization.settings.changeAvatar") }}</Button>
+        <Button button-type="primary" v-bind="$attrs" @click.prevent="on.click">{{ t("organization.settings.changeAvatar") }}</Button>
       </slot>
     </template>
 
