@@ -31,18 +31,15 @@ Fork the project and pull it in your IDE.
 
 To get the project running locally, you need to follow a few steps:
 
-1. Run `git submodule update --init` to initialize the [HangarLib](https://github.com/HangarMC/HangarLib) submodule. If you want to commit code to the lib
-   repository (found in `frontend/src/lib`) without cloning the repo separately, you also need to checkout a branch
-   using `cd frontend/src/lib && git switch master`.
-2. To get the dummy database and email server up and running, move to the docker folder `cd docker` then run `docker-compose -f dev.yml up -d` (`-d` as an optional parameter
+1. Get the dummy database and email server up and running. Move to the docker folder `cd docker` then run `docker-compose -f dev.yml up -d` (`-d` as an optional parameter
    to run the containers in the background).
    Alternatively, if you are using IntelliJ you can press the green arrow in the `docker/dev.yml` file.
-3. Run the Spring Boot application. You can do this in the CLI with `mvn spring-boot:run`, or if you're using IntelliJ, it is included in the run
+2. Run the Spring Boot application. You can do this in the CLI with `mvn spring-boot:run`, or if you're using IntelliJ, it is included in the run
    configurations.
-4. Move to the `frontend` directory: `cd ../frontend`. In that directory, run `pnpm install`. This will install all the needed Node modules.
-5. After the installation, run `pnpm run dev` in the frontend directory to initiate the build and launch. Changes you do to the frontend will be reloaded
+3. Move to the `frontend` directory: `cd ../frontend`. In that directory, run `pnpm install`. This will install all the needed Node modules.
+4. After the installation, run `pnpm run dev` in the frontend directory to initiate the build and launch. Changes you do to the frontend will be reloaded
    automatically.
-6. After that, open http://localhost:3333, and if all went well, Hangar should be up and running.
+5. After that, open http://localhost:3333, and if all went well, Hangar should be up and running.
 
 ### Notes
 
