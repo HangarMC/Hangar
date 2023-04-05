@@ -21,16 +21,16 @@ public interface UserDAO {
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("""
-        INSERT INTO users (uuid, created_at, name, email, tagline, join_date, read_prompts, locked, language, theme, email_verified, socials)
-        VALUES (:uuid, :now, :name, :email, :tagline, :now, :readPrompts, :locked, :language, :theme, :emailVerified, :socials)
+        INSERT INTO users (uuid, created_at, name, email, tagline, read_prompts, locked, language, theme, email_verified, socials)
+        VALUES (:uuid, :now, :name, :email, :tagline, :readPrompts, :locked, :language, :theme, :emailVerified, :socials)
         """)
     UserTable insert(@BindBean UserTable user);
 
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("""
-        INSERT INTO users (uuid, created_at, name, email, tagline, join_date, read_prompts, locked, language, theme, email_verified, socials)
-        VALUES (:uuid, :now, :name, :email, :tagline, :now, :readPrompts, :locked, :language, :theme, :emailVerified, :socials)
+        INSERT INTO users (uuid, created_at, name, email, tagline, read_prompts, locked, language, theme, email_verified, socials)
+        VALUES (:uuid, :now, :name, :email, :tagline, :readPrompts, :locked, :language, :theme, :emailVerified, :socials)
         """)
     UserTable create(UUID uuid, String name, String email, String tagline, String language, List<Integer> readPrompts, boolean locked, String theme, boolean emailVerified, JSONB socials);
 

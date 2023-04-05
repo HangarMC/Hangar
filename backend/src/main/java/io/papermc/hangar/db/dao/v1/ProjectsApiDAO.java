@@ -140,7 +140,6 @@ public interface ProjectsApiDAO {
         "       u.created_at," +
         "       u.name," +
         "       u.tagline," +
-        "       u.join_date," +
         "       u.locked," +
         "       array_agg(r.id) AS roles," +
         "       (SELECT count(*)" +
@@ -169,7 +168,6 @@ public interface ProjectsApiDAO {
         "       u.created_at," +
         "       u.name," +
         "       u.tagline," +
-        "       u.join_date," +
         "       u.locked," +
         "       array_agg(r.id) AS roles," +
         "       (SELECT count(*)" +

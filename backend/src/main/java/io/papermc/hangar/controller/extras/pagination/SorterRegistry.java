@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public enum SorterRegistry implements Sorter {
 
-    USER_JOIN_DATE("joinDate", simpleSorter("u.join_date")),
+    USER_JOIN_DATE("joinDate", simpleSorter("u.created_at")),
     USER_NAME("name", simpleSorter("LOWER(u.name)")),
     USER_PROJECT_COUNT("projectCount", simpleSorter("project_count")),
     USER_ROLES("roles", simpleSorter("roles")),

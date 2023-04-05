@@ -16,7 +16,6 @@ public class UserTable extends Table implements ProjectOwner {
     private String name;
     private String email;
     private String tagline;
-    private OffsetDateTime joinDate;
     private List<Integer> readPrompts;
     private boolean locked;
     private String language;
@@ -25,13 +24,12 @@ public class UserTable extends Table implements ProjectOwner {
     private JSONB socials;
 
     @JdbiConstructor
-    public UserTable(final OffsetDateTime createdAt, @PropagateNull final long id, final UUID uuid, final String name, final String email, final String tagline, final OffsetDateTime joinDate, final List<Integer> readPrompts, final boolean locked, final String language, final String theme, final boolean emailVerified, final JSONB socials) {
+    public UserTable(final OffsetDateTime createdAt, @PropagateNull final long id, final UUID uuid, final String name, final String email, final String tagline, final List<Integer> readPrompts, final boolean locked, final String language, final String theme, final boolean emailVerified, final JSONB socials) {
         super(createdAt, id);
         this.uuid = uuid;
         this.name = name;
         this.email = email;
         this.tagline = tagline;
-        this.joinDate = joinDate;
         this.readPrompts = readPrompts;
         this.locked = locked;
         this.language = language;
@@ -85,14 +83,6 @@ public class UserTable extends Table implements ProjectOwner {
 
     public void setTagline(final String tagline) {
         this.tagline = tagline;
-    }
-
-    public OffsetDateTime getJoinDate() {
-        return this.joinDate;
-    }
-
-    public void setJoinDate(final OffsetDateTime joinDate) {
-        this.joinDate = joinDate;
     }
 
     public List<Integer> getReadPrompts() {
@@ -155,7 +145,6 @@ public class UserTable extends Table implements ProjectOwner {
             ", name='" + this.name + '\'' +
             ", email='" + this.email + '\'' +
             ", tagline='" + this.tagline + '\'' +
-            ", joinDate=" + this.joinDate +
             ", readPrompts=" + this.readPrompts +
             ", locked=" + this.locked +
             ", language='" + this.language + '\'' +
