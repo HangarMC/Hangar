@@ -36,6 +36,6 @@ public interface UserCredentialDAO {
     void update(long userId, JSONB credential, @EnumByOrdinal CredentialType type);
 
     @EnumByOrdinal
-    @SqlQuery("SELECT type FROM user_credentials WHERE user_id = :userId AND type != :password AND (type != :webAuthn OR jsonb_array_length(credential -> 'credentials') > 0)")
+    @SqlQuery("SELECT type FROM user_credentials WHERE user_id = :userId AND type != :password AND (type != :webAuthn OR (credential ->> 'credentials' IS NOT NULL AND jsonb_array_length(credential -> 'credentials') > 0))")
     List<CredentialType> getAll(long userId, @EnumByOrdinal CredentialType password, @EnumByOrdinal CredentialType webAuthn);
 }
