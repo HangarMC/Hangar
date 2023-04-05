@@ -22,7 +22,7 @@ const headers: Header[] = [
   { name: "pic", title: "", sortable: false },
   { name: "name", title: i18n.t("pages.headers.username"), sortable: true },
   { name: "roles", title: i18n.t("pages.headers.roles"), sortable: true },
-  { name: "joinDate", title: i18n.t("pages.headers.joined"), sortable: true },
+  { name: "createdAt", title: i18n.t("pages.headers.joined"), sortable: true },
 ];
 
 const page = ref(0);
@@ -71,7 +71,7 @@ useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));
       @update:page="updatePage"
     >
       <template #item_pic="{ item }"><UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs"></UserAvatar></template>
-      <template #item_joinDate="{ item }">{{ i18n.d(item.joinDate, "date") }}</template>
+      <template #item_createdAt="{ item }">{{ i18n.d(item.createdAt, "date") }}</template>
       <template #item_roles="{ item }">
         <div class="space-x-1">
           <Tag v-for="roleId in item.roles" :key="roleId" :color="{ background: getRole(roleId).color }" :name="getRole(roleId).title" />

@@ -15,7 +15,6 @@ declare module "hangar-api" {
 
   interface User extends Model, Named {
     tagline: string | null;
-    joinDate: string;
     roles: number[];
     projectCount: number;
     isOrganization: boolean;

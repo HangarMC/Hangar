@@ -14,7 +14,6 @@ public class User extends Model implements Named {
 
     private final String name;
     private final String tagline;
-    private final OffsetDateTime joinDate;
     private final List<Long> roles;
     private final long projectCount;
     private final boolean isOrganization;
@@ -23,11 +22,10 @@ public class User extends Model implements Named {
     private String avatarUrl;
 
     @JdbiConstructor
-    public User(final OffsetDateTime createdAt, final String name, final String tagline, final OffsetDateTime joinDate, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory) {
+    public User(final OffsetDateTime createdAt, final String name, final String tagline, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory) {
         super(createdAt);
         this.name = name;
         this.tagline = tagline;
-        this.joinDate = joinDate;
         this.roles = roles;
         this.projectCount = projectCount;
         this.isOrganization = roles.contains(GlobalRole.ORGANIZATION.getRoleId());
@@ -42,10 +40,6 @@ public class User extends Model implements Named {
 
     public String getTagline() {
         return this.tagline;
-    }
-
-    public OffsetDateTime getJoinDate() {
-        return this.joinDate;
     }
 
     public List<Long> getRoles() {
@@ -88,12 +82,12 @@ public class User extends Model implements Named {
         if (o == null || this.getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         final User user = (User) o;
-        return this.projectCount == user.projectCount && this.isOrganization == user.isOrganization && this.locked == user.locked && this.name.equals(user.name) && Objects.equals(this.tagline, user.tagline) && this.joinDate.equals(user.joinDate) && this.roles.equals(user.roles);
+        return this.projectCount == user.projectCount && this.isOrganization == user.isOrganization && this.locked == user.locked && this.name.equals(user.name) && Objects.equals(this.tagline, user.tagline) && this.roles.equals(user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), this.name, this.tagline, this.joinDate, this.roles, this.projectCount, this.isOrganization, this.locked);
+        return Objects.hash(super.hashCode(), this.name, this.tagline, this.roles, this.projectCount, this.isOrganization, this.locked);
     }
 
     @Override
@@ -101,7 +95,6 @@ public class User extends Model implements Named {
         return "User{" +
             "name='" + this.name + '\'' +
             ", tagline='" + this.tagline + '\'' +
-            ", joinDate=" + this.joinDate +
             ", roles=" + this.roles +
             ", projectCount=" + this.projectCount +
             ", isOrganization=" + this.isOrganization +

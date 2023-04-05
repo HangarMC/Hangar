@@ -29,7 +29,7 @@ const headers: Header[] = [
   { name: "pic", title: "", sortable: false },
   { name: "name", title: i18n.t("pages.headers.username"), sortable: true },
   { name: "roles", title: i18n.t("pages.headers.roles"), sortable: true },
-  { name: "joinDate", title: i18n.t("pages.headers.joined"), sortable: true },
+  { name: "createdAt", title: i18n.t("pages.headers.joined"), sortable: true },
   { name: "projectCount", title: i18n.t("pages.headers.projects"), sortable: true },
   { name: "locked", title: i18n.t("pages.headers.locked"), sortable: true },
   { name: "org", title: i18n.t("pages.headers.organization"), sortable: true },
@@ -88,7 +88,7 @@ useHead(useSeo(i18n.t("userList.title"), null, route, null));
       <template #item_pic="{ item }">
         <UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs" />
       </template>
-      <template #item_joinDate="{ item }">{{ i18n.d(item?.joinDate, "date") }}</template>
+      <template #item_createdAt="{ item }">{{ i18n.d(item?.createdAt, "date") }}</template>
       <template #item_name="{ item }">
         <Link :to="'/' + item.name">{{ item.name }}</Link>
       </template>

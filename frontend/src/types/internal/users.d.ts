@@ -46,7 +46,7 @@ declare module "hangar-internal" {
 
   interface UserTable extends Table, Named {
     tagline: string;
-    joinDate: string;
+    createdAt: string;
     readPrompts: number[];
     locked: boolean;
     language: string;
