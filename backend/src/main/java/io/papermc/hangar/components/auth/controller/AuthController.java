@@ -108,7 +108,7 @@ public class AuthController extends HangarComponent {
         final UserCredentialTable credential = this.credentialsService.getCredential(userId, CredentialType.WEBAUTHN);
         if (credential != null) {
             final WebAuthNCredential webAuthNCredential = credential.getCredential().get(WebAuthNCredential.class);
-            if (webAuthNCredential != null) {
+            if (webAuthNCredential != null && webAuthNCredential.credentials() != null) {
                 return webAuthNCredential.credentials().stream()
                     .map(c -> new SettingsResponse.Authenticator(c.addedAt(), c.displayName(), c.id()))
                     .toList();
