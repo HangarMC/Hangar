@@ -7,33 +7,33 @@ import { computed, reactive, type Ref, ref } from "vue";
 import { remove } from "lodash-es";
 import { useVuelidate } from "@vuelidate/core";
 import { useSeo } from "~/composables/useSeo";
-import Steps from "~/lib/components/design/Steps.vue";
-import InputFile from "~/lib/components/ui/InputFile.vue";
-import InputText from "~/lib/components/ui/InputText.vue";
-import InputSelect from "~/lib/components/ui/InputSelect.vue";
-import Button from "~/lib/components/design/Button.vue";
-import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
+import Steps from "~/components/design/Steps.vue";
+import InputFile from "~/components/ui/InputFile.vue";
+import InputText from "~/components/ui/InputText.vue";
+import InputSelect from "~/components/ui/InputSelect.vue";
+import Button from "~/components/design/Button.vue";
+import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 
 import { MarkdownEditor } from "#components";
-import { maxFileSize, minLength, noDuplicated, required, requiredIf, url as validUrl } from "~/lib/composables/useValidationHelpers";
+import { maxFileSize, minLength, noDuplicated, required, requiredIf, url as validUrl } from "~/composables/useValidationHelpers";
 import { useInternalApi } from "~/composables/useApi";
 import { Platform } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { formatSize } from "~/lib/composables/useFile";
+import { formatSize } from "~/composables/useFile";
 import ChannelModal from "~/components/modals/ChannelModal.vue";
 import { useBackendData } from "~/store/backendData";
 import DependencyTable from "~/components/projects/DependencyTable.vue";
 import VersionSelector from "~/components/VersionSelector.vue";
-import Tabs from "~/lib/components/design/Tabs.vue";
+import Tabs from "~/components/design/Tabs.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import { useProjectChannels } from "~/composables/useApiHelper";
 import { definePageMeta } from "#imports";
-import { Step } from "~/lib/types/components/design/Steps";
-import { Tab } from "~/lib/types/components/design/Tabs";
-import InputGroup from "~/lib/components/ui/InputGroup.vue";
-import { useNotificationStore } from "~/lib/store/notification";
-import Alert from "~/lib/components/design/Alert.vue";
-import Link from "~/lib/components/design/Link.vue";
+import { Step } from "~/types/components/design/Steps";
+import { Tab } from "~/types/components/design/Tabs";
+import InputGroup from "~/components/ui/InputGroup.vue";
+import { useNotificationStore } from "~/store/notification";
+import Alert from "~/components/design/Alert.vue";
+import Link from "~/components/design/Link.vue";
 
 definePageMeta({
   projectPermsRequired: ["CREATE_VERSION"],

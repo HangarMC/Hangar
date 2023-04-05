@@ -2,9 +2,9 @@ import { RouteLocationNamedRaw, RouteLocationNormalized } from "vue-router";
 import { PermissionCheck, UserPermissions } from "hangar-api";
 import { defineNuxtRouteMiddleware, handleRequestError, hasPerms, toNamedPermission, useApi, useAuth } from "#imports";
 import { useAuthStore } from "~/store/auth";
-import { routePermLog } from "~/lib/composables/useLog";
+import { routePermLog } from "~/composables/useLog";
 import { NamedPermission, PermissionType } from "~/types/enums";
-import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
+import { useErrorRedirect } from "~/composables/useErrorRedirect";
 
 export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
   if (to.fullPath.startsWith("/@vite")) {

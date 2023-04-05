@@ -3,16 +3,16 @@ import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { HangarProject } from "hangar-internal";
-import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/lib/components/modals/Modal.vue";
-import Tooltip from "~/lib/components/design/Tooltip.vue";
-import InputRadio from "~/lib/components/ui/InputRadio.vue";
+import Button from "~/components/design/Button.vue";
+import Modal from "~/components/modals/Modal.vue";
+import Tooltip from "~/components/design/Tooltip.vue";
+import InputRadio from "~/components/ui/InputRadio.vue";
 import { useBackendData } from "~/store/backendData";
-import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
-import { required } from "~/lib/composables/useValidationHelpers";
+import InputTextarea from "~/components/ui/InputTextarea.vue";
+import { required } from "~/composables/useValidationHelpers";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useNotificationStore } from "~/lib/store/notification";
+import { useNotificationStore } from "~/store/notification";
 
 const props = defineProps<{
   project: HangarProject;

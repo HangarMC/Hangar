@@ -4,7 +4,7 @@ import { useI18n } from "vue-i18n";
 import { HangarProject, PinnedVersion } from "hangar-internal";
 import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
-import Card from "~/lib/components/design/Card.vue";
+import Card from "~/components/design/Card.vue";
 import ProjectInfo from "~/components/projects/ProjectInfo.vue";
 import MemberList from "~/components/projects/MemberList.vue";
 import { MarkdownEditor } from "#components";
@@ -20,9 +20,9 @@ import DownloadButton from "~/components/projects/DownloadButton.vue";
 import { useOpenProjectPages } from "~/composables/useOpenProjectPages";
 import ProjectPageMarkdown from "~/components/projects/ProjectPageMarkdown.vue";
 import { useBackendData } from "~/store/backendData";
-import Tooltip from "~/lib/components/design/Tooltip.vue";
-import Link from "~/lib/components/design/Link.vue";
-import { required } from "~/lib/composables/useValidationHelpers";
+import Tooltip from "~/components/design/Tooltip.vue";
+import Link from "~/components/design/Link.vue";
+import { required } from "~/composables/useValidationHelpers";
 import { linkout } from "~/composables/useUrlHelper";
 
 const props = defineProps<{

@@ -7,17 +7,17 @@ import { PlatformVersion } from "hangar-internal";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useBackendData } from "~/store/backendData";
 import { useInternalApi } from "~/composables/useApi";
-import InputTag from "~/lib/components/ui/InputTag.vue";
-import Button from "~/lib/components/design/Button.vue";
-import PageTitle from "~/lib/components/design/PageTitle.vue";
-import Card from "~/lib/components/design/Card.vue";
-import Table from "~/lib/components/design/Table.vue";
+import InputTag from "~/components/ui/InputTag.vue";
+import Button from "~/components/design/Button.vue";
+import PageTitle from "~/components/design/PageTitle.vue";
+import Card from "~/components/design/Card.vue";
+import Table from "~/components/design/Table.vue";
 import { useSeo } from "~/composables/useSeo";
-import { useNotificationStore } from "~/lib/store/notification";
+import { useNotificationStore } from "~/store/notification";
 import { definePageMeta } from "#imports";
 import { Platform } from "~/types/enums";
-import InputText from "~/lib/components/ui/InputText.vue";
-import { integer } from "~/lib/composables/useValidationHelpers";
+import InputText from "~/components/ui/InputText.vue";
+import { integer } from "~/composables/useValidationHelpers";
 
 definePageMeta({
   globalPermsRequired: ["MANUAL_VALUE_CHANGES"],

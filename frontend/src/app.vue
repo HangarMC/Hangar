@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import "./lib/styles/main.css";
+import "./assets/css/main.css";
 // eslint-disable-next-line import/no-unresolved
 import "uno.css";
 import { useHead } from "@vueuse/head";
 import { computed } from "vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
-import { settingsLog } from "~/lib/composables/useLog";
+import { settingsLog } from "~/composables/useLog";
 import { useAuthStore } from "~/store/auth";
 import { onErrorCaptured, transformAxiosError, useRoute, useRuntimeConfig } from "#imports";
 

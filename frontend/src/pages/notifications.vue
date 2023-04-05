@@ -9,18 +9,18 @@ import { useInvites, useNotifications, useReadNotifications, useUnreadNotificati
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
 import { useSeo } from "~/composables/useSeo";
-import { useNotificationStore } from "~/lib/store/notification";
-import Card from "~/lib/components/design/Card.vue";
-import Button from "~/lib/components/design/Button.vue";
-import { lastUpdated } from "~/lib/composables/useTime";
+import { useNotificationStore } from "~/store/notification";
+import Card from "~/components/design/Card.vue";
+import Button from "~/components/design/Button.vue";
+import { lastUpdated } from "~/composables/useTime";
 import IconMdiAlertOutline from "~icons/mdi/alert-outline";
 import IconMdiInformationOutline from "~icons/mdi/information-outline";
 import IconMdiMessageOutline from "~icons/mdi/message-outline";
 import IconMdiCheck from "~icons/mdi/check";
-import Pagination from "~/lib/components/design/Pagination.vue";
-import Tabs from "~/lib/components/design/Tabs.vue";
+import Pagination from "~/components/design/Pagination.vue";
+import Tabs from "~/components/design/Tabs.vue";
 import { definePageMeta } from "#imports";
-import { Tab } from "~/lib/types/components/design/Tabs";
+import { Tab } from "~/types/components/design/Tabs";
 
 definePageMeta({
   loginRequired: true,

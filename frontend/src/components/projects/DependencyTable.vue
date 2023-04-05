@@ -2,16 +2,16 @@
 import { DependencyVersion, PaginatedResult, PluginDependency, Project, ProjectNamespace } from "hangar-api";
 import { useI18n } from "vue-i18n";
 import { Platform } from "~/types/enums";
-import Table from "~/lib/components/design/Table.vue";
-import Button from "~/lib/components/design/Button.vue";
-import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
-import InputText from "~/lib/components/ui/InputText.vue";
-import { required } from "~/lib/composables/useValidationHelpers";
-import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
+import Table from "~/components/design/Table.vue";
+import Button from "~/components/design/Button.vue";
+import InputCheckbox from "~/components/ui/InputCheckbox.vue";
+import InputText from "~/components/ui/InputText.vue";
+import { required } from "~/composables/useValidationHelpers";
+import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
 import { useApi } from "~/composables/useApi";
-import Tabs from "~/lib/components/design/Tabs.vue";
+import Tabs from "~/components/design/Tabs.vue";
 import { ref, useRoute } from "#imports";
-import { Tab } from "~/lib/types/components/design/Tabs";
+import { Tab } from "~/types/components/design/Tabs";
 
 const route = useRoute();
 const i18n = useI18n();

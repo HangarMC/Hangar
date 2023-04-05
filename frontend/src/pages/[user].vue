@@ -4,9 +4,9 @@ import { useI18n } from "vue-i18n";
 import { Ref } from "vue";
 import { Organization } from "hangar-internal";
 import { useOrganization, useUser } from "~/composables/useApiHelper";
-import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
+import { useErrorRedirect } from "~/composables/useErrorRedirect";
 import { createError, navigateTo } from "#imports";
-import Delayed from "~/lib/components/design/Delayed.vue";
+import Delayed from "~/components/design/Delayed.vue";
 
 const i18n = useI18n();
 const route = useRoute();

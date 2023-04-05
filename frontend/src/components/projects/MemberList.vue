@@ -5,17 +5,17 @@ import { JoinableMember } from "hangar-internal";
 import { PaginatedResult, Role, User } from "hangar-api";
 import { useRoute, useRouter } from "vue-router";
 import { NamedPermission } from "~/types/enums";
-import Card from "~/lib/components/design/Card.vue";
+import Card from "~/components/design/Card.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
-import Link from "~/lib/components/design/Link.vue";
-import DropdownButton from "~/lib/components/design/DropdownButton.vue";
-import DropdownItem from "~/lib/components/design/DropdownItem.vue";
+import Link from "~/components/design/Link.vue";
+import DropdownButton from "~/components/design/DropdownButton.vue";
+import DropdownItem from "~/components/design/DropdownItem.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { getRole, useBackendData } from "~/store/backendData";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import IconMdiClock from "~icons/mdi/clock";
-import Tooltip from "~/lib/components/design/Tooltip.vue";
-import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
+import Tooltip from "~/components/design/Tooltip.vue";
+import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
 import { useAuthStore } from "~/store/auth";
 import MemberLeaveModal from "~/components/modals/MemberLeaveModal.vue";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -154,7 +154,7 @@ async function doSearch(val: string) {
 </script>
 
 <template>
-  <Card :class="props.class" v-if="sortedMembers.length > 0 || canEdit">
+  <Card v-if="sortedMembers.length > 0 || canEdit" :class="props.class">
     <template #header>
       <div class="inline-flex w-full flex-cols space-between">
         <h3 class="flex-grow">{{ i18n.t("project.members") }}</h3>

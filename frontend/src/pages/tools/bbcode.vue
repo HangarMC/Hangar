@@ -3,13 +3,13 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useHead } from "@vueuse/head";
 import { useRoute } from "vue-router";
-import Button from "~/lib/components/design/Button.vue";
+import Button from "~/components/design/Button.vue";
 import Markdown from "~/components/Markdown.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import PageTitle from "~/lib/components/design/PageTitle.vue";
+import PageTitle from "~/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
-import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
+import InputTextarea from "~/components/ui/InputTextarea.vue";
 
 const i18n = useI18n();
 const route = useRoute();

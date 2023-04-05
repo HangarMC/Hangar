@@ -35,5 +35,5 @@ watchPostEffect(async () => {
 </template>
 
 <style lang="scss">
-@import "@/lib/assets/css/markdown.scss";
+@import "@/assets/css/markdown.scss";
 </style>

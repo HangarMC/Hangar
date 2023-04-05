@@ -4,7 +4,7 @@ import { HangarProject } from "hangar-internal";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
 import { usePage } from "~/composables/useApiHelper";
-import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
+import { useErrorRedirect } from "~/composables/useErrorRedirect";
 
 export async function useProjectPage(route: RouteLocationNormalizedLoaded, router: Router, project: HangarProject, mainPage: boolean) {
   const page = mainPage ? ref(project.mainPage) : await usePage(route.params.user as string, route.params.project as string, route.params.all as string);

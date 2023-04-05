@@ -3,14 +3,14 @@ import { useI18n } from "vue-i18n";
 import { HangarProject, PinnedVersion } from "hangar-internal";
 import { computed } from "vue";
 import { PlatformVersionDownload } from "hangar-api";
-import Button from "~/lib/components/design/Button.vue";
+import Button from "~/components/design/Button.vue";
 import { Platform } from "~/types/enums";
-import DropdownButton from "~/lib/components/design/DropdownButton.vue";
+import DropdownButton from "~/components/design/DropdownButton.vue";
 import { useBackendData } from "~/store/backendData";
-import DropdownItem from "~/lib/components/design/DropdownItem.vue";
+import DropdownItem from "~/components/design/DropdownItem.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
 import { useInternalApi } from "~/composables/useApi";
-import { formatSize } from "~/lib/composables/useFile";
+import { formatSize } from "~/composables/useFile";
 
 const i18n = useI18n();
 

@@ -2,7 +2,7 @@ import type { HeadObject } from "@vueuse/head";
 import type { TranslateResult } from "vue-i18n";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
 import { useSeoMeta } from "@vueuse/head";
-import { useConfig } from "~/lib/composables/useConfig";
+import { useConfig } from "~/composables/useConfig";
 
 export function useSeo(
   title: string | TranslateResult | null | undefined,

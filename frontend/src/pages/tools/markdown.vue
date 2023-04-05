@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useHead } from "@vueuse/head";
 import { useRoute } from "vue-router";
-import PageTitle from "~/lib/components/design/PageTitle.vue";
+import PageTitle from "~/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
 
 const i18n = useI18n();

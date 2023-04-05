@@ -4,14 +4,14 @@ import { HangarProjectPage } from "hangar-internal";
 import { computed, inject, ref, watch } from "vue";
 import { AxiosError } from "axios";
 import { useRoute, useRouter } from "vue-router";
-import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/lib/components/modals/Modal.vue";
+import Button from "~/components/design/Button.vue";
+import Modal from "~/components/modals/Modal.vue";
 import { useBackendData } from "~/store/backendData";
-import InputText from "~/lib/components/ui/InputText.vue";
-import InputSelect from "~/lib/components/ui/InputSelect.vue";
+import InputText from "~/components/ui/InputText.vue";
+import InputSelect from "~/components/ui/InputSelect.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { Option } from "~/lib/types/components/ui/InputSelect";
+import { Option } from "~/types/components/ui/InputSelect";
 
 const props = defineProps<{
   projectId: number;

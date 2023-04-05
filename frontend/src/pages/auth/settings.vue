@@ -6,18 +6,18 @@ import * as webauthnJson from "@github/webauthn-json";
 import { AuthSettings } from "hangar-internal";
 import { useSeo } from "~/composables/useSeo";
 import { useAuthStore } from "~/store/auth";
-import Button from "~/lib/components/design/Button.vue";
+import Button from "~/components/design/Button.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useAuthSettings } from "~/composables/useApiHelper";
-import Card from "~/lib/components/design/Card.vue";
-import InputText from "~/lib/components/ui/InputText.vue";
-import AvatarChangeModal from "~/lib/components/modals/AvatarChangeModal.vue";
+import Card from "~/components/design/Card.vue";
+import InputText from "~/components/ui/InputText.vue";
+import AvatarChangeModal from "~/components/modals/AvatarChangeModal.vue";
 import { definePageMeta } from "#imports";
-import Alert from "~/lib/components/design/Alert.vue";
-import Modal from "~/lib/components/modals/Modal.vue";
-import InputPassword from "~/lib/components/ui/InputPassword.vue";
-import { useNotificationStore } from "~/lib/store/notification";
-import ComingSoon from "~/lib/components/design/ComingSoon.vue";
+import Alert from "~/components/design/Alert.vue";
+import Modal from "~/components/modals/Modal.vue";
+import InputPassword from "~/components/ui/InputPassword.vue";
+import { useNotificationStore } from "~/store/notification";
+import ComingSoon from "~/components/design/ComingSoon.vue";
 
 definePageMeta({
   loginRequired: true,

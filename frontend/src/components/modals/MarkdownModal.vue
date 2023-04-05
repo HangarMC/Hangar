@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { type TranslateResult } from "vue-i18n";
 import Markdown from "~/components/Markdown.vue";
-import Modal from "~/lib/components/modals/Modal.vue";
+import Modal from "~/components/modals/Modal.vue";
 
 const props = defineProps<{
   title: string | TranslateResult;

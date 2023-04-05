@@ -4,18 +4,18 @@ import { User } from "hangar-api";
 import { useI18n } from "vue-i18n";
 import { computed } from "vue";
 import UserAvatar from "~/components/UserAvatar.vue";
-import Card from "~/lib/components/design/Card.vue";
+import Card from "~/components/design/Card.vue";
 import TaglineModal from "~/components/modals/TaglineModal.vue";
 import { NamedPermission } from "~/types/enums";
 import { hasPerms } from "~/composables/usePerm";
 import { useAuthStore } from "~/store/auth";
 import Tag from "~/components/Tag.vue";
-import AvatarChangeModal from "~/lib/components/modals/AvatarChangeModal.vue";
-import Tooltip from "~/lib/components/design/Tooltip.vue";
-import Button from "~/lib/components/design/Button.vue";
-import Popper from "~/lib/components/design/Popper.vue";
+import AvatarChangeModal from "~/components/modals/AvatarChangeModal.vue";
+import Tooltip from "~/components/design/Tooltip.vue";
+import Button from "~/components/design/Button.vue";
+import Popper from "~/components/design/Popper.vue";
 import { getRole } from "~/store/backendData";
-import PrettyTime from "~/lib/components/design/PrettyTime.vue";
+import PrettyTime from "~/components/design/PrettyTime.vue";
 
 const props = defineProps<{
   viewingUser: User;

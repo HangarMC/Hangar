@@ -2,9 +2,9 @@
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/lib/components/modals/Modal.vue";
-import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
+import Button from "~/components/design/Button.vue";
+import Modal from "~/components/modals/Modal.vue";
+import InputTextarea from "~/components/ui/InputTextarea.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 

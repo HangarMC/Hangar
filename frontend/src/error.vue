@@ -8,7 +8,7 @@ import { useSeo } from "~/composables/useSeo";
 import Lottie from "~/components/Lottie.vue";
 import { useAuthStore } from "~/store/auth";
 import { useSettingsStore } from "~/store/useSettingsStore";
-import { settingsLog } from "~/lib/composables/useLog";
+import { settingsLog } from "~/composables/useLog";
 
 const props = defineProps<{
   error: NuxtError;

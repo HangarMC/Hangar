@@ -5,11 +5,11 @@ import { HangarNotification, HangarUser } from "hangar-internal";
 import { ref } from "vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import Announcement from "~/components/Announcement.vue";
-import DropdownButton from "~/lib/components/design/DropdownButton.vue";
-import DropdownItem from "~/lib/components/design/DropdownItem.vue";
-import Popper from "~/lib/components/design/Popper.vue";
+import DropdownButton from "~/components/design/DropdownButton.vue";
+import DropdownItem from "~/components/design/DropdownItem.vue";
+import Popper from "~/components/design/Popper.vue";
 
-import hangarLogo from "~/lib/assets/hangar-logo.svg";
+import hangarLogo from "~/assets/hangar-logo.svg";
 
 import IconMdiHome from "~icons/mdi/home";
 import IconMdiAccountGroup from "~icons/mdi/account-group";
@@ -32,17 +32,17 @@ import IconMdiFolderInformationOutline from "~icons/mdi/folder-information-outli
 import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
 import { useBackendData } from "~/store/backendData";
-import { authLog } from "~/lib/composables/useLog";
-import { lastUpdated } from "~/lib/composables/useTime";
+import { authLog } from "~/composables/useLog";
+import { lastUpdated } from "~/composables/useTime";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import UserAvatar from "~/components/UserAvatar.vue";
-import Button from "~/lib/components/design/Button.vue";
+import Button from "~/components/design/Button.vue";
 import { useRecentNotifications, useUnreadNotificationsCount } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import Link from "~/lib/components/design/Link.vue";
+import Link from "~/components/design/Link.vue";
 import { useInternalApi } from "~/composables/useApi";
-import { useConfig } from "~/lib/composables/useConfig";
+import { useConfig } from "~/composables/useConfig";
 import { unref } from "#imports";
 
 // marker so that you can inspect backend data in dev tools

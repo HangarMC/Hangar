@@ -3,8 +3,8 @@ import { NuxtApp } from "nuxt/app";
 import NProgress from "nprogress";
 import { defineNuxtPlugin, useAuth, useRequestEvent } from "#imports";
 import { useAuthStore } from "~/store/auth";
-import { authLog, axiosLog } from "~/lib/composables/useLog";
-import { useConfig } from "~/lib/composables/useConfig";
+import { authLog, axiosLog } from "~/composables/useLog";
+import { useConfig } from "~/composables/useConfig";
 import { transformAxiosError } from "~/composables/useErrorHandling";
 
 let progressBarTimeout: any;

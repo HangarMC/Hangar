@@ -9,7 +9,7 @@ import Markdown from "~/components/Markdown.vue";
 import { MarkdownEditor } from "#components";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
-import Card from "~/lib/components/design/Card.vue";
+import Card from "~/components/design/Card.vue";
 import ProjectPageMarkdown from "~/components/projects/ProjectPageMarkdown.vue";
 import { useOpenProjectPages } from "~/composables/useOpenProjectPages";
 

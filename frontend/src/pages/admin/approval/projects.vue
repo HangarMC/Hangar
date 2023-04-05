@@ -5,7 +5,7 @@ import { useHead } from "@vueuse/head";
 import { useRoute } from "vue-router";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import Card from "~/lib/components/design/Card.vue";
+import Card from "~/components/design/Card.vue";
 import AdminProjectList from "~/components/projects/AdminProjectList.vue";
 import { useSeo } from "~/composables/useSeo";
 import { definePageMeta } from "#imports";

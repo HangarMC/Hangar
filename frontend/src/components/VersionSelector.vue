@@ -2,10 +2,10 @@
 import { computed, Ref, watch } from "vue";
 import { PlatformVersion } from "hangar-internal";
 import { ValidationRule } from "@vuelidate/core";
-import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
-import ArrowSpoiler from "~/lib/components/design/ArrowSpoiler.vue";
+import InputCheckbox from "~/components/ui/InputCheckbox.vue";
+import ArrowSpoiler from "~/components/design/ArrowSpoiler.vue";
 import { ref } from "#imports";
-import InputGroup from "~/lib/components/ui/InputGroup.vue";
+import InputGroup from "~/components/ui/InputGroup.vue";
 
 const props = defineProps<{
   versions: PlatformVersion[];

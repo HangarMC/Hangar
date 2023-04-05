@@ -5,23 +5,23 @@ import { ApiKey, User } from "hangar-api";
 import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
 import { useVuelidate } from "@vuelidate/core";
-import PageTitle from "~/lib/components/design/PageTitle.vue";
-import InputText from "~/lib/components/ui/InputText.vue";
-import Button from "~/lib/components/design/Button.vue";
+import PageTitle from "~/components/design/PageTitle.vue";
+import InputText from "~/components/ui/InputText.vue";
+import Button from "~/components/design/Button.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
-import Table from "~/lib/components/design/Table.vue";
-import Alert from "~/lib/components/design/Alert.vue";
-import Card from "~/lib/components/design/Card.vue";
+import InputCheckbox from "~/components/ui/InputCheckbox.vue";
+import Table from "~/components/design/Table.vue";
+import Alert from "~/components/design/Alert.vue";
+import Card from "~/components/design/Card.vue";
 import { useSeo } from "~/composables/useSeo";
-import { useNotificationStore } from "~/lib/store/notification";
-import { maxLength, minLength, required } from "~/lib/composables/useValidationHelpers";
+import { useNotificationStore } from "~/store/notification";
+import { maxLength, minLength, required } from "~/composables/useValidationHelpers";
 import { validApiKeyName } from "~/composables/useHangarValidations";
-import InputGroup from "~/lib/components/ui/InputGroup.vue";
+import InputGroup from "~/components/ui/InputGroup.vue";
 import { NamedPermission } from "~/types/enums";
 import { definePageMeta } from "#imports";
-import Tooltip from "~/lib/components/design/Tooltip.vue";
+import Tooltip from "~/components/design/Tooltip.vue";
 
 definePageMeta({
   currentUserRequired: true,

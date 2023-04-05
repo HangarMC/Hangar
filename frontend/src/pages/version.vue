@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { useHead } from "@vueuse/head";
 import { useRoute } from "vue-router";
-import PageTitle from "~/lib/components/design/PageTitle.vue";
-import Link from "~/lib/components/design/Link.vue";
-import Alert from "~/lib/components/design/Alert.vue";
+import PageTitle from "~/components/design/PageTitle.vue";
+import Link from "~/components/design/Link.vue";
+import Alert from "~/components/design/Alert.vue";
 import { useSeo } from "~/composables/useSeo";
 import { useVersionInfo } from "~/composables/useApiHelper";
 

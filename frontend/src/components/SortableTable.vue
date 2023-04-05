@@ -1,10 +1,10 @@
 <script lang="ts" setup generic="T extends Record<string, any>">
 import { reactive, ref, watch } from "vue";
 import { Pagination } from "hangar-api";
-import { hasSlotContent } from "~/lib/composables/useSlot";
-import Table from "~/lib/components/design/Table.vue";
-import PaginationButtons from "~/lib/components/design/PaginationButtons.vue";
-import PaginationComponent from "~/lib/components/design/Pagination.vue";
+import { hasSlotContent } from "~/composables/useSlot";
+import Table from "~/components/design/Table.vue";
+import PaginationButtons from "~/components/design/PaginationButtons.vue";
+import PaginationComponent from "~/components/design/Pagination.vue";
 import { Header } from "~/types/components/SortableTable";
 
 type T = Record<string, any>; // remove when https://github.com/vuejs/rfcs/discussions/436 lands or when using volar

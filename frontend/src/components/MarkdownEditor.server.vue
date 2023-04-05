@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ValidationRule } from "@vuelidate/core";
 import Markdown from "~/components/Markdown.vue";
-import Button from "~/lib/components/design/Button.vue";
+import Button from "~/components/design/Button.vue";
 
 const props = withDefaults(
   defineProps<{

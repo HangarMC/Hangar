@@ -3,9 +3,9 @@ import Draggable from "vuedraggable";
 import { useVModel } from "@vueuse/core";
 import { LinkSection } from "hangar-api";
 import { useI18n } from "vue-i18n";
-import InputText from "~/lib/components/ui/InputText.vue";
-import Button from "~/lib/components/design/Button.vue";
-import { maxLength, minLength, required, url } from "~/lib/composables/useValidationHelpers";
+import InputText from "~/components/ui/InputText.vue";
+import Button from "~/components/design/Button.vue";
+import { maxLength, minLength, required, url } from "~/composables/useValidationHelpers";
 import { useBackendData } from "~/store/backendData";
 
 const props = defineProps<{ modelValue: LinkSection["links"] }>();

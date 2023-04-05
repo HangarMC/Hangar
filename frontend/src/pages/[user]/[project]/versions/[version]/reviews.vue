@@ -7,20 +7,20 @@ import { computed, reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { useSeo } from "~/composables/useSeo";
 import { Platform, ReviewAction, ReviewState } from "~/types/enums";
-import Button from "~/lib/components/design/Button.vue";
-import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
-import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
-import Alert from "~/lib/components/design/Alert.vue";
+import Button from "~/components/design/Button.vue";
+import InputCheckbox from "~/components/ui/InputCheckbox.vue";
+import InputTextarea from "~/components/ui/InputTextarea.vue";
+import Alert from "~/components/design/Alert.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useAuthStore } from "~/store/auth";
 import { useBackendData } from "~/store/backendData";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import Tag from "~/components/Tag.vue";
-import Accordeon from "~/lib/components/design/Accordeon.vue";
-import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
+import Accordeon from "~/components/design/Accordeon.vue";
+import TextAreaModal from "~/components/modals/TextAreaModal.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
 import { definePageMeta } from "#imports";
-import PrettyTime from "~/lib/components/design/PrettyTime.vue";
+import PrettyTime from "~/components/design/PrettyTime.vue";
 
 definePageMeta({
   globalPermsRequired: ["REVIEWER"],

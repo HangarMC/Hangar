@@ -4,12 +4,12 @@ import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { useSeo } from "~/composables/useSeo";
-import Card from "~/lib/components/design/Card.vue";
-import InputText from "~/lib/components/ui/InputText.vue";
-import Button from "~/lib/components/design/Button.vue";
-import { email as emailRule, required } from "~/lib/composables/useValidationHelpers";
+import Card from "~/components/design/Card.vue";
+import InputText from "~/components/ui/InputText.vue";
+import Button from "~/components/design/Button.vue";
+import { email as emailRule, required } from "~/composables/useValidationHelpers";
 import { useInternalApi } from "~/composables/useApi";
-import InputPassword from "~/lib/components/ui/InputPassword.vue";
+import InputPassword from "~/components/ui/InputPassword.vue";
 
 const route = useRoute();
 const router = useRouter();

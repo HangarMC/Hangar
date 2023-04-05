@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
-import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/lib/components/modals/Modal.vue";
+import Button from "~/components/design/Button.vue";
+import Modal from "~/components/modals/Modal.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 

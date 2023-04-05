@@ -10,24 +10,24 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
 import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
 import { useSeo } from "~/composables/useSeo";
-import Steps from "~/lib/components/design/Steps.vue";
+import Steps from "~/components/design/Steps.vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
-import InputSelect from "~/lib/components/ui/InputSelect.vue";
-import InputText from "~/lib/components/ui/InputText.vue";
-import InputTag from "~/lib/components/ui/InputTag.vue";
-import Button from "~/lib/components/design/Button.vue";
-import { required, maxLength, pattern, url, requiredIf } from "~/lib/composables/useValidationHelpers";
+import InputSelect from "~/components/ui/InputSelect.vue";
+import InputText from "~/components/ui/InputText.vue";
+import InputTag from "~/components/ui/InputTag.vue";
+import Button from "~/components/design/Button.vue";
+import { required, maxLength, pattern, url, requiredIf } from "~/composables/useValidationHelpers";
 import { validProjectName } from "~/composables/useHangarValidations";
-import Spinner from "~/lib/components/design/Spinner.vue";
-import Link from "~/lib/components/design/Link.vue";
+import Spinner from "~/components/design/Spinner.vue";
+import Link from "~/components/design/Link.vue";
 import { usePossibleOwners } from "~/composables/useApiHelper";
 import { definePageMeta } from "#imports";
-import { Step } from "~/lib/types/components/design/Steps";
+import { Step } from "~/types/components/design/Steps";
 import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
-import Alert from "~/lib/components/design/Alert.vue";
+import Alert from "~/components/design/Alert.vue";
 import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
-import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
-import Tooltip from "~/lib/components/design/Tooltip.vue";
+import InputCheckbox from "~/components/ui/InputCheckbox.vue";
+import Tooltip from "~/components/design/Tooltip.vue";
 
 definePageMeta({
   loginRequired: true,

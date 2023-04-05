@@ -3,9 +3,9 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
 import { useHealthReport } from "~/composables/useApiHelper";
-import Card from "~/lib/components/design/Card.vue";
-import Link from "~/lib/components/design/Link.vue";
-import PageTitle from "~/lib/components/design/PageTitle.vue";
+import Card from "~/components/design/Card.vue";
+import Link from "~/components/design/Link.vue";
+import PageTitle from "~/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
 import { definePageMeta } from "#imports";
 

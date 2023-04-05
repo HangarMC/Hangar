@@ -3,12 +3,12 @@ import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useHead } from "@vueuse/head";
 import { HangarProject } from "hangar-internal";
-import Card from "~/lib/components/design/Card.vue";
-import PageTitle from "~/lib/components/design/PageTitle.vue";
+import Card from "~/components/design/Card.vue";
+import PageTitle from "~/components/design/PageTitle.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
-import Alert from "~/lib/components/design/Alert.vue";
+import Alert from "~/components/design/Alert.vue";
 import { useStargazers } from "~/composables/useApiHelper";
-import Link from "~/lib/components/design/Link.vue";
+import Link from "~/components/design/Link.vue";
 import { useSeo } from "~/composables/useSeo";
 
 const route = useRoute();

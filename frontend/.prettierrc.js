@@ -1,3 +1,11 @@
+/**
+ * @type {import("prettier").Options}
+ */
 module.exports = {
-  ...require("./src/lib/config/prettier.config"),
+  tabWidth: 2,
+  semi: true,
+  singleQuote: false,
+  printWidth: 160,
+  arrowParens: "always",
+  trailingComma: "es5",
 };

@@ -4,7 +4,7 @@ import { BackendData } from "hangar-api";
 import axios, { AxiosInstance } from "axios";
 import { IProjectCategory } from "hangar-internal";
 // noinspection ES6PreferShortImport
-import { backendDataLog } from "../lib/composables/useLog";
+import { backendDataLog } from "../composables/useLog";
 
 // inspired by knossos build hook: https://github.com/modrinth/knossos/blob/master/nuxt.config.js
 export default defineNuxtModule({

@@ -2,9 +2,9 @@
 import { HangarVersion, HangarProject, JarScanResult } from "hangar-internal";
 import { definePageMeta, ref, useHead, useInternalApi, useJarScan, useRoute, useSeo } from "#imports";
 import { Platform } from "~/types/enums";
-import PrettyTime from "~/lib/components/design/PrettyTime.vue";
-import { useNotificationStore } from "~/lib/store/notification";
-import Button from "~/lib/components/design/Button.vue";
+import PrettyTime from "~/components/design/PrettyTime.vue";
+import { useNotificationStore } from "~/store/notification";
+import Button from "~/components/design/Button.vue";
 
 definePageMeta({
   globalPermsRequired: ["REVIEWER"],

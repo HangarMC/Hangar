@@ -9,32 +9,32 @@ import { useVuelidate } from "@vuelidate/core";
 import { Cropper, type CropperResult } from "vue-advanced-cropper";
 import { PaginatedResult, User } from "hangar-api";
 import { useSeo } from "~/composables/useSeo";
-import Card from "~/lib/components/design/Card.vue";
+import Card from "~/components/design/Card.vue";
 import MemberList from "~/components/projects/MemberList.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission, Tag, Visibility } from "~/types/enums";
-import Button from "~/lib/components/design/Button.vue";
-import Tabs from "~/lib/components/design/Tabs.vue";
-import InputSelect from "~/lib/components/ui/InputSelect.vue";
+import Button from "~/components/design/Button.vue";
+import Tabs from "~/components/design/Tabs.vue";
+import InputSelect from "~/components/ui/InputSelect.vue";
 import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
-import InputText from "~/lib/components/ui/InputText.vue";
-import InputFile from "~/lib/components/ui/InputFile.vue";
+import InputText from "~/components/ui/InputText.vue";
+import InputFile from "~/components/ui/InputFile.vue";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useNotificationStore } from "~/lib/store/notification";
-import InputTag from "~/lib/components/ui/InputTag.vue";
-import TextAreaModal from "~/lib/components/modals/TextAreaModal.vue";
+import { useNotificationStore } from "~/store/notification";
+import InputTag from "~/components/ui/InputTag.vue";
+import TextAreaModal from "~/components/modals/TextAreaModal.vue";
 import ProjectSettingsSection from "~/components/projects/ProjectSettingsSection.vue";
-import { maxLength, required, pattern, requiredIf, url } from "~/lib/composables/useValidationHelpers";
+import { maxLength, required, pattern, requiredIf, url } from "~/composables/useValidationHelpers";
 import { validProjectName } from "~/composables/useHangarValidations";
 
 import "vue-advanced-cropper/dist/style.css";
-import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
+import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
 import { definePageMeta } from "#imports";
-import { Tab } from "~/lib/types/components/design/Tabs";
+import { Tab } from "~/types/components/design/Tabs";
 import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
-import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
-import Tooltip from "~/lib/components/design/Tooltip.vue";
+import InputCheckbox from "~/components/ui/InputCheckbox.vue";
+import Tooltip from "~/components/design/Tooltip.vue";
 
 definePageMeta({
   projectPermsRequired: ["EDIT_SUBJECT_SETTINGS"],

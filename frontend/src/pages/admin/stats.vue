@@ -5,12 +5,12 @@ import { ref, watch } from "vue";
 import { LineChartData, LineChartOptions, FixedScaleAxis } from "chartist";
 import { useHead } from "@vueuse/head";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { fromISOString, toISODateString } from "~/lib/composables/useDate";
+import { fromISOString, toISODateString } from "~/composables/useDate";
 import { useInternalApi } from "~/composables/useApi";
 import Chart from "~/components/Chart.vue";
-import PageTitle from "~/lib/components/design/PageTitle.vue";
-import Card from "~/lib/components/design/Card.vue";
-import InputDate from "~/lib/components/ui/InputDate.vue";
+import PageTitle from "~/components/design/PageTitle.vue";
+import Card from "~/components/design/Card.vue";
+import InputDate from "~/components/ui/InputDate.vue";
 import { useSeo } from "~/composables/useSeo";
 import { definePageMeta } from "#imports";
 

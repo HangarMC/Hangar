@@ -6,18 +6,18 @@ import { OrganizationRoleTable } from "hangar-internal";
 import { computed, ref } from "vue";
 import { useHead } from "@vueuse/head";
 import { AxiosError } from "axios";
-import PageTitle from "~/lib/components/design/PageTitle.vue";
-import Link from "~/lib/components/design/Link.vue";
-import Card from "~/lib/components/design/Card.vue";
+import PageTitle from "~/components/design/PageTitle.vue";
+import Link from "~/components/design/Link.vue";
+import Card from "~/components/design/Card.vue";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import SortableTable from "~/components/SortableTable.vue";
 import { useSeo } from "~/composables/useSeo";
 import { useProjects, useUser } from "~/composables/useApiHelper";
 import Tag from "~/components/Tag.vue";
-import InputSelect from "~/lib/components/ui/InputSelect.vue";
+import InputSelect from "~/components/ui/InputSelect.vue";
 import { getRole, useBackendData } from "~/store/backendData";
-import Button from "~/lib/components/design/Button.vue";
+import Button from "~/components/design/Button.vue";
 import { definePageMeta } from "#imports";
 import { Header } from "~/types/components/SortableTable";
 
@@ -102,8 +102,8 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
           <Button
             size="medium"
             :disabled="!selectedRole || !user?.roles.some((r) => getRole(r).value === selectedRole)"
-            @click="processRole(false)"
             class="ml-1"
+            @click="processRole(false)"
           >
             {{ i18n.t("general.delete") }}
           </Button>

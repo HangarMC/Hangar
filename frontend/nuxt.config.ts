@@ -5,8 +5,8 @@ import Icons from "unplugin-icons/vite";
 import Components from "unplugin-vue-components/vite";
 import { ProxyOptions } from "@nuxt-alt/proxy";
 import { defineNuxtConfig } from "nuxt/config";
-import prettier from "./src/lib/plugins/prettier";
-import unocss from "./src/lib/config/unocss.config";
+import prettier from "./src/vite/prettier";
+import unocss from "./unocss.config";
 
 const backendHost = process.env.BACKEND_HOST || "http://localhost:8080";
 const local = true; // set to false if backendData should be fetched from staging. You might need to hard reload (Ctrl+F5) the next page you're on when changing this value

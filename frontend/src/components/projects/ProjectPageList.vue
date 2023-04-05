@@ -2,12 +2,12 @@
 import { HangarProject } from "hangar-internal";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
-import Card from "~/lib/components/design/Card.vue";
+import Card from "~/components/design/Card.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import NewPageModal from "~/components/modals/NewPageModal.vue";
-import TreeView from "~/lib/components/design/TreeView.vue";
-import Link from "~/lib/components/design/Link.vue";
+import TreeView from "~/components/design/TreeView.vue";
+import Link from "~/components/design/Link.vue";
 
 const props = defineProps<{
   project: HangarProject;

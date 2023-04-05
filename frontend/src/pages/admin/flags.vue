@@ -3,12 +3,12 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { ref } from "vue";
 import { useHead } from "@vueuse/head";
-import PageTitle from "~/lib/components/design/PageTitle.vue";
+import PageTitle from "~/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
 import Flags from "~/components/Flags.vue";
-import Tabs from "~/lib/components/design/Tabs.vue";
+import Tabs from "~/components/design/Tabs.vue";
 import { definePageMeta } from "#imports";
-import { Tab } from "~/lib/types/components/design/Tabs";
+import { Tab } from "~/types/components/design/Tabs";
 
 definePageMeta({
   globalPermsRequired: ["MOD_NOTES_AND_FLAGS"],

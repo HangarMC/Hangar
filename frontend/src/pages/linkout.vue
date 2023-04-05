@@ -5,9 +5,9 @@ import { useI18n } from "vue-i18n";
 import { useLocalStorage } from "@vueuse/core";
 import { computed } from "vue";
 import { useSeo } from "~/composables/useSeo";
-import Card from "~/lib/components/design/Card.vue";
-import Button from "~/lib/components/design/Button.vue";
-import Link from "~/lib/components/design/Link.vue";
+import Card from "~/components/design/Card.vue";
+import Button from "~/components/design/Button.vue";
+import Link from "~/components/design/Link.vue";
 
 const route = useRoute();
 const remoteUrl = Array.isArray(route.query.remoteUrl) ? route.query.remoteUrl[0] : route.query.remoteUrl;

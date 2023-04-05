@@ -6,22 +6,22 @@ import { PaginatedResult, Project, User } from "hangar-api";
 import { computed, ref } from "vue";
 import { LoggedAction } from "hangar-internal";
 import { debounce } from "lodash-es";
-import PageTitle from "~/lib/components/design/PageTitle.vue";
+import PageTitle from "~/components/design/PageTitle.vue";
 import { useActionLogs } from "~/composables/useApiHelper";
-import Card from "~/lib/components/design/Card.vue";
+import Card from "~/components/design/Card.vue";
 import SortableTable from "~/components/SortableTable.vue";
-import Link from "~/lib/components/design/Link.vue";
+import Link from "~/components/design/Link.vue";
 import MarkdownModal from "~/components/modals/MarkdownModal.vue";
 import DiffModal from "~/components/modals/DiffModal.vue";
-import Button from "~/lib/components/design/Button.vue";
+import Button from "~/components/design/Button.vue";
 import { useSeo } from "~/composables/useSeo";
 import { definePageMeta, hasPerms, useApi, useInternalApi, useRouter, watch } from "#imports";
-import InputText from "~/lib/components/ui/InputText.vue";
-import InputSelect from "~/lib/components/ui/InputSelect.vue";
+import InputText from "~/components/ui/InputText.vue";
+import InputSelect from "~/components/ui/InputSelect.vue";
 import { useBackendData } from "~/store/backendData";
 import { Header } from "~/types/components/SortableTable";
 import { NamedPermission } from "~/types/enums";
-import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
+import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
 
 definePageMeta({
   globalPermsRequired: ["VIEW_LOGS"],

@@ -3,12 +3,12 @@ import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { PaginatedResult, User } from "hangar-api";
-import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/lib/components/modals/Modal.vue";
+import Button from "~/components/design/Button.vue";
+import Modal from "~/components/modals/Modal.vue";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import InputAutocomplete from "~/lib/components/ui/InputAutocomplete.vue";
-import { useNotificationStore } from "~/lib/store/notification";
+import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
+import { useNotificationStore } from "~/store/notification";
 
 const props = defineProps<{
   organization: string;

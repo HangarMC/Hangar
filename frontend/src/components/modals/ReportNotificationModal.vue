@@ -3,13 +3,13 @@ import { useI18n } from "vue-i18n";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { Flag } from "hangar-internal";
-import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/lib/components/modals/Modal.vue";
-import InputTextarea from "~/lib/components/ui/InputTextarea.vue";
+import Button from "~/components/design/Button.vue";
+import Modal from "~/components/modals/Modal.vue";
+import InputTextarea from "~/components/ui/InputTextarea.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { useNotificationStore } from "~/lib/store/notification";
-import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
+import { useNotificationStore } from "~/store/notification";
+import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 
 const props = defineProps<{
   flag: Flag;

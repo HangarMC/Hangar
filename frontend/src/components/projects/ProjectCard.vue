@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { Project } from "hangar-api";
-import Card from "~/lib/components/design/Card.vue";
-import Link from "~/lib/components/design/Link.vue";
+import Card from "~/components/design/Card.vue";
+import Link from "~/components/design/Link.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
-import { lastUpdated } from "~/lib/composables/useTime";
-import Tooltip from "~/lib/components/design/Tooltip.vue";
+import { lastUpdated } from "~/composables/useTime";
+import Tooltip from "~/components/design/Tooltip.vue";
 import { Tag, Visibility } from "~/types/enums";
 import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
-import PrettyTime from "~/lib/components/design/PrettyTime.vue";
+import PrettyTime from "~/components/design/PrettyTime.vue";
 import IconMdiPuzzleOutline from "~icons/mdi/puzzle-outline";
 import IconMdiBookshelf from "~icons/mdi/bookshelf";
 import IconMdiLeaf from "~icons/mdi/leaf";

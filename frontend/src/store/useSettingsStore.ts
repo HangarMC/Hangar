@@ -2,9 +2,9 @@ import { defineStore } from "pinia";
 import type { Ref } from "vue";
 import { computed, ref, unref } from "vue";
 import { useAuthStore } from "~/store/auth";
-import { settingsLog } from "~/lib/composables/useLog";
+import { settingsLog } from "~/composables/useLog";
 import { useCookies } from "~/composables/useCookies";
-import { useSettingsHelper } from "~/lib/composables/useSettingsHelper";
+import { useSettingsHelper } from "~/composables/useSettingsHelper";
 import { useInternalApi } from "~/composables/useApi";
 
 export const useSettingsStore = defineStore("settings", () => {

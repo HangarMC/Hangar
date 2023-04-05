@@ -5,11 +5,11 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { HangarProjectPage } from "hangar-internal";
 import { useProject } from "~/composables/useApiHelper";
-import { useErrorRedirect } from "~/lib/composables/useErrorRedirect";
+import { useErrorRedirect } from "~/composables/useErrorRedirect";
 import ProjectHeader from "~/components/projects/ProjectHeader.vue";
 import ProjectNav from "~/components/projects/ProjectNav.vue";
 import { createError, navigateTo } from "#imports";
-import Delayed from "~/lib/components/design/Delayed.vue";
+import Delayed from "~/components/design/Delayed.vue";
 
 defineProps({
   user: {

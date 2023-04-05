@@ -8,12 +8,12 @@ import { useResolvedFlags, useUnresolvedFlags } from "~/composables/useApiHelper
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
 import UserAvatar from "~/components/UserAvatar.vue";
-import Card from "~/lib/components/design/Card.vue";
-import Button from "~/lib/components/design/Button.vue";
+import Card from "~/components/design/Card.vue";
+import Button from "~/components/design/Button.vue";
 import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
 import ReportNotificationModal from "~/components/modals/ReportNotificationModal.vue";
-import Pagination from "~/lib/components/design/Pagination.vue";
-import Link from "~/lib/components/design/Link.vue";
+import Pagination from "~/components/design/Pagination.vue";
+import Link from "~/components/design/Link.vue";
 
 const props = defineProps<{
   resolved: boolean;

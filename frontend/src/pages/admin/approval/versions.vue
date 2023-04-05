@@ -6,11 +6,11 @@ import { useRoute } from "vue-router";
 import SortableTable from "~/components/SortableTable.vue";
 import { ReviewAction } from "~/types/enums";
 import { useVersionApprovals } from "~/composables/useApiHelper";
-import Card from "~/lib/components/design/Card.vue";
-import Link from "~/lib/components/design/Link.vue";
+import Card from "~/components/design/Card.vue";
+import Link from "~/components/design/Link.vue";
 import Tag from "~/components/Tag.vue";
 import { useSeo } from "~/composables/useSeo";
-import Button from "~/lib/components/design/Button.vue";
+import Button from "~/components/design/Button.vue";
 import { definePageMeta } from "#imports";
 import { Header } from "~/types/components/SortableTable";
 

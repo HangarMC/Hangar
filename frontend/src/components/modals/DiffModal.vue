@@ -2,7 +2,7 @@
 import { type TranslateResult, useI18n } from "vue-i18n";
 import { DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diff_match_patch as Diff } from "diff-match-patch";
 import { computed } from "vue";
-import Modal from "~/lib/components/modals/Modal.vue";
+import Modal from "~/components/modals/Modal.vue";
 import { useDomPurify } from "~/composables/useDomPurify";
 
 const props = defineProps<{

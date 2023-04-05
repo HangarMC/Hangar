@@ -1,6 +1,6 @@
 import { helpers } from "@vuelidate/validators";
 import { useInternalApi } from "~/composables/useApi";
-import { withOverrideMessage } from "~/lib/composables/useValidationHelpers";
+import { withOverrideMessage } from "~/composables/useValidationHelpers";
 
 export const validProjectName = withOverrideMessage((ownerId: () => number) =>
   helpers.withParams(

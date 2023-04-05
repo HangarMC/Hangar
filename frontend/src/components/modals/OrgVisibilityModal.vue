@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { computed, ref } from "vue";
-import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/lib/components/modals/Modal.vue";
+import Button from "~/components/design/Button.vue";
+import Modal from "~/components/modals/Modal.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
+import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 
 const props = defineProps<{
   modelValue: { [key: string]: boolean };

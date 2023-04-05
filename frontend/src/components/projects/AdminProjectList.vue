@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ProjectApproval } from "hangar-internal";
 import { useI18n } from "vue-i18n";
-import Alert from "~/lib/components/design/Alert.vue";
+import Alert from "~/components/design/Alert.vue";
 import Markdown from "~/components/Markdown.vue";
-import Link from "~/lib/components/design/Link.vue";
+import Link from "~/components/design/Link.vue";
 import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
 
 const i18n = useI18n();

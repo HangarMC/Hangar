@@ -3,13 +3,13 @@ import { useI18n } from "vue-i18n";
 import { ProjectChannel } from "hangar-internal";
 import { computed, reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
-import Button from "~/lib/components/design/Button.vue";
-import Modal from "~/lib/components/modals/Modal.vue";
+import Button from "~/components/design/Button.vue";
+import Modal from "~/components/modals/Modal.vue";
 import { useBackendData } from "~/store/backendData";
-import InputText from "~/lib/components/ui/InputText.vue";
-import { isSame, maxLength, minLength, pattern, required } from "~/lib/composables/useValidationHelpers";
+import InputText from "~/components/ui/InputText.vue";
+import { isSame, maxLength, minLength, pattern, required } from "~/composables/useValidationHelpers";
 import { validChannelName, validChannelColor } from "~/composables/useHangarValidations";
-import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
+import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import { ChannelFlag } from "~/types/enums";
 
 const props = defineProps<{

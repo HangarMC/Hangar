@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { onMounted } from "vue";
 import { useI18n } from "vue-i18n";
-import { useNotificationStore } from "~/lib/store/notification";
+import { useNotificationStore } from "~/store/notification";
 import { useAuthStore } from "~/store/auth";
-import Button from "~/lib/components/design/Button.vue";
-import { useConfig } from "~/lib/composables/useConfig";
+import Button from "~/components/design/Button.vue";
+import { useConfig } from "~/composables/useConfig";
 
 const i18n = useI18n();
 const notifications = useNotificationStore();

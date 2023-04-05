@@ -4,10 +4,10 @@ import jwtDecode, { type JwtPayload } from "jwt-decode";
 import { useAuthStore } from "~/store/auth";
 import { useCookies } from "~/composables/useCookies";
 import { useInternalApi } from "~/composables/useApi";
-import { authLog } from "~/lib/composables/useLog";
+import { authLog } from "~/composables/useLog";
 import { handleRequestError, useRequestEvent } from "#imports";
 import { useAxios } from "~/composables/useAxios";
-import { useNotificationStore } from "~/lib/store/notification";
+import { useNotificationStore } from "~/store/notification";
 import { transformAxiosError } from "~/composables/useErrorHandling";
 
 class Auth {

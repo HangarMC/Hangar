@@ -4,18 +4,18 @@ import { useI18n } from "vue-i18n";
 import { HangarProject, ProjectChannel } from "hangar-internal";
 import { useHead } from "@vueuse/head";
 import { useRoute } from "vue-router";
-import Card from "~/lib/components/design/Card.vue";
+import Card from "~/components/design/Card.vue";
 import { ChannelFlag } from "~/types/enums";
 import { useProjectChannels } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
-import Table from "~/lib/components/design/Table.vue";
+import Table from "~/components/design/Table.vue";
 import Tag from "~/components/Tag.vue";
-import Button from "~/lib/components/design/Button.vue";
+import Button from "~/components/design/Button.vue";
 import { useBackendData } from "~/store/backendData";
 import ChannelModal from "~/components/modals/ChannelModal.vue";
 import { useSeo } from "~/composables/useSeo";
-import { useNotificationStore } from "~/lib/store/notification";
+import { useNotificationStore } from "~/store/notification";
 import { definePageMeta } from "#imports";
 
 definePageMeta({

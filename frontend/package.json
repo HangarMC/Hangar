@@ -22,17 +22,6 @@
       "eslint"
     ]
   },
-  "eslintConfig": {
-    "extends": "./src/lib/config/eslint.config.js",
-    "overrides": [
-      {
-        "files": "src/module/backendData.ts",
-        "rules": {
-          "import/namespace": "off"
-        }
-      }
-    ]
-  },
   "dependencies": {
     "@github/webauthn-json": "^2.1.1",
     "@headlessui/vue": "1.7.12",

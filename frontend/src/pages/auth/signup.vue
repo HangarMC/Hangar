@@ -2,18 +2,18 @@
 import { useHead } from "@vueuse/head";
 import { useRoute, useRouter } from "vue-router";
 import { reactive, ref } from "vue";
-import { useSeo } from "~/composables/useSeo";
-import Card from "~/lib/components/design/Card.vue";
-import InputText from "~/lib/components/ui/InputText.vue";
-import Button from "~/lib/components/design/Button.vue";
-import { useInternalApi } from "~/composables/useApi";
-import InputPassword from "~/lib/components/ui/InputPassword.vue";
-import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
-import { email, minLength, required, sameAs } from "~/lib/composables/useValidationHelpers";
 import { useVuelidate } from "@vuelidate/core";
-import { useNotificationStore } from "~/lib/store/notification";
-import InputGroup from "~/lib/components/ui/InputGroup.vue";
-import Alert from "~/lib/components/design/Alert.vue";
+import { useSeo } from "~/composables/useSeo";
+import Card from "~/components/design/Card.vue";
+import InputText from "~/components/ui/InputText.vue";
+import Button from "~/components/design/Button.vue";
+import { useInternalApi } from "~/composables/useApi";
+import InputPassword from "~/components/ui/InputPassword.vue";
+import InputCheckbox from "~/components/ui/InputCheckbox.vue";
+import { email, minLength, required, sameAs } from "~/composables/useValidationHelpers";
+import { useNotificationStore } from "~/store/notification";
+import InputGroup from "~/components/ui/InputGroup.vue";
+import Alert from "~/components/design/Alert.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -64,7 +64,7 @@ useHead(useSeo("Signup", null, route, null));
       <h1>Sign up</h1>
     </template>
 
-    <form class="flex flex-col gap-2" v-if="!done">
+    <form v-if="!done" class="flex flex-col gap-2">
       <InputText v-model="form.username" label="Username" name="username" autocomplete="username" :rules="[required()]" />
       <InputText v-model="form.email" type="email" label="E-Mail" name="email" autocomplete="email" :rules="[required(), email()]" />
       <InputPassword v-model="form.password" label="Password" name="new-password" :rules="[required()]" />
