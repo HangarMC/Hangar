@@ -34,7 +34,12 @@ if (props.error?.message !== "dummy") {
 }
 
 // custom
-const { t } = useI18n();
+let i18n: ReturnType<useI18n>;
+try {
+  i18n = useI18n();
+} catch (e) {
+  console.log("cant load i18n?!", e);
+}
 
 const statusCode = computed(() => {
   return Number(props.error.statusCode || 500);
@@ -43,11 +48,11 @@ const statusCode = computed(() => {
 const text = computed(() => {
   switch (statusCode.value) {
     case 404:
-      return t("error.404");
+      return i18n?.t("error.404") || "404";
     case 401:
-      return t("error.401");
+      return i18n?.t("error.401") || "401";
     case 403:
-      return t("error.403");
+      return i18n?.t("error.403") || "403";
     default:
       return props.error.message;
   }
@@ -56,20 +61,24 @@ const text = computed(() => {
 const title = computed(() => {
   switch (statusCode.value) {
     case 404:
-      return t("error.404");
+      return i18n?.t("error.404") || "404";
     case 401:
-      return t("error.401");
+      return i18n?.t("error.401") || "401";
     case 403:
-      return t("error.403");
+      return i18n?.t("error.403") || "403";
     default:
-      return t("error.unknown");
+      return i18n?.t("error.unknown") || "unknown error";
   }
 });
 
 if (props.error?.message !== "dummy") {
   console.log("error", text.value, title.value, props.error);
 }
-useHead(useSeo(title.value, null, useRoute(), null));
+try {
+  useHead(useSeo(title.value, null, useRoute(), null));
+} catch (e) {
+  console.log("seo error?!", e);
+}
 </script>
 
 <template>

@@ -4,10 +4,6 @@
 
 base:
   host: "https://hangar.test"
-  authHost: "https://auth.hangar.test"
-  sso:
-    clientId: "my-client"
-    apiKey: "some-id"
   allowIndexing: "true"
   namespace: "default"
 
@@ -27,24 +23,6 @@ ingress:
       pathType: ImplementationSpecific
       target: frontend
     - path: /api/
-      pathType: ImplementationSpecific
-      target: backend
-    - path: /signup
-      pathType: ImplementationSpecific
-      target: backend
-    - path: /login
-      pathType: ImplementationSpecific
-      target: backend
-    - path: /logout
-      pathType: ImplementationSpecific
-      target: backend
-    - path: /handle-logout
-      pathType: ImplementationSpecific
-      target: backend
-    - path: /refresh
-      pathType: ImplementationSpecific
-      target: backend
-    - path: /invalidate
       pathType: ImplementationSpecific
       target: backend
     - path: /v3/api-docs
@@ -201,9 +179,6 @@ backend:
       database: "hangarauth"
       options: "?currentSchema=hangar"
     tokenSecret: "secret"
-    kratosApiKey: "hookapikey-changeme"
-    backendOauthUrl: "http://hangarauth-hydra:4444"
-    backendAuthHost: "http://hangarauth-backend:8080"
     storage:
       type: "local"
       accessKey: "todo"
@@ -214,6 +189,12 @@ backend:
       cdnIncludeBucket: true
     announcement: "This is a staging server for testing purposes. Data could be deleted at any time. That said, signups are open, please test stuff and report and feedback on github or discord!"
     zipkinEndpoint: "http://hangar-zipkin:9411/api/v2/spans"
+    mail:
+      from: noreply@mail.papermc.dev
+      user: dum
+      pass: dum
+      host: mailslurper
+      port: 1025
 
 zipkin:
   image:

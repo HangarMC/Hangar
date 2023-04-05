@@ -3,6 +3,7 @@ package io.papermc.hangar.service.internal.file;
 import io.papermc.hangar.model.common.Platform;
 import java.io.IOException;
 import java.io.InputStream;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.core.io.Resource;
 
 public interface FileService {
@@ -17,7 +18,7 @@ public interface FileService {
 
     byte[] bytes(String path) throws IOException;
 
-    void write(InputStream inputStream, String path) throws IOException;
+    void write(InputStream inputStream, String path, @Nullable String contentType) throws IOException;
 
     void move(String oldPath, String newPath) throws IOException;
 
@@ -27,5 +28,7 @@ public interface FileService {
 
     String getRoot();
 
-    String getDownloadUrl(String user, String project, String version, Platform platform, String fileName);
+    String getVersionDownloadUrl(String user, String project, String version, Platform platform, String fileName);
+
+    String getAvatarUrl(String type, String subject, int version);
 }

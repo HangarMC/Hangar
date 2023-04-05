@@ -2,6 +2,7 @@ package io.papermc.hangar.service;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.util.CacheWrapper;
+import jakarta.annotation.Nullable;
 import jakarta.annotation.PreDestroy;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -22,11 +23,18 @@ public class ReplicationService implements Receiver {
 
     private final CaffeineCacheManager cacheManager;
 
+    @Nullable
     private final JChannel channel;
     private View lastView;
 
     public ReplicationService(@Lazy final CaffeineCacheManager cacheManager, final HangarConfig config) {
         this.cacheManager = cacheManager;
+
+        if (config.isDisableJGroups()) {
+            log.warn("JGroups is disabled, replication of cache clearing will not work!");
+            this.channel = null;
+            return;
+        }
 
         try {
             this.channel = new JChannel(config.isDev() ? "jgroups-local.xml": "jgroups-kube.xml");
@@ -40,7 +48,9 @@ public class ReplicationService implements Receiver {
 
     @PreDestroy
     public void destroy() {
-        this.channel.close();
+        if (this.channel != null) {
+            this.channel.close();
+        }
     }
 
     @Override
@@ -69,6 +79,9 @@ public class ReplicationService implements Receiver {
 
     @Override
     public void receive(final Message msg) {
+        if (this.channel == null) {
+            return;
+        }
         if (msg.getSrc().equals(this.channel.getAddress())) {
             return;
         }
@@ -83,6 +96,10 @@ public class ReplicationService implements Receiver {
     }
 
     public void notifyRemove(final String cacheName, final Object cacheKey) {
+        if (this.channel == null) {
+            return;
+        }
+
         log.debug("cache notifyRemove: {}, cacheKey: {}", cacheName, cacheKey);
         final String msg = "cacheRemove:" + cacheName + ":" + cacheKey;
         try {
@@ -93,6 +110,10 @@ public class ReplicationService implements Receiver {
     }
 
     public void notifyRemoveAll(final String cacheName) {
+        if (this.channel == null) {
+            return;
+        }
+
         log.debug("cache notifyRemoveAll: {}", cacheName);
         final String msg = "cacheRemoveAll:" + cacheName;
         try {

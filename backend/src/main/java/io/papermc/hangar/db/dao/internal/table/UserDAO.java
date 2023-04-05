@@ -1,5 +1,6 @@
 package io.papermc.hangar.db.dao.internal.table;
 
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.db.UserTable;
 import java.util.List;
@@ -20,27 +21,27 @@ public interface UserDAO {
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("""
-        INSERT INTO users (uuid, created_at, name, email, tagline, join_date, read_prompts, locked, language, theme)
-        VALUES (:uuid, :now, :name, :email, :tagline, :now, :readPrompts, :locked, :language, :theme)
+        INSERT INTO users (uuid, created_at, name, email, tagline, join_date, read_prompts, locked, language, theme, email_verified, socials)
+        VALUES (:uuid, :now, :name, :email, :tagline, :now, :readPrompts, :locked, :language, :theme, :emailVerified, :socials)
         """)
     UserTable insert(@BindBean UserTable user);
 
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("""
-        INSERT INTO users (uuid, created_at, name, email, tagline, join_date, read_prompts, locked, language, theme)
-        VALUES (:uuid, :now, :name, :email, :tagline, :now, :readPrompts, :locked, :language, :theme)
+        INSERT INTO users (uuid, created_at, name, email, tagline, join_date, read_prompts, locked, language, theme, email_verified, socials)
+        VALUES (:uuid, :now, :name, :email, :tagline, :now, :readPrompts, :locked, :language, :theme, :emailVerified, :socials)
         """)
-    UserTable create(UUID uuid, String name, String email, String tagline, String language, List<Integer> readPrompts, boolean locked, String theme);
+    UserTable create(UUID uuid, String name, String email, String tagline, String language, List<Integer> readPrompts, boolean locked, String theme, boolean emailVerified, JSONB socials);
 
     @SqlUpdate("DELETE FROM users WHERE id = :id")
     void delete(long id);
 
     @GetGeneratedKeys
-    @SqlUpdate("UPDATE users SET name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language, theme = :theme WHERE id = :id")
+    @SqlUpdate("UPDATE users SET name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language, theme = :theme, email_verified = :emailVerified, socials = :socials WHERE id = :id")
     UserTable update(@BindBean UserTable user);
 
-    @SqlQuery("SELECT * FROM users WHERE id = :id OR lower(name) = lower(:name) OR uuid = :uuid")
+    @SqlQuery("SELECT * FROM users WHERE id = :id OR lower(name) = lower(:name) OR lower(email) = lower(:name) OR uuid = :uuid")
     UserTable _getUserTable(Long id, String name, UUID uuid);
 
     default UserTable getUserTable(final long id) {

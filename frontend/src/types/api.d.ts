@@ -70,7 +70,6 @@ declare module "hangar-api" {
 
   interface Security {
     safeDownloadHosts: string[];
-    imageProxyUrl: string;
   }
 
   interface BackendData {

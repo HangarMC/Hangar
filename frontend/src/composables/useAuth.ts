@@ -11,19 +11,30 @@ import { useNotificationStore } from "~/lib/store/notification";
 import { transformAxiosError } from "~/composables/useErrorHandling";
 
 class Auth {
-  loginUrl(redirectUrl: string): string {
-    if (redirectUrl.endsWith("?loggedOut")) {
+  loginUrl(redirectUrl: string | undefined): string {
+    return this.buildUrl(redirectUrl, "/auth/login");
+  }
+
+  signupUrl(redirectUrl: string | undefined): string {
+    return this.buildUrl(redirectUrl, "/auth/signup");
+  }
+
+  private buildUrl(redirectUrl: string | undefined, url: string) {
+    if (redirectUrl?.endsWith("?loggedOut")) {
       redirectUrl = redirectUrl.replace("?loggedOut", "");
     }
-    return `/login?returnUrl=${redirectUrl}`;
+    if (redirectUrl?.startsWith("/auth") && !redirectUrl.startsWith("/auth/settings")) {
+      redirectUrl = undefined;
+    }
+    return redirectUrl ? `${url}?returnUrl=${redirectUrl}` : url;
   }
 
   async logout() {
     const result = await useAxios()
-      .get(`/logout?returnUrl=/?loggedOut`)
+      .get(`/api/internal/auth/logout`)
       .catch((e) => handleRequestError(e));
-    if (result?.status === 200 && result?.data) {
-      location.replace(result?.data);
+    if (result?.status === 200) {
+      location.replace("/?loggedOut");
     } else {
       await useNotificationStore().error("Error while logging out?!");
     }
@@ -69,7 +80,7 @@ class Auth {
           headers.cookie = "HangarAuth_REFRESH=" + refreshToken;
           authLog("pass refresh cookie", refreshToken);
         }
-        const response = await useAxios().get("/refresh", { headers });
+        const response = await useAxios().get("/api/internal/auth/refresh", { headers });
         if (response.status === 299) {
           authLog("had no cookie");
           resolve(false);
@@ -110,7 +121,7 @@ class Auth {
       token: null,
     });
     if (!store.invalidated) {
-      await axios.get("/invalidate").catch((e) => authLog("Invalidate failed", e.message));
+      await axios.get("/api/internal/auth/invalidate").catch((e) => authLog("Invalidate failed", e.message));
     }
     store.invalidated = true;
   }

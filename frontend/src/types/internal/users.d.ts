@@ -82,4 +82,12 @@ declare module "hangar-internal" {
   interface Organization extends Joinable {
     id: number;
   }
+
+  interface AuthSettings {
+    authenticators: { addedAt: string; displayName: string; id: string }[];
+    hasBackupCodes: boolean;
+    hasTotp: boolean;
+    emailConfirmed: boolean;
+    emailPending: boolean;
+  }
 }

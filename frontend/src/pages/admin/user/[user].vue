@@ -12,9 +12,7 @@ import Card from "~/lib/components/design/Card.vue";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import SortableTable from "~/components/SortableTable.vue";
-import InputCheckbox from "~/lib/components/ui/InputCheckbox.vue";
 import { useSeo } from "~/composables/useSeo";
-import { authUrl, forumUserUrl } from "~/composables/useUrlHelper";
 import { useProjects, useUser } from "~/composables/useApiHelper";
 import Tag from "~/components/Tag.vue";
 import InputSelect from "~/lib/components/ui/InputSelect.vue";
@@ -58,9 +56,6 @@ const orgList = computed(() => {
       })
     : [];
 });
-
-const _forumUserUrl = computed(() => forumUserUrl(route.params.user as string));
-const _authUrl = computed(() => authUrl(route.params.user as string));
 
 const selectedRole = ref();
 async function processRole(add: boolean) {

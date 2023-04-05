@@ -5,6 +5,7 @@ import io.papermc.hangar.db.dao.internal.table.JobsDAO;
 import io.papermc.hangar.model.db.JobTable;
 import io.papermc.hangar.model.internal.job.Job;
 import io.papermc.hangar.model.internal.job.JobException;
+import io.papermc.hangar.model.internal.job.SendMailJob;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -12,6 +13,7 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -21,12 +23,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class JobService extends HangarComponent {
 
     private final JobsDAO jobsDAO;
+    private final MailService mailService;
 
     private ExecutorService executorService;
 
     @Autowired
-    public JobService(final JobsDAO jobsDAO) {
+    public JobService(final JobsDAO jobsDAO, @Lazy final MailService mailService) {
         this.jobsDAO = jobsDAO;
+        this.mailService = mailService;
     }
 
     @PostConstruct
@@ -35,11 +39,8 @@ public class JobService extends HangarComponent {
     }
 
     public void checkAndProcess() {
-        if (!this.config.discourse.enabled()) {
-            return;
-        }
         final long awaitingJobs = this.jobsDAO.countAwaitingJobs();
-        this.logger.debug("Found {} awaiting jobs", awaitingJobs);
+        this.logger.trace("Found {} awaiting jobs", awaitingJobs);
         if (awaitingJobs > 0) {
             final long numberToProcess = Math.max(1, Math.min(awaitingJobs, this.config.jobs.maxConcurrentJobs()));
             for (long i = 0; i < numberToProcess; i++) {
@@ -53,10 +54,7 @@ public class JobService extends HangarComponent {
     }
 
     @Transactional
-    public void save(final Job job) {
-        if (!this.config.discourse.enabled()) {
-            return;
-        }
+    public void schedule(final Job job) {
         this.jobsDAO.save(job.toTable());
     }
 
@@ -98,8 +96,13 @@ public class JobService extends HangarComponent {
         return "Message: " + error.getMessage();
     }
 
-    public void processJob(final JobTable job) {
+    public void processJob(final JobTable job) throws Exception {
         switch (job.getJobType()) {
+            // email
+            case SEND_EMAIL -> {
+                final SendMailJob sendMailJob = SendMailJob.loadFromTable(job);
+                this.mailService.sendMail(sendMailJob.getSubject(), sendMailJob.getRecipient(), sendMailJob.getText());
+            }
             default -> throw new JobException("Unknown job type " + job, "unknown_job_type");
         }
     }

@@ -27,6 +27,7 @@ spring:
   devtools:
     restart:
       additional-exclude: work/**
+      quiet-period: 900
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
@@ -54,23 +55,12 @@ management:
       exposure:
         include: "*"
 
-#############
-# Fake User #
-#############
-fake-user:
-  enabled: false
-  username: paper
-  email: paper@papermc.io
-#  id: -3
-#  name: paper2
-#  username: paper2
-#  email: paper2@papermc.io
-
 hangar:
   dev: true
   base-url: "http://localhost:3333"
   ga-code: "UA-38006759-9"
   allow-indexing: true
+  disable-jgroups: true
 
   licenses:
     - "Unspecified"
@@ -156,21 +146,6 @@ hangar:
     name-change-interval: 30
     name-change-history: 90
 
-  sso:
-    enabled: true
-    oauth-url: "http://localhost:4444"
-    backend-oauth-url: "http://localhost:4444"
-    login-url: "/oauth2/auth"
-    token-url: "/oauth2/token"
-    logout-url: "/oauth2/sessions/logout"
-    client-id: "my-client"
-
-    auth-url: "http://localhost:3001"
-    signup-url: "/account/signup/"
-    api-key: "supersecret"
-
-    kratos-api-key: "hookapikey-changeme"
-
   security:
     secure: false
     unsafe-download-max-age: 600000
@@ -178,11 +153,6 @@ hangar:
     token-secret: "secret!"
     token-expiry: 300 # seconds
     refresh-token-expiry: 30 # days
-    api:
-      url: "http://localhost:3001"
-      avatar-url: "http://localhost:3001/avatar/%s" # only comment in if you run auth locally
-      # avatar-url: "https://docs.papermc.io/img/paper.png"
-      timeout: 10000
     safe-download-hosts:
       - "github.com"
       - "githubusercontent.com"
@@ -200,8 +170,6 @@ hangar:
       - "crowdin.com"
       - "kyori.net"
       - "modrinth.com"
-    # image-proxy-url: "%s"
-    image-proxy-url: "http://localhost:3001/image/%s" # only comment in if you run auth locally
 
   discourse:
     enabled: false
@@ -211,14 +179,14 @@ hangar:
     category: 5 # hangar category
 
   jobs:
-    check-interval: 30s
+    check-interval: 5s
     unknown-error-timeout: 15m
     status-error-timeout: 5m
     not-available-timeout: 2m
     max-concurrent-jobs: 32
 
   storage:
-    type: "local"
+    type: "object"
     # type: "object" # uncomment to use object storage
     access-key: "maaWFU0y2agLgJBD"
     secret-key: "toOBAwlz3ZC6c4dvbFh7Ywk8Y2J4b3kS"
@@ -230,6 +198,18 @@ hangar:
   cors:
     allowed-hosts:
       - api.spigotmc.org
+
+  image:
+    quality: 0.35
+    size: 256
+
+  mail:
+    from: noreply@mail.papermc.dev
+    user: dum
+    pass: dum
+    host: localhost
+    port: 1025
+    dev: true
 
 #################
 # Debug Logging #
@@ -244,6 +224,8 @@ logging:
     io.papermc.hangar.service.ReplicationService: DEBUG
     # org.springframework.cache: TRACE
     # org.springframework.beans: TRACE
-#    io.papermc.hangar.security: TRACE
-#    org.postgresql: TRACE
-
+    # io.papermc.hangar.security: TRACE
+    # org.springframework.security: TRACE
+    # com.webauthn4j: TRACE
+    # org.postgresql: TRACE
+    # com.sun.mail: TRACE

@@ -23,9 +23,8 @@ public class HangarConfig {
     private String urlRegex = "^(https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})";
     private List<String> licenses = new ArrayList<>();
     private boolean allowIndexing = true;
+    private boolean disableJGroups = false;
 
-    @NestedConfigurationProperty
-    public final FakeUserConfig fakeUser;
     @NestedConfigurationProperty
     public UpdateTasksConfig updateTasks;
     @NestedConfigurationProperty
@@ -41,8 +40,6 @@ public class HangarConfig {
     @NestedConfigurationProperty
     public ApiConfig api;
     @NestedConfigurationProperty
-    public SSOConfig sso;
-    @NestedConfigurationProperty
     public HangarSecurityConfig security;
     @NestedConfigurationProperty
     public QueueConfig queue;
@@ -54,6 +51,10 @@ public class HangarConfig {
     public StorageConfig storage;
     @NestedConfigurationProperty
     public CorsConfig cors;
+    @NestedConfigurationProperty
+    public ImageConfig image;
+    @NestedConfigurationProperty
+    public MailConfig mail;
 
     @Component
     public static class Sponsor {
@@ -87,8 +88,7 @@ public class HangarConfig {
     }
 
     @Autowired
-    public HangarConfig(final FakeUserConfig fakeUser, final UpdateTasksConfig updateTasks, final ChannelsConfig channels, final PagesConfig pages, final ProjectsConfig projects, final UserConfig user, final OrganizationsConfig org, final ApiConfig api, final SSOConfig sso, final HangarSecurityConfig security, final QueueConfig queue, final DiscourseConfig discourse, final JobsConfig jobs, final StorageConfig storage, final CorsConfig cors) {
-        this.fakeUser = fakeUser;
+    public HangarConfig(final UpdateTasksConfig updateTasks, final ChannelsConfig channels, final PagesConfig pages, final ProjectsConfig projects, final UserConfig user, final OrganizationsConfig org, final ApiConfig api, final HangarSecurityConfig security, final QueueConfig queue, final DiscourseConfig discourse, final JobsConfig jobs, final StorageConfig storage, final CorsConfig cors, final ImageConfig image, final MailConfig mail) {
         this.updateTasks = updateTasks;
         this.channels = channels;
         this.pages = pages;
@@ -96,13 +96,14 @@ public class HangarConfig {
         this.user = user;
         this.org = org;
         this.api = api;
-        this.sso = sso;
         this.security = security;
         this.queue = queue;
         this.discourse = discourse;
         this.jobs = jobs;
         this.storage = storage;
         this.cors = cors;
+        this.image = image;
+        this.mail = mail;
     }
 
     public void checkDev() {
@@ -181,5 +182,13 @@ public class HangarConfig {
 
     public void setAllowIndexing(final boolean allowIndexing) {
         this.allowIndexing = allowIndexing;
+    }
+
+    public boolean isDisableJGroups() {
+        return this.disableJGroups;
+    }
+
+    public void setDisableJGroups(final boolean disableJGroups) {
+        this.disableJGroups = disableJGroups;
     }
 }

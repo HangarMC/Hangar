@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.internal.organizations;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.OrganizationDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -15,6 +16,7 @@ import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,7 +57,7 @@ public class OrganizationFactory extends HangarComponent {
         }
 
         final String dummyEmail = name.replaceAll("[^a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]", "") + '@' + this.config.org.dummyEmailDomain();
-        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), name, dummyEmail, "", "", List.of(), false, null);
+        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), name, dummyEmail, "", "", List.of(), false, null, true, new JSONB(Map.of()));
         final OrganizationTable organizationTable = this.organizationDAO.insert(new OrganizationTable(userTable.getId(), name, this.getHangarPrincipal().getId(), userTable.getId(), userTable.getUuid()));
         this.globalRoleService.addRole(GlobalRole.ORGANIZATION.create(null, userTable.getUuid(), userTable.getId(), false));
         this.organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_OWNER.create(organizationTable.getId(), userTable.getUuid(), this.getHangarPrincipal().getId(), true));

@@ -1,9 +1,4 @@
-import { useConfig } from "~/lib/composables/useConfig";
 import { useBackendData } from "~/store/backendData";
-
-export function authUrl(user: string) {
-  return useConfig().authHost + "/" + user;
-}
 
 export function forumUrl(topicId: number) {
   return `https://forums.papermc.io/threads/` + topicId;
@@ -42,4 +37,4 @@ const isSafe = (urlString: string) => {
 };
 
 export const linkout = (urlString: string) => (isSafe(urlString) ? urlString : "/linkout?remoteUrl=" + encodeURIComponent(urlString));
-export const proxyImage = (urlString: string) => (isSafe(urlString) ? urlString : useBackendData.security.imageProxyUrl.replace("%s", urlString));
+export const proxyImage = (urlString: string) => (isSafe(urlString) ? urlString : "/api/internal/image/" + urlString);

@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.internal.user;
 
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.UserNameChange;
@@ -13,19 +14,23 @@ public class HangarUser extends User implements Identified {
 
     private final long id;
     private final UUID uuid;
+    private final String email;
     private HeaderData headerData;
     private final List<Integer> readPrompts;
     private final String language;
     private final String theme;
     private String accessToken;
+    private final JSONB socials;
 
-    public HangarUser(final OffsetDateTime createdAt, final String name, final String tagline, final OffsetDateTime joinDate, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory, final long id, final UUID uuid, final List<Integer> readPrompts, final String language, final String theme) {
+    public HangarUser(final OffsetDateTime createdAt, final String name, final String tagline, final OffsetDateTime joinDate, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory, final long id, final UUID uuid, final String email, final List<Integer> readPrompts, final String language, final String theme, final JSONB socials) {
         super(createdAt, name, tagline, joinDate, roles, projectCount, locked, nameHistory);
         this.id = id;
         this.uuid = uuid;
+        this.email = email;
         this.readPrompts = readPrompts;
         this.language = language;
         this.theme = theme;
+        this.socials = socials;
     }
 
     @Override
@@ -63,6 +68,14 @@ public class HangarUser extends User implements Identified {
 
     public UUID getUuid() {
         return this.uuid;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public JSONB getSocials() {
+        return this.socials;
     }
 
     public record HeaderData(Permission globalPermission,

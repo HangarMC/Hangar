@@ -87,7 +87,6 @@ const navBarMenuLinksTools = [
 ];
 
 const auth = useAuth;
-const authHost = useConfig().authHost;
 authLog("render with user " + authStore.user?.name);
 
 const navBarMenuLinksMoreFromPaper = [
@@ -337,7 +336,7 @@ function isRecent(date: string): boolean {
                 <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
                 <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
                 <DropdownItem :to="'/' + authStore.user.name + '/settings/api-keys'">{{ t("nav.user.apiKeys") }}</DropdownItem>
-                <DropdownItem :href="authHost + '/account/settings'">{{ t("nav.user.settings") }}</DropdownItem>
+                <DropdownItem to="/auth/settings">{{ t("nav.user.settings") }}</DropdownItem>
                 <hr />
                 <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/flags">
                   {{ t("nav.user.flags") }}
@@ -369,14 +368,14 @@ function isRecent(date: string): boolean {
 
         <!-- Login/register buttons -->
         <div v-else class="flex gap-2">
-          <a class="flex items-center rounded-md p-2 hover:(text-primary-400 bg-primary-0)" :href="auth.loginUrl($route.fullPath)" rel="nofollow">
+          <NuxtLink class="flex items-center rounded-md p-2 hover:(text-primary-400 bg-primary-0)" :to="auth.loginUrl($route.fullPath)" rel="nofollow">
             <icon-mdi-key-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.login") }}
-          </a>
-          <a class="flex items-center rounded-md p-2 hover:(text-primary-400 bg-primary-0)" href="/signup">
+          </NuxtLink>
+          <NuxtLink class="flex items-center rounded-md p-2 hover:(text-primary-400 bg-primary-0)" :to="auth.signupUrl($route.fullPath)">
             <icon-mdi-clipboard-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.signup") }}
-          </a>
+          </NuxtLink>
         </div>
       </div>
     </nav>

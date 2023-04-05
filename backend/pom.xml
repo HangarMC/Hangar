@@ -43,6 +43,9 @@
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
         <jgroups.version>5.2.13.Final</jgroups.version>
         <jgroups-kube.version>2.0.1.Final</jgroups-kube.version>
+        <totp.version>1.7.2-SNAPSHOT</totp.version>
+        <webp.version>0.1.6</webp.version>
+        <webauthn.version>2.4.0</webauthn.version>
 
         <!-- test -->
         <pg.version>1.17.6</pg.version>
@@ -284,6 +287,28 @@
             <groupId>io.papermc.hangar</groupId>
             <artifactId>HangarJarScanner</artifactId>
             <version>${jarscanner.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.samstevens.totp</groupId>
+            <artifactId>totp-spring-boot-starter-hangar</artifactId>
+            <version>${totp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yubico</groupId>
+            <artifactId>webauthn-server-core</artifactId>
+            <version>${webauthn.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-cbor</artifactId>
+        </dependency>
+
+        <!-- webp -->
+        <dependency>
+            <groupId>org.sejda.imageio</groupId>
+            <artifactId>webp-imageio</artifactId>
+            <version>${webp.version}</version>
         </dependency>
 
         <!-- runtime -->

@@ -2,6 +2,7 @@ package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.config.CacheConfig;
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.model.api.project.ProjectLicense;
@@ -24,6 +25,7 @@ import io.papermc.hangar.service.internal.projects.ProjectService;
 import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -59,7 +61,7 @@ public class FakeDataService extends HangarComponent {
         try {
             for (int udx = 0; udx < users; udx++) {
                 final UserTable user = this.createUser();
-                SecurityContextHolder.getContext().setAuthentication(HangarAuthenticationToken.createVerifiedToken(new HangarPrincipal(user.getUserId(), user.getName(), false, Permission.All), oldAuth.getCredentials()));
+                SecurityContextHolder.getContext().setAuthentication(HangarAuthenticationToken.createVerifiedToken(new HangarPrincipal(user.getUserId(), user.getName(), user.getEmail(), false, Permission.All, null, true), oldAuth.getCredentials()));
                 for (int pdx = 0; pdx < projectsPerUser; pdx++) {
                     this.createProject(user.getUserId());
                 }
@@ -80,7 +82,9 @@ public class FakeDataService extends HangarComponent {
             "en",
             List.of(),
             false,
-            "dark");
+            "dark",
+            true,
+            new JSONB(Map.of()));
         this.globalRoleService.addRole(new GlobalRoleTable(userTable.getId(), GlobalRole.DUMMY));
         return userTable;
     }

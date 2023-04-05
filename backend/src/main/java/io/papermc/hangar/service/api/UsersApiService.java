@@ -17,7 +17,7 @@ import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.internal.AvatarService;
+import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.service.internal.admin.FlagService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.projects.PinnedProjectService;

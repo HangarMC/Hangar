@@ -26,6 +26,7 @@ public interface UsersDAO {
                    u.uuid,
                    u.created_at,
                    u.name,
+                   u.email,
                    u.tagline,
                    u.join_date,
                    array(SELECT role_id FROM user_global_roles WHERE u.id = user_id) AS roles,
@@ -37,6 +38,7 @@ public interface UsersDAO {
                    u.locked,
                    u.language,
                    u.theme,
+                   u.socials,
                    exists(SELECT 1 FROM organizations o WHERE u.id = o.user_id) AS is_organization
                FROM users u
                WHERE lower(u.name) = lower(:name)

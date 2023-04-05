@@ -32,11 +32,12 @@ import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.internal.AvatarService;
+import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.versions.PinnedVersionService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
@@ -75,7 +76,7 @@ public class ProjectService extends HangarComponent {
     private final VersionDependencyService versionDependencyService;
 
     @Autowired
-    public ProjectService(final ProjectsDAO projectDAO, final HangarUsersDAO hangarUsersDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, final AvatarService avatarService, @Lazy final VersionDependencyService versionDependencyService) {
+    public ProjectService(final ProjectsDAO projectDAO, final HangarUsersDAO hangarUsersDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, @Lazy final AvatarService avatarService, @Lazy final VersionDependencyService versionDependencyService) {
         this.projectsDAO = projectDAO;
         this.hangarUsersDAO = hangarUsersDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
@@ -244,7 +245,7 @@ public class ProjectService extends HangarComponent {
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
     }
 
-    public void changeAvatar(final String author, final String slug, final byte[] avatar) {
+    public void changeAvatar(final String author, final String slug, final byte[] avatar) throws IOException {
         final ProjectTable table = this.getProjectTable(author, slug);
         if (table == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown project " + author + "/" + slug);

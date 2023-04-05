@@ -7,7 +7,7 @@ import { useAxios } from "~/composables/useAxios";
 
 type FilteredAxiosConfig = Omit<AxiosRequestConfig, "method" | "url" | "data" | "params" | "baseURL">;
 
-function request<T>(url: string, method: AxiosRequestConfig["method"], data: object, axiosOptions: FilteredAxiosConfig = {}): Promise<T> {
+function request<T>(url: string, method: AxiosRequestConfig["method"], data: object | string, axiosOptions: FilteredAxiosConfig = {}): Promise<T> {
   const cookies = useCookies();
   return new Promise<T>((resolve, reject) => {
     return useAxios()
@@ -53,7 +53,7 @@ export function useApi<T>(url: string, method: AxiosRequestConfig["method"] = "g
 export function useInternalApi<T = void>(
   url: string,
   method: AxiosRequestConfig["method"] = "get",
-  data: object = {},
+  data: object | string = {},
   axiosOptions: FilteredAxiosConfig = {}
 ): Promise<T> {
   fetchLog("useInternalApi", url, data);

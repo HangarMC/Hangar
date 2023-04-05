@@ -1,9 +1,11 @@
 package io.papermc.hangar.security.configs;
 
+import dev.samstevens.totp.spring.autoconfigure.TotpAutoConfiguration;
+import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.security.authentication.HangarAuthenticationFilter;
 import io.papermc.hangar.security.authentication.HangarAuthenticationProvider;
-import io.papermc.hangar.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,9 +21,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
+@ImportAutoConfiguration(TotpAutoConfiguration.class)
 public class SecurityConfig {
 
     public static final String AUTH_NAME = "HangarAuth";
@@ -38,14 +44,16 @@ public class SecurityConfig {
     private final HangarAuthenticationProvider authenticationProvider;
 
     @Autowired
-    public SecurityConfig(final TokenService tokenService, final HangarAuthenticationProvider authenticationProvider, final AuthenticationEntryPoint authenticationEntryPoint) {
+    public SecurityConfig(final TokenService tokenService, final AuthenticationEntryPoint authenticationEntryPoint, final HangarAuthenticationProvider authenticationProvider) {
         this.tokenService = tokenService;
-        this.authenticationProvider = authenticationProvider;
         this.authenticationEntryPoint = authenticationEntryPoint;
+        this.authenticationProvider = authenticationProvider;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(final HttpSecurity http, final AuthenticationManager authenticationManagerBean) throws Exception {
+        //this.webAuthnConfig.configure(http, authenticationManagerBean);
+
         http
             // Disable default configurations
             .logout().disable()
@@ -58,16 +66,17 @@ public class SecurityConfig {
             // Disable csrf (shouldn't need it as its just a backend api now)
             .csrf().disable()
 
+            // Enable cors
+            .cors().and()
+
             // Custom auth filters
             .addFilterBefore(new HangarAuthenticationFilter(
                     new OrRequestMatcher(API_MATCHER, LOGOUT_MATCHER, INVALIDATE_MATCHER),
                     this.tokenService,
-                    this.authenticationManagerBean(),
+                    authenticationManagerBean,
                     this.authenticationEntryPoint),
                 AnonymousAuthenticationFilter.class
             )
-
-//                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
 
             // Permit all (use method security for controller access)
             .authorizeRequests().anyRequest().permitAll();
@@ -78,5 +87,17 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManagerBean() {
         return new ProviderManager(this.authenticationProvider);
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/api/v1/", config);
+        // TODO more cors?
+        return new CorsFilter(source);
     }
 }

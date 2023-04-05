@@ -6,6 +6,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev --port 3333",
+    "devHttps": "NODE_TLS_REJECT_UNAUTHORIZED=0 nuxt dev --port 3333 --https",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "previewBuild": "nuxt build && nuxt preview",
@@ -33,6 +34,7 @@
     ]
   },
   "dependencies": {
+    "@github/webauthn-json": "^2.1.1",
     "@headlessui/vue": "1.7.12",
     "@intlify/unplugin-vue-i18n": "^0.10.0",
     "@pinia/nuxt": "0.4.7",

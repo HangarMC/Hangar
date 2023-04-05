@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectQueryFilter;
@@ -16,7 +17,6 @@ import io.papermc.hangar.model.common.Permission;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
-import io.papermc.hangar.service.internal.AvatarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
