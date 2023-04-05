@@ -1,0 +1,59 @@
+#nprogress {
+  --loading-color: rgb(0, 78, 233);
+  pointer-events: none;
+}
+
+#nprogress .bar {
+  background: var(--loading-color);
+  position: fixed;
+  z-index: 1031;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 5px;
+}
+
+/* Fancy blur effect */
+#nprogress .peg {
+  display: block;
+  position: absolute;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  box-shadow: 0 0 10px var(--loading-color), 0 0 5px var(--loading-color);
+  opacity: 1;
+
+  transform: rotate(3deg) translate(0px, -4px);
+}
+
+/* Remove these to get rid of the spinner */
+#nprogress .spinner {
+  display: block;
+  position: fixed;
+  z-index: 1031;
+  top: 20px;
+  right: 20px;
+}
+
+#nprogress .spinner-icon {
+  width: 25px;
+  height: 25px;
+  box-sizing: border-box;
+
+  border: solid 5px transparent;
+  border-top-color: var(--loading-color);
+  border-left-color: var(--loading-color);
+  border-radius: 100%;
+
+  animation: nprogress-spinner 400ms linear infinite;
+}
+
+@keyframes nprogress-spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

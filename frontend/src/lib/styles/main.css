@@ -1,0 +1,12 @@
+@import "reset.css";
+@import "scrollbar.css";
+@import "loader.css";
+
+html {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-weight: 400;
+}
+
+.w-fit {
+  width: fit-content;
+}

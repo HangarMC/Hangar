@@ -1,0 +1,44 @@
+.dark {
+  .markdown {
+    table thead th {
+      color: #e0e0e0;
+    }
+
+    table tr:nth-child(2n) {
+      background-color: #323235;
+    }
+
+    table tr > td,
+    .page-rendered table tr > th {
+      border-color: #57595e;
+    }
+
+    blockquote {
+      color: #a6b1bd;
+      border-color: #57595e;
+    }
+
+    code {
+      background-color: #37393b;
+    }
+
+    pre {
+      background-color: #37393b;
+      code {
+        background-color: transparent;
+      }
+    }
+
+    h1,
+    h2 {
+      border-bottom-color: #57595e;
+    }
+  }
+}
+
+// Active tailwind overrides specific to markdown.
+
+// Table header colour
+.dark .prose.markdown ol > li:before {
+  color: #e0e0e0;
+}
