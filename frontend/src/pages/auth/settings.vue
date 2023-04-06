@@ -229,64 +229,69 @@ useHead(useSeo("Settings", null, route, null));
 </script>
 
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="space-y-3">
     <!-- todo tabs -->
 
     <Alert v-if="settings?.emailPending" class="col-span-1 md:col-span-2">
-      Got your email confirmation? Enter the code
+      Enter the email verficiation code
       <Button size="small" :disabled="loading" @click="emailConfirmModal.isOpen = true">here</Button>
-      !
     </Alert>
     <Alert v-else-if="!settings?.emailConfirmed" class="col-span-1 md:col-span-2">
       You haven't verified your email yet, click
       <Button size="small" :disabled="loading" @click="emailConfirmModal.isOpen = true">here</Button>
-      to change that!
+      to change that
     </Alert>
 
-    <Modal ref="emailConfirmModal" title="Confirm email" @close="emailConfirmModal.isOpen = false">
-      <template v-if="!emailCodeHasBeenSend">
-        <p class="mb-2">We will send you a code via email</p>
-        <Button :disabled="loading" @click="sendEmailCode">Send</Button>
-      </template>
-      <div v-else class="flex flex-col gap-2">
-        <p>Enter the code you received via email here</p>
-        <InputText v-model="emailCode" label="Code" />
-        <Button class="w-max" :disabled="loading" @click="verifyEmail(emailCode)">Verify Code</Button>
-      </div>
-    </Modal>
-
     <Card>
-      <template #header>Manage Account</template>
+      <template #header>Profile</template>
       <form class="flex flex-col gap-2">
-        <InputText v-model="accountForm.username" label="username" />
-        <InputText v-model="accountForm.email" label="email" />
-        (status: {{ settings?.emailConfirmed ? "confirmed" : "unconfirmed!" }})
-        <Button v-if="!settings?.emailConfirmed" class="w-max" size="small" :disabled="loading" @click.prevent="emailConfirmModal.isOpen = true">
-          Confirm
-        </Button>
-        <InputPassword v-model="accountForm.currentPassword" label="current-password" name="current-password" autofill="current-password" />
-        <InputPassword v-model="accountForm.newPassword" label="new-password (optional)" name="new-password" autofill="new-password" />
-        <Button type="submit" class="w-max" :disabled="loading" @click.prevent="saveAccount">Save</Button>
-      </form>
-    </Card>
+        <div class="relative mr-3">
+          <!-- TODO: Fix this -->
+          <UserAvatar :username="auth.user?.name!" :avatar-url="auth.user?.avatarUrl!" />
+          <AvatarChangeModal :avatar="auth.user?.avatarUrl!" :action="`users/${auth.user?.name}/settings/avatar`">
+            <template #activator="{ on }">
+              <Button class="absolute bottom-0" v-on="on"><IconMdiPencil /></Button>
+            </template>
+          </AvatarChangeModal>
+        </div>
 
-    <Card>
-      <template #header>Manage Profile</template>
-      <form class="flex flex-col gap-2">
-        <InputText v-model="profileForm.tagline" label="tagline" />
-        <!-- todo make avatar change nicer, use the old stuff from old settings maybe? -->
-        <AvatarChangeModal class="w-max" :avatar="auth.user?.avatarUrl!" :action="`users/${auth.user?.name}/settings/avatar`" />
-        <InputText v-model="profileForm.discord" label="discord" />
-        <InputText v-model="profileForm.github" label="github" />
+        <InputText v-model="profileForm.tagline" label="Tagline" />
+        <!-- TODO: Social media (low priority) -->
         <Button type="submit" class="w-max" :disabled="loading" @click.prevent="saveProfile">Save</Button>
       </form>
     </Card>
 
     <Card>
-      <template #header>Manage TOTP</template>
+      <template #header>Account</template>
+      <form class="flex flex-col gap-2">
+        <InputText v-model="accountForm.username" label="Username" />
+        <InputText v-model="accountForm.email" label="Email" autofill="username" autocomplete="username" />
+        <Button v-if="!settings?.emailConfirmed" class="w-max" size="small" :disabled="loading" @click.prevent="emailConfirmModal.isOpen = true">
+          Confirm email
+        </Button>
+        <InputPassword
+          v-model="accountForm.currentPassword"
+          label="Current password"
+          name="current-password"
+          autofill="current-password"
+          autocomplete="current-password"
+        />
+        <InputPassword
+          v-model="accountForm.newPassword"
+          label="New password (optional)"
+          name="new-password"
+          autofill="new-password"
+          autocomplete="new-passwsord"
+        />
+        <Button type="submit" class="w-max" :disabled="loading" @click.prevent="saveAccount">Save</Button>
+      </form>
+    </Card>
+
+    <Card>
+      <template #header>Authenticator App</template>
       <Button v-if="hasTotp" :disabled="loading" @click="unlinkTotp">Unlink totp</Button>
-      <Button v-else-if="!totpData" :disabled="loading" @click="setupTotp">Setup totp</Button>
-      <div v-else class="flex gap-2">
+      <Button v-else-if="!totpData" :disabled="loading" @click="setupTotp">Setup 2FA via authenticator app</Button>
+      <div v-else class="flex lt-sm:flex-col gap-8">
         <div class="flex flex-col gap-2 basis-1/2">
           <p>Scan the code on the right using your favorite authenticator app</p>
           <p>Can't scan? enter the code listed below the image!</p>
@@ -301,8 +306,7 @@ useHead(useSeo("Settings", null, route, null));
     </Card>
 
     <Card>
-      <template #header>Manage Security Keys (WebAuthN)</template>
-      <div>Authenticators:</div>
+      <template #header>Security Keys</template>
       <ul v-if="settings?.authenticators">
         <li v-for="authenticator in settings.authenticators" :key="authenticator.id" class="my-1">
           {{ authenticator.displayName }} <small class="mr-2">(added at {{ authenticator.addedAt }})</small>
@@ -312,11 +316,11 @@ useHead(useSeo("Settings", null, route, null));
       <div class="my-2">
         <InputText v-model="authenticatorName" label="Name" />
       </div>
-      <Button :disabled="loading" @click="addAuthenticator">Add authenticator</Button>
+      <Button :disabled="loading" @click="addAuthenticator">Setup 2FA via security key</Button>
     </Card>
 
     <Card>
-      <template #header>Manage Backup Codes</template>
+      <template #header>Backup Codes</template>
       <div v-if="(hasCodes && showCodes) || (!hasCodes && codes)" class="flex flex-wrap mt-2 mb-2">
         <div v-for="code in codes" :key="code.code" class="basis-3/12">
           <code>{{ code["used_at"] ? "Used" : code.code }}</code>
@@ -331,12 +335,24 @@ useHead(useSeo("Settings", null, route, null));
     </Card>
 
     <Card>
-      <template #header>Manage Devices</template>
+      <template #header>Devices</template>
       <ComingSoon>
         last login<br />
         on revoke iphone<br />
         revoke all
       </ComingSoon>
     </Card>
+
+    <Modal ref="emailConfirmModal" title="Confirm email" @close="emailConfirmModal.isOpen = false">
+      <template v-if="!emailCodeHasBeenSend">
+        <p class="mb-2">We will send you a code via email</p>
+        <Button :disabled="loading" @click="sendEmailCode">Send</Button>
+      </template>
+      <div v-else class="flex flex-col gap-2">
+        <p>Enter the code you received via email here</p>
+        <InputText v-model="emailCode" label="Code" />
+        <Button class="w-max" :disabled="loading" @click="verifyEmail(emailCode)">Verify Code</Button>
+      </div>
+    </Modal>
   </div>
 </template>

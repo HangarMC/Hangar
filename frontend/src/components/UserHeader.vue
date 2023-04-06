@@ -11,7 +11,6 @@ import { hasPerms } from "~/composables/usePerm";
 import { useAuthStore } from "~/store/auth";
 import Tag from "~/components/Tag.vue";
 import AvatarChangeModal from "~/components/modals/AvatarChangeModal.vue";
-import Tooltip from "~/components/design/Tooltip.vue";
 import Button from "~/components/design/Button.vue";
 import Popper from "~/components/design/Popper.vue";
 import { getRole } from "~/store/backendData";
@@ -45,12 +44,7 @@ const canEditCurrentUser = computed<boolean>(() => {
           :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/avatar`"
         >
           <template #activator="{ on }">
-            <Tooltip class="absolute -bottom-3 -right-3">
-              <template #content>
-                {{ i18n.t("author.org.editAvatar") }}
-              </template>
-              <Button v-on="on"><IconMdiPencil /></Button>
-            </Tooltip>
+            <Button class="absolute -bottom-3 -right-3" v-on="on"><IconMdiPencil /></Button>
           </template>
         </AvatarChangeModal>
       </div>
