@@ -901,6 +901,22 @@
       "duplicateName": "Duplicate key name"
     }
   },
+  "auth": {
+    "settings": {
+      "profile": {
+        "header": "Profile"
+      },
+      "account": {
+        "header": "Account"
+      },
+      "security": {
+        "header": "Security"
+      },
+      "apiKeys": {
+        "header": "API keys"
+      }
+    }
+  },
   "apiDocs": {
     "title": "API Docs"
   },

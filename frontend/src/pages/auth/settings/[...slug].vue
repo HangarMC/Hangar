@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { useHead } from "@vueuse/head";
 import { useRoute, useRouter } from "vue-router";
-import { reactive, ref } from "vue";
+import { reactive, ref, watch } from "vue";
 import * as webauthnJson from "@github/webauthn-json";
 import { AuthSettings } from "hangar-internal";
+import { useI18n } from "vue-i18n";
 import { useSeo } from "~/composables/useSeo";
 import { useAuthStore } from "~/store/auth";
 import Button from "~/components/design/Button.vue";
@@ -18,6 +19,8 @@ import Modal from "~/components/modals/Modal.vue";
 import InputPassword from "~/components/ui/InputPassword.vue";
 import { useNotificationStore } from "~/store/notification";
 import ComingSoon from "~/components/design/ComingSoon.vue";
+import Tabs from "~/components/design/Tabs.vue";
+import { Tab } from "~/types/components/design/Tabs";
 
 definePageMeta({
   loginRequired: true,
@@ -27,8 +30,19 @@ const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
 const notification = useNotificationStore();
+const { t } = useI18n();
 
 const settings = await useAuthSettings();
+
+const tabs: Tab[] = [
+  { value: "profile", header: t("auth.settings.profile.header") },
+  { value: "account", header: t("auth.settings.account.header") },
+  { value: "security", header: t("auth.settings.security.header") },
+  { value: "apiKeys", header: t("auth.settings.apiKeys.header") },
+];
+const selectedTab = ref(route.params.slug?.[0] || "profile");
+watch(route, (val) => (selectedTab.value = val.params.slug?.[0] || "profile"), { deep: true });
+watch(selectedTab, (val) => router.replace("/auth/settings/" + val));
 
 const emailConfirmModal = ref();
 const emailCodeHasBeenSend = ref(settings.value?.emailPending);
@@ -243,104 +257,104 @@ useHead(useSeo("Settings", null, route, null));
     </Alert>
 
     <Card>
-      <template #header>Profile</template>
-      <form class="flex flex-col gap-2">
-        <div class="relative mr-3">
-          <!-- TODO: Fix this -->
-          <UserAvatar :username="auth.user?.name!" :avatar-url="auth.user?.avatarUrl!" />
-          <AvatarChangeModal :avatar="auth.user?.avatarUrl!" :action="`users/${auth.user?.name}/settings/avatar`">
-            <template #activator="{ on }">
-              <Button class="absolute bottom-0" v-on="on"><IconMdiPencil /></Button>
-            </template>
-          </AvatarChangeModal>
-        </div>
+      <Tabs v-model="selectedTab" :tabs="tabs">
+        <template #profile>
+          <h2 class="text-xl font-bold mb-4">{{ t("auth.settings.profile.header") }}</h2>
+          <form class="flex flex-col gap-2">
+            <div class="relative mr-3">
+              <!-- TODO: Fix this -->
+              <UserAvatar :username="auth.user?.name!" :avatar-url="auth.user?.avatarUrl!" />
+              <AvatarChangeModal :avatar="auth.user?.avatarUrl!" :action="`users/${auth.user?.name}/settings/avatar`">
+                <template #activator="{ on }">
+                  <Button class="absolute bottom-0" v-on="on"><IconMdiPencil /></Button>
+                </template>
+              </AvatarChangeModal>
+            </div>
 
-        <InputText v-model="profileForm.tagline" label="Tagline" />
-        <!-- TODO: Social media (low priority) -->
-        <Button type="submit" class="w-max" :disabled="loading" @click.prevent="saveProfile">Save</Button>
-      </form>
-    </Card>
+            <InputText v-model="profileForm.tagline" label="Tagline" />
+            <!-- TODO: Social media (low priority) -->
+            <Button type="submit" class="w-max" :disabled="loading" @click.prevent="saveProfile">Save</Button>
+          </form>
+        </template>
+        <template #account>
+          <h2 class="text-xl font-bold mb-4">{{ t("auth.settings.account.header") }}</h2>
+          <form class="flex flex-col gap-2">
+            <InputText v-model="accountForm.username" label="Username" />
+            <InputText v-model="accountForm.email" label="Email" autofill="username" autocomplete="username" />
+            <Button v-if="!settings?.emailConfirmed" class="w-max" size="small" :disabled="loading" @click.prevent="emailConfirmModal.isOpen = true">
+              Confirm email
+            </Button>
+            <InputPassword
+              v-model="accountForm.currentPassword"
+              label="Current password"
+              name="current-password"
+              autofill="current-password"
+              autocomplete="current-password"
+            />
+            <InputPassword
+              v-model="accountForm.newPassword"
+              label="New password (optional)"
+              name="new-password"
+              autofill="new-password"
+              autocomplete="new-passwsord"
+            />
+            <Button type="submit" class="w-max" :disabled="loading" @click.prevent="saveAccount">Save</Button>
+          </form>
+        </template>
+        <template #security>
+          <h2 class="text-xl font-bold mb-4">{{ t("auth.settings.security.header") }}</h2>
+          <h3 class="text-lg font-bold mb-2">Authenticator App</h3>
+          <Button v-if="hasTotp" :disabled="loading" @click="unlinkTotp">Unlink totp</Button>
+          <Button v-else-if="!totpData" :disabled="loading" @click="setupTotp">Setup 2FA via authenticator app</Button>
+          <div v-else class="flex lt-sm:flex-col gap-8">
+            <div class="flex flex-col gap-2 basis-1/2">
+              <p>Scan the code on the right using your favorite authenticator app</p>
+              <p>Can't scan? enter the code listed below the image!</p>
+              <InputText v-model="totpCode" label="Code" inputmode="numeric" />
+              <Button :disabled="loading" @click="addTotp">Verify code and activate</Button>
+            </div>
+            <div class="basis-1/2">
+              <img :src="totpData.qrCode" alt="totp qr code" class="w-60" />
+              <small>{{ totpData.secret }}</small>
+            </div>
+          </div>
 
-    <Card>
-      <template #header>Account</template>
-      <form class="flex flex-col gap-2">
-        <InputText v-model="accountForm.username" label="Username" />
-        <InputText v-model="accountForm.email" label="Email" autofill="username" autocomplete="username" />
-        <Button v-if="!settings?.emailConfirmed" class="w-max" size="small" :disabled="loading" @click.prevent="emailConfirmModal.isOpen = true">
-          Confirm email
-        </Button>
-        <InputPassword
-          v-model="accountForm.currentPassword"
-          label="Current password"
-          name="current-password"
-          autofill="current-password"
-          autocomplete="current-password"
-        />
-        <InputPassword
-          v-model="accountForm.newPassword"
-          label="New password (optional)"
-          name="new-password"
-          autofill="new-password"
-          autocomplete="new-passwsord"
-        />
-        <Button type="submit" class="w-max" :disabled="loading" @click.prevent="saveAccount">Save</Button>
-      </form>
-    </Card>
+          <h3 class="text-lg font-bold mt-6 mb-2">Security Keys</h3>
+          <ul v-if="settings?.authenticators">
+            <li v-for="authenticator in settings.authenticators" :key="authenticator.id" class="my-1">
+              {{ authenticator.displayName }} <small class="mr-2">(added at {{ authenticator.addedAt }})</small>
+              <Button size="small" :disabled="loading" @click.prevent="unregisterAuthenticator(authenticator)">Unregister</Button>
+            </li>
+          </ul>
+          <div class="my-2">
+            <InputText v-model="authenticatorName" label="Name" />
+          </div>
+          <Button :disabled="loading" @click="addAuthenticator">Setup 2FA via security key</Button>
 
-    <Card>
-      <template #header>Authenticator App</template>
-      <Button v-if="hasTotp" :disabled="loading" @click="unlinkTotp">Unlink totp</Button>
-      <Button v-else-if="!totpData" :disabled="loading" @click="setupTotp">Setup 2FA via authenticator app</Button>
-      <div v-else class="flex lt-sm:flex-col gap-8">
-        <div class="flex flex-col gap-2 basis-1/2">
-          <p>Scan the code on the right using your favorite authenticator app</p>
-          <p>Can't scan? enter the code listed below the image!</p>
-          <InputText v-model="totpCode" label="Code" inputmode="numeric" />
-          <Button :disabled="loading" @click="addTotp">Verify code and activate</Button>
-        </div>
-        <div class="basis-1/2">
-          <img :src="totpData.qrCode" alt="totp qr code" class="w-60" />
-          <small>{{ totpData.secret }}</small>
-        </div>
-      </div>
-    </Card>
+          <h3 class="text-lg font-bold mt-6 mb-2">Backup Codes</h3>
+          <div v-if="(hasCodes && showCodes) || (!hasCodes && codes)" class="flex flex-wrap mt-2 mb-2">
+            <div v-for="code in codes" :key="code.code" class="basis-3/12">
+              <code>{{ code["used_at"] ? "Used" : code.code }}</code>
+            </div>
+          </div>
+          <div v-if="hasCodes" class="flex gap-2">
+            <Button v-if="!showCodes" :disabled="loading" @click="revealCodes">Reveal</Button>
+            <Button :disabled="loading" @click="generateNewCodes">Generate new codes</Button>
+          </div>
+          <Button v-else-if="!codes" :disabled="loading" @click="setupCodes">Add</Button>
+          <Button v-else :disabled="loading" @click="confirmCodes">Confirm codes</Button>
 
-    <Card>
-      <template #header>Security Keys</template>
-      <ul v-if="settings?.authenticators">
-        <li v-for="authenticator in settings.authenticators" :key="authenticator.id" class="my-1">
-          {{ authenticator.displayName }} <small class="mr-2">(added at {{ authenticator.addedAt }})</small>
-          <Button size="small" :disabled="loading" @click.prevent="unregisterAuthenticator(authenticator)">Unregister</Button>
-        </li>
-      </ul>
-      <div class="my-2">
-        <InputText v-model="authenticatorName" label="Name" />
-      </div>
-      <Button :disabled="loading" @click="addAuthenticator">Setup 2FA via security key</Button>
-    </Card>
-
-    <Card>
-      <template #header>Backup Codes</template>
-      <div v-if="(hasCodes && showCodes) || (!hasCodes && codes)" class="flex flex-wrap mt-2 mb-2">
-        <div v-for="code in codes" :key="code.code" class="basis-3/12">
-          <code>{{ code["used_at"] ? "Used" : code.code }}</code>
-        </div>
-      </div>
-      <div v-if="hasCodes" class="flex gap-2">
-        <Button v-if="!showCodes" :disabled="loading" @click="revealCodes">Reveal</Button>
-        <Button :disabled="loading" @click="generateNewCodes">Generate new codes</Button>
-      </div>
-      <Button v-else-if="!codes" :disabled="loading" @click="setupCodes">Add</Button>
-      <Button v-else :disabled="loading" @click="confirmCodes">Confirm codes</Button>
-    </Card>
-
-    <Card>
-      <template #header>Devices</template>
-      <ComingSoon>
-        last login<br />
-        on revoke iphone<br />
-        revoke all
-      </ComingSoon>
+          <h3 class="text-lg font-bold mt-6 mb-2">Devices</h3>
+          <ComingSoon>
+            last login<br />
+            on revoke iphone<br />
+            revoke all
+          </ComingSoon>
+        </template>
+        <template #apiKeys>
+          <h2 class="text-xl font-bold mb-4">{{ t("auth.settings.apiKeys.header") }}</h2>
+        </template>
+      </Tabs>
     </Card>
 
     <Modal ref="emailConfirmModal" title="Confirm email" @close="emailConfirmModal.isOpen = false">
