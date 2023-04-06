@@ -15,6 +15,7 @@ declare module "@vue/runtime-core" {
     IconMdiAlertDecagram: typeof import("~icons/mdi/alert-decagram")["default"];
     IconMdiAlertOutline: typeof import("~icons/mdi/alert-outline")["default"];
     IconMdiBell: typeof import("~icons/mdi/bell")["default"];
+    IconMdiBellBadge: typeof import("~icons/mdi/bell-badge")["default"];
     IconMdiBellOutline: typeof import("~icons/mdi/bell-outline")["default"];
     IconMdiBookshelf: typeof import("~icons/mdi/bookshelf")["default"];
     IconMdiCached: typeof import("~icons/mdi/cached")["default"];

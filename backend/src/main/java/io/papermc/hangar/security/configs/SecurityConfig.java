@@ -33,7 +33,7 @@ public class SecurityConfig {
     public static final String AUTH_NAME = "HangarAuth";
     public static final String REFRESH_COOKIE_NAME = AUTH_NAME + "_REFRESH";
 
-    private static final RequestMatcher API_MATCHER = new AndRequestMatcher(new AntPathRequestMatcher("/api/**"), new NegatedRequestMatcher(new AntPathRequestMatcher("/api/v1/authenticate/**")));
+    private static final RequestMatcher API_MATCHER = new AndRequestMatcher(new AntPathRequestMatcher("/api/**"), new NegatedRequestMatcher(new AntPathRequestMatcher("/api/v1/authenticate/**")), new NegatedRequestMatcher(new AntPathRequestMatcher("/api/internal/auth/refresh")));
     private static final RequestMatcher PUBLIC_API_MATCHER = new AndRequestMatcher(new AntPathRequestMatcher("/api/v1/**"), new NegatedRequestMatcher(new AntPathRequestMatcher("/api/v1/authenticate/**")));
     private static final RequestMatcher INTERNAL_API_MATCHER = new AntPathRequestMatcher("/api/internal/**");
     private static final RequestMatcher LOGOUT_MATCHER = new AntPathRequestMatcher("/logout");
@@ -52,8 +52,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http, final AuthenticationManager authenticationManagerBean) throws Exception {
-        //this.webAuthnConfig.configure(http, authenticationManagerBean);
-
         http
             // Disable default configurations
             .logout().disable()
