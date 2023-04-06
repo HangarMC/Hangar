@@ -63,6 +63,7 @@ export default defineNuxtConfig({
 
       // https://github.com/intlify/bundle-tools/tree/main/packages/vite-plugin-vue-i18n
       VueI18n.vite({
+        runtimeOnly: false,
         include: [path.resolve(__dirname, "src/locales/*.json")],
       }),
 
