@@ -19,8 +19,6 @@ import IconMdiBookOpen from "~icons/mdi/book-open";
 import IconMdiLanguageJava from "~icons/mdi/language-java";
 import IconMdiDownloadCircle from "~icons/mdi/download-circle";
 import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
-import IconMdiBellOutline from "~icons/mdi/bell-outline";
-import IconMdiBellBadge from "~icons/mdi/bell-badge";
 import IconMdiAlertOutline from "~icons/mdi/alert-outline";
 import IconMdiInformationOutline from "~icons/mdi/information-outline";
 import IconMdiMessageOutline from "~icons/mdi/message-outline";
@@ -42,7 +40,6 @@ import { useRecentNotifications, useUnreadNotificationsCount } from "~/composabl
 import { handleRequestError } from "~/composables/useErrorHandling";
 import Link from "~/components/design/Link.vue";
 import { useInternalApi } from "~/composables/useApi";
-import { useConfig } from "~/composables/useConfig";
 import { unref } from "#imports";
 
 // marker so that you can inspect backend data in dev tools
@@ -269,8 +266,14 @@ function isRecent(date: string): boolean {
               aria-label="Notifications"
               @click="updateNotifications"
             >
-              <IconMdiBellOutline v-if="unreadNotifications === 0" class="text-[1.2em]" />
-              <IconMdiBellBadge v-else class="text-[1.2em]" />
+              <IconMdiBellOutline v-show="unreadNotifications === 0" class="text-[1.2em]" />
+              <div v-show="unreadNotifications !== 0" class="relative">
+                <!-- This is fine:tm: -->
+                <IconMdiBellBadge class="text-[1.2em]" />
+                <svg class="absolute top-0.6 left-3.3" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <circle style="fill: #c83737" r="3.75" cx="3.75" cy="3.75" />
+                </svg>
+              </div>
             </button>
             <template #content="{ close }">
               <div class="-mt-1 flex flex-col rounded border-t-2 border-primary-400 background-default filter shadow-default overflow-auto max-w-150">
