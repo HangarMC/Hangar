@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.4</version>
+        <version>3.0.5</version>
         <relativePath/>
     </parent>
 
@@ -28,16 +28,16 @@
         <!-- dependency management -->
         <jdbi3-bom.version>3.37.1</jdbi3-bom.version>
         <configurate.version>4.1.2</configurate.version>
-        <spring-cloud-aws.version>3.0.0-RC1</spring-cloud-aws.version>
+        <spring-cloud-aws.version>3.0.0-RC2</spring-cloud-aws.version>
 
         <!-- dependencies -->
-        <springdoc.version>2.0.4</springdoc.version>
+        <springdoc.version>2.1.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
-        <org-json.version>20220924</org-json.version>
+        <org-json.version>20230227</org-json.version>
         <bucket4j.version>7.6.0</bucket4j.version>
         <datafaker.version>1.8.1</datafaker.version>
         <apache-commons-lang.version>3.12.0</apache-commons-lang.version>
-        <jwt.version>4.3.0</jwt.version>
+        <jwt.version>4.4.0</jwt.version>
         <jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
         <caffeine.version>3.1.5</caffeine.version>
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
@@ -48,13 +48,10 @@
         <webauthn.version>2.4.0</webauthn.version>
 
         <!-- test -->
-        <pg.version>1.17.6</pg.version>
+        <pg.version>1.18.0</pg.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-
-        <!-- todo override spring, remove later -->
-        <micrometer-tracing.version>1.0.3</micrometer-tracing.version>
     </properties>
 
     <repositories>
