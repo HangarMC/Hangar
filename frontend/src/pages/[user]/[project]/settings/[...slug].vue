@@ -50,7 +50,7 @@ const props = defineProps<{
   user: HangarUser;
 }>();
 
-const selectedTab = ref(route.hash.substring(1) || "general");
+const selectedTab = ref(route.params.slug?.[0] || "general");
 const tabs: Tab[] = [
   { value: "general", header: i18n.t("project.settings.tabs.general") },
   { value: "links", header: i18n.t("project.settings.tabs.links") },
@@ -112,8 +112,8 @@ const loading = reactive({
 const isCustomLicense = computed(() => form.settings.license.type === "Other");
 const isUnspecifiedLicense = computed(() => form.settings.license.type === "Unspecified");
 
-watch(route, (val) => (selectedTab.value = val.hash.replace("#", "")), { deep: true });
-watch(selectedTab, (val) => history.replaceState({}, "", route.path + "#" + val));
+watch(route, (val) => (selectedTab.value = val.params.slug?.[0] || "general"), { deep: true });
+watch(selectedTab, (val) => router.replace("/" + route.params.user + "/" + route.params.project + "/settings/" + val));
 
 const search = ref<string>("");
 const result = ref<string[]>([]);
