@@ -5,6 +5,7 @@ import { reactive, ref, watch } from "vue";
 import * as webauthnJson from "@github/webauthn-json";
 import { AuthSettings } from "hangar-internal";
 import { useI18n } from "vue-i18n";
+import { useVuelidate } from "@vuelidate/core";
 import { useSeo } from "~/composables/useSeo";
 import { useAuthStore } from "~/store/auth";
 import Button from "~/components/design/Button.vue";
@@ -32,6 +33,7 @@ const router = useRouter();
 const auth = useAuthStore();
 const notification = useNotificationStore();
 const { t } = useI18n();
+const v = useVuelidate();
 
 const settings = await useAuthSettings();
 
@@ -248,10 +250,12 @@ function removeLink(idx: number) {
   profileForm.socials.splice(idx, 1);
 }
 
-function saveProfile() {
+async function saveProfile() {
+  if (!(await v.value.$validate())) return;
   loading.value = true;
   try {
-    // todo saveProfile
+    await useInternalApi("users/" + auth.user?.name + "/settings/profile", "POST", profileForm);
+    notification.success("Saved!");
   } catch (e) {
     notification.error(e);
   }

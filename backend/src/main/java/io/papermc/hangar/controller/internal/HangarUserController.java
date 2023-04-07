@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.images.service.AvatarService;
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.requests.RequestPagination;
@@ -13,6 +14,7 @@ import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
+import io.papermc.hangar.model.internal.api.requests.UserProfileSettings;
 import io.papermc.hangar.model.internal.api.requests.UserSettings;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
@@ -41,8 +43,12 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -67,6 +73,8 @@ import org.springframework.web.server.ResponseStatusException;
 @RateLimit(path = "hangaruser")
 @RequestMapping(path = "/api/internal", produces = MediaType.APPLICATION_JSON_VALUE, method = {RequestMethod.GET, RequestMethod.POST})
 public class HangarUserController extends HangarComponent {
+
+    private static final Set<String> ACCEPTED_SOCIAL_TYPES = Set.of("discord", "github");
 
     private final ObjectMapper mapper;
     private final UsersApiService usersApiService;
@@ -206,6 +214,35 @@ public class HangarUserController extends HangarComponent {
         this.userService.updateUser(userTable);
 
         setThemeCookie(settings, response);
+    }
+
+    // @el(userName: String)
+    @Unlocked
+    @CurrentUser("#userName")
+    @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 5, refillTokens = 2)
+    @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
+    @PostMapping("/users/{userName}/settings/profile")
+    public void saveProfileSettings(@PathVariable final String userName, @RequestBody final UserProfileSettings settings) {
+        final UserTable userTable = this.userService.getUserTable(userName);
+        if (userTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+
+        Map<String, String> map = new HashMap<>();
+        for (final String[] social : settings.socials()) {
+            if (social.length != 2) {
+                throw new HangarApiException("Badly formatted request, " + Arrays.toString(social) + " wasn't of length 2!");
+            }
+            if (!ACCEPTED_SOCIAL_TYPES.contains(social[0])) {
+                throw new HangarApiException("Badly formatted request, social type " + social[0] + " is unknown!");
+            }
+            map.put(social[0], social[1]);
+        }
+        userTable.setSocials(new JSONB(map));
+        userTable.setTagline(settings.tagline());
+        // TODO user action logging
+        this.userService.updateUser(userTable);
     }
 
     @Anyone
