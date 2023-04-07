@@ -13,7 +13,7 @@ import { useAuthSettings } from "~/composables/useApiHelper";
 import Card from "~/components/design/Card.vue";
 import InputText from "~/components/ui/InputText.vue";
 import AvatarChangeModal from "~/components/modals/AvatarChangeModal.vue";
-import { definePageMeta } from "#imports";
+import { definePageMeta, required } from "#imports";
 import Alert from "~/components/design/Alert.vue";
 import Modal from "~/components/modals/Modal.vue";
 import InputPassword from "~/components/ui/InputPassword.vue";
@@ -21,6 +21,7 @@ import { useNotificationStore } from "~/store/notification";
 import ComingSoon from "~/components/design/ComingSoon.vue";
 import Tabs from "~/components/design/Tabs.vue";
 import { Tab } from "~/types/components/design/Tabs";
+import InputSelect from "~/components/ui/InputSelect.vue";
 
 definePageMeta({
   loginRequired: true,
@@ -225,9 +226,27 @@ function saveAccount() {
 
 const profileForm = reactive({
   tagline: auth.user?.tagline,
-  discord: auth.user?.socials?.discord,
-  github: auth.user?.socials?.github,
+  socials: Object.entries(auth.user?.socials),
 });
+const linkType = ref<string>();
+const linkTypes = [
+  { value: "discord", text: "Discord" },
+  { value: "github", text: "GitHub" },
+];
+
+function addLink() {
+  if (!linkType.value) {
+    return notification.error("You have to select a type");
+  }
+  if (profileForm.socials.some((e) => (e[0] as string) === linkType.value)) {
+    return notification.error("You already have a link of that type added");
+  }
+  profileForm.socials.push([linkType.value, ""]);
+}
+
+function removeLink(idx: number) {
+  profileForm.socials.splice(idx, 1);
+}
 
 function saveProfile() {
   loading.value = true;
@@ -243,7 +262,7 @@ useHead(useSeo("Settings", null, route, null));
 </script>
 
 <template>
-  <div class="space-y-3">
+  <div v-if="auth.user" class="space-y-3">
     <!-- todo tabs -->
 
     <Alert v-if="settings?.emailPending" class="col-span-1 md:col-span-2">
@@ -262,18 +281,31 @@ useHead(useSeo("Settings", null, route, null));
           <h2 class="text-xl font-bold mb-4">{{ t("auth.settings.profile.header") }}</h2>
           <form class="flex flex-col gap-2">
             <div class="relative mr-3">
-              <!-- TODO: Fix this -->
-              <UserAvatar :username="auth.user?.name!" :avatar-url="auth.user?.avatarUrl!" />
-              <AvatarChangeModal :avatar="auth.user?.avatarUrl!" :action="`users/${auth.user?.name}/settings/avatar`">
+              <UserAvatar :username="auth.user.name" :avatar-url="auth.user.avatarUrl" />
+              <AvatarChangeModal :avatar="auth.user.avatarUrl" :action="`users/${auth.user.name}/settings/avatar`">
                 <template #activator="{ on }">
-                  <Button class="absolute bottom-0" v-on="on"><IconMdiPencil /></Button>
+                  <Button class="absolute bottom-0" @click.prevent="on.click"><IconMdiPencil /></Button>
                 </template>
               </AvatarChangeModal>
             </div>
 
             <InputText v-model="profileForm.tagline" label="Tagline" />
-            <!-- TODO: Social media (low priority) -->
-            <Button type="submit" class="w-max" :disabled="loading" @click.prevent="saveProfile">Save</Button>
+
+            <h3 class="text-lg font-bold mt-2">Social</h3>
+            <div v-for="(link, idx) in profileForm.socials" :key="link[0]" class="flex gap-2 items-center">
+              <span class="basis-1/3">{{ linkTypes.find((e) => e.value === link[0])?.text }}</span>
+              <InputText v-model="link[1]" label="Username" :rules="[required()]" />
+              <IconMdiBin class="w-8 h-8 cursor-pointer" @click="removeLink(idx)" />
+            </div>
+            <div class="flex gap-2 items-center">
+              <div class="basis-1/3">
+                <Button button-type="secondary" @click.prevent="addLink">Add link</Button>
+              </div>
+              <InputSelect v-model="linkType" :values="linkTypes" label="Type" />
+              <span class="w-8 h-8" />
+            </div>
+
+            <Button type="submit" class="w-max mt-2" :disabled="loading" @click.prevent="saveProfile">Save</Button>
           </form>
         </template>
         <template #account>
