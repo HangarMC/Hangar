@@ -79,7 +79,7 @@ public class VerificationService extends HangarComponent {
         final String code = String.format("%06d", this.secureRandom.nextInt(999999));
         this.verificationCodeDao.insert(new VerificationCodeTable(userId, VerificationCodeTable.VerificationCodeType.EMAIL_VERIFICATION, code));
 
-        final String link = this.config.getBaseUrl() + "/auth/settings?verify=" + code;
+        final String link = this.config.getBaseUrl() + "/auth/settings/account?verify=" + code;
 
         this.mailService.queueEmail("Hangar email verification", email, """
             Hi %s,

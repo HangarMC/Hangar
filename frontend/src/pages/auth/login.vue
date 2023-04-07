@@ -104,7 +104,7 @@ async function loginBackupCode() {
 async function finish(aal: number) {
   authStore.aal = aal;
   await useAuth.updateUser(); // todo maybe return user in login response?
-  const returnUrl = (route.query.returnUrl as string) || "/auth/settings";
+  const returnUrl = (route.query.returnUrl as string) || "/auth/settings/profile";
   await router.push(returnUrl);
 }
 

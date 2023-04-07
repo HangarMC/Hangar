@@ -41,6 +41,7 @@ declare module "hangar-internal" {
     readPrompts: number[];
     language: string;
     theme: string;
+    email: string;
     accessToken?: string;
   }
 

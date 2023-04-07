@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { reactive, ref } from "vue";
-import { ApiKey, User } from "hangar-api";
-import { useRoute } from "vue-router";
-import { useHead } from "@vueuse/head";
+import { ApiKey } from "hangar-api";
 import { useVuelidate } from "@vuelidate/core";
 import PageTitle from "~/components/design/PageTitle.vue";
 import InputText from "~/components/ui/InputText.vue";
@@ -14,7 +12,6 @@ import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import Table from "~/components/design/Table.vue";
 import Alert from "~/components/design/Alert.vue";
 import Card from "~/components/design/Card.vue";
-import { useSeo } from "~/composables/useSeo";
 import { useNotificationStore } from "~/store/notification";
 import { maxLength, minLength, required } from "~/composables/useValidationHelpers";
 import { validApiKeyName } from "~/composables/useHangarValidations";
@@ -22,23 +19,19 @@ import InputGroup from "~/components/ui/InputGroup.vue";
 import { NamedPermission } from "~/types/enums";
 import { definePageMeta } from "#imports";
 import Tooltip from "~/components/design/Tooltip.vue";
+import { useAuthStore } from "~/store/auth";
 
 definePageMeta({
-  currentUserRequired: true,
   globalPermsRequired: ["EDIT_API_KEYS"],
 });
 
 const i18n = useI18n();
-const route = useRoute();
 const notification = useNotificationStore();
 const v = useVuelidate();
+const auth = useAuthStore();
 
-const props = defineProps<{
-  user: User;
-}>();
-
-const apiKeys = ref(await useInternalApi<ApiKey[]>("api-keys/existing-keys/" + route.params.user));
-const possiblePerms = await useInternalApi<NamedPermission[]>("api-keys/possible-perms/" + route.params.user);
+const apiKeys = ref(await useInternalApi<ApiKey[]>("api-keys/existing-keys/" + auth.user?.name));
+const possiblePerms = await useInternalApi<NamedPermission[]>("api-keys/possible-perms/" + auth.user?.name);
 
 const name = ref("");
 const loadingCreate = ref(false);
@@ -46,12 +39,10 @@ const loadingDelete = reactive<Record<string, boolean>>({});
 const selectedPerms = ref([]);
 const createdKey = ref<string | null>(null);
 
-useHead(useSeo(i18n.t("apiKeys.title") + " | " + props.user.name, null, route, props.user.avatarUrl));
-
 async function create() {
   if (!(await v.value.$validate())) return;
   loadingCreate.value = true;
-  const key = await useInternalApi<string>(`api-keys/create-key/${route.params.user}`, "post", {
+  const key = await useInternalApi<string>(`api-keys/create-key/${auth.user?.name}`, "post", {
     name: name.value,
     permissions: selectedPerms.value,
   }).catch((err) => handleRequestError(err));
@@ -74,7 +65,7 @@ async function create() {
 
 async function deleteKey(key: ApiKey) {
   loadingDelete[key.name] = true;
-  await useInternalApi(`api-keys/delete-key/${route.params.user}`, "post", {
+  await useInternalApi(`api-keys/delete-key/${auth.user?.name}`, "post", {
     content: key.name,
   }).catch((err) => handleRequestError(err));
   apiKeys.value = apiKeys.value.filter((k) => k.name !== key.name);
@@ -92,7 +83,7 @@ function copy(event: any) {
 </script>
 
 <template>
-  <div class="space-y-2">
+  <div v-if="auth.user" class="space-y-2">
     <Alert v-if="createdKey" type="info" class="flex">
       {{ i18n.t("apiKeys.created") }}
       <br />
@@ -114,7 +105,7 @@ function copy(event: any) {
       </template>
       <div class="flex items-center">
         <div class="flex-grow mr-2">
-          <InputText v-model="name" :label="i18n.t('apiKeys.name')" :rules="[required(), minLength()(5), maxLength()(36), validApiKeyName()(user.name)]" />
+          <InputText v-model="name" :label="i18n.t('apiKeys.name')" :rules="[required(), minLength()(5), maxLength()(36), validApiKeyName()(auth.user.name)]" />
         </div>
         <Button size="medium" class="w-max" :disabled="v.$invalid || loadingCreate || v.$pending || selectedPerms.length === 0" @click="create">
           {{ i18n.t("apiKeys.createKey") }}

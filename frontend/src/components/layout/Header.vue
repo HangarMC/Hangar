@@ -338,20 +338,19 @@ function isRecent(date: string): boolean {
               <div class="-mt-2 py-1 rounded border-t-2 border-primary-400 background-default filter shadow-default flex flex-col" @click="close()">
                 <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
                 <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
-                <DropdownItem :to="'/' + authStore.user.name + '/settings/api-keys'">{{ t("nav.user.apiKeys") }}</DropdownItem>
-                <DropdownItem to="/auth/settings">{{ t("nav.user.settings") }}</DropdownItem>
+                <DropdownItem to="/auth/settings/profile">{{ t("nav.user.settings") }}</DropdownItem>
                 <hr />
                 <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/flags">
                   {{ t("nav.user.flags") }}
-                  <span v-if="authStore.user.headerData.unresolvedFlags !== 0">{{ "(" + authStore.user.headerData.unresolvedFlags + ")" }}</span>
+                  <span v-if="authStore.user.headerData.unresolvedFlags !== 0">{{ "(" + authStore.user?.headerData.unresolvedFlags + ")" }}</span>
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/approval/projects">
                   {{ t("nav.user.projectApprovals") }}
-                  <span v-if="authStore.user.headerData.projectApprovals !== 0">{{ "(" + authStore.user.headerData.projectApprovals + ")" }}</span>
+                  <span v-if="authStore.user.headerData.projectApprovals !== 0">{{ "(" + authStore.user?.headerData.projectApprovals + ")" }}</span>
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.REVIEWER)" to="/admin/approval/versions">
                   {{ t("nav.user.versionApprovals") }}
-                  <span v-if="authStore.user.headerData.reviewQueueCount !== 0">{{ "(" + authStore.user.headerData.reviewQueueCount + ")" }}</span>
+                  <span v-if="authStore.user.headerData.reviewQueueCount !== 0">{{ "(" + authStore.user?.headerData.reviewQueueCount + ")" }}</span>
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.VIEW_STATS)" to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.VIEW_HEALTH)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>

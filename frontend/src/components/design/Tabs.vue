@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import { computed, watch } from "vue";
+import { useRoute } from "vue-router";
 import Button from "~/components/design/Button.vue";
 import Link from "~/components/design/Link.vue";
 import { Tab } from "~/types/components/design/Tabs";
+
+const route = useRoute();
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -20,18 +23,24 @@ watch(internalValue, (n) => {
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string;
+    modelValue?: string;
     tabs: Tab[];
     vertical?: boolean;
     compact?: boolean;
+    router?: boolean;
   }>(),
   {
+    modelValue: null,
     vertical: true,
     compact: false,
+    router: false,
   }
 );
 
-function selectTab(tab: Tab) {
+function selectTab(event: Event, tab: Tab) {
+  if (!props.router) {
+    event.preventDefault();
+  }
   if (!tab.disable || !tab.disable()) {
     internalValue.value = tab.value;
   }
@@ -43,11 +52,19 @@ function selectTab(tab: Tab) {
     <div :class="{ 'min-w-13ch': vertical, 'basis-full': !vertical }">
       <ul :class="{ 'flex flex-row flex-wrap lt-md:gap-1 md:flex-col': vertical, 'md:space-y-1': !compact && vertical, 'flex flex-row gap-1': !vertical }">
         <li v-for="tab in tabs" :key="tab.value">
-          <Link v-if="!tab.show || tab.show()" :disabled="tab.disable && tab.disable()" :href="'#' + tab.value" @click.prevent="selectTab(tab)">
+          <Link
+            v-if="!tab.show || tab.show()"
+            :disabled="tab.disable && tab.disable()"
+            :href="router ? undefined : '#' + tab.value"
+            :to="router ? tab.value : undefined"
+            @click="selectTab($event, tab)"
+          >
             <Button
               v-if="!tab.show || tab.show()"
               :disabled="tab.disable && tab.disable()"
-              :class="internalValue === tab.value ? 'underline' : '!font-semibold'"
+              :class="
+                (router ? route.path.substring(route.path.lastIndexOf('/') + 1) == tab.value : internalValue === tab.value) ? 'underline' : '!font-semibold'
+              "
               size="medium"
               button-type="transparent"
             >
@@ -59,10 +76,15 @@ function selectTab(tab: Tab) {
       <hr v-if="!vertical" class="mb-2" />
     </div>
     <div class="flex-grow">
-      <template v-for="tab in tabs" :key="tab.value">
-        <slot v-if="internalValue === tab.value" :name="tab.value" />
+      <template v-if="router">
+        <slot v-if="router"></slot>
       </template>
-      <slot name="catchall" />
+      <template v-else>
+        <template v-for="tab in tabs" :key="tab.value">
+          <slot v-if="internalValue === tab.value" :name="tab.value" />
+        </template>
+        <slot name="catchall" />
+      </template>
     </div>
   </div>
 </template>
