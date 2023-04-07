@@ -36,6 +36,10 @@ import InputGroup from "~/components/ui/InputGroup.vue";
 import { ProjectCategory, Tag } from "~/types/enums";
 import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
 
+definePageMeta({
+  loginRequired: true,
+});
+
 const { t } = useI18n();
 const route = useRoute();
 const auth = useAuthStore();
