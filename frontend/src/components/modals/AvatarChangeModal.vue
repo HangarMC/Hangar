@@ -19,15 +19,17 @@
       :src="cropperInput"
       class="h-200px"
       :min-height="150"
+      :default-size="{
+        width: 256,
+        height: 256,
+      }"
       :canvas="{
         imageSmoothingQuality: 'high',
-        maxWidth: 256,
-        maxHeight: 256,
       }"
       :stencil-props="{
-        handlers: {},
-        movable: false,
-        scalable: false,
+        handlers: { eastNorth: true, westNorth: true, eastSouth: true, westSouth: true },
+        movable: true,
+        scalable: true,
         aspectRatio: 1,
       }"
       :resize-image="{
