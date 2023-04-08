@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
 import * as webauthnJson from "@github/webauthn-json";
 import { useVuelidate } from "@vuelidate/core";
+import { useI18n } from "vue-i18n";
 import { useSeo } from "~/composables/useSeo";
 import InputText from "~/components/ui/InputText.vue";
 import Button from "~/components/design/Button.vue";
@@ -20,6 +21,8 @@ const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 const v = useVuelidate();
+const notification = useNotificationStore();
+const i18n = useI18n();
 
 const loading = ref(false);
 const supportedMethods = ref([]);
@@ -42,7 +45,7 @@ async function loginPassword() {
       await finish(response.aal);
     }
   } catch (e) {
-    useNotificationStore().error(e);
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }
@@ -62,7 +65,7 @@ async function loginWebAuthN() {
     });
     await finish(response.aal);
   } catch (e) {
-    useNotificationStore().error(e);
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }
@@ -79,7 +82,7 @@ async function loginTotp() {
     });
     await finish(response.aal);
   } catch (e) {
-    useNotificationStore().error(e);
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }
@@ -96,7 +99,7 @@ async function loginBackupCode() {
     });
     await finish(response.aal);
   } catch (e) {
-    useNotificationStore().error(e);
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }

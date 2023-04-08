@@ -20,6 +20,7 @@ const emit = defineEmits<{
 
 const auth = useAuthStore();
 const notification = useNotificationStore();
+const i18n = useI18n();
 const { t } = useI18n();
 const v = useVuelidate();
 
@@ -45,11 +46,7 @@ async function saveAccount() {
     accountForm.newPassword = "";
     v.value.$reset();
   } catch (e) {
-    if (e?.response?.data?.detail) {
-      error.value = e.response.data.detail;
-    } else {
-      notification.error(e);
-    }
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }

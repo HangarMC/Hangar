@@ -3,6 +3,7 @@ import { useHead } from "@vueuse/head";
 import { useRoute, useRouter } from "vue-router";
 import { reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
+import { useI18n } from "vue-i18n";
 import { useSeo } from "~/composables/useSeo";
 import Card from "~/components/design/Card.vue";
 import InputText from "~/components/ui/InputText.vue";
@@ -10,10 +11,9 @@ import Button from "~/components/design/Button.vue";
 import { useInternalApi } from "~/composables/useApi";
 import InputPassword from "~/components/ui/InputPassword.vue";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import { email, minLength, required, sameAs } from "~/composables/useValidationHelpers";
+import { email, required, sameAs } from "~/composables/useValidationHelpers";
 import { useNotificationStore } from "~/store/notification";
 import InputGroup from "~/components/ui/InputGroup.vue";
-import Alert from "~/components/design/Alert.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -28,8 +28,9 @@ interface SignupForm {
 
 const done = ref(false);
 
+const notification = useNotificationStore();
+const i18n = useI18n();
 const form = reactive<SignupForm>({});
-const repeatedPassword = ref<string>();
 const loading = ref(false);
 
 const errorMessage = ref<string | undefined>();
@@ -42,11 +43,7 @@ async function submit() {
     await useInternalApi("auth/signup", "POST", form);
     done.value = true;
   } catch (e) {
-    if (e.response?.data?.message) {
-      errorMessage.value = e.response.data.message;
-    } else {
-      useNotificationStore().error(e);
-    }
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }
@@ -70,8 +67,8 @@ useHead(useSeo("Signup", null, route, null));
       <InputPassword v-model="form.password" label="Password" name="new-password" :rules="[required()]" />
       <div v-if="errorMessage" class="c-red">{{ errorMessage }}</div>
       <div class="w-max">
-        <InputGroup v-model="form.tos" :rules="[sameAs('Please agree to the tos!')(true)]" :silent-errors="false" full-width>
-          <InputCheckbox v-model="form.tos" label="Agree to TOS?" />
+        <InputGroup v-model="form.tos" :rules="[sameAs('You need to accept the Terms and Conditions')(true)]" :silent-errors="false" full-width>
+          <InputCheckbox v-model="form.tos" label="I agree to the Terms and Conditions" />
         </InputGroup>
       </div>
       <div class="flex gap-2">
@@ -81,11 +78,10 @@ useHead(useSeo("Signup", null, route, null));
     </form>
 
     <div v-if="done" class="flex flex-col gap-2">
-      <Alert type="success" class="w-max">Account created!</Alert>
-      <p>We have send you an email confirmation</p>
+      <p>Your account has been created! Please check your emails to complete the signup process.</p>
       <div class="flex gap-2">
         <Button v-if="route.query.returnUrl">Back to last page</Button>
-        <Button>Goto account settings</Button>
+        <Button>Go to account settings</Button>
       </div>
     </div>
   </Card>

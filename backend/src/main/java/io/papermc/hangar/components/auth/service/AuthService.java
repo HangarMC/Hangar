@@ -66,10 +66,10 @@ public class AuthService extends HangarComponent implements UserDetailsService {
             throw new HangarApiException("dum");
         }
         if (this.userDAO.getUserTable(form.username()) != null) {
-            throw new HangarApiException("nav.user.error.invalidUsername");
+            throw new HangarApiException("nav.user.error.usernameTaken");
         }
         if (this.userDAO.getUserTable(form.email()) != null) {
-            throw new HangarApiException("nav.user.error.invalidUsername");
+            throw new HangarApiException("nav.user.error.emailTaken");
         }
 
         final UserTable userTable = this.userDAO.create(UUID.randomUUID(), form.username(), form.email(), null, "en", List.of(), false, "light", false, new JSONB(Map.of()));
@@ -81,7 +81,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
 
     public boolean validPassword(final String password, final String username) {
         if (!StringUtils.hasText(password) || password.length() < 8) {
-            throw new HangarApiException("password needs to be at least 8 chars long");
+            throw new HangarApiException("The password needs to be at least 8 characters long");
         }
 
         // https://github.com/ory/kratos/blob/40ab76af4f36c671fc1d1108c3b6a15adcdb6125/selfservice/strategy/password/validator.go#L185
@@ -91,12 +91,12 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         final int dist = org.apache.commons.lang3.StringUtils.getLevenshteinDistance(lowerUser, lowerPass);
         final float lcs = ((float) io.papermc.hangar.util.StringUtils.lcs(lowerUser, lowerPass).length()) / lowerPass.length();
         if (dist < 5 || lcs > 0.5) {
-            throw new HangarApiException("username and password are too similar");
+            throw new HangarApiException("The username and password are too similar");
         }
 
         final int breachAmount = this.hibpService.getBreachAmount(password);
         if (breachAmount > 10) {
-            throw new HangarApiException("ur password sucks and was leaked " + breachAmount + " times, use something better!");
+            throw new HangarApiException("Your password has been found in data breaches, please use a different one");
         }
         return true;
     }

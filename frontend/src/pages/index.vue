@@ -157,7 +157,6 @@ useHead(meta);
 <template>
   <div>
     <Container class="flex flex-col items-center gap-4">
-      <Alert v-if="loggedOut" type="success">{{ i18n.t("hangar.loggedOut") }}</Alert>
       <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4">{{ i18n.t("hangar.projectSearch.title") }}</h1>
       <h2 class="text-1xl text-center mb-2">{{ i18n.t("hangar.projectSearch.subTitle") }}</h2>
       <!-- Search Bar -->

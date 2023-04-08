@@ -57,8 +57,8 @@ useHead(useSeo("Reset your password", null, route, null));
   <Card>
     <template #header> Reset your password </template>
     <form v-if="!codeSend" class="flex flex-col gap-2">
-      <p>Enter your email here to receive a verification code to your email address</p>
-      <InputText v-model="email" type="email" label="email" name="email" autocomplete="email" :rules="[required(), emailRule()]" />
+      <p>Enter your email address here to receive a verification code to reset your password.</p>
+      <InputText v-model="email" type="email" label="Email" name="email" autocomplete="email" :rules="[required(), emailRule()]" />
       <Button class="w-max" @click.prevent="sendCode">Send code</Button>
     </form>
     <form v-else-if="!codeVerified" class="flex flex-col gap-2">

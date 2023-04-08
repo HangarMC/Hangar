@@ -38,7 +38,6 @@
     }
   },
   "hangar": {
-    "loggedOut": "You have been logged out!",
     "footer": {
       "api": "API",
       "org": "GitHub",
@@ -97,11 +96,12 @@
       "userList": "User List",
       "logout": "Sign out",
       "error": {
-        "loginFailed": "Authentication Failed",
-        "invalidUsername": "Invalid Username",
+        "loginFailed": "Authentication failed",
+        "invalidUsername": "Invalid username",
+        "usernameTaken": "The given username is unavailable",
+        "emailTaken": "The given email is unavailable",
         "hangarAuth": "Couldn't connect to HangarAuth",
-        "loginDisabled": "Login is temporarily unavailable, please try again later",
-        "fakeUserEnabled": "Fake user is enabled. {0} is therefore disabled"
+        "loginDisabled": "Login is temporarily unavailable, please try again later"
       }
     },
     "createNew": "New",

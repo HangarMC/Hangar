@@ -109,7 +109,7 @@ public class LoginController extends HangarComponent {
     private UserTable verifyPassword(final String usernameOrEmail, final String password) {
         final UserTable userTable = this.userService.getUserTable(usernameOrEmail);
         if (userTable == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
         }
 
         this.credentialsService.verifyPassword(userTable.getUserId(), password);

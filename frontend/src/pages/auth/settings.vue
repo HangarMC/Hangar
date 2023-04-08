@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useHead } from "@vueuse/head";
 import { useRoute, useRouter } from "vue-router";
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useVuelidate } from "@vuelidate/core";
 import { AuthSettings } from "hangar-internal";
@@ -28,6 +28,7 @@ const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
 const notification = useNotificationStore();
+const i18n = useI18n();
 const { t } = useI18n();
 const v = useVuelidate();
 
@@ -61,7 +62,7 @@ async function sendEmailCode() {
     await useInternalApi("auth/email/send", "POST");
     emailCodeHasBeenSend.value = true;
   } catch (e) {
-    notification.error(e);
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }
@@ -77,7 +78,7 @@ async function verifyEmail(emailCode: string) {
     notification.success("Email verified!");
     await router.replace({ query: { verify: undefined } });
   } catch (e) {
-    notification.error(e);
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }

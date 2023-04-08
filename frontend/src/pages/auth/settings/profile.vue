@@ -20,6 +20,7 @@ definePageMeta({
 
 const auth = useAuthStore();
 const notification = useNotificationStore();
+const i18n = useI18n();
 const { t } = useI18n();
 const v = useVuelidate();
 
@@ -56,7 +57,7 @@ async function saveProfile() {
     await useInternalApi("users/" + auth.user?.name + "/settings/profile", "POST", profileForm);
     notification.success("Saved!");
   } catch (e) {
-    notification.error(e);
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }

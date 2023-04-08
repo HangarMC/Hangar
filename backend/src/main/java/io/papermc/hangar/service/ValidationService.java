@@ -27,7 +27,7 @@ public class ValidationService {
         if (BANNED_ROUTES.contains(name)) {
             return false;
         }
-        return name.length() >= 1;
+        return name.length() >= 3;
     }
 
     public @Nullable String isValidProjectName(String name) {

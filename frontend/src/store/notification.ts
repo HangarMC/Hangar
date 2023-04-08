@@ -34,6 +34,17 @@ export const useNotificationStore = defineStore("notification", () => {
     await show({ message, color: "red", clearable, timeout, addedAt: Date.now() });
   }
 
+  async function fromError(i18n: any, error: any, clearable = true, timeout = defaultTimeout) {
+    let message = error;
+    if (error.response?.data?.detail) {
+      message = i18n.t(error.response.data.detail);
+    }
+    if (error.response?.data?.message) {
+      message = i18n.t(error.response.data.message);
+    }
+    await show({ message, color: "red", clearable, timeout, addedAt: Date.now() });
+  }
+
   async function warn(message: string, clearable = true, timeout = defaultTimeout) {
     await show({ message, color: "orange", clearable, timeout, addedAt: Date.now() });
   }
@@ -42,5 +53,5 @@ export const useNotificationStore = defineStore("notification", () => {
     notifications.value.delete(notification);
   }
 
-  return { notifications, show, remove, success, error, warn };
+  return { notifications, show, remove, success, error, fromError, warn };
 });
