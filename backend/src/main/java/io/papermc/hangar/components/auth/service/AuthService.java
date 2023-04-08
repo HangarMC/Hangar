@@ -5,14 +5,13 @@ import io.papermc.hangar.components.auth.dao.UserCredentialDAO;
 import io.papermc.hangar.components.auth.model.credential.CredentialType;
 import io.papermc.hangar.components.auth.model.credential.PasswordCredential;
 import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
+import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.exceptions.WebHookException;
 import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
-import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.internal.MailService;
@@ -132,7 +131,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
             userNameHistory.sort(Comparator.comparing(UserNameChange::date).reversed());
             final OffsetDateTime nextChange = userNameHistory.get(0).date().plus(this.config.user.nameChangeInterval(), ChronoUnit.DAYS);
             if (nextChange.isAfter(OffsetDateTime.now())) {
-                throw WebHookException.of("You can't change your name that soon! You have to wait till " + nextChange.format(DateTimeFormatter.RFC_1123_DATE_TIME));
+                throw new HangarApiException("You can't change your name that soon! You have to wait till " + nextChange.format(DateTimeFormatter.RFC_1123_DATE_TIME));
             }
         }
         // do the change

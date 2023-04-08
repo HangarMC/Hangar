@@ -115,10 +115,17 @@ public class CredentialsService extends HangarComponent {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Malformed credentials");
         }
 
-        if (backupCodeCredential.backupCodes().stream().noneMatch(b -> b.code().equals(code))) {
+        if (!backupCodeCredential.matches(code)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
         }
 
         // TODO mark as used?
+    }
+
+    public void checkRemoveBackupCodes() {
+        final List<CredentialType> credentialTypes = this.getCredentialTypes(this.getHangarPrincipal().getUserId());
+        if (credentialTypes.size() == 1 && credentialTypes.get(0) == CredentialType.BACKUP_CODES) {
+            this.removeCredential(this.getHangarPrincipal().getUserId(), CredentialType.BACKUP_CODES);
+        }
     }
 }

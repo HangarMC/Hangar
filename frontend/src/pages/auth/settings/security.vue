@@ -4,14 +4,16 @@ import * as webauthnJson from "@github/webauthn-json";
 import { AuthSettings } from "hangar-internal";
 import { useI18n } from "vue-i18n";
 import { useVuelidate } from "@vuelidate/core";
+import { AxiosRequestConfig } from "axios";
 import { useAuthStore } from "~/store/auth";
 import { useNotificationStore } from "~/store/notification";
 import { useInternalApi } from "~/composables/useApi";
 import ComingSoon from "~/components/design/ComingSoon.vue";
 import Button from "~/components/design/Button.vue";
 import InputText from "~/components/ui/InputText.vue";
-import { definePageMeta, required } from "#imports";
+import { definePageMeta, required, useAxios } from "#imports";
 import PageTitle from "~/components/design/PageTitle.vue";
+import Modal from "~/components/modals/Modal.vue";
 
 definePageMeta({
   globalPermsRequired: ["EDIT_OWN_USER_SETTINGS"],
@@ -26,7 +28,8 @@ const emit = defineEmits<{
 
 const auth = useAuthStore();
 const notification = useNotificationStore();
-const { t } = useI18n();
+const i18n = useI18n();
+const { t } = i18n;
 const v = useVuelidate();
 
 const loading = ref(false);
@@ -44,9 +47,16 @@ async function addAuthenticator() {
     const publicKeyCredential = await webauthnJson.create(parsed);
     await useInternalApi("auth/webauthn/register", "POST", JSON.stringify(publicKeyCredential), { headers: { "content-type": "text/plain" } });
     authenticatorName.value = "";
-    emit.refreshSettings();
+    emit("refreshSettings");
+    v.value.$reset();
   } catch (e) {
-    notification.error(e);
+    if (e.response.status === 499) {
+      codes.value = e.response.data.body;
+      backupCodeModal.value.isOpen = true;
+      savedRequest.value = e.config;
+    } else {
+      notification.fromError(i18n, e);
+    }
   }
   loading.value = false;
 }
@@ -55,14 +65,13 @@ async function unregisterAuthenticator(authenticator: AuthSettings["authenticato
   loading.value = true;
   try {
     await useInternalApi("auth/webauthn/unregister", "POST", authenticator.id, { headers: { "content-type": "text/plain" } });
-    emit.refreshSettings();
+    emit("refreshSettings");
   } catch (e) {
-    notification.error(e);
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }
 
-const hasTotp = ref(props.settings?.hasTotp);
 const totpData = ref<{ secret: string; qrCode: string } | undefined>();
 
 async function setupTotp() {
@@ -70,7 +79,7 @@ async function setupTotp() {
   try {
     totpData.value = await useInternalApi<{ secret: string; qrCode: string }>("auth/totp/setup", "POST");
   } catch (e) {
-    notification.error(e);
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }
@@ -81,9 +90,17 @@ async function addTotp() {
   loading.value = true;
   try {
     await useInternalApi("auth/totp/register", "POST", { secret: totpData.value?.secret, code: totpCode.value });
-    hasTotp.value = true;
+    totpCode.value = undefined;
+    emit("refreshSettings");
   } catch (e) {
-    notification.error(e);
+    if (e.response.status === 499) {
+      codes.value = e.response.data.body;
+      backupCodeModal.value.isOpen = true;
+      savedRequest.value = e.config;
+      otp.value = e.response.headers["x-hangar-verify"];
+    } else {
+      notification.fromError(i18n, e);
+    }
   }
   loading.value = false;
 }
@@ -92,35 +109,49 @@ async function unlinkTotp() {
   loading.value = true;
   try {
     await useInternalApi("auth/totp/remove", "POST");
-    hasTotp.value = false;
+    emit("refreshSettings");
   } catch (e) {
-    notification.error(e);
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }
 
-const hasCodes = ref(props.settings?.hasBackupCodes);
 const showCodes = ref(false);
 const codes = ref();
 
-async function setupCodes() {
-  loading.value = true;
-  try {
-    codes.value = await useInternalApi("auth/codes/setup", "POST");
-  } catch (e) {
-    notification.error(e);
-  }
-  loading.value = false;
-}
+const savedRequest = ref<AxiosRequestConfig>();
+const backupCodeModal = ref();
+const backupCodeConfirm = ref();
+const otp = ref<string>();
 
-async function confirmCodes() {
+async function confirmAndRepeat() {
   loading.value = true;
   try {
-    await useInternalApi("auth/codes/register", "POST");
-    hasCodes.value = true;
-    showCodes.value = false;
+    const req = savedRequest.value;
+    if (req) {
+      // set header
+      let headers = req.headers;
+      if (!headers) {
+        headers = {};
+        req.headers = headers;
+      }
+      headers["X-Hangar-Verify"] = backupCodeConfirm.value + (otp.value ? ":" + otp.value : "");
+      // repeat request
+      await useAxios()(req);
+      // close modal
+      backupCodeConfirm.value = undefined;
+      backupCodeModal.value.isOpen = false;
+      // reset stuff
+      emit("refreshSettings");
+      totpCode.value = undefined;
+      totpData.value = undefined;
+      authenticatorName.value = "";
+      v.value.$reset();
+    } else {
+      notification.error("no saved request?");
+    }
   } catch (e) {
-    notification.error(e);
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }
@@ -133,7 +164,7 @@ async function revealCodes() {
     }
     showCodes.value = true;
   } catch (e) {
-    notification.error(e);
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }
@@ -142,9 +173,9 @@ async function generateNewCodes() {
   loading.value = true;
   try {
     codes.value = await useInternalApi("auth/codes/regenerate", "POST");
-    hasCodes.value = false;
+    emit("refreshSettings");
   } catch (e) {
-    notification.error(e);
+    notification.fromError(i18n, e);
   }
   loading.value = false;
 }
@@ -154,7 +185,7 @@ async function generateNewCodes() {
   <div v-if="auth.user">
     <PageTitle>{{ t("auth.settings.security.header") }}</PageTitle>
     <h3 class="text-lg font-bold mb-2">Authenticator App</h3>
-    <Button v-if="hasTotp" :disabled="loading" @click="unlinkTotp">Unlink totp</Button>
+    <Button v-if="settings?.hasTotp" :disabled="loading" @click="unlinkTotp">Unlink totp</Button>
     <Button v-else-if="!totpData" :disabled="loading" @click="setupTotp">Setup 2FA via authenticator app</Button>
     <div v-else class="flex lt-sm:flex-col gap-8">
       <div class="flex flex-col gap-2 basis-1/2">
@@ -181,18 +212,30 @@ async function generateNewCodes() {
     </div>
     <Button :disabled="loading" @click="addAuthenticator">Setup 2FA via security key</Button>
 
-    <h3 class="text-lg font-bold mt-4 mb-2">Backup Codes</h3>
-    <div v-if="(hasCodes && showCodes) || (!hasCodes && codes)" class="flex flex-wrap mt-2 mb-2">
-      <div v-for="code in codes" :key="code.code" class="basis-3/12">
-        <code>{{ code["used_at"] ? "Used" : code.code }}</code>
+    <template v-if="settings?.hasBackupCodes">
+      <h3 class="text-lg font-bold mt-4 mb-2">Backup Codes</h3>
+      <div v-if="showCodes" class="flex flex-wrap mt-2 mb-2">
+        <div v-for="code in codes" :key="code.code" class="basis-3/12">
+          <code>{{ code["used_at"] ? "Used" : code.code }}</code>
+        </div>
       </div>
-    </div>
-    <div v-if="hasCodes" class="flex gap-2">
-      <Button v-if="!showCodes" :disabled="loading" @click="revealCodes">Reveal</Button>
-      <Button :disabled="loading" @click="generateNewCodes">Generate new codes</Button>
-    </div>
-    <Button v-else-if="!codes" :disabled="loading" @click="setupCodes">Add</Button>
-    <Button v-else :disabled="loading" @click="confirmCodes">Confirm codes</Button>
+      <div class="flex gap-2">
+        <Button v-if="!showCodes" :disabled="loading" @click="revealCodes">Reveal</Button>
+        <Button :disabled="loading" @click="generateNewCodes">Generate new codes</Button>
+      </div>
+    </template>
+
+    <Modal ref="backupCodeModal" title="Confirm backup codes" @close="backupCodeModal.isOpen = false">
+      You need to configure backup codes before you can activate 2fa. Please save these codes securely!
+      <div class="flex flex-wrap mt-2 mb-2">
+        <div v-for="code in codes" :key="code.code" class="basis-3/12">
+          <code>{{ code.code }}</code>
+        </div>
+      </div>
+      Confirm that you saved the codes by entering one of them below
+      <InputText v-model="backupCodeConfirm" label="Code" />
+      <Button class="mt-2" @click="confirmAndRepeat">Confirm</Button>
+    </Modal>
 
     <h3 class="text-lg font-bold mt-4 mb-2">Devices</h3>
     <ComingSoon>

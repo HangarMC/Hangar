@@ -2,7 +2,9 @@ package io.papermc.hangar.exceptions.handlers;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.exceptions.HangarResponseException;
 import io.papermc.hangar.exceptions.MultiHangarApiException;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@ControllerAdvice(basePackages = "io.papermc.hangar.controller")
+@ControllerAdvice(basePackages = "io.papermc.hangar")
 public class HangarEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final HangarConfig config;
@@ -32,6 +34,11 @@ public class HangarEntityExceptionHandler extends ResponseEntityExceptionHandler
     @ExceptionHandler(MultiHangarApiException.class)
     public ResponseEntity<MultiHangarApiException> handleException(final MultiHangarApiException exception) {
         return new ResponseEntity<>(exception, exception.getHeaders(), exception.getStatusCode().value());
+    }
+
+    @ExceptionHandler(HangarResponseException.class)
+    public ResponseEntity<Object> handleException(final HangarResponseException exception) {
+        return ResponseEntity.status(exception.getStatus()).headers(exception.getHeaders()).body(exception);
     }
 
     @Override

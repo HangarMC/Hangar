@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
@@ -125,6 +126,23 @@ public class TokenService extends HangarComponent {
             .withClaim("emailVerified", userTable.isEmailVerified())
             .withClaim("email", userTable.getEmail())
             .sign(this.algo);
+    }
+
+    public String otp(final long user) {
+        return JWT.create()
+            .withIssuer(this.config.security.tokenIssuer())
+            .withExpiresAt(Instant.now().plus(10, ChronoUnit.MINUTES))
+            .withSubject(String.valueOf(user))
+            .sign(this.algo);
+    }
+
+    public boolean verifyOtp(final long user, final String header) {
+        try {
+            final DecodedJWT decoded = this.verify(header.split(":")[1]);
+            return decoded.getSubject().equals(String.valueOf(user));
+        } catch (final Exception ex) {
+            return false;
+        }
     }
 
     public HangarPrincipal parseHangarPrincipal(final DecodedJWT decodedJWT) {

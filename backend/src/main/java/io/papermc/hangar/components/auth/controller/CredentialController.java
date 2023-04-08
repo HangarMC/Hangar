@@ -33,8 +33,11 @@ import io.papermc.hangar.components.auth.model.dto.TotpSetupResponse;
 import io.papermc.hangar.components.auth.model.dto.WebAuthNSetupResponse;
 import io.papermc.hangar.components.auth.service.AuthService;
 import io.papermc.hangar.components.auth.service.CredentialsService;
+import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.components.auth.service.VerificationService;
 import io.papermc.hangar.components.auth.service.WebAuthNService;
+import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.exceptions.HangarResponseException;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
@@ -45,17 +48,18 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -80,8 +84,9 @@ public class CredentialController extends HangarComponent {
     private final CredentialsService credentialsService;
     private final RelyingParty relyingParty;
     private final WebAuthNService webAuthNService;
+    private final TokenService tokenService;
 
-    public CredentialController(final SecretGenerator secretGenerator, final QrDataFactory qrDataFactory, final QrGenerator qrGenerator, final RecoveryCodeGenerator recoveryCodeGenerator, final CodeVerifier codeVerifier, final AuthService authService, final UserService userService, final PasswordEncoder passwordEncoder, final VerificationService verificationService, final CredentialsService credentialsService, final RelyingParty relyingParty, final WebAuthNService webAuthNService) {
+    public CredentialController(final SecretGenerator secretGenerator, final QrDataFactory qrDataFactory, final QrGenerator qrGenerator, final RecoveryCodeGenerator recoveryCodeGenerator, final CodeVerifier codeVerifier, final AuthService authService, final UserService userService, final PasswordEncoder passwordEncoder, final VerificationService verificationService, final CredentialsService credentialsService, final RelyingParty relyingParty, final WebAuthNService webAuthNService, final TokenService tokenService) {
         this.secretGenerator = secretGenerator;
         this.qrDataFactory = qrDataFactory;
         this.qrGenerator = qrGenerator;
@@ -94,6 +99,7 @@ public class CredentialController extends HangarComponent {
         this.credentialsService = credentialsService;
         this.relyingParty = relyingParty;
         this.webAuthNService = webAuthNService;
+        this.tokenService = tokenService;
     }
 
     /*
@@ -103,6 +109,7 @@ public class CredentialController extends HangarComponent {
     @Unlocked
     @PostMapping(value = "/webauthn/setup", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.TEXT_PLAIN_VALUE)
     public String setupWebauthn(@RequestBody final String authenticatorName) throws JsonProcessingException {
+        // TODO verify that backup codes exist
         final UserIdentity userIdentity = this.webAuthNService.getExistingUserOrCreate(this.getHangarPrincipal().getUserId(), this.getHangarPrincipal().getName());
 
         final WebAuthNSetupResponse response = new WebAuthNSetupResponse(
@@ -126,7 +133,9 @@ public class CredentialController extends HangarComponent {
     @Unlocked
     @PostMapping(value = "/webauthn/register", consumes = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void registerWebauthn(@RequestBody final String publicKeyCredentialJson) throws IOException {
+    public void registerWebauthn(@RequestBody final String publicKeyCredentialJson, @RequestHeader(value = "X-Hangar-Verify", required = false) final String header) throws IOException {
+        final boolean confirmCodes = this.verifyBackupCodes(header);
+
         final var pkc = PublicKeyCredential.parseRegistrationResponseJson(publicKeyCredentialJson);
 
         final WebAuthNCredential.PendingSetup pending = this.webAuthNService.retrieveSetupRequest(this.getHangarPrincipal().getUserId());
@@ -149,6 +158,10 @@ public class CredentialController extends HangarComponent {
         final WebAuthNCredential.Authenticator authenticator = new WebAuthNCredential.Authenticator(registrationResult.getAaguid().getBase64(), registrationResult.getSignatureCount(), false);
         final WebAuthNCredential.WebAuthNDevice device = new WebAuthNCredential.WebAuthNDevice(id, addedAt, publicKey, displayName, authenticator, false, "none");
         this.webAuthNService.addDevice(this.getHangarPrincipal().getUserId(), device);
+
+        if (confirmCodes) {
+            this.confirmBackupCredential();
+        }
     }
 
     @Anyone
@@ -167,6 +180,7 @@ public class CredentialController extends HangarComponent {
     @PostMapping(value = "/webauthn/unregister", consumes = MediaType.TEXT_PLAIN_VALUE)
     public void unregisterWebauthnDevice(@RequestBody final String id) {
         this.webAuthNService.removeDevice(this.getHangarPrincipal().getUserId(), id);
+        this.credentialsService.checkRemoveBackupCodes();
     }
 
     /*
@@ -194,8 +208,10 @@ public class CredentialController extends HangarComponent {
 
     @Unlocked
     @PostMapping("/totp/register")
-    public ResponseEntity<?> registerTotp(@RequestBody final TotpForm form) {
-        if (!StringUtils.hasText(form.code()) || !StringUtils.hasText(form.secret()) || !this.codeVerifier.isValidCode(form.secret(), form.code())) {
+    public ResponseEntity<?> registerTotp(@RequestBody final TotpForm form, @RequestHeader(value = "X-Hangar-Verify", required = false) final String header) {
+        final boolean confirmCodes = this.verifyBackupCodes(header);
+
+        if (!StringUtils.hasText(form.code()) || !StringUtils.hasText(form.secret()) || (!this.codeVerifier.isValidCode(form.secret(), form.code()) && !this.tokenService.verifyOtp(this.getHangarPrincipal().getUserId(), header))) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -207,6 +223,10 @@ public class CredentialController extends HangarComponent {
 
         this.credentialsService.registerCredential(this.getHangarPrincipal().getUserId(), new TotpCredential(totpUrl));
 
+        if (confirmCodes) {
+            this.confirmBackupCredential();
+        }
+
         return ResponseEntity.ok().build();
     }
 
@@ -216,6 +236,7 @@ public class CredentialController extends HangarComponent {
     public void removeTotp() {
         // TODO security protection
         this.credentialsService.removeCredential(this.getHangarPrincipal().getId(), CredentialType.TOTP);
+        this.credentialsService.checkRemoveBackupCodes();
     }
 
     @Unlocked
@@ -229,10 +250,49 @@ public class CredentialController extends HangarComponent {
      * BACKUP CODES
      */
 
-    @Unlocked
-    @PostMapping("/codes/setup")
-    public List<BackupCodeCredential.BackupCode> setupBackupCodes() {
-        // TODO check if there are unconfirmed one in db first
+    private BackupCodeCredential getBackupCredential() {
+        final UserCredentialTable table = this.credentialsService.getCredential(this.getHangarPrincipal().getId(), CredentialType.BACKUP_CODES);
+        if (table == null) {
+            return null;
+        }
+        return table.getCredential().get(BackupCodeCredential.class);
+    }
+
+    private void confirmBackupCredential() {
+        BackupCodeCredential cred = this.getBackupCredential();
+        if (cred == null) {
+            throw new HangarApiException("No pending codes");
+        }
+        cred = new BackupCodeCredential(cred.backupCodes(), false);
+        this.credentialsService.updateCredential(this.getHangarPrincipal().getId(), cred);
+    }
+
+    private boolean verifyBackupCodes(final String header) {
+        final BackupCodeCredential backupCredential = this.getBackupCredential();
+        if (backupCredential == null) {
+            // no codes yet? we generate some
+            final HttpHeaders headers = new HttpHeaders();
+            headers.set("X-Hangar-Verify", this.tokenService.otp(this.getHangarPrincipal().getUserId()));
+            throw new HangarResponseException(HttpStatusCode.valueOf(499), "Setup backup codes first", this.setupBackupCodes(), headers);
+        } else if (backupCredential.unconfirmed()) {
+            if (StringUtils.hasText(header)) {
+                if (!backupCredential.matches(header.split(":")[0])) {
+                    // wrong code? -> proper error
+                    throw new HangarApiException("Backup code doesn't match");
+                }
+                // only if unconfirmed + code is right we mark for confirm
+                return true;
+            } else {
+                // unconfirmed codes? better enter the code!
+                final HttpHeaders headers = new HttpHeaders();
+                headers.set("X-Hangar-Verify", this.tokenService.otp(this.getHangarPrincipal().getUserId()));
+                throw new HangarResponseException(HttpStatusCode.valueOf(499), "Confirm backup codes first", backupCredential.backupCodes(), headers);
+            }
+        }
+        return false;
+    }
+
+    private List<BackupCodeCredential.BackupCode> setupBackupCodes() {
         final List<BackupCodeCredential.BackupCode> codes = Arrays.stream(this.recoveryCodeGenerator.generateCodes(12)).map(s -> new BackupCodeCredential.BackupCode(s, null)).toList();
         this.credentialsService.registerCredential(this.getHangarPrincipal().getUserId(), new BackupCodeCredential(codes, true));
         return codes;
@@ -240,30 +300,13 @@ public class CredentialController extends HangarComponent {
 
     @Unlocked
     @PostMapping("/codes/show")
-    public ResponseEntity<?> showBackupCodes() {
+    public List<BackupCodeCredential.BackupCode> showBackupCodes() {
         // TODO security protection
-        final UserCredentialTable table = this.credentialsService.getCredential(this.getHangarPrincipal().getId(), CredentialType.BACKUP_CODES);
-        if (table == null) {
-            return ResponseEntity.notFound().build();
-        }
-        final BackupCodeCredential cred = table.getCredential().get(BackupCodeCredential.class);
+        final BackupCodeCredential cred = this.getBackupCredential();
         if (cred == null || cred.unconfirmed()) {
-            return ResponseEntity.notFound().build();
+            throw new HangarApiException("You haven't setup backup codes");
         }
-        return ResponseEntity.ok(cred.backupCodes());
-    }
-
-    @Unlocked
-    @PostMapping("/codes/register")
-    public ResponseEntity<?> registerBackupCodes() {
-        final UserCredentialTable table = this.credentialsService.getCredential(this.getHangarPrincipal().getId(), CredentialType.BACKUP_CODES);
-        if (table == null) {
-            return ResponseEntity.notFound().build();
-        }
-        BackupCodeCredential cred = table.getCredential().get(BackupCodeCredential.class);
-        cred = new BackupCodeCredential(cred.backupCodes(), false);
-        this.credentialsService.updateCredential(this.getHangarPrincipal().getId(), cred);
-        return ResponseEntity.ok().build();
+        return cred.backupCodes();
     }
 
     @Unlocked

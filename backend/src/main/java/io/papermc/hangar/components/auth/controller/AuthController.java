@@ -1,6 +1,7 @@
 package io.papermc.hangar.components.auth.controller;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.auth.model.credential.BackupCodeCredential;
 import io.papermc.hangar.components.auth.model.credential.CredentialType;
 import io.papermc.hangar.components.auth.model.credential.WebAuthNCredential;
 import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
@@ -103,7 +104,14 @@ public class AuthController extends HangarComponent {
     public SettingsResponse settings() {
         final long userId = this.getHangarPrincipal().getUserId();
         final List<SettingsResponse.Authenticator> authenticators = this.getAuthenticators(userId);
-        final boolean hasBackupCodes = this.credentialsService.getCredential(userId, CredentialType.BACKUP_CODES) != null;
+        final UserCredentialTable backupCodeTable = this.credentialsService.getCredential(userId, CredentialType.BACKUP_CODES);
+        boolean hasBackupCodes = false;
+        if (backupCodeTable != null) {
+            final BackupCodeCredential backupCodeCredential = backupCodeTable.getCredential().get(BackupCodeCredential.class);
+            if (backupCodeCredential != null && !backupCodeCredential.unconfirmed()) {
+                hasBackupCodes = true;
+            }
+        }
         final boolean hasTotp = this.credentialsService.getCredential(userId, CredentialType.TOTP) != null;
         final boolean emailVerified = this.getHangarPrincipal().isEmailVerified(); // TODO email verified should be part of aal
         final boolean emailPending = this.verificationService.getVerificationCode(userId, VerificationCodeTable.VerificationCodeType.EMAIL_VERIFICATION) != null;

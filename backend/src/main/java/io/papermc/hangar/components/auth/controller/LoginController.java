@@ -58,7 +58,7 @@ public class LoginController extends HangarComponent {
         final UserTable userTable = this.verifyPassword(form.usernameOrEmail(), form.password());
         final List<CredentialType> types = this.credentialsService.getCredentialTypes(userTable.getUserId());
         final int aal = userTable.isEmailVerified() ? 0 : 1;
-        if (types.isEmpty()) {
+        if (types.isEmpty() || (types.size() == 1 && types.get(0) == CredentialType.BACKUP_CODES)) {
             return this.setAalAndLogin(userTable, aal);
         } else {
             return new LoginResponse(aal, types);
