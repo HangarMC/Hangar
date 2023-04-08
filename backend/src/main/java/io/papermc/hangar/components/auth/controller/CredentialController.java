@@ -51,6 +51,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -194,7 +195,7 @@ public class CredentialController extends HangarComponent {
     @Unlocked
     @PostMapping("/totp/register")
     public ResponseEntity<?> registerTotp(@RequestBody final TotpForm form) {
-        if (!this.codeVerifier.isValidCode(form.secret(), form.code())) {
+        if (!StringUtils.hasText(form.code()) || !StringUtils.hasText(form.secret()) || !this.codeVerifier.isValidCode(form.secret(), form.code())) {
             return ResponseEntity.badRequest().build();
         }
 

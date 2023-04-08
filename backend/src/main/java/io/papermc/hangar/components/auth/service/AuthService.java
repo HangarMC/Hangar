@@ -15,6 +15,8 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.ValidationService;
+import io.papermc.hangar.service.internal.MailService;
+import jakarta.validation.constraints.NotEmpty;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -39,8 +41,9 @@ public class AuthService extends HangarComponent implements UserDetailsService {
     private final VerificationService verificationService;
     private final CredentialsService credentialsService;
     private final HibpService hibpService;
+    private final MailService mailService;
 
-    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService, final HibpService hibpService) {
+    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService, final HibpService hibpService, final MailService mailService) {
         this.userDAO = userDAO;
         this.userCredentialDAO = userCredentialDAO;
         this.passwordEncoder = passwordEncoder;
@@ -48,6 +51,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         this.verificationService = verificationService;
         this.credentialsService = credentialsService;
         this.hibpService = hibpService;
+        this.mailService = mailService;
     }
 
     @Transactional
@@ -116,8 +120,8 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         return new HangarPrincipal(userTable.getUserId(), userTable.getName(), userTable.getEmail(), userTable.isLocked(), Permission.ViewPublicInfo, password, userTable.isEmailVerified());
     }
 
-    // TODO call this
-    private void handleUsernameChange(final UserTable user, final String newName) {
+    @Transactional
+    public void handleUsernameChange(final UserTable user, final String newName) {
         // make sure a user with that name doesn't exist yet
         if (this.userDAO.getUserTable(newName) != null) {
             throw new HangarApiException("A user with that name already exists!");
@@ -131,12 +135,54 @@ public class AuthService extends HangarComponent implements UserDetailsService {
                 throw WebHookException.of("You can't change your name that soon! You have to wait till " + nextChange.format(DateTimeFormatter.RFC_1123_DATE_TIME));
             }
         }
+        // do the change
+        final String oldName = user.getName();
+        user.setName(newName);
+        this.userDAO.update(user);
         // record the change into the db
-        this.userDAO.recordNameChange(user.getUuid(), user.getName(), newName);
+        this.userDAO.recordNameChange(user.getUuid(), oldName, newName);
+        // email
+        this.mailService.queueEmail("Hangar Username Changed", user.getEmail(), """
+            Hey %s,
+            your username on hangar was changed to %s.
+            If this wasn't you, please contact support.
+            """.formatted(oldName, newName));
     }
 
-    // TODO call this
-    private void handleEmailChange() {
-        // todo set email to unconfirmed and send email
+    @Transactional
+    public void handleEmailChange(final UserTable userTable, final @NotEmpty String email) {
+        // make sure a user with that email doesn't exist yet
+        if (this.userDAO.getUserTable(email) != null) {
+            throw new HangarApiException("You can't use this email!");
+        }
+
+        // send info mail
+        this.mailService.queueEmail("Hangar Email Changed", userTable.getEmail(), """
+            Hey %s,
+            your email on hangar was changed to %s.
+            If this wasn't you, please contact support.
+            """.formatted(userTable.getName(), email));
+        // update
+        userTable.setEmail(email);
+        userTable.setEmailVerified(false);
+        this.userDAO.update(userTable);
+        // send verification mail
+        this.verificationService.sendVerificationCode(userTable.getUserId(), userTable.getEmail(), userTable.getName());
+    }
+
+    @Transactional
+    public void handlePasswordChange(final UserTable userTable, final String newPassword) {
+        if (!this.validPassword(newPassword, userTable.getName())) {
+            return;
+        }
+        // update
+        this.credentialsService.removeCredential(userTable.getUserId(), CredentialType.PASSWORD);
+        this.credentialsService.registerCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(newPassword)));
+        // send info mail
+        this.mailService.queueEmail("Hangar Password Changed", userTable.getEmail(), """
+            Hey %s,
+            your password on hangar was updated.
+            If this wasn't you, reset your password here: https://hangar.papermc.io/auth/reset
+            """.formatted(userTable.getName()));
     }
 }

@@ -10,7 +10,7 @@ import { useInternalApi } from "~/composables/useApi";
 import ComingSoon from "~/components/design/ComingSoon.vue";
 import Button from "~/components/design/Button.vue";
 import InputText from "~/components/ui/InputText.vue";
-import { definePageMeta } from "#imports";
+import { definePageMeta, required } from "#imports";
 import PageTitle from "~/components/design/PageTitle.vue";
 
 definePageMeta({
@@ -34,6 +34,7 @@ const loading = ref(false);
 const authenticatorName = ref<string>();
 
 async function addAuthenticator() {
+  if (!(await v.value.$validate())) return;
   loading.value = true;
   try {
     const credentialCreateOptions = await useInternalApi<string>("auth/webauthn/setup", "POST", authenticatorName.value, {
@@ -176,7 +177,7 @@ async function generateNewCodes() {
       </li>
     </ul>
     <div class="my-2">
-      <InputText v-model="authenticatorName" label="Name" />
+      <InputText v-model="authenticatorName" label="Name" :rules="[required()]" />
     </div>
     <Button :disabled="loading" @click="addAuthenticator">Setup 2FA via security key</Button>
 

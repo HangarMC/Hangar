@@ -5,23 +5,27 @@ import io.papermc.hangar.components.auth.model.credential.CredentialType;
 import io.papermc.hangar.components.auth.model.credential.WebAuthNCredential;
 import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
 import io.papermc.hangar.components.auth.model.db.VerificationCodeTable;
+import io.papermc.hangar.components.auth.model.dto.AccountForm;
 import io.papermc.hangar.components.auth.model.dto.SettingsResponse;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.components.auth.service.AuthService;
 import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.components.auth.service.VerificationService;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.configs.SecurityConfig;
+import io.papermc.hangar.service.internal.users.UserService;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,12 +44,14 @@ public class AuthController extends HangarComponent {
     private final TokenService tokenService;
     private final VerificationService verificationService;
     private final CredentialsService credentialsService;
+    private final UserService userService;
 
-    public AuthController(final AuthService authService, final TokenService tokenService, final VerificationService verificationService, final CredentialsService credentialsService) {
+    public AuthController(final AuthService authService, final TokenService tokenService, final VerificationService verificationService, final CredentialsService credentialsService, final UserService userService) {
         this.authService = authService;
         this.tokenService = tokenService;
         this.verificationService = verificationService;
         this.credentialsService = credentialsService;
+        this.userService = userService;
     }
 
     @Anyone
@@ -104,7 +110,7 @@ public class AuthController extends HangarComponent {
         return new SettingsResponse(authenticators, hasBackupCodes, hasTotp, emailVerified, emailPending);
     }
 
-    public List<SettingsResponse.Authenticator> getAuthenticators(final long userId) {
+    private List<SettingsResponse.Authenticator> getAuthenticators(final long userId) {
         final UserCredentialTable credential = this.credentialsService.getCredential(userId, CredentialType.WEBAUTHN);
         if (credential != null) {
             final WebAuthNCredential webAuthNCredential = credential.getCredential().get(WebAuthNCredential.class);
@@ -115,5 +121,28 @@ public class AuthController extends HangarComponent {
             }
         }
         return List.of();
+    }
+
+    @Unlocked
+    @PostMapping("/account")
+    public void saveAccount(@RequestBody final AccountForm form) {
+        this.credentialsService.verifyPassword(this.getHangarPrincipal().getUserId(), form.currentPassword());
+
+        final UserTable userTable = this.userService.getUserTable(this.getHangarPrincipal().getUserId());
+        if (userTable == null) {
+            throw new HangarApiException("No user?!");
+        }
+
+        if (!this.getHangarPrincipal().getUsername().equals(form.username())) {
+            this.authService.handleUsernameChange(userTable, form.username());
+        }
+
+        if (!this.getHangarPrincipal().getEmail().equals(form.email())) {
+            this.authService.handleEmailChange(userTable, form.email());
+        }
+
+        if (StringUtils.hasText(form.newPassword())) {
+            this.authService.handlePasswordChange(userTable, form.newPassword());
+        }
     }
 }

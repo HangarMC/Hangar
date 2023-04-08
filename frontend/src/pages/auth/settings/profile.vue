@@ -11,6 +11,7 @@ import InputText from "~/components/ui/InputText.vue";
 import InputSelect from "~/components/ui/InputSelect.vue";
 import Button from "~/components/design/Button.vue";
 import { definePageMeta } from "#imports";
+import { useBackendData } from "~/store/backendData";
 import PageTitle from "~/components/design/PageTitle.vue";
 
 definePageMeta({
@@ -76,7 +77,7 @@ async function saveProfile() {
     </div>
 
     <h3 class="text-lg font-bold mt-4 mb-2">Tagline</h3>
-    <InputText v-model="profileForm.tagline" label="Tagline" />
+    <InputText v-model="profileForm.tagline" label="Tagline" counter :maxlength="useBackendData.validations.userTagline.max" />
 
     <h3 class="text-lg font-bold mt-4">Social</h3>
     <div v-for="(link, idx) in profileForm.socials" :key="link[0]" class="flex items-center">
