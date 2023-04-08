@@ -153,6 +153,8 @@ hangar:
     token-secret: "secret!"
     token-expiry: 300 # seconds
     refresh-token-expiry: 30 # days
+    rp-name: "Hangar"
+    rp-id: "localhost"
     safe-download-hosts:
       - "github.com"
       - "githubusercontent.com"

@@ -17,7 +17,9 @@ public record HangarSecurityConfig(
     String tokenIssuer,
     String tokenSecret,
     @DurationUnit(ChronoUnit.SECONDS) Duration tokenExpiry,
-    @DurationUnit(ChronoUnit.DAYS) Duration refreshTokenExpiry
+    @DurationUnit(ChronoUnit.DAYS) Duration refreshTokenExpiry,
+    String rpName,
+    String rpId
 ) {
 
     public boolean checkSafe(final String url) {

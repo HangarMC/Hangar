@@ -179,6 +179,7 @@ backend:
       database: "hangarauth"
       options: "?currentSchema=hangar"
     tokenSecret: "secret"
+    rpId: "localhost"
     storage:
       type: "local"
       accessKey: "todo"
