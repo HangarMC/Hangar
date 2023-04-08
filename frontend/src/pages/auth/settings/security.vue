@@ -11,6 +11,7 @@ import ComingSoon from "~/components/design/ComingSoon.vue";
 import Button from "~/components/design/Button.vue";
 import InputText from "~/components/ui/InputText.vue";
 import { definePageMeta } from "#imports";
+import PageTitle from "~/components/design/PageTitle.vue";
 
 definePageMeta({
   globalPermsRequired: ["EDIT_OWN_USER_SETTINGS"],
@@ -150,7 +151,7 @@ async function generateNewCodes() {
 
 <template>
   <div v-if="auth.user">
-    <h2 class="text-xl font-bold mb-4">{{ t("auth.settings.security.header") }}</h2>
+    <PageTitle>{{ t("auth.settings.security.header") }}</PageTitle>
     <h3 class="text-lg font-bold mb-2">Authenticator App</h3>
     <Button v-if="hasTotp" :disabled="loading" @click="unlinkTotp">Unlink totp</Button>
     <Button v-else-if="!totpData" :disabled="loading" @click="setupTotp">Setup 2FA via authenticator app</Button>
@@ -167,7 +168,7 @@ async function generateNewCodes() {
       </div>
     </div>
 
-    <h3 class="text-lg font-bold mt-6 mb-2">Security Keys</h3>
+    <h3 class="text-lg font-bold mt-4 mb-2">Security Keys</h3>
     <ul v-if="settings?.authenticators">
       <li v-for="authenticator in settings.authenticators" :key="authenticator.id" class="my-1">
         {{ authenticator.displayName }} <small class="mr-2">(added at {{ authenticator.addedAt }})</small>
@@ -179,7 +180,7 @@ async function generateNewCodes() {
     </div>
     <Button :disabled="loading" @click="addAuthenticator">Setup 2FA via security key</Button>
 
-    <h3 class="text-lg font-bold mt-6 mb-2">Backup Codes</h3>
+    <h3 class="text-lg font-bold mt-4 mb-2">Backup Codes</h3>
     <div v-if="(hasCodes && showCodes) || (!hasCodes && codes)" class="flex flex-wrap mt-2 mb-2">
       <div v-for="code in codes" :key="code.code" class="basis-3/12">
         <code>{{ code["used_at"] ? "Used" : code.code }}</code>
@@ -192,7 +193,7 @@ async function generateNewCodes() {
     <Button v-else-if="!codes" :disabled="loading" @click="setupCodes">Add</Button>
     <Button v-else :disabled="loading" @click="confirmCodes">Confirm codes</Button>
 
-    <h3 class="text-lg font-bold mt-6 mb-2">Devices</h3>
+    <h3 class="text-lg font-bold mt-4 mb-2">Devices</h3>
     <ComingSoon>
       last login<br />
       on revoke iphone<br />

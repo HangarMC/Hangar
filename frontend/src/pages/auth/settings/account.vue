@@ -9,6 +9,7 @@ import Button from "~/components/design/Button.vue";
 import InputPassword from "~/components/ui/InputPassword.vue";
 import InputText from "~/components/ui/InputText.vue";
 import { definePageMeta } from "#imports";
+import PageTitle from "~/components/design/PageTitle.vue";
 
 definePageMeta({
   globalPermsRequired: ["EDIT_OWN_USER_SETTINGS"],
@@ -45,7 +46,7 @@ function saveAccount() {
 
 <template>
   <div v-if="auth.user">
-    <h2 class="text-xl font-bold mb-4">{{ t("auth.settings.account.header") }}</h2>
+    <PageTitle>{{ t("auth.settings.account.header") }}</PageTitle>
     <form class="flex flex-col gap-2">
       <InputText v-model="accountForm.username" label="Username" />
       <InputText v-model="accountForm.email" label="Email" autofill="username" autocomplete="username" />

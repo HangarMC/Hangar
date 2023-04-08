@@ -11,6 +11,7 @@ import InputText from "~/components/ui/InputText.vue";
 import InputSelect from "~/components/ui/InputSelect.vue";
 import Button from "~/components/design/Button.vue";
 import { definePageMeta } from "#imports";
+import PageTitle from "~/components/design/PageTitle.vue";
 
 definePageMeta({
   globalPermsRequired: ["EDIT_OWN_USER_SETTINGS"],
@@ -62,34 +63,38 @@ async function saveProfile() {
 
 <template>
   <div v-if="auth.user">
-    <h2 class="text-xl font-bold mb-4">{{ t("auth.settings.profile.header") }}</h2>
-    <form class="flex flex-col gap-2">
-      <div class="relative mr-3">
-        <UserAvatar :username="auth.user.name" :avatar-url="auth.user.avatarUrl" />
-        <AvatarChangeModal :avatar="auth.user.avatarUrl" :action="`users/${auth.user.name}/settings/avatar`">
-          <template #activator="{ on }">
-            <Button class="absolute bottom-0" @click.prevent="on.click"><IconMdiPencil /></Button>
-          </template>
-        </AvatarChangeModal>
-      </div>
+    <PageTitle>{{ t("auth.settings.profile.header") }}</PageTitle>
 
-      <InputText v-model="profileForm.tagline" label="Tagline" />
+    <h3 class="text-lg font-bold mb-2">Avatar</h3>
+    <div class="relative">
+      <UserAvatar :username="auth.user.name" :avatar-url="auth.user.avatarUrl" />
+      <AvatarChangeModal :avatar="auth.user.avatarUrl" :action="`users/${auth.user.name}/settings/avatar`">
+        <template #activator="{ on }">
+          <Button class="absolute bottom-0" @click.prevent="on.click"><IconMdiPencil /></Button>
+        </template>
+      </AvatarChangeModal>
+    </div>
 
-      <h3 class="text-lg font-bold mt-2">Social</h3>
-      <div v-for="(link, idx) in profileForm.socials" :key="link[0]" class="flex gap-2 items-center">
-        <span class="basis-1/3">{{ linkTypes.find((e) => e.value === link[0])?.text }}</span>
+    <h3 class="text-lg font-bold mt-4 mb-2">Tagline</h3>
+    <InputText v-model="profileForm.tagline" label="Tagline" />
+
+    <h3 class="text-lg font-bold mt-4">Social</h3>
+    <div v-for="(link, idx) in profileForm.socials" :key="link[0]" class="flex items-center">
+      <span class="w-25">{{ linkTypes.find((e) => e.value === link[0])?.text }}</span>
+      <div class="w-75">
         <InputText v-model="link[1]" label="Username" :rules="[required()]" />
-        <IconMdiBin class="w-8 h-8 cursor-pointer" @click="removeLink(idx)" />
       </div>
-      <div class="flex gap-2 items-center">
-        <div class="basis-1/3">
-          <Button button-type="secondary" @click.prevent="addLink">Add link</Button>
-        </div>
+      <IconMdiBin class="ml-2 w-8 h-8 cursor-pointer" @click="removeLink(idx)" />
+    </div>
+    <div class="flex items-center">
+      <div class="w-25">
+        <Button button-type="secondary" @click.prevent="addLink">Add link</Button>
+      </div>
+      <div class="w-75">
         <InputSelect v-model="linkType" :values="linkTypes" label="Type" />
-        <span class="w-8 h-8" />
       </div>
+    </div>
 
-      <Button type="submit" class="w-max mt-2" :disabled="loading" @click.prevent="saveProfile">Save</Button>
-    </form>
+    <Button type="submit" class="w-max mt-2" :disabled="loading" @click.prevent="saveProfile">Save</Button>
   </div>
 </template>

@@ -99,10 +99,9 @@ function copy(event: any) {
         </Button>
       </Tooltip>
     </Alert>
-    <Card>
-      <template #header>
-        <PageTitle>{{ i18n.t("apiKeys.createNew") }}</PageTitle>
-      </template>
+    <PageTitle>{{ i18n.t("auth.settings.apiKeys.header") }}</PageTitle>
+    <div>
+      <h3 class="text-lg font-bold mb-2">{{ i18n.t("apiKeys.createNew") }}</h3>
       <div class="flex items-center">
         <div class="flex-grow mr-2">
           <InputText v-model="name" :label="i18n.t('apiKeys.name')" :rules="[required(), minLength()(5), maxLength()(36), validApiKeyName()(auth.user.name)]" />
@@ -111,17 +110,15 @@ function copy(event: any) {
           {{ i18n.t("apiKeys.createKey") }}
         </Button>
       </div>
-      <InputGroup v-model="selectedPerms" :label="i18n.t('apiKeys.permissions')" class="mt-4 text-xl font-bold" full-width>
+      <InputGroup v-model="selectedPerms" :label="i18n.t('apiKeys.permissions')" class="mt-4 text-lg font-bold" full-width>
         <div class="grid autofix mt-2">
           <InputCheckbox v-for="perm in possiblePerms" :key="perm" v-model="selectedPerms" :label="perm" :value="perm" />
         </div>
         <div v-if="selectedPerms.length === 0" class="text-red font-bold mt-2">{{ i18n.t("apiKeys.permissionRequired") }}</div>
       </InputGroup>
-    </Card>
-    <Card>
-      <template #header>
-        <PageTitle>{{ i18n.t("apiKeys.existing") }}</PageTitle>
-      </template>
+    </div>
+    <div>
+      <h3 class="text-lg font-bold mb-2">{{ i18n.t("apiKeys.existing") }}</h3>
       <Table>
         <thead>
           <tr>
@@ -155,7 +152,7 @@ function copy(event: any) {
           </tr>
         </tbody>
       </Table>
-    </Card>
+    </div>
   </div>
 </template>
 
