@@ -1093,6 +1093,7 @@
     "hangarAuth": "This only change the locale for your current browser (as a cookie). Click here to change your lang on paper auth for all paper services"
   },
   "validation": {
+    "email": "Email is invalid",
     "required": "{property} is required",
     "requiredIf": "{property} is required",
     "maxLength": "Maximum length is {max}",
