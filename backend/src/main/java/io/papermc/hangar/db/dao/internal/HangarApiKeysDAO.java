@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 @RegisterConstructorMapper(ApiKey.class)
 public interface HangarApiKeysDAO {
 
-    @SqlQuery("SELECT created_at, name, token_identifier, raw_key_permissions::bigint permissions FROM api_keys WHERE owner_id = :userId ORDER BY created_at DESC")
+    @SqlQuery("SELECT created_at, name, token_identifier, raw_key_permissions::bigint permissions, last_used FROM api_keys WHERE owner_id = :userId ORDER BY created_at DESC")
     List<ApiKey> getUserApiKeys(long userId);
 }

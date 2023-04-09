@@ -11,7 +11,6 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import Table from "~/components/design/Table.vue";
 import Alert from "~/components/design/Alert.vue";
-import Card from "~/components/design/Card.vue";
 import { useNotificationStore } from "~/store/notification";
 import { maxLength, minLength, required } from "~/composables/useValidationHelpers";
 import { validApiKeyName } from "~/composables/useHangarValidations";
@@ -20,6 +19,7 @@ import { NamedPermission } from "~/types/enums";
 import { definePageMeta } from "#imports";
 import Tooltip from "~/components/design/Tooltip.vue";
 import { useAuthStore } from "~/store/auth";
+import PrettyTime from "~/components/design/PrettyTime.vue";
 
 definePageMeta({
   globalPermsRequired: ["EDIT_API_KEYS"],
@@ -131,6 +131,9 @@ function copy(event: any) {
             <th>
               {{ i18n.t("apiKeys.permissions") }}
             </th>
+            <th class="min-w-100px">
+              {{ i18n.t("apiKeys.lastUsed") }}
+            </th>
             <th />
           </tr>
         </thead>
@@ -139,6 +142,7 @@ function copy(event: any) {
             <td>{{ key.name }}</td>
             <td>{{ key.tokenIdentifier }}</td>
             <td>{{ key.permissions.join(", ") }}</td>
+            <td><PrettyTime v-if="key.lastUsed" :time="key.lastUsed" long /></td>
             <td>
               <Button button-type="red" :loading="loadingDelete[key.name]" @click="deleteKey(key)"><IconMdiDelete /></Button>
             </td>

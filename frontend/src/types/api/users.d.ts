@@ -31,5 +31,6 @@ declare module "hangar-api" {
     token?: string;
     tokenIdentifier?: string;
     permissions: NamedPermission[];
+    lastUsed?: string;
   }
 }

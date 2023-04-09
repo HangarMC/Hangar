@@ -11,6 +11,7 @@ import io.papermc.hangar.model.db.auth.ApiKeyTable;
 import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.util.CryptoUtils;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,8 @@ public class APIAuthenticationService extends HangarComponent {
         if (apiKeyTable == null) {
             throw new HangarApiException("No valid API Key found");
         }
+        apiKeyTable.setLastUsed(OffsetDateTime.now());
+        this.apiKeyDAO.update(apiKeyTable);
 
         final UserTable userTable = this.userDAO.getUserTable(apiKeyTable.getOwnerId());
         final int aal = this.credentialsService.getAal(userTable);

@@ -886,6 +886,7 @@
     "created": "Copy the created key before creating another one or refreshing the page. Do not share this with anyone else.",
     "keyIdentifier": "Identifier",
     "permissions": "Permissions",
+    "lastUsed": "Last used",
     "permissionRequired": "At least one permission needs to be set.",
     "delete": "Delete",
     "copy": "Click to copy key to clipboard",
