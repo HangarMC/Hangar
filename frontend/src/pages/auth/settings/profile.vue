@@ -81,14 +81,14 @@ async function saveProfile() {
     <InputText v-model="profileForm.tagline" label="Tagline" counter :maxlength="useBackendData.validations.userTagline.max" />
 
     <h3 class="text-lg font-bold mt-4">Social</h3>
-    <div v-for="(link, idx) in profileForm.socials" :key="link[0]" class="flex items-center">
+    <div v-for="(link, idx) in profileForm.socials" :key="link[0]" class="flex items-center mt-2">
       <span class="w-25">{{ linkTypes.find((e) => e.value === link[0])?.text }}</span>
       <div class="w-75">
         <InputText v-model="link[1]" label="Username" :rules="[required()]" />
       </div>
-      <IconMdiBin class="ml-2 w-8 h-8 cursor-pointer" @click="removeLink(idx)" />
+      <IconMdiBin class="ml-2 w-6 h-6 cursor-pointer hover:color-red" @click="removeLink(idx)" />
     </div>
-    <div class="flex items-center">
+    <div class="flex items-center mt-2">
       <div class="w-25">
         <Button button-type="secondary" @click.prevent="addLink">Add link</Button>
       </div>
