@@ -18,8 +18,10 @@ import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.components.auth.service.WebAuthNService;
 import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
+import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.users.UserService;
 import java.io.IOException;
 import java.util.List;
@@ -43,13 +45,15 @@ public class LoginController extends HangarComponent {
     private final TokenService tokenService;
     private final RelyingParty relyingParty;
     private final WebAuthNService webAuthNService;
+    private final UsersApiService usersApiService;
 
-    public LoginController(final UserService userService, final CredentialsService credentialsService, final TokenService tokenService, final RelyingParty relyingParty, final WebAuthNService webAuthNService) {
+    public LoginController(final UserService userService, final CredentialsService credentialsService, final TokenService tokenService, final RelyingParty relyingParty, final WebAuthNService webAuthNService, final UsersApiService usersApiService) {
         this.userService = userService;
         this.credentialsService = credentialsService;
         this.tokenService = tokenService;
         this.relyingParty = relyingParty;
         this.webAuthNService = webAuthNService;
+        this.usersApiService = usersApiService;
     }
 
     @Anyone
@@ -57,11 +61,11 @@ public class LoginController extends HangarComponent {
     public LoginResponse loginPassword(@RequestBody final LoginPasswordForm form) {
         final UserTable userTable = this.verifyPassword(form.usernameOrEmail(), form.password());
         final List<CredentialType> types = this.credentialsService.getCredentialTypes(userTable.getUserId());
-        final int aal = userTable.isEmailVerified() ? 0 : 1;
+        final int aal = userTable.isEmailVerified() ? 1 : 0;
         if (types.isEmpty() || (types.size() == 1 && types.get(0) == CredentialType.BACKUP_CODES)) {
             return this.setAalAndLogin(userTable, aal);
         } else {
-            return new LoginResponse(aal, types);
+            return new LoginResponse(aal, types, null);
         }
     }
 
@@ -118,7 +122,16 @@ public class LoginController extends HangarComponent {
 
     private LoginResponse setAalAndLogin(final UserTable userTable, final int aal) {
         // todo create session
+
+        // issue refresh token
         this.tokenService.issueRefreshToken(userTable.getUserId(), this.response);
-        return new LoginResponse(aal, List.of());
+        // issue access token
+        final String token = this.tokenService.newPrivilegedToken(userTable);
+        // get user
+        final HangarUser user = this.usersApiService.getUser(userTable.getName(), HangarUser.class);
+        user.setAccessToken(token);
+        user.setAal(aal);
+        // return
+        return new LoginResponse(aal, null, user);
     }
 }

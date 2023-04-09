@@ -43,6 +43,7 @@ declare module "hangar-internal" {
     theme: string;
     email: string;
     accessToken?: string;
+    aal?: number;
   }
 
   interface UserTable extends Table, Named {
@@ -90,5 +91,11 @@ declare module "hangar-internal" {
     hasTotp: boolean;
     emailConfirmed: boolean;
     emailPending: boolean;
+  }
+
+  interface LoginResponse {
+    aal?: number;
+    types?: string[];
+    user?: HangarUser;
   }
 }

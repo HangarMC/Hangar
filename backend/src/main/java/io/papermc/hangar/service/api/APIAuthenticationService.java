@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -21,12 +22,14 @@ public class APIAuthenticationService extends HangarComponent {
     private final UserDAO userDAO;
     private final ApiKeyDAO apiKeyDAO;
     private final TokenService tokenService;
+    private final CredentialsService credentialsService;
 
     @Autowired
-    public APIAuthenticationService(final UserDAO userDAO, final ApiKeyDAO apiKeyDAO, final TokenService tokenService) {
+    public APIAuthenticationService(final UserDAO userDAO, final ApiKeyDAO apiKeyDAO, final TokenService tokenService, final CredentialsService credentialsService) {
         this.userDAO = userDAO;
         this.apiKeyDAO = apiKeyDAO;
         this.tokenService = tokenService;
+        this.credentialsService = credentialsService;
     }
 
     public ApiSession createJWTForApiKey(final String apiKey) {
@@ -44,7 +47,8 @@ public class APIAuthenticationService extends HangarComponent {
         }
 
         final UserTable userTable = this.userDAO.getUserTable(apiKeyTable.getOwnerId());
-        final String jwt = this.tokenService.expiring(userTable, apiKeyTable.getPermissions(), identifier);
+        final int aal = this.credentialsService.getAal(userTable);
+        final String jwt = this.tokenService.expiring(userTable, apiKeyTable.getPermissions(), identifier, aal, false);
         return new ApiSession(jwt, this.config.security.refreshTokenExpiry().toSeconds());
     }
 }

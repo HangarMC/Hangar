@@ -115,8 +115,10 @@ public class AuthService extends HangarComponent implements UserDetailsService {
             throw new UsernameNotFoundException("no password credentials in table");
         }
         final String password = passwordCredential.getCredential().get(PasswordCredential.class).hashedPassword();
+        final int aal = this.credentialsService.getAal(userTable);
         // TODO load proper perms
-        return new HangarPrincipal(userTable.getUserId(), userTable.getName(), userTable.getEmail(), userTable.isLocked(), Permission.ViewPublicInfo, password, userTable.isEmailVerified());
+        // when exactly is this called? do we even care about perms? do we care about privileged?
+        return new HangarPrincipal(userTable.getUserId(), userTable.getName(), userTable.getEmail(), userTable.isLocked(), Permission.ViewPublicInfo, password, aal, false);
     }
 
     @Transactional

@@ -19,8 +19,12 @@ public class HangarUser extends User implements Identified {
     private final List<Integer> readPrompts;
     private final String language;
     private final String theme;
-    private String accessToken;
     private final JSONB socials;
+
+    @Nullable
+    private String accessToken;
+    @Nullable
+    private Integer aal;
 
     public HangarUser(final OffsetDateTime createdAt, final String name, final String tagline, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory, final long id, final UUID uuid, final String email, final List<Integer> readPrompts, final String language, final String theme, final JSONB socials) {
         super(createdAt, name, tagline, roles, projectCount, locked, nameHistory);
@@ -58,12 +62,22 @@ public class HangarUser extends User implements Identified {
         return this.theme;
     }
 
+    @Nullable
     public String getAccessToken() {
         return this.accessToken;
     }
 
-    public void setAccessToken(final String accessToken) {
+    public void setAccessToken(@Nullable final String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    @Nullable
+    public Integer getAal() {
+        return this.aal;
+    }
+
+    public void setAal(@Nullable final Integer aal) {
+        this.aal = aal;
     }
 
     public UUID getUuid() {

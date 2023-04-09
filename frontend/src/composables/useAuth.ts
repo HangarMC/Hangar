@@ -149,6 +149,9 @@ class Auth {
       if (user.accessToken) {
         authStore.token = user.accessToken;
       }
+      if (user.aal) {
+        authStore.aal = user.aal;
+      }
       authLog("user is now " + authStore.user?.name);
     } else {
       authLog("no user, no content");

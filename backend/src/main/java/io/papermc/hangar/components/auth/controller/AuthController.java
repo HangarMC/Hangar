@@ -22,6 +22,7 @@ import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.internal.users.UserService;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -113,7 +114,7 @@ public class AuthController extends HangarComponent {
             }
         }
         final boolean hasTotp = this.credentialsService.getCredential(userId, CredentialType.TOTP) != null;
-        final boolean emailVerified = this.getHangarPrincipal().isEmailVerified(); // TODO email verified should be part of aal
+        final boolean emailVerified = Objects.requireNonNull(this.userService.getUserTable(userId)).isEmailVerified();
         final boolean emailPending = this.verificationService.getVerificationCode(userId, VerificationCodeTable.VerificationCodeType.EMAIL_VERIFICATION) != null;
         return new SettingsResponse(authenticators, hasBackupCodes, hasTotp, emailVerified, emailPending);
     }

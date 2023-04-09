@@ -3,6 +3,7 @@ package io.papermc.hangar.controller.internal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -86,9 +87,10 @@ public class HangarUserController extends HangarComponent {
     private final OrganizationInviteService organizationInviteService;
     private final TokenService tokenService;
     private final AvatarService avatarService;
+    private final CredentialsService credentialsService;
 
     @Autowired
-    public HangarUserController(final ObjectMapper mapper, final UsersApiService usersApiService, final UserService userService, final NotificationService notificationService, final ProjectRoleService projectRoleService, final OrganizationRoleService organizationRoleService, final ProjectInviteService projectInviteService, final OrganizationInviteService organizationInviteService, final TokenService tokenService, final AvatarService avatarService) {
+    public HangarUserController(final ObjectMapper mapper, final UsersApiService usersApiService, final UserService userService, final NotificationService notificationService, final ProjectRoleService projectRoleService, final OrganizationRoleService organizationRoleService, final ProjectInviteService projectInviteService, final OrganizationInviteService organizationInviteService, final TokenService tokenService, final AvatarService avatarService, final CredentialsService credentialsService) {
         this.mapper = mapper;
         this.usersApiService = usersApiService;
         this.userService = userService;
@@ -99,6 +101,7 @@ public class HangarUserController extends HangarComponent {
         this.organizationInviteService = organizationInviteService;
         this.tokenService = tokenService;
         this.avatarService = avatarService;
+        this.credentialsService = credentialsService;
     }
 
     @Anyone
@@ -128,6 +131,7 @@ public class HangarUserController extends HangarComponent {
         // get user
         final HangarUser user = this.usersApiService.getUser(name, HangarUser.class);
         user.setAccessToken(token);
+        user.setAal(this.credentialsService.getAal(Objects.requireNonNull(this.userService.getUserTable(user.getId()))));
         return ResponseEntity.ok(user);
     }
 

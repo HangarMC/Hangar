@@ -22,7 +22,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,15 +40,17 @@ public class TokenService extends HangarComponent {
     private final PermissionService permissionService;
     private final JWTVerifier verifier;
     private final Algorithm algo;
+    private final CredentialsService credentialsService;
 
     @Autowired
-    public TokenService(final ApiKeyDAO apiKeyDAO, final UserRefreshTokenDAO userRefreshTokenDAO, final UserService userService, final PermissionService permissionService, final JWTVerifier verifier, final Algorithm algo) {
+    public TokenService(final ApiKeyDAO apiKeyDAO, final UserRefreshTokenDAO userRefreshTokenDAO, final UserService userService, final PermissionService permissionService, final JWTVerifier verifier, final Algorithm algo, final CredentialsService credentialsService) {
         this.apiKeyDAO = apiKeyDAO;
         this.userRefreshTokenDAO = userRefreshTokenDAO;
         this.userService = userService;
         this.permissionService = permissionService;
         this.verifier = verifier;
         this.algo = algo;
+        this.credentialsService = credentialsService;
     }
 
     public DecodedJWT verify(final String token) {
@@ -98,7 +99,7 @@ public class TokenService extends HangarComponent {
         // in any case, refreshing the cookie is good
         this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), this.config.security.refreshTokenExpiry().toSeconds(), true, this.response);
         // then issue a new access token
-        return new RefreshResponse(this.newToken0(userTable), userTable);
+        return new RefreshResponse(this.newToken0(userTable, false), userTable);
     }
 
     public void invalidateToken(final String refreshToken) {
@@ -109,12 +110,17 @@ public class TokenService extends HangarComponent {
         this.addCookie(SecurityConfig.AUTH_NAME, null, 0, false, this.response);
     }
 
-    private String newToken0(final UserTable userTable) {
-        final Permission globalPermissions = this.permissionService.getGlobalPermissions(userTable.getId());
-        return this.expiring(userTable, globalPermissions, null);
+    public String newPrivilegedToken(final UserTable userTable) {
+        return this.newToken0(userTable, true);
     }
 
-    public String expiring(final UserTable userTable, final Permission globalPermission, final @Nullable String apiKeyIdentifier) {
+    private String newToken0(final UserTable userTable, final boolean privileged) {
+        final Permission globalPermissions = this.permissionService.getGlobalPermissions(userTable.getId());
+        final int aal = this.credentialsService.getAal(userTable);
+        return this.expiring(userTable, globalPermissions, null, aal, privileged);
+    }
+
+    public String expiring(final UserTable userTable, final Permission globalPermission, final @Nullable String apiKeyIdentifier, final int aal, final boolean privileged) {
         return JWT.create()
             .withIssuer(this.config.security.tokenIssuer())
             .withExpiresAt(Instant.now().plus(this.config.security.tokenExpiry()))
@@ -123,8 +129,9 @@ public class TokenService extends HangarComponent {
             .withClaim("permissions", globalPermission.toBinString())
             .withClaim("locked", userTable.isLocked())
             .withClaim("apiKeyIdentifier", apiKeyIdentifier)
-            .withClaim("emailVerified", userTable.isEmailVerified())
+            .withClaim("aal", aal)
             .withClaim("email", userTable.getEmail())
+            .withClaim("privileged", privileged)
             .sign(this.algo);
     }
 
@@ -151,7 +158,8 @@ public class TokenService extends HangarComponent {
         final boolean locked = decodedJWT.getClaim("locked").asBoolean();
         final Permission globalPermission = Permission.fromBinString(decodedJWT.getClaim("permissions").asString());
         final String apiKeyIdentifier = decodedJWT.getClaim("apiKeyIdentifier").asString();
-        final boolean emailVerified = decodedJWT.getClaim("emailVerified").asBoolean();
+        final int aal = decodedJWT.getClaim("aal").asInt();
+        final boolean privileged = decodedJWT.getClaim("privileged").asBoolean();
         final String email = decodedJWT.getClaim("email").asString();
         if (subject == null || userId == null || globalPermission == null) {
             throw new BadCredentialsException("Malformed jwt");
@@ -161,9 +169,9 @@ public class TokenService extends HangarComponent {
             if (apiKeyTable == null) {
                 throw new BadCredentialsException("Invalid api key identifier");
             }
-            return new HangarApiPrincipal(userId, subject, email, locked, globalPermission, apiKeyTable, emailVerified);
+            return new HangarApiPrincipal(userId, subject, email, locked, globalPermission, apiKeyTable, aal);
         } else {
-            return new HangarPrincipal(userId, subject, email, locked, globalPermission, null, emailVerified);
+            return new HangarPrincipal(userId, subject, email, locked, globalPermission, null, aal, privileged);
         }
     }
 }

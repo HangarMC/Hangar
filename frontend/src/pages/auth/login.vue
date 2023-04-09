@@ -5,12 +5,12 @@ import { ref } from "vue";
 import * as webauthnJson from "@github/webauthn-json";
 import { useVuelidate } from "@vuelidate/core";
 import { useI18n } from "vue-i18n";
+import { LoginResponse } from "hangar-internal";
 import { useSeo } from "~/composables/useSeo";
 import InputText from "~/components/ui/InputText.vue";
 import Button from "~/components/design/Button.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useAuthStore } from "~/store/auth";
-import { useAuth } from "~/composables/useAuth";
 import InputPassword from "~/components/ui/InputPassword.vue";
 import Card from "~/components/design/Card.vue";
 import Link from "~/components/design/Link.vue";
@@ -35,14 +35,14 @@ async function loginPassword() {
   if (!(await v.value.$validate())) return;
   loading.value = true;
   try {
-    const response = await useInternalApi<{ aal: number; types: string[] }>("auth/login/password", "POST", {
+    const response = await useInternalApi<LoginResponse>("auth/login/password", "POST", {
       usernameOrEmail: username.value,
       password: password.value,
     });
     if (response.types?.length > 0) {
       supportedMethods.value.push(...response.types);
     } else {
-      await finish(response.aal);
+      await finish(response);
     }
   } catch (e) {
     notification.fromError(i18n, e);
@@ -58,12 +58,12 @@ async function loginWebAuthN() {
     const credentialGetOptions = await useInternalApi<string>("auth/webauthn/assert", "POST", username.value, { headers: { "content-type": "text/plain" } });
     const parsed = JSON.parse(credentialGetOptions);
     const publicKeyCredential = await webauthnJson.get(parsed);
-    const response = await useInternalApi<{ aal: number }>("auth/login/webauthn", "POST", {
+    const response = await useInternalApi<LoginResponse>("auth/login/webauthn", "POST", {
       usernameOrEmail: username.value,
       password: password.value,
       publicKeyCredentialJson: JSON.stringify(publicKeyCredential),
     });
-    await finish(response.aal);
+    await finish(response);
   } catch (e) {
     notification.fromError(i18n, e);
   }
@@ -75,12 +75,12 @@ const totpCode = ref();
 async function loginTotp() {
   loading.value = true;
   try {
-    const response = await useInternalApi<{ aal: number }>("auth/login/totp", "POST", {
+    const response = await useInternalApi<LoginResponse>("auth/login/totp", "POST", {
       usernameOrEmail: username.value,
       password: password.value,
       totpCode: totpCode.value,
     });
-    await finish(response.aal);
+    await finish(response);
   } catch (e) {
     notification.fromError(i18n, e);
   }
@@ -92,23 +92,31 @@ const backupCode = ref();
 async function loginBackupCode() {
   loading.value = true;
   try {
-    const response = await useInternalApi<{ aal: number }>("auth/login/backup", "POST", {
+    const response = await useInternalApi<LoginResponse>("auth/login/backup", "POST", {
       usernameOrEmail: username.value,
       password: password.value,
       backupCode: backupCode.value,
     });
-    await finish(response.aal);
+    await finish(response);
   } catch (e) {
     notification.fromError(i18n, e);
   }
   loading.value = false;
 }
 
-async function finish(aal: number) {
-  authStore.aal = aal;
-  await useAuth.updateUser(); // todo maybe return user in login response?
-  const returnUrl = (route.query.returnUrl as string) || "/auth/settings/profile";
-  await router.push(returnUrl);
+async function finish(response: LoginResponse) {
+  if (response.aal && response.user?.accessToken) {
+    authStore.aal = response.aal;
+    authStore.user = response.user;
+    authStore.authenticated = true;
+    authStore.invalidated = false;
+    authStore.token = response.user.accessToken;
+    authStore.privileged = true;
+    const returnUrl = (route.query.returnUrl as string) || "/auth/settings/profile";
+    await router.push(returnUrl);
+  } else {
+    notification.error("Did not receive user?");
+  }
 }
 
 useHead(useSeo("Login", null, route, null));
