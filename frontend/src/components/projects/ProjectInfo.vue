@@ -105,9 +105,6 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
         <DropdownItem :to="`/admin/log?projectFilter=/${slug}`">
           {{ i18n.t("project.actions.userActionLogs") }}
         </DropdownItem>
-        <DropdownItem v-if="project.topicId" :href="forumUrl(project.topicId)">
-          {{ i18n.t("project.actions.forum") }}
-        </DropdownItem>
       </DropdownButton>
       <VisibilityChangerModal
         v-if="hasPerms(NamedPermission.SEE_HIDDEN)"

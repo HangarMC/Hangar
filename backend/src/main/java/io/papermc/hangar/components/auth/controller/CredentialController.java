@@ -242,7 +242,6 @@ public class CredentialController extends HangarComponent {
     @PostMapping("/totp/remove")
     @ResponseStatus(HttpStatus.OK)
     public void removeTotp() {
-        // TODO security protection
         this.credentialsService.removeCredential(this.getHangarPrincipal().getId(), CredentialType.TOTP);
         this.credentialsService.checkRemoveBackupCodes();
     }
@@ -311,7 +310,6 @@ public class CredentialController extends HangarComponent {
     @RequireAal(1)
     @PostMapping("/codes/show")
     public List<BackupCodeCredential.BackupCode> showBackupCodes() {
-        // TODO security protection
         final BackupCodeCredential cred = this.getBackupCredential();
         if (cred == null || cred.unconfirmed()) {
             throw new HangarApiException("You haven't setup backup codes");
@@ -323,7 +321,6 @@ public class CredentialController extends HangarComponent {
     @RequireAal(1)
     @PostMapping("/codes/regenerate")
     public List<BackupCodeCredential.BackupCode> regenerateBackupCodes() {
-        // TODO security protection
         this.credentialsService.removeCredential(this.getHangarPrincipal().getId(), CredentialType.BACKUP_CODES);
         return this.setupBackupCodes();
     }

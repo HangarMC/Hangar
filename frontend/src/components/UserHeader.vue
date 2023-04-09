@@ -52,10 +52,6 @@ const canEditCurrentUser = computed<boolean>(() => {
       <div class="overflow-clip overflow-hidden">
         <h1 class="text-2xl px-1 text-strong inline-flex items-center">
           {{ viewingUser.name }}
-          <!-- todo: forum integration -->
-          <!--<a v-if="!viewingUser.isOrganization" class="inline-flex mx-1" :href="forumUserUrl(viewingUser.name)" :title="i18n.t('author.viewOnForums')">
-            <IconMdiOpenInNew />
-          </a>-->
           <span v-if="viewingUser.locked" class="ml-1">
             <IconMdiLockOutline />
           </span>

@@ -4,11 +4,6 @@ export function forumUrl(topicId: number) {
   return `https://forums.papermc.io/threads/` + topicId;
 }
 
-export function forumUserUrl(name: number | string) {
-  // TODO fixme?
-  return `https://forums.papermc.io/members/` + name;
-}
-
 const isSafeHost = (host: string) => {
   for (const safeHost of useBackendData.security.safeDownloadHosts) {
     // Make sure it's the full host or a subdomain
