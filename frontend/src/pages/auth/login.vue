@@ -31,6 +31,11 @@ const supportedMethods = ref([]);
 const username = ref("");
 const password = ref("");
 
+const privileged = (route.query.privileged as boolean) || false;
+if (privileged) {
+  username.value = useAuthStore().user?.name || "";
+}
+
 async function loginPassword() {
   if (!(await v.value.$validate())) return;
   loading.value = true;
@@ -124,16 +129,26 @@ useHead(useSeo("Login", null, route, null));
 
 <template>
   <Card>
-    <template #header> Login</template>
+    <template #header>{{ privileged ? "Sudo" : "Login" }}</template>
+
+    <div v-if="privileged" class="mb-2">Please authenticate again to do this action</div>
 
     <form v-if="supportedMethods.length === 0" class="flex flex-col gap-2">
-      <InputText v-model="username" label="Username" name="username" autocomplete="username" :rules="[required()]" />
+      <InputText
+        v-model="username"
+        label="Username"
+        name="username"
+        autocomplete="username"
+        :rules="[required()]"
+        :class="{ 'hidden!': privileged }"
+        :disabled="privileged"
+      />
       <InputPassword v-model="password" label="Password" name="password" autocomplete="current-password" :rules="[required()]" />
       <div class="flex gap-2">
         <Button :disabled="loading" @click.prevent="loginPassword">Login</Button>
-        <Button button-type="secondary" to="/auth/signup">Signup</Button>
+        <Button v-if="!privileged" button-type="secondary" to="/auth/signup">Signup</Button>
       </div>
-      <Link to="/auth/reset" class="w-max">Forgot your password?</Link>
+      <Link v-if="!privileged" to="/auth/reset" class="w-max">Forgot your password?</Link>
     </form>
 
     <form v-if="supportedMethods.length > 0" class="flex flex-col gap-2 hide-last-hr">

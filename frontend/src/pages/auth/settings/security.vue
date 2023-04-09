@@ -11,7 +11,7 @@ import { useInternalApi } from "~/composables/useApi";
 import ComingSoon from "~/components/design/ComingSoon.vue";
 import Button from "~/components/design/Button.vue";
 import InputText from "~/components/ui/InputText.vue";
-import { definePageMeta, required, useAxios } from "#imports";
+import { definePageMeta, required, useAuth, useAxios, useRoute, useRouter } from "#imports";
 import PageTitle from "~/components/design/PageTitle.vue";
 import Modal from "~/components/modals/Modal.vue";
 
@@ -31,6 +31,8 @@ const notification = useNotificationStore();
 const i18n = useI18n();
 const { t } = i18n;
 const v = useVuelidate();
+const router = useRouter();
+const route = useRoute();
 
 const loading = ref(false);
 
@@ -54,6 +56,8 @@ async function addAuthenticator() {
       codes.value = e.response.data.body;
       backupCodeModal.value.isOpen = true;
       savedRequest.value = e.config;
+    } else if (e.response?.data?.detail === "error.privileged") {
+      await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
       notification.fromError(i18n, e);
     }
@@ -67,7 +71,11 @@ async function unregisterAuthenticator(authenticator: AuthSettings["authenticato
     await useInternalApi("auth/webauthn/unregister", "POST", authenticator.id, { headers: { "content-type": "text/plain" } });
     emit("refreshSettings");
   } catch (e) {
-    notification.fromError(i18n, e);
+    if (e.response?.data?.detail === "error.privileged") {
+      await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
+    } else {
+      notification.fromError(i18n, e);
+    }
   }
   loading.value = false;
 }
@@ -79,7 +87,11 @@ async function setupTotp() {
   try {
     totpData.value = await useInternalApi<{ secret: string; qrCode: string }>("auth/totp/setup", "POST");
   } catch (e) {
-    notification.fromError(i18n, e);
+    if (e.response?.data?.detail === "error.privileged") {
+      await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
+    } else {
+      notification.fromError(i18n, e);
+    }
   }
   loading.value = false;
 }
@@ -98,6 +110,8 @@ async function addTotp() {
       backupCodeModal.value.isOpen = true;
       savedRequest.value = e.config;
       otp.value = e.response.headers["x-hangar-verify"];
+    } else if (e.response?.data?.detail === "error.privileged") {
+      await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
       notification.fromError(i18n, e);
     }
@@ -111,7 +125,11 @@ async function unlinkTotp() {
     await useInternalApi("auth/totp/remove", "POST");
     emit("refreshSettings");
   } catch (e) {
-    notification.fromError(i18n, e);
+    if (e.response?.data?.detail === "error.privileged") {
+      await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
+    } else {
+      notification.fromError(i18n, e);
+    }
   }
   loading.value = false;
 }
@@ -164,7 +182,11 @@ async function revealCodes() {
     }
     showCodes.value = true;
   } catch (e) {
-    notification.fromError(i18n, e);
+    if (e.response?.data?.detail === "error.privileged") {
+      await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
+    } else {
+      notification.fromError(i18n, e);
+    }
   }
   loading.value = false;
 }
@@ -175,7 +197,11 @@ async function generateNewCodes() {
     codes.value = await useInternalApi("auth/codes/regenerate", "POST");
     emit("refreshSettings");
   } catch (e) {
-    notification.fromError(i18n, e);
+    if (e.response?.data?.detail === "error.privileged") {
+      await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
+    } else {
+      notification.fromError(i18n, e);
+    }
   }
   loading.value = false;
 }
