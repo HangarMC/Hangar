@@ -29,7 +29,7 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
 
     @Override
     public int vote(final Authentication authentication, final MethodInvocation methodInvocation, final Set<PermissionRequiredMetadataExtractor.PermissionRequiredAttribute> attributes) {
-        if (!(authentication instanceof HangarAuthenticationToken hangarAuthenticationToken)) {
+        if (!(authentication instanceof final HangarAuthenticationToken hangarAuthenticationToken)) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         for (final PermissionRequiredMetadataExtractor.PermissionRequiredAttribute attribute : attributes) {

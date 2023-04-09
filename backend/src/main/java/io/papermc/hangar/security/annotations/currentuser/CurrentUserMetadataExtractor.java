@@ -22,8 +22,8 @@ public class CurrentUserMetadataExtractor implements AnnotationMetadataExtractor
     record CurrentUserAttribute(Expression expression) implements ConfigAttribute {
 
         @Override
-            public String getAttribute() {
-                return null;
-            }
+        public String getAttribute() {
+            return null;
         }
+    }
 }

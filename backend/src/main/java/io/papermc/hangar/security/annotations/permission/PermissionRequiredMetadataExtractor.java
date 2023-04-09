@@ -29,8 +29,8 @@ public class PermissionRequiredMetadataExtractor implements AnnotationMetadataEx
     record PermissionRequiredAttribute(PermissionType permissionType, NamedPermission[] permissions, Expression expression) implements ConfigAttribute {
 
         @Override
-            public String getAttribute() {
-                return null;
-            }
+        public String getAttribute() {
+            return null;
         }
+    }
 }

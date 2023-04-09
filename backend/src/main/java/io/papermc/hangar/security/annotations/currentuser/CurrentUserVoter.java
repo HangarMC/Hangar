@@ -19,7 +19,7 @@ public class CurrentUserVoter extends HangarDecisionVoter<CurrentUserMetadataExt
 
     @Override
     public int vote(final Authentication authentication, final MethodInvocation methodInvocation, final @NotNull CurrentUserMetadataExtractor.CurrentUserAttribute attribute) {
-        if (!(authentication instanceof HangarAuthenticationToken hangarAuthenticationToken)) {
+        if (!(authentication instanceof final HangarAuthenticationToken hangarAuthenticationToken)) {
             return ACCESS_DENIED;
         }
         if (hangarAuthenticationToken.getPrincipal().isAllowedGlobal(Permission.EditAllUserSettings)) {

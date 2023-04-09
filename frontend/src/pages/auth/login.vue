@@ -105,7 +105,7 @@ async function loginBackupCode() {
 }
 
 async function finish(response: LoginResponse) {
-  if (response.aal && response.user?.accessToken) {
+  if (response.aal !== undefined && response.user?.accessToken) {
     authStore.aal = response.aal;
     authStore.user = response.user;
     authStore.authenticated = true;

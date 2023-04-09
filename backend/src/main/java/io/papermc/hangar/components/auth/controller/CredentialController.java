@@ -40,6 +40,8 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.exceptions.HangarResponseException;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.security.annotations.Anyone;
+import io.papermc.hangar.security.annotations.aal.RequireAal;
+import io.papermc.hangar.security.annotations.privileged.Privileged;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.users.UserService;
@@ -106,7 +108,8 @@ public class CredentialController extends HangarComponent {
      * WEBAUTHN
      */
 
-    @Unlocked
+    @Privileged
+    @RequireAal(1)
     @PostMapping(value = "/webauthn/setup", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.TEXT_PLAIN_VALUE)
     public String setupWebauthn(@RequestBody final String authenticatorName) throws JsonProcessingException {
         // TODO verify that backup codes exist
@@ -130,7 +133,8 @@ public class CredentialController extends HangarComponent {
         return response.publicKeyCredentialCreationOptions().toCredentialsCreateJson();
     }
 
-    @Unlocked
+    @Privileged
+    @RequireAal(1)
     @PostMapping(value = "/webauthn/register", consumes = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void registerWebauthn(@RequestBody final String publicKeyCredentialJson, @RequestHeader(value = "X-Hangar-Verify", required = false) final String header) throws IOException {
@@ -176,7 +180,8 @@ public class CredentialController extends HangarComponent {
         return assertionRequest.toCredentialsGetJson();
     }
 
-    @Unlocked
+    @Privileged
+    @RequireAal(1)
     @PostMapping(value = "/webauthn/unregister", consumes = MediaType.TEXT_PLAIN_VALUE)
     public void unregisterWebauthnDevice(@RequestBody final String id) {
         this.webAuthNService.removeDevice(this.getHangarPrincipal().getUserId(), id);
@@ -187,7 +192,8 @@ public class CredentialController extends HangarComponent {
      * TOTP
      */
 
-    @Unlocked
+    @Privileged
+    @RequireAal(1)
     @PostMapping("/totp/setup")
     public TotpSetupResponse setupTotp() throws QrGenerationException {
         final String secret = this.secretGenerator.generate();
@@ -206,7 +212,8 @@ public class CredentialController extends HangarComponent {
         return new TotpSetupResponse(secret, qrCodeImage);
     }
 
-    @Unlocked
+    @Privileged
+    @RequireAal(1)
     @PostMapping("/totp/register")
     public ResponseEntity<?> registerTotp(@RequestBody final TotpForm form, @RequestHeader(value = "X-Hangar-Verify", required = false) final String header) {
         final boolean confirmCodes = this.verifyBackupCodes(header);
@@ -230,7 +237,8 @@ public class CredentialController extends HangarComponent {
         return ResponseEntity.ok().build();
     }
 
-    @Unlocked
+    @Privileged
+    @RequireAal(1)
     @PostMapping("/totp/remove")
     @ResponseStatus(HttpStatus.OK)
     public void removeTotp() {
@@ -239,7 +247,8 @@ public class CredentialController extends HangarComponent {
         this.credentialsService.checkRemoveBackupCodes();
     }
 
-    @Unlocked
+    @Privileged
+    @RequireAal(1)
     @PostMapping("/totp/verify")
     @ResponseStatus(HttpStatus.OK)
     public void verifyTotp(@RequestBody final String code) {
@@ -298,7 +307,8 @@ public class CredentialController extends HangarComponent {
         return codes;
     }
 
-    @Unlocked
+    @Privileged
+    @RequireAal(1)
     @PostMapping("/codes/show")
     public List<BackupCodeCredential.BackupCode> showBackupCodes() {
         // TODO security protection
@@ -309,7 +319,8 @@ public class CredentialController extends HangarComponent {
         return cred.backupCodes();
     }
 
-    @Unlocked
+    @Privileged
+    @RequireAal(1)
     @PostMapping("/codes/regenerate")
     public List<BackupCodeCredential.BackupCode> regenerateBackupCodes() {
         // TODO security protection

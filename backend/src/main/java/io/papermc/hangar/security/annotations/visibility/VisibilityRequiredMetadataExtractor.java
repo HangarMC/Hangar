@@ -22,8 +22,8 @@ public class VisibilityRequiredMetadataExtractor implements AnnotationMetadataEx
     record VisibilityRequiredAttribute(VisibilityRequired.Type type, Expression expression) implements ConfigAttribute {
 
         @Override
-            public String getAttribute() {
-                return null;
-            }
+        public String getAttribute() {
+            return null;
         }
+    }
 }

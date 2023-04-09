@@ -1115,6 +1115,9 @@
     "401": "You must be logged in for this",
     "403": "You do not have permission to do that",
     "404": "404 Not found",
-    "unknown": "An error occurred"
+    "unknown": "An error occurred",
+    "aal1": "You have to verify your email to do this",
+    "aal2": "You have to setup 2fa to do this",
+    "privileged": "You need to be in a privileged session to do this"
   }
 }

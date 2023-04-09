@@ -14,7 +14,7 @@ public class UnlockedMetadataExtractor implements AnnotationMetadataExtractor<Un
         return Set.of(UnlockedAttribute.INSTANCE);
     }
 
-    static class UnlockedAttribute implements ConfigAttribute {
+    static final class UnlockedAttribute implements ConfigAttribute {
 
         static final UnlockedAttribute INSTANCE = new UnlockedAttribute();
 
