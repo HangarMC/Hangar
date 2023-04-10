@@ -9,6 +9,7 @@ import io.papermc.hangar.service.internal.MailService;
 import java.security.SecureRandom;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -66,11 +67,7 @@ public class VerificationService extends HangarComponent {
         final String code = String.format("%06d", this.secureRandom.nextInt(999999));
         this.verificationCodeDao.insert(new VerificationCodeTable(userTable.getUserId(), VerificationCodeTable.VerificationCodeType.PASSWORD_RESET, code));
 
-        this.mailService.queueEmail("Hangar Password Reset", userTable.getEmail(), """
-            Hi %s,
-            you dum dum did forget your password, enter %s to reset. <br>
-            if you did not request this email, ignore it.
-            """.formatted(userTable.getName(), code));
+        this.mailService.queueMail(MailService.MailType.PASSWORD_RESET, userTable.getEmail(), Map.of("user", userTable.getName(), "code", code));
     }
 
     public void sendVerificationCode(final long userId, final String email, final String name) {
@@ -81,11 +78,7 @@ public class VerificationService extends HangarComponent {
 
         final String link = this.config.getBaseUrl() + "/auth/settings/account?verify=" + code;
 
-        this.mailService.queueEmail("Hangar email verification", email, """
-            Hi %s,
-            here is ya email verification code: %s <br>
-            heres a link you prolly shouldn't link: <a href="%s">%s</a>
-            """.formatted(name, code, link, link));
+        this.mailService.queueMail(MailService.MailType.EMAIL_CONFIRMATION, email, Map.of("user", name, "code", code, "link", link));
     }
 
     public boolean verifyEmailCode(final long id, final String code) {

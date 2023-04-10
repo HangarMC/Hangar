@@ -143,11 +143,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         // record the change into the db
         this.userDAO.recordNameChange(user.getUuid(), oldName, newName);
         // email
-        this.mailService.queueEmail("Hangar Username Changed", user.getEmail(), """
-            Hey %s,
-            your username on hangar was changed to %s.
-            If this wasn't you, please contact support.
-            """.formatted(oldName, newName));
+        this.mailService.queueMail(MailService.MailType.USERNAME_CHANGED, user.getEmail(), Map.of("oldName", oldName, "newName", newName));
     }
 
     @Transactional
@@ -158,11 +154,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         }
 
         // send info mail
-        this.mailService.queueEmail("Hangar Email Changed", userTable.getEmail(), """
-            Hey %s,
-            your email on hangar was changed to %s.
-            If this wasn't you, please contact support.
-            """.formatted(userTable.getName(), email));
+        this.mailService.queueMail(MailService.MailType.EMAIL_CHANGED, userTable.getEmail(), Map.of("user", userTable.getName(), "newMail", email));
         // update
         userTable.setEmail(email);
         userTable.setEmailVerified(false);
@@ -180,10 +172,6 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         this.credentialsService.removeCredential(userTable.getUserId(), CredentialType.PASSWORD);
         this.credentialsService.registerCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(newPassword)));
         // send info mail
-        this.mailService.queueEmail("Hangar Password Changed", userTable.getEmail(), """
-            Hey %s,
-            your password on hangar was updated.
-            If this wasn't you, reset your password here: https://hangar.papermc.io/auth/reset
-            """.formatted(userTable.getName()));
+        this.mailService.queueMail(MailService.MailType.PASSWORD_CHANGED, userTable.getEmail(), Map.of("user", userTable.getName()));
     }
 }
