@@ -129,7 +129,6 @@ public class CredentialController extends HangarComponent {
                     .build()));
 
         this.webAuthNService.storeSetupRequest(this.getHangarPrincipal().getUserId(), response.publicKeyCredentialCreationOptions().toJson(), authenticatorName);
-
         return response.publicKeyCredentialCreationOptions().toCredentialsCreateJson();
     }
 
@@ -217,9 +216,12 @@ public class CredentialController extends HangarComponent {
     @PostMapping("/totp/register")
     public ResponseEntity<?> registerTotp(@RequestBody final TotpForm form, @RequestHeader(value = "X-Hangar-Verify", required = false) final String header) {
         final boolean confirmCodes = this.verifyBackupCodes(header);
+        if (!StringUtils.hasText(form.code())) {
+            throw new HangarApiException("Code is required");
+        }
 
-        if (!StringUtils.hasText(form.code()) || !StringUtils.hasText(form.secret()) || (!this.codeVerifier.isValidCode(form.secret(), form.code()) && !this.tokenService.verifyOtp(this.getHangarPrincipal().getUserId(), header))) {
-            return ResponseEntity.badRequest().build();
+        if (!StringUtils.hasText(form.secret()) || (!this.codeVerifier.isValidCode(form.secret(), form.code()) && !this.tokenService.verifyOtp(this.getHangarPrincipal().getUserId(), header))) {
+            throw new HangarApiException("Invalid code");
         }
 
         final String totpUrl = this.qrDataFactory.newBuilder()

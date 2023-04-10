@@ -52,7 +52,7 @@ async function addAuthenticator() {
     emit("refreshSettings");
     v.value.$reset();
   } catch (e) {
-    if (e.response.status === 499) {
+    if (e.response?.status === 499) {
       codes.value = e.response.data.body;
       backupCodeModal.value.isOpen = true;
       savedRequest.value = e.config;
