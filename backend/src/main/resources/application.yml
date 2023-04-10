@@ -173,13 +173,6 @@ hangar:
       - "kyori.net"
       - "modrinth.com"
 
-  discourse:
-    enabled: false
-    url: "http://localhost:80/"
-    admin-user: "admin"
-    api-key: "3ed9d28a4d225963d0485e095b6ba9dce8852eedbcc2cd8d5f2ef4638160949f"
-    category: 5 # hangar category
-
   jobs:
     check-interval: 5s
     unknown-error-timeout: 15m

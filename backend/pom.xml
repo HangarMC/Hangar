@@ -31,6 +31,7 @@
         <spring-cloud-aws.version>3.0.0-RC2</spring-cloud-aws.version>
 
         <!-- dependencies -->
+        <sentry.version>6.17.0</sentry.version>
         <springdoc.version>2.1.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20230227</org-json.version>
@@ -216,6 +217,18 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <!-- sentry -->
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry-spring-boot-starter-jakarta</artifactId>
+            <version>${sentry.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry-logback</artifactId>
+            <version>${sentry.version}</version>
         </dependency>
 
         <!-- flyway -->

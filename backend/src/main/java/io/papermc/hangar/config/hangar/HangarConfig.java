@@ -44,8 +44,6 @@ public class HangarConfig {
     @NestedConfigurationProperty
     public QueueConfig queue;
     @NestedConfigurationProperty
-    public DiscourseConfig discourse;
-    @NestedConfigurationProperty
     public JobsConfig jobs;
     @NestedConfigurationProperty
     public StorageConfig storage;
@@ -88,7 +86,7 @@ public class HangarConfig {
     }
 
     @Autowired
-    public HangarConfig(final UpdateTasksConfig updateTasks, final ChannelsConfig channels, final PagesConfig pages, final ProjectsConfig projects, final UserConfig user, final OrganizationsConfig org, final ApiConfig api, final HangarSecurityConfig security, final QueueConfig queue, final DiscourseConfig discourse, final JobsConfig jobs, final StorageConfig storage, final CorsConfig cors, final ImageConfig image, final MailConfig mail) {
+    public HangarConfig(final UpdateTasksConfig updateTasks, final ChannelsConfig channels, final PagesConfig pages, final ProjectsConfig projects, final UserConfig user, final OrganizationsConfig org, final ApiConfig api, final HangarSecurityConfig security, final QueueConfig queue, final JobsConfig jobs, final StorageConfig storage, final CorsConfig cors, final ImageConfig image, final MailConfig mail) {
         this.updateTasks = updateTasks;
         this.channels = channels;
         this.pages = pages;
@@ -98,7 +96,6 @@ public class HangarConfig {
         this.api = api;
         this.security = security;
         this.queue = queue;
-        this.discourse = discourse;
         this.jobs = jobs;
         this.storage = storage;
         this.cors = cors;
