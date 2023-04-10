@@ -16,6 +16,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
@@ -97,5 +99,13 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/api/v1/", config);
         // TODO more cors?
         return new CorsFilter(source);
+    }
+
+    @Bean
+    public HttpFirewall getHttpFirewall() {
+        final StrictHttpFirewall strictHttpFirewall = new StrictHttpFirewall();
+        strictHttpFirewall.setAllowUrlEncodedSlash(true);
+        strictHttpFirewall.setAllowUrlEncodedDoubleSlash(true);
+        return strictHttpFirewall;
     }
 }
