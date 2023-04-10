@@ -180,6 +180,8 @@ backend:
       options: "?currentSchema=hangar"
     tokenSecret: "secret"
     rpId: "localhost"
+    sentry:
+      dsn: "todo"
     storage:
       type: "local"
       accessKey: "todo"
