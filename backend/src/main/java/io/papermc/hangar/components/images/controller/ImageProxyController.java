@@ -25,7 +25,7 @@ public class ImageProxyController {
     @GetMapping("/**")
     public ResponseEntity<byte[]> proxy(final HttpServletRequest request, final HttpServletResponse response) {
         final String url = this.cleanUrl(request.getRequestURI());
-        if (this.validTarget(url)) {
+        if (this.validTarget(url, response)) {
             return this.restTemplate.getForEntity(url, byte[].class);
         } else {
            return ResponseEntity.badRequest().build();
@@ -40,19 +40,22 @@ public class ImageProxyController {
             .replace(":///", "://");
     }
 
-    private boolean validTarget(final String url) {
+    private boolean validTarget(final String url, final HttpServletResponse response) {
         try {
             final URL parsedUrl = new URL(url);
             // valid proto
             if (!parsedUrl.getProtocol().equals("http") && !parsedUrl.getProtocol().equals("https")) {
+                response.addHeader("X-Hangar-Debug", "1");
                 return false;
             }
             final InetAddress inetAddress = InetAddress.getByName(parsedUrl.getHost());
             // not local ip
             if (inetAddress.isAnyLocalAddress() || inetAddress.isLoopbackAddress() || inetAddress.isSiteLocalAddress()) {
+                response.addHeader("X-Hangar-Debug", "2");
                 return false;
             }
         } catch (final MalformedURLException | UnknownHostException e) {
+            response.addHeader("X-Hangar-Debug", e.getMessage());
             return false;
         }
 
