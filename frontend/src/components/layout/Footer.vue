@@ -19,7 +19,7 @@ const { t } = useI18n();
             {{ t("hangar.footer.org") }}
           </a>
           <a
-            href="https://hangarstatus.papermc.io"
+            href="https://status.papermc.io"
             class="flex items-center rounded-md px-6 py-2"
             hover="text-primary-400 bg-primary-0"
             target="_blank"
