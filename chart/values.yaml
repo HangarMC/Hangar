@@ -182,6 +182,7 @@ backend:
     rpId: "localhost"
     sentry:
       dsn: "todo"
+      environment: "todo"
     storage:
       type: "local"
       accessKey: "todo"
