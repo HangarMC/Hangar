@@ -172,11 +172,11 @@ backend:
 
   config:
     postgresql:
-      hostname: "hangarauth-postgresql"
+      hostname: "hangar-postgresql"
       port: 5432
-      username: "hangarauth"
-      password: "hangarauth"
-      database: "hangarauth"
+      username: "hangar"
+      password: "hangar"
+      database: "hangar"
       options: "?currentSchema=hangar"
     tokenSecret: "secret"
     rpId: "localhost"
