@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +27,12 @@ public class ImageProxyController {
     public ResponseEntity<byte[]> proxy(final HttpServletRequest request) {
         final String url = this.cleanUrl(request.getRequestURI());
         if (this.validTarget(url)) {
-            return this.restTemplate.getForEntity(url, byte[].class);
-        } else {
-           return ResponseEntity.badRequest().build();
+            final ResponseEntity<byte[]> response = this.restTemplate.getForEntity(url, byte[].class);
+            if (this.validContentType(response)) {
+                return response;
+            }
         }
+        return ResponseEntity.badRequest().build();
     }
 
     private String cleanUrl(final String url) {
@@ -38,6 +41,11 @@ public class ImageProxyController {
             .replace("https:/", "https://")
             .replace("http:/", "http://")
             .replace(":///", "://");
+    }
+
+    private boolean validContentType(final ResponseEntity<byte[]> response) {
+        final MediaType contentType = response.getHeaders().getContentType();
+        return contentType != null && contentType.getType().equals("image");
     }
 
     private boolean validTarget(final String url) {
