@@ -231,9 +231,9 @@ useHead(useSeo(t("importer.title"), null, route, null));
       </template>
       <template #projectConversion>
         <div v-for="project in hangarResources" :key="project.externalId" class="flex mb-4 pb-4 border-b-2px">
-          <div>
+          <div class="flex flex-col justify-between">
             <UserAvatar :username="project.name" :avatar-url="project.avatarUrl" disable-link class="flex-shrink-0" />
-            <div class="text-xl mt-4"><Button @click="remove(project)">Remove</Button></div>
+            <div class="text-sm mt-4 w-min"><Button @click="remove(project)">Remove from conversion</Button></div>
           </div>
           <div class="ml-4 flex-grow">
             <div class="text-xl">
