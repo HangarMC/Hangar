@@ -1,0 +1,3 @@
+DROP TABLE project_version_download_warnings;
+
+DROP TABLE project_version_unsafe_downloads;

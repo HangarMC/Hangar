@@ -180,24 +180,8 @@ public class VersionController extends HangarComponent {
     @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
     // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<?> download(@PathVariable final String author, @PathVariable final String slug, @PathVariable final String versionString, @PathVariable final Platform platform, @RequestParam(required = false) final String token) {
+    public ResponseEntity<?> download(@PathVariable final String author, @PathVariable final String slug, @PathVariable final String versionString, @PathVariable final Platform platform) {
         return this.downloadService.downloadVersion(author, slug, versionString, platform);
-    }
-
-    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
-    // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
-    @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/downloadCheck")
-    public ResponseEntity<String> downloadCheck(@PathVariable final String author, @PathVariable final String slug, @PathVariable final String versionString, @PathVariable final Platform platform) {
-        final boolean requiresConfirmation = this.downloadService.requiresConfirmation(author, slug, versionString, platform);
-        if (requiresConfirmation) {
-            final String token = this.downloadService.createConfirmationToken(author, slug, versionString);
-            if (token == null) {
-                // null means we already had confirmed, no reason to confirm again
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            }
-            return ResponseEntity.status(HttpStatus.PRECONDITION_REQUIRED).body(token);
-        }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Anyone
