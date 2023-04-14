@@ -97,11 +97,10 @@ public interface IVersionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @GetMapping("/projects/{author}/{slug}/versions/{name}/{platform}/stats")
+    @GetMapping("/projects/{author}/{slug}/versions/{name}/stats")
     Map<String, VersionStats> getVersionStats(@Parameter(description = "The author of the version to return the stats for") @PathVariable String author,
                                               @Parameter(description = "The slug of the project to return stats for") @PathVariable String slug,
                                               @Parameter(description = "The version to return the stats for") @PathVariable("name") String versionString,
-                                              @Parameter(description = "The platform of the version to return stats for") @PathVariable Platform platform,
                                               @Parameter(description = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
                                               @Parameter(description = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate);
 

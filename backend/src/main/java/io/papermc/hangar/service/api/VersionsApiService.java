@@ -167,10 +167,10 @@ public class VersionsApiService extends HangarComponent {
         return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount, pagination), versions);
     }
 
-    public Map<String, VersionStats> getVersionStats(final String author, final String slug, final String versionString, final Platform platform, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
+    public Map<String, VersionStats> getVersionStats(final String author, final String slug, final String versionString, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
         if (fromDate.isAfter(toDate)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "From date is after to date");
         }
-        return this.versionsApiDAO.getVersionStats(author, slug, versionString, platform, fromDate, toDate);
+        return this.versionsApiDAO.getVersionStats(author, slug, versionString, fromDate, toDate);
     }
 }

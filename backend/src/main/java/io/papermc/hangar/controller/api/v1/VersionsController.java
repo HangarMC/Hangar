@@ -72,9 +72,8 @@ public class VersionsController implements IVersionsController {
     }
 
     @Override
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#author, #slug}")
-    public Map<String, VersionStats> getVersionStats(final String author, final String slug, final String versionString, final Platform platform, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
-        return this.versionsApiService.getVersionStats(author, slug, versionString, platform, fromDate, toDate);
+    public Map<String, VersionStats> getVersionStats(final String author, final String slug, final String versionString, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
+        return this.versionsApiService.getVersionStats(author, slug, versionString, fromDate, toDate);
     }
 
     @Override

@@ -196,7 +196,8 @@ public interface VersionsApiDAO {
     @KeyColumn("date")
     @RegisterConstructorMapper(value = VersionStats.class, prefix = "vs")
     @SqlQuery("""
-        SELECT cast(dates.day AS date) date, coalesce(pvd.downloads, 0) vs_totalDownloads
+        SELECT cast(dates.day AS date) date,
+            coalesce(pvd.downloads, 0) vs_totalDownloads
         FROM projects p,
              project_versions pv,
              (SELECT generate_series(:fromDate::date, :toDate::date, INTERVAL '1 DAY') AS day) dates
@@ -204,8 +205,7 @@ public interface VersionsApiDAO {
         WHERE lower(p.owner_name) = lower(:author)
           AND lower(p.slug) = lower(:slug)
           AND pv.version_string = :versionString
-          AND pvd.platform = :platform
           AND (pvd IS NULL OR (pvd.project_id = p.id AND pvd.version_id = pv.id));
     """)
-    Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, @EnumByOrdinal Platform platform, OffsetDateTime fromDate, OffsetDateTime toDate);
+    Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, OffsetDateTime fromDate, OffsetDateTime toDate);
 }
