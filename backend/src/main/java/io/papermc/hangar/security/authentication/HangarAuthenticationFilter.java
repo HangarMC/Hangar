@@ -59,7 +59,7 @@ public class HangarAuthenticationFilter extends AbstractAuthenticationProcessing
     private @Nullable String token(final HttpServletRequest request) {
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authorizationHeader != null) {
-            return authorizationHeader.replace(SecurityConfig.AUTH_NAME, "").trim();
+            return authorizationHeader.replace(SecurityConfig.AUTH_NAME, "").replace("Bearer", "").trim();
         }
 
         final String parameter = request.getParameter("t");

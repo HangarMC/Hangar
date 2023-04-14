@@ -41,8 +41,6 @@ useHead(useSeo("Hangar Version", null, route, null));
         </li>
       </ul>
       <p mt="2">
-        You can see an overview graph of these milestones <Link href="https://github.com/orgs/HangarMC/projects/1/insights/2">here</Link>.
-        <br />
         Please report bugs and other problems you encounter to our <Link href="https://github.com/HangarMC/Hangar/issues/new/choose">issue tracker</Link>.
       </p>
     </template>
