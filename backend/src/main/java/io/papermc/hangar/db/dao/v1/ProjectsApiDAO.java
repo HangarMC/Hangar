@@ -1,6 +1,7 @@
 package io.papermc.hangar.db.dao.v1;
 
 import io.papermc.hangar.db.extras.BindPagination;
+import io.papermc.hangar.db.mappers.factories.CompactRoleColumnMapperFactory;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.DayProjectStats;
 import io.papermc.hangar.model.api.project.Project;
@@ -10,6 +11,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
+import org.jdbi.v3.sqlobject.config.RegisterColumnMapperFactory;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.Define;
@@ -117,6 +119,7 @@ public interface ProjectsApiDAO {
                        @BindPagination(isCount = true) RequestPagination pagination);
 
     @RegisterConstructorMapper(ProjectMember.class)
+    @RegisterColumnMapperFactory(CompactRoleColumnMapperFactory.class)
     @SqlQuery("SELECT u.name AS \"user\", array_agg(r.name) roles " +
         "   FROM projects p " +
         "       JOIN user_project_roles upr ON p.id = upr.project_id " +
