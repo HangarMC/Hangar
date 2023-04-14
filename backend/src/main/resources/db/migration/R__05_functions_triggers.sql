@@ -1,33 +1,3 @@
-CREATE OR REPLACE FUNCTION delete_old_project_version_download_warnings() RETURNS trigger
-    LANGUAGE plpgsql
-AS
-$$
-BEGIN
-    DELETE FROM project_version_download_warnings WHERE created_at < current_date - INTERVAL '30' DAY;
-    RETURN new;
-END
-$$;
-
-CREATE OR REPLACE TRIGGER clean_old_project_version_download_warnings
-    AFTER INSERT
-    ON project_version_download_warnings
-EXECUTE PROCEDURE delete_old_project_version_download_warnings();
-
-CREATE OR REPLACE FUNCTION delete_old_project_version_unsafe_downloads() RETURNS trigger
-    LANGUAGE plpgsql
-AS
-$$
-BEGIN
-    DELETE FROM project_version_unsafe_downloads WHERE created_at < current_date - INTERVAL '30' DAY;
-    RETURN new;
-END
-$$;
-
-CREATE OR REPLACE TRIGGER clean_old_project_version_unsafe_downloads
-    AFTER INSERT
-    ON project_version_unsafe_downloads
-EXECUTE PROCEDURE delete_old_project_version_unsafe_downloads();
-
 CREATE OR REPLACE FUNCTION update_project_name_trigger() RETURNS trigger
     LANGUAGE plpgsql
 AS
