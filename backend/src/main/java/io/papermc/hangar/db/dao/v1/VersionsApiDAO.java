@@ -195,17 +195,22 @@ public interface VersionsApiDAO {
 
     @KeyColumn("date")
     @RegisterConstructorMapper(value = VersionStats.class, prefix = "vs")
+    @RegisterColumnMapper(VersionStatsMapper.class)
     @SqlQuery("""
-        SELECT cast(dates.day AS date) date,
-            coalesce(pvd.downloads, 0) vs_totalDownloads
-        FROM projects p,
-             project_versions pv,
-             (SELECT generate_series(:fromDate::date, :toDate::date, INTERVAL '1 DAY') AS day) dates
-                 LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day
-        WHERE lower(p.owner_name) = lower(:author)
-          AND lower(p.slug) = lower(:slug)
-          AND pv.version_string = :versionString
-          AND (pvd IS NULL OR (pvd.project_id = p.id AND pvd.version_id = pv.id));
-    """)
+        SELECT date, sum(platform_downloads) vs_totalDownloads, array_agg((ARRAY[subquery.platform, subquery.platform_downloads])) AS vs_platformDownloads
+        FROM (SELECT cast(dates.day AS date) date,
+                     pvd.platform            platform,
+                     coalesce(sum(pvd.downloads), 0) AS   platform_downloads
+              FROM projects p,
+                   project_versions pv,
+                   (SELECT generate_series(:fromDate::date, :toDate::date, INTERVAL '1 DAY') AS day) dates
+                       LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day
+              WHERE lower(p.owner_name) = lower(:author)
+                AND lower(p.slug) = lower(:slug)
+                AND pv.version_string = :versionString
+                AND (pvd IS NULL OR (pvd.project_id = p.id AND pvd.version_id = pv.id))
+              GROUP BY date, platform) subquery
+        GROUP BY date;
+            """)
     Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, OffsetDateTime fromDate, OffsetDateTime toDate);
 }

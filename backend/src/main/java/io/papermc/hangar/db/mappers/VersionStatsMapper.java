@@ -22,16 +22,23 @@ public class VersionStatsMapper implements ColumnMapper<Map<Platform, Long>> {
 
         final Object[] array = (Object[]) arr.getArray();
         for (final Object entry : array) {
-            final PGobject pgObject = (PGobject) entry;
-            if (pgObject.getValue() == null) {
-                continue;
-            }
+            if (entry instanceof final PGobject pgObject) {
+                if (pgObject.getValue() == null) {
+                    continue;
+                }
 
-            final String val = pgObject.getValue().substring(1, pgObject.getValue().length() - 1);
-            final String[] split = val.split(",");
-            final int platformIndex = Integer.parseInt(split[0]);
-            final long downloads = Long.parseLong(split[1]);
-            result.put(Platform.getValues()[platformIndex], downloads);
+                final String val = pgObject.getValue().substring(1, pgObject.getValue().length() - 1);
+                final String[] split = val.split(",");
+                final int platformIndex = Integer.parseInt(split[0]);
+                final long downloads = Long.parseLong(split[1]);
+                result.put(Platform.getValues()[platformIndex], downloads);
+            } else if (entry instanceof final Long[] longArr){
+                if (longArr.length < 2 || longArr[0] == null) {
+                    continue;
+                }
+
+                result.put(Platform.getValues()[longArr[0].intValue()], longArr[1]);
+            }
         }
         return result;
     }
