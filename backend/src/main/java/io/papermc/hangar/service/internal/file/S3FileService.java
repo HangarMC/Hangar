@@ -109,8 +109,8 @@ public class S3FileService implements FileService {
 
     @Override
     public String getVersionDownloadUrl(final String user, final String project, final String version, final Platform platform, final String fileName) {
-        final String encodedVersion = URLEncoder.encode(version, StandardCharsets.UTF_8);
-        final String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+        final String encodedVersion = URLEncoder.encode(version, StandardCharsets.UTF_8).replace("+", "%20");
+        final String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8).replace("+", "%20");
         final String endpoint = this.config.cdnIncludeBucket() ? this.config.cdnEndpoint() + "/" + this.config.bucket() : this.config.cdnEndpoint();
         return URL_FORMAT.formatted(endpoint, user, project, encodedVersion, platform.name(), encodedFileName);
     }

@@ -22,14 +22,16 @@ import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.service.api.VersionsApiService;
+import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.versions.DownloadService;
+import jakarta.servlet.http.HttpServletResponse;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,11 +45,13 @@ public class VersionsController implements IVersionsController {
 
     private final DownloadService downloadService;
     private final VersionsApiService versionsApiService;
+    private final FileService fileService;
 
     @Autowired
-    public VersionsController(final DownloadService downloadService, final VersionsApiService versionsApiService) {
+    public VersionsController(final DownloadService downloadService, final VersionsApiService versionsApiService, final FileService fileService) {
         this.downloadService = downloadService;
         this.versionsApiService = versionsApiService;
+        this.fileService = fileService;
     }
 
     @Unlocked
@@ -79,7 +83,7 @@ public class VersionsController implements IVersionsController {
     @Override
     @RateLimit(overdraft = 10, refillTokens = 2)
     @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
-    public Resource downloadVersion(final String author, final String slug, final String versionString, final Platform platform) {
-        return this.downloadService.getVersionFile(author, slug, versionString, platform, false, null);
+    public ResponseEntity<?> downloadVersion(final String author, final String slug, final String versionString, final Platform platform, final HttpServletResponse response) {
+        return this.downloadService.downloadVersion(author, slug, versionString, platform);
     }
 }

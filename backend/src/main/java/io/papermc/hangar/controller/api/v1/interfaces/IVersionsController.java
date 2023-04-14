@@ -13,14 +13,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -119,8 +120,10 @@ public interface IVersionsController {
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @GetMapping(value = "/projects/{author}/{slug}/versions/{name}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    Resource downloadVersion(@Parameter(description = "The author of the project to download the version from") @PathVariable String author,
+    ResponseEntity<?> downloadVersion(@Parameter(description = "The author of the project to download the version from") @PathVariable String author,
                              @Parameter(description = "The slug of the project to download the version from") @PathVariable String slug,
                              @Parameter(description = "The name of the version to download") @PathVariable("name") String versionString,
-                             @Parameter(description = "The platform of the version to download") @PathVariable Platform platform);
+                             @Parameter(description = "The platform of the version to download") @PathVariable Platform platform,
+                             HttpServletResponse response
+    );
 }

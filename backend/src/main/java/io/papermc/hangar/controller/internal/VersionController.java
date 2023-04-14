@@ -32,7 +32,6 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -181,8 +180,8 @@ public class VersionController extends HangarComponent {
     @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
     // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public Resource download(@PathVariable final String author, @PathVariable final String slug, @PathVariable final String versionString, @PathVariable final Platform platform, @RequestParam(required = false) final String token) {
-        return this.downloadService.getVersionFile(author, slug, versionString, platform, true, token);
+    public ResponseEntity<?> download(@PathVariable final String author, @PathVariable final String slug, @PathVariable final String versionString, @PathVariable final Platform platform, @RequestParam(required = false) final String token) {
+        return this.downloadService.downloadVersion(author, slug, versionString, platform);
     }
 
     @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#author, #slug, #versionString, #platform}")

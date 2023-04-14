@@ -19,6 +19,7 @@ import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadWarni
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionUnsafeDownloadTable;
 import io.papermc.hangar.service.internal.file.FileService;
+import io.papermc.hangar.service.internal.file.S3FileService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.util.RequestUtil;
 import jakarta.servlet.http.Cookie;
@@ -36,8 +37,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.WebUtils;
 
 @Service
@@ -192,5 +195,20 @@ public class DownloadService extends HangarComponent {
             versionDownloadsMap.put(platformDownload.getPlatform(), download);
         }
         return versionDownloadsMap;
+    }
+
+    public ResponseEntity<?> downloadVersion(final String user, final String project, final String versionString, final Platform platform) {
+        final ProjectVersionDownloadTable download = this.downloadsDAO.getDownloadByPlatform(user, project, versionString, platform);
+        if (StringUtils.hasText(download.getExternalUrl())) {
+            return ResponseEntity.status(301).header("Location", download.getExternalUrl()).build();
+        } else if (this.fileService instanceof S3FileService){
+            return ResponseEntity.status(301).header("Location", this.fileService.getVersionDownloadUrl(user, project, versionString, platform, download.getFileName())).build();
+        } else {
+            final String path = this.projectFiles.getVersionDir(user, project, versionString, platform, download.getFileName());
+            if (!this.fileService.exists(path)) {
+                throw new HangarApiException("Couldn't find a file for version " + versionString);
+            }
+            return ResponseEntity.status(200).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + download.getFileName() + "\"").body(this.fileService.getResource(path));
+        }
     }
 }
