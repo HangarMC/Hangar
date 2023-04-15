@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -172,5 +173,18 @@ public class VersionsApiService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "From date is after to date");
         }
         return this.versionsApiDAO.getVersionStats(author, slug, versionString, fromDate, toDate);
+    }
+
+    public @Nullable String latestVersion(final String author, final String slug) {
+        return this.latestVersion(author, slug, this.config.channels.nameDefault());
+    }
+
+    public @Nullable String latestVersion(final String author, final String slug, final String channel) {
+        final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
+        final String version = this.versionsApiDAO.getLatestVersion(author, slug, channel, canSeeHidden, this.getHangarUserId());
+        if (version == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "No version found for " + author + "/" + slug + " on channel " + channel);
+        }
+        return version;
     }
 }

@@ -87,6 +87,39 @@ public interface IVersionsController {
                                          @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
 
     @Operation(
+        summary = "Returns the latest release version of a project",
+        operationId = "latestReleaseVersion",
+        description = "Returns the latest version of a project. Requires the `view_public_info` permission in the project or owning organizations.",
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
+        tags = "Versions"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
+    })
+    @GetMapping("/projects/{author}/{slug}/latestrelease")
+    String getLatestReleaseVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
+                                         @Parameter(description = "The slug of the project to return the latest version for") @PathVariable String slug);
+
+    @Operation(
+        summary = "Returns the latest version of a project for a specific channel",
+        operationId = "latestVersion",
+        description = "Returns the latest version of a project. Requires the `view_public_info` permission in the project or owning organization.",
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
+        tags = "Versions"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
+    })
+    @GetMapping("/projects/{author}/{slug}/latest")
+    String getLatestVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
+                            @Parameter(description = "The slug of the project to return the latest version for") @PathVariable String slug,
+                            @Parameter(description = "The channel to return the latest version for", required = true) @NotNull String channel);
+
+    @Operation(
         summary = "Returns the stats for a version",
         operationId = "showVersionStats",
         description = "Returns the stats (downloads) for a version per day for a certain date range. Requires the `is_subject_member` permission.",

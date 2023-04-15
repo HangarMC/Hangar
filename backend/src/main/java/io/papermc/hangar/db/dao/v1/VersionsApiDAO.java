@@ -22,6 +22,7 @@ import org.jdbi.v3.sqlobject.config.ValueColumn;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -66,7 +67,7 @@ public interface VersionsApiDAO {
                pv.id = :versionId
            ORDERED BY pv.created_at DESC
     """)
-    Map.Entry<Long, Version> getVersion(long versionId, @Define boolean canSeeHidden, @Define Long userId);
+    @Nullable Map.Entry<Long, Version> getVersion(long versionId, @Define boolean canSeeHidden, @Define Long userId);
 
     @KeyColumn("id")
     @RegisterColumnMapper(VersionStatsMapper.class)
@@ -105,7 +106,7 @@ public interface VersionsApiDAO {
                lower(p.slug) = lower(:slug) AND
                pv.version_string = :versionString
     """)
-    Map.Entry<Long, Version> getVersionWithVersionString(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
+    @Nullable Map.Entry<Long, Version> getVersionWithVersionString(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
 
     @KeyColumn("id")
     @RegisterColumnMapper(VersionStatsMapper.class)
@@ -213,4 +214,26 @@ public interface VersionsApiDAO {
         GROUP BY date;
             """)
     Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, OffsetDateTime fromDate, OffsetDateTime toDate);
+
+    @SqlQuery("""
+        SELECT pv.version_string
+           FROM project_versions pv
+               JOIN project_channels pc ON pv.channel_id = pc.id
+               JOIN projects p ON pv.project_id = p.id
+               LEFT JOIN users u ON pv.author_id = u.id
+           WHERE
+               <if(!canSeeHidden)>
+                   (pv.visibility = 0
+                   <if(userId)>
+                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)
+                   <endif>)
+                   AND
+               <endif>
+               lower(p.owner_name) = lower(:author) AND
+               lower(p.slug) = lower(:slug) AND
+               pc.name = :channel
+           ORDER BY pv.created_at DESC
+           LIMIT 1
+    """)
+    @Nullable String getLatestVersion(String author, String slug, String channel, @Define boolean canSeeHidden, @Define Long userId);
 }

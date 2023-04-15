@@ -22,7 +22,6 @@ import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.service.api.VersionsApiService;
-import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.versions.DownloadService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.OffsetDateTime;
@@ -45,13 +44,11 @@ public class VersionsController implements IVersionsController {
 
     private final DownloadService downloadService;
     private final VersionsApiService versionsApiService;
-    private final FileService fileService;
 
     @Autowired
-    public VersionsController(final DownloadService downloadService, final VersionsApiService versionsApiService, final FileService fileService) {
+    public VersionsController(final DownloadService downloadService, final VersionsApiService versionsApiService) {
         this.downloadService = downloadService;
         this.versionsApiService = versionsApiService;
-        this.fileService = fileService;
     }
 
     @Unlocked
@@ -73,6 +70,18 @@ public class VersionsController implements IVersionsController {
     @ApplicableFilters({VersionChannelFilter.class, VersionPlatformFilter.class, VersionPlatformVersionFilter.class})
     public PaginatedResult<Version> getVersions(final String author, final String slug, @ConfigurePagination(defaultLimitString = "@hangarConfig.projects.initVersionLoad", maxLimit = 25) final @NotNull RequestPagination pagination) {
         return this.versionsApiService.getVersions(author, slug, pagination);
+    }
+
+    @Override
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
+    public String getLatestReleaseVersion(final String author, final String slug) {
+        return this.versionsApiService.latestVersion(author, slug);
+    }
+
+    @Override
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
+    public String getLatestVersion(final String author, final String slug, final @NotNull String channel) {
+        return this.versionsApiService.latestVersion(author, slug, channel);
     }
 
     @Override
