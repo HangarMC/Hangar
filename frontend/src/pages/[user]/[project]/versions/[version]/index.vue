@@ -287,7 +287,7 @@ async function restoreVersion() {
               {{ i18n.t(hasPerms(NamedPermission.IS_SUBJECT_MEMBER) ? "project.info.totalTotalDownloads" : "project.info.totalDownloads", 0) }}
             </th>
             <td class="text-right">
-              {{ version.stats.totalDownloads }}
+              {{ version.stats.totalDownloads.toLocaleString("en-US") }}
             </td>
           </tr>
           <!-- Only show per platform downloads to project members, otherwise not too relevant and only adding to height -->
@@ -297,7 +297,7 @@ async function restoreVersion() {
               {{ i18n.t("project.info.totalDownloads", 0) }}
             </th>
             <td class="text-right">
-              {{ version.stats.platformDownloads[platform] }}
+              {{ version.stats.platformDownloads[platform].toLocaleString("en-US") }}
             </td>
           </tr>
         </table>

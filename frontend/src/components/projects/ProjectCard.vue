@@ -73,11 +73,11 @@ const props = defineProps<{
       <div class="flex-grow"></div>
       <div class="lt-sm:hidden flex flex-col flex-shrink-0 min-w-40">
         <span class="inline-flex items-center">
-          <IconMdiStar class="mx-1" /> {{ project.stats.stars }} {{ i18n.t("project.info.stars", project.stats.stars) }}
+          <IconMdiStar class="mx-1" /> {{ project.stats.stars.toLocaleString("en-US") }} {{ i18n.t("project.info.stars", project.stats.stars) }}
         </span>
         <span class="inline-flex items-center">
           <IconMdiDownload class="mx-1" />
-          {{ project.stats.downloads }} {{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}
+          {{ project.stats.downloads.toLocaleString("en-US") }} {{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}
         </span>
         <Tooltip>
           <template #content> {{ i18n.t("project.info.lastUpdatedTooltip") }}<PrettyTime :time="project.lastUpdated" long /> </template>

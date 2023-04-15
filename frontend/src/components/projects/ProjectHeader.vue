@@ -154,7 +154,7 @@ function requiresConfirmation(): ConfirmationType {
             <Button button-type="secondary" size="small" :disabled="isOwn" @click="toggleStar">
               <IconMdiStar v-if="starred" />
               <IconMdiStarOutline v-else />
-              <span class="ml-2">{{ starredCount }}</span>
+              <span class="ml-2">{{ starredCount.toLocaleString("en-US") }}</span>
             </Button>
           </Tooltip>
           <!-- Tooltips mess with normal margins so this is a workaround -->
@@ -168,7 +168,7 @@ function requiresConfirmation(): ConfirmationType {
             <Button button-type="secondary" size="small" :disabled="isOwn" @click="toggleWatch">
               <IconMdiBell v-if="watching" />
               <IconMdiBellOutline v-else />
-              <span class="ml-2">{{ watchingCount }}</span>
+              <span class="ml-2">{{ watchingCount.toLocaleString("en-US") }}</span>
             </Button>
           </Tooltip>
           <div class="px-1"></div>

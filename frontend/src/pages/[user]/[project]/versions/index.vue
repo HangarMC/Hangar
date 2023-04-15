@@ -148,7 +148,7 @@ function getVisibilityTitle(visibility: Visibility) {
                         </span>
                         <span class="basis-full inline-flex items-center">
                           <IconMdiDownload class="mr-1" />
-                          {{ item.stats.totalDownloads }}
+                          {{ item.stats.totalDownloads.toLocaleString("en-US") }}
                         </span>
                       </div>
                     </div>

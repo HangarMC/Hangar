@@ -57,13 +57,13 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
           <tr v-if="hasPerms(NamedPermission.IS_SUBJECT_MEMBER)">
             <th class="text-left">{{ i18n.t("project.info.views", project.stats.views) }}</th>
             <td>
-              {{ project.stats.views }}
+              {{ project.stats.views.toLocaleString("en-US") }}
             </td>
           </tr>
           <tr>
             <th class="text-left">{{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}</th>
             <td>
-              {{ project.stats.downloads }}
+              {{ project.stats.downloads.toLocaleString("en-US") }}
             </td>
           </tr>
           <tr>
@@ -72,7 +72,7 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
                 {{ i18n.t("project.info.stars", 0) }}
               </Link>
             </th>
-            <td>{{ project.stats.stars }}</td>
+            <td>{{ project.stats.stars.toLocaleString("en-US") }}</td>
           </tr>
           <tr>
             <th class="text-left">
@@ -80,7 +80,7 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
                 {{ i18n.t("project.info.watchers", 0) }}
               </Link>
             </th>
-            <td>{{ project.stats.watchers }}</td>
+            <td>{{ project.stats.watchers.toLocaleString("en-US") }}</td>
           </tr>
         </tbody>
       </table>
