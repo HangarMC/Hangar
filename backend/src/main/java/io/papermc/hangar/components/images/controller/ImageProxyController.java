@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
@@ -24,12 +25,16 @@ public class ImageProxyController {
     }
 
     @GetMapping("/**")
-    public ResponseEntity<byte[]> proxy(final HttpServletRequest request) {
+    public ResponseEntity<?> proxy(final HttpServletRequest request) {
         final String url = this.cleanUrl(request.getRequestURI());
         if (this.validTarget(url)) {
-            final ResponseEntity<byte[]> response = this.restTemplate.getForEntity(url, byte[].class);
-            if (this.validContentType(response)) {
-                return response;
+            try {
+                final ResponseEntity<byte[]> response = this.restTemplate.getForEntity(url, byte[].class);
+                if (this.validContentType(response)) {
+                    return response;
+                }
+            } catch (final RestClientException ex) {
+                return ResponseEntity.internalServerError().body("Encountered " + ex.getClass().getSimpleName() + " while trying to load " + url);
             }
         }
         return ResponseEntity.badRequest().build();
