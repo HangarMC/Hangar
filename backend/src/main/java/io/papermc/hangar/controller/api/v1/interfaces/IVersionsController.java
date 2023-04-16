@@ -98,7 +98,7 @@ public interface IVersionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @GetMapping("/projects/{author}/{slug}/latestrelease")
+    @GetMapping(value = "/projects/{author}/{slug}/latestrelease", produces = MediaType.TEXT_PLAIN_VALUE)
     String getLatestReleaseVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
                                          @Parameter(description = "The slug of the project to return the latest version for") @PathVariable String slug);
 
@@ -114,7 +114,7 @@ public interface IVersionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @GetMapping("/projects/{author}/{slug}/latest")
+    @GetMapping(value = "/projects/{author}/{slug}/latest", produces = MediaType.TEXT_PLAIN_VALUE)
     String getLatestVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
                             @Parameter(description = "The slug of the project to return the latest version for") @PathVariable String slug,
                             @Parameter(description = "The channel to return the latest version for", required = true) @NotNull String channel);
