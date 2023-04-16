@@ -439,7 +439,7 @@ public class VersionFactory extends HangarComponent {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public @Nullable LastDependencies getLastVersionDependencies(final String author, final String slug, final @Nullable String channel, final Platform platform) {
         // TODO optimize with specific query
         final RequestPagination pagination = new RequestPagination(1L, 0L);

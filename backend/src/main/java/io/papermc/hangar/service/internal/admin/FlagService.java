@@ -99,7 +99,7 @@ public class FlagService extends HangarComponent {
         return this.hangarProjectFlagsDAO.getFlags(projectId);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PaginatedResult<HangarProjectFlag> getFlags(final @NotNull RequestPagination pagination, final boolean resolved) {
         final List<HangarProjectFlag> flags = this.hangarProjectFlagsDAO.getFlags(pagination, resolved);
         final long count = this.hangarProjectFlagsDAO.getFlagsCount(resolved);

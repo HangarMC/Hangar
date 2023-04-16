@@ -49,7 +49,13 @@ public class StatService extends HangarComponent {
         final Long userId = this.getHangarUserId();
         final InetAddress address = RequestUtil.getRemoteInetAddress(this.request);
         final Optional<String> existingCookie = this.projectViewsDAO.getIndividualView(userId, address).map(ProjectViewIndividualTable::getCookie);
-        final String cookie = existingCookie.orElse(Optional.ofNullable(WebUtils.getCookie(this.request, STAT_TRACKING_COOKIE)).map(Cookie::getValue).orElse(UUID.randomUUID().toString()));
+        final String cookie = existingCookie.orElseGet(() -> {
+            final Cookie value = WebUtils.getCookie(this.request, STAT_TRACKING_COOKIE);
+            if (value != null) {
+                return value.getValue();
+            }
+            return UUID.randomUUID().toString();
+        });
         this.projectViewsDAO.insert(new ProjectViewIndividualTable(address, cookie, userId, projectIdentified.getProjectId()));
         this.setCookie(cookie);
     }
@@ -76,18 +82,19 @@ public class StatService extends HangarComponent {
     }
 
     @Transactional
-    void processStats(final String individualTable, final String dayTable, final String statColumn, final boolean downloads) {
-        this.hangarStatsDAO.fillStatsUserIdsFromOthers(individualTable);
-        this.hangarStatsDAO.processStatsMain(individualTable, dayTable, statColumn, true, downloads);
-        this.hangarStatsDAO.processStatsMain(individualTable, dayTable, statColumn, false, downloads);
-        this.hangarStatsDAO.deleteOldIndividual(individualTable);
-    }
-
     public void processVersionDownloads() {
         this.processStats("project_versions_downloads_individual", "project_versions_downloads", "downloads", true);
     }
 
+    @Transactional
     public void processProjectViews() {
         this.processStats("project_views_individual", "project_views", "views", false);
+    }
+
+    private void processStats(final String individualTable, final String dayTable, final String statColumn, final boolean downloads) {
+        this.hangarStatsDAO.fillStatsUserIdsFromOthers(individualTable);
+        this.hangarStatsDAO.processStatsMain(individualTable, dayTable, statColumn, true, downloads);
+        this.hangarStatsDAO.processStatsMain(individualTable, dayTable, statColumn, false, downloads);
+        this.hangarStatsDAO.deleteOldIndividual(individualTable);
     }
 }

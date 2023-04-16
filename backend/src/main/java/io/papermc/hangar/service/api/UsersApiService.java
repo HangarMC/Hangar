@@ -74,7 +74,7 @@ public class UsersApiService extends HangarComponent {
         return user instanceof HangarUser ? (T) this.supplyHeaderData((HangarUser) user) : user;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public <T extends User> PaginatedResult<T> getUsers(final String query, final RequestPagination pagination, final Class<T> type) {
         final boolean hasQuery = !StringUtils.isBlank(query);
         final List<T> users = this.usersDAO.getUsers(hasQuery, query, pagination, type);
@@ -82,7 +82,7 @@ public class UsersApiService extends HangarComponent {
         return new PaginatedResult<>(new Pagination(this.usersDAO.getUsersCount(hasQuery, query), pagination), users);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PaginatedResult<ProjectCompact> getUserStarred(final String userName, final ProjectSortingStrategy sortingStrategy, final RequestPagination pagination) {
         this.getUserRequired(userName, this.usersDAO::getUser, User.class);
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
@@ -92,7 +92,7 @@ public class UsersApiService extends HangarComponent {
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PaginatedResult<ProjectCompact> getUserWatching(final String userName, final ProjectSortingStrategy sortingStrategy, final RequestPagination pagination) {
         this.getUserRequired(userName, this.usersDAO::getUser, User.class);
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
@@ -108,7 +108,7 @@ public class UsersApiService extends HangarComponent {
     }
 
     @Cacheable(CacheConfig.AUTHORS)
-    @Transactional
+    @Transactional(readOnly = true)
     public PaginatedResult<User> getAuthors(final RequestPagination pagination) {
         final List<User> users = this.usersApiDAO.getAuthors(pagination);
         users.forEach(u -> u.setAvatarUrl(this.avatarService.getUserAvatarUrl(u)));
@@ -122,7 +122,7 @@ public class UsersApiService extends HangarComponent {
     }
 
     @Cacheable(CacheConfig.STAFF)
-    @Transactional
+    @Transactional(readOnly = true)
     public PaginatedResult<User> getStaff(final RequestPagination pagination) {
         final List<User> users = this.usersApiDAO.getStaff(this.config.user.staffRoles(), pagination);
         users.forEach(u -> u.setAvatarUrl(this.avatarService.getUserAvatarUrl(u)));

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class PinnedVersionService extends HangarComponent {
 
     private final HangarVersionsDAO hangarVersionsDAO;
@@ -35,6 +34,7 @@ public class PinnedVersionService extends HangarComponent {
         this.pinnedProjectVersionsDAO.deleteVersion(projectId, versionId);
     }
 
+    @Transactional(readOnly = true)
     public List<HangarProject.PinnedVersion> getPinnedVersions(final String user, final String project, final long projectId) {
         final List<HangarProject.PinnedVersion> versions = this.hangarVersionsDAO.getPinnedVersions(projectId);
         for (final HangarProject.PinnedVersion version : versions) {

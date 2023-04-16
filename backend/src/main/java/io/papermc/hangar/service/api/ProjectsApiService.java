@@ -43,7 +43,7 @@ public class ProjectsApiService extends HangarComponent {
         return project;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PaginatedResult<ProjectMember> getProjectMembers(final String author, final String slug, final RequestPagination requestPagination) {
         final List<ProjectMember> projectMembers = this.projectsApiDAO.getProjectMembers(author, slug, requestPagination);
         return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectMembersCount(author, slug), requestPagination), projectMembers);
@@ -53,21 +53,21 @@ public class ProjectsApiService extends HangarComponent {
         return this.projectsApiDAO.getProjectStats(author, slug, fromDate, toDate);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PaginatedResult<User> getProjectStargazers(final String author, final String slug, final RequestPagination pagination) {
         final List<User> stargazers = this.projectsApiDAO.getProjectStargazers(author, slug, pagination.getLimit(), pagination.getOffset());
         stargazers.forEach(this.usersApiService::supplyAvatarUrl);
         return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectStargazersCount(author, slug), pagination), stargazers);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PaginatedResult<User> getProjectWatchers(final String author, final String slug, final RequestPagination pagination) {
         final List<User> watchers = this.projectsApiDAO.getProjectWatchers(author, slug, pagination.getLimit(), pagination.getOffset());
         watchers.forEach(this.usersApiService::supplyAvatarUrl);
         return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectWatchersCount(author, slug), pagination), watchers);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Cacheable(CacheConfig.PROJECTS)
     public PaginatedResult<Project> getProjects(final boolean orderWithRelevance, final RequestPagination pagination, final boolean seeHidden) {
         // get query from filter

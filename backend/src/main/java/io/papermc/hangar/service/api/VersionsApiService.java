@@ -148,7 +148,7 @@ public class VersionsApiService extends HangarComponent {
         return true;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Version getVersion(final String author, final String slug, final String versionString) {
         final Map.Entry<Long, Version> version = this.versionsApiDAO.getVersionWithVersionString(author, slug, versionString, this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
         if (version == null) {
@@ -157,7 +157,7 @@ public class VersionsApiService extends HangarComponent {
         return this.versionDependencyService.addDownloadsAndDependencies(author, slug, versionString, version.getKey()).applyTo(version.getValue());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PaginatedResult<Version> getVersions(final String author, final String slug, final RequestPagination pagination) {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final List<Version> versions = this.versionsApiDAO.getVersions(author, slug, canSeeHidden, this.getHangarUserId(), pagination).entrySet().stream()

@@ -46,7 +46,7 @@ public class NotificationService extends HangarComponent {
         return this.hangarNotificationsDAO.getNotifications(this.getHangarUserId(), amount);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PaginatedResult<HangarNotification> getNotifications(final RequestPagination pagination, final @Nullable Boolean read) {
         final List<HangarNotification> notifications = read != null ? this.hangarNotificationsDAO.getNotifications(this.getHangarUserId(), read, pagination) : this.hangarNotificationsDAO.getNotifications(this.getHangarUserId(), pagination);
         return new PaginatedResult<>(new Pagination(this.getUnreadNotifications(), pagination), notifications);

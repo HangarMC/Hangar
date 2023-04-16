@@ -61,7 +61,7 @@ public class UserActionLogService extends HangarComponent {
         inserter.accept(action.getContext().createTable(this.getHangarPrincipal().getUserId(), RequestUtil.getRemoteInetAddress(this.request), action));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PaginatedResult<HangarLoggedAction> getLogs(final RequestPagination pagination) {
         final List<HangarLoggedAction> log = this.loggedActionsDAO.getLog(pagination);
         if (!this.getHangarPrincipal().isAllowedGlobal(Permission.SeeIPAdresses)) {
