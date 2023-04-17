@@ -28,7 +28,7 @@
     "@pinia/nuxt": "0.4.8",
     "@vuelidate/core": "2.0.2",
     "@vuelidate/validators": "2.0.2",
-    "@vueuse/components": "9.13.0",
+    "@vueuse/components": "10.0.2",
     "@vueuse/core": "9.13.0",
     "@vueuse/head": "1.1.23",
     "@vueuse/integrations": "9.13.0",
