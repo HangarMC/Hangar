@@ -33,6 +33,7 @@ public class PermissionService extends HangarComponent {
 
     // Project permissions
     public Permission getProjectPermissions(final @Nullable Long userId, final long projectId) {
+        //TODO still leaks not listed projects (e.g. via pages api) as the perm is technically given
         return this.getPermissions(userId, id -> this.permissionsDAO.getProjectPermission(id, projectId));
     }
 
@@ -70,9 +71,11 @@ public class PermissionService extends HangarComponent {
         if (identifier == null) {
             return DEFAULT_SIGNED_OUT_PERMISSIONS;
         }
+
         final Permission perm = permissionSupplier.apply(identifier);
         if (perm == null) {
             return DEFAULT_SIGNED_IN_PERMISSIONS;
-        } else return perm.add(DEFAULT_SIGNED_IN_PERMISSIONS);
+        }
+        return perm.add(DEFAULT_SIGNED_IN_PERMISSIONS);
     }
 }

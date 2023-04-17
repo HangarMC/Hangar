@@ -79,7 +79,7 @@ public class HangarPrincipal implements ProjectOwner, UserDetails, Serializable 
         if (intersect.isNone()) {
             return false;
         }
-        return this.getPossiblePermissions().has(requiredPermission.intersect(currentPermission));
+        return this.getPossiblePermissions().has(intersect);
     }
 
     @Override

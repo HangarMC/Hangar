@@ -37,7 +37,11 @@ public class PagesController extends HangarComponent implements IPagesController
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public String getMainPage(final String author, final String slug) {
-        return this.getPage(author, slug, "");
+        final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(author, slug, "");
+        if (projectPage == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return projectPage.getContents();
     }
 
     @Override

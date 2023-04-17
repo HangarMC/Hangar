@@ -29,20 +29,24 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
 
     @Override
     public int vote(final Authentication authentication, final MethodInvocation methodInvocation, final Set<PermissionRequiredMetadataExtractor.PermissionRequiredAttribute> attributes) {
-        if (!(authentication instanceof final HangarAuthenticationToken hangarAuthenticationToken)) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        Long userId = null;
+        if (authentication instanceof final HangarAuthenticationToken hangarAuthenticationToken) {
+            this.logger.debug("Possible permissions: {}", hangarAuthenticationToken.getPrincipal().getPossiblePermissions());
+            userId = hangarAuthenticationToken.getUserId();
         }
+
         for (final PermissionRequiredMetadataExtractor.PermissionRequiredAttribute attribute : attributes) {
             final Object[] arguments = attribute.expression().getValue(this.getMethodEvaluationContext(methodInvocation), Object[].class);
             if (arguments == null || !attribute.permissionType().getArgCounts().contains(arguments.length)) {
                 throw new IllegalStateException("Bad annotation configuration");
             }
+
             final Permission requiredPerm = Arrays.stream(attribute.permissions()).map(NamedPermission::getPermission).reduce(Permission::add).orElse(Permission.None);
-            this.logger.debug("Possible permissions: {}", hangarAuthenticationToken.getPrincipal().getPossiblePermissions());
             this.logger.debug("Required permissions: {}", requiredPerm);
+
             final Permission currentPerm;
             switch (attribute.permissionType()) {
-                case PROJECT:
+                case PROJECT -> {
                     if (arguments.length == 1) {
                         final long projectId;
                         final Object argument1 = arguments[0];
@@ -51,36 +55,48 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
                         } else {
                             projectId = (long) argument1;
                         }
-                        currentPerm = this.permissionService.getProjectPermissions(hangarAuthenticationToken.getUserId(), projectId);
+
+                        currentPerm = this.permissionService.getProjectPermissions(userId, projectId);
                     } else if (arguments.length == 2) {
-                        currentPerm = this.permissionService.getProjectPermissions(hangarAuthenticationToken.getUserId(), (String) arguments[0], (String) arguments[1]);
+                        currentPerm = this.permissionService.getProjectPermissions(userId, (String) arguments[0], (String) arguments[1]);
                     } else {
                         currentPerm = Permission.None;
                     }
-                    break;
-                case ORGANIZATION:
+                }
+                case ORGANIZATION -> {
                     if (arguments.length == 1) {
-                        currentPerm = this.permissionService.getOrganizationPermissions(hangarAuthenticationToken.getUserId(), (String) arguments[0]);
+                        currentPerm = this.permissionService.getOrganizationPermissions(userId, (String) arguments[0]);
                     } else {
                         currentPerm = Permission.None;
                     }
-                    break;
-                case GLOBAL:
-                    currentPerm = this.permissionService.getGlobalPermissions(hangarAuthenticationToken.getUserId());
-                    break;
-                default:
-                    currentPerm = Permission.None;
+                }
+                case GLOBAL -> currentPerm = this.permissionService.getGlobalPermissions(userId);
+                default -> currentPerm = Permission.None;
             }
+
             this.logger.debug("Current permissions: {}", currentPerm);
-            if (hangarAuthenticationToken.getPrincipal().isAllowed(requiredPerm, currentPerm)) {
-                return ACCESS_GRANTED;
+            if (authentication instanceof final HangarAuthenticationToken hangarAuthenticationToken) {
+                if (!hangarAuthenticationToken.getPrincipal().isAllowed(requiredPerm, currentPerm)) {
+                    throw new HangarApiException(HttpStatus.NOT_FOUND);
+                }
+            } else if (!this.isAllowed(requiredPerm, currentPerm)) {
+                throw new HangarApiException(HttpStatus.NOT_FOUND);
             }
         }
-        throw new HangarApiException(HttpStatus.NOT_FOUND);
+        return ACCESS_GRANTED;
     }
 
     @Override
     public void onAccessDenied() {
         throw HangarApiException.notFound();
+    }
+
+    private boolean isAllowed(final Permission requiredPermission, final Permission currentPermission) {
+        final Permission intersect = requiredPermission.intersect(currentPermission);
+        if (intersect.isNone()) {
+            return false;
+        }
+
+        return Permission.All.has(intersect);
     }
 }
