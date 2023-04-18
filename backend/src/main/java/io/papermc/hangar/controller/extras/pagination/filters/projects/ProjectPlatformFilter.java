@@ -55,11 +55,11 @@ public class ProjectPlatformFilter implements Filter<ProjectPlatformFilter.Proje
             for (int i = 0; i < this.platforms.length; i++) {
                 sb.append(":__platform__").append(i);
                 if (i + 1 != this.platforms.length) {
-                    sb.append(",");
+                    sb.append(',');
                 }
                 q.bind("__platform__" + i, this.platforms[i]);
             }
-            sb.append(")");
+            sb.append(')');
         }
 
         @Override

@@ -50,7 +50,7 @@ public class VersionPlatformVersionFilter implements Filter<VersionPlatformVersi
                     sb.append(" OR ");
                 }
             }
-            sb.append(")");
+            sb.append(')');
         }
 
         @Override

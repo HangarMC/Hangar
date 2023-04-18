@@ -56,11 +56,11 @@ public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstan
             for (int i = 0; i < this.categories.length; i++) {
                 sb.append(":__category__").append(i);
                 if (i + 1 != this.categories.length) {
-                    sb.append(",");
+                    sb.append(',');
                 }
                 q.bind("__category__" + i, this.categories[i]);
             }
-            sb.append(")");
+            sb.append(')');
         }
 
         @Override

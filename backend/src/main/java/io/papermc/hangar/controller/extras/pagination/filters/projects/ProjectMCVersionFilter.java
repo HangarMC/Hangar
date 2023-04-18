@@ -54,11 +54,11 @@ public class ProjectMCVersionFilter implements Filter<ProjectMCVersionFilter.Pro
             for (int i = 0; i < this.versions.length; i++) {
                 sb.append(":__version__").append(i);
                 if (i + 1 != this.versions.length) {
-                    sb.append(",");
+                    sb.append(',');
                 }
                 q.bind("__version__" + i, this.versions[i]);
             }
-            sb.append(")");
+            sb.append(')');
         }
 
         @Override

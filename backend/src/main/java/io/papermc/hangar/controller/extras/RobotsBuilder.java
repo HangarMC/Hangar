@@ -25,9 +25,9 @@ public class RobotsBuilder {
     public String build() {
         final StringBuilder sb = new StringBuilder();
         for (final Group group : this.groups) {
-            sb.append("user-agent: ").append(group.userAgent).append("\n");
+            sb.append("user-agent: ").append(group.userAgent).append('\n');
             for (final String directive : group.directives) {
-                sb.append(directive).append("\n");
+                sb.append(directive).append('\n');
             }
         }
         sb.append("\n\n");

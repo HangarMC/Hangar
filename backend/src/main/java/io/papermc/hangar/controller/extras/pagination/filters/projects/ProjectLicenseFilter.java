@@ -54,11 +54,11 @@ public class ProjectLicenseFilter implements Filter<ProjectLicenseFilter.Project
             for (int i = 0; i < this.licenses.length; i++) {
                 sb.append(":__licenses__").append(i);
                 if (i + 1 != this.licenses.length) {
-                    sb.append(",");
+                    sb.append(',');
                 }
                 q.bind("__licenses__" + i, this.licenses[i]);
             }
-            sb.append(")");
+            sb.append(')');
         }
 
         @Override

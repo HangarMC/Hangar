@@ -52,8 +52,14 @@ public class ProjectTagFilter implements Filter<ProjectTagFilter.ProjectTagFilte
         @Override
         public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
             sb.append(" AND p.tags").append(" @> '{");
-            for (int i = 0; i < this.tags.length; i++) {
-                sb.append("\"").append(this.tags[i]).append("\"");
+            boolean first = true;
+            for (final Tag tag : this.tags) {
+                if (first) {
+                    first = false;
+                } else {
+                    sb.append(',');
+                }
+                sb.append('"').append(tag).append('"');
             }
             sb.append("}'");
         }
