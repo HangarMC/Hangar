@@ -58,6 +58,8 @@ async function addAuthenticator() {
       savedRequest.value = e.config;
     } else if (e.response?.data?.detail === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
+    } else if (e?.toString()?.startsWith("NotAllowedError")) {
+      notification.error("Security Key Authentication failed!");
     } else {
       notification.fromError(i18n, e);
     }
@@ -73,6 +75,8 @@ async function unregisterAuthenticator(authenticator: AuthSettings["authenticato
   } catch (e) {
     if (e.response?.data?.detail === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
+    } else if (e?.toString()?.startsWith("NotAllowedError")) {
+      notification.error("Security Key Authentication failed!");
     } else {
       notification.fromError(i18n, e);
     }

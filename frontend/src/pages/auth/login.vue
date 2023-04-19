@@ -70,7 +70,11 @@ async function loginWebAuthN() {
     });
     await finish(response);
   } catch (e) {
-    notification.fromError(i18n, e);
+    if (e?.toString()?.startsWith("NotAllowedError")) {
+      notification.error("Security Key Authentication failed!");
+    } else {
+      notification.fromError(i18n, e);
+    }
   }
   loading.value = false;
 }
