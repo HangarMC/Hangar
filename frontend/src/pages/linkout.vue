@@ -27,13 +27,13 @@ const host = computed<string | null>(() => {
   }
 });
 
-if (host.value && trustedHosts.value.includes(host.value)) {
+if (host.value && trustedHosts.value.includes(host.value!)) {
   go();
 }
 
 function trust() {
   if (host.value) {
-    trustedHosts.value.push(host.value);
+    trustedHosts.value.push(host.value!);
   }
   go();
 }
