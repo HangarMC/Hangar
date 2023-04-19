@@ -25,12 +25,13 @@ public class ImageProxyController {
     }
 
     @GetMapping("/**")
-    public ResponseEntity<?> proxy(final HttpServletRequest request) {
+    public ResponseEntity<?> proxy(final HttpServletRequest request, final HttpServletResponse res) {
         final String url = this.cleanUrl(request.getRequestURI());
         if (this.validTarget(url)) {
             try {
                 final ResponseEntity<byte[]> response = this.restTemplate.getForEntity(url, byte[].class);
                 if (this.validContentType(response)) {
+                    res.setHeader("Content-Security-Policy", "default-src 'self'");
                     return response;
                 }
             } catch (final RestClientException ex) {
