@@ -29,7 +29,6 @@ interface DayStats {
   flagsOpened: number;
   reviews: number;
   totalDownloads: number;
-  unsafeDownloads: number;
   uploads: number;
 }
 
@@ -49,7 +48,6 @@ let data: DayStats[] = (await useInternalApi<DayStats[]>("admin/stats", "get", {
 let reviews: DayStat[] = [];
 let uploads: DayStat[] = [];
 let totalDownloads: DayStat[] = [];
-let unsafeDownloads: DayStat[] = [];
 let openedFlags: DayStat[] = [];
 let closedFlags: DayStat[] = [];
 for (const statDay of data) {
@@ -57,7 +55,6 @@ for (const statDay of data) {
   reviews.push({ x: day, y: statDay.reviews });
   uploads.push({ x: day, y: statDay.uploads });
   totalDownloads.push({ x: day, y: statDay.totalDownloads });
-  unsafeDownloads.push({ x: day, y: statDay.unsafeDownloads });
   openedFlags.push({ x: day, y: statDay.flagsOpened });
   closedFlags.push({ x: day, y: statDay.flagsClosed });
 }
@@ -68,8 +65,8 @@ const pluginData = ref<LineChartData>({
 });
 
 const downloadData = ref<LineChartData>({
-  labels: [i18n.t("stats.totalDownloads"), i18n.t("stats.unsafeDownloads")],
-  series: [totalDownloads, unsafeDownloads],
+  labels: [i18n.t("stats.totalDownloads")],
+  series: [totalDownloads],
 });
 
 const flagData = ref<LineChartData>({
@@ -104,7 +101,6 @@ async function updateDate() {
   reviews = [];
   uploads = [];
   totalDownloads = [];
-  unsafeDownloads = [];
   openedFlags = [];
   closedFlags = [];
   for (const statDay of data) {
@@ -112,14 +108,12 @@ async function updateDate() {
     reviews.push({ x: day, y: statDay.reviews });
     uploads.push({ x: day, y: statDay.uploads });
     totalDownloads.push({ x: day, y: statDay.totalDownloads });
-    unsafeDownloads.push({ x: day, y: statDay.unsafeDownloads });
     openedFlags.push({ x: day, y: statDay.flagsOpened });
     closedFlags.push({ x: day, y: statDay.flagsClosed });
   }
   pluginData.value.series[0] = reviews;
   pluginData.value.series[1] = uploads;
   downloadData.value.series[0] = totalDownloads;
-  downloadData.value.series[1] = unsafeDownloads;
   flagData.value.series[0] = openedFlags;
   flagData.value.series[1] = closedFlags;
 }
