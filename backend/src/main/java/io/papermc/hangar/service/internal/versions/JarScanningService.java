@@ -167,13 +167,13 @@ public class JarScanningService {
         final ProjectVersionPlatformDownloadTable platformDownload = this.downloadsDAO.getPlatformDownload(versionId, platform);
         final ProjectVersionDownloadTable download = this.downloadsDAO.getDownload(versionId, platformDownload.getDownloadId());
         if (download.getFileName() == null) {
-            throw new HangarApiException("Couldn't find a file for version " + version + " in download " + download);
+            throw new RuntimeException("Couldn't find a file for version " + version + " in download " + download);
         }
 
         final ProjectTable project = this.projectsDAO.getById(version.projectId());
         final String path = this.projectFiles.getVersionDir(project.getOwnerName(), project.getSlug(), version.versionString(), platform, download.getFileName());
         if (!this.fileService.exists(path)) {
-            throw new HangarApiException("Couldn't find a file for version " + version);
+            throw new RuntimeException("Couldn't find a file for version " + version);
         }
         return new NamedResource(this.fileService.getResource(path), download.getFileName());
     }
