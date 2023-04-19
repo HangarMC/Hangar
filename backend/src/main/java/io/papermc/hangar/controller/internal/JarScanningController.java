@@ -2,7 +2,7 @@ package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.db.versions.JarScanResultTable;
+import io.papermc.hangar.model.internal.versions.JarScanResult;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -32,7 +32,7 @@ public class JarScanningController {
 
     @ResponseBody
     @GetMapping("/result/{platform}/{versionId}")
-    public @Nullable JarScanResultTable getResult(@PathVariable final Platform platform, @PathVariable final long versionId)  {
+    public @Nullable JarScanResult getResult(@PathVariable final Platform platform, @PathVariable final long versionId)  {
         return this.jarScanningService.getLastResult(versionId, platform);
     }
 

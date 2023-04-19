@@ -51,10 +51,8 @@ useHead(useSeo("Scan | " + props.project.name, props.project.description, route,
         <IconMdiInformation class="mr-1" />
         Results for {{ version.name }} {{ result.platform }} (last scanned: <PrettyTime :time="result.createdAt" short-relative />)
       </h3>
-      <div v-for="(file, idx) in result.data" :key="idx">
-        <div v-for="(line, idx2) in file" :key="idx2">
-          {{ line }}
-        </div>
+      <div v-for="(line, idx) in result.entries" :key="idx">
+        {{ line }}
         <hr class="my-1" />
       </div>
     </div>

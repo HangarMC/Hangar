@@ -10,10 +10,12 @@ import io.papermc.hangar.model.api.project.version.VersionToScan;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.db.versions.JarScanResultEntryTable;
 import io.papermc.hangar.model.db.versions.JarScanResultTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
+import io.papermc.hangar.model.internal.versions.JarScanResult;
 import io.papermc.hangar.scanner.HangarJarScanner;
 import io.papermc.hangar.scanner.check.Check;
 import io.papermc.hangar.scanner.model.ScanResult;
@@ -23,13 +25,14 @@ import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.users.UserService;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -134,42 +137,29 @@ public class JarScanningService {
         }
     }
 
-    public Severity scanPlatform(final long versionId, final Platform platform) throws IOException {
+    @Transactional
+    public void scanPlatform(final long versionId, final Platform platform) throws IOException {
         final ProjectVersionTable pvt = this.projectVersionsDAO.getProjectVersionTable(versionId);
         if (pvt == null) {
             throw new HangarApiException("Version not found");
         }
 
-        return this.scanPlatform(new VersionToScan(pvt.getVersionId(), pvt.getProjectId(), pvt.getReviewState(), pvt.getVersionString(), List.of(platform)), platform);
+        this.scanPlatform(new VersionToScan(pvt.getVersionId(), pvt.getProjectId(), pvt.getReviewState(), pvt.getVersionString(), List.of(platform)), platform);
     }
 
     public Severity scanPlatform(final VersionToScan versionToScan, final Platform platform) throws IOException {
         final NamedResource resource = this.getFile(versionToScan, platform);
 
-        final List<ScanResult> scanResults;
+        final ScanResult scanResult;
         try (final InputStream inputStream = resource.resource().getInputStream()) {
-            scanResults = this.scanner.scanJar(inputStream, resource.name());
+            scanResult = this.scanner.scanJar(inputStream, resource.name());
         }
 
-        // find the highest severity
-        Severity highestSeverity = Severity.UNKNOWN;
-        for (final ScanResult scanResult : scanResults) {
-            for (final Check.CheckResult result : scanResult.results()) {
-                if (result.severity().compareTo(highestSeverity) < 0) {
-                    highestSeverity = result.severity();
-                }
-            }
+        final JarScanResultTable table = this.dao.save(new JarScanResultTable(versionToScan.versionId(), this.scanner.version(), platform, scanResult.highestSeverity().name()));
+        for (final Check.CheckResult result : scanResult.results()) {
+            this.dao.save(new JarScanResultEntryTable(table.getId(), result.location(), result.message(), result.severity().name()));
         }
-
-        // this is dum, but I can't be bothered to adjust the model in the scanner to serialize to json properly
-        final List<List<String>> formattedResults = new ArrayList<>();
-        for (final ScanResult scanResult : scanResults) {
-            final List<String> formattedChecks = scanResult.results().stream().map(Check.CheckResult::format).toList();
-            formattedResults.add(formattedChecks);
-        }
-
-        this.dao.save(new JarScanResultTable(versionToScan.versionId(), this.scanner.version(), platform, highestSeverity.name(), new JSONB(formattedResults)));
-        return highestSeverity;
+        return scanResult.highestSeverity();
     }
 
     private NamedResource getFile(final VersionToScan version, final Platform platform) {
@@ -188,8 +178,18 @@ public class JarScanningService {
         return new NamedResource(this.fileService.getResource(path), download.getFileName());
     }
 
-    public JarScanResultTable getLastResult(final long versionId, final Platform platform) {
-        return this.dao.getLastResult(versionId, platform);
+    public @Nullable JarScanResult getLastResult(final long versionId, final Platform platform) {
+        final JarScanResultTable lastResult = this.dao.getLastResult(versionId, platform);
+        if (lastResult == null) {
+            return null;
+        }
+
+        final List<String> entries = this.dao.getEntries(lastResult.getId()).stream().sorted(Comparator.comparing(s -> Severity.valueOf(s.getSeverity()))).map(this::format).toList();
+        return new JarScanResult(lastResult.getId(), platform, lastResult.getCreatedAt(), lastResult.getHighestSeverity(), entries);
+    }
+
+    private String format(final JarScanResultEntryTable entry) {
+        return "[" + entry.getSeverity() + "]: " + entry.getMessage() + " at " + entry.getLocation();
     }
 
     public UserTable getJarScannerUser() {

@@ -2,26 +2,36 @@ package io.papermc.hangar.db.dao.internal.versions;
 
 import io.papermc.hangar.model.api.project.version.VersionToScan;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.db.versions.JarScanResultEntryTable;
 import io.papermc.hangar.model.db.versions.JarScanResultTable;
 import java.util.List;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RegisterConstructorMapper(JarScanResultTable.class)
+@RegisterConstructorMapper(JarScanResultEntryTable.class)
 public interface JarScanResultDAO {
 
     @Timestamped
-    @SqlUpdate("INSERT INTO jar_scan_result(version_id, scanner_version, platform, data, highest_severity, created_at) VALUES (:versionId, :scannerVersion, :platform, :data, :highestSeverity, :now)")
-    void save(@BindBean JarScanResultTable table);
+    @GetGeneratedKeys
+    @SqlUpdate("INSERT INTO jar_scan_result(version_id, scanner_version, platform, highest_severity, created_at) VALUES (:versionId, :scannerVersion, :platform, :highestSeverity, :now)")
+    JarScanResultTable save(@BindBean JarScanResultTable table);
 
-    @RegisterConstructorMapper(JarScanResultTable.class)
+    @SqlUpdate("INSERT INTO jar_scan_result_entry(result_id, location, message, severity) VALUES (:resultId, :location, :message, :severity)")
+    void save(@BindBean JarScanResultEntryTable table);
+
     @SqlQuery("SELECT * FROM jar_scan_result WHERE version_id = :versionId AND platform = :platform ORDER BY created_at DESC LIMIT 1")
     JarScanResultTable getLastResult(long versionId, @EnumByOrdinal final Platform platform);
+
+    @SqlQuery("SELECT * FROM jar_scan_result_entry WHERE result_id = :resultId")
+    List<JarScanResultEntryTable> getEntries(long resultId);
 
     //TODO Don't skip approved versions if HIGHEST severity should unlist it
     // WHERE jsr.version_id = pv.id AND jsr.scanner_version >= :scannerVersion

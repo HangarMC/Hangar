@@ -33,9 +33,9 @@ declare module "hangar-internal" {
   }
 
   interface JarScanResult extends Table {
-    versionId: number;
-    platform: string;
+    createdAt: string;
+    platform: Platform;
     highestSeverity: string;
-    data: string[][];
+    entries: string[];
   }
 }

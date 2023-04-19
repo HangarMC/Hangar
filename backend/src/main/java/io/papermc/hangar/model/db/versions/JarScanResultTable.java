@@ -1,6 +1,5 @@
 package io.papermc.hangar.model.db.versions;
 
-import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.Table;
 import java.time.OffsetDateTime;
@@ -14,24 +13,21 @@ public class JarScanResultTable extends Table {
     private int scannerVersion;
     private Platform platform;
     private String highestSeverity;
-    private JSONB data;
 
     @JdbiConstructor
-    public JarScanResultTable(final OffsetDateTime createdAt, final long id, final long versionId, final int scannerVersion, @EnumByOrdinal final Platform platform, final String highestSeverity, final JSONB data) {
+    public JarScanResultTable(final OffsetDateTime createdAt, final long id, final long versionId, final int scannerVersion, @EnumByOrdinal final Platform platform, final String highestSeverity) {
         super(createdAt, id);
         this.versionId = versionId;
         this.scannerVersion = scannerVersion;
         this.platform = platform;
         this.highestSeverity = highestSeverity;
-        this.data = data;
     }
 
-    public JarScanResultTable(final long versionId, final int scannerVersion, final Platform platform, final String highestSeverity, final JSONB data) {
+    public JarScanResultTable(final long versionId, final int scannerVersion, final Platform platform, final String highestSeverity) {
         this.versionId = versionId;
         this.scannerVersion = scannerVersion;
         this.platform = platform;
         this.highestSeverity = highestSeverity;
-        this.data = data;
     }
 
     public long getVersionId() {
@@ -65,14 +61,6 @@ public class JarScanResultTable extends Table {
 
     public void setHighestSeverity(final String highestSeverity) {
         this.highestSeverity = highestSeverity;
-    }
-
-    public JSONB getData() {
-        return this.data;
-    }
-
-    public void setData(final JSONB data) {
-        this.data = data;
     }
 
     @Override
