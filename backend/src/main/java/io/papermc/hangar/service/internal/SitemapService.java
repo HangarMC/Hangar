@@ -10,6 +10,7 @@ import io.papermc.hangar.db.dao.internal.projects.HangarProjectPagesDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
@@ -59,6 +60,10 @@ public class SitemapService extends HangarComponent {
     @Cacheable(value = CacheConfig.USER_SITEMAP, key = "#username")
     public String getUserSitemap(final String username) {
         final UserTable userTable = this.userDAO.getUserTable(username);
+        if (userTable == null) {
+            throw HangarApiException.notFound();
+        }
+
         final SitemapGenerator generator = SitemapGenerator.of(this.config.getBaseUrl());
         generator.defaultChangeFreqWeekly();
 
