@@ -57,6 +57,7 @@ async function saveAccount() {
     <PageTitle>{{ t("auth.settings.account.header") }}</PageTitle>
     <form class="flex flex-col gap-2">
       <InputText v-model="accountForm.username" label="Username" :rules="[required()]" />
+      <span class="text-sm opacity-85 -mt-1.5">Note that you can only change your username once every 30 days.</span>
       <InputText v-model="accountForm.email" label="Email" autofill="username" autocomplete="username" :rules="[required(), email()]" />
       <Button v-if="!settings?.emailConfirmed" class="w-max" size="small" :disabled="loading" @click.prevent="$emit('openEmailConfirmModal')">
         Confirm email

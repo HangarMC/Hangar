@@ -125,7 +125,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
     public void handleUsernameChange(final UserTable user, final String newName) {
         // make sure a user with that name doesn't exist yet
         if (this.userDAO.getUserTable(newName) != null) {
-            throw new HangarApiException("A user with that name already exists!");
+            throw new HangarApiException("That username is unavailable");
         }
         // check that last change was long ago
         final List<UserNameChange> userNameHistory = this.userDAO.getUserNameHistory(user.getUuid());
@@ -133,7 +133,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
             userNameHistory.sort(Comparator.comparing(UserNameChange::date).reversed());
             final OffsetDateTime nextChange = userNameHistory.get(0).date().plus(this.config.user.nameChangeInterval(), ChronoUnit.DAYS);
             if (nextChange.isAfter(OffsetDateTime.now())) {
-                throw new HangarApiException("You can't change your name that soon! You have to wait till " + nextChange.format(DateTimeFormatter.RFC_1123_DATE_TIME));
+                throw new HangarApiException("You have to wait until " + nextChange.format(DateTimeFormatter.RFC_1123_DATE_TIME) + " before being able to change your username again");
             }
         }
         // do the change

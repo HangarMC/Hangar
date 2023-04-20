@@ -55,17 +55,15 @@ const canEditCurrentUser = computed<boolean>(() => {
           <span v-if="viewingUser.locked" class="ml-1">
             <IconMdiLockOutline />
           </span>
-          <span v-if="viewingUser.nameHistory?.length > 0" class="text-md">
-            <Popper>
-              <IconMdiChevronDown />
-              <template #content="{ close }">
-                <div class="-mt-2 p-2 rounded border-t-2 border-primary-400 background-default filter drop-shadow-xl flex flex-col text-lg" @click="close()">
-                  <div class="font-bold">Was known as:</div>
-                  <div v-for="(history, idx) of viewingUser.nameHistory" :key="idx">{{ history.oldName }} till <PrettyTime :time="history.date" long /></div>
-                </div>
-              </template>
-            </Popper>
-          </span>
+          <Popper v-if="viewingUser.nameHistory?.length > 0">
+            <IconMdiChevronDown cursor="pointer" />
+            <template #content="{ close }">
+              <div class="-mt-2.5 p-2 flex flex-col rounded background-default filter shadow-default text-base" @click="close()">
+                <div class="font-bold">Was known as:</div>
+                <div v-for="(history, idx) of viewingUser.nameHistory" :key="idx">{{ history.oldName }} until <PrettyTime :time="history.date" long /></div>
+              </div>
+            </template>
+          </Popper>
         </h1>
 
         <div class="ml-1">
