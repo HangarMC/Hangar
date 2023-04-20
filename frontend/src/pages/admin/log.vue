@@ -7,7 +7,6 @@ import { computed, ref } from "vue";
 import { LoggedAction } from "hangar-internal";
 import { debounce } from "lodash-es";
 import PageTitle from "~/components/design/PageTitle.vue";
-import { useActionLogs } from "~/composables/useApiHelper";
 import Card from "~/components/design/Card.vue";
 import SortableTable from "~/components/SortableTable.vue";
 import Link from "~/components/design/Link.vue";
@@ -16,7 +15,6 @@ import DiffModal from "~/components/modals/DiffModal.vue";
 import Button from "~/components/design/Button.vue";
 import { useSeo } from "~/composables/useSeo";
 import { definePageMeta, hasPerms, useApi, useInternalApi, useRouter, watch } from "#imports";
-import InputText from "~/components/ui/InputText.vue";
 import InputSelect from "~/components/ui/InputSelect.vue";
 import { useBackendData } from "~/store/backendData";
 import { Header } from "~/types/components/SortableTable";
@@ -29,7 +27,8 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute();
-const loggedActions = await useActionLogs();
+const router = useRouter();
+const loggedActions = ref();
 
 // TODO add support for sorting
 const headers: Header[] = [
@@ -55,6 +54,19 @@ const filter = ref<{
   projectSlug?: string;
 }>({});
 
+if (route.query.authorName) {
+  filter.value.authorName = route.query.authorName as string;
+}
+if (route.query.projectSlug) {
+  filter.value.projectSlug = route.query.projectSlug as string;
+}
+if (route.query.user) {
+  filter.value.authorName = route.query.user as string;
+}
+if (route.query.logAction) {
+  filter.value.authorName = route.query.logAction as string;
+}
+
 const requestParams = computed(() => {
   const limit = 25;
   return {
@@ -64,6 +76,8 @@ const requestParams = computed(() => {
     sort: sort.value,
   };
 });
+
+await update();
 
 watch(filter, debounce(update, 500), { deep: true });
 
@@ -85,7 +99,6 @@ async function updatePage(newPage: number) {
   await update();
 }
 
-const router = useRouter();
 async function update() {
   loggedActions.value = await useInternalApi<PaginatedResult<LoggedAction>>("admin/log", "GET", requestParams.value);
   const { limit, offset, ...paramsWithoutLimit } = requestParams.value;

@@ -16,7 +16,7 @@ const props = defineProps<{
   project: HangarProject;
 }>();
 const i18n = useI18n();
-const slug = computed(() => props.project.namespace.owner + "/" + props.project.name);
+const namespace = computed(() => props.project.namespace.owner + "/" + props.project.name);
 </script>
 
 <template>
@@ -68,7 +68,7 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
           </tr>
           <tr>
             <th class="text-left">
-              <Link :to="`/${slug}/stars`">
+              <Link :to="`/${namespace}/stars`">
                 {{ i18n.t("project.info.stars", 0) }}
               </Link>
             </th>
@@ -76,7 +76,7 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
           </tr>
           <tr>
             <th class="text-left">
-              <Link :to="`/${slug}/watchers`">
+              <Link :to="`/${namespace}/watchers`">
                 {{ i18n.t("project.info.watchers", 0) }}
               </Link>
             </th>
@@ -96,13 +96,13 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
     </template>
     <template #footer>
       <DropdownButton v-if="hasPerms(NamedPermission.IS_STAFF)" :name="i18n.t('project.actions.adminActions')" class="mb-2">
-        <DropdownItem :to="`/${slug}/flags`">
+        <DropdownItem :to="`/${namespace}/flags`">
           {{ i18n.t("project.actions.flagHistory", [project.info.flagCount]) }}
         </DropdownItem>
-        <DropdownItem :to="`/${slug}/notes`">
+        <DropdownItem :to="`/${namespace}/notes`">
           {{ i18n.t("project.actions.staffNotes", [project.info.noteCount]) }}
         </DropdownItem>
-        <DropdownItem :to="`/admin/log?projectFilter=/${slug}`">
+        <DropdownItem :to="`/admin/log?authorName=${project.namespace.owner}&projectSlug=${project.namespace.slug}`">
           {{ i18n.t("project.actions.userActionLogs") }}
         </DropdownItem>
       </DropdownButton>
