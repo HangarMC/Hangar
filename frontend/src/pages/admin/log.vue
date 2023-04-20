@@ -61,10 +61,10 @@ if (route.query.projectSlug) {
   filter.value.projectSlug = route.query.projectSlug as string;
 }
 if (route.query.user) {
-  filter.value.authorName = route.query.user as string;
+  filter.value.user = route.query.user as string;
 }
 if (route.query.logAction) {
-  filter.value.authorName = route.query.logAction as string;
+  filter.value.logAction = route.query.logAction as string;
 }
 
 const requestParams = computed(() => {
