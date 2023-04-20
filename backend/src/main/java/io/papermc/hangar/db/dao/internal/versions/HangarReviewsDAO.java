@@ -77,7 +77,8 @@ public interface HangarReviewsDAO {
         "   WHERE pv.review_state = :reviewState AND" +
         "         p.visibility != 4 AND" +
         "         pv.visibility != 4" +
-        "   GROUP BY pv.id, p.id, pvu.id, pc.id, pvr.id, ru.id")
+        "   GROUP BY pv.id, p.id, pvu.id, pc.id, pvr.id, ru.id" +
+        "   ORDER BY pv.created_at")
     List<HangarReviewQueueEntry> getReviewQueue(@EnumByOrdinal ReviewState reviewState);
 
     @SqlQuery("""
