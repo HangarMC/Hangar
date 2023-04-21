@@ -47,7 +47,7 @@
         <totp.version>1.7.2-SNAPSHOT</totp.version>
         <webp.version>0.1.6</webp.version>
         <webauthn.version>2.4.0</webauthn.version>
-        <logback.version>0.1.5</logback.version>
+        <logback-contrib.version>0.1.5</logback-contrib.version>
         <janino.version>3.1.9</janino.version>
 
         <!-- test -->
@@ -237,12 +237,12 @@
         <dependency>
             <groupId>ch.qos.logback.contrib</groupId>
             <artifactId>logback-jackson</artifactId>
-            <version>${logback.version}</version>
+            <version>${logback-contrib.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback.contrib</groupId>
             <artifactId>logback-json-classic</artifactId>
-            <version>${logback.version}</version>
+            <version>${logback-contrib.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.janino</groupId>
