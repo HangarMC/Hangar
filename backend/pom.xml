@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.5</version>
+        <version>3.0.6</version>
         <relativePath/>
     </parent>
 
@@ -36,13 +36,13 @@
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20230227</org-json.version>
         <bucket4j.version>7.6.0</bucket4j.version>
-        <datafaker.version>1.8.1</datafaker.version>
+        <datafaker.version>1.9.0</datafaker.version>
         <apache-commons-lang.version>3.12.0</apache-commons-lang.version>
         <jwt.version>4.4.0</jwt.version>
         <jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
         <caffeine.version>3.1.6</caffeine.version>
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
-        <jgroups.version>5.2.13.Final</jgroups.version>
+        <jgroups.version>5.2.14.Final</jgroups.version>
         <jgroups-kube.version>2.0.1.Final</jgroups-kube.version>
         <totp.version>1.7.2-SNAPSHOT</totp.version>
         <webp.version>0.1.6</webp.version>
