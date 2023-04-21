@@ -27,13 +27,18 @@ useHead(useSeo("Hangar Version", null, route, null));
       <p mb="2">The next development steps of Hangar have been set to the following milestones:</p>
       <ul class="list-disc list-inside">
         <li mb="2">
-          <Link href="https://github.com/orgs/HangarMC/projects/1/views/12">Before Beta</Link>: Having completed the most important functionality, we will look
-          for beta testers on our production instance on <Link href="https://hangar.papermc.io">hangar.papermc.io</Link>. At this point we promise to no longer
-          reset the database, so you can start uploading your plugins! Certain things might still be rough around the edges, so expect breakage.
+          <s>
+            <Link href="https://github.com/orgs/HangarMC/projects/1/views/6?filterQuery=+-no%3Apriority+release-target%3A%22before+Alpha%22">Before Alpha</Link>
+          </s>
         </li>
         <li mb="2">
-          <Link href="https://github.com/orgs/HangarMC/projects/1/views/14">During Beta</Link> we aim to fix more bugs and introduce a few new exciting
-          features. Hangar might stay in this phase for a while.
+          <s><Link href="https://github.com/orgs/HangarMC/projects/1/views/12">Before Beta</Link></s>
+        </li>
+        <li mb="2">
+          <u>
+            <Link href="https://github.com/orgs/HangarMC/projects/1/views/14">During Beta</Link> we aim to fix more bugs and introduce a few new exciting
+            features. Hangar might stay in this phase for a while.
+          </u>
         </li>
         <li mb="2">
           The <Link href="https://github.com/orgs/HangarMC/projects/1/views/16">Future</Link> is looking bright for Hangar, so this milestone captures all tasks
