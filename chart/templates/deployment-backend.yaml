@@ -58,6 +58,8 @@ spec:
               value: "classpath:/application.yml,/hangar/config/application.yaml"
             - name: KUBERNETES_NAMESPACE
               value: {{ .Values.base.namespace }}
+            - name: JSON_LOGS_ENABLED
+              value: "true"
           volumeMounts:
             - name: {{ include "hangar.fullname" . }}-backend-config-volume
               mountPath: /hangar/config

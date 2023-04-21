@@ -47,6 +47,8 @@
         <totp.version>1.7.2-SNAPSHOT</totp.version>
         <webp.version>0.1.6</webp.version>
         <webauthn.version>2.4.0</webauthn.version>
+        <logback.version>0.1.5</logback.version>
+        <janino.version>3.1.9</janino.version>
 
         <!-- test -->
         <pg.version>1.18.0</pg.version>
@@ -229,6 +231,23 @@
             <groupId>io.sentry</groupId>
             <artifactId>sentry-logback</artifactId>
             <version>${sentry.version}</version>
+        </dependency>
+
+        <!-- logging -->
+        <dependency>
+            <groupId>ch.qos.logback.contrib</groupId>
+            <artifactId>logback-jackson</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback.contrib</groupId>
+            <artifactId>logback-json-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+            <version>${janino.version}</version>
         </dependency>
 
         <!-- flyway -->
