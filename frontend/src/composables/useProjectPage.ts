@@ -20,7 +20,7 @@ export async function useProjectPage(route: RouteLocationNormalizedLoaded, route
   }
 
   async function savePage(content: string) {
-    if (!page) return;
+    if (!page?.value) return;
     await useInternalApi(`pages/save/${project.id}/${page.value?.id}`, "post", {
       content,
     }).catch((e) => handleRequestError(e, "page.new.error.save"));
