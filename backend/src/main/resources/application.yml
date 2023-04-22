@@ -145,6 +145,8 @@ hangar:
       - Hangar_Dev
     name-change-interval: 30
     name-change-history: 90
+    max-name-len: 20
+    name-regex: "^[a-zA-Z0-9-_]{3,}$"
 
   security:
     secure: false

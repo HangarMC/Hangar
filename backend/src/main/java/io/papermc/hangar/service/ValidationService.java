@@ -29,8 +29,15 @@ public class ValidationService {
         name = StringUtils.compact(name.toLowerCase(Locale.ROOT));
         if (BANNED_ROUTES.contains(name)) {
             return false;
+        } else if (name.length() < 3) {
+            return false;
+        } else if (name.length() > this.config.user.maxNameLen()) {
+            return false;
+        } else if (!this.config.user.nameRegex().test(name)) {
+            return false;
+        } else {
+            return true;
         }
-        return name.length() >= 3;
     }
 
     public @Nullable String isValidProjectName(String name) {
