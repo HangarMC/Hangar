@@ -56,7 +56,11 @@
       "subTitle": "Hangar allows you to find the best Paper, Velocity, or Waterfall plugins for your Minecraft server.",
       "categories": "Categories",
       "licenses": "Licenses",
-      "versions": "Minecraft versions",
+      "versions": {
+        "PAPER": "Minecraft versions",
+        "WATERFALL": "Waterfall versions",
+        "VELOCITY": "Velocity versions"
+      },
       "platforms": "Platforms",
       "tags": "Tags"
     },

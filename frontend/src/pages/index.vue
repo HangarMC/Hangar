@@ -241,7 +241,7 @@ useHead(meta);
           </div>
         </div>
         <div v-if="filters.platform" class="versions">
-          <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions") }}</h4>
+          <h4 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions." + filters.platform) }}</h4>
           <div class="max-h-40 overflow-auto">
             <VersionSelector v-model="filters.versions" :versions="versions(filters.platform)" :open="false" col />
           </div>
