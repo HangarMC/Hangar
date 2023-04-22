@@ -32,6 +32,10 @@ public class VerificationService extends HangarComponent {
         return this.verificationCodeDao.get(type, userId);
     }
 
+    public boolean expired(final VerificationCodeTable table) {
+        return table.getCreatedAt().plus(10, ChronoUnit.MINUTES).isBefore(OffsetDateTime.now());
+    }
+
     public boolean verifyResetCode(final String email, final String code, final boolean delete) {
         final UserTable userTable = this.userDAO.getUserTable(email);
         if (userTable == null) {
@@ -42,7 +46,7 @@ public class VerificationService extends HangarComponent {
         if (table == null) {
             throw new HangarApiException("Invalid verification code");
         }
-        if (table.getCreatedAt().plus(10, ChronoUnit.MINUTES).isBefore(OffsetDateTime.now())) {
+        if (this.expired(table)) {
             throw new HangarApiException("The verification code expired, please request a new one");
         }
 
@@ -92,7 +96,7 @@ public class VerificationService extends HangarComponent {
         if (table == null) {
             return false;
         }
-        if (table.getCreatedAt().plus(10, ChronoUnit.MINUTES).isBefore(OffsetDateTime.now())) {
+        if (this.expired(table)) {
             return false; // TODO expired
         }
         if (!table.getCode().equals(code)) {

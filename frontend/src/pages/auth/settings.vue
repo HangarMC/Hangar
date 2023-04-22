@@ -46,7 +46,7 @@ const tabs: Tab[] = [
 ];
 
 const emailConfirmModal = ref();
-const emailCodeHasBeenSend = ref(settings.value?.emailPending);
+const hasPendingMail = ref(settings.value?.emailPending);
 const emailCode = ref();
 
 const loading = ref(false);
@@ -60,7 +60,8 @@ async function sendEmailCode() {
   loading.value = true;
   try {
     await useInternalApi("auth/email/send", "POST");
-    emailCodeHasBeenSend.value = true;
+    hasPendingMail.value = true;
+    notification.success("Email sent!");
   } catch (e) {
     notification.fromError(i18n, e);
   }
@@ -114,9 +115,9 @@ useHead(useSeo("Settings", null, route, null));
     </Card>
 
     <Modal ref="emailConfirmModal" title="Confirm email" @close="emailConfirmModal.isOpen = false">
-      <template v-if="!emailCodeHasBeenSend">
-        <p class="mb-2">We will send you a code via email</p>
-        <Button :disabled="loading" @click="sendEmailCode">Send</Button>
+      <template v-if="!hasPendingMail">
+        <p class="mb-2">Your previous code expired.</p>
+        <Button :disabled="loading || hasPendingMail" @click="sendEmailCode">Resend verification code</Button>
       </template>
       <div v-else class="flex flex-col gap-2">
         <p>Enter the code you received via email here</p>

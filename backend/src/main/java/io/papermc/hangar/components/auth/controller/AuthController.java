@@ -115,7 +115,8 @@ public class AuthController extends HangarComponent {
         }
         final boolean hasTotp = this.credentialsService.getCredential(userId, CredentialType.TOTP) != null;
         final boolean emailVerified = Objects.requireNonNull(this.userService.getUserTable(userId)).isEmailVerified();
-        final boolean emailPending = this.verificationService.getVerificationCode(userId, VerificationCodeTable.VerificationCodeType.EMAIL_VERIFICATION) != null;
+        final VerificationCodeTable verificationCode = this.verificationService.getVerificationCode(userId, VerificationCodeTable.VerificationCodeType.EMAIL_VERIFICATION);
+        final boolean emailPending = verificationCode != null && !this.verificationService.expired(verificationCode);
         return new SettingsResponse(authenticators, hasBackupCodes, hasTotp, emailVerified, emailPending);
     }
 
