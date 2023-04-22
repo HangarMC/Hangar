@@ -198,7 +198,7 @@ hangar:
     size: 256
 
   mail:
-    from: noreply@mail.papermc.dev
+    from: Hangar <noreply@mail.papermc.dev>
     user: dum
     pass: dum
     host: localhost
