@@ -80,8 +80,8 @@ useHead(useSeo("Signup", null, route, null));
     <div v-if="done" class="flex flex-col gap-2">
       <p>Your account has been created! Please check your emails to complete the signup process.</p>
       <div class="flex gap-2">
-        <Button v-if="route.query.returnUrl">Back to last page</Button>
-        <Button>Go to account settings</Button>
+        <Button v-if="route.query.returnUrl" :to="route.query.returnUrl">Back to last page</Button>
+        <Button to="/auth/settings/account">Go to account settings</Button>
       </div>
     </div>
   </Card>

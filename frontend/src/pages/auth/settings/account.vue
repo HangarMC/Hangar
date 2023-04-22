@@ -60,7 +60,7 @@ async function saveAccount() {
       <span class="text-sm opacity-85 -mt-1.5">Note that you can only change your username once every 30 days.</span>
       <InputText v-model="accountForm.email" label="Email" autofill="username" autocomplete="username" :rules="[required(), email()]" />
       <Button v-if="!settings?.emailConfirmed" class="w-max" size="small" :disabled="loading" @click.prevent="$emit('openEmailConfirmModal')">
-        Confirm email
+        Enter verification code
       </Button>
       <InputPassword
         v-model="accountForm.currentPassword"
