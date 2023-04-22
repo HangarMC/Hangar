@@ -25,7 +25,7 @@ const router = useRouter();
 const updateProjectPagesCallback = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
 const modal = ref<any | null>(null); // Filled by vue
 
-const pageRoots = computed(() => flatDeep(props.pages, ""));
+const pageRoots = computed(() => [{ value: -1, text: "<none>" }, ...flatDeep(props.pages, "")]);
 const name = ref("");
 const nameErrorMessages = ref<string[]>([]);
 const parent = ref<number | null>(null);
@@ -39,7 +39,7 @@ watch(name, async () => {
   await useInternalApi("pages/checkName", "get", {
     projectId: props.projectId,
     name: name.value,
-    parentId: parent.value,
+    parentId: parent.value === -1 ? null : parent.value,
   })
     .catch((err: AxiosError) => {
       if (!err.response?.data?.isHangarApiException) {
@@ -68,7 +68,7 @@ async function createPage() {
     loading.value = true;
     const slug = await useInternalApi<string>(`pages/create/${props.projectId}`, "post", {
       name: name.value,
-      parentId: parent.value,
+      parentId: parent.value === -1 ? null : parent.value,
     });
 
     name.value = "";
