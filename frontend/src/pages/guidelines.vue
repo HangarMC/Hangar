@@ -19,21 +19,22 @@ Hangar.
 
 ## Project Name
 
-Your project's name should not include a platform version, tagline or other description. The name should be unique and
-original and must not have a name implying it is an official PaperMC project. Large projects may receive a verified
+Your project's name should not include a platform name or version, tagline or other description. The name should be unique
+and original and must not have a name implying it is an official PaperMC project. Large projects may receive a verified
 status, but this is decided on a case-by-case basis and will not be given on request.
 
 Examples of project names that are **not allowed**:
 
-- *Home--The-Best-Plugin-Out-There*
+- *Warps--The-Best-Plugin-Out-There*
 - *PaperDocs*
-- *Chairs-1.19*
+- *Warps-1.19*
+- *Warps-Paper*
 
 Examples of names that are **allowed**:
 
 - *Warps-Reborn*
 - *Warps2*
-- *CoolWarps-Paper* (although discouraged, as per-platform releases can be done in a single project)
+- *WarpsLib*
 
 ## Project Category
 
@@ -118,7 +119,7 @@ Other malicious actions, such as deleting a server's data or banning random play
 These guidelines are loosely based on [Ore's plugin submission guidelines](https://docs.spongepowered.org/stable/en/ore/guidelines.html),
 licensed under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
-Last updated: January 08, 2023
+Last updated: April 22, 2023
 `;
 
 useHead(useSeo(i18n.t("pages.guidelinesTitle"), null, route, null));
