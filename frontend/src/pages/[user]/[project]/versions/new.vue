@@ -15,7 +15,7 @@ import Button from "~/components/design/Button.vue";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 
 import { MarkdownEditor } from "#components";
-import { maxFileSize, minLength, noDuplicated, required, requiredIf, url as validUrl } from "~/composables/useValidationHelpers";
+import { maxFileSize, maxLength, minLength, noDuplicated, pattern, required, requiredIf, url as validUrl } from "~/composables/useValidationHelpers";
 import { useInternalApi } from "~/composables/useApi";
 import { Platform } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -173,7 +173,7 @@ const fileRules = (platformFile: PlatformFile) => [
   maxFileSize()(useBackendData.validations.project.maxFileSize),
 ];
 const platformRules = [required("Select at least one platform!"), minLength()(1), noDuplicated()(() => platformFiles.value.flatMap((f) => f.platforms))];
-const versionRules = [required()];
+const versionRules = [required(), pattern()(useBackendData.validations.version.regex), maxLength()(useBackendData.validations.version.max)];
 const platformVersionRules = [required("Select at least one platform version!"), minLength()(1)];
 const changelogRules = [requiredIf()(() => selectedStep.value === "changelog")];
 
