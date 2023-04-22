@@ -4,6 +4,7 @@ import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.util.StringUtils;
+import java.util.Locale;
 import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ValidationService {
 
-    private static final Set<String> BANNED_ROUTES = Set.of("actuator", "admin", "api", "api-docs", "authors", "guidelines", "linkout", "logged-out", "markdown", "new", "neworganization", "notifications", "null", "organizations", "privacy", "recommended", "settings", "staff", "terms", "tools", "tos", "undefined", "unread", "version");
+    private static final Set<String> BANNED_ROUTES = Set.of("actuator", "admin", "api", "api-docs", "authors", "guidelines", "linkout",
+        "logged-out", "markdown", "new", "neworganization", "notifications", "null", "organizations", "privacy", "recommended", "settings",
+        "staff", "terms", "tools", "tos", "undefined", "unread", "version", "paper", "velocity", "waterfall", "spigot", "mojang", "minecraft");
     private final HangarConfig config;
 
     public ValidationService(final HangarConfig config) {
@@ -23,7 +26,7 @@ public class ValidationService {
     }
 
     public boolean isValidUsername(String name) {
-        name = StringUtils.compact(name);
+        name = StringUtils.compact(name.toLowerCase(Locale.ROOT));
         if (BANNED_ROUTES.contains(name)) {
             return false;
         }
