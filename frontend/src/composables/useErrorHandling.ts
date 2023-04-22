@@ -31,7 +31,17 @@ export function handleRequestError(err: AxiosError | unknown, msg: string | unde
         notification.error(i18n.t(msg));
       }
     } else {
-      notification.error(msg ? `${i18n.t(msg)}: ${err.response.statusText}` : err.response.statusText);
+      if (!msg) {
+        // todo: This shouldn't happen
+        if (err.response?.data?.detail) {
+          msg = i18n.t(err.response.data.detail);
+        }
+        if (err.response?.data?.message) {
+          msg = i18n.t(err.response.data.message);
+        }
+      }
+
+      notification.error(msg ? `${err.response.statusText}: ${i18n.t(msg)}` : err.response.statusText);
     }
     fetchLog("request error", transformed);
   } else {
