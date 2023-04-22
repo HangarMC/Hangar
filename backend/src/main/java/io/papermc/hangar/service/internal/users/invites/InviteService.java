@@ -65,9 +65,12 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
     @Transactional
     public void sendTransferRequest(final String user, final J joinable) {
         final UserTable userTable = this.userDAO.getUserTable(user);
-        // TODO transfer project to organization (and divert invite to owner)
-        if (userTable == null || userTable.isOrganization()) {
+        if (userTable == null) {
             throw new HangarApiException(this.errorPrefix + "invalidUser", user);
+        }
+        // TODO transfer project to organization (and divert invite to owner)
+        if (userTable.getEmail().endsWith(this.config.org.dummyEmailDomain())) {
+            throw new HangarApiException("Org transfers are not implemented yet");
         }
 
         final List<RT> ownerRoles = this.roleService.getRoles(joinable.getId(), this.getOwnerRole());
