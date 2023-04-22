@@ -124,7 +124,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
     @Transactional
     public void handleUsernameChange(final UserTable user, final String newName) {
         // make sure a user with that name doesn't exist yet
-        if (this.userDAO.getUserTable(newName) != null) {
+        if (this.userDAO.getUserTable(newName) != null && !user.getName().equalsIgnoreCase(newName)) {
             throw new HangarApiException("That username is unavailable");
         }
         // check that last change was long ago
