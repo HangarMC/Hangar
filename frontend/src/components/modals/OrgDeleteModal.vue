@@ -33,7 +33,7 @@ async function deleteOrg() {
     <template #default>
       <p class="mb-2">{{ i18n.t("organization.settings.deleteModal.description", [organization]) }}</p>
       <InputTextarea v-model.trim="comment" rows="2" :label="i18n.t('general.comment')" />
-      <Button button-type="red" class="mt-3" :disabled="loading || comment.length < 7" @click="deleteOrg()">{{ i18n.t("general.delete") }}</Button>
+      <Button button-type="red" class="mt-3" :disabled="loading" @click="deleteOrg()">{{ i18n.t("general.delete") }}</Button>
     </template>
     <template #activator="{ on }">
       <Button button-type="red" size="small" class="mr-1" v-on="on"><IconMdiDeleteAlert /></Button>
