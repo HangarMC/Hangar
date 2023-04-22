@@ -123,7 +123,8 @@ watchDebounced(
   { deep: true, debounce: 250 }
 );
 
-useHead(useSeo(props.user.name, props.user.name + " is an author on Hangar. " + props.user.tagline, route, props.user.avatarUrl));
+const description = props.user.tagline ? props.user.name + " is an author on Hangar. " + props.user.tagline : props.user.name + " is an author on Hangar.";
+useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
 </script>
 
 <template>
