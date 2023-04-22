@@ -1,6 +1,10 @@
-import { DOMPurifyI } from "dompurify";
+import { Config, DOMPurifyI } from "dompurify";
 import { useNuxtApp } from "#imports";
 
-export function useDomPurify() {
-  return useNuxtApp().$dompurify as DOMPurifyI;
+export const config = {
+  FORBID_TAGS: ["style", "base", "head", "link", "meta", "title", "body", "form", "input", "dialog", "embed", "button", "frame", "iframe", "html", "textarea"],
+  FORBID_ATTR: ["style"],
+} as Config;
+export function useDomPurify(text: string) {
+  return (useNuxtApp().$dompurify as DOMPurifyI).sanitize(text, config) as string;
 }

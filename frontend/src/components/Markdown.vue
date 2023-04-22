@@ -16,7 +16,7 @@ const props = withDefaults(
   }
 );
 
-const renderedMarkdown = computed(() => useDomPurify().sanitize(parseMarkdown(props.raw)));
+const renderedMarkdown = computed(() => useDomPurify(parseMarkdown(props.raw)));
 
 watchPostEffect(async () => {
   if (!import.meta.env.SSR) {

@@ -44,7 +44,7 @@ const prettyDiff = computed(() => {
         break;
     }
   }
-  return useDomPurify().sanitize(html.join("").replaceAll("&para;", ""));
+  return useDomPurify(html.join("").replaceAll("&para;", ""));
 });
 </script>
 

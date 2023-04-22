@@ -105,7 +105,7 @@ async function startEditing() {
     maxHeight: props.maxHeight,
     previewClass: ["prose", "markdown", "background-default"],
     previewRender: (markdownPlaintext, previewElement) => {
-      const html = useDomPurify().sanitize(parseMarkdown(markdownPlaintext));
+      const html = useDomPurify(parseMarkdown(markdownPlaintext));
       previewElement.innerHTML = html;
       if (typeof html.includes === "function" && html.includes("<code")) {
         usePrismStore().handlePrism();
@@ -113,7 +113,7 @@ async function startEditing() {
       return null;
     },
     renderingConfig: {
-      sanitizerFunction: (renderedHTML) => useDomPurify().sanitize(renderedHTML),
+      sanitizerFunction: (renderedHTML) => useDomPurify(renderedHTML),
     },
   });
   easyMDE.codemirror.on("change", (instance) => (rawEdited.value = instance.getValue()));
