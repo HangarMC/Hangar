@@ -44,7 +44,7 @@ public class BBCodeConverter {
         REPLACERS.put("img", (tag, tagArg, content) -> "![" + content + "](" + content + ")");
         REPLACERS.put("media", (tag, tagArg, content) -> "youtube".equals(tagArg) ? "@[YouTube](https://youtu.be/" + content + ")" : null);
         REPLACERS.put("size", (tag, tagArg, content) -> {
-            if (content.isBlank()) {
+            if (content.isBlank() || tagArg == null) {
                 return content;
             }
 
@@ -332,6 +332,9 @@ public class BBCodeConverter {
     }
 
     private static String removeQuotes(final String s) {
+        if (s == null) {
+            return "";
+        }
         if (s.length() > 2) {
             final char c = s.charAt(0);
             if ((c == '\'' || c == '"') && c == s.charAt(s.length() - 1)) {
