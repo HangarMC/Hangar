@@ -14,6 +14,7 @@ import InputText from "~/components/ui/InputText.vue";
 import { definePageMeta, required, useAuth, useAxios, useRoute, useRouter } from "#imports";
 import PageTitle from "~/components/design/PageTitle.vue";
 import Modal from "~/components/modals/Modal.vue";
+import PrettyTime from "~/components/design/PrettyTime.vue";
 
 definePageMeta({
   globalPermsRequired: ["EDIT_OWN_USER_SETTINGS"],
@@ -233,7 +234,7 @@ async function generateNewCodes() {
     <h3 class="text-lg font-bold mt-4 mb-2">Security Keys</h3>
     <ul v-if="settings?.authenticators">
       <li v-for="authenticator in settings.authenticators" :key="authenticator.id" class="my-1">
-        {{ authenticator.displayName }} <small class="mr-2">(added at {{ authenticator.addedAt }})</small>
+        {{ authenticator.displayName }} <small class="mr-2">(added at <PrettyTime :time="authenticator.addedAt" long />)</small>
         <Button size="small" :disabled="loading" @click.prevent="unregisterAuthenticator(authenticator)">Unregister</Button>
       </li>
     </ul>
