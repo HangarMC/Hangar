@@ -10,6 +10,7 @@ import Button from "~/components/design/Button.vue";
 import { email as emailRule, required } from "~/composables/useValidationHelpers";
 import { useInternalApi } from "~/composables/useApi";
 import InputPassword from "~/components/ui/InputPassword.vue";
+import { handleRequestError } from "~/composables/useErrorHandling";
 
 const route = useRoute();
 const router = useRouter();
@@ -42,7 +43,11 @@ async function verifyCode() {
 
 async function sendNewPassword() {
   if (!(await v.value.$validate())) return;
-  await useInternalApi("auth/reset/set", "POST", { email: email.value, code: code.value, password: password.value });
+  try {
+    await useInternalApi("auth/reset/set", "POST", { email: email.value, code: code.value, password: password.value });
+  } catch (e) {
+    handleRequestError(e);
+  }
   passwordUpdated.value = true;
 }
 
@@ -62,14 +67,14 @@ useHead(useSeo("Reset your password", null, route, null));
       <Button class="w-max" @click.prevent="sendCode">Send code</Button>
     </form>
     <form v-else-if="!codeVerified" class="flex flex-col gap-2">
-      <p>Enter the code you got via email here</p>
-      <InputText v-model="code" type="text" inputmode="numeric" pattern="[0-9]" label="code" :rules="[required()]" :error-messages="codeError" />
+      <p>Please enter the code you received via email</p>
+      <InputText v-model="code" type="text" inputmode="numeric" pattern="[0-9]" label="Verification code" :rules="[required()]" :error-messages="codeError" />
       <Button class="w-max" @click.prevent="verifyCode">Verify Code</Button>
     </form>
     <form v-else-if="!passwordUpdated" class="flex flex-col gap-2">
       <p>Enter your new password</p>
       <input id="email" v-model="email" type="hidden" name="email" />
-      <InputPassword v-model="password" label="new password" name="new-password" autocomplete="new-password" :rules="[required()]" />
+      <InputPassword v-model="password" label="New password" name="new-password" autocomplete="new-password" :rules="[required()]" />
       <Button class="w-max" @click.prevent="sendNewPassword">Update password</Button>
     </form>
     <div v-else class="flex flex-col gap-2">
