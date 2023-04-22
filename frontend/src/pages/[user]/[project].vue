@@ -34,9 +34,10 @@ async function verify(to: RouteLocationNormalized) {
   }
 }
 
-onBeforeRouteUpdate(async (to) => {
+onBeforeRouteUpdate(async (to, from) => {
   if (!to.params.project || !to.params.user) return;
-  console.log("before project update");
+  if (to.params.user === from.params.user && to.params.project === from.params.project) return;
+  console.log("before project update", to.params, from.params);
   project.value = await useInternalApi<HangarProject>("projects/project/" + to.params.user + "/" + to.params.project);
   console.log("after project update", project.value?.mainPage);
   await verify(to);

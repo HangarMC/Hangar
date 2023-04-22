@@ -26,8 +26,9 @@ function verify() {
   }
 }
 
-onBeforeRouteUpdate(async (to) => {
+onBeforeRouteUpdate(async (to, from) => {
   if (!to.params.version || !to.params.project || !to.params.user) return;
+  if (to.params.user === from.params.user && to.params.project === from.params.project && to.params.version === from.params.version) return;
   version.value = await useInternalApi<HangarVersion>(`versions/version/${to.params.user}/${to.params.project}/versions/${to.params.version}`);
   await verify();
 });
