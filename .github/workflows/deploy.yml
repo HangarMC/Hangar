@@ -72,7 +72,7 @@ jobs:
 
       - name: Build backend
         working-directory: backend
-        run: mvn --batch-mode --errors --fail-at-end --show-version --no-transfer-progress -Dmaven.repo.local=$GITHUB_WORKSPACE/.m2/repository install
+        run: mvn --batch-mode --errors --fail-at-end --show-version --no-transfer-progress install
 
       - name: Install frontend deps
         run: (cd frontend && pnpm install --frozen-lockfile)

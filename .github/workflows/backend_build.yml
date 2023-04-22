@@ -46,4 +46,4 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Build backend
-        run: mvn --batch-mode --errors --fail-at-end --show-version --no-transfer-progress -Dmaven.repo.local=$GITHUB_WORKSPACE/.m2/repository install
+        run: mvn --batch-mode --errors --fail-at-end --show-version --no-transfer-progress install
