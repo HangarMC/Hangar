@@ -45,10 +45,10 @@ async function sendNewPassword() {
   if (!(await v.value.$validate())) return;
   try {
     await useInternalApi("auth/reset/set", "POST", { email: email.value, code: code.value, password: password.value });
+    passwordUpdated.value = true;
   } catch (e) {
     handleRequestError(e);
   }
-  passwordUpdated.value = true;
 }
 
 async function gotoLogin() {

@@ -4,6 +4,7 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.dao.VerificationCodeDao;
 import io.papermc.hangar.components.auth.model.db.VerificationCodeTable;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.service.internal.MailService;
 import java.security.SecureRandom;
@@ -34,19 +35,19 @@ public class VerificationService extends HangarComponent {
     public boolean verifyResetCode(final String email, final String code, final boolean delete) {
         final UserTable userTable = this.userDAO.getUserTable(email);
         if (userTable == null) {
-            return false;
+            throw new HangarApiException("Invalid email");
         }
 
         final VerificationCodeTable table = this.verificationCodeDao.get(VerificationCodeTable.VerificationCodeType.PASSWORD_RESET, userTable.getUserId());
         if (table == null) {
-            return false;
+            throw new HangarApiException("Invalid verification code");
         }
         if (table.getCreatedAt().plus(10, ChronoUnit.MINUTES).isBefore(OffsetDateTime.now())) {
-            return false; // TODO expired
+            throw new HangarApiException("The verification code expired, please request a new one");
         }
 
         if (!table.getCode().equals(code)) {
-            return false;
+            throw new HangarApiException("Invalid verification code");
         }
 
         if (delete) {
