@@ -270,6 +270,7 @@
         "invalidLicense": "License name is invalid",
         "tooLongSponsors": "Project sponsor box is too long",
         "tooManyKeywords": "Project has too many keywords",
+        "keywordTooLong": "Project has a keyword that is too long",
         "noCategory": "Project must have a category",
         "noDescription": "Project must have a description",
         "tooManyDependencies": "Too many dependencies"

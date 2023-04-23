@@ -22,7 +22,7 @@ public class ProjectSettings {
     private final @Valid ProjectLicense license;
 
     // @el(root: Collection<String>)
-    private final @NotNull @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywords)", message = "project.new.error.tooManyKeywords") Collection<String> keywords;
+    private final @NotNull @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywords)", message = "project.new.error.tooManyKeywords") Collection<@Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywordLen)", message = "project.new.error.keywordTooLong") String> keywords;
 
     // @el(root: String)
     private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxSponsorsLen)", message = "project.new.error.tooLongSponsors") String sponsors;
