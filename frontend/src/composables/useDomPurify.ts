@@ -6,5 +6,6 @@ export const config = {
   FORBID_ATTR: ["style"],
 } as Config;
 export function useDomPurify(text: string) {
+  console.log("dum", text);
   return (useNuxtApp().$dompurify as DOMPurifyI).sanitize(text, config) as string;
 }
