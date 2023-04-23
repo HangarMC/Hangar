@@ -7,7 +7,7 @@ import Link from "~/components/design/Link.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import { lastUpdated } from "~/composables/useTime";
 import Tooltip from "~/components/design/Tooltip.vue";
-import { Visibility } from "~/types/enums";
+import { Visibility, Tag } from "~/types/enums";
 import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
 import PrettyTime from "~/components/design/PrettyTime.vue";
 import IconMdiPuzzleOutline from "~icons/mdi/puzzle-outline";
