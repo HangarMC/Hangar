@@ -2,7 +2,6 @@ import { defineStore } from "pinia";
 import type { highlightAll, Languages } from "prismjs";
 import { ref } from "#imports";
 import { prismLog } from "~/composables/useLog";
-import "prismjs/themes/prism-tomorrow.min.css";
 
 export const usePrismStore = defineStore("prism", () => {
   const prism = ref<{ highlightAll: typeof highlightAll; languages: Languages } | null>(null);

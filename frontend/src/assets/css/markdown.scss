@@ -97,6 +97,11 @@
   p + ol {
     margin-top: -10px;
   }
+
+  li > ul,
+  li > ol {
+    margin: 0;
+  }
 }
 
 // override prism stuff
