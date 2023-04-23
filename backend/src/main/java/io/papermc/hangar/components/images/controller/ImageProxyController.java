@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,12 +27,13 @@ public class ImageProxyController {
 
     @GetMapping("/**")
     public ResponseEntity<?> proxy(final HttpServletRequest request, final HttpServletResponse res) {
-        final String url = this.cleanUrl(request.getRequestURI());
+        final String query = StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "";
+        final String url = this.cleanUrl(request.getRequestURI() + query);
         if (this.validTarget(url)) {
             try {
                 final ResponseEntity<byte[]> response = this.restTemplate.getForEntity(url, byte[].class);
                 if (this.validContentType(response)) {
-                    res.setHeader("Content-Security-Policy", "default-src 'self'");
+                    res.setHeader("Content-Security-Policy", "default-src 'self'; img-src 'self' data:;");
                     return response;
                 }
             } catch (final RestClientException ex) {
@@ -46,7 +48,8 @@ public class ImageProxyController {
             .replace("/api/internal/image/", "")
             .replace("https:/", "https://")
             .replace("http:/", "http://")
-            .replace(":///", "://");
+            .replace(":///", "://")
+            .replace("%7F", "\u007F"); // I hate everything about this, but it fixes #1187
     }
 
     private boolean validContentType(final ResponseEntity<byte[]> response) {
