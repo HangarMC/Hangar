@@ -12,6 +12,8 @@ import { useSeo } from "~/composables/useSeo";
 import Link from "~/components/design/Link.vue";
 import { useApi } from "~/composables/useApi";
 import { Header } from "~/types/components/SortableTable";
+import { watch } from "#imports";
+import InputText from "~/components/ui/InputText.vue";
 const i18n = useI18n();
 const route = useRoute();
 
@@ -24,14 +26,17 @@ const headers: Header[] = [
 
 const page = ref(0);
 const sort = ref<string[]>(["-projectCount"]);
+const query = ref();
 const requestParams = computed(() => {
   const limit = 25;
   return {
+    query: query.value,
     limit,
     offset: page.value * limit,
     sort: sort.value,
   };
 });
+watch(query, update);
 const authors = await useAuthors(requestParams.value);
 
 async function updateSort(col: string, sorter: Record<string, number>) {
@@ -62,6 +67,11 @@ useHead(useSeo(i18n.t("pages.authorsTitle"), "Hangar Project Authors", route, nu
 <template>
   <div>
     <PageTitle>Authors</PageTitle>
+
+    <div class="mb-4">
+      <InputText v-model="query" label="Username" />
+    </div>
+
     <SortableTable
       :headers="headers"
       :items="authors?.result"

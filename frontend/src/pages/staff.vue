@@ -3,7 +3,6 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
 import { computed, ref } from "vue";
-import { PaginatedResult, User } from "hangar-api";
 import { useStaff } from "~/composables/useApiHelper";
 import SortableTable from "~/components/SortableTable.vue";
 import PageTitle from "~/components/design/PageTitle.vue";
@@ -11,9 +10,10 @@ import { useSeo } from "~/composables/useSeo";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Link from "~/components/design/Link.vue";
 import Tag from "~/components/Tag.vue";
-import { useApi } from "~/composables/useApi";
 import { Header } from "~/types/components/SortableTable";
 import { getRole } from "~/store/backendData";
+import { watch } from "#imports";
+import InputText from "~/components/ui/InputText.vue";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -27,14 +27,17 @@ const headers: Header[] = [
 
 const page = ref(0);
 const sort = ref<string[]>(["roles"]);
+const query = ref();
 const requestParams = computed(() => {
   const limit = 25;
   return {
+    query: query.value,
     limit,
     offset: page.value * limit,
     sort: sort.value,
   };
 });
+watch(query, () => staffData.refresh());
 const staffData = await useStaff(requestParams);
 const staff = staffData.data;
 
@@ -62,6 +65,11 @@ useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));
 <template>
   <div>
     <PageTitle>Staff</PageTitle>
+
+    <div class="mb-4">
+      <InputText v-model="query" label="Username" />
+    </div>
+
     <SortableTable
       :headers="headers"
       :items="staff.result"
