@@ -1,10 +1,11 @@
 import { type ErrorObject, useVuelidate, type ValidationRule } from "@vuelidate/core";
-import { computed, type Ref } from "vue";
+import { computed, ComputedRef, type Ref } from "vue";
 import * as validators from "@vuelidate/validators";
 import { createI18nMessage, helpers, type ValidatorWrapper } from "@vuelidate/validators";
 import { difference, isEmpty, uniq } from "lodash-es";
+import { AxiosError } from "axios";
 import { I18n } from "~/i18n";
-import { unref } from "#imports";
+import { unref, useInternalApi } from "#imports";
 
 export function isErrorObject(errorObject: string | ErrorObject): errorObject is ErrorObject {
   return typeof errorObject === "object" && "$message" in errorObject;
@@ -96,6 +97,20 @@ export const noDuplicated = withOverrideMessage((elements: any[] | (() => any[])
     const els = typeof elements === "function" ? elements() : unref(elements);
     return { $valid: new Set(els).size === els.length };
   })
+);
+
+export const validPageName = withOverrideMessage((body: ComputedRef<{ projectId: number; parentId?: number; name: string }>) =>
+  helpers.withParams(
+    { body, type: "validPageName" },
+    helpers.withAsync(async () => {
+      try {
+        await useInternalApi("pages/checkName", "get", body.value);
+        return { $valid: true };
+      } catch (e: AxiosError | any) {
+        return e?.response?.data?.detail ? { $valid: false, $message: e.response.data.detail } : { $valid: false };
+      }
+    }, body)
+  )
 );
 
 export function isSame(arrayOne?: any[], arrayTwo?: any[]) {
