@@ -30,9 +30,10 @@ const props = defineProps<{
     :class="{
       '!border-red-500 border-1px': project.visibility === Visibility.SOFT_DELETE,
       '!border-gray-300 !dark:border-gray-700 border-1px': project.visibility === Visibility.PUBLIC,
+      'hover:background-card': true,
     }"
   >
-    <div class="flex space-x-4">
+    <router-link :to="'/' + project.namespace.owner + '/' + project.namespace.slug" class="flex space-x-4">
       <div>
         <UserAvatar :username="project.namespace.owner" :to="'/' + project.namespace.owner + '/' + project.name" :img-src="project.avatarUrl" size="md" />
       </div>
@@ -84,7 +85,7 @@ const props = defineProps<{
           <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" /><PrettyTime :time="project.lastUpdated" short-relative /></span>
         </Tooltip>
       </div>
-    </div>
+    </router-link>
     <div class="sm:hidden space-x-1 text-center mt-2">
       <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" />{{ lastUpdated(project.lastUpdated) }}</span>
       <span class="inline-flex items-center"><IconMdiStar class="mx-1" /> {{ project.stats.stars }}</span>
