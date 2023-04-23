@@ -55,7 +55,9 @@ watch(tag, (t) => {
 });
 
 function remove(t: string) {
-  tags.value = tags.value.filter((v) => v !== t);
+  const index = tags.value.indexOf(t);
+  if (index === -1) return;
+  tags.value.splice(index, 1);
   v.value.$touch();
 }
 
