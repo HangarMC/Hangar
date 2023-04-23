@@ -269,6 +269,7 @@ function createProject() {
             :label="i18n.t('project.new.step3.keywords')"
             :rules="[maxLength()(useBackendData?.validations?.project?.keywords?.max || 5)]"
             :maxlength="useBackendData?.validations?.project?.keywords?.max || 5"
+            counter
           />
         </div>
       </div>
