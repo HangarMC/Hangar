@@ -118,7 +118,8 @@ public interface IUsersController {
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/authors")
-    ResponseEntity<PaginatedResult<User>> getAuthors(@Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
+    ResponseEntity<PaginatedResult<User>> getAuthors(@Parameter(description = "The search query", required = true) @RequestParam(required = false) String query,
+                                                     @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
 
     @Operation(
         summary = "Returns Hangar staff",
@@ -133,5 +134,6 @@ public interface IUsersController {
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/staff")
-    ResponseEntity<PaginatedResult<User>> getStaff(@Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
+    ResponseEntity<PaginatedResult<User>> getStaff(@Parameter(description = "The search query", required = true) @RequestParam(required = false) String query,
+                                                   @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
 }

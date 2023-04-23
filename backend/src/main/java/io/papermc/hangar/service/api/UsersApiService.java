@@ -109,8 +109,9 @@ public class UsersApiService extends HangarComponent {
 
     @Cacheable(CacheConfig.AUTHORS)
     @Transactional(readOnly = true)
-    public PaginatedResult<User> getAuthors(final RequestPagination pagination) {
-        final List<User> users = this.usersApiDAO.getAuthors(pagination);
+    public PaginatedResult<User> getAuthors(final String query, final RequestPagination pagination) {
+        final boolean hasQuery = !StringUtils.isBlank(query);
+        final List<User> users = this.usersApiDAO.getAuthors(hasQuery, query, pagination);
         users.forEach(u -> u.setAvatarUrl(this.avatarService.getUserAvatarUrl(u)));
         final long count = this.usersApiDAO.getAuthorsCount();
         return new PaginatedResult<>(new Pagination(count, pagination), users);
@@ -123,8 +124,9 @@ public class UsersApiService extends HangarComponent {
 
     @Cacheable(CacheConfig.STAFF)
     @Transactional(readOnly = true)
-    public PaginatedResult<User> getStaff(final RequestPagination pagination) {
-        final List<User> users = this.usersApiDAO.getStaff(this.config.user.staffRoles(), pagination);
+    public PaginatedResult<User> getStaff(final String query, final RequestPagination pagination) {
+        final boolean hasQuery = !StringUtils.isBlank(query);
+        final List<User> users = this.usersApiDAO.getStaff(hasQuery, query, this.config.user.staffRoles(), pagination);
         users.forEach(u -> u.setAvatarUrl(this.avatarService.getUserAvatarUrl(u)));
         final long count = this.usersApiDAO.getStaffCount(this.config.user.staffRoles());
         return new PaginatedResult<>(new Pagination(count, pagination), users);

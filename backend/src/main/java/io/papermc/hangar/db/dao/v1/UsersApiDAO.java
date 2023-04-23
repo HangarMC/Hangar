@@ -96,6 +96,7 @@ public interface UsersApiDAO {
         "     lower(u.name) = lower(:user)")
     long getUserWatchingCount(String user, @Define boolean canSeeHidden, @Define Long userId);
 
+    @UseStringTemplateEngine
     @RegisterConstructorMapper(User.class)
     @SqlQuery("SELECT u.created_at," +
         "       u.name," +
@@ -106,13 +107,15 @@ public interface UsersApiDAO {
         "   FROM users u" +
         "   WHERE u.id IN " +
         "       (SELECT DISTINCT p.owner_id FROM projects p WHERE p.visibility != 1)" +
+        "   <if(hasQuery)> AND u.name ILIKE '%' || :query || '%'<endif>" +
         "   <sorters>" +
         "   <offsetLimit>")
-    List<User> getAuthors(@BindPagination RequestPagination pagination);
+    List<User> getAuthors(@Define boolean hasQuery, String query, @BindPagination RequestPagination pagination);
 
     @SqlQuery("SELECT count(DISTINCT p.owner_id) FROM projects p WHERE p.visibility != 1")
     long getAuthorsCount();
 
+    @UseStringTemplateEngine
     @RegisterConstructorMapper(User.class)
     @SqlQuery(" SELECT u.id," +
         "       u.created_at," +
@@ -125,10 +128,11 @@ public interface UsersApiDAO {
         "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
         "       JOIN roles r ON ugr.role_id = r.id" +
         "   WHERE r.name IN (<staffRoles>)" +
+        "   <if(hasQuery)> AND u.name ILIKE '%' || :query || '%'<endif>" +
         "   GROUP BY u.id" +
         "   <sorters>" +
         "   <offsetLimit>")
-    List<User> getStaff(@BindList(onEmpty = BindList.EmptyHandling.NULL_STRING) List<String> staffRoles, @BindPagination RequestPagination pagination);
+    List<User> getStaff(@Define boolean hasQuery, String query, @BindList(onEmpty = BindList.EmptyHandling.NULL_STRING) List<String> staffRoles, @BindPagination RequestPagination pagination);
 
     @SqlQuery(" SELECT count(u.id)" +
         "   FROM users u " +
