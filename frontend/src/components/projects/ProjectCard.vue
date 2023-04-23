@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { Project } from "hangar-api";
+import { useRouter } from "vue-router";
 import Card from "~/components/design/Card.vue";
 import Link from "~/components/design/Link.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import { lastUpdated } from "~/composables/useTime";
 import Tooltip from "~/components/design/Tooltip.vue";
-import { Tag, Visibility } from "~/types/enums";
+import { Visibility } from "~/types/enums";
 import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
 import PrettyTime from "~/components/design/PrettyTime.vue";
 import IconMdiPuzzleOutline from "~icons/mdi/puzzle-outline";
@@ -19,6 +20,7 @@ import IconMdiCancel from "~icons/mdi/cancel";
 import IconMdiEyeOff from "~icons/mdi/eye-off";
 
 const i18n = useI18n();
+const router = useRouter();
 
 const props = defineProps<{
   project: Project;
@@ -30,10 +32,11 @@ const props = defineProps<{
     :class="{
       '!border-red-500 border-1px': project.visibility === Visibility.SOFT_DELETE,
       '!border-gray-300 !dark:border-gray-700 border-1px': project.visibility === Visibility.PUBLIC,
-      'hover:background-card': true,
+      'hover:background-card cursor-pointer': true,
     }"
+    @click="router.push('/' + project.namespace.owner + '/' + project.namespace.slug)"
   >
-    <router-link :to="'/' + project.namespace.owner + '/' + project.namespace.slug" class="flex space-x-4">
+    <div class="flex space-x-4">
       <div>
         <UserAvatar :username="project.namespace.owner" :to="'/' + project.namespace.owner + '/' + project.name" :img-src="project.avatarUrl" size="md" />
       </div>
@@ -85,7 +88,7 @@ const props = defineProps<{
           <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" /><PrettyTime :time="project.lastUpdated" short-relative /></span>
         </Tooltip>
       </div>
-    </router-link>
+    </div>
     <div class="sm:hidden space-x-1 text-center mt-2">
       <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" />{{ lastUpdated(project.lastUpdated) }}</span>
       <span class="inline-flex items-center"><IconMdiStar class="mx-1" /> {{ project.stats.stars }}</span>
