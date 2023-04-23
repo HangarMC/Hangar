@@ -929,7 +929,7 @@
     "notLoggedIn": "You need to be logged in to use the project importer.",
     "step1": {
       "title": "Intro",
-      "text1": "This page allows you to import projects from other platforms.",
+      "text1": "This page allows you to import projects from other platforms. Right now only Spigot is supported.",
       "text2": "Before continuing, please review the Hangar Submission Guideline.",
       "continue": "Agree",
       "back": "Abort"
