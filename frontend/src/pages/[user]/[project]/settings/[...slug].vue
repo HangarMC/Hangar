@@ -25,7 +25,7 @@ import { useNotificationStore } from "~/store/notification";
 import InputTag from "~/components/ui/InputTag.vue";
 import TextAreaModal from "~/components/modals/TextAreaModal.vue";
 import ProjectSettingsSection from "~/components/projects/ProjectSettingsSection.vue";
-import { maxLength, required, pattern, requiredIf, url } from "~/composables/useValidationHelpers";
+import { maxLength, required, pattern, requiredIf, url, noDuplicated } from "~/composables/useValidationHelpers";
 import { validProjectName } from "~/composables/useHangarValidations";
 
 import "vue-advanced-cropper/dist/style.css";
@@ -281,7 +281,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
               counter
               :maxlength="useBackendData.validations?.project?.keywords?.max || 5"
               :label="i18n.t('project.new.step3.keywords')"
-              :rules="[maxLength()(useBackendData.validations?.project?.keywords?.max || 5)]"
+              :rules="[maxLength()(useBackendData.validations?.project?.keywords?.max || 5), noDuplicated()(() => form.settings.keywords)]"
             />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.tags.title" description="project.settings.tagsSub">

@@ -22,7 +22,7 @@ import { MarkdownEditor } from "#components";
 import InputTag from "~/components/ui/InputTag.vue";
 import { useAuthStore } from "~/store/auth";
 import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
-import { minLength, maxLength, pattern, required, requiredIf, url } from "~/composables/useValidationHelpers";
+import { minLength, maxLength, pattern, required, requiredIf, url, noDuplicated } from "~/composables/useValidationHelpers";
 import { validProjectName } from "~/composables/useHangarValidations";
 import Button from "~/components/design/Button.vue";
 import { useInternalApi } from "~/composables/useApi";
@@ -338,8 +338,9 @@ useHead(useSeo(t("importer.title"), null, route, null));
                     <InputTag
                       v-model="project.settings.keywords"
                       :label="t('project.new.step3.keywords')"
-                      :rules="[maxLength()(useBackendData?.validations?.project?.keywords?.max || 5)]"
+                      :rules="[maxLength()(useBackendData?.validations?.project?.keywords?.max || 5), noDuplicated()(() => project.settings.keywords)]"
                       :maxlength="useBackendData?.validations?.project?.keywords?.max || 5"
+                      counter
                     />
                   </div>
                 </div>

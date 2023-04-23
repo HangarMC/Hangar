@@ -16,7 +16,7 @@ import InputSelect from "~/components/ui/InputSelect.vue";
 import InputText from "~/components/ui/InputText.vue";
 import InputTag from "~/components/ui/InputTag.vue";
 import Button from "~/components/design/Button.vue";
-import { required, maxLength, pattern, url, requiredIf } from "~/composables/useValidationHelpers";
+import { required, maxLength, pattern, url, requiredIf, noDuplicated } from "~/composables/useValidationHelpers";
 import { validProjectName } from "~/composables/useHangarValidations";
 import Spinner from "~/components/design/Spinner.vue";
 import Link from "~/components/design/Link.vue";
@@ -267,7 +267,7 @@ function createProject() {
           <InputTag
             v-model="form.settings.keywords"
             :label="i18n.t('project.new.step3.keywords')"
-            :rules="[maxLength()(useBackendData?.validations?.project?.keywords?.max || 5)]"
+            :rules="[maxLength()(useBackendData?.validations?.project?.keywords?.max || 5), noDuplicated()(() => form.settings.keywords)]"
             :maxlength="useBackendData?.validations?.project?.keywords?.max || 5"
             counter
           />
