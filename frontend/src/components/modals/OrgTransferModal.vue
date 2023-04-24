@@ -33,10 +33,14 @@ async function doSearch(val: string) {
 
 async function transfer() {
   loading.value = true;
-  await useInternalApi<string>(`organizations/org/${props.organization}/transfer`, "post", {
-    content: search.value,
-  }).catch((e) => handleRequestError(e));
-  notificationStore.success(i18n.t("organization.settings.success.transferRequest", [search.value]));
+  try {
+    await useInternalApi<string>(`organizations/org/${props.organization}/transfer`, "post", {
+      content: search.value,
+    });
+    notificationStore.success(i18n.t("organization.settings.success.transferRequest", [search.value]));
+  } catch (e) {
+    handleRequestError(e);
+  }
   loading.value = false;
 }
 </script>
