@@ -13,6 +13,7 @@ import InputPassword from "~/components/ui/InputPassword.vue";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import { email, required, sameAs } from "~/composables/useValidationHelpers";
 import { useNotificationStore } from "~/store/notification";
+import Link from "~/components/design/Link.vue";
 import InputGroup from "~/components/ui/InputGroup.vue";
 
 const route = useRoute();
@@ -48,10 +49,6 @@ async function submit() {
   loading.value = false;
 }
 
-async function login() {
-  await router.push("/auth/login");
-}
-
 useHead(useSeo("Signup", null, route, null));
 </script>
 
@@ -71,10 +68,10 @@ useHead(useSeo("Signup", null, route, null));
           <InputCheckbox v-model="form.tos" label="I agree to the Terms and Conditions" />
         </InputGroup>
       </div>
-      <div class="flex gap-2">
+      <div>
         <Button type="submit" :disabled="loading" @click.prevent="submit">Sign up</Button>
-        <Button type="button" button-type="secondary" @click="login">Login</Button>
       </div>
+      <Link to="login">Login with existing account</Link>
     </form>
 
     <div v-if="done" class="flex flex-col gap-2">

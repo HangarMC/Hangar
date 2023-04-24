@@ -26,7 +26,7 @@ const classes = computed<string>(() => "font-bold " + (props.disabled ? "color-g
   <a v-else-if="href" :href="sanitizeUrl(href)" :class="classes" v-bind="$attrs">
     <slot></slot>
   </a>
-  <span v-else :class="classes" v-bind="$attrs">
+  <span v-else :class="classes" v-bind="$attrs" cursor="pointer">
     <slot></slot>
   </span>
 </template>

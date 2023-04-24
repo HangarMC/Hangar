@@ -148,10 +148,10 @@ useHead(useSeo("Login", null, route, null));
         :disabled="privileged"
       />
       <InputPassword v-model="password" label="Password" name="password" autocomplete="current-password" :rules="[required()]" />
-      <div class="flex gap-2">
+      <div>
         <Button :disabled="loading" @click.prevent="loginPassword">Login</Button>
-        <Button v-if="!privileged" button-type="secondary" to="/auth/signup">Signup</Button>
       </div>
+      <Link v-if="!privileged" button-type="secondary" to="/auth/signup" class="w-max">Don't have an account yet? Create one!</Link>
       <Link v-if="!privileged" to="/auth/reset" class="w-max">Forgot your password?</Link>
     </form>
 
