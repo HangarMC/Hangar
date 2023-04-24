@@ -162,7 +162,7 @@ function requiresConfirmation(): ConfirmationType {
           <Tooltip>
             <template #content>
               <span v-if="isOwn">{{ i18n.t("project.info.watchers", 0) }}</span>
-              <span v-else-if="starred">{{ i18n.t("project.actions.unwatch") }}</span>
+              <span v-else-if="watching">{{ i18n.t("project.actions.unwatch") }}</span>
               <span v-else>{{ i18n.t("project.actions.watch") }}</span>
             </template>
             <Button button-type="secondary" size="small" :disabled="isOwn" @click="toggleWatch">
