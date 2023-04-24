@@ -99,7 +99,7 @@ function trackDownload(platform: Platform, version: DownloadableVersion & { id?:
           <Button :size="small ? 'medium' : 'large'">
             <IconMdiDownloadOutline />
             <span v-if="!small" class="ml-1">{{ i18n.t("version.page.download") }}</span>
-            <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" class="text-lg pb-1.75" />
+            <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" :class="{ 'text-lg pb-1.75': !small }" />
           </Button>
         </a>
       </div>
