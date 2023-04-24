@@ -63,7 +63,10 @@ public class ProjectFactory extends HangarComponent {
         if (projectOwner == null) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "error.project.ownerNotFound");
         }
+
         this.checkProjectAvailability(projectOwner.getUserId(), newProject.getName());
+        this.projectService.validateSettings(newProject);
+
         ProjectTable projectTable = null;
         try {
             projectTable = this.projectsDAO.insert(new ProjectTable(projectOwner, newProject));

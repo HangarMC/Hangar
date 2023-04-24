@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.db.customtypes.JSONB;
@@ -32,7 +33,6 @@ import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.versions.PinnedVersionService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
@@ -169,23 +169,28 @@ public class ProjectService extends HangarComponent {
         return channel != null ? this.getLastVersion(author, slug, platform, null) : null;
     }
 
-    public void saveSettings(final String author, final String slug, final ProjectSettingsForm settingsForm) {
+    public void validateSettings(final ProjectSettingsForm settingsForm) {
         this.validateLinks(settingsForm.getSettings().getLinks());
+
         if (settingsForm.getSettings().getKeywords().stream().anyMatch(s -> s.length() > this.config.projects.maxKeywordLen())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordTooLong");
         }
 
         final Set<String> tags = new LinkedHashSet<>(settingsForm.getSettings().getTags());
-        if (tags.stream().anyMatch(s-> Tag.byName(s) == null)) {
+        if (tags.stream().anyMatch(s -> Tag.byName(s) == null)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.invalidTag");
         }
+    }
+
+    public void saveSettings(final String author, final String slug, final ProjectSettingsForm settingsForm) {
+        this.validateSettings(settingsForm);
 
         final ProjectTable projectTable = this.getProjectTable(author, slug);
-        //final boolean requiresHomepageUpdate = !projectTable.getKeywords().equals(settingsForm.getSettings().getKeywords())
+        // final boolean requiresHomepageUpdate = !projectTable.getKeywords().equals(settingsForm.getSettings().getKeywords())
         //    || !projectTable.getDescription().equals(settingsForm.getDescription());
 
         projectTable.setCategory(settingsForm.getCategory());
-        projectTable.setTags(tags);
+        projectTable.setTags(new LinkedHashSet<>(settingsForm.getSettings().getTags()));
         projectTable.setKeywords(settingsForm.getSettings().getKeywords());
         projectTable.setLinks(new JSONB(settingsForm.getSettings().getLinks()));
         String licenseName = org.apache.commons.lang3.StringUtils.stripToNull(settingsForm.getSettings().getLicense().getName());
@@ -252,7 +257,7 @@ public class ProjectService extends HangarComponent {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown project " + author + "/" + slug);
         }
         this.avatarService.changeProjectAvatar(table.getProjectId(), avatar);
-        this.actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(table.getId()),  Base64.getEncoder().encodeToString(avatar), "#unknown"));
+        this.actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(table.getId()), Base64.getEncoder().encodeToString(avatar), "#unknown"));
     }
 
     public void deleteAvatar(final String author, final String slug) {
