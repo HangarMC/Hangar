@@ -31,22 +31,24 @@ function FakeSlot(props: { item: Item }) {
 
 <template>
   <div v-for="item in items" :key="item[itemKey]" :class="props.clazz">
-    <span class="flex">
-      <IconMdiMenuDown
-        v-if="'children' in item && item.children?.length"
-        :class="'cursor-pointer transform transition-transform ' + (expanded[item[itemKey]] ? 'rotate-0' : '-rotate-90')"
-        @click="expanded[item[itemKey]] = !expanded[item[itemKey]]"
-      />
-      <span v-else class="pl-4" />
+    <div class="flex items-center">
+      <div v-if="'children' in item && item.children?.length" class="inline-flex items-center">
+        <IconMdiMenuDown
+          :class="'absolute cursor-pointer transform transition-transform ' + (expanded[item[itemKey]] ? 'rotate-0' : '-rotate-90')"
+          @click="expanded[item[itemKey]] = !expanded[item[itemKey]]"
+        />
+        <span class="pl-5" />
+      </div>
+      <span v-else class="pl-5" />
       <FakeSlot :item="item"></FakeSlot>
-    </span>
+    </div>
     <TreeView
       v-if="expanded[item[itemKey]] && 'children' in item && item.children?.length"
       :key="item[itemKey]"
       :items="item.children"
       :item-key="itemKey"
       :open="open"
-      clazz="pl-2"
+      clazz="pl-4"
     >
       <template #item="slotProp">
         <FakeSlot :item="slotProp.item"></FakeSlot>
