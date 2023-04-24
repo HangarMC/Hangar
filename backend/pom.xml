@@ -11,7 +11,7 @@
 
     <groupId>io.papermc</groupId>
     <artifactId>hangar</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
 
     <name>hangar</name>
     <description>Ore, but in Spring, but for Paper</description>
