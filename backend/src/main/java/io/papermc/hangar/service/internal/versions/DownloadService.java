@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -60,6 +61,10 @@ public class DownloadService extends HangarComponent {
 
     public ResponseEntity<?> downloadVersion(final String user, final String project, final String versionString, final Platform platform) {
         final ProjectVersionDownloadTable download = this.downloadsDAO.getDownloadByPlatform(user, project, versionString, platform);
+        if (download == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+
         if (StringUtils.hasText(download.getExternalUrl())) {
             return ResponseEntity.status(301).header("Location", download.getExternalUrl()).build();
         } else if (this.fileService instanceof S3FileService){

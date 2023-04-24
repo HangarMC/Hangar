@@ -177,9 +177,11 @@ public class VersionFactory extends HangarComponent {
             // load meta
             pluginDataFile = this.pluginDataService.loadMeta(pluginFileName, bytes, this.getHangarPrincipal().getUserId());
         } catch (final ConfigurateException configurateException) {
-            this.logger.error("Error while reading file metadata while uploading {} for {}", pluginFileName, this.getHangarPrincipal().getName(), configurateException);
             this.fileService.deleteDirectory(userTempDir);
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.metaNotFound");
+        } catch (final HangarApiException apiException) {
+            this.fileService.deleteDirectory(userTempDir);
+            throw apiException;
         } catch (final Exception e) {
             this.logger.error("Error while uploading {} for {}", pluginFileName, this.getHangarPrincipal().getName(), e);
             this.fileService.deleteDirectory(userTempDir);

@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller.extras.pagination;
 
+import io.papermc.hangar.exceptions.HangarApiException;
 import java.util.HashMap;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +56,7 @@ public enum SorterRegistry implements Sorter {
         if (SORTERS.containsKey(name)) {
             return SORTERS.get(name);
         }
-        throw new IllegalArgumentException(name + " is not a registered sorter");
+        throw new HangarApiException(name + " is not a registered sorter");
     }
 
     public enum SortDirection {

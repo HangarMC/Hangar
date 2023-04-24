@@ -90,8 +90,8 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
     @Override
     public RequestPagination resolveArgument(final @NotNull MethodParameter parameter, final ModelAndViewContainer mavContainer, final @NotNull NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
         final RequestPagination pagination = this.create(
-            ApiUtils.mapParameter(webRequest, "offset", Long::parseLong),
-            ApiUtils.mapParameter(webRequest, "limit", Long::parseLong),
+            ApiUtils.mapParameter(webRequest, "offset", this::parseLong),
+            ApiUtils.mapParameter(webRequest, "limit", this::parseLong),
             parameter.getParameterAnnotation(ConfigurePagination.class)
         );
 
@@ -146,5 +146,13 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
         }
 
         return pagination;
+    }
+
+    private long parseLong(final String s) {
+        try {
+            return Long.parseLong(s);
+        } catch (final NumberFormatException e) {
+            throw new HangarApiException(s + " is not a valid long");
+        }
     }
 }

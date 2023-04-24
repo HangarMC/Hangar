@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller.extras.pagination;
 
+import io.papermc.hangar.exceptions.HangarApiException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,6 @@ public class FilterRegistry {
         if (this.filters.containsKey(filterClass)) {
             return (T) this.filters.get(filterClass);
         }
-        throw new IllegalArgumentException(filterClass + " is not a registered filter");
+        throw new HangarApiException(filterClass + " is not a registered filter");
     }
 }
