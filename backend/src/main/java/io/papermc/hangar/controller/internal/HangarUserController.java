@@ -142,8 +142,9 @@ public class HangarUserController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
     @PostMapping(path = "/users/{userName}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveTagline(@PathVariable final String userName, @RequestBody @Valid final StringContent content) {
-        if (content.getContent().length() > this.config.user.maxTaglineLen()) {
+    public void saveTagline(@PathVariable final String userName, @RequestBody final StringContent content) {
+        final String s = content.contentOrEmpty();
+        if (s.length() > this.config.user.maxTaglineLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "author.error.invalidTagline");
         }
 
@@ -153,7 +154,7 @@ public class HangarUserController extends HangarComponent {
         }
 
         final String oldTagline = userTable.getTagline() == null ? "" : userTable.getTagline();
-        userTable.setTagline(content.getContent());
+        userTable.setTagline(s);
         this.userService.updateUser(userTable);
         this.actionLogger.user(LogAction.USER_TAGLINE_CHANGED.create(UserContext.of(userTable.getId()), userTable.getTagline(), oldTagline));
     }

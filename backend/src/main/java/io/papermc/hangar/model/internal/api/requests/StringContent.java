@@ -13,6 +13,10 @@ public class StringContent {
         return this.content;
     }
 
+    public String contentOrEmpty() {
+        return this.content == null ? "" : this.content;
+    }
+
     public void setContent(final String content) {
         this.content = content;
     }
