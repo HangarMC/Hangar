@@ -48,6 +48,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -63,6 +64,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class ProjectService extends HangarComponent {
 
+    private static final Pattern KEYWORD_PATTERN = Pattern.compile("^[a-zA-Z0-9-]+$");
     private final ProjectsDAO projectsDAO;
     private final HangarUsersDAO hangarUsersDAO;
     private final HangarProjectsDAO hangarProjectsDAO;
@@ -172,8 +174,14 @@ public class ProjectService extends HangarComponent {
     public void validateSettings(final ProjectSettingsForm settingsForm) {
         this.validateLinks(settingsForm.getSettings().getLinks());
 
-        if (settingsForm.getSettings().getKeywords().stream().anyMatch(s -> s.length() > this.config.projects.maxKeywordLen())) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordTooLong");
+        for (final String keyword : settingsForm.getSettings().getKeywords()) {
+            if (keyword.length() < 3) {
+                throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordTooShort");
+            } else if (keyword.length() > this.config.projects.maxKeywordLen()) {
+                throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordTooLong");
+            } else if (!KEYWORD_PATTERN.matcher(keyword).matches()) {
+                throw new HangarApiException(HttpStatus.BAD_REQUEST, "Invalid keyword");
+            }
         }
 
         final Set<String> tags = new LinkedHashSet<>(settingsForm.getSettings().getTags());

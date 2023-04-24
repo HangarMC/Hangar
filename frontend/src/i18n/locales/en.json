@@ -306,6 +306,7 @@
       "keywords": "Keywords",
       "keywordsSub": "These are special words that will return your project when people add them to their searches.",
       "keywordTooLong": "Keyword is too long",
+      "keywordTooShort": "Keyword is too short",
       "tags": {
         "title": "Tags",
         "SUPPORTS_FOLIA": {

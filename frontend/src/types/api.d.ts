@@ -53,6 +53,7 @@ declare module "hangar-api" {
       desc: Validation;
       license: Ensure<Validation, "max" | "regex">;
       keywords: Validation;
+      keywordName: Validation;
       channels: Validation;
       pageName: Validation;
       pageContent: Validation;

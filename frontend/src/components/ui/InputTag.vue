@@ -47,11 +47,37 @@ if (!tags.value) tags.value = [];
 watch(tag, (t) => {
   // comma and space act like enter, didn't find a nicer way to implement this...
   if (t.includes(",") || t.includes(" ")) {
-    tag.value = t.replace(",", "").replace(" ", "").substring(0, props.tagMaxlength);
-    add();
-    return;
+    let remainingString = t;
+    do {
+      const commaIndex = remainingString.indexOf(",");
+      const separatorIndex = commaIndex !== -1 ? commaIndex : remainingString.indexOf(" ");
+      if (separatorIndex === -1) {
+        // No more separators!
+        tag.value = remainingString.substring(0, props.tagMaxlength);
+        add();
+        return;
+      }
+
+      tag.value = remainingString.substring(0, Math.min(separatorIndex, props.tagMaxlength));
+      if (separatorIndex === remainingString.length - 1) {
+        // The last character is a separator
+        add();
+        return;
+      }
+
+      // Add the current tag and check for more
+      remainingString = remainingString.substring(separatorIndex + 1, remainingString.length);
+      add();
+    } while (remainingString.includes(",") || remainingString.includes(" "));
+
+    if (remainingString.length !== 0) {
+      // And the last one
+      tag.value = remainingString.substring(0, props.tagMaxlength);
+      add();
+    }
+  } else {
+    tag.value = t.substring(0, props.tagMaxlength);
   }
-  tag.value = t.substring(0, props.tagMaxlength);
 });
 
 function remove(t: string) {
