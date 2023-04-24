@@ -224,7 +224,7 @@ function createProject() {
         <div class="basis-full mt-2" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
           <InputSelect v-model="form.settings.license.type" :values="useLicenseOptions" :label="i18n.t('project.new.step3.type')" :rules="[required()]" />
         </div>
-        <div v-if="isCustomLicense" class="basis-full md:basis-8/12 mt-4">
+        <div v-if="isCustomLicense" class="basis-full md:basis-8/12 mt-2">
           <InputText
             v-model.trim="form.settings.license.name"
             :label="i18n.t('project.new.step3.customName')"
@@ -235,7 +235,7 @@ function createProject() {
             ]"
           />
         </div>
-        <div v-if="!licenseUnset" class="basis-full mt-4" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
+        <div v-if="!licenseUnset" class="basis-full mt-2" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
           <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" :rules="[url()]" />
         </div>
       </div>
