@@ -128,7 +128,8 @@ function post(member: EditableMember, action: "edit" | "add" | "remove") {
       router.go(0);
     })
     .catch((e) => {
-      addErrors.value.push(i18n.te(e.response?.data.message) ? i18n.t(e.response?.data.message, e.response?.data.messageArgs) : e.response?.data.message);
+      handleRequestError(e);
+      // addErrors.value.push(i18n.te(e.response?.data.message) ? i18n.t(e.response?.data.message, e.response?.data.messageArgs) : e.response?.data.message);
     })
     .finally(() => {
       saving.value = false;
