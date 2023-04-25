@@ -38,7 +38,6 @@ public class ApplicationController extends HangarComponent {
             .disallow("/error")
             .disallow("/version-info")
             .disallow("/api")
-            .disallow("/zipkin")
             .disallow("/notifications")
             .disallow("/*/settings")
             .disallow("/*/*/channels")

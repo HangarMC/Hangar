@@ -68,6 +68,6 @@ public class ObservabilitySqlLogger implements SqlLogger {
 
     private String getObservationName(final StatementContext context) {
         final Method method = context.getExtensionMethod().getMethod();
-        return method.getDeclaringClass().getSimpleName() + "#" + method.getName();
+        return method.getDeclaringClass().getSimpleName().replace("DAO", "dao") + "#" + method.getName();
     }
 }

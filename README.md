@@ -81,6 +81,7 @@ docker run -d -p 9411:9411 openzipkin/zipkin
 ```
 
 Then just enable it in the `application.yml` under `management.tracing`.
+You also need to comment in the dependency in the pom.xml
 
 ## License
 

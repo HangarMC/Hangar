@@ -2,8 +2,12 @@ package io.papermc.hangar.config;
 
 import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.observation.aop.ObservedAspect;
+import io.opentelemetry.context.propagation.ContextPropagators;
 import io.papermc.hangar.observability.CacheableObservationAspect;
 import io.papermc.hangar.observability.ObservabilitySqlLogger;
+import io.sentry.opentelemetry.OpenTelemetryLinkErrorEventProcessor;
+import io.sentry.opentelemetry.SentryPropagator;
+import io.sentry.opentelemetry.SentrySpanProcessor;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.spi.JdbiPlugin;
 import org.jdbi.v3.core.statement.SqlLogger;
@@ -45,5 +49,21 @@ public class ObservabilityConfig {
                 jdbi.setSqlLogger(myLogger);
             }
         };
+    }
+
+    // sentry
+    @Bean
+    public SentrySpanProcessor sentrySpanProcessor() {
+        return new SentrySpanProcessor();
+    }
+
+    @Bean
+    public ContextPropagators sentryPropagators() {
+        return ContextPropagators.create(new SentryPropagator());
+    }
+
+    @Bean
+    public OpenTelemetryLinkErrorEventProcessor otelLinkEventProcessor() {
+        return new OpenTelemetryLinkErrorEventProcessor();
     }
 }
