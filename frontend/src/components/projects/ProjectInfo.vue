@@ -97,10 +97,10 @@ const namespace = computed(() => props.project.namespace.owner + "/" + props.pro
     <template #footer>
       <DropdownButton v-if="hasPerms(NamedPermission.IS_STAFF)" :name="i18n.t('project.actions.adminActions')" class="mb-2">
         <DropdownItem :to="`/${namespace}/flags`">
-          {{ i18n.t("project.actions.flagHistory", [project.info.flagCount]) }}
+          {{ i18n.t("project.actions.flagHistory", [project.info.flagCount ?? 0]) }}
         </DropdownItem>
         <DropdownItem :to="`/${namespace}/notes`">
-          {{ i18n.t("project.actions.staffNotes", [project.info.noteCount]) }}
+          {{ i18n.t("project.actions.staffNotes", [project.info.noteCount ?? 0]) }}
         </DropdownItem>
         <DropdownItem :to="`/admin/log?authorName=${project.namespace.owner}&projectSlug=${project.namespace.slug}`">
           {{ i18n.t("project.actions.userActionLogs") }}
