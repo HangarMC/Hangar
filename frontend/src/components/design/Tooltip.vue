@@ -34,6 +34,7 @@ onErrorCaptured((err) => {
 <style>
 .popper {
   --popper-theme-background-color: #464646;
+  --popper-theme-background-color-hover: #464646;
   --popper-theme-padding: 0.5rem;
   --popper-theme-border-radius: 0.375rem;
   --popper-theme-text-color: #fff;
