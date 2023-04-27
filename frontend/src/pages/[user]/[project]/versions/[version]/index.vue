@@ -15,6 +15,7 @@ import { useErrorRedirect } from "~/composables/useErrorRedirect";
 import TagComponent from "~/components/Tag.vue";
 import { hasPerms } from "~/composables/usePerm";
 import Button from "~/components/design/Button.vue";
+import { required } from "~/composables/useValidationHelpers";
 
 import { MarkdownEditor } from "#components";
 import Markdown from "~/components/Markdown.vue";
@@ -184,6 +185,7 @@ async function restoreVersion() {
             :deletable="false"
             :cancellable="true"
             :saveable="true"
+            :rules="[required()]"
             @save="savePage"
           />
           <template #fallback>
