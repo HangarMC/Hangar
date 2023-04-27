@@ -6,6 +6,7 @@ import io.papermc.hangar.model.db.JobTable;
 import io.papermc.hangar.model.internal.job.Job;
 import io.papermc.hangar.model.internal.job.JobException;
 import io.papermc.hangar.model.internal.job.SendMailJob;
+import io.papermc.hangar.util.ThreadFactory;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -35,7 +36,7 @@ public class JobService extends HangarComponent {
 
     @PostConstruct
     public void initThreadPool() {
-        this.executorService = new ThreadPoolExecutor(1, this.config.jobs.maxConcurrentJobs(), 60, TimeUnit.SECONDS, new SynchronousQueue<>());
+        this.executorService = new ThreadPoolExecutor(1, this.config.jobs.maxConcurrentJobs(), 60, TimeUnit.SECONDS, new SynchronousQueue<>(), new ThreadFactory("JobService", false));
     }
 
     public void checkAndProcess() {

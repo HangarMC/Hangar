@@ -23,6 +23,7 @@ import io.papermc.hangar.scanner.model.Severity;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.users.UserService;
+import io.papermc.hangar.util.ThreadFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Comparator;
@@ -40,13 +41,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import software.amazon.awssdk.utils.ThreadFactoryBuilder;
 
 @Service
 public class JarScanningService {
 
     public static final UUID JAR_SCANNER_USER = new UUID(952332837L, -376012533328L);
-    private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(new ThreadFactoryBuilder().threadNamePrefix("Scanner").build());
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(new ThreadFactory("Scanner", true));
     private static final Logger LOGGER = LoggerFactory.getLogger(JarScanningService.class);
     private final HangarJarScanner scanner = new HangarJarScanner();
     private final JarScanResultDAO dao;
