@@ -24,7 +24,7 @@ public class FileTooLargeExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(MultiPartParserDefinition.FileTooLargeException.class)
     public ResponseEntity<HangarApiException> handleException(final MultiPartParserDefinition.FileTooLargeException exception) {
-        final HangarApiException apiException = new HangarApiException(HttpStatus.PAYLOAD_TOO_LARGE, "File too large - files have to be less than " + this.config.projects.maxFileSize() + "MB in size");
+        final HangarApiException apiException = new HangarApiException(HttpStatus.PAYLOAD_TOO_LARGE, "File too large - files have to be less than " + this.config.projects.maxFileSizeMB() + "MB in size");
         return new ResponseEntity<>(apiException, HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
