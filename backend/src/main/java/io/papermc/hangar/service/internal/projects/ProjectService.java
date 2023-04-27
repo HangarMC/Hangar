@@ -253,7 +253,7 @@ public class ProjectService extends HangarComponent {
         }
 
         final ProjectTable projectTable = this.getProjectTable(author, slug);
-        projectTable.setSponsors(content);
+        projectTable.setSponsors(trimmedContent);
         this.projectsDAO.update(projectTable);
         // TODO what settings changed
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
