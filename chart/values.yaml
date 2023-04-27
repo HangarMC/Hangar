@@ -183,6 +183,7 @@ backend:
     sentry:
       dsn: "todo"
       environment: "todo"
+      tracesSampleRate: 0.2
     storage:
       type: "local"
       accessKey: "todo"
