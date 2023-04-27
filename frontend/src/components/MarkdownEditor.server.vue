@@ -15,6 +15,7 @@ const props = withDefaults(
     rules?: ValidationRule<string | undefined>[];
     noPaddingTop?: boolean;
     maxHeight?: string;
+    label?: string;
   }>(),
   {
     maxlength: 30_000,

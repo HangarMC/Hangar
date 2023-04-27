@@ -24,6 +24,7 @@ const props = withDefaults(
     rules?: ValidationRule<string | undefined>[];
     noPaddingTop?: boolean;
     maxHeight?: string;
+    label?: string;
   }>(),
   {
     maxlength: 30_000,
@@ -52,7 +53,7 @@ const internalEditing = computed({
 });
 
 const errorMessages = computed(() => props.errorMessages);
-const { v, errors } = useValidation(undefined, props.rules, rawEdited, errorMessages);
+const { v, errors } = useValidation(props.label, props.rules, rawEdited, errorMessages);
 
 if (process.client && props.editing) {
   onMounted(startEditing);
