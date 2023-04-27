@@ -27,13 +27,13 @@ public interface HangarUsersDAO {
         """)
     Pair<UserTable, OrganizationTable> getUserAndOrg(String userName);
 
-    @SqlUpdate("INSERT INTO project_stars VALUES (:userId, :projectId)")
+    @SqlUpdate("INSERT INTO project_stars VALUES (:userId, :projectId) ON CONFLICT DO NOTHING")
     void setStarred(long projectId, long userId);
 
     @SqlUpdate("DELETE FROM project_stars WHERE user_id = :userId AND project_id = :projectId")
     void setNotStarred(long projectId, long userId);
 
-    @SqlUpdate("INSERT INTO project_watchers VALUES (:projectId, :userId)")
+    @SqlUpdate("INSERT INTO project_watchers VALUES (:projectId, :userId) ON CONFLICT DO NOTHING")
     void setWatching(long projectId, long userId);
 
     @SqlUpdate("DELETE FROM project_watchers WHERE project_id = :projectId AND user_id = :userId")
