@@ -201,6 +201,7 @@ async function generateNewCodes() {
   loading.value = true;
   try {
     codes.value = await useInternalApi("auth/codes/regenerate", "POST");
+    notification.success("Regenerated backup codes!");
     emit("refreshSettings");
   } catch (e) {
     if (e.response?.data?.detail === "error.privileged") {

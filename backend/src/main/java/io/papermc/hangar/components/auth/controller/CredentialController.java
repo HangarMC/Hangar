@@ -283,7 +283,7 @@ public class CredentialController extends HangarComponent {
             // no codes yet? we generate some
             final HttpHeaders headers = new HttpHeaders();
             headers.set("X-Hangar-Verify", this.tokenService.otp(this.getHangarPrincipal().getUserId()));
-            throw new HangarResponseException(HttpStatusCode.valueOf(499), "Setup backup codes first", this.setupBackupCodes(), headers);
+            throw new HangarResponseException(HttpStatusCode.valueOf(499), "Setup backup codes first", this.setupBackupCodes(true), headers);
         } else if (backupCredential.unconfirmed()) {
             if (StringUtils.hasText(header)) {
                 if (!backupCredential.matches(header.split(":")[0])) {
@@ -302,9 +302,9 @@ public class CredentialController extends HangarComponent {
         return false;
     }
 
-    private List<BackupCodeCredential.BackupCode> setupBackupCodes() {
+    private List<BackupCodeCredential.BackupCode> setupBackupCodes(final boolean unconfirmed) {
         final List<BackupCodeCredential.BackupCode> codes = Arrays.stream(this.recoveryCodeGenerator.generateCodes(12)).map(s -> new BackupCodeCredential.BackupCode(s, null)).toList();
-        this.credentialsService.registerCredential(this.getHangarPrincipal().getUserId(), new BackupCodeCredential(codes, true));
+        this.credentialsService.registerCredential(this.getHangarPrincipal().getUserId(), new BackupCodeCredential(codes, unconfirmed));
         return codes;
     }
 
@@ -324,7 +324,7 @@ public class CredentialController extends HangarComponent {
     @PostMapping("/codes/regenerate")
     public List<BackupCodeCredential.BackupCode> regenerateBackupCodes() {
         this.credentialsService.removeCredential(this.getHangarPrincipal().getId(), CredentialType.BACKUP_CODES);
-        return this.setupBackupCodes();
+        return this.setupBackupCodes(false); //TODO Require confirmation, otherwise don't delete the old codes
     }
 
     /*
