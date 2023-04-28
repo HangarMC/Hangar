@@ -128,7 +128,7 @@ function createProject() {
         }
       }
 
-      handleRequestError(err, "project.new.error.create");
+      handleRequestError(err);
     })
     .finally(() => {
       projectLoading.value = false;
