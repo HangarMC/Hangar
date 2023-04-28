@@ -105,6 +105,13 @@ const filteredOptions = computed(() => {
   }
   return props.options;
 });
+
+const tagInput = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (target.value.trim().length < props.tagMaxlength) {
+    tag.value = target.value;
+  }
+};
 </script>
 
 <template>
@@ -129,14 +136,14 @@ const filteredOptions = computed(() => {
       </span>
       <template v-if="options">
         <input
-          v-model="tag"
+          :value="tag"
           type="text"
           v-bind="$attrs"
           :class="slotProps.class"
           :list="id"
-          :maxlength="tagMaxlength"
           class="pointer-events-auto flex-grow !bg-gray-100 rounded-xl px-2 dark:(!bg-gray-500 text-white)"
           @blur="v.$touch()"
+          @input="tagInput"
           @keydown.enter="add"
           @change="add"
         />
@@ -152,7 +159,7 @@ const filteredOptions = computed(() => {
         :class="slotProps.class"
       >
         <IconMdiSubdirectoryArrowLeft class="absolute right-2"> </IconMdiSubdirectoryArrowLeft>
-        <input v-model="tag" type="text" :class="slotProps.class" :maxlength="tagMaxlength" @keydown.enter="add" @blur="v.$touch()" />
+        <input :value="tag" type="text" :class="slotProps.class" @keydown.enter="add" @blur="v.$touch()" @input="tagInput" />
       </div>
     </div>
   </InputWrapper>
