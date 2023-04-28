@@ -169,6 +169,7 @@ async function confirmAndRepeat() {
       totpCode.value = undefined;
       totpData.value = undefined;
       authenticatorName.value = "";
+      notification.success("Successfully enabled 2FA!");
       v.value.$reset();
     } else {
       notification.error("no saved request?");

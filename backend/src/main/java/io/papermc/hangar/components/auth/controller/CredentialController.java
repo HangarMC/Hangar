@@ -220,8 +220,8 @@ public class CredentialController extends HangarComponent {
             throw new HangarApiException("Code is required");
         }
 
-        if (!StringUtils.hasText(form.secret()) || (!this.codeVerifier.isValidCode(form.secret(), form.code()) && !this.tokenService.verifyOtp(this.getHangarPrincipal().getUserId(), header))) {
-            throw new HangarApiException("Invalid code");
+        if (!StringUtils.hasText(form.secret()) || !this.codeVerifier.isValidCode(form.secret(), form.code()) || !this.tokenService.verifyOtp(this.getHangarPrincipal().getUserId(), header)) {
+            throw new HangarApiException("Invalid TOTP code");
         }
 
         final String totpUrl = this.qrDataFactory.newBuilder()
