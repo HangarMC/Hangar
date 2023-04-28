@@ -3,9 +3,11 @@ import { useI18n } from "vue-i18n";
 import { User } from "hangar-api";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useVuelidate } from "@vuelidate/core";
 import Button from "~/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { useInternalApi } from "~/composables/useApi";
+import { required } from "#imports";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import Tooltip from "~/components/design/Tooltip.vue";
 import InputTextarea from "~/components/ui/InputTextarea.vue";
@@ -20,6 +22,7 @@ const props = defineProps<{
 
 const i18n = useI18n();
 const router = useRouter();
+const v = useVuelidate();
 
 const comment = ref<string>("");
 const toggleProjectDeletion = ref<boolean>(false);
@@ -31,7 +34,9 @@ async function confirm(close: () => void) {
     });
     close();
     router.go(0);
-    useNotificationStore().success(i18n.t(`author.lock.success${props.user.locked ? "Unlock" : "Lock"}`, [props.user.name]));
+    useNotificationStore().success(
+      i18n.t(`author.lock.success${props.user.locked ? "Unlock" : "Lock"}${props.user.isOrganization ? "Org" : ""}`, [props.user.name])
+    );
   } catch (e) {
     handleRequestError(e);
   }
@@ -39,20 +44,20 @@ async function confirm(close: () => void) {
 </script>
 
 <template>
-  <Modal :title="i18n.t(`author.lock.confirm${user.locked ? 'Unlock' : 'Lock'}`, [user.name])">
+  <Modal :title="i18n.t(`author.lock.confirm${user.locked ? 'Unlock' : 'Lock'}${user.isOrganization ? 'Org' : ''}`, [user.name])">
     <template #default="{ on }">
-      <InputTextarea v-model="comment" />
+      <InputTextarea v-model="comment" :rules="[required()]" :label="i18n.t(`author.lock.reason${user.locked ? 'Unlock' : 'Lock'}`)" />
       <InputCheckbox
         v-if="hasPerms(NamedPermission.DELETE_PROJECT)"
         v-model="toggleProjectDeletion"
-        :label="props.user.locked ? 'Reinstate ALL deleted projects of user' : 'Delete ALL projects of user'"
+        :label="i18n.t(`author.lock.${user.locked ? 'reinstateProjects' : 'deleteProjects'}${user.isOrganization ? 'Org' : ''}`)"
       />
-      <Button button-type="primary" class="mt-3" @click="confirm(on.click)">{{ i18n.t("general.confirm") }}</Button>
+      <Button button-type="primary" class="mt-3" :disabled="v.$invalid" @click="confirm(on.click)">{{ i18n.t("general.confirm") }}</Button>
     </template>
     <template #activator="{ on }">
       <Tooltip>
         <template #content>
-          {{ i18n.t(`author.tooltips.${user.locked ? "unlock" : "lock"}`) }}
+          {{ i18n.t(`author.tooltips.${user.locked ? "unlock" : "lock"}${user.isOrganization ? "Org" : ""}`) }}
         </template>
         <Button size="small" class="mr-1 inline-flex" v-on="on">
           <IconMdiLockOpenOutline v-if="user.locked" />
