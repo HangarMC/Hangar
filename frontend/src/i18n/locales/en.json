@@ -785,13 +785,25 @@
       "activity": "User Activity",
       "admin": "User Admin",
       "transfer": "Transfer organization to another user",
-      "delete": "Delete organization"
+      "delete": "Delete organization",
+      "lockOrg": "Lock organization",
+      "unlockOrg": "Unlock organization"
     },
     "lock": {
       "confirmLock": "Lock {0}'s account?",
       "confirmUnlock": "Unlock {0}'s account?",
       "successLock": "Successfully locked {0}'s account",
-      "successUnlock": "Successfully unlocked {0}'s account"
+      "successUnlock": "Successfully unlocked {0}'s account",
+      "confirmLockOrg": "Lock the {0} organization?",
+      "confirmUnlockOrg": "Unlock the {0} organization?",
+      "successLockOrg": "Successfully locked the {0} organization",
+      "successUnlockOrg": "Successfully unlocked the {0} organization",
+      "deleteProjects": "Delete ALL projects of user",
+      "reinstateProjects": "Reinstate ALL deleted projects of user",
+      "deleteProjectsOrg": "Delete ALL projects of the organization",
+      "reinstateProjectsOrg": "Reinstate ALL deleted projects of the organization",
+      "reasonLock": "Reason for locking",
+      "reasonUnlock": "Reason for unlocking"
     },
     "org": {
       "editAvatar": "Edit avatar"
