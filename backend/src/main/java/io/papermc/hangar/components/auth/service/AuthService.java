@@ -123,6 +123,11 @@ public class AuthService extends HangarComponent implements UserDetailsService {
 
     @Transactional
     public void handleUsernameChange(final UserTable user, final String newName) {
+        // need to be a valid name
+        if (!this.validationService.isValidUsername(newName)) {
+            throw new HangarApiException("nav.user.error.invalidUsername");
+        }
+
         // make sure a user with that name doesn't exist yet
         if (this.userDAO.getUserTable(newName) != null && !user.getName().equalsIgnoreCase(newName)) {
             throw new HangarApiException("That username is unavailable");
