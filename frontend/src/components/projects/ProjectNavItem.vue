@@ -26,9 +26,9 @@ const clazz = computed(() => {
 
 <template>
   <div v-if="to || href" class="mb-[-2px] mr-1">
-    <router-link v-if="to" :to="to" :class="clazz">
+    <NuxtLink v-if="to" :to="to" :class="clazz">
       <slot></slot>
-    </router-link>
+    </NuxtLink>
     <a v-if="href" :href="linkout(href)" :class="clazz" target="_blank">
       <span class="mx-1">
         <slot></slot>

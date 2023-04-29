@@ -130,10 +130,10 @@ function updateSelectedNotifications() {
                 <IconMdiAlertOutline v-else-if="item.type === 'warning'" class="text-red-600" />
                 <IconMdiMessageOutline v-else-if="item.type === 'neutral'" />
               </span>
-              <router-link v-if="item.action" :to="'/' + item.action" active-class="">
+              <NuxtLink v-if="item.action" :to="'/' + item.action" active-class="">
                 {{ i18n.t(item.message[0], item.message.slice(1)) }}
                 <div class="text-xs mt-1">{{ lastUpdated(new Date(item.createdAt)) }}</div>
-              </router-link>
+              </NuxtLink>
               <span v-else>
                 {{ i18n.t(item.message[0], item.message.slice(1)) }}
                 <div class="text-xs mt-1">{{ lastUpdated(new Date(item.createdAt)) }}</div>
@@ -155,7 +155,7 @@ function updateSelectedNotifications() {
       <Tabs v-model="selectedInvitesTab" :tabs="selectedInvitesTabs" :vertical="false" />
       <Card v-for="(invite, index) in filteredInvites" :key="index">
         {{ i18n.t(!invite.accepted ? "notifications.invited" : "notifications.inviteAccepted", [invite.type]) }}:
-        <router-link :to="invite.url" exact>{{ invite.name }}</router-link>
+        <NuxtLink :to="invite.url" exact>{{ invite.name }}</NuxtLink>
         <template v-if="!invite.accepted">
           <br />
           <Button class="mr-2" @click="updateInvite(invite, 'accept')">{{ i18n.t("notifications.invite.btns.accept") }}</Button>

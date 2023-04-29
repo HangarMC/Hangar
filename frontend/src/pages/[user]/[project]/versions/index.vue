@@ -115,7 +115,7 @@ function getVisibilityTitle(visibility: Visibility) {
           <template #default="{ item }">
             <li class="mb-2">
               <Card :class="getBorderClasses(item)" class="pb-1">
-                <router-link :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${item.name}`">
+                <NuxtLink :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${item.name}`">
                   <div class="flex lt-lg:flex-wrap">
                     <div class="basis-full lg:(basis-6/15 pb-4) truncate">
                       <div class="flex flex-wrap items-center">
@@ -153,7 +153,7 @@ function getVisibilityTitle(visibility: Visibility) {
                       </div>
                     </div>
                   </div>
-                </router-link>
+                </NuxtLink>
               </Card>
             </li>
           </template>
@@ -164,9 +164,9 @@ function getVisibilityTitle(visibility: Visibility) {
     <section class="basis-full md:basis-4/15 flex-grow">
       <div class="flex flex-col flex-wrap space-y-4">
         <div v-if="hasPerms(NamedPermission.CREATE_VERSION)" class="basis-full flex-grow">
-          <router-link :to="route.path + '/new'">
+          <NuxtLink :to="route.path + '/new'">
             <Button size="large" class="w-full">{{ i18n.t("version.new.uploadNew") }}</Button>
-          </router-link>
+          </NuxtLink>
         </div>
 
         <Card class="basis-6/12 md:basis-full flex-grow">

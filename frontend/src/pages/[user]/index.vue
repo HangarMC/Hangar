@@ -185,13 +185,13 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
 
             <ul>
               <li v-for="(org, orgName) in organizations" :key="orgName">
-                <router-link :to="'/' + orgName" class="flex items-center mb-2">
+                <NuxtLink :to="'/' + orgName" class="flex items-center mb-2">
                   <UserAvatar :username="orgName" :avatar-url="org.avatarUrl" size="xs" :disable-link="true" class="flex-shrink-0 mr-2" />
                   {{ orgName }}
                   <span class="flex-grow" />
                   <Tag :color="{ background: getRole(org.role.roleId).color }" :name="getRole(org.role.roleId).title" class="ml-1" />
                   <IconMdiEyeOffOutline v-if="organizationVisibility && organizationVisibility[orgName]" class="ml-1" />
-                </router-link>
+                </NuxtLink>
               </li>
             </ul>
 

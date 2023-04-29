@@ -43,9 +43,9 @@ const props = defineProps<{
       <div class="overflow-clip overflow-hidden min-w-0">
         <div class="inline-flex items-center gap-x-1">
           <h2>
-            <router-link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
+            <NuxtLink :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
               <span class="text-lg font-bold">{{ project.name }}</span>
-            </router-link>
+            </NuxtLink>
             <span class="text-sm">
               by
               <Link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</Link>

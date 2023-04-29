@@ -178,7 +178,7 @@ function isRecent(date: string): boolean {
               >
                 <p class="text-base font-semibold color-primary mb-3">Hangar</p>
                 <div class="grid grid-cols-2">
-                  <router-link
+                  <NuxtLink
                     v-for="link in navBarMenuLinksHangar"
                     :key="link.label"
                     :to="{ name: link.link }"
@@ -188,12 +188,12 @@ function isRecent(date: string): boolean {
                   >
                     <component :is="link.icon" class="mr-3 text-[1.2em]" />
                     {{ link.label }}
-                  </router-link>
+                  </NuxtLink>
                 </div>
 
                 <p class="text-base font-semibold color-primary mb-3 mt-6">{{ t("nav.hangar.tools") }}</p>
                 <div class="grid grid-cols-2">
-                  <router-link
+                  <NuxtLink
                     v-for="link in navBarMenuLinksTools"
                     :key="link.label"
                     :to="{ name: link.link }"
@@ -203,7 +203,7 @@ function isRecent(date: string): boolean {
                   >
                     <component :is="link.icon" class="mr-3 text-[1.2em]" />
                     {{ link.label }}
-                  </router-link>
+                  </NuxtLink>
                 </div>
 
                 <p class="text-base font-semibold color-primary mb-3 mt-6">{{ t("nav.hangar.moreFrom") }}</p>
@@ -224,13 +224,13 @@ function isRecent(date: string): boolean {
         </Popover>
 
         <!-- Site logo -->
-        <router-link to="/" class="flex-shrink-0">
+        <NuxtLink to="/" class="flex-shrink-0">
           <img alt="Hangar Logo" :src="hangarLogo" height="34" width="32" />
-        </router-link>
+        </NuxtLink>
 
         <!-- Desktop links -->
         <div class="gap-4 hidden sm:flex sm:items-center">
-          <router-link
+          <NuxtLink
             v-for="navBarLink in navBarLinks"
             :key="navBarLink.label"
             :to="{ name: navBarLink.link }"
@@ -238,7 +238,7 @@ function isRecent(date: string): boolean {
             after="absolute content-empty block w-0 top-30px left-1/10 h-4px rounded-8px"
           >
             {{ navBarLink.label }}
-          </router-link>
+          </NuxtLink>
         </div>
       </div>
 
@@ -294,7 +294,7 @@ function isRecent(date: string): boolean {
                     <IconMdiMessageOutline v-else-if="notification.type === 'neutral'" />
                   </span>
 
-                  <router-link
+                  <NuxtLink
                     v-if="notification.action"
                     :to="'/' + notification.action"
                     active-class=""
@@ -303,7 +303,7 @@ function isRecent(date: string): boolean {
                   >
                     {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
                     <div class="text-xs mt-1">{{ lastUpdated(new Date(notification.createdAt)) }}</div>
-                  </router-link>
+                  </NuxtLink>
                   <div v-else>
                     {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
                     <div class="text-xs mt-1">{{ lastUpdated(new Date(notification.createdAt)) }}</div>

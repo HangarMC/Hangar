@@ -127,13 +127,13 @@ function requiresConfirmation(): ConfirmationType {
             :to="'/' + project.namespace.owner + '/' + project.name"
             :img-src="project.avatarUrl"
           />
-          <router-link class="!sm:ml-0 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner">
+          <NuxtLink class="!sm:ml-0 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner">
             {{ project.namespace.owner }}
-          </router-link>
+          </NuxtLink>
           <span class="text-gray-500 dark:text-gray-400"> / </span>
-          <router-link class="px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner + '/' + project.name">
+          <NuxtLink class="px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner + '/' + project.name">
             <h1 class="font-semibold">{{ project.name }}</h1>
-          </router-link>
+          </NuxtLink>
         </div>
         <p class="sm:ml-1">{{ project.description }}</p>
       </div>

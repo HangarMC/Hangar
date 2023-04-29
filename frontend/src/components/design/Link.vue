@@ -20,9 +20,9 @@ const classes = computed<string>(() => "font-bold " + (props.disabled ? "color-g
 </script>
 
 <template>
-  <router-link v-if="to" :to="to" :class="classes" v-bind="$attrs" :active-class="props.activeUnderline ? 'underline' : ''">
+  <NuxtLink v-if="to" :to="to" :class="classes" v-bind="$attrs" :active-class="props.activeUnderline ? 'underline' : ''">
     <slot></slot>
-  </router-link>
+  </NuxtLink>
   <a v-else-if="href" :href="sanitizeUrl(href)" :class="classes" v-bind="$attrs">
     <slot></slot>
   </a>

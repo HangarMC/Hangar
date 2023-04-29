@@ -122,17 +122,17 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
         <ul class="divide-y divide-blue-500/50">
           <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.name}`" class="p-1 py-2">
             <div class="flex">
-              <router-link :to="createPinnedVersionUrl(version)" class="flex-grow truncate">
+              <NuxtLink :to="createPinnedVersionUrl(version)" class="flex-grow truncate">
                 <div class="truncate">
                   <span class="font-semibold truncate">{{ version.name }}</span>
                 </div>
-              </router-link>
+              </NuxtLink>
               <div class="ml-1 space-y-2 flex flex-col">
                 <Tag :name="version.channel.name" :color="{ background: version.channel.color }" />
               </div>
             </div>
             <div class="flex pt-1">
-              <router-link :to="createPinnedVersionUrl(version)" class="flex-grow">
+              <NuxtLink :to="createPinnedVersionUrl(version)" class="flex-grow">
                 <div class="inline-flex items-center mt-1">
                   <div class="flex flex-col">
                     <div v-for="(v, p) in version.platformDependenciesFormatted" :key="p" class="flex flex-row items-center">
@@ -141,7 +141,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
                     </div>
                   </div>
                 </div>
-              </router-link>
+              </NuxtLink>
               <div class="ml-1 space-y-2 flex flex-col mt-1">
                 <DownloadButton :project="project" :pinned-version="version" small :show-versions="false" class="self-end" />
               </div>

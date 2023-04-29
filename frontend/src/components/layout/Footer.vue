@@ -27,15 +27,15 @@ const { t } = useI18n();
           >
             {{ t("hangar.footer.status") }}
           </a>
-          <router-link :to="{ name: 'api-docs' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
+          <NuxtLink :to="{ name: 'api-docs' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
             {{ t("hangar.footer.api") }}
-          </router-link>
-          <router-link :to="{ name: 'terms' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
+          </NuxtLink>
+          <NuxtLink :to="{ name: 'terms' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
             {{ t("hangar.footer.terms") }}
-          </router-link>
-          <router-link :to="{ name: 'privacy' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
+          </NuxtLink>
+          <NuxtLink :to="{ name: 'privacy' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
             {{ t("hangar.footer.privacypolicy") }}
-          </router-link>
+          </NuxtLink>
         </div>
         <p class="font-bold">© {{ new Date().getFullYear() }} <a href="https://papermc.io/">PaperMC</a></p>
       </div>

@@ -19,7 +19,7 @@ const type = computed(() => {
     return "p";
   }
   if (props.to) {
-    return "router-link";
+    return "NuxtLink";
   } else if (props.href) {
     return "a";
   } else {
