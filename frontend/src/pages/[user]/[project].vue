@@ -11,12 +11,9 @@ import ProjectNav from "~/components/projects/ProjectNav.vue";
 import { createError, navigateTo, onBeforeRouteUpdate, useInternalApi } from "#imports";
 import Delayed from "~/components/design/Delayed.vue";
 
-defineProps({
-  user: {
-    type: Object as PropType<User>,
-    required: true,
-  },
-});
+defineProps<{
+  user: User;
+}>();
 
 const i18n = useI18n();
 const route = useRoute();
@@ -37,9 +34,7 @@ async function verify(to: RouteLocationNormalized) {
 onBeforeRouteUpdate(async (to, from) => {
   if (!to.params.project || !to.params.user) return;
   if (to.params.user === from.params.user && to.params.project === from.params.project) return;
-  console.log("before project update", to.params, from.params);
   project.value = await useInternalApi<HangarProject>("projects/project/" + to.params.user + "/" + to.params.project);
-  console.log("after project update", project.value?.mainPage);
   await verify(to);
 });
 
@@ -49,7 +44,7 @@ provide("updateProjectPages", function (pages: HangarProjectPage[]) {
 </script>
 
 <template>
-  <div v-if="project">
+  <div v-if="project && user">
     <ProjectHeader :project="project" />
     <ProjectNav :project="project" />
     <router-view v-slot="{ Component }">

@@ -123,12 +123,12 @@ watchDebounced(
   { deep: true, debounce: 250 }
 );
 
-const description = props.user.tagline ? props.user.name + " is an author on Hangar. " + props.user.tagline : props.user.name + " is an author on Hangar.";
+const description = props.user.name + " is an author on Hangar." + (props.user?.tagline ? " " + props.user.tagline : "");
 useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
 </script>
 
 <template>
-  <div>
+  <div v-if="user">
     <UserHeader :viewing-user="user" :organization="organization" />
     <div class="flex-basis-full flex flex-col gap-2 flex-grow lg:max-w-7/10 lg:min-w-6/10">
       <div v-for="project in pinned" :key="project.namespace">

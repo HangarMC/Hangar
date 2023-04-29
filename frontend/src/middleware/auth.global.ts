@@ -15,7 +15,7 @@ export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, fro
 
   await useAuth.updateUser();
   await loadRoutePerms(to);
-  await handleRoutePerms(to);
+  await handleRoutePerms(to, from);
 });
 
 async function loadRoutePerms(to: RouteLocationNormalized) {
@@ -57,9 +57,9 @@ async function loadRoutePerms(to: RouteLocationNormalized) {
   authStore.setRoutePerms(null);
 }
 
-async function handleRoutePerms(to: RouteLocationNormalized) {
+async function handleRoutePerms(to: RouteLocationNormalized, from: RouteLocationNormalized) {
   const authStore = useAuthStore();
-  routePermLog("navigate to " + String(to.name) + ", meta:", to.meta);
+  routePermLog("navigate to " + String(to.name) + ", meta:", to.meta, "(from: " + String(from.name) + ")");
   for (const key in handlers) {
     if (!to.meta[key]) continue;
     const handler = handlers[key];

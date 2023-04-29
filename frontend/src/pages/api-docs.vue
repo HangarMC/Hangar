@@ -40,7 +40,6 @@ onMounted(() => {
           if (req.headers?.Authorization) {
               req.headers.Authorization = req.headers?.Authorization.replace("Bearer", "HangarAuth")
           }
-          console.log(req)
         }
         return req;
       }
