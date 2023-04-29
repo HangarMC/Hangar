@@ -49,7 +49,8 @@ public class ImageProxyController {
             .replace("https:/", "https://")
             .replace("http:/", "http://")
             .replace(":///", "://")
-            .replace("%7F", "\u007F"); // I hate everything about this, but it fixes #1187
+            .replace("%7F", "\u007F")
+            .replace("%20", " "); // I hate everything about this, but it fixes #1187
     }
 
     private boolean validContentType(final ResponseEntity<byte[]> response) {
