@@ -10,13 +10,8 @@ import AvatarChangeModal from "~/components/modals/AvatarChangeModal.vue";
 import InputText from "~/components/ui/InputText.vue";
 import InputSelect from "~/components/ui/InputSelect.vue";
 import Button from "~/components/design/Button.vue";
-import { definePageMeta } from "#imports";
 import { useBackendData } from "~/store/backendData";
 import PageTitle from "~/components/design/PageTitle.vue";
-
-definePageMeta({
-  globalPermsRequired: ["EDIT_OWN_USER_SETTINGS"],
-});
 
 const auth = useAuthStore();
 const notification = useNotificationStore();

@@ -11,14 +11,10 @@ import { useInternalApi } from "~/composables/useApi";
 import ComingSoon from "~/components/design/ComingSoon.vue";
 import Button from "~/components/design/Button.vue";
 import InputText from "~/components/ui/InputText.vue";
-import { definePageMeta, required, requiredIf, useAuth, useAxios, useRoute, useRouter } from "#imports";
+import { requiredIf, useAuth, useAxios, useRoute, useRouter } from "#imports";
 import PageTitle from "~/components/design/PageTitle.vue";
 import Modal from "~/components/modals/Modal.vue";
 import PrettyTime from "~/components/design/PrettyTime.vue";
-
-definePageMeta({
-  globalPermsRequired: ["EDIT_OWN_USER_SETTINGS"],
-});
 
 const props = defineProps<{
   settings?: AuthSettings;

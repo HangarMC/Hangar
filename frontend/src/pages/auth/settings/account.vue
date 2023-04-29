@@ -8,12 +8,9 @@ import { useAuthSettings } from "~/composables/useApiHelper";
 import Button from "~/components/design/Button.vue";
 import InputPassword from "~/components/ui/InputPassword.vue";
 import InputText from "~/components/ui/InputText.vue";
-import { definePageMeta, email, required, useInternalApi } from "#imports";
+import { email, required, useInternalApi } from "#imports";
 import PageTitle from "~/components/design/PageTitle.vue";
 
-definePageMeta({
-  globalPermsRequired: ["EDIT_OWN_USER_SETTINGS"],
-});
 const emit = defineEmits<{
   openEmailConfirmModal: () => void;
 }>();

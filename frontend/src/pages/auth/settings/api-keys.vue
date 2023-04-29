@@ -16,22 +16,21 @@ import { maxLength, minLength, required } from "~/composables/useValidationHelpe
 import { validApiKeyName } from "~/composables/useHangarValidations";
 import InputGroup from "~/components/ui/InputGroup.vue";
 import { NamedPermission } from "~/types/enums";
-import { definePageMeta } from "#imports";
 import Tooltip from "~/components/design/Tooltip.vue";
 import { useAuthStore } from "~/store/auth";
 import PrettyTime from "~/components/design/PrettyTime.vue";
-
-definePageMeta({
-  globalPermsRequired: ["EDIT_API_KEYS"],
-});
 
 const i18n = useI18n();
 const notification = useNotificationStore();
 const v = useVuelidate();
 const auth = useAuthStore();
 
-const apiKeys = ref(await useInternalApi<ApiKey[]>("api-keys/existing-keys/" + auth.user?.name));
-const possiblePerms = await useInternalApi<NamedPermission[]>("api-keys/possible-perms/" + auth.user?.name);
+const results = await Promise.all([
+  useInternalApi<ApiKey[]>("api-keys/existing-keys/" + auth.user?.name),
+  useInternalApi<NamedPermission[]>("api-keys/possible-perms/" + auth.user?.name),
+]);
+const apiKeys = ref(results[0]);
+const possiblePerms = results[1];
 
 const name = ref("");
 const loadingCreate = ref(false);
