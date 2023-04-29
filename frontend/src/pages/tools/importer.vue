@@ -33,7 +33,7 @@ import Alert from "~/components/design/Alert.vue";
 import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import InputGroup from "~/components/ui/InputGroup.vue";
-import { ProjectCategory, Tag } from "~/types/enums";
+import { ProjectCategory, Tag } from "~/types/enums"; // dont remove Tag, even if IntelliJ says its unused...
 import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
 
 definePageMeta({
@@ -140,6 +140,10 @@ watchDebounced(
 
 function remove(project: NewProjectForm) {
   hangarResources.value = hangarResources.value.filter((p) => p !== project);
+}
+
+function updatePageContent(project: NewProjectForm, raw: string) {
+  project.pageContent = raw;
 }
 
 const status = reactive<Record<string, { project: NewProjectForm; loading: boolean; success: boolean; result: string; errors: string[] }>>({});
@@ -271,7 +275,15 @@ useHead(useSeo(t("importer.title"), null, route, null));
             <Spoiler title="Description" :open="false" class="!max-w-full mt-2">
               <template #content>
                 <ClientOnly>
-                  <MarkdownEditor :raw="project.pageContent" :editing="true" :deletable="false" :saveable="false" :cancellable="false" no-padding-top />
+                  <MarkdownEditor
+                    :raw="project.pageContent"
+                    :editing="true"
+                    :deletable="false"
+                    :saveable="false"
+                    :cancellable="false"
+                    no-padding-top
+                    @update:raw="(e) => updatePageContent(project, e)"
+                  />
                 </ClientOnly>
               </template>
             </Spoiler>

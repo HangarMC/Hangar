@@ -39,6 +39,7 @@ const emit = defineEmits<{
   (e: "save", edited: string): void;
   (e: "delete"): void;
   (e: "update:editing", editing: boolean): void;
+  (e: "update:raw", raw: string): void;
 }>();
 
 let easyMDE: Easymde | null = null;
@@ -71,6 +72,8 @@ watch(
   },
   { deep: true }
 );
+
+watch(rawEdited, (e) => emit("update:raw", e));
 
 function savePage() {
   loading.save = true;
