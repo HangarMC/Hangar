@@ -14,8 +14,7 @@ export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, fro
   }
 
   await useAuth.updateUser();
-  await loadRoutePerms(to);
-  await handleRoutePerms(to, from);
+  loadRoutePerms(to).then(() => handleRoutePerms(to, from));
 });
 
 async function loadRoutePerms(to: RouteLocationNormalized) {
