@@ -39,7 +39,6 @@ async function cb(u: Ref<User | null>) {
   <router-view v-if="!blocking || user" v-slot="{ Component }">
     <Suspense>
       <component :is="Component" :user="user" :organization="organization" />
-      <template #fallback><Delayed> Loading... </Delayed></template>
     </Suspense>
   </router-view>
 </template>
