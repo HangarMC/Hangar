@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { NuxtLink } from "#components";
 
 const props = withDefaults(
   defineProps<{
@@ -19,7 +20,7 @@ const type = computed(() => {
     return "p";
   }
   if (props.to) {
-    return "NuxtLink";
+    return NuxtLink;
   } else if (props.href) {
     return "a";
   } else {
