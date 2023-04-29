@@ -59,7 +59,7 @@ useHead(useSeo("Reset your password", null, route, null));
 </script>
 
 <template>
-  <Card>
+  <Card class="w-xl mx-auto max-w-full">
     <template #header> Reset your password </template>
     <form v-if="!codeSend" class="flex flex-col gap-2">
       <p>Enter your email address here to receive a verification code to reset your password.</p>

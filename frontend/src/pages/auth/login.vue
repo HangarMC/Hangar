@@ -132,7 +132,7 @@ useHead(useSeo("Login", null, route, null));
 </script>
 
 <template>
-  <Card>
+  <Card class="w-xl mx-auto max-w-full">
     <template #header>{{ privileged ? "Sudo" : "Login" }}</template>
 
     <div v-if="privileged" class="mb-2">Please authenticate again to do this action</div>

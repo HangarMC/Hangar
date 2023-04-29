@@ -48,14 +48,11 @@ declare module "@vue/runtime-core" {
     IconMdiEarth: typeof import("~icons/mdi/earth")["default"];
     IconMdiEye: typeof import("~icons/mdi/eye")["default"];
     IconMdiEyeOff: typeof import("~icons/mdi/eye-off")["default"];
-    IconMdiFeather: typeof import("~icons/mdi/feather")["default"];
     IconMdiFileDocument: typeof import("~icons/mdi/file-document")["default"];
     IconMdiFlag: typeof import("~icons/mdi/flag")["default"];
     IconMdiFolderPlusOutline: typeof import("~icons/mdi/folder-plus-outline")["default"];
     IconMdiFormatListNumbered: typeof import("~icons/mdi/format-list-numbered")["default"];
     IconMdiGamepadRoundLeft: typeof import("~icons/mdi/gamepad-round-left")["default"];
-    IconMdiGavel: typeof import("~icons/mdi/gavel")["default"];
-    IconMdiHelp: typeof import("~icons/mdi/help")["default"];
     IconMdiHelpCircleOutline: typeof import("~icons/mdi/help-circle-outline")["default"];
     IconMdiHome: typeof import("~icons/mdi/home")["default"];
     IconMdiHorseVariant: typeof import("~icons/mdi/horse-variant")["default"];

@@ -53,7 +53,7 @@ useHead(useSeo("Signup", null, route, null));
 </script>
 
 <template>
-  <Card>
+  <Card class="w-xl mx-auto max-w-full">
     <template #header>
       <h1>Sign up</h1>
     </template>
