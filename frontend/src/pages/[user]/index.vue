@@ -71,12 +71,8 @@ const requestParams = computed(() => {
 });
 
 const userData = await useUserData(props.user.name, requestParams.value);
-const { starred, watching, organizations, pinned } = userData.value || { starred: null };
+const { starred, watching, organizations, pinned, organizationVisibility } = userData.value || { starred: null };
 const projects = ref(userData.value?.projects);
-let organizationVisibility = null;
-if (props.user.name === useAuthStore().user?.name) {
-  organizationVisibility = await useOrgVisibility(props.user.name);
-}
 const orgRoles = useBackendData.orgRoles.filter((role) => role.assignable);
 const authStore = useAuthStore();
 

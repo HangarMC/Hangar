@@ -24,6 +24,7 @@ import { NuxtApp } from "@nuxt/schema";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { ref, useAsyncData, createError } from "#imports";
 import { handleRequestError } from "~/composables/useErrorHandling";
+import { useAuthStore } from "~/store/auth";
 
 export type NonNullAsyncData<T, E = unknown> = { data: Ref<T> } & Pick<AsyncData<T, E>, "pending" | "refresh" | "execute" | "error">;
 
@@ -180,8 +181,10 @@ export async function useUserData(
     projects: PaginatedResult<Project>;
     organizations: { [key: string]: OrganizationRoleTable };
     pinned: ProjectCompact[];
+    organizationVisibility: { [key: string]: boolean } | null;
   } | null>
 > {
+  const self = user === useAuthStore().user?.name;
   return extract(
     await useAsyncData("useUserData:" + user, async () => {
       // noinspection ES6MissingAwait
@@ -194,6 +197,7 @@ export async function useUserData(
         }),
         useInternalApi<{ [key: string]: RoleTable }>(`organizations/${user}/userOrganizations`),
         useApi<ProjectCompact[]>(`users/${user}/pinned`),
+        self ? useOrgVisibility(user) : null,
       ]);
       return {
         starred: data[0] as PaginatedResult<ProjectCompact>,
@@ -201,6 +205,7 @@ export async function useUserData(
         projects: data[2] as PaginatedResult<Project>,
         organizations: data[3] as { [key: string]: OrganizationRoleTable },
         pinned: data[4] as ProjectCompact[],
+        organizationVisibility: data[5],
       };
     })
   );
