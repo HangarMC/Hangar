@@ -28,7 +28,7 @@ import Button from "~/components/design/Button.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import Spinner from "~/components/design/Spinner.vue";
-import { definePageMeta, reactive } from "#imports";
+import { definePageMeta, reactive, usePossibleOwners } from "#imports";
 import Alert from "~/components/design/Alert.vue";
 import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
@@ -81,7 +81,6 @@ const steps: Step[] = [
       }
       hangarResources.value = [];
       if (auth.user) {
-        // todo allow selecting owner id
         const ownerId = auth.user.id;
         const selected = spigotResources.value.filter((r) => selectedSpigotResources.value.includes(r.id));
         hangarResources.value = await convertSpigotProjects(selected, ownerId);
@@ -106,6 +105,7 @@ const steps: Step[] = [
   { value: "finishing", header: t("importer.step5.title"), showNext: false, showBack: false },
 ];
 
+const projectOwners = await usePossibleOwners();
 const username = ref();
 const spigotAuthor = ref<SpigotAuthor | null>(null);
 const spigotResources = ref<SpigotResource[]>([]);
@@ -240,19 +240,25 @@ useHead(useSeo(t("importer.title"), null, route, null));
             <div class="text-sm mt-4 w-min"><Button @click="remove(project)">Remove from conversion</Button></div>
           </div>
           <div class="ml-4 flex-grow">
-            <div class="text-xl">
-              <InputText
-                v-model="project.name"
-                label="Name"
-                :maxlength="useBackendData.validations.project.name.max"
-                counter
-                :rules="[
-                  required(),
-                  maxLength()(useBackendData.validations.project.name.max),
-                  pattern()(useBackendData.validations.project.name.regex),
-                  validProjectName()(() => project.ownerId),
-                ]"
-              />
+            <div class="text-xl flex">
+              <div class="basis-full md:basis-6/12">
+                <InputSelect v-model="project.ownerId" :values="projectOwners" item-value="id" item-text="name" label="Create as" :rules="[required()]" />
+              </div>
+              <span class="text-3xl lt-md:hidden ml-2 mr-2">/</span>
+              <div class="basis-full">
+                <InputText
+                  v-model="project.name"
+                  label="Name"
+                  :maxlength="useBackendData.validations.project.name.max"
+                  counter
+                  :rules="[
+                    required(),
+                    maxLength()(useBackendData.validations.project.name.max),
+                    pattern()(useBackendData.validations.project.name.regex),
+                    validProjectName()(() => project.ownerId),
+                  ]"
+                />
+              </div>
             </div>
             <div class="mt-2">
               <InputText
