@@ -65,15 +65,15 @@ public class ChannelService extends HangarComponent {
     }
 
     @Transactional
-    public ProjectChannelTable createProjectChannel(final String name, final Color color, final long projectId, final Set<ChannelFlag> flags) {
+    public ProjectChannelTable createProjectChannel(final String name, final String description, final Color color, final long projectId, final Set<ChannelFlag> flags) {
         this.validateChannel(name, color, projectId, this.projectChannelsDAO.getProjectChannels(projectId));
-        final ProjectChannelTable channelTable = this.projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, flags));
+        final ProjectChannelTable channelTable = this.projectChannelsDAO.insert(new ProjectChannelTable(name, description, color, projectId, flags));
         this.actionLogger.project(LogAction.PROJECT_CHANNEL_CREATED.create(ProjectContext.of(projectId), formatChannelChange(channelTable), ""));
         return channelTable;
     }
 
     @Transactional
-    public void editProjectChannel(final long channelId, final String name, final Color color, final long projectId, final Set<ChannelFlag> flags) {
+    public void editProjectChannel(final long channelId, final String name, final String description, final Color color, final long projectId, final Set<ChannelFlag> flags) {
         final ProjectChannelTable projectChannelTable = this.getProjectChannel(channelId);
         if (projectChannelTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
@@ -114,6 +114,7 @@ public class ChannelService extends HangarComponent {
         this.validateChannel(name, color, projectId, this.projectChannelsDAO.getProjectChannels(projectId).stream().filter(ch -> ch.getId() != channelId).collect(Collectors.toList()));
         final String old = formatChannelChange(projectChannelTable);
         projectChannelTable.setName(name);
+        projectChannelTable.setDescription(description);
         projectChannelTable.setColor(color);
         projectChannelTable.setFlags(flags);
         this.projectChannelsDAO.update(projectChannelTable);

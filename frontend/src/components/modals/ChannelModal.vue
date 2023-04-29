@@ -34,6 +34,7 @@ const form = reactive<ProjectChannel>({
   versionCount: 0,
 });
 const name = ref<string>(props.channel ? props.channel.name : "");
+const description = ref<string>(props.channel?.description || "");
 const color = ref<string>(props.channel ? props.channel.color : "");
 const flags = ref<ChannelFlag[]>(props.channel ? props.channel.flags : []);
 const swatches = computed<string[][]>(() => {
@@ -53,13 +54,19 @@ const swatches = computed<string[][]>(() => {
 });
 
 const noChange = computed(() => {
-  return props.channel?.name === name.value && props.channel.color === color.value && isSame(props.channel.flags, flags.value);
+  return (
+    props.channel?.name === name.value &&
+    props.channel?.description === description.value &&
+    props.channel.color === color.value &&
+    isSame(props.channel.flags, flags.value)
+  );
 });
 
 async function create(close: () => void) {
   if (!(await v.value.$validate())) return;
   close();
   form.name = name.value;
+  form.description = description.value;
   form.color = color.value;
   form.flags = flags.value;
   emit("create", form);
@@ -79,6 +86,7 @@ function reset() {
     Object.assign(form, props.channel);
   } else {
     name.value = "";
+    description.value = "";
     color.value = "";
     flags.value = [];
   }
@@ -99,7 +107,11 @@ reset();
             pattern()(useBackendData.validations.project.channels.regex),
             validChannelName()(props.projectId, props.channel?.name),
           ]"
+          counter
         />
+        <div class="mt-3">
+          <InputText v-model.trim="description" :label="i18n.t('channel.modal.description')" :maxlength="50" counter />
+        </div>
         <p class="text-lg font-bold mt-3 mb-1">{{ i18n.t("channel.modal.color") }}</p>
         <div v-for="(arr, arrIndex) in swatches" :key="arrIndex" class="flex">
           <div v-for="(c, n) in arr" :key="n" class="flex-grow-0 flex-shrink-1 pa-2 pr-1 mb-1">

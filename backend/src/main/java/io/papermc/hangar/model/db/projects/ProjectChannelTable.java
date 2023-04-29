@@ -15,19 +15,22 @@ public class ProjectChannelTable extends Table implements Named {
     private final long projectId;
     private final Set<ChannelFlag> flags;
     private String name;
+    private String description;
     private Color color;
 
     @JdbiConstructor
-    public ProjectChannelTable(final OffsetDateTime createdAt, final long id, final String name, @EnumByOrdinal final Color color, final long projectId, final Set<ChannelFlag> flags) {
+    public ProjectChannelTable(final OffsetDateTime createdAt, final long id, final String name, final String description, @EnumByOrdinal final Color color, final long projectId, final Set<ChannelFlag> flags) {
         super(createdAt, id);
         this.name = name;
+        this.description = description;
         this.color = color;
         this.projectId = projectId;
         this.flags = new HashSet<>(flags); // to ensure mutability
     }
 
-    public ProjectChannelTable(final String name, final Color color, final long projectId, final Set<ChannelFlag> flags) {
+    public ProjectChannelTable(final String name, final String description, final Color color, final long projectId, final Set<ChannelFlag> flags) {
         this.name = name;
+        this.description = description;
         this.color = color;
         this.projectId = projectId;
         this.flags = new HashSet<>(flags); // to ensure mutability
@@ -40,6 +43,14 @@ public class ProjectChannelTable extends Table implements Named {
 
     public void setName(final String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
     }
 
     @EnumByOrdinal
@@ -68,6 +79,7 @@ public class ProjectChannelTable extends Table implements Named {
     public String toString() {
         return "ProjectChannelTable{" +
             "name='" + this.name + '\'' +
+            ", description=" + this.description +
             ", color=" + this.color +
             ", projectId=" + this.projectId +
             ", flags=" + this.flags +

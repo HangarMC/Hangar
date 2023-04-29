@@ -32,6 +32,7 @@ public interface HangarVersionsDAO {
                pv.review_state,
                pc.created_at pc_created_at,
                pc.name pc_name,
+               pc.description pc_description,
                pc.color pc_color,
                pc.flags pc_flags,
                CASE
@@ -71,6 +72,7 @@ public interface HangarVersionsDAO {
                pv.review_state,
                pc.created_at pc_created_at,
                pc.name pc_name,
+               pc.description pc_description,
                pc.color pc_color,
                pc.flags pc_flags,
                CASE
@@ -104,6 +106,7 @@ public interface HangarVersionsDAO {
                pv."type",
                pv.version_string AS name,
                pc.name pc_name,
+               pc.description pc_description,
                pc.created_at pc_created_at,
                pc.color pc_color,
                pc.flags pc_flags
@@ -116,6 +119,7 @@ public interface HangarVersionsDAO {
                pv."type",
                pv.version_string AS name,
                pc.name pc_name,
+               pc.description pc_description,
                pc.created_at pc_created_at,
                pc.color pc_color,
                pc.flags pc_flags

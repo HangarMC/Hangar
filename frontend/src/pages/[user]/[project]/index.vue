@@ -128,7 +128,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
                 </div>
               </NuxtLink>
               <div class="ml-1 space-y-2 flex flex-col">
-                <Tag :name="version.channel.name" :color="{ background: version.channel.color }" />
+                <Tag :name="version.channel.name" :color="{ background: version.channel.color }" :tooltip="version.channel.description" />
               </div>
             </div>
             <div class="flex pt-1">

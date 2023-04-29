@@ -22,6 +22,7 @@ declare module "hangar-api" {
   }
 
   interface ProjectChannel extends Model, Named {
+    description: string;
     color: string;
     flags: ChannelFlag[];
   }

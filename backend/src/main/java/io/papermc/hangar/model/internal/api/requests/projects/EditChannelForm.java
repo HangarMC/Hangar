@@ -8,8 +8,8 @@ public class EditChannelForm extends ChannelForm {
 
     private final long id;
 
-    public EditChannelForm(final String name, final Color color, final Set<ChannelFlag> flags, final long id) {
-        super(name, color, flags);
+    public EditChannelForm(final String name, final String description, final Color color, final Set<ChannelFlag> flags, final long id) {
+        super(name, description, color, flags);
         this.id = id;
     }
 

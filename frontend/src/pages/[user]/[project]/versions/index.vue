@@ -125,7 +125,7 @@ function getVisibilityTitle(visibility: Visibility) {
                       <div class="flex flex-wrap items-center">
                         <h2 class="lg:basis-full lt-lg:mr-1 text-1.15rem leading-relaxed">{{ item.name }}</h2>
                         <span class="lg:hidden flex-grow" />
-                        <Tag :name="item.channel.name" :color="{ background: item.channel.color }" />
+                        <Tag :name="item.channel.name" :color="{ background: item.channel.color }" :tooltip="item.channel.description" />
                         <IconMdiCancel v-if="item.visibility === Visibility.SOFT_DELETE" class="ml-1"></IconMdiCancel>
                         <span v-else-if="item.visibility !== Visibility.PUBLIC" class="ml-1 inline-flex items-center">
                           <span class="text-gray-600 dark:text-gray-300 text-sm">
@@ -187,7 +187,7 @@ function getVisibilityTitle(visibility: Visibility) {
           <ul>
             <li v-for="channel in channels" :key="channel.name" class="inline-flex w-full">
               <InputCheckbox v-model="filter.channels" :value="channel.name" @change="updateChannelCheckAll">
-                <Tag :name="channel.name" :color="{ background: channel.color }"></Tag>
+                <Tag :name="channel.name" :color="{ background: channel.color }" :tooltip="channel.description"></Tag>
               </InputCheckbox>
             </li>
           </ul>

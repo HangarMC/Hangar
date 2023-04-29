@@ -47,6 +47,7 @@ async function deleteChannel(channel: ProjectChannel) {
 async function addChannel(channel: ProjectChannel) {
   await useInternalApi(`channels/${props.project.id}/create`, "post", {
     name: channel.name,
+    description: channel.description,
     color: channel.color,
     flags: channel.flags,
   })
@@ -62,6 +63,7 @@ async function editChannel(channel: ProjectChannel) {
   await useInternalApi(`channels/${props.project.id}/edit`, "post", {
     id: channel.id,
     name: channel.name,
+    description: channel.description,
     color: channel.color,
     flags: channel.flags,
   })
@@ -85,6 +87,9 @@ async function editChannel(channel: ProjectChannel) {
             <span class="inline-flex items-center gap-1"><IconMdiTag />{{ i18n.t("channel.manage.channelName") }}</span>
           </th>
           <th>
+            <span class="inline-flex items-center gap-1">{{ i18n.t("channel.manage.channelDescription") }}</span>
+          </th>
+          <th>
             <span class="inline-flex items-center gap-1"><IconMdiFormatListNumbered />{{ i18n.t("channel.manage.versionCount") }}</span>
           </th>
           <th />
@@ -93,7 +98,8 @@ async function editChannel(channel: ProjectChannel) {
       </thead>
       <tbody>
         <tr v-for="channel in channels" :key="channel.name">
-          <td><Tag :name="channel.name" :color="{ background: channel.color }" /></td>
+          <td><Tag :name="channel.name" :color="{ background: channel.color }" :tooltip="channel.description" /></td>
+          <td>{{ channel.description }}</td>
           <td>{{ channel.versionCount }}</td>
           <td>
             <ChannelModal :project-id="props.project.id" edit :channel="channel" @create="editChannel">

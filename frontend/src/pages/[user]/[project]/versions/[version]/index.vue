@@ -155,7 +155,13 @@ async function restoreVersion() {
       <div class="flex gap-2 justify-between">
         <div>
           <h2 class="text-3xl sm:inline-flex items-center gap-x-1">
-            <TagComponent class="mr-1" :name="projectVersion.channel.name" :color="{ background: projectVersion.channel.color }" :short-form="true" />
+            <TagComponent
+              class="mr-1"
+              :name="projectVersion.channel.name"
+              :color="{ background: projectVersion.channel.color }"
+              :short-form="true"
+              :tooltip="projectVersion.channel.description"
+            />
             {{ projectVersion.name }}
           </h2>
           <h3>

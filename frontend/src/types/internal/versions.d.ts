@@ -10,6 +10,7 @@ declare module "hangar-internal" {
     description: string | null;
     files: PendingVersionFile[];
     channelName: string;
+    channelDescription: string;
     channelColor: string;
     channelFlags: ChannelFlag[];
   }
@@ -21,6 +22,7 @@ declare module "hangar-internal" {
   }
 
   interface ProjectChannel extends Named, Partial<Table> {
+    description?: string;
     color: string;
     flags: ChannelFlag[];
     temp?: boolean;

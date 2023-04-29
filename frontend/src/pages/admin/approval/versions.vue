@@ -107,7 +107,7 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
         </template>
         <template #item_version="{ item }">
           <Link :to="`/${item.namespace.owner}/${item.namespace.slug}/versions/${item.versionString}`">
-            <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" />
+            <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" :tooltip="item.channelDescription" />
             {{ item.versionString }}
           </Link>
         </template>
@@ -137,7 +137,7 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
           </Link>
         </template>
         <template #item_version="{ item }">
-          <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" />
+          <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" :tooltip="item.channelDescription" />
         </template>
         <template #item_queuedBy="{ item }">
           <Link :to="`/${item.versionAuthor}`">

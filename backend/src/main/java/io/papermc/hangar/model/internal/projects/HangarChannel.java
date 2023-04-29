@@ -11,8 +11,8 @@ public class HangarChannel extends ProjectChannelTable {
 
     private final int versionCount;
 
-    public HangarChannel(final OffsetDateTime createdAt, final long id, final String name, @EnumByOrdinal final Color color, final long projectId, final Set<ChannelFlag> flags, final int versionCount) {
-        super(createdAt, id, name, color, projectId, flags);
+    public HangarChannel(final OffsetDateTime createdAt, final long id, final String name, final String description, @EnumByOrdinal final Color color, final long projectId, final Set<ChannelFlag> flags, final int versionCount) {
+        super(createdAt, id, name, description, color, projectId, flags);
         this.versionCount = versionCount;
     }
 

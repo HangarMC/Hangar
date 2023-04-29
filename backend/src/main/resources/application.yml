@@ -91,9 +91,12 @@ hangar:
 
   channels:
     max-name-len: 15
+    min-name-len: 1
+    max-description-len: 50
     name-regex: "^[a-zA-Z0-9]+$"
     color-default: cyan
     name-default: "Release"
+    description-default: "The default channel"
 
   pages:
     home:

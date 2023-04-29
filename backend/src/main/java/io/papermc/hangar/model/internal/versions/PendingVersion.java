@@ -33,18 +33,20 @@ public class PendingVersion {
 
     // @el(root: String)
     @NotBlank(message = "version.new.error.channel.noName")
-    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName") String channelName;
+    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName") @Validate(SpEL = "@validations.max(#root, @hangarConfig.channels.maxNameLen)", message = "channel.modal.error.tooLongName") String channelName;
+    private final @Validate(SpEL = "@validations.max(#root, @hangarConfig.channels.maxDescriptionLen)", message = "channel.modal.error.tooLongDescription") String channelDescription;
     private final Color channelColor;
     private final Set<ChannelFlag> channelFlags;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PendingVersion(final String versionString, final Map<Platform, Set<PluginDependency>> pluginDependencies, final EnumMap<Platform, SortedSet<String>> platformDependencies, final String description, final List<PendingVersionFile> files, final String channelName, final @Nullable Color channelColor, final Set<ChannelFlag> channelFlags) {
+    public PendingVersion(final String versionString, final Map<Platform, Set<PluginDependency>> pluginDependencies, final EnumMap<Platform, SortedSet<String>> platformDependencies, final String description, final List<PendingVersionFile> files, final String channelName, final String channelDescription, final @Nullable Color channelColor, final Set<ChannelFlag> channelFlags) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
         this.description = description;
         this.files = files;
         this.channelName = channelName;
+        this.channelDescription = channelDescription;
         this.channelColor = channelColor;
         this.channelFlags = channelFlags;
     }
@@ -57,6 +59,7 @@ public class PendingVersion {
         this.files = files;
         // Keep data from frontend
         this.channelName = "";
+        this.channelDescription = "";
         this.channelColor = Color.CYAN;
         this.channelFlags = Set.of();
     }
@@ -83,6 +86,10 @@ public class PendingVersion {
 
     public String getChannelName() {
         return this.channelName;
+    }
+
+    public String getChannelDescription() {
+        return this.channelDescription;
     }
 
     public @Nullable Color getChannelColor() {

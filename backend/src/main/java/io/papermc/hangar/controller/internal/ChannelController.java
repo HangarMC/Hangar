@@ -79,7 +79,7 @@ public class ChannelController extends HangarComponent {
     public void createChannel(@PathVariable final long projectId, @RequestBody final @Valid ChannelForm channelForm) {
         final Set<ChannelFlag> flags = channelForm.getFlags();
         flags.retainAll(ChannelFlag.EDITABLE);
-        this.channelService.createProjectChannel(channelForm.getName(), channelForm.getColor(), projectId, flags);
+        this.channelService.createProjectChannel(channelForm.getName(), channelForm.getDescription(), channelForm.getColor(), projectId, flags);
     }
 
     @Unlocked
@@ -90,7 +90,7 @@ public class ChannelController extends HangarComponent {
     public void editChannel(@PathVariable final long projectId, @RequestBody final @Valid EditChannelForm channelForm) {
         final Set<ChannelFlag> flags = channelForm.getFlags();
         flags.retainAll(ChannelFlag.EDITABLE);
-        this.channelService.editProjectChannel(channelForm.getId(), channelForm.getName(), channelForm.getColor(), projectId, flags);
+        this.channelService.editProjectChannel(channelForm.getId(), channelForm.getName(), channelForm.getDescription(), channelForm.getColor(), projectId, flags);
     }
 
     @Unlocked

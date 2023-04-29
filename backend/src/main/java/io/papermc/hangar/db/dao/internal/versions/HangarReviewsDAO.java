@@ -63,6 +63,7 @@ public interface HangarReviewsDAO {
         "       pv.created_at version_created_at," +
         "       coalesce(pvu.name, 'DELETED USER') version_author," +
         "       pc.name channel_name," +
+        "       pc.description channel_description," +
         "       pc.color channel_color," +
         "       ru.name r_reviewer_name," +
         "       pvr.created_at r_review_started," +

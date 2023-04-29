@@ -590,6 +590,7 @@
       "titleNew": "Add a new channel",
       "titleEdit": "Edit channel",
       "name": "Channel Name",
+      "description": "Channel Description",
       "color": "Channel Color",
       "pickedColor": "Picked channel color (must be unique)",
       "flags": {
@@ -602,6 +603,7 @@
         "duplicateColor": "This project already has a channel with this color",
         "duplicateName": "This project already has a channel with this name",
         "tooLongName": "Channel name is too long",
+        "tooLongDescription": "Channel description is too long",
         "cannotDelete": "You cannot delete this channel",
         "cannotEdit": "You cannot edit this channel",
         "invalidFlag": "You tried to set an invalid channel flag"
@@ -617,6 +619,7 @@
       "reviewInfo": "Channel names may automatically be flagged for review and will only be published after",
       "subtitle": "Release channels represent the state of a plugin release. A project may have up to five release channels.",
       "channelName": "Channel Name",
+      "channelDescription": "Channel Description",
       "versionCount": "Version Count",
       "reviewed": "Reviewed",
       "edit": "Edit",

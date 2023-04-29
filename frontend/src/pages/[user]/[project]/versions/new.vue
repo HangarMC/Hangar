@@ -210,6 +210,7 @@ async function createPendingVersion() {
 
   if (pendingVersion.value && currentChannel.value) {
     pendingVersion.value.channelName = currentChannel.value.name;
+    pendingVersion.value.channelDescription = currentChannel.value.description;
     pendingVersion.value.channelColor = currentChannel.value.color;
     pendingVersion.value.channelFlags = currentChannel.value.flags;
   }
@@ -224,6 +225,7 @@ async function createVersion() {
 
   loading.submit = true;
   pendingVersion.value.description = descriptionEditor.value.rawEdited;
+  pendingVersion.value.channelDescription = currentChannel.value.description;
   pendingVersion.value.channelColor = currentChannel.value.color;
   pendingVersion.value.channelFlags = currentChannel.value.flags;
 

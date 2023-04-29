@@ -9,6 +9,7 @@ interface Color {
 const props = defineProps<{
   name?: string;
   color?: Color;
+  tooltip?: string;
 }>();
 
 const ccColor = computed(() => {
@@ -49,7 +50,7 @@ const ccColor = computed(() => {
 </script>
 
 <template>
-  <div class="tags inline-flex flex-wrap items-center justify-start">
+  <div class="tags inline-flex flex-wrap items-center justify-start" :title="tooltip">
     <span
       :style="{
         color: ccColor?.foreground,
