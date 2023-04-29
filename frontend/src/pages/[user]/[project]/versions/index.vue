@@ -48,8 +48,12 @@ const requestOptions = computed(() => {
   };
 });
 
-const channels = (await useProjectChannels(route.params.user as string, route.params.project as string)).data;
-const versions = await useProjectVersions(route.params.user as string, route.params.project as string);
+const results = await Promise.all([
+  useProjectChannels(route.params.user as string, route.params.project as string),
+  useProjectVersions(route.params.user as string, route.params.project as string),
+]);
+const channels = results[0].data;
+const versions = results[1];
 filter.channels.push(...channels.value.map((c) => c.name));
 filter.platforms.push(...platforms.value.map((p) => p.enumName));
 
