@@ -65,7 +65,9 @@ useHead(useSeo("Signup", null, route, null));
       <div v-if="errorMessage" class="c-red">{{ errorMessage }}</div>
       <div class="w-max">
         <InputGroup v-model="form.tos" :rules="[sameAs('You need to accept the Terms and Conditions')(true)]" :silent-errors="false" full-width>
-          <InputCheckbox v-model="form.tos" label="I agree to the Terms and Conditions" />
+          <InputCheckbox v-model="form.tos">
+            <template #label>I agree to the&nbsp;<Link to="/terms">Terms and Conditions</Link></template>
+          </InputCheckbox>
         </InputGroup>
       </div>
       <div>
