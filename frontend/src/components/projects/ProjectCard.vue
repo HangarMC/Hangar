@@ -48,7 +48,7 @@ const props = defineProps<{
             </NuxtLink>
             <span class="text-sm">
               by
-              <Link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</Link>
+              <Link :to="'/' + project.namespace.owner" @click.stop="router.push('/' + project.namespace.owner)">{{ project.namespace.owner }}</Link>
             </span>
           </h2>
           <IconMdiCancel v-show="project.visibility === Visibility.SOFT_DELETE" />
