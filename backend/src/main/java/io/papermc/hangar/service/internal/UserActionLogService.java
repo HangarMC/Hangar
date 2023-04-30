@@ -64,7 +64,7 @@ public class UserActionLogService extends HangarComponent {
     @Transactional(readOnly = true)
     public PaginatedResult<HangarLoggedAction> getLogs(final RequestPagination pagination) {
         final List<HangarLoggedAction> log = this.loggedActionsDAO.getLog(pagination);
-        if (!this.getHangarPrincipal().isAllowedGlobal(Permission.SeeIPAdresses)) {
+        if (!this.getHangarPrincipal().isAllowedGlobal(Permission.ViewIp)) {
             for (final HangarLoggedAction hangarLoggedAction : log) {
                 hangarLoggedAction.hideAddress();
             }

@@ -6,7 +6,6 @@ import { User } from "hangar-api";
 import { useOrganization, useUser } from "~/composables/useApiHelper";
 import { useErrorRedirect } from "~/composables/useErrorRedirect";
 import { createError, navigateTo } from "#imports";
-import Delayed from "~/components/design/Delayed.vue";
 
 const i18n = useI18n();
 const route = useRoute();

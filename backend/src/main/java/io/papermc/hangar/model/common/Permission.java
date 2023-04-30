@@ -64,7 +64,6 @@ public class Permission implements Comparable<Permission>, Argument {
     public static final Permission EditAllUserSettings = new Permission(1L << 43);
     public static final Permission RestoreVersion = new Permission(1L << 44);
     public static final Permission RestoreProject = new Permission(1L << 45);
-    public static final Permission SeeIPAdresses = new Permission(1L << 46);
 
     private final long value;
 

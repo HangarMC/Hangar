@@ -41,7 +41,7 @@ const headers: Header[] = [
   { title: i18n.t("userActionLog.newState"), name: "newState", sortable: false },
 ];
 
-if (!hasPerms(NamedPermission.SEE_IP_ADDRESSES)) {
+if (!hasPerms(NamedPermission.VIEW_IP)) {
   headers.splice(1, 1);
 }
 
