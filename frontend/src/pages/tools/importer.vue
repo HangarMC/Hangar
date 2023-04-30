@@ -179,7 +179,7 @@ function createProject(project: NewProjectForm) {
         status[project.name].errors.push("Unknown error");
       }
 
-      handleRequestError(err, "project.new.error.create");
+      handleRequestError(err);
     })
     .finally(() => {
       status[project.name].loading = false;
