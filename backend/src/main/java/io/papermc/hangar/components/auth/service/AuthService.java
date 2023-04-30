@@ -105,7 +105,6 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         if (username == null) {
             throw new UsernameNotFoundException("no user with null username");
         }
-        System.out.println("loading user " + username);
         final UserTable userTable = this.userDAO.getUserTable(username);
         if (userTable == null) {
             throw new UsernameNotFoundException("no user in table");
