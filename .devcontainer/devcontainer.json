@@ -1,0 +1,42 @@
+{
+	"name": "Hangar",
+	"image": "mcr.microsoft.com/devcontainers/java:0-17",
+	"features": {
+		"ghcr.io/devcontainers/features/java:1": {
+			"version": "none",
+			"installMaven": "true",
+			"installGradle": "false"
+		},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/devcontainers-contrib/features/pnpm:2": {}
+	},
+	"portsAttributes": {
+		"1025": {
+			"label": "MailSlurper SMTP"
+		},
+		"3333": {
+			"label": "Hangar Frontend"
+		},
+		"4436-4437": {
+			"label": "MailSlurper HTTP"
+		},
+		"5432": {
+			"label": "Postgres"
+		},
+		"8080": {
+			"label": "Hangar Backend"
+		}
+	},
+	"remoteEnv": {
+		"BACKEND_HOST": "https://localhost:8080",
+		"BACKEND_DATA_HOST": "https://localhost:8080"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"vscjava.vscode-java-pack",
+				"Vue.volar"
+			]
+		}
+	}
+}
