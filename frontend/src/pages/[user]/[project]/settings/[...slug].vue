@@ -154,7 +154,7 @@ async function transfer() {
     await useInternalApi<string>(`projects/project/${route.params.user}/${route.params.project}/transfer`, "post", {
       content: search.value,
     });
-    await notificationStore.success(i18n.t("project.settings.success.transferRequest", [search.value]));
+    notificationStore.success(i18n.t("project.settings.success.transferRequest", [search.value]));
   } catch (e: any) {
     handleRequestError(e);
   }

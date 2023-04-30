@@ -41,16 +41,19 @@ public interface HangarNotificationsDAO {
     @SqlQuery("SELECT upr.id roleId," +
         "   upr.role_type AS role," +
         "   p.name," +
+        "   o.name as representingOrg," +
         "   '/' || p.owner_name || '/' || p.slug url" +
         "   FROM user_project_roles upr" +
         "   JOIN projects p ON p.id = upr.project_id" +
-        "   WHERE upr.user_id = :userId " +
+        "   LEFT JOIN organizations o ON o.user_id = upr.user_id" +
+        "   WHERE (upr.user_id = :userId OR o.owner_id = :userId)" +
         "       AND upr.accepted = FALSE" +
         "   ORDER BY upr.created_at DESC")
     List<HangarInvite.HangarProjectInvite> getProjectInvites(long userId);
 
     @RegisterConstructorMapper(HangarInvite.HangarOrganizationInvite.class)
     @SqlQuery("SELECT uor.id AS roleId," +
+        "   uor.role_type AS role," +
         "   o.name," +
         "   '/' || o.name url" +
         "   FROM user_organization_roles uor" +

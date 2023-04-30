@@ -34,6 +34,11 @@ public class OrganizationInviteService extends InviteService<OrganizationContext
     }
 
     @Override
+    protected boolean canInviteOrganizationUser() {
+        return false;
+    }
+
+    @Override
     protected OrganizationRole getOwnerRole() {
         return OrganizationRole.ORGANIZATION_OWNER;
     }

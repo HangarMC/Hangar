@@ -7,6 +7,7 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.Owned;
 import io.papermc.hangar.model.common.roles.Role;
+import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
@@ -14,6 +15,7 @@ import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.LogContext;
 import io.papermc.hangar.model.loggable.Loggable;
+import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.perms.members.MemberService;
 import io.papermc.hangar.service.internal.perms.roles.RoleService;
 import io.papermc.hangar.service.internal.users.NotificationService;
@@ -30,6 +32,9 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
 
     @Autowired
     protected NotificationService notificationService;
+
+    @Autowired
+    protected OrganizationService organizationService;
 
     @Autowired
     private UserDAO userDAO;
@@ -68,9 +73,10 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
         if (userTable == null) {
             throw new HangarApiException(this.errorPrefix + "invalidUser", user);
         }
-        // TODO transfer project to organization (and divert invite to owner)
-        if (userTable.getEmail().endsWith(this.config.org.dummyEmailDomain())) {
-            throw new HangarApiException("Org transfers are not implemented yet");
+
+        final OrganizationTable organizationTable = this.organizationService.getOrganizationTableByUser(userTable.getId());
+        if (!this.canInviteOrganizationUser() && organizationTable != null) {
+            throw new HangarApiException("Cannot transfer to an organization");
         }
 
         final List<RT> ownerRoles = this.roleService.getRoles(joinable.getId(), this.getOwnerRole());
@@ -78,16 +84,26 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
             throw new HangarApiException(this.errorPrefix + "pendingTransfer");
         }
 
+        //TODO Allow sending transfer request to current members
         final RT roleTable = this.roleService.addRole(this.getOwnerRole().create(joinable.getId(), null, userTable.getId(), false), true);
         if (roleTable == null) {
             throw new HangarApiException(this.errorPrefix + "alreadyInvited", user);
         }
 
-        this.joinableNotificationService.transferRequest(roleTable, joinable, this.getHangarPrincipal().getUserId(), this.getHangarPrincipal().getName());
+        // If transferred to an organization, notify the organization owner
+        this.joinableNotificationService.transferRequest(
+            organizationTable != null ? organizationTable.getOwnerId() : userTable.getId(),
+            joinable,
+            this.getHangarPrincipal().getUserId(),
+            this.getHangarPrincipal().getName()
+        );
         this.logInvitesSent(joinable, "Sent transfer request: " + userTable.getName());
     }
 
-    @Transactional
+    protected boolean canInviteOrganizationUser() {
+        return true;
+    }
+
     public void cancelTransferRequest(final J joinable) {
         final List<RT> ownerRoles = this.roleService.getRoles(joinable.getId(), this.getOwnerRole());
         for (final RT ownerRole : ownerRoles) {
@@ -110,12 +126,13 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
     @Transactional
     public void acceptInvite(RT roleTable) {
         if (roleTable.isAccepted()) {
-            throw new IllegalArgumentException("Cannot accept an invite that has already been accepted");
+            throw new HangarApiException("Cannot accept an invite that has already been accepted");
         }
 
-        final UserTable userTable = this.userDAO.getUserTable(roleTable.getUserId());
         roleTable = this.roleService.changeAcceptance(roleTable, true);
         this.memberService.addMember(roleTable);
+
+        final UserTable userTable = this.userDAO.getUserTable(roleTable.getUserId());
         this.logInviteAccepted(roleTable, userTable);
 
         if (roleTable.getRole().getRoleId() == this.getOwnerRole().getRoleId()) {

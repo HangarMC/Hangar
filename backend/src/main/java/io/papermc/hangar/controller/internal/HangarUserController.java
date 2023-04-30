@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.service.CredentialsService;
+import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -12,6 +13,7 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.model.common.roles.Role;
+import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
@@ -30,8 +32,8 @@ import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import io.papermc.hangar.security.configs.SecurityConfig;
-import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.service.api.UsersApiService;
+import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.perms.roles.OrganizationRoleService;
 import io.papermc.hangar.service.internal.perms.roles.ProjectRoleService;
 import io.papermc.hangar.service.internal.perms.roles.RoleService;
@@ -42,7 +44,6 @@ import io.papermc.hangar.service.internal.users.invites.OrganizationInviteServic
 import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -82,6 +83,7 @@ public class HangarUserController extends HangarComponent {
     private final UserService userService;
     private final NotificationService notificationService;
     private final ProjectRoleService projectRoleService;
+    private final OrganizationService organizationService;
     private final OrganizationRoleService organizationRoleService;
     private final ProjectInviteService projectInviteService;
     private final OrganizationInviteService organizationInviteService;
@@ -90,12 +92,13 @@ public class HangarUserController extends HangarComponent {
     private final CredentialsService credentialsService;
 
     @Autowired
-    public HangarUserController(final ObjectMapper mapper, final UsersApiService usersApiService, final UserService userService, final NotificationService notificationService, final ProjectRoleService projectRoleService, final OrganizationRoleService organizationRoleService, final ProjectInviteService projectInviteService, final OrganizationInviteService organizationInviteService, final TokenService tokenService, final AvatarService avatarService, final CredentialsService credentialsService) {
+    public HangarUserController(final ObjectMapper mapper, final UsersApiService usersApiService, final UserService userService, final NotificationService notificationService, final ProjectRoleService projectRoleService, final OrganizationService organizationService, final OrganizationRoleService organizationRoleService, final ProjectInviteService projectInviteService, final OrganizationInviteService organizationInviteService, final TokenService tokenService, final AvatarService avatarService, final CredentialsService credentialsService) {
         this.mapper = mapper;
         this.usersApiService = usersApiService;
         this.userService = userService;
         this.notificationService = notificationService;
         this.projectRoleService = projectRoleService;
+        this.organizationService = organizationService;
         this.organizationRoleService = organizationRoleService;
         this.projectInviteService = projectInviteService;
         this.organizationInviteService = organizationInviteService;
@@ -337,13 +340,20 @@ public class HangarUserController extends HangarComponent {
 
     private <RT extends ExtendedRoleTable<? extends Role<RT>, ?>, RS extends RoleService<RT, ?, ?>, IS extends InviteService<?, ?, RT, ?>> void updateRole(final RS roleService, final IS inviteService, final long id, final InviteStatus status) {
         final RT table = roleService.getRole(id);
-        if (table == null || table.getUserId() != this.getHangarPrincipal().getId()) {
+        if (table == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
-        switch (status) {
-            case DECLINE -> inviteService.declineInvite(table);
-            case ACCEPT -> inviteService.acceptInvite(table);
+        final OrganizationTable organizationTable = this.organizationService.getOrganizationTableByUser(table.getUserId());
+        final long notificationReceiver = organizationTable != null ? organizationTable.getOwnerId() : table.getUserId();
+        if (notificationReceiver != this.getHangarPrincipal().getId()) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+
+        if (status == InviteStatus.DECLINE) {
+            inviteService.declineInvite(table);
+        } else if (status == InviteStatus.ACCEPT) {
+            inviteService.acceptInvite(table);
         }
     }
 

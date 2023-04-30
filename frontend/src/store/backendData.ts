@@ -30,6 +30,18 @@ export function getRole(id: number): Role | undefined {
   );
 }
 
+export function getRoleByValue(id: string): Role | undefined {
+  return (
+    getRoleFromRolesValue(id, typedBackendData.globalRoles) ||
+    getRoleFromRolesValue(id, typedBackendData.projectRoles) ||
+    getRoleFromRolesValue(id, typedBackendData.orgRoles)
+  );
+}
+
+function getRoleFromRolesValue(id: string, roles: Role[]): Role | undefined {
+  return roles.find((r) => r.value === id);
+}
+
 function getRoleFromRoles(id: number, roles: Role[]): Role | undefined {
   return roles.find((r) => r.roleId === id);
 }

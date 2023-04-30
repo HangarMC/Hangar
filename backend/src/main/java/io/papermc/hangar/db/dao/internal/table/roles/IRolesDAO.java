@@ -12,6 +12,8 @@ public interface IRolesDAO<T extends IRoleTable<? extends Role<T>>> {
 
     void delete(T table);
 
+    T getTable(long id);
+
     T getTable(long id, long userId);
 
     List<T> getRoleTablesByPrincipal(long principalId, String role);

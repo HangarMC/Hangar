@@ -688,6 +688,8 @@
     "invites": "Invites",
     "invited": "You have been invited to join the {0}",
     "inviteAccepted": "You have accepted an invitation to the {0}",
+    "invitedOrg": "Your organization {0} has been invited to join the {1}",
+    "inviteAcceptedOrg": "You have accepted an invitation for {0} to the {1}",
     "readAll": "Mark all as read",
     "unread": "Unread",
     "read": "Read",

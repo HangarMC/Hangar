@@ -21,6 +21,7 @@ import Pagination from "~/components/design/Pagination.vue";
 import Tabs from "~/components/design/Tabs.vue";
 import { definePageMeta } from "#imports";
 import { Tab } from "~/types/components/design/Tabs";
+import { getRoleByValue } from "~/store/backendData";
 
 definePageMeta({
   loginRequired: true,
@@ -154,13 +155,18 @@ function updateSelectedNotifications() {
       </template>
       <Tabs v-model="selectedInvitesTab" :tabs="selectedInvitesTabs" :vertical="false" />
       <Card v-for="(invite, index) in filteredInvites" :key="index">
-        {{ i18n.t(!invite.accepted ? "notifications.invited" : "notifications.inviteAccepted", [invite.type]) }}:
-        <NuxtLink :to="invite.url" exact>{{ invite.name }}</NuxtLink>
-        <template v-if="!invite.accepted">
+        <span v-if="invite.representingOrg">
+          {{ i18n.t(!invite.accepted ? "notifications.invitedOrg" : "notifications.inviteAcceptedOrg", [invite.representingOrg, invite.type]) }}:
+        </span>
+        <span v-else> {{ i18n.t(!invite.accepted ? "notifications.invited" : "notifications.inviteAccepted", [invite.type]) }}: </span>
+
+        <NuxtLink :to="invite.url" exact class="mr-2">{{ invite.name }}</NuxtLink>
+        <Tag :color="{ background: getRoleByValue(invite.role).color }" :name="getRoleByValue(invite.role).title" />
+        <div v-if="!invite.accepted" class="-mt-4">
           <br />
           <Button class="mr-2" @click="updateInvite(invite, 'accept')">{{ i18n.t("notifications.invite.btns.accept") }}</Button>
           <Button @click="updateInvite(invite, 'decline')">{{ i18n.t("notifications.invite.btns.decline") }}</Button>
-        </template>
+        </div>
       </Card>
       <div v-if="!filteredInvites.length" class="text-lg">
         {{ i18n.t("notifications.empty.invites") }}

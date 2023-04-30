@@ -33,6 +33,11 @@ public interface GlobalRolesDAO extends IRolesDAO<GlobalRoleTable> {
     void deleteAll(long userId);
 
     @Override
+    default GlobalRoleTable getTable(final long id) {
+        throw new UnsupportedOperationException("Cannot get global roles by just an id");
+    }
+
+    @Override
     default GlobalRoleTable getTable(final long id, final long userId) {
         throw new UnsupportedOperationException("Cannot get global roles by just an id");
     }

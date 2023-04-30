@@ -51,7 +51,7 @@ public abstract class RoleService<RT extends IRoleTable<R>, R extends Role<RT>, 
     }
 
     public RT getRole(final long id) {
-        return this.roleDao.getTable(id, this.getHangarPrincipal().getUserId());
+        return this.roleDao.getTable(id);
     }
 
     public RT getRole(final long principalId, final long userId) {
