@@ -1,45 +1,51 @@
 {
-	"name": "Hangar",
-	"image": "mcr.microsoft.com/devcontainers/java:0-17",
-	"features": {
-		"ghcr.io/devcontainers/features/java:1": {
-			"version": "none", // Java is already present.
-			"installMaven": "true"
-		},
-		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
-		"ghcr.io/devcontainers-contrib/features/pnpm:2": {}
-	},
-	"portsAttributes": {
-		"1025": {
-			"label": "MailSlurper SMTP"
-		},
-		"3333": {
-			"label": "Nuxt Frontend"
-		},
-		"4436-4437": {
-			"label": "MailSlurper HTTP"
-		},
-		"5432": {
-			"label": "Postgres"
-		},
-		"8080": {
-			"label": "Maven Backend"
-		},
-		"9411": {
-			"label": "Zipkin"
-		}
-	},
-	"postCreateCommand": "bash ./.devcontainer/post-create.sh",
-	"remoteEnv": {
-		"BACKEND_HOST": "https://localhost:8080",
-		"BACKEND_DATA_HOST": "https://localhost:8080"
-	},
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"vscjava.vscode-java-pack",
-				"Vue.volar"
-			]
-		}
-	}
+    "name": "Hangar",
+    "image": "mcr.microsoft.com/devcontainers/java:0-17",
+    "features": {
+        "ghcr.io/devcontainers/features/java:1": {
+            "version": "none", // Java is already present.
+            "installMaven": "true"
+        },
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+        "ghcr.io/devcontainers-contrib/features/pnpm:2": {}
+    },
+    "portsAttributes": {
+        "1025": {
+            "label": "MailSlurper SMTP"
+        },
+        "3333": {
+            "label": "Nuxt Frontend"
+        },
+        "4436-4437": {
+            "label": "MailSlurper HTTP"
+        },
+        "5432": {
+            "label": "Postgres"
+        },
+        "8080": {
+            "label": "Maven Backend"
+        },
+        "9411": {
+            "label": "Zipkin"
+        }
+    },
+    "postCreateCommand": "bash ./.devcontainer/post-create.sh",
+    "remoteEnv": {
+        "BACKEND_HOST": "https://localhost:8080",
+        "BACKEND_DATA_HOST": "https://localhost:8080"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                // Language support
+                "Vue.volar",
+                "vscjava.vscode-java-pack",
+                // Spring Boot Tools
+                "vmware.vscode-spring-boot",
+                "vscjava.vscode-spring-boot-dashboard",
+                // Editor tools
+                "EditorConfig.EditorConfig"
+            ]
+        }
+    }
 }
