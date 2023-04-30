@@ -21,8 +21,8 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.service.internal.PlatformService;
-import io.papermc.hangar.service.internal.projects.ProjectService;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -46,38 +46,36 @@ public class VersionDependencyService extends HangarComponent {
     private final ProjectsDAO projectsDAO;
     private final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependenciesDAO;
     private final PlatformService platformService;
-    private final ProjectService projectService;
     private final DownloadService downloadService;
 
     @Autowired
-    public VersionDependencyService(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final VersionsApiDAO versionsApiDAO, final ProjectsDAO projectsDAO, final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final PlatformService platformService, final ProjectService projectService, final DownloadService downloadService) {
+    public VersionDependencyService(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final VersionsApiDAO versionsApiDAO, final ProjectsDAO projectsDAO, final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final PlatformService platformService, final DownloadService downloadService) {
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.versionsApiDAO = versionsApiDAO;
         this.projectsDAO = projectsDAO;
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.platformService = platformService;
-        this.projectService = projectService;
         this.downloadService = downloadService;
     }
 
     @Cacheable(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p3") // versionId is key
     public DownloadsAndDependencies addDownloadsAndDependencies(final String user, final String project, final String versionName, final long versionId) {
+        //TODO All of this is dumb and needs to be redone into as little queries as possible
         final Map<Platform, SortedSet<String>> platformDependencies = this.versionsApiDAO.getPlatformDependencies(versionId);
         final Map<Platform, String> platformDependenciesFormatted = new EnumMap<>(Platform.class);
-        for (final Map.Entry<Platform, SortedSet<String>> entry : platformDependencies.entrySet()) {
+        platformDependencies.entrySet().parallelStream().forEach(entry -> {
             final List<String> fullVersionsForPlatform = this.platformService.getFullVersionsForPlatform(entry.getKey());
             final String formattedVersionRange = VersionFormatter.formatVersionRange(new ArrayList<>(entry.getValue()), fullVersionsForPlatform);
             platformDependenciesFormatted.put(entry.getKey(), formattedVersionRange);
-        }
+        });
 
-        // TODO into one query
         final Map<Platform, Set<PluginDependency>> pluginDependencies = new EnumMap<>(Platform.class);
-        for (final Platform platform : Platform.getValues()) {
+        Arrays.stream(Platform.getValues()).parallel().forEach(platform -> {
             final Set<PluginDependency> pluginDependencySet = this.versionsApiDAO.getPluginDependencies(versionId, platform);
             if (!pluginDependencySet.isEmpty()) {
                 pluginDependencies.put(platform, pluginDependencySet);
             }
-        }
+        });
 
         final Map<Platform, PlatformVersionDownload> downloads = this.downloadService.getDownloads(user, project, versionName, versionId);
         return new DownloadsAndDependencies(pluginDependencies, platformDependencies, platformDependenciesFormatted, downloads);

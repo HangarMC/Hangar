@@ -160,7 +160,8 @@ public class VersionsApiService extends HangarComponent {
     @Transactional(readOnly = true)
     public PaginatedResult<Version> getVersions(final String author, final String slug, final RequestPagination pagination) {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
-        final List<Version> versions = this.versionsApiDAO.getVersions(author, slug, canSeeHidden, this.getHangarUserId(), pagination).entrySet().stream()
+        //TODO Squash queries
+        final List<Version> versions = this.versionsApiDAO.getVersions(author, slug, canSeeHidden, this.getHangarUserId(), pagination).entrySet().parallelStream()
             .map(entry -> this.versionDependencyService.addDownloadsAndDependencies(author, slug, entry.getValue().getName(), entry.getKey()).applyTo(entry.getValue()))
             .sorted((v1, v2) -> v2.getCreatedAt().compareTo(v1.getCreatedAt()))
             .toList();

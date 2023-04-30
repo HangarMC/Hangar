@@ -38,6 +38,7 @@ import io.papermc.hangar.service.internal.versions.PinnedVersionService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
@@ -122,10 +123,11 @@ public class ProjectService extends HangarComponent {
     }
 
     public HangarProject getHangarProject(final String author, final String slug) {
+        //TODO All of this is dumb and needs to be redone into as little queries as possible
         final Pair<Long, Project> project = this.hangarProjectsDAO.getProject(author, slug, this.getHangarUserId());
         final ProjectOwner projectOwner = this.getProjectOwner(author);
         final List<JoinableMember<ProjectRoleTable>> members = this.hangarProjectsDAO.getProjectMembers(project.getLeft(), this.getHangarUserId(), this.permissionService.getProjectPermissions(this.getHangarUserId(), project.getLeft()).has(Permission.EditProjectSettings));
-        members.forEach((member) -> member.setAvatarUrl(this.avatarService.getUserAvatarUrl(member.getUser())));
+        members.parallelStream().forEach((member) -> member.setAvatarUrl(this.avatarService.getUserAvatarUrl(member.getUser())));
         String lastVisibilityChangeComment = "";
         String lastVisibilityChangeUserName = "";
         if (project.getRight().getVisibility() == Visibility.NEEDSCHANGES || project.getRight().getVisibility() == Visibility.SOFTDELETE) {
@@ -140,13 +142,13 @@ public class ProjectService extends HangarComponent {
         final List<HangarProject.PinnedVersion> pinnedVersions = this.pinnedVersionService.getPinnedVersions(project.getRight().getNamespace().getOwner(), project.getRight().getNamespace().getSlug(), project.getLeft());
 
         final Map<Platform, HangarVersion> mainChannelVersions = new EnumMap<>(Platform.class);
-        for (final Platform platform : Platform.getValues()) {
+        Arrays.stream(Platform.getValues()).parallel().forEach(platform -> {
             final HangarVersion version = this.getLastVersion(author, slug, platform, this.config.channels.nameDefault());
             if (version != null) {
                 this.versionDependencyService.addDownloadsAndDependencies(author, slug, version.getName(), version.getId()).applyTo(version);
                 mainChannelVersions.put(platform, version);
             }
-        }
+        });
 
         final ExtendedProjectPage projectPage = this.projectPageService.getProjectHomePage(project.getRight().getId());
         final HangarProject hangarProject = new HangarProject(project.getRight(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, mainChannelVersions, projectPage);
