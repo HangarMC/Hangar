@@ -74,7 +74,7 @@ public class PlatformService extends HangarComponent {
     }
 
     @Transactional
-    @CacheEvict(value = CacheConfig.PLATFORMS, allEntries = true)
+    @CacheEvict(value = {CacheConfig.PLATFORMS, CacheConfig.PLATFORMS_FULL}, allEntries = true)
     public void updatePlatformVersions(final Map<Platform, List<String>> platformVersions) {
         platformVersions.forEach((platform, versions) -> {
             final Map<String, PlatformVersionTable> platformVersionTables = this.platformVersionDAO.getForPlatform(platform);

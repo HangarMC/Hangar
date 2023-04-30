@@ -67,6 +67,11 @@ public class CacheConfig {
         return this.createCache(PLATFORMS, Duration.ofHours(12), 100);
     }
 
+    @Bean(PLATFORMS_FULL)
+    Cache platformFullCache() {
+        return this.createCache(PLATFORMS_FULL, Duration.ofHours(24), 10);
+    }
+
     @Bean(PROJECTS)
     Cache projectsCache() {
         return this.createCache(PROJECTS, Duration.ofHours(1), 10);
@@ -169,7 +174,7 @@ public class CacheConfig {
 
     @Bean(USERNAME)
     Cache usernameCache() {
-        return this.createCache(AVATARS, Duration.ofHours(2), 500);
+        return this.createCache(USERNAME, Duration.ofHours(2), 500);
     }
 
     @Bean(VERSION_DEPENDENCIES)
