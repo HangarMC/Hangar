@@ -19,7 +19,16 @@ public interface HangarStatsDAO {
     @RegisterConstructorMapper(DayStats.class)
     List<DayStats> getStats(LocalDate startDate, LocalDate endDate);
 
-    @SqlUpdate("UPDATE <table> pvdi SET user_id = (SELECT pvdi2.user_id FROM <table> pvdi2 WHERE pvdi2.user_id IS NOT NULL AND pvdi2.cookie = pvdi.cookie LIMIT 1) WHERE pvdi.user_id IS NULL AND pvdi.processed = 0")
+    @SqlUpdate("""
+        UPDATE <table> AS pvdi
+        SET user_id = pvdi2.user_id
+        FROM (
+          SELECT DISTINCT cookie, user_id
+          FROM project_versions_downloads_individual
+          WHERE user_id IS NOT NULL
+        ) AS pvdi2
+        WHERE pvdi.cookie = pvdi2.cookie AND pvdi.user_id IS NULL AND pvdi.processed = 0
+                                """)
     void fillStatsUserIdsFromOthers(@Define String table);
 
     @UseStringTemplateEngine
