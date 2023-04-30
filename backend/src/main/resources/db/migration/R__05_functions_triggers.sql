@@ -3,7 +3,8 @@ CREATE OR REPLACE FUNCTION update_project_name_trigger() RETURNS trigger
 AS
 $$
 BEGIN
-    UPDATE projects p SET name = u.name FROM users u WHERE p.id = new.id AND u.id = new.owner_id;
+    UPDATE projects p SET owner_name = u.name FROM users u WHERE p.id = new.id AND u.id = new.owner_id;
+    RETURN NULL;
 END;
 $$;
 
