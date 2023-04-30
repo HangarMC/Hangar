@@ -56,18 +56,18 @@ public class ReplicationService implements Receiver {
     @Override
     public void viewAccepted(final View newView) {
         if (this.lastView == null) {
-            log.info("Received initial view: {}", this.viewToString(newView.getMembers()));
+            log.debug("Received initial view: {}", this.viewToString(newView.getMembers()));
         } else {
-            log.info("Received new view.");
+            log.debug("Received new view.");
 
             final List<Address> newMembers = View.newMembers(this.lastView, newView);
             if (!newMembers.isEmpty()) {
-                log.info("New members: {}", this.viewToString(newMembers));
+                log.debug("New members: {}", this.viewToString(newMembers));
             }
 
             final List<Address> exMembers = View.leftMembers(this.lastView, newView);
             if (!exMembers.isEmpty()) {
-                log.info("Exited members: {}", this.viewToString(exMembers));
+                log.debug("Exited members: {}", this.viewToString(exMembers));
             }
         }
         this.lastView = newView;
