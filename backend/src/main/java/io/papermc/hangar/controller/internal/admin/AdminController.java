@@ -156,6 +156,11 @@ public class AdminController extends HangarComponent {
     @PermissionRequired(NamedPermission.VIEW_HEALTH)
     @GetMapping(path = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
     public HealthReport getHealthReport() {
+        if (true) {
+            //TODO
+            throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Health report is disabled");
+        }
+
         final List<UnhealthyProject> staleProjects = this.healthService.getStaleProjects();
         final List<MissingFileCheck> missingFiles = this.healthService.getVersionsWithMissingFiles();
         final List<JobTable> erroredJobs = this.jobService.getErroredJobs();
