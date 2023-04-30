@@ -3,19 +3,16 @@ package io.papermc.hangar.config;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.papermc.hangar.service.ReplicationService;
 import io.papermc.hangar.util.CacheWrapper;
-import java.time.Duration;
 import jakarta.annotation.PostConstruct;
+import java.time.Duration;
 import org.springframework.boot.actuate.metrics.cache.CacheMetricsRegistrar;
 import org.springframework.cache.Cache;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
-import org.springframework.cache.interceptor.BeanFactoryCacheOperationSourceAdvisor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
 @Configuration
-@EnableCaching
 public class CacheConfig {
 
     public static final String AUTHORS = "authors-cache";
@@ -48,14 +45,10 @@ public class CacheConfig {
     private final CacheMetricsRegistrar cacheMetricsRegistrar;
     private final CaffeineCacheManager cacheManager;
     private final ReplicationService replicationService;
-    // don't ask me why we need this bean, without it, caching doesn't work for some methods, as the advisor is still in creation.
-    @SuppressWarnings({"FieldCanBeLocal", "unused"})
-    private final BeanFactoryCacheOperationSourceAdvisor beanFactoryCacheOperationSourceAdvisor;
 
-    public CacheConfig(@Lazy final CacheMetricsRegistrar cacheMetricsRegistrar, final ReplicationService replicationService, final BeanFactoryCacheOperationSourceAdvisor beanFactoryCacheOperationSourceAdvisor) {
+    public CacheConfig(@Lazy final CacheMetricsRegistrar cacheMetricsRegistrar, final ReplicationService replicationService) {
         this.cacheMetricsRegistrar = cacheMetricsRegistrar;
         this.replicationService = replicationService;
-        this.beanFactoryCacheOperationSourceAdvisor = beanFactoryCacheOperationSourceAdvisor;
         this.cacheManager = new CaffeineCacheManager();
     }
 
