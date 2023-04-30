@@ -7,7 +7,7 @@ ALTER TABLE project_version_dependencies ALTER COLUMN external_url TYPE varchar(
 --ALTER TABLE projects ALTER COLUMN tags TYPE varchar(64)[];
 
 -- Create a whole lot of indexes
-CREATE UNIQUE INDEX idx_project_versions_downloads_individual_cookie_user ON project_versions_downloads_individual (user_id, cookie);
+CREATE INDEX idx_project_versions_downloads_individual_cookie_user ON project_versions_downloads_individual (user_id, cookie);
 --CREATE INDEX idx_project_versions_downloads_project_version ON project_versions_downloads (project_id, version_id); Already exists
 CREATE INDEX idx_avatars_subject_type ON avatars (subject, type);
 CREATE INDEX idx_jar_scan_result_version_platform ON jar_scan_result (version_id, platform);

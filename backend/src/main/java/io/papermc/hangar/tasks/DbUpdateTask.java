@@ -25,12 +25,11 @@ public class DbUpdateTask {
 
     @Scheduled(fixedRateString = "#{@hangarConfig.updateTasks.versionDownloads.toMillis()}", initialDelay = 1000)
     public void updateVersionDownloads() {
-        //TODO
-        //this.statService.processVersionDownloads();
+        this.statService.processVersionDownloads();
     }
 
     @Scheduled(fixedRateString = "#{@hangarConfig.updateTasks.projectViews.toMillis()}", initialDelay = 1000)
     public void updateProjectViews() {
-        //this.statService.processProjectViews();
+        this.statService.processProjectViews();
     }
 }
