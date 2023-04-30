@@ -207,7 +207,7 @@ public class AdminController extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Cannot add role with no rank");
         }
 
-        final int rank = this.globalRoleService.getGlobalRoles(user.getUserId()).stream().filter(r -> r.rank() != null).mapToInt(GlobalRole::rank).max().orElse(-1);
+        final int rank = this.globalRoleService.getGlobalRoles(this.getHangarUserId()).stream().filter(r -> r.rank() != null).mapToInt(GlobalRole::rank).max().orElse(-1);
         if (rank == -1 || rank != 0 && globalRole.rank() <= rank) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Cannot add role with higher rank than current highest role");
         }
@@ -224,7 +224,7 @@ public class AdminController extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Cannot remove role with no rank");
         }
 
-        final int rank = this.globalRoleService.getGlobalRoles(user.getUserId()).stream().filter(r -> r.rank() != null).mapToInt(GlobalRole::rank).max().orElse(-1);
+        final int rank = this.globalRoleService.getGlobalRoles(this.getHangarUserId()).stream().filter(r -> r.rank() != null).mapToInt(GlobalRole::rank).max().orElse(-1);
         if (rank == -1 || rank != 0 && globalRole.rank() <= rank) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Cannot remove role with higher rank than current highest role");
         }
