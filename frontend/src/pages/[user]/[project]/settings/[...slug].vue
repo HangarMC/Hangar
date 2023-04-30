@@ -280,7 +280,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
               v-model="form.settings.keywords"
               counter
               :maxlength="useBackendData.validations?.project?.keywords?.max || 5"
-              :tag-maxlength="useBackendData.validations?.project?.keywordName?.max"
+              :tag-maxlength="useBackendData.validations?.project?.keywordName?.max || 16"
               :label="i18n.t('project.new.step3.keywords')"
               :rules="[maxLength()(useBackendData.validations?.project?.keywords?.max || 5), noDuplicated()(() => form.settings.keywords)]"
             />
