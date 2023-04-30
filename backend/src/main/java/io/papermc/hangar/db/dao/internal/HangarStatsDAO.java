@@ -34,7 +34,11 @@ public interface HangarStatsDAO {
          SELECT sq.day,
              sq.project_id,
              <if(downloads)>sq.version_id, sq.platform,<endif>
-             count(DISTINCT sq.<if(withUserId)>user_id<else>address<endif>) FILTER (WHERE sq.processed \\<@ ARRAY[1])
+             <if(withUserId)>count(DISTINCT sq.user_id)<else>count(distinct network(case
+                                               when family(sq.address::inet) = 6 then set_masklen(sq.address, 48)
+                                               when family(sq.address::inet) = 4 then set_masklen(sq.address, 32)
+                                               else null end
+                        )::inet)<endif> FILTER (WHERE sq.processed \\<@ ARRAY[1])
          FROM (SELECT date_trunc('DAY', d.created_at)::date AS day,
                      d.project_id,
                      <if(downloads)>d.version_id, d.platform,<endif>
