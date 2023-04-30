@@ -11,6 +11,7 @@ import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
@@ -69,12 +70,15 @@ public class SitemapService extends HangarComponent {
 
         // add all projects
         final List<ProjectTable> projects = this.projectsDAO.getUserProjects(userTable.getId(), false);
+        projects.removeIf(p -> p.getVisibility() != Visibility.PUBLIC && p.getVisibility() != Visibility.NEEDSAPPROVAL);
         projects.forEach(p -> generator.addPage(userTable.getName() + "/" + p.getSlug()));
 
         // add all versions of said projects
         projects.forEach(p -> {
             final List<ProjectVersionTable> projectVersions = this.projectVersionsDAO.getProjectVersions(p.getId());
-            projectVersions.forEach(pv -> generator.addPage(this.path(userTable.getName(), p.getSlug(), "versions", pv.getVersionString())));
+            projectVersions.stream()
+                .filter(pv -> pv.getVisibility() == Visibility.PUBLIC || pv.getVisibility() == Visibility.NEEDSAPPROVAL)
+                .forEach(pv -> generator.addPage(this.path(userTable.getName(), p.getSlug(), "versions", pv.getVersionString())));
         });
 
         // add all pages of said projects
