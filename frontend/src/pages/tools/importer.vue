@@ -338,7 +338,7 @@ useHead(useSeo(t("importer.title"), null, route, null));
                     <InputTag
                       v-model="project.settings.keywords"
                       :label="t('project.new.step3.keywords')"
-                      :tag-maxlength="useBackendData.validations?.project?.keywordName?.max"
+                      :tag-maxlength="useBackendData.validations?.project?.keywordName?.max || 16"
                       :rules="[maxLength()(useBackendData?.validations?.project?.keywords?.max || 5), noDuplicated()(() => project.settings.keywords)]"
                       :maxlength="useBackendData?.validations?.project?.keywords?.max || 5"
                       counter
