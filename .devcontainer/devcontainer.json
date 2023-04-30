@@ -3,9 +3,8 @@
 	"image": "mcr.microsoft.com/devcontainers/java:0-17",
 	"features": {
 		"ghcr.io/devcontainers/features/java:1": {
-			"version": "none",
-			"installMaven": "true",
-			"installGradle": "false"
+			"version": "none", // Java is already present.
+			"installMaven": "true"
 		},
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
 		"ghcr.io/devcontainers-contrib/features/pnpm:2": {}
@@ -15,7 +14,7 @@
 			"label": "MailSlurper SMTP"
 		},
 		"3333": {
-			"label": "Hangar Frontend"
+			"label": "Nuxt Frontend"
 		},
 		"4436-4437": {
 			"label": "MailSlurper HTTP"
@@ -24,9 +23,13 @@
 			"label": "Postgres"
 		},
 		"8080": {
-			"label": "Hangar Backend"
+			"label": "Maven Backend"
+		},
+		"9411": {
+			"label": "Zipkin"
 		}
 	},
+	"postCreateCommand": "bash ./.devcontainer/post-create.sh",
 	"remoteEnv": {
 		"BACKEND_HOST": "https://localhost:8080",
 		"BACKEND_DATA_HOST": "https://localhost:8080"
