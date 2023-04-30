@@ -197,13 +197,33 @@ public class AdminController extends HangarComponent {
     @PermissionRequired(NamedPermission.EDIT_ALL_USER_SETTINGS)
     @PostMapping("/user/{user}/{role}")
     public void addRole(@PathVariable final UserTable user, @PathVariable final String role) {
-        this.globalRoleService.addRole(new GlobalRoleTable(user.getUserId(), GlobalRole.byApiValue(role)));
+        final GlobalRole globalRole = GlobalRole.byApiValue(role);
+        if (globalRole.rank() == null) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "Cannot add role with no rank");
+        }
+
+        final int rank = this.globalRoleService.getGlobalRoles(user.getUserId()).stream().filter(r -> r.rank() != null).mapToInt(GlobalRole::rank).max().orElse(-1);
+        if (rank == -1 || rank != 0 && globalRole.rank() <= rank) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "Cannot add role with higher rank than current highest role");
+        }
+
+        this.globalRoleService.addRole(new GlobalRoleTable(user.getUserId(), globalRole));
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.EDIT_ALL_USER_SETTINGS)
     @DeleteMapping("/user/{user}/{role}")
     public void removeRole(@PathVariable final UserTable user, @PathVariable final String role) {
-        this.globalRoleService.deleteRole(new GlobalRoleTable(user.getUserId(), GlobalRole.byApiValue(role)));
+        final GlobalRole globalRole = GlobalRole.byApiValue(role);
+        if (globalRole.rank() == null) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "Cannot remove role with no rank");
+        }
+
+        final int rank = this.globalRoleService.getGlobalRoles(user.getUserId()).stream().filter(r -> r.rank() != null).mapToInt(GlobalRole::rank).max().orElse(-1);
+        if (rank == -1 || rank != 0 && globalRole.rank() <= rank) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "Cannot remove role with higher rank than current highest role");
+        }
+
+        this.globalRoleService.deleteRole(new GlobalRoleTable(user.getUserId(), globalRole));
     }
 }
