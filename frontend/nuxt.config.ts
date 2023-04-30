@@ -77,6 +77,13 @@ export default defineNuxtConfig({
       // Workaround until they support native ESM
       noExternal: ["vue3-popper"],
     },
+    // Codespaces workaround
+    server: {
+      https: process.env.CODESPACES === "true",
+      hmr: {
+        protocol: process.env.CODESPACES ? "wss" : "ws",
+      },
+    },
   },
   experimental: {
     writeEarlyHints: false,
