@@ -1,10 +1,12 @@
-## Sets up an bare-bones Hangar environment to make developing in Codespaces quicker and easier.
+#!/bin/bash
 
-## Install Maven dependencies (backend)
-cd backend && mvn dependency:go-offline -q
+# Sets up an bare-bones Hangar environment to make developing in Codespaces quicker and easier.
 
-## Install PNPM dependencies (frontend)
+# Create Docker containers (db & email)
+cd docker && docker-compose -f dev.yml up --no-start
+
+# Install PNPM dependencies (frontend)
 cd ../frontend && pnpm i --silent
 
-## Create Docker containers (db & email)
-cd ../docker && docker-compose -f dev.yml up --no-start --quiet-pull
+# Install Maven dependencies (backend)
+cd ../backend && exec mvn dependency:go-offline -q
