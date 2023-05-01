@@ -5,7 +5,8 @@ import Icons from "unplugin-icons/vite";
 import Components from "unplugin-vue-components/vite";
 import { ProxyOptions } from "@nuxt-alt/proxy";
 import { defineNuxtConfig } from "nuxt/config";
-import { ViteConfig } from "nuxt/schema";
+import type { ViteConfig } from "nuxt/schema";
+import type { HmrOptions } from "vite";
 import prettier from "./src/vite/prettier";
 import unocss from "./unocss.config";
 
@@ -73,6 +74,22 @@ export default defineNuxtConfig({
       //   fix: true,
       // }),
       prettier(),
+
+      (() => {
+        if (process.env.CODESPACES)
+          return {
+            name: "client-host",
+            transform(code, id) {
+              if (id.endsWith("dist/client/client.mjs") || id.endsWith("dist/client/env.mjs")) {
+                return code
+                  .replace("__HMR_HOSTNAME__", JSON.stringify((<HmrOptions>getDevContainerWorkaround().server?.hmr).host))
+                  .replace("__HMR_PROTOCOL__", JSON.stringify("wss")); // seems to be ignoring the server.hmr.protocol value
+              }
+
+              return code;
+            },
+          };
+      })(),
     ],
     ssr: {
       // Workaround until they support native ESM
@@ -141,7 +158,6 @@ function defineProxyBackend(): ProxyOptions {
 }
 
 // Codespaces workaround
-// TODO: implement https://github.com/vitejs/vite/issues/8666#issuecomment-1315694497
 function getDevContainerWorkaround(): ViteConfig {
   return process.env.CODESPACES === "true"
     ? {
