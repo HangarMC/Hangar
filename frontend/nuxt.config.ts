@@ -5,6 +5,7 @@ import Icons from "unplugin-icons/vite";
 import Components from "unplugin-vue-components/vite";
 import { ProxyOptions } from "@nuxt-alt/proxy";
 import { defineNuxtConfig } from "nuxt/config";
+import { ViteConfig } from "nuxt/schema";
 import prettier from "./src/vite/prettier";
 import unocss from "./unocss.config";
 
@@ -77,13 +78,7 @@ export default defineNuxtConfig({
       // Workaround until they support native ESM
       noExternal: ["vue3-popper"],
     },
-    // Codespaces workaround
-    server: {
-      https: process.env.CODESPACES === "true",
-      hmr: {
-        protocol: process.env.CODESPACES ? "wss" : "ws",
-      },
-    },
+    server: getDevContainerWorkaround(),
   },
   experimental: {
     writeEarlyHints: false,
@@ -143,4 +138,20 @@ function defineProxyBackend(): ProxyOptions {
     },
     changeOrigin: true,
   };
+}
+
+// Codespaces workaround
+// TODO: implement https://github.com/vitejs/vite/issues/8666#issuecomment-1315694497
+function getDevContainerWorkaround(): ViteConfig {
+  return process.env.CODESPACES === "true"
+    ? {
+        server: {
+          https: true,
+          hmr: {
+            host: `${process.env.CODESPACE_NAME}-24678.${process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}`,
+            protocol: "wss",
+          },
+        },
+      }
+    : {};
 }
