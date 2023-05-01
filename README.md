@@ -25,6 +25,7 @@ Fork the project and pull it in your IDE.
 * Docker is required in order to run the PostgreSQL database and the dummy email server
 * Java 17 or higher
 * [pnpm]
+* mvn
 * git
 
 ### Setting up
@@ -34,7 +35,7 @@ To get the project running locally, you need to follow a few steps:
 1. Get the dummy database and email server up and running. Move to the docker folder `cd docker` then run `docker-compose -f dev.yml up -d` (`-d` as an optional parameter
    to run the containers in the background).
    Alternatively, if you are using IntelliJ you can press the green arrow in the `docker/dev.yml` file.
-2. Run the Spring Boot application. You can do this in the CLI with `mvn spring-boot:run`, or if you're using IntelliJ, it is included in the run
+2. Move to the `backend` directory: `cd ../backend`. In that directory, run `mvn spring-boot:run`, or if you're using IntelliJ, it is included in the run
    configurations.
 3. Move to the `frontend` directory: `cd ../frontend`. In that directory, run `pnpm install`. This will install all the needed Node modules.
 4. After the installation, run `pnpm run dev` in the frontend directory to initiate the build and launch. Changes you do to the frontend will be reloaded
