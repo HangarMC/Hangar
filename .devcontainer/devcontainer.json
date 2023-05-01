@@ -2,6 +2,7 @@
     "name": "Hangar",
     "image": "mcr.microsoft.com/devcontainers/java:0-17",
     "features": {
+        "ghcr.io/devcontainers/features/github-cli:1": {},
         "ghcr.io/devcontainers/features/java:1": {
             "version": "none", // Java is already present.
             "installMaven": "true"
@@ -9,6 +10,7 @@
         "ghcr.io/devcontainers/features/docker-in-docker:2": {},
         "ghcr.io/devcontainers-contrib/features/pnpm:2": {}
     },
+    "forwardPorts": [3333, 24678],
     "portsAttributes": {
         "1025": {
             "label": "MailSlurper SMTP"
@@ -27,8 +29,13 @@
         },
         "9411": {
             "label": "Zipkin"
+        },
+        "24678": {
+            "label": "Nuxt WebSocket"
         }
     },
+
+    "postAttachCommand": "bash ./.devcontainer/post-attach.sh",
     "postCreateCommand": "bash ./.devcontainer/post-create.sh",
     "remoteEnv": {
         "BACKEND_HOST": "https://localhost:8080",
