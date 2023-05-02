@@ -3,22 +3,23 @@ package io.papermc.hangar.model.db.stats;
 import io.papermc.hangar.model.db.Table;
 import java.net.InetAddress;
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 public abstract class IndividualTable extends Table {
 
     private final InetAddress address;
-    private final String cookie;
+    private final UUID cookie;
     private final Long userId;
     private final int processed;
 
-    protected IndividualTable(final InetAddress address, final String cookie, final Long userId) {
+    protected IndividualTable(final InetAddress address, final UUID cookie, final Long userId) {
         this.address = address;
         this.cookie = cookie;
         this.userId = userId;
         this.processed = 0;
     }
 
-    protected IndividualTable(final OffsetDateTime createdAt, final long id, final InetAddress address, final String cookie, final Long userId, final int processed) {
+    protected IndividualTable(final OffsetDateTime createdAt, final long id, final InetAddress address, final UUID cookie, final Long userId, final int processed) {
         super(createdAt, id);
         this.address = address;
         this.cookie = cookie;
@@ -30,7 +31,7 @@ public abstract class IndividualTable extends Table {
         return this.address;
     }
 
-    public String getCookie() {
+    public UUID getCookie() {
         return this.cookie;
     }
 

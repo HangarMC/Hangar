@@ -53,7 +53,7 @@ public class APIKeyService extends HangarComponent {
 
         this.checkName(userIdentified, apiKeyForm.name());
 
-        final String tokenIdentifier = UUID.randomUUID().toString();
+        final UUID tokenIdentifier = UUID.randomUUID();
         final String token = UUID.randomUUID().toString();
         final String hashedToken = CryptoUtils.hmacSha256(this.config.security.tokenSecret(), token.getBytes(StandardCharsets.UTF_8));
         this.apiKeyDAO.insert(new ApiKeyTable(apiKeyForm.name(), userIdentified.getUserId(), tokenIdentifier, hashedToken, keyPermission));

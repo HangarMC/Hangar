@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -48,14 +49,7 @@ public class StatService extends HangarComponent {
     public void addProjectView(final ProjectIdentified projectIdentified) {
         final Long userId = this.getHangarUserId();
         final InetAddress address = RequestUtil.getRemoteInetAddress(this.request);
-        final Optional<String> existingCookie = this.projectViewsDAO.getIndividualView(userId, address).map(ProjectViewIndividualTable::getCookie);
-        final String cookie = existingCookie.orElseGet(() -> {
-            final Cookie value = WebUtils.getCookie(this.request, STAT_TRACKING_COOKIE);
-            if (value != null) {
-                return value.getValue();
-            }
-            return UUID.randomUUID().toString();
-        });
+        final UUID cookie = this.getStatsCookie(this.projectViewsDAO.getIndividualView(userId, address).map(ProjectViewIndividualTable::getCookie));
         this.projectViewsDAO.insert(new ProjectViewIndividualTable(address, cookie, userId, projectIdentified.getProjectId()));
         this.setCookie(cookie);
     }
@@ -64,15 +58,33 @@ public class StatService extends HangarComponent {
     public <T extends VersionIdentified & ProjectIdentified> void addVersionDownload(final T versionIdentified, final Platform platform) {
         final Long userId = this.getHangarUserId();
         final InetAddress address = RequestUtil.getRemoteInetAddress(this.request);
-        final Optional<String> existingCookie = this.projectVersionDownloadStatsDAO.getIndividualDownload(userId, address).map(ProjectVersionDownloadIndividualTable::getCookie);
-        final String cookie = existingCookie.orElse(Optional.ofNullable(WebUtils.getCookie(this.request, STAT_TRACKING_COOKIE)).map(Cookie::getValue).orElse(UUID.randomUUID().toString()));
+        final UUID cookie = this.getStatsCookie(this.projectVersionDownloadStatsDAO.getIndividualDownload(userId, address).map(ProjectVersionDownloadIndividualTable::getCookie));
         this.projectVersionDownloadStatsDAO.insert(new ProjectVersionDownloadIndividualTable(address, cookie, userId, versionIdentified.getProjectId(), versionIdentified.getVersionId(), platform));
         this.setCookie(cookie);
     }
 
-    private void setCookie(final String cookieValue) {
+    private UUID getStatsCookie(final Optional<UUID> existingCookie) {
+        return existingCookie.orElseGet(() -> {
+            final Cookie value = WebUtils.getCookie(this.request, STAT_TRACKING_COOKIE);
+            final UUID uuid;
+            if (value != null && (uuid = this.uuidOrNull(value.getValue())) != null) {
+                return uuid;
+            }
+            return UUID.randomUUID();
+        });
+    }
+
+    private @Nullable UUID uuidOrNull(final String uuidString) {
+        try {
+            return UUID.fromString(uuidString);
+        } catch (final IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    private void setCookie(final UUID cookieValue) {
         this.response.addHeader(HttpHeaders.SET_COOKIE,
-            ResponseCookie.from(STAT_TRACKING_COOKIE, cookieValue)
+            ResponseCookie.from(STAT_TRACKING_COOKIE, cookieValue.toString())
                 .secure(this.config.security.secure())
                 .path("/")
                 .maxAge((long) (60 * 60 * 24 * 356.24 * 1000))
