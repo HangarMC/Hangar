@@ -40,7 +40,7 @@ const props = defineProps<{
   version: HangarVersion;
   project: HangarProject;
   versionPlatforms: Set<Platform>;
-  user: User;
+  user?: User;
 }>();
 
 const projectVersion = computed<HangarVersion | undefined>(() => props.version);
@@ -286,28 +286,30 @@ async function restoreVersion() {
         </template>
 
         <table class="w-full">
-          <tr>
-            <th class="text-left">{{ i18n.t("project.info.publishDate") }}</th>
-            <td class="text-right">{{ i18n.d(version.createdAt, "date") }}</td>
-          </tr>
-          <tr>
-            <th class="text-left">
-              {{ i18n.t(hasPerms(NamedPermission.IS_SUBJECT_MEMBER) ? "project.info.totalTotalDownloads" : "project.info.totalDownloads", 0) }}
-            </th>
-            <td class="text-right">
-              {{ version.stats.totalDownloads.toLocaleString("en-US") }}
-            </td>
-          </tr>
-          <!-- Only show per platform downloads to project members, otherwise not too relevant and only adding to height -->
-          <tr v-for="platform in hasPerms(NamedPermission.IS_SUBJECT_MEMBER) ? Object.keys(version.stats.platformDownloads) : []" :key="platform">
-            <th class="text-left inline-flex">
-              <PlatformLogo :platform="platform" :size="24" class="mr-1" />
-              {{ i18n.t("project.info.totalDownloads", 0) }}
-            </th>
-            <td class="text-right">
-              {{ version.stats.platformDownloads[platform].toLocaleString("en-US") }}
-            </td>
-          </tr>
+          <tbody>
+            <tr>
+              <th class="text-left">{{ i18n.t("project.info.publishDate") }}</th>
+              <td class="text-right">{{ i18n.d(version.createdAt, "date") }}</td>
+            </tr>
+            <tr>
+              <th class="text-left">
+                {{ i18n.t(hasPerms(NamedPermission.IS_SUBJECT_MEMBER) ? "project.info.totalTotalDownloads" : "project.info.totalDownloads", 0) }}
+              </th>
+              <td class="text-right">
+                {{ version.stats.totalDownloads.toLocaleString("en-US") }}
+              </td>
+            </tr>
+            <!-- Only show per platform downloads to project members, otherwise not too relevant and only adding to height -->
+            <tr v-for="platform in hasPerms(NamedPermission.IS_SUBJECT_MEMBER) ? Object.keys(version.stats.platformDownloads) : []" :key="platform">
+              <th class="text-left inline-flex">
+                <PlatformLogo :platform="platform" :size="24" class="mr-1" />
+                {{ i18n.t("project.info.totalDownloads", 0) }}
+              </th>
+              <td class="text-right">
+                {{ version.stats.platformDownloads[platform].toLocaleString("en-US") }}
+              </td>
+            </tr>
+          </tbody>
         </table>
       </Card>
 
