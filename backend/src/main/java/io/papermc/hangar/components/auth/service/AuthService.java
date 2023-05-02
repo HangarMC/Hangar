@@ -93,10 +93,16 @@ public class AuthService extends HangarComponent implements UserDetailsService {
             throw new HangarApiException("The username and password are too similar");
         }
 
-        final int breachAmount = this.hibpService.getBreachAmount(password);
-        if (breachAmount > 10) {
-            throw new HangarApiException("Your password has been found in data breaches, please use a different one");
+        try {
+            final int breachAmount = this.hibpService.getBreachAmount(password);
+            if (breachAmount > 10) {
+                throw new HangarApiException("Your password has been found in data breaches, please use a different one");
+            }
+        } catch (final Exception e) {
+            // Don't block account creation if this isn't reachable
+            e.printStackTrace();
         }
+
         return true;
     }
 
