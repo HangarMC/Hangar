@@ -5,13 +5,13 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.components.auth.dao.UserRefreshTokenDAO;
+import io.papermc.hangar.components.auth.model.db.UserRefreshToken;
+import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.auth.ApiKeyTable;
-import io.papermc.hangar.components.auth.model.db.UserRefreshToken;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.security.authentication.api.HangarApiPrincipal;
 import io.papermc.hangar.security.configs.SecurityConfig;
@@ -165,7 +165,14 @@ public class TokenService extends HangarComponent {
             throw new BadCredentialsException("Malformed jwt");
         }
         if (apiKeyIdentifier != null) {
-            final ApiKeyTable apiKeyTable = this.apiKeyDAO.findApiKey(userId, apiKeyIdentifier);
+            final UUID identifier;
+            try {
+                identifier = UUID.fromString(apiKeyIdentifier);
+            } catch (final IllegalArgumentException e) {
+                throw new BadCredentialsException("Invalid api key identifier");
+            }
+
+            final ApiKeyTable apiKeyTable = this.apiKeyDAO.findApiKey(userId, identifier);
             if (apiKeyTable == null) {
                 throw new BadCredentialsException("Invalid api key identifier");
             }
