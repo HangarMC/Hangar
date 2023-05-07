@@ -15,6 +15,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -38,18 +39,17 @@ public class DownloadService extends HangarComponent {
 
     public Map<Platform, PlatformVersionDownload> getDownloads(final String user, final String project, final String version, final long versionId) {
         final Map<Platform, PlatformVersionDownload> versionDownloadsMap = new EnumMap<>(Platform.class);
-        // TODO into one query
-        final List<ProjectVersionDownloadTable> versionDownloads = this.downloadsDAO.getDownloads(versionId);
-        final List<ProjectVersionPlatformDownloadTable> platformDownloads = this.downloadsDAO.getPlatformDownloads(versionId);
+        final List<Pair<ProjectVersionPlatformDownloadTable, ProjectVersionDownloadTable>> platformDownloadsFull = this.downloadsDAO.getPlatformDownloadsFull(versionId);
         final Map<Long, PlatformVersionDownload> downloads = new HashMap<>();
-        for (final ProjectVersionPlatformDownloadTable platformDownload : platformDownloads) {
+        for (final Pair<ProjectVersionPlatformDownloadTable, ProjectVersionDownloadTable> platformDownloadPair : platformDownloadsFull) {
+            final ProjectVersionPlatformDownloadTable platformDownload = platformDownloadPair.getLeft();
             PlatformVersionDownload download = downloads.get(platformDownload.getDownloadId());
             if (download != null) {
                 versionDownloadsMap.put(platformDownload.getPlatform(), download);
                 continue;
             }
 
-            final ProjectVersionDownloadTable downloadTable = versionDownloads.stream().filter(table -> table.getId() == platformDownload.getDownloadId()).findAny().orElseThrow(NullPointerException::new);
+            final ProjectVersionDownloadTable downloadTable = platformDownloadPair.getRight();
             final FileInfo fileInfo = downloadTable.getFileName() != null ? new FileInfo(downloadTable.getFileName(), downloadTable.getFileSize(), downloadTable.getHash()) : null;
             final String downloadUrl = fileInfo != null ? this.fileService.getVersionDownloadUrl(user, project, version, platformDownload.getPlatform(), fileInfo.getName()) : null;
             download = new PlatformVersionDownload(fileInfo, downloadTable.getExternalUrl(), downloadUrl);

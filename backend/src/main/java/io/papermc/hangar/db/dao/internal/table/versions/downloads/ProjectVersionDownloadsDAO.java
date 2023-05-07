@@ -5,6 +5,7 @@ import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
 import java.util.Collection;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -37,6 +38,11 @@ public interface ProjectVersionDownloadsDAO {
 
     @SqlQuery("SELECT * FROM project_version_platform_downloads WHERE version_id = :versionId")
     List<ProjectVersionPlatformDownloadTable> getPlatformDownloads(long versionId);
+
+    @SqlQuery("SELECT pvpd.*, pvd.file_size, pvd.hash, pvd.file_name, pvd.external_url FROM project_version_platform_downloads pvpd " +
+        "JOIN project_version_downloads pvd ON pvd.id = pvpd.download_id " +
+        "WHERE pvpd.version_id = :versionId")
+    List<Pair<ProjectVersionPlatformDownloadTable, ProjectVersionDownloadTable>> getPlatformDownloadsFull(long versionId);
 
     @SqlQuery("SELECT * FROM project_version_platform_downloads WHERE version_id = :versionId AND download_id = :downloadId")
     List<ProjectVersionPlatformDownloadTable> getPlatformDownloads(long versionId, long downloadId);
