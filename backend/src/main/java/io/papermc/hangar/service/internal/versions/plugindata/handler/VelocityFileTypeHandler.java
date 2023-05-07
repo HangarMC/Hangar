@@ -32,7 +32,7 @@ public class VelocityFileTypeHandler extends FileTypeHandler<VelocityFileData> {
 
         @Override
         protected @NotNull Set<PluginDependency> createPluginDependencies() {
-            return this.dependencies.stream().map(dependency -> PluginDependency.of(dependency.id, !dependency.optional)).collect(Collectors.toSet());
+            return this.dependencies.stream().map(dependency -> PluginDependency.of(dependency.id, !dependency.optional, Platform.VELOCITY)).collect(Collectors.toSet());
         }
 
         @ConfigSerializable
