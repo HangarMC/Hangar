@@ -12,6 +12,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -109,8 +110,12 @@ public class ImageProxyController {
     }
 
     private boolean validContentType(final ClientResponse response) {
-        final var contentType = response.headers().contentType();
-        return contentType.isPresent() && contentType.get().getType().equals("image");
+        try {
+            final var contentType = response.headers().contentType();
+            return contentType.isPresent() && contentType.get().getType().equals("image");
+        } catch (final InvalidMediaTypeException ignored) {
+            return false;
+        }
     }
 
     private boolean validTarget(final String url) {
