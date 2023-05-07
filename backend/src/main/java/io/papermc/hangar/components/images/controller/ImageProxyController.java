@@ -13,6 +13,7 @@ import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.InvalidMediaTypeException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +37,7 @@ public class ImageProxyController {
     }
 
     @GetMapping("/**")
-    public StreamingResponseBody proxy(final HttpServletRequest request, final HttpServletResponse res) {
+    public Object proxy(final HttpServletRequest request, final HttpServletResponse res) {
         final String query = StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "";
         final String url = this.cleanUrl(request.getRequestURI() + query);
         if (this.validTarget(url)) {
@@ -47,11 +48,11 @@ public class ImageProxyController {
                     .headers((headers) -> this.passHeaders(headers, request))
                     .exchange().block(); // Block the request, we don't get the body at this point!
                 if (clientResponse == null) {
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Encountered an error whilst trying to load url");
+                    return ResponseEntity.internalServerError().body("Encountered an error whilst trying to load url");
                 }
                 // block large stuff
                 if (this.contentTooLarge(clientResponse)) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The image you are trying too proxy is too large");
+                    return ResponseEntity.badRequest().body("The image you are trying too proxy is too large");
                 }
                 // forward headers
                 for (final Map.Entry<String, List<String>> stringListEntry : clientResponse.headers().asHttpHeaders().entrySet()) {
@@ -61,7 +62,7 @@ public class ImageProxyController {
                 final Flux<DataBuffer> body = clientResponse.body(BodyExtractors.toDataBuffers());
                 if (this.validContentType(clientResponse)) {
                     res.setHeader("Content-Security-Policy", "default-src 'self'; img-src 'self' data:;"); // no xss for you sir
-                    return (o) -> {
+                    return (StreamingResponseBody) o -> {
                         // Write the data buffers into the outputstream as they come!
                         final Flux<DataBuffer> flux = DataBufferUtils
                             .write(body, o)
@@ -74,17 +75,20 @@ public class ImageProxyController {
                             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Encountered " + ex.getClass().getSimpleName() + " while trying to load " + url);
                         }
                     };
+                } else {
+                    return ResponseEntity.badRequest().body("Bad content type");
                 }
             } catch (final WebClientRequestException ex) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Encountered " + ex.getClass().getSimpleName() + " while trying to load " + url);
+                return ResponseEntity.internalServerError().body("Encountered " + ex.getClass().getSimpleName() + " while trying to load " + url);
             } finally {
                 if (clientResponse != null) {
                     // noinspection ReactiveStreamsUnusedPublisher
                     clientResponse.releaseBody(); // Just in case...
                 }
             }
+        } else {
+            return ResponseEntity.badRequest().body("Bad target");
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
     private void passHeaders(final HttpHeaders headers, final HttpServletRequest request) {
