@@ -106,7 +106,8 @@ public class ImageProxyController {
 
     private boolean contentTooLarge(final ClientResponse response) {
         final var contentLength = response.headers().contentLength();
-        return contentLength.isEmpty() || contentLength.getAsLong() > 100_000_000;
+        // not all responses have a length...
+        return contentLength.isPresent() && contentLength.getAsLong() > 150_000_000;
     }
 
     private boolean validContentType(final ClientResponse response) {
