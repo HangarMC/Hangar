@@ -3,18 +3,21 @@ import Draggable from "vuedraggable";
 import { useI18n } from "vue-i18n";
 import { LinkSection } from "hangar-api";
 import { useVModel } from "@vueuse/core";
+import { computed } from "vue";
 import InputText from "~/components/ui/InputText.vue";
 import InputSelect from "~/components/ui/InputSelect.vue";
 import ProjectLinksFormInner from "~/components/projects/ProjectLinksFormInner.vue";
 import Button from "~/components/design/Button.vue";
 import Card from "~/components/design/Card.vue";
-import { maxLength, minLength, required } from "~/composables/useValidationHelpers";
+import { maxLength, minLength, noDuplicated, required } from "~/composables/useValidationHelpers";
 import { useBackendData } from "~/store/backendData";
 
 const props = defineProps<{ modelValue: LinkSection[] }>();
 const emit = defineEmits(["update:modelValue"]);
 const sections = useVModel(props, "modelValue", emit);
 const i18n = useI18n();
+
+const types = computed(() => sections.value.map((l) => l.type));
 
 function addSection() {
   let nextId = Math.max(...sections.value.map((l) => l.id)) + 1;
@@ -43,7 +46,7 @@ function removeSection(index: number) {
                 { value: 'sidebar', text: i18n.t('project.settings.links.sidebar') },
               ]"
               :label="i18n.t('project.settings.links.typeField')"
-              :rules="[required()]"
+              :rules="[required(), noDuplicated()(() => types)]"
             />
             <InputText
               v-if="section.type !== 'top'"
