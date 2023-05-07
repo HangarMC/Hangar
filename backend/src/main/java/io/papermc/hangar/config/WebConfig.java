@@ -1,9 +1,11 @@
 package io.papermc.hangar.config;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesAnnotationIntrospector;
+import io.netty.channel.ChannelOption;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimitInterceptor;
@@ -16,9 +18,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -38,23 +43,31 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
+import reactor.netty.http.client.HttpClient;
 
 @Configuration
 public class WebConfig extends WebMvcConfigurationSupport {
 
     private static final Logger interceptorLogger = LoggerFactory.getLogger(LoggingInterceptor.class); // NO-SONAR
+
+    private static final Duration timeout = Duration.ofSeconds(45);
 
     private final HangarConfig hangarConfig;
     private final ObjectMapper mapper;
@@ -157,11 +170,43 @@ public class WebConfig extends WebMvcConfigurationSupport {
         }
 
         builder.defaultHeader("User-Agent", "Hangar <hangar@papermc.io>");
+        builder.setConnectTimeout(timeout);
+        builder.setReadTimeout(timeout);
 
         this.addDefaultHttpMessageConverters(messageConverters);
         builder.messageConverters(messageConverters);
 
         return builder.build();
+    }
+
+    @Bean
+    public WebClient webClient(final WebClient.Builder builder) {
+        final HttpClient httpClient = HttpClient.create()
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, (int) timeout.toMillis())
+            .responseTimeout(timeout)
+            .doOnConnected(conn ->
+                conn.addHandlerLast(new ReadTimeoutHandler(timeout.toMillis(), TimeUnit.MILLISECONDS))
+                    .addHandlerLast(new WriteTimeoutHandler(timeout.toMillis(), TimeUnit.MILLISECONDS)));
+        builder.clientConnector(new ReactorClientHttpConnector(httpClient));
+
+        final int size = 16 * 1024 * 1024;
+        builder.exchangeStrategies(ExchangeStrategies.builder()
+            .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
+            .build());
+
+        builder.defaultHeader("User-Agent", "Hangar <hangar@papermc.io>");
+
+        return builder.build();
+    }
+
+    @Override
+    protected void configureAsyncSupport(final AsyncSupportConfigurer configurer) {
+        configurer.setTaskExecutor(this.taskExecutor());
+    }
+
+    @Bean
+    protected ConcurrentTaskExecutor taskExecutor() {
+        return new ConcurrentTaskExecutor(Executors.newFixedThreadPool(10));
     }
 
     static class LoggingInterceptor implements ClientHttpRequestInterceptor {
