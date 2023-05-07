@@ -6,6 +6,9 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -31,7 +34,7 @@ public class ImageProxyController {
         final String url = this.cleanUrl(request.getRequestURI() + query);
         if (this.validTarget(url)) {
             try {
-                final ResponseEntity<byte[]> response = this.restTemplate.getForEntity(url, byte[].class);
+                final ResponseEntity<byte[]> response = this.restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(this.passHeaders(request)), byte[].class);
                 if (this.validContentType(response)) {
                     res.setHeader("Content-Security-Policy", "default-src 'self'; img-src 'self' data:;");
                     return response;
@@ -41,6 +44,15 @@ public class ImageProxyController {
             }
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    private HttpHeaders passHeaders(final HttpServletRequest request) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.set("User-Agent", request.getHeader("User-Agent") + " Hangar/1.0");
+        headers.set("Accept", request.getHeader("Accept"));
+        headers.set("Accept-Encoding", request.getHeader("Accept-Encoding"));
+        headers.set("Accept-Language", request.getHeader("Accept-Language"));
+        return headers;
     }
 
     private String cleanUrl(final String url) {
