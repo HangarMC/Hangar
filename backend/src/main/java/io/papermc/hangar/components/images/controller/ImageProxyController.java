@@ -48,11 +48,10 @@ public class ImageProxyController {
                 if (clientResponse == null) {
                     throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Encountered an error whilst trying to load url");
                 }
-
+                // block large stuff
                 if (this.contentTooLarge(clientResponse)) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The image you are trying too proxy is too large");
                 }
-
                 // forward headers
                 for (final Map.Entry<String, List<String>> stringListEntry : clientResponse.headers().asHttpHeaders().entrySet()) {
                     res.setHeader(stringListEntry.getKey(), stringListEntry.getValue().get(0));
@@ -96,7 +95,6 @@ public class ImageProxyController {
 
     private String cleanUrl(final String url) {
         return url
-            .replace("/api/internal/image/flux/", "")
             .replace("/api/internal/image/", "")
             .replace("https:/", "https://")
             .replace("http:/", "http://")
