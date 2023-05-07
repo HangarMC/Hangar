@@ -48,8 +48,8 @@ public interface ProjectsDAO {
 
     @SqlQuery("SELECT * FROM " +
         "     (SELECT CASE " +
-        "         WHEN \"name\" = :name THEN 'OWNER_NAME'" +
-        "         WHEN slug = :slug THEN 'OWNER_SLUG'" +
+        "         WHEN LOWER(\"name\") = LOWER(:name) THEN 'OWNER_NAME'" +
+        "         WHEN LOWER(slug) = LOWER(:slug) THEN 'OWNER_SLUG'" +
         "     END AS sq" +
         "     FROM projects WHERE owner_id = :ownerId) sq" +
         " WHERE sq IS NOT NULL ")

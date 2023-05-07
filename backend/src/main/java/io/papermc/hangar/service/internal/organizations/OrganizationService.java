@@ -60,6 +60,10 @@ public class OrganizationService extends HangarComponent {
         return this.organizationDAO.getOrganizationsWithPermission(userId, permission);
     }
 
+    public OrganizationTable getOrganizationTableWithPermission(final long userId, final long organizationUserId, final Permission permission) {
+        return this.organizationDAO.getOrganizationWithPermission(userId, organizationUserId, permission);
+    }
+
     public List<OrganizationTable> getOrganizationsOwnedBy(final long ownerId) {
         return this.organizationDAO.getOrganizationsOwnedBy(ownerId);
     }

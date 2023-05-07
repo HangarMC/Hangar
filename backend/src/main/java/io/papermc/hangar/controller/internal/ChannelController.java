@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.NamedPermission;
@@ -19,7 +20,6 @@ import io.papermc.hangar.service.internal.projects.ProjectService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -68,6 +68,9 @@ public class ChannelController extends HangarComponent {
     @GetMapping(path = "/{author}/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<HangarChannel>> getChannels(@PathVariable final String author, @PathVariable final String slug) {
         final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
+        if (projectTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
         return ResponseEntity.ok(this.channelService.getProjectChannels(projectTable.getId()));
     }
 

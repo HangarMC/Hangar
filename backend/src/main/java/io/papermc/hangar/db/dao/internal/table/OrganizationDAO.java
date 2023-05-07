@@ -62,6 +62,16 @@ public interface OrganizationDAO {
 
     @SqlQuery("""
             SELECT o.*, u.uuid AS userUuid
+               FROM organization_trust ot
+                   JOIN organizations o ON ot.organization_id = o.id
+                   JOIN users u ON o.user_id = u.id
+               WHERE ot.user_id = :userId AND o.user_id = :organizationUserId
+                   AND (ot.permission & :permission::bit(64)) = :permission::bit(64)
+        """)
+    OrganizationTable getOrganizationWithPermission(long userId, long organizationUserId, Permission permission);
+
+    @SqlQuery("""
+            SELECT o.*, u.uuid AS userUuid
                 FROM organizations o
                     JOIN users u ON u.id = o.user_id
                 WHERE o.owner_id = :ownerId

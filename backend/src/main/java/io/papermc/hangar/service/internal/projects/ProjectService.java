@@ -111,7 +111,7 @@ public class ProjectService extends HangarComponent {
         if (Objects.equals(this.getHangarUserId(), userId)) {
             return this.getHangarPrincipal();
         }
-        return this.organizationService.getOrganizationTablesWithPermission(this.getHangarPrincipal().getId(), Permission.CreateProject).stream().filter(ot -> ot.getUserId() == userId).findFirst().orElse(null);
+        return this.organizationService.getOrganizationTableWithPermission(this.getHangarPrincipal().getId(), userId, Permission.CreateProject);
     }
 
     public ProjectOwner getProjectOwner(final String userName) {

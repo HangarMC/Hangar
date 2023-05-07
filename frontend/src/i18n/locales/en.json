@@ -1124,7 +1124,8 @@
     "pattern": "{property} is invalid",
     "noDuplicated": "Can only select each {property} once!",
     "url": "Invalid URL format",
-    "maxFileSize": "File is too large, max size is 10mb"
+    "maxFileSize": "File is too large, max size is 10mb",
+    "validProjectName": "Project name is already taken"
   },
   "prompts": {
     "confirm": "Got it!",
