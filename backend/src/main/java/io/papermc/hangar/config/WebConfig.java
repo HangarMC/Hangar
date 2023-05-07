@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
@@ -45,12 +46,14 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -64,7 +67,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     private static final Logger interceptorLogger = LoggerFactory.getLogger(LoggingInterceptor.class); // NO-SONAR
 
-    private static final Duration timeout = Duration.ofSeconds(30);
+    private static final Duration timeout = Duration.ofSeconds(45);
 
     private final HangarConfig hangarConfig;
     private final ObjectMapper mapper;
@@ -194,6 +197,16 @@ public class WebConfig extends WebMvcConfigurationSupport {
         builder.defaultHeader("User-Agent", "Hangar <hangar@papermc.io>");
 
         return builder.build();
+    }
+
+    @Override
+    protected void configureAsyncSupport(final AsyncSupportConfigurer configurer) {
+        configurer.setTaskExecutor(this.taskExecutor());
+    }
+
+    @Bean
+    protected ConcurrentTaskExecutor taskExecutor() {
+        return new ConcurrentTaskExecutor(Executors.newFixedThreadPool(10));
     }
 
     static class LoggingInterceptor implements ClientHttpRequestInterceptor {
