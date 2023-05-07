@@ -178,6 +178,7 @@ public interface VersionsApiDAO {
         "       pvd.name," +
         "       pvd.required," +
         "       pvd.external_url," +
+        "       pvd.platform," +
         "       p.owner_name pn_owner," +
         "       p.slug pn_slug" +
         "   FROM project_version_dependencies pvd" +
