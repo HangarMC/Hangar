@@ -186,6 +186,19 @@ public interface VersionsApiDAO {
     @RegisterConstructorMapper(PluginDependency.class)
     Set<PluginDependency> getPluginDependencies(long versionId, @EnumByOrdinal Platform platform); // TODO make into one db call for all platforms?
 
+    @SqlQuery("SELECT " +
+        "       pvd.name," +
+        "       pvd.required," +
+        "       pvd.external_url," +
+        "       p.owner_name pn_owner," +
+        "       p.slug pn_slug," +
+        "       pvd.platform" +
+        "   FROM project_version_dependencies pvd" +
+        "       LEFT JOIN projects p ON pvd.project_id = p.id" +
+        "   WHERE pvd.version_id = :versionId")
+    @RegisterConstructorMapper(PluginDependency.class)
+    Set<PluginDependency> getPluginDependencies(long versionId);
+
     @KeyColumn("platform")
     @ValueColumn("versions")
     @SqlQuery("SELECT" +

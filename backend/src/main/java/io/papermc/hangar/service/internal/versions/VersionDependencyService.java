@@ -69,13 +69,8 @@ public class VersionDependencyService extends HangarComponent {
             platformDependenciesFormatted.put(entry.getKey(), formattedVersionRange);
         });
 
-        final Map<Platform, Set<PluginDependency>> pluginDependencies = new EnumMap<>(Platform.class);
-        Arrays.stream(Platform.getValues()).parallel().forEach(platform -> {
-            final Set<PluginDependency> pluginDependencySet = this.versionsApiDAO.getPluginDependencies(versionId, platform);
-            if (!pluginDependencySet.isEmpty()) {
-                pluginDependencies.put(platform, pluginDependencySet);
-            }
-        });
+        final Map<Platform, Set<PluginDependency>> pluginDependencies = this.versionsApiDAO.getPluginDependencies(versionId).stream()
+            .collect(Collectors.groupingBy(PluginDependency::getPlatform, Collectors.toSet()));
 
         final Map<Platform, PlatformVersionDownload> downloads = this.downloadService.getDownloads(user, project, versionName, versionId);
         return new DownloadsAndDependencies(pluginDependencies, platformDependencies, platformDependenciesFormatted, downloads);

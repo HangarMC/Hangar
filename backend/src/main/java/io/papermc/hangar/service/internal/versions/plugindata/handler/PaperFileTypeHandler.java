@@ -53,12 +53,12 @@ public class PaperFileTypeHandler extends FileTypeHandler<PaperFileData> {
             final Set<PluginDependency> dependencies = new HashSet<>();
             if (this.hardDepends != null) {
                 for (final String hardDepend : this.hardDepends) {
-                    dependencies.add(PluginDependency.of(hardDepend, true));
+                    dependencies.add(PluginDependency.of(hardDepend, true, Platform.PAPER));
                 }
             }
             if (this.softDepends != null) {
                 for (final String softDepend : this.softDepends) {
-                    dependencies.add(PluginDependency.of(softDepend, false));
+                    dependencies.add(PluginDependency.of(softDepend, false, Platform.PAPER));
                 }
             }
             return dependencies;

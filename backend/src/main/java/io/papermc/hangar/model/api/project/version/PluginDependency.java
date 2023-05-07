@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.controller.validations.AtLeastOneNotNull;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.api.project.ProjectNamespace;
+import io.papermc.hangar.model.common.Platform;
 import java.util.Objects;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
@@ -17,21 +18,24 @@ public class PluginDependency implements Named {
     private final boolean required;
     private final ProjectNamespace namespace;
     private final String externalUrl;
+    private final Platform platform;
 
     @JdbiConstructor
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PluginDependency(final @Nullable String name, final boolean required, @Nested("pn") final @Nullable ProjectNamespace namespace, final String externalUrl) {
+    public PluginDependency(final @Nullable String name, final boolean required, @Nested("pn") final @Nullable ProjectNamespace namespace, final String externalUrl, final Platform platform) {
         this.name = namespace != null ? null : name;
         this.required = required;
         this.namespace = namespace;
         this.externalUrl = externalUrl;
+        this.platform = platform;
     }
 
-    private PluginDependency(final String name, final boolean required) {
+    private PluginDependency(final String name, final boolean required, final Platform platform) {
         this.name = name;
         this.required = required;
         this.namespace = null;
         this.externalUrl = null;
+        this.platform = platform;
     }
 
     @Override
@@ -50,6 +54,8 @@ public class PluginDependency implements Named {
     public String getExternalUrl() {
         return this.externalUrl;
     }
+
+    public Platform getPlatform(){ return this.platform; }
 
     @Override
     public String toString() {
@@ -74,7 +80,7 @@ public class PluginDependency implements Named {
         return Objects.hash(this.name, this.required, this.namespace, this.externalUrl);
     }
 
-    public static PluginDependency of(final String name, final boolean required) {
-        return new PluginDependency(name, required);
+    public static PluginDependency of(final String name, final boolean required, final Platform platform) {
+        return new PluginDependency(name, required, platform);
     }
 }
