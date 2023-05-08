@@ -17,40 +17,18 @@ explicitly listed here at our own discretion.
 In general, our [Community Guidelines](https://papermc.io/community-guidelines) also apply to resources submitted on
 Hangar.
 
-## Project Name
-
-Your project's name should not include a platform name or version, tagline or other description. The name should be unique
-and original and must not have a name implying it is an official PaperMC project. Large projects may receive a verified
-status, but this is decided on a case-by-case basis and will not be given on request.
-
-Examples of project names that are **not allowed**:
-
-- *Warps--The-Best-Plugin-Out-There*
-- *PaperDocs*
-- *Warps-1.19*
-- *Warps-Paper*
-
-Examples of names that are **allowed**:
-
-- *Warps-Reborn*
-- *Warps2*
-- *WarpsLib*
-
-## Project Category
-
-The category you choose should be accurate. Your project should use the most fitting category rather than any category
-that only slightly applies. If no category appears accurate, the Miscellaneous category should be used.
-
-## Platform Selection
-
-A plugin's selected platforms must be able to load it when put into the platform's plugin directory, provided its
-dependencies and configuration have been set up properly.
-
 ## Resource Updates
 
 While the rate-limit for uploading new versions is very lenient to allow sometimes necessary hotfixes, you should not
 unnecessarily push a large number of updates to the release channel, solely to bump the update date of your project or to
 flood watching users with notifications.
+
+## Artificially Inflating Stats
+
+Artificially increasing the download, star, or watcher count of projects (i.e. by creating multiple accounts to star
+a project or making an auto-updater re-download the already present version over and over again) will result in your account(s)
+and/or project being removed. If you have reason to believe that one of your project is being botted by someone else, please
+contact our support.
 
 ## Monetization / Advertising
 
@@ -77,7 +55,9 @@ JProfiler license keys). Use this field in moderation and keep it secondary to y
 information about sponsors may be put into the sponsors field.
 
 ## Obfuscation
-To circumvent license issues and the effort involved in reviewing obfuscated code, we do not allow submitted plugins to be obfuscated in any capacity.
+
+To circumvent license issues and the effort involved in reviewing obfuscated code, we do not allow submitted plugins to be
+obfuscated in any capacity.
 
 ## EULA
 
@@ -107,6 +87,35 @@ Your project must either:
 You have to acknowledge or credit the past plugin and its developers. Essentially, do not claim it is a new plugin and
 exclusively your creation.
 
+## Project Name
+
+Your project's name should not include a platform name or version, tagline or other description. The name should be unique
+and original and must not have a name implying it is an official PaperMC project. Large projects may receive a verified
+status, but this is decided on a case-by-case basis and will not be given on request.
+
+Examples of project names that are **not allowed**:
+
+- *Warps--The-Best-Plugin-Out-There*
+- *PaperDocs*
+- *Warps-1.19*
+- *Warps-Paper*
+
+Examples of names that are **allowed**:
+
+- *Warps-Reborn*
+- *Warps2*
+- *WarpsLib*
+
+## Project Category
+
+The category you choose should be accurate. Your project should use the most fitting category rather than any category
+that only slightly applies. If no category appears accurate, the Miscellaneous category should be used.
+
+## Platform Selection
+
+A plugin's selected platforms must be able to load it when put into the platform's plugin directory, provided its
+dependencies and configuration have been set up properly.
+
 ## Malicious Code
 
 Plugins must not grant or revoke feature access to any particular user or group of users determined by the plugin
@@ -119,7 +128,8 @@ Other malicious actions, such as deleting a server's data or banning random play
 These guidelines are loosely based on [Ore's plugin submission guidelines](https://docs.spongepowered.org/stable/en/ore/guidelines.html),
 licensed under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
-Last updated: April 22, 2023
+Last updated: May 08, 2023
+
 `;
 
 useHead(useSeo(i18n.t("pages.guidelinesTitle"), null, route, null));
