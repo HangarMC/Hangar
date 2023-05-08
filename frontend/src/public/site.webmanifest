@@ -1,8 +1,8 @@
 {
-  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
-  "name": "Hangar | PaperMC",
-  "description": "Plugin repository for Paper plugins and more!",
+  "name": "Hangar by PaperMC",
+  "description": "Plugin repository for the Paper, Waterfall and Folia platforms.",
   "short_name": "Hangar",
+  "start_url": "/",
   "icons": [
     {
       "src": "/favicon/android-chrome-192x192.png",
