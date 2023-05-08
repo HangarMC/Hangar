@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { Ref } from "vue";
+import { Ref, isRef } from "vue";
 import { computed, ref, unref } from "vue";
 import { useAuthStore } from "~/store/auth";
 import { settingsLog } from "~/composables/useLog";
@@ -54,7 +54,7 @@ export const useSettingsStore = defineStore("settings", () => {
   async function saveSettings() {
     const store = useAuthStore();
     const data = {
-      theme: darkMode.value ? "dark" : "light",
+      theme: isRef(darkMode) ? (darkMode.value ? "dark" : "light") : getColorPreference(),
       language: locale.value,
     };
     try {
@@ -89,6 +89,15 @@ export const useSettingsStore = defineStore("settings", () => {
         disableMobile();
       }
     });
+  }
+
+  function getColorPreference() {
+    const media: MediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
+    media.addEventListener("change", (event) => {
+      settingsLog("preferred color scheme changed", event.matches);
+      darkMode.value = event.matches;
+    });
+    return media.matches ? "dark" : "light";
   }
 
   return {
