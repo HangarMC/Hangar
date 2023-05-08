@@ -95,4 +95,8 @@ public class UserService extends HangarComponent {
         }
         return userTableFunction.apply(identifier);
     }
+
+    public void delete(final UserTable user) {
+        this.userDAO.delete(user.getUserId());
+    }
 }

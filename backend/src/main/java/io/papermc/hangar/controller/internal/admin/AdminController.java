@@ -171,7 +171,7 @@ public class AdminController extends HangarComponent {
     @PermissionRequired(NamedPermission.IS_STAFF)
     @PostMapping(value = "/lock-user/{user}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void setUserLock(@PathVariable final UserTable user, @RequestParam final boolean locked, @RequestParam(required = false, defaultValue = "false") final boolean toggleProjectDeletion, @RequestBody @Valid final StringContent comment) {
-        if (comment.getContent().length() > 500) {
+        if (comment.getContent().length() > 1000) {
             throw new HangarApiException("Comment too long");
         }
 
@@ -186,6 +186,22 @@ public class AdminController extends HangarComponent {
             } else {
                 this.projectAdminService.changeVisibility(projectTable.getProjectId(), Visibility.PUBLIC, comment.getContent());
             }
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
+    @PostMapping(value = "/yeet/{user}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void yeetusDeletus(@PathVariable final UserTable user, @RequestBody @Valid final StringContent comment) {
+        if (comment.getContent().length() > 1000) {
+            throw new HangarApiException("Comment too long");
+        }
+
+        try {
+            this.userService.delete(user);
+        } catch (final Exception e) {
+            e.printStackTrace();
+            throw new HangarApiException("Could not delete user", e);
         }
     }
 

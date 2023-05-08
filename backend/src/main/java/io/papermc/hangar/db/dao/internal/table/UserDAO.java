@@ -41,6 +41,9 @@ public interface UserDAO {
     @SqlUpdate("UPDATE users SET name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language, theme = :theme, email_verified = :emailVerified, socials = :socials WHERE id = :id")
     UserTable update(@BindBean UserTable user);
 
+    @SqlUpdate("DELETE FROM users WHERE id = :id")
+    void delete(@BindBean UserTable user);
+
     @SqlQuery("SELECT * FROM users WHERE id = :id OR lower(name) = lower(:name) OR lower(email) = lower(:name) OR uuid = :uuid")
     UserTable _getUserTable(Long id, String name, UUID uuid);
 

@@ -791,6 +791,7 @@
       "admin": "User Admin",
       "transfer": "Transfer organization to another user",
       "delete": "Delete organization",
+      "deleteUser": "Delete user",
       "lockOrg": "Lock organization",
       "unlockOrg": "Unlock organization"
     },
