@@ -71,7 +71,7 @@ const requestParams = computed(() => {
 });
 
 const userData = await useUserData(props.user.name, requestParams.value);
-const { starred, watching, organizations, pinned, organizationVisibility } = userData.value || { starred: null };
+const { starred, watching, organizations, pinned, organizationVisibility, possibleAlts } = userData.value || { starred: null };
 const projects = ref(userData.value?.projects);
 const orgRoles = useBackendData.orgRoles.filter((role) => role.assignable);
 const authStore = useAuthStore();
@@ -165,6 +165,17 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
           </Tooltip>
 
           <LockUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.IS_STAFF)" :user="user" />
+        </Card>
+
+        <Card v-if="possibleAlts?.length !== 0" class="mb-4">
+          <template #header> Shares address with </template>
+          <ul>
+            <li v-for="name in possibleAlts" :key="name">
+              <Link :to="'/' + name">
+                {{ name }}
+              </Link>
+            </li>
+          </ul>
         </Card>
 
         <template v-if="!user.isOrganization && organizations">

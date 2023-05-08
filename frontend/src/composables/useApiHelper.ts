@@ -22,9 +22,10 @@ import { AsyncData } from "nuxt/app";
 import { ComputedRef, Ref } from "vue";
 import { NuxtApp } from "@nuxt/schema";
 import { useApi, useInternalApi } from "~/composables/useApi";
-import { ref, useAsyncData, createError } from "#imports";
+import { createError, hasPerms, ref, useAsyncData } from "#imports";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useAuthStore } from "~/store/auth";
+import { NamedPermission } from "~/types/enums";
 
 export type NonNullAsyncData<T, E = unknown> = { data: Ref<T> } & Pick<AsyncData<T, E>, "pending" | "refresh" | "execute" | "error">;
 
@@ -182,6 +183,7 @@ export async function useUserData(
     organizations: { [key: string]: OrganizationRoleTable };
     pinned: ProjectCompact[];
     organizationVisibility: { [key: string]: boolean } | null;
+    possibleAlts: string[] | null;
   } | null>
 > {
   const self = user === useAuthStore().user?.name;
@@ -198,6 +200,7 @@ export async function useUserData(
         useInternalApi<{ [key: string]: RoleTable }>(`organizations/${user}/userOrganizations`),
         useApi<ProjectCompact[]>(`users/${user}/pinned`),
         self ? useOrgVisibility(user) : null,
+        hasPerms(NamedPermission.IS_STAFF) ? useInternalApi<string[]>(`users/${user}/alts`) : null,
       ]);
       return {
         starred: data[0] as PaginatedResult<ProjectCompact>,
@@ -206,6 +209,7 @@ export async function useUserData(
         organizations: data[3] as { [key: string]: OrganizationRoleTable },
         pinned: data[4] as ProjectCompact[],
         organizationVisibility: data[5],
+        possibleAlts: data[6],
       };
     })
   );

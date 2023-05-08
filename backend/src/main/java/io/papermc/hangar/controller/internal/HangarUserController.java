@@ -7,6 +7,7 @@ import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.db.customtypes.JSONB;
+import io.papermc.hangar.db.dao.internal.table.stats.ProjectViewsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.requests.RequestPagination;
@@ -90,9 +91,10 @@ public class HangarUserController extends HangarComponent {
     private final TokenService tokenService;
     private final AvatarService avatarService;
     private final CredentialsService credentialsService;
+    private final ProjectViewsDAO projectViewsDAO;
 
     @Autowired
-    public HangarUserController(final ObjectMapper mapper, final UsersApiService usersApiService, final UserService userService, final NotificationService notificationService, final ProjectRoleService projectRoleService, final OrganizationService organizationService, final OrganizationRoleService organizationRoleService, final ProjectInviteService projectInviteService, final OrganizationInviteService organizationInviteService, final TokenService tokenService, final AvatarService avatarService, final CredentialsService credentialsService) {
+    public HangarUserController(final ObjectMapper mapper, final UsersApiService usersApiService, final UserService userService, final NotificationService notificationService, final ProjectRoleService projectRoleService, final OrganizationService organizationService, final OrganizationRoleService organizationRoleService, final ProjectInviteService projectInviteService, final OrganizationInviteService organizationInviteService, final TokenService tokenService, final AvatarService avatarService, final CredentialsService credentialsService, final ProjectViewsDAO projectViewsDAO) {
         this.mapper = mapper;
         this.usersApiService = usersApiService;
         this.userService = userService;
@@ -105,6 +107,7 @@ public class HangarUserController extends HangarComponent {
         this.tokenService = tokenService;
         this.avatarService = avatarService;
         this.credentialsService = credentialsService;
+        this.projectViewsDAO = projectViewsDAO;
     }
 
     @Anyone
@@ -136,6 +139,18 @@ public class HangarUserController extends HangarComponent {
         user.setAccessToken(token);
         user.setAal(this.credentialsService.getAal(Objects.requireNonNull(this.userService.getUserTable(user.getId()))));
         return ResponseEntity.ok(user);
+    }
+
+    @Unlocked
+    @PermissionRequired(NamedPermission.IS_STAFF)
+    @ResponseBody
+    @GetMapping(value = "/users/{userName}/alts", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<String> possibleAltAccounts(@PathVariable final String userName) {
+        final UserTable table = this.userService.getUserTable(userName);
+        if (table == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown org " + userName);
+        }
+        return this.projectViewsDAO.getUsersSharingAddressWith(table.getUserId());
     }
 
     // @el(userName: String)
