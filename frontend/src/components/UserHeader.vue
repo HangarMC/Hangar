@@ -15,6 +15,9 @@ import Button from "~/components/design/Button.vue";
 import Popper from "~/components/design/Popper.vue";
 import { getRole } from "~/store/backendData";
 import PrettyTime from "~/components/design/PrettyTime.vue";
+import IconMdiGitHub from "~icons/mdi/github";
+import IconMdiDiscord from "~icons/mdi/discord";
+import Tooltip from "~/components/design/Tooltip.vue";
 
 const props = defineProps<{
   viewingUser: User;
@@ -52,6 +55,15 @@ const canEditCurrentUser = computed<boolean>(() => {
       <div class="overflow-clip overflow-hidden">
         <h1 class="text-2xl px-1 text-strong inline-flex items-center">
           {{ viewingUser.name }}
+          <a v-if="viewingUser.socials?.github" :href="`https://github.com/${viewingUser.socials.github}`" class="ml-1">
+            <IconMdiGitHub class="mr-1" />
+          </a>
+          <Tooltip v-if="viewingUser.socials?.discord">
+            <template #content>
+              <span class="text-base">{{ viewingUser.socials.discord }}</span>
+            </template>
+            <IconMdiDiscord class="mr-1" />
+          </Tooltip>
           <span v-if="viewingUser.locked" class="ml-1">
             <IconMdiLockOutline />
           </span>
