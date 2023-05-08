@@ -10,7 +10,7 @@ export function useSeo(
   route: RouteLocationNormalizedLoaded,
   image: string | null
 ): HeadObject {
-  description = description || "Plugin repository for Paper plugins and more!";
+  description = description || "Plugin repository for the Paper, Waterfall and Folia platforms.";
   const config = useConfig();
   const canonical = config.publicHost + (route.fullPath.endsWith("/") ? route.fullPath.substring(0, route.fullPath.length - 1) : route.fullPath);
   image = image || "https://docs.papermc.io/img/paper.png";
@@ -32,7 +32,7 @@ export function useSeo(
     msapplicationTileImage: image,
     themeColor: "#ffffff",
     msapplicationTileColor: "#ffffff",
-    msapplicationConfig: "/favicon/browserconfig.xml",
+    msapplicationConfig: "/browserconfig.xml",
   });
 
   const seo = {
@@ -42,7 +42,7 @@ export function useSeo(
       { rel: "apple-touch-icon", sizes: "180x180", href: "/favicon/apple-touch-icon.png" },
       { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon/favicon-32x32.png" },
       { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon/favicon-16x16.png" },
-      { rel: "manifest", href: "/favicon/site.webmanifest" },
+      { rel: "manifest", href: "/site.webmanifest" },
       { rel: "mask-icon", href: "/favicon/safari-pinned-tab.svg", color: "#686868" },
       { rel: "shortcut icon", href: "/favicon/favicon.ico" },
     ],
