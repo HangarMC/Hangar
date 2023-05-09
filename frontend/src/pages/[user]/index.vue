@@ -169,7 +169,7 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
           <DeleteUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.MANUAL_VALUE_CHANGES)" :user="user" />
         </Card>
 
-        <Card v-if="possibleAlts?.length !== 0" class="mb-4">
+        <Card v-if="possibleAlts?.length > 0" class="mb-4">
           <template #header> Shares address with </template>
           <ul>
             <li v-for="name in possibleAlts" :key="name">
