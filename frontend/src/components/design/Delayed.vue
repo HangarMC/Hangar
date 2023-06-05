@@ -11,12 +11,12 @@ const props = withDefaults(
   }
 );
 
-function delay(time: number) {
+function doDelay(time: number) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 const show = ref(false);
-delay(props.delay).then(() => {
+doDelay(props.delay).then(() => {
   show.value = true;
 });
 </script>
