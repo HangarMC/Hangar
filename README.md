@@ -44,7 +44,7 @@ To get the project running locally, you need to follow a few steps:
 
 ### Notes
 
-* The Spring Boot configuration file that is used by this environment is located at `Hangar/src/main/resources/application.yml`.
+* The Spring Boot configuration file that is used by this environment is located at `backend/src/main/resources/application.yml`.
 * You can view the emails hangar sends on http://localhost:4436/
 * On staging/prod Hangar uses object storage, if you want to test that you can install minio and change the storage type to `object` in the `application.yml`
 

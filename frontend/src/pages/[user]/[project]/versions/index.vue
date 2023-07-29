@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { NamedPermission, Visibility } from "~/types/backend";
+import { NamedPermission, Visibility, ChannelFlag } from "~/types/backend";
 import type { Platform, HangarProject, Version } from "~/types/backend";
 
 const i18n = useI18n();
@@ -34,7 +34,7 @@ const requestParams = computed(() => {
 const results = await Promise.all([useProjectChannels(route.params.project), useProjectVersions(route.params.project, requestParams.value)]);
 const channels = results[0].data;
 const versions = results[1];
-filter.channels.push(...channels.value.map((c) => c.name));
+filter.channels.push(...channels.value.filter((c) => !c.flags.includes(ChannelFlag.HIDE_BY_DEFAULT)).map((c) => c.name));
 filter.platforms.push(...platforms.value.map((p) => p.enumName));
 
 useHead(useSeo("Versions | " + props.project.name, props.project.description, route, props.project.avatarUrl));

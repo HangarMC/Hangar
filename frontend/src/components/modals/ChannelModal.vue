@@ -14,7 +14,7 @@ const i18n = useI18n();
 const v = useVuelidate({ $stopPropagation: true });
 
 const frozen = props.channel && props.channel.flags.includes(ChannelFlag.FROZEN);
-const possibleFlags = frozen ? [ChannelFlag.PINNED] : [ChannelFlag.UNSTABLE, ChannelFlag.PINNED, ChannelFlag.SENDS_NOTIFICATIONS];
+const possibleFlags = frozen ? [ChannelFlag.PINNED] : [ChannelFlag.UNSTABLE, ChannelFlag.PINNED, ChannelFlag.SENDS_NOTIFICATIONS, ChannelFlag.HIDE_BY_DEFAULT];
 
 const form = reactive<ProjectChannel>({
   name: "",
@@ -135,6 +135,7 @@ reset();
             <IconMdiAlertOutline v-if="f === ChannelFlag.UNSTABLE" />
             <IconMdiPinOutline v-else-if="f === ChannelFlag.PINNED" />
             <IconMdiBellOutline v-else-if="f === ChannelFlag.SENDS_NOTIFICATIONS" />
+            <IconMdiHideOutline v-else-if="f === ChannelFlag.HIDE_BY_DEFAULT" />
           </span>
           {{ i18n.t("channel.modal.flags." + f.toLowerCase()) }}
         </template>
