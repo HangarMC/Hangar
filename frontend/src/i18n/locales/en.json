@@ -305,8 +305,9 @@
       "categorySub": "Categorize your project into one of 10 categories. Appropriately categorizing your project makes it easier for people to find.",
       "keywords": "Keywords",
       "keywordsSub": "These are special words that will return your project when people add them to their searches.",
-      "keywordTooLong": "Keyword is too long",
-      "keywordTooShort": "Keyword is too short",
+      "keywordTooLong": "Keyword '{0}' is too long",
+      "keywordTooShort": "Keyword '{0}' is too short",
+      "keywordInvalid": "Keyword '{0}' is invalid",
       "tags": {
         "title": "Tags",
         "SUPPORTS_FOLIA": {

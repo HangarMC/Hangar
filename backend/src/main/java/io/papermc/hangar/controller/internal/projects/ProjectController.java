@@ -110,7 +110,7 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
     @PostMapping(path = "/project/{author}/{slug}/settings", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveProjectSettings(@PathVariable final String author, @PathVariable final String slug, @RequestBody @Valid final ProjectSettingsForm settingsForm) {
+    public void saveProjectSettings(@PathVariable final String author, @PathVariable final String slug, @RequestBody final @Valid ProjectSettingsForm settingsForm) {
         this.projectService.saveSettings(author, slug, settingsForm);
     }
 

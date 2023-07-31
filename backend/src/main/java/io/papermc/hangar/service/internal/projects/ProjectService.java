@@ -178,11 +178,11 @@ public class ProjectService extends HangarComponent {
 
         for (final String keyword : settingsForm.getSettings().getKeywords()) {
             if (keyword.length() < 3) {
-                throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordTooShort");
+                throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordTooShort", keyword);
             } else if (keyword.length() > this.config.projects.maxKeywordLen()) {
-                throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordTooLong");
+                throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordTooLong", keyword);
             } else if (!KEYWORD_PATTERN.matcher(keyword).matches()) {
-                throw new HangarApiException(HttpStatus.BAD_REQUEST, "Invalid keyword");
+                throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordInvalid", keyword);
             }
         }
 

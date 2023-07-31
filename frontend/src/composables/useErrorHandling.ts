@@ -20,12 +20,17 @@ export function handleRequestError(err: AxiosError | unknown, msg: string | unde
   } else if (err.response && typeof err.response.data === "object" && err.response.data) {
     if ("isHangarApiException" in err.response.data) {
       for (const errorMsg of collectErrors(err.response.data as HangarApiException, i18n)) {
+        console.log("dum", err.response.data, errorMsg, msg);
         notification.error(msg ? `${i18n.t(msg)}: ${errorMsg}` : errorMsg);
       }
     } else if ("isHangarValidationException" in err.response.data) {
       const data = err.response.data as HangarValidationException;
       for (const fieldError of data.fieldErrors) {
-        notification.error(i18n.te(fieldError.errorMsg) ? i18n.t(fieldError.errorMsg) : fieldError.errorMsg);
+        notification.error(
+          i18n.te(fieldError.errorMsg)
+            ? i18n.t(fieldError.errorMsg, [fieldError.fieldName, fieldError.rejectedValue])
+            : fieldError.errorMsg + " '" + fieldError.fieldName + "': " + fieldError.rejectedValue
+        );
       }
       if (msg) {
         notification.error(i18n.t(msg));
@@ -88,7 +93,7 @@ function _handleRequestError(err: AxiosError | unknown, i18n: Composer) {
 
 function collectErrors(exception: HangarApiException | MultiHangarApiException, i18n: Composer): string[] {
   if (!exception.isMultiException) {
-    return exception.message ? [i18n.te(exception.message) ? i18n.t(exception.message, [exception.messageArgs]) : exception.message] : [];
+    return exception.message ? [i18n.te(exception.message) ? i18n.t(exception.message, [...exception.messageArgs]) : exception.message] : [];
   } else {
     const res: string[] = [];
     for (const ex of exception.exceptions) {

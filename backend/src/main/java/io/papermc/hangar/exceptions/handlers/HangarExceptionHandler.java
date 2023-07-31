@@ -4,10 +4,12 @@ import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.exceptions.HangarResponseException;
 import io.papermc.hangar.exceptions.MultiHangarApiException;
-import java.util.Map;
+import io.undertow.server.RequestTooBigException;
+import io.undertow.server.handlers.form.MultiPartParserDefinition;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,12 +19,12 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice(basePackages = "io.papermc.hangar")
-public class HangarEntityExceptionHandler extends ResponseEntityExceptionHandler {
+public class HangarExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final HangarConfig config;
 
     @Autowired
-    public HangarEntityExceptionHandler(final HangarConfig config) {
+    public HangarExceptionHandler(final HangarConfig config) {
         this.config = config;
     }
 
@@ -53,5 +55,17 @@ public class HangarEntityExceptionHandler extends ResponseEntityExceptionHandler
     @Override
     protected @NotNull ResponseEntity<Object> handleMethodArgumentNotValid(final @NotNull MethodArgumentNotValidException ex, final @NotNull HttpHeaders headers, final @NotNull HttpStatusCode status, final @NotNull WebRequest request) {
         return new ResponseEntity<>(ex, headers, status);
+    }
+
+    @ExceptionHandler(MultiPartParserDefinition.FileTooLargeException.class)
+    public ResponseEntity<HangarApiException> handleException(final MultiPartParserDefinition.FileTooLargeException exception) {
+        final HangarApiException apiException = new HangarApiException(HttpStatus.PAYLOAD_TOO_LARGE, "File too large - files have to be less than " + this.config.projects.maxFileSizeMB() + "MB in size");
+        return new ResponseEntity<>(apiException, HttpStatus.PAYLOAD_TOO_LARGE);
+    }
+
+    @ExceptionHandler(RequestTooBigException.class)
+    public ResponseEntity<HangarApiException> handleException(final RequestTooBigException exception) {
+        final HangarApiException apiException = new HangarApiException(HttpStatus.PAYLOAD_TOO_LARGE, "File too large - files have to be less than " + this.config.projects.maxTotalFilesSizeMB() + "MB total");
+        return new ResponseEntity<>(apiException, HttpStatus.PAYLOAD_TOO_LARGE);
     }
 }
