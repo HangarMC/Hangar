@@ -151,7 +151,7 @@ function requiresConfirmation(): ConfirmationType {
               <span v-else-if="starred">{{ i18n.t("project.actions.unstar") }}</span>
               <span v-else>{{ i18n.t("project.actions.star") }}</span>
             </template>
-            <Button button-type="secondary" size="small" :disabled="isOwn" @click="toggleStar">
+            <Button button-type="secondary" size="small" @click="toggleStar">
               <IconMdiStar v-if="starred" />
               <IconMdiStarOutline v-else />
               <span class="ml-2">{{ starredCount.toLocaleString("en-US") }}</span>
@@ -165,7 +165,7 @@ function requiresConfirmation(): ConfirmationType {
               <span v-else-if="watching">{{ i18n.t("project.actions.unwatch") }}</span>
               <span v-else>{{ i18n.t("project.actions.watch") }}</span>
             </template>
-            <Button button-type="secondary" size="small" :disabled="isOwn" @click="toggleWatch">
+            <Button button-type="secondary" size="small" @click="toggleWatch">
               <IconMdiBell v-if="watching" />
               <IconMdiBellOutline v-else />
               <span class="ml-2">{{ watchingCount.toLocaleString("en-US") }}</span>
