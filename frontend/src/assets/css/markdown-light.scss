@@ -4,6 +4,8 @@
   .markdown {
     @include meta.load-css("prismjs/themes/prism.min.css");
 
+    --un-prose-hr: #959595;
+
     table tr:nth-child(2n) {
       background-color: #f5f5f5;
     }
