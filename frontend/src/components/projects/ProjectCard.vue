@@ -25,6 +25,15 @@ const router = useRouter();
 const props = defineProps<{
   project: Project;
 }>();
+
+function open(event: PointerEvent) {
+  const url = "/" + props.project.namespace.owner + "/" + props.project.namespace.slug;
+  if (event.ctrlKey) {
+    window?.open(location.origin + url, "_blank")?.focus();
+  } else {
+    router.push(url);
+  }
+}
 </script>
 
 <template>
@@ -34,7 +43,7 @@ const props = defineProps<{
       '!border-gray-300 !dark:border-gray-700 border-1px': project.visibility === Visibility.PUBLIC,
       'hover:background-card cursor-pointer': true,
     }"
-    @click="router.push('/' + project.namespace.owner + '/' + project.namespace.slug)"
+    @click.prevent="open($event)"
   >
     <div class="flex space-x-4">
       <div>
