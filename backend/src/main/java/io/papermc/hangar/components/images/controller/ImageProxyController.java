@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -44,7 +46,7 @@ public class ImageProxyController {
             ClientResponse clientResponse = null;
             try {
                 clientResponse = this.webClient.get()
-                    .uri(url)
+                    .uri(new URL(url).toURI())
                     .headers((headers) -> this.passHeaders(headers, request))
                     .exchange().block(); // Block the request, we don't get the body at this point!
                 if (clientResponse == null) {
@@ -78,7 +80,7 @@ public class ImageProxyController {
                 } else {
                     return ResponseEntity.badRequest().body("Bad content type");
                 }
-            } catch (final WebClientRequestException ex) {
+            } catch (final WebClientRequestException | MalformedURLException | URISyntaxException ex) {
                 return ResponseEntity.internalServerError().body("Encountered " + ex.getClass().getSimpleName() + " while trying to load " + url);
             } finally {
                 if (clientResponse != null) {
