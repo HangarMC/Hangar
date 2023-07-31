@@ -1,4 +1,11 @@
-import { RouterConfig } from "@nuxt/schema";
+// import { RouterOptions } from "@nuxt/schema";
+import { RouterHistory, RouterOptions } from "vue-router";
+
+type RouterConfig = Partial<Omit<RouterOptions, "history" | "routes">> & {
+  history?: (baseURL?: string) => RouterHistory;
+  routes?: (_routes: RouterOptions$1["routes"]) => RouterOptions$1["routes"];
+  hashMode?: boolean;
+};
 
 export default {
   scrollBehavior(to, from, savedPosition) {

@@ -266,7 +266,7 @@ async function generateNewCodes() {
       </div>
       Confirm that you saved the backup codes by entering one of them below
       <InputText v-model="backupCodeConfirm" label="Backup Code" :rules="[requiredIf()(backupCodeModal.isOpen)]" />
-      <Button class="mt-2" @click="confirmAndRepeat" :disabled="v.$invalid">Confirm</Button>
+      <Button class="mt-2" :disabled="v.$invalid" @click="confirmAndRepeat">Confirm</Button>
     </Modal>
 
     <h3 class="text-lg font-bold mt-4 mb-2">Devices</h3>

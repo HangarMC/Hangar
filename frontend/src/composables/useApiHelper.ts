@@ -20,7 +20,6 @@ import {
 } from "hangar-internal";
 import { AsyncData } from "nuxt/app";
 import { ComputedRef, Ref } from "vue";
-import { NuxtApp } from "@nuxt/schema";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { createError, hasPerms, ref, useAsyncData } from "#imports";
 import { handleRequestError } from "~/composables/useErrorHandling";
