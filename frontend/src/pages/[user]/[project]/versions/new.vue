@@ -203,7 +203,7 @@ async function createPendingVersion() {
     })
   );
 
-  pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project.id}/upload`, "post", formData, { timeout: 15000 }).catch<any>(
+  pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project.id}/upload`, "post", formData, { timeout: 45000 }).catch<any>(
     (e) => handleRequestError(e)
   );
   loading.create = false;
@@ -249,7 +249,7 @@ async function createVersion() {
   }
 
   try {
-    await useInternalApi(`versions/version/${props.project.id}/create`, "post", pendingVersion.value, { timeout: 10000 });
+    await useInternalApi(`versions/version/${props.project.id}/create`, "post", pendingVersion.value, { timeout: 45000 });
     await router.push(`/${route.params.user}/${route.params.project}/versions`);
   } catch (e: any) {
     handleRequestError(e);

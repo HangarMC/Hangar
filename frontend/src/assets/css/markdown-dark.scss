@@ -4,7 +4,7 @@
   .markdown {
     @include meta.load-css("prismjs/themes/prism-tomorrow.min.css");
 
-    --un-prose-hr: #E0E6F0;
+    --un-prose-hr: #e0e6f0;
 
     table thead th {
       color: #e0e0e0;
