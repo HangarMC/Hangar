@@ -34,6 +34,10 @@ module.exports = {
     "import/core-modules": ["virtual:windi.css"],
   },
   rules: {
+    // temp disable
+    // TODO reenable
+    "vue/no-setup-props-destructure": "off",
+
     "eol-last": ["error", "always"],
 
     "vue/multi-word-component-names": "off",
