@@ -177,6 +177,11 @@ hangar:
       - "crowdin.com"
       - "kyori.net"
       - "modrinth.com"
+      - "i.imgur.com"
+      - "imgur.com"
+      - "giphy.com"
+      - "media.giphy.com"
+      - "bstats.org"
 
   jobs:
     check-interval: 5s
