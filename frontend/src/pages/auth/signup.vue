@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useHead } from "@vueuse/head";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { useI18n } from "vue-i18n";
@@ -17,7 +17,6 @@ import Link from "~/components/design/Link.vue";
 import InputGroup from "~/components/ui/InputGroup.vue";
 
 const route = useRoute();
-const router = useRouter();
 const v = useVuelidate();
 
 interface SignupForm {

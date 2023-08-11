@@ -7,7 +7,7 @@ import { HangarProject } from "hangar-internal";
 import { useHead } from "@vueuse/head";
 import Link from "~/components/design/Link.vue";
 import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission, Platform, Visibility } from "~/types/enums";
+import { ChannelFlag, NamedPermission, Platform, Visibility } from "~/types/enums";
 import Card from "~/components/design/Card.vue";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import Tag from "~/components/Tag.vue";
@@ -54,7 +54,7 @@ const results = await Promise.all([
 ]);
 const channels = results[0].data;
 const versions = results[1];
-filter.channels.push(...channels.value.map((c) => c.name));
+filter.channels.push(...channels.value.filter((c) => !c.flags.includes(ChannelFlag.HIDE_BY_DEFAULT)).map((c) => c.name));
 filter.platforms.push(...platforms.value.map((p) => p.enumName));
 
 useHead(useSeo("Versions | " + props.project.name, props.project.description, route, props.project.avatarUrl));

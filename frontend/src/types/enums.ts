@@ -116,6 +116,7 @@ export enum ChannelFlag {
   FROZEN = "FROZEN",
   UNSTABLE = "UNSTABLE",
   PINNED = "PINNED",
+  HIDE_BY_DEFAULT = "HIDE_BY_DEFAULT",
 }
 
 export enum PinnedStatus {

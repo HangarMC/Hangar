@@ -7,7 +7,7 @@ import Button from "~/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { useBackendData } from "~/store/backendData";
 import InputText from "~/components/ui/InputText.vue";
-import { isSame, maxLength, minLength, pattern, required } from "~/composables/useValidationHelpers";
+import { isSame, maxLength, pattern, required } from "~/composables/useValidationHelpers";
 import { validChannelName, validChannelColor } from "~/composables/useHangarValidations";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import { ChannelFlag } from "~/types/enums";
@@ -25,7 +25,7 @@ const i18n = useI18n();
 const v = useVuelidate();
 
 const frozen = props.channel && props.channel.flags.includes(ChannelFlag.FROZEN);
-const possibleFlags = frozen ? [ChannelFlag.PINNED] : [ChannelFlag.UNSTABLE, ChannelFlag.PINNED];
+const possibleFlags = frozen ? [ChannelFlag.PINNED] : [ChannelFlag.UNSTABLE, ChannelFlag.PINNED, ChannelFlag.HIDE_BY_DEFAULT];
 
 const form = reactive<ProjectChannel>({
   name: "",
