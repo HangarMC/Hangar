@@ -296,7 +296,9 @@ public class VersionFactory extends HangarComponent {
             this.downloadsDAO.insertPlatformDownloads(platformDownloadsTables);
 
             // send notifications
-            this.notificationService.notifyUsersNewVersion(projectTable, projectVersionTable, this.projectService.getProjectWatchers(projectTable.getId()));
+            if (projectChannelTable.getFlags().contains(ChannelFlag.SENDS_NOTIFICATIONS)) {
+                this.notificationService.notifyUsersNewVersion(projectTable, projectVersionTable, this.projectService.getProjectWatchers(projectTable.getId()));
+            }
             this.actionLogger.version(LogAction.VERSION_CREATED.create(VersionContext.of(projectId, projectVersionTable.getId()), "published", ""));
 
             if (projectTable.getVisibility() == Visibility.NEW) {

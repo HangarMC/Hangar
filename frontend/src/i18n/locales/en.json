@@ -596,7 +596,8 @@
       "pickedColor": "Picked channel color (must be unique)",
       "flags": {
         "unstable": "Versions are to be considered unstable",
-        "pinned": "Latest version is pinned on main project page"
+        "pinned": "Latest version is pinned on main project page",
+        "sends_notifications": "New versions in this channel send notifications to watching users"
       },
       "error": {
         "invalidName": "Invalid channel name",

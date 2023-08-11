@@ -25,7 +25,7 @@ const i18n = useI18n();
 const v = useVuelidate();
 
 const frozen = props.channel && props.channel.flags.includes(ChannelFlag.FROZEN);
-const possibleFlags = frozen ? [ChannelFlag.PINNED] : [ChannelFlag.UNSTABLE, ChannelFlag.PINNED];
+const possibleFlags = frozen ? [ChannelFlag.PINNED] : [ChannelFlag.UNSTABLE, ChannelFlag.PINNED, ChannelFlag.SENDS_NOTIFICATIONS];
 
 const form = reactive<ProjectChannel>({
   name: "",
@@ -136,7 +136,16 @@ reset();
         />
         <div class="mb-4" />
       </div>
-      <InputCheckbox v-for="f in possibleFlags" :key="f" v-model="flags" :label="i18n.t(`channel.modal.flags.${f.toLowerCase()}`)" :value="f" />
+      <InputCheckbox v-for="f in possibleFlags" :key="f" v-model="flags" :value="f">
+        <template #label>
+          <span class="mr-1">
+            <IconMdiAlertOutline v-if="f === ChannelFlag.UNSTABLE" />
+            <IconMdiPinOutline v-else-if="f === ChannelFlag.PINNED" />
+            <IconMdiBellOutline v-else-if="f === ChannelFlag.SENDS_NOTIFICATIONS" />
+          </span>
+          {{ i18n.t("channel.modal.flags." + f.toLowerCase()) }}
+        </template>
+      </InputCheckbox>
 
       <Button class="mt-3" :disabled="noChange || v.$invalid" @click="create(on.click)">{{ edit ? i18n.t("general.save") : i18n.t("general.create") }}</Button>
     </template>

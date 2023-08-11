@@ -69,6 +69,7 @@ declare module "vue" {
     IconMdiPencil: typeof import("~icons/mdi/pencil")["default"];
     IconMdiPin: typeof import("~icons/mdi/pin")["default"];
     IconMdiPinOff: typeof import("~icons/mdi/pin-off")["default"];
+    IconMdiPinOutline: typeof import("~icons/mdi/pin-outline")["default"];
     IconMdiPlay: typeof import("~icons/mdi/play")["default"];
     IconMdiPlus: typeof import("~icons/mdi/plus")["default"];
     IconMdiPuzzleOutline: typeof import("~icons/mdi/puzzle-outline")["default"];

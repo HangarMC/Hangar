@@ -12,6 +12,7 @@ public enum ChannelFlag {
     FROZEN(false, false),
     UNSTABLE(true, false),
     PINNED(true, true),
+    SENDS_NOTIFICATIONS(true, false),
     ;
 
     public static final Set<ChannelFlag> EDITABLE = Arrays.stream(values()).filter(ChannelFlag::isEditable).collect(Collectors.toUnmodifiableSet());
