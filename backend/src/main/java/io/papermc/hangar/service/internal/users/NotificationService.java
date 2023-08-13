@@ -94,13 +94,11 @@ public class NotificationService extends HangarComponent {
 
     public void notifyUsersNewVersion(final ProjectTable projectTable, final ProjectVersionTable projectVersionTable, final List<UserTable> projectWatchers) {
         final List<NotificationTable> notificationTables = new ArrayList<>();
+        final String action = projectTable.getOwnerName() + "/" + projectTable.getSlug() + "/versions/" + projectVersionTable.getVersionString();
+        final Long userId = this.getHangarUserId();
+        final String[] messageArgs = {"notifications.project.newVersion", projectTable.getName(), projectVersionTable.getVersionString()};
         for (final UserTable projectWatcher : projectWatchers) {
-            notificationTables.add(new NotificationTable(
-                projectWatcher.getId(),
-                projectTable.getOwnerName() + "/" + projectTable.getSlug() + "/versions/" + projectVersionTable.getVersionString(),
-                this.getHangarUserId(),
-                new String[]{"notifications.project.newVersion", projectTable.getName(), projectVersionTable.getVersionString()}, NotificationType.NEUTRAL)
-            );
+            notificationTables.add(new NotificationTable(projectWatcher.getId(), action, userId, messageArgs, NotificationType.NEUTRAL));
         }
         this.notificationsDAO.insert(notificationTables);
     }

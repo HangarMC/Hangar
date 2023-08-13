@@ -24,6 +24,7 @@ import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.util.ThreadFactory;
+import io.sentry.Sentry;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Comparator;
@@ -119,6 +120,7 @@ public class JarScanningService {
                 severity = this.scanPlatform(versionToScan, platform);
             } catch (final Exception e) {
                 e.printStackTrace();
+                Sentry.captureException(e);
             }
 
             if (severity.compareTo(highestSeverity) < 0) {
