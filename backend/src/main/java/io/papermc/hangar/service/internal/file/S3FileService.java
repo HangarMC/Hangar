@@ -91,7 +91,6 @@ public class S3FileService implements FileService {
 
     @Override
     public void move(final String oldPath, final String newPath) throws IOException {
-        System.out.println(oldPath + " -> " + newPath);
         if (!oldPath.startsWith(this.getRoot()) && newPath.startsWith(this.getRoot())) {
             // upload from file to s3
             this.write(Files.newInputStream(Path.of(oldPath)), newPath, null);
@@ -100,8 +99,7 @@ public class S3FileService implements FileService {
             final String sourceDirectory = oldPath.replace(this.getRoot(), "");
             final String destinationDirectory = newPath.replace(this.getRoot(), "");
             for (final S3Object object : this.s3Client.listObjectsV2Paginator(builder -> builder.bucket(this.config.bucket()).prefix(sourceDirectory)).contents()) {
-                final String sourceKey = object.key();
-                System.out.println(sourceKey + " -> " + sourceKey.replace(sourceDirectory, destinationDirectory));
+                final String sourceKey = object.key().replace(this.getRoot(), "");
                 this.s3Client.copyObject(builder -> builder
                     .sourceBucket(this.config.bucket())
                     .sourceKey(sourceKey)
@@ -111,7 +109,8 @@ public class S3FileService implements FileService {
             }
 
             for (final S3Object object : this.s3Client.listObjectsV2Paginator(builder -> builder.bucket(this.config.bucket()).prefix(sourceDirectory)).contents()) {
-                this.s3Client.deleteObject(builder -> builder.bucket(this.config.bucket()).key(object.key()));
+                final String key = object.key().replace(this.getRoot(), "");
+                this.s3Client.deleteObject(builder -> builder.bucket(this.config.bucket()).key(key));
             }
         } else {
             throw new UnsupportedOperationException("cant move " + oldPath + " to " + newPath);
