@@ -165,6 +165,11 @@ public class JarScanningService {
     private NamedResource getFile(final VersionToScan version, final Platform platform) {
         final long versionId = version.versionId();
         final ProjectVersionPlatformDownloadTable platformDownload = this.downloadsDAO.getPlatformDownload(versionId, platform);
+        // TODO Why can platformDownload be null at this stage
+        if (platformDownload == null) {
+            throw new RuntimeException("Couldn't find a download for version " + version + " in platform " + platform);
+        }
+
         final ProjectVersionDownloadTable download = this.downloadsDAO.getDownload(versionId, platformDownload.getDownloadId());
         if (download.getFileName() == null) {
             throw new RuntimeException("Couldn't find a file for version " + version + " in download " + download);

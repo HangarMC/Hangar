@@ -18,6 +18,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 @Service
 @ConditionalOnProperty(value = "hangar.storage.type", havingValue = "object")
@@ -72,7 +73,7 @@ public class S3FileService implements FileService {
     }
 
     @Override
-    public void move(final String oldPath, final String newPath) throws IOException {
+    public void moveFile(final String oldPath, final String newPath) throws IOException {
         if (!oldPath.startsWith(this.getRoot()) && newPath.startsWith(this.getRoot())) {
             // upload from file to s3
             this.write(Files.newInputStream(Path.of(oldPath)), newPath, null);
@@ -83,6 +84,34 @@ public class S3FileService implements FileService {
                 .destinationBucket(this.config.bucket()).destinationKey(newPath.replace(this.getRoot(), ""))
             ));
             this.s3Template.deleteObject(oldPath);
+        } else {
+            throw new UnsupportedOperationException("cant move " + oldPath + " to " + newPath);
+        }
+    }
+
+    @Override
+    public void move(final String oldPath, final String newPath) throws IOException {
+        if (!oldPath.startsWith(this.getRoot()) && newPath.startsWith(this.getRoot())) {
+            // upload from file to s3
+            this.write(Files.newInputStream(Path.of(oldPath)), newPath, null);
+        } else if (oldPath.startsWith(this.getRoot()) && newPath.startsWith(this.getRoot())) {
+            // There is no renaming and there are no directories, so we have to copy and delete individual objects
+            final String sourceDirectory = oldPath.replace(this.getRoot(), "");
+            final String destinationDirectory = newPath.replace(this.getRoot(), "");
+            for (final S3Object object : this.s3Client.listObjectsV2Paginator(builder -> builder.bucket(this.config.bucket()).prefix(sourceDirectory)).contents()) {
+                System.out.println(object.key());
+                final String sourceKey = object.key();
+                this.s3Client.copyObject(builder -> builder
+                    .sourceBucket(this.config.bucket())
+                    .sourceKey(sourceKey)
+                    .destinationBucket(this.config.bucket())
+                    .destinationKey(sourceKey.replace(sourceDirectory, destinationDirectory))
+                );
+            }
+
+            for (final S3Object object : this.s3Client.listObjectsV2Paginator(builder -> builder.bucket(this.config.bucket()).prefix(sourceDirectory)).contents()) {
+                this.s3Client.deleteObject(builder -> builder.bucket(this.config.bucket()).key(object.key()));
+            }
         } else {
             throw new UnsupportedOperationException("cant move " + oldPath + " to " + newPath);
         }

@@ -20,6 +20,10 @@ public interface FileService {
 
     void write(InputStream inputStream, String path, @Nullable String contentType) throws IOException;
 
+    default void moveFile(String oldPath, String newPath) throws IOException {
+        this.move(oldPath, newPath);
+    }
+
     void move(String oldPath, String newPath) throws IOException;
 
     void link(String existingPath, String newPath) throws IOException;
