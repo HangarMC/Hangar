@@ -319,7 +319,7 @@ function isRecent(date: string): boolean {
                       }}
                     </span>
                   </Link>
-                  <span v-if="loadedUnreadNotifications !== 0" class="color-primary hover:(underline)" @click="markNotificationsRead">
+                  <span v-if="loadedUnreadNotifications !== 0" class="color-primary hover:(underline cursor-pointer)" @click="markNotificationsRead">
                     {{ i18n.t("notifications.markAsRead") }}
                   </span>
                 </div>
