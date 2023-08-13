@@ -387,7 +387,7 @@ public class VersionFactory extends HangarComponent {
         final String tmpVersionJar = this.fileService.resolve(this.fileService.resolve(userTempDir, platformToResolve.name()), fileInfo.getName());
 
         final String newVersionJarPath = this.fileService.resolve(this.fileService.resolve(versionDir, platformToResolve.name()), fileInfo.getName());
-        this.fileService.move(tmpVersionJar, newVersionJarPath);
+        this.fileService.moveFile(tmpVersionJar, newVersionJarPath);
 
         // Create links for the other platforms
         for (int i = 1; i < pendingVersionFile.platforms().size(); i++) {
