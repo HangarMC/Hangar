@@ -1,12 +1,13 @@
-version: '3.7'
+version: "3.7"
+name: hangar
 
 services:
   postgres:
-    build: ./postgres
+    image: postgres:15-alpine
     environment:
       POSTGRES_DB: hangar
       POSTGRES_USER: hangar
-      POSTGRES_PASSWORD: 'hangar'
+      POSTGRES_PASSWORD: hangar
     ports:
       - "5432:5432"
     volumes:
@@ -16,12 +17,25 @@ services:
     platform: linux/amd64
     image: oryd/mailslurper:latest-smtps
     ports:
-      - '4436:4436'
-      - '4437:4437'
-      - '1025:1025'
+      - "4436:4436"
+      - "4437:4437"
+      - "1025:1025"
+
+  minio:
+    image: "bitnami/minio:latest"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=hangar_root
+      - MINIO_ROOT_PASSWORD=hangar_pass
+      - MINIO_DEFAULT_BUCKETS=hangar:public
+    volumes:
+      - minio_data:/data
 
 volumes:
   postgres_data:
+  minio_data:
 
 networks:
   default:

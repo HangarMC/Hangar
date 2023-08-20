@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="backend json logging" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <envs>
+      <env name="JSON_LOGS_ENABLED" value="true" />
+    </envs>
+    <module name="hangar" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="io.papermc.hangar.HangarApplication" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="io.papermc.hangar.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

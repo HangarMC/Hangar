@@ -32,7 +32,7 @@ Fork the project and pull it in your IDE.
 
 To get the project running locally, you need to follow a few steps:
 
-1. Get the dummy database and email server up and running. Move to the docker folder `cd docker` then run `docker-compose -f dev.yml up -d` (`-d` as an optional parameter
+1. Get the dummy database, storage and email server up and running. Move to the docker folder `cd docker` then run `docker-compose -f dev.yml up -d` (`-d` as an optional parameter
    to run the containers in the background).
    Alternatively, if you are using IntelliJ you can press the green arrow in the `docker/dev.yml` file.
 2. Move to the `backend` directory: `cd ../backend`. In that directory, run `mvn spring-boot:run`, or if you're using IntelliJ, it is included in the run
@@ -75,10 +75,11 @@ to which dependencies are broken.
 
 ## Tracing
 
-If you want to have traces available locally, you can run zipkin via Docker like this:
+If you want to have traces available locally, you can run zipkin via the docker-compose file `zipkin.yml` in the docker folder like this:
 
 ```shell
-docker run -d -p 9411:9411 openzipkin/zipkin
+cd docker
+docker-compose -f zipkin.yml up -d
 ```
 
 Then just enable it in the `application.yml` under `management.tracing`.
