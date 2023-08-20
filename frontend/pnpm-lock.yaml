@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   hookable: 5.4.2
 
@@ -71,14 +75,14 @@ dependencies:
     specifier: 4.17.21
     version: 4.17.21
   marked:
-    specifier: 4.3.0
-    version: 4.3.0
+    specifier: 7.0.4
+    version: 7.0.4
   marked-extended-tables:
     specifier: 1.0.6
-    version: 1.0.6(marked@4.3.0)
+    version: 1.0.6(marked@7.0.4)
   marked-linkify-it:
     specifier: 3.1.1
-    version: 3.1.1(marked@4.3.0)
+    version: 3.1.1(marked@7.0.4)
   nprogress:
     specifier: 0.2.0
     version: 0.2.0
@@ -5587,27 +5591,33 @@ packages:
       semver: 6.3.1
     dev: true
 
-  /marked-extended-tables@1.0.6(marked@4.3.0):
+  /marked-extended-tables@1.0.6(marked@7.0.4):
     resolution: {integrity: sha512-l3bgWsVHxJLaZhDGYdg3tREoUt+Jzq05fGAoKfeORAyz149N/jxDOimcg4wYV27G2M/6meZR28jVgtV+qTXD1g==}
     peerDependencies:
       marked: ^3.0.0 || ^4.0.0 || ^5.0.0
     dependencies:
-      marked: 4.3.0
+      marked: 7.0.4
     dev: false
 
-  /marked-linkify-it@3.1.1(marked@4.3.0):
+  /marked-linkify-it@3.1.1(marked@7.0.4):
     resolution: {integrity: sha512-aUBfHW1wcDpAfZuygE+Py7ZZXWFCkTHVBjfedV/yQbT+TuY2LvSDKyowuhSMuFDbMQtq/LL0m2wYGjPtizn6yg==}
     peerDependencies:
       marked: ^4 || ^5 || ^6 || ^7
     dependencies:
       '@types/linkify-it': 3.0.2
       linkify-it: 4.0.1
-      marked: 4.3.0
+      marked: 7.0.4
     dev: false
 
   /marked@4.3.0:
     resolution: {integrity: sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==}
     engines: {node: '>= 12'}
+    hasBin: true
+    dev: false
+
+  /marked@7.0.4:
+    resolution: {integrity: sha512-t8eP0dXRJMtMvBojtkcsA7n48BkauktUKzfkPSCq85ZMTJ0v76Rke4DYz01omYpPTUh4p/f7HePgRo3ebG8+QQ==}
+    engines: {node: '>= 16'}
     hasBin: true
     dev: false
 
@@ -8633,7 +8643,3 @@ packages:
       compress-commons: 4.1.1
       readable-stream: 3.6.2
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
