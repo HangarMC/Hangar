@@ -74,7 +74,7 @@ hangar:
   announcements:
     - text: |
         This is a local server for testing purposes. There is a public staging instance at <a href="https://hangar.papermc.dev" style="text-decoration: underline">https://hangar.papermc.dev</a> and the production site can be found at <a href="https://hangar.papermc.io" style="text-decoration: underline">https://hangar.papermc.io</a>.
-      color: "#ff544b"
+      color: "#2f4476"
 
   sponsors:
     - name: Beer

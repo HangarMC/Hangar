@@ -31,6 +31,8 @@ export default {
     "button-secondary": "bg-secondary-500 enabled:hover:(bg-secondary-400 dark:bg-secondary-600)",
     "button-transparent": "bg-transparent enabled:hover:(bg-primary-400/15 text-primary-400 dark:text-primary-100)",
     "button-red": "bg-red-500 dark:bg-red-600 enabled:hover:(bg-red-400 dark:bg-red-500)",
+    "text-gray": "text-gray-600 dark:text-gray-300",
+    "text-gray-secondary": "text-gray-500 dark:text-gray-400",
   },
   rules: [],
   variants: [
