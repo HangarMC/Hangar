@@ -53,7 +53,7 @@ function open(event: PointerEvent) {
         <div class="inline-flex items-center gap-x-1">
           <h2>
             <NuxtLink :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
-              <span class="text-lg font-bold">{{ project.name }}</span>
+              <span class="text-xl font-bold">{{ project.name }}</span>
             </NuxtLink>
             <span class="text-sm">
               by
