@@ -191,7 +191,7 @@ hangar:
     max-concurrent-jobs: 32
 
   storage:
-    type: "object"
+    # type: "object"
     access-key: "hangar_root"
     secret-key: "hangar_pass"
     bucket: "hangar"
