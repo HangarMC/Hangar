@@ -3,7 +3,7 @@ import markedLinkifyIt from "marked-linkify-it";
 import markedExtendedTables from "marked-extended-tables";
 import { linkout, proxyImage } from "~/composables/useUrlHelper";
 
-const youtubeRegex = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+const youtubeRegex = /(?:youtube\.com\/(?:[^\s/]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[&?]v=)|youtu\.be\/)([\w-]{11})(?:==(\d+))?/;
 const imageSizeParts = /(.*)==\s*(\d*)\s*x\s*(\d*)\s*$/;
 
 const renderer = {
@@ -29,8 +29,8 @@ const renderer = {
       width = parts[3];
     }
     const youtubeMatch = url.match(youtubeRegex);
-    if (youtubeMatch && youtubeMatch[7]?.length === 11) {
-      let res = '<iframe src="//www.youtube.com/embed/' + youtubeMatch[7] + '"';
+    if (youtubeMatch && youtubeMatch[1]?.length === 11) {
+      let res = '<iframe src="https://www.youtube.com/embed/' + youtubeMatch[1] + '"';
       if (height) res += ' height="' + height + '"';
       if (width) res += ' width="' + width + '"';
       if (title) res += ' title="' + title + '"';
@@ -46,6 +46,15 @@ const renderer = {
     }
   },
   link(href: string, title: string, text: string) {
+    const youtubeMatch = href.match(youtubeRegex);
+    if (youtubeMatch && youtubeMatch[1]?.length === 11) {
+      let res = '<iframe src="https://www.youtube.com/embed/' + youtubeMatch[1] + '"';
+      if (title) res += ' title="' + title + '"';
+      res += ' height="' + 275 + '"';
+      res += ' width="' + 500 + '"';
+      res += ">" + text + "</iframe>";
+      return res;
+    }
     return `<a href="${linkout(href)}"` + (title ? ` title="${title}">` : ">") + text + "</a>";
   },
 };

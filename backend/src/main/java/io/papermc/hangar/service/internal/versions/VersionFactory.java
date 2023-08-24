@@ -362,6 +362,7 @@ public class VersionFactory extends HangarComponent {
             for (final PluginDependency pluginDependency : platformListEntry.getValue()) {
                 Long depProjectId = null;
                 if (pluginDependency.getNamespace() != null) {
+                    // TODO only get id
                     final ProjectTable depProjectTable = this.projectService.getProjectTable(pluginDependency.getNamespace().getOwner(), pluginDependency.getNamespace().getSlug());
                     if (depProjectTable == null) {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPluginDependencyNamespace");
@@ -415,7 +416,7 @@ public class VersionFactory extends HangarComponent {
         final Set<Platform> processedPlatforms = EnumSet.noneOf(Platform.class);
         for (final PendingVersionFile pendingVersionFile : pendingVersion.getFiles()) {
             if (!processedPlatforms.addAll(pendingVersionFile.platforms())) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Overlapping platforms in pending version");
             }
 
             final FileInfo fileInfo = pendingVersionFile.fileInfo();
@@ -426,6 +427,7 @@ public class VersionFactory extends HangarComponent {
                     if (!this.fileService.exists(tmpVersionJar)) {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.noFile");
                     }
+
                     final byte[] bytes = this.fileService.bytes(tmpVersionJar);
                     if (bytes.length != fileInfo.sizeBytes()) {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.mismatchedFileSize");
@@ -437,15 +439,20 @@ public class VersionFactory extends HangarComponent {
                 }
             }
 
-            if (pendingVersion.getPlatformDependencies().entrySet().stream().anyMatch(en -> !new HashSet<>(this.platformService.getFullVersionsForPlatform(en.getKey())).containsAll(en.getValue()))) {
-                throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPlatformVersion");
+            // Check if the platform versions are valid
+            for (final Map.Entry<Platform, SortedSet<String>> entry : pendingVersion.getPlatformDependencies().entrySet()) {
+                final Platform platform = entry.getKey();
+                final Set<String> versionsForPlatform = new HashSet<>(this.platformService.getFullVersionsForPlatform(platform));
+                if (!versionsForPlatform.containsAll(entry.getValue())) {
+                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPlatformVersion");
+                }
             }
         }
     }
 
     @Transactional(readOnly = true)
     public @Nullable LastDependencies getLastVersionDependencies(final String author, final String slug, final @Nullable String channel, final Platform platform) {
-        // TODO optimize with specific query
+        // TODO Optimize with specific query
         final RequestPagination pagination = new RequestPagination(1L, 0L);
         pagination.getFilters().put("platform", new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
         if (channel != null) {
