@@ -173,10 +173,10 @@ public class VersionDependencyService extends HangarComponent {
                 dependencyTable.setExternalUrl(dependency.getExternalUrl());
                 dependencyTable.setProjectId(null);
                 updated = true;
-            } else if (dependency.getNamespace() != null) {
-                final ProjectTable projectTable = this.projectsDAO.getBySlug(dependency.getNamespace().getSlug());
+            } else if (dependency.getExternalUrl() == null) {
+                final ProjectTable projectTable = this.projectsDAO.getBySlug(dependency.getName());
                 if (projectTable == null) {
-                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidProjectNamespace", dependency.getNamespace().getOwner() + "/" + dependency.getNamespace().getSlug());
+                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidProjectNamespace", dependency.getName());
                 }
 
                 if (dependencyTable.getExternalUrl() != null || dependencyTable.getProjectId() != projectTable.getId()) {
@@ -195,10 +195,10 @@ public class VersionDependencyService extends HangarComponent {
         for (final Map.Entry<String, PluginDependency> entry : form.getPluginDependencies().entrySet()) {
             final PluginDependency dependency = entry.getValue();
             Long pdProjectId = null;
-            if (dependency.getNamespace() != null) {
-                final ProjectTable projectTable = this.projectsDAO.getBySlug(dependency.getNamespace().getSlug());
+            if (dependency.getExternalUrl() == null) {
+                final ProjectTable projectTable = this.projectsDAO.getBySlug(dependency.getName());
                 if (projectTable == null) {
-                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidProjectNamespace", dependency.getNamespace().getOwner() + "/" + dependency.getNamespace().getSlug());
+                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidProjectNamespace", dependency.getName());
                 }
 
                 pdProjectId = projectTable.getId();
