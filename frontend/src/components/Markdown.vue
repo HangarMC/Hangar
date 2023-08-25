@@ -28,7 +28,7 @@ watchPostEffect(async () => {
 </script>
 
 <template>
-  <div class="prose max-w-full rounded markdown break-words" :class="{ 'p-4': !inline, inline: inline }">
+  <div class="iframe-container prose max-w-full rounded markdown break-words" :class="{ 'p-4': !inline, inline: inline }">
     <!-- eslint-disable-next-line vue/no-v-html -->
     <div v-html="renderedMarkdown" />
   </div>
@@ -36,4 +36,9 @@ watchPostEffect(async () => {
 
 <style lang="scss">
 @import "@/assets/css/markdown.scss";
+
+.iframe-container iframe {
+  max-width: 100%;
+  max-height: 100%;
+}
 </style>

@@ -42,7 +42,7 @@ public class BBCodeConverter {
         REPLACERS.put("center", encaseIfNotBlank("<center>", "</center>"));
         REPLACERS.put("spoiler", (tag, tagArg, content) -> "<details>\n<summary>%s</summary>\n\n%s\n</details>\n".formatted(removeQuotes(tagArg), content));
         REPLACERS.put("img", (tag, tagArg, content) -> "![" + content + "](" + content + ")");
-        REPLACERS.put("media", (tag, tagArg, content) -> "youtube".equals(tagArg) ? "@[YouTube](https://youtu.be/" + content + ")" : null);
+        REPLACERS.put("media", (tag, tagArg, content) -> "youtube".equals(tagArg) ? "![YouTube](https://youtu.be/" + content + ")" : null);
         REPLACERS.put("size", (tag, tagArg, content) -> {
             if (content.isBlank() || tagArg == null) {
                 return content;

@@ -22,7 +22,7 @@ public class PluginDependency implements Named {
 
     @JdbiConstructor
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PluginDependency(final @Nullable String name, final boolean required, @Nested("pn") final @Nullable ProjectNamespace namespace, final String externalUrl, final @Nullable Platform platform) {
+    public PluginDependency(final @Nullable String name, final boolean required, @Nested("pn") final @Nullable ProjectNamespace namespace, final @Nullable String externalUrl, final @Nullable Platform platform) {
         this.name = namespace != null ? null : name;
         this.required = required;
         this.namespace = namespace;
@@ -51,7 +51,7 @@ public class PluginDependency implements Named {
         return this.namespace;
     }
 
-    public String getExternalUrl() {
+    public @Nullable String getExternalUrl() {
         return this.externalUrl;
     }
 
