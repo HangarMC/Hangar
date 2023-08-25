@@ -9,9 +9,7 @@ import java.util.Objects;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.jetbrains.annotations.Nullable;
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 
-@AtLeastOneNotNull(fieldNames = {"namespace", "externalUrl"}, includeBlankStrings = true, message = "Must specify a namespace or external URL for a dependency")
 @AtLeastOneNotNull(fieldNames = {"name", "namespace"}, includeBlankStrings = true, message = "Must specify a name or namespace for a dependency")
 public class PluginDependency implements Named {
 
@@ -23,7 +21,6 @@ public class PluginDependency implements Named {
     @JdbiConstructor
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PluginDependency(final String name, final boolean required, @Nested("pn") @Deprecated(forRemoval = true) final @Nullable ProjectNamespace namespace, final @Nullable String externalUrl, final Platform platform) {
-        Preconditions.checkArgument(name != null || namespace != null, "Must specify a name a dependency");
         this.name = name != null ? name : namespace.getSlug();
         this.required = required;
         this.externalUrl = externalUrl;
