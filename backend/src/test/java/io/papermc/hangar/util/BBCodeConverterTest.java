@@ -62,7 +62,7 @@ class BBCodeConverterTest {
     @Test
     void testMedia() {
         final String result = this.converter.convertToMarkdown("[MEDIA=youtube]dQw4w9WgXcQ[/MEDIA]");
-        Assertions.assertEquals("@[YouTube](https://youtu.be/dQw4w9WgXcQ)", result);
+        Assertions.assertEquals("![YouTube](https://youtu.be/dQw4w9WgXcQ)", result);
     }
 
     @Test
