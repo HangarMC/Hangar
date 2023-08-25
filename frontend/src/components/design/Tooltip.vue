@@ -33,6 +33,7 @@ onErrorCaptured((err) => {
 
 <style>
 .popper {
+  max-width: 700px;
   --popper-theme-background-color: #464646;
   --popper-theme-background-color-hover: #464646;
   --popper-theme-padding: 0.5rem;

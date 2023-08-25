@@ -672,6 +672,7 @@
   },
   "form": {
     "memberList": {
+      "info": "Here, you can manage the members and their permissions. Groups come in a hierarchy where higher groups inherit permissions: Support comes with no extra permissions; Editors and Developers can edit the docs pages; Maintainers can create, edit, and delete versions; Admins can invite and manage other members.",
       "addUser": "Add User...",
       "create": "Create",
       "editUser": "Edit User",

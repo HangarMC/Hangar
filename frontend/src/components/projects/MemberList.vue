@@ -157,8 +157,15 @@ async function doSearch(val: string) {
 <template>
   <Card v-if="sortedMembers.length > 0 || canEdit" :class="props.class">
     <template #header>
-      <div class="inline-flex w-full flex-cols space-between">
-        <h3 class="flex-grow">{{ i18n.t("project.members") }}</h3>
+      <div class="inline-flex w-full flex-cols space-between items-center">
+        <h3>{{ i18n.t("project.members") }}</h3>
+        <Tooltip v-if="canEdit" class="text-base font-normal">
+          <template #content>
+            {{ i18n.t("form.memberList.info") }}
+          </template>
+          <IconMdiHelpCircleOutline class="ml-1 text-gray-400" />
+        </Tooltip>
+        <div class="flex-grow" />
         <MemberLeaveModal v-if="canLeave" :author="author" :organization="organization" :slug="slug" />
       </div>
     </template>
