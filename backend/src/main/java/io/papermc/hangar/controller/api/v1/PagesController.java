@@ -33,11 +33,11 @@ public class PagesController extends HangarComponent implements IPagesController
 
     @Override
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.VIEW_PUBLIC_INFO, args = "{#author, #slug}")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.VIEW_PUBLIC_INFO, args = "{#slug}")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public String getMainPage(final String author, final String slug) {
-        final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(author, slug, "");
+    public String getMainPage(final String slug) {
+        final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(slug, "");
         if (projectPage == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -46,11 +46,11 @@ public class PagesController extends HangarComponent implements IPagesController
 
     @Override
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.VIEW_PUBLIC_INFO, args = "{#author, #slug}")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.VIEW_PUBLIC_INFO, args = "{#slug}")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public String getPage(final String author, final String slug, final String path) {
-        final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(author, slug, path);
+    public String getPage(final String slug, final String path) {
+        final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(slug, path);
         if (projectPage == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -60,19 +60,19 @@ public class PagesController extends HangarComponent implements IPagesController
     @Unlocked
     @Override
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 20)
-    @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#author, #slug}")
+    @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#slug}")
     @ResponseStatus(HttpStatus.OK)
-    public void editMainPage(final String author, final String slug, final StringContent pageEditForm) {
-        this.editPage(author, slug, new PageEditForm("", pageEditForm.getContent()));
+    public void editMainPage(final String slug, final StringContent pageEditForm) {
+        this.editPage(slug, new PageEditForm("", pageEditForm.getContent()));
     }
 
     @Unlocked
     @Override
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 20)
-    @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#author, #slug}")
+    @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#slug}")
     @ResponseStatus(HttpStatus.OK)
-    public void editPage(final String author, final String slug, final PageEditForm pageEditForm) {
-        final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(author, slug, pageEditForm.path());
+    public void editPage(final String slug, final PageEditForm pageEditForm) {
+        final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(slug, pageEditForm.path());
         if (projectPage == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "Project page not found");
         }

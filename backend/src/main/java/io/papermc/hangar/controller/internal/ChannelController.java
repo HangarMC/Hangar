@@ -64,10 +64,10 @@ public class ChannelController extends HangarComponent {
 
     // @el(author: String, slug: String)
     @Anyone
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
-    @GetMapping(path = "/{author}/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<HangarChannel>> getChannels(@PathVariable final String author, @PathVariable final String slug) {
-        final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
+    @GetMapping(path = "/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<HangarChannel>> getChannels(@PathVariable final String slug) {
+        final ProjectTable projectTable = this.projectService.getProjectTable(slug);
         if (projectTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }

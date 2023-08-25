@@ -50,6 +50,11 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
                     if (arguments.length == 1) {
                         final long projectId;
                         final Object argument1 = arguments[0];
+                        if (argument1 instanceof String projectName) {
+                            currentPerm = this.permissionService.getProjectPermissions(userId, projectName);
+                            break;
+                        }
+
                         if (argument1 instanceof ProjectTable) {
                             projectId = ((ProjectTable) argument1).getId();
                         } else {
@@ -57,8 +62,6 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
                         }
 
                         currentPerm = this.permissionService.getProjectPermissions(userId, projectId);
-                    } else if (arguments.length == 2) {
-                        currentPerm = this.permissionService.getProjectPermissions(userId, (String) arguments[0], (String) arguments[1]);
                     } else {
                         currentPerm = Permission.None;
                     }

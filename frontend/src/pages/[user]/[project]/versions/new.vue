@@ -134,7 +134,7 @@ function removePlatformFile(id: number) {
 
 const dependencyTables = ref();
 const pendingVersion: Ref<PendingVersion | undefined> = ref<PendingVersion>();
-const channels = (await useProjectChannels(route.params.user as string, route.params.project as string)).data;
+const channels = (await useProjectChannels(route.params.project as string)).data;
 const selectedPlatforms = ref<Platform[]>([]);
 const descriptionEditor = ref();
 const lastDescription = ref();

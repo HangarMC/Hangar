@@ -55,11 +55,10 @@ public interface ProjectVersionsDAO {
         "   JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
         "   JOIN platform_versions v ON pvpd.platform_version_id = v.id" +
         "   WHERE" +
-        "       lower(p.owner_name) = lower(:author) AND" +
         "       lower(p.slug) = lower(:slug) AND" +
         "       pv.version_string = :versionString" +
         "   LIMIT 1")
-    ProjectVersionTable getProjectVersionTable(String author, String slug, String versionString);
+    ProjectVersionTable getProjectVersionTable(String slug, String versionString);
 
     @SingleValue
     @UseEnumStrategy(EnumStrategy.BY_ORDINAL)

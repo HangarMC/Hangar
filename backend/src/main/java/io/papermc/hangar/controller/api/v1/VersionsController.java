@@ -54,45 +54,45 @@ public class VersionsController implements IVersionsController {
     @Unlocked
     @Override
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#author, #slug}")
-    public UploadedVersion uploadVersion(final String author, final String slug, final List<MultipartFile> files, final VersionUpload versionUpload) {
-        return this.versionsApiService.uploadVersion(author, slug, files, versionUpload);
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#slug}")
+    public UploadedVersion uploadVersion(final String slug, final List<MultipartFile> files, final VersionUpload versionUpload) {
+        return this.versionsApiService.uploadVersion(slug, files, versionUpload);
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
-    public Version getVersion(final String author, final String slug, final String name) {
-        return this.versionsApiService.getVersion(author, slug, name);
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
+    public Version getVersion(final String slug, final String name) {
+        return this.versionsApiService.getVersion(slug, name);
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
     @ApplicableFilters({VersionChannelFilter.class, VersionPlatformFilter.class, VersionPlatformVersionFilter.class})
-    public PaginatedResult<Version> getVersions(final String author, final String slug, @ConfigurePagination(defaultLimitString = "@hangarConfig.projects.initVersionLoad", maxLimit = 25) final @NotNull RequestPagination pagination) {
-        return this.versionsApiService.getVersions(author, slug, pagination);
+    public PaginatedResult<Version> getVersions(final String slug, @ConfigurePagination(defaultLimitString = "@hangarConfig.projects.initVersionLoad", maxLimit = 25) final @NotNull RequestPagination pagination) {
+        return this.versionsApiService.getVersions(slug, pagination);
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
-    public String getLatestReleaseVersion(final String author, final String slug) {
-        return this.versionsApiService.latestVersion(author, slug);
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
+    public String getLatestReleaseVersion(final String slug) {
+        return this.versionsApiService.latestVersion(slug);
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
-    public String getLatestVersion(final String author, final String slug, final @NotNull String channel) {
-        return this.versionsApiService.latestVersion(author, slug, channel);
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
+    public String getLatestVersion(final String slug, final @NotNull String channel) {
+        return this.versionsApiService.latestVersion(slug, channel);
     }
 
     @Override
-    public Map<String, VersionStats> getVersionStats(final String author, final String slug, final String versionString, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
-        return this.versionsApiService.getVersionStats(author, slug, versionString, fromDate, toDate);
+    public Map<String, VersionStats> getVersionStats(final String slug, final String versionString, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
+        return this.versionsApiService.getVersionStats(slug, versionString, fromDate, toDate);
     }
 
     @Override
     @RateLimit(overdraft = 10, refillTokens = 2)
-    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
-    public ResponseEntity<?> downloadVersion(final String author, final String slug, final String versionString, final Platform platform, final HttpServletResponse response) {
-        return this.downloadService.downloadVersion(author, slug, versionString, platform);
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#slug, #versionString, #platform}")
+    public ResponseEntity<?> downloadVersion(final String slug, final String versionString, final Platform platform, final HttpServletResponse response) {
+        return this.downloadService.downloadVersion(slug, versionString, platform);
     }
 }

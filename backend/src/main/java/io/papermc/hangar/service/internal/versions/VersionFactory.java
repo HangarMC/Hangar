@@ -198,7 +198,7 @@ public class VersionFactory extends HangarComponent {
         // setup dependencies
         if (prefillDependencies) {
             for (final Platform platform : fileOrUrl.platforms()) {
-                final LastDependencies lastDependencies = this.getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), channel, platform);
+                final LastDependencies lastDependencies = this.getLastVersionDependencies(projectTable.getSlug(), channel, platform);
                 if (lastDependencies != null) {
                     pluginDependencies.put(platform, lastDependencies.pluginDependencies());
                     platformDependencies.put(platform, lastDependencies.platformDependencies());
@@ -222,7 +222,7 @@ public class VersionFactory extends HangarComponent {
 
     private void createPendingUrl(final String channel, final ProjectTable projectTable, final Map<Platform, Set<PluginDependency>> pluginDependencies, final Map<Platform, SortedSet<String>> platformDependencies, final MultipartFileOrUrl fileOrUrl) {
         for (final Platform platform : fileOrUrl.platforms()) {
-            final LastDependencies lastDependencies = this.getLastVersionDependencies(projectTable.getOwnerName(), projectTable.getSlug(), channel, platform);
+            final LastDependencies lastDependencies = this.getLastVersionDependencies(projectTable.getSlug(), channel, platform);
             if (lastDependencies != null) {
                 pluginDependencies.put(platform, lastDependencies.pluginDependencies());
                 platformDependencies.put(platform, lastDependencies.platformDependencies());
@@ -363,7 +363,7 @@ public class VersionFactory extends HangarComponent {
                 Long depProjectId = null;
                 if (pluginDependency.getNamespace() != null) {
                     // TODO only get id
-                    final ProjectTable depProjectTable = this.projectService.getProjectTable(pluginDependency.getNamespace().getOwner(), pluginDependency.getNamespace().getSlug());
+                    final ProjectTable depProjectTable = this.projectService.getProjectTable(pluginDependency.getNamespace().getSlug());
                     if (depProjectTable == null) {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPluginDependencyNamespace");
                     }
@@ -451,7 +451,7 @@ public class VersionFactory extends HangarComponent {
     }
 
     @Transactional(readOnly = true)
-    public @Nullable LastDependencies getLastVersionDependencies(final String author, final String slug, final @Nullable String channel, final Platform platform) {
+    public @Nullable LastDependencies getLastVersionDependencies(final String slug, final @Nullable String channel, final Platform platform) {
         // TODO Optimize with specific query
         final RequestPagination pagination = new RequestPagination(1L, 0L);
         pagination.getFilters().put("platform", new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
@@ -460,7 +460,7 @@ public class VersionFactory extends HangarComponent {
             pagination.getFilters().put("channel", new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
         }
 
-        final Long versionId = this.versionsApiDAO.getVersions(author, slug, false, this.getHangarUserId(), pagination).keySet().stream().findAny().orElse(null);
+        final Long versionId = this.versionsApiDAO.getVersions(slug, false, this.getHangarUserId(), pagination).keySet().stream().findAny().orElse(null);
         if (versionId != null) {
             final SortedSet<String> platformDependency = this.versionsApiDAO.getPlatformDependencies(versionId).get(platform);
             if (platformDependency != null) {
@@ -470,7 +470,7 @@ public class VersionFactory extends HangarComponent {
         }
 
         // Try again with any channel, else empty
-        return channel != null ? this.getLastVersionDependencies(author, slug, null, platform) : null;
+        return channel != null ? this.getLastVersionDependencies(slug, null, platform) : null;
     }
 
     private boolean exists(final long projectId, final String versionString) {

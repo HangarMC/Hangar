@@ -28,7 +28,7 @@ const props = defineProps<{
 }>();
 const i18n = useI18n();
 const route = useRoute();
-const channelData = await useProjectChannels(props.project.namespace.owner, props.project.namespace.slug);
+const channelData = await useProjectChannels(props.project.namespace.slug);
 const channels = channelData.data;
 const validations = useBackendData.validations;
 const notifications = useNotificationStore();

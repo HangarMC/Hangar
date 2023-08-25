@@ -64,7 +64,7 @@ public class ProjectFactory extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "error.project.ownerNotFound");
         }
 
-        this.checkProjectAvailability(projectOwner.getUserId(), newProject.getName());
+        this.checkProjectAvailability(newProject.getName());
         this.projectService.validateSettings(newProject);
 
         ProjectTable projectTable = null;
@@ -93,15 +93,15 @@ public class ProjectFactory extends HangarComponent {
         return projectTable;
     }
 
-    public String renameProject(final String author, final String slug, final String newName) {
-        return this.renameProject(author, slug, newName, false);
+    public String renameProject(final String slug, final String newName) {
+        return this.renameProject(slug, newName, false);
     }
 
     @Transactional
-    public String renameProject(final String author, final String slug, final String newName, final boolean skipNameCheck) {
+    public String renameProject(final String slug, final String newName, final boolean skipNameCheck) {
         final String compactNewName = StringUtils.compact(newName);
-        final ProjectTable projectTable = this.projectService.getProjectTable(author, slug);
-        this.checkProjectAvailability(projectTable.getOwnerId(), compactNewName, skipNameCheck);
+        final ProjectTable projectTable = this.projectService.getProjectTable(slug);
+        this.checkProjectAvailability(compactNewName, skipNameCheck);
 
         final String oldName = projectTable.getName();
         final String oldSlug = projectTable.getSlug();
@@ -109,22 +109,22 @@ public class ProjectFactory extends HangarComponent {
         projectTable.setName(compactNewName);
         projectTable.setSlug(newSlug);
         this.projectsDAO.update(projectTable);
-        this.actionLogger.project(LogAction.PROJECT_RENAMED.create(ProjectContext.of(projectTable.getId()), author + "/" + compactNewName, author + "/" + oldName));
+        this.actionLogger.project(LogAction.PROJECT_RENAMED.create(ProjectContext.of(projectTable.getId()), compactNewName, oldName));
         this.projectFiles.renameProject(projectTable.getOwnerName(), oldSlug, newSlug);
         return newSlug;
     }
 
-    public void checkProjectAvailability(final long userId, final String name) {
-        this.checkProjectAvailability(userId, name, false);
+    public void checkProjectAvailability(final String name) {
+        this.checkProjectAvailability(name, false);
     }
 
-    public void checkProjectAvailability(final long userId, final String name, final boolean skipNameChecking) {
+    public void checkProjectAvailability(final String name, final boolean skipNameChecking) {
         String errorKey = null;
         if (!skipNameChecking) {
             errorKey = this.validationService.isValidProjectName(name);
         }
         if (errorKey == null) {
-            final InvalidProjectReason reason = this.projectsDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));
+            final InvalidProjectReason reason = this.projectsDAO.checkProjectValidity(name, StringUtils.slugify(name));
             if (reason != null) {
                 errorKey = reason.key;
             }
@@ -146,7 +146,7 @@ public class ProjectFactory extends HangarComponent {
             // Append deletion suffix to allow creation of new projects under the old namespace
             int deletedId = -1;
             for (int i = 0; i < 10; i++) {
-                if (this.projectsDAO.getBySlug(projectTable.getOwnerName(), projectTable.getSlug() + SOFT_DELETION_SUFFIX + i) == null) {
+                if (this.projectsDAO.getBySlug(projectTable.getSlug() + SOFT_DELETION_SUFFIX + i) == null) {
                     deletedId = i;
                     break;
                 }
@@ -157,7 +157,7 @@ public class ProjectFactory extends HangarComponent {
             }
 
             final String newName = projectTable.getName() + SOFT_DELETION_SUFFIX + deletedId;
-            this.renameProject(projectTable.getOwnerName(), projectTable.getSlug(), newName, true);
+            this.renameProject(projectTable.getSlug(), newName, true);
             projectTable.setName(newName);
             projectTable.setSlug(StringUtils.slugify(newName));
             this.projectVisibilityService.changeVisibility(projectTable, Visibility.SOFTDELETE, comment);
@@ -179,8 +179,8 @@ public class ProjectFactory extends HangarComponent {
     @EnumByName
     public enum InvalidProjectReason {
 
-        OWNER_NAME("project.new.error.nameExists"),
-        OWNER_SLUG("project.new.error.slugExists"),
+        NAME_EXISTS("project.new.error.nameExists"),
+        SLUG_EXISTS("project.new.error.slugExists"),
         INVALID_NAME("project.new.error.invalidName");
 
         private final String key;

@@ -94,11 +94,10 @@ public interface HangarVersionsDAO {
                    <endif>)
                    AND
                <endif>
-               lower(p.owner_name) = lower(:author) AND
                lower(p.slug) = lower(:slug) AND
                pv.version_string = :versionString
         """)
-    HangarVersion getVersionWithVersionString(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
+    HangarVersion getVersionWithVersionString(String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
 
     // TODO fixup view and this
     @SqlQuery("""

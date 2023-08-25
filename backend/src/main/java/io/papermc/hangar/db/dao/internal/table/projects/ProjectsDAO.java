@@ -36,8 +36,8 @@ public interface ProjectsDAO {
     @SqlUpdate("DELETE FROM projects WHERE id = :id")
     void delete(@BindBean ProjectTable project);
 
-    @SqlQuery("SELECT * FROM projects WHERE lower(owner_name) = lower(:author) AND lower(slug) = lower(:slug)")
-    ProjectTable getBySlug(String author, String slug);
+    @SqlQuery("SELECT * FROM projects WHERE lower(slug) = lower(:slug)")
+    ProjectTable getBySlug(String slug);
 
     @SqlQuery("SELECT * FROM projects WHERE id = :projectId")
     ProjectTable getById(long projectId);
@@ -48,12 +48,12 @@ public interface ProjectsDAO {
 
     @SqlQuery("SELECT * FROM " +
         "     (SELECT CASE " +
-        "         WHEN LOWER(\"name\") = LOWER(:name) THEN 'OWNER_NAME'" +
-        "         WHEN LOWER(slug) = LOWER(:slug) THEN 'OWNER_SLUG'" +
+        "         WHEN LOWER(\"name\") = LOWER(:name) THEN 'NAME_EXISTS'" +
+        "         WHEN LOWER(slug) = LOWER(:slug) THEN 'SLUG_EXISTS'" +
         "     END AS sq" +
-        "     FROM projects WHERE owner_id = :ownerId) sq" +
+        "     FROM projects) sq" +
         " WHERE sq IS NOT NULL ")
-    ProjectFactory.InvalidProjectReason checkProjectValidity(long ownerId, String name, String slug);
+    ProjectFactory.InvalidProjectReason checkProjectValidity(String name, String slug);
 
     @RegisterConstructorMapper(UserTable.class)
     @SqlQuery("SELECT u.* " +

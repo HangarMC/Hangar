@@ -46,15 +46,15 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
-    public ResponseEntity<Project> getProject(final String author, final String slug) {
-        return ResponseEntity.ok(this.projectsApiService.getProject(author, slug));
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
+    public ResponseEntity<Project> getProject(final String slug) {
+        return ResponseEntity.ok(this.projectsApiService.getProject(slug));
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
-    public ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(final String author, final String slug, final @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(this.projectsApiService.getProjectMembers(author, slug, pagination));
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
+    public ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(final String slug, final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.projectsApiService.getProjectMembers(slug, pagination));
     }
 
     @Override
@@ -66,20 +66,20 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
     }
 
     @Override
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#author, #slug}")
-    public ResponseEntity<Map<String, DayProjectStats>> getProjectStats(final String author, final String slug, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
-        return ResponseEntity.ok(this.projectsApiService.getProjectStats(author, slug, fromDate, toDate));
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#slug}")
+    public ResponseEntity<Map<String, DayProjectStats>> getProjectStats(final String slug, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
+        return ResponseEntity.ok(this.projectsApiService.getProjectStats(slug, fromDate, toDate));
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
-    public ResponseEntity<PaginatedResult<User>> getProjectStargazers(final String author, final String slug, final @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(this.projectsApiService.getProjectStargazers(author, slug, pagination));
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
+    public ResponseEntity<PaginatedResult<User>> getProjectStargazers(final String slug, final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.projectsApiService.getProjectStargazers(slug, pagination));
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
-    public ResponseEntity<PaginatedResult<User>> getProjectWatchers(final String author, final String slug, final @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(this.projectsApiService.getProjectWatchers(author, slug, pagination));
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
+    public ResponseEntity<PaginatedResult<User>> getProjectWatchers(final String slug, final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.projectsApiService.getProjectWatchers(slug, pagination));
     }
 }

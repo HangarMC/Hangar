@@ -15,9 +15,8 @@ defineProps<{
   user: User;
 }>();
 
-const i18n = useI18n();
 const route = useRoute();
-const project = await useProject(route.params.user as string, route.params.project as string);
+const project = await useProject(route.params.project as string);
 await verify(route);
 
 async function verify(to: RouteLocationNormalized) {
@@ -34,7 +33,7 @@ async function verify(to: RouteLocationNormalized) {
 onBeforeRouteUpdate(async (to, from) => {
   if (!to.params.project || !to.params.user) return;
   if (to.params.user === from.params.user && to.params.project === from.params.project) return;
-  project.value = await useInternalApi<HangarProject>("projects/project/" + to.params.user + "/" + to.params.project);
+  project.value = await useInternalApi<HangarProject>("projects/project/" + to.params.project);
   await verify(to);
 });
 

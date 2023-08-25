@@ -6,10 +6,12 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.version.FileInfo;
 import io.papermc.hangar.model.api.project.version.PlatformVersionDownload;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.file.S3FileService;
+import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -29,12 +31,14 @@ public class DownloadService extends HangarComponent {
     private final ProjectFiles projectFiles;
     private final ProjectVersionDownloadsDAO downloadsDAO;
     private final FileService fileService;
+    private final ProjectService projectService;
 
     @Autowired
-    public DownloadService(final ProjectFiles projectFiles, final ProjectVersionDownloadsDAO downloadsDAO, final FileService fileService) {
+    public DownloadService(final ProjectFiles projectFiles, final ProjectVersionDownloadsDAO downloadsDAO, final FileService fileService, final ProjectService projectService) {
         this.projectFiles = projectFiles;
         this.downloadsDAO = downloadsDAO;
         this.fileService = fileService;
+        this.projectService = projectService;
     }
 
     public Map<Platform, PlatformVersionDownload> getDownloads(final String user, final String project, final String version, final long versionId) {
@@ -59,18 +63,24 @@ public class DownloadService extends HangarComponent {
         return versionDownloadsMap;
     }
 
-    public ResponseEntity<?> downloadVersion(final String user, final String project, final String versionString, final Platform platform) {
-        final ProjectVersionDownloadTable download = this.downloadsDAO.getDownloadByPlatform(user, project, versionString, platform);
+    public ResponseEntity<?> downloadVersion(final String project, final String versionString, final Platform platform) {
+        final ProjectTable projectTable = this.projectService.getProjectTable(project);
+        if (projectTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+
+        final ProjectVersionDownloadTable download = this.downloadsDAO.getDownloadByPlatform(projectTable.getProjectId(), versionString, platform);
         if (download == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
+        final String ownerName = projectTable.getOwnerName(); // TODO Move away from owner name dirs
         if (StringUtils.hasText(download.getExternalUrl())) {
             return ResponseEntity.status(301).header("Location", download.getExternalUrl()).build();
         } else if (this.fileService instanceof S3FileService){
-            return ResponseEntity.status(301).header("Location", this.fileService.getVersionDownloadUrl(user, project, versionString, platform, download.getFileName())).build();
+            return ResponseEntity.status(301).header("Location", this.fileService.getVersionDownloadUrl(ownerName, project, versionString, platform, download.getFileName())).build();
         } else {
-            final String path = this.projectFiles.getVersionDir(user, project, versionString, platform, download.getFileName());
+            final String path = this.projectFiles.getVersionDir(ownerName, project, versionString, platform, download.getFileName());
             if (!this.fileService.exists(path)) {
                 throw new HangarApiException("Couldn't find a file for version " + versionString);
             }

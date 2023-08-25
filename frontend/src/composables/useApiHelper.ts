@@ -40,16 +40,16 @@ export async function useOrganization(user: string): Promise<Ref<Organization | 
   return extract(await useAsyncData("useOrganization:" + user, () => useInternalApi<Organization>(`organizations/org/${user}`)));
 }
 
-export async function useProject(user: string, project: string): Promise<Ref<HangarProject | null>> {
-  return extract(await useAsyncData("useProject:" + user + ":" + project, () => useInternalApi<HangarProject>("projects/project/" + user + "/" + project)));
+export async function useProject(project: string): Promise<Ref<HangarProject | null>> {
+  return extract(await useAsyncData("useProject:" + project, () => useInternalApi<HangarProject>("projects/project/" + project)));
 }
 
-export async function useStargazers(user: string, project: string): Promise<Ref<PaginatedResult<User> | null>> {
-  return extract(await useAsyncData("useStargazers:" + user + ":" + project, () => useApi<PaginatedResult<User>>(`projects/${user}/${project}/stargazers`)));
+export async function useStargazers(project: string): Promise<Ref<PaginatedResult<User> | null>> {
+  return extract(await useAsyncData("useStargazers:" + project, () => useApi<PaginatedResult<User>>(`projects/${project}/stargazers`)));
 }
 
-export async function useWatchers(user: string, project: string): Promise<Ref<PaginatedResult<User> | null>> {
-  return extract(await useAsyncData("useWatchers:" + user + ":" + project, () => useApi<PaginatedResult<User>>(`projects/${user}/${project}/watchers`)));
+export async function useWatchers(project: string): Promise<Ref<PaginatedResult<User> | null>> {
+  return extract(await useAsyncData("useWatchers:" + project, () => useApi<PaginatedResult<User>>(`projects/${project}/watchers`)));
 }
 
 export async function useStaff(params?: ComputedRef<{ offset?: number; limit?: number; sort?: string[] }>): Promise<NonNullAsyncData<PaginatedResult<User>>> {
@@ -104,31 +104,25 @@ export async function useProjectNotes(projectId: number): Promise<Ref<Note[] | n
   return extract(await useAsyncData("useProjectNotes:" + projectId, () => useInternalApi<Note[]>("projects/notes/" + projectId)));
 }
 
-export async function useProjectChannels(user: string, project: string): Promise<NonNullAsyncData<ProjectChannel[]>> {
-  return await useAsyncDataNonNull("useProjectChannels:" + user + ":" + project, () => useInternalApi<ProjectChannel[]>(`channels/${user}/${project}`));
+export async function useProjectChannels(project: string): Promise<NonNullAsyncData<ProjectChannel[]>> {
+  return await useAsyncDataNonNull("useProjectChannels:" + project, () => useInternalApi<ProjectChannel[]>(`channels/${project}`));
 }
 
-export async function useProjectVersions(user: string, project: string): Promise<Ref<PaginatedResult<Version> | null>> {
-  return extract(
-    await useAsyncData("useProjectVersions:" + user + ":" + project, () => useApi<PaginatedResult<Version>>(`projects/${user}/${project}/versions`))
-  );
+export async function useProjectVersions(project: string): Promise<Ref<PaginatedResult<Version> | null>> {
+  return extract(await useAsyncData("useProjectVersions:" + project, () => useApi<PaginatedResult<Version>>(`projects/${project}/versions`)));
 }
 
-export async function useProjectVersionsInternal(user: string, project: string, version: string): Promise<Ref<HangarVersion | null>> {
+export async function useProjectVersionsInternal(project: string, version: string): Promise<Ref<HangarVersion | null>> {
   return extract(
-    await useAsyncData("useProjectVersionsInternal:" + user + ":" + project + ":" + version, () =>
-      useInternalApi<HangarVersion>(`versions/version/${user}/${project}/versions/${version}`)
+    await useAsyncData("useProjectVersionsInternal:" + project + ":" + version, () =>
+      useInternalApi<HangarVersion>(`versions/version/${project}/versions/${version}`)
     )
   );
 }
 
-export async function usePage(user: string, project: string, path?: string): Promise<Ref<ProjectPage | null>> {
+export async function usePage(project: string, path?: string): Promise<Ref<ProjectPage | null>> {
   path = path?.toString()?.replaceAll(",", "/");
-  return extract(
-    await useAsyncData("usePage:" + user + ":" + project + ":" + path, () =>
-      useInternalApi<ProjectPage>(`pages/page/${user}/${project}` + (path ? "/" + path : ""))
-    )
-  );
+  return extract(await useAsyncData("usePage:" + project + ":" + path, () => useInternalApi<ProjectPage>(`pages/page/${project}` + (path ? "/" + path : ""))));
 }
 
 export async function useHealthReport(): Promise<Ref<HealthReport | null>> {

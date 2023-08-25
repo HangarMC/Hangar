@@ -21,15 +21,15 @@ public interface HangarProjectPagesDAO {
         "   exists(SELECT 1 FROM project_home_pages php WHERE php.page_id = pp.id AND php.project_id = p.id) AS home" +
         "   FROM project_pages pp" +
         "       JOIN projects p ON pp.project_id = p.id" +
-        "   WHERE lower(p.owner_name) = lower(:author) AND lower(p.slug) = lower(:slug) AND lower(pp.slug) = lower(:pageSlug)")
-    ExtendedProjectPage getProjectPage(String author, String slug, String pageSlug);
+        "   WHERE lower(p.slug) = lower(:slug) AND lower(pp.slug) = lower(:pageSlug)")
+    ExtendedProjectPage getProjectPage(String slug, String pageSlug);
 
     @SqlQuery("SELECT pp.*, TRUE AS home " +
             "   FROM project_pages pp" +
             "       JOIN projects p ON pp.project_id = p.id" +
             "       JOIN project_home_pages php ON pp.id = php.page_id" +
-            "   WHERE lower(p.owner_name) = lower(:author) AND lower(p.slug) = lower(:slug)")
-    ExtendedProjectPage getHomePage(String author, String slug);
+            "   WHERE lower(p.slug) = lower(:slug)")
+    ExtendedProjectPage getHomePage(String slug);
 
     @SqlQuery("SELECT pp.*," +
         "   exists(SELECT 1 FROM project_home_pages php WHERE php.page_id = pp.id AND php.project_id = p.id) AS home" +

@@ -12,9 +12,11 @@ import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.model.internal.versions.VersionUpload;
 import io.papermc.hangar.service.internal.PlatformService;
+import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.versions.VersionFactory;
 import java.time.OffsetDateTime;
@@ -39,19 +41,21 @@ public class VersionsApiService extends HangarComponent {
     private final VersionFactory versionFactory;
     private final ProjectsApiService projectsApiService;
     private final PlatformService platformService;
+    private final ProjectService projectService;
 
     @Autowired
-    public VersionsApiService(final VersionsApiDAO versionsApiDAO, final VersionDependencyService versionDependencyService, final VersionFactory versionFactory, final ProjectsApiService projectsApiService, final PlatformService platformService) {
+    public VersionsApiService(final VersionsApiDAO versionsApiDAO, final VersionDependencyService versionDependencyService, final VersionFactory versionFactory, final ProjectsApiService projectsApiService, final PlatformService platformService, final ProjectService projectService) {
         this.versionsApiDAO = versionsApiDAO;
         this.versionDependencyService = versionDependencyService;
         this.versionFactory = versionFactory;
         this.projectsApiService = projectsApiService;
         this.platformService = platformService;
+        this.projectService = projectService;
     }
 
     @Transactional
-    public UploadedVersion uploadVersion(final String author, final String slug, final List<MultipartFile> files, final VersionUpload versionUpload) {
-        final Project project = this.projectsApiService.getProject(author, slug);
+    public UploadedVersion uploadVersion(final String slug, final List<MultipartFile> files, final VersionUpload versionUpload) {
+        final Project project = this.projectsApiService.getProject(slug);
         if (project == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "Project not found");
         }
@@ -149,42 +153,47 @@ public class VersionsApiService extends HangarComponent {
     }
 
     @Transactional(readOnly = true)
-    public Version getVersion(final String author, final String slug, final String versionString) {
-        final Map.Entry<Long, Version> version = this.versionsApiDAO.getVersionWithVersionString(author, slug, versionString, this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
+    public Version getVersion(final String slug, final String versionString) {
+        final Map.Entry<Long, Version> version = this.versionsApiDAO.getVersionWithVersionString(slug, versionString, this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        return this.versionDependencyService.addDownloadsAndDependencies(author, slug, versionString, version.getKey()).applyTo(version.getValue());
+        return this.versionDependencyService.addDownloadsAndDependencies(slug, versionString, version.getKey()).applyTo(version.getValue());
     }
 
     @Transactional(readOnly = true)
-    public PaginatedResult<Version> getVersions(final String author, final String slug, final RequestPagination pagination) {
-        final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
+    public PaginatedResult<Version> getVersions(final String slug, final RequestPagination pagination) {
         //TODO Squash queries
-        final List<Version> versions = this.versionsApiDAO.getVersions(author, slug, canSeeHidden, this.getHangarUserId(), pagination).entrySet().parallelStream()
-            .map(entry -> this.versionDependencyService.addDownloadsAndDependencies(author, slug, entry.getValue().getName(), entry.getKey()).applyTo(entry.getValue()))
+        final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
+        final ProjectTable projectTable = this.projectService.getProjectTable(slug);
+        if (projectTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+
+        final List<Version> versions = this.versionsApiDAO.getVersions(slug, canSeeHidden, this.getHangarUserId(), pagination).entrySet().parallelStream()
+            .map(entry -> this.versionDependencyService.addDownloadsAndDependencies(projectTable.getOwnerName(), slug, entry.getValue().getName(), entry.getKey()).applyTo(entry.getValue()))
             .sorted((v1, v2) -> v2.getCreatedAt().compareTo(v1.getCreatedAt()))
             .toList();
-        final Long versionCount = this.versionsApiDAO.getVersionCount(author, slug, canSeeHidden, this.getHangarUserId(), pagination);
+        final Long versionCount = this.versionsApiDAO.getVersionCount(slug, canSeeHidden, this.getHangarUserId(), pagination);
         return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount, pagination), versions);
     }
 
-    public Map<String, VersionStats> getVersionStats(final String author, final String slug, final String versionString, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
+    public Map<String, VersionStats> getVersionStats(final String slug, final String versionString, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
         if (fromDate.isAfter(toDate)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "From date is after to date");
         }
-        return this.versionsApiDAO.getVersionStats(author, slug, versionString, fromDate, toDate);
+        return this.versionsApiDAO.getVersionStats(slug, versionString, fromDate, toDate);
     }
 
-    public @Nullable String latestVersion(final String author, final String slug) {
-        return this.latestVersion(author, slug, this.config.channels.nameDefault());
+    public @Nullable String latestVersion(final String slug) {
+        return this.latestVersion(slug, this.config.channels.nameDefault());
     }
 
-    public @Nullable String latestVersion(final String author, final String slug, final String channel) {
+    public @Nullable String latestVersion(final String slug, final String channel) {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
-        final String version = this.versionsApiDAO.getLatestVersion(author, slug, channel, canSeeHidden, this.getHangarUserId());
+        final String version = this.versionsApiDAO.getLatestVersion(slug, channel, canSeeHidden, this.getHangarUserId());
         if (version == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND, "No version found for " + author + "/" + slug + " on channel " + channel);
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "No version found for " + slug + " on channel " + channel);
         }
         return version;
     }

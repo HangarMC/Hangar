@@ -23,7 +23,7 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
   const config = useConfig();
   const options: AxiosRequestConfig = {
     baseURL: import.meta.env.SSR ? config.proxyHost : config.publicHost,
-    timeout: 4000,
+    timeout: 10_000,
   };
   axiosLog("axios options", options);
   const axiosInstance = axios.create(options);

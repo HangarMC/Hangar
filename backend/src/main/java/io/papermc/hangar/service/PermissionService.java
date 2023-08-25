@@ -37,8 +37,8 @@ public class PermissionService extends HangarComponent {
         return this.getPermissions(userId, id -> this.permissionsDAO.getProjectPermission(id, projectId));
     }
 
-    public Permission getProjectPermissions(final @Nullable Long userId, final @NotNull String author, final @NotNull String slug) {
-        return this.getPermissions(userId, id -> this.permissionsDAO.getProjectPermission(id, author, slug));
+    public Permission getProjectPermissions(final @Nullable Long userId, final @NotNull String slug) {
+        return this.getPermissions(userId, id -> this.permissionsDAO.getProjectPermission(id, slug));
     }
 
     public Map<UserTable, Permission> getProjectMemberPermissions(final long projectId) {

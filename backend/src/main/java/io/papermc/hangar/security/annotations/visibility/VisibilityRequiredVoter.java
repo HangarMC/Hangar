@@ -33,10 +33,11 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
         this.logger.debug("Resolved arguments: {}", Arrays.toString(arguments));
         switch (attribute.type()) {
             case PROJECT:
-                if (arguments.length == 1 && this.projectService.getProjectTable((long) arguments[0]) != null) {
-                    return ACCESS_GRANTED;
-                } else if (this.projectService.getProjectTable((String) arguments[0], (String) arguments[1]) != null) {
-                    return ACCESS_GRANTED;
+                if (arguments.length == 1) {
+                    if (arguments[0] instanceof String slug && this.projectService.getProjectTable(slug) != null
+                            || this.projectService.getProjectTable((long) arguments[0]) != null) {
+                        return ACCESS_GRANTED;
+                    }
                 } else {
                     return ACCESS_DENIED;
                 }
@@ -44,7 +45,7 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
                 if (arguments.length == 1 && this.versionService.getProjectVersionTable((long) arguments[0]) != null) {
                     return ACCESS_GRANTED;
                 } else {
-                    if (this.versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1], (String) arguments[2]) != null) { // TODO is platform needed here?
+                    if (this.versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1]) != null) { // TODO is platform needed here?
                         return ACCESS_GRANTED;
                     } else {
                         return ACCESS_DENIED;

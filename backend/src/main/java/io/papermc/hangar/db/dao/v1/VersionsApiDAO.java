@@ -104,11 +104,10 @@ public interface VersionsApiDAO {
                    <endif>)
                    AND
                <endif>
-               lower(p.owner_name) = lower(:author) AND
                lower(p.slug) = lower(:slug) AND
                pv.version_string = :versionString
     """)
-    @Nullable Map.Entry<Long, Version> getVersionWithVersionString(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
+    @Nullable Map.Entry<Long, Version> getVersionWithVersionString(String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
 
     @KeyColumn("id")
     @RegisterColumnMapper(VersionStatsMapper.class)
@@ -148,11 +147,10 @@ public interface VersionsApiDAO {
                        OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)
                    <endif>)
                <endif>
-               AND lower(p.owner_name) = lower(:author) AND
-               lower(p.slug) = lower(:slug)
+               AND lower(p.slug) = lower(:slug)
          GROUP BY pv.id, p.id, u.name, pc.id, pv.created_at ORDER BY pv.created_at DESC <offsetLimit>
     """)
-    SortedMap<Long, Version> getVersions(String author, String slug, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
+    SortedMap<Long, Version> getVersions(String slug, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
     @SqlQuery("SELECT count(DISTINCT pv.id)" +
         "   FROM project_versions pv" +
@@ -170,9 +168,8 @@ public interface VersionsApiDAO {
         "              OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)" +
         "           <endif>)" +
         "       <endif> " +
-        "   AND lower(p.slug) = lower(:slug) AND " +
-        "   lower(p.owner_name) = lower(:author)")
-    Long getVersionCount(String author, String slug, @Define boolean canSeeHidden, @Define Long userId, @BindPagination(isCount = true) RequestPagination pagination);
+        "   AND lower(p.slug) = lower(:slug)")
+    Long getVersionCount(String slug, @Define boolean canSeeHidden, @Define Long userId, @BindPagination(isCount = true) RequestPagination pagination);
 
     @SqlQuery("SELECT " +
         "       pvd.name," +
@@ -223,14 +220,13 @@ public interface VersionsApiDAO {
                    project_versions pv,
                    (SELECT generate_series(:fromDate::date, :toDate::date, INTERVAL '1 DAY') AS day) dates
                        LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day
-              WHERE lower(p.owner_name) = lower(:author)
-                AND lower(p.slug) = lower(:slug)
+              WHERE lower(p.slug) = lower(:slug)
                 AND pv.version_string = :versionString
                 AND (pvd IS NULL OR (pvd.project_id = p.id AND pvd.version_id = pv.id))
               GROUP BY date, platform) subquery
         GROUP BY date;
             """)
-    Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, OffsetDateTime fromDate, OffsetDateTime toDate);
+    Map<String, VersionStats> getVersionStats(String slug, String versionString, OffsetDateTime fromDate, OffsetDateTime toDate);
 
     @SqlQuery("""
         SELECT pv.version_string
@@ -246,11 +242,10 @@ public interface VersionsApiDAO {
                    <endif>)
                    AND
                <endif>
-               lower(p.owner_name) = lower(:author) AND
                lower(p.slug) = lower(:slug) AND
                pc.name = :channel
            ORDER BY pv.created_at DESC
            LIMIT 1
     """)
-    @Nullable String getLatestVersion(String author, String slug, String channel, @Define boolean canSeeHidden, @Define Long userId);
+    @Nullable String getLatestVersion(String slug, String channel, @Define boolean canSeeHidden, @Define Long userId);
 }

@@ -59,10 +59,9 @@ public interface ProjectVersionDownloadsDAO {
             JOIN project_versions pv ON pv.id = pvd.version_id
             JOIN projects p ON pv.project_id = p.id
             JOIN project_version_platform_downloads pvpd ON pvd.id = pvpd.download_id
-        WHERE lower(p.owner_name) = lower(:user)
-          AND lower(p.slug) = lower(:project)
+        WHERE p.id = :projectId
           AND pv.version_string = :versionString
           AND pvpd.platform = :platform
         """)
-    ProjectVersionDownloadTable getDownloadByPlatform(String user, String project, String versionString, @EnumByOrdinal Platform platform);
+    ProjectVersionDownloadTable getDownloadByPlatform(long projectId, String versionString, @EnumByOrdinal Platform platform);
 }

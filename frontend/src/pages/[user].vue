@@ -7,7 +7,6 @@ import { useOrganization, useUser } from "~/composables/useApiHelper";
 import { useErrorRedirect } from "~/composables/useErrorRedirect";
 import { createError, navigateTo } from "#imports";
 
-const i18n = useI18n();
 const route = useRoute();
 const user = ref();
 const organization = ref();

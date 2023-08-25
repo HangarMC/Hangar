@@ -46,11 +46,19 @@ public interface IVersionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @PostMapping(path = "/projects/{author}/{slug}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    UploadedVersion uploadVersion(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
-                       @Parameter(description = "The slug of the project to return versions for") @PathVariable String slug,
+    @PostMapping(path = "/projects/{slug}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    UploadedVersion uploadVersion(@Parameter(description = "The slug of the project to return versions for") @PathVariable String slug,
                        @Parameter(description = "The version files in order of selected platforms, if any") @RequestPart(required = false) @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
                        @Parameter(description = "Version data. Note that platform versions accept version ranges, e.g. '1.16.4-1.19' and wildcards, e.g '1.19.x'") @RequestPart @Valid VersionUpload versionUpload);
+
+    @PostMapping(path = "/projects/{author}/{slug}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Deprecated(forRemoval = true)
+    default UploadedVersion uploadVersionWithPlaceholderName(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
+                        @Parameter(description = "The slug of the project to return versions for") @PathVariable String slug,
+                        @Parameter(description = "The version files in order of selected platforms, if any") @RequestPart(required = false) @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
+                        @Parameter(description = "Version data. Note that platform versions accept version ranges, e.g. '1.16.4-1.19' and wildcards, e.g '1.19.x'") @RequestPart @Valid VersionUpload versionUpload) {
+       return this.uploadVersion(slug, files, versionUpload);
+    }
 
     @Operation(
         summary = "Returns a specific version of a project",
@@ -64,10 +72,17 @@ public interface IVersionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @GetMapping("/projects/{author}/{slug}/versions/{name}")
-    Version getVersion(@Parameter(description = "The author of the project to return the version for") @PathVariable String author,
-                       @Parameter(description = "The slug of the project to return the version for") @PathVariable String slug,
+    @GetMapping("/projects/{slug}/versions/{name}")
+    Version getVersion(@Parameter(description = "The slug of the project to return the version for") @PathVariable String slug,
                        @Parameter(description = "The name of the version to return") @PathVariable("name") String versionString);
+
+    @GetMapping("/projects/{author}/{slug}/versions/{name}")
+    @Deprecated(forRemoval = true)
+    default Version getVersion(@Parameter(description = "The author of the project to return the version for") @PathVariable String author,
+                       @Parameter(description = "The slug of the project to return the version for") @PathVariable String slug,
+                       @Parameter(description = "The name of the version to return") @PathVariable("name") String versionString) {
+        return this.getVersion(slug, versionString);
+    }
 
     @Operation(
         summary = "Returns all versions of a project",
@@ -81,10 +96,17 @@ public interface IVersionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @GetMapping("/projects/{author}/{slug}/versions")
-    PaginatedResult<Version> getVersions(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
-                                         @Parameter(description = "The slug of the project to return versions for") @PathVariable String slug,
+    @GetMapping("/projects/{slug}/versions")
+    PaginatedResult<Version> getVersions(@Parameter(description = "The slug of the project to return versions for") @PathVariable String slug,
                                          @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
+
+    @GetMapping("/projects/{author}/{slug}/versions")
+    @Deprecated(forRemoval = true)
+    default PaginatedResult<Version> getVersions(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
+                                         @Parameter(description = "The slug of the project to return versions for") @PathVariable String slug,
+                                         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination) {
+        return this.getVersions(slug, pagination);
+    }
 
     @Operation(
         summary = "Returns the latest release version of a project",
@@ -98,9 +120,15 @@ public interface IVersionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
+    @GetMapping(value = "/projects/{slug}/latestrelease", produces = MediaType.TEXT_PLAIN_VALUE)
+    String getLatestReleaseVersion(@Parameter(description = "The slug of the project to return the latest version for") @PathVariable String slug);
+
     @GetMapping(value = "/projects/{author}/{slug}/latestrelease", produces = MediaType.TEXT_PLAIN_VALUE)
-    String getLatestReleaseVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
-                                         @Parameter(description = "The slug of the project to return the latest version for") @PathVariable String slug);
+    @Deprecated(forRemoval = true)
+    default String getLatestReleaseVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
+                                         @Parameter(description = "The slug of the project to return the latest version for") @PathVariable String slug) {
+        return this.getLatestReleaseVersion(slug);
+    }
 
     @Operation(
         summary = "Returns the latest version of a project for a specific channel",
@@ -114,10 +142,17 @@ public interface IVersionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @GetMapping(value = "/projects/{author}/{slug}/latest", produces = MediaType.TEXT_PLAIN_VALUE)
-    String getLatestVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
-                            @Parameter(description = "The slug of the project to return the latest version for") @PathVariable String slug,
+    @GetMapping(value = "/projects/{slug}/latest", produces = MediaType.TEXT_PLAIN_VALUE)
+    String getLatestVersion(@Parameter(description = "The slug of the project to return the latest version for") @PathVariable String slug,
                             @Parameter(description = "The channel to return the latest version for", required = true) @NotNull String channel);
+
+    @GetMapping(value = "/projects/{author}/{slug}/latest", produces = MediaType.TEXT_PLAIN_VALUE)
+    @Deprecated(forRemoval = true)
+    default String getLatestVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
+                            @Parameter(description = "The slug of the project to return the latest version for") @PathVariable String slug,
+                            @Parameter(description = "The channel to return the latest version for", required = true) @NotNull String channel) {
+        return this.getLatestVersion(slug, channel);
+    }
 
     @Operation(
         summary = "Returns the stats for a version",
@@ -131,12 +166,21 @@ public interface IVersionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @GetMapping("/projects/{author}/{slug}/versions/{name}/stats")
-    Map<String, VersionStats> getVersionStats(@Parameter(description = "The author of the version to return the stats for") @PathVariable String author,
-                                              @Parameter(description = "The slug of the project to return stats for") @PathVariable String slug,
+    @GetMapping("/projects/{slug}/versions/{name}/stats")
+    Map<String, VersionStats> getVersionStats(@Parameter(description = "The slug of the project to return stats for") @PathVariable String slug,
                                               @Parameter(description = "The version to return the stats for") @PathVariable("name") String versionString,
                                               @Parameter(description = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
                                               @Parameter(description = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate);
+
+    @GetMapping("/projects/{author}/{slug}/versions/{name}/stats")
+    @Deprecated(forRemoval = true)
+    default Map<String, VersionStats> getVersionStats(@Parameter(description = "The author of the version to return the stats for") @PathVariable String author,
+                                              @Parameter(description = "The slug of the project to return stats for") @PathVariable String slug,
+                                              @Parameter(description = "The version to return the stats for") @PathVariable("name") String versionString,
+                                              @Parameter(description = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
+                                              @Parameter(description = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate) {
+        return this.getVersionStats(slug, versionString, fromDate, toDate);
+    }
 
     @Operation(
         summary = "Downloads a version",
@@ -152,11 +196,21 @@ public interface IVersionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @GetMapping(value = "/projects/{author}/{slug}/versions/{name}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    ResponseEntity<?> downloadVersion(@Parameter(description = "The author of the project to download the version from") @PathVariable String author,
-                             @Parameter(description = "The slug of the project to download the version from") @PathVariable String slug,
+    @GetMapping(value = "/projects/{slug}/versions/{name}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    ResponseEntity<?> downloadVersion(@Parameter(description = "The slug of the project to download the version from") @PathVariable String slug,
                              @Parameter(description = "The name of the version to download") @PathVariable("name") String versionString,
                              @Parameter(description = "The platform of the version to download") @PathVariable Platform platform,
                              HttpServletResponse response
     );
+
+    @GetMapping(value = "/projects/{author}/{slug}/versions/{name}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @Deprecated(forRemoval = true)
+    default ResponseEntity<?> downloadVersion(@Parameter(description = "The author of the project to download the version from") @PathVariable String author,
+                             @Parameter(description = "The slug of the project to download the version from") @PathVariable String slug,
+                             @Parameter(description = "The name of the version to download") @PathVariable("name") String versionString,
+                             @Parameter(description = "The platform of the version to download") @PathVariable Platform platform,
+                             HttpServletResponse response
+    ) {
+        return this.downloadVersion(slug, versionString, platform, response);
+    }
 }

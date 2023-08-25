@@ -67,10 +67,10 @@ public class ProjectPageController extends HangarComponent {
         this.projectPageService.checkDuplicateName(projectId, name, parentId);
     }
 
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
-    @GetMapping(path = "/page/{author}/{slug}/**", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ExtendedProjectPage> getProjectPage(@PathVariable final String author, @PathVariable final String slug) {
-        return ResponseEntity.ok(this.projectPageService.getProjectPageFromURI(author, slug, this.request.getRequestURI()));
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
+    @GetMapping(path = "/page/{slug}/**", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ExtendedProjectPage> getProjectPage(@PathVariable final String slug) {
+        return ResponseEntity.ok(this.projectPageService.getProjectPageFromURI(slug, this.request.getRequestURI()));
     }
 
     @Unlocked

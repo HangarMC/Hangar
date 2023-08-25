@@ -17,7 +17,7 @@ const props = defineProps<{
   project: HangarProject;
 }>();
 
-const version = await useProjectVersionsInternal(route.params.user as string, route.params.project as string, route.params.version as string);
+const version = await useProjectVersionsInternal(route.params.project as string, route.params.version as string);
 verify();
 
 function verify() {

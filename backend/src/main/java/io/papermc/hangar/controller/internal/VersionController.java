@@ -71,10 +71,10 @@ public class VersionController extends HangarComponent {
         this.pinnedVersionService = pinnedVersionService;
     }
 
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#author, #slug}")
-    @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HangarVersion> getVersion(@PathVariable final String author, @PathVariable final String slug, @PathVariable final String versionString) {
-        return ResponseEntity.ok(this.versionService.getHangarVersion(author, slug, versionString));
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
+    @GetMapping(path = "/version/{slug}/versions/{versionString}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HangarVersion> getVersion(@PathVariable final String slug, @PathVariable final String versionString) {
+        return ResponseEntity.ok(this.versionService.getHangarVersion(slug, versionString));
     }
 
     @Unlocked
@@ -177,11 +177,11 @@ public class VersionController extends HangarComponent {
 
     @ResponseBody
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
-    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#slug, #versionString, #platform}")
     // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
-    @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<?> download(@PathVariable final String author, @PathVariable final String slug, @PathVariable final String versionString, @PathVariable final Platform platform) {
-        return this.downloadService.downloadVersion(author, slug, versionString, platform);
+    @GetMapping(path = "/version/{slug}/versions/{versionString}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<?> download(@PathVariable final String slug, @PathVariable final String versionString, @PathVariable final Platform platform) {
+        return this.downloadService.downloadVersion(slug, versionString, platform);
     }
 
     @Anyone

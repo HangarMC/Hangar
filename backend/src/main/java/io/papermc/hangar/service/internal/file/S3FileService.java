@@ -94,8 +94,6 @@ public class S3FileService implements FileService {
 
     @Override
     public void move(final String oldPath, final String newPath) throws IOException {
-        System.out.println("oldPath = " + oldPath);
-        System.out.println("newPath = " + newPath);
         if (!oldPath.startsWith(this.getRoot()) && newPath.startsWith(this.getRoot())) {
             // upload from file to s3
             this.write(Files.newInputStream(Path.of(oldPath)), newPath, null);
@@ -103,26 +101,15 @@ public class S3FileService implements FileService {
             // There is no renaming and there are no directories, so we have to copy and delete individual objects
             final String sourceDirectory = oldPath.replace(this.getRoot(), "");
             final String destinationDirectory = newPath.replace(this.getRoot(), "");
-            System.out.println("sourceDirectory = " + sourceDirectory);
-            System.out.println("destinationDirectory = " + destinationDirectory);
             for (final S3Object object : this.s3Client.listObjectsV2Paginator(builder -> builder.bucket(this.config.bucket()).prefix(sourceDirectory)).contents()) {
-                System.out.println("object = " + object.key());
-                System.out.println("destinationkey = " + object.key().replace(sourceDirectory, destinationDirectory));
-
-                final String relativePath = object.key().substring(sourceDirectory.length());
-                final String destinationKey = destinationDirectory + relativePath;
-                System.out.println("different = " + destinationKey);
-
+                final String key = object.key();
                 this.s3Client.copyObject(builder -> builder
                         .sourceBucket(this.config.bucket())
-                        .sourceKey(object.key())
+                        .sourceKey(key)
                         .destinationBucket(this.config.bucket())
-                        .destinationKey(object.key().replace(sourceDirectory, destinationDirectory))
+                        .destinationKey(key.replace(sourceDirectory, destinationDirectory))
                 );
-                System.out.println("Moved");
-
-                final String key = object.key();
-                this.s3Client.deleteObject(builder -> builder.bucket(this.config.bucket()).key(key));
+                this.s3Template.deleteObject(this.config.bucket(), key);
             }
         } else {
             throw new UnsupportedOperationException("cant move " + oldPath + " to " + newPath);

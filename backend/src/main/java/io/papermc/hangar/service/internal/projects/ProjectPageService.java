@@ -106,12 +106,12 @@ public class ProjectPageService extends HangarComponent {
         return null;
     }
 
-    public ExtendedProjectPage getProjectPageFromURI(final String author, final String slug, final String uri) {
-        final String path = uri.replace("/api/internal/pages/page/" + author + "/" + slug, "");
-        return this.getProjectPage(author, slug, path);
+    public ExtendedProjectPage getProjectPageFromURI(final String slug, final String uri) {
+        final String path = uri.replace("/api/internal/pages/page/" + slug, "");
+        return this.getProjectPage(slug, path);
     }
 
-    public ExtendedProjectPage getProjectPage(final String author, final String slug, String path) {
+    public ExtendedProjectPage getProjectPage(final String slug, String path) {
         final ExtendedProjectPage pageTable;
         if (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
@@ -120,7 +120,7 @@ public class ProjectPageService extends HangarComponent {
             path = path.substring(1);
         }
 
-        pageTable = path.isEmpty() ? this.hangarProjectPagesDAO.getHomePage(author, slug) : this.hangarProjectPagesDAO.getProjectPage(author, slug, path);
+        pageTable = path.isEmpty() ? this.hangarProjectPagesDAO.getHomePage(slug) : this.hangarProjectPagesDAO.getProjectPage(slug, path);
         if (pageTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "Page not found");
         }

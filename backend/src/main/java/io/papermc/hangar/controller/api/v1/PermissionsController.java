@@ -35,31 +35,31 @@ public class PermissionsController extends HangarComponent implements IPermissio
     }
 
     @Override
-    public ResponseEntity<PermissionCheck> hasAllPermissions(final @Size(max = 50) Set<NamedPermission> permissions, final String author, final String slug, final String organization) {
-        return this.has(permissions, author, slug, organization, (namedPerms, perm) -> namedPerms.stream().allMatch(p -> perm.has(p.getPermission())));
+    public ResponseEntity<PermissionCheck> hasAllPermissions(final @Size(max = 50) Set<NamedPermission> permissions, final String slug, final String organization) {
+        return this.has(permissions, slug, organization, (namedPerms, perm) -> namedPerms.stream().allMatch(p -> perm.has(p.getPermission())));
     }
 
     @Override
-    public ResponseEntity<PermissionCheck> hasAny(final Set<NamedPermission> permissions, final String author, final String slug, final String organization) {
-        return this.has(permissions, author, slug, organization, (namedPerms, perm) -> namedPerms.stream().anyMatch(p -> perm.has(p.getPermission())));
+    public ResponseEntity<PermissionCheck> hasAny(final Set<NamedPermission> permissions, final String slug, final String organization) {
+        return this.has(permissions, slug, organization, (namedPerms, perm) -> namedPerms.stream().anyMatch(p -> perm.has(p.getPermission())));
     }
 
     @Override
-    public ResponseEntity<UserPermissions> showPermissions(final String author, final String slug, final String organization) {
-        final Pair<PermissionType, Permission> scopedPerms = this.getPermissionsInScope(author, slug, organization);
+    public ResponseEntity<UserPermissions> showPermissions(final String slug, final String organization) {
+        final Pair<PermissionType, Permission> scopedPerms = this.getPermissionsInScope(slug, organization);
         return ResponseEntity.ok(new UserPermissions(scopedPerms.getLeft(), scopedPerms.getRight().toBinString(), scopedPerms.getRight().toNamed()));
     }
 
-    private Pair<PermissionType, Permission> getPermissionsInScope(final String author, final String slug, final String organization) {
-        if (author != null && slug != null && organization == null) { // author & slug
-            Permission perms = this.permissionService.getProjectPermissions(this.getHangarUserId(), author, slug);
+    private Pair<PermissionType, Permission> getPermissionsInScope(final String slug, final String organization) {
+        if (slug != null && organization == null) { // author & slug
+            Permission perms = this.permissionService.getProjectPermissions(this.getHangarUserId(), slug);
             perms = this.getHangarPrincipal().getPossiblePermissions().intersect(perms);
             return new ImmutablePair<>(PermissionType.PROJECT, perms);
-        } else if (author == null && slug == null && organization == null) { // current user (I don't think there's a need to see other user's global permissions)
+        } else if (slug == null && organization == null) { // current user (I don't think there's a need to see other user's global permissions)
             Permission perms = this.permissionService.getGlobalPermissions(this.getHangarUserId());
             perms = this.getHangarPrincipal().getPossiblePermissions().intersect(perms);
             return new ImmutablePair<>(PermissionType.GLOBAL, perms);
-        } else if (author == null && slug == null) { // just org
+        } else if (slug == null) { // just org
             Permission perms = this.permissionService.getOrganizationPermissions(this.getHangarUserId(), organization);
             perms = this.getHangarPrincipal().getPossiblePermissions().intersect(perms);
             return new ImmutablePair<>(PermissionType.ORGANIZATION, perms);
@@ -68,8 +68,8 @@ public class PermissionsController extends HangarComponent implements IPermissio
         }
     }
 
-    private ResponseEntity<PermissionCheck> has(final Collection<NamedPermission> perms, final String author, final String slug, final String organization, final BiPredicate<Collection<NamedPermission>, Permission> check) {
-        final Pair<PermissionType, Permission> scopedPerms = this.getPermissionsInScope(author, slug, organization);
+    private ResponseEntity<PermissionCheck> has(final Collection<NamedPermission> perms, final String slug, final String organization, final BiPredicate<Collection<NamedPermission>, Permission> check) {
+        final Pair<PermissionType, Permission> scopedPerms = this.getPermissionsInScope(slug, organization);
         return ResponseEntity.ok(new PermissionCheck(scopedPerms.getLeft(), check.test(perms, scopedPerms.getRight())));
     }
 }

@@ -36,35 +36,35 @@ public class ProjectsApiService extends HangarComponent {
         this.avatarService = avatarService;
     }
 
-    public Project getProject(final String author, final String slug) {
+    public Project getProject(final String slug) {
         final boolean seeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
-        final Project project = this.projectsApiDAO.getProject(author, slug, seeHidden, this.getHangarUserId());
+        final Project project = this.projectsApiDAO.getProject(slug, seeHidden, this.getHangarUserId());
         project.setAvatarUrl(this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner()));
         return project;
     }
 
     @Transactional(readOnly = true)
-    public PaginatedResult<ProjectMember> getProjectMembers(final String author, final String slug, final RequestPagination requestPagination) {
-        final List<ProjectMember> projectMembers = this.projectsApiDAO.getProjectMembers(author, slug, requestPagination);
-        return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectMembersCount(author, slug), requestPagination), projectMembers);
+    public PaginatedResult<ProjectMember> getProjectMembers(final String slug, final RequestPagination requestPagination) {
+        final List<ProjectMember> projectMembers = this.projectsApiDAO.getProjectMembers(slug, requestPagination);
+        return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectMembersCount(slug), requestPagination), projectMembers);
     }
 
-    public Map<String, DayProjectStats> getProjectStats(final String author, final String slug, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
-        return this.projectsApiDAO.getProjectStats(author, slug, fromDate, toDate);
+    public Map<String, DayProjectStats> getProjectStats(final String slug, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
+        return this.projectsApiDAO.getProjectStats(slug, fromDate, toDate);
     }
 
     @Transactional(readOnly = true)
-    public PaginatedResult<User> getProjectStargazers(final String author, final String slug, final RequestPagination pagination) {
-        final List<User> stargazers = this.projectsApiDAO.getProjectStargazers(author, slug, pagination.getLimit(), pagination.getOffset());
+    public PaginatedResult<User> getProjectStargazers(final String slug, final RequestPagination pagination) {
+        final List<User> stargazers = this.projectsApiDAO.getProjectStargazers(slug, pagination.getLimit(), pagination.getOffset());
         stargazers.forEach(this.usersApiService::supplyAvatarUrl);
-        return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectStargazersCount(author, slug), pagination), stargazers);
+        return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectStargazersCount(slug), pagination), stargazers);
     }
 
     @Transactional(readOnly = true)
-    public PaginatedResult<User> getProjectWatchers(final String author, final String slug, final RequestPagination pagination) {
-        final List<User> watchers = this.projectsApiDAO.getProjectWatchers(author, slug, pagination.getLimit(), pagination.getOffset());
+    public PaginatedResult<User> getProjectWatchers(final String slug, final RequestPagination pagination) {
+        final List<User> watchers = this.projectsApiDAO.getProjectWatchers(slug, pagination.getLimit(), pagination.getOffset());
         watchers.forEach(this.usersApiService::supplyAvatarUrl);
-        return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectWatchersCount(author, slug), pagination), watchers);
+        return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectWatchersCount(slug), pagination), watchers);
     }
 
     @Transactional(readOnly = true)

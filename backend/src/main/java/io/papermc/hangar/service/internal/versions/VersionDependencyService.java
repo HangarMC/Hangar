@@ -58,6 +58,16 @@ public class VersionDependencyService extends HangarComponent {
         this.downloadService = downloadService;
     }
 
+    @Cacheable(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p2") // versionId is key
+    public DownloadsAndDependencies addDownloadsAndDependencies(final String project, final String versionName, final long versionId) {
+        final ProjectTable projectTable = this.projectsDAO.getBySlug(project);
+        if (projectTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+
+        return this.addDownloadsAndDependencies(projectTable.getOwnerName(), project, versionName, versionId);
+    }
+
     @Cacheable(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p3") // versionId is key
     public DownloadsAndDependencies addDownloadsAndDependencies(final String user, final String project, final String versionName, final long versionId) {
         //TODO All of this is dumb and needs to be redone into as little queries as possible
@@ -70,7 +80,7 @@ public class VersionDependencyService extends HangarComponent {
         });
 
         final Map<Platform, Set<PluginDependency>> pluginDependencies = this.versionsApiDAO.getPluginDependencies(versionId).stream()
-            .collect(Collectors.groupingBy(PluginDependency::getPlatform, Collectors.toSet()));
+                .collect(Collectors.groupingBy(PluginDependency::getPlatform, Collectors.toSet()));
 
         final Map<Platform, PlatformVersionDownload> downloads = this.downloadService.getDownloads(user, project, versionName, versionId);
         return new DownloadsAndDependencies(pluginDependencies, platformDependencies, platformDependenciesFormatted, downloads);
@@ -164,7 +174,7 @@ public class VersionDependencyService extends HangarComponent {
                 dependencyTable.setProjectId(null);
                 updated = true;
             } else if (dependency.getNamespace() != null) {
-                final ProjectTable projectTable = this.projectsDAO.getBySlug(dependency.getNamespace().getOwner(), dependency.getNamespace().getSlug());
+                final ProjectTable projectTable = this.projectsDAO.getBySlug(dependency.getNamespace().getSlug());
                 if (projectTable == null) {
                     throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidProjectNamespace", dependency.getNamespace().getOwner() + "/" + dependency.getNamespace().getSlug());
                 }
@@ -186,7 +196,7 @@ public class VersionDependencyService extends HangarComponent {
             final PluginDependency dependency = entry.getValue();
             Long pdProjectId = null;
             if (dependency.getNamespace() != null) {
-                final ProjectTable projectTable = this.projectsDAO.getBySlug(dependency.getNamespace().getOwner(), dependency.getNamespace().getSlug());
+                final ProjectTable projectTable = this.projectsDAO.getBySlug(dependency.getNamespace().getSlug());
                 if (projectTable == null) {
                     throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidProjectNamespace", dependency.getNamespace().getOwner() + "/" + dependency.getNamespace().getSlug());
                 }
