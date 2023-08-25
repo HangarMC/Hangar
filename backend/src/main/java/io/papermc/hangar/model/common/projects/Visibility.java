@@ -2,7 +2,9 @@ package io.papermc.hangar.model.common.projects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "The visibility of a project or version", example = "PUBLIC")
 public enum Visibility {
     PUBLIC("public", false, true, "", "visibility.name.public"),
 

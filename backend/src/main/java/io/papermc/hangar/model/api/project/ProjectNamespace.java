@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.api.project;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
@@ -7,6 +8,7 @@ import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 public class ProjectNamespace {
 
     private final String owner;
+    @Schema(description = "The unique name of a project", example = "Maintenance")
     private final String slug;
 
     @JdbiConstructor

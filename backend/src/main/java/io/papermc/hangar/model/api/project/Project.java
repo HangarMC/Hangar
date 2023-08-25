@@ -3,6 +3,7 @@ package io.papermc.hangar.model.api.project;
 import io.papermc.hangar.model.api.project.settings.ProjectSettings;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
@@ -11,8 +12,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class Project extends ProjectCompact {
 
+    @Schema(description = "The short description of the project")
     private final String description;
+    @Schema(description = "Information about your interactions with the project")
     private final UserActions userActions;
+    @Schema(description = "The settings of the project")
     private final ProjectSettings settings;
 
     @JdbiConstructor

@@ -2,6 +2,7 @@ package io.papermc.hangar.model.common;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @EnumByOrdinal
+@Schema(description = "Server platform", example = "PAPER")
 public enum Platform {
 
     // NOTE: The order here should always be the order they are displayed whenever there is a list somewhere on the frontend

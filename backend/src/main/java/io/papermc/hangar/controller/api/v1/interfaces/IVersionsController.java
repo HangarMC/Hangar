@@ -37,7 +37,10 @@ public interface IVersionsController {
     @Operation(
         summary = "Creates a new version and returns parts of its metadata",
         operationId = "uploadVersion",
-        description = "Creates a new version for a project. Requires the `create_version` permission in the project or owning organization.",
+        description = """
+        Creates a new version for a project. Requires the `create_version` permission in the project or owning organization.
+        Make sure you provide the contents of this request as multipart/form-data.
+        You can find a simple example implementation written in Java here: https://gist.github.com/kennytv/a227d82249f54e0ad35005330256fee2""",
         security = @SecurityRequirement(name = "HangarAuth", scopes = "create_version"),
         tags = "Versions"
     )
@@ -49,14 +52,14 @@ public interface IVersionsController {
     @PostMapping(path = "/projects/{slug}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     UploadedVersion uploadVersion(@Parameter(description = "The slug of the project to return versions for") @PathVariable String slug,
                        @Parameter(description = "The version files in order of selected platforms, if any") @RequestPart(required = false) @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
-                       @Parameter(description = "Version data. Note that platform versions accept version ranges, e.g. '1.16.4-1.19' and wildcards, e.g '1.19.x'") @RequestPart @Valid VersionUpload versionUpload);
+                       @Parameter(description = "Version data. See the VersionUpload schema for more info") @RequestPart @Valid VersionUpload versionUpload);
 
     @PostMapping(path = "/projects/{author}/{slug}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Deprecated(forRemoval = true)
-    default UploadedVersion uploadVersionWithPlaceholderName(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
+    default UploadedVersion uploadVersion(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
                         @Parameter(description = "The slug of the project to return versions for") @PathVariable String slug,
                         @Parameter(description = "The version files in order of selected platforms, if any") @RequestPart(required = false) @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
-                        @Parameter(description = "Version data. Note that platform versions accept version ranges, e.g. '1.16.4-1.19' and wildcards, e.g '1.19.x'") @RequestPart @Valid VersionUpload versionUpload) {
+                        @RequestPart @Valid VersionUpload versionUpload) {
        return this.uploadVersion(slug, files, versionUpload);
     }
 
