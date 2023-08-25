@@ -34,8 +34,11 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
         switch (attribute.type()) {
             case PROJECT:
                 if (arguments.length == 1) {
-                    if (arguments[0] instanceof String slug && this.projectService.getProjectTable(slug) != null
-                            || this.projectService.getProjectTable((long) arguments[0]) != null) {
+                    if (arguments[0] instanceof String slug) {
+                        if (this.projectService.getProjectTable(slug) != null) {
+                            return ACCESS_GRANTED;
+                        }
+                    } else if (this.projectService.getProjectTable((long) arguments[0]) != null) {
                         return ACCESS_GRANTED;
                     }
                 } else {
