@@ -38,17 +38,7 @@ const props = defineProps<{
   project: HangarProject;
 }>();
 
-const options = reactive({ page: 1, itemsPerPage: 10 });
 const platforms = computed(() => [...(useBackendData.platforms?.values() || [])]);
-const requestOptions = computed(() => {
-  return {
-    limit: options.itemsPerPage,
-    offset: (options.page - 1) * options.itemsPerPage,
-    channel: filter.channels,
-    platform: filter.platforms,
-  };
-});
-
 const pagination = ref();
 const page = ref(0);
 const requestParams = computed(() => {
@@ -56,6 +46,8 @@ const requestParams = computed(() => {
   return {
     limit,
     offset: page.value * limit,
+    channel: filter.channels,
+    platform: filter.platforms,
   };
 });
 
@@ -72,7 +64,7 @@ useHead(useSeo("Versions | " + props.project.name, props.project.description, ro
 
 const pageChangeScrollAnchor: Ref<Element | null> = ref(null);
 
-async function emitPageUpdate(newPage: number) {
+async function update(newPage: number) {
   page.value = newPage;
   versions.value = (await useProjectVersions(route.params.project as string, requestParams.value))?.value;
 }
@@ -87,14 +79,8 @@ watch(
       versions.value.result = [];
       return;
     }
-    const newVersions = await useApi<PaginatedResult<Version>>(
-      `projects/${route.params.user}/${route.params.project}/versions`,
-      "get",
-      requestOptions.value
-    ).catch((e) => handleRequestError(e));
-    if (newVersions) {
-      versions.value = newVersions;
-    }
+
+    await update(0);
   },
   { deep: true }
 );
@@ -139,7 +125,7 @@ function getVisibilityTitle(visibility: Visibility) {
           :items="versions.result"
           :server-pagination="versions.pagination"
           :reset-anchor="pageChangeScrollAnchor"
-          @update:page="emitPageUpdate"
+          @update:page="update"
         >
           <template #default="{ item }">
             <li class="mb-2">

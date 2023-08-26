@@ -138,7 +138,7 @@ async function save() {
       form.settings.license.url = null;
     }
 
-    await useInternalApi(`projects/project/${route.params.user}/${route.params.project}/settings`, "post", {
+    await useInternalApi(`projects/project/${route.params.project}/settings`, "post", {
       ...form,
     });
     await router.go(0);
@@ -164,7 +164,7 @@ async function transfer() {
 async function rename() {
   loading.rename = true;
   try {
-    const newSlug = await useInternalApi<string>(`projects/project/${route.params.user}/${route.params.project}/rename`, "post", {
+    const newSlug = await useInternalApi<string>(`projects/project/${route.params.project}/rename`, "post", {
       content: newName.value,
     });
     await notificationStore.success(i18n.t("project.settings.success.rename", [newName.value]));
@@ -212,7 +212,7 @@ async function uploadIcon() {
   data.append("projectIcon", cropperResult.value);
   loading.uploadIcon = true;
   try {
-    const response = await useInternalApi<string | null>(`projects/project/${route.params.user}/${route.params.project}/saveIcon`, "post", data);
+    const response = await useInternalApi<string | null>(`projects/project/${route.params.project}/saveIcon`, "post", data);
     imgSrc.value = URL.createObjectURL(cropperResult.value); // set temporary source so it changes right away
     projectIcon.value = null;
     cropperInput.value = null;
@@ -229,7 +229,7 @@ async function uploadIcon() {
 async function resetIcon() {
   loading.resetIcon = true;
   try {
-    const response = await useInternalApi<string | null>(`projects/project/${route.params.user}/${route.params.project}/resetIcon`, "post");
+    const response = await useInternalApi<string | null>(`projects/project/${route.params.project}/resetIcon`, "post");
     await (response
       ? notificationStore.success(i18n.t("project.settings.success.resetIconWarn", [response]))
       : notificationStore.success(i18n.t("project.settings.success.resetIcon")));
