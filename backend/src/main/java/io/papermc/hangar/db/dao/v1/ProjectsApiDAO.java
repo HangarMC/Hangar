@@ -91,7 +91,7 @@ public interface ProjectsApiDAO {
             p.donation_enabled,
             p.donation_subject,
             p.sponsors,
-            CASE WHEN :query IS NULL THEN 1 WHEN p.name = :query THEN 2 ELSE 3 END AS exact_match
+            CASE WHEN :query IS NULL THEN 1 WHEN lower(p.name) = :query THEN 2 ELSE 3 END AS exact_match
         FROM home_projects hp
             JOIN projects p ON hp.id = p.id
             LEFT JOIN project_versions pv ON p.id = pv.project_id

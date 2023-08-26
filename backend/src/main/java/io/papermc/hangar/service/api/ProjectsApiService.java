@@ -74,7 +74,7 @@ public class ProjectsApiService extends HangarComponent {
         String query = null;
         for (final Filter.FilterInstance filterInstance : pagination.getFilters().values()) {
             if (filterInstance instanceof final ProjectQueryFilter.ProjectQueryFilterInstance queryFilter) {
-                query = queryFilter.query();
+                query = queryFilter.query().toLowerCase();
             }
         }
 
