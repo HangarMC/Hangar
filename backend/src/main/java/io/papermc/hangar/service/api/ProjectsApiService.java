@@ -69,7 +69,7 @@ public class ProjectsApiService extends HangarComponent {
 
     @Transactional(readOnly = true)
     @Cacheable(CacheConfig.PROJECTS)
-    public PaginatedResult<Project> getProjects(final RequestPagination pagination, final boolean seeHidden) {
+    public PaginatedResult<Project> getProjects(final RequestPagination pagination, final boolean seeHidden, final boolean prioritizeExactMatch) {
         // get query from filter
         String query = null;
         for (final Filter.FilterInstance filterInstance : pagination.getFilters().values()) {
@@ -78,7 +78,7 @@ public class ProjectsApiService extends HangarComponent {
             }
         }
 
-        if (query != null && !query.isBlank()) {
+        if (prioritizeExactMatch && query != null && !query.isBlank()) {
             pagination.getSorters().put("exact_match", sb -> sb.append(" exact_match ASC"));
         }
 
