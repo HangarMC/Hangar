@@ -49,11 +49,11 @@ function visibleCss(value: boolean) {
 </script>
 
 <template>
-  <div class="flex gap-2 justify-center">
-    <Button :style="visibleCss(page > 0)" :disabled="page <= 0" aria-label="First page" @click="gotoPage(0)">
+  <div class="flex gap-1.5 rounded-md justify-center">
+    <Button class="bg-slate-400 dark:bg-slate-700 px-3" :style="visibleCss(page > 0)" :disabled="page <= 0" aria-label="First page" @click="gotoPage(0)">
       <span class="nav-btn">«</span>
     </Button>
-    <Button :style="visibleCss(page > 0)" :disabled="page <= 0" aria-label="Prev page" @click="gotoPage(page - 1)">
+    <Button class="bg-slate-400 dark:bg-slate-700 px-3" :style="visibleCss(page > 0)" :disabled="page <= 0" aria-label="Prev page" @click="gotoPage(page - 1)">
       <span class="nav-btn">‹</span>
     </Button>
     <Button
@@ -61,15 +61,30 @@ function visibleCss(value: boolean) {
       :key="index"
       :disabled="page === index - 1"
       :aria-label="'Page ' + index"
-      :class="{ 'disabled:bg-slate-500 disabled:dark:bg-slate-700': page === index - 1 }"
+      class="bg-slate-400 dark:bg-slate-700 px-3"
+      :class="{ 'disabled:bg-slate-500 disabled:dark:bg-slate-500': page === index - 1 }"
       @click="gotoPage(index - 1)"
     >
-      {{ index }}
+      <span class="text-white">
+        {{ index }}
+      </span>
     </Button>
-    <Button :style="visibleCss(page < pages - 1)" :disabled="page >= pages - 1" aria-label="Next page" @click="gotoPage(page + 1)">
+    <Button
+      class="bg-slate-400 dark:bg-slate-700 px-3"
+      :style="visibleCss(page < pages - 1)"
+      :disabled="page >= pages - 1"
+      aria-label="Next page"
+      @click="gotoPage(page + 1)"
+    >
       <span class="nav-btn">›</span>
     </Button>
-    <Button :style="visibleCss(page < pages - 1)" :disabled="page >= pages - 1" aria-label="Last page" @click="gotoPage(pages - 1)">
+    <Button
+      class="bg-slate-400 dark:bg-slate-700 px-3"
+      :style="visibleCss(page < pages - 1)"
+      :disabled="page >= pages - 1"
+      aria-label="Last page"
+      @click="gotoPage(pages - 1)"
+    >
       <span class="nav-btn">»</span>
     </Button>
   </div>
