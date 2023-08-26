@@ -69,7 +69,7 @@ public class ProjectsApiService extends HangarComponent {
 
     @Transactional(readOnly = true)
     @Cacheable(CacheConfig.PROJECTS)
-    public PaginatedResult<Project> getProjects(final boolean orderWithRelevance, final RequestPagination pagination, final boolean seeHidden) {
+    public PaginatedResult<Project> getProjects(final RequestPagination pagination, final boolean seeHidden) {
         // get query from filter
         String query = null;
         for (final Filter.FilterInstance filterInstance : pagination.getFilters().values()) {
@@ -78,18 +78,11 @@ public class ProjectsApiService extends HangarComponent {
             }
         }
 
-        // handle relevance
-        String relevance = "";
-        if (orderWithRelevance && query != null && !query.isEmpty()) {
-            if (query.endsWith(" ")) {
-                relevance = "ts_rank(hp.search_words, websearch_to_tsquery('english', :query)) AS relevance,";
-            } else {
-                relevance = "ts_rank(hp.search_words, websearch_to_tsquery_postfix('english', :query)) AS relevance,";
-            }
-            pagination.getSorters().put("relevance", sb -> sb.append(" relevance DESC"));
+        if (query != null && !query.isBlank()) {
+            pagination.getSorters().put("exact_match", sb -> sb.append(" exact_match ASC"));
         }
 
-        final List<Project> projects = this.projectsApiDAO.getProjects(seeHidden, this.getHangarUserId(), pagination, relevance);
+        final List<Project> projects = this.projectsApiDAO.getProjects(seeHidden, this.getHangarUserId(), pagination, query);
         for (final Project project : projects) {
             project.setAvatarUrl(this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner()));
         }

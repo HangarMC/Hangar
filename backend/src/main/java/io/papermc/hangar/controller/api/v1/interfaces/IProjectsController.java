@@ -91,8 +91,8 @@ public interface IProjectsController {
     })
     @GetMapping("/projects")
     ResponseEntity<PaginatedResult<Project>> getProjects(
-        @Parameter(description = "Whether projects should be sorted by the relevance to the given query") @RequestParam(defaultValue = "true", required = false) boolean relevance,
-        @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
+            @Parameter(deprecated = true, description = "No longer functions. Sort by (recent) stars, downloads, or views instead") @RequestParam(defaultValue = "true", required = false) boolean orderWithRelevance,
+            @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
     );
 
     @Operation(

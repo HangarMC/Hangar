@@ -18,6 +18,7 @@ import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.customizer.DefineNamedBindings;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -78,7 +79,6 @@ public interface ProjectsApiDAO {
             coalesce(hp.last_updated, p.created_at) AS last_updated,
             ((extract(EPOCH FROM coalesce(hp.last_updated, p.created_at)) - 1609459200) / 604800) *1 AS last_updated_double, --- We can order with this. That "dum" does not work. It only orders it with this.
             p.visibility,
-            <relevance>
             EXISTS(SELECT * FROM project_stars ps WHERE ps.project_id = p.id AND ps.user_id = :requesterId) AS starred,
             EXISTS(SELECT * FROM project_watchers pw WHERE pw.project_id = p.id AND pw.user_id = :requesterId) AS watching,
             EXISTS(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) AS flagged,
@@ -90,7 +90,8 @@ public interface ProjectsApiDAO {
             p.keywords,
             p.donation_enabled,
             p.donation_subject,
-            p.sponsors
+            p.sponsors,
+            CASE WHEN :query IS NULL THEN 1 WHEN p.name = :query THEN 2 ELSE 3 END AS exact_match
         FROM home_projects hp
             JOIN projects p ON hp.id = p.id
             LEFT JOIN project_versions pv ON p.id = pv.project_id
@@ -101,8 +102,7 @@ public interface ProjectsApiDAO {
             <sorters>
             <offsetLimit>""")
     @DefineNamedBindings
-    List<Project> getProjects(@Define boolean seeHidden, Long requesterId,
-                              @BindPagination RequestPagination pagination, @Define String relevance);
+    List<Project> getProjects(@Define boolean seeHidden, Long requesterId, @BindPagination RequestPagination pagination, @Nullable String query);
 
     // This query can be shorter because it doesn't need all those column values as above does, just a single column for the amount of rows to be counted
     @UseStringTemplateEngine
