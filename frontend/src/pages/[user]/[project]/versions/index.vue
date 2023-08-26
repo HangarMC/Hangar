@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { PaginatedResult, Version } from "hangar-api";
-import { computed, reactive, watch } from "vue";
+import { computed, reactive, Ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { HangarProject } from "hangar-internal";
 import { useHead } from "@vueuse/head";
@@ -70,6 +70,8 @@ filter.platforms.push(...platforms.value.map((p) => p.enumName));
 
 useHead(useSeo("Versions | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 
+const pageChangeScrollAnchor: Ref<Element | null> = ref(null);
+
 async function emitPageUpdate(newPage: number) {
   page.value = newPage;
   versions.value = (await useProjectVersions(route.params.project as string, requestParams.value))?.value;
@@ -127,11 +129,18 @@ function getVisibilityTitle(visibility: Visibility) {
 </script>
 
 <template>
-  <div class="flex flex-wrap md:flex-nowrap gap-4">
+  <div ref="pageChangeScrollAnchor" class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-11/15 flex-grow">
       <ul>
         <Alert v-if="!versions || !versions.result || versions.result.length === 0" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
-        <Pagination v-else-if="versions" ref="pagination" :items="versions.result" :server-pagination="versions.pagination" @update:page="emitPageUpdate">
+        <Pagination
+          v-else-if="versions"
+          ref="pagination"
+          :items="versions.result"
+          :server-pagination="versions.pagination"
+          :reset-anchor="pageChangeScrollAnchor"
+          @update:page="emitPageUpdate"
+        >
           <template #default="{ item }">
             <li class="mb-2">
               <Card :class="getBorderClasses(item)" class="pb-1">
