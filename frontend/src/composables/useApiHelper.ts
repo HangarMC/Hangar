@@ -108,8 +108,8 @@ export async function useProjectChannels(project: string): Promise<NonNullAsyncD
   return await useAsyncDataNonNull("useProjectChannels:" + project, () => useInternalApi<ProjectChannel[]>(`channels/${project}`));
 }
 
-export async function useProjectVersions(project: string): Promise<Ref<PaginatedResult<Version> | null>> {
-  return extract(await useAsyncData("useProjectVersions:" + project, () => useApi<PaginatedResult<Version>>(`projects/${project}/versions`)));
+export async function useProjectVersions(project: string, data?: object): Promise<Ref<PaginatedResult<Version> | null>> {
+  return extract(await useAsyncData("useProjectVersions:" + project, () => useApi<PaginatedResult<Version>>(`projects/${project}/versions`, "GET", data)));
 }
 
 export async function useProjectVersionsInternal(project: string, version: string): Promise<Ref<HangarVersion | null>> {

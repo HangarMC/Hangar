@@ -20,6 +20,7 @@ import { useSeo } from "~/composables/useSeo";
 import Alert from "~/components/design/Alert.vue";
 import Pagination from "~/components/design/Pagination.vue";
 import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
+import { ref } from "#imports";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -48,13 +49,31 @@ const requestOptions = computed(() => {
   };
 });
 
-const results = await Promise.all([useProjectChannels(route.params.project as string), useProjectVersions(route.params.project as string)]);
+const pagination = ref();
+const page = ref(0);
+const requestParams = computed(() => {
+  const limit = 7;
+  return {
+    limit,
+    offset: page.value * limit,
+  };
+});
+
+const results = await Promise.all([
+  useProjectChannels(route.params.project as string),
+  useProjectVersions(route.params.project as string, requestParams.value),
+]);
 const channels = results[0].data;
 const versions = results[1];
 filter.channels.push(...channels.value.map((c) => c.name));
 filter.platforms.push(...platforms.value.map((p) => p.enumName));
 
 useHead(useSeo("Versions | " + props.project.name, props.project.description, route, props.project.avatarUrl));
+
+async function emitPageUpdate(newPage: number) {
+  page.value = newPage;
+  versions.value = (await useProjectVersions(route.params.project as string, requestParams.value))?.value;
+}
 
 watch(
   filter,
@@ -112,7 +131,7 @@ function getVisibilityTitle(visibility: Visibility) {
     <section class="basis-full md:basis-11/15 flex-grow">
       <ul>
         <Alert v-if="!versions || !versions.result || versions.result.length === 0" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
-        <Pagination v-else-if="versions" :items="versions.result">
+        <Pagination v-else-if="versions" ref="pagination" :items="versions.result" :server-pagination="versions.pagination" @update:page="emitPageUpdate">
           <template #default="{ item }">
             <li class="mb-2">
               <Card :class="getBorderClasses(item)" class="pb-1">
