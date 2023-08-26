@@ -176,7 +176,10 @@ async function restoreVersion() {
         <div class="inline-flex items-center flex-grow space-x-2">
           <div class="flex-grow" />
           <Tooltip v-if="confirmationWarningKey" :content="i18n.t(confirmationWarningKey)">
-            <IconMdiAlert class="text-2xl" />
+            <div class="text-2xl">
+              <IconMdiAlert v-if="confirmationWarningKey === 'version.page.unsafeWarningExternal'" />
+              <IconMdiProgressQuestion v-else class="text-gray-400" />
+            </div>
           </Tooltip>
           <DownloadButton :version="projectVersion" :project="project" :show-single-platform="false" :show-versions="false" show-file-size />
         </div>

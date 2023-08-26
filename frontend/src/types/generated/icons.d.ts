@@ -47,6 +47,7 @@ declare module "vue" {
     IconMdiEye: typeof import("~icons/mdi/eye")["default"];
     IconMdiEyeOff: typeof import("~icons/mdi/eye-off")["default"];
     IconMdiFileDocument: typeof import("~icons/mdi/file-document")["default"];
+    IconMdiFileFind: typeof import("~icons/mdi/file-find")["default"];
     IconMdiFlag: typeof import("~icons/mdi/flag")["default"];
     IconMdiFolderPlusOutline: typeof import("~icons/mdi/folder-plus-outline")["default"];
     IconMdiFormatListNumbered: typeof import("~icons/mdi/format-list-numbered")["default"];
@@ -72,8 +73,8 @@ declare module "vue" {
     IconMdiPinOutline: typeof import("~icons/mdi/pin-outline")["default"];
     IconMdiPlay: typeof import("~icons/mdi/play")["default"];
     IconMdiPlus: typeof import("~icons/mdi/plus")["default"];
+    IconMdiProgressQuestion: typeof import("~icons/mdi/progress-question")["default"];
     IconMdiPuzzleOutline: typeof import("~icons/mdi/puzzle-outline")["default"];
-    IconMdiQuestionMark: typeof import("~icons/mdi/question-mark")["default"];
     IconMdiRefresh: typeof import("~icons/mdi/refresh")["default"];
     IconMdiRenameBox: typeof import("~icons/mdi/rename-box")["default"];
     IconMdiSend: typeof import("~icons/mdi/send")["default"];
@@ -89,6 +90,7 @@ declare module "vue" {
     IconMdiSubdirectoryArrowLeft: typeof import("~icons/mdi/subdirectory-arrow-left")["default"];
     IconMdiTag: typeof import("~icons/mdi/tag")["default"];
     IconMdiTools: typeof import("~icons/mdi/tools")["default"];
+    IconMdiTriangleOutline: typeof import("~icons/mdi/triangle-outline")["default"];
     IconMdiTrophy: typeof import("~icons/mdi/trophy")["default"];
     IconMdiUndo: typeof import("~icons/mdi/undo")["default"];
     IconMdiUpload: typeof import("~icons/mdi/upload")["default"];
