@@ -121,8 +121,6 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
         paramNames.remove("sort");
         paramNames.remove("limit");
         paramNames.remove("offset");
-        // TODO remove these bellow eventually
-        paramNames.remove("relevance");
 
         // remove request params
         for (final Parameter param : parameter.getExecutable().getParameters()) {

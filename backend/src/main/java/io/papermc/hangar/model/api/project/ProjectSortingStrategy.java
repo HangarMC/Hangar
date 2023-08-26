@@ -2,39 +2,30 @@ package io.papermc.hangar.model.api.project;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Gets or Sets ProjectSortingStrategy
  */
 public enum ProjectSortingStrategy {
 
-    STARS(0, "Most stars", "hp.stars DESC, p.name ASC", "stars"),
-    DOWNLOADS(1, "Most downloads", "hp.downloads DESC", "downloads"),
-    VIEWS(2, "Most views", "hp.views DESC", "views"),
-    NEWEST(3, "Newest", "p.created_at DESC", "newest"),
-    UPDATED(4, "Recently updated", "hp.last_updated DESC", "updated"),
-    ONLY_RELEVANCE(5, "Only relevance", "hp.last_updated DESC", "only_relevance"),
-    RECENT_DOWNLOADS(6, "Recent views", "hp.recent_views DESC", "recent_views"),
-    RECENT_VIEWS(7, "Recent downloads", "hp.recent_downloads DESC", "recent_downloads");
+    STARS("Most stars", "hp.stars DESC, p.name ASC", "stars"),
+    DOWNLOADS("Most downloads", "hp.downloads DESC", "downloads"),
+    VIEWS("Most views", "hp.views DESC", "views"),
+    NEWEST("Newest", "p.created_at DESC", "newest"),
+    UPDATED("Recently updated", "hp.last_updated DESC", "updated"),
+    RECENT_DOWNLOADS("Recent views", "hp.recent_views DESC", "recent_views"),
+    RECENT_VIEWS("Recent downloads", "hp.recent_downloads DESC", "recent_downloads");
 
-    public static final ProjectSortingStrategy Default = UPDATED;
-
-    private final int value;
+    private static final ProjectSortingStrategy[] VALUES = values();
     private final String title;
     private final String sql;
     private final String apiName;
 
-    public static final ProjectSortingStrategy[] VALUES = values();
-
-    ProjectSortingStrategy(final int value, final String title, final String sql, final String apiName) {
-        this.value = value;
+    ProjectSortingStrategy(final String title, final String sql, final String apiName) {
         this.title = title;
         this.sql = sql;
         this.apiName = apiName;
-    }
-
-    public int getValue() {
-        return this.value;
     }
 
     public String getTitle() {
@@ -56,10 +47,10 @@ public enum ProjectSortingStrategy {
     }
 
     @JsonCreator
-    public static ProjectSortingStrategy fromApiName(final String apiName) {
-        for (final ProjectSortingStrategy b : values()) {
-            if (b.apiName.equals(apiName)) {
-                return b;
+    public static @Nullable ProjectSortingStrategy fromApiName(final String apiName) {
+        for (final ProjectSortingStrategy strategy : VALUES) {
+            if (strategy.apiName.equals(apiName)) {
+                return strategy;
             }
         }
         return null;

@@ -49,7 +49,6 @@
       "clear": "(clear)",
       "query": "Search in {0} projects...",
       "sortBy": "Sort by",
-      "relevanceSort": "Sort by relevance",
       "noProjects": "There are no projects. 😢",
       "noProjectsFound": "Found 0 projects. 😢",
       "title": "Find your favorite plugins",

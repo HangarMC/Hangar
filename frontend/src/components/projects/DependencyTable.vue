@@ -71,7 +71,7 @@ function reset() {
 
 async function onSearch(val: string, index: number) {
   if (val) {
-    const projects = await useApi<PaginatedResult<Project>>(`projects?relevance=true&limit=25&offset=0&q=${val.replace("/", " ")}`);
+    const projects = await useApi<PaginatedResult<Project>>(`projects?limit=25&offset=0&q=${val.replace("/", " ")}`);
     completionResults.value[index] = projects.result
       .filter((p) => p.namespace.owner !== route.params.user || p.namespace.slug !== route.params.project)
       .map((p) => p.namespace);

@@ -15,8 +15,10 @@ import io.papermc.hangar.model.api.project.ProjectMember;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import java.time.OffsetDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -79,7 +81,12 @@ public class ProjectsApiService extends HangarComponent {
         }
 
         if (prioritizeExactMatch && query != null && !query.isBlank()) {
-            pagination.getSorters().put("exact_match", sb -> sb.append(" exact_match ASC"));
+            // This sorter needs to be first
+            final Map<String, Consumer<StringBuilder>> sorters = pagination.getSorters();
+            final Map<String, Consumer<StringBuilder>> copy = new LinkedHashMap<>(sorters);
+            sorters.clear();
+            sorters.put("exact_match", sb -> sb.append(" exact_match ASC"));
+            sorters.putAll(copy);
         }
 
         final List<Project> projects = this.projectsApiDAO.getProjects(seeHidden, this.getHangarUserId(), pagination, query);
