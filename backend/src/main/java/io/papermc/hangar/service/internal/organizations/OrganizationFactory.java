@@ -48,7 +48,7 @@ public class OrganizationFactory extends HangarComponent {
     }
 
     @Transactional
-    public void createOrganization(final String name) {
+    public OrganizationTable createOrganization(final String name) {
         if (!this.config.org.enabled()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "organization.new.error.notEnabled");
         }
@@ -61,6 +61,7 @@ public class OrganizationFactory extends HangarComponent {
         final OrganizationTable organizationTable = this.organizationDAO.insert(new OrganizationTable(userTable.getId(), name, this.getHangarPrincipal().getId(), userTable.getId(), userTable.getUuid()));
         this.globalRoleService.addRole(GlobalRole.ORGANIZATION.create(null, userTable.getUuid(), userTable.getId(), false));
         this.organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_OWNER.create(organizationTable.getId(), userTable.getUuid(), this.getHangarPrincipal().getId(), true));
+        return organizationTable;
     }
 
     @Transactional

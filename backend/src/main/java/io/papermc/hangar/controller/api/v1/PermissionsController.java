@@ -64,6 +64,7 @@ public class PermissionsController extends HangarComponent implements IPermissio
             perms = this.getHangarPrincipal().getPossiblePermissions().intersect(perms);
             return new ImmutablePair<>(PermissionType.ORGANIZATION, perms);
         } else {
+            // unreachable
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Incorrect request parameters");
         }
     }
