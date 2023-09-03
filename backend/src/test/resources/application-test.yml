@@ -13,5 +13,6 @@ spring:
     baseline-version: 0.0
 
 hangar:
+  disable-ratelimiting: true
   storage:
     type: "local"

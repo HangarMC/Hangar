@@ -10,6 +10,13 @@ public class StringContent {
 
     private @NotBlank(message = "general.error.fieldEmpty") @Schema(description = "A non-null, non-empty string") String content;
 
+    public StringContent() {
+    }
+
+    public StringContent(final String content) {
+        this.content = content;
+    }
+
     public String getContent() {
         return this.content;
     }

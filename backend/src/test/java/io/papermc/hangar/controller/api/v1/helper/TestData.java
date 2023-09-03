@@ -12,6 +12,7 @@ import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
@@ -22,6 +23,7 @@ import io.papermc.hangar.service.internal.organizations.OrganizationFactory;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
+import io.papermc.hangar.service.internal.projects.ProjectPageService;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +52,9 @@ public class TestData {
 
     public static ProjectTable PROJECT;
 
+    public static ProjectPageTable PAGE_PARENT;
+    public static ProjectPageTable PAGE_CHILD;
+
     @Autowired
     private AuthService authService;
     @Autowired
@@ -62,6 +67,8 @@ public class TestData {
     private OrganizationMemberService organizationMemberService;
     @Autowired
     private ProjectFactory projectFactory;
+    @Autowired
+    private ProjectPageService projectPageService;
 
     @EventListener(ApplicationStartedEvent.class)
     public void prepare() {
@@ -83,6 +90,8 @@ public class TestData {
         logger.info("Creating some test projects...");
         PROJECT = this.projectFactory.createProject(new NewProjectForm(new ProjectSettings(List.of(), List.of(), new ProjectLicense(null, null, "MIT"), List.of(), null),
             Category.CHAT, "", ORG.getUserId(), "TestProject", "# Test", null));
+        PAGE_PARENT = this.projectPageService.createPage(PROJECT.getProjectId(), "TestParentPage", "testparentpage", "# TestParentPage", true, null, false);
+        PAGE_CHILD = this.projectPageService.createPage(PROJECT.getProjectId(), "TestChildPage", "testparentpage/testchild", "# TestChildPage", true, PAGE_PARENT.getId(), false);
 
         logger.info("Creating test api keys...");
         KEY_ADMIN = this.apiKeyService.createApiKey(USER_ADMIN, new CreateAPIKeyForm("Admin", Set.of(NamedPermission.values())), Permission.All);
