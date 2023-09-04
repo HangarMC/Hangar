@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   hookable: 5.4.2
 
@@ -71,14 +75,14 @@ dependencies:
     specifier: 4.17.21
     version: 4.17.21
   marked:
-    specifier: 7.0.5
-    version: 7.0.5
+    specifier: 8.0.0
+    version: 8.0.0
   marked-extended-tables:
     specifier: 1.0.6
-    version: 1.0.6(marked@7.0.5)
+    version: 1.0.6(marked@8.0.0)
   marked-linkify-it:
     specifier: 3.1.1
-    version: 3.1.1(marked@7.0.5)
+    version: 3.1.1(marked@8.0.0)
   nprogress:
     specifier: 0.2.0
     version: 0.2.0
@@ -1518,6 +1522,7 @@ packages:
     dependencies:
       is-glob: 4.0.3
       micromatch: 4.0.5
+      napi-wasm: 1.1.0
     dev: true
     bundledDependencies:
       - napi-wasm
@@ -4261,7 +4266,7 @@ packages:
       debug: 4.3.4
       enhanced-resolve: 5.15.0
       eslint: 8.48.0
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.62.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.0)(eslint@8.48.0)
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.5.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.0)(eslint@8.48.0)
       eslint-plugin-import: 2.28.1(@typescript-eslint/parser@6.5.0)(eslint-import-resolver-typescript@3.6.0)(eslint@8.48.0)
       fast-glob: 3.3.1
       get-tsconfig: 4.7.0
@@ -5933,22 +5938,22 @@ packages:
       semver: 6.3.1
     dev: true
 
-  /marked-extended-tables@1.0.6(marked@7.0.5):
+  /marked-extended-tables@1.0.6(marked@8.0.0):
     resolution: {integrity: sha512-l3bgWsVHxJLaZhDGYdg3tREoUt+Jzq05fGAoKfeORAyz149N/jxDOimcg4wYV27G2M/6meZR28jVgtV+qTXD1g==}
     peerDependencies:
       marked: ^3.0.0 || ^4.0.0 || ^5.0.0
     dependencies:
-      marked: 7.0.5
+      marked: 8.0.0
     dev: false
 
-  /marked-linkify-it@3.1.1(marked@7.0.5):
+  /marked-linkify-it@3.1.1(marked@8.0.0):
     resolution: {integrity: sha512-aUBfHW1wcDpAfZuygE+Py7ZZXWFCkTHVBjfedV/yQbT+TuY2LvSDKyowuhSMuFDbMQtq/LL0m2wYGjPtizn6yg==}
     peerDependencies:
       marked: ^4 || ^5 || ^6 || ^7
     dependencies:
       '@types/linkify-it': 3.0.2
       linkify-it: 4.0.1
-      marked: 7.0.5
+      marked: 8.0.0
     dev: false
 
   /marked@4.3.0:
@@ -5957,8 +5962,8 @@ packages:
     hasBin: true
     dev: false
 
-  /marked@7.0.5:
-    resolution: {integrity: sha512-lwNAFTfXgqpt/XvK17a/8wY9/q6fcSPZT1aP6QW0u74VwaJF/Z9KbRcX23sWE4tODM+AolJNcUtErTkgOeFP/Q==}
+  /marked@8.0.0:
+    resolution: {integrity: sha512-RI/D5csFVreNrFchdKFSdV38GDHJdD7OdmbNWYzGvApPb0A9pyypgfHC/FBH4ugmRE8cr7yg/TH7tu8585eMhA==}
     engines: {node: '>= 16'}
     hasBin: true
     dev: false
@@ -6129,6 +6134,10 @@ packages:
     resolution: {integrity: sha512-7ZtY5KTCNheRGfEFxnedV5zFiORN1+Y1N6zvPTnHQd8ENUvfaDBeuJDZb2bN/oXwXxu3qkTXDzy57W5vAmDTBw==}
     engines: {node: ^14 || ^16 || >=18}
     hasBin: true
+    dev: true
+
+  /napi-wasm@1.1.0:
+    resolution: {integrity: sha512-lHwIAJbmLSjF9VDRm9GoVOy9AGp3aIvkjv+Kvz9h16QR3uSVYH78PNQUnT2U4X53mhlnV2M7wrhibQ3GHicDmg==}
     dev: true
 
   /natural-compare-lite@1.4.0:
@@ -8948,7 +8957,3 @@ packages:
       compress-commons: 4.1.1
       readable-stream: 3.6.2
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
