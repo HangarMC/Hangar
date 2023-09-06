@@ -28,7 +28,6 @@ public class VersionUpload {
     // @el(root: String)
     private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxLen)", message = "page.new.error.maxLength") String description;
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
-    @NotEmpty(message = "version.new.error.invalidNumOfPlatforms")
     private final List<@Valid MultipartFileOrUrl> files;
 
     // @el(root: String)
