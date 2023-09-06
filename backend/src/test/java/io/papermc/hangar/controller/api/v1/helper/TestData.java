@@ -24,6 +24,7 @@ import io.papermc.hangar.service.internal.perms.members.OrganizationMemberServic
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
+import io.papermc.hangar.service.internal.projects.ProjectService;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -69,6 +70,8 @@ public class TestData {
     private ProjectFactory projectFactory;
     @Autowired
     private ProjectPageService projectPageService;
+    @Autowired
+    private ProjectService projectService;
 
     @EventListener(ApplicationStartedEvent.class)
     public void prepare() {
@@ -98,6 +101,8 @@ public class TestData {
         KEY_ALL = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("All", new HashSet<>(Permission.fromBinString("0000000000000000000011110000111100001111001100001111011111110111").toNamed())), Permission.All);
         KEY_PROJECT_ONLY = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("Project Only", Set.of(NamedPermission.CREATE_PROJECT)), Permission.All);
         KEY_SEE_HIDDEN = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("See Hidden", Set.of(NamedPermission.SEE_HIDDEN)), Permission.All);
+
+        this.projectService.refreshHomeProjects();
 
         HangarApplication.TEST_PRINCIPAL = Optional.empty();
         HangarApplication.TEST_MODE = false;
