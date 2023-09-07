@@ -88,6 +88,7 @@ export default defineNuxtConfig({
   nitro: {
     preset: "node-cluster",
     compressPublicAssets: true,
+    timing: false,
   },
   sourcemap: {
     server: true,
