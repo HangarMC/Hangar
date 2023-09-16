@@ -1,6 +1,7 @@
 package io.papermc.hangar.security.annotations.ratelimit;
 
 import io.github.bucket4j.Bucket;
+import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.service.internal.BucketService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,15 +20,21 @@ public class RateLimitInterceptor implements HandlerInterceptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RateLimitInterceptor.class);
     private final BucketService bucketService;
+    private final HangarConfig hangarConfig;
 
     @Autowired
-    public RateLimitInterceptor(final BucketService bucketService) {
+    public RateLimitInterceptor(final BucketService bucketService, final HangarConfig hangarConfig) {
         this.bucketService = bucketService;
+        this.hangarConfig = hangarConfig;
     }
 
     @Override
     public boolean preHandle(final @NotNull HttpServletRequest request, final @NotNull HttpServletResponse response, final @NotNull Object handler) {
         if (!(handler instanceof HandlerMethod handlerMethod)) {
+            return true;
+        }
+
+        if (this.hangarConfig.isDisableRateLimiting()) {
             return true;
         }
 

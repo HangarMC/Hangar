@@ -24,6 +24,7 @@ public class HangarConfig {
     private List<String> licenses = new ArrayList<>();
     private boolean allowIndexing = true;
     private boolean disableJGroups = false;
+    private boolean disableRateLimiting = false;
 
     @NestedConfigurationProperty
     public UpdateTasksConfig updateTasks;
@@ -187,5 +188,13 @@ public class HangarConfig {
 
     public void setDisableJGroups(final boolean disableJGroups) {
         this.disableJGroups = disableJGroups;
+    }
+
+    public boolean isDisableRateLimiting() {
+        return this.disableRateLimiting;
+    }
+
+    public void setDisableRateLimiting(final boolean disableRateLimiting) {
+        this.disableRateLimiting = disableRateLimiting;
     }
 }

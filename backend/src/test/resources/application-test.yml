@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:tc:postgresql:14:///
+    url: jdbc:tc:postgresql:15:///
     username: ""
     password: ""
 
@@ -10,14 +10,9 @@ spring:
     locations:
       - classpath:db/test_migrations
       - classpath:db/migration
-      - classpath:db/dummy_data
     baseline-version: 0.0
 
-fake-user:
-  enabled: true
-  username: test
-  email: test@papermc.io
-
 hangar:
+  disable-ratelimiting: true
   storage:
     type: "local"

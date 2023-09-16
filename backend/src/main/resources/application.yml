@@ -61,6 +61,7 @@ hangar:
   ga-code: "UA-38006759-9"
   allow-indexing: true
   disable-jgroups: true
+  disable-ratelimiting: false
 
   licenses:
     - "Unspecified"

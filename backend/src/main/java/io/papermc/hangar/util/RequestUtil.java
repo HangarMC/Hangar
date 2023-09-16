@@ -1,5 +1,6 @@
 package io.papermc.hangar.util;
 
+import io.papermc.hangar.HangarApplication;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,6 +16,10 @@ public final class RequestUtil {
     private static final String ATTR = "HangarIP";
 
     public static String getRemoteAddress(final HttpServletRequest request) {
+        if (HangarApplication.TEST_MODE) {
+            return "::1";
+        }
+
         final Object attribute = request.getAttribute(ATTR);
         if (attribute instanceof String ip) {
             return ip;

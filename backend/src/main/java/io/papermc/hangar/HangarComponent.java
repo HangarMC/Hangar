@@ -54,6 +54,9 @@ public abstract class HangarComponent {
     }
 
     private MemoizingSupplier<Optional<HangarPrincipal>> getHangarPrincipal0() {
+        if (HangarApplication.TEST_MODE) {
+            return MemoizingSupplier.of(() -> HangarApplication.TEST_PRINCIPAL);
+        }
         return MemoizingSupplier.of(() -> Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
             .filter(HangarAuthenticationToken.class::isInstance)
             .map(HangarAuthenticationToken.class::cast)

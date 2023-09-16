@@ -38,9 +38,6 @@ public class PagesController extends HangarComponent implements IPagesController
     @ResponseStatus(HttpStatus.OK)
     public String getMainPage(final String slug) {
         final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(slug, "");
-        if (projectPage == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
         return projectPage.getContents();
     }
 
@@ -51,9 +48,6 @@ public class PagesController extends HangarComponent implements IPagesController
     @ResponseStatus(HttpStatus.OK)
     public String getPage(final String slug, final String path) {
         final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(slug, path);
-        if (projectPage == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
         return projectPage.getContents();
     }
 
@@ -73,10 +67,6 @@ public class PagesController extends HangarComponent implements IPagesController
     @ResponseStatus(HttpStatus.OK)
     public void editPage(final String slug, final PageEditForm pageEditForm) {
         final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(slug, pageEditForm.path());
-        if (projectPage == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND, "Project page not found");
-        }
-
         this.projectPageService.saveProjectPage(projectPage.getProjectId(), projectPage.getId(), pageEditForm.content());
     }
 }

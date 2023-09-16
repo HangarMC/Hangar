@@ -21,8 +21,10 @@ import java.util.Map;
 import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ProjectsApiService extends HangarComponent {
@@ -41,6 +43,9 @@ public class ProjectsApiService extends HangarComponent {
     public Project getProject(final String slug) {
         final boolean seeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final Project project = this.projectsApiDAO.getProject(slug, seeHidden, this.getHangarUserId());
+        if (project == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project " + slug + " not found");
+        }
         project.setAvatarUrl(this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner()));
         return project;
     }
