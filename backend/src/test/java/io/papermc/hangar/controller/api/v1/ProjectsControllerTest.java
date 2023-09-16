@@ -5,6 +5,7 @@ import io.papermc.hangar.controller.api.v1.helper.TestData;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
 import java.util.Set;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.Matchers.*;
@@ -40,18 +41,21 @@ class ProjectsControllerTest extends ControllerTest {
     }
 
     @Test
+    @Disabled
     void testGetStats() throws Exception {
         // TODO
         throw new RuntimeException();
     }
 
     @Test
+    @Disabled
     void testGetStargazers() throws Exception {
         // TODO
         throw new RuntimeException();
     }
 
     @Test
+    @Disabled
     void testGetWatchers() throws Exception {
         // TODO
         throw new RuntimeException();

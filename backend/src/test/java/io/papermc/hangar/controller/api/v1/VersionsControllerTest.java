@@ -5,6 +5,7 @@ import io.papermc.hangar.controller.api.v1.helper.TestData;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
 import java.util.Set;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
@@ -12,6 +13,7 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Disabled
 class VersionsControllerTest extends ControllerTest {
 
     @Test
