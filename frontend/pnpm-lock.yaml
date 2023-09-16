@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   hookable: 5.4.2
 
@@ -33,7 +37,7 @@ dependencies:
     version: 10.4.1(vue@3.3.4)
   '@vueuse/integrations':
     specifier: 10.4.1
-    version: 10.4.1(axios@1.5.0)(jwt-decode@3.1.2)(nprogress@0.2.0)(universal-cookie@4.0.4)(vue@3.3.4)
+    version: 10.4.1(axios@1.5.0)(jwt-decode@3.1.2)(nprogress@0.2.0)(universal-cookie@6.1.1)(vue@3.3.4)
   accept-language-parser:
     specifier: 1.5.0
     version: 1.5.0
@@ -98,8 +102,8 @@ dependencies:
     specifier: 5.7.1
     version: 5.7.1
   universal-cookie:
-    specifier: 4.0.4
-    version: 4.0.4
+    specifier: 6.1.1
+    version: 6.1.1
   vue:
     specifier: 3.3.4
     version: 3.3.4
@@ -1729,8 +1733,8 @@ packages:
       '@types/tern': 0.23.5
     dev: false
 
-  /@types/cookie@0.3.3:
-    resolution: {integrity: sha512-LKVP3cgXBT9RYj+t+9FDKwS5tdI+rPBXaNSkma7hvqy35lc7mAokC2zsqWJH0LaqIt3B962nuYI77hsJoT1gow==}
+  /@types/cookie@0.5.2:
+    resolution: {integrity: sha512-DBpRoJGKJZn7RY92dPrgoMew8xCWc2P71beqsjyhEI/Ds9mOyVmBwtekyfhpwFIVt1WrxTonFifiOZ62V8CnNA==}
     dev: false
 
   /@types/debug@4.1.8:
@@ -2565,7 +2569,7 @@ packages:
       - '@vue/composition-api'
       - vue
 
-  /@vueuse/integrations@10.4.1(axios@1.5.0)(jwt-decode@3.1.2)(nprogress@0.2.0)(universal-cookie@4.0.4)(vue@3.3.4):
+  /@vueuse/integrations@10.4.1(axios@1.5.0)(jwt-decode@3.1.2)(nprogress@0.2.0)(universal-cookie@6.1.1)(vue@3.3.4):
     resolution: {integrity: sha512-uRBPyG5Lxoh1A/J+boiioPT3ELEAPEo4t8W6Mr4yTKIQBeW/FcbsotZNPr4k9uz+3QEksMmflWloS9wCnypM7g==}
     peerDependencies:
       async-validator: '*'
@@ -2611,7 +2615,7 @@ packages:
       axios: 1.5.0(debug@4.3.4)
       jwt-decode: 3.1.2
       nprogress: 0.2.0
-      universal-cookie: 4.0.4
+      universal-cookie: 6.1.1
       vue-demi: 0.14.6(vue@3.3.4)
     transitivePeerDependencies:
       - '@vue/composition-api'
@@ -3371,8 +3375,8 @@ packages:
     resolution: {integrity: sha512-mWYvfOLrfEc996hlKcdABeIiPHUPC6DM2QYZdGGOvhOTbA3tjm2eBwqlJpoFdjC89NI4Qt6h0Pu06Mp+1Pj5OQ==}
     dev: true
 
-  /cookie@0.4.2:
-    resolution: {integrity: sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==}
+  /cookie@0.5.0:
+    resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
     engines: {node: '>= 0.6'}
     dev: false
 
@@ -7799,11 +7803,11 @@ packages:
     transitivePeerDependencies:
       - rollup
 
-  /universal-cookie@4.0.4:
-    resolution: {integrity: sha512-lbRVHoOMtItjWbM7TwDLdl8wug7izB0tq3/YVKhT/ahB4VDvWMyvnADfnJI8y6fSvsjh51Ix7lTGC6Tn4rMPhw==}
+  /universal-cookie@6.1.1:
+    resolution: {integrity: sha512-33S9x3CpdUnnjwTNs2Fgc41WGve2tdLtvaK2kPSbZRc5pGpz2vQFbRWMxlATsxNNe/Cy8SzmnmbuBM85jpZPtA==}
     dependencies:
-      '@types/cookie': 0.3.3
-      cookie: 0.4.2
+      '@types/cookie': 0.5.2
+      cookie: 0.5.0
     dev: false
 
   /universalify@0.2.0:
@@ -8647,7 +8651,3 @@ packages:
       compress-commons: 5.0.1
       readable-stream: 3.6.2
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
