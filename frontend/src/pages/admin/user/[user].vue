@@ -4,7 +4,7 @@ import { User } from "hangar-api";
 import { useRoute, useRouter } from "vue-router";
 import { OrganizationRoleTable } from "hangar-internal";
 import { computed, ref } from "vue";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { AxiosError } from "axios";
 import PageTitle from "~/components/design/PageTitle.vue";
 import Link from "~/components/design/Link.vue";

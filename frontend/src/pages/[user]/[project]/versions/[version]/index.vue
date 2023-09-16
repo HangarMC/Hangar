@@ -4,7 +4,7 @@ import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { User } from "hangar-api";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { AxiosError } from "axios";
 import { NamedPermission, Platform, ReviewState, Visibility, PinnedStatus } from "~/types/enums";
 import { useBackendData } from "~/store/backendData";

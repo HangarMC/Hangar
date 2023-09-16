@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRoute } from "vue-router";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { computed } from "vue";
 import { NuxtError } from "nuxt/app";
 import { useI18n } from "vue-i18n";

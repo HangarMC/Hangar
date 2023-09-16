@@ -2,7 +2,7 @@
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { ref } from "vue";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import PageTitle from "~/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
 import Flags from "~/components/Flags.vue";

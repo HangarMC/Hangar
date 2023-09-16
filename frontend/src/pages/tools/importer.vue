@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { useRoute } from "vue-router";
 import { computed, ref } from "vue";
 import { NewProjectForm } from "hangar-internal";

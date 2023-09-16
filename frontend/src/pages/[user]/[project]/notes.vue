@@ -3,7 +3,7 @@ import { User } from "hangar-api";
 import { useI18n } from "vue-i18n";
 import { HangarProject, Note } from "hangar-internal";
 import { ref } from "vue";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { useRoute } from "vue-router";
 import Card from "~/components/design/Card.vue";
 import Link from "~/components/design/Link.vue";

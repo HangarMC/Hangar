@@ -2,7 +2,7 @@
 import "./assets/css/main.css";
 // eslint-disable-next-line import/no-unresolved
 import "uno.css";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { computed } from "vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import { settingsLog } from "~/composables/useLog";

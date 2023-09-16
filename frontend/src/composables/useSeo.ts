@@ -1,7 +1,7 @@
-import type { HeadObject } from "@vueuse/head";
+import type { HeadObject } from "@unhead/vue";
 import type { TranslateResult } from "vue-i18n";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
-import { useSeoMeta } from "@vueuse/head";
+import { useSeoMeta } from "@unhead/vue";
 import { useConfig } from "~/composables/useConfig";
 
 export function useSeo(

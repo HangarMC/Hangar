@@ -26,7 +26,7 @@
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
         <!-- dependency management -->
-        <jdbi3-bom.version>3.41.0</jdbi3-bom.version>
+        <jdbi3-bom.version>3.41.1</jdbi3-bom.version>
         <configurate.version>4.1.2</configurate.version>
         <spring-cloud-aws.version>3.0.2</spring-cloud-aws.version>
 
@@ -42,7 +42,7 @@
         <jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
         <caffeine.version>3.1.8</caffeine.version>
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
-        <jgroups.version>5.2.18.Final</jgroups.version>
+        <jgroups.version>5.3.0.Final</jgroups.version>
         <jgroups-kube.version>2.0.1.Final</jgroups-kube.version>
         <totp.version>1.7.2-SNAPSHOT</totp.version>
         <webp.version>0.1.6</webp.version>

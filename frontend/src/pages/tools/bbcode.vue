@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { useRoute } from "vue-router";
 import Button from "~/components/design/Button.vue";
 import Markdown from "~/components/Markdown.vue";

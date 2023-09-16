@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { useSeo } from "~/composables/useSeo";
 import Markdown from "~/components/Markdown.vue";
 

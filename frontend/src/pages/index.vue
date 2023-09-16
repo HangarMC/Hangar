@@ -2,7 +2,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
 import { computed, isRef, Ref, ref, watch } from "vue";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { useRoute, useRouter } from "vue-router";
 import { PaginatedResult, Project } from "hangar-api";
 import { PlatformVersion } from "hangar-internal";

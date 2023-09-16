@@ -2,7 +2,7 @@
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { FlagActivity, ReviewActivity } from "hangar-internal";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import PageTitle from "~/components/design/PageTitle.vue";

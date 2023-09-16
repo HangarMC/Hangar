@@ -4,7 +4,7 @@ import { PaginatedResult, Version } from "hangar-api";
 import { computed, reactive, Ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { HangarProject } from "hangar-internal";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import Link from "~/components/design/Link.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission, Platform, Visibility } from "~/types/enums";

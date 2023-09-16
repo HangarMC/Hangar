@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { computed, ref } from "vue";
 import { useStaff } from "~/composables/useApiHelper";
 import SortableTable from "~/components/SortableTable.vue";

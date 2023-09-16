@@ -2,7 +2,7 @@
 import { HangarProject, HangarProjectPage } from "hangar-internal";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { inject } from "vue";
 import { useProjectPage } from "~/composables/useProjectPage";
 import { useSeo } from "~/composables/useSeo";

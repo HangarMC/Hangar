@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { useSeo } from "~/composables/useSeo";

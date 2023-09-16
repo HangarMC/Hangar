@@ -3,7 +3,7 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { ref, watch } from "vue";
 import { LineChartData, LineChartOptions, FixedScaleAxis } from "chartist";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { fromISOString, toISODateString } from "~/composables/useDate";
 import { useInternalApi } from "~/composables/useApi";

@@ -3,7 +3,7 @@ import { ProjectSettingsForm, NewProjectForm } from "hangar-internal";
 import { computed, type Ref, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { useVuelidate } from "@vuelidate/core";
 import { ProjectCategory, Tag } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";

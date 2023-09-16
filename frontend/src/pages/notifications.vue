@@ -3,7 +3,7 @@ import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { HangarNotification, Invite } from "hangar-internal";
 import { computed, ref, type Ref } from "vue";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { PaginatedResult } from "hangar-api";
 import { useInvites, useNotifications, useReadNotifications, useUnreadNotifications } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";

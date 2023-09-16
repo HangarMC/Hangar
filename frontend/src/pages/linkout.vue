@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from "vue-router";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { useI18n } from "vue-i18n";
 import { useLocalStorage } from "@vueuse/core";
 import { computed } from "vue";

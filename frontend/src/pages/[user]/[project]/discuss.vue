@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { useRoute } from "vue-router";
 import { HangarProject } from "hangar-internal";
 import { useSeo } from "~/composables/useSeo";

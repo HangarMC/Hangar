@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { computed, ref } from "vue";
 import { PaginatedResult, User } from "hangar-api";
 import PageTitle from "~/components/design/PageTitle.vue";

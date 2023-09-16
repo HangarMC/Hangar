@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { PaginatedResult, Project, User } from "hangar-api";
 import { computed, ref } from "vue";
 import { LoggedAction } from "hangar-internal";

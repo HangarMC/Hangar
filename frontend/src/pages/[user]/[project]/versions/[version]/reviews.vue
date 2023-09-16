@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { useRoute } from "vue-router";
 import { HangarProject, HangarReview, HangarReviewMessage, HangarVersion, IPlatform } from "hangar-internal";
 import { useI18n } from "vue-i18n";

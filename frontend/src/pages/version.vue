@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { useRoute } from "vue-router";
 import PageTitle from "~/components/design/PageTitle.vue";
 import Link from "~/components/design/Link.vue";

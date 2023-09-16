@@ -2,7 +2,7 @@
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { Ref, ref } from "vue";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { PlatformVersion } from "hangar-internal";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useBackendData } from "~/store/backendData";

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ProjectApproval } from "hangar-internal";
 import { useI18n } from "vue-i18n";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 import { useRoute } from "vue-router";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
