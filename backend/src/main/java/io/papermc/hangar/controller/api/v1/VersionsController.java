@@ -91,8 +91,8 @@ public class VersionsController implements IVersionsController {
 
     @Override
     @RateLimit(overdraft = 10, refillTokens = 2)
-    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#slug, #versionString, #platform}")
-    public ResponseEntity<?> downloadVersion(final String slug, final String versionString, final Platform platform, final HttpServletResponse response) {
-        return this.downloadService.downloadVersion(slug, versionString, platform);
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#slug, #version, #platform}")
+    public ResponseEntity<?> downloadVersion(final String slug, final String version, final Platform platform, final HttpServletResponse response) {
+        return this.downloadService.downloadVersion(slug, version, platform);
     }
 }

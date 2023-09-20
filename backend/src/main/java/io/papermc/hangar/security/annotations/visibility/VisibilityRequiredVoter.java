@@ -28,7 +28,7 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
     public int vote(final Authentication authentication, final MethodInvocation method, final @NotNull VisibilityRequiredMetadataExtractor.VisibilityRequiredAttribute attribute) {
         final Object[] arguments = attribute.expression().getValue(this.getMethodEvaluationContext(method), Object[].class);
         if (arguments == null || !attribute.type().getArgCount().contains(arguments.length)) {
-            throw new IllegalStateException("Bad annotation configuration");
+            throw new IllegalStateException("Bad annotation configuration on " + method.getMethod().getDeclaringClass().getName() + "#" + method.getMethod().getName());
         }
         this.logger.debug("Resolved arguments: {}", Arrays.toString(arguments));
         switch (attribute.type()) {
@@ -47,7 +47,7 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
             case VERSION:
                 if (arguments.length == 1 && this.versionService.getProjectVersionTable((long) arguments[0]) != null) {
                     return ACCESS_GRANTED;
-                } else {
+                } else if (arguments.length == 3) {
                     if (this.versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1]) != null) { // TODO is platform needed here?
                         return ACCESS_GRANTED;
                     } else {

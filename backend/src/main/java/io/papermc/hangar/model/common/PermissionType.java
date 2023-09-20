@@ -7,7 +7,7 @@ import java.util.Set;
 public enum PermissionType {
     GLOBAL("global", 0),
 
-    PROJECT("project", 1, 2),
+    PROJECT("project", 1),
 
     ORGANIZATION("organization", 1);
 

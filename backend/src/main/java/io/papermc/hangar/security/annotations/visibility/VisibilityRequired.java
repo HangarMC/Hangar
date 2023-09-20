@@ -31,8 +31,8 @@ public @interface VisibilityRequired {
     String args();
 
     enum Type {
-        PROJECT(1, 2),
-        VERSION(1, 4);
+        PROJECT(1),
+        VERSION(1, 3);
 
         private final Set<Integer> argCount;
 
