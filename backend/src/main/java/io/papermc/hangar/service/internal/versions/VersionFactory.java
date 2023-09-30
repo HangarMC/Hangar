@@ -366,7 +366,7 @@ public class VersionFactory extends HangarComponent {
                     // Hangar project dependency
                     final ProjectTable depProjectTable = this.projectService.getProjectTable(pluginDependency.getName());
                     if (depProjectTable == null) {
-                        throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPluginDependencyNamespace");
+                        throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPluginDependencyNamespace", pluginDependency.getName());
                     }
                     depProjectId = depProjectTable.getProjectId();
                 }

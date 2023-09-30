@@ -505,7 +505,7 @@
         "unknown": "An unknown error has occurred",
         "incomplete": "Plugin file missing {0}",
         "noDescription": "Must have a description",
-        "invalidPluginDependencyNamespace": "Declared plugin dependency has an invalid project namespace",
+        "invalidPluginDependencyNamespace": "Plugin dependency {0} does not exist on Hangar",
         "invalidName": "Invalid version name",
         "channel": {
           "noName": "Must have a channel name specified",
