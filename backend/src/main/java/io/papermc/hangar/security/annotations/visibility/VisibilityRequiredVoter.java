@@ -41,19 +41,19 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
                     } else if (this.projectService.getProjectTable((long) arguments[0]) != null) {
                         return ACCESS_GRANTED;
                     }
-                } else {
-                    return ACCESS_DENIED;
                 }
+                return ACCESS_DENIED;
             case VERSION:
-                if (arguments.length == 1 && this.versionService.getProjectVersionTable((long) arguments[0]) != null) {
-                    return ACCESS_GRANTED;
+                if (arguments.length == 1) {
+                    if (this.versionService.getProjectVersionTable((long) arguments[0]) != null) {
+                        return ACCESS_GRANTED;
+                    }
                 } else if (arguments.length == 3) {
                     if (this.versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1]) != null) { // TODO is platform needed here?
                         return ACCESS_GRANTED;
-                    } else {
-                        return ACCESS_DENIED;
                     }
                 }
+                return ACCESS_DENIED;
         }
         return ACCESS_ABSTAIN;
     }
