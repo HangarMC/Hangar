@@ -7,7 +7,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
-import static io.papermc.hangar.components.query.QueryHelper.EMPTY;
+import static io.papermc.hangar.components.query.QueryHelper.avatarUrl;
 import static io.papermc.hangar.components.query.QueryHelper.join;
 import static io.papermc.hangar.components.query.QueryHelper.query;
 
@@ -21,7 +21,6 @@ public class QueryMappings {
     }
 
     // queries
-
     @QueryMapping
     public Object projectBySlug(final DataFetchingEnvironment environment) {
         return query(environment, "projects", "WHERE projects.slug = :slug");
@@ -38,7 +37,6 @@ public class QueryMappings {
     }
 
     // joins
-
     @SchemaMapping(typeName = "User", field = "projects")
     public Object userProjects(final DataFetchingEnvironment environment) {
         return join(environment, "projects", "projects", "owner_id", "id");
@@ -50,19 +48,14 @@ public class QueryMappings {
     }
 
     // special schemas
-
     @SchemaMapping(typeName = "Project", field = "avatarUrl")
     public Object projectAvatarUrl(final DataFetchingEnvironment environment) {
-        final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
-        final String parentTable = PrefixUtil.getParentTable(environment.getExecutionStepInfo(), queryBuilder);
-        final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
-        final String avatarVersion = STR."ext_\{parentAlias.replace("_", "")}avatarversion";
-        final String projectId = STR."ext_\{parentAlias.replace("_", "")}projectid";
-        queryBuilder.fields.add(STR."\{parentAlias}avatar.version AS \{avatarVersion}");
-        queryBuilder.fields.add(STR."\{parentTable}id AS \{projectId}");
-        queryBuilder.joins.add(STR."JOIN avatars \{parentAlias}avatar ON \{parentAlias}avatar.type = 'project' AND \{parentAlias}avatar.subject = \{parentTable}id::varchar");
-        queryBuilder.resolver.put(parentAlias + "avatarUrl", (r) -> this.fileService.getAvatarUrl(AvatarService.PROJECT, String.valueOf(r.get(projectId)), (Integer) r.get(avatarVersion)));
-        return EMPTY;
+        return avatarUrl(environment, this.fileService, AvatarService.PROJECT);
+    }
+
+    @SchemaMapping(typeName = "User", field = "avatarUrl")
+    public Object userUrl(final DataFetchingEnvironment environment) {
+        return avatarUrl(environment, this.fileService, AvatarService.USER);
     }
 
     @SchemaMapping(typeName = "Project", field = "namespace")
