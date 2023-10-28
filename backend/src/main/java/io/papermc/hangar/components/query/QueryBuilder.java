@@ -24,7 +24,7 @@ public class QueryBuilder {
         return STR."""
            SELECT
 
-           \{this.fields.stream().reduce((a, b) -> a + ",\n" + b).orElse("")}
+           \{this.fields.stream().sorted(Comparator.comparing(String::length)).reduce((a, b) -> a + ",\n" + b).orElse("")}
 
            \{this.from}
 
@@ -46,7 +46,7 @@ public class QueryBuilder {
 
                 // then run the resolvers
                 for (final var entry : this.resolver.entrySet()) {
-                    outputMap.put(entry.getKey(), entry.getValue().apply(inputMap));
+                    inputMap.put(entry.getKey(), entry.getValue().apply(inputMap));
                 }
 
                 // then clean it up into a tree

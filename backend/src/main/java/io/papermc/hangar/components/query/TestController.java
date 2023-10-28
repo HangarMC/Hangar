@@ -106,12 +106,14 @@ public class TestController {
     @SchemaMapping(typeName = "Project", field = "avatarUrl")
     public Object projectAvatarUrl(final DataFetchingEnvironment environment) {
         final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
+        final String parentTable = PrefixUtil.getParentTable(environment.getExecutionStepInfo(), queryBuilder);
         final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
-        queryBuilder.fields.add("avatar.version AS ext_avatarversion");
-        queryBuilder.fields.add("project.id AS ext_projectid");
-        // TODO needs prefixes
-        queryBuilder.joins.add("JOIN avatars avatar ON avatar.type = 'project' AND avatar.subject = project.id::varchar");
-        queryBuilder.resolver.put(parentAlias + "avatarUrl", (r) -> this.fileService.getAvatarUrl(AvatarService.PROJECT, String.valueOf(r.get("ext_projectid")), (Integer) r.get("ext_avatarversion")));
+        final String avatarVersion = STR."ext_\{parentAlias.replace("_", "")}avatarversion";
+        final String projectId = STR."ext_\{parentAlias.replace("_", "")}projectid";
+        queryBuilder.fields.add(STR."\{parentAlias}avatar.version AS \{avatarVersion}");
+        queryBuilder.fields.add(STR."\{parentTable}id AS \{projectId}");
+        queryBuilder.joins.add(STR."JOIN avatars \{parentAlias}avatar ON \{parentAlias}avatar.type = 'project' AND \{parentAlias}avatar.subject = \{parentTable}id::varchar");
+        queryBuilder.resolver.put(parentAlias + "avatarUrl", (r) -> this.fileService.getAvatarUrl(AvatarService.PROJECT, String.valueOf(r.get(projectId)), (Integer) r.get(avatarVersion)));
         return EMPTY;
     }
 
