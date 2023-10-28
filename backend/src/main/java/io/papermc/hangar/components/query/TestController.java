@@ -7,14 +7,12 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQLError;
-import graphql.execution.ExecutionStepInfo;
 import graphql.execution.instrumentation.Instrumentation;
 import graphql.execution.instrumentation.InstrumentationState;
 import graphql.execution.instrumentation.parameters.InstrumentationExecutionParameters;
 import graphql.execution.instrumentation.parameters.InstrumentationFieldFetchParameters;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.PropertyDataFetcher;
@@ -22,14 +20,14 @@ import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.service.internal.file.FileService;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
+import java.util.concurrent.TimeUnit;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.SqlStatements;
 import org.jetbrains.annotations.NotNull;
@@ -53,6 +51,7 @@ public class TestController {
         this.jdbi = jdbi;
         this.fileService = fileService;
 
+        // TODO fix me
         jdbi.getConfig(SqlStatements.class).setUnusedBindingAllowed(true);
     }
 
@@ -89,8 +88,8 @@ public class TestController {
     @SchemaMapping(typeName = "User", field = "projects")
     public Object userProjects(final DataFetchingEnvironment environment) {
         final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
-        final String parentTable = this.getParentTable(environment.getExecutionStepInfo(), queryBuilder);
-        final String parentAlias = this.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
+        final String parentTable = PrefixUtil.getParentTable(environment.getExecutionStepInfo(), queryBuilder);
+        final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
         queryBuilder.joins.add(STR."JOIN projects \{parentAlias}projects ON \{parentAlias}projects.owner_id = \{parentTable}id");
         return List.of(EMPTY);
     }
@@ -98,8 +97,8 @@ public class TestController {
     @SchemaMapping(typeName = "Project", field = "owner")
     public Object projectOwner(final DataFetchingEnvironment environment) {
         final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
-        final String parentTable = this.getParentTable(environment.getExecutionStepInfo(), queryBuilder);
-        final String parentAlias = this.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
+        final String parentTable = PrefixUtil.getParentTable(environment.getExecutionStepInfo(), queryBuilder);
+        final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
         queryBuilder.joins.add(STR."JOIN users \{parentAlias}owner ON \{parentAlias}owner.id = \{parentTable}owner_id");
         return EMPTY;
     }
@@ -107,7 +106,7 @@ public class TestController {
     @SchemaMapping(typeName = "Project", field = "avatarUrl")
     public Object projectAvatarUrl(final DataFetchingEnvironment environment) {
         final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
-        final String parentAlias = this.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
+        final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
         queryBuilder.fields.add("avatar.version AS ext_avatarversion");
         queryBuilder.fields.add("project.id AS ext_projectid");
         // TODO needs prefixes
@@ -119,8 +118,8 @@ public class TestController {
     @SchemaMapping(typeName = "Project", field = "namespace")
     public Object projectNamespace(final DataFetchingEnvironment environment) {
         final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
-        final String parentAlias = this.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
-        final String parentTable = this.getParentTable(environment.getExecutionStepInfo(), queryBuilder);
+        final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
+        final String parentTable = PrefixUtil.getParentTable(environment.getExecutionStepInfo(), queryBuilder);
         if (environment.getSelectionSet().contains("owner")) {
             queryBuilder.fields.add(STR."\{parentTable}owner_name AS \{parentAlias}namespace_owner");
         }
@@ -128,70 +127,6 @@ public class TestController {
             queryBuilder.fields.add(STR."\{parentTable}slug AS \{parentAlias}namespace_slug");
         }
         return null; // no need to dig deeper
-    }
-
-    @Bean
-    public SimpleModule dum() {
-        final SimpleModule module = new SimpleModule();
-        module.addSerializer(new StdSerializer<>(PgArray.class) {
-
-            @Override
-            public void serialize(final PgArray value, final JsonGenerator gen, final SerializerProvider provider) throws IOException {
-                gen.writeStartArray();
-                final Object array;
-                try {
-                    array = value.getArray();
-                } catch (final SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                if (array instanceof final Object[] arr) {
-                    for (final Object o : arr) {
-                        gen.writeObject(o);
-                    }
-                } else if (array instanceof final Iterable<?> it) {
-                    for (final Object o : it) {
-                        gen.writeObject(o);
-                    }
-                } else {
-                    throw new RuntimeException("Unknown array type: " + array.getClass());
-                }
-                gen.writeEndArray();
-            }
-        });
-        return module;
-    }
-
-
-    private String getParentAlias(final ExecutionStepInfo info, final QueryBuilder queryBuilder) {
-        final ExecutionStepInfo parent = info.getParent();
-        if (parent == null || parent.getObjectType() == null) {
-            return queryBuilder.rootTable + "_";
-        } else if (parent.getObjectType().getName().equals("Query")) {
-            return queryBuilder.rootTable + "_";
-        } else if (parent.getType() instanceof GraphQLList) {
-            // skip lists, else we would match them twice
-            return this.getParentTable(parent, queryBuilder, true);
-        } else {
-            return this.getParentAlias(parent, queryBuilder) + parent.getField().getName() + "_";
-        }
-    }
-
-    private String getParentTable(final ExecutionStepInfo info, final QueryBuilder queryBuilder) {
-        return this.getParentTable(info, queryBuilder, false);
-    }
-
-    private String getParentTable(final ExecutionStepInfo info, final QueryBuilder queryBuilder, final boolean deep) {
-        final ExecutionStepInfo parent = info.getParent();
-        if (parent == null || parent.getObjectType() == null) {
-            return "";
-        } else if (parent.getType() instanceof GraphQLList) {
-            // skip lists, else we would match them twice
-            return this.getParentTable(parent, queryBuilder, true);
-        } else if (parent.getObjectType().getName().equals("Query")) {
-            return queryBuilder.rootTable + (deep ? "_" : ".");
-        } else {
-            return this.getParentTable(parent, queryBuilder, true) + parent.getField().getName() + (deep ? "_" : ".");
-        }
     }
 
     @Bean
@@ -206,6 +141,7 @@ public class TestController {
             @Override
             public @NotNull ExecutionInput instrumentExecutionInput(final ExecutionInput executionInput, final InstrumentationExecutionParameters parameters, final InstrumentationState state) {
                 System.out.println("start!");
+                parameters.getGraphQLContext().put("startTime", LocalDateTime.now());
                 parameters.getGraphQLContext().put("queryBuilder", new QueryBuilder());
                 return Instrumentation.super.instrumentExecutionInput(executionInput, parameters, state);
             }
@@ -216,8 +152,8 @@ public class TestController {
                 // replace the default property data fetcher with our own
                 if (dataFetcher instanceof final PropertyDataFetcher<?> propertyDataFetcher) {
                     final QueryBuilder queryBuilder = parameters.getEnvironment().getGraphQlContext().get("queryBuilder");
-                    final String parentAlias = TestController.this.getParentAlias(parameters.getEnvironment().getExecutionStepInfo(), queryBuilder);
-                    final String parentTable = TestController.this.getParentTable(parameters.getEnvironment().getExecutionStepInfo(), queryBuilder);
+                    final String parentAlias = PrefixUtil.getParentAlias(parameters.getEnvironment().getExecutionStepInfo(), queryBuilder);
+                    final String parentTable = PrefixUtil.getParentTable(parameters.getEnvironment().getExecutionStepInfo(), queryBuilder);
                     queryBuilder.fields.add(STR."\{parentTable}\{propertyDataFetcher.getPropertyName()} AS \{parentAlias}\{propertyDataFetcher.getPropertyName()}");
 
                     // find return type
@@ -240,56 +176,25 @@ public class TestController {
                     return Instrumentation.super.instrumentExecutionResult(executionResult, parameters, state);
                 }
 
-                // todo sorting the joins by length is a hack to make sure we join the tables in the right order
-                final String sql = STR."""
-                        SELECT
+                final String sql = queryBuilder.buildSql();
 
-                        \{queryBuilder.fields.stream().reduce((a, b) -> a + ",\n" + b).orElse("")}
+                final LocalDateTime parseTime = LocalDateTime.now();
 
-                        \{queryBuilder.from}
-
-                        \{queryBuilder.joins.stream().sorted(Comparator.comparing(String::length)).reduce((a, b) -> a + "\n" + b).orElse("")}
-
-                        \{queryBuilder.condition};
-                        """;
                 try {
                     return CompletableFuture.completedFuture(TestController.this.jdbi.withHandle((handle -> {
-                        final var test = handle.select(sql)
-                            .bind("projectBySlug_slug", "Test") // todo: fix binds
-                            .mapToMap()
-                            .collectIntoList()
-                            .stream().map(inputMap -> {
-                                // first put in static fields
-                                final Map<String, Object> outputMap = new HashMap<>(queryBuilder.staticFields);
-                                Map<String, Object> currentMap = outputMap;
+                        final var result = queryBuilder.execute(handle, sql);
 
-                                // then run the resolvers
-                                for (final var entry : queryBuilder.resolver.entrySet()) {
-                                    outputMap.put(entry.getKey(), entry.getValue().apply(inputMap));
-                                }
-
-                                // then clean it up into a tree
-                                for (final String key : inputMap.keySet()) {
-                                    final String[] parts = key.split("_");
-                                    for (int i = 0; i < parts.length - 1; i++) {
-                                        final String part = parts[i];
-                                        if (!currentMap.containsKey(part)) {
-                                            currentMap.put(part, new HashMap<String, Object>());
-                                        }
-                                        currentMap = (Map<String, Object>) currentMap.get(part);
-                                    }
-                                    currentMap.put(parts[parts.length - 1], inputMap.get(key));
-                                    currentMap = outputMap;
-                                }
-
-                                return outputMap;
-                            }).toList();
-
+                        final LocalDateTime startTime = parameters.getGraphQLContext().get("startTime");
+                        final LocalDateTime endTime = LocalDateTime.now();
                         final var ext = Map.<Object, Object>of(
                             "sql", sql.split("\n"),
-                            "sql2", sql.replace("\n", " ")
+                            "sql2", sql.replace("\n", " "),
+                            "parseTime", Duration.between(startTime, parseTime).toMillis() + "ms",
+                            "executionTime", Duration.between(parseTime, endTime).toMillis() + "ms",
+                            "totalTime", Duration.between(startTime, endTime).toMillis()+ "ms"
                         );
-                        return ExecutionResult.newExecutionResult().data(test).extensions(ext).build();
+
+                        return ExecutionResult.newExecutionResult().data(result).extensions(ext).build();
                     })));
                 } catch (final Throwable e) {
                     // e.printStackTrace();
@@ -306,14 +211,4 @@ public class TestController {
         };
     }
 
-    // TODO we need one query builder per query mapping or use subqueries
-    class QueryBuilder {
-        String rootTable = "";
-        String from = "";
-        String condition = "";
-        Set<String> fields = new HashSet<>();
-        Set<String> joins = new HashSet<>();
-        Map<String, Function<Map<String, Object>, Object>> resolver = new HashMap<>();
-        Map<String, Object> staticFields = new HashMap<>();
-    }
 }
