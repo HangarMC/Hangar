@@ -15,6 +15,8 @@ type Project {
     visibility: String
     avatarUrl: String
     owner: User
+    homepage: ProjectPage
+    pages: [ProjectPage]
 }
 
 type User {
@@ -32,6 +34,17 @@ type User {
     social: String
     avatarUrl: String
     projects: [Project]
+}
+
+type ProjectPage {
+    id: Int
+    createdAt: String
+    project: Project
+    name: String
+    slug: String
+    contents: String
+    deletable: Boolean
+    parent: ProjectPage
 }
 
 type ProjectStats {

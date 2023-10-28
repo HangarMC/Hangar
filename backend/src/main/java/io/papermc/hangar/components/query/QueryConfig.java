@@ -108,11 +108,12 @@ public class QueryConfig {
                     })));
                 } catch (final Throwable e) {
                     // e.printStackTrace();
-                    final var error = Map.<String, Object>of(
-                        "message", e.getMessage().split("\n"),
-                        "sql", sql.split("\n"),
-                        "sql2", sql.replace("\n", " ")
-                    );
+
+                    final var error = LinkedHashMap.<String, Object>newLinkedHashMap(3);
+                    error.put("message", e.getMessage().split("\n"));
+                    error.put("sql", sql.split("\n"));
+                    error.put("sql2", sql.replace("\n", " "));
+
                     return CompletableFuture.completedFuture(ExecutionResult.newExecutionResult()
                         .addError(GraphQLError.newError().message("Dum").extensions(error).build())
                         .build());
