@@ -146,8 +146,8 @@ defineExpose({ dependencies, reset });
               <InputText
                 v-model.trim="dep.externalUrl"
                 :placeholder="t('version.new.form.externalUrl')"
-                :disabled="(dep.namespace !== null && Object.keys(dep.namespace).length !== 0) || noEditing"
-                :rules="dep.namespace !== null && Object.keys(dep.namespace).length !== 0 ? [] : [required(t('version.new.form.externalUrl'))]"
+                :disabled="(dep.namespace && Object.keys(dep.namespace).length !== 0) || noEditing"
+                :rules="dep.namespace && Object.keys(dep.namespace).length !== 0 ? [] : [required(t('version.new.form.externalUrl'))]"
                 clearable
                 @change="dep.namespace = null"
               />
