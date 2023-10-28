@@ -24,10 +24,13 @@ public final class QueryHelper {
         queryBuilder.condition = condition;
         return EMPTY_LIST;
     }
-
     public static List<Object> join(final DataFetchingEnvironment environment, String table, String alias, String fieldA, String fieldB) {
+        return join(environment, table, alias, fieldA, fieldB, null);
+    }
+
+    public static List<Object> join(final DataFetchingEnvironment environment, String table, String alias, String fieldA, String fieldB, String secondTable) {
         final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
-        final String parentTable = PrefixUtil.getParentTable(environment.getExecutionStepInfo(), queryBuilder);
+        final String parentTable = secondTable == null ? PrefixUtil.getParentTable(environment.getExecutionStepInfo(), queryBuilder) : secondTable;
         final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
         queryBuilder.joins.add(STR."JOIN \{table} \{parentAlias}\{alias} ON \{parentAlias}\{alias}.\{fieldA} = \{parentTable}\{fieldB}");
         return EMPTY_LIST;
