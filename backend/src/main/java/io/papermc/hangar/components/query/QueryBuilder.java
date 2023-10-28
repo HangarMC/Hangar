@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.statement.Query;
 
 // TODO we need one query builder per query mapping or use subqueries
 public class QueryBuilder {
@@ -34,9 +35,12 @@ public class QueryBuilder {
            """;
     }
 
-    public Object execute(final Handle handle, final String sql) {
-        return handle.select(sql)
-            .bind("projectBySlug_slug", "Test") // todo: fix binds
+    public Object execute(final Handle handle, final String sql, final Map<String, Object> variables) {
+        Query select = handle.select(sql);
+        for (final var entry : variables.entrySet()) {
+            select = select.bind(entry.getKey(), entry.getValue());
+        }
+        return select
             .mapToMap()
             .collectIntoList()
             .stream().map(inputMap -> {
@@ -62,6 +66,9 @@ public class QueryBuilder {
                     currentMap.put(parts[parts.length - 1], inputMap.get(key));
                     currentMap = outputMap;
                 }
+
+                // TODO cleanup ext
+                //outputMap.remove("ext");
 
                 return outputMap;
             }).toList();

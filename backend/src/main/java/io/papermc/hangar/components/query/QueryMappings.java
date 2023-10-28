@@ -3,13 +3,13 @@ package io.papermc.hangar.components.query;
 import graphql.schema.DataFetchingEnvironment;
 import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.service.internal.file.FileService;
-import java.util.List;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
-import static io.papermc.hangar.components.query.QueryHelper.*;
 import static io.papermc.hangar.components.query.QueryHelper.EMPTY;
+import static io.papermc.hangar.components.query.QueryHelper.join;
+import static io.papermc.hangar.components.query.QueryHelper.query;
 
 @Controller
 public class QueryMappings {
@@ -24,7 +24,7 @@ public class QueryMappings {
 
     @QueryMapping
     public Object projectBySlug(final DataFetchingEnvironment environment) {
-        return query(environment, "projects", "WHERE slug = :projectBySlug_slug");
+        return query(environment, "projects", "WHERE projects.slug = :slug");
     }
 
     @QueryMapping
