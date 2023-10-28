@@ -7,6 +7,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import static io.papermc.hangar.components.query.QueryHelper.EMPTY;
 import static io.papermc.hangar.components.query.QueryHelper.avatarUrl;
 import static io.papermc.hangar.components.query.QueryHelper.join;
 import static io.papermc.hangar.components.query.QueryHelper.query;
@@ -47,6 +48,11 @@ public class QueryMappings {
         return join(environment, "users", "owner", "id", "owner_id");
     }
 
+    @SchemaMapping(typeName = "Project", field = "pages")
+    public Object projectPages(final DataFetchingEnvironment environment) {
+        return join(environment, "project_pages", "pages", "project_id", "id");
+    }
+
     // special schemas
     @SchemaMapping(typeName = "Project", field = "avatarUrl")
     public Object projectAvatarUrl(final DataFetchingEnvironment environment) {
@@ -70,5 +76,14 @@ public class QueryMappings {
             queryBuilder.fields.add(STR."\{parentTable}slug AS \{parentAlias}namespace_slug");
         }
         return null; // no need to dig deeper
+    }
+
+    @SchemaMapping(typeName = "Project", field = "homepage")
+    public Object projectHomepage(final DataFetchingEnvironment environment) {
+        final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
+        final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo().getParent(), queryBuilder);
+        join(environment, "project_home_pages", "homepage_id", "project_id", "id");
+        join(environment, "project_pages", "homepage", "id", "page_id", parentAlias + "homepage_id.");
+        return EMPTY;
     }
 }
