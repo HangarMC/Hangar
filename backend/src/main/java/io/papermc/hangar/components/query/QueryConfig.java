@@ -19,10 +19,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.statement.SqlStatements;
 import org.jetbrains.annotations.NotNull;
 import org.postgresql.jdbc.PgArray;
 import org.springframework.context.annotation.Bean;
@@ -37,9 +37,6 @@ public class QueryConfig {
 
     public QueryConfig(final Jdbi jdbi) {
         this.jdbi = jdbi;
-
-        // TODO fix me
-        jdbi.getConfig(SqlStatements.class).setUnusedBindingAllowed(true);
     }
 
     @Bean
@@ -95,17 +92,17 @@ public class QueryConfig {
 
                 try {
                     return CompletableFuture.completedFuture(QueryConfig.this.jdbi.withHandle((handle -> {
-                        final var result = queryBuilder.execute(handle, sql);
+                        final var result = queryBuilder.execute(handle, sql, parameters.getVariables());
 
                         final LocalDateTime startTime = parameters.getGraphQLContext().get("startTime");
                         final LocalDateTime endTime = LocalDateTime.now();
-                        final var ext = Map.<Object, Object>of(
-                            "sql", sql.split("\n"),
-                            "sql2", sql.replace("\n", " "),
-                            "parseTime", Duration.between(startTime, parseTime).toMillis() + "ms",
-                            "executionTime", Duration.between(parseTime, endTime).toMillis() + "ms",
-                            "totalTime", Duration.between(startTime, endTime).toMillis() + "ms"
-                        );
+
+                        final var ext = LinkedHashMap.newLinkedHashMap(5);
+                        ext.put("sql", sql.split("\n"));
+                        ext.put("sql2", sql.replace("\n", " "));
+                        ext.put("parseTime", Duration.between(startTime, parseTime).toMillis() + "ms");
+                        ext.put("executionTime", Duration.between(parseTime, endTime).toMillis() + "ms");
+                        ext.put("totalTime", Duration.between(startTime, endTime).toMillis() + "ms");
 
                         return ExecutionResult.newExecutionResult().data(result).extensions(ext).build();
                     })));
