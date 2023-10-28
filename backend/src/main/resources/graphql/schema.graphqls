@@ -1,0 +1,49 @@
+type Query {
+    projectBySlug(slug: String!): Project
+    projects: [Project]
+    users: [User]
+}
+
+type Project {
+    createdAt: String
+    id: Int
+    name: String
+    namespace: ProjectNamespace
+    stats: ProjectStats
+    category: String
+    lastUpdated: String
+    visibility: String
+    avatarUrl: String
+    owner: User
+}
+
+type User {
+    id: Int
+    uuid: String
+    createdAt: String
+    name: String
+    email: String
+    tagline: String
+    read_prompts: [Int]
+    locked: Boolean
+    language: String
+    theme: String
+    email_verified: Boolean
+    social: String
+    avatarUrl: String
+    projects: [Project]
+}
+
+type ProjectStats {
+    views: Int
+    downloads: Int
+    recentViews: Int
+    recentDownloads: Int
+    stars: Int
+    watchers: Int
+}
+
+type ProjectNamespace {
+    owner: String
+    slug: String
+}

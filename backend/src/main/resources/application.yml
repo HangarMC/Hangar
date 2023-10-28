@@ -41,6 +41,10 @@ spring:
       secrets:
         enableApi: true
 
+  graphql:
+    graphiql:
+      enabled: true
+
 springdoc:
   pathsToMatch: "/api/v1/**"
 
@@ -227,6 +231,7 @@ logging:
     io.papermc.hangar.service.internal.JobService: DEBUG
     io.papermc.hangar.config.WebConfig.LoggingInterceptor: DEBUG
     io.papermc.hangar.service.ReplicationService: DEBUG
+    # graphql: TRACE
     # org.springframework.cache: TRACE
     # org.springframework.beans: TRACE
     # io.papermc.hangar.security: TRACE
