@@ -189,7 +189,6 @@ class QueryMergerTest {
         compare(expected, QueryMerger.merge(input));
     }
 
-    // TODO idk whats going on here
     @Test
     void mergeDeep() throws JsonProcessingException {
         final List<Map<String, String>> input = new ArrayList<>();
