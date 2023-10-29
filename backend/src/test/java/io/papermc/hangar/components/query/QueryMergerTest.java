@@ -134,8 +134,6 @@ class QueryMergerTest {
         compare(expected, QueryMerger.merge(input));
     }
 
-    private static void compare(Map<String, Object> expected, Map<String, Object> output) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
     @Test
     void mergeNoPrimaryKeyNamespace() throws JsonProcessingException {
         final List<Map<String, String>> input = new ArrayList<>();
@@ -158,6 +156,82 @@ class QueryMergerTest {
         compare(expected, QueryMerger.merge(input));
     }
 
+    // TODO solve these by always adding PKs to query on join
+    @Test
+    void mergeNoPrimaryKey() throws JsonProcessingException {
+        final List<Map<String, String>> input = new ArrayList<>();
+        input.add(Map.of("projects_id", "1"));
+        input.add(Map.of("projects_id", "2"));
+
+        final Map<String, Object> expected = Map.of(
+            "projects", List.of(
+                Map.of("id", "1"),
+                Map.of("id", "2")
+            )
+        );
+
+        compare(expected, QueryMerger.merge(input));
+    }
+
+    @Test
+    void mergeNoPrimaryKey2() throws JsonProcessingException {
+        final List<Map<String, String>> input = new ArrayList<>();
+        input.add(Map.of("projects_id", "1", "projects_owner_name", "MiniDigger"));
+        input.add(Map.of("projects_id", "2", "projects_owner_name", "MiniDigger"));
+
+        final Map<String, Object> expected = Map.of(
+            "projects", List.of(
+                Map.of("id", "1", "owner", Map.of("name", "MiniDigger")),
+                Map.of("id", "2", "owner", Map.of("name", "MiniDigger"))
+            )
+        );
+
+        compare(expected, QueryMerger.merge(input));
+    }
+
+    // TODO idk whats going on here
+    @Test
+    void mergeDeep() throws JsonProcessingException {
+        final List<Map<String, String>> input = new ArrayList<>();
+        input.add(Map.of(
+            "projects_name", "Test",
+            "projects_owner_name", "MiniDigger",
+            "projects_owner_projects_name", "Test"
+        ));
+        input.add(Map.of(
+            "projects_name", "Test",
+            "projects_owner_name", "MiniDigger",
+            "projects_owner_projects_name", "Test2"
+        ));
+        input.add(Map.of(
+            "projects_name", "Test2",
+            "projects_owner_name", "MiniDigger",
+            "projects_owner_projects_name", "Test"
+        ));
+        input.add(Map.of(
+            "projects_name", "Test2",
+            "projects_owner_name", "MiniDigger",
+            "projects_owner_projects_name", "Test2"
+        ));
+
+        final Map<String, Object> expected = Map.of(
+            "projects", List.of(
+                Map.of("name", "Test", "owner", Map.of("name", "MiniDigger", "projects", List.of(
+                    Map.of("name", "Test"),
+                    Map.of("name", "Test2")
+                ))),
+                Map.of("name", "Test2", "owner", Map.of("name", "MiniDigger", "projects", List.of(
+                    Map.of("name", "Test"),
+                    Map.of("name", "Test2")
+                )))
+            )
+        );
+
+        compare(expected, QueryMerger.merge(input));
+    }
+
+    private static void compare(final Map<String, Object> expected, final Map<String, Object> output) throws JsonProcessingException {
+        final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
 
         final ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
