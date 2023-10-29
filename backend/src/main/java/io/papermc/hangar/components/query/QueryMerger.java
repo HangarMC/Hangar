@@ -82,10 +82,11 @@ public final class QueryMerger {
 
                 if (pkValue == null) {
                     System.out.println(prefix + "no primary key found: " + others);
-                    // no more nesting
+                    final Map<String, Object> map = new HashMap<>();
                     for (final String key : others.keySet()) {
-                        result.put(key, others.get(key));
+                        map.put(key, others.get(key));
                     }
+                    result.put(commonKey, map);
                 } else {
                     System.out.println(prefix + "others: " + others);
                     newInputs.computeIfAbsent(pkValue, _ -> new ArrayList<>()).add(others);
@@ -104,9 +105,12 @@ public final class QueryMerger {
         for (final String key : result.keySet()) {
             final Object entry = result.get(key);
             if (entry instanceof final Map map) {
-                if (key.equals("pages") || key.equals("projects")) { // TODO cheat
+                if (key.equals("namespace")) { // TODO cheat, these should stay a map
+                    continue;
+                } else if (key.equals("pages") || key.equals("projects")) { // TODO cheat, these should be a lis
                     result.put(key, map.values());
                 } else {
+                    // these should be a single value
                     result.put(key, map.values().stream().findFirst().orElseThrow());
                 }
             }
