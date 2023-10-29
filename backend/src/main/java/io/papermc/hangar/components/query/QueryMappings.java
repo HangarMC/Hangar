@@ -24,17 +24,17 @@ public class QueryMappings {
     // queries
     @QueryMapping
     public Object projectBySlug(final DataFetchingEnvironment environment) {
-        return query(environment, "projects", "WHERE projects.slug = :slug");
+        return query(environment, "projects", "projectBySlug", "WHERE projectBySlug.slug = :slug");
     }
 
     @QueryMapping
     public Object projects(final DataFetchingEnvironment environment) {
-        return query(environment, "projects");
+        return query(environment, "projects", "projects");
     }
 
     @QueryMapping
     public Object users(final DataFetchingEnvironment environment) {
-        return query(environment, "users");
+        return query(environment, "users", "users");
     }
 
     // joins
