@@ -74,7 +74,7 @@ public final class QueryMerger {
                         newResult = current.computeIfAbsent(pkValue, _ -> new HashMap<>());
                         newResult.put(pk, row.get(key));
                     } else {
-                        final String shortenedKey = key.replace(commonKey + "_", "");
+                        final String shortenedKey = key.replaceFirst(commonKey + "_", "");
                         System.out.println(prefix + "not primary key: " + shortenedKey);
                         others.put(shortenedKey, row.get(key));
                     }
