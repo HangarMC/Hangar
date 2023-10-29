@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -17,8 +18,7 @@ public class QueryBuilder {
     String condition = "";
     Set<String> fields = new HashSet<>();
     Set<String> joins = new LinkedHashSet<>();
-    Map<String, Function<Map<String, Object>, Object>> resolver = new HashMap<>();
-    Map<String, Object> staticFields = new HashMap<>();
+    Map<String, Function<Map<String, String>, String>> resolver = new HashMap<>();
 
     public String buildSql() {
         return STR."""
@@ -34,14 +34,37 @@ public class QueryBuilder {
            """;
     }
 
-    public Object execute(final Handle handle, final String sql, final Map<String, Object> variables) {
+    public List<Map<String, String>> execute(final Handle handle, final String sql, final Map<String, Object> variables) {
         Query select = handle.select(sql);
         // bind the arguments
         for (final var entry : variables.entrySet()) {
             select = select.bind(entry.getKey(), entry.getValue());
         }
 
-        // execute the query and merge the result
-        return QueryMerger.merge(select.mapToMap(String.class).collectIntoList());
+        // execute the query
+        return select.mapToMap(String.class).collectIntoList();
+    }
+
+    public void handleResolvers(final List<Map<String, String>> result) {
+        Set<String> keysToRemove = null;
+        for (final Map<String, String> inputMap : result) {
+            // run the resolvers
+            for (final var entry : this.resolver.entrySet()) {
+                inputMap.put(entry.getKey(), entry.getValue().apply(inputMap));
+            }
+            // first time: find the ext keys
+            if (keysToRemove == null) {
+                keysToRemove = new HashSet<>();
+                for (final String key : inputMap.keySet()) {
+                    if (key.startsWith("ext_")) {
+                        keysToRemove.add(key);
+                    }
+                }
+            }
+            // remove th ext keys
+            for (final String key : keysToRemove) {
+                inputMap.remove(key);
+            }
+        }
     }
 }

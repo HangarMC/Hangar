@@ -69,7 +69,7 @@ public class AvatarService extends HangarComponent {
                 throw new RuntimeException("Error saving default avatar", e);
             }
         }
-        this.defaultAvatarUrl = this.fileService.getAvatarUrl("default", "default", 0);
+        this.defaultAvatarUrl = this.fileService.getAvatarUrl("default", "default", "0");
         logger.info("Default avatar url is {}", this.defaultAvatarUrl);
     }
 
@@ -122,7 +122,7 @@ public class AvatarService extends HangarComponent {
                 return this.defaultAvatarUrl;
             }
         } else {
-            return this.fileService.getAvatarUrl(type, subject, table.getVersion());
+            return this.fileService.getAvatarUrl(type, subject, String.valueOf(table.getVersion()));
         }
     }
 

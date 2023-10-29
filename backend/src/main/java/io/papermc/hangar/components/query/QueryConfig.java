@@ -92,7 +92,15 @@ public class QueryConfig {
 
                 try {
                     return CompletableFuture.completedFuture(QueryConfig.this.jdbi.withHandle((handle -> {
-                        final var result = queryBuilder.execute(handle, sql, parameters.getVariables());
+                        final var resultList = queryBuilder.execute(handle, sql, parameters.getVariables());
+
+                        final LocalDateTime executionTime = LocalDateTime.now();
+
+                        // handle resolvers
+                        queryBuilder.handleResolvers(resultList);
+
+                        // merge the result
+                        final var result = QueryMerger.merge(resultList);
 
                         final LocalDateTime startTime = parameters.getGraphQLContext().get("startTime");
                         final LocalDateTime endTime = LocalDateTime.now();
@@ -101,16 +109,17 @@ public class QueryConfig {
                         ext.put("sql", sql.split("\n"));
                         ext.put("sql2", sql.replace("\n", " "));
                         ext.put("parseTime", Duration.between(startTime, parseTime).toMillis() + "ms");
-                        ext.put("executionTime", Duration.between(parseTime, endTime).toMillis() + "ms");
+                        ext.put("executionTime", Duration.between(parseTime, executionTime).toMillis() + "ms");
+                        ext.put("resolveTime", Duration.between(executionTime, endTime).toMillis() + "ms");
                         ext.put("totalTime", Duration.between(startTime, endTime).toMillis() + "ms");
 
                         return ExecutionResult.newExecutionResult().data(result).extensions(ext).build();
                     })));
                 } catch (final Throwable e) {
-                    // e.printStackTrace();
+                    e.printStackTrace();
 
                     final var error = LinkedHashMap.<String, Object>newLinkedHashMap(3);
-                    error.put("message", e.getMessage().split("\n"));
+                    error.put("message", e.getMessage() != null ? e.getMessage().split("\n") : "<null>");
                     error.put("sql", sql.split("\n"));
                     error.put("sql2", sql.replace("\n", " "));
 

@@ -103,7 +103,7 @@ public class LocalStorageFileService implements FileService {
     }
 
     @Override
-    public String getAvatarUrl(final String type, final String subject, final int version) {
+    public String getAvatarUrl(final String type, final String subject, final String version) {
         return this.hangarConfig.getBaseUrl() + "/api/internal/avatar/" + type + "/" + subject + ".webp?v=" + version;
     }
 }
