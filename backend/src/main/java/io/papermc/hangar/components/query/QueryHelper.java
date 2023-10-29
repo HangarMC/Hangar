@@ -13,22 +13,22 @@ public final class QueryHelper {
     private QueryHelper() {
     }
 
-    public static List<Object> query(final DataFetchingEnvironment environment, final String projects) {
-        return query(environment, projects, "");
+    public static List<Object> query(final DataFetchingEnvironment environment, final String rootTable, final String rootAlias) {
+        return query(environment, rootTable, rootAlias, "");
     }
 
-    public static List<Object> query(final DataFetchingEnvironment environment, final String projects, final String condition) {
+    public static List<Object> query(final DataFetchingEnvironment environment, final String rootTable, final String rootAlias, final String condition) {
         final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
-        queryBuilder.rootTable = projects;
-        queryBuilder.from = STR."FROM \{queryBuilder.rootTable}";
+        queryBuilder.rootTable = rootAlias;
+        queryBuilder.from = STR."FROM \{rootTable} \{rootAlias}";
         queryBuilder.condition = condition;
         return EMPTY_LIST;
     }
-    public static List<Object> join(final DataFetchingEnvironment environment, String table, String alias, String fieldA, String fieldB) {
+    public static List<Object> join(final DataFetchingEnvironment environment, final String table, final String alias, final String fieldA, final String fieldB) {
         return join(environment, table, alias, fieldA, fieldB, null);
     }
 
-    public static List<Object> join(final DataFetchingEnvironment environment, String table, String alias, String fieldA, String fieldB, String secondTable) {
+    public static List<Object> join(final DataFetchingEnvironment environment, final String table, final String alias, final String fieldA, final String fieldB, final String secondTable) {
         final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
         final String parentTable = secondTable == null ? PrefixUtil.getParentTable(environment.getExecutionStepInfo(), queryBuilder) : secondTable;
         final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
