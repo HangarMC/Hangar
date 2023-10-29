@@ -136,9 +136,31 @@ class QueryMergerTest {
 
     private static void compare(Map<String, Object> expected, Map<String, Object> output) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
+    @Test
+    void mergeNoPrimaryKeyNamespace() throws JsonProcessingException {
+        final List<Map<String, String>> input = new ArrayList<>();
+        input.add(Map.of(
+            "projectbyslug_name", "Test",
+            "projectbyslug_namespace_slug", "Test",
+            "projectbyslug_namespace_owner", "MiniDigger"
+        ));
+
+        final Map<String, Object> expected = Map.of(
+            "projectbyslug", Map.of(
+                "name", "Test",
+                "namespace", Map.of(
+                    "owner", "MiniDigger",
+                    "slug", "Test"
+                )
+            )
+        );
+
+        compare(expected, QueryMerger.merge(input));
+    }
+
         objectMapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
 
-        ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
+        final ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValueAsString(expected);
 
         assertEquals(objectWriter.writeValueAsString(expected), objectWriter.writeValueAsString(output));
