@@ -25,17 +25,18 @@ public class QueryMappings {
     // queries
     @QueryMapping
     public Object projectBySlug(final DataFetchingEnvironment environment) {
-        return query(environment, "projects", "projectBySlug", "WHERE projectBySlug.slug = :slug");
+        final String segmentName = environment.getExecutionStepInfo().getPath().getSegmentName();
+        return query(environment, "projects", STR."WHERE \{segmentName}.slug = :slug");
     }
 
     @QueryMapping
     public Object projects(final DataFetchingEnvironment environment) {
-        return query(environment, "projects", "projects");
+        return query(environment, "projects");
     }
 
     @QueryMapping
     public Object users(final DataFetchingEnvironment environment) {
-        return query(environment, "users", "users");
+        return query(environment, "users");
     }
 
     // joins

@@ -16,14 +16,15 @@ public final class QueryHelper {
     private QueryHelper() {
     }
 
-    public static List<Object> query(final DataFetchingEnvironment environment, final String rootTable, final String rootAlias) {
-        return query(environment, rootTable, rootAlias, "");
+    public static List<Object> query(final DataFetchingEnvironment environment, final String rootTable) {
+        return query(environment, rootTable, "");
     }
 
-    public static List<Object> query(final DataFetchingEnvironment environment, final String rootTable, final String rootAlias, final String condition) {
+    public static List<Object> query(final DataFetchingEnvironment environment, final String rootTable, final String condition) {
         final QueryBuilder queryBuilder = newQueryBuilder(environment.getGraphQlContext());
-        queryBuilder.rootTable = rootAlias;
-        queryBuilder.from = STR."FROM \{rootTable} \{rootAlias}";
+        queryBuilder.variables = environment.getExecutionStepInfo().getArguments();
+        queryBuilder.rootTable = environment.getExecutionStepInfo().getPath().getSegmentName();
+        queryBuilder.from = STR."FROM \{rootTable} \{queryBuilder.rootTable}";
         queryBuilder.condition = condition;
         return EMPTY_LIST;
     }
