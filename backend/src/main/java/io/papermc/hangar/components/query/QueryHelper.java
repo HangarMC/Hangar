@@ -54,7 +54,7 @@ public final class QueryHelper {
         queryBuilder.fields.add(STR."\{parentTable}\{idField} AS \{id}");
 
         queryBuilder.joins.add(STR."JOIN avatars \{parentAlias}avatar ON \{parentAlias}avatar.type = '\{avatarType}' AND \{parentAlias}avatar.subject = \{parentTable}\{idField}::varchar");
-        queryBuilder.resolver.put(parentAlias + "avatarUrl", (r) -> fileService.getAvatarUrl(avatarType, String.valueOf(r.get(id)), r.get(avatarVersion)));
+        queryBuilder.resolver.put(parentAlias + environment.getExecutionStepInfo().getPath().getSegmentName(), (r) -> fileService.getAvatarUrl(avatarType, String.valueOf(r.get(id)), r.get(avatarVersion)));
         return EMPTY;
     }
 }
