@@ -68,7 +68,7 @@ public class QueryConfig {
                     final QueryBuilder queryBuilder = getActiveQueryBuilder(parameters.getEnvironment().getGraphQlContext());
                     final String parentAlias = PrefixUtil.getParentAlias(parameters.getEnvironment().getExecutionStepInfo(), queryBuilder);
                     final String parentTable = PrefixUtil.getParentTable(parameters.getEnvironment().getExecutionStepInfo(), queryBuilder);
-                    queryBuilder.fields.add(STR."\{parentTable}\{propertyDataFetcher.getPropertyName()} AS \{parentAlias}\{propertyDataFetcher.getPropertyName()}");
+                    queryBuilder.fields.add(STR."\{parentTable}\{propertyDataFetcher.getPropertyName()} AS \{parentAlias}\{parameters.getExecutionStepInfo().getPath().getSegmentName()}");
 
                     // find return type
                     if (parameters.getField().getType() instanceof final GraphQLScalarType scalarType) {
@@ -85,8 +85,14 @@ public class QueryConfig {
             public @NotNull CompletableFuture<ExecutionResult> instrumentExecutionResult(final ExecutionResult executionResult, final InstrumentationExecutionParameters parameters, final InstrumentationState state) {
                 final List<QueryBuilder> queryBuilders = getAllQueryBuilders(parameters.getGraphQLContext());
 
+                // (parsing) error? -> return
+                if (!executionResult.getErrors().isEmpty()) {
+                    return CompletableFuture.completedFuture(executionResult);
+                }
+
+                // introspection query? -> return
                 if (parameters.getOperation() != null && parameters.getOperation().equals("IntrospectionQuery")) {
-                    return Instrumentation.super.instrumentExecutionResult(executionResult, parameters, state);
+                    return CompletableFuture.completedFuture(executionResult);
                 }
 
                 final Map<String, Object> totalResult = new HashMap<>();
