@@ -26,7 +26,7 @@ public class QueryBuilder {
     Map<String, Object> variables = new HashMap<>();
 
     public static List<QueryBuilder> getAllQueryBuilders(final GraphQLContext context) {
-        return context.get(QUERY_BUILDER);
+        return context.getOrDefault(QUERY_BUILDER, List.of());
     }
 
     public static QueryBuilder getActiveQueryBuilder(final GraphQLContext context) {
