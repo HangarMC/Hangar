@@ -5,6 +5,9 @@ import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.service.internal.file.FileService;
 import java.util.List;
 
+import static io.papermc.hangar.components.query.QueryBuilder.getActiveQueryBuilder;
+import static io.papermc.hangar.components.query.QueryBuilder.newQueryBuilder;
+
 public final class QueryHelper {
 
     public static final Object EMPTY = new Object();
@@ -18,7 +21,7 @@ public final class QueryHelper {
     }
 
     public static List<Object> query(final DataFetchingEnvironment environment, final String rootTable, final String rootAlias, final String condition) {
-        final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
+        final QueryBuilder queryBuilder = newQueryBuilder(environment.getGraphQlContext());
         queryBuilder.rootTable = rootAlias;
         queryBuilder.from = STR."FROM \{rootTable} \{rootAlias}";
         queryBuilder.condition = condition;
@@ -29,7 +32,7 @@ public final class QueryHelper {
     }
 
     public static List<Object> join(final DataFetchingEnvironment environment, final String table, final String alias, final String fieldA, final String fieldB, final String secondTable) {
-        final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
+        final QueryBuilder queryBuilder = getActiveQueryBuilder(environment.getGraphQlContext());
         final String parentTable = secondTable == null ? PrefixUtil.getParentTable(environment.getExecutionStepInfo(), queryBuilder) : secondTable;
         final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
         queryBuilder.joins.add(STR."JOIN \{table} \{parentAlias}\{alias} ON \{parentAlias}\{alias}.\{fieldA} = \{parentTable}\{fieldB}");
@@ -40,7 +43,7 @@ public final class QueryHelper {
         final String idVar = avatarType.equals(AvatarService.USER) ? "userid" : "projectid";
         final String idField = avatarType.equals(AvatarService.USER) ? "uuid" : "id";
 
-        final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
+        final QueryBuilder queryBuilder = getActiveQueryBuilder(environment.getGraphQlContext());
         final String parentTable = PrefixUtil.getParentTable(environment.getExecutionStepInfo(), queryBuilder);
         final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
 
