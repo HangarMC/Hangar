@@ -100,7 +100,7 @@ public class QueryConfig {
                     try {
                         QueryConfig.this.jdbi.useHandle((handle -> {
                             // run the query
-                            final var resultList = queryBuilder.execute(handle, sql, parameters.getVariables());
+                            final var resultList = queryBuilder.execute(handle, sql);
 
                             final LocalDateTime executionTime = LocalDateTime.now();
 
