@@ -7,6 +7,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import static io.papermc.hangar.components.query.QueryBuilder.getActiveQueryBuilder;
 import static io.papermc.hangar.components.query.QueryHelper.EMPTY;
 import static io.papermc.hangar.components.query.QueryHelper.avatarUrl;
 import static io.papermc.hangar.components.query.QueryHelper.join;
@@ -66,7 +67,7 @@ public class QueryMappings {
 
     @SchemaMapping(typeName = "Project", field = "namespace")
     public Object projectNamespace(final DataFetchingEnvironment environment) {
-        final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
+        final QueryBuilder queryBuilder = getActiveQueryBuilder(environment.getGraphQlContext());
         final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
         final String parentTable = PrefixUtil.getParentTable(environment.getExecutionStepInfo(), queryBuilder);
         if (environment.getSelectionSet().contains("owner")) {
@@ -80,7 +81,7 @@ public class QueryMappings {
 
     @SchemaMapping(typeName = "Project", field = "homepage")
     public Object projectHomepage(final DataFetchingEnvironment environment) {
-        final QueryBuilder queryBuilder = environment.getGraphQlContext().get("queryBuilder");
+        final QueryBuilder queryBuilder = getActiveQueryBuilder(environment.getGraphQlContext());
         final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo().getParent(), queryBuilder);
         join(environment, "project_home_pages", "homepage_id", "project_id", "id");
         join(environment, "project_pages", "homepage", "id", "page_id", parentAlias + "homepage_id.");

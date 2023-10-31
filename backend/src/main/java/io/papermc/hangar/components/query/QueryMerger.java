@@ -82,11 +82,7 @@ public final class QueryMerger {
 
                 if (pkValue == null) {
                     System.out.println(prefix + "no primary key found: " + others);
-                    final Map<String, Object> map = new HashMap<>();
-                    for (final String key : others.keySet()) {
-                        map.put(key, others.get(key));
-                    }
-                    result.put(commonKey, map);
+                    result.put(commonKey, others);
                 } else {
                     System.out.println(prefix + "others: " + others);
                     newInputs.computeIfAbsent(pkValue, _ -> new ArrayList<>()).add(others);
