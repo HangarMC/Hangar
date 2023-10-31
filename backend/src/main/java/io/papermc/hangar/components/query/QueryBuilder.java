@@ -23,6 +23,7 @@ public class QueryBuilder {
     Set<String> fields = new HashSet<>();
     Set<String> joins = new LinkedHashSet<>();
     Map<String, Function<Map<String, String>, String>> resolver = new HashMap<>();
+    Map<String, Object> variables = new HashMap<>();
 
     public static List<QueryBuilder> getAllQueryBuilders(final GraphQLContext context) {
         return context.get(QUERY_BUILDER);
@@ -55,10 +56,10 @@ public class QueryBuilder {
            """;
     }
 
-    public List<Map<String, String>> execute(final Handle handle, final String sql, final Map<String, Object> variables) {
+    public List<Map<String, String>> execute(final Handle handle, final String sql) {
         Query select = handle.select(sql);
         // bind the arguments
-        for (final var entry : variables.entrySet()) {
+        for (final var entry : this.variables.entrySet()) {
             select = select.bind(entry.getKey(), entry.getValue());
         }
 
