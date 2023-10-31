@@ -1,9 +1,11 @@
 package io.papermc.hangar.components.query;
 
+import graphql.GraphQLContext;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,14 +13,33 @@ import java.util.function.Function;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.statement.Query;
 
-// TODO we need one query builder per query mapping or use subqueries
 public class QueryBuilder {
+
+    public static final String QUERY_BUILDER = "queryBuilder";
+
     String rootTable = "";
     String from = "";
     String condition = "";
     Set<String> fields = new HashSet<>();
     Set<String> joins = new LinkedHashSet<>();
     Map<String, Function<Map<String, String>, String>> resolver = new HashMap<>();
+
+    public static List<QueryBuilder> getAllQueryBuilders(final GraphQLContext context) {
+        return context.get(QUERY_BUILDER);
+    }
+
+    public static QueryBuilder getActiveQueryBuilder(final GraphQLContext context) {
+        return context.<List<QueryBuilder>>get(QUERY_BUILDER).getLast();
+    }
+
+    public static QueryBuilder newQueryBuilder(final GraphQLContext context) {
+        if (!context.hasKey(QUERY_BUILDER)) {
+            context.put(QUERY_BUILDER, new LinkedList<>());
+        }
+        final QueryBuilder newBuilder = new QueryBuilder();
+        context.<List<QueryBuilder>>get(QUERY_BUILDER).add(newBuilder);
+        return newBuilder;
+    }
 
     public String buildSql() {
         return STR."""
