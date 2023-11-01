@@ -1,5 +1,5 @@
 import path from "node:path";
-import VueI18n from "@intlify/unplugin-vue-i18n";
+import VueI18nVitePlugin from "@intlify/unplugin-vue-i18n/vite";
 import IconsResolver from "unplugin-icons/resolver";
 import Icons from "unplugin-icons/vite";
 import Components from "unplugin-vue-components/vite";
@@ -39,6 +39,9 @@ export default defineNuxtConfig({
       },
     ],
   ],
+  build: {
+    transpile: ["vue-i18n"],
+  },
   vite: {
     plugins: [
       // https://github.com/antfu/unplugin-vue-components
@@ -61,9 +64,9 @@ export default defineNuxtConfig({
         autoInstall: true,
       }),
 
-      // https://github.com/intlify/bundle-tools/tree/main/packages/vite-plugin-vue-i18n
-      VueI18n.vite({
-        runtimeOnly: false,
+      // https://github.com/intlify/bundle-tools/tree/main/packages/unplugin-vue-i18n
+      VueI18nVitePlugin({
+        runtimeOnly: false, // TODO figure out if using the message compiler and including all locales is better? maybe we can still treeshake locales with runtimeOnly?
         include: [path.resolve(__dirname, "src/locales/*.json")],
       }),
 
