@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { HangarProject } from "hangar-internal";
+import type { HangarProject } from "hangar-internal";
 import ProjectNavItem from "~/components/projects/ProjectNavItem.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";

@@ -1,5 +1,5 @@
-import { RouteLocationNamedRaw, RouteLocationNormalized } from "vue-router";
-import { PermissionCheck, UserPermissions } from "hangar-api";
+import type { RouteLocationNamedRaw, RouteLocationNormalized } from "vue-router";
+import type { PermissionCheck, UserPermissions } from "hangar-api";
 import { defineNuxtRouteMiddleware, handleRequestError, hasPerms, toNamedPermission, useApi, useAuth } from "#imports";
 import { useAuthStore } from "~/store/auth";
 import { routePermLog } from "~/composables/useLog";

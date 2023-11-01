@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ProjectSettingsForm, NewProjectForm } from "hangar-internal";
+import type { ProjectSettingsForm, NewProjectForm } from "hangar-internal";
 import { computed, type Ref, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
@@ -22,7 +22,7 @@ import Spinner from "~/components/design/Spinner.vue";
 import Link from "~/components/design/Link.vue";
 import { usePossibleOwners } from "~/composables/useApiHelper";
 import { definePageMeta } from "#imports";
-import { Step } from "~/types/components/design/Steps";
+import type { Step } from "~/types/components/design/Steps";
 import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
 import Alert from "~/components/design/Alert.vue";
 import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";

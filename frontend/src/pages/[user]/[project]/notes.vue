@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { User } from "hangar-api";
+import type { User } from "hangar-api";
 import { useI18n } from "vue-i18n";
-import { HangarProject, Note } from "hangar-internal";
+import type { HangarProject, Note } from "hangar-internal";
 import { ref } from "vue";
 import { useHead } from "@unhead/vue";
 import { useRoute } from "vue-router";
@@ -16,7 +16,7 @@ import InputText from "~/components/ui/InputText.vue";
 import Button from "~/components/design/Button.vue";
 import { useSeo } from "~/composables/useSeo";
 import { definePageMeta } from "#imports";
-import { Header } from "~/types/components/SortableTable";
+import type { Header } from "~/types/components/SortableTable";
 
 definePageMeta({
   projectPermsRequired: ["MOD_NOTES_AND_FLAGS"],

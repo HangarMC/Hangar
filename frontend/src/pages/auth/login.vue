@@ -5,7 +5,7 @@ import { ref } from "vue";
 import * as webauthnJson from "@github/webauthn-json";
 import { useVuelidate } from "@vuelidate/core";
 import { useI18n } from "vue-i18n";
-import { LoginResponse } from "hangar-internal";
+import type { LoginResponse } from "hangar-internal";
 import { useSeo } from "~/composables/useSeo";
 import InputText from "~/components/ui/InputText.vue";
 import Button from "~/components/design/Button.vue";

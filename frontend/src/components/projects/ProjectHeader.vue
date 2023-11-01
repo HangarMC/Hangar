@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { HangarProject } from "hangar-internal";
-import { AxiosError } from "axios";
+import type { HangarProject } from "hangar-internal";
+import type { AxiosError } from "axios";
 import { useRouter } from "vue-router";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Button from "~/components/design/Button.vue";
@@ -15,7 +15,8 @@ import { useNotificationStore } from "~/store/notification";
 import FlagModal from "~/components/modals/FlagModal.vue";
 import Alert from "~/components/design/Alert.vue";
 import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission, Platform, ReviewState, Visibility } from "~/types/enums";
+import type { Platform } from "~/types/enums";
+import { NamedPermission, ReviewState, Visibility } from "~/types/enums";
 import Markdown from "~/components/Markdown.vue";
 import DownloadButton from "~/components/projects/DownloadButton.vue";
 

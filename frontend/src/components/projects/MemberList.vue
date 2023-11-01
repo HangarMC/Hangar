@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { JoinableMember } from "hangar-internal";
-import { PaginatedResult, Role, User } from "hangar-api";
+import type { JoinableMember } from "hangar-internal";
+import type { PaginatedResult, Role, User } from "hangar-api";
 import { useRoute, useRouter } from "vue-router";
 import { NamedPermission } from "~/types/enums";
 import Card from "~/components/design/Card.vue";

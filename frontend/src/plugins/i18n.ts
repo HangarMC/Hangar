@@ -1,4 +1,4 @@
-import { NuxtApp } from "nuxt/app";
+import type { NuxtApp } from "nuxt/app";
 import { defineNuxtPlugin } from "#imports";
 import { installI18n } from "~/i18n";
 import { settingsLog } from "~/composables/useLog";

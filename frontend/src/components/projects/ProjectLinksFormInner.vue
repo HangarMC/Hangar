@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Draggable from "vuedraggable";
 import { useVModel } from "@vueuse/core";
-import { LinkSection } from "hangar-api";
+import type { LinkSection } from "hangar-api";
 import { useI18n } from "vue-i18n";
 import InputText from "~/components/ui/InputText.vue";
 import Button from "~/components/design/Button.vue";

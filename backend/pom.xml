@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.3</version>
+        <version>3.1.5</version>
         <relativePath/>
     </parent>
 
@@ -26,17 +26,17 @@
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
         <!-- dependency management -->
-        <jdbi3-bom.version>3.41.1</jdbi3-bom.version>
+        <jdbi3-bom.version>3.41.3</jdbi3-bom.version>
         <configurate.version>4.1.2</configurate.version>
         <spring-cloud-aws.version>3.0.2</spring-cloud-aws.version>
 
         <!-- dependencies -->
-        <sentry.version>6.29.0</sentry.version>
+        <sentry.version>6.32.0</sentry.version>
         <springdoc.version>2.2.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20230618</org-json.version>
         <bucket4j.version>7.6.0</bucket4j.version>
-        <datafaker.version>2.0.1</datafaker.version>
+        <datafaker.version>2.0.2</datafaker.version>
         <apache-commons-lang.version>3.13.0</apache-commons-lang.version>
         <jwt.version>4.4.0</jwt.version>
         <jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
@@ -52,7 +52,7 @@
         <mockito-inline.version>5.2.0</mockito-inline.version>
 
         <!-- test -->
-        <pg.version>1.19.0</pg.version>
+        <pg.version>1.19.1</pg.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
@@ -423,13 +423,12 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <testSource>${java.version}</testSource>
                     <testTarget>${java.version}</testTarget>
                     <encoding>${encoding}</encoding>
-                    <compilerArgs>--enable-preview
-                    </compilerArgs>
+                    <compilerArgs>--enable-preview</compilerArgs>
                 </configuration>
             </plugin>
             <plugin>

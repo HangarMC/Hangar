@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { HangarVersion, HangarProject, JarScanResult } from "hangar-internal";
+import type { HangarVersion, HangarProject, JarScanResult } from "hangar-internal";
 import { definePageMeta, ref, useHead, useInternalApi, useJarScan, useRoute, useSeo } from "#imports";
-import { Platform } from "~/types/enums";
+import type { Platform } from "~/types/enums";
 import PrettyTime from "~/components/design/PrettyTime.vue";
 import { useNotificationStore } from "~/store/notification";
 import Button from "~/components/design/Button.vue";

@@ -10,7 +10,7 @@ import { useSeo } from "~/composables/useSeo";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Link from "~/components/design/Link.vue";
 import Tag from "~/components/Tag.vue";
-import { Header } from "~/types/components/SortableTable";
+import type { Header } from "~/types/components/SortableTable";
 import { getRole } from "~/store/backendData";
 import { watch } from "#imports";
 import InputText from "~/components/ui/InputText.vue";

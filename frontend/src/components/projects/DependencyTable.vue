@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { DependencyVersion, PaginatedResult, PluginDependency, Project, ProjectNamespace } from "hangar-api";
+import type { DependencyVersion, PaginatedResult, PluginDependency, Project, ProjectNamespace } from "hangar-api";
 import { useI18n } from "vue-i18n";
-import { Platform } from "~/types/enums";
+import type { Platform } from "~/types/enums";
 import Table from "~/components/design/Table.vue";
 import Button from "~/components/design/Button.vue";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
@@ -11,7 +11,7 @@ import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
 import { useApi } from "~/composables/useApi";
 import Tabs from "~/components/design/Tabs.vue";
 import { ref, useRoute } from "#imports";
-import { Tab } from "~/types/components/design/Tabs";
+import type { Tab } from "~/types/components/design/Tabs";
 
 const route = useRoute();
 const i18n = useI18n();

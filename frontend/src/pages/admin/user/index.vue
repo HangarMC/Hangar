@@ -3,7 +3,7 @@ import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { useHead } from "@unhead/vue";
 import { computed, ref } from "vue";
-import { PaginatedResult, User } from "hangar-api";
+import type { PaginatedResult, User } from "hangar-api";
 import PageTitle from "~/components/design/PageTitle.vue";
 import Link from "~/components/design/Link.vue";
 import Tag from "~/components/Tag.vue";
@@ -13,7 +13,7 @@ import { definePageMeta, watch } from "#imports";
 import { useUsers } from "~/composables/useApiHelper";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import InputText from "~/components/ui/InputText.vue";
-import { Header } from "~/types/components/SortableTable";
+import type { Header } from "~/types/components/SortableTable";
 import SortableTable from "~/components/SortableTable.vue";
 import { getRole } from "~/store/backendData";
 

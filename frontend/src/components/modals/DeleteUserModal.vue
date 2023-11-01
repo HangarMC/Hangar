@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { User } from "hangar-api";
+import type { User } from "hangar-api";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useVuelidate } from "@vuelidate/core";

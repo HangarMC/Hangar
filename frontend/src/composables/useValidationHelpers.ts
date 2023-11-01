@@ -1,5 +1,6 @@
 import { type ErrorObject, useVuelidate, type ValidationRule } from "@vuelidate/core";
-import { computed, ComputedRef, type Ref } from "vue";
+import { computed } from "vue";
+import type { ComputedRef, type Ref } from "vue";
 import * as validators from "@vuelidate/validators";
 import { createI18nMessage, helpers, type ValidatorWrapper } from "@vuelidate/validators";
 import { difference, isEmpty, uniq } from "lodash-es";

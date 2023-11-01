@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import { User } from "hangar-api";
-import { HangarProject } from "hangar-internal";
+import type { User } from "hangar-api";
+import type { HangarProject } from "hangar-internal";
 import ProjectPageList from "~/components/projects/ProjectPageList.vue";
 import Markdown from "~/components/Markdown.vue";
 

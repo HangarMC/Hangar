@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { Review, ReviewQueueEntry } from "hangar-internal";
+import type { Review, ReviewQueueEntry } from "hangar-internal";
 import { useHead } from "@unhead/vue";
 import { useRoute } from "vue-router";
 import SortableTable from "~/components/SortableTable.vue";
@@ -12,7 +12,7 @@ import Tag from "~/components/Tag.vue";
 import { useSeo } from "~/composables/useSeo";
 import Button from "~/components/design/Button.vue";
 import { definePageMeta } from "#imports";
-import { Header } from "~/types/components/SortableTable";
+import type { Header } from "~/types/components/SortableTable";
 
 definePageMeta({
   globalPermsRequired: ["REVIEWER"],

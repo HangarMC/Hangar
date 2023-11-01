@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { HangarProject } from "hangar-internal";
+import type { HangarProject } from "hangar-internal";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import Card from "~/components/design/Card.vue";
