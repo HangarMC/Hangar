@@ -162,65 +162,54 @@ function isRecent(date: string): boolean {
           <PopoverButton v-slot="{ open }" class="flex" aria-label="Menu">
             <icon-mdi-menu class="transition-transform text-[1.2em]" :class="open ? 'transform rotate-90' : ''" />
           </PopoverButton>
-          <transition
-            enter-active-class="transition duration-200 ease-out"
-            enter-from-class="translate-y-1 opacity-0"
-            enter-to-class="translate-y-0 opacity-100"
-            leave-active-class="transition duration-150 ease-in"
-            leave-from-class="translate-y-0 opacity-100"
-            leave-to-class="translate-y-1 opacity-0"
+
+          <!-- todo: Use Popper -->
+          <PopoverPanel
+            class="absolute top-10 z-10 w-max lt-sm:w-90vw background-default left-1/20 filter shadow-default rounded-r-md rounded-bl-md border-top-primary text-sm p-[20px]"
           >
-            <!-- dummy diff to make the transition work on pages where template root has multiple elements -->
-            <div id="#navbarMenuLinks">
-              <!-- todo: Use Popper -->
-              <PopoverPanel
-                class="absolute top-10 z-10 w-max lt-sm:w-90vw background-default left-1/20 filter shadow-default rounded-r-md rounded-bl-md border-top-primary text-sm p-[20px]"
+            <p class="text-base font-semibold color-primary mb-3">Hangar</p>
+            <div class="grid grid-cols-2">
+              <NuxtLink
+                v-for="link in navBarMenuLinksHangar"
+                :key="link.label"
+                :to="{ name: link.link }"
+                class="flex items-center rounded-md px-6 py-2"
+                hover="text-primary-400 bg-primary-0"
+                @click="close()"
               >
-                <p class="text-base font-semibold color-primary mb-3">Hangar</p>
-                <div class="grid grid-cols-2">
-                  <NuxtLink
-                    v-for="link in navBarMenuLinksHangar"
-                    :key="link.label"
-                    :to="{ name: link.link }"
-                    class="flex items-center rounded-md px-6 py-2"
-                    hover="text-primary-400 bg-primary-0"
-                    @click="close()"
-                  >
-                    <component :is="link.icon" class="mr-3 text-[1.2em]" />
-                    {{ link.label }}
-                  </NuxtLink>
-                </div>
-
-                <p class="text-base font-semibold color-primary mb-3 mt-6">{{ t("nav.hangar.tools") }}</p>
-                <div class="grid grid-cols-2">
-                  <NuxtLink
-                    v-for="link in navBarMenuLinksTools"
-                    :key="link.label"
-                    :to="{ name: link.link }"
-                    class="flex items-center rounded-md px-6 py-2"
-                    hover="text-primary-400 bg-primary-0"
-                    @click="close()"
-                  >
-                    <component :is="link.icon" class="mr-3 text-[1.2em]" />
-                    {{ link.label }}
-                  </NuxtLink>
-                </div>
-
-                <p class="text-base font-semibold color-primary mb-3 mt-6">{{ t("nav.hangar.moreFrom") }}</p>
-                <div class="grid grid-cols-2">
-                  <a
-                    v-for="link in navBarMenuLinksMoreFromPaper"
-                    :key="link.label"
-                    class="flex items-center rounded-md px-6 py-2 hover:(text-primary-400 bg-primary-0)"
-                    :href="link.link"
-                  >
-                    <component :is="link.icon" class="mr-3 text-[1.2em]" />
-                    {{ link.label }}
-                  </a>
-                </div>
-              </PopoverPanel>
+                <component :is="link.icon" class="mr-3 text-[1.2em]" />
+                {{ link.label }}
+              </NuxtLink>
             </div>
-          </transition>
+
+            <p class="text-base font-semibold color-primary mb-3 mt-6">{{ t("nav.hangar.tools") }}</p>
+            <div class="grid grid-cols-2">
+              <NuxtLink
+                v-for="link in navBarMenuLinksTools"
+                :key="link.label"
+                :to="{ name: link.link }"
+                class="flex items-center rounded-md px-6 py-2"
+                hover="text-primary-400 bg-primary-0"
+                @click="close()"
+              >
+                <component :is="link.icon" class="mr-3 text-[1.2em]" />
+                {{ link.label }}
+              </NuxtLink>
+            </div>
+
+            <p class="text-base font-semibold color-primary mb-3 mt-6">{{ t("nav.hangar.moreFrom") }}</p>
+            <div class="grid grid-cols-2">
+              <a
+                v-for="link in navBarMenuLinksMoreFromPaper"
+                :key="link.label"
+                class="flex items-center rounded-md px-6 py-2 hover:(text-primary-400 bg-primary-0)"
+                :href="link.link"
+              >
+                <component :is="link.icon" class="mr-3 text-[1.2em]" />
+                {{ link.label }}
+              </a>
+            </div>
+          </PopoverPanel>
         </Popover>
 
         <!-- Site logo -->

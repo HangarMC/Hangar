@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import type { Version } from "hangar-api";
-import type { PaginatedResult } from "hangar-api";
+import type { Version, PaginatedResult } from "hangar-api";
 import type { Ref } from "vue";
 import { computed, reactive, watch } from "vue";
 import { useRoute } from "vue-router";
