@@ -56,7 +56,12 @@ type ProjectStats {
     watchers: Int
 }
 
-type ProjectNamespace {
+type ProjectNamespace implements Virtual{
     owner: String
     slug: String
+    _virtual: Boolean
+}
+
+interface Virtual {
+    _virtual: Boolean
 }
