@@ -36,7 +36,7 @@ public final class QueryHelper {
         final QueryBuilder queryBuilder = getActiveQueryBuilder(environment.getGraphQlContext());
         final String parentTable = secondTable == null ? PrefixUtil.getParentTable(environment.getExecutionStepInfo(), queryBuilder) : secondTable;
         final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
-        queryBuilder.joins.add(STR."JOIN \{table} \{parentAlias}\{alias} ON \{parentAlias}\{alias}.\{fieldA} = \{parentTable}\{fieldB}");
+        queryBuilder.joins.add(STR."LEFT JOIN \{table} \{parentAlias}\{alias} ON \{parentAlias}\{alias}.\{fieldA} = \{parentTable}\{fieldB}");
         return EMPTY_LIST;
     }
 
