@@ -84,6 +84,7 @@ public class QueryConfig {
             @Override
             public @NotNull CompletableFuture<ExecutionResult> instrumentExecutionResult(final ExecutionResult executionResult, final InstrumentationExecutionParameters parameters, final InstrumentationState state) {
                 final List<QueryBuilder> queryBuilders = getAllQueryBuilders(parameters.getGraphQLContext());
+                final QueryMerger merger = new QueryMerger(parameters.getSchema());
 
                 // (parsing) error? -> return
                 if (!executionResult.getErrors().isEmpty()) {
@@ -114,7 +115,7 @@ public class QueryConfig {
                             queryBuilder.handleResolvers(resultList);
 
                             // merge the result
-                            final var result = QueryMerger.merge(resultList);
+                            final var result = merger.merge(resultList);
 
                             // collect some data
                             final LocalDateTime startTime = parameters.getGraphQLContext().get("startTime");
