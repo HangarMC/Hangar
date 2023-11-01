@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue";
 import { useRoute, useRouter } from "vue-router";
-import { HangarProject, HangarUser } from "hangar-internal";
+import type { HangarProject, HangarUser } from "hangar-internal";
 import { useI18n } from "vue-i18n";
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { cloneDeep } from "lodash-es";
 import { useVuelidate } from "@vuelidate/core";
 import { Cropper, type CropperResult } from "vue-advanced-cropper";
-import { PaginatedResult, User } from "hangar-api";
+import type { PaginatedResult, User } from "hangar-api";
 import { useSeo } from "~/composables/useSeo";
 import Card from "~/components/design/Card.vue";
 import MemberList from "~/components/projects/MemberList.vue";
@@ -31,7 +31,7 @@ import { validProjectName } from "~/composables/useHangarValidations";
 import "vue-advanced-cropper/dist/style.css";
 import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
 import { definePageMeta } from "#imports";
-import { Tab } from "~/types/components/design/Tabs";
+import type { Tab } from "~/types/components/design/Tabs";
 import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import Tooltip from "~/components/design/Tooltip.vue";

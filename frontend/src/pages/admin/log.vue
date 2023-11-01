@@ -2,9 +2,9 @@
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { useHead } from "@unhead/vue";
-import { PaginatedResult, Project, User } from "hangar-api";
+import type { PaginatedResult, Project, User } from "hangar-api";
 import { computed, ref } from "vue";
-import { LoggedAction } from "hangar-internal";
+import type { LoggedAction } from "hangar-internal";
 import { debounce } from "lodash-es";
 import PageTitle from "~/components/design/PageTitle.vue";
 import Card from "~/components/design/Card.vue";
@@ -17,7 +17,7 @@ import { useSeo } from "~/composables/useSeo";
 import { definePageMeta, hasPerms, useApi, useInternalApi, useRouter, watch } from "#imports";
 import InputSelect from "~/components/ui/InputSelect.vue";
 import { useBackendData } from "~/store/backendData";
-import { Header } from "~/types/components/SortableTable";
+import type { Header } from "~/types/components/SortableTable";
 import { NamedPermission } from "~/types/enums";
 import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
 

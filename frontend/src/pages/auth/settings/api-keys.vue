@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { reactive, ref } from "vue";
-import { ApiKey } from "hangar-api";
+import type { ApiKey } from "hangar-api";
 import { useVuelidate } from "@vuelidate/core";
 import PageTitle from "~/components/design/PageTitle.vue";
 import InputText from "~/components/ui/InputText.vue";
@@ -15,7 +15,7 @@ import { useNotificationStore } from "~/store/notification";
 import { maxLength, minLength, required } from "~/composables/useValidationHelpers";
 import { validApiKeyName } from "~/composables/useHangarValidations";
 import InputGroup from "~/components/ui/InputGroup.vue";
-import { NamedPermission } from "~/types/enums";
+import type { NamedPermission } from "~/types/enums";
 import Tooltip from "~/components/design/Tooltip.vue";
 import { useAuthStore } from "~/store/auth";
 import PrettyTime from "~/components/design/PrettyTime.vue";

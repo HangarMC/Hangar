@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { type PropType, provide } from "vue";
-import { User } from "hangar-api";
-import { useI18n } from "vue-i18n";
-import { RouteLocationNormalized, useRoute } from "vue-router";
-import { HangarProjectPage, HangarProject } from "hangar-internal";
+import { provide } from "vue";
+import type { User } from "hangar-api";
+import type { RouteLocationNormalized } from "vue-router";
+import { useRoute } from "vue-router";
+import type { HangarProjectPage, HangarProject } from "hangar-internal";
 import { useProject } from "~/composables/useApiHelper";
 import { useErrorRedirect } from "~/composables/useErrorRedirect";
 import ProjectHeader from "~/components/projects/ProjectHeader.vue";

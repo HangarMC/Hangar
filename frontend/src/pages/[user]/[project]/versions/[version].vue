@@ -2,10 +2,10 @@
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { computed } from "vue";
-import { HangarProject, HangarVersion } from "hangar-internal";
+import type { HangarProject, HangarVersion } from "hangar-internal";
 import { useProjectVersionsInternal } from "~/composables/useApiHelper";
 import { useErrorRedirect } from "~/composables/useErrorRedirect";
-import { Platform } from "~/types/enums";
+import type { Platform } from "~/types/enums";
 import Delayed from "~/components/design/Delayed.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { onBeforeRouteUpdate } from "#imports";

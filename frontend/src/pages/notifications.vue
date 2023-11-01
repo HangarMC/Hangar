@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import { HangarNotification, Invite } from "hangar-internal";
+import type { HangarNotification, Invite } from "hangar-internal";
 import { computed, ref, type Ref } from "vue";
 import { useHead } from "@unhead/vue";
-import { PaginatedResult } from "hangar-api";
+import type { PaginatedResult } from "hangar-api";
 import { useInvites, useNotifications, useReadNotifications, useUnreadNotifications } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
@@ -20,7 +20,7 @@ import IconMdiCheck from "~icons/mdi/check";
 import Pagination from "~/components/design/Pagination.vue";
 import Tabs from "~/components/design/Tabs.vue";
 import { definePageMeta } from "#imports";
-import { Tab } from "~/types/components/design/Tabs";
+import type { Tab } from "~/types/components/design/Tabs";
 import { getRoleByValue } from "~/store/backendData";
 
 definePageMeta({

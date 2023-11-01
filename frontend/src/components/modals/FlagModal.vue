@@ -2,7 +2,7 @@
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { HangarProject } from "hangar-internal";
+import type { HangarProject } from "hangar-internal";
 import Button from "~/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import Tooltip from "~/components/design/Tooltip.vue";

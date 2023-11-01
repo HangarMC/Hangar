@@ -1,5 +1,5 @@
-import { RouteLocationNormalizedLoaded } from "vue-router";
-import { HangarProject } from "hangar-internal";
+import type { RouteLocationNormalizedLoaded } from "vue-router";
+import type { HangarProject } from "hangar-internal";
 import { ref, watch } from "vue";
 
 export function useOpenProjectPages(route: RouteLocationNormalizedLoaded, project: HangarProject) {

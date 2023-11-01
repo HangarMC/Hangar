@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { PaginatedResult, Project, User } from "hangar-api";
+import type { PaginatedResult, Project, User } from "hangar-api";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { useHead } from "@unhead/vue";
-import { Organization } from "hangar-internal";
+import type { Organization } from "hangar-internal";
 import { computed, type FunctionalComponent, ref } from "vue";
 import { watchDebounced } from "@vueuse/core";
 import ProjectList from "~/components/projects/ProjectList.vue";

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { ProjectChannel } from "hangar-internal";
+import type { ProjectChannel } from "hangar-internal";
 import { computed, reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import Button from "~/components/design/Button.vue";

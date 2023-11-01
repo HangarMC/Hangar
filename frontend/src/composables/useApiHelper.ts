@@ -1,5 +1,5 @@
-import { PaginatedResult, Project, ProjectCompact, User, Version, VersionInfo } from "hangar-api";
-import {
+import type { PaginatedResult, Project, ProjectCompact, User, Version, VersionInfo } from "hangar-api";
+import type {
   AuthSettings,
   Flag,
   HangarNotification,
@@ -18,8 +18,8 @@ import {
   ReviewQueueEntry,
   RoleTable,
 } from "hangar-internal";
-import { AsyncData } from "nuxt/app";
-import { ComputedRef, Ref } from "vue";
+import type { AsyncData } from "nuxt/app";
+import type { ComputedRef, Ref } from "vue";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { createError, hasPerms, ref, useAsyncData } from "#imports";
 import { handleRequestError } from "~/composables/useErrorHandling";

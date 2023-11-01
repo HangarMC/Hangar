@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { Organization } from "hangar-internal";
-import { User } from "hangar-api";
+import type { Organization } from "hangar-internal";
+import type { User } from "hangar-api";
 import { useI18n } from "vue-i18n";
 import { computed } from "vue";
 import UserAvatar from "~/components/UserAvatar.vue";

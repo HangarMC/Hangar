@@ -7,7 +7,7 @@ import Link from "~/components/design/Link.vue";
 import Card from "~/components/design/Card.vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import Button from "~/components/design/Button.vue";
-import { Step } from "~/types/components/design/Steps";
+import type { Step } from "~/types/components/design/Steps";
 
 const router = useRouter();
 const settings = useSettingsStore();

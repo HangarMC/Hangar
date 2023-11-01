@@ -2,7 +2,7 @@
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useHead } from "@unhead/vue";
-import { HangarProject } from "hangar-internal";
+import type { HangarProject } from "hangar-internal";
 import Card from "~/components/design/Card.vue";
 import PageTitle from "~/components/design/PageTitle.vue";
 import UserAvatar from "~/components/UserAvatar.vue";

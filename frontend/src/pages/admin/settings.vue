@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import { Ref, ref } from "vue";
+import type { Ref } from "vue";
+import { ref } from "vue";
 import { useHead } from "@unhead/vue";
-import { PlatformVersion } from "hangar-internal";
+import type { PlatformVersion } from "hangar-internal";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useBackendData } from "~/store/backendData";
 import { useInternalApi } from "~/composables/useApi";
@@ -15,7 +16,7 @@ import Table from "~/components/design/Table.vue";
 import { useSeo } from "~/composables/useSeo";
 import { useNotificationStore } from "~/store/notification";
 import { definePageMeta } from "#imports";
-import { Platform } from "~/types/enums";
+import type { Platform } from "~/types/enums";
 import InputText from "~/components/ui/InputText.vue";
 import { integer } from "~/composables/useValidationHelpers";
 

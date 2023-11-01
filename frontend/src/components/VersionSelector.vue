@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { computed, Ref, watch } from "vue";
-import { PlatformVersion } from "hangar-internal";
-import { ValidationRule } from "@vuelidate/core";
+import type { Ref } from "vue";
+import { computed, watch } from "vue";
+import type { PlatformVersion } from "hangar-internal";
+import type { ValidationRule } from "@vuelidate/core";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import ArrowSpoiler from "~/components/design/ArrowSpoiler.vue";
 import { ref } from "#imports";

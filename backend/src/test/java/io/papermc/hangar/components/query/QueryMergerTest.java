@@ -23,6 +23,7 @@ class QueryMergerTest {
     @BeforeAll
     static void setup() {
         try (final InputStream resourceAsStream = QueryMergerTest.class.getClassLoader().getResourceAsStream("graphql/schema.graphqls")) {
+            assert resourceAsStream != null;
             merger = new QueryMerger(SchemaGenerator.createdMockedSchema(new String(resourceAsStream.readAllBytes())));
         } catch (final IOException e) {
             throw new RuntimeException(e);

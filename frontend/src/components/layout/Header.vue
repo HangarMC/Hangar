@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
-import { HangarNotification, HangarUser } from "hangar-internal";
+import type { HangarNotification, HangarUser } from "hangar-internal";
 import { ref } from "vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import Announcement from "~/components/Announcement.vue";

@@ -2,7 +2,7 @@
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { PaginatedResult, User } from "hangar-api";
+import type { PaginatedResult, User } from "hangar-api";
 import Button from "~/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { useApi, useInternalApi } from "~/composables/useApi";

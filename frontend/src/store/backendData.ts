@@ -1,10 +1,10 @@
-import { BackendData, IPermission, Role } from "hangar-api";
+import type { BackendData, IPermission, Role } from "hangar-api";
 import { computed } from "vue";
-import { IPlatform, IProjectCategory, IPrompt } from "hangar-internal";
+import type { IPlatform, IProjectCategory, IPrompt } from "hangar-internal";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import backendData from "~/generated/backendData.json";
-import { Option } from "~/types/components/ui/InputAutocomplete";
+import type { Option } from "~/types/components/ui/InputAutocomplete";
 
 const typedBackendData = { ...backendData } as unknown as BackendData;
 

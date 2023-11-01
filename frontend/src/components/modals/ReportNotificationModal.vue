@@ -2,7 +2,7 @@
 import { useI18n } from "vue-i18n";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { Flag } from "hangar-internal";
+import type { Flag } from "hangar-internal";
 import Button from "~/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import InputTextarea from "~/components/ui/InputTextarea.vue";

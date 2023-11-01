@@ -1,5 +1,5 @@
 <script lang="ts" setup generic="T extends Record<string, any>">
-import { type Pagination } from "hangar-api";
+import type { Pagination } from "hangar-api";
 import { computed, ref, watch } from "vue";
 import PaginationButtons from "~/components/design/PaginationButtons.vue";
 

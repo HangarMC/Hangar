@@ -1,5 +1,6 @@
-import { presetAttributify, presetTypography, presetWind, transformerDirectives, transformerVariantGroup, VariantFunction } from "unocss";
-import { UnocssNuxtOptions } from "@unocss/nuxt";
+import type { VariantFunction } from "unocss";
+import { presetAttributify, presetTypography, presetWind, transformerDirectives, transformerVariantGroup } from "unocss";
+import type { UnocssNuxtOptions } from "@unocss/nuxt";
 
 export function parent(name: string): VariantFunction {
   return wrap(name, "." + name);

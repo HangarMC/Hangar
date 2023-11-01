@@ -1,6 +1,7 @@
-import axios, { AxiosError } from "axios";
-import { HangarApiException, HangarValidationException, MultiHangarApiException } from "hangar-api";
-import { Composer } from "vue-i18n";
+import type { AxiosError } from "axios";
+import axios from "axios";
+import type { HangarApiException, HangarValidationException, MultiHangarApiException } from "hangar-api";
+import type { Composer } from "vue-i18n";
 import { useNotificationStore } from "~/store/notification";
 import { I18n } from "~/i18n";
 import { createError } from "#imports";

@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { HangarProject, HangarVersion } from "hangar-internal";
+import type { HangarProject, HangarVersion } from "hangar-internal";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
-import { User } from "hangar-api";
+import type { User } from "hangar-api";
 import { useHead } from "@unhead/vue";
-import { AxiosError } from "axios";
-import { NamedPermission, Platform, ReviewState, Visibility, PinnedStatus } from "~/types/enums";
+import type { AxiosError } from "axios";
+import type { Platform } from "~/types/enums";
+import { NamedPermission, ReviewState, Visibility, PinnedStatus } from "~/types/enums";
 import { useBackendData } from "~/store/backendData";
 import { lastUpdated } from "~/composables/useTime";
 import { useInternalApi } from "~/composables/useApi";

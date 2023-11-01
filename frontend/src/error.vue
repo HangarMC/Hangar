@@ -2,7 +2,7 @@
 import { useRoute } from "vue-router";
 import { useHead } from "@unhead/vue";
 import { computed } from "vue";
-import { NuxtError } from "nuxt/app";
+import type { NuxtError } from "nuxt/app";
 import { useI18n } from "vue-i18n";
 import { useSeo } from "~/composables/useSeo";
 import Lottie from "~/components/Lottie.vue";

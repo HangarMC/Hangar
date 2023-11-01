@@ -3,9 +3,9 @@ import type { Ref } from "vue";
 import { computed, ref, unref } from "vue";
 import { useAuthStore } from "~/store/auth";
 import { settingsLog } from "~/composables/useLog";
-import { useCookies } from "~/composables/useCookies";
 import { useSettingsHelper } from "~/composables/useSettingsHelper";
 import { useInternalApi } from "~/composables/useApi";
+import { useCookie } from "#imports";
 
 export const useSettingsStore = defineStore("settings", () => {
   settingsLog("defineSettingsStore");
@@ -67,7 +67,7 @@ export const useSettingsStore = defineStore("settings", () => {
   const { loadSettingsServer, loadSettingsClient } = useSettingsHelper(
     import.meta.env.SSR,
     userData,
-    () => useCookies().get("HANGAR_theme"),
+    () => useCookie("HANGAR_theme").value,
     (loc) => (locale.value = loc),
     (dark) => (darkMode.value = dark),
     saveSettings,

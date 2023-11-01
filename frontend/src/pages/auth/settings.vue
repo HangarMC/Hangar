@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useVuelidate } from "@vuelidate/core";
-import { AuthSettings } from "hangar-internal";
+import type { AuthSettings } from "hangar-internal";
 import { useSeo } from "~/composables/useSeo";
 import { useAuthStore } from "~/store/auth";
 import Button from "~/components/design/Button.vue";
@@ -17,7 +17,7 @@ import Alert from "~/components/design/Alert.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { useNotificationStore } from "~/store/notification";
 import Tabs from "~/components/design/Tabs.vue";
-import { Tab } from "~/types/components/design/Tabs";
+import type { Tab } from "~/types/components/design/Tabs";
 import Delayed from "~/components/design/Delayed.vue";
 
 definePageMeta({
