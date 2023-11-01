@@ -2,8 +2,8 @@
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { ref } from "vue";
-import { Flag, HangarFlagNotification } from "hangar-internal";
-import { PaginatedResult } from "hangar-api";
+import type { Flag, HangarFlagNotification } from "hangar-internal";
+import type { PaginatedResult } from "hangar-api";
 import { useResolvedFlags, useUnresolvedFlags } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";

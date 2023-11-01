@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
-import { FlagActivity, ReviewActivity } from "hangar-internal";
+import type { FlagActivity, ReviewActivity } from "hangar-internal";
 import { useHead } from "@unhead/vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";

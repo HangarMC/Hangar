@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import * as webauthnJson from "@github/webauthn-json";
-import { AuthSettings } from "hangar-internal";
+import type { AuthSettings } from "hangar-internal";
 import { useI18n } from "vue-i18n";
 import { useVuelidate } from "@vuelidate/core";
-import { AxiosRequestConfig } from "axios";
+import type { AxiosRequestConfig } from "axios";
 import { useAuthStore } from "~/store/auth";
 import { useNotificationStore } from "~/store/notification";
 import { useInternalApi } from "~/composables/useApi";

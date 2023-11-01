@@ -1,5 +1,5 @@
 // import { RouterOptions } from "@nuxt/schema";
-import { RouterHistory, RouterOptions } from "vue-router";
+import type { RouterHistory, RouterOptions } from "vue-router";
 
 type RouterConfig = Partial<Omit<RouterOptions, "history" | "routes">> & {
   history?: (baseURL?: string) => RouterHistory;

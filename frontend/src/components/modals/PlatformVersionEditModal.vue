@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
+import type { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useVuelidate } from "@vuelidate/core";
 import Button from "~/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
-import { Platform } from "~/types/enums";
+import type { Platform } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
 import VersionSelector from "~/components/VersionSelector.vue";

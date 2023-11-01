@@ -3,7 +3,7 @@ import VueI18n from "@intlify/unplugin-vue-i18n";
 import IconsResolver from "unplugin-icons/resolver";
 import Icons from "unplugin-icons/vite";
 import Components from "unplugin-vue-components/vite";
-import { ProxyOptions } from "@nuxt-alt/proxy";
+import type { ProxyOptions } from "@nuxt-alt/proxy";
 import { defineNuxtConfig } from "nuxt/config";
 import prettier from "./src/vite/prettier";
 import unocss from "./unocss.config";

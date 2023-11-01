@@ -1,5 +1,6 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { NuxtApp } from "nuxt/app";
+import type { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios from "axios";
+import type { NuxtApp } from "nuxt/app";
 import NProgress from "nprogress";
 import { defineNuxtPlugin, useAuth, useRequestEvent } from "#imports";
 import { useAuthStore } from "~/store/auth";

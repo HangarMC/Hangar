@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { HangarProject } from "hangar-internal";
+import type { HangarProject } from "hangar-internal";
 import { forumUrl } from "~/composables/useUrlHelper";
 import Card from "~/components/design/Card.vue";
 import Link from "~/components/design/Link.vue";

@@ -1,18 +1,8 @@
 <script lang="ts" setup>
 import { onMounted, watch } from "vue";
 import "chartist-plugin-legend";
-import {
-  BarChart,
-  BarChartData,
-  BarChartOptions,
-  LineChart,
-  LineChartData,
-  LineChartOptions,
-  PieChart,
-  PieChartData,
-  PieChartOptions,
-  BaseChart,
-} from "chartist";
+import type { BarChartData, BarChartOptions, LineChartData, LineChartOptions, PieChartData, PieChartOptions, BaseChart } from "chartist";
+import { BarChart, LineChart, PieChart } from "chartist";
 
 const props = defineProps<{
   id: string;

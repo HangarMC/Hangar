@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
-import { type ValidationRule } from "@vuelidate/core";
+import type { ValidationRule } from "@vuelidate/core";
 import { useValidation } from "~/composables/useValidationHelpers";
 import InputWrapper from "~/components/ui/InputWrapper.vue";
-import { Option } from "~/types/components/ui/InputAutocomplete";
+import type { Option } from "~/types/components/ui/InputAutocomplete";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: object | string | boolean | number | null | undefined): void;

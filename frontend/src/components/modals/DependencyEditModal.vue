@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
+import type { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
 import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { DependencyVersion, PluginDependency } from "hangar-api";
+import type { DependencyVersion, PluginDependency } from "hangar-api";
 import { cloneDeep } from "lodash-es";
 import { hasPerms } from "~/composables/usePerm";
 import Button from "~/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
-import { NamedPermission, Platform } from "~/types/enums";
+import type { Platform } from "~/types/enums";
+import { NamedPermission } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
 import DependencyTable from "~/components/projects/DependencyTable.vue";

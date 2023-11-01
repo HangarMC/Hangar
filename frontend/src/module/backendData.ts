@@ -1,8 +1,9 @@
 import { promises as fs } from "fs";
 import { defineNuxtModule } from "@nuxt/kit";
-import { BackendData } from "hangar-api";
-import axios, { AxiosInstance } from "axios";
-import { IProjectCategory } from "hangar-internal";
+import type { BackendData } from "hangar-api";
+import type { AxiosInstance } from "axios";
+import axios from "axios";
+import type { IProjectCategory } from "hangar-internal";
 // noinspection ES6PreferShortImport
 import { backendDataLog } from "../composables/useLog";
 

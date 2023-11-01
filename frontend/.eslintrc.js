@@ -8,6 +8,7 @@ module.exports = {
   parser: "vue-eslint-parser",
   parserOptions: {
     parser: "@typescript-eslint/parser",
+    project: "./tsconfig.json",
   },
   extends: [
     "@nuxtjs/eslint-config-typescript",
@@ -47,6 +48,8 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unused-vars": "off",
     "no-unused-vars": "off",
+    "@typescript-eslint/consistent-type-exports": "error",
+    "@typescript-eslint/consistent-type-imports": "error",
 
     // unicorn
     "unicorn/better-regex": "error",
@@ -89,6 +92,7 @@ module.exports = {
   overrides: [
     {
       files: ".eslintrc.js",
+      extends: ["plugin:@typescript-eslint/disable-type-checked"],
       rules: {
         "unicorn/prefer-module": "off",
       },

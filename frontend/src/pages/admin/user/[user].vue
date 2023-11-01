@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { User } from "hangar-api";
+import type { User } from "hangar-api";
 import { useRoute, useRouter } from "vue-router";
-import { OrganizationRoleTable } from "hangar-internal";
+import type { OrganizationRoleTable } from "hangar-internal";
 import { computed, ref } from "vue";
 import { useHead } from "@unhead/vue";
-import { AxiosError } from "axios";
+import type { AxiosError } from "axios";
 import PageTitle from "~/components/design/PageTitle.vue";
 import Link from "~/components/design/Link.vue";
 import Card from "~/components/design/Card.vue";
@@ -19,7 +19,7 @@ import InputSelect from "~/components/ui/InputSelect.vue";
 import { getRole, useBackendData } from "~/store/backendData";
 import Button from "~/components/design/Button.vue";
 import { definePageMeta } from "#imports";
-import { Header } from "~/types/components/SortableTable";
+import type { Header } from "~/types/components/SortableTable";
 
 definePageMeta({
   globalPermsRequired: ["EDIT_ALL_USER_SETTINGS"],

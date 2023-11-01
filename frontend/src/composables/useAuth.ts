@@ -1,11 +1,10 @@
-import { HangarUser } from "hangar-internal";
-import { AxiosError, AxiosInstance, AxiosRequestHeaders } from "axios";
-import jwtDecode, { type JwtPayload } from "jwt-decode";
+import type { HangarUser } from "hangar-internal";
+import type { AxiosError, AxiosInstance, AxiosRequestHeaders } from "axios";
+import { jwtDecode, type JwtPayload } from "jwt-decode";
 import { useAuthStore } from "~/store/auth";
-import { useCookies } from "~/composables/useCookies";
 import { useInternalApi } from "~/composables/useApi";
 import { authLog } from "~/composables/useLog";
-import { handleRequestError, useRequestEvent } from "#imports";
+import { handleRequestError, useCookie, useRequestEvent } from "#imports";
 import { useAxios } from "~/composables/useAxios";
 import { useNotificationStore } from "~/store/notification";
 import { transformAxiosError } from "~/composables/useErrorHandling";
@@ -65,7 +64,7 @@ class Auth {
     }
     // eslint-disable-next-line no-async-promise-executor
     this.refreshPromise = new Promise<false | string>(async (resolve) => {
-      const refreshToken = useCookies().get("HangarAuth_REFRESH");
+      const refreshToken = useCookie("HangarAuth_REFRESH").value;
       if (import.meta.env.SSR && !refreshToken) {
         authLog("no cookie, no point in refreshing");
         resolve(false);
@@ -75,7 +74,7 @@ class Auth {
 
       try {
         authLog("do refresh request");
-        const headers: AxiosRequestHeaders = {};
+        const headers = {} as AxiosRequestHeaders;
         if (import.meta.env.SSR) {
           headers.cookie = "HangarAuth_REFRESH=" + refreshToken;
           authLog("pass refresh cookie", refreshToken);

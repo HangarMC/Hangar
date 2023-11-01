@@ -8,7 +8,7 @@ import { useSeo } from "~/composables/useSeo";
 import Flags from "~/components/Flags.vue";
 import Tabs from "~/components/design/Tabs.vue";
 import { definePageMeta } from "#imports";
-import { Tab } from "~/types/components/design/Tabs";
+import type { Tab } from "~/types/components/design/Tabs";
 
 definePageMeta({
   globalPermsRequired: ["MOD_NOTES_AND_FLAGS"],

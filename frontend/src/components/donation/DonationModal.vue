@@ -26,7 +26,7 @@ onMounted(() => {
     script.onload = () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      // eslint-disable-next-line no-undef
+
       PayPal.Donation.Button({
         env: config.paypalEnv,
         business: props.donationSubject,

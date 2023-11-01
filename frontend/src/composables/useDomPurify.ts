@@ -1,4 +1,4 @@
-import { Config, DOMPurifyI } from "dompurify";
+import type { Config, DOMPurifyI } from "dompurify";
 import { useNuxtApp } from "#imports";
 
 export const config = {

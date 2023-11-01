@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue";
 import { useRoute } from "vue-router";
-import { HangarProject, HangarReview, HangarReviewMessage, HangarVersion, IPlatform } from "hangar-internal";
+import type { HangarProject, HangarReview, HangarReviewMessage, HangarVersion, IPlatform } from "hangar-internal";
 import { useI18n } from "vue-i18n";
 import { computed, reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { useSeo } from "~/composables/useSeo";
-import { Platform, ReviewAction, ReviewState } from "~/types/enums";
+import type { Platform } from "~/types/enums";
+import { ReviewAction, ReviewState } from "~/types/enums";
 import Button from "~/components/design/Button.vue";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import InputTextarea from "~/components/ui/InputTextarea.vue";

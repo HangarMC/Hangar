@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { HangarProject, PinnedVersion } from "hangar-internal";
+import type { HangarProject, PinnedVersion } from "hangar-internal";
 import { computed } from "vue";
-import { PlatformVersionDownload } from "hangar-api";
+import type { PlatformVersionDownload } from "hangar-api";
 import Button from "~/components/design/Button.vue";
-import { Platform } from "~/types/enums";
+import type { Platform } from "~/types/enums";
 import DropdownButton from "~/components/design/DropdownButton.vue";
 import { useBackendData } from "~/store/backendData";
 import DropdownItem from "~/components/design/DropdownItem.vue";

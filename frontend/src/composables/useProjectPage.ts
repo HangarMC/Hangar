@@ -1,6 +1,6 @@
 import { ref } from "vue";
-import { RouteLocationNormalizedLoaded, Router } from "vue-router";
-import { HangarProject } from "hangar-internal";
+import type { RouteLocationNormalizedLoaded, Router } from "vue-router";
+import type { HangarProject } from "hangar-internal";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
 import { usePage } from "~/composables/useApiHelper";

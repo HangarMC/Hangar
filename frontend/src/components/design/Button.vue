@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from "vue";
-import { RouteLocationRaw } from "vue-router";
+import type { RouteLocationRaw } from "vue-router";
 import Spinner from "~/components/design/Spinner.vue";
 import { NuxtLink } from "#components";
 

@@ -1,14 +1,13 @@
 import type { AxiosError, AxiosRequestConfig } from "axios";
 import qs from "qs";
 import Cookies from "universal-cookie";
-import { useCookies } from "~/composables/useCookies";
 import { authLog, fetchLog } from "~/composables/useLog";
 import { useAxios } from "~/composables/useAxios";
+import { useCookie } from "#imports";
 
 type FilteredAxiosConfig = Omit<AxiosRequestConfig, "method" | "url" | "data" | "params" | "baseURL">;
 
 function request<T>(url: string, method: AxiosRequestConfig["method"], data: object | string, axiosOptions: FilteredAxiosConfig = {}): Promise<T> {
-  const cookies = useCookies();
   return new Promise<T>((resolve, reject) => {
     return useAxios()
       .request<T>({
@@ -31,7 +30,7 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
             const parsedCookies = new Cookies(statString);
             const statCookie = parsedCookies.get("hangar_stats");
             // keep cookie settings in sync with StatService#setCookie
-            cookies.set("hangar_stats", statCookie, { path: "/", sameSite: "strict", maxAge: 60 * 60 * 24 * 356.24 * 1000 });
+            useCookie("hangar_stats", { path: "/", sameSite: "strict", maxAge: 60 * 60 * 24 * 356.24 * 1000 }).value = statCookie;
             authLog("got stats cookie from backend", statCookie);
           }
         }

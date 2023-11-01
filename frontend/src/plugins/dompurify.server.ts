@@ -1,4 +1,4 @@
-import { NuxtApp } from "nuxt/app";
+import type { NuxtApp } from "nuxt/app";
 import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
 import { defineNuxtPlugin } from "#imports";
