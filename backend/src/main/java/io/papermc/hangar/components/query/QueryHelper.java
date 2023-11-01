@@ -40,7 +40,7 @@ public final class QueryHelper {
         return EMPTY_LIST;
     }
 
-    public static Object avatarUrl(final DataFetchingEnvironment environment, final FileService fileService, final String avatarType) {
+    public static Object avatarUrl(final DataFetchingEnvironment environment, final FileService fileService,  final AvatarService avatarService, final String avatarType) {
         final String idVar = avatarType.equals(AvatarService.USER) ? "userid" : "projectid";
         final String idField = avatarType.equals(AvatarService.USER) ? "uuid" : "id";
 
@@ -53,8 +53,14 @@ public final class QueryHelper {
         queryBuilder.fields.add(STR."\{parentAlias}avatar.version AS \{avatarVersion}");
         queryBuilder.fields.add(STR."\{parentTable}\{idField} AS \{id}");
 
-        queryBuilder.joins.add(STR."JOIN avatars \{parentAlias}avatar ON \{parentAlias}avatar.type = '\{avatarType}' AND \{parentAlias}avatar.subject = \{parentTable}\{idField}::varchar");
-        queryBuilder.resolver.put(parentAlias + environment.getExecutionStepInfo().getPath().getSegmentName(), (r) -> fileService.getAvatarUrl(avatarType, String.valueOf(r.get(id)), r.get(avatarVersion)));
+        queryBuilder.joins.add(STR."LEFT JOIN avatars \{parentAlias}avatar ON \{parentAlias}avatar.type = '\{avatarType}' AND \{parentAlias}avatar.subject = \{parentTable}\{idField}::varchar");
+        queryBuilder.resolver.put(parentAlias + environment.getExecutionStepInfo().getPath().getSegmentName(), (r) -> {
+            // TODO for projects we need to call up to the owner and get the avatar from there? or should we handle that in frontend?
+            if (r.get(avatarVersion) == null) {
+                return avatarService.getDefaultAvatarUrl();
+            }
+            return fileService.getAvatarUrl(avatarType, String.valueOf(r.get(id)), r.get(avatarVersion));
+        });
         return EMPTY;
     }
 }
