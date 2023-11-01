@@ -80,7 +80,7 @@ public class QueryMerger {
                     if (key.equals(commonKey + "_" + pk)) {
                         pkValue = row.get(key);
                         System.out.println(logPrefix + "primary key: " + pkValue);
-                        newResult = current.computeIfAbsent(pkValue, _ -> new HashMap<>());
+                        newResult = current.computeIfAbsent(pkValue, dum -> new HashMap<>());
                         newResult.put(pk, row.get(key));
                     } else {
                         final String shortenedKey = key.replaceFirst(commonKey + "_", "");
@@ -94,7 +94,7 @@ public class QueryMerger {
                     result.put(commonKey, others);
                 } else {
                     System.out.println(logPrefix + "others: " + others);
-                    newInputs.computeIfAbsent(pkValue, _ -> new ArrayList<>()).add(others);
+                    newInputs.computeIfAbsent(pkValue, dum -> new ArrayList<>()).add(others);
                 }
             }
 
