@@ -73,6 +73,10 @@ public class AvatarService extends HangarComponent {
         logger.info("Default avatar url is {}", this.defaultAvatarUrl);
     }
 
+    public String getDefaultAvatarUrl() {
+        return this.defaultAvatarUrl;
+    }
+
     /*
      * Get methods
      */

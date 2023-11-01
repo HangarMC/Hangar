@@ -17,9 +17,11 @@ import static io.papermc.hangar.components.query.QueryHelper.query;
 public class QueryMappings {
 
     private final FileService fileService;
+    private final AvatarService avatarService;
 
-    public QueryMappings(final FileService fileService) {
+    public QueryMappings(final FileService fileService, final AvatarService avatarService) {
         this.fileService = fileService;
+        this.avatarService = avatarService;
     }
 
     // queries
@@ -58,12 +60,12 @@ public class QueryMappings {
     // special schemas
     @SchemaMapping(typeName = "Project", field = "avatarUrl")
     public Object projectAvatarUrl(final DataFetchingEnvironment environment) {
-        return avatarUrl(environment, this.fileService, AvatarService.PROJECT);
+        return avatarUrl(environment, this.fileService, this.avatarService, AvatarService.PROJECT);
     }
 
     @SchemaMapping(typeName = "User", field = "avatarUrl")
     public Object userUrl(final DataFetchingEnvironment environment) {
-        return avatarUrl(environment, this.fileService, AvatarService.USER);
+        return avatarUrl(environment, this.fileService, this.avatarService, AvatarService.USER);
     }
 
     @SchemaMapping(typeName = "Project", field = "namespace")
