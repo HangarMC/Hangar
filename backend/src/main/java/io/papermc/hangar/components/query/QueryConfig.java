@@ -73,10 +73,10 @@ public class QueryConfig {
                     // find return type
                     if (parameters.getField().getType() instanceof final GraphQLScalarType scalarType) {
                         if (scalarType.getName().equals("Int")) {
-                            return (DataFetcher<Integer>) _ -> 0;
+                            return (DataFetcher<Integer>) dum -> 0;
                         }
                     }
-                    return (DataFetcher<Object>) _ -> EMPTY;
+                    return (DataFetcher<Object>) dum -> EMPTY;
                 }
                 return Instrumentation.super.instrumentDataFetcher(dataFetcher, parameters, state);
             }
