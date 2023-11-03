@@ -40,6 +40,14 @@ public final class QueryHelper {
         return EMPTY_LIST;
     }
 
+    public static void selectField(final DataFetchingEnvironment environment, final String tableSuffix, final String qglField, final String dbField, final String resultField) {
+        if (environment.getSelectionSet().contains(qglField)) {
+            final QueryBuilder queryBuilder = getActiveQueryBuilder(environment.getGraphQlContext());
+            final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
+            queryBuilder.fields.add(STR."\{parentAlias.substring(0, parentAlias.length() - 1)}\{tableSuffix}.\{dbField} AS \{parentAlias}\{resultField}");
+        }
+    }
+
     public static Object avatarUrl(final DataFetchingEnvironment environment, final FileService fileService,  final AvatarService avatarService, final String avatarType) {
         final String idVar = avatarType.equals(AvatarService.USER) ? "userid" : "projectid";
         final String idField = avatarType.equals(AvatarService.USER) ? "uuid" : "id";

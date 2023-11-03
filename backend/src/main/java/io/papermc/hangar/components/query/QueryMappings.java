@@ -12,6 +12,7 @@ import static io.papermc.hangar.components.query.QueryHelper.EMPTY;
 import static io.papermc.hangar.components.query.QueryHelper.avatarUrl;
 import static io.papermc.hangar.components.query.QueryHelper.join;
 import static io.papermc.hangar.components.query.QueryHelper.query;
+import static io.papermc.hangar.components.query.QueryHelper.selectField;
 
 @Controller
 public class QueryMappings {
@@ -70,15 +71,8 @@ public class QueryMappings {
 
     @SchemaMapping(typeName = "Project", field = "namespace")
     public Object projectNamespace(final DataFetchingEnvironment environment) {
-        final QueryBuilder queryBuilder = getActiveQueryBuilder(environment.getGraphQlContext());
-        final String parentAlias = PrefixUtil.getParentAlias(environment.getExecutionStepInfo(), queryBuilder);
-        final String parentTable = PrefixUtil.getParentTable(environment.getExecutionStepInfo(), queryBuilder);
-        if (environment.getSelectionSet().contains("owner")) {
-            queryBuilder.fields.add(STR."\{parentTable}owner_name AS \{parentAlias}namespace_owner");
-        }
-        if (environment.getSelectionSet().contains("slug")) {
-            queryBuilder.fields.add(STR."\{parentTable}slug AS \{parentAlias}namespace_slug");
-        }
+        selectField(environment, "", "owner", "owner_name", "namespace_owner");
+        selectField(environment, "", "slug", "slug", "namespace_slug");
         return null; // no need to dig deeper
     }
 
@@ -89,5 +83,17 @@ public class QueryMappings {
         join(environment, "project_home_pages", "homepage_id", "project_id", "id");
         join(environment, "project_pages", "homepage", "id", "page_id", parentAlias + "homepage_id.");
         return EMPTY;
+    }
+
+    @SchemaMapping(typeName = "Project", field = "stats")
+    public Object projectStats(final DataFetchingEnvironment environment) {
+        join(environment, "home_projects", "extra", "id", "id");
+        selectField(environment, "_extra", "stars", "stars", "stats_stars");
+        selectField(environment, "_extra", "watchers", "watchers", "stats_watchers");
+        selectField(environment, "_extra", "views", "views", "stats_views");
+        selectField(environment, "_extra", "downloads", "downloads", "stats_downloads");
+        selectField(environment, "_extra", "recentViews", "recent_views", "stats_recentViews");
+        selectField(environment, "_extra", "recentDownloads", "recent_downloads", "stats_recentDownloads");
+        return null; // no need to dig deeper
     }
 }

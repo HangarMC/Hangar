@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -195,7 +196,8 @@ class QueryMergerTest {
     }
 
     // TODO solve these by always adding PKs to query on join
-    //@Test
+    @Test
+    @DisabledIfEnvironmentVariable(named = "CI", matches = "true")
     void mergeNoPrimaryKey() throws JsonProcessingException {
         final List<Map<String, String>> input = new ArrayList<>();
         input.add(Map.of("projects_id", "1"));
@@ -211,7 +213,8 @@ class QueryMergerTest {
         compare(expected, merger.merge(input));
     }
 
-    //@Test
+    @Test
+    @DisabledIfEnvironmentVariable(named = "CI", matches = "true")
     void mergeNoPrimaryKey2() throws JsonProcessingException {
         final List<Map<String, String>> input = new ArrayList<>();
         input.add(Map.of("projects_id", "1", "projects_owner_name", "MiniDigger"));
@@ -227,7 +230,8 @@ class QueryMergerTest {
         compare(expected, merger.merge(input));
     }
 
-    //@Test
+    @Test
+    @DisabledIfEnvironmentVariable(named = "CI", matches = "true")
     void mergeNoPrimaryKey3() throws JsonProcessingException {
         final List<Map<String, String>> input = new ArrayList<>();
         input.add(Map.of("projects_name", "Test", "projects_owner_email", "Dum", "projects_owner_id", "1"));
@@ -239,6 +243,25 @@ class QueryMergerTest {
                 Map.of("name", "Test2", "owner", Map.of("email", "Dum", "id", "1"))
             )
         );
+
+        compare(expected, merger.merge(input));
+    }
+
+    @Test
+    @DisabledIfEnvironmentVariable(named = "CI", matches = "true")
+    void mergeEmptyProjects() throws JsonProcessingException {
+        final List<Map<String, String>> input = new ArrayList<>();
+        final Map<String, String> thing = new HashMap<>();
+        thing.put("users_name", "JarScanner");
+        thing.put("users_projects_name", null);
+        thing.put("users_projects_stats_stars", null);
+        input.add(thing);
+
+        final Map<String, Object> expected = Map.of(
+            "users", List.of(Map.of(
+                "projects", List.of(),
+                "name", "JarScanner"
+            )));
 
         compare(expected, merger.merge(input));
     }
