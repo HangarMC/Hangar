@@ -47,7 +47,8 @@ type ProjectPage {
     parent: ProjectPage
 }
 
-type ProjectStats {
+type ProjectStats implements Virtual {
+    _virtual: Boolean
     views: Int
     downloads: Int
     recentViews: Int
@@ -56,10 +57,10 @@ type ProjectStats {
     watchers: Int
 }
 
-type ProjectNamespace implements Virtual{
+type ProjectNamespace implements Virtual {
+    _virtual: Boolean
     owner: String
     slug: String
-    _virtual: Boolean
 }
 
 interface Virtual {
