@@ -3,6 +3,7 @@ package io.papermc.hangar.components.query;
 import graphql.schema.DataFetchingEnvironment;
 import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.service.internal.file.FileService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import static io.papermc.hangar.components.query.QueryHelper.query;
 import static io.papermc.hangar.components.query.QueryHelper.selectField;
 
 @Controller
+@ConditionalOnProperty("enable-graphql")
 public class QueryMappings {
 
     private final FileService fileService;
