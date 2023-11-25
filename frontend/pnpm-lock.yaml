@@ -72,14 +72,14 @@ dependencies:
     specifier: 4.17.21
     version: 4.17.21
   marked:
-    specifier: 9.1.4
-    version: 9.1.4
+    specifier: 10.0.0
+    version: 10.0.0
   marked-extended-tables:
     specifier: 1.0.7
-    version: 1.0.7(marked@9.1.4)
+    version: 1.0.7(marked@10.0.0)
   marked-linkify-it:
     specifier: 3.1.6
-    version: 3.1.6(marked@9.1.4)
+    version: 3.1.6(marked@10.0.0)
   nprogress:
     specifier: 0.2.0
     version: 0.2.0
@@ -6341,33 +6341,33 @@ packages:
       - supports-color
     dev: true
 
-  /marked-extended-tables@1.0.7(marked@9.1.4):
+  /marked-extended-tables@1.0.7(marked@10.0.0):
     resolution: {integrity: sha512-DwURXYCPxhIdEP6y0rI9Od3qPM6ieXK7ce6hqR0/9MpkSmBUMrrBtoH3fMp6+oEXjfmIq4YBGPi9Ios80N3Q2w==}
     peerDependencies:
       marked: '>=3 <10'
     dependencies:
-      marked: 9.1.4
+      marked: 10.0.0
     dev: false
 
-  /marked-linkify-it@3.1.6(marked@9.1.4):
+  /marked-linkify-it@3.1.6(marked@10.0.0):
     resolution: {integrity: sha512-rxM/9R6wemj9F49Y5h2lQm8ZTNx9k9+2yl3QLc7mvSyejcIGT+2Invb9Ll9l/dS520dR19MZzzfxTe8cL1oR6w==}
     peerDependencies:
       marked: '>=4 <11'
     dependencies:
       '@types/linkify-it': 3.0.5
       linkify-it: 4.0.1
-      marked: 9.1.4
+      marked: 10.0.0
+    dev: false
+
+  /marked@10.0.0:
+    resolution: {integrity: sha512-YiGcYcWj50YrwBgNzFoYhQ1hT6GmQbFG8SksnYJX1z4BXTHSOrz1GB5/Jm2yQvMg4nN1FHP4M6r03R10KrVUiA==}
+    engines: {node: '>= 18'}
+    hasBin: true
     dev: false
 
   /marked@4.3.0:
     resolution: {integrity: sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==}
     engines: {node: '>= 12'}
-    hasBin: true
-    dev: false
-
-  /marked@9.1.4:
-    resolution: {integrity: sha512-Mq83CCaClhXqhf8sLQ57c1unNelHEuFadK36ga+GeXR4FeT/5ssaC5PaCRVqMA74VYorzYRqdAaxxteIanh3Kw==}
-    engines: {node: '>= 16'}
     hasBin: true
     dev: false
 

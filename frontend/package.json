@@ -43,7 +43,7 @@
     "jsdom": "22.1.0",
     "jwt-decode": "4.0.0",
     "lodash-es": "4.17.21",
-    "marked": "9.1.4",
+    "marked": "10.0.0",
     "marked-extended-tables": "1.0.7",
     "marked-linkify-it": "3.1.6",
     "nprogress": "0.2.0",
