@@ -40,7 +40,7 @@
     "dompurify": "3.0.6",
     "easymde": "2.18.0",
     "filesize": "10.1.0",
-    "jsdom": "22.1.0",
+    "jsdom": "23.0.1",
     "jwt-decode": "4.0.0",
     "lodash-es": "4.17.21",
     "marked": "9.1.4",
