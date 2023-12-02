@@ -26,12 +26,12 @@
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
         <!-- dependency management -->
-        <jdbi3-bom.version>3.41.3</jdbi3-bom.version>
+        <jdbi3-bom.version>3.42.0</jdbi3-bom.version>
         <configurate.version>4.1.2</configurate.version>
         <spring-cloud-aws.version>3.0.3</spring-cloud-aws.version>
 
         <!-- dependencies -->
-        <sentry.version>6.34.0</sentry.version>
+        <sentry.version>7.0.0</sentry.version>
         <springdoc.version>2.2.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20230618</org-json.version>
@@ -48,8 +48,9 @@
         <webp.version>0.1.6</webp.version>
         <webauthn.version>2.5.0</webauthn.version>
         <logback-contrib.version>0.1.5</logback-contrib.version>
-        <janino.version>3.1.10</janino.version>
+        <janino.version>3.1.11</janino.version>
         <mockito-inline.version>5.2.0</mockito-inline.version>
+        <otel-semconv.version>1.30.0-alpha</otel-semconv.version>
 
         <!-- test -->
         <pg.version>1.19.3</pg.version>
@@ -301,6 +302,12 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-tracing-bridge-otel</artifactId>
+        </dependency>
+        <!-- need this to fix an incompatibility with springboot 3.2/micrometer -->
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-semconv</artifactId>
+            <version>${otel-semconv.version}</version>
         </dependency>
         <!--dependency>
             <groupId>io.opentelemetry</groupId>
