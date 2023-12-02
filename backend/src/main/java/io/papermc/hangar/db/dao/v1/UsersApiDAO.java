@@ -7,15 +7,15 @@ import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import java.time.OffsetDateTime;
 import java.util.List;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 public interface UsersApiDAO {
 
     @RegisterConstructorMapper(ProjectCompact.class)

@@ -5,14 +5,14 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import java.util.List;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapperFactory;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 public interface HangarOrganizationsDAO {
 
     @RegisterRowMapperFactory(JoinableRowMapperFactory.class)

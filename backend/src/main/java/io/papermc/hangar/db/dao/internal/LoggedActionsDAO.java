@@ -10,6 +10,7 @@ import io.papermc.hangar.model.db.log.LoggedActionsUserTable;
 import io.papermc.hangar.model.db.log.LoggedActionsVersionTable;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
 import java.util.List;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -18,9 +19,8 @@ import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 public interface LoggedActionsDAO {
 
     @Timestamped

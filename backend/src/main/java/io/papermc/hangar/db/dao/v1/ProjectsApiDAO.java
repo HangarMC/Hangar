@@ -10,6 +10,7 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapperFactory;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
@@ -19,9 +20,8 @@ import org.jdbi.v3.sqlobject.customizer.DefineNamedBindings;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 @RegisterConstructorMapper(Project.class)
 public interface ProjectsApiDAO {
 

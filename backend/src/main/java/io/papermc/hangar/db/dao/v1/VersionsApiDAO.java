@@ -14,6 +14,7 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.enums.EnumStrategy;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
@@ -23,9 +24,8 @@ import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 @UseStringTemplateEngine
 @UseEnumStrategy(EnumStrategy.BY_ORDINAL)
 @RegisterConstructorMapper(Version.class)

@@ -4,11 +4,11 @@ import io.papermc.hangar.db.extras.BindPagination;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import java.util.List;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 @RegisterConstructorMapper(HangarProjectFlag.class)
 public interface HangarProjectFlagsDAO {
 

@@ -5,14 +5,14 @@ import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
 import io.papermc.hangar.db.customtypes.JSONB;
 import java.util.List;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 @RegisterConstructorMapper(UserCredentialTable.class)
 public interface UserCredentialDAO {
 

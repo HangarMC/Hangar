@@ -3,6 +3,7 @@ package io.papermc.hangar;
 import io.papermc.hangar.config.hangar.PagesConfig;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import java.util.Optional;
+import org.jdbi.v3.spring5.EnableJdbiRepositories;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -14,8 +15,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 @EnableScheduling
 @EnableCaching
+@EnableJdbiRepositories
 @SpringBootApplication
-@Import(JdbiBeanFactoryPostProcessor.class)
 @ConfigurationPropertiesScan(value = "io.papermc.hangar.config.hangar", basePackageClasses = PagesConfig.class)
 public class HangarApplication {
 

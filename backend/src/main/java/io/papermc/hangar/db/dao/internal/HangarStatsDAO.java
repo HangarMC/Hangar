@@ -3,15 +3,15 @@ package io.papermc.hangar.db.dao.internal;
 import io.papermc.hangar.model.internal.admin.DayStats;
 import java.time.LocalDate;
 import java.util.List;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 public interface HangarStatsDAO {
 
     @SqlQuery

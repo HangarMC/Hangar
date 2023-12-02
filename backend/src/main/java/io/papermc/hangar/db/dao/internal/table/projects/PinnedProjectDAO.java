@@ -3,13 +3,13 @@ package io.papermc.hangar.db.dao.internal.table.projects;
 import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.db.projects.PinnedProjectTable;
 import java.util.List;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 public interface PinnedProjectDAO {
 
     @SqlUpdate("INSERT INTO pinned_user_projects (project_id, user_id) VALUES (:projectId, :userId) ON CONFLICT DO NOTHING")

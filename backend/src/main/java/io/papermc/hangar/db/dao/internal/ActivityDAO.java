@@ -3,11 +3,11 @@ package io.papermc.hangar.db.dao.internal;
 import io.papermc.hangar.model.internal.admin.activity.FlagActivity;
 import io.papermc.hangar.model.internal.admin.activity.ReviewActivity;
 import java.util.List;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 public interface ActivityDAO {
 
     @RegisterConstructorMapper(FlagActivity.class)

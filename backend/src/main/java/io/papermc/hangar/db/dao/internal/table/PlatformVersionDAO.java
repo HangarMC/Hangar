@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.enums.EnumStrategy;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.UseEnumStrategy;
@@ -16,9 +17,8 @@ import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.SqlBatch;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 @RegisterConstructorMapper(PlatformVersionTable.class)
 @UseEnumStrategy(EnumStrategy.BY_ORDINAL)
 public interface PlatformVersionDAO {

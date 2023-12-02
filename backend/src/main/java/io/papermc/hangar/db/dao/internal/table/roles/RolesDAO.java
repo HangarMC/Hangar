@@ -5,6 +5,7 @@ import io.papermc.hangar.model.common.roles.RoleData;
 import io.papermc.hangar.model.db.roles.RoleTable;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
@@ -12,7 +13,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 @RegisterConstructorMapper(RoleTable.class)
 @RegisterConstructorMapper(RoleData.class)
 public interface RolesDAO {

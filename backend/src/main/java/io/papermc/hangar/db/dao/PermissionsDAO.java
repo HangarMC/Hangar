@@ -3,13 +3,13 @@ package io.papermc.hangar.db.dao;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
 import java.util.Map;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.ValueColumn;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 public interface PermissionsDAO {
 
     @SqlQuery("SELECT coalesce(gt.permission, B'0'::bit(64))::bigint perm_value" +

@@ -1,13 +1,13 @@
 package io.papermc.hangar.db.dao.internal.table.versions;
 
 import io.papermc.hangar.model.db.versions.PinnedProjectVersionTable;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 public interface PinnedProjectVersionsDAO {
 
     @Timestamped

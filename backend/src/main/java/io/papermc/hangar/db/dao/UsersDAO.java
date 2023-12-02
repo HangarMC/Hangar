@@ -6,6 +6,7 @@ import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import java.util.List;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapperFactory;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.AllowUnusedBindings;
@@ -13,9 +14,8 @@ import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.MapTo;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 @RegisterConstructorMapper(HangarUser.class)
 @RegisterConstructorMapper(User.class)
 @RegisterColumnMapperFactory(RoleColumnMapperFactory.class)

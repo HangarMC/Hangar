@@ -4,15 +4,15 @@ import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import java.util.List;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.springframework.stereotype.Repository;
 
-@Repository
+@JdbiRepository
 @RegisterConstructorMapper(ProjectChannelTable.class)
 public interface ProjectChannelsDAO {
 
