@@ -92,7 +92,7 @@ function cancelTransfer() {
   }
 
   saving.value = true;
-  const url = props.organization ? `organizations/org/${props.author}/canceltransfer` : `projects/project/${props.author}/${props.slug}/canceltransfer`;
+  const url = props.organization ? `organizations/org/${props.author}/canceltransfer` : `projects/project/${props.slug}/canceltransfer`;
   useInternalApi(url, "post")
     .then(() => router.go(0))
     .catch((e) => handleRequestError(e))
@@ -122,7 +122,7 @@ function post(member: EditableMember, action: "edit" | "add" | "remove") {
   }
 
   saving.value = true;
-  const url = props.organization ? `organizations/org/${props.author}/members/${action}` : `projects/project/${props.author}/${props.slug}/members/${action}`;
+  const url = props.organization ? `organizations/org/${props.author}/members/${action}` : `projects/project/${props.slug}/members/${action}`;
   useInternalApi(url, "post", member)
     .then(() => {
       router.go(0);
