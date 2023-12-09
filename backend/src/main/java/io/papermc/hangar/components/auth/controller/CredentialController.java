@@ -187,6 +187,15 @@ public class CredentialController extends HangarComponent {
         this.credentialsService.checkRemoveBackupCodes();
     }
 
+    @Privileged
+    @RequireAal(1)
+    @PostMapping(value = "/webauthn/rename", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void renameWebauthn(@RequestBody final RenameRequest renameRequest) {
+        this.webAuthNService.renameDevice(this.getHangarPrincipal().getUserId(), renameRequest.id(), renameRequest.displayName());
+    }
+
+    public record RenameRequest(String id, String displayName) {}
+
     /*
      * TOTP
      */

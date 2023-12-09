@@ -16,7 +16,7 @@ import PageTitle from "~/components/design/PageTitle.vue";
 import Modal from "~/components/modals/Modal.vue";
 import PrettyTime from "~/components/design/PrettyTime.vue";
 
-const props = defineProps<{
+defineProps<{
   settings?: AuthSettings;
 }>();
 const emit = defineEmits<{
@@ -68,6 +68,40 @@ async function unregisterAuthenticator(authenticator: AuthSettings["authenticato
   loading.value = true;
   try {
     await useInternalApi("auth/webauthn/unregister", "POST", authenticator.id, { headers: { "content-type": "text/plain" } });
+    emit("refreshSettings");
+  } catch (e) {
+    if (e.response?.data?.message === "error.privileged") {
+      await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
+    } else if (e?.toString()?.startsWith("NotAllowedError")) {
+      notification.error("Security Key Authentication failed!");
+    } else {
+      notification.fromError(i18n, e);
+    }
+  }
+  loading.value = false;
+}
+
+const newAuthenticatorName = ref<string>();
+const currentlyRenamingAuthenticator = ref<AuthSettings["authenticators"][0]>();
+const authenticatorRenameModal = ref();
+
+function renameAuthenticatorModal(authenticator: AuthSettings["authenticators"][0]) {
+  newAuthenticatorName.value = authenticator.displayName;
+  currentlyRenamingAuthenticator.value = authenticator;
+  authenticatorRenameModal.value.isOpen = true;
+  v.value.$reset();
+}
+
+async function renameAuthenticator() {
+  if (!(await v.value.$validate())) return;
+  if (!currentlyRenamingAuthenticator.value) {
+    notification.error("Something went wrong, please try again");
+    return;
+  }
+  loading.value = true;
+  try {
+    await useInternalApi("auth/webauthn/rename", "POST", { id: currentlyRenamingAuthenticator.value.id, displayName: newAuthenticatorName.value });
+    authenticatorRenameModal.value.isOpen = false;
     emit("refreshSettings");
   } catch (e) {
     if (e.response?.data?.message === "error.privileged") {
@@ -237,10 +271,22 @@ async function generateNewCodes() {
       <li v-for="authenticator in settings.authenticators" :key="authenticator.id" class="my-1">
         {{ authenticator.displayName }} <small class="mr-2">(added at <PrettyTime :time="authenticator.addedAt" long />)</small>
         <Button size="small" :disabled="loading" @click.prevent="unregisterAuthenticator(authenticator)">Unregister</Button>
+        <Button class="ml-2" size="small" :disabled="loading" @click.prevent="renameAuthenticatorModal(authenticator)">Rename</Button>
       </li>
+      <Modal
+        ref="authenticatorRenameModal"
+        title="Rename authenticator"
+        @close="
+          authenticatorRenameModal.isOpen = false;
+          v.$reset();
+        "
+      >
+        <InputText v-model="newAuthenticatorName" label="Name" :rules="[requiredIf()(() => authenticatorRenameModal.isOpen)]" />
+        <Button class="mt-2" size="small" :disabled="loading" @click.prevent="renameAuthenticator">Rename</Button>
+      </Modal>
     </ul>
     <div class="my-2">
-      <InputText v-model="authenticatorName" label="Name" :rules="[requiredIf()(() => totpData == undefined)]" />
+      <InputText v-model="authenticatorName" label="Name" :rules="[requiredIf()(() => totpData == undefined && !authenticatorRenameModal.isOpen)]" />
     </div>
     <Button :disabled="loading" @click="addAuthenticator">Setup 2FA via security key</Button>
 
