@@ -5,9 +5,9 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <footer class="relative flex mt-10 background-default px-8 text-light-10">
-    <div class="mt-3 mb-3 flex flex-column flex-grow-1 justify-center">
-      <div class="flex flex-wrap flex-row-reverse flex-grow-1 gap-4 justify-around items-center max-w-1200px text-sm">
+  <footer class="relative mt-10 py-1 background-default text-light-10">
+    <div class="mt-3 mb-3 max-w-screen-xl mx-auto px-4">
+      <div class="flex flex-wrap flex-row-reverse flex-grow-1 gap-4 justify-around items-center text-sm">
         <div class="flex flex-row flex-wrap justify-center">
           <a
             href="https://github.com/HangarMC"
@@ -40,7 +40,9 @@ const { t } = useI18n();
             {{ t("hangar.footer.legalNotice") }}
           </NuxtLink>
         </div>
-        <p class="font-bold">© {{ new Date().getFullYear() }} <a href="https://papermc.io/">PaperMC</a></p>
+        <div class="flex flex-grow-1 lt-md:justify-center">
+          <p class="font-bold">© {{ new Date().getFullYear() }} <a href="https://papermc.io/">PaperMC</a></p>
+        </div>
       </div>
     </div>
   </footer>
