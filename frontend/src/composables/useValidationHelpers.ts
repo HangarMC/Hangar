@@ -1,6 +1,6 @@
 import { type ErrorObject, useVuelidate, type ValidationRule } from "@vuelidate/core";
 import { computed } from "vue";
-import type { ComputedRef, type Ref } from "vue";
+import type { ComputedRef, Ref } from "vue";
 import * as validators from "@vuelidate/validators";
 import { createI18nMessage, helpers, type ValidatorWrapper } from "@vuelidate/validators";
 import { difference, isEmpty, uniq } from "lodash-es";
@@ -108,7 +108,13 @@ export const validPageName = withOverrideMessage((body: ComputedRef<{ projectId:
         await useInternalApi("pages/checkName", "get", body.value);
         return { $valid: true };
       } catch (e: AxiosError | any) {
-        return e?.response?.data?.detail ? { $valid: false, $message: e.response.data.detail } : { $valid: false };
+        if (e?.response?.data?.detail) {
+          return { $valid: false, $message: e.response.data.detail };
+        } else if (e?.response?.data?.message) {
+          return { $valid: false, $message: e.response.data.message };
+        } else {
+          return { $valid: false };
+        }
       }
     }, body)
   )

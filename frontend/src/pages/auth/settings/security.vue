@@ -53,7 +53,7 @@ async function addAuthenticator() {
       codes.value = e.response.data.body;
       backupCodeModal.value.isOpen = true;
       savedRequest.value = e.config;
-    } else if (e.response?.data?.detail === "error.privileged") {
+    } else if (e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else if (e?.toString()?.startsWith("NotAllowedError")) {
       notification.error("Security Key Authentication failed!");
@@ -70,7 +70,7 @@ async function unregisterAuthenticator(authenticator: AuthSettings["authenticato
     await useInternalApi("auth/webauthn/unregister", "POST", authenticator.id, { headers: { "content-type": "text/plain" } });
     emit("refreshSettings");
   } catch (e) {
-    if (e.response?.data?.detail === "error.privileged") {
+    if (e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else if (e?.toString()?.startsWith("NotAllowedError")) {
       notification.error("Security Key Authentication failed!");
@@ -88,7 +88,7 @@ async function setupTotp() {
   try {
     totpData.value = await useInternalApi<{ secret: string; qrCode: string }>("auth/totp/setup", "POST");
   } catch (e) {
-    if (e.response?.data?.detail === "error.privileged") {
+    if (e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
       notification.fromError(i18n, e);
@@ -111,7 +111,7 @@ async function addTotp() {
       backupCodeModal.value.isOpen = true;
       savedRequest.value = e.config;
       otp.value = e.response.headers["x-hangar-verify"];
-    } else if (e.response?.data?.detail === "error.privileged") {
+    } else if (e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
       notification.fromError(i18n, e);
@@ -126,7 +126,7 @@ async function unlinkTotp() {
     await useInternalApi("auth/totp/remove", "POST");
     emit("refreshSettings");
   } catch (e) {
-    if (e.response?.data?.detail === "error.privileged") {
+    if (e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
       notification.fromError(i18n, e);
@@ -184,7 +184,7 @@ async function revealCodes() {
     }
     showCodes.value = true;
   } catch (e) {
-    if (e.response?.data?.detail === "error.privileged") {
+    if (e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
       notification.fromError(i18n, e);
@@ -200,7 +200,7 @@ async function generateNewCodes() {
     notification.success("Regenerated backup codes!");
     emit("refreshSettings");
   } catch (e) {
-    if (e.response?.data?.detail === "error.privileged") {
+    if (e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
       notification.fromError(i18n, e);
