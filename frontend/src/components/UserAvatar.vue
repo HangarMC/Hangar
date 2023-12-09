@@ -50,7 +50,9 @@ const src = computed(() => {
 });
 
 const url = computed(() => {
-  if (props.to) {
+  if (props.disableLink) {
+    return undefined;
+  } else if (props.to) {
     return props.to;
   } else if (props.username) {
     return "/" + props.username;
@@ -63,7 +65,7 @@ const url = computed(() => {
 <template>
   <div :class="'rounded-lg ' + sizeClass">
     <component :is="disableLink ? 'span' : 'NuxtLink'" :key="url" :to="url">
-      <img class="rounded-lg w-full h-full" :title="username" :src="src" :alt="username" @error="errored = true" />
+      <img class="rounded-lg w-full h-full" :title="username" :src="src" :alt="'Avatar for ' + username" @error="errored = true" />
     </component>
   </div>
 </template>
