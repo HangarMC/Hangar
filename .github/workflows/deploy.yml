@@ -38,7 +38,7 @@ jobs:
         run: echo "timestamp=$(date +%s)" >> $GITHUB_OUTPUT
 
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: temurin
