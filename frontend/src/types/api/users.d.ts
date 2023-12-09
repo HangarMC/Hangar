@@ -24,6 +24,9 @@ declare module "hangar-api" {
     socials?: {
       discord?: string;
       github?: string;
+      twitter?: string;
+      youtube?: string;
+      website?: string;
     };
   }
 

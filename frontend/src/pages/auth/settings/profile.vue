@@ -29,6 +29,9 @@ const linkType = ref<string>();
 const linkTypes = [
   { value: "discord", text: "Discord" },
   { value: "github", text: "GitHub" },
+  { value: "twitter", text: "Twitter" },
+  { value: "youtube", text: "YouTube" },
+  { value: "website", text: "Website" },
 ];
 
 function addLink() {

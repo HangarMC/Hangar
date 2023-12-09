@@ -77,7 +77,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping(path = "/api/internal", produces = MediaType.APPLICATION_JSON_VALUE, method = {RequestMethod.GET, RequestMethod.POST})
 public class HangarUserController extends HangarComponent {
 
-    private static final Set<String> ACCEPTED_SOCIAL_TYPES = Set.of("discord", "github");
+    private static final Set<String> ACCEPTED_SOCIAL_TYPES = Set.of("discord", "github", "twitter", "youtube", "website");
 
     private final ObjectMapper mapper;
     private final UsersApiService usersApiService;
