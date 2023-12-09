@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 import org.jdbi.v3.core.Jdbi;
 import org.jetbrains.annotations.NotNull;
 import org.postgresql.jdbc.PgArray;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,6 +37,7 @@ import static io.papermc.hangar.components.query.QueryBuilder.getAllQueryBuilder
 import static io.papermc.hangar.components.query.QueryHelper.EMPTY;
 
 @Configuration
+@ConditionalOnProperty("enable-graphql")
 public class QueryConfig {
 
     private final Jdbi jdbi;
