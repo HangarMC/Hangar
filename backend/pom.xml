@@ -32,9 +32,9 @@
 
         <!-- dependencies -->
         <sentry.version>7.0.0</sentry.version>
-        <springdoc.version>2.2.0</springdoc.version>
+        <springdoc.version>2.3.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
-        <org-json.version>20230618</org-json.version>
+        <org-json.version>20231013</org-json.version>
         <bucket4j.version>7.6.0</bucket4j.version>
         <datafaker.version>2.0.2</datafaker.version>
         <apache-commons-lang.version>3.14.0</apache-commons-lang.version>
