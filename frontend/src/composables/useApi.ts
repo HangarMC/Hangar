@@ -24,15 +24,19 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
       })
       .then(({ data, headers }) => {
         // check for stats cookie
-        if (headers["set-cookie"]) {
-          const statString = headers["set-cookie"].find((c: string) => c.startsWith("hangar_stats"));
-          if (statString) {
-            const parsedCookies = new Cookies(statString);
-            const statCookie = parsedCookies.get("hangar_stats");
-            // keep cookie settings in sync with StatService#setCookie
-            useCookie("hangar_stats", { path: "/", sameSite: "strict", maxAge: 60 * 60 * 24 * 356.24 * 1000 }).value = statCookie;
-            authLog("got stats cookie from backend", statCookie);
+        try {
+          if (headers["set-cookie"]) {
+            const statString = headers["set-cookie"].find((c: string) => c.startsWith("hangar_stats"));
+            if (statString) {
+              const parsedCookies = new Cookies(statString);
+              const statCookie = parsedCookies.get("hangar_stats");
+              // keep cookie settings in sync with StatService#setCookie
+              useCookie("hangar_stats", { path: "/", sameSite: "strict", maxAge: 60 * 60 * 24 * 356.24 * 1000 }).value = statCookie;
+              authLog("got stats cookie from backend", statCookie);
+            }
           }
+        } catch (e) {
+          authLog("failed to parse stats cookie", e);
         }
         resolve(data);
       })
