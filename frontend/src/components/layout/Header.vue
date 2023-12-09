@@ -155,7 +155,7 @@ function isRecent(date: string): boolean {
       <Announcement v-for="(announcement, idx) in useBackendData.announcements" :key="idx" :announcement="announcement" />
     </div>
 
-    <nav class="max-w-screen-xl mx-auto flex flex-wrap justify-center px-4 py-2 gap-3">
+    <nav class="max-w-screen-xl mx-auto flex flex-wrap justify-end px-4 py-2 gap-3">
       <!-- Left side items -->
       <div class="flex items-center gap-4">
         <Popover v-slot="{ close }" class="relative">
@@ -316,6 +316,8 @@ function isRecent(date: string): boolean {
             </template>
           </Popper>
         </div>
+      </div>
+      <div class="flex items-center gap-2">
         <!-- Profile dropdown -->
         <div v-if="authStore.user">
           <Popper placement="bottom-end">
