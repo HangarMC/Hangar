@@ -144,6 +144,9 @@ public class TokenService extends HangarComponent {
     }
 
     public boolean verifyOtp(final long user, final String header) {
+        if (header == null) {
+            return true;
+        }
         try {
             final DecodedJWT decoded = this.verify(header.split(":")[1]);
             return decoded.getSubject().equals(String.valueOf(user));
