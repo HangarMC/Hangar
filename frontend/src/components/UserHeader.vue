@@ -58,23 +58,41 @@ const canEditCurrentUser = computed<boolean>(() => {
       <div class="overflow-clip overflow-hidden">
         <h1 class="text-2xl px-1 text-strong inline-flex items-center">
           {{ viewingUser.name }}
-          <a v-if="viewingUser.socials?.github" :href="`https://github.com/${viewingUser.socials.github}`" class="ml-1" rel="external nofollow">
-            <IconMdiGitHub class="mr-1" />
+          <a
+            v-if="viewingUser.socials?.github"
+            :href="`https://github.com/${viewingUser.socials.github}`"
+            class="ml-1"
+            rel="external nofollow"
+            title="GitHub Link"
+          >
+            <IconMdiGitHub class="mr-1 hover:text-slate-400" />
           </a>
-          <a v-if="viewingUser.socials?.twitter" :href="`https://twitter.com/${viewingUser.socials.twitter}`" class="ml-1" rel="external nofollow">
-            <IconMdiTwitter class="mr-1" />
+          <a
+            v-if="viewingUser.socials?.twitter"
+            :href="`https://twitter.com/${viewingUser.socials.twitter}`"
+            class="ml-1"
+            rel="external nofollow"
+            title="Twitter Link"
+          >
+            <IconMdiTwitter class="mr-1 hover:text-slate-400" />
           </a>
-          <a v-if="viewingUser.socials?.youtube" :href="`https://youtube.com/${viewingUser.socials.youtube}`" class="ml-1" rel="external nofollow">
-            <IconMdiYouTube class="mr-1" />
+          <a
+            v-if="viewingUser.socials?.youtube"
+            :href="`https://youtube.com/${viewingUser.socials.youtube}`"
+            class="ml-1"
+            rel="external nofollow"
+            title="YouTube Link"
+          >
+            <IconMdiYouTube class="mr-1 hover:text-slate-400" />
           </a>
-          <a v-if="viewingUser.socials?.website" :href="`${viewingUser.socials.github}`" class="ml-1" rel="external nofollow">
-            <IconMdiWeb class="mr-1" />
+          <a v-if="viewingUser.socials?.website" :href="`https://${viewingUser.socials.website}`" class="ml-1" rel="external nofollow" title="Website Link">
+            <IconMdiWeb class="mr-1 hover:text-slate-400" />
           </a>
           <Tooltip v-if="viewingUser.socials?.discord">
             <template #content>
               <span class="text-base">{{ viewingUser.socials.discord }}</span>
             </template>
-            <IconMdiDiscord class="ml-1" />
+            <IconMdiDiscord class="ml-1 hover:text-slate-400" />
           </Tooltip>
           <span v-if="viewingUser.locked" class="ml-1">
             <IconMdiLockOutline />
