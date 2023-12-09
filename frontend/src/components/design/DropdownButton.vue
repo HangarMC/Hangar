@@ -45,7 +45,7 @@ defineExpose({ close });
         </template>
       </Button>
       <template #content>
-        <div class="flex flex-col z-10 -mt-2 py-1 rounded border-t-2 border-primary-400 background-default shadow-default">
+        <div class="flex flex-col z-10 -mt-2 py-1 rounded border-t-2 border-primary-500 background-default shadow-default">
           <slot :close="close" />
         </div>
       </template>

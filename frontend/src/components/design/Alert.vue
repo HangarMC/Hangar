@@ -14,7 +14,7 @@ const color = computed(() => {
   // map type to bg-color
   return {
     success: "bg-green-500 border-green-600",
-    info: "bg-primary-400 border-primary-500",
+    info: "bg-primary-500 border-primary-600",
     warning: "bg-yellow-500 border-yellow-600",
     danger: "bg-red-500 font-semibold border-red-600",
     neutral: "background-default border dark:border-gray-800",

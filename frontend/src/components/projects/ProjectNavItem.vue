@@ -18,8 +18,8 @@ const selected = computed(() => {
 
 const clazz = computed(() => {
   return (
-    "px-2 py-1 inline-flex items-center transition duration-300 border-b-2 border-transparent hover:border-[#004ee9] " +
-    (selected.value ? "!border-[#004ee9] font-semibold " : "")
+    "px-2 py-1 inline-flex items-center transition duration-300 border-b-2 border-transparent hover:border-primary-500 " +
+    (selected.value ? "!border-primary-500 font-semibold " : "")
   );
 });
 </script>

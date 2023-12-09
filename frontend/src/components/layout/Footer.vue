@@ -12,7 +12,7 @@ const { t } = useI18n();
           <a
             href="https://github.com/HangarMC"
             class="flex items-center rounded-md px-6 py-2"
-            hover="text-primary-400 bg-primary-0"
+            hover="text-primary-500 bg-primary-0"
             target="_blank"
             rel="noreferrer noopener"
           >
@@ -21,22 +21,22 @@ const { t } = useI18n();
           <a
             href="https://status.papermc.io"
             class="flex items-center rounded-md px-6 py-2"
-            hover="text-primary-400 bg-primary-0"
+            hover="text-primary-500 bg-primary-0"
             target="_blank"
             rel="noreferrer noopener"
           >
             {{ t("hangar.footer.status") }}
           </a>
-          <NuxtLink :to="{ name: 'api-docs' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
+          <NuxtLink :to="{ name: 'api-docs' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-500 bg-primary-0">
             {{ t("hangar.footer.api") }}
           </NuxtLink>
-          <NuxtLink :to="{ name: 'terms' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
+          <NuxtLink :to="{ name: 'terms' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-500 bg-primary-0">
             {{ t("hangar.footer.terms") }}
           </NuxtLink>
-          <NuxtLink :to="{ name: 'privacy' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
+          <NuxtLink :to="{ name: 'privacy' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-500 bg-primary-0">
             {{ t("hangar.footer.privacypolicy") }}
           </NuxtLink>
-          <NuxtLink href="https://forums.papermc.io/help/legal-notice/" class="flex items-center rounded-md px-6 py-2" hover="text-primary-400 bg-primary-0">
+          <NuxtLink href="https://forums.papermc.io/help/legal-notice/" class="flex items-center rounded-md px-6 py-2" hover="text-primary-500 bg-primary-0">
             {{ t("hangar.footer.legalNotice") }}
           </NuxtLink>
         </div>

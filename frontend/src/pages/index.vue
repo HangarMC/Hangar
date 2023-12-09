@@ -172,7 +172,7 @@ useHead(meta);
         />
         <div class="md:hidden flex">
           <Menu>
-            <MenuButton class="bg-gradient-to-r from-[#004ee9] to-[#367aff] rounded-r-md text-left font-semibold flex items-center gap-2 text-white p-2">
+            <MenuButton class="bg-gradient-to-r from-primary-500 to-primary-400 rounded-r-md text-left font-semibold flex items-center gap-2 text-white p-2">
               <span class="whitespace-nowrap">{{ i18n.t("hangar.projectSearch.sortBy") }}</span>
               <icon-mdi-sort-variant class="text-xl pointer-events-none" />
             </MenuButton>
@@ -189,7 +189,10 @@ useHead(meta);
               >
                 <MenuItem v-for="sorter in sorters" :key="sorter.id" v-slot="{ active }">
                   <button
-                    :class="{ 'bg-gray-100 dark:bg-gray-700': active, 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': activeSorter === sorter.id }"
+                    :class="{
+                      'bg-gray-100 dark:bg-gray-700': active,
+                      'bg-gradient-to-r from-primary-500 to-primary-400 text-white': activeSorter === sorter.id,
+                    }"
                     class="px-4 py-2 text-left"
                     @click="activeSorter = sorter.id"
                   >
@@ -204,7 +207,7 @@ useHead(meta);
       <div class="justify-center inline-flex gap-1 lt-md:hidden">
         <div v-for="sorter in sorters" :key="sorter.id">
           <button
-            :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': activeSorter === sorter.id }"
+            :class="{ 'bg-gradient-to-r from-primary-500 to-primary-400 text-white': activeSorter === sorter.id }"
             class="rounded-lg py-2 px-4 hover:(bg-gray-300 dark:bg-gray-700)"
             @click="activeSorter = sorter.id"
           >

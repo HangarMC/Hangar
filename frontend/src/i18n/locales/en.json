@@ -940,6 +940,10 @@
       },
       "apiKeys": {
         "header": "API keys"
+      },
+      "misc": {
+        "header": "Other",
+        "accentColor": "Accent Color"
       }
     }
   },

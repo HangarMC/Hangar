@@ -7,7 +7,7 @@ import { computed } from "vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import { settingsLog } from "~/composables/useLog";
 import { useAuthStore } from "~/store/auth";
-import { onErrorCaptured, transformAxiosError, useRoute, useRuntimeConfig } from "#imports";
+import { onErrorCaptured, transformAxiosError, useAccentColor, useRoute, useRuntimeConfig } from "#imports";
 
 // popper needs this?
 import "regenerator-runtime/runtime";
@@ -20,6 +20,7 @@ const authStore = useAuthStore();
 const settingsStore = useSettingsStore();
 settingsStore.loadSettingsClient();
 settingsStore.setupMobile();
+useAccentColor();
 settingsLog("render for user", authStore.user?.name, "with darkmode", settingsStore.darkMode);
 
 // for some dum reason useHead will not always replace the "light" from server side with "dark" from client side so we just force it.

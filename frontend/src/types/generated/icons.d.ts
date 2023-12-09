@@ -29,6 +29,7 @@ declare module "vue" {
     IconMdiClipboardOutline: typeof import("~icons/mdi/clipboard-outline")["default"];
     IconMdiClose: typeof import("~icons/mdi/close")["default"];
     IconMdiCloseCircle: typeof import("~icons/mdi/close-circle")["default"];
+    IconMdiCloudSearch: typeof import("~icons/mdi/cloud-search")["default"];
     IconMdiCodeBracesBox: typeof import("~icons/mdi/code-braces-box")["default"];
     IconMdiCogTransfer: typeof import("~icons/mdi/cog-transfer")["default"];
     IconMdiContentCopy: typeof import("~icons/mdi/content-copy")["default"];
@@ -42,6 +43,7 @@ declare module "vue" {
     IconMdiEye: typeof import("~icons/mdi/eye")["default"];
     IconMdiEyeOff: typeof import("~icons/mdi/eye-off")["default"];
     IconMdiFlag: typeof import("~icons/mdi/flag")["default"];
+    IconMdiFolderPlusOutline: typeof import("~icons/mdi/folder-plus-outline")["default"];
     IconMdiFormatListNumbered: typeof import("~icons/mdi/format-list-numbered")["default"];
     IconMdiGamepadRoundLeft: typeof import("~icons/mdi/gamepad-round-left")["default"];
     IconMdiHelpCircleOutline: typeof import("~icons/mdi/help-circle-outline")["default"];
@@ -50,6 +52,8 @@ declare module "vue" {
     IconMdiInformation: typeof import("~icons/mdi/information")["default"];
     IconMdiKeyOutline: typeof import("~icons/mdi/key-outline")["default"];
     IconMdiLeaf: typeof import("~icons/mdi/leaf")["default"];
+    IconMdiLicense: typeof import("~icons/mdi/license")["default"];
+    IconMdiLink: typeof import("~icons/mdi/link")["default"];
     IconMdiLockOpenOutline: typeof import("~icons/mdi/lock-open-outline")["default"];
     IconMdiLockOutline: typeof import("~icons/mdi/lock-outline")["default"];
     IconMdiMenu: typeof import("~icons/mdi/menu")["default"];

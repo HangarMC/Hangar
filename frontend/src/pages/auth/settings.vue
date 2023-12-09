@@ -43,6 +43,7 @@ const tabs: Tab[] = [
   { value: "account", header: t("auth.settings.account.header") },
   { value: "security", header: t("auth.settings.security.header") },
   { value: "api-keys", header: t("auth.settings.apiKeys.header") },
+  { value: "other", header: t("auth.settings.misc.header") },
 ];
 
 const emailConfirmModal = ref();

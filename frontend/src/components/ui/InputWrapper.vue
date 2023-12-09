@@ -34,7 +34,7 @@ function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
       :class="[
         'relative flex w-full outline-none p-2 border-1px rounded',
         'border-gray-500',
-        'focus-within:border-primary-400 focus-within:hover:border-primary-400',
+        'focus-within:border-primary-500 focus-within:hover:border-primary-500',
         'hover:border-gray-400',
         'error:border-red-400',
         'transition duration-200 ease',
@@ -53,7 +53,7 @@ function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
           'absolute origin-top-left left-2 italic pointer-events-none',
           'input-hover:(opacity-100)',
           'input-focused:(transform scale-60 opacity-100 not-italic) filled:(transform scale-60 text-black-50 not-italic)',
-          'opacity-60 error:(!text-red-400) input-focused:(text-primary-300)',
+          'opacity-60 error:(!text-red-400) input-focused:(text-primary-400)',
           'py-0.5 input-focused:(top-0) filled:(top-0)',
           'transition duration-250 ease',
         ]"

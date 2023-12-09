@@ -4,7 +4,7 @@
 }
 
 * {
-  scrollbar-color: #004ee9 #f2f5fb;
+  scrollbar-color: var(--primary-400) #f2f5fb;
   scrollbar-width: thin;
 }
 
@@ -16,7 +16,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #004ee9;
+  background: var(--primary-400);
   border-radius: 5px;
 }
 

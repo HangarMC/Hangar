@@ -174,7 +174,7 @@ function isRecent(date: string): boolean {
                 :key="link.label"
                 :to="{ name: link.link }"
                 class="flex items-center rounded-md px-6 py-2"
-                hover="text-primary-400 bg-primary-0"
+                hover="text-primary-500 bg-primary-0"
                 @click="close()"
               >
                 <component :is="link.icon" class="mr-3 text-[1.2em]" />
@@ -189,7 +189,7 @@ function isRecent(date: string): boolean {
                 :key="link.label"
                 :to="{ name: link.link }"
                 class="flex items-center rounded-md px-6 py-2"
-                hover="text-primary-400 bg-primary-0"
+                hover="text-primary-500 bg-primary-0"
                 @click="close()"
               >
                 <component :is="link.icon" class="mr-3 text-[1.2em]" />
@@ -202,7 +202,7 @@ function isRecent(date: string): boolean {
               <a
                 v-for="link in navBarMenuLinksMoreFromPaper"
                 :key="link.label"
-                class="flex items-center rounded-md px-6 py-2 hover:(text-primary-400 bg-primary-0)"
+                class="flex items-center rounded-md px-6 py-2 hover:(text-primary-500 bg-primary-0)"
                 :href="link.link"
               >
                 <component :is="link.icon" class="mr-3 text-[1.2em]" />
@@ -244,14 +244,14 @@ function isRecent(date: string): boolean {
             </template>
           </DropdownButton>
         </div>
-        <button class="flex rounded-md p-2" hover="text-primary-400 bg-primary-0" aria-label="Toogle dark mode" @click="settings.toggleDarkMode()">
+        <button class="flex rounded-md p-2" hover="text-primary-500 bg-primary-0" aria-label="Toogle dark mode" @click="settings.toggleDarkMode()">
           <icon-mdi-weather-night v-if="settings.darkMode" class="text-[1.2em]"></icon-mdi-weather-night>
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
         <div v-if="authStore.user">
           <Popper placement="bottom-end">
             <button
-              class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)"
+              class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-500 bg-primary-0)"
               aria-label="Notifications"
               @click="updateNotifications"
             >
@@ -265,7 +265,7 @@ function isRecent(date: string): boolean {
               </div>
             </button>
             <template #content="{ close }">
-              <div class="-mt-1 flex flex-col rounded border-t-2 border-primary-400 background-default filter shadow-default overflow-auto max-w-150">
+              <div class="-mt-1 flex flex-col rounded border-t-2 border-primary-500 background-default filter shadow-default overflow-auto max-w-150">
                 <div v-if="notifications.length === 0">
                   <span class="flex shadow-0 p-2 mt-2 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
                 </div>
@@ -321,12 +321,12 @@ function isRecent(date: string): boolean {
         <!-- Profile dropdown -->
         <div v-if="authStore.user">
           <Popper placement="bottom-end">
-            <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-400 bg-primary-0)" @click="updateNavData">
+            <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-500 bg-primary-0)" @click="updateNavData">
               <UserAvatar :username="authStore.user.name" :avatar-url="authStore.user.avatarUrl" size="xs" :disable-link="true" />
               {{ authStore.user.name }}
             </button>
             <template #content="{ close }">
-              <div class="-mt-2 py-1 rounded border-t-2 border-primary-400 background-default filter shadow-default flex flex-col" @click="close()">
+              <div class="-mt-2 py-1 rounded border-t-2 border-primary-500 background-default filter shadow-default flex flex-col" @click="close()">
                 <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
                 <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
                 <DropdownItem to="/auth/settings/profile">{{ t("nav.user.settings") }}</DropdownItem>
@@ -362,11 +362,11 @@ function isRecent(date: string): boolean {
 
         <!-- Login/register buttons -->
         <div v-else class="flex gap-2">
-          <NuxtLink class="flex items-center rounded-md p-2 hover:(text-primary-400 bg-primary-0)" :to="auth.loginUrl($route.fullPath)" rel="nofollow">
+          <NuxtLink class="flex items-center rounded-md p-2 hover:(text-primary-500 bg-primary-0)" :to="auth.loginUrl($route.fullPath)" rel="nofollow">
             <icon-mdi-key-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.login") }}
           </NuxtLink>
-          <NuxtLink class="flex items-center rounded-md p-2 hover:(text-primary-400 bg-primary-0)" :to="auth.signupUrl($route.fullPath)">
+          <NuxtLink class="flex items-center rounded-md p-2 hover:(text-primary-500 bg-primary-0)" :to="auth.signupUrl($route.fullPath)">
             <icon-mdi-clipboard-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.signup") }}
           </NuxtLink>
@@ -383,7 +383,8 @@ nav .router-link-active {
 }
 
 nav a.router-link-active:after {
-  background: linear-gradient(-270deg, #004ee9 0%, #367aff 100%);
+  content: "";
+  background: linear-gradient(-270deg, var(--primary-500) 0%, var(--primary-400) 100%);
   transition: width 0.2s ease-in;
   width: 80%;
 }

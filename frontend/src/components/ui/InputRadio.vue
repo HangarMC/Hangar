@@ -23,7 +23,7 @@ const { v } = useValidation(props.label, undefined, internalVal, undefined);
     <input
       v-model="internalVal"
       type="radio"
-      class="appearance-none h-4 w-4 bg-gray-300 mr-2 rounded-full group-hover:bg-gray-400 !checked:bg-primary-400"
+      class="appearance-none h-4 w-4 bg-gray-300 mr-2 rounded-full group-hover:bg-gray-400 !checked:bg-primary-500"
       dark="bg-gray-600 group-hover:bg-gray-500"
       v-bind="$attrs"
       @blur="v.$touch()"
