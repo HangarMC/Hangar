@@ -143,6 +143,7 @@ public interface ProjectsApiDAO {
         "       u.name," +
         "       u.tagline," +
         "       u.locked," +
+        "       u.socials, " +
         "       array_agg(r.id) AS roles," +
         "       (SELECT count(*)" +
         "           FROM project_members_all pma" +
@@ -171,6 +172,7 @@ public interface ProjectsApiDAO {
         "       u.name," +
         "       u.tagline," +
         "       u.locked," +
+        "       u.socials, " +
         "       array_agg(r.id) AS roles," +
         "       (SELECT count(*)" +
         "           FROM project_members_all pma" +

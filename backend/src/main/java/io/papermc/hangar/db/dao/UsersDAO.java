@@ -60,6 +60,7 @@ public interface UsersDAO {
         "       u.created_at," +
         "       u.name," +
         "       u.tagline," +
+        "       u.socials, " +
         "       array(SELECT role_id FROM user_global_roles WHERE u.id = user_id) AS roles," +
         "       (SELECT count(*) FROM project_members_all pma WHERE pma.user_id = u.id) AS project_count," +
         "       u.read_prompts," +

@@ -102,6 +102,7 @@ public interface UsersApiDAO {
         "       u.name," +
         "       u.tagline," +
         "       u.locked," +
+        "       u.socials, " +
         "       array(SELECT r.id FROM roles r JOIN user_global_roles ugr ON r.id = ugr.role_id WHERE u.id = ugr.user_id ORDER BY r.permission::bigint DESC) AS roles," +
         "       (SELECT count(*) FROM project_members_all pma WHERE pma.user_id = u.id) AS project_count" +
         "   FROM users u" +
@@ -122,6 +123,7 @@ public interface UsersApiDAO {
         "       u.name," +
         "       u.tagline," +
         "       u.locked," +
+        "       u.socials, " +
         "       array_agg(r.id ORDER BY r.permission::bigint DESC) AS roles," +
         "       (SELECT count(*) FROM project_members_all pma WHERE pma.user_id = u.id) AS project_count" +
         "   FROM users u" +
