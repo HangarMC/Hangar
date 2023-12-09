@@ -1,6 +1,7 @@
 package io.papermc.hangar.model.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.roles.GlobalRole;
@@ -20,9 +21,10 @@ public class User extends Model implements Named {
     private final boolean locked;
     private List<UserNameChange> nameHistory;
     private String avatarUrl;
+    private final JSONB socials;
 
     @JdbiConstructor
-    public User(final OffsetDateTime createdAt, final String name, final String tagline, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory) {
+    public User(final OffsetDateTime createdAt, final String name, final String tagline, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory, final JSONB socials) {
         super(createdAt);
         this.name = name;
         this.tagline = tagline;
@@ -31,6 +33,7 @@ public class User extends Model implements Named {
         this.isOrganization = roles.contains(GlobalRole.ORGANIZATION.getRoleId());
         this.locked = locked;
         this.nameHistory = nameHistory;
+        this.socials = socials;
     }
 
     @Override
@@ -74,6 +77,10 @@ public class User extends Model implements Named {
 
     public void setAvatarUrl(final String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public JSONB getSocials() {
+        return socials;
     }
 
     @Override

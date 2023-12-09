@@ -27,7 +27,7 @@ public class HangarUser extends User implements Identified {
     private Integer aal;
 
     public HangarUser(final OffsetDateTime createdAt, final String name, final String tagline, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory, final long id, final UUID uuid, final String email, final List<Integer> readPrompts, final String language, final String theme, final JSONB socials) {
-        super(createdAt, name, tagline, roles, projectCount, locked, nameHistory);
+        super(createdAt, name, tagline, roles, projectCount, locked, nameHistory, socials);
         this.id = id;
         this.uuid = uuid;
         this.email = email;
