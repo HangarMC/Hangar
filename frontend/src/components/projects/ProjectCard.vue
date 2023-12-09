@@ -37,7 +37,9 @@ defineProps<{
       }"
     >
       <div class="flex space-x-4">
-        <UserAvatar :username="project.namespace.owner" :img-src="project.avatarUrl" size="md" disable-link />
+        <div>
+          <UserAvatar :username="project.namespace.owner" :img-src="project.avatarUrl" size="md" disable-link />
+        </div>
         <div class="overflow-clip overflow-hidden min-w-0">
           <div class="inline-flex items-center gap-x-1">
             <h2>
