@@ -1124,7 +1124,7 @@
     "requiredIf": "{property} is required",
     "maxLength": "Maximum length is {max}",
     "minLength": "Minimum length is {min}",
-    "pattern": "{property} is invalid",
+    "pattern": "{property} is invalid, '{model}' doesn't match pattern '{regex}'",
     "noDuplicated": "Can only select each {property} once!",
     "url": "Invalid URL format",
     "maxFileSize": "File is too large, max size is 10mb",
