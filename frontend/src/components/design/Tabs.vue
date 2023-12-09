@@ -8,18 +8,8 @@ import type { Tab } from "~/types/components/design/Tabs";
 const route = useRoute();
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: string): void;
+  (e: "update:modelValue", value?: string): void;
 }>();
-const internalValue = computed({
-  get: () => props.modelValue,
-  set: (value) => emit("update:modelValue", value),
-});
-
-watch(internalValue, (n) => {
-  if (props.tabs.length > 0 && !props.tabs.some((t) => t.value === n)) {
-    internalValue.value = props.tabs[0].value;
-  }
-});
 
 const props = withDefaults(
   defineProps<{
@@ -30,12 +20,23 @@ const props = withDefaults(
     router?: boolean;
   }>(),
   {
-    modelValue: null,
+    modelValue: undefined,
     vertical: true,
     compact: false,
     router: false,
   }
 );
+
+const internalValue = computed({
+  get: () => props.modelValue,
+  set: (value) => emit("update:modelValue", value),
+});
+
+watch(internalValue, (n) => {
+  if (props.tabs.length > 0 && !props.tabs.some((t) => t.value === n)) {
+    internalValue.value = props.tabs[0].value;
+  }
+});
 
 function selectTab(event: Event, tab: Tab) {
   if (!props.router) {
