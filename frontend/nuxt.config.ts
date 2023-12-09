@@ -84,6 +84,7 @@ export default defineNuxtConfig({
   experimental: {
     writeEarlyHints: false,
     componentIslands: true,
+    asyncContext: true,
   },
   typescript: {
     // typeCheck: "build", // TODO enable typechecking on build
