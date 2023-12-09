@@ -89,6 +89,13 @@ export default defineNuxtConfig({
   typescript: {
     // typeCheck: "build", // TODO enable typechecking on build
   },
+  devtools: {
+    enabled: true,
+
+    timeline: {
+      enabled: true,
+    },
+  },
   nitro: {
     preset: "node-cluster",
     compressPublicAssets: true,
