@@ -42,11 +42,11 @@ function go() {
   location.href = remoteUrl as string;
 }
 
-async function back() {
-  if (!window.history.state.back) {
+function back() {
+  if (window.opener != null || window.history.length === 1) {
     window.close(); // close tab
   } else {
-    await router.back();
+    router.back();
   }
 }
 
