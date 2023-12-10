@@ -3,6 +3,7 @@ import { useI18n } from "vue-i18n";
 import { useAccentColor } from "~/composables/useAccentColor";
 import PageTitle from "~/components/design/PageTitle.vue";
 import InputSelect from "~/components/ui/InputSelect.vue";
+import Alert from "~/components/design/Alert.vue";
 
 const { t } = useI18n();
 
@@ -32,6 +33,7 @@ const accentColor = useAccentColor();
 <template>
   <div>
     <PageTitle>{{ t("auth.settings.misc.header") }}</PageTitle>
+    <Alert type="warning" class="mb-4">The accent colors are mostly untested and full of contrast issues, proceed with caution!</Alert>
     <InputSelect v-model="accentColor" :values="accentColors" :label="t('auth.settings.misc.accentColor')" />
   </div>
 </template>
