@@ -14,6 +14,7 @@ const props = withDefaults(
     buttonType?: "primary" | "secondary" | "red" | "transparent";
     loading?: boolean;
     to?: string | RouteLocationRaw | object;
+    href?: string;
   }>(),
   {
     disabled: false,
@@ -21,6 +22,7 @@ const props = withDefaults(
     buttonType: "primary",
     loading: false,
     to: undefined,
+    href: undefined,
   }
 );
 const paddingClass = computed<string>(() => {
@@ -54,7 +56,15 @@ const classes = computed<string>(() => {
 </script>
 
 <template>
-  <component :is="to ? NuxtLink : 'button'" :class="classes" :disabled="disabled || loading" :to="to" v-bind="$attrs" @click="$emit('click', $event)">
+  <component
+    :is="to ? NuxtLink : href ? 'a' : 'button'"
+    :class="classes"
+    :disabled="disabled || loading"
+    :to="to"
+    :href="href"
+    v-bind="$attrs"
+    @click="$emit('click', $event)"
+  >
     <slot></slot>
     <span v-if="loading" class="pl-1"><Spinner class="stroke-gray-400" :diameter="1" :stroke="0.01" unit="rem" /></span>
   </component>

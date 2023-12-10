@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -26,6 +27,8 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import static org.springframework.security.config.Customizer.*;
 
 @Configuration
 @EnableWebSecurity
@@ -56,18 +59,18 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(final HttpSecurity http, final AuthenticationManager authenticationManagerBean) throws Exception {
         http
             // Disable default configurations
-            .logout().disable()
-            .httpBasic().disable()
-            .formLogin().disable()
+            .logout(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .formLogin(AbstractHttpConfigurer::disable)
 
             // Disable session creation
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             // Disable csrf (shouldn't need it as its just a backend api now)
-            .csrf().disable()
+            .csrf(AbstractHttpConfigurer::disable)
 
             // Enable cors
-            .cors().and()
+            .cors(withDefaults())
 
             // Custom auth filters
             .addFilterBefore(new HangarAuthenticationFilter(
@@ -79,7 +82,7 @@ public class SecurityConfig {
             )
 
             // Permit all (use method security for controller access)
-            .authorizeRequests().anyRequest().permitAll();
+            .authorizeHttpRequests(s-> s.anyRequest().permitAll());
 
         return http.build();
     }

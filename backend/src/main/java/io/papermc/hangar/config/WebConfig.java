@@ -47,6 +47,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
@@ -65,7 +66,7 @@ import reactor.netty.http.client.HttpClient;
 @Configuration
 public class WebConfig extends WebMvcConfigurationSupport {
 
-    private static final Logger interceptorLogger = LoggerFactory.getLogger(LoggingInterceptor.class); // NO-SONAR
+    private static final Logger interceptorLogger = LoggerFactory.getLogger("http-client-logger");
 
     private static final Duration timeout = Duration.ofSeconds(45);
 
@@ -195,6 +196,21 @@ public class WebConfig extends WebMvcConfigurationSupport {
             .build());
 
         builder.defaultHeader("User-Agent", "Hangar <hangar@papermc.io>");
+
+        return builder.build();
+    }
+
+    @Bean
+    public RestClient restClient(final List<HttpMessageConverter<?>> messageConverters) {
+        final RestClient.Builder builder = RestClient.builder();
+        if (interceptorLogger.isDebugEnabled()) {
+            builder.requestInterceptor(new LoggingInterceptor());
+        }
+
+        builder.defaultHeader("User-Agent", "Hangar <hangar@papermc.io>");
+
+        this.addDefaultHttpMessageConverters(messageConverters);
+        builder.messageConverters(s -> s.addAll(messageConverters));
 
         return builder.build();
     }

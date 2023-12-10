@@ -3,6 +3,7 @@ package io.papermc.hangar.components.auth.controller;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.model.credential.BackupCodeCredential;
 import io.papermc.hangar.components.auth.model.credential.CredentialType;
+import io.papermc.hangar.components.auth.model.credential.OAuthCredential;
 import io.papermc.hangar.components.auth.model.credential.WebAuthNCredential;
 import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
 import io.papermc.hangar.components.auth.model.db.VerificationCodeTable;
@@ -105,6 +106,7 @@ public class AuthController extends HangarComponent {
     public SettingsResponse settings() {
         final long userId = this.getHangarPrincipal().getUserId();
         final List<SettingsResponse.Authenticator> authenticators = this.getAuthenticators(userId);
+
         final UserCredentialTable backupCodeTable = this.credentialsService.getCredential(userId, CredentialType.BACKUP_CODES);
         boolean hasBackupCodes = false;
         if (backupCodeTable != null) {
@@ -113,11 +115,17 @@ public class AuthController extends HangarComponent {
                 hasBackupCodes = true;
             }
         }
+
         final boolean hasTotp = this.credentialsService.getCredential(userId, CredentialType.TOTP) != null;
         final boolean emailVerified = Objects.requireNonNull(this.userService.getUserTable(userId)).isEmailVerified();
+
         final VerificationCodeTable verificationCode = this.verificationService.getVerificationCode(userId, VerificationCodeTable.VerificationCodeType.EMAIL_VERIFICATION);
         final boolean emailPending = verificationCode != null && !this.verificationService.expired(verificationCode);
-        return new SettingsResponse(authenticators, hasBackupCodes, hasTotp, emailVerified, emailPending);
+
+        final List<UserCredentialTable> oauthCredentials = this.credentialsService.getAllCredentials(userId, CredentialType.OAUTH);
+        final List<OAuthCredential> oauth = oauthCredentials.stream().map(c -> c.getCredential().get(OAuthCredential.class)).toList();
+
+        return new SettingsResponse(authenticators, oauth, hasBackupCodes, hasTotp, emailVerified, emailPending);
     }
 
     private List<SettingsResponse.Authenticator> getAuthenticators(final long userId) {

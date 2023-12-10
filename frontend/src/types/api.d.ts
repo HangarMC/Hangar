@@ -71,6 +71,7 @@ declare module "hangar-api" {
 
   interface Security {
     safeDownloadHosts: string[];
+    oauthProviders: string[];
   }
 
   interface BackendData {

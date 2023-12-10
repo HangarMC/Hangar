@@ -87,6 +87,7 @@ declare module "hangar-internal" {
 
   interface AuthSettings {
     authenticators: { addedAt: string; displayName: string; id: string }[];
+    oAuthCredentials: { id: string; name: string; provider: string }[];
     hasBackupCodes: boolean;
     hasTotp: boolean;
     emailConfirmed: boolean;

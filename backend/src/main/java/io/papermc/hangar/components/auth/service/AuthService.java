@@ -6,19 +6,21 @@ import io.papermc.hangar.components.auth.model.credential.CredentialType;
 import io.papermc.hangar.components.auth.model.credential.PasswordCredential;
 import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
+import io.papermc.hangar.components.auth.model.dto.login.LoginResponse;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.ValidationService;
+import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.MailService;
 import jakarta.validation.constraints.NotEmpty;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -41,8 +43,10 @@ public class AuthService extends HangarComponent implements UserDetailsService {
     private final CredentialsService credentialsService;
     private final HibpService hibpService;
     private final MailService mailService;
+    private final TokenService tokenService;
+    private final UsersApiService usersApiService;
 
-    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService, final HibpService hibpService, final MailService mailService) {
+    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService, final HibpService hibpService, final MailService mailService, final TokenService tokenService, final UsersApiService usersApiService) {
         this.userDAO = userDAO;
         this.userCredentialDAO = userCredentialDAO;
         this.passwordEncoder = passwordEncoder;
@@ -51,31 +55,37 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         this.credentialsService = credentialsService;
         this.hibpService = hibpService;
         this.mailService = mailService;
+        this.tokenService = tokenService;
+        this.usersApiService = usersApiService;
     }
 
     @Transactional
     public UserTable registerUser(final SignupForm form) {
-        if (!form.tos()) {
-            throw new HangarApiException("nav.user.error.tos");
-        }
-        if (!this.validationService.isValidUsername(form.username())) {
-            throw new HangarApiException("nav.user.error.invalidUsername");
-        }
         if (!this.validPassword(form.password(), form.username())) {
             throw new HangarApiException("dum");
         }
-        if (this.userDAO.getUserTable(form.username()) != null) {
-            throw new HangarApiException("nav.user.error.usernameTaken");
-        }
-        if (this.userDAO.getUserTable(form.email()) != null) {
-            throw new HangarApiException("nav.user.error.emailTaken");
-        }
+        this.validateNewUser(form.username(), form.email(), form.tos());
 
         final UserTable userTable = this.userDAO.create(UUID.randomUUID(), form.username(), form.email(), null, "en", List.of(), false, "light", false, new JSONB(Map.of()));
         this.credentialsService.registerCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(form.password())));
         this.verificationService.sendVerificationCode(userTable.getUserId(), userTable.getEmail(), userTable.getName());
 
         return userTable;
+    }
+
+    public void validateNewUser(final String username, final String email, final boolean tos) {
+        if (!tos) {
+            throw new HangarApiException("nav.user.error.tos");
+        }
+        if (!this.validationService.isValidUsername(username)) {
+            throw new HangarApiException("nav.user.error.invalidUsername");
+        }
+        if (this.userDAO.getUserTable(username) != null) {
+            throw new HangarApiException("nav.user.error.usernameTaken");
+        }
+        if (this.userDAO.getUserTable(email) != null) {
+            throw new HangarApiException("nav.user.error.emailTaken");
+        }
     }
 
     public boolean validPassword(final String password, final String username) {
@@ -141,7 +151,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         final List<UserNameChange> userNameHistory = this.userDAO.getUserNameHistory(user.getUuid());
         if (!userNameHistory.isEmpty()) {
             userNameHistory.sort(Comparator.comparing(UserNameChange::date).reversed());
-            final OffsetDateTime nextChange = userNameHistory.get(0).date().plus(this.config.user.nameChangeInterval(), ChronoUnit.DAYS);
+            final OffsetDateTime nextChange = userNameHistory.get(0).date().plusDays(this.config.user.nameChangeInterval());
             if (nextChange.isAfter(OffsetDateTime.now())) {
                 throw new HangarApiException("You have to wait until " + nextChange.format(DateTimeFormatter.RFC_1123_DATE_TIME) + " before being able to change your username again");
             }
@@ -183,5 +193,20 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         this.credentialsService.registerCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(newPassword)));
         // send info mail
         this.mailService.queueMail(MailService.MailType.PASSWORD_CHANGED, userTable.getEmail(), Map.of("user", userTable.getName()));
+    }
+
+    public LoginResponse setAalAndLogin(final UserTable userTable, final int aal) {
+        // todo create session
+
+        // issue refresh token
+        this.tokenService.issueRefreshToken(userTable.getUserId(), this.response);
+        // issue access token
+        final String token = this.tokenService.newPrivilegedToken(userTable);
+        // get user
+        final HangarUser user = this.usersApiService.getUser(userTable.getName(), HangarUser.class);
+        user.setAccessToken(token);
+        user.setAal(aal);
+        // return
+        return new LoginResponse(aal, null, user);
     }
 }
