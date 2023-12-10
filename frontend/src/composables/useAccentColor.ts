@@ -1,13 +1,16 @@
 import { useHead } from "@unhead/vue";
-import { useLocalStorage } from "@vueuse/core";
-import { computed, ref } from "vue";
+import { computed } from "vue";
+import { useCookie } from "nuxt/app";
 
 export function useAccentColor() {
-  if (process.server) {
-    return ref<string>("blue");
-  }
+  const accentColor = useCookie("accent-color", {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7 * 365,
+  });
 
-  const accentColor = useLocalStorage("accent-color", "blue");
+  if (!accentColor.value) {
+    accentColor.value = "blue";
+  }
 
   const themeClass = computed(() => {
     return "theme-" + accentColor.value;

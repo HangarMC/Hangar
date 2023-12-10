@@ -14,6 +14,7 @@ declare module "vue" {
     IconMdiBell: typeof import("~icons/mdi/bell")["default"];
     IconMdiBellBadge: typeof import("~icons/mdi/bell-badge")["default"];
     IconMdiBellOutline: typeof import("~icons/mdi/bell-outline")["default"];
+    IconMdiBin: typeof import("~icons/mdi/bin")["default"];
     IconMdiBookshelf: typeof import("~icons/mdi/bookshelf")["default"];
     IconMdiCashMultiple: typeof import("~icons/mdi/cash-multiple")["default"];
     IconMdiChat: typeof import("~icons/mdi/chat")["default"];
@@ -25,6 +26,7 @@ declare module "vue" {
     IconMdiClose: typeof import("~icons/mdi/close")["default"];
     IconMdiCodeBracesBox: typeof import("~icons/mdi/code-braces-box")["default"];
     IconMdiCogTransfer: typeof import("~icons/mdi/cog-transfer")["default"];
+    IconMdiContentCopy: typeof import("~icons/mdi/content-copy")["default"];
     IconMdiContentSave: typeof import("~icons/mdi/content-save")["default"];
     IconMdiController: typeof import("~icons/mdi/controller")["default"];
     IconMdiDelete: typeof import("~icons/mdi/delete")["default"];
@@ -32,6 +34,7 @@ declare module "vue" {
     IconMdiDownloadOutline: typeof import("~icons/mdi/download-outline")["default"];
     IconMdiEarth: typeof import("~icons/mdi/earth")["default"];
     IconMdiEye: typeof import("~icons/mdi/eye")["default"];
+    IconMdiEyeOff: typeof import("~icons/mdi/eye-off")["default"];
     IconMdiFlag: typeof import("~icons/mdi/flag")["default"];
     IconMdiGamepadRoundLeft: typeof import("~icons/mdi/gamepad-round-left")["default"];
     IconMdiHelpCircleOutline: typeof import("~icons/mdi/help-circle-outline")["default"];

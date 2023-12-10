@@ -25,7 +25,8 @@ settingsLog("render for user", authStore.user?.name, "with darkmode", settingsSt
 
 // for some dum reason useHead will not always replace the "light" from server side with "dark" from client side so we just force it.
 if (process.client) {
-  document.documentElement.className = settingsStore.darkMode ? "dark" : "light";
+  document.documentElement.classList.remove("light", "dark");
+  document.documentElement.classList.add(settingsStore.darkMode ? "dark" : "light");
 }
 
 useHead({
