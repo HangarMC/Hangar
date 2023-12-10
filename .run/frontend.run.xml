@@ -6,9 +6,7 @@
       <script value="dev" />
     </scripts>
     <node-interpreter value="project" />
-    <envs>
-      <env name="DEBUG" value="hangar:*" />
-    </envs>
+    <envs />
     <method v="2" />
   </configuration>
 </component>

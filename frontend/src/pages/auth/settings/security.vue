@@ -11,10 +11,13 @@ import { useInternalApi } from "~/composables/useApi";
 import ComingSoon from "~/components/design/ComingSoon.vue";
 import Button from "~/components/design/Button.vue";
 import InputText from "~/components/ui/InputText.vue";
+import Link from "~/components/design/Link.vue";
 import { requiredIf, useAuth, useAxios, useRoute, useRouter } from "#imports";
 import PageTitle from "~/components/design/PageTitle.vue";
 import Modal from "~/components/modals/Modal.vue";
 import PrettyTime from "~/components/design/PrettyTime.vue";
+import { useBackendData } from "~/store/backendData";
+import IconMdiGitHub from "~icons/mdi/github";
 
 defineProps<{
   settings?: AuthSettings;
@@ -30,6 +33,7 @@ const { t } = i18n;
 const v = useVuelidate();
 const router = useRouter();
 const route = useRoute();
+const backendData = useBackendData;
 
 const loading = ref(false);
 
@@ -242,6 +246,33 @@ async function generateNewCodes() {
   }
   loading.value = false;
 }
+
+async function setupOAuth(provider: string) {
+  try {
+    window.location.href = await useInternalApi<string>("oauth/" + provider + "/login?mode=settings&returnUrl=" + encodeURIComponent(route.fullPath), "GET");
+  } catch (e) {
+    if (e.response?.data?.message === "error.privileged") {
+      await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
+    } else {
+      notification.fromError(i18n, e);
+    }
+  }
+}
+
+const currentlyUnlinkingProvider = ref<string>();
+const oauthModal = ref();
+const unlinkUrl = ref<string>();
+
+async function unlinkOAuth(provider: string, id: string) {
+  unlinkUrl.value = await useInternalApi("oauth/" + provider + "/unlink/" + id, "POST");
+  currentlyUnlinkingProvider.value = provider;
+  oauthModal.value.isOpen = true;
+}
+
+function closeUnlinkModal() {
+  oauthModal.value.isOpen = false;
+  emit("refreshSettings");
+}
 </script>
 
 <template>
@@ -302,6 +333,35 @@ async function generateNewCodes() {
         <Button :disabled="loading" @click="generateNewCodes">Generate new codes</Button>
       </div>
     </template>
+
+    <h3 class="text-lg font-bold mt-4 mb-2">OAuth</h3>
+    <div class="flex gap-2 mt-2">
+      <Button v-for="provider in backendData.security.oauthProviders" :key="provider" :disabled="loading" @click="setupOAuth(provider)">
+        <template v-if="provider === 'github'">
+          <IconMdiGitHub class="mr-1" />
+          Link a GitHub account
+        </template>
+        <template v-else> Link {{ provider }} account</template>
+      </Button>
+    </div>
+    <div class="flex gap-2 mt-2">
+      <Button
+        v-for="credential in settings?.oAuthCredentials"
+        :key="credential.provider + credential.id"
+        @click="unlinkOAuth(credential.provider, credential.id)"
+      >
+        <template v-if="credential.provider === 'github'">
+          <IconMdiGitHub class="mr-1" />
+          Unlink GitHub account {{ credential.name }}
+        </template>
+        <template v-else> Unlink {{ credential.provider }} account {{ credential.name }}</template>
+      </Button>
+    </div>
+
+    <Modal ref="oauthModal" title="Successfully unlinked!" @close="closeUnlinkModal">
+      <p>Successfully unlinked your {{ currentlyUnlinkingProvider }} account!</p>
+      <Link :href="unlinkUrl" target="_blank">Click here to remove the Hangar app from your {{ currentlyUnlinkingProvider }} account</Link>
+    </Modal>
 
     <Modal ref="backupCodeModal" title="Confirm backup codes" @close="backupCodeModal.isOpen = false">
       You need to configure backup codes before you can activate 2fa. Please save these codes securely!

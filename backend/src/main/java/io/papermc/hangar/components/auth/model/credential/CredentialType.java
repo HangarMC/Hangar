@@ -4,5 +4,6 @@ public enum CredentialType {
     PASSWORD,
     BACKUP_CODES,
     TOTP,
-    WEBAUTHN
+    WEBAUTHN,
+    OAUTH
 }

@@ -15,10 +15,13 @@ import { email, required, sameAs } from "~/composables/useValidationHelpers";
 import { useNotificationStore } from "~/store/notification";
 import Link from "~/components/design/Link.vue";
 import InputGroup from "~/components/ui/InputGroup.vue";
+import { useBackendData } from "~/store/backendData";
+import IconMdiGitHub from "~icons/mdi/github";
 
 const route = useRoute();
 const router = useRouter();
 const v = useVuelidate();
+const backendData = useBackendData;
 
 interface SignupForm {
   username?: string;
@@ -57,6 +60,26 @@ useHead(useSeo("Signup", null, route, null));
     <template #header>
       <h1>Sign up</h1>
     </template>
+
+    <div v-if="!done && backendData.security.oauthProviders.length > 0" class="mb-2">
+      Either login using an OAuth Provider
+      <div class="flex gap-2 mt-2">
+        <Button
+          v-for="provider in backendData.security.oauthProviders"
+          :key="provider"
+          :disabled="loading"
+          :href="'/api/internal/oauth/' + provider + '/login?mode=signup&returnUrl=/'"
+        >
+          <template v-if="provider === 'github'">
+            <IconMdiGitHub class="mr-1" />
+            Login with GitHub
+          </template>
+          <template v-else> Login with {{ provider }} </template>
+        </Button>
+      </div>
+      <hr class="mt-3 mb-2" />
+      or create a new account below
+    </div>
 
     <form v-if="!done" class="flex flex-col gap-2">
       <InputText v-model="form.username" label="Username" name="username" autocomplete="username" :rules="[required()]" />

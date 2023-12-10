@@ -14,14 +14,12 @@ import io.papermc.hangar.components.auth.model.dto.login.LoginPasswordForm;
 import io.papermc.hangar.components.auth.model.dto.login.LoginResponse;
 import io.papermc.hangar.components.auth.model.dto.login.LoginTotpForm;
 import io.papermc.hangar.components.auth.model.dto.login.LoginWebAuthNForm;
+import io.papermc.hangar.components.auth.service.AuthService;
 import io.papermc.hangar.components.auth.service.CredentialsService;
-import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.components.auth.service.WebAuthNService;
 import io.papermc.hangar.model.db.UserTable;
-import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
-import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.users.UserService;
 import java.io.IOException;
 import java.util.List;
@@ -42,18 +40,16 @@ public class LoginController extends HangarComponent {
 
     private final UserService userService;
     private final CredentialsService credentialsService;
-    private final TokenService tokenService;
     private final RelyingParty relyingParty;
     private final WebAuthNService webAuthNService;
-    private final UsersApiService usersApiService;
+    private final AuthService authService;
 
-    public LoginController(final UserService userService, final CredentialsService credentialsService, final TokenService tokenService, final RelyingParty relyingParty, final WebAuthNService webAuthNService, final UsersApiService usersApiService) {
+    public LoginController(final UserService userService, final CredentialsService credentialsService, final RelyingParty relyingParty, final WebAuthNService webAuthNService, final AuthService authService) {
         this.userService = userService;
         this.credentialsService = credentialsService;
-        this.tokenService = tokenService;
         this.relyingParty = relyingParty;
         this.webAuthNService = webAuthNService;
-        this.usersApiService = usersApiService;
+        this.authService = authService;
     }
 
     @Anyone
@@ -62,8 +58,8 @@ public class LoginController extends HangarComponent {
         final UserTable userTable = this.verifyPassword(form.usernameOrEmail(), form.password());
         final List<CredentialType> types = this.credentialsService.getCredentialTypes(userTable.getUserId());
         final int aal = userTable.isEmailVerified() ? 1 : 0;
-        if (types.isEmpty() || (types.size() == 1 && types.get(0) == CredentialType.BACKUP_CODES)) {
-            return this.setAalAndLogin(userTable, aal);
+        if (types.isEmpty() || (types.size() == 1 && types.getFirst() == CredentialType.BACKUP_CODES)) {
+            return this.authService.setAalAndLogin(userTable, aal);
         } else {
             return new LoginResponse(aal, types, null);
         }
@@ -86,7 +82,7 @@ public class LoginController extends HangarComponent {
             this.webAuthNService.updateCredential(userTable.getUserId(), result.getCredential().getCredentialId().getBase64(), result.getSignatureCount());
 
             if (result.isSuccess()) {
-                return this.setAalAndLogin(userTable, 2);
+                return this.authService.setAalAndLogin(userTable, 2);
             }
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
         } catch (final AssertionFailedException e) {
@@ -99,7 +95,7 @@ public class LoginController extends HangarComponent {
     public LoginResponse loginTotp(@RequestBody final LoginTotpForm form) {
         final UserTable userTable = this.verifyPassword(form.usernameOrEmail(), form.password());
         this.credentialsService.verifyTotp(userTable.getUserId(), form.totpCode());
-        return this.setAalAndLogin(userTable, 2);
+        return this.authService.setAalAndLogin(userTable, 2);
     }
 
     @Anyone
@@ -107,7 +103,7 @@ public class LoginController extends HangarComponent {
     public LoginResponse loginBackup(@RequestBody final LoginBackupForm form) {
         final UserTable userTable = this.verifyPassword(form.usernameOrEmail(), form.password());
         this.credentialsService.verifyBackupCode(userTable.getUserId(), form.backupCode());
-        return this.setAalAndLogin(userTable, 2);
+        return this.authService.setAalAndLogin(userTable, 2);
     }
 
     private UserTable verifyPassword(final String usernameOrEmail, final String password) {
@@ -118,20 +114,5 @@ public class LoginController extends HangarComponent {
 
         this.credentialsService.verifyPassword(userTable.getUserId(), password);
         return userTable;
-    }
-
-    private LoginResponse setAalAndLogin(final UserTable userTable, final int aal) {
-        // todo create session
-
-        // issue refresh token
-        this.tokenService.issueRefreshToken(userTable.getUserId(), this.response);
-        // issue access token
-        final String token = this.tokenService.newPrivilegedToken(userTable);
-        // get user
-        final HangarUser user = this.usersApiService.getUser(userTable.getName(), HangarUser.class);
-        user.setAccessToken(token);
-        user.setAal(aal);
-        // return
-        return new LoginResponse(aal, null, user);
     }
 }

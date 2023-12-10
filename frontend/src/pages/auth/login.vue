@@ -16,6 +16,8 @@ import Card from "~/components/design/Card.vue";
 import Link from "~/components/design/Link.vue";
 import { required } from "~/composables/useValidationHelpers";
 import { useNotificationStore } from "~/store/notification";
+import { useBackendData } from "~/store/backendData";
+import IconMdiGitHub from "~icons/mdi/github";
 
 const route = useRoute();
 const router = useRouter();
@@ -23,6 +25,7 @@ const authStore = useAuthStore();
 const v = useVuelidate();
 const notification = useNotificationStore();
 const i18n = useI18n();
+const backendData = useBackendData;
 
 const loading = ref(false);
 const supportedMethods = ref([]);
@@ -148,8 +151,20 @@ useHead(useSeo("Login", null, route, null));
         :disabled="privileged"
       />
       <InputPassword v-model="password" label="Password" name="password" autocomplete="current-password" :rules="[required()]" />
-      <div>
+      <div class="flex gap-2">
         <Button :disabled="loading" @click.prevent="loginPassword">Login</Button>
+        <Button
+          v-for="provider in backendData.security.oauthProviders"
+          :key="provider"
+          :disabled="loading"
+          :href="'/api/internal/oauth/' + provider + '/login?mode=login&returnUrl=/'"
+        >
+          <template v-if="provider === 'github'">
+            <IconMdiGitHub class="mr-1" />
+            Login with GitHub
+          </template>
+          <template v-else> Login with {{ provider }} </template>
+        </Button>
       </div>
       <Link v-if="!privileged" button-type="secondary" to="/auth/signup" class="w-max">Don't have an account yet? Create one!</Link>
       <Link v-if="!privileged" to="/auth/reset" class="w-max">Forgot your password?</Link>

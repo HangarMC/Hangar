@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.auth.service.OAuthService;
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.customtypes.RoleCategory;
@@ -53,14 +54,16 @@ public class BackendDataController extends HangarComponent {
     private final PlatformService platformService;
     private final Optional<GitProperties> gitProperties;
     private final RolesDAO rolesDAO;
+    private final OAuthService oAuthService;
 
     @Autowired
-    public BackendDataController(final ObjectMapper mapper, final HangarConfig config, final PlatformService platformService, final Optional<GitProperties> gitProperties, final RolesDAO rolesDAO) {
+    public BackendDataController(final ObjectMapper mapper, final HangarConfig config, final PlatformService platformService, final Optional<GitProperties> gitProperties, final RolesDAO rolesDAO, OAuthService oAuthService) {
         this.config = config;
         this.objectMapper = mapper.copy();
         this.platformService = platformService;
         this.gitProperties = gitProperties;
         this.rolesDAO = rolesDAO;
+        this.oAuthService = oAuthService;
         this.objectMapper.setAnnotationIntrospector(new JacksonAnnotationIntrospector() {
             @Override
             protected <A extends Annotation> A _findAnnotation(final Annotated annotated, final Class<A> annoClass) {
@@ -233,6 +236,6 @@ public class BackendDataController extends HangarComponent {
     @GetMapping("/security")
     @ResponseBody
     public Security getSecurity() {
-        return new Security(this.config.security.safeDownloadHosts());
+        return new Security(this.config.security.safeDownloadHosts(), this.oAuthService.getProviders().keySet());
     }
 }
