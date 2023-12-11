@@ -28,6 +28,9 @@ ingress:
     - path: /v3/api-docs
       pathType: ImplementationSpecific
       target: backend
+    - path: /v3/api-docs.yaml
+      pathType: ImplementationSpecific
+      target: backend
     - path: /robots.txt
       pathType: ImplementationSpecific
       target: backend
