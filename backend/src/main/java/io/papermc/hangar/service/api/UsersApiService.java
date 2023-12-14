@@ -74,6 +74,13 @@ public class UsersApiService extends HangarComponent {
         return user instanceof HangarUser ? (T) this.supplyHeaderData((HangarUser) user) : user;
     }
 
+    public <T extends User> T getUser(final long id, final Class<T> type) {
+        final T user = this.getUserRequired(id, this.usersDAO::getUser, type);
+        this.supplyNameHistory(user);
+        this.supplyAvatarUrl(user);
+        return user instanceof HangarUser ? (T) this.supplyHeaderData((HangarUser) user) : user;
+    }
+
     @Transactional(readOnly = true)
     public <T extends User> PaginatedResult<T> getUsers(final String query, final RequestPagination pagination, final Class<T> type) {
         final boolean hasQuery = !StringUtils.isBlank(query);

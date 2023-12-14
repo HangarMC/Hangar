@@ -36,16 +36,18 @@ public class OAuthService extends HangarComponent {
     private final UserDAO userDAO;
     private final VerificationService verificationService;
     private final UserCredentialDAO userCredentialDAO;
+    private final CredentialsService credentialsService;
 
     private final Map<String, OAuthProvider> providers = new HashMap<>();
 
-    public OAuthService(final RestClient restClient, final Algorithm algo, final AuthService authService, final UserDAO userDAO, final VerificationService verificationService, final UserCredentialDAO userCredentialDAO) {
+    public OAuthService(final RestClient restClient, final Algorithm algo, final AuthService authService, final UserDAO userDAO, final VerificationService verificationService, final UserCredentialDAO userCredentialDAO, final CredentialsService credentialsService) {
         this.restClient = restClient;
         this.algo = algo;
         this.authService = authService;
         this.userDAO = userDAO;
         this.verificationService = verificationService;
         this.userCredentialDAO = userCredentialDAO;
+        this.credentialsService = credentialsService;
         this.providers.put("github", new OAuthProvider("github", "26ba07861a06dda93f56", "d0cb6980a7c647b95cd30f8a2d6ac98b79cd67ac", new String[]{"user:email"}));
     }
 
@@ -55,6 +57,18 @@ public class OAuthService extends HangarComponent {
             .withExpiresAt(Instant.now().plus(10, ChronoUnit.MINUTES))
             .withSubject(String.valueOf(user))
             .withClaim("mode", mode.name())
+            .withClaim("returnUrl", returnUrl)
+            .sign(this.algo);
+    }
+
+    public String registerState(final OAuthUserDetails details, final String provider, final String returnUrl) {
+        return JWT.create()
+            .withIssuer(this.config.security.tokenIssuer())
+            .withExpiresAt(Instant.now().plus(10, ChronoUnit.MINUTES))
+            .withSubject(details.id())
+            .withClaim("email", details.email())
+            .withClaim("username", details.username())
+            .withClaim("provider", provider)
             .withClaim("returnUrl", returnUrl)
             .sign(this.algo);
     }
@@ -171,7 +185,14 @@ public class OAuthService extends HangarComponent {
             throw new IllegalArgumentException("Unknown provider: " + provider);
         }
 
-        this.userCredentialDAO.removeOAuth(this.getHangarPrincipal().getUserId(), CredentialType.OAUTH, provider, id);
+        final long userId = this.getHangarPrincipal().getUserId();
+        final boolean hasPassword = this.credentialsService.getCredential(userId, CredentialType.TOTP) != null;
+        final long oauthCreds = this.userCredentialDAO.countByType(userId, CredentialType.OAUTH);
+        if (!hasPassword && oauthCreds == 1) {
+            throw new HangarApiException("You can't remove your last oauth account without having a password set");
+        }
+
+        this.userCredentialDAO.removeOAuth(userId, CredentialType.OAUTH, provider, id);
 
         // TODO get from provider
         return "https://github.com/settings/connections/applications/" + oAuthProvider.clientId();

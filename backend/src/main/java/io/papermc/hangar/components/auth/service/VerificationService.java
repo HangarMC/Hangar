@@ -66,6 +66,9 @@ public class VerificationService extends HangarComponent {
         if (userTable == null) {
             return;
         }
+        if (!userTable.isEmailVerified()) {
+            return;
+        }
 
         this.verificationCodeDao.deleteOld(VerificationCodeTable.VerificationCodeType.PASSWORD_RESET, userTable.getUserId());
 

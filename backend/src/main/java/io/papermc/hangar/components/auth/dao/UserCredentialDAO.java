@@ -39,7 +39,7 @@ public interface UserCredentialDAO {
 
     @Timestamped
     @SqlUpdate("UPDATE user_credentials set credential = :credential, updated_at = :now WHERE type = :type and user_id = :userId")
-    void update(long userId, JSONB credential, @EnumByOrdinal CredentialType type);
+    boolean update(long userId, JSONB credential, @EnumByOrdinal CredentialType type);
 
     @EnumByOrdinal
     @SqlQuery("SELECT type FROM user_credentials WHERE user_id = :userId AND type != :password AND (type != :webAuthn OR (credential ->> 'credentials' IS NOT NULL AND jsonb_array_length(credential -> 'credentials') > 0))")
@@ -57,4 +57,7 @@ public interface UserCredentialDAO {
     @Timestamped
     @SqlUpdate("UPDATE user_credentials set credential = :credential, updated_at = :now WHERE type = :type and user_id = :userId and credential ->> 'provider' = :provider and credential ->> 'id' = :id")
     void updateOAuth(long userId, JSONB credential, @EnumByOrdinal CredentialType type, final String provider, final String id);
+
+    @SqlQuery("SELECT count(*) FROM user_credentials where type = :type and user_id = :userId ")
+    long countByType(long userId, @EnumByOrdinal CredentialType type);
 }

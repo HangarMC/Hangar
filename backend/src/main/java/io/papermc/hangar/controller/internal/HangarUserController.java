@@ -114,7 +114,7 @@ public class HangarUserController extends HangarComponent {
     @GetMapping("/users/@me")
     public ResponseEntity<?> getCurrentUser(final HangarAuthenticationToken hangarAuthenticationToken, @CookieValue(name = SecurityConfig.REFRESH_COOKIE_NAME, required = false) final String refreshToken) {
         final String token;
-        final String name;
+        final long id;
         if (hangarAuthenticationToken == null) {
             // if we don't have a token, lets see if we can get one via our refresh token
             if (refreshToken == null) {
@@ -124,7 +124,7 @@ public class HangarUserController extends HangarComponent {
             try {
                 final TokenService.RefreshResponse refreshResponse = this.tokenService.refreshAccessToken(refreshToken);
                 token = refreshResponse.accessToken();
-                name = refreshResponse.userTable().getName();
+                id = refreshResponse.userTable().getUserId();
             } catch (final HangarApiException ex) {
                 // no token + no valid refresh token -> no content
                 return ResponseEntity.noContent().build();
@@ -132,10 +132,10 @@ public class HangarUserController extends HangarComponent {
         } else {
             // when we have a token, just use that
             token = hangarAuthenticationToken.getCredentials().getToken();
-            name = hangarAuthenticationToken.getName();
+            id = hangarAuthenticationToken.getUserId();
         }
         // get user
-        final HangarUser user = this.usersApiService.getUser(name, HangarUser.class);
+        final HangarUser user = this.usersApiService.getUser(id, HangarUser.class);
         user.setAccessToken(token);
         user.setAal(this.credentialsService.getAal(Objects.requireNonNull(this.userService.getUserTable(user.getId()))));
         return ResponseEntity.ok(user);

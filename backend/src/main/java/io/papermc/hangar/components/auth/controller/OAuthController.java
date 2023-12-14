@@ -3,12 +3,15 @@ package io.papermc.hangar.components.auth.controller;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.model.credential.OAuthCredential;
+import io.papermc.hangar.components.auth.model.dto.OAuthSignupForm;
+import io.papermc.hangar.components.auth.model.dto.OAuthSignupResponse;
 import io.papermc.hangar.components.auth.model.oauth.OAuthMode;
 import io.papermc.hangar.components.auth.model.oauth.OAuthUserDetails;
 import io.papermc.hangar.components.auth.service.AuthService;
 import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.components.auth.service.OAuthService;
 import io.papermc.hangar.components.auth.service.TokenService;
+import io.papermc.hangar.components.auth.service.VerificationService;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,12 +36,14 @@ public class OAuthController extends HangarComponent {
     private final TokenService tokenService;
     private final AuthService authService;
     private final CredentialsService credentialsService;
+    private final VerificationService verificationService;
 
-    public OAuthController(final OAuthService oAuthService, final TokenService tokenService, final AuthService authService, final CredentialsService credentialsService) {
+    public OAuthController(final OAuthService oAuthService, final TokenService tokenService, final AuthService authService, final CredentialsService credentialsService, VerificationService verificationService) {
         this.oAuthService = oAuthService;
         this.tokenService = tokenService;
         this.authService = authService;
         this.credentialsService = credentialsService;
+        this.verificationService = verificationService;
     }
 
     @GetMapping("/{provider}/login")
@@ -70,17 +76,11 @@ public class OAuthController extends HangarComponent {
                         if (existingUser != null) {
                             this.authService.setAalAndLogin(existingUser, 2);
                             this.redirect(returnUrl);
+                        } else {
+                            // save the user details and let the user choose their name and email
+                            final String jwt = this.oAuthService.registerState(userDetails, provider, returnUrl);
+                            this.redirect("/auth/oauth-signup?state=" + jwt);
                         }
-
-                        // TODO show tos and allow to change username and email somehow
-                        final String email = userDetails.email();
-                        final String username = userDetails.username();
-                        final boolean tos = true;
-
-                        final UserTable newUser = this.oAuthService.register(provider, userDetails.id(), username, email, tos, userDetails.email().equals(email));
-                        this.credentialsService.registerCredential(newUser.getUserId(), new OAuthCredential(provider, userDetails.id(), userDetails.username()));
-                        this.authService.setAalAndLogin(newUser, 2);
-                        this.redirect(returnUrl);
                     }
                     case SETTINGS -> {
                         final long userId = Long.parseLong(decodedState.getSubject());
@@ -92,6 +92,24 @@ public class OAuthController extends HangarComponent {
         } else {
             this.redirect(returnUrl);
         }
+    }
+
+    @PostMapping("/register")
+    public OAuthSignupResponse register(@RequestBody final OAuthSignupForm form) {
+        final DecodedJWT decodedState = this.tokenService.verify(form.jwt());
+        final String oauthId = decodedState.getSubject();
+        final String oauthEmail = decodedState.getClaim("email").asString();
+        final String oauthUsername = decodedState.getClaim("username").asString();
+        final String oauthProvider = decodedState.getClaim("provider").asString();
+
+        final String email = form.email();
+        final String username = form.username();
+        final boolean tos = form.tos();
+
+        final UserTable newUser = this.oAuthService.register(oauthProvider, oauthId, username, email, tos, oauthEmail.equals(email));
+        this.credentialsService.registerCredential(newUser.getUserId(), new OAuthCredential(oauthProvider, oauthId, oauthUsername));
+        this.authService.setAalAndLogin(newUser, 2);
+        return new OAuthSignupResponse(!newUser.isEmailVerified());
     }
 
     @RequireAal(2)

@@ -42,8 +42,8 @@ public class CredentialsService extends HangarComponent {
         this.userCredentialDAO.remove(userId, type);
     }
 
-    public void updateCredential(final long userId, final Credential credential) {
-        this.userCredentialDAO.update(userId, new JSONB(credential), credential.type());
+    public boolean updateCredential(final long userId, final Credential credential) {
+        return this.userCredentialDAO.update(userId, new JSONB(credential), credential.type());
     }
 
     public @Nullable UserCredentialTable getCredential(final long userId, final CredentialType type) {

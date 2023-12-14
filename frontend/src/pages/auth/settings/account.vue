@@ -8,11 +8,12 @@ import { useAuthSettings } from "~/composables/useApiHelper";
 import Button from "~/components/design/Button.vue";
 import InputPassword from "~/components/ui/InputPassword.vue";
 import InputText from "~/components/ui/InputText.vue";
-import { email, required, useInternalApi } from "#imports";
+import { email, required, useAuth, useInternalApi } from "#imports";
 import PageTitle from "~/components/design/PageTitle.vue";
 
 const emit = defineEmits<{
-  openEmailConfirmModal: () => void;
+  openEmailConfirmModal: [];
+  refreshSettings: [];
 }>();
 
 const auth = useAuthStore();
@@ -41,6 +42,8 @@ async function saveAccount() {
     notification.success("Saved!");
     accountForm.currentPassword = "";
     accountForm.newPassword = "";
+    emit("refreshSettings");
+    useAuth.updateUser(true);
     v.value.$reset();
   } catch (e) {
     notification.fromError(i18n, e);
@@ -59,21 +62,23 @@ async function saveAccount() {
       <Button v-if="!settings?.emailConfirmed" class="w-max" size="small" :disabled="loading" @click.prevent="$emit('openEmailConfirmModal')">
         Verify email
       </Button>
-      <InputPassword
-        v-model="accountForm.currentPassword"
-        label="Current password"
-        name="current-password"
-        autofill="current-password"
-        autocomplete="current-password"
-        :rules="[required()]"
-      />
-      <InputPassword
-        v-model="accountForm.newPassword"
-        label="New password (optional)"
-        name="new-password"
-        autofill="new-password"
-        autocomplete="new-password"
-      />
+      <template v-if="settings?.hasPassword">
+        <InputPassword
+          v-model="accountForm.currentPassword"
+          label="Current password"
+          name="current-password"
+          autofill="current-password"
+          autocomplete="current-password"
+          :rules="[required()]"
+        />
+        <InputPassword
+          v-model="accountForm.newPassword"
+          label="New password (optional)"
+          name="new-password"
+          autofill="new-password"
+          autocomplete="new-password"
+        />
+      </template>
       <div v-if="error" class="text-red">{{ error }}</div>
       <Button type="submit" class="w-max" :disabled="loading" @click.prevent="saveAccount">Save</Button>
     </form>
