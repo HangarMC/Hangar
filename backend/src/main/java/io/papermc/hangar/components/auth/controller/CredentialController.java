@@ -363,7 +363,11 @@ public class CredentialController extends HangarComponent {
         final UserTable userTable = this.userService.getUserTable(form.email());
         if (userTable != null) {
             if (this.authService.validPassword(form.password(), userTable.getName()) && this.verificationService.verifyResetCode(form.email(), form.code(), true)) {
-                this.credentialsService.updateCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(form.password())));
+                final PasswordCredential credential = new PasswordCredential(this.passwordEncoder.encode(form.password()));
+                final boolean success = this.credentialsService.updateCredential(userTable.getUserId(), credential);
+                if (!success) {
+                    this.credentialsService.registerCredential(userTable.getUserId(), credential);
+                }
                 return ResponseEntity.ok().build();
             }
         }

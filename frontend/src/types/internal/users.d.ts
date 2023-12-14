@@ -92,6 +92,7 @@ declare module "hangar-internal" {
     hasTotp: boolean;
     emailConfirmed: boolean;
     emailPending: boolean;
+    hasPassword: boolean;
   }
 
   interface LoginResponse {

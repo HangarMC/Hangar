@@ -117,6 +117,7 @@ public class AuthController extends HangarComponent {
         }
 
         final boolean hasTotp = this.credentialsService.getCredential(userId, CredentialType.TOTP) != null;
+        final boolean hasPassword = this.credentialsService.getCredential(userId, CredentialType.TOTP) != null;
         final boolean emailVerified = Objects.requireNonNull(this.userService.getUserTable(userId)).isEmailVerified();
 
         final VerificationCodeTable verificationCode = this.verificationService.getVerificationCode(userId, VerificationCodeTable.VerificationCodeType.EMAIL_VERIFICATION);
@@ -125,7 +126,7 @@ public class AuthController extends HangarComponent {
         final List<UserCredentialTable> oauthCredentials = this.credentialsService.getAllCredentials(userId, CredentialType.OAUTH);
         final List<OAuthCredential> oauth = oauthCredentials.stream().map(c -> c.getCredential().get(OAuthCredential.class)).toList();
 
-        return new SettingsResponse(authenticators, oauth, hasBackupCodes, hasTotp, emailVerified, emailPending);
+        return new SettingsResponse(authenticators, oauth, hasBackupCodes, hasTotp, emailVerified, emailPending, hasPassword);
     }
 
     private List<SettingsResponse.Authenticator> getAuthenticators(final long userId) {
@@ -144,9 +145,13 @@ public class AuthController extends HangarComponent {
     @Unlocked
     @PostMapping("/account")
     public void saveAccount(@RequestBody final AccountForm form) {
-        this.credentialsService.verifyPassword(this.getHangarPrincipal().getUserId(), form.currentPassword());
+        final long userId = this.getHangarPrincipal().getUserId();
+        final boolean hasPassword = this.credentialsService.getCredential(userId, CredentialType.TOTP) != null;
+        if (hasPassword) {
+            this.credentialsService.verifyPassword(userId, form.currentPassword());
+        }
 
-        final UserTable userTable = this.userService.getUserTable(this.getHangarPrincipal().getUserId());
+        final UserTable userTable = this.userService.getUserTable(userId);
         if (userTable == null) {
             throw new HangarApiException("No user?!");
         }

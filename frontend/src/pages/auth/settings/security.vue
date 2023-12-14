@@ -19,11 +19,11 @@ import PrettyTime from "~/components/design/PrettyTime.vue";
 import { useBackendData } from "~/store/backendData";
 import IconMdiGitHub from "~icons/mdi/github";
 
-defineProps<{
+const props = defineProps<{
   settings?: AuthSettings;
 }>();
 const emit = defineEmits<{
-  refreshSettings: () => void;
+  refreshSettings: [];
 }>();
 
 const auth = useAuthStore();
@@ -247,6 +247,10 @@ async function generateNewCodes() {
   loading.value = false;
 }
 
+const currentlyUnlinkingProvider = ref<string>();
+const oauthModal = ref();
+const unlinkUrl = ref<string>();
+
 async function setupOAuth(provider: string) {
   try {
     window.location.href = await useInternalApi<string>("oauth/" + provider + "/login?mode=settings&returnUrl=" + encodeURIComponent(route.fullPath), "GET");
@@ -259,14 +263,14 @@ async function setupOAuth(provider: string) {
   }
 }
 
-const currentlyUnlinkingProvider = ref<string>();
-const oauthModal = ref();
-const unlinkUrl = ref<string>();
-
 async function unlinkOAuth(provider: string, id: string) {
-  unlinkUrl.value = await useInternalApi("oauth/" + provider + "/unlink/" + id, "POST");
-  currentlyUnlinkingProvider.value = provider;
-  oauthModal.value.isOpen = true;
+  try {
+    unlinkUrl.value = await useInternalApi("oauth/" + provider + "/unlink/" + id, "POST");
+    currentlyUnlinkingProvider.value = provider;
+    oauthModal.value.isOpen = true;
+  } catch (e) {
+    notification.fromError(i18n, e);
+  }
 }
 
 function closeUnlinkModal() {
@@ -348,6 +352,12 @@ function closeUnlinkModal() {
       <Button
         v-for="credential in settings?.oAuthCredentials"
         :key="credential.provider + credential.id"
+        :disabled="!settings?.hasPassword && settings?.oAuthCredentials.length === 1"
+        :title="
+          !settings?.hasPassword && settings?.oAuthCredentials.length === 1
+            ? 'You can\'t unlink your last oauth credential if you don\'t have a password set'
+            : undefined
+        "
         @click="unlinkOAuth(credential.provider, credential.id)"
       >
         <template v-if="credential.provider === 'github'">

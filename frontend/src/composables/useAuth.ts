@@ -125,14 +125,14 @@ class Auth {
     store.invalidated = true;
   }
 
-  async updateUser(): Promise<void> {
+  async updateUser(force = false): Promise<void> {
     const authStore = useAuthStore();
     const axios = useAxios();
     if (authStore.invalidated) {
       authLog("no point in updating if we just invalidated");
       return;
     }
-    if (authStore.user) {
+    if (!force && authStore.user) {
       authLog("no point in updating if we already have a user");
       return;
     }

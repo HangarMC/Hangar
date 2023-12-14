@@ -4,6 +4,8 @@ import io.papermc.hangar.util.CryptoUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class HibpService {
+
+    private static final Logger logger = LoggerFactory.getLogger(HibpService.class);
 
     private final RestTemplate restTemplate;
 
@@ -25,14 +29,18 @@ public class HibpService {
         final String prefix = hashedPassword.substring(0, 5);
         final String suffix = hashedPassword.substring(5).toUpperCase();
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.set("User-Agent", "Hangar/1.0 #https://github.com/HangarMC/Hangar");
-        final ResponseEntity<String> response = this.restTemplate.exchange("https://api.pwnedpasswords.com/range/" + prefix, HttpMethod.GET, new HttpEntity<>(headers), String.class);
-        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            final Optional<String> match = Arrays.stream(response.getBody().split("\r\n")).filter(s -> s.startsWith(suffix)).findAny();
-            if (match.isPresent()) {
-                return Integer.parseInt(match.get().split(":")[1]);
+        try {
+            final HttpHeaders headers = new HttpHeaders();
+            headers.set("User-Agent", "Hangar/1.0 #https://github.com/HangarMC/Hangar");
+            final ResponseEntity<String> response = this.restTemplate.exchange("https://api.pwnedpasswords.com/range/" + prefix, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                final Optional<String> match = Arrays.stream(response.getBody().split("\r\n")).filter(s -> s.startsWith(suffix)).findAny();
+                if (match.isPresent()) {
+                    return Integer.parseInt(match.get().split(":")[1]);
+                }
             }
+        } catch (final Exception ex) {
+            logger.warn("HIBP is offline?", ex);
         }
         return -1;
     }
