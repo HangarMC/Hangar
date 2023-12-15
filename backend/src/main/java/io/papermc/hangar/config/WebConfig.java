@@ -139,7 +139,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
             AnnotationIntrospector.pair(sAnnotationIntrospector, new HangarAnnotationIntrospector()),
             this.mapper.getDeserializationConfig().getAnnotationIntrospector()
         );
-        converters.add(new MappingJackson2HttpMessageConverter(this.mapper));
+        converters.add(this.mappingJackson2HttpMessageConverter(this.mapper));
         this.addDefaultHttpMessageConverters(converters);
     }
 
@@ -228,7 +228,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     static class LoggingInterceptor implements ClientHttpRequestInterceptor {
 
         @Override
-        public ClientHttpResponse intercept(final HttpRequest req, final byte[] reqBody, final ClientHttpRequestExecution ex) throws IOException {
+        public @NotNull ClientHttpResponse intercept(final @NotNull HttpRequest req, final byte @NotNull [] reqBody, final @NotNull ClientHttpRequestExecution ex) throws IOException {
             if (interceptorLogger.isDebugEnabled()) {
                 interceptorLogger.debug("Request {}, body {}, headers {}", req.getMethod() + " " + req.getURI(), new String(reqBody, StandardCharsets.UTF_8), req.getHeaders());
             }

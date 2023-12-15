@@ -5,6 +5,7 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.model.credential.OAuthCredential;
 import io.papermc.hangar.components.auth.model.dto.OAuthSignupForm;
 import io.papermc.hangar.components.auth.model.dto.OAuthSignupResponse;
+import io.papermc.hangar.components.auth.model.oauth.OAuthCodeResponse;
 import io.papermc.hangar.components.auth.model.oauth.OAuthMode;
 import io.papermc.hangar.components.auth.model.oauth.OAuthUserDetails;
 import io.papermc.hangar.components.auth.service.AuthService;
@@ -12,6 +13,7 @@ import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.components.auth.service.OAuthService;
 import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.components.auth.service.VerificationService;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
@@ -36,14 +38,12 @@ public class OAuthController extends HangarComponent {
     private final TokenService tokenService;
     private final AuthService authService;
     private final CredentialsService credentialsService;
-    private final VerificationService verificationService;
 
-    public OAuthController(final OAuthService oAuthService, final TokenService tokenService, final AuthService authService, final CredentialsService credentialsService, VerificationService verificationService) {
+    public OAuthController(final OAuthService oAuthService, final TokenService tokenService, final AuthService authService, final CredentialsService credentialsService) {
         this.oAuthService = oAuthService;
         this.tokenService = tokenService;
         this.authService = authService;
         this.credentialsService = credentialsService;
-        this.verificationService = verificationService;
     }
 
     @GetMapping("/{provider}/login")
@@ -60,33 +60,40 @@ public class OAuthController extends HangarComponent {
     }
 
     @GetMapping("/{provider}/callback")
-    public void callback(@PathVariable final String provider, @RequestParam(required = false) final String code, @RequestParam final String state) throws IOException {
+    public void callback(@PathVariable final String provider,
+                         @RequestParam(required = false) final String code,
+                         @RequestParam final String state,
+                         @RequestParam(required = false) final String error,
+                         @RequestParam(required = false, name = "error_description") final String errorDescription) throws IOException {
         final DecodedJWT decodedState = this.tokenService.verify(state);
         final OAuthMode mode = decodedState.getClaim("mode").as(OAuthMode.class);
         final String returnUrl = decodedState.getClaim("returnUrl").asString();
 
-        if (code != null) {
-            final String token = this.oAuthService.redeemCode(provider, code);
-            if (token != null) {
-                final OAuthUserDetails userDetails = this.oAuthService.getUserDetails(provider, token);
+        // todo better error handling
+        if (error != null) {
+            throw new HangarApiException("OAuth error: " + error + " - " + errorDescription);
+        }
 
-                switch (mode) {
-                    case LOGIN, SIGNUP -> {
-                        final UserTable existingUser = this.oAuthService.login(provider, userDetails.id(), userDetails.username());
-                        if (existingUser != null) {
-                            this.authService.setAalAndLogin(existingUser, 2);
-                            this.redirect(returnUrl);
-                        } else {
-                            // save the user details and let the user choose their name and email
-                            final String jwt = this.oAuthService.registerState(userDetails, provider, returnUrl);
-                            this.redirect("/auth/oauth-signup?state=" + jwt);
-                        }
-                    }
-                    case SETTINGS -> {
-                        final long userId = Long.parseLong(decodedState.getSubject());
-                        this.credentialsService.registerCredential(userId, new OAuthCredential(provider, userDetails.id(), userDetails.username()));
+        if (code != null) {
+            final OAuthCodeResponse response = this.oAuthService.redeemCode(provider, code);
+            final OAuthUserDetails userDetails = this.oAuthService.getUserDetails(provider, response);
+
+            switch (mode) {
+                case LOGIN, SIGNUP -> {
+                    final UserTable existingUser = this.oAuthService.login(provider, userDetails.id(), userDetails.username());
+                    if (existingUser != null) {
+                        this.authService.setAalAndLogin(existingUser, 2);
                         this.redirect(returnUrl);
+                    } else {
+                        // save the user details and let the user choose their name and email
+                        final String jwt = this.oAuthService.registerState(userDetails, provider, returnUrl);
+                        this.redirect("/auth/oauth-signup?state=" + jwt);
                     }
+                }
+                case SETTINGS -> {
+                    final long userId = Long.parseLong(decodedState.getSubject());
+                    this.credentialsService.registerCredential(userId, new OAuthCredential(provider, userDetails.id(), userDetails.username()));
+                    this.redirect(returnUrl);
                 }
             }
         } else {

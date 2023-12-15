@@ -1,11 +1,11 @@
 package io.papermc.hangar.config.hangar;
 
+import io.papermc.hangar.components.auth.model.oauth.OAuthProvider;
 import java.net.URI;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.boot.convert.DurationUnit;
 
@@ -19,7 +19,8 @@ public record HangarSecurityConfig(
     @DurationUnit(ChronoUnit.SECONDS) Duration tokenExpiry,
     @DurationUnit(ChronoUnit.DAYS) Duration refreshTokenExpiry,
     String rpName,
-    String rpId
+    String rpId,
+    List<OAuthProvider> oAuthProviders
 ) {
 
     public boolean checkSafe(final String url) {
