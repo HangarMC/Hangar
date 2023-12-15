@@ -187,6 +187,31 @@ hangar:
       - "giphy.com"
       - "media.giphy.com"
       - "bstats.org"
+    o-auth-providers:
+      - name: "github"
+        mode: "github"
+        client-id: "26ba07861a06dda93f56"
+        client-secret: "d0cb6980a7c647b95cd30f8a2d6ac98b79cd67ac"
+        scopes:
+        - "user:email"
+      - name: "microsoft"
+        mode: "oidc"
+        client-id: "93147315-cd13-411a-8068-90e912c6e242"
+        client-secret: "L4l8Q~AVLEy5nSp0_q4qm2a8z1DrODJhJGb4cbjc"
+        scopes:
+        - "openid"
+        - "email"
+        - "profile"
+        well-known: "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration"
+      - name: "google"
+        mode: "oidc"
+        client-id: "731781739823-2gdq4irf8o50ktsctn358j5bd1an5r0k.apps.googleusercontent.com"
+        client-secret: "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"
+        scopes:
+          - "openid"
+          - "email"
+          - "profile"
+        well-known: "https://accounts.google.com/.well-known/openid-configuration"
 
   jobs:
     check-interval: 5s

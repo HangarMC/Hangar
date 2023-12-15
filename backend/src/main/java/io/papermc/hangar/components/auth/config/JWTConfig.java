@@ -22,4 +22,9 @@ public class JWTConfig extends HangarComponent {
     public Algorithm algorithm() {
         return Algorithm.HMAC256(this.config.security.tokenSecret());
     }
+
+    @Bean
+    public JWT jwt() {
+        return new JWT();
+    }
 }
