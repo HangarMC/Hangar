@@ -2,7 +2,6 @@ package io.papermc.hangar.controller.api.v1;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.api.v1.interfaces.IPagesController;
-import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.PageEditForm;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
@@ -17,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 // @el(author: String, slug: String, projectId: long)
 @Anyone

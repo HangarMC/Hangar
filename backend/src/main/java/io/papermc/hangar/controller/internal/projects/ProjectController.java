@@ -1,7 +1,6 @@
 package io.papermc.hangar.controller.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.PermissionType;

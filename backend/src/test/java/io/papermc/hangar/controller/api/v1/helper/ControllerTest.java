@@ -1,6 +1,5 @@
 package io.papermc.hangar.controller.api.v1.helper;
 
-import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fasterxml.jackson.databind.ObjectMapper;

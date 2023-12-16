@@ -6,7 +6,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.dao.UserRefreshTokenDAO;
-import io.papermc.hangar.components.auth.model.credential.CredentialType;
 import io.papermc.hangar.components.auth.model.db.UserRefreshToken;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.exceptions.HangarApiException;

@@ -10,6 +10,7 @@ declare module "vue" {
     IconMdiAccountPlus: typeof import("~icons/mdi/account-plus")["default"];
     IconMdiAlert: typeof import("~icons/mdi/alert")["default"];
     IconMdiAlertBox: typeof import("~icons/mdi/alert-box")["default"];
+    IconMdiAlertDecagram: typeof import("~icons/mdi/alert-decagram")["default"];
     IconMdiAlertOutline: typeof import("~icons/mdi/alert-outline")["default"];
     IconMdiBell: typeof import("~icons/mdi/bell")["default"];
     IconMdiBellBadge: typeof import("~icons/mdi/bell-badge")["default"];
@@ -42,6 +43,7 @@ declare module "vue" {
     IconMdiEarth: typeof import("~icons/mdi/earth")["default"];
     IconMdiEye: typeof import("~icons/mdi/eye")["default"];
     IconMdiEyeOff: typeof import("~icons/mdi/eye-off")["default"];
+    IconMdiFileDocument: typeof import("~icons/mdi/file-document")["default"];
     IconMdiFlag: typeof import("~icons/mdi/flag")["default"];
     IconMdiFolderPlusOutline: typeof import("~icons/mdi/folder-plus-outline")["default"];
     IconMdiFormatListNumbered: typeof import("~icons/mdi/format-list-numbered")["default"];
@@ -54,13 +56,17 @@ declare module "vue" {
     IconMdiLeaf: typeof import("~icons/mdi/leaf")["default"];
     IconMdiLicense: typeof import("~icons/mdi/license")["default"];
     IconMdiLink: typeof import("~icons/mdi/link")["default"];
+    IconMdiListStatus: typeof import("~icons/mdi/list-status")["default"];
     IconMdiLockOpenOutline: typeof import("~icons/mdi/lock-open-outline")["default"];
     IconMdiLockOutline: typeof import("~icons/mdi/lock-outline")["default"];
     IconMdiMenu: typeof import("~icons/mdi/menu")["default"];
     IconMdiMenuDown: typeof import("~icons/mdi/menu-down")["default"];
     IconMdiOpenInNew: typeof import("~icons/mdi/open-in-new")["default"];
     IconMdiPencil: typeof import("~icons/mdi/pencil")["default"];
+    IconMdiPin: typeof import("~icons/mdi/pin")["default"];
+    IconMdiPinOff: typeof import("~icons/mdi/pin-off")["default"];
     IconMdiPinOutline: typeof import("~icons/mdi/pin-outline")["default"];
+    IconMdiPlay: typeof import("~icons/mdi/play")["default"];
     IconMdiPlus: typeof import("~icons/mdi/plus")["default"];
     IconMdiProgressQuestion: typeof import("~icons/mdi/progress-question")["default"];
     IconMdiPuzzleOutline: typeof import("~icons/mdi/puzzle-outline")["default"];

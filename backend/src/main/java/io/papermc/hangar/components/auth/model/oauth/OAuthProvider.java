@@ -1,7 +1,6 @@
 package io.papermc.hangar.components.auth.model.oauth;
 
 import java.util.Objects;
-import org.apache.commons.lang3.StringUtils;
 
 public final class OAuthProvider {
 

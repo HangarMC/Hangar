@@ -2,7 +2,6 @@ package io.papermc.hangar.security.annotations.permission;
 
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import org.springframework.expression.Expression;

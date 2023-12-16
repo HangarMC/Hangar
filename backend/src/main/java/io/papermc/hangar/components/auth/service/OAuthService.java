@@ -81,7 +81,7 @@ public class OAuthService extends HangarComponent {
             case GITHUB -> {
                 provider.authorizationEndpoint("https://github.com/login/oauth/authorize");
                 provider.tokenEndpoint("https://github.com/login/oauth/access_token");
-                provider.userInfoEndpoint(""); // TODO
+                provider.userInfoEndpoint("https://api.github.com/user");
             }
             default -> throw new IllegalArgumentException("Unknown provider mode: " + provider.mode());
         }
@@ -148,7 +148,7 @@ public class OAuthService extends HangarComponent {
                 )))
                 .retrieve()
                 .body(OAuthCodeResponse.class);
-            case GITHUB -> this.restClient.post().uri("https://github.com/login/oauth/access_token")
+            case GITHUB -> this.restClient.post().uri(oAuthProvider.tokenEndpoint())
                 .header("Accept", "application/json")
                 .body(new OAuthCodeRequest(oAuthProvider.clientId(), oAuthProvider.clientSecret(), code))
                 .retrieve()
@@ -178,7 +178,7 @@ public class OAuthService extends HangarComponent {
             }
             case GITHUB -> {
                 // noinspection unchecked
-                final Map<String, String> response = this.restClient.get().uri("https://api.github.com/user")
+                final Map<String, String> response = this.restClient.get().uri(oAuthProvider.userInfoEndpoint())
                     .header("Authorization", "Bearer " + codeResponse.accessToken())
                     .retrieve()
                     .body(Map.class);

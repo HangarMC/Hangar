@@ -2,17 +2,14 @@ package io.papermc.hangar.components.auth.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.components.auth.model.credential.OAuthCredential;
 import io.papermc.hangar.components.auth.model.dto.OAuthSignupForm;
 import io.papermc.hangar.components.auth.model.dto.OAuthSignupResponse;
 import io.papermc.hangar.components.auth.model.oauth.OAuthCodeResponse;
 import io.papermc.hangar.components.auth.model.oauth.OAuthMode;
 import io.papermc.hangar.components.auth.model.oauth.OAuthUserDetails;
 import io.papermc.hangar.components.auth.service.AuthService;
-import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.components.auth.service.OAuthService;
 import io.papermc.hangar.components.auth.service.TokenService;
-import io.papermc.hangar.components.auth.service.VerificationService;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.security.annotations.aal.RequireAal;

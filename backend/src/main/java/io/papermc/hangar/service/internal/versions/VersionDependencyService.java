@@ -22,7 +22,6 @@ import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.service.internal.PlatformService;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;

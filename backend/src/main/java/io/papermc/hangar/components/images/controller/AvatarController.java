@@ -4,7 +4,6 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.images.service.AvatarService;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
