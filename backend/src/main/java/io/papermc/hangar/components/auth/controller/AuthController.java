@@ -106,6 +106,7 @@ public class AuthController extends HangarComponent {
     public SettingsResponse settings() {
         final long userId = this.getHangarPrincipal().getUserId();
         final List<SettingsResponse.Authenticator> authenticators = this.getAuthenticators(userId);
+        final List<OAuthCredential.OAuthConnection> oauth = this.getOAuthConnections(userId);
 
         final UserCredentialTable backupCodeTable = this.credentialsService.getCredential(userId, CredentialType.BACKUP_CODES);
         boolean hasBackupCodes = false;
@@ -123,9 +124,6 @@ public class AuthController extends HangarComponent {
         final VerificationCodeTable verificationCode = this.verificationService.getVerificationCode(userId, VerificationCodeTable.VerificationCodeType.EMAIL_VERIFICATION);
         final boolean emailPending = verificationCode != null && !this.verificationService.expired(verificationCode);
 
-        final List<UserCredentialTable> oauthCredentials = this.credentialsService.getAllCredentials(userId, CredentialType.OAUTH);
-        final List<OAuthCredential> oauth = oauthCredentials.stream().map(c -> c.getCredential().get(OAuthCredential.class)).toList();
-
         return new SettingsResponse(authenticators, oauth, hasBackupCodes, hasTotp, emailVerified, emailPending, hasPassword);
     }
 
@@ -137,6 +135,17 @@ public class AuthController extends HangarComponent {
                 return webAuthNCredential.credentials().stream()
                     .map(c -> new SettingsResponse.Authenticator(c.addedAt(), c.displayName(), c.id()))
                     .toList();
+            }
+        }
+        return List.of();
+    }
+
+    private List<OAuthCredential.OAuthConnection> getOAuthConnections(final long userId) {
+        final UserCredentialTable credential = this.credentialsService.getCredential(userId, CredentialType.OAUTH);
+        if (credential != null) {
+            final OAuthCredential oAuthCredential = credential.getCredential().get(OAuthCredential.class);
+            if (oAuthCredential != null && oAuthCredential.connections() != null) {
+                return oAuthCredential.connections();
             }
         }
         return List.of();

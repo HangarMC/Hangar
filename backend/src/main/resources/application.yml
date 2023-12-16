@@ -194,6 +194,7 @@ hangar:
         client-secret: "d0cb6980a7c647b95cd30f8a2d6ac98b79cd67ac"
         scopes:
         - "user:email"
+        unlink-link: "https://github.com/settings/connections/applications/:id"
       - name: "microsoft"
         mode: "oidc"
         client-id: "93147315-cd13-411a-8068-90e912c6e242"
@@ -203,6 +204,7 @@ hangar:
         - "email"
         - "profile"
         well-known: "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration"
+        unlink-link: "https://account.live.com/consent/Manage"
       - name: "google"
         mode: "oidc"
         client-id: "731781739823-2gdq4irf8o50ktsctn358j5bd1an5r0k.apps.googleusercontent.com"
@@ -212,6 +214,7 @@ hangar:
           - "email"
           - "profile"
         well-known: "https://accounts.google.com/.well-known/openid-configuration"
+        unlink-link: "https://myaccount.google.com/connections"
 
   jobs:
     check-interval: 5s

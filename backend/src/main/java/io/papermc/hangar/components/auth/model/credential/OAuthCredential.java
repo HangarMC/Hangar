@@ -1,6 +1,10 @@
 package io.papermc.hangar.components.auth.model.credential;
 
-public record OAuthCredential(String provider, String id, String name) implements Credential {
+import java.util.List;
+
+public record OAuthCredential(List<OAuthConnection> connections) implements Credential {
+
+    public record OAuthConnection(String provider, String id, String name) {}
 
     @Override
     public CredentialType type() {
