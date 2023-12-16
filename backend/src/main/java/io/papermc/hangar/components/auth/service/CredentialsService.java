@@ -51,10 +51,6 @@ public class CredentialsService extends HangarComponent {
         return this.userCredentialDAO.getByType(type, userId);
     }
 
-    public List<UserCredentialTable> getAllCredentials(final long userId, final CredentialType type) {
-        return this.userCredentialDAO.getAllByType(type, userId);
-    }
-
     public @Nullable UserCredentialTable getCredentialByUserHandle(final ByteArray userHandle) {
         return this.userCredentialDAO.getByUserHandle(CredentialType.WEBAUTHN, userHandle.getBase64());
     }

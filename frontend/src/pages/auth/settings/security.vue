@@ -19,7 +19,7 @@ import PrettyTime from "~/components/design/PrettyTime.vue";
 import { useBackendData } from "~/store/backendData";
 import IconMdiGitHub from "~icons/mdi/github";
 
-const props = defineProps<{
+defineProps<{
   settings?: AuthSettings;
 }>();
 const emit = defineEmits<{
@@ -350,11 +350,11 @@ function closeUnlinkModal() {
     </div>
     <div class="flex gap-2 mt-2">
       <Button
-        v-for="credential in settings?.oAuthCredentials"
+        v-for="credential in settings?.oauthConnections"
         :key="credential.provider + credential.id"
-        :disabled="!settings?.hasPassword && settings?.oAuthCredentials.length === 1"
+        :disabled="!settings?.hasPassword && settings?.oauthConnections.length === 1"
         :title="
-          !settings?.hasPassword && settings?.oAuthCredentials.length === 1
+          !settings?.hasPassword && settings?.oauthConnections.length === 1
             ? 'You can\'t unlink your last oauth credential if you don\'t have a password set'
             : undefined
         "

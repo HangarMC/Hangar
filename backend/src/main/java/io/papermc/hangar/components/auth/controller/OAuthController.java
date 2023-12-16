@@ -37,13 +37,11 @@ public class OAuthController extends HangarComponent {
     private final OAuthService oAuthService;
     private final TokenService tokenService;
     private final AuthService authService;
-    private final CredentialsService credentialsService;
 
-    public OAuthController(final OAuthService oAuthService, final TokenService tokenService, final AuthService authService, final CredentialsService credentialsService) {
+    public OAuthController(final OAuthService oAuthService, final TokenService tokenService, final AuthService authService) {
         this.oAuthService = oAuthService;
         this.tokenService = tokenService;
         this.authService = authService;
-        this.credentialsService = credentialsService;
     }
 
     @GetMapping("/{provider}/login")
@@ -92,7 +90,7 @@ public class OAuthController extends HangarComponent {
                 }
                 case SETTINGS -> {
                     final long userId = Long.parseLong(decodedState.getSubject());
-                    this.credentialsService.registerCredential(userId, new OAuthCredential(provider, userDetails.id(), userDetails.username()));
+                    this.oAuthService.registerCredentials(provider, userId, userDetails);
                     this.redirect(returnUrl);
                 }
             }
@@ -114,7 +112,7 @@ public class OAuthController extends HangarComponent {
         final boolean tos = form.tos();
 
         final UserTable newUser = this.oAuthService.register(oauthProvider, oauthId, username, email, tos, oauthEmail.equals(email));
-        this.credentialsService.registerCredential(newUser.getUserId(), new OAuthCredential(oauthProvider, oauthId, oauthUsername));
+        this.oAuthService.registerCredentials(oauthProvider, newUser.getUserId(), new OAuthUserDetails(oauthId, oauthUsername, oauthEmail));
         this.authService.setAalAndLogin(newUser, 2);
         return new OAuthSignupResponse(!newUser.isEmailVerified());
     }

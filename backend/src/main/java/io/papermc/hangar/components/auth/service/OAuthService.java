@@ -44,7 +44,7 @@ public class OAuthService extends HangarComponent {
 
     private final Map<String, OAuthProvider> providers = new HashMap<>();
 
-    public OAuthService(final RestClient restClient, final Algorithm algo, JWT jwt, final AuthService authService, final UserDAO userDAO, final VerificationService verificationService, final UserCredentialDAO userCredentialDAO, final CredentialsService credentialsService) {
+    public OAuthService(final RestClient restClient, final Algorithm algo, final JWT jwt, final AuthService authService, final UserDAO userDAO, final VerificationService verificationService, final UserCredentialDAO userCredentialDAO, final CredentialsService credentialsService) {
         this.restClient = restClient;
         this.algo = algo;
         this.jwt = jwt;
@@ -204,12 +204,11 @@ public class OAuthService extends HangarComponent {
     public UserTable register(final String provider, final String id, final String username, final String email, final boolean tos, final boolean emailVerified) {
         this.authService.validateNewUser(username, email, tos);
 
-        if (this.userCredentialDAO.getOAuthUser(provider, id) != null) {
+        if (this.userCredentialDAO.getOAuthUser(provider, id, CredentialType.OAUTH) != null) {
             throw new HangarApiException("This " + provider + " account is already linked to a Hangar account");
         }
 
         final UserTable userTable = this.userDAO.create(UUID.randomUUID(), username, email, null, "en", List.of(), false, "light", emailVerified, new JSONB(Map.of()));
-
         if (!emailVerified) {
             this.verificationService.sendVerificationCode(userTable.getUserId(), userTable.getEmail(), userTable.getName());
         }
@@ -222,7 +221,7 @@ public class OAuthService extends HangarComponent {
     }
 
     public UserTable login(final String provider, final String id, final String name) {
-        final JoinRow result = this.userCredentialDAO.getOAuthUser(provider, id);
+        final JoinRow result = this.userCredentialDAO.getOAuthUser(provider, id, CredentialType.OAUTH);
         if (result == null) {
             return null;
         }
@@ -238,8 +237,16 @@ public class OAuthService extends HangarComponent {
             return null;
         }
 
-        if (!name.equals(oAuthCredential.name())) {
-            this.userCredentialDAO.updateOAuth(userTable.getUserId(), new JSONB(new OAuthCredential(provider, id, name)), CredentialType.OAUTH, provider, id);
+        for (final OAuthCredential.OAuthConnection connection : oAuthCredential.connections()) {
+            if (connection.provider().equals(provider) && connection.id().equals(id)) {
+                if (!connection.name().equals(name)) {
+                    oAuthCredential.connections().remove(connection);
+                    oAuthCredential.connections().add(new OAuthCredential.OAuthConnection(provider, id, name));
+                    this.credentialsService.updateCredential(userTable.getUserId(), oAuthCredential);
+                } else {
+                    break;
+                }
+            }
         }
 
         return userTable;
@@ -253,14 +260,52 @@ public class OAuthService extends HangarComponent {
 
         final long userId = this.getHangarPrincipal().getUserId();
         final boolean hasPassword = this.credentialsService.getCredential(userId, CredentialType.PASSWORD) != null;
-        final long oauthCreds = this.userCredentialDAO.countByType(userId, CredentialType.OAUTH);
-        if (!hasPassword && oauthCreds == 1) {
+        final OAuthCredential oAuthCredential = this.getOAuthCredential(userId);
+        if (!hasPassword && oAuthCredential.connections().size() == 1) {
             throw new HangarApiException("You can't remove your last oauth account without having a password set");
         }
+        final boolean removedAny = oAuthCredential.connections().removeIf(c -> c.provider().equals(provider) && c.id().equals(id));
+        if (!removedAny) {
+            throw new HangarApiException("Unknown connection");
+        }
+        this.credentialsService.updateCredential(userId, oAuthCredential);
 
-        this.userCredentialDAO.removeOAuth(userId, CredentialType.OAUTH, provider, id);
+        return oAuthProvider.unlinkLink().replace(":id", oAuthProvider.clientId());
+    }
 
-        // TODO get from provider
-        return "https://github.com/settings/connections/applications/" + oAuthProvider.clientId();
+    public void registerCredentials(final String provider, final long userId, final OAuthUserDetails userDetails) {
+        final OAuthCredential.OAuthConnection connection = new OAuthCredential.OAuthConnection(provider, userDetails.id(), userDetails.username());
+        final OAuthCredential oAuthCredential;
+        try {
+            // check if we already have connections
+            oAuthCredential = this.getOAuthCredential(userId);
+        } catch (final HangarApiException e) {
+            // else just add
+            this.credentialsService.registerCredential(userId, new OAuthCredential(List.of(connection)));
+            return;
+        }
+        // check if this account already has that connection
+        oAuthCredential.connections().stream().filter((c -> c.provider().equals(provider) && c.id().equals(userDetails.id()))).findFirst().ifPresent(c -> {
+            throw new HangarApiException("This " + provider + " account is already linked to your Hangar account");
+        });
+        // check if another account already has that connection
+        if (this.userCredentialDAO.getOAuthUser(provider, userDetails.id(), CredentialType.OAUTH) != null) {
+            throw new HangarApiException("This " + provider + " account is already linked to another Hangar account");
+        }
+        // add
+        oAuthCredential.connections().add(connection);
+        this.credentialsService.updateCredential(userId, oAuthCredential);
+    }
+
+    private OAuthCredential getOAuthCredential(final long userId) {
+        final UserCredentialTable oauth = this.credentialsService.getCredential(userId, CredentialType.OAUTH);
+        if (oauth == null) {
+            throw new HangarApiException("You don't have any oauth accounts linked");
+        }
+        final OAuthCredential oAuthCredential = oauth.getCredential().get(OAuthCredential.class);
+        if (oAuthCredential == null) {
+            throw new HangarApiException("You don't have any oauth accounts linked");
+        }
+        return oAuthCredential;
     }
 }

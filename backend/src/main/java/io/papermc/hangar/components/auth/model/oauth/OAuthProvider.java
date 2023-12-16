@@ -1,6 +1,7 @@
 package io.papermc.hangar.components.auth.model.oauth;
 
 import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
 
 public final class OAuthProvider {
 
@@ -15,18 +16,20 @@ public final class OAuthProvider {
     private final String[] scopes;
     private final Mode mode;
     private final String wellKnown;
+    private final String unlinkLink;
 
     private String authorizationEndpoint;
     private String tokenEndpoint;
     private String userInfoEndpoint;
 
-    public OAuthProvider(final String name, final String clientId, final String clientSecret, final String[] scopes, final Mode mode, final String wellKnown) {
+    public OAuthProvider(final String name, final String clientId, final String clientSecret, final String[] scopes, final Mode mode, final String wellKnown, String unlinkLink) {
         this.name = name;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.scopes = scopes;
         this.mode = mode;
         this.wellKnown = wellKnown;
+        this.unlinkLink = unlinkLink;
     }
 
     public String name() {
@@ -51,6 +54,10 @@ public final class OAuthProvider {
 
     public String wellKnown() {
         return this.wellKnown;
+    }
+
+    public String unlinkLink() {
+        return this.unlinkLink;
     }
 
     public String authorizationEndpoint() {
