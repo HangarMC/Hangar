@@ -1,0 +1,23 @@
+@media (prefers-reduced-motion: no-preference) {
+  .page-enter-active,
+  .page-leave-active {
+    transition-property: opacity, transform, blur;
+    transition-duration: 0.2s;
+    width: 100%;
+  }
+
+  .page-enter-from,
+  .page-leave-to {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    transform: translateY(1rem);
+    filter: blur(0.2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-leave-from {
+    display: none;
+  }
+}

@@ -18,6 +18,12 @@ export default defineNuxtConfig({
   imports: {
     autoImport: false,
   },
+  app: {
+    pageTransition: {
+      name: "page",
+      mode: "in-out",
+    },
+  },
   srcDir: "src",
   runtimeConfig: {
     backendHost,
