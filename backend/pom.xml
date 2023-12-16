@@ -28,7 +28,7 @@
         <!-- dependency management -->
         <jdbi3-bom.version>3.42.0</jdbi3-bom.version>
         <configurate.version>4.1.2</configurate.version>
-        <spring-cloud-aws.version>3.0.3</spring-cloud-aws.version>
+        <spring-cloud-aws.version>3.1.0</spring-cloud-aws.version>
 
         <!-- dependencies -->
         <sentry.version>7.0.0</sentry.version>
@@ -441,7 +441,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.2</version>
+                <version>3.2.3</version>
                 <configuration>
                     <argLine>--enable-preview</argLine>
                 </configuration>
