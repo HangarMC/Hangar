@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.dao.UserRefreshTokenDAO;
+import io.papermc.hangar.components.auth.model.credential.CredentialType;
 import io.papermc.hangar.components.auth.model.db.UserRefreshToken;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -98,8 +99,12 @@ public class TokenService extends HangarComponent {
         }
         // in any case, refreshing the cookie is good
         this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), this.config.security.refreshTokenExpiry().toSeconds(), true, this.response);
+
+        // oauth only users are always privileged
+        final boolean privileged = this.credentialsService.isOAuthOnly(userTable.getUserId());
+
         // then issue a new access token
-        return new RefreshResponse(this.newToken0(userTable, false), userTable);
+        return new RefreshResponse(this.newToken0(userTable, privileged), userTable);
     }
 
     public void invalidateToken(final String refreshToken) {
