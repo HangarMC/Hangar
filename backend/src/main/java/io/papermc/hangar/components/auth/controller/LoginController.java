@@ -20,9 +20,13 @@ import io.papermc.hangar.components.auth.service.WebAuthNService;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
+import io.papermc.hangar.security.annotations.unlocked.Unlocked;
+import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.internal.users.UserService;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -52,6 +56,13 @@ public class LoginController extends HangarComponent {
         this.authService = authService;
     }
 
+    @Unlocked
+    @PostMapping("login/sudo")
+    public LoginResponse loginSudo() {
+        final List<CredentialType> types = this.credentialsService.getCredentialTypes(this.getHangarPrincipal().getUserId());
+        return new LoginResponse(this.getHangarPrincipal().getAal(), types, null);
+    }
+
     @Anyone
     @PostMapping("login/password")
     public LoginResponse loginPassword(@RequestBody final LoginPasswordForm form) {
@@ -68,7 +79,14 @@ public class LoginController extends HangarComponent {
     @Anyone
     @PostMapping("login/webauthn")
     public LoginResponse loginWebAuthN(@RequestBody final LoginWebAuthNForm form) throws IOException {
-        final UserTable userTable = this.verifyPassword(form.usernameOrEmail(), form.password());
+        final Optional<HangarPrincipal> principal = this.getOptionalHangarPrincipal();
+        final UserTable userTable;
+        //noinspection OptionalIsPresent
+        if (principal.isPresent()) {
+            userTable = Objects.requireNonNull(this.userService.getUserTable(principal.get().getUserId()));
+        } else {
+            userTable = this.verifyPassword(form.usernameOrEmail(), form.password());
+        }
 
         final var pkc = PublicKeyCredential.parseAssertionResponseJson(form.publicKeyCredentialJson());
 
@@ -93,6 +111,12 @@ public class LoginController extends HangarComponent {
     @Anyone
     @PostMapping("login/totp")
     public LoginResponse loginTotp(@RequestBody final LoginTotpForm form) {
+        final Optional<HangarPrincipal> principal = this.getOptionalHangarPrincipal();
+        if (principal.isPresent()) {
+            this.credentialsService.verifyTotp(principal.get().getUserId(), form.totpCode());
+            return this.authService.setAalAndLogin(Objects.requireNonNull(this.userService.getUserTable(principal.get().getUserId())), 2);
+        }
+
         final UserTable userTable = this.verifyPassword(form.usernameOrEmail(), form.password());
         this.credentialsService.verifyTotp(userTable.getUserId(), form.totpCode());
         return this.authService.setAalAndLogin(userTable, 2);
@@ -101,6 +125,12 @@ public class LoginController extends HangarComponent {
     @Anyone
     @PostMapping("login/backup")
     public LoginResponse loginBackup(@RequestBody final LoginBackupForm form) {
+        final Optional<HangarPrincipal> principal = this.getOptionalHangarPrincipal();
+        if (principal.isPresent()) {
+            this.credentialsService.verifyBackupCode(principal.get().getUserId(), form.backupCode());
+            return this.authService.setAalAndLogin(Objects.requireNonNull(this.userService.getUserTable(principal.get().getUserId())), 2);
+        }
+
         final UserTable userTable = this.verifyPassword(form.usernameOrEmail(), form.password());
         this.credentialsService.verifyBackupCode(userTable.getUserId(), form.backupCode());
         return this.authService.setAalAndLogin(userTable, 2);

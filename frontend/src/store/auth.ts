@@ -12,7 +12,6 @@ export const useAuthStore = defineStore("auth", () => {
   const routePermissionsUser = ref<string | null>(null);
   const routePermissionsProject = ref<string | null>(null);
   const invalidated = ref<boolean>(false);
-  const privileged = ref<boolean>(false);
 
   authLog("create authStore");
 
@@ -22,5 +21,5 @@ export const useAuthStore = defineStore("auth", () => {
     routePermissionsProject.value = routePermsProject;
   }
 
-  return { token, authenticated, user, routePermissions, invalidated, setRoutePerms, routePermissionsUser, routePermissionsProject, aal, privileged };
+  return { token, authenticated, user, routePermissions, invalidated, setRoutePerms, routePermissionsUser, routePermissionsProject, aal };
 });

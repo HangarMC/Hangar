@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue";
 import { useRoute, useRouter } from "vue-router";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import * as webauthnJson from "@github/webauthn-json";
 import { useVuelidate } from "@vuelidate/core";
 import { useI18n } from "vue-i18n";
@@ -28,7 +28,9 @@ const i18n = useI18n();
 const backendData = useBackendData;
 
 const loading = ref(false);
-const supportedMethods = ref([]);
+const supportedMethods = ref<string[]>([]);
+
+const returnUrl = computed(() => (route.query.returnUrl as string) || "/auth/settings/profile");
 
 // aal1
 const username = ref("");
@@ -37,6 +39,12 @@ const password = ref("");
 const privileged = (route.query.privileged as boolean) || false;
 if (privileged) {
   username.value = useAuthStore().user?.name || "";
+  loading.value = true;
+  const response = await useInternalApi<LoginResponse>("auth/login/sudo", "POST");
+  if (response.types?.length) {
+    supportedMethods.value.push(...response.types);
+  }
+  loading.value = false;
 }
 
 async function loginPassword() {
@@ -47,7 +55,7 @@ async function loginPassword() {
       usernameOrEmail: username.value,
       password: password.value,
     });
-    if (response.types?.length > 0) {
+    if (response.types?.length) {
       supportedMethods.value.push(...response.types);
     } else {
       await finish(response);
@@ -123,9 +131,7 @@ async function finish(response: LoginResponse) {
     authStore.authenticated = true;
     authStore.invalidated = false;
     authStore.token = response.user.accessToken;
-    authStore.privileged = true;
-    const returnUrl = (route.query.returnUrl as string) || "/auth/settings/profile";
-    await router.push(returnUrl);
+    await router.push(returnUrl.value);
   } else {
     notification.error("Did not receive user?");
   }
@@ -153,18 +159,20 @@ useHead(useSeo("Login", null, route, null));
       <InputPassword v-model="password" label="Password" name="password" autocomplete="current-password" :rules="[required()]" />
       <div class="flex gap-2">
         <Button :disabled="loading" @click.prevent="loginPassword">Login</Button>
-        <Button
-          v-for="provider in backendData.security.oauthProviders"
-          :key="provider"
-          :disabled="loading"
-          :href="'/api/internal/oauth/' + provider + '/login?mode=login&returnUrl=/'"
-        >
-          <template v-if="provider === 'github'">
-            <IconMdiGitHub class="mr-1" />
-            Login with GitHub
-          </template>
-          <template v-else> Login with {{ provider }} </template>
-        </Button>
+        <template v-if="!privileged">
+          <Button
+            v-for="provider in backendData.security.oauthProviders"
+            :key="provider"
+            :disabled="loading"
+            :href="'/api/internal/oauth/' + provider + '/login?mode=login&returnUrl=' + returnUrl"
+          >
+            <template v-if="provider === 'github'">
+              <IconMdiGitHub class="mr-1" />
+              Login with GitHub
+            </template>
+            <template v-else> Login with {{ provider }} </template>
+          </Button>
+        </template>
       </div>
       <Link v-if="!privileged" button-type="secondary" to="/auth/signup" class="w-max">Don't have an account yet? Create one!</Link>
       <Link v-if="!privileged" to="/auth/reset" class="w-max">Forgot your password?</Link>

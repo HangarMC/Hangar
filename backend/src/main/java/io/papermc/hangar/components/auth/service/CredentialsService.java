@@ -9,6 +9,7 @@ import io.papermc.hangar.components.auth.model.credential.Credential;
 import io.papermc.hangar.components.auth.model.credential.CredentialType;
 import io.papermc.hangar.components.auth.model.credential.PasswordCredential;
 import io.papermc.hangar.components.auth.model.credential.TotpCredential;
+import io.papermc.hangar.components.auth.model.credential.WebAuthNCredential;
 import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.db.UserTable;
@@ -141,5 +142,21 @@ public class CredentialsService extends HangarComponent {
         } else {
             return 2;
         }
+    }
+
+    public boolean isOAuthOnly(final long userId) {
+        // no pw, no totp
+        if (this.getCredential(userId, CredentialType.PASSWORD) == null &&
+            this.getCredential(userId, CredentialType.TOTP) == null) {
+            final UserCredentialTable credential = this.getCredential(userId, CredentialType.WEBAUTHN);
+            // either no webauthn
+            if(credential == null) {
+                return true;
+            }
+            // or not correctly setup webauthn
+            final WebAuthNCredential webAuthNCredential = credential.getCredential().get(WebAuthNCredential.class);
+            return webAuthNCredential == null || webAuthNCredential.credentials().isEmpty();
+        }
+        return false;
     }
 }
