@@ -189,6 +189,12 @@ backend:
       options: "?currentSchema=hangar"
     tokenSecret: "secret"
     rpId: "localhost"
+    githubClientId: "todo"
+    githubClientSecret: "todo"
+    microsoftClientId: "todo"
+    microsoftClientSecret: "todo"
+    googleClientId: "todo"
+    googleClientSecret: "todo"
     sentry:
       dsn: "todo"
       environment: "todo"
