@@ -46,7 +46,10 @@ public class OAuthController extends HangarComponent {
 
     @GetMapping("/{provider}/login")
     public String login(@PathVariable final String provider, @RequestParam final OAuthMode mode, @RequestParam(required = false) final String returnUrl) throws IOException {
-        // TODO sanitize return url
+        if (!returnUrl.startsWith("/") || returnUrl.contains("..")) {
+            throw new HangarApiException("Invalid return url");
+        }
+
         final String state = this.oAuthService.oauthState(this.getHangarUserId(), mode, returnUrl);
         final String loginUrl = this.oAuthService.getLoginUrl(provider, state);
         if (mode == OAuthMode.SETTINGS) {
