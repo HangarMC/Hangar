@@ -12,7 +12,9 @@ const route = useRoute();
   <main :data-page="route.name">
     <Header />
     <Container class="min-h-[80vh]">
-      <slot />
+      <div class="relative w-full">
+        <slot />
+      </div>
     </Container>
     <Notifications />
     <Footer />
