@@ -6,6 +6,8 @@ import io.papermc.hangar.exceptions.HangarResponseException;
 import io.papermc.hangar.exceptions.MultiHangarApiException;
 import io.undertow.server.RequestTooBigException;
 import io.undertow.server.handlers.form.MultiPartParserDefinition;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +18,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @ControllerAdvice(basePackages = "io.papermc.hangar")
 public class HangarExceptionHandler extends ResponseEntityExceptionHandler {
@@ -29,18 +33,41 @@ public class HangarExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(HangarApiException.class)
-    public ResponseEntity<HangarApiException> handleException(final HangarApiException exception) {
-        return new ResponseEntity<>(exception, exception.getHeaders(), exception.getStatusCode().value());
+    public ResponseEntity<HangarApiException> handleException(final HangarApiException exception, final HandlerMethod method, final HttpServletRequest request) {
+        return this.<HangarApiException>checkErrorRedirect(method, exception.getStatusCode().value(), exception.getReason(), request)
+            .orElseGet(() -> new ResponseEntity<>(exception, exception.getHeaders(), exception.getStatusCode().value()));
     }
 
     @ExceptionHandler(MultiHangarApiException.class)
-    public ResponseEntity<MultiHangarApiException> handleException(final MultiHangarApiException exception) {
-        return new ResponseEntity<>(exception, exception.getHeaders(), exception.getStatusCode().value());
+    public ResponseEntity<MultiHangarApiException> handleException(final MultiHangarApiException exception, final HandlerMethod method, final HttpServletRequest request) {
+        return this.<MultiHangarApiException>checkErrorRedirect(method, exception.getStatusCode().value(), exception.getReason(), request)
+            .orElseGet(() -> new ResponseEntity<>(exception, exception.getHeaders(), exception.getStatusCode().value()));
     }
 
     @ExceptionHandler(HangarResponseException.class)
-    public ResponseEntity<Object> handleException(final HangarResponseException exception) {
-        return ResponseEntity.status(exception.getStatus()).headers(exception.getHeaders()).body(exception);
+    public ResponseEntity<HangarResponseException> handleException(final HangarResponseException exception, final HandlerMethod method, final HttpServletRequest request) {
+        return this.<HangarResponseException>checkErrorRedirect(method, exception.getStatus().value(), exception.getMessage(), request)
+            .orElseGet(() -> ResponseEntity.status(exception.getStatus()).headers(exception.getHeaders()).body(exception));
+    }
+
+    private <T> Optional<ResponseEntity<T>> checkErrorRedirect(final HandlerMethod method, final int status, final String message, final HttpServletRequest request) {
+        final ErrorRedirect errorRedirect = method.getMethodAnnotation(ErrorRedirect.class);
+        if (errorRedirect != null) {
+            String returnUrl = (String) request.getAttribute(ErrorRedirect.RETURN_URL);
+            if (returnUrl == null) {
+                returnUrl = errorRedirect.returnUrl();
+            }
+
+            final HttpHeaders headers = new HttpHeaders();
+            final String url = UriComponentsBuilder.fromPath("/error")
+                .queryParam("returnUrl", returnUrl)
+                .queryParam("errorCode", status)
+                .queryParam("errorMessage", message)
+                .build().toUriString();
+            headers.add("Location", url);
+            return Optional.of(new ResponseEntity<>(headers, HttpStatus.FOUND));
+        }
+        return Optional.empty();
     }
 
     @Override

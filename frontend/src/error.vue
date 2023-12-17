@@ -9,6 +9,7 @@ import Lottie from "~/components/Lottie.vue";
 import { useAuthStore } from "~/store/auth";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import { settingsLog } from "~/composables/useLog";
+import { useAccentColor } from "~/composables/useAccentColor";
 
 const props = defineProps<{
   error: NuxtError;
@@ -20,6 +21,7 @@ if (props.error?.message !== "dummy") {
   const settingsStore = useSettingsStore();
   settingsStore.loadSettingsClient();
   settingsStore.setupMobile();
+  useAccentColor();
   settingsLog("render for user", authStore.user?.name, "with darkmode", settingsStore.darkMode);
   useHead({
     htmlAttrs: {
@@ -34,7 +36,7 @@ if (props.error?.message !== "dummy") {
 }
 
 // custom
-let i18n: ReturnType<useI18n>;
+let i18n: ReturnType<typeof useI18n>;
 try {
   i18n = useI18n();
 } catch (e) {

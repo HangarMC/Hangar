@@ -3,6 +3,7 @@ package io.papermc.hangar.controller.internal;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.internal.config.VersionControllerConfig;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.exceptions.handlers.ErrorRedirect;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.common.Platform;
@@ -175,6 +176,7 @@ public class VersionController extends HangarComponent {
         this.versionService.restoreVersion(projectId, version);
     }
 
+    @ErrorRedirect
     @ResponseBody
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
     @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#slug, #versionString, #platform}")

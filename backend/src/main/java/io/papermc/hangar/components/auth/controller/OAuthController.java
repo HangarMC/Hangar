@@ -11,10 +11,13 @@ import io.papermc.hangar.components.auth.service.AuthService;
 import io.papermc.hangar.components.auth.service.OAuthService;
 import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.exceptions.handlers.ErrorRedirect;
+import io.papermc.hangar.exceptions.handlers.HangarExceptionHandler;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import java.io.IOException;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +44,7 @@ public class OAuthController extends HangarComponent {
         this.authService = authService;
     }
 
+    @ErrorRedirect
     @GetMapping("/{provider}/login")
     public String login(@PathVariable final String provider, @RequestParam final OAuthMode mode, @RequestParam(required = false) final String returnUrl) throws IOException {
         if (!returnUrl.startsWith("/") || returnUrl.contains("..")) {
@@ -57,6 +61,7 @@ public class OAuthController extends HangarComponent {
         }
     }
 
+    @ErrorRedirect
     @GetMapping("/{provider}/callback")
     public void callback(@PathVariable final String provider,
                          @RequestParam(required = false) final String code,
@@ -67,7 +72,8 @@ public class OAuthController extends HangarComponent {
         final OAuthMode mode = decodedState.getClaim("mode").as(OAuthMode.class);
         final String returnUrl = decodedState.getClaim("returnUrl").asString();
 
-        // todo better error handling
+        this.request.setAttribute(ErrorRedirect.RETURN_URL, returnUrl);
+
         if (error != null) {
             throw new HangarApiException("OAuth error: " + error + " - " + errorDescription);
         }
