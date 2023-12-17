@@ -18,6 +18,8 @@ import { required } from "~/composables/useValidationHelpers";
 import { useNotificationStore } from "~/store/notification";
 import { useBackendData } from "~/store/backendData";
 import IconMdiGitHub from "~icons/mdi/github";
+import IconMdiGoogle from "~icons/mdi/google";
+import IconMdiMicrosoft from "~icons/mdi/microsoft";
 
 const route = useRoute();
 const router = useRouter();
@@ -157,21 +159,41 @@ useHead(useSeo("Login", null, route, null));
         :disabled="privileged"
       />
       <InputPassword v-model="password" label="Password" name="password" autocomplete="current-password" :rules="[required()]" />
-      <div class="flex gap-2">
+      <div class="flex flex-col gap-2">
         <Button :disabled="loading" @click.prevent="loginPassword">Login</Button>
         <template v-if="!privileged">
-          <Button
-            v-for="provider in backendData.security.oauthProviders"
-            :key="provider"
-            :disabled="loading"
-            :href="'/api/internal/oauth/' + provider + '/login?mode=login&returnUrl=' + returnUrl"
-          >
-            <template v-if="provider === 'github'">
-              <IconMdiGitHub class="mr-1" />
-              Login with GitHub
-            </template>
-            <template v-else> Login with {{ provider }} </template>
-          </Button>
+          <div class="flex items-center space-x-2">
+            <hr class="flex-grow border-zinc-200 dark:border-zinc-700" />
+            <span class="text-zinc-400 dark:text-zinc-300 text-sm">OR</span>
+            <hr class="flex-grow border-zinc-200 dark:border-zinc-700" />
+          </div>
+          <div class="flex flex-row justify-center gap-x-4">
+            <Button
+              v-for="provider in backendData.security.oauthProviders"
+              :key="provider"
+              :disabled="loading"
+              :href="'/api/internal/oauth/' + provider + '/login?mode=login&returnUrl=' + returnUrl"
+            >
+              <template v-if="provider === 'github'">
+                <div class="flex flex-row gap-x-0.5 items-center">
+                  <IconMdiGitHub class="mr-1" />
+                  GitHub
+                </div>
+              </template>
+              <template v-if="provider === 'google'">
+                <div class="flex flex-row gap-x-0.5 items-center">
+                  <IconMdiGoogle class="mr-1" />
+                  Google
+                </div>
+              </template>
+              <template v-if="provider === 'microsoft'">
+                <div class="flex flex-row gap-x-0.5 items-center">
+                  <IconMdiMicrosoft class="mr-1" />
+                  Microsoft
+                </div>
+              </template>
+            </Button>
+          </div>
         </template>
       </div>
       <Link v-if="!privileged" button-type="secondary" to="/auth/signup" class="w-max">Don't have an account yet? Create one!</Link>
