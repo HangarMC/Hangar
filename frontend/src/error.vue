@@ -15,7 +15,7 @@ const props = defineProps<{
   error: NuxtError;
 }>();
 
-if (props.error?.message !== "dummy") {
+if (!(props.error?.data?.dummyError === true)) {
   // keep in sync with app.vue, cause reasons
   const authStore = useAuthStore();
   const settingsStore = useSettingsStore();
@@ -73,7 +73,10 @@ const title = computed(() => {
   }
 });
 
-if (props.error?.message !== "dummy") {
+if (
+  (typeof props.error?.data === "string" && JSON.parse(props.error?.data).logErrorMessage !== false) ||
+  (typeof props.error?.data !== "string" && props.error?.data?.logErrorMessage !== false)
+) {
   console.log("error", text.value, title.value, props.error);
 }
 try {

@@ -41,7 +41,7 @@ useHead({
 });
 
 onErrorCaptured((err) => {
-  if (err?.message === "dummy" || err?.message === "API Error") {
+  if (err?.data?.logErrorMessage === false) {
     return;
   }
   console.log("captured", transformAxiosError(err)); // TODO error handling

@@ -14,7 +14,8 @@ export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, fro
   }
 
   await useAuth.updateUser();
-  loadRoutePerms(to).then(() => handleRoutePerms(to, from));
+  await loadRoutePerms(to);
+  await handleRoutePerms(to, from);
 });
 
 async function loadRoutePerms(to: RouteLocationNormalized) {
@@ -93,7 +94,7 @@ function currentUserRequired(authStore: ReturnType<typeof useAuthStore>, to: Rou
   checkLogin(authStore, to, 404);
   if (!hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)) {
     if (to.params.user !== authStore.user?.name) {
-      return useErrorRedirect(to, 403);
+      return useErrorRedirect(to, 403, undefined, { logErrorMessage: false });
     }
   }
 }
@@ -115,7 +116,7 @@ async function globalPermsRequired(authStore: ReturnType<typeof useAuthStore>, t
   routePermLog("result", check);
   if (check && (check.type !== PermissionType.GLOBAL || !check.result)) {
     routePermLog("404?");
-    return useErrorRedirect(to, 404, "Not found");
+    return useErrorRedirect(to, 404, "Not found", { logErrorMessage: false });
   }
 }
 
@@ -126,17 +127,17 @@ function projectPermsRequired(authStore: ReturnType<typeof useAuthStore>, to: Ro
   }
   checkLogin(authStore, to, 404);
   if (!authStore.routePermissions) {
-    return useErrorRedirect(to, 404);
+    return useErrorRedirect(to, 404, undefined, { logErrorMessage: false });
   }
   routePermLog("check has perms", to.meta.projectPermsRequired, toNamedPermission(to.meta.projectPermsRequired as string[]));
   if (!hasPerms(...toNamedPermission(to.meta.projectPermsRequired as string[]))) {
-    return useErrorRedirect(to, 404);
+    return useErrorRedirect(to, 404, undefined, { logErrorMessage: false });
   }
 }
 
 function checkLogin(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized, status: number, msg?: string) {
   if (!authStore.authenticated) {
     routePermLog("not logged in!");
-    return useErrorRedirect(to, status, msg || "Not logged in!");
+    return useErrorRedirect(to, status, msg || "Not logged in!", { logErrorMessage: false });
   }
 }

@@ -5,7 +5,7 @@ import type { Ref } from "vue";
 import { computed, ref } from "vue";
 import type { User } from "hangar-api";
 import { useOrganization, useUser } from "~/composables/useApiHelper";
-import { useErrorRedirect } from "~/composables/useErrorRedirect";
+import { useDummyError, useErrorRedirect } from "~/composables/useErrorRedirect";
 import { createError, navigateTo } from "#imports";
 
 const route = useRoute();
@@ -26,7 +26,7 @@ async function cb(u: Ref<User | null>) {
     const newPath = route.fullPath.replace(route.params.user as string, u.value!.name);
     console.debug("Redirect to " + newPath + " from (" + route.fullPath + ")");
     await navigateTo(newPath);
-    throw createError("dummy");
+    useDummyError();
   } else if (u.value?.isOrganization) {
     organization.value = (await useOrganization(route.params.user as string)).value;
   }

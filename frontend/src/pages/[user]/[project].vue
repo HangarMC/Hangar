@@ -5,7 +5,7 @@ import type { RouteLocationNormalized } from "vue-router";
 import { useRoute } from "vue-router";
 import type { HangarProjectPage, HangarProject } from "hangar-internal";
 import { useProject } from "~/composables/useApiHelper";
-import { useErrorRedirect } from "~/composables/useErrorRedirect";
+import { useDummyError, useErrorRedirect } from "~/composables/useErrorRedirect";
 import ProjectHeader from "~/components/projects/ProjectHeader.vue";
 import ProjectNav from "~/components/projects/ProjectNav.vue";
 import { createError, navigateTo, onBeforeRouteUpdate, useInternalApi } from "#imports";
@@ -26,7 +26,7 @@ async function verify(to: RouteLocationNormalized) {
     const newPath = to.fullPath.replace(to.params.project as string, project.value!.namespace.slug);
     console.debug("Redirect to " + newPath + " from (" + to.fullPath + ")");
     await navigateTo(newPath);
-    throw createError("dummy");
+    useDummyError();
   }
 }
 
