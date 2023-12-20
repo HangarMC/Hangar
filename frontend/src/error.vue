@@ -10,6 +10,8 @@ import { useAuthStore } from "~/store/auth";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import { settingsLog } from "~/composables/useLog";
 import { useAccentColor } from "~/composables/useAccentColor";
+import Button from "~/components/design/Button.vue";
+import { useAuth } from "~/composables/useAuth";
 
 const props = defineProps<{
   error: NuxtError;
@@ -42,6 +44,8 @@ try {
 } catch (e) {
   console.log("cant load i18n?!", e);
 }
+
+const auth = useAuth;
 
 const statusCode = computed(() => {
   return Number(props.error.statusCode || 500);
@@ -101,6 +105,7 @@ try {
       <template v-else>
         <h1 class="text-4xl font-bold">{{ title }}</h1>
         <h2 class="text-xl font-bold">{{ text }}</h2>
+        <Button v-if="statusCode === 401" class="mt-2" :to="auth.loginUrl($route.fullPath)">Login</Button>
       </template>
     </div>
   </NuxtLayout>
