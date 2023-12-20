@@ -11,7 +11,6 @@ import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.PermissionService;
-import jakarta.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.BiPredicate;
@@ -35,7 +34,7 @@ public class PermissionsController extends HangarComponent implements IPermissio
     }
 
     @Override
-    public ResponseEntity<PermissionCheck> hasAllPermissions(final @Size(max = 50) Set<NamedPermission> permissions, final String slug, final String organization) {
+    public ResponseEntity<PermissionCheck> hasAllPermissions(final Set<NamedPermission> permissions, final String slug, final String organization) {
         return this.has(permissions, slug, organization, (namedPerms, perm) -> namedPerms.stream().allMatch(p -> perm.has(p.getPermission())));
     }
 

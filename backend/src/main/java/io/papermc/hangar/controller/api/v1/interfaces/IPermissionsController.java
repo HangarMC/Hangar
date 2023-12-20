@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Size;
 import java.util.Set;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public interface IPermissionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired")
     })
     @GetMapping("/permissions/hasAll")
-    ResponseEntity<PermissionCheck> hasAllPermissions(@Parameter(description = "The permissions to check", required = true) @RequestParam Set<NamedPermission> permissions,
+    ResponseEntity<PermissionCheck> hasAllPermissions(@Parameter(description = "The permissions to check", required = true) @RequestParam @Size(max = 50) Set<NamedPermission> permissions,
                                                       @Parameter(description = "The project slug of the project to check permissions in. Must not be used together with `organizationName`") @RequestParam(required = false) String slug,
                                                       @Parameter(description = "The organization to check permissions in. Must not be used together with `projectOwner` and `projectSlug`") @RequestParam(required = false) String organization
     );
