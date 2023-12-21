@@ -187,6 +187,7 @@ hangar:
       - "giphy.com"
       - "media.giphy.com"
       - "bstats.org"
+    o-auth-enabled: true
     o-auth-providers:
       - name: "github"
         mode: "github"

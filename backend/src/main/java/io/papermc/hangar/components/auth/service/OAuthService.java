@@ -57,6 +57,9 @@ public class OAuthService extends HangarComponent {
 
     @PostConstruct
     private void setup() {
+        if (!this.config.security.oAuthEnabled()) {
+            return;
+        }
         this.config.security.oAuthProviders().forEach(this::setupProvider);
     }
 

@@ -189,6 +189,7 @@ backend:
       options: "?currentSchema=hangar"
     tokenSecret: "secret"
     rpId: "localhost"
+    oauthEnabled: true
     githubClientId: "todo"
     githubClientSecret: "todo"
     microsoftClientId: "todo"

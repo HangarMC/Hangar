@@ -20,7 +20,8 @@ public record HangarSecurityConfig(
     @DurationUnit(ChronoUnit.DAYS) Duration refreshTokenExpiry,
     String rpName,
     String rpId,
-    List<OAuthProvider> oAuthProviders
+    List<OAuthProvider> oAuthProviders,
+    @DefaultValue("false") boolean oAuthEnabled
 ) {
 
     public boolean checkSafe(final String url) {
