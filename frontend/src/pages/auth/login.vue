@@ -196,6 +196,9 @@ useHead(useSeo("Login", null, route, null));
           </div>
         </template>
       </div>
+
+      <hr class="flex-grow border-zinc-200 dark:border-zinc-700 mt-1" />
+
       <Link v-if="!privileged" button-type="secondary" to="/auth/signup" class="w-max">Don't have an account yet? Create one!</Link>
       <Link v-if="!privileged" to="/auth/reset" class="w-max">Forgot your password?</Link>
     </form>
