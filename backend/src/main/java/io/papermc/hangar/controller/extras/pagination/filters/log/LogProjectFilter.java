@@ -18,11 +18,6 @@ public class LogProjectFilter implements Filter<LogProjectFilterInstance, String
     }
 
     @Override
-    public boolean supports(final NativeWebRequest webRequest) {
-        return this.getQueryParamNames().stream().anyMatch(webRequest.getParameterMap()::containsKey);
-    }
-
-    @Override
     public String getDescription() {
         return "Filters logs by a project namespace";
     }

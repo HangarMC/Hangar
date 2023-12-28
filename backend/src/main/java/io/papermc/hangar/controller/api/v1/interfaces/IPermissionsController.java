@@ -54,8 +54,8 @@ public interface IPermissionsController {
     })
     @GetMapping("/permissions/hasAny")
     ResponseEntity<PermissionCheck> hasAny(@Parameter(description = "The permissions to check", required = true) @RequestParam Set<NamedPermission> permissions,
-                                           @Parameter(description = "The slug of the project to check permissions in. Must not be used together with `organizationName`") @RequestParam(required = false) String slug,
-                                           @Parameter(description = "The organization to check permissions in. Must not be used together with `projectOwner` and `projectSlug`") @RequestParam(required = false) String organization
+                                           @Parameter(description = "The slug of the project to check permissions in. Must not be used together with `organization`") @RequestParam(required = false) String slug,
+                                           @Parameter(description = "The organization to check permissions in. Must not be used together with `slug`") @RequestParam(required = false) String organization
     );
 
     @Operation(

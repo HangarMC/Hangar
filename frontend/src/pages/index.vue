@@ -48,7 +48,6 @@ const filters = ref({
 const activeSorter = ref<string>((route.query.sort as string) || "-stars");
 const page = ref(route.query.page ? Number(route.query.page) : 0);
 const query = ref<string>((route.query.q as string) || "");
-const loggedOut = ref<boolean>("loggedOut" in route.query);
 const projects = ref<PaginatedResult<Project> | null>();
 
 const requestParams = computed(() => {
@@ -62,7 +61,7 @@ const requestParams = computed(() => {
     tag: filters.value.tags,
   };
   if (query.value) {
-    params.q = query.value;
+    params.query = query.value;
   }
   if (activeSorter.value) {
     params.sort = activeSorter.value;

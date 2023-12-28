@@ -70,7 +70,7 @@ public class SwaggerConfig {
         return new CustomScanner(filterRegistry);
     }
 
-    static class CustomScanner implements OperationCustomizer {
+    public static class CustomScanner implements OperationCustomizer {
 
         private final FilterRegistry filterRegistry;
 
@@ -94,18 +94,30 @@ public class SwaggerConfig {
                     .style(Parameter.StyleEnum.FORM)
                     .schema(allowedValues)
                 );
+            } else if (operation.getParameters() != null && operation.getParameters().stream().anyMatch(p -> p.getName().equals("sort"))) {
+                throw new RuntimeException("potential swagger issue found, sort param but no @ApplicableSorters annotation?: " + operation.getOperationId());
             }
+
             final ApplicableFilters filters = handlerMethod.getMethodAnnotation(ApplicableFilters.class);
             if (filters != null) {
                 for (final var clazz : filters.value()) {
                     final var filter = this.filterRegistry.get(clazz);
 
-                    operation.addParametersItem(new Parameter()
-                        .name(filter.getSingleQueryParam()) // TODO multi-param filters
-                        .in("query")
-                        .description(filter.getDescription())
-                        .style(Parameter.StyleEnum.FORM)
-                        .schema(new StringSchema()));
+                    for (final String queryParamName : filter.getQueryParamNames()) {
+                        final Parameter param = new Parameter()
+                            .name(queryParamName)
+                            .in("query")
+                            .description(filter.getDescription())
+                            .style(Parameter.StyleEnum.FORM)
+                            .schema(new StringSchema());
+
+                        final String deprecationNote = filter.getDeprecatedQueryParamNames().get(queryParamName);
+                        if (deprecationNote != null) {
+                            param.deprecated(true).description("Deprecated: " + deprecationNote);
+                        }
+
+                        operation.addParametersItem(param);
+                    }
                 }
             }
 
