@@ -1,5 +1,6 @@
 package io.papermc.hangar.components.images.controller;
 
+import io.papermc.hangar.controller.api.v1.helper.ControllerTest;
 import java.net.URI;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -12,12 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class ImageProxyControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+class ImageProxyControllerTest extends ControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
