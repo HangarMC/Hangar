@@ -29,7 +29,7 @@ class ImageProxyControllerTest extends ControllerTest {
     public void proxyShouldReturnBadRequestForInvalidTarget(final String url) throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get(new URI("/api/internal/image/" + url)))
             .andExpect(status().isBadRequest())
-            .andExpect(content().string("\"Bad target\""));
+            .andExpect(content().string("Bad target"));
     }
 
     @ParameterizedTest
