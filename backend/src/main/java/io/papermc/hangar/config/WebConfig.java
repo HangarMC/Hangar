@@ -139,8 +139,8 @@ public class WebConfig extends WebMvcConfigurationSupport {
             AnnotationIntrospector.pair(sAnnotationIntrospector, new HangarAnnotationIntrospector()),
             this.mapper.getDeserializationConfig().getAnnotationIntrospector()
         );
-        converters.add(this.mappingJackson2HttpMessageConverter(this.mapper));
         this.addDefaultHttpMessageConverters(converters);
+        converters.add(this.mappingJackson2HttpMessageConverter(this.mapper));
     }
 
     @Override
