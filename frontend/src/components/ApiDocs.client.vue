@@ -13,7 +13,7 @@ watch(dom, () => {
   }
 
   dom.value?.addEventListener("spec-loaded", () => {
-    const navBar = dom.value.shadowRoot?.querySelector<HTMLElement>(".nav-bar");
+    const navBar = dom.value?.shadowRoot?.querySelector<HTMLElement>(".nav-bar");
     if (navBar) {
       // set the height to auto so that max-content works
       navBar.style.height = "auto";
@@ -22,6 +22,7 @@ watch(dom, () => {
 });
 </script>
 
+<!-- todo colors as custom props + we need to change other colors (to accent color) -->
 <template>
   <rapi-doc
     ref="dom"
@@ -40,6 +41,10 @@ watch(dom, () => {
     show-curl-before-try="true"
     heading-text="Hangar API"
     :theme="settings.darkMode ? 'dark' : 'light'"
+    font-size="large"
+    :bg-color="settings.darkMode ? 'var(--gray-800)' : 'var(--gray-50)'"
+    primary-color="var(--primary-500)"
+    regular-font="inherit"
   >
   </rapi-doc>
 </template>
