@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import "rapidoc";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
 
 const settings = useSettingsStore();
@@ -20,9 +20,11 @@ watch(dom, () => {
     }
   });
 });
+
+const bgColor = computed(() => window.getComputedStyle(document.body).getPropertyValue(settings.darkMode ? "--gray-800" : "--gray-50"));
+const primaryColor = computed(() => window.getComputedStyle(document.body).getPropertyValue("--primary-500"));
 </script>
 
-<!-- todo colors as custom props + we need to change other colors (to accent color) -->
 <template>
   <rapi-doc
     ref="dom"
@@ -42,9 +44,10 @@ watch(dom, () => {
     heading-text="Hangar API"
     :theme="settings.darkMode ? 'dark' : 'light'"
     font-size="large"
-    :bg-color="settings.darkMode ? 'var(--gray-800)' : 'var(--gray-50)'"
-    primary-color="var(--primary-500)"
+    :bg-color="bgColor"
+    :primary-color="primaryColor"
     regular-font="inherit"
+    :text-color="settings.darkMode ? '#E0E6f0' : '#262626'"
   >
   </rapi-doc>
 </template>
