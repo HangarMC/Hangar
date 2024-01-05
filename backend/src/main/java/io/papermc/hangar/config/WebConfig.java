@@ -44,6 +44,7 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
@@ -139,8 +140,10 @@ public class WebConfig extends WebMvcConfigurationSupport {
             AnnotationIntrospector.pair(sAnnotationIntrospector, new HangarAnnotationIntrospector()),
             this.mapper.getDeserializationConfig().getAnnotationIntrospector()
         );
-        this.addDefaultHttpMessageConverters(converters);
+        // order is important!
+        converters.add(new ByteArrayHttpMessageConverter());
         converters.add(this.mappingJackson2HttpMessageConverter(this.mapper));
+        this.addDefaultHttpMessageConverters(converters);
     }
 
     @Override

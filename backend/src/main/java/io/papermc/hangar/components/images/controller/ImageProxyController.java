@@ -14,7 +14,6 @@ import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.InvalidMediaTypeException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +37,7 @@ public class ImageProxyController {
     }
 
     @GetMapping("/**")
-    public Object proxy(final HttpServletRequest request, final HttpServletResponse res) {
+    public StreamingResponseBody proxy(final HttpServletRequest request, final HttpServletResponse res) {
         final String query = StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "";
         final String url = this.cleanUrl(request.getRequestURI() + query);
         if (this.validTarget(url)) {
@@ -49,11 +48,11 @@ public class ImageProxyController {
                     .headers((headers) -> this.passHeaders(headers, request))
                     .exchange().block(); // Block the request, we don't get the body at this point!
                 if (clientResponse == null) {
-                    return ResponseEntity.internalServerError().body("Encountered an error whilst trying to load url");
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Encountered an error whilst trying to load url");
                 }
                 // block large stuff
                 if (this.contentTooLarge(clientResponse)) {
-                    return ResponseEntity.badRequest().body("The image you are trying too proxy is too large");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The image you are trying too proxy is too large");
                 }
                 // forward headers
                 for (final Map.Entry<String, List<String>> stringListEntry : clientResponse.headers().asHttpHeaders().entrySet()) {
@@ -77,10 +76,10 @@ public class ImageProxyController {
                         }
                     };
                 } else {
-                    return ResponseEntity.badRequest().body("Bad content type");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad content type");
                 }
             } catch (final WebClientRequestException | MalformedURLException | URISyntaxException ex) {
-                return ResponseEntity.internalServerError().body("Encountered " + ex.getClass().getSimpleName() + " while trying to load " + url);
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Encountered " + ex.getClass().getSimpleName() + " while trying to load " + url, ex);
             } finally {
                 if (clientResponse != null) {
                     // noinspection ReactiveStreamsUnusedPublisher
@@ -88,7 +87,7 @@ public class ImageProxyController {
                 }
             }
         } else {
-            return ResponseEntity.badRequest().body("Bad target");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad target");
         }
     }
 

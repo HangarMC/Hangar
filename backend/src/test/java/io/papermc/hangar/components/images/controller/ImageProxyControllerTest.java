@@ -4,13 +4,10 @@ import io.papermc.hangar.controller.api.v1.helper.ControllerTest;
 import java.net.URI;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ImageProxyControllerTest extends ControllerTest {
@@ -29,7 +26,7 @@ class ImageProxyControllerTest extends ControllerTest {
     public void proxyShouldReturnBadRequestForInvalidTarget(final String url) throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get(new URI("/api/internal/image/" + url)))
             .andExpect(status().isBadRequest())
-            .andExpect(content().string("Bad target"));
+            .andExpect(jsonPath("$.message").value("400 BAD_REQUEST \"Bad target\""));
     }
 
     @ParameterizedTest
