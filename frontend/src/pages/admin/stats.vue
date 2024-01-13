@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
-import { ref, watch } from "vue";
-import type { LineChartData, LineChartOptions } from "chartist";
-import { FixedScaleAxis } from "chartist";
+import { computed, ref, watch } from "vue";
 import { useHead } from "@unhead/vue";
+import { Line } from "vue-chartjs";
+import { CategoryScale, Chart, type ChartData, Colors, Legend, LinearScale, LineController, LineElement, PointElement, Tooltip } from "chart.js";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { fromISOString, toISODateString } from "~/composables/useDate";
 import { useInternalApi } from "~/composables/useApi";
-import Chart from "~/components/Chart.vue";
 import PageTitle from "~/components/design/PageTitle.vue";
 import Card from "~/components/design/Card.vue";
 import InputDate from "~/components/ui/InputDate.vue";
@@ -18,11 +17,6 @@ import { definePageMeta } from "#imports";
 definePageMeta({
   globalPermsRequired: ["VIEW_STATS"],
 });
-
-interface DayStat {
-  x: Date;
-  y: number;
-}
 
 interface DayStats {
   day: string;
@@ -41,50 +35,63 @@ const oneMonthBefore = new Date(now.getFullYear(), now.getMonth() - 1, now.getDa
 const startDate = ref<string>(toISODateString(oneMonthBefore));
 const endDate = ref<string>(toISODateString(now));
 
-let data: DayStats[] = (await useInternalApi<DayStats[]>("admin/stats", "get", {
-  from: startDate.value,
-  to: endDate.value,
-}).catch((e) => handleRequestError(e))) as DayStats[];
+const data = ref<DayStats[] | void>(
+  await useInternalApi<DayStats[]>("admin/stats", "get", {
+    from: startDate.value,
+    to: endDate.value,
+  }).catch((e) => handleRequestError(e))
+);
 
-let reviews: DayStat[] = [];
-let uploads: DayStat[] = [];
-let totalDownloads: DayStat[] = [];
-let openedFlags: DayStat[] = [];
-let closedFlags: DayStat[] = [];
-for (const statDay of data) {
-  const day = fromISOString(statDay.day);
-  reviews.push({ x: day, y: statDay.reviews });
-  uploads.push({ x: day, y: statDay.uploads });
-  totalDownloads.push({ x: day, y: statDay.totalDownloads });
-  openedFlags.push({ x: day, y: statDay.flagsOpened });
-  closedFlags.push({ x: day, y: statDay.flagsClosed });
-}
+const labels = computed(() => data.value?.map((day) => i18n.d(fromISOString(day.day), "date")));
 
-const pluginData = ref<LineChartData>({
-  labels: [i18n.t("stats.reviews"), i18n.t("stats.uploads")],
-  series: [reviews, uploads],
-});
-
-const downloadData = ref<LineChartData>({
-  labels: [i18n.t("stats.totalDownloads")],
-  series: [totalDownloads],
-});
-
-const flagData = ref<LineChartData>({
-  labels: [i18n.t("stats.openedFlags"), i18n.t("stats.closedFlags")],
-  series: [openedFlags, closedFlags],
-});
-
-const options: LineChartOptions = {
-  axisX: {
-    type: FixedScaleAxis,
-    divisor: 5,
-    labelInterpolationFnc: (value: string | Date) => {
-      return i18n.d(value, "date");
+const pluginData = ref<ChartData<"line", number[], string>>({
+  labels: labels.value,
+  datasets: [
+    {
+      label: i18n.t("stats.reviews"),
+      data: data.value?.map((day) => day.reviews) || [],
+      tension: 0.2,
     },
-  },
-  // plugins: [Chartist.plugins.legend()],
+    {
+      label: i18n.t("stats.uploads"),
+      data: data.value?.map((day) => day.uploads) || [],
+      tension: 0.2,
+    },
+  ],
+});
+
+const downloadData = ref<ChartData<"line", number[], string>>({
+  labels: labels.value,
+  datasets: [
+    {
+      label: i18n.t("stats.totalDownloads"),
+      data: data.value?.map((day) => day.totalDownloads) || [],
+      tension: 0.2,
+    },
+  ],
+});
+
+const flagData = ref<ChartData<"line", number[], string>>({
+  labels: labels.value,
+  datasets: [
+    {
+      label: i18n.t("stats.openedFlags"),
+      data: data.value?.map((day) => day.flagsOpened) || [],
+      tension: 0.2,
+    },
+    {
+      label: i18n.t("stats.closedFlags"),
+      data: data.value?.map((day) => day.flagsClosed) || [],
+      tension: 0.2,
+    },
+  ],
+});
+
+const options = {
+  responsive: true,
 };
+
+Chart.register(CategoryScale, LinearScale, Tooltip, Legend, PointElement, LineElement, LineController, Colors);
 
 useHead(useSeo(i18n.t("stats.title"), null, route, null));
 
@@ -92,31 +99,10 @@ watch(startDate, updateDate);
 watch(endDate, updateDate);
 
 async function updateDate() {
-  data = (await useInternalApi<DayStats[]>("admin/stats", "get", {
+  data.value = (await useInternalApi<DayStats[]>("admin/stats", "get", {
     from: startDate.value,
     to: endDate.value,
   }).catch((e) => handleRequestError(e))) as DayStats[];
-  if (!data) {
-    return;
-  }
-  reviews = [];
-  uploads = [];
-  totalDownloads = [];
-  openedFlags = [];
-  closedFlags = [];
-  for (const statDay of data) {
-    const day = fromISOString(statDay.day);
-    reviews.push({ x: day, y: statDay.reviews });
-    uploads.push({ x: day, y: statDay.uploads });
-    totalDownloads.push({ x: day, y: statDay.totalDownloads });
-    openedFlags.push({ x: day, y: statDay.flagsOpened });
-    closedFlags.push({ x: day, y: statDay.flagsClosed });
-  }
-  pluginData.value.series[0] = reviews;
-  pluginData.value.series[1] = uploads;
-  downloadData.value.series[0] = totalDownloads;
-  flagData.value.series[0] = openedFlags;
-  flagData.value.series[1] = closedFlags;
 }
 </script>
 
@@ -127,21 +113,15 @@ async function updateDate() {
     <InputDate v-model="endDate" />
     <Card class="mt-4">
       <template #header> {{ i18n.t("stats.plugins") }}</template>
-      <client-only>
-        <Chart id="stats" :data="pluginData" :options="options" bar-type="Line" />
-      </client-only>
+      <Line :data="pluginData" :options="options"></Line>
     </Card>
     <Card class="mt-4">
       <template #header>{{ i18n.t("stats.downloads") }}</template>
-      <client-only>
-        <Chart id="downloads" :data="downloadData" :options="options" bar-type="Line" />
-      </client-only>
+      <Line :data="downloadData" :options="options"></Line>
     </Card>
     <Card class="mt-4">
       <template #header>{{ i18n.t("stats.flags") }}</template>
-      <client-only>
-        <Chart id="flags" :data="flagData" :options="options" bar-type="Line" />
-      </client-only>
+      <Line :data="flagData" :options="options"></Line>
     </Card>
   </div>
 </template>
