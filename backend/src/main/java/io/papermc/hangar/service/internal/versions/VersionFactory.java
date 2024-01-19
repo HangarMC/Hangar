@@ -213,6 +213,10 @@ public class VersionFactory extends HangarComponent {
 
                 final SortedSet<String> loadedPlatformDependencies = pluginDataFile.data().getPlatformDependencies().get(platform);
                 if (loadedPlatformDependencies != null) {
+                    // Make sure we don't add invalid versions
+                    final Set<String> versionsForPlatform = new HashSet<>(this.platformService.getFullVersionsForPlatform(platform));
+                    loadedPlatformDependencies.retainAll(versionsForPlatform);
+
                     platformDependencies.put(platform, loadedPlatformDependencies);
                 }
             }
@@ -446,7 +450,7 @@ public class VersionFactory extends HangarComponent {
                 final Platform platform = entry.getKey();
                 final Set<String> versionsForPlatform = new HashSet<>(this.platformService.getFullVersionsForPlatform(platform));
                 if (!versionsForPlatform.containsAll(entry.getValue())) {
-                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPlatformVersion");
+                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPlatformVersion", entry.getValue());
                 }
             }
         }

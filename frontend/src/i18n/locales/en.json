@@ -501,6 +501,7 @@
         "mismatchedFileSize": "File sizes do not match",
         "hashMismatch": "File hashes do not match",
         "invalidPlatformVersion": "Invalid MC version for a platform specified",
+        "invalidPlatformVersionList": "Invalid MC version for a platform specified. Provided: {0}",
         "fileIOError": "File IO Error",
         "unknown": "An unknown error has occurred",
         "incomplete": "Plugin file missing {0}",
