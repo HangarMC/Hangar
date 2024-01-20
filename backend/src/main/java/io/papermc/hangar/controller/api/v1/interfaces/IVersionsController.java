@@ -9,6 +9,9 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.internal.versions.VersionUpload;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Encoding;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -49,10 +52,11 @@ public interface IVersionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
+    @RequestBody(content = @Content(encoding = @Encoding(name = "versionUpload", contentType = "application/json")))
     @PostMapping(path = "/projects/{slug}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     UploadedVersion uploadVersion(@Parameter(description = "The slug of the project to return versions for") @PathVariable String slug,
-                       @Parameter(description = "The version files in order of selected platforms, if any") @RequestPart(required = false) @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
-                       @Parameter(description = "Version data. See the VersionUpload schema for more info") @RequestPart @Valid VersionUpload versionUpload);
+                       @Parameter(description = "The version files in order of selected platforms, if any") @RequestPart(required = false, name = "files") @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
+                       @Parameter(description = "Version data. See the VersionUpload schema for more info") @RequestPart("versionUpload") @Valid VersionUpload versionUpload);
 
     @PostMapping(path = "/projects/{author}/{slug}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Deprecated(forRemoval = true)
