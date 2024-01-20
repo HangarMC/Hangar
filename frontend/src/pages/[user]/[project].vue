@@ -48,7 +48,9 @@ provide("updateProjectPages", function (pages: HangarProjectPage[]) {
     <ProjectNav :project="project" />
     <router-view v-slot="{ Component }">
       <Suspense>
-        <component :is="Component" v-model:project="project" :user="user" />
+        <div>
+          <component :is="Component" v-model:project="project" :user="user" />
+        </div>
         <template #fallback>
           <Delayed> Loading... </Delayed>
         </template>

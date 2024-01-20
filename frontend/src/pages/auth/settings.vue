@@ -108,7 +108,9 @@ useHead(useSeo("Settings", null, route, null));
       <Tabs :tabs="tabs" router>
         <router-view v-slot="{ Component }">
           <Suspense>
-            <component :is="Component" :settings="settings" @refresh-settings="refreshSettings" @open-email-confirm-modal="emailConfirmModal.isOpen = true" />
+            <div>
+              <component :is="Component" :settings="settings" @refresh-settings="refreshSettings" @open-email-confirm-modal="emailConfirmModal.isOpen = true" />
+            </div>
             <template #fallback><Delayed> Loading... </Delayed></template>
           </Suspense>
         </router-view>

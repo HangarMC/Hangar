@@ -47,7 +47,9 @@ const versionPlatforms = computed<Set<Platform>>(() => {
 <template>
   <router-view v-slot="{ Component }">
     <Suspense>
-      <component :is="Component" :project="project" :version="version" :version-platforms="versionPlatforms" />
+      <div>
+        <component :is="Component" :project="project" :version="version" :version-platforms="versionPlatforms" />
+      </div>
       <template #fallback> <Delayed> Loading... </Delayed> </template>
     </Suspense>
   </router-view>

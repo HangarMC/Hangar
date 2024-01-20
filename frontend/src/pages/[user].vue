@@ -35,9 +35,13 @@ async function cb(u: Ref<User | null>) {
 </script>
 
 <template>
-  <router-view v-if="!blocking || user" v-slot="{ Component }">
-    <Suspense>
-      <component :is="Component" :user="user" :organization="organization" />
-    </Suspense>
-  </router-view>
+  <div>
+    <router-view v-if="!blocking || user" v-slot="{ Component }">
+      <Suspense>
+        <div>
+          <component :is="Component" :user="user" :organization="organization" />
+        </div>
+      </Suspense>
+    </router-view>
+  </div>
 </template>
