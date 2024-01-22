@@ -38,7 +38,7 @@ jobs:
           cache: 'maven'
 
       - name: Cache Maven Deps
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: $GITHUB_WORKSPACE/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
