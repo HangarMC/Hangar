@@ -56,7 +56,7 @@ public class CredentialsService extends HangarComponent {
     }
 
     public List<CredentialType> getCredentialTypes(final long userId) {
-        return this.userCredentialDAO.getAll(userId, CredentialType.PASSWORD, CredentialType.WEBAUTHN);
+        return this.userCredentialDAO.getAll(userId, CredentialType.PASSWORD, CredentialType.WEBAUTHN, CredentialType.OAUTH);
     }
 
     public void verifyPassword(final long userId, final String password) {
@@ -126,14 +126,14 @@ public class CredentialsService extends HangarComponent {
 
     public void checkRemoveBackupCodes() {
         final List<CredentialType> credentialTypes = this.getCredentialTypes(this.getHangarPrincipal().getUserId());
-        if (credentialTypes.size() == 1 && credentialTypes.get(0) == CredentialType.BACKUP_CODES) {
+        if (credentialTypes.size() == 1 && credentialTypes.getFirst() == CredentialType.BACKUP_CODES) {
             this.removeCredential(this.getHangarPrincipal().getUserId(), CredentialType.BACKUP_CODES);
         }
     }
 
     public int getAal(final UserTable userTable) {
         final List<CredentialType> types = this.getCredentialTypes(userTable.getUserId());
-        if (types.isEmpty() || (types.size() == 1 && types.get(0) == CredentialType.BACKUP_CODES)) {
+        if (types.isEmpty() || (types.size() == 1 && types.getFirst() == CredentialType.BACKUP_CODES)) {
             return userTable.isEmailVerified() ? 1 : 0;
         } else {
             return 2;
