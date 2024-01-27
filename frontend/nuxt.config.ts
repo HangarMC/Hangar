@@ -2,10 +2,10 @@ import path from "node:path";
 import VueI18nVitePlugin from "@intlify/unplugin-vue-i18n/vite";
 import IconsResolver from "unplugin-icons/resolver";
 import Icons from "unplugin-icons/vite";
+import EslintPlugin from "vite-plugin-eslint";
 import Components from "unplugin-vue-components/vite";
 import type { ProxyOptions } from "@nuxt-alt/proxy";
 import { defineNuxtConfig } from "nuxt/config";
-import prettier from "./src/vite/prettier";
 import unocss from "./unocss.config";
 
 const backendHost = process.env.BACKEND_HOST || "http://localhost:8080";
@@ -77,10 +77,9 @@ export default defineNuxtConfig({
       }),
 
       // TODO fix this
-      // EslintPlugin({
-      //   fix: true,
-      // }),
-      prettier(),
+      EslintPlugin({
+        fix: true,
+      }),
     ],
     ssr: {
       // Workaround until they support native ESM

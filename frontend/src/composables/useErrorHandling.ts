@@ -1,5 +1,5 @@
 import type { AxiosError } from "axios";
-import axios from "axios";
+import { isAxiosError } from "axios";
 import type { HangarApiException, HangarValidationException, MultiHangarApiException } from "hangar-api";
 import type { Composer } from "vue-i18n";
 import { useNotificationStore } from "~/store/notification";
@@ -14,7 +14,7 @@ export function handleRequestError(err: AxiosError | unknown, msg: string | unde
   }
   const notification = useNotificationStore();
   const transformed = transformAxiosError(err);
-  if (!axios.isAxiosError(err)) {
+  if (!isAxiosError(err)) {
     // everything should be an AxiosError
     fetchLog("no axios request error", transformed);
     notification.error(transformed.message?.toString() || "Unknown error");
@@ -58,7 +58,7 @@ export function handleRequestError(err: AxiosError | unknown, msg: string | unde
 
 function _handleRequestError(err: AxiosError | unknown, i18n: Composer) {
   const transformed = transformAxiosError(err);
-  if (!axios.isAxiosError(err)) {
+  if (!isAxiosError(err)) {
     // everything should be an AxiosError
     createError({
       statusCode: 500,
@@ -105,7 +105,7 @@ function collectErrors(exception: HangarApiException | MultiHangarApiException, 
 }
 
 export function transformAxiosError(err: AxiosError | unknown): Record<string, unknown> {
-  return axios.isAxiosError(err)
+  return isAxiosError(err)
     ? {
         code: err?.code,
         requestUrl: err?.request?.path || err?.config?.url,

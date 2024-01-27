@@ -33,7 +33,6 @@ const underReviewHeaders: Header[] = [
   { title: i18n.t("versionApproval.version") as string, name: "version", sortable: false },
   { title: i18n.t("versionApproval.queuedBy") as string, name: "queuedBy", sortable: true },
   { title: i18n.t("versionApproval.status") as string, name: "status", sortable: true },
-  { title: "", name: "reviewLogs", sortable: false },
 ];
 
 const notStartedHeaders: Header[] = [
@@ -156,10 +155,6 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
           </span>
           <br />
           <span class="text-green-400"> {{ i18n.t("versionApproval.statuses.approved", [getApprovedCount(item)]) }}</span>
-        </template>
-        <template>
-          <IconMdiListStatus />
-          {{ i18n.t("version.page.reviewLogs") }}
         </template>
         <template #expanded-item="{ item, headers }">
           <td :colspan="headers.length">

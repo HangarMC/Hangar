@@ -43,6 +43,8 @@ module.exports = {
 
     "vue/multi-word-component-names": "off",
 
+    "no-console": "off",
+
     // TS
     "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/no-explicit-any": "off",

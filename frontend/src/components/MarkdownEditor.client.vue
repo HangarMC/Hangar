@@ -32,6 +32,7 @@ const props = withDefaults(
     rules: undefined,
     noPaddingTop: false,
     maxHeight: "500px",
+    label: undefined,
   }
 );
 

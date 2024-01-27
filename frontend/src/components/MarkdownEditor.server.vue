@@ -2,8 +2,7 @@
 import type { ValidationRule } from "@vuelidate/core";
 import Markdown from "~/components/Markdown.vue";
 import Button from "~/components/design/Button.vue";
-
-const props = withDefaults(
+withDefaults(
   defineProps<{
     raw: string;
     editing: boolean;
@@ -23,6 +22,7 @@ const props = withDefaults(
     rules: undefined,
     noPaddingTop: false,
     maxHeight: "500px",
+    label: undefined,
   }
 );
 </script>
