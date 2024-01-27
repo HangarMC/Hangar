@@ -76,7 +76,6 @@ export default defineNuxtConfig({
         include: [path.resolve(__dirname, "src/locales/*.json")],
       }),
 
-      // TODO fix this
       EslintPlugin({
         fix: true,
       }),
