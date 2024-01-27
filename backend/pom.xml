@@ -53,7 +53,7 @@
         <otel-semconv.version>1.30.0-alpha</otel-semconv.version>
 
         <!-- test -->
-        <pg.version>1.19.3</pg.version>
+        <pg.version>1.19.4</pg.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
