@@ -16,7 +16,7 @@
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "preserve",
-    "types": ["vite/client", "unplugin-icons/types/vue", "nuxt-windicss"],
+    "types": ["vite/client", "unplugin-icons/types/vue"],
     "paths": {
       "~/*": ["src/*"],
       "#imports": [".nuxt/imports"],

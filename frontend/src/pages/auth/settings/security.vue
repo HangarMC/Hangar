@@ -4,7 +4,7 @@ import * as webauthnJson from "@github/webauthn-json";
 import type { AuthSettings } from "hangar-internal";
 import { useI18n } from "vue-i18n";
 import { useVuelidate } from "@vuelidate/core";
-import type { AxiosRequestConfig } from "axios";
+import { type AxiosRequestConfig, isAxiosError } from "axios";
 import { useAuthStore } from "~/store/auth";
 import { useNotificationStore } from "~/store/notification";
 import { useInternalApi } from "~/composables/useApi";
@@ -53,11 +53,11 @@ async function addAuthenticator() {
     emit("refreshSettings");
     v.value.$reset();
   } catch (e) {
-    if (e.response?.status === 499) {
+    if (isAxiosError(e) && e.response?.status === 499) {
       codes.value = e.response.data.body;
       backupCodeModal.value.isOpen = true;
       savedRequest.value = e.config;
-    } else if (e.response?.data?.message === "error.privileged") {
+    } else if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else if (e?.toString()?.startsWith("NotAllowedError")) {
       notification.error("Security Key Authentication failed!");
@@ -74,7 +74,7 @@ async function unregisterAuthenticator(authenticator: AuthSettings["authenticato
     await useInternalApi("auth/webauthn/unregister", "POST", authenticator.id, { headers: { "content-type": "text/plain" } });
     emit("refreshSettings");
   } catch (e) {
-    if (e.response?.data?.message === "error.privileged") {
+    if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else if (e?.toString()?.startsWith("NotAllowedError")) {
       notification.error("Security Key Authentication failed!");
@@ -108,7 +108,7 @@ async function renameAuthenticator() {
     authenticatorRenameModal.value.isOpen = false;
     emit("refreshSettings");
   } catch (e) {
-    if (e.response?.data?.message === "error.privileged") {
+    if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else if (e?.toString()?.startsWith("NotAllowedError")) {
       notification.error("Security Key Authentication failed!");
@@ -126,7 +126,7 @@ async function setupTotp() {
   try {
     totpData.value = await useInternalApi<{ secret: string; qrCode: string }>("auth/totp/setup", "POST");
   } catch (e) {
-    if (e.response?.data?.message === "error.privileged") {
+    if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
       notification.fromError(i18n, e);
@@ -144,12 +144,12 @@ async function addTotp() {
     totpCode.value = undefined;
     emit("refreshSettings");
   } catch (e) {
-    if (e.response.status === 499) {
+    if (isAxiosError(e) && e.response?.status === 499) {
       codes.value = e.response.data.body;
       backupCodeModal.value.isOpen = true;
       savedRequest.value = e.config;
       otp.value = e.response.headers["x-hangar-verify"];
-    } else if (e.response?.data?.message === "error.privileged") {
+    } else if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
       notification.fromError(i18n, e);
@@ -164,7 +164,7 @@ async function unlinkTotp() {
     await useInternalApi("auth/totp/remove", "POST");
     emit("refreshSettings");
   } catch (e) {
-    if (e.response?.data?.message === "error.privileged") {
+    if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
       notification.fromError(i18n, e);
@@ -222,7 +222,7 @@ async function revealCodes() {
     }
     showCodes.value = true;
   } catch (e) {
-    if (e.response?.data?.message === "error.privileged") {
+    if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
       notification.fromError(i18n, e);
@@ -238,7 +238,7 @@ async function generateNewCodes() {
     notification.success("Regenerated backup codes!");
     emit("refreshSettings");
   } catch (e) {
-    if (e.response?.data?.message === "error.privileged") {
+    if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
       notification.fromError(i18n, e);
@@ -255,7 +255,7 @@ async function setupOAuth(provider: string) {
   try {
     window.location.href = await useInternalApi<string>("oauth/" + provider + "/login?mode=settings&returnUrl=" + encodeURIComponent(route.fullPath), "GET");
   } catch (e) {
-    if (e.response?.data?.message === "error.privileged") {
+    if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
       notification.fromError(i18n, e);

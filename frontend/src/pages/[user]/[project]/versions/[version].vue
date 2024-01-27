@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { computed } from "vue";
 import type { HangarProject, HangarVersion } from "hangar-internal";
@@ -10,10 +9,9 @@ import Delayed from "~/components/design/Delayed.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { onBeforeRouteUpdate } from "#imports";
 
-const i18n = useI18n();
 const route = useRoute();
 
-const props = defineProps<{
+defineProps<{
   project: HangarProject;
 }>();
 

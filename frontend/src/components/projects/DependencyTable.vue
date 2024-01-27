@@ -69,7 +69,7 @@ function reset() {
   selectedTab.value.splice(0);
 }
 
-async function onSearch(val: string, index: number) {
+async function onSearch(val: string | undefined, index: number) {
   if (val) {
     const projects = await useApi<PaginatedResult<Project>>(`projects?limit=25&offset=0&q=${val.replace("/", " ")}`);
     completionResults.value[index] = projects.result
@@ -99,7 +99,7 @@ const selectedUploadTabs: Tab[] = [
   { value: "url", header: "URL" },
 ];
 
-function changeTabs(val: string, idx: number) {
+function changeTabs(val: string | undefined, idx: number) {
   if (val === "file") {
     dependencies.value[idx].externalUrl = null;
   } else if (val === "url") {

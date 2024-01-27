@@ -5,7 +5,7 @@ import { useRoute } from "vue-router";
 import { computed, ref } from "vue";
 import type { NewProjectForm } from "hangar-internal";
 import { useVuelidate } from "@vuelidate/core";
-import { AxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { watchDebounced } from "@vueuse/core";
 import PageTitle from "~/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
@@ -129,9 +129,9 @@ watchDebounced(
     spigotAuthor.value = null;
     try {
       spigotAuthor.value = await getSpigotAuthor(username.value);
-    } catch (e: AxiosError) {
+    } catch (e) {
       // don't need popup about not found and wrong format
-      if (!e.message?.includes("404") && !e.message?.includes("400")) {
+      if (!isAxiosError(e) || (!e.message?.includes("404") && !e.message?.includes("400"))) {
         handleRequestError(e);
       }
     }

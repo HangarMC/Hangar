@@ -62,7 +62,7 @@ export const validApiKeyName = withOverrideMessage((username: string) =>
   )
 );
 
-export const validChannelName = withOverrideMessage((projectId: string, existingName: string) =>
+export const validChannelName = withOverrideMessage((projectId: string, existingName?: string) =>
   helpers.withParams(
     { projectId, type: "validChannelName" },
     helpers.withAsync(async (value: string) => {
@@ -83,7 +83,7 @@ export const validChannelName = withOverrideMessage((projectId: string, existing
   )
 );
 
-export const validChannelColor = withOverrideMessage((projectId: string, existingColor: string) =>
+export const validChannelColor = withOverrideMessage((projectId: string, existingColor?: string) =>
   helpers.withParams(
     { projectId, type: "validChannelColor" },
     helpers.withAsync(async (value: string) => {

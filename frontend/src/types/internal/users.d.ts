@@ -19,6 +19,7 @@ declare module "hangar-internal" {
     name: string;
     url: string;
     accepted?: boolean;
+    representingOrg?: string;
   }
 
   interface Invites {

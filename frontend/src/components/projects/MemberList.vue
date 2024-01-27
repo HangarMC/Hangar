@@ -3,7 +3,7 @@ import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import type { JoinableMember } from "hangar-internal";
 import type { PaginatedResult, Role, User } from "hangar-api";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { NamedPermission } from "~/types/enums";
 import Card from "~/components/design/Card.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
@@ -56,7 +56,6 @@ const sortedMembers = [...props.members].sort((r1, r2) => {
 });
 
 const i18n = useI18n();
-const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 const roles: Role[] = (props.organization ? useBackendData.orgRoles : useBackendData.projectRoles).filter((role) => role.assignable);
@@ -166,7 +165,7 @@ async function doSearch(val: string) {
           <IconMdiHelpCircleOutline class="ml-1 text-gray-400" />
         </Tooltip>
         <div class="flex-grow" />
-        <MemberLeaveModal v-if="canLeave" :author="author" :organization="organization" :slug="slug" />
+        <MemberLeaveModal v-if="canLeave && author" :author="author" :organization="organization" :slug="slug" />
       </div>
     </template>
 
@@ -182,14 +181,14 @@ async function doSearch(val: string) {
         </p>
         <Tooltip v-if="!member.role.accepted">
           <template #content>
-            {{ i18n.t("form.memberList.invitedAs", [getRole(member.role.roleId).title]) }}
+            {{ i18n.t("form.memberList.invitedAs", [getRole(member.role.roleId)?.title]) }}
           </template>
-          <span class="items-center inline-flex"> {{ getRole(member.role.roleId).title }} <IconMdiClock class="ml-1" /> </span>
+          <span class="items-center inline-flex"> {{ getRole(member.role.roleId)?.title }} <IconMdiClock class="ml-1" /> </span>
         </Tooltip>
-        <span v-else class="items-center inline-flex"> {{ getRole(member.role.roleId).title }}</span>
+        <span v-else class="items-center inline-flex"> {{ getRole(member.role.roleId)?.title }}</span>
       </div>
       <!-- todo confirmation modal -->
-      <DropdownButton v-if="canEdit && getRole(member.role.roleId).assignable" :name="i18n.t('general.edit')">
+      <DropdownButton v-if="canEdit && getRole(member.role.roleId)?.assignable" :name="i18n.t('general.edit')">
         <template #button-label>
           <IconMdiPencil />
         </template>
@@ -199,7 +198,7 @@ async function doSearch(val: string) {
         <hr />
         <DropdownItem @click="removeMember(member)">{{ i18n.t("form.memberList.remove") }}</DropdownItem>
       </DropdownButton>
-      <DropdownButton v-if="canEdit && !getRole(member.role.roleId).assignable && !member.role.accepted" :name="i18n.t('general.edit')">
+      <DropdownButton v-if="canEdit && !getRole(member.role.roleId)?.assignable && !member.role.accepted" :name="i18n.t('general.edit')">
         <template #button-label>
           <IconMdiPencil />
         </template>

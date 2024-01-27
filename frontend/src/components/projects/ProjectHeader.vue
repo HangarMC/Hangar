@@ -28,7 +28,6 @@ const props = defineProps<{
 }>();
 
 const user = useAuthStore().user;
-const slug = computed(() => props.project.namespace.owner + "/" + props.project.name);
 
 const starred = ref(props.project.userActions.starred);
 const watching = ref(props.project.userActions.watching);

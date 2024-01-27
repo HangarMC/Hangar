@@ -29,13 +29,13 @@ const modal = ref<any | null>(null); // Filled by vue
 
 const pageRoots = computed(() => [{ value: -1, text: "<none>" }, ...flatDeep(props.pages, "")]);
 const name = ref("");
-const parent = ref<number | null>(null);
+const parent = ref<number>();
 const loading = ref<boolean>(false);
 
 const body = computed(() => ({
   projectId: props.projectId,
   name: name.value,
-  parentId: parent.value === -1 ? null : parent.value,
+  parentId: parent.value === -1 ? undefined : parent.value,
 }));
 const rules = [
   required(),
@@ -66,7 +66,7 @@ async function createPage() {
     });
 
     name.value = "";
-    parent.value = null;
+    parent.value = undefined;
 
     if (updateProjectPagesCallback) {
       updateProjectPagesCallback(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.projectId}`, "get"));

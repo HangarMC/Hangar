@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import type { Version, PaginatedResult } from "hangar-api";
+import type { Version } from "hangar-api";
 import type { Ref } from "vue";
 import { computed, reactive, watch } from "vue";
 import { useRoute } from "vue-router";
@@ -62,7 +62,7 @@ filter.platforms.push(...platforms.value.map((p) => p.enumName));
 
 useHead(useSeo("Versions | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 
-const pageChangeScrollAnchor: Ref<Element | null> = ref(null);
+const pageChangeScrollAnchor = ref<Element>();
 
 async function update(newPage: number) {
   page.value = newPage;

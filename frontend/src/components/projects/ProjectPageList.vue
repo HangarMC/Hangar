@@ -9,7 +9,7 @@ import NewPageModal from "~/components/modals/NewPageModal.vue";
 import TreeView from "~/components/design/TreeView.vue";
 import Link from "~/components/design/Link.vue";
 
-const props = defineProps<{
+defineProps<{
   project: HangarProject;
   open: string[];
 }>();

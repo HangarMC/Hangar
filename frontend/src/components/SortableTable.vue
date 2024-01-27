@@ -29,8 +29,6 @@ const expanded = ref<Record<number, boolean>>({});
 const sorter = reactive<Record<string, number>>(props.initialSorter || {});
 const sorted = ref<T[]>(props.items);
 
-const page = ref(0);
-
 function sort() {
   if (props.serverPagination) {
     // if we use server fetched data, we don't want to sort on the client, ever

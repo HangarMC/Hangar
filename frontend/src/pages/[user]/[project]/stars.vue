@@ -27,7 +27,7 @@ useHead(useSeo(i18n.t("project.stargazers") + " | " + props.project.name, props.
       <PageTitle>{{ i18n.t("project.stargazers") }}</PageTitle>
     </template>
 
-    <div v-if="stargazers?.result?.length > 0" class="flex flex-wrap gap-4">
+    <div v-if="stargazers?.result" class="flex flex-wrap gap-4">
       <div v-for="stargazer in stargazers?.result" :key="stargazer.name">
         <div class="inline-flex items-center space-x-1">
           <UserAvatar size="xs" :username="stargazer.name" :avatar-url="stargazer.avatarUrl" />

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useHead } from "@unhead/vue";
 import { computed, ref } from "vue";
 import type { PaginatedResult, User } from "hangar-api";
@@ -23,7 +23,6 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute();
-const router = useRouter();
 
 const headers: Header[] = [
   { name: "pic", title: "", sortable: false },
@@ -84,7 +83,14 @@ useHead(useSeo(i18n.t("userList.title"), null, route, null));
       <InputText v-model="query" label="Username" />
     </div>
 
-    <SortableTable :headers="headers" :items="users?.result" :server-pagination="users?.pagination" @update:sort="updateSort" @update:page="updatePage">
+    <SortableTable
+      v-if="users"
+      :headers="headers"
+      :items="users.result"
+      :server-pagination="users?.pagination"
+      @update:sort="updateSort"
+      @update:page="updatePage"
+    >
       <template #item_pic="{ item }">
         <UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs" />
       </template>
@@ -100,7 +106,7 @@ useHead(useSeo(i18n.t("userList.title"), null, route, null));
       </template>
       <template #item_roles="{ item }">
         <div class="space-x-1">
-          <Tag v-for="roleId in item.roles" :key="roleId" :color="{ background: getRole(roleId).color }" :name="getRole(roleId).title" />
+          <Tag v-for="roleId in item.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
         </div>
       </template>
     </SortableTable>

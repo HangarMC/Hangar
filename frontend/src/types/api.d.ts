@@ -25,9 +25,9 @@ declare module "hangar-api" {
   }
 
   interface Validation {
-    regex?: string;
-    max?: number;
-    min?: number;
+    regex: string;
+    max: number;
+    min: number;
   }
 
   interface VersionInfo {

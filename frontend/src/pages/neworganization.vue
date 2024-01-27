@@ -51,7 +51,7 @@ async function create() {
     <template #header>{{ i18n.t("organization.new.title") }}</template>
     <p class="mb-3">{{ i18n.t("organization.new.text") }}</p>
 
-    <div v-if="currentUser.headerData.organizationCount < useBackendData.validations.maxOrgCount" class="mt-2">
+    <div v-if="currentUser && currentUser.headerData.organizationCount < useBackendData.validations.maxOrgCount" class="mt-2">
       <InputText
         v-model="name"
         class="max-w-100 pr-2"

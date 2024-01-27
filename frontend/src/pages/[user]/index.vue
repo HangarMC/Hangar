@@ -128,7 +128,7 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
   <div v-if="user">
     <UserHeader :viewing-user="user" :organization="organization" />
     <div class="flex-basis-full flex flex-col gap-2 flex-grow lg:max-w-7/10 lg:min-w-6/10">
-      <div v-for="project in pinned" :key="project.namespace">
+      <div v-for="project in pinned" :key="project.namespace.slug">
         <ProjectCard :project="project" />
       </div>
     </div>
@@ -169,7 +169,7 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
           <DeleteUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.MANUAL_VALUE_CHANGES)" :user="user" />
         </Card>
 
-        <Card v-if="possibleAlts?.length > 0" class="mb-4">
+        <Card v-if="possibleAlts?.length" class="mb-4">
           <template #header> Shares address with </template>
           <ul>
             <li v-for="name in possibleAlts" :key="name">
@@ -198,7 +198,7 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
                   <UserAvatar :username="orgName" :avatar-url="org.avatarUrl" size="xs" :disable-link="true" class="flex-shrink-0 mr-2" />
                   {{ orgName }}
                   <span class="flex-grow" />
-                  <Tag :color="{ background: getRole(org.role.roleId).color }" :name="getRole(org.role.roleId).title" class="ml-1" />
+                  <Tag :color="{ background: getRole(org.role.roleId)?.color }" :name="getRole(org.role.roleId)?.title" class="ml-1" />
                   <IconMdiEyeOffOutline v-if="organizationVisibility && organizationVisibility[orgName]" class="ml-1" />
                 </NuxtLink>
               </li>

@@ -85,9 +85,9 @@ function trackDownload(platform: Platform, version: DownloadableVersion & { id?:
 <template>
   <div class="flex items-center">
     <div v-if="pinnedVersion">
-      <div v-if="Object.keys(props.pinnedVersion.downloads).length === 1">
+      <div v-if="pinnedVersion && Object.keys(pinnedVersion.downloads).length === 1">
         <a
-          v-for="(v, p) in pinnedVersion.platformDependenciesFormatted"
+          v-for="(_, p) in pinnedVersion.platformDependenciesFormatted"
           :key="p"
           class="flex items-center"
           :href="downloadLink(p, pinnedVersion)"

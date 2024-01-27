@@ -8,7 +8,7 @@ import { useProject } from "~/composables/useApiHelper";
 import { useDummyError, useErrorRedirect } from "~/composables/useErrorRedirect";
 import ProjectHeader from "~/components/projects/ProjectHeader.vue";
 import ProjectNav from "~/components/projects/ProjectNav.vue";
-import { createError, navigateTo, onBeforeRouteUpdate, useInternalApi } from "#imports";
+import { navigateTo, onBeforeRouteUpdate, useInternalApi } from "#imports";
 import Delayed from "~/components/design/Delayed.vue";
 
 defineProps<{

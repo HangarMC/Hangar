@@ -23,7 +23,7 @@ const loading = ref(false);
 
 const profileForm = reactive({
   tagline: auth.user?.tagline,
-  socials: Object.entries(auth.user?.socials),
+  socials: auth.user?.socials ? Object.entries(auth.user.socials) : [],
 });
 const linkType = ref<string>();
 const linkTypes = [

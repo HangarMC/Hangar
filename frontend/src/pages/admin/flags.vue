@@ -16,7 +16,6 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute();
-const loading = ref<{ [key: number]: boolean }>({});
 
 const selectedTab = ref("unresolved");
 const selectedTabs: Tab[] = [

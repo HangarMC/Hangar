@@ -80,10 +80,6 @@ const projectVersion = computed<HangarVersion>(() => {
   return props.version;
 });
 
-const platform = computed<IPlatform | undefined>(() => {
-  return useBackendData.platforms?.get(platformEnum.value);
-});
-
 const isReviewStateChecked = computed<boolean>(() => {
   return projectVersion.value.reviewState === ReviewState.PARTIALLY_REVIEWED || projectVersion.value.reviewState === ReviewState.REVIEWED;
 });

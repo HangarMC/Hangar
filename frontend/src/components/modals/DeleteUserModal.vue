@@ -2,7 +2,6 @@
 import { useI18n } from "vue-i18n";
 import type { User } from "hangar-api";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import { useVuelidate } from "@vuelidate/core";
 import Button from "~/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
@@ -18,7 +17,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const router = useRouter();
 const v = useVuelidate();
 const comment = ref<string>("");
 

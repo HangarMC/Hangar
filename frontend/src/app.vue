@@ -7,12 +7,10 @@ import { computed } from "vue";
 import { useSettingsStore } from "~/store/useSettingsStore";
 import { settingsLog } from "~/composables/useLog";
 import { useAuthStore } from "~/store/auth";
-import { onErrorCaptured, transformAxiosError, useAccentColor, useRoute, useRuntimeConfig } from "#imports";
+import { onErrorCaptured, transformAxiosError, useAccentColor, useRuntimeConfig } from "#imports";
 
 // popper needs this?
 import "regenerator-runtime/runtime";
-
-const route = useRoute();
 
 // keep in sync with error.vue, cause reasons
 const runtimeConfig = useRuntimeConfig();

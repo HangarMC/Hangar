@@ -114,7 +114,8 @@ function updateNavData() {
   useInternalApi<HangarUser>("users/@me")
     .catch((e) => handleRequestError(e))
     .then((user) => {
-      return (authStore.user = unref(user));
+      if (!user) return;
+      authStore.user = unref(user);
     });
 }
 

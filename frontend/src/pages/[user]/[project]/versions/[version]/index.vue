@@ -213,7 +213,7 @@ async function restoreVersion() {
 
         <span class="inline-flex items-center">
           <IconMdiInformation class="mr-1" />
-          {{ i18n.t("version.page.visibility", [i18n.t(currentVisibility.title)]) }}
+          {{ i18n.t("version.page.visibility", [i18n.t(currentVisibility?.title)]) }}
         </span>
 
         <div class="flex gap-2 flex-wrap mt-2">
@@ -326,7 +326,7 @@ async function restoreVersion() {
 
         <div v-for="platform in versionPlatforms" :key="platform" class="flex items-center mb-1">
           <PlatformLogo :platform="platform" :size="24" class="mr-1 flex-shrink-0" />
-          {{ useBackendData.platforms.get(platform).name }}
+          {{ useBackendData.platforms.get(platform)?.name }}
           ({{ projectVersion?.platformDependenciesFormatted[platform] }})
           <span class="flex-grow" />
           <PlatformVersionEditModal
@@ -350,7 +350,7 @@ async function restoreVersion() {
             <template #title>
               <div class="flex gap-1 w-full">
                 <PlatformLogo :platform="platform" :size="24" class="flex-shrink-0" />
-                {{ useBackendData.platforms.get(platform).name }}
+                {{ useBackendData.platforms.get(platform)?.name }}
                 <span class="flex-grow" />
                 <DependencyEditModal :project="project" :version="version" :platform="useBackendData.platforms.get(platform)" />
               </div>

@@ -2,7 +2,7 @@
 import { useI18n } from "vue-i18n";
 import type { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
 import { computed, onMounted, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import type { DependencyVersion, PluginDependency } from "hangar-api";
 import { cloneDeep } from "lodash-es";
 import { hasPerms } from "~/composables/usePerm";
@@ -21,7 +21,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const route = useRoute();
 const router = useRouter();
 
 const projectVersion = computed(() => {

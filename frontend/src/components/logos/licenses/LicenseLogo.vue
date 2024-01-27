@@ -4,7 +4,7 @@ import GPLLogo from "~/components/logos/licenses/GPLLogo.vue";
 import LGPLLogo from "~/components/logos/licenses/LGPLLogo.vue";
 import AGPLLogo from "~/components/logos/licenses/AGPLLogo.vue";
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     license: string;
     size?: number;

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
 import { ref } from "vue";
 import type { Flag, HangarFlagNotification } from "hangar-internal";
 import type { PaginatedResult } from "hangar-api";
@@ -20,7 +19,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const route = useRoute();
 const flags = await (props.resolved ? useResolvedFlags() : useUnresolvedFlags());
 const loading = ref<{ [key: number]: boolean }>({});
 

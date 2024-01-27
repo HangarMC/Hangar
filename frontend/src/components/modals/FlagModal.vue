@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
 import { ref } from "vue";
 import type { HangarProject } from "hangar-internal";
 import Button from "~/components/design/Button.vue";
@@ -25,7 +24,6 @@ const emit = defineEmits<{
 }>();
 
 const i18n = useI18n();
-const router = useRouter();
 
 const flagReason = ref<string>();
 const flagComment = ref<string>();

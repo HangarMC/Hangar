@@ -2,7 +2,7 @@
 import type { User } from "hangar-api";
 import { useI18n } from "vue-i18n";
 import type { HangarProject, PinnedVersion } from "hangar-internal";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { ref } from "vue";
 import Card from "~/components/design/Card.vue";
 import ProjectInfo from "~/components/projects/ProjectInfo.vue";
@@ -32,7 +32,6 @@ const props = defineProps<{
 
 const i18n = useI18n();
 const route = useRoute();
-const router = useRouter();
 const openProjectPages = await useOpenProjectPages(route, props.project);
 
 const sponsors = ref(props.project.settings.sponsors);

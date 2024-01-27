@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
-import type { Ref } from "vue";
 import { computed, isRef, ref, watch } from "vue";
 import { useHead } from "@unhead/vue";
 import { useRoute, useRouter } from "vue-router";
@@ -16,7 +15,6 @@ import Card from "~/components/design/Card.vue";
 import Container from "~/components/design/Container.vue";
 import { useSeo } from "~/composables/useSeo";
 import { useApi } from "~/composables/useApi";
-import Alert from "~/components/design/Alert.vue";
 import type { Platform } from "~/types/enums";
 import { Tag } from "~/types/enums";
 import InputRadio from "~/components/ui/InputRadio.vue";
@@ -41,7 +39,7 @@ const toArray = (input: unknown) => (Array.isArray(input) ? input : input ? [inp
 const filters = ref({
   versions: toArray(route.query.version),
   categories: toArray(route.query.category),
-  platform: (route.query.platform || null) as string | null,
+  platform: (route.query.platform || undefined) as string | undefined,
   tags: toArray(route.query.tag),
 });
 
@@ -150,7 +148,7 @@ if (isRef(meta.script)) {
   meta.script.push(script);
 }
 
-const pageChangeScrollAnchor: Ref<Element | null> = ref(null);
+const pageChangeScrollAnchor = ref<Element>();
 
 useHead(meta);
 </script>
@@ -229,7 +227,7 @@ useHead(meta);
               v-if="filters.platform"
               class="font-normal text-sm hover:(underline) text-gray-600 dark:text-gray-400"
               cursor="pointer"
-              @click="filters.platform = null"
+              @click="filters.platform = undefined"
             >
               {{ i18n.t("hangar.projectSearch.clear") }}
             </span>

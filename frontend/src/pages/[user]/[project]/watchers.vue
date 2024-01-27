@@ -27,7 +27,7 @@ useHead(useSeo(i18n.t("project.watchers") + " | " + props.project.name, props.pr
       <PageTitle>{{ i18n.t("project.watchers") }}</PageTitle>
     </template>
 
-    <div v-if="watchers?.result?.length > 0" class="flex flex-wrap gap-4">
+    <div v-if="watchers?.result?.length" class="flex flex-wrap gap-4">
       <div v-for="watcher in watchers?.result" :key="watcher.name">
         <div class="inline-flex items-center space-x-1">
           <UserAvatar size="xs" :username="watcher.name" :avatar-url="watcher.avatarUrl" />

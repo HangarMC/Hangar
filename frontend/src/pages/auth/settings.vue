@@ -3,7 +3,6 @@ import { useHead } from "@unhead/vue";
 import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useVuelidate } from "@vuelidate/core";
 import type { AuthSettings } from "hangar-internal";
 import { useSeo } from "~/composables/useSeo";
 import { useAuthStore } from "~/store/auth";
@@ -30,7 +29,6 @@ const auth = useAuthStore();
 const notification = useNotificationStore();
 const i18n = useI18n();
 const { t } = useI18n();
-const v = useVuelidate();
 
 const settings = await useAuthSettings();
 

@@ -2,7 +2,6 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import type { HangarProject } from "hangar-internal";
-import { forumUrl } from "~/composables/useUrlHelper";
 import Card from "~/components/design/Card.vue";
 import Link from "~/components/design/Link.vue";
 import DropdownButton from "~/components/design/DropdownButton.vue";

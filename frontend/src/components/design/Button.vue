@@ -5,7 +5,7 @@ import Spinner from "~/components/design/Spinner.vue";
 import { NuxtLink } from "#components";
 
 defineEmits<{
-  (e: "click"): void;
+  click: [event: MouseEvent];
 }>();
 const props = withDefaults(
   defineProps<{

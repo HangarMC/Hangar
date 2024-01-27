@@ -11,7 +11,6 @@ import { useInternalApi } from "~/composables/useApi";
 import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
 import { useSeo } from "~/composables/useSeo";
 import Steps from "~/components/design/Steps.vue";
-import { useSettingsStore } from "~/store/useSettingsStore";
 import InputSelect from "~/components/ui/InputSelect.vue";
 import InputText from "~/components/ui/InputText.vue";
 import InputTag from "~/components/ui/InputTag.vue";
@@ -36,7 +35,6 @@ definePageMeta({
 const i18n = useI18n();
 const router = useRouter();
 const route = useRoute();
-const settings = useSettingsStore();
 
 const projectOwners = await usePossibleOwners();
 const projectCreationErrors: Ref<string[]> = ref([]);

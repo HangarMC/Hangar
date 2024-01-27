@@ -2,9 +2,8 @@
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import type { HangarNotification, Invite } from "hangar-internal";
-import { computed, ref, type Ref } from "vue";
+import { computed, ref } from "vue";
 import { useHead } from "@unhead/vue";
-import type { PaginatedResult } from "hangar-api";
 import { useInvites, useNotifications, useReadNotifications, useUnreadNotifications } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useInternalApi } from "~/composables/useApi";
@@ -36,7 +35,7 @@ const notificationStore = useNotificationStore();
 const unreadNotifications = await useUnreadNotifications();
 const readNotifications = await useReadNotifications();
 const allNotifications = await useNotifications();
-const notifications: Ref<PaginatedResult<HangarNotification> | null> = ref(unreadNotifications.value);
+const notifications = ref(unreadNotifications.value);
 const invites = await useInvites();
 
 const selectedTab = ref("unread");
@@ -121,7 +120,7 @@ function updateSelectedNotifications() {
         {{ i18n.t(`notifications.empty.${selectedTab}`) }}
       </div>
 
-      <Pagination v-if="notifications?.result.length !== 0" :items="notifications?.result">
+      <Pagination v-if="notifications?.result" :items="notifications.result">
         <template #default="{ item }">
           <div class="p-1 mb-1 flex items-center">
             <div class="inline-flex items-center flex-grow">
@@ -144,7 +143,7 @@ function updateSelectedNotifications() {
           </div>
         </template>
       </Pagination>
-      <Button v-if="notifications?.result.length > 1 && selectedTab === 'unread'" size="small" @click="markAllAsRead">
+      <Button v-if="notifications?.result && selectedTab === 'unread'" size="small" @click="markAllAsRead">
         {{ i18n.t("notifications.readAll") }}
       </Button>
     </Card>
@@ -161,7 +160,7 @@ function updateSelectedNotifications() {
         <span v-else> {{ i18n.t(!invite.accepted ? "notifications.invited" : "notifications.inviteAccepted", [invite.type]) }}: </span>
 
         <NuxtLink :to="invite.url" exact class="mr-2">{{ invite.name }}</NuxtLink>
-        <Tag :color="{ background: getRoleByValue(invite.role).color }" :name="getRoleByValue(invite.role).title" />
+        <Tag :color="{ background: getRoleByValue(invite.role)?.color }" :name="getRoleByValue(invite.role)?.title" />
         <div v-if="!invite.accepted" class="-mt-4">
           <br />
           <Button class="mr-2" @click="updateInvite(invite, 'accept')">{{ i18n.t("notifications.invite.btns.accept") }}</Button>

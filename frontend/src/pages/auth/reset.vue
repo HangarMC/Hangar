@@ -3,6 +3,7 @@ import { useHead } from "@unhead/vue";
 import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
+import { isAxiosError } from "axios";
 import { useSeo } from "~/composables/useSeo";
 import Card from "~/components/design/Card.vue";
 import InputText from "~/components/ui/InputText.vue";
@@ -37,7 +38,7 @@ async function verifyCode() {
     await useInternalApi("auth/reset/verify", "POST", { email: email.value, code: code.value });
     codeVerified.value = true;
   } catch (e) {
-    codeError.value = e.response && e.response.status === 400 ? ["Invalid code"] : ["Unknown error"];
+    codeError.value = isAxiosError(e) && e.response?.status === 400 ? ["Invalid code"] : ["Unknown error"];
   }
 }
 

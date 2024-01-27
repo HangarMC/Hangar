@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
 import { ref } from "vue";
 import type { PaginatedResult, User } from "hangar-api";
 import Button from "~/components/design/Button.vue";
@@ -15,7 +14,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const router = useRouter();
 const notificationStore = useNotificationStore();
 
 const search = ref<string>("");

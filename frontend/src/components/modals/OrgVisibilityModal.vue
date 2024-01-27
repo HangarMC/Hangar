@@ -42,7 +42,7 @@ async function changeOrgVisibility(org: string) {
     <p>{{ i18n.t("author.orgVisibilityModal") }}</p>
 
     <ul class="p-2">
-      <li v-for="(hidden, org) in internalVisibility" :key="org">
+      <li v-for="(_, org) in internalVisibility" :key="org">
         <InputCheckbox v-model="internalVisibility[org]" :label="org" :disabled="loading" @change="changeOrgVisibility(org)"></InputCheckbox>
       </li>
     </ul>

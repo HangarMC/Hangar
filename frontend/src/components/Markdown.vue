@@ -1,17 +1,16 @@
 <script lang="ts" setup>
 import { computed, watchPostEffect } from "vue";
-import { useI18n } from "vue-i18n";
 import { usePrismStore } from "~/store/prism";
 import { parseMarkdown } from "~/composables/useMarked";
 import { useDomPurify } from "~/composables/useDomPurify";
 
-const i18n = useI18n();
 const props = withDefaults(
   defineProps<{
-    raw: string;
+    raw?: string;
     inline?: boolean;
   }>(),
   {
+    raw: undefined,
     inline: false,
   }
 );

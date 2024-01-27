@@ -2,7 +2,7 @@
 import { useI18n } from "vue-i18n";
 import type { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
 import { computed, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { useVuelidate } from "@vuelidate/core";
 import Button from "~/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
@@ -19,7 +19,6 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const route = useRoute();
 const router = useRouter();
 
 const projectVersion = computed(() => {

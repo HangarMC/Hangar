@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { useI18n } from "vue-i18n";
@@ -19,7 +19,6 @@ import { useBackendData } from "~/store/backendData";
 import IconMdiGitHub from "~icons/mdi/github";
 
 const route = useRoute();
-const router = useRouter();
 const v = useVuelidate();
 const backendData = useBackendData;
 

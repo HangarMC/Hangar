@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useI18n } from "vue-i18n";
 import { useHead } from "@unhead/vue";
 import { useRoute } from "vue-router";
 import Button from "~/components/design/Button.vue";
@@ -11,7 +10,6 @@ import PageTitle from "~/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
 import InputTextarea from "~/components/ui/InputTextarea.vue";
 
-const i18n = useI18n();
 const route = useRoute();
 
 const input = ref("");

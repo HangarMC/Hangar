@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { HangarProject, HangarProjectPage } from "hangar-internal";
-import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { useHead } from "@unhead/vue";
 import { inject } from "vue";
@@ -16,7 +15,6 @@ const props = defineProps<{
 
 const route = useRoute();
 const router = useRouter();
-const i18n = useI18n();
 
 const updateProjectPages = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
 

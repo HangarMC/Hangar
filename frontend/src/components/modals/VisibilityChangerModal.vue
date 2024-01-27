@@ -50,8 +50,8 @@ async function submit(): Promise<void> {
 
 <template>
   <Modal :title="i18n.t('visibility.modal.title', [type])" window-classes="w-150">
-    <template #default="{ on }">
-      Currently: {{ i18n.t(currentVisibility.title) }}
+    <template #default>
+      Currently: {{ i18n.t(currentVisibility?.title) }}
       <InputRadio v-for="vis in visibilities" :key="vis.name" v-model="visibility" :value="vis.name" :label="i18n.t(vis.title)" class="block" />
 
       <div v-if="showTextarea">
@@ -60,7 +60,7 @@ async function submit(): Promise<void> {
         <br />
       </div>
 
-      <Button class="mt-3" @click="submit(on.click)">{{ i18n.t("general.submit") }}</Button>
+      <Button class="mt-3" @click="submit">{{ i18n.t("general.submit") }}</Button>
     </template>
     <template #activator="{ on }">
       <Button v-bind="$attrs" class="mr-1" v-on="on">

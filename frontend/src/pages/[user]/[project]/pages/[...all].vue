@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import type { User } from "hangar-api";
 import type { HangarProject } from "hangar-internal";
 import ProjectPageList from "~/components/projects/ProjectPageList.vue";
@@ -18,9 +17,7 @@ const props = defineProps<{
   project: HangarProject;
 }>();
 
-const i18n = useI18n();
 const route = useRoute();
-const router = useRouter();
 
 const open = await useOpenProjectPages(route, props.project);
 // useSeo is in ProjectPageMarkdown

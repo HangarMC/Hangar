@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type TranslateResult, useI18n } from "vue-i18n";
+import { type TranslateResult } from "vue-i18n";
 import { DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diff_match_patch as Diff } from "diff-match-patch";
 import { computed } from "vue";
 import Modal from "~/components/modals/Modal.vue";
@@ -10,8 +10,6 @@ const props = defineProps<{
   left: string;
   right: string;
 }>();
-
-const i18n = useI18n();
 
 const diff = computed(() => {
   const differ = new Diff();

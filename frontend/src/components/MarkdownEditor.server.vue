@@ -4,7 +4,7 @@ import Markdown from "~/components/Markdown.vue";
 import Button from "~/components/design/Button.vue";
 withDefaults(
   defineProps<{
-    raw: string;
+    raw?: string | null;
     editing: boolean;
     deletable: boolean;
     cancellable: boolean;
@@ -17,6 +17,7 @@ withDefaults(
     label?: string;
   }>(),
   {
+    raw: undefined,
     maxlength: 30_000,
     errorMessages: undefined,
     rules: undefined,

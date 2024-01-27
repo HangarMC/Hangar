@@ -7,7 +7,7 @@ import Button from "~/components/design/Button.vue";
 import Modal from "~/components/modals/Modal.vue";
 import { useBackendData } from "~/store/backendData";
 import InputText from "~/components/ui/InputText.vue";
-import { isSame, maxLength, minLength, pattern, required } from "~/composables/useValidationHelpers";
+import { isSame, maxLength, pattern, required } from "~/composables/useValidationHelpers";
 import { validChannelName, validChannelColor } from "~/composables/useHangarValidations";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import { ChannelFlag } from "~/types/enums";
@@ -105,7 +105,7 @@ reset();
             required(),
             maxLength()(useBackendData.validations.project.channels.max),
             pattern()(useBackendData.validations.project.channels.regex),
-            validChannelName()(props.projectId, props.channel?.name),
+            validChannelName()(String(props.projectId), props.channel?.name),
           ]"
           counter
         />
@@ -130,7 +130,7 @@ reset();
         <InputText
           v-model="color"
           :label="i18n.t('channel.modal.pickedColor')"
-          :rules="[required(), validChannelColor()(props.projectId, props.channel?.color)]"
+          :rules="[required(), validChannelColor()(String(props.projectId), props.channel?.color)]"
           readonly
           disabled
         />

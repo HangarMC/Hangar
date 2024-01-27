@@ -5,14 +5,14 @@ import { useValidation } from "~/composables/useValidationHelpers";
 import InputWrapper from "~/components/ui/InputWrapper.vue";
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: string): void;
+  (e: "update:modelValue", value?: string): void;
 }>();
 const value = computed({
   get: () => props.modelValue,
   set: (val) => emit("update:modelValue", val),
 });
 const props = defineProps<{
-  modelValue: string;
+  modelValue?: string;
   label?: string;
   counter?: boolean;
   maxlength?: number;

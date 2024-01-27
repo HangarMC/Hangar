@@ -14,7 +14,7 @@ import { hasSlotContent } from "~/composables/useSlot";
 
 const props = withDefaults(
   defineProps<{
-    raw: string;
+    raw?: string | null;
     editing: boolean;
     deletable: boolean;
     cancellable: boolean;
@@ -27,6 +27,7 @@ const props = withDefaults(
     label?: string;
   }>(),
   {
+    raw: undefined,
     maxlength: 30_000,
     errorMessages: undefined,
     rules: undefined,

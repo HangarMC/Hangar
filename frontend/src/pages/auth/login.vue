@@ -38,7 +38,7 @@ const returnUrl = computed(() => (route.query.returnUrl as string) || "/auth/set
 const username = ref("");
 const password = ref("");
 
-const privileged = (route.query.privileged as boolean) || false;
+const privileged = (route.query.privileged as unknown as boolean) || false;
 if (privileged) {
   username.value = useAuthStore().user?.name || "";
   loading.value = true;

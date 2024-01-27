@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import type { User } from "hangar-api";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import type { OrganizationRoleTable } from "hangar-internal";
 import { computed, ref } from "vue";
 import { useHead } from "@unhead/vue";
@@ -27,7 +27,6 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute();
-const router = useRouter();
 
 const projects = await useProjects({ owner: route.params.user });
 const orgs = await useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${route.params.user}/userOrganizations`).catch((e) =>
@@ -84,7 +83,7 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
       <Card class="basis-full">
         <template #header>{{ i18n.t("userAdmin.roles") }}</template>
         <div class="space-x-1">
-          <Tag v-for="roleId in user?.roles" :key="roleId" :color="{ background: getRole(roleId).color }" :name="getRole(roleId).title" />
+          <Tag v-for="roleId in user?.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
         </div>
 
         <div class="flex mt-2 items-center">
@@ -96,12 +95,17 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
               item-value="value"
             />
           </div>
-          <Button size="medium" :disabled="!selectedRole || user?.roles.some((r) => getRole(r).value === selectedRole)" class="ml-1" @click="processRole(true)">
+          <Button
+            size="medium"
+            :disabled="!selectedRole || user?.roles.some((r) => getRole(r)?.value === selectedRole)"
+            class="ml-1"
+            @click="processRole(true)"
+          >
             {{ i18n.t("general.add") }}
           </Button>
           <Button
             size="medium"
-            :disabled="!selectedRole || !user?.roles.some((r) => getRole(r).value === selectedRole)"
+            :disabled="!selectedRole || !user?.roles.some((r) => getRole(r)?.value === selectedRole)"
             class="ml-1"
             @click="processRole(false)"
           >
@@ -121,15 +125,15 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
           </Link>
         </template>
         <template #item_owner="{ item }">
-          <Link :to="'/' + orgs[item.name].ownerName">
-            {{ orgs[item.name].ownerName }}
+          <Link :to="'/' + orgs[item.name]?.ownerName">
+            {{ orgs[item.name]?.ownerName }}
           </Link>
         </template>
         <template #item_role="{ item }">
-          {{ getRole(orgs[item.name].roleId).title }}
+          {{ getRole(orgs[item.name]?.roleId)?.title }}
         </template>
         <template #item_accepted="{ item }">
-          <IconMdiCheck v-if="orgs[item.name].accepted" class="text-green" />
+          <IconMdiCheck v-if="orgs[item.name]?.accepted" class="text-green" />
           <IconMdiClose v-else class="text-red" />
         </template>
       </SortableTable>

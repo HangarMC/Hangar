@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { useRoute } from "vue-router";
-import { useI18n } from "vue-i18n";
 import type { Ref } from "vue";
 import { computed, ref } from "vue";
 import type { User } from "hangar-api";
 import { useOrganization, useUser } from "~/composables/useApiHelper";
 import { useDummyError, useErrorRedirect } from "~/composables/useErrorRedirect";
-import { createError, navigateTo } from "#imports";
+import { navigateTo } from "#imports";
 
 const route = useRoute();
 const user = ref();

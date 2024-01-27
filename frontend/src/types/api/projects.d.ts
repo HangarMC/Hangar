@@ -3,6 +3,17 @@ declare module "hangar-api" {
   import type { ProjectCategory } from "~/types/enums";
   import { Tag } from "~/types/enums";
 
+  interface PaginatedResult<T> {
+    result: T[];
+    pagination: Pagination;
+  }
+
+  interface Pagination {
+    count: number;
+    limit: number;
+    offset: number;
+  }
+
   interface ProjectNamespace {
     owner: string;
     slug: string;
