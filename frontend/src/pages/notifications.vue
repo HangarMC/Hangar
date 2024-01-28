@@ -1,26 +1,6 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
 import type { HangarNotification, Invite } from "hangar-internal";
-import { computed, ref } from "vue";
-import { useHead } from "@unhead/vue";
-import { useInvites, useNotifications, useReadNotifications, useUnreadNotifications } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useInternalApi } from "~/composables/useApi";
-import { useSeo } from "~/composables/useSeo";
-import { useNotificationStore } from "~/store/notification";
-import Card from "~/components/design/Card.vue";
-import Button from "~/components/design/Button.vue";
-import { lastUpdated } from "~/composables/useTime";
-import IconMdiAlertOutline from "~icons/mdi/alert-outline";
-import IconMdiInformationOutline from "~icons/mdi/information-outline";
-import IconMdiMessageOutline from "~icons/mdi/message-outline";
-import IconMdiCheck from "~icons/mdi/check";
-import Pagination from "~/components/design/Pagination.vue";
-import Tabs from "~/components/design/Tabs.vue";
-import { definePageMeta } from "#imports";
 import type { Tab } from "~/types/components/design/Tabs";
-import { getRoleByValue } from "~/store/backendData";
 
 definePageMeta({
   loginRequired: true,

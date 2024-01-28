@@ -1,12 +1,7 @@
 import type { AxiosRequestConfig, AxiosResponse } from "axios";
 import axios from "axios";
-import type { NuxtApp } from "nuxt/app";
 import NProgress from "nprogress";
-import { defineNuxtPlugin, useAuth, useRequestEvent } from "#imports";
-import { useAuthStore } from "~/store/auth";
-import { authLog, axiosLog } from "~/composables/useLog";
-import { useConfig } from "~/composables/useConfig";
-import { transformAxiosError } from "~/composables/useErrorHandling";
+import type { NuxtApp } from "nuxt/app";
 
 let progressBarTimeout: any;
 
@@ -20,7 +15,7 @@ const stopProgressBar = () => {
   NProgress.done();
 };
 
-export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
+export default defineNuxtPlugin((nuxtApp) => {
   const config = useConfig();
   const options: AxiosRequestConfig = {
     baseURL: import.meta.env.SSR ? config.proxyHost : config.publicHost,

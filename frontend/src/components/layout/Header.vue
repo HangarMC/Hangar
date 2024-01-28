@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
-import { useI18n } from "vue-i18n";
 import type { HangarNotification, HangarUser } from "hangar-internal";
-import { ref } from "vue";
-import { useSettingsStore } from "~/store/useSettingsStore";
-import Announcement from "~/components/Announcement.vue";
-import DropdownButton from "~/components/design/DropdownButton.vue";
-import DropdownItem from "~/components/design/DropdownItem.vue";
-import Popper from "~/components/design/Popper.vue";
 
 import hangarLogo from "~/assets/hangar-logo.svg";
 
@@ -27,20 +20,7 @@ import IconMdiFolderPlusOutline from "~icons/mdi/folder-plus-outline";
 import IconMdiFolderWrenchOutline from "~icons/mdi/folder-wrench-outline";
 import IconMdiFolderInformationOutline from "~icons/mdi/folder-information-outline";
 
-import { useAuthStore } from "~/store/auth";
-import { useAuth } from "~/composables/useAuth";
-import { useBackendData } from "~/store/backendData";
-import { authLog } from "~/composables/useLog";
-import { lastUpdated } from "~/composables/useTime";
-import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
-import UserAvatar from "~/components/UserAvatar.vue";
-import Button from "~/components/design/Button.vue";
-import { useRecentNotifications, useUnreadNotificationsCount } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import Link from "~/components/design/Link.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { unref } from "#imports";
 
 // marker so that you can inspect backend data in dev tools
 const backendData = useBackendData;
@@ -58,13 +38,15 @@ if (authStore.user) {
   updateNotifications();
 }
 
-const navBarLinks = [
+type NavBarLinks = { link: keyof RouteNamedMap; label: string; icon?: any }[];
+
+const navBarLinks: NavBarLinks = [
   { link: "index", label: "Home" },
   { link: "authors", label: "Authors" },
   { link: "staff", label: "Team" },
 ];
 
-const navBarMenuLinksHangar = [
+const navBarMenuLinksHangar: NavBarLinks = [
   { link: "index", label: "Home", icon: IconMdiHome },
   { link: "guidelines", label: "Resource Guidelines", icon: IconMdiFileDocumentAlert },
   { link: "new", label: "Create Project", icon: IconMdiFolderPlusOutline },
@@ -76,7 +58,7 @@ if (!authStore.user) {
   navBarMenuLinksHangar.splice(2, 2);
 }
 
-const navBarMenuLinksTools = [
+const navBarMenuLinksTools: NavBarLinks = [
   { link: "tools-importer", label: t("nav.tools.importer"), icon: IconMdiFolderPlusOutline },
   { link: "tools-bbcode", label: t("nav.tools.bbcode"), icon: IconMdiFolderWrenchOutline },
   { link: "tools-markdown", label: t("nav.tools.markdown"), icon: IconMdiFolderWrenchOutline },

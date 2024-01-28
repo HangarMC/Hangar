@@ -1,23 +1,6 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
 import type { Project } from "hangar-api";
-import { useRouter } from "vue-router";
-import Card from "~/components/design/Card.vue";
-import Link from "~/components/design/Link.vue";
-import UserAvatar from "~/components/UserAvatar.vue";
-import { lastUpdated } from "~/composables/useTime";
-import Tooltip from "~/components/design/Tooltip.vue";
 import { Visibility, Tag } from "~/types/enums";
-import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
-import PrettyTime from "~/components/design/PrettyTime.vue";
-import IconMdiPuzzleOutline from "~icons/mdi/puzzle-outline";
-import IconMdiBookshelf from "~icons/mdi/bookshelf";
-import IconMdiLeaf from "~icons/mdi/leaf";
-import IconMdiStar from "~icons/mdi/star";
-import IconMdiDownload from "~icons/mdi/download";
-import IconMdiCalendar from "~icons/mdi/calendar";
-import IconMdiCancel from "~icons/mdi/cancel";
-import IconMdiEyeOff from "~icons/mdi/eye-off";
 
 const i18n = useI18n();
 const router = useRouter();

@@ -1,25 +1,9 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
-import { useHead } from "@unhead/vue";
 import type { PaginatedResult, Project, User } from "hangar-api";
-import { computed, ref } from "vue";
 import type { LoggedAction } from "hangar-internal";
 import { debounce } from "lodash-es";
-import PageTitle from "~/components/design/PageTitle.vue";
-import Card from "~/components/design/Card.vue";
-import SortableTable from "~/components/SortableTable.vue";
-import Link from "~/components/design/Link.vue";
-import MarkdownModal from "~/components/modals/MarkdownModal.vue";
-import DiffModal from "~/components/modals/DiffModal.vue";
-import Button from "~/components/design/Button.vue";
-import { useSeo } from "~/composables/useSeo";
-import { definePageMeta, hasPerms, useApi, useInternalApi, useRouter, watch } from "#imports";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import { useBackendData } from "~/store/backendData";
 import type { Header } from "~/types/components/SortableTable";
 import { NamedPermission } from "~/types/enums";
-import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
 
 definePageMeta({
   globalPermsRequired: ["VIEW_LOGS"],

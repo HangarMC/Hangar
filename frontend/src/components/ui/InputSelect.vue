@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import type { ValidationRule } from "@vuelidate/core";
-import { useI18n } from "vue-i18n";
-import { useValidation } from "~/composables/useValidationHelpers";
-import InputWrapper from "~/components/ui/InputWrapper.vue";
 import type { Option } from "~/types/components/ui/InputSelect";
 
 const i18n = useI18n();

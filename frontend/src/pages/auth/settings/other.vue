@@ -1,10 +1,4 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { useAccentColor } from "~/composables/useAccentColor";
-import PageTitle from "~/components/design/PageTitle.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import Alert from "~/components/design/Alert.vue";
-
 const { t } = useI18n();
 
 const accentColors = [

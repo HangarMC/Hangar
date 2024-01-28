@@ -1,24 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
 import type { JoinableMember } from "hangar-internal";
 import type { PaginatedResult, Role, User } from "hangar-api";
-import { useRouter } from "vue-router";
 import { NamedPermission } from "~/types/enums";
-import Card from "~/components/design/Card.vue";
-import UserAvatar from "~/components/UserAvatar.vue";
-import Link from "~/components/design/Link.vue";
-import DropdownButton from "~/components/design/DropdownButton.vue";
-import DropdownItem from "~/components/design/DropdownItem.vue";
-import { hasPerms } from "~/composables/usePerm";
-import { getRole, useBackendData } from "~/store/backendData";
-import { useApi, useInternalApi } from "~/composables/useApi";
-import IconMdiClock from "~icons/mdi/clock";
-import Tooltip from "~/components/design/Tooltip.vue";
-import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
-import { useAuthStore } from "~/store/auth";
-import MemberLeaveModal from "~/components/modals/MemberLeaveModal.vue";
-import { handleRequestError } from "~/composables/useErrorHandling";
 
 interface EditableMember {
   name: string;

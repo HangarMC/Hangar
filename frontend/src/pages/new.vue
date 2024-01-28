@@ -1,32 +1,8 @@
 <script setup lang="ts">
 import type { ProjectSettingsForm, NewProjectForm } from "hangar-internal";
-import { computed, type Ref, ref } from "vue";
-import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
-import { useHead } from "@unhead/vue";
-import { useVuelidate } from "@vuelidate/core";
+import type { Ref } from "vue";
 import { ProjectCategory, Tag } from "~/types/enums";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useInternalApi } from "~/composables/useApi";
-import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
-import { useSeo } from "~/composables/useSeo";
-import Steps from "~/components/design/Steps.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import InputText from "~/components/ui/InputText.vue";
-import InputTag from "~/components/ui/InputTag.vue";
-import Button from "~/components/design/Button.vue";
-import { required, maxLength, pattern, url, requiredIf, noDuplicated } from "~/composables/useValidationHelpers";
-import { validProjectName } from "~/composables/useHangarValidations";
-import Spinner from "~/components/design/Spinner.vue";
-import Link from "~/components/design/Link.vue";
-import { usePossibleOwners } from "~/composables/useApiHelper";
-import { definePageMeta } from "#imports";
 import type { Step } from "~/types/components/design/Steps";
-import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
-import Alert from "~/components/design/Alert.vue";
-import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import Tooltip from "~/components/design/Tooltip.vue";
 
 definePageMeta({
   loginRequired: true,
@@ -234,7 +210,7 @@ function createProject() {
           />
         </div>
         <div v-if="!licenseUnset" class="basis-full mt-2" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
-          <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" :rules="[url()]" />
+          <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" :rules="[validUrl()]" />
         </div>
       </div>
       <div class="text-lg mt-6 flex gap-2 items-center">

@@ -1,6 +1,4 @@
 import NProgress from "nprogress";
-import { nextTick } from "vue";
-import { defineNuxtPlugin, useRouter } from "#imports";
 
 let progressBarTimeout: any;
 

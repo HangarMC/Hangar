@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { useNotificationStore } from "~/store/notification";
-
 const notificationStore = useNotificationStore();
 
 // TODO make more responsive: stop removal timer and progress bar on hover

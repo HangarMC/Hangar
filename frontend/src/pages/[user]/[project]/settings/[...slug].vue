@@ -1,46 +1,20 @@
 <script lang="ts" setup>
-import { useHead } from "@unhead/vue";
-import { useRoute, useRouter } from "vue-router";
 import type { HangarProject, HangarUser } from "hangar-internal";
-import { useI18n } from "vue-i18n";
-import { computed, onMounted, reactive, ref, watch } from "vue";
 import { cloneDeep } from "lodash-es";
 import { useVuelidate } from "@vuelidate/core";
 import { Cropper, type CropperResult } from "vue-advanced-cropper";
 import type { PaginatedResult, User } from "hangar-api";
-import { useSeo } from "~/composables/useSeo";
-import Card from "~/components/design/Card.vue";
-import MemberList from "~/components/projects/MemberList.vue";
-import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission, Tag, Visibility } from "~/types/enums";
-import Button from "~/components/design/Button.vue";
-import Tabs from "~/components/design/Tabs.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
-import InputText from "~/components/ui/InputText.vue";
-import InputFile from "~/components/ui/InputFile.vue";
-import { useApi, useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useNotificationStore } from "~/store/notification";
-import InputTag from "~/components/ui/InputTag.vue";
-import TextAreaModal from "~/components/modals/TextAreaModal.vue";
-import ProjectSettingsSection from "~/components/projects/ProjectSettingsSection.vue";
-import { maxLength, required, pattern, requiredIf, url, noDuplicated } from "~/composables/useValidationHelpers";
-import { validProjectName } from "~/composables/useHangarValidations";
+import type { Tab } from "~/types/components/design/Tabs";
+import type InputText from "~/components/ui/InputText.vue";
 
 import "vue-advanced-cropper/dist/style.css";
-import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
-import { definePageMeta } from "#imports";
-import type { Tab } from "~/types/components/design/Tabs";
-import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import Tooltip from "~/components/design/Tooltip.vue";
 
 definePageMeta({
   projectPermsRequired: ["EDIT_SUBJECT_SETTINGS"],
 });
 
-const route = useRoute();
+const route = useRoute<"user-project-settings-slug">();
 const router = useRouter();
 const i18n = useI18n();
 const v = useVuelidate();
@@ -316,7 +290,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
                 />
               </div>
               <div v-if="!isUnspecifiedLicense" class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
-                <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[url()]" />
+                <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[validUrl()]" />
               </div>
             </div>
           </ProjectSettingsSection>

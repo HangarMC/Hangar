@@ -1,18 +1,4 @@
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
-import { useI18n } from "vue-i18n";
-import { useVuelidate } from "@vuelidate/core";
-import { useInternalApi } from "~/composables/useApi";
-import { useAuthStore } from "~/store/auth";
-import { useNotificationStore } from "~/store/notification";
-import { required } from "~/composables/useValidationHelpers";
-import AvatarChangeModal from "~/components/modals/AvatarChangeModal.vue";
-import InputText from "~/components/ui/InputText.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import Button from "~/components/design/Button.vue";
-import { useBackendData } from "~/store/backendData";
-import PageTitle from "~/components/design/PageTitle.vue";
-
 const auth = useAuthStore();
 const notification = useNotificationStore();
 const i18n = useI18n();

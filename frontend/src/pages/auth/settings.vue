@@ -1,23 +1,6 @@
 <script lang="ts" setup>
-import { useHead } from "@unhead/vue";
-import { useRoute, useRouter } from "vue-router";
-import { ref } from "vue";
-import { useI18n } from "vue-i18n";
 import type { AuthSettings } from "hangar-internal";
-import { useSeo } from "~/composables/useSeo";
-import { useAuthStore } from "~/store/auth";
-import Button from "~/components/design/Button.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { useAuthSettings } from "~/composables/useApiHelper";
-import Card from "~/components/design/Card.vue";
-import InputText from "~/components/ui/InputText.vue";
-import { definePageMeta } from "#imports";
-import Alert from "~/components/design/Alert.vue";
-import Modal from "~/components/modals/Modal.vue";
-import { useNotificationStore } from "~/store/notification";
-import Tabs from "~/components/design/Tabs.vue";
 import type { Tab } from "~/types/components/design/Tabs";
-import Delayed from "~/components/design/Delayed.vue";
 
 definePageMeta({
   loginRequired: true,

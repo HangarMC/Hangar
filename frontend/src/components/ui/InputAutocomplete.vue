@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from "vue";
 import type { ValidationRule } from "@vuelidate/core";
-import { useValidation } from "~/composables/useValidationHelpers";
-import InputWrapper from "~/components/ui/InputWrapper.vue";
 import type { Option } from "~/types/components/ui/InputAutocomplete";
 
 const emit = defineEmits<{

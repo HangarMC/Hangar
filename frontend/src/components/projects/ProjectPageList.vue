@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import type { HangarProject } from "hangar-internal";
-import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
-import Card from "~/components/design/Card.vue";
-import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
-import NewPageModal from "~/components/modals/NewPageModal.vue";
-import TreeView from "~/components/design/TreeView.vue";
-import Link from "~/components/design/Link.vue";
 
 defineProps<{
   project: HangarProject;
@@ -15,7 +8,7 @@ defineProps<{
 }>();
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute<"user-project">();
 </script>
 
 <template>

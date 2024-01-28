@@ -1,13 +1,6 @@
 import type { HangarUser } from "hangar-internal";
 import type { AxiosError, AxiosInstance, AxiosRequestHeaders } from "axios";
 import { jwtDecode, type JwtPayload } from "jwt-decode";
-import { useAuthStore } from "~/store/auth";
-import { useInternalApi } from "~/composables/useApi";
-import { authLog } from "~/composables/useLog";
-import { handleRequestError, useCookie, useRequestEvent } from "#imports";
-import { useAxios } from "~/composables/useAxios";
-import { useNotificationStore } from "~/store/notification";
-import { transformAxiosError } from "~/composables/useErrorHandling";
 
 class Auth {
   loginUrl(redirectUrl: string | undefined): string {

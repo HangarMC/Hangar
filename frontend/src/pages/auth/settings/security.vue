@@ -1,23 +1,7 @@
 <script lang="ts" setup>
-import { ref } from "vue";
 import * as webauthnJson from "@github/webauthn-json";
 import type { AuthSettings } from "hangar-internal";
-import { useI18n } from "vue-i18n";
-import { useVuelidate } from "@vuelidate/core";
 import { type AxiosRequestConfig, isAxiosError } from "axios";
-import { useAuthStore } from "~/store/auth";
-import { useNotificationStore } from "~/store/notification";
-import { useInternalApi } from "~/composables/useApi";
-import ComingSoon from "~/components/design/ComingSoon.vue";
-import Button from "~/components/design/Button.vue";
-import InputText from "~/components/ui/InputText.vue";
-import Link from "~/components/design/Link.vue";
-import { requiredIf, useAuth, useAxios, useRoute, useRouter } from "#imports";
-import PageTitle from "~/components/design/PageTitle.vue";
-import Modal from "~/components/modals/Modal.vue";
-import PrettyTime from "~/components/design/PrettyTime.vue";
-import { useBackendData } from "~/store/backendData";
-import IconMdiGitHub from "~icons/mdi/github";
 
 defineProps<{
   settings?: AuthSettings;
@@ -342,7 +326,7 @@ function closeUnlinkModal() {
     <div class="flex gap-2 mt-2">
       <Button v-for="provider in backendData.security.oauthProviders" :key="provider" :disabled="loading" @click="setupOAuth(provider)">
         <template v-if="provider === 'github'">
-          <IconMdiGitHub class="mr-1" />
+          <IconMdiGithub class="mr-1" />
           Link a GitHub account
         </template>
         <template v-else> Link {{ provider }} account</template>
@@ -361,7 +345,7 @@ function closeUnlinkModal() {
         @click="unlinkOAuth(credential.provider, credential.id)"
       >
         <template v-if="credential.provider === 'github'">
-          <IconMdiGitHub class="mr-1" />
+          <IconMdiGithub class="mr-1" />
           Unlink GitHub account {{ credential.name }}
         </template>
         <template v-else> Unlink {{ credential.provider }} account {{ credential.name }}</template>

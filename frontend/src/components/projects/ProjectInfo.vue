@@ -1,15 +1,6 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useI18n } from "vue-i18n";
 import type { HangarProject } from "hangar-internal";
-import Card from "~/components/design/Card.vue";
-import Link from "~/components/design/Link.vue";
-import DropdownButton from "~/components/design/DropdownButton.vue";
-import DropdownItem from "~/components/design/DropdownItem.vue";
-import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission, Tag } from "~/types/enums";
-import DonationModal from "~/components/donation/DonationModal.vue";
-import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
 
 const props = defineProps<{
   project: HangarProject;

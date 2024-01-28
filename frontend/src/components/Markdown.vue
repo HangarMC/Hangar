@@ -1,9 +1,4 @@
 <script lang="ts" setup>
-import { computed, watchPostEffect } from "vue";
-import { usePrismStore } from "~/store/prism";
-import { parseMarkdown } from "~/composables/useMarked";
-import { useDomPurify } from "~/composables/useDomPurify";
-
 const props = withDefaults(
   defineProps<{
     raw?: string;

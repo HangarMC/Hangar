@@ -1,5 +1,3 @@
-import { configLog } from "~/composables/useLog";
-
 interface Config {
   publicHost: string;
   proxyHost: string;

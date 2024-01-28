@@ -1,13 +1,9 @@
-import { ref } from "vue";
-import type { RouteLocationNormalizedLoaded, Router } from "vue-router";
 import type { HangarProject } from "hangar-internal";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useInternalApi } from "~/composables/useApi";
-import { usePage } from "~/composables/useApiHelper";
-import { useErrorRedirect } from "~/composables/useErrorRedirect";
+import type { RouteLocationNormalizedLoaded, Router } from "vue-router";
+import type { RouteLocationNormalizedTyped } from "unplugin-vue-router";
 
-export async function useProjectPage(route: RouteLocationNormalizedLoaded, router: Router, project: HangarProject, mainPage: boolean) {
-  const page = mainPage ? ref(project.mainPage) : await usePage(route.params.project as string, route.params.all as string);
+export async function useProjectPage(route: RouteLocationNormalizedTyped<"user-project-pages-all">, router: Router, project: HangarProject, mainPage: boolean) {
+  const page = mainPage ? ref(project.mainPage) : await usePage(route.params.project, route.params.all);
   if (!page?.value) {
     throw useErrorRedirect(route, 404, "Not found");
   }

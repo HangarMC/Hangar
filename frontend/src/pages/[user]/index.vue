@@ -1,40 +1,11 @@
 <script setup lang="ts">
 import type { PaginatedResult, Project, User } from "hangar-api";
-import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
-import { useHead } from "@unhead/vue";
 import type { Organization } from "hangar-internal";
-import { computed, type FunctionalComponent, ref } from "vue";
-import { watchDebounced } from "@vueuse/core";
-import ProjectList from "~/components/projects/ProjectList.vue";
-import Card from "~/components/design/Card.vue";
-import UserAvatar from "~/components/UserAvatar.vue";
-import Link from "~/components/design/Link.vue";
-import MemberList from "~/components/projects/MemberList.vue";
-import { useUserData } from "~/composables/useApiHelper";
-import { getRole, useBackendData } from "~/store/backendData";
-import { useAuthStore } from "~/store/auth";
-import { useSeo } from "~/composables/useSeo";
-import UserHeader from "~/components/UserHeader.vue";
-import { hasPerms } from "~/composables/usePerm";
+import type { FunctionalComponent } from "vue";
 import { NamedPermission } from "~/types/enums";
-import Button from "~/components/design/Button.vue";
-import Tooltip from "~/components/design/Tooltip.vue";
 import IconMdiWrench from "~icons/mdi/wrench";
 import IconMdiKey from "~icons/mdi/key";
 import IconMdiCalendar from "~icons/mdi/calendar";
-import IconMdiEyeOffOutline from "~icons/mdi/eye-off-outline";
-import OrgVisibilityModal from "~/components/modals/OrgVisibilityModal.vue";
-import LockUserModal from "~/components/modals/LockUserModal.vue";
-import ProjectCard from "~/components/projects/ProjectCard.vue";
-import OrgTransferModal from "~/components/modals/OrgTransferModal.vue";
-import OrgDeleteModal from "~/components/modals/OrgDeleteModal.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import { useApi } from "~/composables/useApi";
-import { useRouter } from "#imports";
-import InputText from "~/components/ui/InputText.vue";
-import Tag from "~/components/Tag.vue";
-import DeleteUserModal from "~/components/modals/DeleteUserModal.vue";
 
 const props = defineProps<{
   user: User;

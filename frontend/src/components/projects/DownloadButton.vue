@@ -1,16 +1,7 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import type { HangarProject, PinnedVersion } from "hangar-internal";
-import { computed } from "vue";
 import type { PlatformVersionDownload } from "hangar-api";
-import Button from "~/components/design/Button.vue";
 import type { Platform } from "~/types/enums";
-import DropdownButton from "~/components/design/DropdownButton.vue";
-import { useBackendData } from "~/store/backendData";
-import DropdownItem from "~/components/design/DropdownItem.vue";
-import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { formatSize } from "~/composables/useFile";
 
 const i18n = useI18n();
 

@@ -1,18 +1,6 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import type { HangarProjectPage } from "hangar-internal";
-import { computed, inject, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useVuelidate } from "@vuelidate/core";
-import Button from "~/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
-import { useBackendData } from "~/store/backendData";
-import InputText from "~/components/ui/InputText.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
 import type { Option } from "~/types/components/ui/InputSelect";
-import { maxLength, minLength, pattern, required, validPageName } from "~/composables/useValidationHelpers";
 
 const props = defineProps<{
   projectId: number;
@@ -20,7 +8,7 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute<"user-project">();
 const router = useRouter();
 const v = useVuelidate();
 

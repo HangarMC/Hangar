@@ -1,7 +1,6 @@
 import { marked } from "marked";
 import markedLinkifyIt from "marked-linkify-it";
 import markedExtendedTables from "marked-extended-tables";
-import { linkout, proxyImage } from "~/composables/useUrlHelper";
 
 const youtubeRegex = /(?:youtube\.com\/(?:[^\s/]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[&?]v=)|youtu\.be\/)([\w-]{11})(?:==(\d+))?/;
 const imageSizeParts = /(.*)==\s*(\d*)\s*x?\s*(\d*)\s*$/;

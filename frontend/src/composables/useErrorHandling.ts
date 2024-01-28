@@ -2,10 +2,7 @@ import type { AxiosError } from "axios";
 import { isAxiosError } from "axios";
 import type { HangarApiException, HangarValidationException, MultiHangarApiException } from "hangar-api";
 import type { Composer } from "vue-i18n";
-import { useNotificationStore } from "~/store/notification";
 import { I18n } from "~/i18n";
-import { createError } from "#imports";
-import { fetchLog } from "~/composables/useLog";
 
 export function handleRequestError(err: AxiosError | unknown, msg: string | undefined = undefined, alwaysShowErrorPage = false) {
   const i18n: Composer = I18n.value;

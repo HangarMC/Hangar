@@ -1,39 +1,9 @@
 <script lang="ts" setup>
-import { useHead } from "@unhead/vue";
 import type { HangarProject, IPlatform, PendingVersion, ProjectChannel } from "hangar-internal";
-import { useRoute, useRouter } from "vue-router";
-import { useI18n } from "vue-i18n";
-import { computed, reactive, type Ref, ref } from "vue";
 import { remove } from "lodash-es";
-import { useVuelidate } from "@vuelidate/core";
-import { useSeo } from "~/composables/useSeo";
-import Steps from "~/components/design/Steps.vue";
-import InputFile from "~/components/ui/InputFile.vue";
-import InputText from "~/components/ui/InputText.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import Button from "~/components/design/Button.vue";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-
-import { MarkdownEditor } from "#components";
-import { maxFileSize, maxLength, minLength, noDuplicated, pattern, required, requiredIf, url as validUrl } from "~/composables/useValidationHelpers";
-import { useInternalApi } from "~/composables/useApi";
 import type { Platform } from "~/types/enums";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { formatSize } from "~/composables/useFile";
-import ChannelModal from "~/components/modals/ChannelModal.vue";
-import { useBackendData } from "~/store/backendData";
-import DependencyTable from "~/components/projects/DependencyTable.vue";
-import VersionSelector from "~/components/VersionSelector.vue";
-import Tabs from "~/components/design/Tabs.vue";
-import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
-import { useProjectChannels } from "~/composables/useApiHelper";
-import { definePageMeta } from "#imports";
 import type { Step } from "~/types/components/design/Steps";
 import type { Tab } from "~/types/components/design/Tabs";
-import InputGroup from "~/components/ui/InputGroup.vue";
-import { useNotificationStore } from "~/store/notification";
-import Alert from "~/components/design/Alert.vue";
-import Link from "~/components/design/Link.vue";
 
 definePageMeta({
   projectPermsRequired: ["CREATE_VERSION"],

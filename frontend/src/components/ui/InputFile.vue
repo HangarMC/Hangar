@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
 import type { ValidationRule } from "@vuelidate/core";
-import { useValidation } from "~/composables/useValidationHelpers";
-import InputWrapper from "~/components/ui/InputWrapper.vue";
 
 const emit = defineEmits<{
   (e: "update:modelValue", file: File | null | undefined): void;

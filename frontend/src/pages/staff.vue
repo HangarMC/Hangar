@@ -1,19 +1,5 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
-import { useHead } from "@unhead/vue";
-import { computed, ref } from "vue";
-import { useStaff } from "~/composables/useApiHelper";
-import SortableTable from "~/components/SortableTable.vue";
-import PageTitle from "~/components/design/PageTitle.vue";
-import { useSeo } from "~/composables/useSeo";
-import UserAvatar from "~/components/UserAvatar.vue";
-import Link from "~/components/design/Link.vue";
-import Tag from "~/components/Tag.vue";
 import type { Header } from "~/types/components/SortableTable";
-import { getRole } from "~/store/backendData";
-import { watch } from "#imports";
-import InputText from "~/components/ui/InputText.vue";
 
 const i18n = useI18n();
 const route = useRoute();

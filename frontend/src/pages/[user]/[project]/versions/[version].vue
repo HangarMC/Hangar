@@ -1,13 +1,7 @@
 <script lang="ts" setup>
-import { useRoute } from "vue-router";
 import { computed } from "vue";
 import type { HangarProject, HangarVersion } from "hangar-internal";
-import { useProjectVersionsInternal } from "~/composables/useApiHelper";
-import { useErrorRedirect } from "~/composables/useErrorRedirect";
 import type { Platform } from "~/types/enums";
-import Delayed from "~/components/design/Delayed.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { onBeforeRouteUpdate } from "#imports";
 
 const route = useRoute();
 

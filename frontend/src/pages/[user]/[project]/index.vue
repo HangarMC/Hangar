@@ -1,29 +1,7 @@
 <script lang="ts" setup>
 import type { User } from "hangar-api";
-import { useI18n } from "vue-i18n";
 import type { HangarProject, PinnedVersion } from "hangar-internal";
-import { useRoute } from "vue-router";
-import { ref } from "vue";
-import Card from "~/components/design/Card.vue";
-import ProjectInfo from "~/components/projects/ProjectInfo.vue";
-import MemberList from "~/components/projects/MemberList.vue";
-import { MarkdownEditor } from "#components";
-import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
-import Markdown from "~/components/Markdown.vue";
-import ProjectPageList from "~/components/projects/ProjectPageList.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import Tag from "~/components/Tag.vue";
-import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
-import DownloadButton from "~/components/projects/DownloadButton.vue";
-import { useOpenProjectPages } from "~/composables/useOpenProjectPages";
-import ProjectPageMarkdown from "~/components/projects/ProjectPageMarkdown.vue";
-import { useBackendData } from "~/store/backendData";
-import Tooltip from "~/components/design/Tooltip.vue";
-import Link from "~/components/design/Link.vue";
-import { required } from "~/composables/useValidationHelpers";
-import { linkout } from "~/composables/useUrlHelper";
 
 const props = defineProps<{
   user: User;

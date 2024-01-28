@@ -1,19 +1,7 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
-import { useHead } from "@unhead/vue";
 import type { PaginatedResult, User } from "hangar-api";
-import { computed, ref } from "vue";
-import { useAuthors } from "~/composables/useApiHelper";
-import SortableTable from "~/components/SortableTable.vue";
-import PageTitle from "~/components/design/PageTitle.vue";
-import UserAvatar from "~/components/UserAvatar.vue";
-import { useSeo } from "~/composables/useSeo";
-import Link from "~/components/design/Link.vue";
-import { useApi } from "~/composables/useApi";
 import type { Header } from "~/types/components/SortableTable";
-import { watch } from "#imports";
-import InputText from "~/components/ui/InputText.vue";
+
 const i18n = useI18n();
 const route = useRoute();
 

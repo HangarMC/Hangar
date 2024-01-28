@@ -1,16 +1,6 @@
 <script lang="ts" setup>
 import type { User } from "hangar-api";
-import { useI18n } from "vue-i18n";
 import type { HangarProject } from "hangar-internal";
-import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import Card from "~/components/design/Card.vue";
-import Link from "~/components/design/Link.vue";
-import SortableTable from "~/components/SortableTable.vue";
-import Alert from "~/components/design/Alert.vue";
-import { useProjectFlags } from "~/composables/useApiHelper";
-import { useSeo } from "~/composables/useSeo";
-import { definePageMeta } from "#imports";
 import type { Header } from "~/types/components/SortableTable";
 
 definePageMeta({

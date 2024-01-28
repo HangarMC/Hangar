@@ -1,17 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from "vue-router";
-import { useI18n } from "vue-i18n";
 import type { FlagActivity, ReviewActivity } from "hangar-internal";
-import { useHead } from "@unhead/vue";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import PageTitle from "~/components/design/PageTitle.vue";
-import Card from "~/components/design/Card.vue";
-import Table from "~/components/design/Table.vue";
-import Link from "~/components/design/Link.vue";
-import Alert from "~/components/design/Alert.vue";
-import { useSeo } from "~/composables/useSeo";
-import { definePageMeta } from "#imports";
 
 definePageMeta({
   globalPermsRequired: ["REVIEWER"],

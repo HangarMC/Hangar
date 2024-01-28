@@ -1,7 +1,3 @@
-import { useHead } from "@unhead/vue";
-import { computed } from "vue";
-import { useCookie } from "nuxt/app";
-
 export function useAccentColor() {
   const accentColor = useCookie("accent-color", {
     path: "/",

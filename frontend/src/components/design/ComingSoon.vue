@@ -6,7 +6,6 @@
 
 <script lang="ts" setup>
 import type { VNode } from "vue";
-import { computed, useSlots } from "vue";
 
 const props = defineProps<{
   short?: boolean;

@@ -1,15 +1,5 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import type { ProjectChannel } from "hangar-internal";
-import { computed, reactive, ref } from "vue";
-import { useVuelidate } from "@vuelidate/core";
-import Button from "~/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
-import { useBackendData } from "~/store/backendData";
-import InputText from "~/components/ui/InputText.vue";
-import { isSame, maxLength, pattern, required } from "~/composables/useValidationHelpers";
-import { validChannelName, validChannelColor } from "~/composables/useHangarValidations";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import { ChannelFlag } from "~/types/enums";
 
 const props = defineProps<{

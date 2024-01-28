@@ -1,16 +1,6 @@
 <script lang="ts" setup>
 import Draggable from "vuedraggable";
-import { useI18n } from "vue-i18n";
 import type { LinkSection } from "hangar-api";
-import { useVModel } from "@vueuse/core";
-import { computed } from "vue";
-import InputText from "~/components/ui/InputText.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import ProjectLinksFormInner from "~/components/projects/ProjectLinksFormInner.vue";
-import Button from "~/components/design/Button.vue";
-import Card from "~/components/design/Card.vue";
-import { maxLength, minLength, noDuplicated, required } from "~/composables/useValidationHelpers";
-import { useBackendData } from "~/store/backendData";
 
 const props = defineProps<{ modelValue: LinkSection[] }>();
 const emit = defineEmits(["update:modelValue"]);

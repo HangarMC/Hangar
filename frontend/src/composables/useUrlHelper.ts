@@ -1,5 +1,3 @@
-import { useBackendData } from "~/store/backendData";
-
 export function forumUrl(topicId: number) {
   return `https://forums.papermc.io/threads/` + topicId;
 }

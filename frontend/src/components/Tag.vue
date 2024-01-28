@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { computed } from "vue";
-
 interface Color {
   foreground?: string;
   background?: string;

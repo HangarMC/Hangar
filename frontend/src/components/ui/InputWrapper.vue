@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import type { ErrorObject } from "@vuelidate/core";
-import ErrorTooltip from "~/components/design/ErrorTooltip.vue";
-import Spinner from "~/components/design/Spinner.vue";
-import { isErrorObject } from "~/composables/useValidationHelpers";
-import { unref } from "#imports";
+import { ErrorTooltip } from "#components";
 
 const props = defineProps<{
   errors?: (string | ErrorObject)[];

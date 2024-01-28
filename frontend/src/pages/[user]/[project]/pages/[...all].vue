@@ -1,23 +1,14 @@
 <script lang="ts" setup>
-import { useRoute } from "vue-router";
 import type { User } from "hangar-api";
 import type { HangarProject } from "hangar-internal";
-import ProjectPageList from "~/components/projects/ProjectPageList.vue";
-import Markdown from "~/components/Markdown.vue";
-
-import { MarkdownEditor } from "#components";
-import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
-import Card from "~/components/design/Card.vue";
-import ProjectPageMarkdown from "~/components/projects/ProjectPageMarkdown.vue";
-import { useOpenProjectPages } from "~/composables/useOpenProjectPages";
 
 const props = defineProps<{
   user: User;
   project: HangarProject;
 }>();
 
-const route = useRoute();
+const route = useRoute<"user-project-pages-all">();
 
 const open = await useOpenProjectPages(route, props.project);
 // useSeo is in ProjectPageMarkdown

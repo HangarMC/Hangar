@@ -1,7 +1,5 @@
 <script lang="ts" setup generic="T extends Record<string, any>">
 import type { Pagination } from "hangar-api";
-import { computed, ref, watch } from "vue";
-import PaginationButtons from "~/components/design/PaginationButtons.vue";
 
 type T = Record<string, any>; // remove when https://github.com/vuejs/rfcs/discussions/436 lands or when using volar
 

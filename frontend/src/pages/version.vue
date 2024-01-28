@@ -1,12 +1,4 @@
 <script lang="ts" setup>
-import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import PageTitle from "~/components/design/PageTitle.vue";
-import Link from "~/components/design/Link.vue";
-import Alert from "~/components/design/Alert.vue";
-import { useSeo } from "~/composables/useSeo";
-import { useVersionInfo } from "~/composables/useApiHelper";
-
 const version = await useVersionInfo();
 const route = useRoute();
 useHead(useSeo("Hangar Version", null, route, null));

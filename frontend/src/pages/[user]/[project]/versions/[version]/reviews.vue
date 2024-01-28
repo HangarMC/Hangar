@@ -1,27 +1,8 @@
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import type { HangarProject, HangarReview, HangarReviewMessage, HangarVersion, IPlatform } from "hangar-internal";
-import { useI18n } from "vue-i18n";
-import { computed, reactive, ref } from "vue";
-import { useVuelidate } from "@vuelidate/core";
-import { useSeo } from "~/composables/useSeo";
+import type { HangarProject, HangarReview, HangarReviewMessage, HangarVersion } from "hangar-internal";
 import type { Platform } from "~/types/enums";
 import { ReviewAction, ReviewState } from "~/types/enums";
-import Button from "~/components/design/Button.vue";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import InputTextarea from "~/components/ui/InputTextarea.vue";
-import Alert from "~/components/design/Alert.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { useAuthStore } from "~/store/auth";
-import { useBackendData } from "~/store/backendData";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import Tag from "~/components/Tag.vue";
-import Accordeon from "~/components/design/Accordeon.vue";
-import TextAreaModal from "~/components/modals/TextAreaModal.vue";
-import DownloadButton from "~/components/projects/DownloadButton.vue";
-import { definePageMeta } from "#imports";
-import PrettyTime from "~/components/design/PrettyTime.vue";
 
 definePageMeta({
   globalPermsRequired: ["REVIEWER"],

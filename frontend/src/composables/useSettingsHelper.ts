@@ -1,6 +1,5 @@
 import localeParser from "accept-language-parser";
 import { type ComputedRef, type Ref, watch } from "vue";
-import { settingsLog } from "~/composables/useLog";
 import { SUPPORTED_LOCALES } from "~/i18n";
 
 export function useSettingsHelper(

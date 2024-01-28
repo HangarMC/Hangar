@@ -1,26 +1,7 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import type { Version } from "hangar-api";
-import type { Ref } from "vue";
-import { computed, reactive, watch } from "vue";
-import { useRoute } from "vue-router";
 import type { HangarProject } from "hangar-internal";
-import { useHead } from "@unhead/vue";
-import Link from "~/components/design/Link.vue";
-import { hasPerms } from "~/composables/usePerm";
-import type { Platform } from "~/types/enums";
-import { NamedPermission, Visibility } from "~/types/enums";
-import Card from "~/components/design/Card.vue";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import Tag from "~/components/Tag.vue";
-import Button from "~/components/design/Button.vue";
-import { useBackendData } from "~/store/backendData";
-import { useProjectChannels, useProjectVersions } from "~/composables/useApiHelper";
-import { useSeo } from "~/composables/useSeo";
-import Alert from "~/components/design/Alert.vue";
-import Pagination from "~/components/design/Pagination.vue";
-import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
-import { ref } from "#imports";
+import { NamedPermission, Platform, Visibility } from "~/types/enums";
 
 const i18n = useI18n();
 const route = useRoute();

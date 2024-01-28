@@ -1,27 +1,9 @@
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
-import { useI18n } from "vue-i18n";
-import { computed, isRef, ref, watch } from "vue";
-import { useHead } from "@unhead/vue";
-import { useRoute, useRouter } from "vue-router";
 import type { PaginatedResult, Project } from "hangar-api";
 import type { PlatformVersion } from "hangar-internal";
-import { watchDebounced } from "@vueuse/core";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import { useBackendData, useVisibleCategories, useVisiblePlatforms } from "~/store/backendData";
-import ProjectList from "~/components/projects/ProjectList.vue";
-import { useProjects } from "~/composables/useApiHelper";
-import Card from "~/components/design/Card.vue";
-import Container from "~/components/design/Container.vue";
-import { useSeo } from "~/composables/useSeo";
-import { useApi } from "~/composables/useApi";
 import type { Platform } from "~/types/enums";
 import { Tag } from "~/types/enums";
-import InputRadio from "~/components/ui/InputRadio.vue";
-import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
-import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
-import { useConfig } from "~/composables/useConfig";
-import VersionSelector from "~/components/VersionSelector.vue";
 
 const i18n = useI18n();
 const route = useRoute();

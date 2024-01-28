@@ -1,38 +1,11 @@
 <script lang="ts" setup>
 import type { HangarProject, HangarVersion } from "hangar-internal";
-import { computed, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useI18n } from "vue-i18n";
 import type { User } from "hangar-api";
-import { useHead } from "@unhead/vue";
 import type { AxiosError } from "axios";
 import type { Platform } from "~/types/enums";
 import { NamedPermission, ReviewState, Visibility, PinnedStatus } from "~/types/enums";
-import { useBackendData } from "~/store/backendData";
-import { lastUpdated } from "~/composables/useTime";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useErrorRedirect } from "~/composables/useErrorRedirect";
-import TagComponent from "~/components/Tag.vue";
-import { hasPerms } from "~/composables/usePerm";
-import Button from "~/components/design/Button.vue";
-import { required } from "~/composables/useValidationHelpers";
 
-import { MarkdownEditor } from "#components";
-import Markdown from "~/components/Markdown.vue";
-import Card from "~/components/design/Card.vue";
-import Link from "~/components/design/Link.vue";
-import { useSeo } from "~/composables/useSeo";
-import { useNotificationStore } from "~/store/notification";
-import Tooltip from "~/components/design/Tooltip.vue";
-import DownloadButton from "~/components/projects/DownloadButton.vue";
-import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
-import TextAreaModal from "~/components/modals/TextAreaModal.vue";
-import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
-import Spoiler from "~/components/design/Spoiler.vue";
-import PlatformVersionEditModal from "~/components/modals/PlatformVersionEditModal.vue";
-
-const route = useRoute();
+const route = useRoute<"user-project-versions-version">();
 const i18n = useI18n();
 const router = useRouter();
 const notification = useNotificationStore();
@@ -156,7 +129,7 @@ async function restoreVersion() {
       <div class="flex gap-2 justify-between">
         <div>
           <h2 class="text-3xl sm:inline-flex items-center gap-x-1">
-            <TagComponent
+            <Tag
               class="mr-1"
               :name="projectVersion.channel.name"
               :color="{ background: projectVersion.channel.color }"

@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { computed } from "vue";
-import { hasSlotContent } from "~/composables/useSlot";
-
 const props = withDefaults(
   defineProps<{
     accent?: boolean;

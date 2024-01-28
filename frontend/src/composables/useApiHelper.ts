@@ -16,14 +16,9 @@ import type {
   ProjectOwner,
   ProjectPage,
   ReviewQueueEntry,
-  RoleTable,
 } from "hangar-internal";
-import type { AsyncData } from "nuxt/app";
+import type { AsyncData, NuxtApp } from "nuxt/app";
 import type { ComputedRef, Ref } from "vue";
-import { useApi, useInternalApi } from "~/composables/useApi";
-import { createError, hasPerms, ref, useAsyncData } from "#imports";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useAuthStore } from "~/store/auth";
 import { NamedPermission } from "~/types/enums";
 
 export type NonNullAsyncData<T, E = unknown> = { data: Ref<T> } & Pick<AsyncData<T, E>, "pending" | "refresh" | "execute" | "error">;
@@ -120,7 +115,7 @@ export async function useProjectVersionsInternal(project: string, version: strin
   );
 }
 
-export async function usePage(project: string, path?: string): Promise<Ref<ProjectPage | null>> {
+export async function usePage(project: string, path?: string | null): Promise<Ref<ProjectPage | null>> {
   path = path?.toString()?.replaceAll(",", "/");
   return extract(await useAsyncData("usePage:" + project + ":" + path, () => useInternalApi<ProjectPage>(`pages/page/${project}` + (path ? "/" + path : ""))));
 }

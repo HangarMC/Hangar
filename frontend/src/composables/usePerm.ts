@@ -2,8 +2,6 @@
  * Checks if the supplier permission has all named permissions.
  * @param namedPermission perms required
  */
-import { useAuthStore } from "~/store/auth";
-import { useBackendData } from "~/store/backendData";
 import { NamedPermission } from "~/types/enums";
 
 export function toNamedPermission(perms: string[]): NamedPermission[] {

@@ -1,17 +1,6 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import type { Review, ReviewQueueEntry } from "hangar-internal";
-import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import SortableTable from "~/components/SortableTable.vue";
 import { ReviewAction } from "~/types/enums";
-import { useVersionApprovals } from "~/composables/useApiHelper";
-import Card from "~/components/design/Card.vue";
-import Link from "~/components/design/Link.vue";
-import Tag from "~/components/Tag.vue";
-import { useSeo } from "~/composables/useSeo";
-import Button from "~/components/design/Button.vue";
-import { definePageMeta } from "#imports";
 import type { Header } from "~/types/components/SortableTable";
 
 definePageMeta({

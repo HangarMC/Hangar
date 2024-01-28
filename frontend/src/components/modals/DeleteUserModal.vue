@@ -1,16 +1,5 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import type { User } from "hangar-api";
-import { ref } from "vue";
-import { useVuelidate } from "@vuelidate/core";
-import Button from "~/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { required } from "#imports";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import Tooltip from "~/components/design/Tooltip.vue";
-import InputTextarea from "~/components/ui/InputTextarea.vue";
-import { useNotificationStore } from "~/store/notification";
 
 const props = defineProps<{
   user: User;

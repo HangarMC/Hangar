@@ -1,12 +1,6 @@
 <script lang="ts" setup>
 import Draggable from "vuedraggable";
-import { useVModel } from "@vueuse/core";
 import type { LinkSection } from "hangar-api";
-import { useI18n } from "vue-i18n";
-import InputText from "~/components/ui/InputText.vue";
-import Button from "~/components/design/Button.vue";
-import { maxLength, minLength, required, url } from "~/composables/useValidationHelpers";
-import { useBackendData } from "~/store/backendData";
 
 const props = defineProps<{ modelValue: LinkSection["links"] }>();
 const emit = defineEmits(["update:modelValue"]);
@@ -36,7 +30,7 @@ function add() {
           :label="i18n.t('project.settings.links.nameField')"
           :rules="[required(), maxLength()(useBackendData.validations.project.pageName.max), minLength()(useBackendData.validations.project.pageName.min)]"
         />
-        <InputText v-model="element.url" :label="i18n.t('project.settings.links.urlField')" :rules="[url(), required()]" />
+        <InputText v-model="element.url" :label="i18n.t('project.settings.links.urlField')" :rules="[validUrl(), required()]" />
 
         <IconMdiClose class="flex-shrink-0 cursor-pointer" @click="remove(index)" />
       </li>

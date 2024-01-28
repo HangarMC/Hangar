@@ -22,8 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from "vue";
-
 const props = withDefaults(
   defineProps<{
     value?: number;

@@ -1,16 +1,6 @@
 <script lang="ts" setup>
 import type { DependencyVersion, PaginatedResult, PluginDependency, Project, ProjectNamespace } from "hangar-api";
-import { useI18n } from "vue-i18n";
 import type { Platform } from "~/types/enums";
-import Table from "~/components/design/Table.vue";
-import Button from "~/components/design/Button.vue";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import InputText from "~/components/ui/InputText.vue";
-import { required } from "~/composables/useValidationHelpers";
-import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
-import { useApi } from "~/composables/useApi";
-import Tabs from "~/components/design/Tabs.vue";
-import { ref, useRoute } from "#imports";
 import type { Tab } from "~/types/components/design/Tabs";
 
 const route = useRoute();

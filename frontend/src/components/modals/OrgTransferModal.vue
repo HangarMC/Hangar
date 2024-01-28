@@ -1,13 +1,5 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { ref } from "vue";
 import type { PaginatedResult, User } from "hangar-api";
-import Button from "~/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
-import { useApi, useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
-import { useNotificationStore } from "~/store/notification";
 
 const props = defineProps<{
   organization: string;

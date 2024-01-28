@@ -1,24 +1,7 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import type { User } from "hangar-api";
-import { useRoute } from "vue-router";
 import type { OrganizationRoleTable } from "hangar-internal";
-import { computed, ref } from "vue";
-import { useHead } from "@unhead/vue";
 import type { AxiosError } from "axios";
-import PageTitle from "~/components/design/PageTitle.vue";
-import Link from "~/components/design/Link.vue";
-import Card from "~/components/design/Card.vue";
-import { useApi, useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import SortableTable from "~/components/SortableTable.vue";
-import { useSeo } from "~/composables/useSeo";
-import { useProjects, useUser } from "~/composables/useApiHelper";
-import Tag from "~/components/Tag.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import { getRole, useBackendData } from "~/store/backendData";
-import Button from "~/components/design/Button.vue";
-import { definePageMeta } from "#imports";
 import type { Header } from "~/types/components/SortableTable";
 
 definePageMeta({

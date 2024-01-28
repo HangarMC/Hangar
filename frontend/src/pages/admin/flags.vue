@@ -1,13 +1,4 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
-import { ref } from "vue";
-import { useHead } from "@unhead/vue";
-import PageTitle from "~/components/design/PageTitle.vue";
-import { useSeo } from "~/composables/useSeo";
-import Flags from "~/components/Flags.vue";
-import Tabs from "~/components/design/Tabs.vue";
-import { definePageMeta } from "#imports";
 import type { Tab } from "~/types/components/design/Tabs";
 
 definePageMeta({

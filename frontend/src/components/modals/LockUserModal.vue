@@ -1,19 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import type { User } from "hangar-api";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useVuelidate } from "@vuelidate/core";
-import Button from "~/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { required } from "#imports";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import Tooltip from "~/components/design/Tooltip.vue";
-import InputTextarea from "~/components/ui/InputTextarea.vue";
-import { useNotificationStore } from "~/store/notification";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 
 const props = defineProps<{

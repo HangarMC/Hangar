@@ -1,21 +1,6 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
-import { useHead } from "@unhead/vue";
-import { computed, ref } from "vue";
 import type { PaginatedResult, User } from "hangar-api";
-import PageTitle from "~/components/design/PageTitle.vue";
-import Link from "~/components/design/Link.vue";
-import Tag from "~/components/Tag.vue";
-import { useApi } from "~/composables/useApi";
-import { useSeo } from "~/composables/useSeo";
-import { definePageMeta, watch } from "#imports";
-import { useUsers } from "~/composables/useApiHelper";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import InputText from "~/components/ui/InputText.vue";
 import type { Header } from "~/types/components/SortableTable";
-import SortableTable from "~/components/SortableTable.vue";
-import { getRole } from "~/store/backendData";
 
 definePageMeta({
   globalPermsRequired: ["EDIT_ALL_USER_SETTINGS"],

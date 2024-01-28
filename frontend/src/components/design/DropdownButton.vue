@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { OnClickOutside } from "@vueuse/components";
-import IconMdiMenuDown from "~icons/mdi/menu-down";
-import IconMdiMenuUp from "~icons/mdi/menu-up";
-import Button from "~/components/design/Button.vue";
-import Popper from "~/components/design/Popper.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -40,7 +35,7 @@ defineExpose({ close });
           <span class="mx-1">{{ props.name }}</span>
         </slot>
         <template v-if="props.buttonArrow">
-          <IconMdiMenuUp v-if="open" class="text-lg"></IconMdiMenuUp>
+          <IconMdiMenu v-if="open" class="text-lg"></IconMdiMenu>
           <IconMdiMenuDown v-else class="text-lg"></IconMdiMenuDown>
         </template>
       </Button>

@@ -1,41 +1,9 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import { computed, ref } from "vue";
 import type { NewProjectForm } from "hangar-internal";
-import { useVuelidate } from "@vuelidate/core";
 import { isAxiosError } from "axios";
-import { watchDebounced } from "@vueuse/core";
-import PageTitle from "~/components/design/PageTitle.vue";
-import { useSeo } from "~/composables/useSeo";
-import Steps from "~/components/design/Steps.vue";
 import type { Step } from "~/types/components/design/Steps";
-import Link from "~/components/design/Link.vue";
 import type { SpigotAuthor, SpigotResource } from "~/composables/useProjectImporter";
-import { convertSpigotProjects, getAllSpigotResourcesByAuthor, getSpigotAuthor } from "~/composables/useProjectImporter";
-import InputText from "~/components/ui/InputText.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import UserAvatar from "~/components/UserAvatar.vue";
-import Spoiler from "~/components/design/Spoiler.vue";
-
-import { MarkdownEditor } from "#components";
-import InputTag from "~/components/ui/InputTag.vue";
-import { useAuthStore } from "~/store/auth";
-import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
-import { minLength, maxLength, pattern, required, requiredIf, url, noDuplicated } from "~/composables/useValidationHelpers";
-import { validProjectName } from "~/composables/useHangarValidations";
-import Button from "~/components/design/Button.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import Spinner from "~/components/design/Spinner.vue";
-import { definePageMeta, reactive, usePossibleOwners } from "#imports";
-import Alert from "~/components/design/Alert.vue";
-import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import InputGroup from "~/components/ui/InputGroup.vue";
-import { ProjectCategory, Tag } from "~/types/enums"; // dont remove Tag, even if IntelliJ says its unused...
-import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
+import { ProjectCategory, Tag } from "~/types/enums";
 
 definePageMeta({
   loginRequired: true,
@@ -344,7 +312,7 @@ useHead(useSeo(t("importer.title"), null, route, null));
                     />
                   </div>
                   <div v-if="!project.util.licenseUnset" class="basis-full mt-4" :md="project.util.isCustomLicense ? 'basis-full' : 'basis-6/12'">
-                    <InputText v-model.trim="project.settings.license.url" :label="t('project.new.step3.url')" :rules="[url()]" />
+                    <InputText v-model.trim="project.settings.license.url" :label="t('project.new.step3.url')" :rules="[validUrl()]" />
                   </div>
                 </div>
                 <div class="text-lg mt-6 flex gap-2 items-center">

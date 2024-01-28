@@ -1,10 +1,6 @@
 <script lang="ts" setup>
 import Popper from "vue3-popper";
 import type { ErrorObject } from "@vuelidate/core";
-import { computed, type Ref } from "vue";
-import { isErrorObject } from "~/composables/useValidationHelpers";
-import { onErrorCaptured } from "#imports";
-import { popperLog } from "~/composables/useLog";
 
 const props = defineProps<{
   errorMessages?: (string | ErrorObject)[];

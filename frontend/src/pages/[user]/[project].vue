@@ -1,25 +1,17 @@
 <script lang="ts" setup>
-import { provide } from "vue";
 import type { User } from "hangar-api";
-import type { RouteLocationNormalized } from "vue-router";
-import { useRoute } from "vue-router";
 import type { HangarProjectPage, HangarProject } from "hangar-internal";
-import { useProject } from "~/composables/useApiHelper";
-import { useDummyError, useErrorRedirect } from "~/composables/useErrorRedirect";
-import ProjectHeader from "~/components/projects/ProjectHeader.vue";
-import ProjectNav from "~/components/projects/ProjectNav.vue";
-import { navigateTo, onBeforeRouteUpdate, useInternalApi } from "#imports";
-import Delayed from "~/components/design/Delayed.vue";
+import type { RouteLocationNormalizedTyped } from "unplugin-vue-router";
 
 defineProps<{
   user: User;
 }>();
 
-const route = useRoute();
-const project = await useProject(route.params.project as string);
+const route = useRoute("/:user()/:project()");
+const project = await useProject(route.params.project);
 await verify(route);
 
-async function verify(to: RouteLocationNormalized) {
+async function verify(to: RouteLocationNormalizedTyped<any>) {
   if (!project?.value) {
     throw useErrorRedirect(to, 404, "Not found");
   } else if (to.params.project !== project.value?.namespace.slug) {
@@ -31,8 +23,8 @@ async function verify(to: RouteLocationNormalized) {
 }
 
 onBeforeRouteUpdate(async (to, from) => {
-  if (!to.params.project || !to.params.user) return;
-  if (to.params.user === from.params.user && to.params.project === from.params.project) return;
+  if (!("project" in to.params) || !to.params.project || !to.params.user) return;
+  if ("project" in from.params && to.params.user === from.params.user && to.params.project === from.params.project) return;
   project.value = await useInternalApi<HangarProject>("projects/project/" + to.params.project);
   await verify(to);
 });

@@ -1,6 +1,4 @@
 import type { NewProjectForm } from "hangar-internal";
-import { computed } from "vue";
-import { useInternalApi } from "~/composables/useApi";
 import { ProjectCategory } from "~/types/enums";
 
 export interface SpigotAuthor {

@@ -1,16 +1,5 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { computed, ref } from "vue";
-import { useRouter } from "vue-router";
-import Button from "~/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
 import { Visibility } from "~/types/enums";
-import InputRadio from "~/components/ui/InputRadio.vue";
-import { useBackendData } from "~/store/backendData";
-import InputTextarea from "~/components/ui/InputTextarea.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useNotificationStore } from "~/store/notification";
 
 const props = defineProps<{
   type: "project" | "version";

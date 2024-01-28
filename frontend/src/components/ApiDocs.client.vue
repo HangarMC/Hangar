@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import "rapidoc";
 import { computed, ref, watch } from "vue";
-import { useSettingsStore } from "~/store/useSettingsStore";
 
 const settings = useSettingsStore();
 

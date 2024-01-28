@@ -1,13 +1,11 @@
 import type { HeadObject } from "@unhead/vue";
 import type { TranslateResult } from "vue-i18n";
-import type { RouteLocationNormalizedLoaded } from "vue-router";
-import { useSeoMeta } from "@unhead/vue";
-import { useConfig } from "~/composables/useConfig";
+import type { RouteLocationNormalizedLoadedTyped } from "unplugin-vue-router";
 
 export function useSeo(
   title: string | TranslateResult | null | undefined,
   description: string | TranslateResult | null | undefined,
-  route: RouteLocationNormalizedLoaded,
+  route: RouteLocationNormalizedLoadedTyped<any>,
   image: string | null
 ): HeadObject {
   description = description || "Plugin repository for the Paper, Waterfall and Folia platforms.";
@@ -78,7 +76,7 @@ export function useSeo(
   return seo;
 }
 
-function generateBreadcrumbs(route: RouteLocationNormalizedLoaded) {
+function generateBreadcrumbs(route: RouteLocationNormalizedLoadedTyped) {
   const arr = [];
   const split = route.fullPath.split("/");
   let curr = "";

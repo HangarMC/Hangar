@@ -1,14 +1,5 @@
 <script lang="ts" setup>
 import type { ProjectApproval } from "hangar-internal";
-import { useI18n } from "vue-i18n";
-import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import Card from "~/components/design/Card.vue";
-import AdminProjectList from "~/components/projects/AdminProjectList.vue";
-import { useSeo } from "~/composables/useSeo";
-import { definePageMeta } from "#imports";
 
 interface ApprovalProjects {
   needsApproval: ProjectApproval[];

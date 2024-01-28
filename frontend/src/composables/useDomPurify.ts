@@ -1,5 +1,4 @@
 import type { Config, DOMPurifyI } from "dompurify";
-import { useNuxtApp } from "#imports";
 
 export const config = {
   FORBID_TAGS: ["style", "base", "head", "link", "meta", "title", "body", "form", "input", "dialog", "embed", "button", "frame", "html", "textarea"],

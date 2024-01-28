@@ -1,19 +1,12 @@
 <script setup lang="ts">
 import type { HangarProject, HangarProjectPage } from "hangar-internal";
-import { useRoute, useRouter } from "vue-router";
-import { useHead } from "@unhead/vue";
-import { inject } from "vue";
-import { useProjectPage } from "~/composables/useProjectPage";
-import { useSeo } from "~/composables/useSeo";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
 
 const props = defineProps<{
   project: HangarProject;
   mainPage: boolean;
 }>();
 
-const route = useRoute();
+const route = useRoute<"user-project-pages-all">();
 const router = useRouter();
 
 const updateProjectPages = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");

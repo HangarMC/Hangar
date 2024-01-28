@@ -1,26 +1,7 @@
 <script lang="ts" setup>
 import type { Organization } from "hangar-internal";
 import type { User } from "hangar-api";
-import { useI18n } from "vue-i18n";
-import { computed } from "vue";
-import UserAvatar from "~/components/UserAvatar.vue";
-import Card from "~/components/design/Card.vue";
-import TaglineModal from "~/components/modals/TaglineModal.vue";
 import { NamedPermission } from "~/types/enums";
-import { hasPerms } from "~/composables/usePerm";
-import { useAuthStore } from "~/store/auth";
-import Tag from "~/components/Tag.vue";
-import AvatarChangeModal from "~/components/modals/AvatarChangeModal.vue";
-import Button from "~/components/design/Button.vue";
-import Popper from "~/components/design/Popper.vue";
-import { getRole } from "~/store/backendData";
-import PrettyTime from "~/components/design/PrettyTime.vue";
-import IconMdiGitHub from "~icons/mdi/github";
-import IconMdiDiscord from "~icons/mdi/discord";
-import IconMdiTwitter from "~icons/mdi/twitter";
-import IconMdiYouTube from "~icons/mdi/youtube";
-import IconMdiWeb from "~icons/mdi/web";
-import Tooltip from "~/components/design/Tooltip.vue";
 
 const props = defineProps<{
   viewingUser: User;
@@ -65,7 +46,7 @@ const canEditCurrentUser = computed<boolean>(() => {
             rel="external nofollow"
             title="GitHub Link"
           >
-            <IconMdiGitHub class="mr-1 hover:text-slate-400" />
+            <IconMdiGithub class="mr-1 hover:text-slate-400" />
           </a>
           <a
             v-if="viewingUser.socials?.twitter"
@@ -83,7 +64,7 @@ const canEditCurrentUser = computed<boolean>(() => {
             rel="external nofollow"
             title="YouTube Link"
           >
-            <IconMdiYouTube class="mr-1 hover:text-slate-400" />
+            <IconMdiYoutube class="mr-1 hover:text-slate-400" />
           </a>
           <a v-if="viewingUser.socials?.website" :href="`https://${viewingUser.socials.website}`" class="ml-1" rel="external nofollow" title="Website Link">
             <IconMdiWeb class="mr-1 hover:text-slate-400" />

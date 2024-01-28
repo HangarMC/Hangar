@@ -1,12 +1,8 @@
-import type { RouteLocationNamedRaw, RouteLocationNormalized } from "vue-router";
 import type { PermissionCheck, UserPermissions } from "hangar-api";
-import { defineNuxtRouteMiddleware, handleRequestError, hasPerms, toNamedPermission, useApi, useAuth } from "#imports";
-import { useAuthStore } from "~/store/auth";
-import { routePermLog } from "~/composables/useLog";
+import type { RouteLocationNamedRaw, RouteLocationNormalized } from "vue-router";
 import { NamedPermission, PermissionType } from "~/types/enums";
-import { useErrorRedirect } from "~/composables/useErrorRedirect";
 
-export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {
   if (to.fullPath.startsWith("/@vite")) {
     // really don't need to do stuff for such meta routes
     console.log("hit vite path???????????????????????", to.fullPath);

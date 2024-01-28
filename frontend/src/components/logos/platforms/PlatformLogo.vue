@@ -1,8 +1,5 @@
 <script lang="ts" setup>
 import { Platform } from "~/types/enums";
-import PaperLogo from "~/components/logos/platforms/PaperLogo.vue";
-import VelocityLogo from "~/components/logos/platforms/VelocityLogo.vue";
-import WaterfallLogo from "~/components/logos/platforms/WaterfallLogo.vue";
 
 withDefaults(
   defineProps<{

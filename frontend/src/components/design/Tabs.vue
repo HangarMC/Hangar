@@ -1,8 +1,4 @@
 <script lang="ts" setup>
-import { computed, watch } from "vue";
-import { useRoute } from "vue-router";
-import Button from "~/components/design/Button.vue";
-import Link from "~/components/design/Link.vue";
 import type { Tab } from "~/types/components/design/Tabs";
 
 const route = useRoute();

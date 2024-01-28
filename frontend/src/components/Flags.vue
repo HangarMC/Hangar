@@ -1,18 +1,6 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { ref } from "vue";
 import type { Flag, HangarFlagNotification } from "hangar-internal";
 import type { PaginatedResult } from "hangar-api";
-import { useResolvedFlags, useUnresolvedFlags } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useInternalApi } from "~/composables/useApi";
-import UserAvatar from "~/components/UserAvatar.vue";
-import Card from "~/components/design/Card.vue";
-import Button from "~/components/design/Button.vue";
-import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
-import ReportNotificationModal from "~/components/modals/ReportNotificationModal.vue";
-import Pagination from "~/components/design/Pagination.vue";
-import Link from "~/components/design/Link.vue";
 
 const props = defineProps<{
   resolved: boolean;

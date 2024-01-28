@@ -1,23 +1,4 @@
 <script lang="ts" setup>
-import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import { reactive, ref } from "vue";
-import { useVuelidate } from "@vuelidate/core";
-import { useI18n } from "vue-i18n";
-import { useSeo } from "~/composables/useSeo";
-import Card from "~/components/design/Card.vue";
-import InputText from "~/components/ui/InputText.vue";
-import Button from "~/components/design/Button.vue";
-import { useInternalApi } from "~/composables/useApi";
-import InputPassword from "~/components/ui/InputPassword.vue";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import { email, required, sameAs } from "~/composables/useValidationHelpers";
-import { useNotificationStore } from "~/store/notification";
-import Link from "~/components/design/Link.vue";
-import InputGroup from "~/components/ui/InputGroup.vue";
-import { useBackendData } from "~/store/backendData";
-import IconMdiGitHub from "~icons/mdi/github";
-
 const route = useRoute();
 const v = useVuelidate();
 const backendData = useBackendData;
@@ -71,7 +52,7 @@ useHead(useSeo("Signup", null, route, null));
         >
           <template v-if="provider === 'github'">
             <div class="flex flex-row gap-x-0.5 items-center">
-              <IconMdiGitHub class="mr-1" />
+              <IconMdiGithub class="mr-1" />
               GitHub
             </div>
           </template>

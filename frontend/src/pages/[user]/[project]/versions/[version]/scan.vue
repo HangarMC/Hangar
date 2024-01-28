@@ -1,10 +1,6 @@
 <script lang="ts" setup>
 import type { HangarVersion, HangarProject, JarScanResult } from "hangar-internal";
-import { definePageMeta, ref, useHead, useInternalApi, useJarScan, useRoute, useSeo } from "#imports";
 import type { Platform } from "~/types/enums";
-import PrettyTime from "~/components/design/PrettyTime.vue";
-import { useNotificationStore } from "~/store/notification";
-import Button from "~/components/design/Button.vue";
 
 definePageMeta({
   globalPermsRequired: ["REVIEWER"],

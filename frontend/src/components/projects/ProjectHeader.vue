@@ -1,24 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, type Ref } from "vue";
-import { useI18n } from "vue-i18n";
 import type { HangarProject } from "hangar-internal";
 import type { AxiosError } from "axios";
-import { useRouter } from "vue-router";
-import UserAvatar from "~/components/UserAvatar.vue";
-import Button from "~/components/design/Button.vue";
-import Card from "~/components/design/Card.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import Tooltip from "~/components/design/Tooltip.vue";
-import { useAuthStore } from "~/store/auth";
-import { useNotificationStore } from "~/store/notification";
-import FlagModal from "~/components/modals/FlagModal.vue";
-import Alert from "~/components/design/Alert.vue";
-import { hasPerms } from "~/composables/usePerm";
 import type { Platform } from "~/types/enums";
 import { NamedPermission, ReviewState, Visibility } from "~/types/enums";
-import Markdown from "~/components/Markdown.vue";
-import DownloadButton from "~/components/projects/DownloadButton.vue";
+import type { Ref } from "vue";
 
 const i18n = useI18n();
 const router = useRouter();

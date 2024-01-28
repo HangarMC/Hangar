@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref, watch } from "vue";
 import { Dialog, DialogOverlay } from "@headlessui/vue";
 
 const props = withDefaults(
