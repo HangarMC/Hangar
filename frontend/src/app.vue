@@ -30,7 +30,7 @@ useHead({
 });
 
 onErrorCaptured((err) => {
-  if (err?.data?.logErrorMessage === false) {
+  if (isNuxtError(err) && err?.data?.logErrorMessage === false) {
     return;
   }
   console.log("captured", transformAxiosError(err)); // TODO error handling

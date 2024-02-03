@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { Flag } from "hangar-internal";
+import type { HangarProjectFlag } from "~/types/backend";
 
 const props = defineProps<{
-  flag: Flag;
+  flag: HangarProjectFlag;
   sendToReporter: boolean;
 }>();
 

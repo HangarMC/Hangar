@@ -1,6 +1,5 @@
 import type { RouteLocationNormalizedTyped } from "unplugin-vue-router";
 import type { RouteLocationNamedRaw } from "vue-router";
-import { createError } from "#imports";
 
 export function useErrorRedirect(
   currentRoute: RouteLocationNormalizedTyped<any>,

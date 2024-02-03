@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import type { Version } from "hangar-api";
-import type { HangarProject } from "hangar-internal";
-import { NamedPermission, Platform, Visibility } from "~/types/enums";
+import { type HangarProject, NamedPermission, Platform, type Version, Visibility } from "~/types/backend";
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("user-project-versions");
 
 const filter = reactive({
   channels: [] as string[],
@@ -32,10 +30,7 @@ const requestParams = computed(() => {
   };
 });
 
-const results = await Promise.all([
-  useProjectChannels(route.params.project as string),
-  useProjectVersions(route.params.project as string, requestParams.value),
-]);
+const results = await Promise.all([useProjectChannels(route.params.project), useProjectVersions(route.params.project, requestParams.value)]);
 const channels = results[0].data;
 const versions = results[1];
 filter.channels.push(...channels.value.map((c) => c.name));
@@ -47,7 +42,7 @@ const pageChangeScrollAnchor = ref<Element>();
 
 async function update(newPage: number) {
   page.value = newPage;
-  versions.value = (await useProjectVersions(route.params.project as string, requestParams.value))?.value;
+  versions.value = (await useProjectVersions(route.params.project, requestParams.value))?.value;
 }
 
 watch(
@@ -83,10 +78,10 @@ function updatePlatformCheckAll() {
 }
 
 function getBorderClasses(version: Version): string {
-  if (version.visibility === Visibility.SOFT_DELETE) {
+  if (version.visibility === Visibility.SoftDelete) {
     return "!border-red-500 border-1px";
   }
-  return version.visibility === Visibility.PUBLIC ? "!border-gray-300 !dark:border-gray-700 border-1px" : "";
+  return version.visibility === Visibility.Public ? "!border-gray-300 !dark:border-gray-700 border-1px" : "";
 }
 
 function getVisibilityTitle(visibility: Visibility) {
@@ -118,8 +113,8 @@ function getVisibilityTitle(visibility: Visibility) {
                         <h2 class="lg:basis-full lt-lg:mr-1 text-1.15rem leading-relaxed">{{ item.name }}</h2>
                         <span class="lg:hidden flex-grow" />
                         <Tag :name="item.channel.name" :color="{ background: item.channel.color }" :tooltip="item.channel.description" />
-                        <IconMdiCancel v-if="item.visibility === Visibility.SOFT_DELETE" class="ml-1"></IconMdiCancel>
-                        <span v-else-if="item.visibility !== Visibility.PUBLIC" class="ml-1 inline-flex items-center">
+                        <IconMdiCancel v-if="item.visibility === Visibility.SoftDelete" class="ml-1"></IconMdiCancel>
+                        <span v-else-if="item.visibility !== Visibility.Public" class="ml-1 inline-flex items-center">
                           <span class="text-gray-600 dark:text-gray-300 text-sm">
                             {{ getVisibilityTitle(item.visibility) }}
                           </span>
@@ -159,7 +154,7 @@ function getVisibilityTitle(visibility: Visibility) {
 
     <section class="basis-full md:basis-4/15 flex-grow">
       <div class="flex flex-col flex-wrap space-y-4">
-        <div v-if="hasPerms(NamedPermission.CREATE_VERSION)" class="basis-full flex-grow">
+        <div v-if="hasPerms(NamedPermission.CreateVersion)" class="basis-full flex-grow">
           <NuxtLink :to="route.path + '/new'">
             <Button size="large" class="w-full">{{ i18n.t("version.new.uploadNew") }}</Button>
           </NuxtLink>
@@ -170,7 +165,7 @@ function getVisibilityTitle(visibility: Visibility) {
             <div class="inline-flex w-full flex-cols space-between">
               <InputCheckbox v-model="filter.allChecked.channels" @change="checkAllChannels" />
               <h3 class="flex-grow">{{ i18n.t("version.channels") }}</h3>
-              <Link v-if="hasPerms(NamedPermission.EDIT_CHANNELS)" :to="`/${project.owner.name}/${project.name}/channels`">
+              <Link v-if="hasPerms(NamedPermission.EditChannels)" :to="`/${project.owner.name}/${project.name}/channels`">
                 <Button size="small" class="ml-2 text-sm"><IconMdiPencil /></Button>
               </Link>
             </div>

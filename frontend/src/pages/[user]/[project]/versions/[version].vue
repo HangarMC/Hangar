@@ -1,15 +1,13 @@
 <script lang="ts" setup>
-import { computed } from "vue";
-import type { HangarProject, HangarVersion } from "hangar-internal";
-import type { Platform } from "~/types/enums";
+import { type HangarProject, type HangarVersion, Platform } from "~/types/backend";
 
-const route = useRoute();
+const route = useRoute("user-project-versions-version");
 
 defineProps<{
   project: HangarProject;
 }>();
 
-const version = await useProjectVersionsInternal(route.params.project as string, route.params.version as string);
+const version = await useProjectVersionsInternal(route.params.project, route.params.version);
 verify();
 
 function verify() {
@@ -19,10 +17,11 @@ function verify() {
 }
 
 onBeforeRouteUpdate(async (to, from) => {
-  if (!to.params.version || !to.params.project || !to.params.user) return;
-  if (to.params.user === from.params.user && to.params.project === from.params.project && to.params.version === from.params.version) return;
+  if (!("version" in to.params) || !to.params.version || !to.params.project || !to.params.user) return;
+  if ("version" in from.params && to.params.user === from.params.user && to.params.project === from.params.project && to.params.version === from.params.version)
+    return;
   version.value = await useInternalApi<HangarVersion>(`versions/version/${to.params.user}/${to.params.project}/versions/${to.params.version}`);
-  await verify();
+  verify();
 });
 
 const versionPlatforms = computed<Set<Platform>>(() => {

@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import type { User } from "hangar-api";
-import type { HangarProject, Note } from "hangar-internal";
 import type { Header } from "~/types/components/SortableTable";
+import type { HangarProject, HangarProjectNote, User } from "~/types/backend";
 
 definePageMeta({
-  projectPermsRequired: ["MOD_NOTES_AND_FLAGS"],
+  projectPermsRequired: ["ModNotesAndFlags"],
 });
 
 const props = defineProps<{
@@ -12,16 +11,16 @@ const props = defineProps<{
   project: HangarProject;
 }>();
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("user-project-notes");
 const notes = await useProjectNotes(props.project.id);
 const text = ref("");
 const loading = ref(false);
 
-const headers: Header[] = [
+const headers = [
   { title: "Date", name: "createdAt", width: "10%" },
   { title: "User", name: "userName", width: "10%" },
   { title: "Message", name: "message", width: "80%" },
-];
+] as const satisfies Header<string>[];
 
 useHead(useSeo("Notes | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 
@@ -34,7 +33,7 @@ async function addNote() {
     content: text.value,
   }).catch((e) => handleRequestError(e));
   text.value = "";
-  const newNotes = await useInternalApi<Note[]>("projects/notes/" + props.project.id).catch((e) => handleRequestError(e));
+  const newNotes = await useInternalApi<HangarProjectNote[]>("projects/notes/" + props.project.id).catch((e) => handleRequestError(e));
   if (notes?.value && newNotes) {
     notes.value = newNotes;
   }
@@ -63,7 +62,7 @@ async function addNote() {
       <template #empty>
         <Alert type="warning">{{ i18n.t("notes.noNotes") }}</Alert>
       </template>
-      <template #item_createdAt="{ item }">
+      <template #createdAt="{ item }">
         {{ i18n.d(item.createdAt, "time") }}
       </template>
     </SortableTable>

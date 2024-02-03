@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const props = withDefaults(
   defineProps<{
-    raw?: string;
+    raw?: string | null;
     inline?: boolean;
   }>(),
   {

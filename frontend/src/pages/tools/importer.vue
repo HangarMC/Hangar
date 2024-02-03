@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import type { NewProjectForm } from "hangar-internal";
 import { isAxiosError } from "axios";
 import type { Step } from "~/types/components/design/Steps";
 import type { SpigotAuthor, SpigotResource } from "~/composables/useProjectImporter";
-import { ProjectCategory, Tag } from "~/types/enums";
+import { Category, type NewProjectForm, Tag } from "~/types/backend";
 
 definePageMeta({
   loginRequired: true,
@@ -128,10 +127,10 @@ function createProject(project: NewProjectForm) {
   if (!project.pageContent) {
     project.pageContent = "# " + project.name + "  \nWelcome to your new project!";
   }
-  if (!project.util.isCustomLicense.value) {
+  if (!project.util.isCustomLicense) {
     project.settings.license.name = null;
   }
-  if (project.util.licenseUnset.value) {
+  if (project.util.licenseUnset) {
     project.settings.license.url = null;
   }
   useInternalApi<string>("projects/create", "post", project, { timeout: 10000 })
@@ -243,7 +242,7 @@ useHead(useSeo(t("importer.title"), null, route, null));
                 v-model="project.category"
                 :values="useCategoryOptions"
                 label="Category"
-                :rules="[required(), (category) => category !== ProjectCategory.UNDEFINED]"
+                :rules="[required(), (category) => category !== Category.Undefined]"
                 i18n-text-values
               />
             </div>

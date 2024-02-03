@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import * as webauthnJson from "@github/webauthn-json";
-import type { AuthSettings } from "hangar-internal";
 import { type AxiosRequestConfig, isAxiosError } from "axios";
+import type { Authenticator, SettingsResponse } from "~/types/backend";
 
 defineProps<{
-  settings?: AuthSettings;
+  settings?: SettingsResponse;
 }>();
 const emit = defineEmits<{
   refreshSettings: [];
@@ -16,7 +16,7 @@ const i18n = useI18n();
 const { t } = i18n;
 const v = useVuelidate();
 const router = useRouter();
-const route = useRoute();
+const route = useRoute("auth-settings");
 const backendData = useBackendData;
 
 const loading = ref(false);
@@ -52,7 +52,7 @@ async function addAuthenticator() {
   loading.value = false;
 }
 
-async function unregisterAuthenticator(authenticator: AuthSettings["authenticators"][0]) {
+async function unregisterAuthenticator(authenticator: Authenticator) {
   loading.value = true;
   try {
     await useInternalApi("auth/webauthn/unregister", "POST", authenticator.id, { headers: { "content-type": "text/plain" } });
@@ -70,10 +70,10 @@ async function unregisterAuthenticator(authenticator: AuthSettings["authenticato
 }
 
 const newAuthenticatorName = ref<string>();
-const currentlyRenamingAuthenticator = ref<AuthSettings["authenticators"][0]>();
+const currentlyRenamingAuthenticator = ref<Authenticator>();
 const authenticatorRenameModal = ref();
 
-function renameAuthenticatorModal(authenticator: AuthSettings["authenticators"][0]) {
+function renameAuthenticatorModal(authenticator: Authenticator) {
   newAuthenticatorName.value = authenticator.displayName;
   currentlyRenamingAuthenticator.value = authenticator;
   authenticatorRenameModal.value.isOpen = true;

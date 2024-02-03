@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 definePageMeta({
-  globalPermsRequired: ["VIEW_HEALTH"],
+  globalPermsRequired: ["ViewHealth"],
 });
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("admin-health");
 const healthReport = await useHealthReport();
 
 useHead(useSeo(i18n.t("health.title"), null, route, null));

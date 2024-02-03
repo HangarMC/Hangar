@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const version = await useVersionInfo();
-const route = useRoute();
+const route = useRoute("version");
 useHead(useSeo("Hangar Version", null, route, null));
 </script>
 

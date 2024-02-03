@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import type { Organization } from "hangar-internal";
-import type { User } from "hangar-api";
-import { NamedPermission } from "~/types/enums";
+import { NamedPermission, type User } from "~/types/backend";
+import type { HangarOrganization } from "~/types/backend";
 
 const props = defineProps<{
   viewingUser: User;
-  organization: Organization;
+  organization: HangarOrganization;
 }>();
 
 const i18n = useI18n();
@@ -16,7 +15,7 @@ const isCurrentUser = computed<boolean>(() => {
 });
 
 const canEditCurrentUser = computed<boolean>(() => {
-  return hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS) || isCurrentUser.value || hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS);
+  return hasPerms(NamedPermission.EditAllUserSettings) || isCurrentUser.value || hasPerms(NamedPermission.EditSubjectSettings);
 });
 </script>
 
@@ -26,7 +25,7 @@ const canEditCurrentUser = computed<boolean>(() => {
       <div class="relative mr-3">
         <UserAvatar :username="viewingUser.name" :avatar-url="viewingUser.avatarUrl" />
         <AvatarChangeModal
-          v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)"
+          v-if="hasPerms(NamedPermission.EditSubjectSettings)"
           :avatar="viewingUser.avatarUrl"
           :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/avatar`"
         >

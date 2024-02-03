@@ -1,8 +1,13 @@
-import type { HangarProject } from "hangar-internal";
-import type { RouteLocationNormalizedLoaded, Router } from "vue-router";
-import type { RouteLocationNormalizedTyped } from "unplugin-vue-router";
+import type { RouteLocationNormalizedLoadedTyped } from "unplugin-vue-router";
+import type { RouterTyped } from "vue-router/auto";
+import type { HangarProject } from "~/types/backend";
 
-export async function useProjectPage(route: RouteLocationNormalizedTyped<"user-project-pages-all">, router: Router, project: HangarProject, mainPage: boolean) {
+export async function useProjectPage(
+  route: RouteLocationNormalizedLoadedTyped<any, "user-project-pages-all">,
+  router: RouterTyped,
+  project: HangarProject,
+  mainPage: boolean
+) {
   const page = mainPage ? ref(project.mainPage) : await usePage(route.params.project, route.params.all);
   if (!page?.value) {
     throw useErrorRedirect(route, 404, "Not found");

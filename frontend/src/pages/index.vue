@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
-import type { PaginatedResult, Project } from "hangar-api";
-import type { PlatformVersion } from "hangar-internal";
-import type { Platform } from "~/types/enums";
-import { Tag } from "~/types/enums";
+import { type PaginatedResultProject, Platform, type PlatformVersion, Tag } from "~/types/backend";
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("index");
 const router = useRouter();
 
 const sorters = [
@@ -28,7 +25,7 @@ const filters = ref({
 const activeSorter = ref<string>((route.query.sort as string) || "-stars");
 const page = ref(route.query.page ? Number(route.query.page) : 0);
 const query = ref<string>((route.query.q as string) || "");
-const projects = ref<PaginatedResult<Project> | null>();
+const projects = ref<PaginatedResultProject | null>();
 
 const requestParams = computed(() => {
   const limit = 10;
@@ -78,7 +75,7 @@ watchDebounced(
 );
 
 async function updateProjects() {
-  projects.value = await useApi<PaginatedResult<Project>>("projects", "get", requestParams.value);
+  projects.value = await useApi<PaginatedResultProject>("projects", "get", requestParams.value);
   await checkOffsetLargerCount();
 }
 

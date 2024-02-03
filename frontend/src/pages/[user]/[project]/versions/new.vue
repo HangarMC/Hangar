@@ -1,15 +1,14 @@
 <script lang="ts" setup>
-import type { HangarProject, IPlatform, PendingVersion, ProjectChannel } from "hangar-internal";
 import { remove } from "lodash-es";
-import type { Platform } from "~/types/enums";
 import type { Step } from "~/types/components/design/Steps";
 import type { Tab } from "~/types/components/design/Tabs";
+import { type HangarProject, type PendingVersion, Platform, type PlatformData, type ProjectChannel } from "~/types/backend";
 
 definePageMeta({
-  projectPermsRequired: ["CREATE_VERSION"],
+  projectPermsRequired: ["CreateVersion"],
 });
 
-const route = useRoute();
+const route = useRoute("user-project-versions-new");
 const router = useRouter();
 const i18n = useI18n();
 const t = i18n.t;
@@ -88,11 +87,11 @@ interface PlatformFile {
   url?: string;
 }
 
-const platformFiles: Ref<PlatformFile[]> = ref([{ platforms: [], selectedTab: "file" }]);
-const selectedUploadTabs: Tab[] = [
+const platformFiles = ref<PlatformFile[]>([{ platforms: [], selectedTab: "file" }]);
+const selectedUploadTabs = [
   { value: "file", header: i18n.t("version.new.form.file") },
   { value: "url", header: i18n.t("version.new.form.url") },
-];
+] as const satisfies Tab<string>[];
 
 function addPlatformFile() {
   platformFiles.value.push({ platforms: [], selectedTab: "file" });
@@ -103,8 +102,8 @@ function removePlatformFile(id: number) {
 }
 
 const dependencyTables = ref();
-const pendingVersion: Ref<PendingVersion | undefined> = ref<PendingVersion>();
-const channels = (await useProjectChannels(route.params.project as string)).data;
+const pendingVersion = ref<PendingVersion>();
+const channels = (await useProjectChannels(route.params.project)).data;
 const selectedPlatforms = ref<Platform[]>([]);
 const descriptionEditor = ref();
 const lastDescription = ref();
@@ -123,15 +122,15 @@ const descriptionToLoad = computed(() => {
 const selectedChannel = ref<string>("Release");
 const currentChannel = computed(() => channels.value.find((c) => c.name === selectedChannel.value));
 
-const platforms = computed<IPlatform[]>(() => {
+const platforms = computed<PlatformData[]>(() => {
   return [...useBackendData.platforms.values()];
 });
-const selectedPlatformsData = computed<IPlatform[]>(() => {
-  const result: IPlatform[] = [];
+const selectedPlatformsData = computed<PlatformData[]>(() => {
+  const result: PlatformData[] = [];
   for (const platformName of selectedPlatforms.value) {
-    const iPlatform = useBackendData.platforms.get(platformName);
-    if (iPlatform) {
-      result.push(iPlatform);
+    const p = useBackendData.platforms.get(platformName);
+    if (p) {
+      result.push(p);
     }
   }
   return result;

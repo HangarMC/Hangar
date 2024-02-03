@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Visibility } from "~/types/enums";
+import { Visibility, type VisibilityData } from "~/types/backend";
 
 const props = defineProps<{
   type: "project" | "version";
@@ -29,7 +29,7 @@ async function submit(): Promise<void> {
     notification.success(i18n.t("visibility.modal.success", [props.type, i18n.t(setVisibility.value?.title)]));
   }
 
-  if (visibility.value === Visibility.SOFT_DELETE) {
+  if (visibility.value === Visibility.SoftDelete) {
     await router.push("/");
   } else {
     router.go(0);
@@ -40,7 +40,7 @@ async function submit(): Promise<void> {
 <template>
   <Modal :title="i18n.t('visibility.modal.title', [type])" window-classes="w-150">
     <template #default>
-      Currently: {{ i18n.t(currentVisibility?.title) }}
+      Currently: {{ currentVisibility ? i18n.t(currentVisibility.title) : "Unknown" }}
       <InputRadio v-for="vis in visibilities" :key="vis.name" v-model="visibility" :value="vis.name" :label="i18n.t(vis.title)" class="block" />
 
       <div v-if="showTextarea">

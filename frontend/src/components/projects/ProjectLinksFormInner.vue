@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Draggable from "vuedraggable";
-import type { LinkSection } from "hangar-api";
+import type { LinkSection } from "~/types/backend";
 
 const props = defineProps<{ modelValue: LinkSection["links"] }>();
 const emit = defineEmits(["update:modelValue"]);

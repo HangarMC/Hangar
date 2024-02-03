@@ -18,7 +18,7 @@ public class ProjectSettings {
     // @el(root: List<String>)
     private final @NotNull @Validate(SpEL = "@validate.max(#root, 4)", message = "Too many link sections") List<@Valid LinkSection> links;
     // @el(root: Collection<String>)
-    private final @NotNull @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxTags)", message = "project.new.error.tooManyTags") Collection<String> tags;
+    private final @NotNull @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxTags)", message = "project.new.error.tooManyTags") Collection<Tag> tags;
     private final @Valid ProjectLicense license;
 
     // @el(root: Collection<String>)
@@ -28,7 +28,7 @@ public class ProjectSettings {
     private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxSponsorsLen)", message = "project.new.error.tooLongSponsors") String sponsors;
 
     @JdbiConstructor
-    public ProjectSettings(final JSONB links, final List<String> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final String sponsors) {
+    public ProjectSettings(final JSONB links, final List<Tag> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final String sponsors) {
         this.links = links.get(new TypeReference<>() {
         });
         this.tags = tags;
@@ -38,7 +38,7 @@ public class ProjectSettings {
     }
 
     @JsonCreator
-    public ProjectSettings(@Nested("links") final List<LinkSection> links, final Collection<String> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final String sponsors) {
+    public ProjectSettings(@Nested("links") final List<LinkSection> links, final Collection<Tag> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final String sponsors) {
         this.links = links;
         this.tags = tags;
         this.license = license;
@@ -54,7 +54,7 @@ public class ProjectSettings {
         return this.license;
     }
 
-    public Collection<String> getTags() {
+    public Collection<Tag> getTags() {
         return this.tags;
     }
 

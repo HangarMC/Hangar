@@ -16,6 +16,8 @@ const internalVisibility = computed({
   set: (v) => emit("update:modelValue", v),
 });
 
+const orgs = computed(() => Object.keys(internalVisibility.value));
+
 async function changeOrgVisibility(org: string) {
   if (loading.value) {
     return;
@@ -34,7 +36,7 @@ async function changeOrgVisibility(org: string) {
     <p>{{ i18n.t("author.orgVisibilityModal") }}</p>
 
     <ul class="p-2">
-      <li v-for="(_, org) in internalVisibility" :key="org">
+      <li v-for="org in orgs" :key="org">
         <InputCheckbox v-model="internalVisibility[org]" :label="org" :disabled="loading" @change="changeOrgVisibility(org)"></InputCheckbox>
       </li>
     </ul>

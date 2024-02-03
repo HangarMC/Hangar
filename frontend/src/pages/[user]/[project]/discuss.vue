@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { HangarProject } from "hangar-internal";
+import type { HangarProject } from "~/types/backend";
 
-const route = useRoute();
+const route = useRoute("user-project-discuss");
 const props = defineProps<{
   project: HangarProject;
 }>();

@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import type { JoinableMember } from "hangar-internal";
-import type { PaginatedResult, Role, User } from "hangar-api";
-import { NamedPermission } from "~/types/enums";
+import { NamedPermission, type PaginatedResultUser } from "~/types/backend";
 
 interface EditableMember {
   name: string;
@@ -50,7 +48,7 @@ const canLeave = computed<boolean>(() => {
 
   return props.members.some((member) => member.user.id === authStore.user?.id && member.user.id !== props.owner);
 });
-const canEdit = computed<boolean>(() => hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS));
+const canEdit = computed<boolean>(() => hasPerms(NamedPermission.EditSubjectSettings));
 const saving = ref<boolean>(false);
 const search = ref<string>("");
 const addErrors = ref<string[]>([]);
@@ -125,9 +123,9 @@ function convertMember(member: JoinableMember): EditableMember {
   };
 }
 
-async function doSearch(val: string) {
+async function doSearch(val?: string) {
   result.value = [];
-  const users = await useApi<PaginatedResult<User>>("users", "get", {
+  const users = await useApi<PaginatedResultUser>("users", "get", {
     query: val,
     limit: 25,
     offset: 0,

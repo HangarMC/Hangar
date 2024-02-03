@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import * as webauthnJson from "@github/webauthn-json";
-import type { LoginResponse } from "hangar-internal";
+import type { LoginResponse } from "~/types/backend";
 
-const route = useRoute();
+const route = useRoute("auth-login");
 const router = useRouter();
 const authStore = useAuthStore();
 const v = useVuelidate();

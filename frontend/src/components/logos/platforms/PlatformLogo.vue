@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Platform } from "~/types/enums";
+import { Platform } from "~/types/backend";
 
 withDefaults(
   defineProps<{

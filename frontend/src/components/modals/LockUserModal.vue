@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import type { User } from "hangar-api";
-import { NamedPermission } from "~/types/enums";
+import { NamedPermission, type User } from "~/types/backend";
 
 const props = defineProps<{
   user: User;
@@ -35,7 +33,7 @@ async function confirm(close: () => void) {
     <template #default="{ on }">
       <InputTextarea v-model="comment" :rules="[required()]" :label="i18n.t(`author.lock.reason${user.locked ? 'Unlock' : 'Lock'}`)" />
       <InputCheckbox
-        v-if="hasPerms(NamedPermission.DELETE_PROJECT)"
+        v-if="hasPerms(NamedPermission.DeleteProject)"
         v-model="toggleProjectDeletion"
         :label="i18n.t(`author.lock.${user.locked ? 'reinstateProjects' : 'deleteProjects'}${user.isOrganization ? 'Org' : ''}`)"
       />

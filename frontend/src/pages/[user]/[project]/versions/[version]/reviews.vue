@@ -1,14 +1,11 @@
 <script lang="ts" setup>
-import { useHead } from "@unhead/vue";
-import type { HangarProject, HangarReview, HangarReviewMessage, HangarVersion } from "hangar-internal";
-import type { Platform } from "~/types/enums";
-import { ReviewAction, ReviewState } from "~/types/enums";
+import { type HangarProject, type HangarReview, type HangarReviewMessage, type HangarVersion, Platform, ReviewAction, ReviewState } from "~/types/backend";
 
 definePageMeta({
-  globalPermsRequired: ["REVIEWER"],
+  globalPermsRequired: ["Reviewer"],
 });
 
-const route = useRoute();
+const route = useRoute("user-project-versions-version-reviews");
 const authStore = useAuthStore();
 const i18n = useI18n();
 const t = i18n.t;
@@ -55,14 +52,12 @@ const filteredReviews = computed<HangarReview[]>(() => {
   return reviews.value;
 });
 
-const platformEnum = computed<Platform>(() => ((route.params.platform as string) || "").toUpperCase() as Platform);
-
 const projectVersion = computed<HangarVersion>(() => {
   return props.version;
 });
 
 const isReviewStateChecked = computed<boolean>(() => {
-  return projectVersion.value.reviewState === ReviewState.PARTIALLY_REVIEWED || projectVersion.value.reviewState === ReviewState.REVIEWED;
+  return projectVersion.value.reviewState === ReviewState.PartiallyReviewed || projectVersion.value.reviewState === ReviewState.Reviewed;
 });
 
 if (projectVersion.value) {
@@ -92,6 +87,8 @@ function getReviewStateString(review: HangarReview): string {
     case ReviewAction.PARTIALLY_APPROVE:
       return "partiallyApproved";
   }
+
+  return "error";
 }
 
 function getReviewStateColor(review: HangarReview): string {
@@ -113,6 +110,8 @@ function getReviewStateColor(review: HangarReview): string {
     case ReviewAction.PARTIALLY_APPROVE:
       return "#4CAF50";
   }
+
+  return "#D50000";
 }
 
 function getReviewMessageColor(msg: HangarReviewMessage): string {

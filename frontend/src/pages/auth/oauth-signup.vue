@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { jwtDecode } from "jwt-decode";
 
-const route = useRoute();
+const route = useRoute("auth-oauth-signup");
 const v = useVuelidate();
 
 interface OAuthSignupForm {

@@ -1,11 +1,23 @@
 import { promises as fs } from "fs";
 import { defineNuxtModule } from "@nuxt/kit";
-import type { BackendData } from "hangar-api";
 import type { AxiosInstance } from "axios";
 import axios from "axios";
-import type { IProjectCategory } from "hangar-internal";
 // noinspection ES6PreferShortImport
 import { backendDataLog } from "../composables/useLog";
+import type {
+  Announcement,
+  RoleData,
+  Security,
+  Validations,
+  CategoryData,
+  PermissionData,
+  PlatformData,
+  VisibilityData,
+  ColorData,
+  FlagReasonData,
+  PromptData,
+} from "~/types/backend";
+import type { ServerBackendData } from "~/types/backendData";
 
 // inspired by knossos build hook: https://github.com/modrinth/knossos/blob/master/nuxt.config.js
 export default defineNuxtModule({
@@ -36,7 +48,7 @@ export default defineNuxtModule({
   },
 });
 
-async function generateBackendData(state: BackendData, path: string, retry = true) {
+async function generateBackendData(state: ServerBackendData, path: string, retry = true) {
   const axiosInstance = prepareAxios(state.meta.apiUrl);
 
   try {
@@ -70,8 +82,8 @@ async function generateBackendData(state: BackendData, path: string, retry = tru
   }
 }
 
-async function loadState(path: string): Promise<BackendData> {
-  let state = {} as BackendData;
+async function loadState(path: string): Promise<ServerBackendData> {
+  let state = {} as ServerBackendData;
   try {
     const data = await fs.readFile(path, "utf8");
     state = JSON.parse(data);
@@ -82,7 +94,7 @@ async function loadState(path: string): Promise<BackendData> {
   return state;
 }
 
-function needsRefresh(state: BackendData, ttl: number, serverUrl: string, version: number) {
+function needsRefresh(state: ServerBackendData, ttl: number, serverUrl: string, version: number) {
   if (
     // Skip regeneration if within TTL...
     state?.meta?.lastGenerated &&
@@ -117,7 +129,7 @@ function prepareAxios(serverUrl: string): AxiosInstance {
   return axiosInstance;
 }
 
-async function loadData(state: BackendData, axiosInstance: AxiosInstance) {
+async function loadData(state: ServerBackendData, axiosInstance: AxiosInstance) {
   const [
     projectCategories,
     permissions,
@@ -136,27 +148,23 @@ async function loadData(state: BackendData, axiosInstance: AxiosInstance) {
     security,
   ] = (
     await Promise.all([
-      axiosInstance.get<typeof state.projectCategories>("/categories"),
-      axiosInstance.get<typeof state.permissions>("/permissions"),
-      axiosInstance.get<typeof state.platforms>("/platforms"),
-      axiosInstance.get<typeof state.validations>("/validations"),
-      axiosInstance.get<typeof state.prompts>("/prompts"),
-      axiosInstance.get<typeof state.announcements>("/announcements"),
-      axiosInstance.get<typeof state.visibilities>("/visibilities"),
-      axiosInstance.get<typeof state.licenses>("/licenses"),
-      axiosInstance.get<typeof state.orgRoles>("/orgRoles"),
-      axiosInstance.get<typeof state.projectRoles>("/projectRoles"),
-      axiosInstance.get<typeof state.globalRoles>("/globalRoles"),
-      axiosInstance.get<typeof state.channelColors>("/channelColors"),
-      axiosInstance.get<typeof state.flagReasons>("/flagReasons"),
-      axiosInstance.get<typeof state.loggedActions>("/loggedActions"),
-      axiosInstance.get<typeof state.security>("/security"),
+      axiosInstance.get<CategoryData[]>("/categories"),
+      axiosInstance.get<PermissionData[]>("/permissions"),
+      axiosInstance.get<PlatformData[]>("/platforms"),
+      axiosInstance.get<Validations>("/validations"),
+      axiosInstance.get<PromptData[]>("/prompts"),
+      axiosInstance.get<Announcement[]>("/announcements"),
+      axiosInstance.get<VisibilityData[]>("/visibilities"),
+      axiosInstance.get<string[]>("/licenses"),
+      axiosInstance.get<RoleData[]>("/orgRoles"),
+      axiosInstance.get<RoleData[]>("/projectRoles"),
+      axiosInstance.get<RoleData[]>("/globalRoles"),
+      axiosInstance.get<ColorData[]>("/channelColors"),
+      axiosInstance.get<FlagReasonData[]>("/flagReasons"),
+      axiosInstance.get<string[]>("/loggedActions"),
+      axiosInstance.get<Security>("/security"),
     ])
   ).map((it) => it?.data || it);
-
-  for (const c of projectCategories as unknown as IProjectCategory[]) {
-    c.title = "project.category." + c.apiName;
-  }
 
   state.projectCategories = projectCategories as typeof state.projectCategories;
   state.permissions = permissions as typeof state.permissions;

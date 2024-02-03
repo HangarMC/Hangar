@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { HangarProject } from "hangar-internal";
-import { NamedPermission, Tag } from "~/types/enums";
+import { type HangarProject, NamedPermission, Tag } from "~/types/backend";
 
 const props = defineProps<{
   project: HangarProject;
@@ -44,7 +43,7 @@ const namespace = computed(() => props.project.namespace.owner + "/" + props.pro
               </template>
             </td>
           </tr>
-          <tr v-if="hasPerms(NamedPermission.IS_SUBJECT_MEMBER)">
+          <tr v-if="hasPerms(NamedPermission.IsSubjectMember)">
             <th class="text-left">{{ i18n.t("project.info.views", project.stats.views) }}</th>
             <td>
               {{ project.stats.views.toLocaleString("en-US") }}
@@ -85,7 +84,7 @@ const namespace = computed(() => props.project.namespace.owner + "/" + props.pro
       </div>
     </template>
     <template #footer>
-      <DropdownButton v-if="hasPerms(NamedPermission.IS_STAFF)" :name="i18n.t('project.actions.adminActions')" class="mb-2">
+      <DropdownButton v-if="hasPerms(NamedPermission.IsStaff)" :name="i18n.t('project.actions.adminActions')" class="mb-2">
         <DropdownItem :to="`/${namespace}/flags`">
           {{ i18n.t("project.actions.flagHistory", [project.info.flagCount ?? 0]) }}
         </DropdownItem>
@@ -97,7 +96,7 @@ const namespace = computed(() => props.project.namespace.owner + "/" + props.pro
         </DropdownItem>
       </DropdownButton>
       <VisibilityChangerModal
-        v-if="hasPerms(NamedPermission.SEE_HIDDEN)"
+        v-if="hasPerms(NamedPermission.SeeHidden)"
         type="project"
         :prop-visibility="project.visibility"
         :post-url="`projects/visibility/${project.projectId}`"

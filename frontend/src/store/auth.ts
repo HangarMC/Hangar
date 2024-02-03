@@ -1,4 +1,4 @@
-import type { HangarUser } from "hangar-internal";
+import type { HangarUser } from "~/types/backend";
 
 export const useAuthStore = defineStore("auth", () => {
   const token = ref<string | null>(null);

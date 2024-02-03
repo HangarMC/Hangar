@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import type { HangarNotification, Invite } from "hangar-internal";
 import type { Tab } from "~/types/components/design/Tabs";
+import type { HangarNotification } from "~/types/backend";
 
 definePageMeta({
   loginRequired: true,
 });
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("notifications");
 const router = useRouter();
 const notificationStore = useNotificationStore();
 
@@ -19,18 +19,18 @@ const notifications = ref(unreadNotifications.value);
 const invites = await useInvites();
 
 const selectedTab = ref("unread");
-const selectedTabs: Tab[] = [
+const selectedTabs = [
   { value: "unread", header: i18n.t("notifications.unread") },
   { value: "read", header: i18n.t("notifications.read") },
   { value: "all", header: i18n.t("notifications.all") },
-];
+] as const satisfies Tab<string>[];
 
 const selectedInvitesTab = ref("all");
-const selectedInvitesTabs: Tab[] = [
+const selectedInvitesTabs = [
   { value: "all", header: i18n.t("notifications.invite.all") },
   { value: "projects", header: i18n.t("notifications.invite.projects") },
   { value: "organizations", header: i18n.t("notifications.invite.organizations") },
-];
+] as const satisfies Tab<string>[];
 
 const filteredInvites = computed(() => {
   if (!invites || !invites.value) return [];

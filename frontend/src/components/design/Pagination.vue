@@ -1,7 +1,5 @@
 <script lang="ts" setup generic="T extends Record<string, any>">
-import type { Pagination } from "hangar-api";
-
-type T = Record<string, any>; // remove when https://github.com/vuejs/rfcs/discussions/436 lands or when using volar
+import type { Pagination } from "~/types/backend";
 
 const props = withDefaults(
   defineProps<{
@@ -68,6 +66,11 @@ function updatePage(newPage: number) {
   }
   emit("update:page", newPage);
 }
+
+defineSlots<{
+  pagination(props: { page: number; updatePage: (newPage: number) => void; pages: number }): any;
+  default(props: { item: T; idx: number; key: number }): any;
+}>();
 </script>
 
 <template>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { Project } from "hangar-api";
-import { Visibility, Tag } from "~/types/enums";
+import { type Project, Tag, Visibility } from "~/types/backend";
 
 const i18n = useI18n();
 const router = useRouter();
@@ -14,8 +13,8 @@ defineProps<{
   <NuxtLink :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
     <Card
       :class="{
-        '!border-red-500 border-1px': project.visibility === Visibility.SOFT_DELETE,
-        '!border-gray-300 !dark:border-gray-700 border-1px': project.visibility === Visibility.PUBLIC,
+        '!border-red-500 border-1px': project.visibility === Visibility.SoftDelete,
+        '!border-gray-300 !dark:border-gray-700 border-1px': project.visibility === Visibility.Public,
         'hover:background-card': true,
       }"
     >
@@ -34,8 +33,8 @@ defineProps<{
                 </object>
               </span>
             </h2>
-            <IconMdiCancel v-show="project.visibility === Visibility.SOFT_DELETE" />
-            <IconMdiEyeOff v-show="project.visibility !== Visibility.PUBLIC" />
+            <IconMdiCancel v-show="project.visibility === Visibility.SoftDelete" />
+            <IconMdiEyeOff v-show="project.visibility !== Visibility.Public" />
           </div>
 
           <h3 v-if="project.description" class="mb-1">{{ project.description }}</h3>

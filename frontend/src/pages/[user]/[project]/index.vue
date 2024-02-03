@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import type { User } from "hangar-api";
-import type { HangarProject, PinnedVersion } from "hangar-internal";
-import { NamedPermission } from "~/types/enums";
+import { type HangarProject, NamedPermission, type PinnedVersion, type User } from "~/types/backend";
 
 const props = defineProps<{
   user: User;
@@ -9,8 +7,8 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const route = useRoute();
-const openProjectPages = await useOpenProjectPages(route, props.project);
+const route = useRoute("user-project-pages-all");
+const openProjectPages = useOpenProjectPages(route, props.project);
 
 const sponsors = ref(props.project.settings.sponsors);
 const editingSponsors = ref(false);
@@ -37,7 +35,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
     <section class="basis-full md:basis-11/15 flex-grow overflow-auto">
       <ProjectPageMarkdown v-slot="{ page, editingPage, changeEditingPage, savePage }" :project="props.project" main-page>
         <Card v-if="page?.contents" class="pb-0 overflow-clip overflow-hidden">
-          <ClientOnly v-if="hasPerms(NamedPermission.EDIT_PAGE)">
+          <ClientOnly v-if="hasPerms(NamedPermission.EditPage)">
             <MarkdownEditor
               :editing="editingPage"
               :raw="page.contents"
@@ -57,8 +55,8 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
           <Markdown v-else :raw="page.contents" />
         </Card>
       </ProjectPageMarkdown>
-      <Card v-if="sponsors || hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" class="mt-2 pb-0 overflow-clip overflow-visible">
-        <ClientOnly v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)">
+      <Card v-if="sponsors || hasPerms(NamedPermission.EditSubjectSettings)" class="mt-2 pb-0 overflow-clip overflow-visible">
+        <ClientOnly v-if="hasPerms(NamedPermission.EditSubjectSettings)">
           <MarkdownEditor
             v-model:editing="editingSponsors"
             :raw="sponsors"

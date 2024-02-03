@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { AuthSettings } from "hangar-internal";
 import type { Tab } from "~/types/components/design/Tabs";
+import type { SettingsResponse } from "~/types/backend";
 
 definePageMeta({
   loginRequired: true,
 });
 
-const route = useRoute();
+const route = useRoute("auth-settings");
 const router = useRouter();
 const auth = useAuthStore();
 const notification = useNotificationStore();
@@ -19,13 +19,13 @@ if (process.client && route.path.endsWith("settings")) {
   window.location.replace("/auth/settings/profile");
 }
 
-const tabs: Tab[] = [
+const tabs = [
   { value: "profile", header: t("auth.settings.profile.header") },
   { value: "account", header: t("auth.settings.account.header") },
   { value: "security", header: t("auth.settings.security.header") },
   { value: "api-keys", header: t("auth.settings.apiKeys.header") },
   { value: "other", header: t("auth.settings.misc.header") },
-];
+] as const satisfies Tab<string>[];
 
 const emailConfirmModal = ref();
 const hasPendingMail = ref(settings.value?.emailPending);
@@ -67,7 +67,7 @@ async function verifyEmail(emailCode: string) {
 }
 
 async function refreshSettings() {
-  settings.value = await useInternalApi<AuthSettings>("auth/settings", "POST");
+  settings.value = await useInternalApi<SettingsResponse>("auth/settings", "POST");
 }
 
 useHead(useSeo("Settings", null, route, null));

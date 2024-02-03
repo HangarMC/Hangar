@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import type { ProjectSettingsForm, NewProjectForm } from "hangar-internal";
-import type { Ref } from "vue";
-import { ProjectCategory, Tag } from "~/types/enums";
 import type { Step } from "~/types/components/design/Steps";
+import { Category, type NewProjectForm, type ProjectSettingsForm, Tag } from "~/types/backend";
 
 definePageMeta({
   loginRequired: true,
@@ -10,13 +8,13 @@ definePageMeta({
 
 const i18n = useI18n();
 const router = useRouter();
-const route = useRoute();
+const route = useRoute("new");
 
 const projectOwners = await usePossibleOwners();
-const projectCreationErrors: Ref<string[]> = ref([]);
+const projectCreationErrors = ref<string[]>([]);
 const projectLoading = ref(true);
 const form = ref<NewProjectForm>({
-  category: ProjectCategory.ADMIN_TOOLS,
+  category: Category.AdminTools,
   settings: {
     license: {} as ProjectSettingsForm["settings"]["license"],
     donation: {} as ProjectSettingsForm["settings"]["donation"],

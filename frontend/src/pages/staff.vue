@@ -2,14 +2,14 @@
 import type { Header } from "~/types/components/SortableTable";
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("staff");
 
-const headers: Header[] = [
+const headers = [
   { name: "pic", title: "", sortable: false },
   { name: "name", title: i18n.t("pages.headers.username"), sortable: true },
   { name: "roles", title: i18n.t("pages.headers.roles"), sortable: true },
   { name: "createdAt", title: i18n.t("pages.headers.joined"), sortable: true },
-];
+] as const satisfies Header<string>[];
 
 const page = ref(0);
 const sort = ref<string[]>(["roles"]);
@@ -58,20 +58,20 @@ useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));
 
     <SortableTable
       :headers="headers"
-      :items="staff.result"
+      :items="staff?.result || []"
       :server-pagination="staff.pagination"
       :initial-sorter="{ roles: 1 }"
       @update:sort="updateSort"
       @update:page="updatePage"
     >
-      <template #item_pic="{ item }"><UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs"></UserAvatar></template>
-      <template #item_createdAt="{ item }">{{ i18n.d(item.createdAt, "date") }}</template>
-      <template #item_roles="{ item }">
+      <template #pic="{ item }"><UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs"></UserAvatar></template>
+      <template #createdAt="{ item }">{{ i18n.d(item.createdAt, "date") }}</template>
+      <template #roles="{ item }">
         <div class="space-x-1">
           <Tag v-for="roleId in item.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
         </div>
       </template>
-      <template #item_name="{ item }">
+      <template #name="{ item }">
         <Link :to="'/' + item.name">{{ item.name }}</Link>
       </template>
     </SortableTable>

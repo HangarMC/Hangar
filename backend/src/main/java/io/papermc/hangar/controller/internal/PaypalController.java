@@ -2,10 +2,10 @@ package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.service.internal.PaypalService;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("/api/internal/paypal")
 public class PaypalController extends HangarComponent {
 

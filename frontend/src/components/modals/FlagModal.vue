@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { HangarProject } from "hangar-internal";
+import type { HangarProject } from "~/types/backend";
 
 const props = defineProps<{
   project: HangarProject;

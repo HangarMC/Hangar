@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { ProjectChannel } from "hangar-internal";
-import { ChannelFlag } from "~/types/enums";
+import { ChannelFlag, type ProjectChannel } from "~/types/backend";
 
 const props = defineProps<{
   projectId: number;
@@ -8,7 +7,7 @@ const props = defineProps<{
   channel?: ProjectChannel;
 }>();
 const emit = defineEmits<{
-  (e: "create", channel: ProjectChannel): void;
+  (e: "create", channel: ProjectChannel): any;
 }>();
 
 const i18n = useI18n();

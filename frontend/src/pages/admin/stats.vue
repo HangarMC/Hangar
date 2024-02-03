@@ -3,7 +3,7 @@ import { Line } from "vue-chartjs";
 import { CategoryScale, Chart, type ChartData, Colors, Legend, LinearScale, LineController, LineElement, PointElement, Tooltip } from "chart.js";
 
 definePageMeta({
-  globalPermsRequired: ["VIEW_STATS"],
+  globalPermsRequired: ["ViewStats"],
 });
 
 interface DayStats {
@@ -16,7 +16,7 @@ interface DayStats {
 }
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("admin-stats");
 
 const now = new Date();
 const oneMonthBefore = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());

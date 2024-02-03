@@ -46,7 +46,7 @@ spring:
       enabled: true
 
 springdoc:
-  pathsToMatch: "/api/v1/**"
+  use-fqn: true
 
 management:
   tracing:

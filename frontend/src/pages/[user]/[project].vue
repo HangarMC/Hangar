@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import type { User } from "hangar-api";
-import type { HangarProjectPage, HangarProject } from "hangar-internal";
 import type { RouteLocationNormalizedTyped } from "unplugin-vue-router";
+import type { HangarProject, HangarProjectPage, User } from "~/types/backend";
 
 defineProps<{
   user: User;
 }>();
 
-const route = useRoute("/:user()/:project()");
+const route = useRoute("user-project");
 const project = await useProject(route.params.project);
 await verify(route);
 

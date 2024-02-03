@@ -5,7 +5,7 @@ import { SUPPORTED_LOCALES } from "~/i18n";
 export function useSettingsHelper(
   ssr: boolean,
   userData: ComputedRef<{ hasUser: boolean; theme?: string; language?: string }>,
-  getThemeCookie: () => string,
+  getThemeCookie: () => string | undefined | null,
   setLocale: (locale: string) => void,
   setTheme: (dark: boolean) => void,
   saveSettings: () => Promise<void>,

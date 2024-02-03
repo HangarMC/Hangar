@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import type { PaginatedResult, User } from "hangar-api";
 import type { Header } from "~/types/components/SortableTable";
+import type { PaginatedResultUser } from "~/types/backend";
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("authors");
 
-const headers: Header[] = [
+const headers = [
   { name: "pic", title: "", sortable: false },
   { name: "name", title: i18n.t("pages.headers.username"), sortable: true },
   { name: "createdAt", title: i18n.t("pages.headers.joined"), sortable: true },
   { name: "projectCount", title: i18n.t("pages.headers.projects"), sortable: true },
-];
+] as const satisfies Header<string>[];
 
 const page = ref(0);
 const sort = ref<string[]>(["-projectCount"]);
@@ -46,7 +46,7 @@ async function updatePage(newPage: number) {
 }
 
 async function update() {
-  authors.value = await useApi<PaginatedResult<User>>("authors", "GET", requestParams.value);
+  authors.value = await useApi<PaginatedResultUser>("authors", "GET", requestParams.value);
 }
 
 useHead(useSeo(i18n.t("pages.authorsTitle"), "Hangar Project Authors", route, null));
@@ -62,15 +62,15 @@ useHead(useSeo(i18n.t("pages.authorsTitle"), "Hangar Project Authors", route, nu
 
     <SortableTable
       :headers="headers"
-      :items="authors?.result"
+      :items="authors?.result || []"
       :server-pagination="authors?.pagination"
       :initial-sorter="{ projectCount: -1 }"
       @update:sort="updateSort"
       @update:page="updatePage"
     >
-      <template #item_pic="{ item }"><UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs"></UserAvatar></template>
-      <template #item_createdAt="{ item }">{{ i18n.d(item?.createdAt, "date") }}</template>
-      <template #item_name="{ item }">
+      <template #pic="{ item }"><UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs"></UserAvatar></template>
+      <template #createdAt="{ item }">{{ i18n.d(item?.createdAt, "date") }}</template>
+      <template #name="{ item }">
         <Link :to="'/' + item.name">{{ item.name }}</Link>
       </template>
     </SortableTable>

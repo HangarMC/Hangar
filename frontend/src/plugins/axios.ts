@@ -30,7 +30,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       // forward auth token
       addAuthHeader(config, authStore.token);
       // forward other headers for ssr
-      forwardRequestHeaders(config, nuxtApp);
+      if (process.server) forwardRequestHeaders(config, nuxtApp as NuxtApp);
       // axiosLog("calling with headers", config.headers);
       // Progress bar
       if (process.client) startProgressBar();
@@ -44,7 +44,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   axiosInstance.interceptors.response.use(
     (res) => {
       // forward cookies and stuff to browser
-      forwardResponseHeaders(res, nuxtApp);
+      forwardResponseHeaders(res, nuxtApp as NuxtApp);
       // Progress bar
       if (process.client) stopProgressBar();
       return res;

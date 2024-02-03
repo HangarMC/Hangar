@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import type { HangarProject } from "hangar-internal";
 import type { AxiosError } from "axios";
-import type { Platform } from "~/types/enums";
-import { NamedPermission, ReviewState, Visibility } from "~/types/enums";
 import type { Ref } from "vue";
+import { type HangarProject, NamedPermission, Platform, ReviewState, Visibility } from "~/types/backend";
 
 const i18n = useI18n();
 const router = useRouter();
@@ -64,7 +62,7 @@ enum ConfirmationType {
 function requiresConfirmation(): ConfirmationType {
   for (const platform in props.project.mainChannelVersions) {
     const version = props.project.mainChannelVersions[platform as Platform];
-    if (version.reviewState !== ReviewState.REVIEWED) {
+    if (version.reviewState !== ReviewState.Reviewed) {
       return ConfirmationType.REQUIRED;
     }
 
@@ -78,17 +76,17 @@ function requiresConfirmation(): ConfirmationType {
 </script>
 
 <template>
-  <div v-if="project.visibility !== Visibility.PUBLIC" class="mb-4">
-    <Alert v-if="project.visibility === Visibility.NEEDS_CHANGES" type="danger">
+  <div v-if="project.visibility !== Visibility.Public" class="mb-4">
+    <Alert v-if="project.visibility === Visibility.NeedsChanges" type="danger">
       <div>
         <div class="text-bold">{{ i18n.t("visibility.notice." + project.visibility) }}</div>
         <Markdown :raw="project.lastVisibilityChangeComment || 'Unknown'" class="mt-2" inline />
-        <div v-if="hasPerms(NamedPermission.EDIT_PAGE)">
+        <div v-if="hasPerms(NamedPermission.EditPage)">
           <Button @click="sendForApproval">{{ i18n.t("project.sendForApproval") }}</Button>
         </div>
       </div>
     </Alert>
-    <Alert v-else-if="project.visibility === Visibility.SOFT_DELETE" type="danger">
+    <Alert v-else-if="project.visibility === Visibility.SoftDelete" type="danger">
       {{ i18n.t("visibility.notice." + project.visibility, [project.lastVisibilityChangeUserName]) }}
     </Alert>
     <Alert v-else type="danger">

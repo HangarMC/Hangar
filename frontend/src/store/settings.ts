@@ -3,7 +3,7 @@ export const useSettingsStore = defineStore("settings", () => {
   const darkMode = ref(false);
   const locale = ref("en");
 
-  const mobile: Ref<boolean> = ref(true); // True cause mobile first!!
+  const mobile = ref(true); // True cause mobile first!!
   const mobileBreakPoint = 700;
 
   function toggleDarkMode() {

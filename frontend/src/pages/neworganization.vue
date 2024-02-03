@@ -3,7 +3,7 @@ definePageMeta({
   loginRequired: true,
 });
 
-const route = useRoute();
+const route = useRoute("neworganization");
 const router = useRouter();
 const i18n = useI18n();
 const v = useVuelidate();

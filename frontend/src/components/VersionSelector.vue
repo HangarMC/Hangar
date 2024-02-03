@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { Ref } from "vue";
-import type { PlatformVersion } from "hangar-internal";
 import type { ValidationRule } from "@vuelidate/core";
 
 const props = defineProps<{
@@ -19,8 +17,8 @@ const selected = computed({
   set: (value) => emit("update:modelValue", value),
 });
 
-const selectedParents: Ref<string[]> = ref([]);
-const selectedSub: Ref<string[]> = ref([]);
+const selectedParents = ref<string[]>([]);
+const selectedSub = ref<string[]>([]);
 for (const version of selected.value) {
   selectedSub.value.push(version);
 

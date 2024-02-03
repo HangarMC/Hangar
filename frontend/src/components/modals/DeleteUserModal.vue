@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { User } from "hangar-api";
+import type { User } from "~/types/backend";
 
 const props = defineProps<{
   user: User;

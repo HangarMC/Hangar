@@ -2,17 +2,17 @@
 import type { Tab } from "~/types/components/design/Tabs";
 
 definePageMeta({
-  globalPermsRequired: ["MOD_NOTES_AND_FLAGS"],
+  globalPermsRequired: ["ModNotesAndFlags"],
 });
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("admin-flags");
 
 const selectedTab = ref("unresolved");
-const selectedTabs: Tab[] = [
+const selectedTabs = [
   { value: "unresolved", header: i18n.t("flagReview.unresolved") },
   { value: "resolved", header: i18n.t("flagReview.resolved") },
-];
+] as const satisfies Tab<string>[];
 
 useHead(useSeo(i18n.t("flagReview.title"), null, route, null));
 </script>

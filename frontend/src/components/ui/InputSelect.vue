@@ -1,11 +1,11 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T">
 import type { ValidationRule } from "@vuelidate/core";
 import type { Option } from "~/types/components/ui/InputSelect";
 
 const i18n = useI18n();
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: object | string | boolean | number | null | undefined): void;
+  (e: "update:modelValue", value?: T): void;
 }>();
 const internalVal = computed({
   get: () => props.modelValue,
@@ -14,8 +14,8 @@ const internalVal = computed({
 
 const props = withDefaults(
   defineProps<{
-    modelValue?: object | string | boolean | number | null;
-    values: Option[] | Record<string, any> | string[] | object[];
+    modelValue?: T;
+    values: Option<T>[] | Record<string, any> | string[] | object[];
     itemValue?: string;
     itemText?: string;
     disabled?: boolean;
@@ -28,7 +28,7 @@ const props = withDefaults(
     i18nTextValues?: boolean;
   }>(),
   {
-    modelValue: "",
+    modelValue: undefined,
     itemValue: "value",
     itemText: "text",
     label: "",

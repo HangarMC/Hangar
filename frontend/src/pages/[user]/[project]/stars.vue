@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { HangarProject } from "hangar-internal";
+import type { HangarProject } from "~/types/backend";
 
-const route = useRoute<"user-project-stars">();
+const route = useRoute("user-project-stars");
 const i18n = useI18n();
-const stargazers = await useStargazers(route.params.project as string);
+const stargazers = await useStargazers(route.params.project);
 
 const props = defineProps<{
   project: HangarProject;

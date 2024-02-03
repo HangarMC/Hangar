@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
-import type { HangarNotification, HangarUser } from "hangar-internal";
 
 import hangarLogo from "~/assets/hangar-logo.svg";
 
@@ -20,9 +19,11 @@ import IconMdiFolderPlusOutline from "~icons/mdi/folder-plus-outline";
 import IconMdiFolderWrenchOutline from "~icons/mdi/folder-wrench-outline";
 import IconMdiFolderInformationOutline from "~icons/mdi/folder-information-outline";
 
-import { NamedPermission } from "~/types/enums";
+import type { RouteNamedMap } from "vue-router/auto/routes";
+import { type HangarNotification, type HangarUser, NamedPermission } from "~/types/backend";
 
 // marker so that you can inspect backend data in dev tools
+// @ts-ignore
 const backendData = useBackendData;
 
 const settings = useSettingsStore();
@@ -314,26 +315,26 @@ function isRecent(date: string): boolean {
                 <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
                 <DropdownItem to="/auth/settings/profile">{{ t("nav.user.settings") }}</DropdownItem>
                 <hr />
-                <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/flags">
+                <DropdownItem v-if="hasPerms(NamedPermission.ModNotesAndFlags)" to="/admin/flags">
                   {{ t("nav.user.flags") }}
                   <span v-if="authStore.user.headerData.unresolvedFlags !== 0">{{ "(" + authStore.user?.headerData.unresolvedFlags + ")" }}</span>
                 </DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/approval/projects">
+                <DropdownItem v-if="hasPerms(NamedPermission.ModNotesAndFlags)" to="/admin/approval/projects">
                   {{ t("nav.user.projectApprovals") }}
                   <span v-if="authStore.user.headerData.projectApprovals !== 0">{{ "(" + authStore.user?.headerData.projectApprovals + ")" }}</span>
                 </DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.REVIEWER)" to="/admin/approval/versions">
+                <DropdownItem v-if="hasPerms(NamedPermission.Reviewer)" to="/admin/approval/versions">
                   {{ t("nav.user.versionApprovals") }}
                   <span v-if="authStore.user.headerData.reviewQueueCount !== 0">{{ "(" + authStore.user?.headerData.reviewQueueCount + ")" }}</span>
                 </DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.VIEW_STATS)" to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
+                <DropdownItem v-if="hasPerms(NamedPermission.ViewStats)" to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
                 <!-- todo -->
-                <!--<DropdownItem v-if="hasPerms(NamedPermission.VIEW_HEALTH)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>-->
-                <DropdownItem v-if="hasPerms(NamedPermission.VIEW_LOGS)" to="/admin/log">{{ t("nav.user.log") }}</DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.MANUAL_VALUE_CHANGES)" to="/admin/settings">
+                <!--<DropdownItem v-if="hasPerms(NamedPermission.ViewHealth)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>-->
+                <DropdownItem v-if="hasPerms(NamedPermission.ViewLogs)" to="/admin/log">{{ t("nav.user.log") }}</DropdownItem>
+                <DropdownItem v-if="hasPerms(NamedPermission.ManualValueChanges)" to="/admin/settings">
                   {{ t("nav.user.adminSettings") }}
                 </DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)" to="/admin/user/">
+                <DropdownItem v-if="hasPerms(NamedPermission.EditAllUserSettings)" to="/admin/user/">
                   {{ t("nav.user.userList") }}
                 </DropdownItem>
                 <hr />

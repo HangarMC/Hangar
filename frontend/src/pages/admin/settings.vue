@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import type { Ref } from "vue";
-import type { PlatformVersion } from "hangar-internal";
-import type { Platform } from "~/types/enums";
+import { Platform, type PlatformVersion } from "~/types/backend";
 
 definePageMeta({
-  globalPermsRequired: ["MANUAL_VALUE_CHANGES"],
+  globalPermsRequired: ["ManualValueChanges"],
 });
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("admin-settings");
 const router = useRouter();
 const notification = useNotificationStore();
 
@@ -18,7 +16,7 @@ const loading = ref<boolean>(false);
 
 useHead(useSeo(i18n.t("platformVersions.title"), null, route, null));
 
-const fullVersions: Ref<Record<Platform, string[]>> = ref({
+const fullVersions = ref<Record<Platform, string[]>>({
   PAPER: [],
   WATERFALL: [],
   VELOCITY: [],

@@ -1,6 +1,5 @@
-import type { PermissionCheck, UserPermissions } from "hangar-api";
-import type { RouteLocationNamedRaw, RouteLocationNormalized } from "vue-router";
-import { NamedPermission, PermissionType } from "~/types/enums";
+import type { RouteLocationNamedRaw, RouteLocationNormalized } from "vue-router/auto";
+import { NamedPermission, type PermissionCheck, PermissionType, type UserPermissions } from "~/types/backend";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   if (to.fullPath.startsWith("/@vite")) {
@@ -16,7 +15,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
 async function loadRoutePerms(to: RouteLocationNormalized) {
   const authStore = useAuthStore();
-  if (to.params.user && to.params.project) {
+  if ("project" in to.params && to.params.user && to.params.project) {
     if (authStore.authenticated) {
       if (to.params.user === authStore.routePermissionsUser && to.params.project === authStore.routePermissionsProject) {
         return;
@@ -31,9 +30,9 @@ async function loadRoutePerms(to: RouteLocationNormalized) {
       }
       return;
     }
-  } else if (to.params.user) {
+  } else if ("user" in to.params && to.params.user) {
     if (authStore.authenticated) {
-      if (to.params.user === authStore.routePermissionsUser && to.params.project === null) {
+      if (to.params.user === authStore.routePermissionsUser && !("project" in to.params)) {
         return;
       }
 
@@ -84,11 +83,11 @@ function loginRequired(authStore: ReturnType<typeof useAuthStore>, to: RouteLoca
 
 function currentUserRequired(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
   routePermLog("route currentUserRequired");
-  if (!to.params.user) {
+  if (!("user" in to.params) || !to.params.user) {
     throw new TypeError("Must have 'user' as a route param to use CurrentUser");
   }
   checkLogin(authStore, to, 404);
-  if (!hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)) {
+  if (!hasPerms(NamedPermission.EditAllUserSettings)) {
     if (to.params.user !== authStore.user?.name) {
       return useErrorRedirect(to, 403, undefined, { logErrorMessage: false });
     }
@@ -110,7 +109,7 @@ async function globalPermsRequired(authStore: ReturnType<typeof useAuthStore>, t
     }
   });
   routePermLog("result", check);
-  if (check && (check.type !== PermissionType.GLOBAL || !check.result)) {
+  if (check && (check.type !== PermissionType.Global || !check.result)) {
     routePermLog("404?");
     return useErrorRedirect(to, 404, "Not found", { logErrorMessage: false });
   }
@@ -118,7 +117,7 @@ async function globalPermsRequired(authStore: ReturnType<typeof useAuthStore>, t
 
 function projectPermsRequired(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
   routePermLog("route projectPermsRequired", to.meta.projectPermsRequired);
-  if (!to.params.user || !to.params.project) {
+  if (!("project" in to.params) || !to.params.user || !to.params.project) {
     throw new Error("Can't use this decorator on a route without `author` and `slug` path params");
   }
   checkLogin(authStore, to, 404);

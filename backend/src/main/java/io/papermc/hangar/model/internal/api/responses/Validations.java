@@ -6,7 +6,7 @@ import org.checkerframework.framework.qual.DefaultQualifier;
 
 @DefaultQualifier(NonNull.class)
 public record Validations(
-    Project project,
+    ProjectValidations project,
     Validation userTagline,
     Validation version,
     Validation org,
@@ -14,7 +14,7 @@ public record Validations(
     String urlRegex
 ) {
 
-    public record Project(
+    public record ProjectValidations(
         Validation name,
         Validation desc,
         Validation license,
@@ -31,7 +31,7 @@ public record Validations(
     }
 
     public static Validations create(final HangarConfig config) {
-        final Project project = new Project(
+        final ProjectValidations project = new ProjectValidations(
             config.projects.projectName(),
             config.projects.projectDescription(),
             config.projects.licenseName(),

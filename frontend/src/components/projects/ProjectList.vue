@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { PaginatedResult, Project } from "hangar-api";
+import type { PaginatedResultProject } from "~/types/backend";
 
 const i18n = useI18n();
 
 defineProps<{
-  projects: PaginatedResult<Project>;
+  projects: PaginatedResultProject;
   resetAnchor?: Element;
 }>();
 

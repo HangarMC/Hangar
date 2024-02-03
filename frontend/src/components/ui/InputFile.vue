@@ -2,7 +2,7 @@
 import type { ValidationRule } from "@vuelidate/core";
 
 const emit = defineEmits<{
-  (e: "update:modelValue", file: File | null | undefined): void;
+  (e: "update:modelValue", file?: File | null): void;
 }>();
 const file = computed({
   get: () => props.modelValue,

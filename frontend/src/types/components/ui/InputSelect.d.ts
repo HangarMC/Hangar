@@ -1,4 +1,4 @@
-export interface Option {
-  value: object | string | boolean | number;
+export interface Option<T> {
+  value: T;
   text: string;
 }

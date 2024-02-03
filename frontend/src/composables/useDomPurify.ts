@@ -6,7 +6,8 @@ export const config = {
   ADD_TAGS: ["iframe"],
   ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling"],
 } as Config;
-export function useDomPurify(text: string) {
+export function useDomPurify(text?: string) {
+  if (!text) return "";
   const dompurify = useNuxtApp().$dompurify as DOMPurifyI;
 
   // Manually handle iframe to allow YouTube video embeds

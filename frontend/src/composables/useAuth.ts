@@ -1,6 +1,6 @@
-import type { HangarUser } from "hangar-internal";
 import type { AxiosError, AxiosInstance, AxiosRequestHeaders } from "axios";
 import { jwtDecode, type JwtPayload } from "jwt-decode";
+import type { HangarUser } from "~/types/backend";
 
 class Auth {
   loginUrl(redirectUrl: string | undefined): string {

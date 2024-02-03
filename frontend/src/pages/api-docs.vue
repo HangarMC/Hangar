@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("api-docs");
 
 const server = import.meta.env.SSR;
 useHead(useSeo(i18n.t("apiDocs.title"), "API Docs for the Hangar REST API", route, null));

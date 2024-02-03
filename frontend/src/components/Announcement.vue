@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Announcement } from "hangar-api";
+import type { Announcement } from "~/types/backend";
 
 const props = defineProps<{ announcement: Announcement }>();
 const { announcement } = toRefs(props);

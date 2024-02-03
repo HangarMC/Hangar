@@ -1,19 +1,17 @@
 <script setup lang="ts">
-import type { PaginatedResult, Project, User } from "hangar-api";
-import type { Organization } from "hangar-internal";
 import type { FunctionalComponent } from "vue";
-import { NamedPermission } from "~/types/enums";
 import IconMdiWrench from "~icons/mdi/wrench";
 import IconMdiKey from "~icons/mdi/key";
 import IconMdiCalendar from "~icons/mdi/calendar";
+import { type HangarOrganization, NamedPermission, type PaginatedResultProject, type User } from "~/types/backend";
 
 const props = defineProps<{
   user: User;
-  organization: Organization;
+  organization: HangarOrganization;
 }>();
 const i18n = useI18n();
 
-const route = useRoute();
+const route = useRoute("user");
 const router = useRouter();
 
 const sorters = [
@@ -61,14 +59,14 @@ interface UserButton {
 const buttons = computed<UserButton[]>(() => {
   const list = [] as UserButton[];
   if (!props.user.isOrganization) {
-    if (hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)) {
+    if (hasPerms(NamedPermission.EditAllUserSettings)) {
       list.push({ icon: IconMdiKey, attr: { to: "/" + props.user.name + "/settings/api-keys" }, name: "apiKeys" });
     }
-    if (hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS) || hasPerms(NamedPermission.REVIEWER)) {
+    if (hasPerms(NamedPermission.ModNotesAndFlags) || hasPerms(NamedPermission.Reviewer)) {
       list.push({ icon: IconMdiCalendar, attr: { to: `/admin/activities/${props.user.name}` }, name: "activity" });
     }
   }
-  if (hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)) {
+  if (hasPerms(NamedPermission.EditAllUserSettings)) {
     list.push({ icon: IconMdiWrench, attr: { to: "/admin/user/" + props.user.name }, name: "admin" });
   }
 
@@ -86,7 +84,7 @@ watchDebounced(
     // set the request params
     await router.replace({ query: { page: page.value, ...paramsWithoutLimit } });
     // do the update
-    projects.value = await useApi<PaginatedResult<Project>>("projects", "get", { owner: props.user.name, ...requestParams.value });
+    projects.value = await useApi<PaginatedResultProject>("projects", "get", { owner: props.user.name, ...requestParams.value });
   },
   { deep: true, debounce: 250 }
 );
@@ -114,11 +112,11 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
       </div>
       <div class="flex-basis-full flex-grow lg:max-w-3/10 lg:min-w-2/10">
         <Card
-          v-if="buttons.length !== 0 || (organization && hasPerms(NamedPermission.IS_SUBJECT_OWNER))"
+          v-if="buttons.length !== 0 || (organization && hasPerms(NamedPermission.IsSubjectOwner))"
           class="mb-4 border-solid border-top-4 border-top-red-500 dark:border-top-red-500"
         >
           <template #header>{{ i18n.t("author.management") }}</template>
-          <template v-if="organization && hasPerms(NamedPermission.IS_SUBJECT_OWNER)">
+          <template v-if="organization && hasPerms(NamedPermission.IsSubjectOwner)">
             <Tooltip :content="i18n.t('author.tooltips.transfer')">
               <OrgTransferModal :organization="user.name" />
             </Tooltip>
@@ -136,8 +134,8 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
             </Link>
           </Tooltip>
 
-          <LockUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.IS_STAFF)" :user="user" />
-          <DeleteUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.MANUAL_VALUE_CHANGES)" :user="user" />
+          <LockUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.IsStaff)" :user="user" />
+          <DeleteUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.ManualValueChanges)" :user="user" />
         </Card>
 
         <Card v-if="possibleAlts?.length" class="mb-4">
@@ -183,33 +181,33 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
           <Card class="mb-4" accent>
             <template #header>{{ i18n.t("author.stars") }}</template>
 
-            <ul>
+            <ul v-if="starred?.result?.length">
               <li v-for="star in starred?.result" :key="star.name">
                 <Link :to="'/' + star.namespace.owner + '/' + star.namespace.slug">
                   {{ star.namespace.owner }}/<strong>{{ star.name }}</strong>
                 </Link>
               </li>
-
-              <span v-if="!starred || starred?.result?.length === 0">
-                {{ i18n.t("author.noStarred", [props.user.name]) }}
-              </span>
             </ul>
+
+            <span v-else>
+              {{ i18n.t("author.noStarred", [props.user.name]) }}
+            </span>
           </Card>
 
           <Card accent>
             <template #header>{{ i18n.t("author.watching") }}</template>
 
-            <ul>
+            <ul v-if="watching?.result?.length">
               <li v-for="watched in watching?.result" :key="watched.name">
                 <Link :to="'/' + watched.namespace.owner + '/' + watched.namespace.slug">
                   {{ watched.namespace.owner }}/<strong>{{ watched.name }}</strong>
                 </Link>
               </li>
-
-              <span v-if="!watching || watching?.result?.length === 0">
-                {{ i18n.t("author.noWatching", [props.user.name]) }}
-              </span>
             </ul>
+
+            <span v-else>
+              {{ i18n.t("author.noWatching", [props.user.name]) }}
+            </span>
           </Card>
         </template>
         <MemberList

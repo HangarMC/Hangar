@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("terms");
 
 const text = `
 Terms and Conditions

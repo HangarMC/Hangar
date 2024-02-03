@@ -59,7 +59,7 @@ marked.use({ renderer });
 marked.use(markedExtendedTables());
 marked.use(markedLinkifyIt());
 
-export function parseMarkdown(text?: string): string | undefined {
+export function parseMarkdown(text?: string | null): string | undefined {
   if (!text) return undefined;
-  return marked.parse(text);
+  return marked.parse(text) as string;
 }

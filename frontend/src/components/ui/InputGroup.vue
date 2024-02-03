@@ -1,8 +1,8 @@
-<script lang="ts" setup>
+<script lang="ts" setup generic="T">
 import type { ValidationRule } from "@vuelidate/core";
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value?: string[] | boolean[] | number[] | object[]): void;
+  (e: "update:modelValue", value?: T): void;
 }>();
 const value = computed({
   get: () => props.modelValue,
@@ -10,7 +10,7 @@ const value = computed({
 });
 const props = withDefaults(
   defineProps<{
-    modelValue?: string[] | boolean[] | number[] | object[];
+    modelValue?: T;
     label?: string;
     errorMessages?: string[];
     rules?: ValidationRule<string | undefined>[];

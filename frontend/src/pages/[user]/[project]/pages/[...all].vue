@@ -1,16 +1,14 @@
 <script lang="ts" setup>
-import type { User } from "hangar-api";
-import type { HangarProject } from "hangar-internal";
-import { NamedPermission } from "~/types/enums";
+import { type HangarProject, NamedPermission, type User } from "~/types/backend";
 
 const props = defineProps<{
   user: User;
   project: HangarProject;
 }>();
 
-const route = useRoute<"user-project-pages-all">();
+const route = useRoute("user-project-pages-all");
 
-const open = await useOpenProjectPages(route, props.project);
+const open = useOpenProjectPages(route, props.project);
 // useSeo is in ProjectPageMarkdown
 </script>
 
@@ -24,7 +22,7 @@ const open = await useOpenProjectPages(route, props.project);
         :main-page="false"
       >
         <Card v-if="page" class="pb-0 overflow-clip overflow-hidden">
-          <ClientOnly v-if="hasPerms(NamedPermission.EDIT_PAGE)">
+          <ClientOnly v-if="hasPerms(NamedPermission.EditPage)">
             <MarkdownEditor
               ref="editor"
               :editing="editingPage"

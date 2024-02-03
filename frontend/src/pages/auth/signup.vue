@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const route = useRoute();
+const route = useRoute("auth-signup");
 const v = useVuelidate();
 const backendData = useBackendData;
 

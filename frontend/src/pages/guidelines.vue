@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("guidelines");
 
 const text = `
 # Resource Guidelines

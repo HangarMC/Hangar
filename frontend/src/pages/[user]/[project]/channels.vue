@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import type { User } from "hangar-api";
-import type { HangarProject, ProjectChannel } from "hangar-internal";
-import { ChannelFlag } from "~/types/enums";
+import { ChannelFlag, type HangarChannel, type HangarProject, type User } from "~/types/backend";
 
 definePageMeta({
-  projectPermsRequired: ["EDIT_CHANNELS"],
+  projectPermsRequired: ["EditChannels"],
 });
 
 const props = defineProps<{
@@ -12,7 +10,7 @@ const props = defineProps<{
   project: HangarProject;
 }>();
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("user-project-channels");
 const channelData = await useProjectChannels(props.project.namespace.slug);
 const channels = channelData.data;
 const validations = useBackendData.validations;
@@ -20,7 +18,7 @@ const notifications = useNotificationStore();
 
 useHead(useSeo("Channels | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 
-async function deleteChannel(channel: ProjectChannel) {
+async function deleteChannel(channel: HangarChannel) {
   await useInternalApi(`channels/${props.project.id}/delete/${channel.id}`, "post")
     .then(() => {
       channelData.refresh();
@@ -29,7 +27,7 @@ async function deleteChannel(channel: ProjectChannel) {
     .catch((e) => handleRequestError(e));
 }
 
-async function addChannel(channel: ProjectChannel) {
+async function addChannel(channel: HangarChannel) {
   await useInternalApi(`channels/${props.project.id}/create`, "post", {
     name: channel.name,
     description: channel.description,
@@ -43,7 +41,7 @@ async function addChannel(channel: ProjectChannel) {
     .catch((e) => handleRequestError(e));
 }
 
-async function editChannel(channel: ProjectChannel) {
+async function editChannel(channel: HangarChannel) {
   if (!channel.id) return;
   await useInternalApi(`channels/${props.project.id}/edit`, "post", {
     id: channel.id,

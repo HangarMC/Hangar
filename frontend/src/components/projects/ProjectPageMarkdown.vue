@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { HangarProject, HangarProjectPage } from "hangar-internal";
+import type { HangarProject, HangarProjectPage } from "~/types/backend";
 
 const props = defineProps<{
   project: HangarProject;
   mainPage: boolean;
 }>();
 
-const route = useRoute<"user-project-pages-all">();
+const route = useRoute("user-project-pages-all");
 const router = useRouter();
 
 const updateProjectPages = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");

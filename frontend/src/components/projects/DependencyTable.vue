@@ -1,15 +1,14 @@
 <script lang="ts" setup>
-import type { DependencyVersion, PaginatedResult, PluginDependency, Project, ProjectNamespace } from "hangar-api";
-import type { Platform } from "~/types/enums";
 import type { Tab } from "~/types/components/design/Tabs";
+import { type HangarVersion, type PaginatedResultProject, Platform, type PluginDependency, type ProjectNamespace } from "~/types/backend";
 
-const route = useRoute();
+const route = useRoute("user-project");
 const i18n = useI18n();
 const t = i18n.t;
 
 const props = withDefaults(
   defineProps<{
-    version: DependencyVersion;
+    version: HangarVersion;
     platform: Platform;
     noEditing?: boolean;
   }>(),
@@ -61,14 +60,14 @@ function reset() {
 
 async function onSearch(val: string | undefined, index: number) {
   if (val) {
-    const projects = await useApi<PaginatedResult<Project>>(`projects?limit=25&offset=0&q=${val.replace("/", " ")}`);
+    const projects = await useApi<PaginatedResultProject>(`projects?limit=25&offset=0&q=${val.replace("/", " ")}`);
     completionResults.value[index] = projects.result
       .filter((p) => p.namespace.owner !== route.params.user || p.namespace.slug !== route.params.project)
       .map((p) => p.namespace);
   }
 }
 
-function toString(namespace: ProjectNamespace | string) {
+function toString(namespace: ProjectNamespace | string | null): string {
   if (!namespace) return "";
   if (typeof namespace === "string") return namespace;
   return namespace.owner + "/" + namespace.slug;
@@ -84,10 +83,10 @@ function fromString(string: string): ProjectNamespace | string | null {
       };
 }
 
-const selectedUploadTabs: Tab[] = [
+const selectedUploadTabs = [
   { value: "file", header: "Hangar" },
   { value: "url", header: "URL" },
-];
+] as const satisfies Tab<string>[];
 
 function changeTabs(val: string | undefined, idx: number) {
   if (val === "file") {

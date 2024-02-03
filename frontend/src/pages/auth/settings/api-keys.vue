@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { ApiKey } from "hangar-api";
-import type { NamedPermission } from "~/types/enums";
+import { type ApiKey, NamedPermission } from "~/types/backend";
 
 const i18n = useI18n();
 const notification = useNotificationStore();

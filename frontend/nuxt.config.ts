@@ -139,7 +139,6 @@ export default defineNuxtConfig({
     },
   },
   proxy: {
-    enableProxy: true,
     proxies: {
       // for performance, these should be mirrored in ingress
       "/api/": defineProxyBackend(),

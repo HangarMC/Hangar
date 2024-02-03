@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.Optional;
 
 // @el(orgName: String)
-@Controller
+@RestController
 @RateLimit(path = "organization")
 @RequestMapping("/api/internal/organizations")
 public class OrganizationController extends HangarComponent {

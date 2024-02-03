@@ -2,7 +2,7 @@
 import { isAxiosError } from "axios";
 import { email as emailRule } from "~/composables/useValidationHelpers";
 
-const route = useRoute();
+const route = useRoute("auth-reset");
 const router = useRouter();
 const v = useVuelidate();
 

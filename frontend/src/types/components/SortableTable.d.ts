@@ -1,6 +1,6 @@
-export interface Header {
-  name: string;
+export type Header<T extends string> = {
+  name: T;
   title: string;
   sortable?: boolean;
   width?: string;
-}
+};

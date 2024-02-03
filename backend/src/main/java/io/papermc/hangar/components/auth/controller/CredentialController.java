@@ -56,7 +56,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,14 +63,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import static dev.samstevens.totp.util.Utils.getDataUriForImage;
 
-@Controller
+@RestController
 @RateLimit(path = "auth")
 @RequestMapping(path = "/api/internal/auth", produces = MediaType.APPLICATION_JSON_VALUE)
-@ResponseBody
 public class CredentialController extends HangarComponent {
 
     private final SecretGenerator secretGenerator;

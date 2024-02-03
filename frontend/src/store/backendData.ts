@@ -1,33 +1,36 @@
-import type { BackendData, IPermission, Role } from "hangar-api";
-import type { IPlatform, IProjectCategory, IPrompt } from "hangar-internal";
 import backendData from "~/generated/backendData.json";
 import type { Option } from "~/types/components/ui/InputAutocomplete";
+import type { CategoryData, RoleData } from "~/types/backend";
+import type { BackendData, ServerBackendData } from "~/types/backendData";
 
-const typedBackendData = { ...backendData } as unknown as BackendData;
+const serverBackendData = { ...backendData } as unknown as ServerBackendData;
+const typedBackendData = { ...serverBackendData } as unknown as BackendData;
 
 // convert to bigint
-const permissionResult = (typedBackendData.permissions as unknown as IPermission[])?.map(({ value, frontendName, permission }) => ({
+const permissionResult = serverBackendData.permissions?.map(({ value, frontendName, permission }) => ({
   value,
   frontendName,
   permission: BigInt("0b" + permission),
 }));
 
 // convert to maps
-typedBackendData.projectCategories = convertToMap(typedBackendData.projectCategories as unknown as IProjectCategory[], (value) => value.apiName);
+typedBackendData.projectCategories = convertToMap(serverBackendData.projectCategories, (value) => value.apiName);
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 typedBackendData.permissions = convertToMap(permissionResult, (value) => value.value);
-typedBackendData.platforms = convertToMap(typedBackendData.platforms as unknown as IPlatform[], (value) => value.name.toUpperCase());
-typedBackendData.prompts = convertToMap(typedBackendData.prompts as unknown as IPrompt[], (value) => value.name);
+typedBackendData.platforms = convertToMap(serverBackendData.platforms, (value) => value.name.toUpperCase());
+typedBackendData.prompts = convertToMap(serverBackendData.prompts, (value) => value.name);
 
 // main export
 export const useBackendData = typedBackendData;
 
-export function getRole(id: number): Role | undefined {
+export function getRole(id: number): RoleData | undefined {
   return (
     getRoleFromRoles(id, typedBackendData.globalRoles) || getRoleFromRoles(id, typedBackendData.projectRoles) || getRoleFromRoles(id, typedBackendData.orgRoles)
   );
 }
 
-export function getRoleByValue(id: string): Role | undefined {
+export function getRoleByValue(id: string): RoleData | undefined {
   return (
     getRoleFromRolesValue(id, typedBackendData.globalRoles) ||
     getRoleFromRolesValue(id, typedBackendData.projectRoles) ||
@@ -35,22 +38,22 @@ export function getRoleByValue(id: string): Role | undefined {
   );
 }
 
-function getRoleFromRolesValue(id: string, roles: Role[]): Role | undefined {
+function getRoleFromRolesValue(id: string, roles: RoleData[]): RoleData | undefined {
   return roles.find((r) => r.value === id);
 }
 
-function getRoleFromRoles(id: number, roles: Role[]): Role | undefined {
+function getRoleFromRoles(id: number, roles: RoleData[]): RoleData | undefined {
   return roles.find((r) => r.roleId === id);
 }
 
 // helpers
-export const useVisibleCategories = computed<IProjectCategory[]>(() =>
-  [...(useBackendData.projectCategories?.values() || [])].filter((value) => value.visible)
-);
+export const useVisibleCategories = computed<CategoryData[]>(() => [...(useBackendData.projectCategories?.values() || [])].filter((value) => value.visible));
 export const useVisiblePlatforms = computed(() => (useBackendData.platforms ? [...useBackendData.platforms.values()].filter((value) => value.visible) : []));
 
-export const useLicenseOptions = computed<Option[]>(() => useBackendData.licenses.map<Option>((l) => ({ value: l, text: l })));
-export const useCategoryOptions = computed<Option[]>(() => useVisibleCategories.value.map<Option>((c) => ({ value: c.apiName, text: c.title })));
+export const useLicenseOptions = computed<Option<string>[]>(() => useBackendData.licenses.map<Option<string>>((l) => ({ value: l, text: l })));
+export const useCategoryOptions = computed<Option<string>[]>(() =>
+  useVisibleCategories.value.map<Option<string>>((c) => ({ value: c.apiName, text: c.title }))
+);
 
 function convertToMap<E, T>(values: T[] = [], toStringFunc: (value: T) => string): Map<E, T> {
   const map = new Map<E, T>();

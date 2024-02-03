@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { FlagActivity, ReviewActivity } from "hangar-internal";
+import type { FlagActivity, ReviewActivity } from "~/types/backend";
 
 definePageMeta({
-  globalPermsRequired: ["REVIEWER"],
+  globalPermsRequired: ["Reviewer"],
 });
 
-const route = useRoute();
+const route = useRoute("admin-activities-user");
 const i18n = useI18n();
 const flagActivities = await useInternalApi<FlagActivity[]>(`admin/activity/${route.params.user}/flags`).catch((e) => handleRequestError(e));
 const reviewActivities = await useInternalApi<ReviewActivity[]>(`admin/activity/${route.params.user}/reviews`).catch((e) => handleRequestError(e));

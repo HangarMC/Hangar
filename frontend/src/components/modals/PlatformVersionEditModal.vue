@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import type { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
-import type { Platform } from "~/types/enums";
+import { type HangarProject, type HangarVersion, Platform, type PlatformData } from "~/types/backend";
 
 const props = defineProps<{
   project: HangarProject;
   version: HangarVersion;
-  platform: IPlatform;
+  platform: PlatformData;
 }>();
 
 const i18n = useI18n();

@@ -4,14 +4,19 @@ import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.ModelVisible;
 import io.papermc.hangar.model.Owned;
 import io.papermc.hangar.model.Visitable;
+import io.papermc.hangar.model.api.project.settings.LinkSection;
+import io.papermc.hangar.model.api.project.settings.Tag;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
 import io.papermc.hangar.model.loggable.ProjectLoggable;
 import io.papermc.hangar.util.StringUtils;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.OffsetDateTime;
 import java.util.Collection;
+import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
@@ -24,8 +29,9 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
     private Category category;
     private String description;
     private Visibility visibility;
-    private Collection<String> tags;
+    private Collection<Tag> tags;
     private Collection<String> keywords;
+    @ArraySchema(schema = @Schema(implementation = LinkSection.class))
     private JSONB links;
     private String licenseType;
     private String licenseName;
@@ -85,7 +91,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.category = category;
         this.description = description;
         this.visibility = visibility;
-        this.tags = tags;
+        this.tags = tags.stream().map(Tag::byName).toList();
         this.keywords = keywords;
         this.links = links;
         this.licenseType = licenseType;
@@ -160,11 +166,11 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.visibility = visibility;
     }
 
-    public Collection<String> getTags() {
+    public Collection<Tag> getTags() {
         return this.tags;
     }
 
-    public void setTags(final Collection<String> tags) {
+    public void setTags(final Collection<Tag> tags) {
         this.tags = tags;
     }
 

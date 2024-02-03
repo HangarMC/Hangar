@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import type { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
-import type { DependencyVersion, PluginDependency } from "hangar-api";
 import { cloneDeep } from "lodash-es";
-import type { Platform } from "~/types/enums";
-import { NamedPermission } from "~/types/enums";
+import { type HangarProject, type HangarVersion, NamedPermission, Platform, type PlatformData } from "~/types/backend";
+import type { PluginDependency } from "~/types/backend";
 
 const props = defineProps<{
   project: HangarProject;
   version: HangarVersion;
-  platform: IPlatform;
+  platform: PlatformData;
 }>();
 
 const i18n = useI18n();
@@ -21,7 +19,7 @@ const projectVersion = computed(() => {
 const loading = ref(false);
 const depTable = ref();
 const modal = ref();
-const formVersion = ref<DependencyVersion>({
+const formVersion = ref<Partial<HangarVersion>>({
   pluginDependencies: {} as Record<Platform, PluginDependency[]>,
 });
 
@@ -82,7 +80,7 @@ onMounted(() =>
 
     <Button button-type="primary" class="mt-3" :disabled="loading || !validInput" @click="save">{{ i18n.t("general.save") }}</Button>
     <template #activator="{ on }">
-      <Button v-if="hasPerms(NamedPermission.EDIT_VERSION)" class="text-sm" v-on="on"><IconMdiPencil /></Button>
+      <Button v-if="hasPerms(NamedPermission.EditVersion)" class="text-sm" v-on="on"><IconMdiPencil /></Button>
     </template>
   </Modal>
 </template>

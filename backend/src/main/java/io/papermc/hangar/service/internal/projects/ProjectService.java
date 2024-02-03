@@ -187,8 +187,8 @@ public class ProjectService extends HangarComponent {
             }
         }
 
-        final Set<String> tags = new LinkedHashSet<>(settingsForm.getSettings().getTags());
-        if (tags.stream().anyMatch(s -> Tag.byName(s) == null)) {
+        final Set<Tag> tags = new LinkedHashSet<>(settingsForm.getSettings().getTags());
+        if (tags.stream().anyMatch(Objects::isNull)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.invalidTag");
         }
     }

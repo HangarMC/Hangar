@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { HangarProjectPage } from "hangar-internal";
 import type { Option } from "~/types/components/ui/InputSelect";
+import type { HangarProjectPage } from "~/types/backend";
 
 const props = defineProps<{
   projectId: number;
@@ -8,7 +8,7 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const route = useRoute<"user-project">();
+const route = useRoute("user-project");
 const router = useRouter();
 const v = useVuelidate();
 
@@ -33,8 +33,8 @@ const rules = [
   validPageName()(body),
 ];
 
-function flatDeep(pages: HangarProjectPage[], prefix: string): Option[] {
-  let ps: Option[] = [];
+function flatDeep(pages: HangarProjectPage[], prefix: string): Option<number>[] {
+  let ps: Option<number>[] = [];
   for (const page of pages) {
     if (page.children.length > 0) {
       ps = [...ps, ...flatDeep(page.children, prefix + "-")];

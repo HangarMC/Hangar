@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import type { PaginatedResult, User } from "hangar-api";
 import type { Header } from "~/types/components/SortableTable";
+import type { PaginatedResultUser } from "~/types/backend";
 
 definePageMeta({
-  globalPermsRequired: ["EDIT_ALL_USER_SETTINGS"],
+  globalPermsRequired: ["EditAllUserSettings"],
 });
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("admin-user");
 
-const headers: Header[] = [
+const headers = [
   { name: "pic", title: "", sortable: false },
   { name: "name", title: i18n.t("pages.headers.username"), sortable: true },
   { name: "roles", title: i18n.t("pages.headers.roles"), sortable: true },
@@ -17,7 +17,7 @@ const headers: Header[] = [
   { name: "projectCount", title: i18n.t("pages.headers.projects"), sortable: true },
   { name: "locked", title: i18n.t("pages.headers.locked"), sortable: true },
   { name: "org", title: i18n.t("pages.headers.organization"), sortable: true },
-];
+] as const satisfies Header<string>[];
 
 const users = await useUsers();
 const page = ref(0);
@@ -54,7 +54,7 @@ async function updatePage(newPage: number) {
 }
 
 async function update() {
-  users.value = await useApi<PaginatedResult<User>>("users", "GET", requestParams.value);
+  users.value = await useApi<PaginatedResultUser>("users", "GET", requestParams.value);
 }
 
 useHead(useSeo(i18n.t("userList.title"), null, route, null));
@@ -76,20 +76,20 @@ useHead(useSeo(i18n.t("userList.title"), null, route, null));
       @update:sort="updateSort"
       @update:page="updatePage"
     >
-      <template #item_pic="{ item }">
+      <template #pic="{ item }">
         <UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs" />
       </template>
-      <template #item_createdAt="{ item }">{{ i18n.d(item?.createdAt, "date") }}</template>
-      <template #item_name="{ item }">
+      <template #createdAt="{ item }">{{ i18n.d(item?.createdAt, "date") }}</template>
+      <template #name="{ item }">
         <Link :to="'/' + item.name">{{ item.name }}</Link>
       </template>
-      <template #item_locked="{ item }">
+      <template #locked="{ item }">
         <InputCheckbox disabled :model-value="item.locked" />
       </template>
-      <template #item_org="{ item }">
+      <template #org="{ item }">
         <InputCheckbox disabled :model-value="item.isOrganization" />
       </template>
-      <template #item_roles="{ item }">
+      <template #roles="{ item }">
         <div class="space-x-1">
           <Tag v-for="roleId in item.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
         </div>

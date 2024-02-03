@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import type { HangarVersion, HangarProject, JarScanResult } from "hangar-internal";
-import type { Platform } from "~/types/enums";
+import { type HangarProject, type HangarVersion, type JarScanResult, Platform } from "~/types/backend";
 
 definePageMeta({
-  globalPermsRequired: ["REVIEWER"],
+  globalPermsRequired: ["Reviewer"],
 });
 
 const props = defineProps<{
@@ -12,7 +11,7 @@ const props = defineProps<{
   versionPlatforms: Set<Platform>;
 }>();
 
-const route = useRoute();
+const route = useRoute("user-project-versions-version-scan");
 
 const results = ref<JarScanResult[]>([]);
 for (const platform of props.versionPlatforms) {
