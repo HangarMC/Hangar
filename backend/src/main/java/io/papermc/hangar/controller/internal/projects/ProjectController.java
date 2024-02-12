@@ -171,7 +171,7 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#slug}")
     @PostMapping(path = "/project/{slug}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.Member<ProjectRole> member) {
+    public void addProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.ProjectMember member) {
         final ProjectTable projectTable = this.projectService.getProjectTable(slug);
         this.projectInviteService.sendInvite(member, projectTable);
     }
@@ -181,7 +181,7 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#slug}")
     @PostMapping(path = "/project/{slug}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void editProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.Member<ProjectRole> member) {
+    public void editProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.ProjectMember member) {
         final ProjectTable projectTable = this.projectService.getProjectTable(slug);
         this.projectMemberService.editMember(member, projectTable);
     }
@@ -190,7 +190,7 @@ public class ProjectController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#slug}")
     @PostMapping(path = "/project/{slug}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void removeProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.Member<ProjectRole> member) {
+    public void removeProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.ProjectMember member) {
         final ProjectTable projectTable = this.projectService.getProjectTable(slug);
         this.projectMemberService.removeMember(member, projectTable);
     }

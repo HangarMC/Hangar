@@ -3,7 +3,7 @@ package io.papermc.hangar.service.internal.file;
 import io.papermc.hangar.model.common.Platform;
 import java.io.IOException;
 import java.io.InputStream;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.core.io.Resource;
 
 public interface FileService {

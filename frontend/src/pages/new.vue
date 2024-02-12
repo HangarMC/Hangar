@@ -153,8 +153,8 @@ function createProject() {
             counter
             :rules="[
               required(),
-              maxLength()(useBackendData.validations.project.name.max),
-              pattern()(useBackendData.validations.project.name.regex),
+              maxLength()(useBackendData.validations.project.name.max!),
+              pattern()(useBackendData.validations.project.name.regex!),
               validProjectName()(() => form.ownerId),
             ]"
           />
@@ -202,8 +202,8 @@ function createProject() {
             :label="i18n.t('project.new.step3.customName')"
             :rules="[
               requiredIf()(isCustomLicense),
-              maxLength()(useBackendData.validations.project.license.max),
-              pattern()(useBackendData.validations.project.license.regex),
+              maxLength()(useBackendData.validations.project.license.max!),
+              pattern()(useBackendData.validations.project.license.regex!),
             ]"
           />
         </div>

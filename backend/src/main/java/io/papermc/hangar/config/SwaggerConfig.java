@@ -16,11 +16,16 @@ import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import jakarta.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.customizers.SpringDocCustomizers;
@@ -38,6 +43,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.method.HandlerMethod;
 
@@ -105,9 +111,32 @@ public class SwaggerConfig {
         return openAPI -> {
             for (final Schema<?> schema : openAPI.getComponents().getSchemas().values()) {
                 if (schema.getProperties() != null) {
-                    // todo load class, check which properties have a @Nullable annotation and exclude them
-                    // Class.forName(schema.getName());
-                    schema.required(new ArrayList<>(schema.getProperties().keySet()));
+                    try {
+                        final Class<?> clazz = Class.forName(schema.getName());
+                        final Set<String> requiredKeys = new HashSet<>();
+                        for (final String key : schema.getProperties().keySet()) {
+                            final Field field = ReflectionUtils.findField(clazz, key);
+
+                            if (field != null && (field.getAnnotatedType().isAnnotationPresent(Nullable.class) || field.getAnnotatedType().isAnnotationPresent(jakarta.annotation.Nullable.class))) {
+                                continue;
+                            }
+
+                            Method method = null;
+                            for (final String prefix : List.of("get", "is", "has", "")) {
+                                 method = ReflectionUtils.findMethod(clazz, !prefix.isEmpty() ? prefix + key.substring(0, 1).toUpperCase() + key.substring(1) : key );
+                                 if (method != null) break;
+                            }
+
+                            if (method != null && (method.getAnnotatedReturnType().isAnnotationPresent(Nullable.class) || method.getAnnotatedReturnType().isAnnotationPresent(jakarta.annotation.Nullable.class))) {
+                                continue;
+                            }
+
+                            requiredKeys.add(key);
+                        }
+                        schema.required(new ArrayList<>(requiredKeys));
+                    } catch (final ClassNotFoundException e) {
+                        schema.required(new ArrayList<>(schema.getProperties().keySet()));
+                    }
                 }
             }
         };
@@ -115,7 +144,7 @@ public class SwaggerConfig {
 
     public OpenApiCustomizer exceptionCustomizer() {
         return openAPI -> {
-            for (Class<?> clazz : List.of(HangarApiException.class, MultiHangarApiException.class, MethodArgumentNotValidExceptionSerializer.HangarValidationException.class)) {
+            for (final Class<?> clazz : List.of(HangarApiException.class, MultiHangarApiException.class, MethodArgumentNotValidExceptionSerializer.HangarValidationException.class)) {
                 ModelConverters.getInstance().readAllAsResolvedSchema(clazz).referencedSchemas.forEach(openAPI.getComponents()::addSchemas);
             }
         };

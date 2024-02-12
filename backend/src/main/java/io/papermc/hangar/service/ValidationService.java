@@ -6,7 +6,7 @@ import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.util.StringUtils;
 import java.util.Locale;
 import java.util.Set;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.stereotype.Service;
 
 @Service

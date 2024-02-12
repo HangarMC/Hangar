@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ChannelFlag, type HangarChannel, type HangarProject, type User } from "~/types/backend";
+import { ChannelFlag, type HangarChannel, type HangarProject, type ProjectChannel, type User } from "~/types/backend";
 
 definePageMeta({
   projectPermsRequired: ["EditChannels"],
@@ -27,7 +27,7 @@ async function deleteChannel(channel: HangarChannel) {
     .catch((e) => handleRequestError(e));
 }
 
-async function addChannel(channel: HangarChannel) {
+async function addChannel(channel: HangarChannel | ProjectChannel) {
   await useInternalApi(`channels/${props.project.id}/create`, "post", {
     name: channel.name,
     description: channel.description,
@@ -41,8 +41,8 @@ async function addChannel(channel: HangarChannel) {
     .catch((e) => handleRequestError(e));
 }
 
-async function editChannel(channel: HangarChannel) {
-  if (!channel.id) return;
+async function editChannel(channel: HangarChannel | ProjectChannel) {
+  if (!("id" in channel)) return;
   await useInternalApi(`channels/${props.project.id}/edit`, "post", {
     id: channel.id,
     name: channel.name,
@@ -86,8 +86,8 @@ async function editChannel(channel: HangarChannel) {
           <td>{{ channel.versionCount }}</td>
           <td>
             <ChannelModal :project-id="props.project.id" edit :channel="channel" @create="editChannel">
-              <template #activator="{ on, attrs }">
-                <Button v-bind="attrs" v-on="on">
+              <template #activator="{ on }">
+                <Button v-on="on">
                   {{ i18n.t("channel.manage.editButton") }}
                 </Button>
               </template>
@@ -103,12 +103,11 @@ async function editChannel(channel: HangarChannel) {
     </Table>
 
     <ChannelModal :project-id="props.project.id" @create="addChannel">
-      <template #activator="{ on, attrs }">
+      <template #activator="{ on }">
         <Button
           v-if="channels.length < validations.project.maxChannelCount"
           :disabled="channels.length >= validations.project.maxChannelCount"
           class="mt-2"
-          v-bind="attrs"
           v-on="on"
         >
           <IconMdiPlus />

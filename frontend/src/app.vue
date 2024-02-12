@@ -2,6 +2,7 @@
 import "./assets/css/main.css";
 // popper needs this?
 import "regenerator-runtime/runtime";
+import type { HangarNuxtError } from "~/types/components/error";
 
 // keep in sync with error.vue, cause reasons
 const runtimeConfig = useRuntimeConfig();
@@ -30,7 +31,7 @@ useHead({
 });
 
 onErrorCaptured((err) => {
-  if (isNuxtError(err) && err?.data?.logErrorMessage === false) {
+  if (isNuxtError<HangarNuxtError>(err) && err?.data?.logErrorMessage === false) {
     return;
   }
   console.log("captured", transformAxiosError(err)); // TODO error handling

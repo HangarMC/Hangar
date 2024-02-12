@@ -1,7 +1,3 @@
-export function forumUrl(topicId: number) {
-  return `https://forums.papermc.io/threads/` + topicId;
-}
-
 const isSafeHost = (host: string) => {
   for (const safeHost of useBackendData.security.safeDownloadHosts) {
     // Make sure it's the full host or a subdomain

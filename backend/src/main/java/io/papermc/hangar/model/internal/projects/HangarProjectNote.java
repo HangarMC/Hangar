@@ -3,7 +3,7 @@ package io.papermc.hangar.model.internal.projects;
 import io.papermc.hangar.model.db.projects.ProjectNoteTable;
 import java.time.OffsetDateTime;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class HangarProjectNote extends ProjectNoteTable {
 

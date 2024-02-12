@@ -79,7 +79,7 @@ class Auth {
         } else if (response.status === 200) {
           // forward cookie header to renew refresh cookie
           if (import.meta.env.SSR && response.headers["set-cookie"]) {
-            useRequestEvent().node.res?.setHeader("set-cookie", response.headers["set-cookie"]);
+            useRequestEvent()?.node?.res?.setHeader("set-cookie", response.headers["set-cookie"]);
           }
           // validate and return token
           const token = response.data;

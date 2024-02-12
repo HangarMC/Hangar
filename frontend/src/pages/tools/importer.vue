@@ -221,8 +221,8 @@ useHead(useSeo(t("importer.title"), null, route, null));
                   counter
                   :rules="[
                     required(),
-                    maxLength()(useBackendData.validations.project.name.max),
-                    pattern()(useBackendData.validations.project.name.regex),
+                    maxLength()(useBackendData.validations.project.name.max!),
+                    pattern()(useBackendData.validations.project.name.regex!),
                     validProjectName()(() => project.ownerId),
                   ]"
                 />
@@ -305,8 +305,8 @@ useHead(useSeo(t("importer.title"), null, route, null));
                       :label="t('project.new.step3.customName')"
                       :rules="[
                         requiredIf()(project.util.isCustomLicense),
-                        maxLength()(useBackendData.validations.project.license.max),
-                        pattern()(useBackendData.validations.project.license.regex),
+                        maxLength()(useBackendData.validations.project.license.max!),
+                        pattern()(useBackendData.validations.project.license.regex!),
                       ]"
                     />
                   </div>

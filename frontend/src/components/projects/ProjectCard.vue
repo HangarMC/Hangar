@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { type Project, Tag, Visibility } from "~/types/backend";
+import { type Project, type ProjectCompact, Tag, Visibility } from "~/types/backend";
 
 const i18n = useI18n();
 const router = useRouter();
 
 defineProps<{
-  project: Project;
+  project: Project | ProjectCompact;
 }>();
 </script>
 
@@ -37,11 +37,11 @@ defineProps<{
             <IconMdiEyeOff v-show="project.visibility !== Visibility.Public" />
           </div>
 
-          <h3 v-if="project.description" class="mb-1">{{ project.description }}</h3>
+          <h3 v-if="'description' in project && project.description" class="mb-1">{{ project.description }}</h3>
           <div class="inline-flex items-center text-gray-500 dark:text-gray-400 lt-sm:hidden">
             <CategoryLogo :category="project.category" :size="16" class="mr-1" />
             {{ i18n.t("project.category." + project.category) }}
-            <div v-if="project.settings" class="inline-flex ml-2 space-x-1">
+            <div v-if="'settings' in project && project.settings" class="inline-flex ml-2 space-x-1">
               <span class="border-l-1 border-gray-500 dark:border-gray-400" />
               <span v-for="tag in project.settings.tags" :key="tag" class="inline-flex items-center">
                 <Tooltip>

@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-interface ApprovalProjects {
-  needsApproval: ProjectApproval[];
-  waitingProjects: ProjectApproval[];
-}
+import type { ProjectApprovals } from "~/types/backend";
 
 definePageMeta({
   globalPermsRequired: ["Reviewer"],
@@ -10,7 +7,7 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute("admin-approval-projects");
-const data: ApprovalProjects = (await useInternalApi<ApprovalProjects>("admin/approval/projects").catch((e) => handleRequestError(e))) as ApprovalProjects;
+const data = (await useInternalApi<ProjectApprovals>("admin/approval/projects").catch((e) => handleRequestError(e))) as ProjectApprovals;
 
 useHead(useSeo(i18n.t("projectApproval.title"), null, route, null));
 </script>

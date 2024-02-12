@@ -5,7 +5,7 @@ import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.util.StaticContextAccessor;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class ProjectLicense {
 

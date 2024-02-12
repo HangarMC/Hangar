@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ChannelFlag, type ProjectChannel } from "~/types/backend";
+import { ChannelFlag, Color, type HangarChannel, type ProjectChannel } from "~/types/backend";
 
 const props = defineProps<{
   projectId: number;
@@ -7,7 +7,7 @@ const props = defineProps<{
   channel?: ProjectChannel;
 }>();
 const emit = defineEmits<{
-  (e: "create", channel: ProjectChannel): any;
+  (e: "create", channel: HangarChannel | ProjectChannel): any;
 }>();
 
 const i18n = useI18n();
@@ -18,9 +18,10 @@ const possibleFlags = frozen ? [ChannelFlag.PINNED] : [ChannelFlag.UNSTABLE, Cha
 
 const form = reactive<ProjectChannel>({
   name: "",
-  color: "",
-  flags: [], // TODO only do automated name validation
-  versionCount: 0,
+  color: Color.Transparent,
+  description: "",
+  createdAt: "",
+  flags: [] as ChannelFlag[], // TODO only do automated name validation
 });
 const name = ref<string>(props.channel ? props.channel.name : "");
 const description = ref<string>(props.channel?.description || "");
@@ -56,7 +57,7 @@ async function create(close: () => void) {
   close();
   form.name = name.value;
   form.description = description.value;
-  form.color = color.value;
+  form.color = color.value as Color;
   form.flags = flags.value;
   emit("create", form);
 }
@@ -92,8 +93,8 @@ reset();
           :label="i18n.t('channel.modal.name')"
           :rules="[
             required(),
-            maxLength()(useBackendData.validations.project.channels.max),
-            pattern()(useBackendData.validations.project.channels.regex),
+            maxLength()(useBackendData.validations.project.channels.max!),
+            pattern()(useBackendData.validations.project.channels.regex!),
             validChannelName()(String(props.projectId), props.channel?.name),
           ]"
           counter

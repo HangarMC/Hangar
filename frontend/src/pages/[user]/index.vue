@@ -167,7 +167,7 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
                   <UserAvatar :username="orgName" :avatar-url="org.avatarUrl" size="xs" :disable-link="true" class="flex-shrink-0 mr-2" />
                   {{ orgName }}
                   <span class="flex-grow" />
-                  <Tag :color="{ background: getRole(org.role.roleId)?.color }" :name="getRole(org.role.roleId)?.title" class="ml-1" />
+                  <Tag :color="{ background: getRole(org.roleId)?.color }" :name="getRole(org.roleId)?.title" class="ml-1" />
                   <IconMdiEyeOffOutline v-if="organizationVisibility && organizationVisibility[orgName]" class="ml-1" />
                 </NuxtLink>
               </li>

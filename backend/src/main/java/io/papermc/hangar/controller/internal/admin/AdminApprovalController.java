@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.projects.ReviewState;
+import io.papermc.hangar.model.internal.projects.HangarProjectApproval;
 import io.papermc.hangar.model.internal.versions.HangarReviewQueueEntry;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
@@ -28,32 +29,28 @@ public class AdminApprovalController extends HangarComponent {
 
     private final ProjectAdminService projectAdminService;
     private final ReviewService reviewService;
-    private final ObjectMapper mapper;
 
     @Autowired
-    public AdminApprovalController(final ProjectAdminService projectAdminService, final ReviewService reviewService, final ObjectMapper mapper) {
+    public AdminApprovalController(final ProjectAdminService projectAdminService, final ReviewService reviewService) {
         this.projectAdminService = projectAdminService;
         this.reviewService = reviewService;
-        this.mapper = mapper;
     }
 
     @GetMapping("/versions")
-    public ResponseEntity<ObjectNode> getReviewQueue() {
+    public ResponseEntity<ReviewQueue> getReviewQueue() {
         final List<HangarReviewQueueEntry> underReviewEntries = this.reviewService.getReviewQueue(ReviewState.UNDER_REVIEW);
         final List<HangarReviewQueueEntry> notStartedEntries = this.reviewService.getReviewQueue(ReviewState.UNREVIEWED);
-        final ObjectNode objectNode = this.mapper.createObjectNode();
-        objectNode.set("underReview", this.mapper.valueToTree(underReviewEntries));
-        objectNode.set("notStarted", this.mapper.valueToTree(notStartedEntries));
-        return ResponseEntity.ok(objectNode);
+        return ResponseEntity.ok(new ReviewQueue(underReviewEntries, notStartedEntries));
     }
 
+    public record ReviewQueue(List<HangarReviewQueueEntry> underReview, List<HangarReviewQueueEntry> notStarted) { }
+
     @GetMapping("/projects")
-    public ResponseEntity<ObjectNode> getProjectApprovals() {
-        final ObjectNode objectNode = this.mapper.createObjectNode();
-        objectNode.set("needsApproval", this.mapper.valueToTree(this.projectAdminService.getProjectsNeedingApproval()));
-        objectNode.set("waitingProjects", this.mapper.valueToTree(this.projectAdminService.getProjectsWaitingForChanges()));
-        return ResponseEntity.ok(objectNode);
+    public ResponseEntity<ProjectApprovals> getProjectApprovals() {
+        return ResponseEntity.ok(new ProjectApprovals(this.projectAdminService.getProjectsNeedingApproval(), this.projectAdminService.getProjectsWaitingForChanges()));
     }
+
+    public record ProjectApprovals(List<HangarProjectApproval> needsApproval, List<HangarProjectApproval> waitingProjects) { }
 
     @GetMapping("/projectneedingapproval")
     public ResponseEntity<Integer> getProjectApprovalQueueSize() {

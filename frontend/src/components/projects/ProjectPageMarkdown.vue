@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { HangarProject, HangarProjectPage } from "~/types/backend";
+import type { ExtendedProjectPage, HangarProject, HangarProjectPage } from "~/types/backend";
 
 const props = defineProps<{
   project: HangarProject;
@@ -28,6 +28,16 @@ async function deletePageAndUpdateProject() {
     handleRequestError(e);
   }
 }
+
+defineSlots<{
+  default: (props: {
+    page: ExtendedProjectPage | HangarProjectPage | null;
+    editingPage: boolean;
+    changeEditingPage: (editing: boolean) => void;
+    savePage: (content: string) => void;
+    deletePage: () => void;
+  }) => any;
+}>();
 </script>
 
 <template>

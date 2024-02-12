@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { NuxtError } from "nuxt/app";
+import type { HangarNuxtError } from "~/types/components/error";
 
 const props = defineProps<{
-  error: NuxtError;
+  error: NuxtError<HangarNuxtError>;
 }>();
 
 if (!(props.error?.data?.dummyError === true)) {

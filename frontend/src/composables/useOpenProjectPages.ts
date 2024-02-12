@@ -1,6 +1,5 @@
+import type { RouteLocationNormalizedLoadedTyped, _RouteMapGeneric } from "unplugin-vue-router";
 import type { HangarProject } from "~/types/backend";
-import type { RouteLocationNormalizedLoadedTyped } from "unplugin-vue-router";
-import type { _RouteMapGeneric } from "unplugin-vue-router/dist/types";
 
 export function useOpenProjectPages(route: RouteLocationNormalizedLoadedTyped<_RouteMapGeneric, "user-project-pages-all">, project: HangarProject) {
   const open = ref<string[]>([]);

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Tab } from "~/types/components/design/Tabs";
-import type { HangarNotification } from "~/types/backend";
+import type { HangarNotification, HangarOrganizationInvite, HangarProjectInvite } from "~/types/backend";
 
 definePageMeta({
   loginRequired: true,
@@ -32,7 +32,7 @@ const selectedInvitesTabs = [
   { value: "organizations", header: i18n.t("notifications.invite.organizations") },
 ] as const satisfies Tab<string>[];
 
-const filteredInvites = computed(() => {
+const filteredInvites = computed<HangarProjectInvite[] | HangarOrganizationInvite[]>(() => {
   if (!invites || !invites.value) return [];
   switch (selectedInvitesTab.value) {
     case "projects":
@@ -65,7 +65,7 @@ async function markNotificationRead(notification: HangarNotification, push = tru
   }
 }
 
-async function updateInvite(invite: Invite, status: "accept" | "decline") {
+async function updateInvite(invite: HangarProjectInvite, status: "accept" | "decline") {
   await useInternalApi(`invites/${invite.type}/${invite.roleId}/${status}`, "post").catch((e) => handleRequestError(e));
   if (status === "accept") {
     invite.accepted = true;
@@ -134,7 +134,7 @@ function updateSelectedNotifications() {
       </template>
       <Tabs v-model="selectedInvitesTab" :tabs="selectedInvitesTabs" :vertical="false" />
       <Card v-for="(invite, index) in filteredInvites" :key="index">
-        <span v-if="invite.representingOrg">
+        <span v-if="'representingOrg' in invite">
           {{ i18n.t(!invite.accepted ? "notifications.invitedOrg" : "notifications.inviteAcceptedOrg", [invite.representingOrg, invite.type]) }}:
         </span>
         <span v-else> {{ i18n.t(!invite.accepted ? "notifications.invited" : "notifications.inviteAccepted", [invite.type]) }}: </span>

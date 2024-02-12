@@ -89,7 +89,7 @@ public class OrganizationController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#orgName}")
     @PostMapping(path = "/org/{orgName}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addOrganizationMember(@PathVariable final String orgName, @RequestBody @Valid final EditMembersForm.Member<OrganizationRole> member) {
+    public void addOrganizationMember(@PathVariable final String orgName, @RequestBody @Valid final EditMembersForm.OrgMember member) {
         final OrganizationTable organizationTable = this.organizationService.getOrganizationTable(orgName);
         if (organizationTable == null) {
             throw new HangarApiException("Org " + orgName + " doesn't exist");
@@ -102,7 +102,7 @@ public class OrganizationController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#orgName}")
     @PostMapping(path = "/org/{orgName}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void editOrganizationMember(@PathVariable final String orgName, @RequestBody @Valid final EditMembersForm.Member<OrganizationRole> member) {
+    public void editOrganizationMember(@PathVariable final String orgName, @RequestBody @Valid final EditMembersForm.OrgMember member) {
         final OrganizationTable organizationTable = this.organizationService.getOrganizationTable(orgName);
         this.memberService.editMember(member, organizationTable);
     }
@@ -112,7 +112,7 @@ public class OrganizationController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#orgName}")
     @PostMapping(path = "/org/{orgName}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void removeOrganizationMember(@PathVariable final String orgName, @RequestBody @Valid final EditMembersForm.Member<OrganizationRole> member) {
+    public void removeOrganizationMember(@PathVariable final String orgName, @RequestBody @Valid final EditMembersForm.OrgMember member) {
         final OrganizationTable organizationTable = this.organizationService.getOrganizationTable(orgName);
         this.memberService.removeMember(member, organizationTable);
     }

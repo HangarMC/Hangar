@@ -96,10 +96,10 @@ function addAuthHeader(config: AxiosRequestConfig, token: string | undefined | n
 
 function forwardRequestHeaders(config: AxiosRequestConfig, nuxtApp: NuxtApp) {
   if (!process.server) return;
-  const req = useRequestEvent(nuxtApp).node.req;
+  const req = useRequestEvent(nuxtApp)?.node?.req;
 
   const forward = (header: string) => {
-    if (req.headers[header] && config.headers) {
+    if (req?.headers?.[header] && config.headers) {
       config.headers[header] = req.headers[header];
     }
   };
@@ -118,11 +118,11 @@ function forwardRequestHeaders(config: AxiosRequestConfig, nuxtApp: NuxtApp) {
 
 function forwardResponseHeaders(axiosResponse: AxiosResponse, nuxtApp: NuxtApp) {
   if (!process.server) return;
-  const res = useRequestEvent(nuxtApp).node.res;
+  const res = useRequestEvent(nuxtApp)?.node?.res;
 
   const forward = (header: string) => {
     if (axiosResponse.headers[header]) {
-      res.setHeader(header, axiosResponse.headers[header]);
+      res?.setHeader(header, axiosResponse.headers[header]);
     }
   };
 

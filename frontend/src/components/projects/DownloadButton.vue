@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type HangarProject, type HangarVersion, type PinnedVersion, Platform, type PlatformVersionDownload } from "~/types/backend";
+import { type HangarProject, type HangarVersion, type PinnedVersion, Platform } from "~/types/backend";
 
 const i18n = useI18n();
 

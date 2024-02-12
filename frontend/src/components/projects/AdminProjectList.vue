@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import type { HangarProjectApproval } from "~/types/backend";
+
 const i18n = useI18n();
 defineProps<{
-  projects: Approval[];
+  projects: HangarProjectApproval[];
 }>();
 </script>
 

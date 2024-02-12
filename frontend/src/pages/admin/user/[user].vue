@@ -11,9 +11,9 @@ const i18n = useI18n();
 const route = useRoute("admin-user-user");
 
 const projects = await useProjects({ owner: route.params.user });
-const orgs = await useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${route.params.user}/userOrganizations`).catch((e) =>
+const orgs = (await useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${route.params.user}/userOrganizations`).catch((e) =>
   handleRequestError(e)
-);
+)) as { [key: string]: OrganizationRoleTable };
 const user = await useUser(route.params.user);
 
 const projectsConfig = [

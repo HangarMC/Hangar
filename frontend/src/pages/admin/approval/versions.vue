@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Header } from "~/types/components/SortableTable";
-import { type HangarReview, ReviewAction } from "~/types/backend";
+import { type HangarReviewQueueEntry, type Review, ReviewAction } from "~/types/backend";
 
 definePageMeta({
   globalPermsRequired: ["Reviewer"],
@@ -34,40 +34,40 @@ const notStartedHeaders = [
 useHead(useSeo(i18n.t("versionApproval.title"), null, route, null));
 
 // TODO There's no actual endpoint with filters
-function getRouteParams(entry: ReviewQueueEntry) {
-  return {
-    user: entry.namespace.owner,
-    project: entry.namespace.slug,
-    version: entry.versionString,
-    platform: entry.platforms[0].toLowerCase(),
-  };
-}
+// function getRouteParams(entry: HangarReviewQueueEntry) {
+//   return {
+//     user: entry.namespace.owner,
+//     project: entry.namespace.slug,
+//     version: entry.versionString,
+//     platform: entry.platforms[0].toLowerCase(),
+//   };
+// }
 
-function isOngoing(review: HangarReview) {
+function isOngoing(review: Review) {
   return actions.ongoing.includes(review.lastAction);
 }
 
-function isStopped(review: HangarReview) {
+function isStopped(review: Review) {
   return actions.stopped.includes(review.lastAction);
 }
 
-function isApproved(review: HangarReview) {
+function isApproved(review: Review) {
   return actions.approved.includes(review.lastAction);
 }
 
-function getOngoingCount(entry: ReviewQueueEntry) {
+function getOngoingCount(entry: HangarReviewQueueEntry) {
   return getCount(entry, ...actions.ongoing);
 }
 
-function getStoppedCount(entry: ReviewQueueEntry) {
+function getStoppedCount(entry: HangarReviewQueueEntry) {
   return getCount(entry, ...actions.stopped);
 }
 
-function getApprovedCount(entry: ReviewQueueEntry) {
+function getApprovedCount(entry: HangarReviewQueueEntry) {
   return getCount(entry, ...actions.approved);
 }
 
-function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
+function getCount(entry: HangarReviewQueueEntry, ..._actions: ReviewAction[]) {
   let count = 0;
   for (const review of entry.reviews) {
     if (_actions.includes(review.lastAction)) {
@@ -94,7 +94,7 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
         </template>
         <template #version="{ item }">
           <Link :to="`/${item.namespace.owner}/${item.namespace.slug}/versions/${item.versionString}`">
-            <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" :tooltip="item.channelDescription" />
+            <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" />
             {{ item.versionString }}
           </Link>
         </template>
@@ -124,7 +124,7 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
           </Link>
         </template>
         <template #version="{ item }">
-          <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" :tooltip="item.channelDescription" />
+          <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" />
         </template>
         <template #queuedBy="{ item }">
           <Link :to="`/${item.versionAuthor}`">

@@ -12,6 +12,9 @@ generateApi({
       if (rawTypeName.startsWith("io.papermc.hangar.model.api.PaginatedResult")) {
         prefix = "PaginatedResult";
       }
+      if (rawTypeName.startsWith("io.papermc.hangar.model.internal.user.JoinableMember")) {
+        prefix = "JoinableMember";
+      }
       if (rawTypeName.includes(".")) {
         const newName = rawTypeName.substring(rawTypeName.lastIndexOf(".") + 1);
         if (newName.includes("$")) {
@@ -26,9 +29,9 @@ generateApi({
   primitiveTypeConstructs: (constructs) => ({
     ...constructs,
     object: "Record<string, any>",
-    string: {
-      "date-time": "Date",
-    },
+    //string: {
+    //  "date-time": "Date",
+    //},
   }),
 })
   .then(({ files, configuration }) => {

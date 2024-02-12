@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Visibility, type VisibilityData } from "~/types/backend";
+import { Visibility } from "~/types/backend";
 
 const props = defineProps<{
   type: "project" | "version";

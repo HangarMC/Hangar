@@ -42,9 +42,9 @@ async function create() {
         :maxlength="useBackendData.validations.org.max"
         :rules="[
           required(),
-          minLength()(useBackendData.validations.org.min),
-          maxLength()(useBackendData.validations.org.max),
-          pattern()(useBackendData.validations.org.regex),
+          minLength()(useBackendData.validations.org.min!),
+          maxLength()(useBackendData.validations.org.max!),
+          pattern()(useBackendData.validations.org.regex!),
           validOrgName(),
         ]"
       />

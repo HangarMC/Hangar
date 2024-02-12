@@ -26,6 +26,8 @@ import {
   type SettingsResponse,
   type User,
   type VersionInfo,
+  type Invites,
+  type ReviewQueue,
 } from "~/types/backend";
 
 export type NonNullAsyncData<T, E = unknown> = { data: Ref<T> } & Pick<AsyncData<T, E>, "pending" | "refresh" | "execute" | "error">;
@@ -67,7 +69,7 @@ export async function useUsers(): Promise<Ref<PaginatedResultUser | null>> {
 }
 
 export async function useInvites(): Promise<Ref<Invites | null>> {
-  return extract(await useAsyncData("useInvites", () => useInternalApi<Invite>("invites")));
+  return extract(await useAsyncData("useInvites", () => useInternalApi<Invites>("invites")));
 }
 
 export async function useNotifications(): Promise<Ref<PaginatedResultHangarNotification | null>> {
@@ -137,12 +139,8 @@ export async function useActionLogs(): Promise<Ref<PaginatedResultHangarLoggedAc
   return extract(await useAsyncData("useActionLogs", () => useInternalApi<PaginatedResultHangarLoggedAction>("admin/log")));
 }
 
-export async function useVersionApprovals(): Promise<Ref<{ underReview: ReviewQueueEntry[]; notStarted: ReviewQueueEntry[] } | null>> {
-  return extract(
-    await useAsyncData("useVersionApprovals", () =>
-      useInternalApi<{ underReview: ReviewQueueEntry[]; notStarted: ReviewQueueEntry[] }>("admin/approval/versions")
-    )
-  );
+export async function useVersionApprovals(): Promise<Ref<ReviewQueue | null>> {
+  return extract(await useAsyncData("useVersionApprovals", () => useInternalApi<ReviewQueue>("admin/approval/versions")));
 }
 
 export async function usePossibleOwners(): Promise<Ref<ProjectOwner[] | null>> {

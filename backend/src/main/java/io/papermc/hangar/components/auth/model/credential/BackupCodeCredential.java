@@ -3,7 +3,7 @@ package io.papermc.hangar.components.auth.model.credential;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
 import java.util.List;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.util.StringUtils;
 
 public record BackupCodeCredential(@JsonProperty("recovery_codes") List<BackupCode> backupCodes, boolean unconfirmed) implements Credential {

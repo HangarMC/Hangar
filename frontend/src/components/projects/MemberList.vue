@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { NamedPermission, type PaginatedResultUser } from "~/types/backend";
+import {
+  type JoinableMemberOrganizationRoleTable,
+  type JoinableMemberProjectRoleTable,
+  NamedPermission,
+  type PaginatedResultUser,
+  type RoleData,
+} from "~/types/backend";
 
 interface EditableMember {
   name: string;
@@ -8,7 +14,7 @@ interface EditableMember {
 
 const props = withDefaults(
   defineProps<{
-    members: JoinableMember[];
+    members: JoinableMemberProjectRoleTable[] | JoinableMemberOrganizationRoleTable[];
     disableSaving?: boolean;
     class?: string;
     organization?: boolean;
@@ -39,7 +45,7 @@ const sortedMembers = [...props.members].sort((r1, r2) => {
 const i18n = useI18n();
 const router = useRouter();
 const authStore = useAuthStore();
-const roles: Role[] = (props.organization ? useBackendData.orgRoles : useBackendData.projectRoles).filter((role) => role.assignable);
+const roles: RoleData[] = (props.organization ? useBackendData.orgRoles : useBackendData.projectRoles).filter((role) => role.assignable);
 
 const canLeave = computed<boolean>(() => {
   if (!authStore.user) {
@@ -58,11 +64,11 @@ watch(search, () => {
   addErrors.value = [];
 });
 
-function filteredRoles(currentRole: number): Role[] {
+function filteredRoles(currentRole: number): RoleData[] {
   return roles.filter((r) => r.roleId !== currentRole);
 }
 
-function removeMember(member: JoinableMember) {
+function removeMember(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable) {
   post(convertMember(member), "remove");
 }
 
@@ -79,13 +85,13 @@ function cancelTransfer() {
     .finally(() => (saving.value = false));
 }
 
-function setRole(member: JoinableMember, role: Role) {
+function setRole(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable, role: RoleData) {
   const editableMember: EditableMember = convertMember(member);
   editableMember.roleId = role.roleId;
   post(editableMember, "edit");
 }
 
-function invite(member: string, role: Role) {
+function invite(member: string, role: RoleData) {
   const editableMember: EditableMember = { name: member, roleId: role.roleId };
   post(editableMember, "add");
   return "";
@@ -116,7 +122,7 @@ function post(member: EditableMember, action: "edit" | "add" | "remove") {
     });
 }
 
-function convertMember(member: JoinableMember): EditableMember {
+function convertMember(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable): EditableMember {
   return {
     name: member.user.name,
     roleId: member.role.roleId,

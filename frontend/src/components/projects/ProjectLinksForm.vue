@@ -42,7 +42,11 @@ function removeSection(index: number) {
               v-if="section.type !== 'top'"
               v-model="section.title"
               :label="i18n.t('project.settings.links.titleField')"
-              :rules="[required(), maxLength()(useBackendData.validations.project.pageName.max), minLength()(useBackendData.validations.project.pageName.min)]"
+              :rules="[
+                required(),
+                maxLength()(useBackendData.validations.project.pageName.max!),
+                minLength()(useBackendData.validations.project.pageName.min!),
+              ]"
             />
 
             <IconMdiClose class="flex-shrink-0 cursor-pointer" @click="removeSection(index)" />

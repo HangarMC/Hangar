@@ -2,7 +2,7 @@ package io.papermc.hangar.controller.extras.resolvers.path.model;
 
 import io.papermc.hangar.exceptions.HangarApiException;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.NativeWebRequest;

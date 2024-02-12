@@ -1,12 +1,15 @@
+import type { Renderer } from "marked";
 import { marked } from "marked";
 import markedLinkifyIt from "marked-linkify-it";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import markedExtendedTables from "marked-extended-tables";
 
 const youtubeRegex = /(?:youtube\.com\/(?:[^\s/]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[&?]v=)|youtu\.be\/)([\w-]{11})(?:==(\d+))?/;
 const imageSizeParts = /(.*)==\s*(\d*)\s*x?\s*(\d*)\s*$/;
 
 const renderer = {
-  heading(text: string, level: number) {
+  heading(text, level) {
     const escapedText = text.toLowerCase().replaceAll(/\W+/g, "-");
     return `
             <h${level}>
@@ -17,7 +20,7 @@ const renderer = {
               </a>
             </h${level}>`;
   },
-  image(href: string, title: string, alt: string) {
+  image(href, title, alt) {
     const parts = imageSizeParts.exec(href);
     let url = href;
     let height;
@@ -51,10 +54,10 @@ const renderer = {
       return res;
     }
   },
-  link(href: string, title: string, text: string) {
+  link(href, title, text) {
     return `<a href="${linkout(href)}"` + (title ? ` title="${title}">` : ">") + text + "</a>";
   },
-};
+} satisfies Partial<Renderer>;
 marked.use({ renderer });
 marked.use(markedExtendedTables());
 marked.use(markedLinkifyIt());

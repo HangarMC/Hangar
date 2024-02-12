@@ -5,7 +5,7 @@ import io.papermc.hangar.model.api.project.version.FileInfo;
 import io.papermc.hangar.model.common.Platform;
 import jakarta.validation.constraints.Size;
 import java.util.List;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 // @el(root: String) // can't figure out how to apply this to just the field
 public record PendingVersionFile(

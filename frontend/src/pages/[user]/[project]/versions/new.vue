@@ -2,7 +2,7 @@
 import { remove } from "lodash-es";
 import type { Step } from "~/types/components/design/Steps";
 import type { Tab } from "~/types/components/design/Tabs";
-import { type HangarProject, type PendingVersion, Platform, type PlatformData, type ProjectChannel } from "~/types/backend";
+import type { Platform, HangarProject, PendingVersion, PlatformData, ProjectChannel } from "~/types/backend";
 
 definePageMeta({
   projectPermsRequired: ["CreateVersion"],
@@ -142,7 +142,7 @@ const fileRules = (platformFile: PlatformFile) => [
   maxFileSize()(useBackendData.validations.project.maxFileSize),
 ];
 const platformRules = [required("Select at least one platform!"), minLength()(1), noDuplicated()(() => platformFiles.value.flatMap((f) => f.platforms))];
-const versionRules = [required(), pattern()(useBackendData.validations.version.regex), maxLength()(useBackendData.validations.version.max)];
+const versionRules = [required(), pattern()(useBackendData.validations.version.regex!), maxLength()(useBackendData.validations.version.max!)];
 const platformVersionRules = [required("Select at least one platform version!"), minLength()(1)];
 const changelogRules = [requiredIf()(() => selectedStep.value === "changelog")];
 

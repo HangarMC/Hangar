@@ -27,9 +27,9 @@ const body = computed(() => ({
 }));
 const rules = [
   required(),
-  maxLength()(useBackendData.validations.project.pageName.max),
-  minLength()(useBackendData.validations.project.pageName.min),
-  pattern()(useBackendData.validations.project.pageName.regex),
+  maxLength()(useBackendData.validations.project.pageName.max!),
+  minLength()(useBackendData.validations.project.pageName.min!),
+  pattern()(useBackendData.validations.project.pageName.regex!),
   validPageName()(body),
 ];
 

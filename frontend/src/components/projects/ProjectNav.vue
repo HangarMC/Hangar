@@ -27,9 +27,6 @@ function childRoute(route = ""): string {
     <ProjectNavItem v-if="hasPerms(NamedPermission.EditChannels)" :to="childRoute('/channels')">
       {{ i18n.t("project.tabs.channels") }}
     </ProjectNavItem>
-    <ProjectNavItem v-if="project.topicId" :to="childRoute('/discuss')">
-      {{ i18n.t("project.tabs.discuss") }}
-    </ProjectNavItem>
     <ProjectNavItem v-if="hasPerms(NamedPermission.EditSubjectSettings)" :to="childRoute('/settings')">
       {{ i18n.t("project.tabs.settings") }}
     </ProjectNavItem>

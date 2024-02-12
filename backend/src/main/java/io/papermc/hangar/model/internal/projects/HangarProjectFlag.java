@@ -6,7 +6,7 @@ import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.projects.ProjectFlagTable;
 import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class HangarProjectFlag extends ProjectFlagTable {
 
