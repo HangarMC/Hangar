@@ -17,6 +17,7 @@ console.table({
     BUILD_NAME,
 });
 
+const windowSize = "1920x1080";
 const defaultCapabilities = {
     browserVersion: "latest",
     projectName: "Hangar E2E",
@@ -39,6 +40,7 @@ exports.config = {
             user: DEV ? undefined : BROWSERSTACK_USERNAME,
             key: DEV ? undefined : BROWSERSTACK_ACCESS_KEY,
             browser: "Edge",
+            windowSize,
             capabilities: {
                 ...defaultCapabilities,
                 os: "Windows",
@@ -52,6 +54,7 @@ exports.config = {
             browsers: [
                 {
                     browser: "Safari",
+                    windowSize,
                     capabilities: {
                         ...defaultCapabilities,
                         os: "OS X",
@@ -60,6 +63,7 @@ exports.config = {
                 },
                 {
                     browser: "Edge",
+                    windowSize,
                     capabilities: {
                         ...defaultCapabilities,
                         os: "Windows",
