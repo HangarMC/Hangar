@@ -1,7 +1,6 @@
 {
   "name": "hangar-e2e",
   "version": "1.0.0",
-  "description": "",
   "scripts": {
     "staging": "BROWSERSTACK_DEV=true npx codeceptjs run -c codecept.conf.ts --steps -p pauseOnFail",
     "local": "BROWSERSTACK_DEV=true BROWSERSTACK_LOCAL=true npx codeceptjs run -c codecept.conf.ts --steps -p pauseOnFail",
@@ -9,12 +8,10 @@
     "browserstack-multiple": "npx codeceptjs run-multiple bstack -c codecept.conf.ts --steps",
     "browserstack-local": "BROWSERSTACK_LOCAL=true npx codeceptjs run -c codecept.conf.ts --steps"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@types/chai": "4.3.11",
     "browserstack-local": "^1.5.2",
-    "chai": "5.1.0",
+    "chai": "4.4.1",
     "codeceptjs": "^3.2.3",
     "dotenv": "^16.0.0",
     "ts-node": "10.9.2",

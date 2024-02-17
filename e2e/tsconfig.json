@@ -13,6 +13,7 @@
         "strictNullChecks": false,
         "types": [
             "codeceptjs",
+            "chai",
             "node"
         ],
         "declaration": true,

@@ -1,11 +1,11 @@
 /// <reference types='codeceptjs' />
-type steps_file = typeof import('./utils/steps');
-type IndexPage = typeof import('./pages/IndexPage');
+type util = typeof import('./utils/util');
+type IndexPage = typeof import('./utils/IndexPage');
 
 declare namespace CodeceptJS {
-  interface SupportObject { I: I, current: any, IndexPage: IndexPage }
+  interface SupportObject { I: I, current: any, util: util, IndexPage: IndexPage }
   interface Methods extends WebDriver {}
-  interface I extends ReturnType<steps_file> {}
+  interface I extends WithTranslation<Methods> {}
   namespace Translation {
     interface Actions {}
   }

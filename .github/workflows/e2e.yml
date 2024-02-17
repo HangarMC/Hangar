@@ -1,0 +1,59 @@
+name: e2e
+
+on:
+  # allow manual dispatch
+  workflow_dispatch:
+  # run on pushes to staging
+  push:
+    branches:
+      - staging
+      - autoimport
+
+jobs:
+  e2e:
+    name: 'Hangar E2E Tests'
+    runs-on: ubuntu-latest
+    steps:
+      - name: BrowserStack Env Setup
+        uses: browserstack/github-actions/setup-env@master
+        with:
+          username:  ${{ secrets.BROWSERSTACK_USERNAME }}
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Cache Pnpm
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install e2e deps
+        env:
+          CI: true
+        run: (cd e2e && pnpm install --frozen-lockfile)
+
+      - name: Run e2e tests
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+        run: (cd e2e && pnpm run browserstack-multiple)

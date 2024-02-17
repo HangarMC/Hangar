@@ -10,9 +10,26 @@ const DEV = process.env.BROWSERSTACK_DEV === "true";
 const LOCAL = process.env.BROWSERSTACK_LOCAL === "true";
 const BUILD_NAME = process.env.BROWSERSTACK_BUILD_NAME || "browserstack-build-1" + (LOCAL ? "-local" : "");
 
+console.table({
+    DEBUG,
+    DEV,
+    LOCAL,
+    BUILD_NAME,
+});
+
+const defaultCapabilities = {
+    browserVersion: "latest",
+    projectName: "Hangar E2E",
+    buildName: BUILD_NAME,
+    "browserstack.debug": DEBUG ? "true" : undefined,
+    "browserstack.networkLogs": DEBUG ? "true" : undefined,
+    "browserstack.consoleLogs": DEBUG ? "info" : undefined,
+    "browserstack.local": LOCAL ? "true" : "false",
+};
+
 exports.config = {
     name: "Hangar E2E",
-    tests: "./tests/*_test.ts",
+    tests: "./tests/*.ts",
     output: "./output",
     timeout: 120,
 
@@ -23,13 +40,9 @@ exports.config = {
             key: DEV ? undefined : BROWSERSTACK_ACCESS_KEY,
             browser: "Edge",
             capabilities: {
+                ...defaultCapabilities,
                 os: "Windows",
                 osVersion: "11",
-                browserVersion: "latest",
-                projectName: "Hangar E2E",
-                buildName: BUILD_NAME,
-                "browserstack.debug": DEBUG ? "true" : undefined,
-                "browserstack.networkLogs": DEBUG ? "true" : undefined,
             },
         },
     },
@@ -40,25 +53,17 @@ exports.config = {
                 {
                     browser: "Safari",
                     capabilities: {
+                        ...defaultCapabilities,
                         os: "OS X",
                         osVersion: "Sonoma",
-                        browserVersion: "latest",
-                        projectName: "Hangar E2E",
-                        buildName: BUILD_NAME,
-                        "browserstack.debug": DEBUG ? "true" : undefined,
-                        "browserstack.networkLogs": DEBUG ? "true" : undefined,
                     },
                 },
                 {
                     browser: "Edge",
                     capabilities: {
+                        ...defaultCapabilities,
                         os: "Windows",
                         osVersion: "11",
-                        browserVersion: "latest",
-                        projectName: "Hangar E2E",
-                        buildName: BUILD_NAME,
-                        "browserstack.debug": DEBUG ? "true" : undefined,
-                        "browserstack.networkLogs": DEBUG ? "true" : undefined,
                     },
                 },
             ],
@@ -83,7 +88,7 @@ exports.config = {
 
     teardown:
         LOCAL && !DEV
-            ? function () {
+            ? async function () {
                   exports.bs_local.stop(() => {
                       console.log("Disconnected Local");
                   });
@@ -91,8 +96,8 @@ exports.config = {
             : undefined,
 
     include: {
-        I: "./utils/steps.ts",
-        IndexPage: "./pages/IndexPage.ts",
+        util: "./utils/util.ts",
+        IndexPage: "./utils/IndexPage.ts",
     },
 
     plugins: {
@@ -107,4 +112,4 @@ exports.config = {
             enabled: true,
         },
     },
-};
+} as CodeceptJS.MainConfig;
