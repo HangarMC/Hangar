@@ -3,6 +3,11 @@ name: e2e
 on:
   # allow manual dispatch
   workflow_dispatch:
+    inputs:
+      debug:
+        type: boolean
+        required: false
+        default: false
   # run on pushes to staging
   push:
     branches:
@@ -56,4 +61,5 @@ jobs:
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          BROWSERSTACK_DEBUG: ${{ github.event.inputs.debug || false }}
         run: (cd e2e && pnpm run browserstack-multiple)
