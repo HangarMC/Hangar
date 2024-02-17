@@ -6,12 +6,12 @@ Scenario("Test Project List", async ({ I, util, IndexPage }) => {
     util.openHangarPage("/");
 
     let placeholder = await I.grabAttributeFrom(IndexPage.searchField, "placeholder");
-    expect(placeholder).to.not.contain("0");
+    expect(placeholder).to.not.eq("Search in 0 projects...");
+    I.dontSee("There are no projects.");
 
     I.fillField(IndexPage.searchField, "Some Value That doesnt Exist");
     I.waitInUrl("query");
-    placeholder = await I.grabAttributeFrom(IndexPage.searchField, "placeholder");
-    expect(placeholder).to.contain("0");
+    I.see("There are no projects.");
 
     await util.browserStackStatus(true, "Test passed");
 });
