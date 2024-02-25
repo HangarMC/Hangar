@@ -73,6 +73,9 @@ useHead(useSeo(i18n.t("pages.authorsTitle"), "Hangar Project Authors", route, nu
       <template #name="{ item }">
         <Link :to="'/' + item.name">{{ item.name }}</Link>
       </template>
+      <template #empty>
+        <div class="text-center">No authors found. 😢</div>
+      </template>
     </SortableTable>
   </div>
 </template>

@@ -74,6 +74,9 @@ useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));
       <template #name="{ item }">
         <Link :to="'/' + item.name">{{ item.name }}</Link>
       </template>
+      <template #empty>
+        <div class="text-center">No staff found. 😢</div>
+      </template>
     </SortableTable>
   </div>
 </template>

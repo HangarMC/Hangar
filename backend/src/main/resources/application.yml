@@ -249,6 +249,10 @@ hangar:
     port: 1025
     dev: true
 
+  e2e:
+    password: "password"
+    totp-secret: "JBSWY3DPEHPK3PXP"
+
 #################
 # Debug Logging #
 #################

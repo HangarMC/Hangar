@@ -30,4 +30,11 @@ public class FakeDataController {
     public void generateFakeData(@RequestParam final int users, @RequestParam final int projectsPerUser) {
         this.fakeDataService.generate(users, projectsPerUser);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/generateE2EData")
+    @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
+    public void generateE2EData() {
+        this.fakeDataService.generateE2EData();
+    }
 }

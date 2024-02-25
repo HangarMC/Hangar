@@ -150,6 +150,7 @@ function createProject() {
             v-model.trim="form.name"
             :label="i18n.t('project.new.step2.projectName')"
             :maxlength="useBackendData.validations.project.name.max"
+            name="name"
             counter
             :rules="[
               required(),
@@ -165,6 +166,7 @@ function createProject() {
             :label="i18n.t('project.new.step2.projectSummary')"
             :rules="[required()]"
             :maxlength="useBackendData.validations.project.desc.max"
+            name="description"
             counter
           />
         </div>
@@ -174,6 +176,7 @@ function createProject() {
             :values="useCategoryOptions"
             :label="i18n.t('project.new.step2.projectCategory')"
             :rules="[required()]"
+            name="category"
             i18n-text-values
           />
         </div>

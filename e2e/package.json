@@ -6,7 +6,8 @@
     "local": "BROWSERSTACK_DEV=true BROWSERSTACK_LOCAL=true npx codeceptjs run -c codecept.conf.ts --steps -p pauseOnFail",
     "browserstack-single": "npx codeceptjs run -c codecept.conf.ts --steps",
     "browserstack-multiple": "npx codeceptjs run-multiple bstack -c codecept.conf.ts --steps",
-    "browserstack-local": "BROWSERSTACK_LOCAL=true npx codeceptjs run -c codecept.conf.ts --steps"
+    "browserstack-local": "BROWSERSTACK_LOCAL=true npx codeceptjs run -c codecept.conf.ts --steps",
+    "def": "npx codeceptjs def"
   },
   "dependencies": {
     "@types/chai": "4.3.11",
@@ -14,6 +15,8 @@
     "chai": "4.4.1",
     "codeceptjs": "^3.2.3",
     "dotenv": "^16.0.0",
+    "jwt-decode": "4.0.0",
+    "totp-generator": "1.0.0",
     "ts-node": "10.9.2",
     "webdriverio": "^7.17.4"
   }

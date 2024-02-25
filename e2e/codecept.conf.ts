@@ -30,7 +30,7 @@ const defaultCapabilities = {
 
 exports.config = {
     name: "Hangar E2E",
-    tests: "./tests/*.ts",
+    tests: "./tests/**/*.ts",
     output: "./output",
     timeout: 120,
 

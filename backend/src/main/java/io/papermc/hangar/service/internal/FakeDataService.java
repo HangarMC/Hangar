@@ -1,6 +1,10 @@
 package io.papermc.hangar.service.internal;
 
+import dev.samstevens.totp.qr.QrDataFactory;
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.auth.model.credential.PasswordCredential;
+import io.papermc.hangar.components.auth.model.credential.TotpCredential;
+import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
@@ -32,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 import net.datafaker.Faker;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,13 +50,19 @@ public class FakeDataService extends HangarComponent {
     private final ProjectService projectService;
     private final ProjectFactory projectFactory;
     private final ProjectsDAO projectsDAO;
+    private final CredentialsService credentialsService;
+    private final PasswordEncoder passwordEncoder;
+    private final QrDataFactory qrDataFactory;
 
-    public FakeDataService(final UserDAO userDAO, final GlobalRoleService globalRoleService, final ProjectService projectService, final ProjectFactory projectFactory, final ProjectsDAO projectsDAO) {
+    public FakeDataService(final UserDAO userDAO, final GlobalRoleService globalRoleService, final ProjectService projectService, final ProjectFactory projectFactory, final ProjectsDAO projectsDAO, final CredentialsService credentialsService, final PasswordEncoder passwordEncoder, final QrDataFactory qrDataFactory) {
         this.userDAO = userDAO;
         this.globalRoleService = globalRoleService;
         this.projectService = projectService;
         this.projectFactory = projectFactory;
         this.projectsDAO = projectsDAO;
+        this.credentialsService = credentialsService;
+        this.passwordEncoder = passwordEncoder;
+        this.qrDataFactory = qrDataFactory;
     }
 
     @Transactional
@@ -60,10 +71,18 @@ public class FakeDataService extends HangarComponent {
         final HangarAuthenticationToken oldAuth = (HangarAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         try {
             for (int udx = 0; udx < users; udx++) {
-                final UserTable user = this.createUser();
+                final UserTable user;
+                try {
+                    user = this.createUser();
+                } catch (final Exception ignored) {
+                    continue;
+                }
                 SecurityContextHolder.getContext().setAuthentication(HangarAuthenticationToken.createVerifiedToken(new HangarPrincipal(user.getUserId(), user.getName(), user.getEmail(), false, Permission.All, null, 2, true), oldAuth.getCredentials()));
                 for (int pdx = 0; pdx < projectsPerUser; pdx++) {
-                    this.createProject(user.getUserId());
+                    try {
+                        this.createProject(user.getUserId());
+                    } catch (final Exception ignored) {
+                    }
                 }
             }
         } catch (final Exception e) {
@@ -94,7 +113,9 @@ public class FakeDataService extends HangarComponent {
         final ProjectLicense licence = new ProjectLicense(null, null, type);
         final Set<String> keyWords = new HashSet<>();
         for (int i = 0; i < this.faker.random().nextInt(2, 5); i++) {
-            keyWords.add(this.faker.marketing().buzzwords());
+            String keyword = this.faker.marketing().buzzwords().replace(" ", "-").replace("'", "").replace(".", "");
+            keyword = keyword.length() > 16 ? keyword.substring(0, 16) : keyword;
+            keyWords.add(keyword);
         }
         final ProjectSettings settings = new ProjectSettings(
             List.of(
@@ -128,5 +149,44 @@ public class FakeDataService extends HangarComponent {
 
     private String normalize(final String input) {
         return input.replace(" ", "_").replace("\"", "").replace("'", "").replace(".", "");
+    }
+
+    public void generateE2EData() {
+        final UserTable admin = this.userDAO.create(UUID.randomUUID(), "e2e_admin",
+            "e2e_admin@hangar.papermc.io",
+            "Used for E2E tests",
+            "en",
+            List.of(),
+            false,
+            "dark",
+            true,
+            new JSONB(Map.of()));
+        this.globalRoleService.addRole(new GlobalRoleTable(admin.getId(), GlobalRole.HANGAR_ADMIN));
+
+        final UserTable user = this.userDAO.create(UUID.randomUUID(), "e2e_user",
+            "e2e_user@hangar.papermc.io",
+            "Used for E2E tests",
+            "en",
+            List.of(),
+            false,
+            "dark",
+            true,
+            new JSONB(Map.of()));
+
+        final String password = this.config.e2e.password();
+        final String totpSecret = this.config.e2e.totpSecret();
+        this.credentialsService.registerCredential(admin.getUserId(), new PasswordCredential(this.passwordEncoder.encode(password)));
+        this.credentialsService.registerCredential(user.getUserId(), new PasswordCredential(this.passwordEncoder.encode(password)));
+
+        this.credentialsService.registerCredential(admin.getUserId(), new TotpCredential(this.qrDataFactory.newBuilder()
+            .label(admin.getName())
+            .secret(totpSecret)
+            .issuer("Hangar")
+            .build().getUri()));
+        this.credentialsService.registerCredential(user.getUserId(), new TotpCredential(this.qrDataFactory.newBuilder()
+            .label(user.getName())
+            .secret(totpSecret)
+            .issuer("Hangar")
+            .build().getUri()));
     }
 }

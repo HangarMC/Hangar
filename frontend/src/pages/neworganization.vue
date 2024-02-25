@@ -38,6 +38,7 @@ async function create() {
         v-model="name"
         class="max-w-100 pr-2"
         :label="i18n.t('organization.new.name')"
+        name="name"
         counter
         :maxlength="useBackendData.validations.org.max"
         :rules="[
@@ -49,7 +50,7 @@ async function create() {
         ]"
       />
 
-      <Button size="medium" :disabled="!canCreate" @click="create">
+      <Button size="medium" :disabled="!canCreate" title="Create Org" @click="create">
         {{ i18n.t("form.memberList.create") }}
       </Button>
     </div>

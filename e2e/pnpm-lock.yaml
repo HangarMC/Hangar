@@ -20,6 +20,12 @@ dependencies:
   dotenv:
     specifier: ^16.0.0
     version: 16.4.2
+  jwt-decode:
+    specifier: 4.0.0
+    version: 4.0.0
+  totp-generator:
+    specifier: 1.0.0
+    version: 1.0.0
   ts-node:
     specifier: 10.9.2
     version: 10.9.2(@types/node@20.11.17)(typescript@5.3.3)
@@ -2721,6 +2727,15 @@ packages:
     resolution: {integrity: sha512-2bf/1crAmPpsmj1I6rDT6W0SOErkrNBpb555xNWcMVWYrX6VnXpG0GRMQ2shvOHwafpfse8q0gnzPFYVH6Tqdg==}
     dev: false
 
+  /jssha@3.3.1:
+    resolution: {integrity: sha512-VCMZj12FCFMQYcFLPRm/0lOBbLi8uM2BhXPTqw3U4YAfs4AZfiApOoBLoN8cQE60Z50m1MYMTQVCfgF/KaCVhQ==}
+    dev: false
+
+  /jwt-decode@4.0.0:
+    resolution: {integrity: sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==}
+    engines: {node: '>=18'}
+    dev: false
+
   /keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
     dependencies:
@@ -4152,6 +4167,12 @@ packages:
     engines: {node: '>=8.0'}
     dependencies:
       is-number: 7.0.0
+    dev: false
+
+  /totp-generator@1.0.0:
+    resolution: {integrity: sha512-Iu/1Lk60/MH8FE+5cDWPiGbwKK1hxzSq+KT9oSqhZ1BEczGIKGcN50bP0WMLiIZKRg7t29iWLxw6f81TICQdoA==}
+    dependencies:
+      jssha: 3.3.1
     dev: false
 
   /tr46@0.0.3:

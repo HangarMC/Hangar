@@ -55,7 +55,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
     :no-error-tooltip="noErrorTooltip"
   >
     <template #default="slotProps">
-      <select v-model="internalVal" :disabled="disabled" :class="slotProps.class" class="appearance-none" @blur="v.$touch()">
+      <select v-model="internalVal" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" class="appearance-none" @blur="v.$touch()">
         <option
           v-for="val in values"
           :key="val[itemValue] || val"
