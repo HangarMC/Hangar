@@ -44,6 +44,7 @@ import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.CryptoUtils;
 import io.papermc.hangar.util.StringUtils;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -171,9 +172,12 @@ public class VersionFactory extends HangarComponent {
             // read file
             final String tmpDir = this.fileService.resolve(userTempDir, platformToResolve.name());
             final String tmpPluginFile = this.fileService.resolve(tmpDir, pluginFileName);
-            final byte[] bytes = file.getInputStream().readAllBytes();
-            // write
-            this.fileService.write(file.getInputStream(), tmpPluginFile, null);
+            final byte[] bytes;
+            try (final InputStream in = file.getInputStream()) {
+                bytes = in.readAllBytes();
+            }
+            this.fileService.write(file, bytes, tmpPluginFile, null);
+
             // load meta
             pluginDataFile = this.pluginDataService.loadMeta(pluginFileName, bytes, this.getHangarPrincipal().getUserId());
         } catch (final ConfigurateException configurateException) {
