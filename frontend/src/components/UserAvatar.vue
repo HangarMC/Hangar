@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { NuxtLink } from "#components";
 
 const props = withDefaults(
   defineProps<{
@@ -64,7 +64,7 @@ const url = computed(() => {
 
 <template>
   <div :class="'rounded-lg ' + sizeClass">
-    <component :is="disableLink ? 'span' : 'NuxtLink'" :key="url" :to="url">
+    <component :is="disableLink ? 'span' : NuxtLink" :key="url" :to="url">
       <img class="rounded-lg w-full h-full" :title="username" :src="src" :alt="'Avatar for ' + username" @error="errored = true" />
     </component>
   </div>

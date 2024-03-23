@@ -53,7 +53,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -214,8 +214,8 @@ public class ProjectService extends HangarComponent {
             }
         }
 
-        final Set<String> tags = new LinkedHashSet<>(settingsForm.getSettings().getTags());
-        if (tags.stream().anyMatch(s -> Tag.byName(s) == null)) {
+        final Set<Tag> tags = new LinkedHashSet<>(settingsForm.getSettings().getTags());
+        if (tags.stream().anyMatch(Objects::isNull)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.invalidTag");
         }
     }

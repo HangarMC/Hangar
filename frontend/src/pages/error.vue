@@ -1,8 +1,4 @@
 <script lang="ts" setup>
-import { computed } from "vue";
-import { useRoute } from "vue-router";
-import Button from "~/components/design/Button.vue";
-
 const route = useRoute();
 
 const hangarApiError = computed(() => {

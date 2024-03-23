@@ -1,41 +1,8 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import { computed, ref } from "vue";
-import type { NewProjectForm } from "hangar-internal";
-import { useVuelidate } from "@vuelidate/core";
 import { isAxiosError } from "axios";
-import { watchDebounced } from "@vueuse/core";
-import PageTitle from "~/components/design/PageTitle.vue";
-import { useSeo } from "~/composables/useSeo";
-import Steps from "~/components/design/Steps.vue";
 import type { Step } from "~/types/components/design/Steps";
-import Link from "~/components/design/Link.vue";
 import type { SpigotAuthor, SpigotResource } from "~/composables/useProjectImporter";
-import { convertSpigotProjects, getAllSpigotResourcesByAuthor, getSpigotAuthor } from "~/composables/useProjectImporter";
-import InputText from "~/components/ui/InputText.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import UserAvatar from "~/components/UserAvatar.vue";
-import Spoiler from "~/components/design/Spoiler.vue";
-
-import { MarkdownEditor } from "#components";
-import InputTag from "~/components/ui/InputTag.vue";
-import { useAuthStore } from "~/store/auth";
-import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
-import { minLength, maxLength, pattern, required, requiredIf, url, noDuplicated } from "~/composables/useValidationHelpers";
-import { validProjectName } from "~/composables/useHangarValidations";
-import Button from "~/components/design/Button.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import Spinner from "~/components/design/Spinner.vue";
-import { definePageMeta, reactive, usePossibleOwners } from "#imports";
-import Alert from "~/components/design/Alert.vue";
-import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import InputGroup from "~/components/ui/InputGroup.vue";
-import { ProjectCategory, Tag } from "~/types/enums"; // dont remove Tag, even if IntelliJ says its unused...
-import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
+import { Category, type NewProjectForm, Tag } from "~/types/backend";
 
 definePageMeta({
   loginRequired: true,
@@ -160,10 +127,10 @@ function createProject(project: NewProjectForm) {
   if (!project.pageContent) {
     project.pageContent = "# " + project.name + "  \nWelcome to your new project!";
   }
-  if (!project.util.isCustomLicense.value) {
+  if (!project.util.isCustomLicense) {
     project.settings.license.name = null;
   }
-  if (project.util.licenseUnset.value) {
+  if (project.util.licenseUnset) {
     project.settings.license.url = null;
   }
   useInternalApi<string>("projects/create", "post", project, { timeout: 10000 })
@@ -254,8 +221,8 @@ useHead(useSeo(t("importer.title"), null, route, null));
                   counter
                   :rules="[
                     required(),
-                    maxLength()(useBackendData.validations.project.name.max),
-                    pattern()(useBackendData.validations.project.name.regex),
+                    maxLength()(useBackendData.validations.project.name.max!),
+                    pattern()(useBackendData.validations.project.name.regex!),
                     validProjectName()(() => project.ownerId),
                   ]"
                 />
@@ -275,7 +242,7 @@ useHead(useSeo(t("importer.title"), null, route, null));
                 v-model="project.category"
                 :values="useCategoryOptions"
                 label="Category"
-                :rules="[required(), (category) => category !== ProjectCategory.UNDEFINED]"
+                :rules="[required(), (category) => category !== Category.Undefined]"
                 i18n-text-values
               />
             </div>
@@ -338,13 +305,13 @@ useHead(useSeo(t("importer.title"), null, route, null));
                       :label="t('project.new.step3.customName')"
                       :rules="[
                         requiredIf()(project.util.isCustomLicense),
-                        maxLength()(useBackendData.validations.project.license.max),
-                        pattern()(useBackendData.validations.project.license.regex),
+                        maxLength()(useBackendData.validations.project.license.max!),
+                        pattern()(useBackendData.validations.project.license.regex!),
                       ]"
                     />
                   </div>
                   <div v-if="!project.util.licenseUnset" class="basis-full mt-4" :md="project.util.isCustomLicense ? 'basis-full' : 'basis-6/12'">
-                    <InputText v-model.trim="project.settings.license.url" :label="t('project.new.step3.url')" :rules="[url()]" />
+                    <InputText v-model.trim="project.settings.license.url" :label="t('project.new.step3.url')" :rules="[validUrl()]" />
                   </div>
                 </div>
                 <div class="text-lg mt-6 flex gap-2 items-center">

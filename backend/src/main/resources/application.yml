@@ -46,7 +46,7 @@ spring:
       enabled: true
 
 springdoc:
-  pathsToMatch: "/api/v1/**"
+  use-fqn: true
 
 management:
   tracing:
@@ -249,6 +249,10 @@ hangar:
     host: localhost
     port: 1025
     dev: true
+
+  e2e:
+    password: "password"
+    totp-secret: "JBSWY3DPEHPK3PXP"
 
 #################
 # Debug Logging #

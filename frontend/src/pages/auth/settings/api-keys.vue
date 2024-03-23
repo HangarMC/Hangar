@@ -1,24 +1,5 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { reactive, ref } from "vue";
-import type { ApiKey } from "hangar-api";
-import { useVuelidate } from "@vuelidate/core";
-import PageTitle from "~/components/design/PageTitle.vue";
-import InputText from "~/components/ui/InputText.vue";
-import Button from "~/components/design/Button.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import Table from "~/components/design/Table.vue";
-import Alert from "~/components/design/Alert.vue";
-import { useNotificationStore } from "~/store/notification";
-import { maxLength, minLength, required } from "~/composables/useValidationHelpers";
-import { validApiKeyName } from "~/composables/useHangarValidations";
-import InputGroup from "~/components/ui/InputGroup.vue";
-import type { NamedPermission } from "~/types/enums";
-import Tooltip from "~/components/design/Tooltip.vue";
-import { useAuthStore } from "~/store/auth";
-import PrettyTime from "~/components/design/PrettyTime.vue";
+import { type ApiKey, NamedPermission } from "~/types/backend";
 
 const i18n = useI18n();
 const notification = useNotificationStore();

@@ -1,13 +1,10 @@
-<script setup lang="ts">
-import { computed, watch } from "vue";
+<script setup lang="ts" generic="T">
 import type { ValidationRule } from "@vuelidate/core";
-import { useValidation } from "~/composables/useValidationHelpers";
-import InputWrapper from "~/components/ui/InputWrapper.vue";
 import type { Option } from "~/types/components/ui/InputAutocomplete";
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: object | string | boolean | number | null | undefined): void;
-  (e: "search", value: object | string | boolean | number | null | undefined): void;
+  (e: "update:modelValue", value?: T): void;
+  (e: "search", value?: T): void | Promise<void>;
 }>();
 const internalVal = computed({
   get: () => props.modelValue,
@@ -17,10 +14,10 @@ const internalVal = computed({
 const props = withDefaults(
   defineProps<{
     id: string;
-    modelValue?: object | string | boolean | number | null;
-    values: Option[] | Record<string, any> | string[];
-    itemValue?: string | ((object: object) => string);
-    itemText?: string | ((object: object) => string);
+    modelValue?: T;
+    values: Option<T>[] | Record<string, any> | string[];
+    itemValue?: string | ((object: T) => string);
+    itemText?: string | ((object: T) => string);
     disabled?: boolean;
     label?: string;
     loading?: boolean;
@@ -30,7 +27,7 @@ const props = withDefaults(
     noErrorTooltip?: boolean;
   }>(),
   {
-    modelValue: "",
+    modelValue: undefined,
     itemValue: "value",
     itemText: "text",
     label: "",

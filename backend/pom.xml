@@ -26,15 +26,15 @@
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
         <!-- dependency management -->
-        <jdbi3-bom.version>3.43.0</jdbi3-bom.version>
+        <jdbi3-bom.version>3.44.1</jdbi3-bom.version>
         <configurate.version>4.2.0-SNAPSHOT</configurate.version>
         <spring-cloud-aws.version>3.1.0</spring-cloud-aws.version>
 
         <!-- dependencies -->
-        <sentry.version>7.2.0</sentry.version>
+        <sentry.version>7.3.0</sentry.version>
         <springdoc.version>2.3.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
-        <org-json.version>20231013</org-json.version>
+        <org-json.version>20240205</org-json.version>
         <bucket4j.version>7.6.0</bucket4j.version>
         <datafaker.version>2.1.0</datafaker.version>
         <apache-commons-lang.version>3.14.0</apache-commons-lang.version>
@@ -42,18 +42,18 @@
         <jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
         <caffeine.version>3.1.8</caffeine.version>
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
-        <jgroups.version>5.3.1.Final</jgroups.version>
+        <jgroups.version>5.3.2.Final</jgroups.version>
         <jgroups-kube.version>2.0.1.Final</jgroups-kube.version>
         <totp.version>1.7.2-SNAPSHOT</totp.version>
         <webp.version>0.1.6</webp.version>
         <webauthn.version>2.5.0</webauthn.version>
         <logback-contrib.version>0.1.5</logback-contrib.version>
-        <janino.version>3.1.11</janino.version>
+        <janino.version>3.1.12</janino.version>
         <mockito-inline.version>5.2.0</mockito-inline.version>
         <otel-semconv.version>1.30.0-alpha</otel-semconv.version>
 
         <!-- test -->
-        <pg.version>1.19.4</pg.version>
+        <pg.version>1.19.5</pg.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
@@ -189,7 +189,7 @@
         <!-- SpringDoc dependencies -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
 

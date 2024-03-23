@@ -12,7 +12,7 @@ import io.papermc.hangar.util.RequestUtil;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.util.Locale;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.stereotype.Service;
 
 @Service

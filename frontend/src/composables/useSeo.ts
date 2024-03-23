@@ -1,15 +1,13 @@
-import type { HeadObject } from "@unhead/vue";
+import type { UseHeadInput } from "@unhead/vue";
 import type { TranslateResult } from "vue-i18n";
-import type { RouteLocationNormalizedLoaded } from "vue-router";
-import { useSeoMeta } from "@unhead/vue";
-import { useConfig } from "~/composables/useConfig";
+import type { RouteLocationNormalized } from "vue-router/auto";
 
 export function useSeo(
   title: string | TranslateResult | null | undefined,
   description: string | TranslateResult | null | undefined,
-  route: RouteLocationNormalizedLoaded,
+  route: RouteLocationNormalized,
   image: string | null
-): HeadObject {
+): UseHeadInput {
   description = description || "Plugin repository for Paper, Velocity, Waterfall and Folia.";
   const config = useConfig();
   const canonical = config.publicHost + (route.fullPath.endsWith("/") ? route.fullPath.substring(0, route.fullPath.length - 1) : route.fullPath);
@@ -57,8 +55,8 @@ export function useSeo(
         }),
         key: "breadcrumb",
       },
-    ] as any[],
-  } as HeadObject;
+    ],
+  } as UseHeadInput;
 
   // todo renenable crowdin integration
   // if (context.app.i18n.locale === 'dum') {
@@ -78,7 +76,7 @@ export function useSeo(
   return seo;
 }
 
-function generateBreadcrumbs(route: RouteLocationNormalizedLoaded) {
+function generateBreadcrumbs(route: RouteLocationNormalized) {
   const arr = [];
   const split = route.fullPath.split("/");
   let curr = "";

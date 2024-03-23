@@ -1,46 +1,18 @@
 <script lang="ts" setup>
-import { useHead } from "@unhead/vue";
-import { useRoute, useRouter } from "vue-router";
-import type { HangarProject, HangarUser } from "hangar-internal";
-import { useI18n } from "vue-i18n";
-import { computed, onMounted, reactive, ref, watch } from "vue";
 import { cloneDeep } from "lodash-es";
 import { useVuelidate } from "@vuelidate/core";
 import { Cropper, type CropperResult } from "vue-advanced-cropper";
-import type { PaginatedResult, User } from "hangar-api";
-import { useSeo } from "~/composables/useSeo";
-import Card from "~/components/design/Card.vue";
-import MemberList from "~/components/projects/MemberList.vue";
-import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission, Tag, Visibility } from "~/types/enums";
-import Button from "~/components/design/Button.vue";
-import Tabs from "~/components/design/Tabs.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
-import InputText from "~/components/ui/InputText.vue";
-import InputFile from "~/components/ui/InputFile.vue";
-import { useApi, useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useNotificationStore } from "~/store/notification";
-import InputTag from "~/components/ui/InputTag.vue";
-import TextAreaModal from "~/components/modals/TextAreaModal.vue";
-import ProjectSettingsSection from "~/components/projects/ProjectSettingsSection.vue";
-import { maxLength, required, pattern, requiredIf, url, noDuplicated } from "~/composables/useValidationHelpers";
-import { validProjectName } from "~/composables/useHangarValidations";
+import type { Tab } from "~/types/components/design/Tabs";
+import type InputText from "~/components/ui/InputText.vue";
+import { type HangarProject, type HangarUser, NamedPermission, type PaginatedResultUser, Tag, Visibility } from "~/types/backend";
 
 import "vue-advanced-cropper/dist/style.css";
-import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
-import { definePageMeta } from "#imports";
-import type { Tab } from "~/types/components/design/Tabs";
-import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import Tooltip from "~/components/design/Tooltip.vue";
 
 definePageMeta({
-  projectPermsRequired: ["EDIT_SUBJECT_SETTINGS"],
+  projectPermsRequired: ["EditSubjectSettings"],
 });
 
-const route = useRoute();
+const route = useRoute("user-project-settings-slug");
 const router = useRouter();
 const i18n = useI18n();
 const v = useVuelidate();
@@ -51,12 +23,12 @@ const props = defineProps<{
 }>();
 
 const selectedTab = ref(route.params.slug?.[0] || "general");
-const tabs: Tab[] = [
+const tabs = [
   { value: "general", header: i18n.t("project.settings.tabs.general") },
   { value: "links", header: i18n.t("project.settings.tabs.links") },
   { value: "management", header: i18n.t("project.settings.tabs.management") },
   // { value: "donation", header: i18n.t("project.settings.tabs.donation") },
-];
+] as const satisfies Tab<string>[];
 
 const form = reactive({
   settings: cloneDeep(props.project.settings),
@@ -119,7 +91,7 @@ const search = ref<string>("");
 const result = ref<string[]>([]);
 async function doSearch(val: unknown) {
   result.value = [];
-  const users = await useApi<PaginatedResult<User>>("users", "get", {
+  const users = await useApi<PaginatedResultUser>("users", "get", {
     query: val,
     limit: 25,
     offset: 0,
@@ -181,7 +153,7 @@ async function softDelete(comment: string) {
       content: comment,
     });
     await notificationStore.success(i18n.t("project.settings.success.softDelete"));
-    if (hasPerms(NamedPermission.HARD_DELETE_PROJECT)) {
+    if (hasPerms(NamedPermission.HardDeleteProject)) {
       router.go(0);
     } else {
       await router.push("/");
@@ -310,13 +282,13 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
                   :label="i18n.t('project.settings.licenseCustom')"
                   :rules="[
                     requiredIf()(isCustomLicense),
-                    maxLength()(useBackendData.validations.project.license.max),
-                    pattern()(useBackendData.validations.project.license.regex),
+                    maxLength()(useBackendData.validations.project.license.max!),
+                    pattern()(useBackendData.validations.project.license.regex!),
                   ]"
                 />
               </div>
               <div v-if="!isUnspecifiedLicense" class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
-                <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[url()]" />
+                <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[validUrl()]" />
               </div>
             </div>
           </ProjectSettingsSection>
@@ -371,7 +343,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
           </ProjectSettingsSection>
         </template>
         <template #management>
-          <ProjectSettingsSection v-if="hasPerms(NamedPermission.IS_SUBJECT_OWNER)" title="project.settings.rename" description="project.settings.renameSub">
+          <ProjectSettingsSection v-if="hasPerms(NamedPermission.IsSubjectOwner)" title="project.settings.rename" description="project.settings.renameSub">
             <div class="flex items-center">
               <InputText
                 ref="newNameField"
@@ -385,11 +357,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
               </Button>
             </div>
           </ProjectSettingsSection>
-          <ProjectSettingsSection
-            v-if="hasPerms(NamedPermission.IS_SUBJECT_OWNER)"
-            title="project.settings.transfer"
-            description="project.settings.transferSub"
-          >
+          <ProjectSettingsSection v-if="hasPerms(NamedPermission.IsSubjectOwner)" title="project.settings.transfer" description="project.settings.transferSub">
             <div class="flex items-center">
               <InputAutocomplete id="membersearch" v-model="search" :values="result" :label="i18n.t('project.settings.transferTo')" @search="doSearch" />
               <Button :disabled="search.length === 0" :loading="loading.transfer" class="ml-2" @click="transfer">
@@ -399,7 +367,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
             </div>
           </ProjectSettingsSection>
           <ProjectSettingsSection
-            v-if="hasPerms(NamedPermission.DELETE_PROJECT) && project.visibility !== Visibility.SOFT_DELETE"
+            v-if="hasPerms(NamedPermission.DeleteProject) && project.visibility !== Visibility.SoftDelete"
             title="project.settings.delete"
             description="project.settings.deleteSub"
             class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"
@@ -411,7 +379,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
             </TextAreaModal>
           </ProjectSettingsSection>
           <ProjectSettingsSection
-            v-if="hasPerms(NamedPermission.HARD_DELETE_PROJECT)"
+            v-if="hasPerms(NamedPermission.HardDeleteProject)"
             title="project.settings.hardDelete"
             description="project.settings.hardDeleteSub"
             class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"

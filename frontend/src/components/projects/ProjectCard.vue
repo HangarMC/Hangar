@@ -1,29 +1,11 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-import type { Project } from "hangar-api";
-import { useRouter } from "vue-router";
-import Card from "~/components/design/Card.vue";
-import Link from "~/components/design/Link.vue";
-import UserAvatar from "~/components/UserAvatar.vue";
-import { lastUpdated } from "~/composables/useTime";
-import Tooltip from "~/components/design/Tooltip.vue";
-import { Visibility, Tag } from "~/types/enums";
-import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
-import PrettyTime from "~/components/design/PrettyTime.vue";
-import IconMdiPuzzleOutline from "~icons/mdi/puzzle-outline";
-import IconMdiBookshelf from "~icons/mdi/bookshelf";
-import IconMdiLeaf from "~icons/mdi/leaf";
-import IconMdiStar from "~icons/mdi/star";
-import IconMdiDownload from "~icons/mdi/download";
-import IconMdiCalendar from "~icons/mdi/calendar";
-import IconMdiCancel from "~icons/mdi/cancel";
-import IconMdiEyeOff from "~icons/mdi/eye-off";
+import { type Project, type ProjectCompact, Tag, Visibility } from "~/types/backend";
 
 const i18n = useI18n();
 const router = useRouter();
 
 defineProps<{
-  project: Project;
+  project: Project | ProjectCompact;
 }>();
 </script>
 
@@ -31,8 +13,8 @@ defineProps<{
   <NuxtLink :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
     <Card
       :class="{
-        '!border-red-500 border-1px': project.visibility === Visibility.SOFT_DELETE,
-        '!border-gray-300 !dark:border-gray-700 border-1px': project.visibility === Visibility.PUBLIC,
+        '!border-red-500 border-1px': project.visibility === Visibility.SoftDelete,
+        '!border-gray-300 !dark:border-gray-700 border-1px': project.visibility === Visibility.Public,
         'hover:background-card': true,
       }"
     >
@@ -51,15 +33,15 @@ defineProps<{
                 </object>
               </span>
             </h2>
-            <IconMdiCancel v-show="project.visibility === Visibility.SOFT_DELETE" />
-            <IconMdiEyeOff v-show="project.visibility !== Visibility.PUBLIC" />
+            <IconMdiCancel v-show="project.visibility === Visibility.SoftDelete" />
+            <IconMdiEyeOff v-show="project.visibility !== Visibility.Public" />
           </div>
 
-          <h3 v-if="project.description" class="mb-1">{{ project.description }}</h3>
+          <h3 v-if="'description' in project && project.description" class="mb-1">{{ project.description }}</h3>
           <div class="inline-flex items-center text-gray-500 dark:text-gray-400 lt-sm:hidden">
             <CategoryLogo :category="project.category" :size="16" class="mr-1" />
             {{ i18n.t("project.category." + project.category) }}
-            <div v-if="project.settings" class="inline-flex ml-2 space-x-1">
+            <div v-if="'settings' in project && project.settings" class="inline-flex ml-2 space-x-1">
               <span class="border-l-1 border-gray-500 dark:border-gray-400" />
               <span v-for="tag in project.settings.tags" :key="tag" class="inline-flex items-center">
                 <Tooltip>

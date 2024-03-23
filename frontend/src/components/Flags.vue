@@ -1,18 +1,5 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { ref } from "vue";
-import type { Flag, HangarFlagNotification } from "hangar-internal";
-import type { PaginatedResult } from "hangar-api";
-import { useResolvedFlags, useUnresolvedFlags } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useInternalApi } from "~/composables/useApi";
-import UserAvatar from "~/components/UserAvatar.vue";
-import Card from "~/components/design/Card.vue";
-import Button from "~/components/design/Button.vue";
-import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
-import ReportNotificationModal from "~/components/modals/ReportNotificationModal.vue";
-import Pagination from "~/components/design/Pagination.vue";
-import Link from "~/components/design/Link.vue";
+import type { HangarProjectFlag, HangarProjectFlagNotification, PaginatedResultHangarProjectFlag } from "~/types/backend";
 
 const props = defineProps<{
   resolved: boolean;
@@ -22,13 +9,13 @@ const i18n = useI18n();
 const flags = await (props.resolved ? useResolvedFlags() : useUnresolvedFlags());
 const loading = ref<{ [key: number]: boolean }>({});
 
-function resolve(flag: Flag) {
+function resolve(flag: HangarProjectFlag) {
   loading.value[flag.id] = true;
   useInternalApi(`flags/${flag.id}/resolve/${props.resolved ? "false" : "true"}`, "POST")
     .catch<any>((e) => handleRequestError(e))
     .then(async () => {
       if (flags && flags.value) {
-        const newFlags = await useInternalApi<PaginatedResult<Flag>>("flags/" + (props.resolved ? "resolved" : "unresolved")).catch((e) =>
+        const newFlags = await useInternalApi<PaginatedResultHangarProjectFlag>("flags/" + (props.resolved ? "resolved" : "unresolved")).catch((e) =>
           handleRequestError(e)
         );
         if (newFlags) {
@@ -42,17 +29,17 @@ function resolve(flag: Flag) {
 }
 
 // TODO: bake into hangarflag?
-const notifications = ref<HangarFlagNotification[]>([]);
+const notifications = ref<HangarProjectFlagNotification[]>([]);
 const currentId = ref(-1);
 
-async function getNotifications(flag: Flag) {
+async function getNotifications(flag: HangarProjectFlag) {
   if (currentId.value === flag.id) {
     return;
   }
 
-  notifications.value = (await useInternalApi<HangarFlagNotification[]>(`flags/${flag.id}/notifications`, "get").catch((e) =>
+  notifications.value = (await useInternalApi<HangarProjectFlagNotification[]>(`flags/${flag.id}/notifications`, "get").catch((e) =>
     handleRequestError(e)
-  )) as HangarFlagNotification[];
+  )) as HangarProjectFlagNotification[];
   currentId.value = flag.id;
 }
 </script>

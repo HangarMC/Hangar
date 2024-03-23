@@ -1,29 +1,12 @@
 <script lang="ts" setup>
-import { useHead } from "@unhead/vue";
-import { useRoute, useRouter } from "vue-router";
-import { ref } from "vue";
-import { useI18n } from "vue-i18n";
-import type { AuthSettings } from "hangar-internal";
-import { useSeo } from "~/composables/useSeo";
-import { useAuthStore } from "~/store/auth";
-import Button from "~/components/design/Button.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { useAuthSettings } from "~/composables/useApiHelper";
-import Card from "~/components/design/Card.vue";
-import InputText from "~/components/ui/InputText.vue";
-import { definePageMeta } from "#imports";
-import Alert from "~/components/design/Alert.vue";
-import Modal from "~/components/modals/Modal.vue";
-import { useNotificationStore } from "~/store/notification";
-import Tabs from "~/components/design/Tabs.vue";
 import type { Tab } from "~/types/components/design/Tabs";
-import Delayed from "~/components/design/Delayed.vue";
+import type { SettingsResponse } from "~/types/backend";
 
 definePageMeta({
   loginRequired: true,
 });
 
-const route = useRoute();
+const route = useRoute("auth-settings");
 const router = useRouter();
 const auth = useAuthStore();
 const notification = useNotificationStore();
@@ -36,13 +19,13 @@ if (process.client && route.path.endsWith("settings")) {
   window.location.replace("/auth/settings/profile");
 }
 
-const tabs: Tab[] = [
+const tabs = [
   { value: "profile", header: t("auth.settings.profile.header") },
   { value: "account", header: t("auth.settings.account.header") },
   { value: "security", header: t("auth.settings.security.header") },
   { value: "api-keys", header: t("auth.settings.apiKeys.header") },
   { value: "other", header: t("auth.settings.misc.header") },
-];
+] as const satisfies Tab<string>[];
 
 const emailConfirmModal = ref();
 const hasPendingMail = ref(settings.value?.emailPending);
@@ -84,7 +67,7 @@ async function verifyEmail(emailCode: string) {
 }
 
 async function refreshSettings() {
-  settings.value = await useInternalApi<AuthSettings>("auth/settings", "POST");
+  settings.value = await useInternalApi<SettingsResponse>("auth/settings", "POST");
 }
 
 useHead(useSeo("Settings", null, route, null));

@@ -1,18 +1,9 @@
-import { defineStore } from "pinia";
-import type { Ref } from "vue";
-import { computed, ref, unref } from "vue";
-import { useAuthStore } from "~/store/auth";
-import { settingsLog } from "~/composables/useLog";
-import { useSettingsHelper } from "~/composables/useSettingsHelper";
-import { useInternalApi } from "~/composables/useApi";
-import { useCookie } from "#imports";
-
 export const useSettingsStore = defineStore("settings", () => {
   settingsLog("defineSettingsStore");
-  const darkMode: Ref<boolean> = ref(false);
-  const locale: Ref<string> = ref("en");
+  const darkMode = ref(false);
+  const locale = ref("en");
 
-  const mobile: Ref<boolean> = ref(true); // True cause mobile first!!
+  const mobile = ref(true); // True cause mobile first!!
   const mobileBreakPoint = 700;
 
   function toggleDarkMode() {

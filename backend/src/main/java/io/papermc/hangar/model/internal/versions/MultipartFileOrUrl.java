@@ -6,7 +6,7 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Platform;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 // @el(root: String) // can't figure out how to apply this to just the one record component
 @Schema(description = "List of different jars/external links that are part of the version")

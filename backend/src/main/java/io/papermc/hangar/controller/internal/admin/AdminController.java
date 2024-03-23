@@ -52,7 +52,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,9 +62,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @Unlocked
-@Controller
+@RestController
 @RateLimit(path = "admin")
 @RequestMapping("/api/internal/admin")
 public class AdminController extends HangarComponent {
@@ -122,7 +122,6 @@ public class AdminController extends HangarComponent {
     @PostMapping(path = "/updateHashes")
     @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
     @RateLimit(overdraft = 1, refillSeconds = RateLimit.MAX_REFILL_DELAY, refillTokens = 1)
-    @ResponseBody
     public List<String> updateHashes() {
         return this.versionService.updateFileHashes();
     }
@@ -131,12 +130,10 @@ public class AdminController extends HangarComponent {
     @PostMapping(path = "/scanSafeLinks")
     @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
     @RateLimit(overdraft = 1, refillSeconds = RateLimit.MAX_REFILL_DELAY, refillTokens = 1)
-    @ResponseBody
     public void approveVersionsWithSafeLinks() {
         this.reviewService.approveVersionsWithSafeLinks();
     }
 
-    @ResponseBody
     @PermissionRequired(NamedPermission.VIEW_STATS)
     @GetMapping(path = "/stats", produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayNode getStats(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
@@ -152,7 +149,6 @@ public class AdminController extends HangarComponent {
         return this.mapper.valueToTree(this.statService.getStats(from, to));
     }
 
-    @ResponseBody
     @PermissionRequired(NamedPermission.VIEW_HEALTH)
     @GetMapping(path = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
     public HealthReport getHealthReport() {
@@ -205,7 +201,6 @@ public class AdminController extends HangarComponent {
         }
     }
 
-    @ResponseBody
     @GetMapping(value = "/log", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.REVIEWER)
     @ApplicableFilters({LogActionFilter.class, LogPageFilter.class, LogProjectFilter.class, LogSubjectFilter.class, LogUserFilter.class, LogVersionFilter.class})

@@ -1,13 +1,5 @@
 <script setup lang="ts">
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
-import { useI18n } from "vue-i18n";
-import type { HangarNotification, HangarUser } from "hangar-internal";
-import { ref } from "vue";
-import { useSettingsStore } from "~/store/useSettingsStore";
-import Announcement from "~/components/Announcement.vue";
-import DropdownButton from "~/components/design/DropdownButton.vue";
-import DropdownItem from "~/components/design/DropdownItem.vue";
-import Popper from "~/components/design/Popper.vue";
 
 import hangarLogo from "~/assets/hangar-logo.svg";
 
@@ -27,22 +19,11 @@ import IconMdiFolderPlusOutline from "~icons/mdi/folder-plus-outline";
 import IconMdiFolderWrenchOutline from "~icons/mdi/folder-wrench-outline";
 import IconMdiFolderInformationOutline from "~icons/mdi/folder-information-outline";
 
-import { useAuthStore } from "~/store/auth";
-import { useAuth } from "~/composables/useAuth";
-import { useBackendData } from "~/store/backendData";
-import { authLog } from "~/composables/useLog";
-import { lastUpdated } from "~/composables/useTime";
-import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission } from "~/types/enums";
-import UserAvatar from "~/components/UserAvatar.vue";
-import Button from "~/components/design/Button.vue";
-import { useRecentNotifications, useUnreadNotificationsCount } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import Link from "~/components/design/Link.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { unref } from "#imports";
+import type { RouteNamedMap } from "vue-router/auto/routes";
+import { type HangarNotification, type HangarUser, NamedPermission } from "~/types/backend";
 
 // marker so that you can inspect backend data in dev tools
+// @ts-ignore
 const backendData = useBackendData;
 
 const settings = useSettingsStore();
@@ -58,13 +39,15 @@ if (authStore.user) {
   updateNotifications();
 }
 
-const navBarLinks = [
+type NavBarLinks = { link: keyof RouteNamedMap; label: string; icon?: any }[];
+
+const navBarLinks: NavBarLinks = [
   { link: "index", label: "Home" },
   { link: "authors", label: "Authors" },
   { link: "staff", label: "Team" },
 ];
 
-const navBarMenuLinksHangar = [
+const navBarMenuLinksHangar: NavBarLinks = [
   { link: "index", label: "Home", icon: IconMdiHome },
   { link: "guidelines", label: "Resource Guidelines", icon: IconMdiFileDocumentAlert },
   { link: "new", label: "Create Project", icon: IconMdiFolderPlusOutline },
@@ -76,7 +59,7 @@ if (!authStore.user) {
   navBarMenuLinksHangar.splice(2, 2);
 }
 
-const navBarMenuLinksTools = [
+const navBarMenuLinksTools: NavBarLinks = [
   { link: "tools-importer", label: t("nav.tools.importer"), icon: IconMdiFolderPlusOutline },
   { link: "tools-bbcode", label: t("nav.tools.bbcode"), icon: IconMdiFolderWrenchOutline },
   { link: "tools-markdown", label: t("nav.tools.markdown"), icon: IconMdiFolderWrenchOutline },
@@ -332,26 +315,26 @@ function isRecent(date: string): boolean {
                 <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
                 <DropdownItem to="/auth/settings/profile">{{ t("nav.user.settings") }}</DropdownItem>
                 <hr />
-                <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/flags">
+                <DropdownItem v-if="hasPerms(NamedPermission.ModNotesAndFlags)" to="/admin/flags">
                   {{ t("nav.user.flags") }}
                   <span v-if="authStore.user.headerData.unresolvedFlags !== 0">{{ "(" + authStore.user?.headerData.unresolvedFlags + ")" }}</span>
                 </DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/approval/projects">
+                <DropdownItem v-if="hasPerms(NamedPermission.ModNotesAndFlags)" to="/admin/approval/projects">
                   {{ t("nav.user.projectApprovals") }}
                   <span v-if="authStore.user.headerData.projectApprovals !== 0">{{ "(" + authStore.user?.headerData.projectApprovals + ")" }}</span>
                 </DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.REVIEWER)" to="/admin/approval/versions">
+                <DropdownItem v-if="hasPerms(NamedPermission.Reviewer)" to="/admin/approval/versions">
                   {{ t("nav.user.versionApprovals") }}
                   <span v-if="authStore.user.headerData.reviewQueueCount !== 0">{{ "(" + authStore.user?.headerData.reviewQueueCount + ")" }}</span>
                 </DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.VIEW_STATS)" to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
+                <DropdownItem v-if="hasPerms(NamedPermission.ViewStats)" to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
                 <!-- todo -->
-                <!--<DropdownItem v-if="hasPerms(NamedPermission.VIEW_HEALTH)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>-->
-                <DropdownItem v-if="hasPerms(NamedPermission.VIEW_LOGS)" to="/admin/log">{{ t("nav.user.log") }}</DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.MANUAL_VALUE_CHANGES)" to="/admin/settings">
+                <!--<DropdownItem v-if="hasPerms(NamedPermission.ViewHealth)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>-->
+                <DropdownItem v-if="hasPerms(NamedPermission.ViewLogs)" to="/admin/log">{{ t("nav.user.log") }}</DropdownItem>
+                <DropdownItem v-if="hasPerms(NamedPermission.ManualValueChanges)" to="/admin/settings">
                   {{ t("nav.user.adminSettings") }}
                 </DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)" to="/admin/user/">
+                <DropdownItem v-if="hasPerms(NamedPermission.EditAllUserSettings)" to="/admin/user/">
                   {{ t("nav.user.userList") }}
                 </DropdownItem>
                 <hr />

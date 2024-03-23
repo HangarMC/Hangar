@@ -1,9 +1,6 @@
 import type { AxiosError, AxiosRequestConfig } from "axios";
 import qs from "qs";
 import Cookies from "universal-cookie";
-import { authLog, fetchLog } from "~/composables/useLog";
-import { useAxios } from "~/composables/useAxios";
-import { useCookie } from "#imports";
 
 type FilteredAxiosConfig = Omit<AxiosRequestConfig, "method" | "url" | "data" | "params" | "baseURL">;
 

@@ -5,6 +5,7 @@ import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.common.Permission;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
 import java.time.OffsetDateTime;
 import java.util.List;

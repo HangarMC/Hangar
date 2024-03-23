@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref, useSlots, watch } from "vue";
-
 type Item = Record<Exclude<string, "children">, string> & { children?: Record<string, string>[] };
 
 const props = defineProps<{

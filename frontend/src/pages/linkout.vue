@@ -1,15 +1,5 @@
 <script lang="ts" setup>
-import { useRoute, useRouter } from "vue-router";
-import { useHead } from "@unhead/vue";
-import { useI18n } from "vue-i18n";
-import { useLocalStorage } from "@vueuse/core";
-import { computed } from "vue";
-import { useSeo } from "~/composables/useSeo";
-import Card from "~/components/design/Card.vue";
-import Button from "~/components/design/Button.vue";
-import Link from "~/components/design/Link.vue";
-
-const route = useRoute();
+const route = useRoute("linkout");
 const remoteUrl = Array.isArray(route.query.remoteUrl) ? route.query.remoteUrl[0] : route.query.remoteUrl;
 const i18n = useI18n();
 const router = useRouter();

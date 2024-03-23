@@ -1,45 +1,14 @@
 <script lang="ts" setup>
-import { useHead } from "@unhead/vue";
-import type { HangarProject, IPlatform, PendingVersion, ProjectChannel } from "hangar-internal";
-import { useRoute, useRouter } from "vue-router";
-import { useI18n } from "vue-i18n";
-import { computed, reactive, type Ref, ref } from "vue";
 import { remove } from "lodash-es";
-import { useVuelidate } from "@vuelidate/core";
-import { useSeo } from "~/composables/useSeo";
-import Steps from "~/components/design/Steps.vue";
-import InputFile from "~/components/ui/InputFile.vue";
-import InputText from "~/components/ui/InputText.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import Button from "~/components/design/Button.vue";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-
-import { MarkdownEditor } from "#components";
-import { maxFileSize, maxLength, minLength, noDuplicated, pattern, required, requiredIf, url as validUrl } from "~/composables/useValidationHelpers";
-import { useInternalApi } from "~/composables/useApi";
-import type { Platform } from "~/types/enums";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { formatSize } from "~/composables/useFile";
-import ChannelModal from "~/components/modals/ChannelModal.vue";
-import { useBackendData } from "~/store/backendData";
-import DependencyTable from "~/components/projects/DependencyTable.vue";
-import VersionSelector from "~/components/VersionSelector.vue";
-import Tabs from "~/components/design/Tabs.vue";
-import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
-import { useProjectChannels } from "~/composables/useApiHelper";
-import { definePageMeta } from "#imports";
 import type { Step } from "~/types/components/design/Steps";
 import type { Tab } from "~/types/components/design/Tabs";
-import InputGroup from "~/components/ui/InputGroup.vue";
-import { useNotificationStore } from "~/store/notification";
-import Alert from "~/components/design/Alert.vue";
-import Link from "~/components/design/Link.vue";
+import type { Platform, HangarProject, PendingVersion, PlatformData, ProjectChannel } from "~/types/backend";
 
 definePageMeta({
-  projectPermsRequired: ["CREATE_VERSION"],
+  projectPermsRequired: ["CreateVersion"],
 });
 
-const route = useRoute();
+const route = useRoute("user-project-versions-new");
 const router = useRouter();
 const i18n = useI18n();
 const t = i18n.t;
@@ -118,11 +87,11 @@ interface PlatformFile {
   url?: string;
 }
 
-const platformFiles: Ref<PlatformFile[]> = ref([{ platforms: [], selectedTab: "file" }]);
-const selectedUploadTabs: Tab[] = [
+const platformFiles = ref<PlatformFile[]>([{ platforms: [], selectedTab: "file" }]);
+const selectedUploadTabs = [
   { value: "file", header: i18n.t("version.new.form.file") },
   { value: "url", header: i18n.t("version.new.form.url") },
-];
+] as const satisfies Tab<string>[];
 
 function addPlatformFile() {
   platformFiles.value.push({ platforms: [], selectedTab: "file" });
@@ -133,8 +102,8 @@ function removePlatformFile(id: number) {
 }
 
 const dependencyTables = ref();
-const pendingVersion: Ref<PendingVersion | undefined> = ref<PendingVersion>();
-const channels = (await useProjectChannels(route.params.project as string)).data;
+const pendingVersion = ref<PendingVersion>();
+const channels = (await useProjectChannels(route.params.project)).data;
 const selectedPlatforms = ref<Platform[]>([]);
 const descriptionEditor = ref();
 const lastDescription = ref();
@@ -153,15 +122,15 @@ const descriptionToLoad = computed(() => {
 const selectedChannel = ref<string>("Release");
 const currentChannel = computed(() => channels.value.find((c) => c.name === selectedChannel.value));
 
-const platforms = computed<IPlatform[]>(() => {
+const platforms = computed<PlatformData[]>(() => {
   return [...useBackendData.platforms.values()];
 });
-const selectedPlatformsData = computed<IPlatform[]>(() => {
-  const result: IPlatform[] = [];
+const selectedPlatformsData = computed<PlatformData[]>(() => {
+  const result: PlatformData[] = [];
   for (const platformName of selectedPlatforms.value) {
-    const iPlatform = useBackendData.platforms.get(platformName);
-    if (iPlatform) {
-      result.push(iPlatform);
+    const p = useBackendData.platforms.get(platformName);
+    if (p) {
+      result.push(p);
     }
   }
   return result;
@@ -173,7 +142,7 @@ const fileRules = (platformFile: PlatformFile) => [
   maxFileSize()(useBackendData.validations.project.maxFileSize),
 ];
 const platformRules = [required("Select at least one platform!"), minLength()(1), noDuplicated()(() => platformFiles.value.flatMap((f) => f.platforms))];
-const versionRules = [required(), pattern()(useBackendData.validations.version.regex), maxLength()(useBackendData.validations.version.max)];
+const versionRules = [required(), pattern()(useBackendData.validations.version.regex!), maxLength()(useBackendData.validations.version.max!)];
 const platformVersionRules = [required("Select at least one platform version!"), minLength()(1)];
 const changelogRules = [requiredIf()(() => selectedStep.value === "changelog")];
 

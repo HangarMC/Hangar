@@ -1,21 +1,10 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import type { HangarProject, HangarVersion, IPlatform } from "hangar-internal";
-import { computed, ref } from "vue";
-import { useRouter } from "vue-router";
-import { useVuelidate } from "@vuelidate/core";
-import Button from "~/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
-import type { Platform } from "~/types/enums";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useInternalApi } from "~/composables/useApi";
-import VersionSelector from "~/components/VersionSelector.vue";
-import { minLength, required } from "~/composables/useValidationHelpers";
+import { type HangarProject, type HangarVersion, Platform, type PlatformData } from "~/types/backend";
 
 const props = defineProps<{
   project: HangarProject;
   version: HangarVersion;
-  platform: IPlatform;
+  platform: PlatformData;
 }>();
 
 const i18n = useI18n();

@@ -1,16 +1,13 @@
-<script setup lang="ts">
-import { computed } from "vue";
-import { useValidation } from "~/composables/useValidationHelpers";
-
+<script setup lang="ts" generic="T">
 const emit = defineEmits<{
-  (e: "update:modelValue", value: boolean | boolean[] | string[] | [] | undefined): void;
+  (e: "update:modelValue", value?: T): void;
 }>();
 const internalVal = computed({
   get: () => props.modelValue,
   set: (val) => emit("update:modelValue", val),
 });
 const props = defineProps<{
-  modelValue?: boolean | boolean[] | string[] | [];
+  modelValue?: T;
   label?: string;
   disabled?: boolean;
   value?: string;

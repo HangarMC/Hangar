@@ -3,6 +3,8 @@ package io.papermc.hangar.model.internal.api.requests;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.common.roles.OrganizationRole;
+import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import jakarta.validation.Valid;
@@ -10,16 +12,16 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 
-public class EditMembersForm<R extends Role<? extends ExtendedRoleTable<R, ?>>> {
+public class EditMembersForm<R extends Role<? extends ExtendedRoleTable<R, ?>>, M extends EditMembersForm.Member<R>> {
 
-    private final List<@Valid Member<R>> members;
+    private final List<@Valid M> members;
 
     @JsonCreator
-    public EditMembersForm(final List<Member<R>> members) {
+    public EditMembersForm(final List<M> members) {
         this.members = members;
     }
 
-    public List<Member<R>> getMembers() {
+    public List<M> getMembers() {
         return this.members;
     }
 
@@ -63,6 +65,31 @@ public class EditMembersForm<R extends Role<? extends ExtendedRoleTable<R, ?>>> 
                 ", name='" + this.name + '\'' +
                 ", role=" + this.role +
                 '}';
+        }
+    }
+
+    // type helpders for typescript...
+    public static class EditOrgMembersForm extends EditMembersForm<OrganizationRole, OrgMember> {
+        public EditOrgMembersForm(final List<OrgMember> members) {
+            super(members);
+        }
+    }
+
+    public static class EditProjectMembersForm extends EditMembersForm<ProjectRole, ProjectMember> {
+        public EditProjectMembersForm(final List<ProjectMember> members) {
+            super(members);
+        }
+    }
+
+    public static class OrgMember extends Member<OrganizationRole> {
+        public OrgMember(final String name, final long roleId) {
+            super(name, roleId);
+        }
+    }
+
+    public static class ProjectMember extends Member<ProjectRole> {
+        public ProjectMember(final String name, final long roleId) {
+            super(name, roleId);
         }
     }
 }

@@ -1,18 +1,6 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import type { HangarProjectPage } from "hangar-internal";
-import { computed, inject, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useVuelidate } from "@vuelidate/core";
-import Button from "~/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
-import { useBackendData } from "~/store/backendData";
-import InputText from "~/components/ui/InputText.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
 import type { Option } from "~/types/components/ui/InputSelect";
-import { maxLength, minLength, pattern, required, validPageName } from "~/composables/useValidationHelpers";
+import type { HangarProjectPage } from "~/types/backend";
 
 const props = defineProps<{
   projectId: number;
@@ -20,7 +8,7 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("user-project");
 const router = useRouter();
 const v = useVuelidate();
 
@@ -39,14 +27,14 @@ const body = computed(() => ({
 }));
 const rules = [
   required(),
-  maxLength()(useBackendData.validations.project.pageName.max),
-  minLength()(useBackendData.validations.project.pageName.min),
-  pattern()(useBackendData.validations.project.pageName.regex),
+  maxLength()(useBackendData.validations.project.pageName.max!),
+  minLength()(useBackendData.validations.project.pageName.min!),
+  pattern()(useBackendData.validations.project.pageName.regex!),
   validPageName()(body),
 ];
 
-function flatDeep(pages: HangarProjectPage[], prefix: string): Option[] {
-  let ps: Option[] = [];
+function flatDeep(pages: HangarProjectPage[], prefix: string): Option<number>[] {
+  let ps: Option<number>[] = [];
   for (const page of pages) {
     if (page.children.length > 0) {
       ps = [...ps, ...flatDeep(page.children, prefix + "-")];

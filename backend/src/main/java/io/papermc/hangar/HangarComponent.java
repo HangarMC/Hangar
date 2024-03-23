@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
 import org.jdbi.v3.core.internal.MemoizingSupplier;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

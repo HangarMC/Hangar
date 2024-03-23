@@ -1,21 +1,16 @@
-<script lang="ts" setup generic="T extends Record<string, any>">
-import { reactive, ref, watch } from "vue";
-import type { Pagination } from "hangar-api";
-import { hasSlotContent } from "~/composables/useSlot";
-import Table from "~/components/design/Table.vue";
-import PaginationButtons from "~/components/design/PaginationButtons.vue";
-import PaginationComponent from "~/components/design/Pagination.vue";
+<script lang="ts" setup generic="T extends Record<string, any>, H extends string">
+import type { Ref } from "vue";
 import type { Header } from "~/types/components/SortableTable";
-
-type T = Record<string, any>; // remove when https://github.com/vuejs/rfcs/discussions/436 lands or when using volar
+import { Pagination as PaginationComponent } from "#components";
+import type { Pagination } from "~/types/backend";
 
 const props = withDefaults(
   defineProps<{
-    headers: Header[];
+    headers: Header<H>[];
     items: T[];
     expandable?: boolean;
     serverPagination?: Pagination;
-    initialSorter?: Record<string, number>;
+    initialSorter?: Partial<Record<H, number>>;
     maxSorters?: number;
   }>(),
   {
@@ -26,8 +21,8 @@ const props = withDefaults(
 );
 
 const expanded = ref<Record<number, boolean>>({});
-const sorter = reactive<Record<string, number>>(props.initialSorter || {});
-const sorted = ref<T[]>(props.items);
+const sorter = reactive<Record<H, number>>({ ...props.initialSorter }) as Record<H, number>;
+const sorted = ref<T[]>(props.items) as Ref<T[]>; // idk why I need a cast here...
 
 function sort() {
   if (props.serverPagination) {
@@ -36,7 +31,7 @@ function sort() {
     return;
   }
   sorted.value = [...props.items].sort((a, b) => {
-    for (const field of Object.keys(sorter)) {
+    for (const field of Object.keys(sorter) as Array<keyof typeof sorter>) {
       if (sorter[field] === 0) continue;
       if (a[field] > b[field]) return sorter[field];
       if (a[field] < b[field]) return -sorter[field];
@@ -48,7 +43,7 @@ function sort() {
 watch(() => props.items, sort);
 
 function checkReset() {
-  const keys = Object.keys(sorter);
+  const keys = Object.keys(sorter) as H[];
   if (keys.length >= props.maxSorters) {
     for (const k of keys) {
       delete sorter[k];
@@ -56,7 +51,7 @@ function checkReset() {
   }
 }
 
-function click(header: Header) {
+function click(header: Header<H>) {
   if (header.sortable) {
     if (sorter[header.name] === 1) {
       checkReset();
@@ -75,11 +70,20 @@ function click(header: Header) {
 
 const emit = defineEmits<{
   (e: "update:page", value: number): void;
-  (e: "update:sort", col: string, sorter: Record<string, number>): void;
+  (e: "update:sort", col: keyof T, sorter: Record<string, number>): void;
 }>();
 function updatePage(newPage: number) {
   emit("update:page", newPage);
 }
+
+const slots = defineSlots<
+  {
+    [A in H]?: (_: { item: T }) => any;
+  } & {
+    empty(): any;
+    "expanded-item"(props: { item: T; headers: Header<H>[] }): any;
+  }
+>();
 </script>
 
 <template>
@@ -101,8 +105,8 @@ function updatePage(newPage: number) {
         <template #default="{ item, idx }">
           <tr>
             <td v-for="header in headers" :key="header.name" :style="header.width ? 'width: ' + header.width : ''" @click="expanded[idx] = !expanded[idx]">
-              <template v-if="hasSlotContent($slots['item_' + header.name], { item: item })">
-                <slot :name="'item_' + header.name" :item="item"></slot>
+              <template v-if="hasSlotContent(slots[header.name], { item: item })">
+                <slot :name="header.name" :item="item"></slot>
               </template>
               <template v-else>
                 {{ item[header.name] }}

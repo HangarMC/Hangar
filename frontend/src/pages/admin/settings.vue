@@ -1,31 +1,12 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
-import type { Ref } from "vue";
-import { ref } from "vue";
-import { useHead } from "@unhead/vue";
-import type { PlatformVersion } from "hangar-internal";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useBackendData } from "~/store/backendData";
-import { useInternalApi } from "~/composables/useApi";
-import InputTag from "~/components/ui/InputTag.vue";
-import Button from "~/components/design/Button.vue";
-import PageTitle from "~/components/design/PageTitle.vue";
-import Card from "~/components/design/Card.vue";
-import Table from "~/components/design/Table.vue";
-import { useSeo } from "~/composables/useSeo";
-import { useNotificationStore } from "~/store/notification";
-import { definePageMeta } from "#imports";
-import type { Platform } from "~/types/enums";
-import InputText from "~/components/ui/InputText.vue";
-import { integer } from "~/composables/useValidationHelpers";
+import { Platform, type PlatformVersion } from "~/types/backend";
 
 definePageMeta({
-  globalPermsRequired: ["MANUAL_VALUE_CHANGES"],
+  globalPermsRequired: ["ManualValueChanges"],
 });
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("admin-settings");
 const router = useRouter();
 const notification = useNotificationStore();
 
@@ -35,7 +16,7 @@ const loading = ref<boolean>(false);
 
 useHead(useSeo(i18n.t("platformVersions.title"), null, route, null));
 
-const fullVersions: Ref<Record<Platform, string[]>> = ref({
+const fullVersions = ref<Record<Platform, string[]>>({
   PAPER: [],
   WATERFALL: [],
   VELOCITY: [],

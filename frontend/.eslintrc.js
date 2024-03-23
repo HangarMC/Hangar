@@ -21,6 +21,7 @@ module.exports = {
     "prettier",
   ],
   plugins: ["unicorn"],
+  ignorePatterns: ["src/types/backend/**"],
   settings: {
     "import/resolver": {
       node: {

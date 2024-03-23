@@ -1,16 +1,6 @@
 <script lang="ts" setup>
 import Draggable from "vuedraggable";
-import { useI18n } from "vue-i18n";
-import type { LinkSection } from "hangar-api";
-import { useVModel } from "@vueuse/core";
-import { computed } from "vue";
-import InputText from "~/components/ui/InputText.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import ProjectLinksFormInner from "~/components/projects/ProjectLinksFormInner.vue";
-import Button from "~/components/design/Button.vue";
-import Card from "~/components/design/Card.vue";
-import { maxLength, minLength, noDuplicated, required } from "~/composables/useValidationHelpers";
-import { useBackendData } from "~/store/backendData";
+import type { LinkSection } from "~/types/backend";
 
 const props = defineProps<{ modelValue: LinkSection[] }>();
 const emit = defineEmits(["update:modelValue"]);
@@ -52,7 +42,11 @@ function removeSection(index: number) {
               v-if="section.type !== 'top'"
               v-model="section.title"
               :label="i18n.t('project.settings.links.titleField')"
-              :rules="[required(), maxLength()(useBackendData.validations.project.pageName.max), minLength()(useBackendData.validations.project.pageName.min)]"
+              :rules="[
+                required(),
+                maxLength()(useBackendData.validations.project.pageName.max!),
+                minLength()(useBackendData.validations.project.pageName.min!),
+              ]"
             />
 
             <IconMdiClose class="flex-shrink-0 cursor-pointer" @click="removeSection(index)" />

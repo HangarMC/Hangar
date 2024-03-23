@@ -1,52 +1,34 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import type { User } from "hangar-api";
-import { useRoute } from "vue-router";
-import type { OrganizationRoleTable } from "hangar-internal";
-import { computed, ref } from "vue";
-import { useHead } from "@unhead/vue";
 import type { AxiosError } from "axios";
-import PageTitle from "~/components/design/PageTitle.vue";
-import Link from "~/components/design/Link.vue";
-import Card from "~/components/design/Card.vue";
-import { useApi, useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import SortableTable from "~/components/SortableTable.vue";
-import { useSeo } from "~/composables/useSeo";
-import { useProjects, useUser } from "~/composables/useApiHelper";
-import Tag from "~/components/Tag.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import { getRole, useBackendData } from "~/store/backendData";
-import Button from "~/components/design/Button.vue";
-import { definePageMeta } from "#imports";
 import type { Header } from "~/types/components/SortableTable";
+import type { OrganizationRoleTable, User } from "~/types/backend";
 
 definePageMeta({
-  globalPermsRequired: ["EDIT_ALL_USER_SETTINGS"],
+  globalPermsRequired: ["EditAllUserSettings"],
 });
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("admin-user-user");
 
 const projects = await useProjects({ owner: route.params.user });
-const orgs = await useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${route.params.user}/userOrganizations`).catch((e) =>
+const orgs = (await useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${route.params.user}/userOrganizations`).catch((e) =>
   handleRequestError(e)
-);
-const user = await useUser(route.params.user as string);
+)) as { [key: string]: OrganizationRoleTable };
+const user = await useUser(route.params.user);
 
-const projectsConfig: Header[] = [
+const projectsConfig = [
   { title: i18n.t("userAdmin.project"), name: "name" },
   { title: i18n.t("userAdmin.owner"), name: "owner" },
   { title: i18n.t("userAdmin.role"), name: "role" },
   { title: i18n.t("userAdmin.accepted"), name: "accepted" },
-];
+] as const satisfies Header<string>[];
 
-const orgConfig: Header[] = [
+const orgConfig = [
   { title: i18n.t("userAdmin.organization"), name: "name" },
   { title: i18n.t("userAdmin.owner"), name: "owner" },
   { title: i18n.t("userAdmin.role"), name: "role" },
   { title: i18n.t("userAdmin.accepted"), name: "accepted" },
-];
+] as const satisfies Header<string>[];
 
 const orgList = computed(() => {
   return orgs
@@ -61,7 +43,7 @@ async function processRole(add: boolean) {
   try {
     await useInternalApi("admin/user/" + route.params.user + "/" + selectedRole.value, add ? "POST" : "DELETE");
     if (user?.value) {
-      user.value = await useApi<User>(("users/" + route.params.user) as string);
+      user.value = await useApi<User>("users/" + route.params.user);
     }
   } catch (e) {
     handleRequestError(e as AxiosError);
@@ -75,8 +57,8 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
   <div>
     <PageTitle
       >{{ i18n.t("userAdmin.title") }}
-      <Link :to="'/' + $route.params.user">
-        {{ $route.params.user }}
+      <Link :to="'/' + route.params.user">
+        {{ route.params.user }}
       </Link>
     </PageTitle>
     <div class="flex lt-md:flex-col mb-2 gap-2">
@@ -119,20 +101,20 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
       <template #header>{{ i18n.t("userAdmin.organizations") }}</template>
 
       <SortableTable :items="orgList" :headers="orgConfig">
-        <template #item_name="{ item }">
+        <template #name="{ item }">
           <Link :to="'/' + item.name">
             {{ item.name }}
           </Link>
         </template>
-        <template #item_owner="{ item }">
+        <template #owner="{ item }">
           <Link :to="'/' + orgs[item.name]?.ownerName">
             {{ orgs[item.name]?.ownerName }}
           </Link>
         </template>
-        <template #item_role="{ item }">
+        <template #role="{ item }">
           {{ getRole(orgs[item.name]?.roleId)?.title }}
         </template>
-        <template #item_accepted="{ item }">
+        <template #accepted="{ item }">
           <IconMdiCheck v-if="orgs[item.name]?.accepted" class="text-green" />
           <IconMdiClose v-else class="text-red" />
         </template>
@@ -142,21 +124,21 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route,
       <template #header>{{ i18n.t("userAdmin.projects") }}</template>
 
       <SortableTable v-if="projects" :items="projects.result" :headers="projectsConfig">
-        <template #item_name="{ item }">
+        <template #name="{ item }">
           <Link :to="'/' + item.namespace.owner + '/' + item.name">
             {{ item.name }}
           </Link>
         </template>
-        <template #item_owner="{ item }">
+        <template #owner="{ item }">
           <Link :to="'/' + item.namespace.owner">
             {{ item.namespace.owner }}
           </Link>
         </template>
         <!-- todo -->
-        <!--<template #item_role="{ item }">
+        <!--<template #role="{ item }">
           {{ item.name }}
         </template>-->
-        <template #item_accepted="{ item }">
+        <template #accepted="{ item }">
           <IconMdiCheck v-if="item.visibility === 'public'" class="text-green" />
           <IconMdiClose v-else class="text-red" />
         </template>

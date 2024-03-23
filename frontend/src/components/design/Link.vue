@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { computed } from "vue";
-import { sanitizeUrl } from "~/composables/useUrlHelper";
-
 const props = withDefaults(
   defineProps<{
     to?: string | object;

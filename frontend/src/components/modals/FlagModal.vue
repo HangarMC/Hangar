@@ -1,17 +1,5 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { ref } from "vue";
-import type { HangarProject } from "hangar-internal";
-import Button from "~/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
-import Tooltip from "~/components/design/Tooltip.vue";
-import InputRadio from "~/components/ui/InputRadio.vue";
-import { useBackendData } from "~/store/backendData";
-import InputTextarea from "~/components/ui/InputTextarea.vue";
-import { required } from "~/composables/useValidationHelpers";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useNotificationStore } from "~/store/notification";
+import type { HangarProject } from "~/types/backend";
 
 const props = defineProps<{
   project: HangarProject;

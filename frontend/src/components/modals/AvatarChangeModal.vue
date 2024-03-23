@@ -43,18 +43,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import { Cropper, type CropperResult } from "vue-advanced-cropper";
-import { onMounted, ref, watch } from "vue";
-import Button from "~/components/design/Button.vue";
-import InputFile from "~/components/ui/InputFile.vue";
-import { maxFileSize, required } from "~/composables/useValidationHelpers";
-import Modal from "~/components/modals/Modal.vue";
 
 import "vue-advanced-cropper/dist/style.css";
-import { useNotificationStore } from "~/store/notification";
-import { useInternalApi } from "~/composables/useApi";
-import { useBackendData } from "~/store/backendData";
 
 const { t } = useI18n();
 const notifications = useNotificationStore();

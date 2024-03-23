@@ -4,16 +4,15 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.extras.RobotsBuilder;
 import io.papermc.hangar.security.annotations.Anyone;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @Anyone
-@Controller
+@RestController
 public class ApplicationController extends HangarComponent {
 
     @GetMapping(path = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
-    @ResponseBody
     public String robots() {
         if (!this.config.isAllowIndexing()) {
             return new RobotsBuilder()

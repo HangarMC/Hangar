@@ -1,11 +1,8 @@
 import type { AxiosError } from "axios";
 import { isAxiosError } from "axios";
-import type { HangarApiException, HangarValidationException, MultiHangarApiException } from "hangar-api";
 import type { Composer } from "vue-i18n";
-import { useNotificationStore } from "~/store/notification";
 import { I18n } from "~/i18n";
-import { createError } from "#imports";
-import { fetchLog } from "~/composables/useLog";
+import type { HangarApiException, HangarValidationException, MultiHangarApiException } from "~/types/backend";
 
 export function handleRequestError(err: AxiosError | unknown, msg: string | undefined = undefined, alwaysShowErrorPage = false) {
   const i18n: Composer = I18n.value;
@@ -26,12 +23,15 @@ export function handleRequestError(err: AxiosError | unknown, msg: string | unde
       }
     } else if ("isHangarValidationException" in err.response.data) {
       const data = err.response.data as HangarValidationException;
-      for (const fieldError of data.fieldErrors) {
-        notification.error(
-          i18n.te(fieldError.errorMsg)
-            ? i18n.t(fieldError.errorMsg, [fieldError.fieldName, fieldError.rejectedValue])
-            : fieldError.errorMsg + " '" + fieldError.fieldName + "': " + fieldError.rejectedValue
-        );
+      if (data.fieldErrors) {
+        for (const fieldError of data.fieldErrors) {
+          if (!fieldError.errorMsg) continue;
+          notification.error(
+            i18n.te(fieldError.errorMsg)
+              ? i18n.t(fieldError.errorMsg, [fieldError.fieldName, fieldError.rejectedValue])
+              : fieldError.errorMsg + " '" + fieldError.fieldName + "': " + fieldError.rejectedValue
+          );
+        }
       }
       if (msg) {
         notification.error(i18n.t(msg));
@@ -67,16 +67,16 @@ function _handleRequestError(err: AxiosError | unknown, i18n: Composer) {
   } else if (err.response && typeof err.response.data === "object" && err.response.data) {
     if ("isHangarApiException" in err.response.data) {
       const data =
-        "isMultiException" in err.response.data ? (err.response.data as MultiHangarApiException).exceptions[0] : (err.response.data as HangarApiException);
+        "isMultiException" in err.response.data ? (err.response.data as MultiHangarApiException).exceptions?.[0] : (err.response.data as HangarApiException);
       createError({
-        statusCode: data.httpError.statusCode,
-        statusMessage: data.message ? (i18n.te(data.message) ? i18n.t(data.message) : data.message) : null,
+        statusCode: data?.httpError.statusCode,
+        statusMessage: data?.message ? (i18n.te(data.message) ? i18n.t(data.message) : data.message) : undefined,
       });
     } else if ("isHangarValidationException" in err.response.data) {
       const data = err.response.data as HangarValidationException;
       createError({
-        statusCode: data.httpError.statusCode,
-        statusMessage: data.fieldErrors.map((f) => f.errorMsg).join(", "),
+        statusCode: data.httpError?.statusCode,
+        statusMessage: data.fieldErrors?.map((f) => f.errorMsg).join(", "),
       });
     } else {
       createError({
@@ -93,11 +93,17 @@ function _handleRequestError(err: AxiosError | unknown, i18n: Composer) {
 }
 
 function collectErrors(exception: HangarApiException | MultiHangarApiException, i18n: Composer): string[] {
-  if (!exception.isMultiException) {
+  if (!("isMultiException" in exception) || !exception.isMultiException) {
     return exception.message ? [i18n.te(exception.message) ? i18n.t(exception.message, [...exception.messageArgs]) : exception.message] : [];
   } else {
     const res: string[] = [];
-    for (const ex of exception.exceptions) {
+    const exceptions = (exception as MultiHangarApiException).exceptions;
+    if (!exceptions) return [];
+    for (const ex of exceptions) {
+      if (!ex.message) {
+        res.push("Unknown error");
+        continue;
+      }
       res.push(i18n.te(ex.message) ? i18n.t(ex.message, ex.messageArgs) : ex.message);
     }
     return res;

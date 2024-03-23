@@ -1,20 +1,9 @@
 <script lang="ts" setup>
-import type { User } from "hangar-api";
-import { useI18n } from "vue-i18n";
-import type { HangarProject } from "hangar-internal";
-import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import Card from "~/components/design/Card.vue";
-import Link from "~/components/design/Link.vue";
-import SortableTable from "~/components/SortableTable.vue";
-import Alert from "~/components/design/Alert.vue";
-import { useProjectFlags } from "~/composables/useApiHelper";
-import { useSeo } from "~/composables/useSeo";
-import { definePageMeta } from "#imports";
 import type { Header } from "~/types/components/SortableTable";
+import type { HangarProject, User } from "~/types/backend";
 
 definePageMeta({
-  projectPermsRequired: ["MOD_NOTES_AND_FLAGS"],
+  projectPermsRequired: ["ModNotesAndFlags"],
 });
 
 const props = defineProps<{
@@ -22,16 +11,16 @@ const props = defineProps<{
   project: HangarProject;
 }>();
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("user-project-flags");
 const flags = await useProjectFlags(props.project.id);
 
-const headers: Header[] = [
+const headers = [
   { title: "Submitter", name: "user" },
   { title: "Reason", name: "reason" },
   { title: "Comment", name: "comment" },
   { title: "When", name: "createdAt" },
   { title: "Resolved", name: "resolved" },
-];
+] as const satisfies Header<string>[];
 
 useHead(useSeo("Flags | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 </script>
@@ -51,16 +40,16 @@ useHead(useSeo("Flags | " + props.project.name, props.project.description, route
           {{ i18n.t("flags.noFlags") }}
         </Alert>
       </template>
-      <template #item_user="{ item }">
+      <template #user="{ item }">
         <Link :to="'/' + item.reportedByName">{{ item.reportedByName }}</Link>
       </template>
-      <template #item_reason="{ item }">
+      <template #reason="{ item }">
         {{ i18n.t(item.reason) }}
       </template>
-      <template #item_createdAt="{ item }">
+      <template #createdAt="{ item }">
         {{ i18n.d(item.createdAt, "time") }}
       </template>
-      <template #item_resolved="{ item }">
+      <template #resolved="{ item }">
         <span v-if="item.resolved">{{ i18n.t("flags.resolved", [item.resolvedByName, i18n.d(item.resolvedAt, "date")]) }}</span>
         <span v-else v-text="i18n.t('flags.notResolved')" />
       </template>

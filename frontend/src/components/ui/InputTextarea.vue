@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import { computed } from "vue";
 import type { ValidationRule } from "@vuelidate/core";
-import { useValidation } from "~/composables/useValidationHelpers";
-import InputWrapper from "~/components/ui/InputWrapper.vue";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value?: string): void;
@@ -28,7 +25,7 @@ const props = defineProps<{
 }>();
 
 const rows = computed(() => {
-  return Math.max(props.minRows || 3, Math.min(props.maxRows || 100, value.value?.split(/\r\n|\r|\n/g).length + (props.extraRows || 0)));
+  return Math.max(props.minRows || 3, Math.min(props.maxRows || 100, (value.value ? value.value.split(/\r\n|\r|\n/g).length : 0) + (props.extraRows || 0)));
 });
 
 const errorMessages = computed(() => props.errorMessages);

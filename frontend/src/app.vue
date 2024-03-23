@@ -1,16 +1,8 @@
 <script setup lang="ts">
 import "./assets/css/main.css";
-// eslint-disable-next-line import/no-unresolved
-import "uno.css";
-import { useHead } from "@unhead/vue";
-import { computed } from "vue";
-import { useSettingsStore } from "~/store/useSettingsStore";
-import { settingsLog } from "~/composables/useLog";
-import { useAuthStore } from "~/store/auth";
-import { onErrorCaptured, transformAxiosError, useAccentColor, useRuntimeConfig } from "#imports";
-
 // popper needs this?
 import "regenerator-runtime/runtime";
+import type { HangarNuxtError } from "~/types/components/error";
 
 // keep in sync with error.vue, cause reasons
 const runtimeConfig = useRuntimeConfig();
@@ -41,7 +33,7 @@ useHead({
 });
 
 onErrorCaptured((err) => {
-  if (err?.data?.logErrorMessage === false) {
+  if (isNuxtError<HangarNuxtError>(err) && err?.data?.logErrorMessage === false) {
     return;
   }
   console.log("captured", transformAxiosError(err)); // TODO error handling

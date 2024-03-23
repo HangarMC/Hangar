@@ -6,7 +6,7 @@ import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.UUID;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)

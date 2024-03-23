@@ -1,8 +1,5 @@
-<script lang="ts" setup>
-import { computed, watch } from "vue";
-import { useRoute } from "vue-router";
-import Button from "~/components/design/Button.vue";
-import Link from "~/components/design/Link.vue";
+<script lang="ts" setup generic="T extends string">
+import type { VNode } from "vue";
 import type { Tab } from "~/types/components/design/Tabs";
 
 const route = useRoute();
@@ -14,7 +11,7 @@ const emit = defineEmits<{
 const props = withDefaults(
   defineProps<{
     modelValue?: string;
-    tabs: Tab[];
+    tabs: Tab<T>[];
     vertical?: boolean;
     compact?: boolean;
     router?: boolean;
@@ -38,7 +35,7 @@ watch(internalValue, (n) => {
   }
 });
 
-function selectTab(event: Event, tab: Tab) {
+function selectTab(event: Event, tab: Tab<T>) {
   if (!props.router) {
     event.preventDefault();
   }
@@ -46,6 +43,15 @@ function selectTab(event: Event, tab: Tab) {
     internalValue.value = tab.value;
   }
 }
+
+defineSlots<
+  {
+    [A in T]: () => VNode;
+  } & {
+    catchall: () => VNode;
+    default: () => VNode;
+  }
+>();
 </script>
 
 <template>

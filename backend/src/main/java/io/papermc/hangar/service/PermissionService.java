@@ -7,7 +7,7 @@ import io.papermc.hangar.model.db.UserTable;
 import java.util.Map;
 import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.stereotype.Service;
 
 @Service

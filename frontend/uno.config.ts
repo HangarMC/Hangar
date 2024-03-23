@@ -1,6 +1,5 @@
-import type { VariantFunction } from "unocss";
+import { defineConfig, type VariantFunction } from "unocss";
 import { presetAttributify, presetTypography, presetWind, transformerDirectives, transformerVariantGroup } from "unocss";
-import type { UnocssNuxtOptions } from "@unocss/nuxt";
 
 export function parent(name: string): VariantFunction {
   return wrap(name, "." + name);
@@ -16,10 +15,9 @@ export function wrap(name: string, wrap: string): VariantFunction {
   };
 }
 
-export default {
+export default defineConfig({
   presets: [presetWind(), presetAttributify(), presetTypography()],
   transformers: [transformerVariantGroup(), transformerDirectives()],
-  autoImport: false,
   safelist: "order-last button-primary button-secondary button-red button-transparent".split(" "),
   shortcuts: {
     "background-body": "bg-gray-100 dark:bg-gray-900",
@@ -89,4 +87,4 @@ export default {
       black: "#0f172a",
     },
   },
-} as UnocssNuxtOptions;
+});

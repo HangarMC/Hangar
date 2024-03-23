@@ -1,16 +1,4 @@
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
-import { useI18n } from "vue-i18n";
-import { useVuelidate } from "@vuelidate/core";
-import { useAuthStore } from "~/store/auth";
-import { useNotificationStore } from "~/store/notification";
-import { useAuthSettings } from "~/composables/useApiHelper";
-import Button from "~/components/design/Button.vue";
-import InputPassword from "~/components/ui/InputPassword.vue";
-import InputText from "~/components/ui/InputText.vue";
-import { email, required, useAuth, useInternalApi } from "#imports";
-import PageTitle from "~/components/design/PageTitle.vue";
-
 const emit = defineEmits<{
   openEmailConfirmModal: [];
   refreshSettings: [];

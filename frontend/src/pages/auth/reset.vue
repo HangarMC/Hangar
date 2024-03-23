@@ -1,19 +1,8 @@
 <script lang="ts" setup>
-import { useHead } from "@unhead/vue";
-import { useRoute, useRouter } from "vue-router";
-import { ref } from "vue";
-import { useVuelidate } from "@vuelidate/core";
 import { isAxiosError } from "axios";
-import { useSeo } from "~/composables/useSeo";
-import Card from "~/components/design/Card.vue";
-import InputText from "~/components/ui/InputText.vue";
-import Button from "~/components/design/Button.vue";
-import { email as emailRule, required } from "~/composables/useValidationHelpers";
-import { useInternalApi } from "~/composables/useApi";
-import InputPassword from "~/components/ui/InputPassword.vue";
-import { handleRequestError } from "~/composables/useErrorHandling";
+import { email as emailRule } from "~/composables/useValidationHelpers";
 
-const route = useRoute();
+const route = useRoute("auth-reset");
 const router = useRouter();
 const v = useVuelidate();
 

@@ -1,7 +1,4 @@
-import type { NewProjectForm } from "hangar-internal";
-import { computed } from "vue";
-import { useInternalApi } from "~/composables/useApi";
-import { ProjectCategory } from "~/types/enums";
+import { Category, type NewProjectForm } from "~/types/backend";
 
 export interface SpigotAuthor {
   avatar: string;
@@ -69,25 +66,25 @@ function buildSpigotUrl(params: Record<string, string | number>) {
 }
 
 const categoryMapping = {
-  "5": ProjectCategory.GAMEPLAY, // Transportation
-  "6": ProjectCategory.CHAT, // Chat
-  "7": ProjectCategory.ADMIN_TOOLS, // Tools and Utilities
-  "8": ProjectCategory.MISC, // Misc
-  "9": ProjectCategory.DEV_TOOLS, // Libraries / APIs
-  "10": ProjectCategory.GAMEPLAY, // Transportation again?!
-  "11": ProjectCategory.CHAT, // Chat again?!
-  "12": ProjectCategory.ADMIN_TOOLS, // Tools and Utilites again?!
-  "13": ProjectCategory.MISC, // Misc again?!
-  "14": ProjectCategory.CHAT, // CHat again again??!!
-  "15": ProjectCategory.ADMIN_TOOLS, // Tools and Utilities again again??!!
-  "16": ProjectCategory.MISC, // Misc again again??!!
-  "17": ProjectCategory.GAMEPLAY, // Fun
-  "18": ProjectCategory.WORLD_MANAGEMENT, // World Management
-  "22": ProjectCategory.GAMEPLAY, // Mechanics
-  "23": ProjectCategory.ECONOMY, // Economy
-  "24": ProjectCategory.GAMES, // Game Mode,
-  "26": ProjectCategory.DEV_TOOLS, // Libraries / APIs again?!
-} as Record<string, ProjectCategory>;
+  "5": Category.Gameplay, // Transportation
+  "6": Category.Chat, // Chat
+  "7": Category.AdminTools, // Tools and Utilities
+  "8": Category.Misc, // Misc
+  "9": Category.DevTools, // Libraries / APIs
+  "10": Category.Gameplay, // Transportation again?!
+  "11": Category.Chat, // Chat again?!
+  "12": Category.AdminTools, // Tools and Utilites again?!
+  "13": Category.Misc, // Misc again?!
+  "14": Category.Chat, // CHat again again??!!
+  "15": Category.AdminTools, // Tools and Utilities again again??!!
+  "16": Category.Misc, // Misc again again??!!
+  "17": Category.Gameplay, // Fun
+  "18": Category.WorldManagement, // World Management
+  "22": Category.Gameplay, // Mechanics
+  "23": Category.Economy, // Economy
+  "24": Category.Games, // Game Mode,
+  "26": Category.DevTools, // Libraries / APIs again?!
+} as Record<string, Category>;
 const unspecifiedLicenseName = "Unspecified";
 
 export async function convertSpigotProjects(spigotResources: SpigotResource[], ownerId: number) {
@@ -116,7 +113,7 @@ export async function convertSpigotProjects(spigotResources: SpigotResource[], o
       console.log("failed to convert", hangarResource, e);
     }
 
-    hangarResource.category = categoryMapping[spigotResource.category.id] || ProjectCategory.UNDEFINED;
+    hangarResource.category = categoryMapping[spigotResource.category.id] || Category.Undefined;
 
     hangarResource.settings.license.type = unspecifiedLicenseName;
     hangarResource.util.isCustomLicense = computed(() => hangarResource.settings.license.type === "Other");

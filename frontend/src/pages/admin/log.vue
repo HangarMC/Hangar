@@ -1,47 +1,29 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
-import { useHead } from "@unhead/vue";
-import type { PaginatedResult, Project, User } from "hangar-api";
-import { computed, ref } from "vue";
-import type { LoggedAction } from "hangar-internal";
 import { debounce } from "lodash-es";
-import PageTitle from "~/components/design/PageTitle.vue";
-import Card from "~/components/design/Card.vue";
-import SortableTable from "~/components/SortableTable.vue";
-import Link from "~/components/design/Link.vue";
-import MarkdownModal from "~/components/modals/MarkdownModal.vue";
-import DiffModal from "~/components/modals/DiffModal.vue";
-import Button from "~/components/design/Button.vue";
-import { useSeo } from "~/composables/useSeo";
-import { definePageMeta, hasPerms, useApi, useInternalApi, useRouter, watch } from "#imports";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import { useBackendData } from "~/store/backendData";
 import type { Header } from "~/types/components/SortableTable";
-import { NamedPermission } from "~/types/enums";
-import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
+import { NamedPermission, type PaginatedResultHangarLoggedAction, type PaginatedResultProject, type PaginatedResultUser } from "~/types/backend";
 
 definePageMeta({
-  globalPermsRequired: ["VIEW_LOGS"],
+  globalPermsRequired: ["ViewLogs"],
 });
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("admin-log");
 const router = useRouter();
-const loggedActions = ref();
+const loggedActions = ref<PaginatedResultHangarLoggedAction>();
 
 // TODO add support for sorting
-const headers: Header[] = [
-  { title: i18n.t("userActionLog.user"), name: "user", sortable: false },
+const headers = [
+  { title: i18n.t("userActionLog.user"), name: "userName", sortable: false },
   { title: i18n.t("userActionLog.address"), name: "address", sortable: false },
   { title: i18n.t("userActionLog.time"), name: "time", sortable: false },
   { title: i18n.t("userActionLog.action"), name: "action", sortable: false },
   { title: i18n.t("userActionLog.context"), name: "context", sortable: false },
   { title: i18n.t("userActionLog.oldState"), name: "oldState", sortable: false },
   { title: i18n.t("userActionLog.newState"), name: "newState", sortable: false },
-];
+] as const satisfies Header<string>[];
 
-if (!hasPerms(NamedPermission.VIEW_IP)) {
+if (!hasPerms(NamedPermission.ViewIp)) {
   headers.splice(1, 1);
 }
 
@@ -100,7 +82,7 @@ async function updatePage(newPage: number) {
 }
 
 async function update() {
-  loggedActions.value = await useInternalApi<PaginatedResult<LoggedAction>>("admin/log", "GET", requestParams.value);
+  loggedActions.value = await useInternalApi<PaginatedResultHangarLoggedAction>("admin/log", "GET", requestParams.value);
   const { limit, offset, ...paramsWithoutLimit } = requestParams.value;
   await router.replace({ query: { ...paramsWithoutLimit } });
 }
@@ -109,9 +91,9 @@ const userSearchResult = ref<string[]>([]);
 const authorSearchResult = ref<string[]>([]);
 const projectSearchResult = ref<string[]>([]);
 
-async function searchUser(val: string) {
+async function searchUser(val?: string) {
   userSearchResult.value = [];
-  const users = await useApi<PaginatedResult<User>>("users", "get", {
+  const users = await useApi<PaginatedResultUser>("users", "get", {
     query: val,
     limit: 25,
     offset: 0,
@@ -119,9 +101,9 @@ async function searchUser(val: string) {
   userSearchResult.value = users.result.filter((u) => !u.isOrganization).map((u) => u.name);
 }
 
-async function searchAuthor(val: string) {
+async function searchAuthor(val?: string) {
   authorSearchResult.value = [];
-  const authors = await useApi<PaginatedResult<User>>("users", "get", {
+  const authors = await useApi<PaginatedResultUser>("users", "get", {
     query: val,
     limit: 25,
     offset: 0,
@@ -129,9 +111,9 @@ async function searchAuthor(val: string) {
   authorSearchResult.value = authors.result.map((u) => u.name);
 }
 
-async function searchProject(val: string) {
+async function searchProject(val?: string) {
   projectSearchResult.value = [];
-  const projects = await useApi<PaginatedResult<Project>>("projects", "get", {
+  const projects = await useApi<PaginatedResultProject>("projects", "get", {
     q: val,
     limit: 25,
     offset: 0,
@@ -169,6 +151,7 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
       </div>
 
       <SortableTable
+        v-if="loggedActions"
         :loading="true"
         :headers="headers"
         :items="loggedActions?.result"
@@ -176,16 +159,16 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
         @update:sort="updateSort"
         @update:page="updatePage"
       >
-        <template #item_user="{ item }">
+        <template #userName="{ item }">
           <Link :to="'/' + item.userName">{{ item.userName }}</Link>
         </template>
-        <template #item_time="{ item }">
+        <template #time="{ item }">
           {{ i18n.d(item.createdAt, "time") }}
         </template>
-        <template #item_action="{ item }">
+        <template #action="{ item }">
           {{ i18n.t(item.action.description) }}
         </template>
-        <template #item_context="{ item }">
+        <template #context="{ item }">
           <template v-if="item.project && item.page">
             <Link :to="'/' + item.project.owner + '/' + item.project.slug + '/pages/' + item.page.slug">
               {{ item.project.owner + "/" + item.project.slug + "/" + item.page.slug }}
@@ -203,7 +186,7 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
             <Link :to="'/' + item.subject.name">{{ item.subject.name }}</Link>
           </template>
         </template>
-        <template #item_oldState="{ item }">
+        <template #oldState="{ item }">
           <template v-if="(item.contextType === 'PAGE' || item.action.pgLoggedAction === 'version_description_changed') && item.oldState">
             <MarkdownModal :markdown-input="item.oldState" :title="i18n.t('userActionLog.markdownView')">
               <template #activator="{ on }">
@@ -221,7 +204,7 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
             <span>{{ item.oldState && i18n.te(item.oldState) ? i18n.t(item.oldState) : item.oldState }}</span>
           </template>
         </template>
-        <template #item_newState="{ item }">
+        <template #newState="{ item }">
           <template v-if="item.contextType === 'PAGE' || item.action.pgLoggedAction === 'version_description_changed'">
             <div class="flex gap-2">
               <MarkdownModal :markdown-input="item.newState" :title="i18n.t('userActionLog.markdownView')">

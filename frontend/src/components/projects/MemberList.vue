@@ -1,24 +1,11 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
-import type { JoinableMember } from "hangar-internal";
-import type { PaginatedResult, Role, User } from "hangar-api";
-import { useRouter } from "vue-router";
-import { NamedPermission } from "~/types/enums";
-import Card from "~/components/design/Card.vue";
-import UserAvatar from "~/components/UserAvatar.vue";
-import Link from "~/components/design/Link.vue";
-import DropdownButton from "~/components/design/DropdownButton.vue";
-import DropdownItem from "~/components/design/DropdownItem.vue";
-import { hasPerms } from "~/composables/usePerm";
-import { getRole, useBackendData } from "~/store/backendData";
-import { useApi, useInternalApi } from "~/composables/useApi";
-import IconMdiClock from "~icons/mdi/clock";
-import Tooltip from "~/components/design/Tooltip.vue";
-import InputAutocomplete from "~/components/ui/InputAutocomplete.vue";
-import { useAuthStore } from "~/store/auth";
-import MemberLeaveModal from "~/components/modals/MemberLeaveModal.vue";
-import { handleRequestError } from "~/composables/useErrorHandling";
+import {
+  type JoinableMemberOrganizationRoleTable,
+  type JoinableMemberProjectRoleTable,
+  NamedPermission,
+  type PaginatedResultUser,
+  type RoleData,
+} from "~/types/backend";
 
 interface EditableMember {
   name: string;
@@ -27,7 +14,7 @@ interface EditableMember {
 
 const props = withDefaults(
   defineProps<{
-    members: JoinableMember[];
+    members: JoinableMemberProjectRoleTable[] | JoinableMemberOrganizationRoleTable[];
     disableSaving?: boolean;
     class?: string;
     organization?: boolean;
@@ -58,7 +45,7 @@ const sortedMembers = [...props.members].sort((r1, r2) => {
 const i18n = useI18n();
 const router = useRouter();
 const authStore = useAuthStore();
-const roles: Role[] = (props.organization ? useBackendData.orgRoles : useBackendData.projectRoles).filter((role) => role.assignable);
+const roles: RoleData[] = (props.organization ? useBackendData.orgRoles : useBackendData.projectRoles).filter((role) => role.assignable);
 
 const canLeave = computed<boolean>(() => {
   if (!authStore.user) {
@@ -67,7 +54,7 @@ const canLeave = computed<boolean>(() => {
 
   return props.members.some((member) => member.user.id === authStore.user?.id && member.user.id !== props.owner);
 });
-const canEdit = computed<boolean>(() => hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS));
+const canEdit = computed<boolean>(() => hasPerms(NamedPermission.EditSubjectSettings));
 const saving = ref<boolean>(false);
 const search = ref<string>("");
 const addErrors = ref<string[]>([]);
@@ -77,11 +64,11 @@ watch(search, () => {
   addErrors.value = [];
 });
 
-function filteredRoles(currentRole: number): Role[] {
+function filteredRoles(currentRole: number): RoleData[] {
   return roles.filter((r) => r.roleId !== currentRole);
 }
 
-function removeMember(member: JoinableMember) {
+function removeMember(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable) {
   post(convertMember(member), "remove");
 }
 
@@ -98,13 +85,13 @@ function cancelTransfer() {
     .finally(() => (saving.value = false));
 }
 
-function setRole(member: JoinableMember, role: Role) {
+function setRole(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable, role: RoleData) {
   const editableMember: EditableMember = convertMember(member);
   editableMember.roleId = role.roleId;
   post(editableMember, "edit");
 }
 
-function invite(member: string, role: Role) {
+function invite(member: string, role: RoleData) {
   const editableMember: EditableMember = { name: member, roleId: role.roleId };
   post(editableMember, "add");
   return "";
@@ -135,16 +122,16 @@ function post(member: EditableMember, action: "edit" | "add" | "remove") {
     });
 }
 
-function convertMember(member: JoinableMember): EditableMember {
+function convertMember(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable): EditableMember {
   return {
     name: member.user.name,
     roleId: member.role.roleId,
   };
 }
 
-async function doSearch(val: string) {
+async function doSearch(val?: string) {
   result.value = [];
-  const users = await useApi<PaginatedResult<User>>("users", "get", {
+  const users = await useApi<PaginatedResultUser>("users", "get", {
     query: val,
     limit: 25,
     offset: 0,

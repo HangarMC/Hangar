@@ -1,27 +1,8 @@
 <script lang="ts" setup>
-import { useHead } from "@unhead/vue";
-import { useRoute, useRouter } from "vue-router";
-import { ref, computed } from "vue";
 import * as webauthnJson from "@github/webauthn-json";
-import { useVuelidate } from "@vuelidate/core";
-import { useI18n } from "vue-i18n";
-import type { LoginResponse } from "hangar-internal";
-import { useSeo } from "~/composables/useSeo";
-import InputText from "~/components/ui/InputText.vue";
-import Button from "~/components/design/Button.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { useAuthStore } from "~/store/auth";
-import InputPassword from "~/components/ui/InputPassword.vue";
-import Card from "~/components/design/Card.vue";
-import Link from "~/components/design/Link.vue";
-import { required } from "~/composables/useValidationHelpers";
-import { useNotificationStore } from "~/store/notification";
-import { useBackendData } from "~/store/backendData";
-import IconMdiGitHub from "~icons/mdi/github";
-import IconMdiGoogle from "~icons/mdi/google";
-import IconMdiMicrosoft from "~icons/mdi/microsoft";
+import type { LoginResponse } from "~/types/backend";
 
-const route = useRoute();
+const route = useRoute("auth-login");
 const router = useRouter();
 const authStore = useAuthStore();
 const v = useVuelidate();
@@ -176,7 +157,7 @@ useHead(useSeo("Login", null, route, null));
             >
               <template v-if="provider === 'github'">
                 <div class="flex flex-row gap-x-0.5 items-center">
-                  <IconMdiGitHub class="mr-1" />
+                  <IconMdiGithub class="mr-1" />
                   GitHub
                 </div>
               </template>

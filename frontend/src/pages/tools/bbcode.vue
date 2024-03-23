@@ -1,15 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import Button from "~/components/design/Button.vue";
-import Markdown from "~/components/Markdown.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import PageTitle from "~/components/design/PageTitle.vue";
-import { useSeo } from "~/composables/useSeo";
-import InputTextarea from "~/components/ui/InputTextarea.vue";
-
 const route = useRoute();
 
 const input = ref("");

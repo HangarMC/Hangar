@@ -5,7 +5,7 @@ import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 @JdbiRepository
 public interface PinnedProjectVersionsDAO {

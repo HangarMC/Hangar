@@ -1,16 +1,7 @@
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref, watch } from "vue";
 import type { ValidationRule } from "@vuelidate/core";
 import type Easymde from "easymde";
 import EasyMDE from "easymde";
-import Markdown from "~/components/Markdown.vue";
-import Button from "~/components/design/Button.vue";
-import DeletePageModal from "~/components/modals/DeletePageModal.vue";
-import { useValidation } from "~/composables/useValidationHelpers";
-import ErrorTooltip from "~/components/design/ErrorTooltip.vue";
-import { nextTick, parseMarkdown, useDomPurify } from "#imports";
-import { usePrismStore } from "~/store/prism";
-import { hasSlotContent } from "~/composables/useSlot";
 
 const props = withDefaults(
   defineProps<{

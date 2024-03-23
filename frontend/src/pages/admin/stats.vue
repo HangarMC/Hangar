@@ -1,21 +1,9 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
-import { computed, ref, watch } from "vue";
-import { useHead } from "@unhead/vue";
 import { Line } from "vue-chartjs";
 import { CategoryScale, Chart, type ChartData, Colors, Legend, LinearScale, LineController, LineElement, PointElement, Tooltip } from "chart.js";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { fromISOString, toISODateString } from "~/composables/useDate";
-import { useInternalApi } from "~/composables/useApi";
-import PageTitle from "~/components/design/PageTitle.vue";
-import Card from "~/components/design/Card.vue";
-import InputDate from "~/components/ui/InputDate.vue";
-import { useSeo } from "~/composables/useSeo";
-import { definePageMeta } from "#imports";
 
 definePageMeta({
-  globalPermsRequired: ["VIEW_STATS"],
+  globalPermsRequired: ["ViewStats"],
 });
 
 interface DayStats {
@@ -28,7 +16,7 @@ interface DayStats {
 }
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("admin-stats");
 
 const now = new Date();
 const oneMonthBefore = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());

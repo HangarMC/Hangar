@@ -1,15 +1,11 @@
-<script setup lang="ts">
-import { computed } from "vue";
+<script setup lang="ts" generic="T">
 import type { ValidationRule } from "@vuelidate/core";
-import { useI18n } from "vue-i18n";
-import { useValidation } from "~/composables/useValidationHelpers";
-import InputWrapper from "~/components/ui/InputWrapper.vue";
 import type { Option } from "~/types/components/ui/InputSelect";
 
 const i18n = useI18n();
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: object | string | boolean | number | null | undefined): void;
+  (e: "update:modelValue", value?: T): void;
 }>();
 const internalVal = computed({
   get: () => props.modelValue,
@@ -18,8 +14,8 @@ const internalVal = computed({
 
 const props = withDefaults(
   defineProps<{
-    modelValue?: object | string | boolean | number | null;
-    values: Option[] | Record<string, any> | string[] | object[];
+    modelValue?: T;
+    values: Option<T>[] | Record<string, any> | string[] | object[];
     itemValue?: string;
     itemText?: string;
     disabled?: boolean;
@@ -32,7 +28,7 @@ const props = withDefaults(
     i18nTextValues?: boolean;
   }>(),
   {
-    modelValue: "",
+    modelValue: undefined,
     itemValue: "value",
     itemText: "text",
     label: "",
@@ -59,7 +55,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
     :no-error-tooltip="noErrorTooltip"
   >
     <template #default="slotProps">
-      <select v-model="internalVal" :disabled="disabled" :class="slotProps.class" class="appearance-none" @blur="v.$touch()">
+      <select v-model="internalVal" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" class="appearance-none" @blur="v.$touch()">
         <option
           v-for="val in values"
           :key="val[itemValue] || val"

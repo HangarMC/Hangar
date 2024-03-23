@@ -1,30 +1,9 @@
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
-import { useI18n } from "vue-i18n";
-import { computed, isRef, ref, watch } from "vue";
-import { useHead } from "@unhead/vue";
-import { useRoute, useRouter } from "vue-router";
-import type { PaginatedResult, Project } from "hangar-api";
-import type { PlatformVersion } from "hangar-internal";
-import { watchDebounced } from "@vueuse/core";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import { useBackendData, useVisibleCategories, useVisiblePlatforms } from "~/store/backendData";
-import ProjectList from "~/components/projects/ProjectList.vue";
-import { useProjects } from "~/composables/useApiHelper";
-import Card from "~/components/design/Card.vue";
-import Container from "~/components/design/Container.vue";
-import { useSeo } from "~/composables/useSeo";
-import { useApi } from "~/composables/useApi";
-import type { Platform } from "~/types/enums";
-import { Tag } from "~/types/enums";
-import InputRadio from "~/components/ui/InputRadio.vue";
-import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
-import CategoryLogo from "~/components/logos/categories/CategoryLogo.vue";
-import { useConfig } from "~/composables/useConfig";
-import VersionSelector from "~/components/VersionSelector.vue";
+import { type PaginatedResultProject, Platform, type PlatformVersion, Tag } from "~/types/backend";
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("index");
 const router = useRouter();
 
 const sorters = [
@@ -46,7 +25,7 @@ const filters = ref({
 const activeSorter = ref<string>((route.query.sort as string) || "-stars");
 const page = ref(route.query.page ? Number(route.query.page) : 0);
 const query = ref<string>((route.query.q as string) || "");
-const projects = ref<PaginatedResult<Project> | null>();
+const projects = ref<PaginatedResultProject | null>();
 
 const requestParams = computed(() => {
   const limit = 10;
@@ -96,7 +75,7 @@ watchDebounced(
 );
 
 async function updateProjects() {
-  projects.value = await useApi<PaginatedResult<Project>>("projects", "get", requestParams.value);
+  projects.value = await useApi<PaginatedResultProject>("projects", "get", requestParams.value);
   await checkOffsetLargerCount();
 }
 

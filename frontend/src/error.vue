@@ -1,20 +1,9 @@
 <script lang="ts" setup>
-import { useRoute } from "vue-router";
-import { useHead } from "@unhead/vue";
-import { computed } from "vue";
 import type { NuxtError } from "nuxt/app";
-import { useI18n } from "vue-i18n";
-import { useSeo } from "~/composables/useSeo";
-import Lottie from "~/components/Lottie.vue";
-import { useAuthStore } from "~/store/auth";
-import { useSettingsStore } from "~/store/useSettingsStore";
-import { settingsLog } from "~/composables/useLog";
-import { useAccentColor } from "~/composables/useAccentColor";
-import Button from "~/components/design/Button.vue";
-import { useAuth } from "~/composables/useAuth";
+import type { HangarNuxtError } from "~/types/components/error";
 
 const props = defineProps<{
-  error: NuxtError;
+  error: NuxtError<HangarNuxtError>;
 }>();
 
 if (!(props.error?.data?.dummyError === true)) {

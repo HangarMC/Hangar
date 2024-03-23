@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useI18n } from "vue-i18n";
-import type { HangarProject } from "hangar-internal";
-import ProjectNavItem from "~/components/projects/ProjectNavItem.vue";
-import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission } from "~/types/enums";
+import { type HangarProject, NamedPermission } from "~/types/backend";
 
 const props = defineProps<{
   project: HangarProject;
@@ -29,13 +24,10 @@ function childRoute(route = ""): string {
     <ProjectNavItem :to="childRoute('/versions')">
       {{ i18n.t("project.tabs.versions") }}
     </ProjectNavItem>
-    <ProjectNavItem v-if="hasPerms(NamedPermission.EDIT_CHANNELS)" :to="childRoute('/channels')">
+    <ProjectNavItem v-if="hasPerms(NamedPermission.EditChannels)" :to="childRoute('/channels')">
       {{ i18n.t("project.tabs.channels") }}
     </ProjectNavItem>
-    <ProjectNavItem v-if="project.topicId" :to="childRoute('/discuss')">
-      {{ i18n.t("project.tabs.discuss") }}
-    </ProjectNavItem>
-    <ProjectNavItem v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" :to="childRoute('/settings')">
+    <ProjectNavItem v-if="hasPerms(NamedPermission.EditSubjectSettings)" :to="childRoute('/settings')">
       {{ i18n.t("project.tabs.settings") }}
     </ProjectNavItem>
     <template v-for="section in props.project.settings.links">

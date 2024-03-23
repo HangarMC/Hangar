@@ -37,7 +37,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,10 +46,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 // @el(projectId: long, author: String, slug: String, versionString: String, platform: io.papermc.hangar.model.common.Platform)
-@Controller
+@RestController
 @Secured("ROLE_USER")
 @RateLimit(path = "version")
 @ServletComponentScan(basePackageClasses = VersionControllerConfig.class)
@@ -177,7 +177,6 @@ public class VersionController extends HangarComponent {
     }
 
     @ErrorRedirect
-    @ResponseBody
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
     @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#slug, #versionString, #platform}")
     // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter

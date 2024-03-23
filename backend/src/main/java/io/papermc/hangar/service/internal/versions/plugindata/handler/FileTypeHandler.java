@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import org.jdbi.v3.core.internal.MemoizingSupplier;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 
 public abstract class FileTypeHandler<D extends FileTypeHandler.FileData> {

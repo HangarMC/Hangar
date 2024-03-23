@@ -1,18 +1,9 @@
 <script lang="ts" setup>
-import { useRoute } from "vue-router";
-import { useI18n } from "vue-i18n";
-import { useHead } from "@unhead/vue";
-import type { HangarProject } from "hangar-internal";
-import Card from "~/components/design/Card.vue";
-import PageTitle from "~/components/design/PageTitle.vue";
-import UserAvatar from "~/components/UserAvatar.vue";
-import { useStargazers } from "~/composables/useApiHelper";
-import Link from "~/components/design/Link.vue";
-import { useSeo } from "~/composables/useSeo";
+import type { HangarProject } from "~/types/backend";
 
-const route = useRoute();
+const route = useRoute("user-project-stars");
 const i18n = useI18n();
-const stargazers = await useStargazers(route.params.project as string);
+const stargazers = await useStargazers(route.params.project);
 
 const props = defineProps<{
   project: HangarProject;

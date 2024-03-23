@@ -5,7 +5,7 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.settings.ProjectSettings;
 import io.papermc.hangar.model.common.projects.Category;
 import jakarta.validation.constraints.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class NewProjectForm extends ProjectSettingsForm {
 

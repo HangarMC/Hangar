@@ -1,20 +1,5 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import type { User } from "hangar-api";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useVuelidate } from "@vuelidate/core";
-import Button from "~/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { required } from "#imports";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import Tooltip from "~/components/design/Tooltip.vue";
-import InputTextarea from "~/components/ui/InputTextarea.vue";
-import { useNotificationStore } from "~/store/notification";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import { hasPerms } from "~/composables/usePerm";
-import { NamedPermission } from "~/types/enums";
+import { NamedPermission, type User } from "~/types/backend";
 
 const props = defineProps<{
   user: User;
@@ -48,7 +33,7 @@ async function confirm(close: () => void) {
     <template #default="{ on }">
       <InputTextarea v-model="comment" :rules="[required()]" :label="i18n.t(`author.lock.reason${user.locked ? 'Unlock' : 'Lock'}`)" />
       <InputCheckbox
-        v-if="hasPerms(NamedPermission.DELETE_PROJECT)"
+        v-if="hasPerms(NamedPermission.DeleteProject)"
         v-model="toggleProjectDeletion"
         :label="i18n.t(`author.lock.${user.locked ? 'reinstateProjects' : 'deleteProjects'}${user.isOrganization ? 'Org' : ''}`)"
       />

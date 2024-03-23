@@ -57,7 +57,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,12 +65,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-@Controller
+@RestController
 @LoggedIn
 @RateLimit(path = "hangaruser")
 @RequestMapping(path = "/api/internal", produces = MediaType.APPLICATION_JSON_VALUE, method = {RequestMethod.GET, RequestMethod.POST})
@@ -143,7 +142,6 @@ public class HangarUserController extends HangarComponent {
 
     @Unlocked
     @PermissionRequired(NamedPermission.IS_STAFF)
-    @ResponseBody
     @GetMapping(value = "/users/{userName}/alts", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> possibleAltAccounts(@PathVariable final String userName) {
         final UserTable table = this.userService.getUserTable(userName);
@@ -200,7 +198,6 @@ public class HangarUserController extends HangarComponent {
     // @el(userName: String)
     @Unlocked
     @CurrentUser("#userName")
-    @ResponseBody
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
@@ -325,12 +322,11 @@ public class HangarUserController extends HangarComponent {
     }
 
     @GetMapping("/invites")
-    public ResponseEntity<ObjectNode> getUserInvites() {
-        final ObjectNode invites = this.mapper.createObjectNode();
-        invites.set(HangarInvite.InviteType.PROJECT.toString(), this.mapper.valueToTree(this.projectInviteService.getProjectInvites()));
-        invites.set(HangarInvite.InviteType.ORGANIZATION.toString(), this.mapper.valueToTree(this.organizationInviteService.getOrganizationInvites()));
-        return ResponseEntity.ok(invites);
+    public ResponseEntity<Invites> getUserInvites() {
+        return ResponseEntity.ok(new Invites(this.projectInviteService.getProjectInvites(), this.organizationInviteService.getOrganizationInvites()));
     }
+
+    public record Invites(List<HangarInvite.HangarProjectInvite> project, List<HangarInvite.HangarOrganizationInvite> organization) { }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)

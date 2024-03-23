@@ -2,7 +2,7 @@ package io.papermc.hangar.model.internal.user.notifications;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Locale;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public abstract class HangarInvite {
 

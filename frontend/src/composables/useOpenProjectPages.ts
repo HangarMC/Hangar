@@ -1,8 +1,7 @@
-import type { RouteLocationNormalizedLoaded } from "vue-router";
-import type { HangarProject } from "hangar-internal";
-import { ref, watch } from "vue";
+import type { RouteLocationNormalizedLoadedTyped, _RouteMapGeneric } from "unplugin-vue-router";
+import type { HangarProject } from "~/types/backend";
 
-export function useOpenProjectPages(route: RouteLocationNormalizedLoaded, project: HangarProject) {
+export function useOpenProjectPages(route: RouteLocationNormalizedLoadedTyped<_RouteMapGeneric, "user-project-pages-all">, project: HangarProject) {
   const open = ref<string[]>([]);
 
   watch(

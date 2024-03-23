@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import "rapidoc";
-import { computed, ref, watch } from "vue";
-import { useSettingsStore } from "~/store/useSettingsStore";
 
 const settings = useSettingsStore();
 
@@ -28,7 +26,7 @@ const primaryColor = computed(() => window.getComputedStyle(document.body).getPr
 <template>
   <rapi-doc
     ref="dom"
-    spec-url="/v3/api-docs"
+    spec-url="/v3/api-docs/public"
     render-style="focused"
     allow-server-selection="false"
     allow-spec-url-load="false"

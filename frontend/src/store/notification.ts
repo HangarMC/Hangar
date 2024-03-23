@@ -1,6 +1,3 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
-
 export interface Notification {
   color?: string;
   timeout?: number;

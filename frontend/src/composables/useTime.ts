@@ -1,6 +1,4 @@
-import { useI18n } from "vue-i18n";
-
-export function lastUpdated(date: Date): string {
+export function lastUpdated(date: Date | string): string {
   const i18n = useI18n();
   date = new Date(date);
   const today: Date = new Date();

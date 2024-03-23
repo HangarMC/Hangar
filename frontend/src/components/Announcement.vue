@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import type { Announcement } from "hangar-api";
-import { toRefs } from "vue";
-import { useDomPurify } from "~/composables/useDomPurify";
+import type { Announcement } from "~/types/backend";
 
 const props = defineProps<{ announcement: Announcement }>();
 const { announcement } = toRefs(props);

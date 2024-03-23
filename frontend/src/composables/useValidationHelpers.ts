@@ -1,12 +1,10 @@
 import { type ErrorObject, useVuelidate, type ValidationRule } from "@vuelidate/core";
-import { computed } from "vue";
 import type { ComputedRef, Ref } from "vue";
 import * as validators from "@vuelidate/validators";
 import { createI18nMessage, helpers, type ValidatorWrapper } from "@vuelidate/validators";
 import { difference, isEmpty, uniq } from "lodash-es";
 import { AxiosError } from "axios";
 import { I18n } from "~/i18n";
-import { unref, useInternalApi } from "#imports";
 
 export function isErrorObject(errorObject: string | ErrorObject): errorObject is ErrorObject {
   return typeof errorObject === "object" && "$message" in errorObject;
@@ -73,7 +71,7 @@ export const requiredUnless = withOverrideMessage(validators.requiredUnless);
 export const minLength = withOverrideMessage(validators.minLength);
 export const maxLength = withOverrideMessage(validators.maxLength);
 export const integer = withOverrideMessage(validators.integer);
-export const url = withOverrideMessage(validators.url);
+export const validUrl = withOverrideMessage(validators.url);
 export const email = withOverrideMessage(validators.email);
 export const sameAs = withOverrideMessage(validators.sameAs);
 

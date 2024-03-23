@@ -1,12 +1,5 @@
 <script lang="ts" setup>
-import type { Ref } from "vue";
-import { computed, watch } from "vue";
-import type { PlatformVersion } from "hangar-internal";
 import type { ValidationRule } from "@vuelidate/core";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import ArrowSpoiler from "~/components/design/ArrowSpoiler.vue";
-import { ref } from "#imports";
-import InputGroup from "~/components/ui/InputGroup.vue";
 
 const props = defineProps<{
   versions: PlatformVersion[];
@@ -24,8 +17,8 @@ const selected = computed({
   set: (value) => emit("update:modelValue", value),
 });
 
-const selectedParents: Ref<string[]> = ref([]);
-const selectedSub: Ref<string[]> = ref([]);
+const selectedParents = ref<string[]>([]);
+const selectedSub = ref<string[]>([]);
 for (const version of selected.value) {
   selectedSub.value.push(version);
 

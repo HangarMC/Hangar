@@ -54,6 +54,8 @@ public class HangarConfig {
     public ImageConfig image;
     @NestedConfigurationProperty
     public MailConfig mail;
+    @NestedConfigurationProperty
+    public E2EConfig e2e;
 
     @Component
     public static class Sponsor {
@@ -87,7 +89,7 @@ public class HangarConfig {
     }
 
     @Autowired
-    public HangarConfig(final UpdateTasksConfig updateTasks, final ChannelsConfig channels, final PagesConfig pages, final ProjectsConfig projects, final UserConfig user, final OrganizationsConfig org, final ApiConfig api, final HangarSecurityConfig security, final QueueConfig queue, final JobsConfig jobs, final StorageConfig storage, final CorsConfig cors, final ImageConfig image, final MailConfig mail) {
+    public HangarConfig(final UpdateTasksConfig updateTasks, final ChannelsConfig channels, final PagesConfig pages, final ProjectsConfig projects, final UserConfig user, final OrganizationsConfig org, final ApiConfig api, final HangarSecurityConfig security, final QueueConfig queue, final JobsConfig jobs, final StorageConfig storage, final CorsConfig cors, final ImageConfig image, final MailConfig mail, final E2EConfig e2e) {
         this.updateTasks = updateTasks;
         this.channels = channels;
         this.pages = pages;
@@ -102,6 +104,7 @@ public class HangarConfig {
         this.cors = cors;
         this.image = image;
         this.mail = mail;
+        this.e2e = e2e;
     }
 
     public void checkDev() {

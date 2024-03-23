@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 // TODO Remove this and the enums to keep everything data driven (see RoleData)
 public interface Role<T extends IRoleTable<? extends Role<T>>> {

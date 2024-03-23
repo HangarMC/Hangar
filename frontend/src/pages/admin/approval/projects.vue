@@ -1,27 +1,13 @@
 <script lang="ts" setup>
-import type { ProjectApproval } from "hangar-internal";
-import { useI18n } from "vue-i18n";
-import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import Card from "~/components/design/Card.vue";
-import AdminProjectList from "~/components/projects/AdminProjectList.vue";
-import { useSeo } from "~/composables/useSeo";
-import { definePageMeta } from "#imports";
-
-interface ApprovalProjects {
-  needsApproval: ProjectApproval[];
-  waitingProjects: ProjectApproval[];
-}
+import type { ProjectApprovals } from "~/types/backend";
 
 definePageMeta({
-  globalPermsRequired: ["REVIEWER"],
+  globalPermsRequired: ["Reviewer"],
 });
 
 const i18n = useI18n();
-const route = useRoute();
-const data: ApprovalProjects = (await useInternalApi<ApprovalProjects>("admin/approval/projects").catch((e) => handleRequestError(e))) as ApprovalProjects;
+const route = useRoute("admin-approval-projects");
+const data = (await useInternalApi<ProjectApprovals>("admin/approval/projects").catch((e) => handleRequestError(e))) as ProjectApprovals;
 
 useHead(useSeo(i18n.t("projectApproval.title"), null, route, null));
 </script>

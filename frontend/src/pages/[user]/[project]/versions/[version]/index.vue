@@ -1,38 +1,8 @@
 <script lang="ts" setup>
-import type { HangarProject, HangarVersion } from "hangar-internal";
-import { computed, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useI18n } from "vue-i18n";
-import type { User } from "hangar-api";
-import { useHead } from "@unhead/vue";
 import type { AxiosError } from "axios";
-import type { Platform } from "~/types/enums";
-import { NamedPermission, ReviewState, Visibility, PinnedStatus } from "~/types/enums";
-import { useBackendData } from "~/store/backendData";
-import { lastUpdated } from "~/composables/useTime";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useErrorRedirect } from "~/composables/useErrorRedirect";
-import TagComponent from "~/components/Tag.vue";
-import { hasPerms } from "~/composables/usePerm";
-import Button from "~/components/design/Button.vue";
-import { required } from "~/composables/useValidationHelpers";
+import { type HangarProject, type HangarVersion, Platform, ReviewState, PinnedStatus, type User, NamedPermission, Visibility } from "~/types/backend";
 
-import { MarkdownEditor } from "#components";
-import Markdown from "~/components/Markdown.vue";
-import Card from "~/components/design/Card.vue";
-import Link from "~/components/design/Link.vue";
-import { useSeo } from "~/composables/useSeo";
-import { useNotificationStore } from "~/store/notification";
-import Tooltip from "~/components/design/Tooltip.vue";
-import DownloadButton from "~/components/projects/DownloadButton.vue";
-import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
-import TextAreaModal from "~/components/modals/TextAreaModal.vue";
-import DependencyEditModal from "~/components/modals/DependencyEditModal.vue";
-import Spoiler from "~/components/design/Spoiler.vue";
-import PlatformVersionEditModal from "~/components/modals/PlatformVersionEditModal.vue";
-
-const route = useRoute();
+const route = useRoute("user-project-versions-version");
 const i18n = useI18n();
 const router = useRouter();
 const notification = useNotificationStore();
@@ -49,13 +19,13 @@ if (!projectVersion.value) {
   throw useErrorRedirect(route, 404, "Not found");
 }
 const isReviewStateChecked = computed<boolean>(
-  () => projectVersion.value?.reviewState === ReviewState.PARTIALLY_REVIEWED || projectVersion.value?.reviewState === ReviewState.REVIEWED
+  () => projectVersion.value?.reviewState === ReviewState.PartiallyReviewed || projectVersion.value?.reviewState === ReviewState.Reviewed
 );
-const isUnderReview = computed<boolean>(() => projectVersion.value?.reviewState === ReviewState.UNDER_REVIEW);
+const isUnderReview = computed<boolean>(() => projectVersion.value?.reviewState === ReviewState.UnderReview);
 const currentVisibility = computed(() => useBackendData.visibilities.find((v) => v.name === projectVersion.value?.visibility));
 const editingPage = ref(false);
 const confirmationWarningKey = computed<string | null>(() => {
-  if (projectVersion.value?.reviewState !== ReviewState.REVIEWED) {
+  if (projectVersion.value?.reviewState !== ReviewState.Reviewed) {
     return "version.page.unsafeWarning";
   }
   for (const platform in projectVersion.value?.downloads) {
@@ -68,7 +38,7 @@ const confirmationWarningKey = computed<string | null>(() => {
 const platformsWithDependencies = computed(() => {
   const platforms = [];
   for (const platform of props.versionPlatforms) {
-    if ((projectVersion.value && projectVersion.value.pluginDependencies[platform]) || hasPerms(NamedPermission.EDIT_VERSION)) {
+    if ((projectVersion.value && projectVersion.value.pluginDependencies[platform]) || hasPerms(NamedPermission.EditVersion)) {
       platforms.push(platform);
     }
   }
@@ -156,7 +126,7 @@ async function restoreVersion() {
       <div class="flex gap-2 justify-between">
         <div>
           <h2 class="text-3xl sm:inline-flex items-center gap-x-1">
-            <TagComponent
+            <Tag
               class="mr-1"
               :name="projectVersion.channel.name"
               :color="{ background: projectVersion.channel.color }"
@@ -170,7 +140,7 @@ async function restoreVersion() {
               {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
             </span>
           </h3>
-          <em v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.approvedBy">
+          <em v-if="hasPerms(NamedPermission.Reviewer) && projectVersion.approvedBy">
             {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
           </em>
         </div>
@@ -187,7 +157,7 @@ async function restoreVersion() {
       </div>
 
       <Card class="relative mt-4 pb-0 overflow-clip overflow-hidden">
-        <ClientOnly v-if="hasPerms(NamedPermission.EDIT_VERSION)">
+        <ClientOnly v-if="hasPerms(NamedPermission.EditVersion)">
           <MarkdownEditor
             ref="editor"
             v-model:editing="editingPage"
@@ -206,14 +176,14 @@ async function restoreVersion() {
       </Card>
     </section>
     <section class="basis-full lg:basis-4/15 flex-grow space-y-4">
-      <Card v-if="hasPerms(NamedPermission.DELETE_VERSION) || hasPerms(NamedPermission.VIEW_LOGS) || hasPerms(NamedPermission.REVIEWER)">
+      <Card v-if="hasPerms(NamedPermission.DeleteVersion) || hasPerms(NamedPermission.ViewLogs) || hasPerms(NamedPermission.Reviewer)">
         <template #header>
           <h3>{{ i18n.t("version.page.manage") }}</h3>
         </template>
 
         <span class="inline-flex items-center">
           <IconMdiInformation class="mr-1" />
-          {{ i18n.t("version.page.visibility", [i18n.t(currentVisibility?.title)]) }}
+          {{ i18n.t("version.page.visibility", [i18n.t(currentVisibility?.title || "")]) }}
         </span>
 
         <div class="flex gap-2 flex-wrap mt-2">
@@ -230,12 +200,12 @@ async function restoreVersion() {
           </Tooltip>
 
           <!--todo route for user action log, with filtering-->
-          <Button v-if="hasPerms(NamedPermission.VIEW_LOGS)" @click="router.push('/admin/log')">
+          <Button v-if="hasPerms(NamedPermission.ViewLogs)" @click="router.push('/admin/log')">
             <IconMdiFileDocument />
             {{ i18n.t("version.page.userAdminLogs") }}
           </Button>
 
-          <template v-if="hasPerms(NamedPermission.REVIEWER)">
+          <template v-if="hasPerms(NamedPermission.Reviewer)">
             <Button v-if="isReviewStateChecked" :to="route.path + '/reviews'">
               <IconMdiListStatus />
               {{ i18n.t("version.page.reviewLogs") }}
@@ -254,11 +224,11 @@ async function restoreVersion() {
             </Button>
           </template>
 
-          <Button v-if="hasPerms(NamedPermission.REVIEWER) && projectVersion.visibility === Visibility.SOFT_DELETE" @click="restoreVersion">
+          <Button v-if="hasPerms(NamedPermission.Reviewer) && projectVersion.visibility === Visibility.SoftDelete" @click="restoreVersion">
             {{ i18n.t("version.page.restore") }}
           </Button>
           <TextAreaModal
-            v-if="hasPerms(NamedPermission.DELETE_VERSION) && projectVersion.visibility !== Visibility.SOFT_DELETE"
+            v-if="hasPerms(NamedPermission.DeleteVersion) && projectVersion.visibility !== Visibility.SoftDelete"
             :title="i18n.t('version.page.delete')"
             :label="i18n.t('general.comment')"
             :submit="deleteVersion"
@@ -269,7 +239,7 @@ async function restoreVersion() {
             </template>
           </TextAreaModal>
           <TextAreaModal
-            v-if="hasPerms(NamedPermission.HARD_DELETE_VERSION)"
+            v-if="hasPerms(NamedPermission.HardDeleteVersion)"
             :title="i18n.t('version.page.hardDelete')"
             :label="i18n.t('general.comment')"
             :submit="hardDeleteVersion"
@@ -297,14 +267,14 @@ async function restoreVersion() {
             </tr>
             <tr>
               <th class="text-left">
-                {{ i18n.t(hasPerms(NamedPermission.IS_SUBJECT_MEMBER) ? "project.info.totalTotalDownloads" : "project.info.totalDownloads", 0) }}
+                {{ i18n.t(hasPerms(NamedPermission.IsSubjectMember) ? "project.info.totalTotalDownloads" : "project.info.totalDownloads", 0) }}
               </th>
               <td class="text-right">
                 {{ version.stats.totalDownloads.toLocaleString("en-US") }}
               </td>
             </tr>
             <!-- Only show per platform downloads to project members, otherwise not too relevant and only adding to height -->
-            <tr v-for="platform in hasPerms(NamedPermission.IS_SUBJECT_MEMBER) ? Object.keys(version.stats.platformDownloads) : []" :key="platform">
+            <tr v-for="platform in hasPerms(NamedPermission.IsSubjectMember) ? Object.keys(version.stats.platformDownloads) : []" :key="platform">
               <th class="text-left inline-flex">
                 <PlatformLogo :platform="platform" :size="24" class="mr-1" />
                 {{ i18n.t("project.info.totalDownloads", 0) }}
@@ -330,7 +300,7 @@ async function restoreVersion() {
           ({{ projectVersion?.platformDependenciesFormatted[platform] }})
           <span class="flex-grow" />
           <PlatformVersionEditModal
-            v-if="hasPerms(NamedPermission.EDIT_VERSION)"
+            v-if="hasPerms(NamedPermission.EditVersion)"
             :project="project"
             :version="version"
             :platform="useBackendData.platforms.get(platform)"
@@ -338,7 +308,7 @@ async function restoreVersion() {
         </div>
       </Card>
 
-      <Card v-if="hasPerms(NamedPermission.EDIT_VERSION) || platformsWithDependencies.length !== 0">
+      <Card v-if="hasPerms(NamedPermission.EditVersion) || platformsWithDependencies.length !== 0">
         <template #header>
           <div class="inline-flex w-full">
             <h3 class="flex-grow">{{ i18n.t("version.page.dependencies") }}</h3>

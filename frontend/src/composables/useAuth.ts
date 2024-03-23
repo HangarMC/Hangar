@@ -1,13 +1,6 @@
-import type { HangarUser } from "hangar-internal";
 import type { AxiosError, AxiosInstance, AxiosRequestHeaders } from "axios";
 import { jwtDecode, type JwtPayload } from "jwt-decode";
-import { useAuthStore } from "~/store/auth";
-import { useInternalApi } from "~/composables/useApi";
-import { authLog } from "~/composables/useLog";
-import { handleRequestError, useCookie, useRequestEvent } from "#imports";
-import { useAxios } from "~/composables/useAxios";
-import { useNotificationStore } from "~/store/notification";
-import { transformAxiosError } from "~/composables/useErrorHandling";
+import type { HangarUser } from "~/types/backend";
 
 class Auth {
   loginUrl(redirectUrl: string | undefined): string {
@@ -86,7 +79,7 @@ class Auth {
         } else if (response.status === 200) {
           // forward cookie header to renew refresh cookie
           if (import.meta.env.SSR && response.headers["set-cookie"]) {
-            useRequestEvent().node.res?.setHeader("set-cookie", response.headers["set-cookie"]);
+            useRequestEvent()?.node?.res?.setHeader("set-cookie", response.headers["set-cookie"]);
           }
           // validate and return token
           const token = response.data;

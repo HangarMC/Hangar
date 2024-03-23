@@ -1,12 +1,10 @@
 import path from "node:path";
 import VueI18nVitePlugin from "@intlify/unplugin-vue-i18n/vite";
 import IconsResolver from "unplugin-icons/resolver";
-import Icons from "unplugin-icons/vite";
-import EslintPlugin from "vite-plugin-eslint";
+// import EslintPlugin from "vite-plugin-eslint";
 import Components from "unplugin-vue-components/vite";
 import type { ProxyOptions } from "@nuxt-alt/proxy";
 import { defineNuxtConfig } from "nuxt/config";
-import unocss from "./unocss.config";
 
 const backendHost = process.env.BACKEND_HOST || "http://localhost:8080";
 const local = true; // set to false if backendData should be fetched from staging. You might need to hard reload (Ctrl+F5) the next page you're on when changing this value
@@ -15,8 +13,25 @@ const allowIndexing = process.env.HANGAR_ALLOW_INDEXING || "true";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
+  telemetry: false,
+  components: [
+    {
+      path: "~/components",
+      pathPrefix: false,
+    },
+  ],
   imports: {
-    autoImport: false,
+    dirs: ["store"],
+    presets: [
+      {
+        from: "vue-i18n",
+        imports: ["useI18n", "createI18n"],
+      },
+      {
+        from: "@vuelidate/core",
+        imports: ["useVuelidate"],
+      },
+    ],
   },
   app: {
     pageTransition: {
@@ -31,12 +46,18 @@ export default defineNuxtConfig({
       allowIndexing,
     },
   },
-  unocss,
   modules: [
     "@unocss/nuxt",
     "@pinia/nuxt",
     "@nuxt-alt/proxy",
     "unplugin-icons/nuxt",
+    "@vueuse/nuxt",
+    [
+      "unplugin-icons/nuxt",
+      {
+        autoInstall: true,
+      },
+    ],
     // "@unlighthouse/nuxt",
     [
       "./src/module/backendData",
@@ -44,6 +65,7 @@ export default defineNuxtConfig({
         serverUrl: backendDataHost,
       },
     ],
+    "./src/module/componentsFix",
   ],
   build: {
     transpile: ["vue-i18n"],
@@ -52,22 +74,15 @@ export default defineNuxtConfig({
     plugins: [
       // https://github.com/antfu/unplugin-vue-components
       Components({
-        // we don't want to import components, just icons
-        dirs: ["none"],
         // auto import icons
         resolvers: [
           // https://github.com/antfu/vite-plugin-icons
           IconsResolver({
-            componentPrefix: "icon",
+            prefix: "icon",
             enabledCollections: ["mdi"],
           }),
         ],
         dts: "types/generated/icons.d.ts",
-      }),
-
-      // https://github.com/antfu/unplugin-icons
-      Icons({
-        autoInstall: true,
       }),
 
       // https://github.com/intlify/bundle-tools/tree/main/packages/unplugin-vue-i18n
@@ -76,9 +91,10 @@ export default defineNuxtConfig({
         include: [path.resolve(__dirname, "src/locales/*.json")],
       }),
 
-      EslintPlugin({
-        fix: true,
-      }),
+      // TODO this seems slow as fuck, wtf
+      // EslintPlugin({
+      //  fix: true,
+      // }),
     ],
     ssr: {
       // Workaround until they support native ESM
@@ -89,9 +105,17 @@ export default defineNuxtConfig({
     writeEarlyHints: false,
     componentIslands: true,
     asyncContext: true,
+    typedPages: true,
   },
   typescript: {
     // typeCheck: "build", // TODO enable typechecking on build
+    tsConfig: {
+      include: ["./types/typed-router.d.ts"],
+      compilerOptions: {
+        strictNullChecks: true,
+        noUnusedLocals: true,
+      },
+    },
   },
   devtools: {
     enabled: true,
@@ -115,7 +139,6 @@ export default defineNuxtConfig({
     },
   },
   proxy: {
-    enableProxy: true,
     proxies: {
       // for performance, these should be mirrored in ingress
       "/api/": defineProxyBackend(),

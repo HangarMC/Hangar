@@ -1,25 +1,8 @@
 <script lang="ts" setup>
-import type { User } from "hangar-api";
-import { useI18n } from "vue-i18n";
-import type { HangarProject, ProjectChannel } from "hangar-internal";
-import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import Card from "~/components/design/Card.vue";
-import { ChannelFlag } from "~/types/enums";
-import { useProjectChannels } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useInternalApi } from "~/composables/useApi";
-import Table from "~/components/design/Table.vue";
-import Tag from "~/components/Tag.vue";
-import Button from "~/components/design/Button.vue";
-import { useBackendData } from "~/store/backendData";
-import ChannelModal from "~/components/modals/ChannelModal.vue";
-import { useSeo } from "~/composables/useSeo";
-import { useNotificationStore } from "~/store/notification";
-import { definePageMeta } from "#imports";
+import { ChannelFlag, type HangarChannel, type HangarProject, type ProjectChannel, type User } from "~/types/backend";
 
 definePageMeta({
-  projectPermsRequired: ["EDIT_CHANNELS"],
+  projectPermsRequired: ["EditChannels"],
 });
 
 const props = defineProps<{
@@ -27,7 +10,7 @@ const props = defineProps<{
   project: HangarProject;
 }>();
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("user-project-channels");
 const channelData = await useProjectChannels(props.project.namespace.slug);
 const channels = channelData.data;
 const validations = useBackendData.validations;
@@ -35,7 +18,7 @@ const notifications = useNotificationStore();
 
 useHead(useSeo("Channels | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 
-async function deleteChannel(channel: ProjectChannel) {
+async function deleteChannel(channel: HangarChannel) {
   await useInternalApi(`channels/${props.project.id}/delete/${channel.id}`, "post")
     .then(() => {
       channelData.refresh();
@@ -44,7 +27,7 @@ async function deleteChannel(channel: ProjectChannel) {
     .catch((e) => handleRequestError(e));
 }
 
-async function addChannel(channel: ProjectChannel) {
+async function addChannel(channel: HangarChannel | ProjectChannel) {
   await useInternalApi(`channels/${props.project.id}/create`, "post", {
     name: channel.name,
     description: channel.description,
@@ -58,8 +41,8 @@ async function addChannel(channel: ProjectChannel) {
     .catch((e) => handleRequestError(e));
 }
 
-async function editChannel(channel: ProjectChannel) {
-  if (!channel.id) return;
+async function editChannel(channel: HangarChannel | ProjectChannel) {
+  if (!("id" in channel)) return;
   await useInternalApi(`channels/${props.project.id}/edit`, "post", {
     id: channel.id,
     name: channel.name,
@@ -103,8 +86,8 @@ async function editChannel(channel: ProjectChannel) {
           <td>{{ channel.versionCount }}</td>
           <td>
             <ChannelModal :project-id="props.project.id" edit :channel="channel" @create="editChannel">
-              <template #activator="{ on, attrs }">
-                <Button v-bind="attrs" v-on="on">
+              <template #activator="{ on }">
+                <Button v-on="on">
                   {{ i18n.t("channel.manage.editButton") }}
                 </Button>
               </template>
@@ -120,12 +103,11 @@ async function editChannel(channel: ProjectChannel) {
     </Table>
 
     <ChannelModal :project-id="props.project.id" @create="addChannel">
-      <template #activator="{ on, attrs }">
+      <template #activator="{ on }">
         <Button
           v-if="channels.length < validations.project.maxChannelCount"
           :disabled="channels.length >= validations.project.maxChannelCount"
           class="mt-2"
-          v-bind="attrs"
           v-on="on"
         >
           <IconMdiPlus />

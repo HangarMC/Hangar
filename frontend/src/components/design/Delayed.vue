@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { ref } from "#imports";
-import Transitioned from "~/components/design/Transitioned.vue";
-
 const props = withDefaults(
   defineProps<{
     delay?: number;

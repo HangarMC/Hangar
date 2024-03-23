@@ -1,25 +1,13 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import type { Review, ReviewQueueEntry } from "hangar-internal";
-import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import SortableTable from "~/components/SortableTable.vue";
-import { ReviewAction } from "~/types/enums";
-import { useVersionApprovals } from "~/composables/useApiHelper";
-import Card from "~/components/design/Card.vue";
-import Link from "~/components/design/Link.vue";
-import Tag from "~/components/Tag.vue";
-import { useSeo } from "~/composables/useSeo";
-import Button from "~/components/design/Button.vue";
-import { definePageMeta } from "#imports";
 import type { Header } from "~/types/components/SortableTable";
+import { type HangarReviewQueueEntry, type Review, ReviewAction } from "~/types/backend";
 
 definePageMeta({
-  globalPermsRequired: ["REVIEWER"],
+  globalPermsRequired: ["Reviewer"],
 });
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("admin-approval-versions");
 const data = await useVersionApprovals();
 
 const actions = {
@@ -28,32 +16,32 @@ const actions = {
   approved: [ReviewAction.APPROVE, ReviewAction.PARTIALLY_APPROVE],
 };
 
-const underReviewHeaders: Header[] = [
+const underReviewHeaders = [
   { title: i18n.t("versionApproval.project") as string, name: "project", sortable: false },
   { title: i18n.t("versionApproval.version") as string, name: "version", sortable: false },
   { title: i18n.t("versionApproval.queuedBy") as string, name: "queuedBy", sortable: true },
   { title: i18n.t("versionApproval.status") as string, name: "status", sortable: true },
-];
+] as const satisfies Header<string>[];
 
-const notStartedHeaders: Header[] = [
+const notStartedHeaders = [
   { title: i18n.t("versionApproval.project") as string, name: "project", sortable: false },
   { title: i18n.t("versionApproval.date") as string, name: "date", sortable: true },
   { title: i18n.t("versionApproval.version") as string, name: "version", sortable: false },
   { title: i18n.t("versionApproval.queuedBy") as string, name: "queuedBy", sortable: true },
   { title: "", name: "startBtn", sortable: false },
-];
+] as const satisfies Header<string>[];
 
 useHead(useSeo(i18n.t("versionApproval.title"), null, route, null));
 
 // TODO There's no actual endpoint with filters
-function getRouteParams(entry: ReviewQueueEntry) {
-  return {
-    user: entry.namespace.owner,
-    project: entry.namespace.slug,
-    version: entry.versionString,
-    platform: entry.platforms[0].toLowerCase(),
-  };
-}
+// function getRouteParams(entry: HangarReviewQueueEntry) {
+//   return {
+//     user: entry.namespace.owner,
+//     project: entry.namespace.slug,
+//     version: entry.versionString,
+//     platform: entry.platforms[0].toLowerCase(),
+//   };
+// }
 
 function isOngoing(review: Review) {
   return actions.ongoing.includes(review.lastAction);
@@ -67,19 +55,19 @@ function isApproved(review: Review) {
   return actions.approved.includes(review.lastAction);
 }
 
-function getOngoingCount(entry: ReviewQueueEntry) {
+function getOngoingCount(entry: HangarReviewQueueEntry) {
   return getCount(entry, ...actions.ongoing);
 }
 
-function getStoppedCount(entry: ReviewQueueEntry) {
+function getStoppedCount(entry: HangarReviewQueueEntry) {
   return getCount(entry, ...actions.stopped);
 }
 
-function getApprovedCount(entry: ReviewQueueEntry) {
+function getApprovedCount(entry: HangarReviewQueueEntry) {
   return getCount(entry, ...actions.approved);
 }
 
-function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
+function getCount(entry: HangarReviewQueueEntry, ..._actions: ReviewAction[]) {
   let count = 0;
   for (const review of entry.reviews) {
     if (_actions.includes(review.lastAction)) {
@@ -96,26 +84,26 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
       <template #header>{{ i18n.t("versionApproval.approvalQueue") }}</template>
 
       <SortableTable v-if="data" :headers="notStartedHeaders" :items="data.notStarted">
-        <template #item_project="{ item }">
+        <template #project="{ item }">
           <Link :to="`/${item.namespace.owner}/${item.namespace.slug}`">
             {{ `${item.namespace.owner}/${item.namespace.slug}` }}
           </Link>
         </template>
-        <template #item_date="{ item }">
+        <template #date="{ item }">
           <span class="start-date">{{ i18n.d(item.versionCreatedAt, "time") }}</span>
         </template>
-        <template #item_version="{ item }">
+        <template #version="{ item }">
           <Link :to="`/${item.namespace.owner}/${item.namespace.slug}/versions/${item.versionString}`">
-            <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" :tooltip="item.channelDescription" />
+            <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" />
             {{ item.versionString }}
           </Link>
         </template>
-        <template #item_queuedBy="{ item }">
+        <template #queuedBy="{ item }">
           <Link :to="`/${item.versionAuthor}`">
             {{ item.versionAuthor }}
           </Link>
         </template>
-        <template #item_startBtn="{ item }">
+        <template #startBtn="{ item }">
           <Link :to="`/${item.namespace.owner}/${item.namespace.slug}/versions/${item.versionString}/reviews`">
             <Button>
               <IconMdiPlay />
@@ -130,22 +118,22 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
       <template #header>{{ i18n.t("versionApproval.inReview") }}</template>
 
       <SortableTable v-if="data" :headers="underReviewHeaders" :items="data.underReview" expandable>
-        <template #item_project="{ item }">
+        <template #project="{ item }">
           <Link :to="`/${item.namespace.owner}/${item.namespace.slug}`">
             {{ `${item.namespace.owner}/${item.namespace.slug}` }}
           </Link>
         </template>
-        <template #item_version="{ item }">
-          <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" :tooltip="item.channelDescription" />
+        <template #version="{ item }">
+          <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" />
         </template>
-        <template #item_queuedBy="{ item }">
+        <template #queuedBy="{ item }">
           <Link :to="`/${item.versionAuthor}`">
             {{ item.versionAuthor }}
           </Link>
           <br />
           <small>{{ i18n.d(item.versionCreatedAt, "time") }}</small>
         </template>
-        <template #item_status="{ item }">
+        <template #status="{ item }">
           <span class="text-yellow-400">
             {{ i18n.t("versionApproval.statuses.ongoing", [getOngoingCount(item)]) }}
           </span>

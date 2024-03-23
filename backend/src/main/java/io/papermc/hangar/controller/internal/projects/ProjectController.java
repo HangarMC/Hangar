@@ -33,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,10 +40,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 // @el(author: String, slug: String, projectId: long, project: io.papermc.hangar.model.db.projects.ProjectTable)
-@Controller
+@RestController
 @RateLimit(path = "project")
 @RequestMapping(path = "/api/internal/projects", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProjectController extends HangarComponent {
@@ -171,7 +171,7 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#slug}")
     @PostMapping(path = "/project/{slug}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.Member<ProjectRole> member) {
+    public void addProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.ProjectMember member) {
         final ProjectTable projectTable = this.projectService.getProjectTable(slug);
         this.projectInviteService.sendInvite(member, projectTable);
     }
@@ -181,7 +181,7 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#slug}")
     @PostMapping(path = "/project/{slug}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void editProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.Member<ProjectRole> member) {
+    public void editProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.ProjectMember member) {
         final ProjectTable projectTable = this.projectService.getProjectTable(slug);
         this.projectMemberService.editMember(member, projectTable);
     }
@@ -190,7 +190,7 @@ public class ProjectController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#slug}")
     @PostMapping(path = "/project/{slug}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void removeProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.Member<ProjectRole> member) {
+    public void removeProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.ProjectMember member) {
         final ProjectTable projectTable = this.projectService.getProjectTable(slug);
         this.projectMemberService.removeMember(member, projectTable);
     }

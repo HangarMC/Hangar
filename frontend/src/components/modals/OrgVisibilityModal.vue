@@ -1,12 +1,4 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { computed, ref } from "vue";
-import Button from "~/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-
 const props = defineProps<{
   modelValue: { [key: string]: boolean };
 }>();
@@ -23,6 +15,8 @@ const internalVisibility = computed({
   get: () => props.modelValue,
   set: (v) => emit("update:modelValue", v),
 });
+
+const orgs = computed(() => Object.keys(internalVisibility.value));
 
 async function changeOrgVisibility(org: string) {
   if (loading.value) {
@@ -42,7 +36,7 @@ async function changeOrgVisibility(org: string) {
     <p>{{ i18n.t("author.orgVisibilityModal") }}</p>
 
     <ul class="p-2">
-      <li v-for="(_, org) in internalVisibility" :key="org">
+      <li v-for="org in orgs" :key="org">
         <InputCheckbox v-model="internalVisibility[org]" :label="org" :disabled="loading" @change="changeOrgVisibility(org)"></InputCheckbox>
       </li>
     </ul>

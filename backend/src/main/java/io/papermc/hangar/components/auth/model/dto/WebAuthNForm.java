@@ -1,7 +1,7 @@
 package io.papermc.hangar.components.auth.model.dto;
 
 import com.yubico.webauthn.data.ByteArray;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public record WebAuthNForm(
     @Nullable String credentialName,

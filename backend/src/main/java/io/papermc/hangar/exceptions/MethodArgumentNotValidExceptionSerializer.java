@@ -14,6 +14,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 @JsonComponent
 public class MethodArgumentNotValidExceptionSerializer extends JsonSerializer<MethodArgumentNotValidException> {
 
+    public record HangarValidationException(String message, String object, boolean isHangarValidationException, HttpError httpError, GlobalError[] globalErrors, FieldError[] fieldErrors) {
+        record HttpError(int statusCode, String statusPhrase) {
+        }
+        record GlobalError(String code, String errorMsg, String objectName) {
+        }
+        record FieldError(String code, String errorMsg, String fieldName, String rejectedValue) {
+        }
+    }
+
     @Override
     public void serialize(final MethodArgumentNotValidException exception, final JsonGenerator gen, final SerializerProvider provider) throws IOException {
         gen.writeStartObject();

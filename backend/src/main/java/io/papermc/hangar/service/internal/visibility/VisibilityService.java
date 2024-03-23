@@ -14,7 +14,7 @@ import io.papermc.hangar.model.loggable.Loggable;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.JobService;
 import java.util.Map;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,33 +1,13 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
-import type { HangarNotification, Invite } from "hangar-internal";
-import { computed, ref } from "vue";
-import { useHead } from "@unhead/vue";
-import { useInvites, useNotifications, useReadNotifications, useUnreadNotifications } from "~/composables/useApiHelper";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useInternalApi } from "~/composables/useApi";
-import { useSeo } from "~/composables/useSeo";
-import { useNotificationStore } from "~/store/notification";
-import Card from "~/components/design/Card.vue";
-import Button from "~/components/design/Button.vue";
-import { lastUpdated } from "~/composables/useTime";
-import IconMdiAlertOutline from "~icons/mdi/alert-outline";
-import IconMdiInformationOutline from "~icons/mdi/information-outline";
-import IconMdiMessageOutline from "~icons/mdi/message-outline";
-import IconMdiCheck from "~icons/mdi/check";
-import Pagination from "~/components/design/Pagination.vue";
-import Tabs from "~/components/design/Tabs.vue";
-import { definePageMeta } from "#imports";
 import type { Tab } from "~/types/components/design/Tabs";
-import { getRoleByValue } from "~/store/backendData";
+import type { HangarNotification, HangarOrganizationInvite, HangarProjectInvite } from "~/types/backend";
 
 definePageMeta({
   loginRequired: true,
 });
 
 const i18n = useI18n();
-const route = useRoute();
+const route = useRoute("notifications");
 const router = useRouter();
 const notificationStore = useNotificationStore();
 
@@ -39,20 +19,20 @@ const notifications = ref(unreadNotifications.value);
 const invites = await useInvites();
 
 const selectedTab = ref("unread");
-const selectedTabs: Tab[] = [
+const selectedTabs = [
   { value: "unread", header: i18n.t("notifications.unread") },
   { value: "read", header: i18n.t("notifications.read") },
   { value: "all", header: i18n.t("notifications.all") },
-];
+] as const satisfies Tab<string>[];
 
 const selectedInvitesTab = ref("all");
-const selectedInvitesTabs: Tab[] = [
+const selectedInvitesTabs = [
   { value: "all", header: i18n.t("notifications.invite.all") },
   { value: "projects", header: i18n.t("notifications.invite.projects") },
   { value: "organizations", header: i18n.t("notifications.invite.organizations") },
-];
+] as const satisfies Tab<string>[];
 
-const filteredInvites = computed(() => {
+const filteredInvites = computed<HangarProjectInvite[] | HangarOrganizationInvite[]>(() => {
   if (!invites || !invites.value) return [];
   switch (selectedInvitesTab.value) {
     case "projects":
@@ -85,7 +65,7 @@ async function markNotificationRead(notification: HangarNotification, push = tru
   }
 }
 
-async function updateInvite(invite: Invite, status: "accept" | "decline") {
+async function updateInvite(invite: HangarProjectInvite, status: "accept" | "decline") {
   await useInternalApi(`invites/${invite.type}/${invite.roleId}/${status}`, "post").catch((e) => handleRequestError(e));
   if (status === "accept") {
     invite.accepted = true;
@@ -154,7 +134,7 @@ function updateSelectedNotifications() {
       </template>
       <Tabs v-model="selectedInvitesTab" :tabs="selectedInvitesTabs" :vertical="false" />
       <Card v-for="(invite, index) in filteredInvites" :key="index">
-        <span v-if="invite.representingOrg">
+        <span v-if="'representingOrg' in invite">
           {{ i18n.t(!invite.accepted ? "notifications.invitedOrg" : "notifications.inviteAcceptedOrg", [invite.representingOrg, invite.type]) }}:
         </span>
         <span v-else> {{ i18n.t(!invite.accepted ? "notifications.invited" : "notifications.inviteAccepted", [invite.type]) }}: </span>

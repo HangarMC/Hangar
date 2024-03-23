@@ -1,32 +1,6 @@
 <script setup lang="ts">
-import type { ProjectSettingsForm, NewProjectForm } from "hangar-internal";
-import { computed, type Ref, ref } from "vue";
-import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
-import { useHead } from "@unhead/vue";
-import { useVuelidate } from "@vuelidate/core";
-import { ProjectCategory, Tag } from "~/types/enums";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { useInternalApi } from "~/composables/useApi";
-import { useBackendData, useCategoryOptions, useLicenseOptions } from "~/store/backendData";
-import { useSeo } from "~/composables/useSeo";
-import Steps from "~/components/design/Steps.vue";
-import InputSelect from "~/components/ui/InputSelect.vue";
-import InputText from "~/components/ui/InputText.vue";
-import InputTag from "~/components/ui/InputTag.vue";
-import Button from "~/components/design/Button.vue";
-import { required, maxLength, pattern, url, requiredIf, noDuplicated } from "~/composables/useValidationHelpers";
-import { validProjectName } from "~/composables/useHangarValidations";
-import Spinner from "~/components/design/Spinner.vue";
-import Link from "~/components/design/Link.vue";
-import { usePossibleOwners } from "~/composables/useApiHelper";
-import { definePageMeta } from "#imports";
 import type { Step } from "~/types/components/design/Steps";
-import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
-import Alert from "~/components/design/Alert.vue";
-import ProjectLinksForm from "~/components/projects/ProjectLinksForm.vue";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import Tooltip from "~/components/design/Tooltip.vue";
+import { Category, type NewProjectForm, type ProjectSettingsForm, Tag } from "~/types/backend";
 
 definePageMeta({
   loginRequired: true,
@@ -34,13 +8,13 @@ definePageMeta({
 
 const i18n = useI18n();
 const router = useRouter();
-const route = useRoute();
+const route = useRoute("new");
 
 const projectOwners = await usePossibleOwners();
-const projectCreationErrors: Ref<string[]> = ref([]);
+const projectCreationErrors = ref<string[]>([]);
 const projectLoading = ref(true);
 const form = ref<NewProjectForm>({
-  category: ProjectCategory.ADMIN_TOOLS,
+  category: Category.AdminTools,
   settings: {
     license: {} as ProjectSettingsForm["settings"]["license"],
     donation: {} as ProjectSettingsForm["settings"]["donation"],
@@ -176,11 +150,12 @@ function createProject() {
             v-model.trim="form.name"
             :label="i18n.t('project.new.step2.projectName')"
             :maxlength="useBackendData.validations.project.name.max"
+            name="name"
             counter
             :rules="[
               required(),
-              maxLength()(useBackendData.validations.project.name.max),
-              pattern()(useBackendData.validations.project.name.regex),
+              maxLength()(useBackendData.validations.project.name.max!),
+              pattern()(useBackendData.validations.project.name.regex!),
               validProjectName()(() => form.ownerId),
             ]"
           />
@@ -191,6 +166,7 @@ function createProject() {
             :label="i18n.t('project.new.step2.projectSummary')"
             :rules="[required()]"
             :maxlength="useBackendData.validations.project.desc.max"
+            name="description"
             counter
           />
         </div>
@@ -200,6 +176,7 @@ function createProject() {
             :values="useCategoryOptions"
             :label="i18n.t('project.new.step2.projectCategory')"
             :rules="[required()]"
+            name="category"
             i18n-text-values
           />
         </div>
@@ -228,13 +205,13 @@ function createProject() {
             :label="i18n.t('project.new.step3.customName')"
             :rules="[
               requiredIf()(isCustomLicense),
-              maxLength()(useBackendData.validations.project.license.max),
-              pattern()(useBackendData.validations.project.license.regex),
+              maxLength()(useBackendData.validations.project.license.max!),
+              pattern()(useBackendData.validations.project.license.regex!),
             ]"
           />
         </div>
         <div v-if="!licenseUnset" class="basis-full mt-2" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
-          <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" :rules="[url()]" />
+          <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" :rules="[validUrl()]" />
         </div>
       </div>
       <div class="text-lg mt-6 flex gap-2 items-center">

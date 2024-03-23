@@ -1,12 +1,4 @@
 <script lang="ts" setup>
-import { computed, ref, unref } from "vue";
-import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
-import { useVuelidate } from "@vuelidate/core";
-import Link from "~/components/design/Link.vue";
-import Card from "~/components/design/Card.vue";
-import { useSettingsStore } from "~/store/useSettingsStore";
-import Button from "~/components/design/Button.vue";
 import type { Step } from "~/types/components/design/Steps";
 
 const router = useRouter();

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { ValidationRule } from "@vuelidate/core";
-import Markdown from "~/components/Markdown.vue";
-import Button from "~/components/design/Button.vue";
+
 withDefaults(
   defineProps<{
     raw?: string | null;

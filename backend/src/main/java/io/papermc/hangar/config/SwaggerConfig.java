@@ -1,19 +1,55 @@
 package io.papermc.hangar.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.papermc.hangar.controller.extras.pagination.FilterRegistry;
 import io.papermc.hangar.controller.extras.pagination.SorterRegistry;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
+import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.exceptions.MethodArgumentNotValidExceptionSerializer;
+import io.papermc.hangar.exceptions.MultiHangarApiException;
+import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import jakarta.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.customizers.OperationCustomizer;
+import org.springdoc.core.customizers.SpringDocCustomizers;
+import org.springdoc.core.models.GroupedOpenApi;
+import org.springdoc.core.properties.SpringDocConfigProperties;
+import org.springdoc.core.providers.SpringDocProviders;
+import org.springdoc.core.service.AbstractRequestService;
+import org.springdoc.core.service.GenericResponseService;
+import org.springdoc.core.service.OpenAPIService;
+import org.springdoc.core.service.OperationService;
+import org.springdoc.webmvc.api.OpenApiWebMvcResource;
+import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.http.MediaType;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.method.HandlerMethod;
+
+import static org.springdoc.core.utils.Constants.API_DOCS_URL;
+import static org.springdoc.core.utils.Constants.APPLICATION_OPENAPI_YAML;
+import static org.springdoc.core.utils.Constants.DEFAULT_API_DOCS_URL_YAML;
 
 @Configuration
 public class SwaggerConfig {
@@ -23,8 +59,8 @@ public class SwaggerConfig {
     }
 
     @Bean
-    OpenApiCustomizer apiInfo() {
-        return openApi -> {
+    public GroupedOpenApi publicOpenApi() {
+        return GroupedOpenApi.builder().group("public").pathsToMatch("/api/v1/**").addOpenApiCustomizer((openApi -> {
             openApi.info(new Info().title("Hangar API").version("1.0").description("""
                 This page describes the format for the current Hangar REST API as well as general usage guidelines.<br>
                 Note that all routes **not** listed here should be considered **internal**, and can change at a moment's notice. **Do not use them**.
@@ -58,12 +94,61 @@ public class SwaggerConfig {
 
                 If applicable, always cache responses. The Hangar API itself is cached by CloudFlare and internally."""));
             openApi.getComponents().addSecuritySchemes("HangarAuth", new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT"));
+        })).build();
+    }
+
+    @Bean
+    public GroupedOpenApi internalOpenApi() {
+        return GroupedOpenApi.builder().group("internal").pathsToMatch("/api/internal/**").build();
+    }
+
+    @Bean
+    public GroupedOpenApi combinedOpenApi() {
+        return GroupedOpenApi.builder().group("combined").pathsToMatch("/api/**").addOpenApiCustomizer(this.requiredByDefaultCustomizer()).addOpenApiCustomizer(this.exceptionCustomizer()).build();
+    }
+
+    public OpenApiCustomizer requiredByDefaultCustomizer() {
+        return openAPI -> {
+            for (final Schema<?> schema : openAPI.getComponents().getSchemas().values()) {
+                if (schema.getProperties() != null) {
+                    try {
+                        final Class<?> clazz = Class.forName(schema.getName());
+                        final Set<String> requiredKeys = new HashSet<>();
+                        for (final String key : schema.getProperties().keySet()) {
+                            final Field field = ReflectionUtils.findField(clazz, key);
+
+                            if (field != null && (field.getAnnotatedType().isAnnotationPresent(Nullable.class) || field.getAnnotatedType().isAnnotationPresent(jakarta.annotation.Nullable.class))) {
+                                continue;
+                            }
+
+                            Method method = null;
+                            for (final String prefix : List.of("get", "is", "has", "")) {
+                                 method = ReflectionUtils.findMethod(clazz, !prefix.isEmpty() ? prefix + key.substring(0, 1).toUpperCase() + key.substring(1) : key );
+                                 if (method != null) break;
+                            }
+
+                            if (method != null && (method.getAnnotatedReturnType().isAnnotationPresent(Nullable.class) || method.getAnnotatedReturnType().isAnnotationPresent(jakarta.annotation.Nullable.class))) {
+                                continue;
+                            }
+
+                            requiredKeys.add(key);
+                        }
+                        schema.required(new ArrayList<>(requiredKeys));
+                    } catch (final ClassNotFoundException e) {
+                        schema.required(new ArrayList<>(schema.getProperties().keySet()));
+                    }
+                }
+            }
         };
     }
 
-    // TODO fix
-    //.directModelSubstitute(LocalDate.class, java.sql.Date.class)
-    //.directModelSubstitute(OffsetDateTime.class, Date.class)
+    public OpenApiCustomizer exceptionCustomizer() {
+        return openAPI -> {
+            for (final Class<?> clazz : List.of(HangarApiException.class, MultiHangarApiException.class, MethodArgumentNotValidExceptionSerializer.HangarValidationException.class)) {
+                ModelConverters.getInstance().readAllAsResolvedSchema(clazz).referencedSchemas.forEach(openAPI.getComponents()::addSchemas);
+            }
+        };
+    }
 
     @Bean
     public CustomScanner customScanner(final FilterRegistry filterRegistry) {
@@ -123,5 +208,45 @@ public class SwaggerConfig {
 
             return operation;
         }
+    }
+
+    // override /v3/api-docs to return /v3/api-docs/public
+    @Bean
+    @Primary
+    OpenApiWebMvcResource openApiResource(final ObjectFactory<OpenAPIService> openAPIBuilderObjectFactory, final AbstractRequestService requestBuilder,
+                                          final GenericResponseService responseBuilder, final OperationService operationParser,
+                                          final SpringDocConfigProperties springDocConfigProperties,
+                                          final SpringDocProviders springDocProviders, final SpringDocCustomizers springDocCustomizers, final List<GroupedOpenApi> groupedOpenApis) {
+
+        final OpenApiWebMvcResource publicApi = groupedOpenApis.stream()
+            .filter(s -> s.getGroup().equals("public"))
+            .findFirst()
+            .map(groupedOpenApi -> new OpenApiWebMvcResource(groupedOpenApi.getGroup(),
+                openAPIBuilderObjectFactory,
+                requestBuilder,
+                responseBuilder,
+                operationParser,
+                springDocConfigProperties, springDocProviders,
+                new SpringDocCustomizers(Optional.of(groupedOpenApi.getOpenApiCustomizers()), Optional.of(groupedOpenApi.getOperationCustomizers()),
+                    Optional.of(groupedOpenApi.getRouterOperationCustomizers()), Optional.of(groupedOpenApi.getOpenApiMethodFilters()))
+
+            )).orElseThrow(RuntimeException::new);
+
+        return new OpenApiWebMvcResource(openAPIBuilderObjectFactory, requestBuilder,
+            responseBuilder, operationParser, springDocConfigProperties, springDocProviders, springDocCustomizers) {
+            @io.swagger.v3.oas.annotations.Operation(hidden = true)
+            @GetMapping(value = API_DOCS_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+            @Override
+            public byte[] openapiJson(final HttpServletRequest request, @Value(API_DOCS_URL) final String apiDocsUrl, final Locale locale) throws JsonProcessingException {
+                return publicApi.openapiJson(request, apiDocsUrl, locale);
+            }
+
+            @io.swagger.v3.oas.annotations.Operation(hidden = true)
+            @GetMapping(value = DEFAULT_API_DOCS_URL_YAML, produces = APPLICATION_OPENAPI_YAML)
+            @Override
+            public byte[] openapiYaml(final HttpServletRequest request, @Value(DEFAULT_API_DOCS_URL_YAML) final String apiDocsUrl, final Locale locale) throws JsonProcessingException {
+                return publicApi.openapiYaml(request, apiDocsUrl, locale);
+            }
+        };
     }
 }

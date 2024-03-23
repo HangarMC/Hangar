@@ -1,23 +1,7 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import type { HangarProject, PinnedVersion } from "hangar-internal";
-import { computed } from "vue";
-import type { PlatformVersionDownload } from "hangar-api";
-import Button from "~/components/design/Button.vue";
-import type { Platform } from "~/types/enums";
-import DropdownButton from "~/components/design/DropdownButton.vue";
-import { useBackendData } from "~/store/backendData";
-import DropdownItem from "~/components/design/DropdownItem.vue";
-import PlatformLogo from "~/components/logos/platforms/PlatformLogo.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { formatSize } from "~/composables/useFile";
+import { type HangarProject, type HangarVersion, type PinnedVersion, Platform } from "~/types/backend";
 
 const i18n = useI18n();
-
-interface DownloadableVersion {
-  name: string;
-  downloads: Record<Platform, PlatformVersionDownload>;
-}
 
 const props = withDefaults(
   defineProps<{
@@ -27,7 +11,7 @@ const props = withDefaults(
     showSinglePlatform?: boolean;
     // Define either version and platform or pinnedVersion, or neither to use main channel versions
     platform?: Platform;
-    version?: DownloadableVersion;
+    version?: HangarVersion;
     pinnedVersion?: PinnedVersion;
     showFileSize?: boolean;
   }>(),
@@ -42,12 +26,12 @@ const props = withDefaults(
   }
 );
 
-function downloadLink(platform: Platform | undefined, version: DownloadableVersion | undefined) {
+function downloadLink(platform: string | undefined, version: HangarVersion | PinnedVersion | undefined) {
   if (!version || !platform) return;
   return version.downloads[platform]?.externalUrl ? version.downloads[platform].externalUrl : version.downloads[platform].downloadUrl;
 }
 
-function isExternal(platform: Platform | undefined, version: DownloadableVersion | undefined): boolean {
+function isExternal(platform: string | undefined, version: HangarVersion | PinnedVersion | undefined): boolean {
   if (!version || !platform) return false;
   return !!version.downloads[platform]?.externalUrl;
 }
@@ -66,7 +50,7 @@ const singlePlatform = computed<Platform | undefined>(() => {
   }
   return props.platform;
 });
-const singleVersion = computed<DownloadableVersion | undefined>(() => {
+const singleVersion = computed<HangarVersion | undefined>(() => {
   if (!props.version && props.project?.mainChannelVersions && singlePlatform.value) {
     return props.project.mainChannelVersions[singlePlatform.value];
   }
@@ -75,7 +59,7 @@ const singleVersion = computed<DownloadableVersion | undefined>(() => {
 
 const platformDownloadLink = computed(() => downloadLink(singlePlatform.value, singleVersion.value));
 
-function trackDownload(platform: Platform, version: DownloadableVersion & { id?: number; versionId: number }) {
+function trackDownload(platform: string, version: { id?: number; versionId?: number }) {
   // hangar version has id, pinned version has versionId...
   const id = version.id || version.versionId;
   useInternalApi(`versions/version/${id}/${platform}/track`);
@@ -147,8 +131,8 @@ function trackDownload(platform: Platform, version: DownloadableVersion & { id?:
           </div>
           <div v-if="showSinglePlatform" class="inline-flex justify-center items-center font-normal text-0.75rem">
             <PlatformLogo :platform="singlePlatform" :size="15" class="mr-1 flex-shrink-0" />
-            <span v-if="singleVersion.platformDependencies && showVersions">
-              {{ singleVersion.platformDependenciesFormatted[singlePlatform] }}
+            <span v-if="singleVersion?.platformDependencies && showVersions">
+              {{ singleVersion?.platformDependenciesFormatted[singlePlatform] }}
             </span>
           </div>
         </div>

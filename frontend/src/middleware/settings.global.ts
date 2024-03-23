@@ -1,12 +1,8 @@
-import type { RouteLocationNormalized } from "vue-router";
-import { defineNuxtRouteMiddleware, useRequestEvent } from "#imports";
-import { useSettingsStore } from "~/store/useSettingsStore";
-
-export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {
   if (!process.server || to.fullPath.includes("/@vite")) return;
   const event = useRequestEvent();
-  const request = event.node.res;
-  const response = event.node.res;
+  const request = event?.node?.res;
+  const response = event?.node?.res;
 
-  await useSettingsStore().loadSettingsServer(request, response);
+  useSettingsStore().loadSettingsServer(request, response);
 });

@@ -1,33 +1,11 @@
 <script lang="ts" setup>
-import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import type { HangarProject, HangarReview, HangarReviewMessage, HangarVersion, IPlatform } from "hangar-internal";
-import { useI18n } from "vue-i18n";
-import { computed, reactive, ref } from "vue";
-import { useVuelidate } from "@vuelidate/core";
-import { useSeo } from "~/composables/useSeo";
-import type { Platform } from "~/types/enums";
-import { ReviewAction, ReviewState } from "~/types/enums";
-import Button from "~/components/design/Button.vue";
-import InputCheckbox from "~/components/ui/InputCheckbox.vue";
-import InputTextarea from "~/components/ui/InputTextarea.vue";
-import Alert from "~/components/design/Alert.vue";
-import { useInternalApi } from "~/composables/useApi";
-import { useAuthStore } from "~/store/auth";
-import { useBackendData } from "~/store/backendData";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import Tag from "~/components/Tag.vue";
-import Accordeon from "~/components/design/Accordeon.vue";
-import TextAreaModal from "~/components/modals/TextAreaModal.vue";
-import DownloadButton from "~/components/projects/DownloadButton.vue";
-import { definePageMeta } from "#imports";
-import PrettyTime from "~/components/design/PrettyTime.vue";
+import { type HangarProject, type HangarReview, type HangarReviewMessage, type HangarVersion, Platform, ReviewAction, ReviewState } from "~/types/backend";
 
 definePageMeta({
-  globalPermsRequired: ["REVIEWER"],
+  globalPermsRequired: ["Reviewer"],
 });
 
-const route = useRoute();
+const route = useRoute("user-project-versions-version-reviews");
 const authStore = useAuthStore();
 const i18n = useI18n();
 const t = i18n.t;
@@ -74,14 +52,12 @@ const filteredReviews = computed<HangarReview[]>(() => {
   return reviews.value;
 });
 
-const platformEnum = computed<Platform>(() => ((route.params.platform as string) || "").toUpperCase() as Platform);
-
 const projectVersion = computed<HangarVersion>(() => {
   return props.version;
 });
 
 const isReviewStateChecked = computed<boolean>(() => {
-  return projectVersion.value.reviewState === ReviewState.PARTIALLY_REVIEWED || projectVersion.value.reviewState === ReviewState.REVIEWED;
+  return projectVersion.value.reviewState === ReviewState.PartiallyReviewed || projectVersion.value.reviewState === ReviewState.Reviewed;
 });
 
 if (projectVersion.value) {
@@ -111,6 +87,8 @@ function getReviewStateString(review: HangarReview): string {
     case ReviewAction.PARTIALLY_APPROVE:
       return "partiallyApproved";
   }
+
+  return "error";
 }
 
 function getReviewStateColor(review: HangarReview): string {
@@ -132,6 +110,8 @@ function getReviewStateColor(review: HangarReview): string {
     case ReviewAction.PARTIALLY_APPROVE:
       return "#4CAF50";
   }
+
+  return "#D50000";
 }
 
 function getReviewMessageColor(msg: HangarReviewMessage): string {

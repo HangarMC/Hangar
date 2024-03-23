@@ -1,30 +1,10 @@
 <script lang="ts" setup>
-import type { Organization } from "hangar-internal";
-import type { User } from "hangar-api";
-import { useI18n } from "vue-i18n";
-import { computed } from "vue";
-import UserAvatar from "~/components/UserAvatar.vue";
-import Card from "~/components/design/Card.vue";
-import TaglineModal from "~/components/modals/TaglineModal.vue";
-import { NamedPermission } from "~/types/enums";
-import { hasPerms } from "~/composables/usePerm";
-import { useAuthStore } from "~/store/auth";
-import Tag from "~/components/Tag.vue";
-import AvatarChangeModal from "~/components/modals/AvatarChangeModal.vue";
-import Button from "~/components/design/Button.vue";
-import Popper from "~/components/design/Popper.vue";
-import { getRole } from "~/store/backendData";
-import PrettyTime from "~/components/design/PrettyTime.vue";
-import IconMdiGitHub from "~icons/mdi/github";
-import IconMdiDiscord from "~icons/mdi/discord";
-import IconMdiTwitter from "~icons/mdi/twitter";
-import IconMdiYouTube from "~icons/mdi/youtube";
-import IconMdiWeb from "~icons/mdi/web";
-import Tooltip from "~/components/design/Tooltip.vue";
+import { NamedPermission, type User } from "~/types/backend";
+import type { HangarOrganization } from "~/types/backend";
 
 const props = defineProps<{
   viewingUser: User;
-  organization: Organization;
+  organization: HangarOrganization;
 }>();
 
 const i18n = useI18n();
@@ -35,7 +15,7 @@ const isCurrentUser = computed<boolean>(() => {
 });
 
 const canEditCurrentUser = computed<boolean>(() => {
-  return hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS) || isCurrentUser.value || hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS);
+  return hasPerms(NamedPermission.EditAllUserSettings) || isCurrentUser.value || hasPerms(NamedPermission.EditSubjectSettings);
 });
 </script>
 
@@ -45,7 +25,7 @@ const canEditCurrentUser = computed<boolean>(() => {
       <div class="relative mr-3">
         <UserAvatar :username="viewingUser.name" :avatar-url="viewingUser.avatarUrl" />
         <AvatarChangeModal
-          v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)"
+          v-if="hasPerms(NamedPermission.EditSubjectSettings)"
           :avatar="viewingUser.avatarUrl"
           :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/avatar`"
         >
@@ -65,7 +45,7 @@ const canEditCurrentUser = computed<boolean>(() => {
             rel="external nofollow"
             title="GitHub Link"
           >
-            <IconMdiGitHub class="mr-1 hover:text-slate-400" />
+            <IconMdiGithub class="mr-1 hover:text-slate-400" />
           </a>
           <a
             v-if="viewingUser.socials?.twitter"
@@ -83,7 +63,7 @@ const canEditCurrentUser = computed<boolean>(() => {
             rel="external nofollow"
             title="YouTube Link"
           >
-            <IconMdiYouTube class="mr-1 hover:text-slate-400" />
+            <IconMdiYoutube class="mr-1 hover:text-slate-400" />
           </a>
           <a v-if="viewingUser.socials?.website" :href="`https://${viewingUser.socials.website}`" class="ml-1" rel="external nofollow" title="Website Link">
             <IconMdiWeb class="mr-1 hover:text-slate-400" />

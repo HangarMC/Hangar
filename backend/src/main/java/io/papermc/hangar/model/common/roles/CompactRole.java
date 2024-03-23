@@ -2,7 +2,7 @@ package io.papermc.hangar.model.common.roles;
 
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public record CompactRole(String title, Color color, @Nullable Integer rank, RoleCategory category) {
 

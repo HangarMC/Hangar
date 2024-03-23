@@ -1,4 +1,3 @@
-// import { RouterOptions } from "@nuxt/schema";
 import type { RouterHistory, RouterOptions } from "vue-router";
 
 type RouterConfig = Partial<Omit<RouterOptions, "history" | "routes">> & {

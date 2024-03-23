@@ -7,7 +7,7 @@ import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)

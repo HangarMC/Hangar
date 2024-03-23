@@ -1,12 +1,7 @@
 import type { AxiosRequestConfig, AxiosResponse } from "axios";
 import axios from "axios";
-import type { NuxtApp } from "nuxt/app";
 import NProgress from "nprogress";
-import { defineNuxtPlugin, useAuth, useRequestEvent } from "#imports";
-import { useAuthStore } from "~/store/auth";
-import { authLog, axiosLog } from "~/composables/useLog";
-import { useConfig } from "~/composables/useConfig";
-import { transformAxiosError } from "~/composables/useErrorHandling";
+import type { NuxtApp } from "nuxt/app";
 
 let progressBarTimeout: any;
 
@@ -20,7 +15,7 @@ const stopProgressBar = () => {
   NProgress.done();
 };
 
-export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
+export default defineNuxtPlugin((nuxtApp) => {
   const config = useConfig();
   const options: AxiosRequestConfig = {
     baseURL: import.meta.env.SSR ? config.proxyHost : config.publicHost,
@@ -35,7 +30,7 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
       // forward auth token
       addAuthHeader(config, authStore.token);
       // forward other headers for ssr
-      forwardRequestHeaders(config, nuxtApp);
+      if (process.server) forwardRequestHeaders(config, nuxtApp as NuxtApp);
       // axiosLog("calling with headers", config.headers);
       // Progress bar
       if (process.client) startProgressBar();
@@ -49,7 +44,7 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
   axiosInstance.interceptors.response.use(
     (res) => {
       // forward cookies and stuff to browser
-      forwardResponseHeaders(res, nuxtApp);
+      forwardResponseHeaders(res, nuxtApp as NuxtApp);
       // Progress bar
       if (process.client) stopProgressBar();
       return res;
@@ -101,10 +96,10 @@ function addAuthHeader(config: AxiosRequestConfig, token: string | undefined | n
 
 function forwardRequestHeaders(config: AxiosRequestConfig, nuxtApp: NuxtApp) {
   if (!process.server) return;
-  const req = useRequestEvent(nuxtApp).node.req;
+  const req = useRequestEvent(nuxtApp)?.node?.req;
 
   const forward = (header: string) => {
-    if (req.headers[header] && config.headers) {
+    if (req?.headers?.[header] && config.headers) {
       config.headers[header] = req.headers[header];
     }
   };
@@ -123,11 +118,11 @@ function forwardRequestHeaders(config: AxiosRequestConfig, nuxtApp: NuxtApp) {
 
 function forwardResponseHeaders(axiosResponse: AxiosResponse, nuxtApp: NuxtApp) {
   if (!process.server) return;
-  const res = useRequestEvent(nuxtApp).node.res;
+  const res = useRequestEvent(nuxtApp)?.node?.res;
 
   const forward = (header: string) => {
     if (axiosResponse.headers[header]) {
-      res.setHeader(header, axiosResponse.headers[header]);
+      res?.setHeader(header, axiosResponse.headers[header]);
     }
   };
 

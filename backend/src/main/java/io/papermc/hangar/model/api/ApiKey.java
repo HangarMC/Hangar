@@ -5,15 +5,16 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import java.time.OffsetDateTime;
 import java.util.List;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class ApiKey extends Model {
 
     private final String name;
     private final String tokenIdentifier;
     private final List<NamedPermission> permissions;
-    private final OffsetDateTime lastUsed;
+    private final @Nullable OffsetDateTime lastUsed;
 
-    public ApiKey(final OffsetDateTime createdAt, final String name, final String tokenIdentifier, final Permission permissions, final OffsetDateTime lastUsed) {
+    public ApiKey(final OffsetDateTime createdAt, final String name, final String tokenIdentifier, final Permission permissions, final @Nullable OffsetDateTime lastUsed) {
         super(createdAt);
         this.name = name;
         this.tokenIdentifier = tokenIdentifier;
@@ -33,7 +34,7 @@ public class ApiKey extends Model {
         return this.permissions;
     }
 
-    public OffsetDateTime getLastUsed() {
+    public @Nullable OffsetDateTime getLastUsed() {
         return this.lastUsed;
     }
 }

@@ -1,10 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useHead } from "@unhead/vue";
-import { useRoute } from "vue-router";
-import PageTitle from "~/components/design/PageTitle.vue";
-import { useSeo } from "~/composables/useSeo";
-
 const route = useRoute();
 
 const markdown = ref("# Your input  \nEnter your *markdown* here!");

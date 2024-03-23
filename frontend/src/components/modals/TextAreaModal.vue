@@ -1,10 +1,4 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { ref } from "vue";
-import Button from "~/components/design/Button.vue";
-import Modal from "~/components/modals/Modal.vue";
-import InputTextarea from "~/components/ui/InputTextarea.vue";
-
 const props = defineProps<{
   title: string;
   label: string;
