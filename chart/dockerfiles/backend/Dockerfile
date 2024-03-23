@@ -10,6 +10,6 @@ ENV TERM xterm-256color
 
 EXPOSE 8080
 # "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005" is for debug only
-ENTRYPOINT ["java", "--enable-preview", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-XX:+CrashOnOutOfMemoryError", "--enable-preview", "-jar", "app.jar"]
 
 ADD --chown=java:java backend/target/hangar-*.jar /hangar/app.jar
