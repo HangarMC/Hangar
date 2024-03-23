@@ -17,7 +17,7 @@ settingsLog("render for user", authStore.user?.name, "with darkmode", settingsSt
 if (process.client) {
   document.documentElement.classList.remove("light", "dark");
   document.documentElement.classList.add(settingsStore.darkMode ? "dark" : "light");
-
+  
   window.hangarLoaded = true;
 }
 

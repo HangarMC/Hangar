@@ -47,7 +47,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -123,12 +125,12 @@ public class ProjectService extends HangarComponent {
 
     public HangarProject getHangarProject(final String slug) {
         //TODO All of this is dumb and needs to be redone into as little queries as possible
-        final Project project = this.hangarProjectsDAO.getProject(slug, this.getHangarUserId());
+        // Not with CompletableFuture
+        final Long hangarUserId = this.getHangarUserId();
+        final Project project = this.hangarProjectsDAO.getProject(slug, hangarUserId);
         final long projectId = project.getId();
         final String ownerName = project.getNamespace().getOwner();
-        final ProjectOwner projectOwner = this.getProjectOwner(ownerName);
-        final List<JoinableMember<ProjectRoleTable>> members = this.hangarProjectsDAO.getProjectMembers(projectId, this.getHangarUserId(), this.permissionService.getProjectPermissions(this.getHangarUserId(), projectId).has(Permission.EditProjectSettings));
-        members.parallelStream().forEach((member) -> member.setAvatarUrl(this.avatarService.getUserAvatarUrl(member.getUser())));
+
         String lastVisibilityChangeComment = "";
         String lastVisibilityChangeUserName = "";
         if (project.getVisibility() == Visibility.NEEDSCHANGES || project.getVisibility() == Visibility.SOFTDELETE) {
@@ -138,23 +140,48 @@ public class ProjectService extends HangarComponent {
                 lastVisibilityChangeUserName = projectVisibilityChangeTable.getKey();
             }
         }
-        final HangarProject.HangarProjectInfo info = this.hangarProjectsDAO.getHangarProjectInfo(projectId);
-        final Map<Long, HangarProjectPage> pages = this.projectPageService.getProjectPages(projectId);
-        final List<HangarProject.PinnedVersion> pinnedVersions = this.pinnedVersionService.getPinnedVersions(ownerName, project.getNamespace().getSlug(), projectId);
+
+        final CompletableFuture<List<JoinableMember<ProjectRoleTable>>> membersFuture = this.supply(() -> {
+            final List<JoinableMember<ProjectRoleTable>> members = this.hangarProjectsDAO.getProjectMembers(projectId, hangarUserId, this.permissionService.getProjectPermissions(hangarUserId, projectId).has(Permission.EditProjectSettings));
+            members.parallelStream().forEach((member) -> member.setAvatarUrl(this.avatarService.getUserAvatarUrl(member.getUser())));
+            return members;
+        });
 
         final Map<Platform, HangarVersion> mainChannelVersions = new EnumMap<>(Platform.class);
-        Arrays.stream(Platform.getValues()).parallel().forEach(platform -> {
+        final CompletableFuture<Void> mainChannelFuture = CompletableFuture.runAsync(() -> Arrays.stream(Platform.getValues()).parallel().forEach(platform -> {
             final HangarVersion version = this.getLastVersion(ownerName, slug, platform, this.config.channels.nameDefault());
             if (version != null) {
                 this.versionDependencyService.addDownloadsAndDependencies(ownerName, slug, version.getName(), version.getId()).applyTo(version);
                 mainChannelVersions.put(platform, version);
             }
-        });
+        }));
 
-        final ExtendedProjectPage projectPage = this.projectPageService.getProjectHomePage(projectId);
-        final HangarProject hangarProject = new HangarProject(project, projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), pinnedVersions, mainChannelVersions, projectPage);
-        hangarProject.setAvatarUrl(this.avatarService.getProjectAvatarUrl(hangarProject.getProjectId(), hangarProject.getNamespace().getOwner()));
+        final CompletableFuture<HangarProject.HangarProjectInfo> info = this.supply(() -> this.hangarProjectsDAO.getHangarProjectInfo(projectId));
+        final CompletableFuture<Map<Long, HangarProjectPage>> pages = this.supply(() -> this.projectPageService.getProjectPages(projectId));
+        final CompletableFuture<List<HangarProject.PinnedVersion>> pinnedVersions = this.supply(() -> this.pinnedVersionService.getPinnedVersions(ownerName, project.getNamespace().getSlug(), projectId));
+        final CompletableFuture<ExtendedProjectPage> projectPage = this.supply(() -> this.projectPageService.getProjectHomePage(projectId));
+        final CompletableFuture<String> avatarUrl = this.supply(() -> this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner()));
+        final CompletableFuture<ProjectOwner> projectOwner = this.supply(() -> this.getProjectOwner(ownerName));
+
+        mainChannelFuture.join();
+        final HangarProject hangarProject = new HangarProject(
+            project,
+            projectOwner.join(),
+            membersFuture.join(),
+            lastVisibilityChangeComment,
+            lastVisibilityChangeUserName,
+            info.join(),
+            pages.join().values(),
+            pinnedVersions.join(),
+            mainChannelVersions,
+            projectPage.join()
+        );
+        hangarProject.setAvatarUrl(avatarUrl.join());
         return hangarProject;
+    }
+
+    private <T> CompletableFuture<T> supply(final Supplier<T> supplier) {
+        return CompletableFuture.supplyAsync(supplier);
     }
 
     public @Nullable HangarVersion getLastVersion(final String author, final String slug, final Platform platform, final @Nullable String channel) {

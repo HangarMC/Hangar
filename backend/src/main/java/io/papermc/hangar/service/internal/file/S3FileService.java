@@ -17,6 +17,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
@@ -76,10 +77,21 @@ public class S3FileService implements FileService {
     }
 
     @Override
+    public void write(final MultipartFile file, final byte[] fileBytes, final String path, @Nullable final String contentType) throws IOException {
+        final S3Resource resource = (S3Resource) this.getResource(path);
+        resource.setObjectMetadata(ObjectMetadata.builder().contentType(contentType).build());
+        try (final OutputStream outputStream = resource.getOutputStream()) {
+            outputStream.write(fileBytes);
+        }
+    }
+
+    @Override
     public void moveFile(final String oldPath, final String newPath) throws IOException {
         if (!oldPath.startsWith(this.getRoot()) && newPath.startsWith(this.getRoot())) {
             // upload from file to s3
-            this.write(Files.newInputStream(Path.of(oldPath)), newPath, null);
+            try (final InputStream in = Files.newInputStream(Path.of(oldPath))) {
+                this.write(in, newPath, null);
+            }
         } else if (oldPath.startsWith(this.getRoot()) && newPath.startsWith(this.getRoot())) {
             // "rename" in s3
             this.s3Client.copyObject((builder -> builder
@@ -96,7 +108,9 @@ public class S3FileService implements FileService {
     public void move(final String oldPath, final String newPath) throws IOException {
         if (!oldPath.startsWith(this.getRoot()) && newPath.startsWith(this.getRoot())) {
             // upload from file to s3
-            this.write(Files.newInputStream(Path.of(oldPath)), newPath, null);
+            try (final InputStream in = Files.newInputStream(Path.of(oldPath))) {
+                this.write(in, newPath, null);
+            }
         } else if (oldPath.startsWith(this.getRoot()) && newPath.startsWith(this.getRoot())) {
             // There is no renaming and there are no directories, so we have to copy and delete individual objects
             final String sourceDirectory = oldPath.replace(this.getRoot(), "");

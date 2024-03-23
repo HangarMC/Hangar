@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
 
@@ -19,6 +20,8 @@ public interface FileService {
     byte[] bytes(String path) throws IOException;
 
     void write(InputStream inputStream, String path, @Nullable String contentType) throws IOException;
+
+    void write(MultipartFile file, byte[] fileBytes, String path, @Nullable String contentType) throws IOException;
 
     default void moveFile(String oldPath, String newPath) throws IOException {
         this.move(oldPath, newPath);

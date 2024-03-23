@@ -8,7 +8,7 @@ export function useSeo(
   route: RouteLocationNormalized,
   image: string | null
 ): UseHeadInput {
-  description = description || "Plugin repository for the Paper, Waterfall and Folia platforms.";
+  description = description || "Plugin repository for Paper, Velocity, Waterfall and Folia.";
   const config = useConfig();
   const canonical = config.publicHost + (route.fullPath.endsWith("/") ? route.fullPath.substring(0, route.fullPath.length - 1) : route.fullPath);
   image = image || "https://docs.papermc.io/img/paper.png";

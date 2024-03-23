@@ -21,6 +21,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
@@ -50,8 +51,13 @@ public class StatService extends HangarComponent {
         final Long userId = this.getHangarUserId();
         final InetAddress address = RequestUtil.getRemoteInetAddress(this.request);
         final UUID cookie = this.getStatsCookie(this.projectViewsDAO.getIndividualView(userId, address).map(ProjectViewIndividualTable::getCookie));
-        this.projectViewsDAO.insert(new ProjectViewIndividualTable(address, cookie, userId, projectIdentified.getProjectId()));
+        this.insertView(new ProjectViewIndividualTable(address, cookie, userId, projectIdentified.getProjectId()));
         this.setCookie(cookie);
+    }
+
+    @Async
+    void insertView(final ProjectViewIndividualTable projectViewIndividualTable) {
+        this.projectViewsDAO.insert(projectViewIndividualTable);
     }
 
     @Transactional

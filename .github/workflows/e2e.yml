@@ -6,7 +6,6 @@ on:
     inputs:
       debug:
         type: boolean
-        description: 'Enable debug mode'
         required: false
         default: false
   # run on pushes to staging

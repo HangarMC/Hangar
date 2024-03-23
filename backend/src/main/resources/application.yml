@@ -166,6 +166,7 @@ hangar:
     rp-name: "Hangar"
     rp-id: "localhost"
     safe-download-hosts:
+      - "dev.bukkit.org"
       - "github.com"
       - "githubusercontent.com"
       - "gitlab.com"

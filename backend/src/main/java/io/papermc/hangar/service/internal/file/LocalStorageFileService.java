@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @ConditionalOnProperty(value = "hangar.storage.type", havingValue = "local", matchIfMissing = true)
@@ -59,6 +60,13 @@ public class LocalStorageFileService implements FileService {
             Files.createDirectories(p.getParent());
         }
         Files.copy(inputStream, p, StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    @Override
+    public void write(final MultipartFile file, final byte[] fileBytes, final String path, @Nullable final String contentType) throws IOException {
+        try (final InputStream in = file.getInputStream()) {
+            this.write(in, path, contentType);
+        }
     }
 
     @Override
