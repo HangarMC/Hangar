@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { AxiosError } from "axios";
-import { type HangarProject, type HangarVersion, Platform, ReviewState, PinnedStatus, type User, NamedPermission, Visibility } from "~/types/backend";
+import { ReviewState, PinnedStatus, NamedPermission, Visibility } from "~/types/backend";
+import type { Platform, type HangarProject, type HangarVersion, type User } from "~/types/backend";
 
 const route = useRoute("user-project-versions-version");
 const i18n = useI18n();

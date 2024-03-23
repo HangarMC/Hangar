@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Platform, type PlatformVersion } from "~/types/backend";
+import type { Platform, type PlatformVersion } from "~/types/backend";
 
 definePageMeta({
   globalPermsRequired: ["ManualValueChanges"],

@@ -41,8 +41,8 @@ async function transfer() {
       <p class="mb-2">{{ i18n.t("organization.settings.transferModal.description", [organization]) }}</p>
       <div class="flex items-center">
         <InputAutocomplete
-          v-model="search"
           id="org-transfer"
+          v-model="search"
           :values="result"
           :label="i18n.t('organization.settings.transferModal.transferTo')"
           @search="doSearch"

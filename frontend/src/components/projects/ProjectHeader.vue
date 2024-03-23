@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { AxiosError } from "axios";
 import type { Ref } from "vue";
-import { type HangarProject, NamedPermission, Platform, ReviewState, Visibility } from "~/types/backend";
+import { NamedPermission, ReviewState, Visibility } from "~/types/backend";
+import type { Platform, type HangarProject } from "~/types/backend";
 
 const i18n = useI18n();
 const router = useRouter();

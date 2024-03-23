@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware((to, from) => {
   if (!process.server || to.fullPath.includes("/@vite")) return;
   const event = useRequestEvent();
   const request = event?.node?.res;

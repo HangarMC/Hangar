@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type HangarProject, type HangarVersion, Platform } from "~/types/backend";
+import type { Platform , type HangarProject, type HangarVersion } from "~/types/backend";
 
 const route = useRoute("user-project-versions-version");
 

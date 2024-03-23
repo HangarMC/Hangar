@@ -1,5 +1,7 @@
-import {
+import type {
   NamedPermission,
+  Category,
+  Platform,
   type Prompt,
   type Announcement,
   type RoleData,
@@ -11,8 +13,6 @@ import {
   type VisibilityData,
   type ColorData,
   type FlagReasonData,
-  Category,
-  Platform,
   type PromptData,
 } from "~/types/backend";
 

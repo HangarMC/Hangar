@@ -1,5 +1,3 @@
-import { defineNuxtModule } from "@nuxt/kit";
-
 export default defineNuxtModule({
   meta: {
     name: "componentsFix",
@@ -7,7 +5,7 @@ export default defineNuxtModule({
   },
   setup(_, nuxt) {
     nuxt.hook("components:extend", (components) => {
-      components.filter((component) => component.pascalName === "Link").forEach((component) => (component.priority = 1337));
+      for (const component of components.filter((component) => component.pascalName === "Link")) component.priority = 1337;
     });
   },
 });

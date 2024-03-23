@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { NamedPermission, type User } from "~/types/backend";
-import type { HangarOrganization } from "~/types/backend";
+import { NamedPermission} from "~/types/backend";
+import type { HangarOrganization , type User  } from "~/types/backend";
 
 const props = defineProps<{
   viewingUser: User;

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Tab } from "~/types/components/design/Tabs";
-import { type HangarVersion, type PaginatedResultProject, Platform, type PluginDependency, type ProjectNamespace } from "~/types/backend";
+import type { Platform, type HangarVersion, type PaginatedResultProject, type PluginDependency, type ProjectNamespace } from "~/types/backend";
 
 const route = useRoute("user-project");
 const i18n = useI18n();

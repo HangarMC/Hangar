@@ -3,7 +3,7 @@ import { cloneDeep } from "lodash-es";
 import { useVuelidate } from "@vuelidate/core";
 import { Cropper, type CropperResult } from "vue-advanced-cropper";
 import type { Tab } from "~/types/components/design/Tabs";
-import type InputText from "~/components/ui/InputText.vue";
+import InputText from "~/components/ui/InputText.vue";
 import { type HangarProject, type HangarUser, NamedPermission, type PaginatedResultUser, Tag, Visibility } from "~/types/backend";
 
 import "vue-advanced-cropper/dist/style.css";

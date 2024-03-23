@@ -19,11 +19,10 @@ import IconMdiFolderPlusOutline from "~icons/mdi/folder-plus-outline";
 import IconMdiFolderWrenchOutline from "~icons/mdi/folder-wrench-outline";
 import IconMdiFolderInformationOutline from "~icons/mdi/folder-information-outline";
 
-import type { RouteNamedMap } from "vue-router/auto/routes";
 import { type HangarNotification, type HangarUser, NamedPermission } from "~/types/backend";
 
 // marker so that you can inspect backend data in dev tools
-// @ts-ignore
+// @ts-expect-error dum
 const backendData = useBackendData;
 
 const settings = useSettingsStore();
@@ -39,7 +38,7 @@ if (authStore.user) {
   updateNotifications();
 }
 
-type NavBarLinks = { link: keyof RouteNamedMap; label: string; icon?: any }[];
+type NavBarLinks = { link: string; label: string; icon?: any }[];
 
 const navBarLinks: NavBarLinks = [
   { link: "index", label: "Home" },
