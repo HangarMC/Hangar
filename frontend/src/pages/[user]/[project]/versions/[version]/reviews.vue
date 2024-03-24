@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ReviewAction, ReviewState } from "~/types/backend";
-import type { Platform, type HangarProject, type HangarReview, type HangarReviewMessage, type HangarVersion } from "~/types/backend";
+import type { Platform, HangarProject, HangarReview, HangarReviewMessage, HangarVersion } from "~/types/backend";
 
 definePageMeta({
   globalPermsRequired: ["Reviewer"],

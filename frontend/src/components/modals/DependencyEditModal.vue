@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { cloneDeep } from "lodash-es";
-import { NamedPermission} from "~/types/backend";
-import type { PluginDependency , Platform, type HangarProject, type HangarVersion, type PlatformData } from "~/types/backend";
+import { NamedPermission } from "~/types/backend";
+import type { PluginDependency, Platform, HangarProject, HangarVersion, PlatformData } from "~/types/backend";
 
 const props = defineProps<{
   project: HangarProject;

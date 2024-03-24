@@ -9,11 +9,10 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "previewBuild": "nuxt build && nuxt preview",
-    "prep": "nuxt prepare",
     "lint:eslint": "eslint --ext \".js,.vue,.ts,.html\" --ignore-path .gitignore --fix .",
     "lint:prettier": "prettier -w .",
     "lint:typecheck": "nuxt typecheck",
-    "prepare": "cd .. && husky install frontend/.husky"
+    "prepare": "nuxt prepare && cd .. && husky install frontend/.husky"
   },
   "lint-staged": {
     "*.{ts,js,vue,html}": [

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { NamedPermission, Visibility } from "~/types/backend";
-import type { Platform, type HangarProject, type Version } from "~/types/backend";
+import type { Platform, HangarProject, Version } from "~/types/backend";
 
 const i18n = useI18n();
 const route = useRoute("user-project-versions");

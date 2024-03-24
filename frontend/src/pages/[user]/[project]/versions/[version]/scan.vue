@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Platform , type HangarProject, type HangarVersion, type JarScanResult } from "~/types/backend";
+import type { Platform, HangarProject, HangarVersion, JarScanResult } from "~/types/backend";
 
 definePageMeta({
   globalPermsRequired: ["Reviewer"],

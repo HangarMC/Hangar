@@ -39,6 +39,7 @@ module.exports = {
     // temp disable
     // TODO reenable
     "vue/no-setup-props-destructure": "off",
+    "import/namespace": "off", // its slow as fuck
 
     "eol-last": ["error", "always"],
 

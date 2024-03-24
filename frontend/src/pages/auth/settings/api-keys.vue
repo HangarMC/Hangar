@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { NamedPermission , type ApiKey } from "~/types/backend";
+import type { NamedPermission, ApiKey } from "~/types/backend";
 
 const i18n = useI18n();
 const notification = useNotificationStore();

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { Tag } from "~/types/backend";
-import type { Platform, type PaginatedResultProject, type PlatformVersion } from "~/types/backend";
+import type { Platform, PaginatedResultProject, PlatformVersion } from "~/types/backend";
 
 const i18n = useI18n();
 const route = useRoute("index");
