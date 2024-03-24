@@ -107,7 +107,7 @@ module.exports = {
       },
     },
     {
-      files: "src/module/backendData.ts",
+      files: ["src/module/backendData.ts", "src/module/componentsFix.ts"],
       rules: {
         "import/namespace": "off",
       },
