@@ -10,7 +10,7 @@
     "def": "npx codeceptjs def"
   },
   "dependencies": {
-    "@types/chai": "4.3.11",
+    "@types/chai": "4.3.14",
     "browserstack-local": "^1.5.2",
     "chai": "4.4.1",
     "codeceptjs": "^3.2.3",
