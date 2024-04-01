@@ -34,7 +34,7 @@
         <sentry.version>7.6.0</sentry.version>
         <springdoc.version>2.4.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
-        <org-json.version>20240205</org-json.version>
+        <org-json.version>20240303</org-json.version>
         <bucket4j.version>7.6.0</bucket4j.version>
         <datafaker.version>2.1.0</datafaker.version>
         <apache-commons-lang.version>3.14.0</apache-commons-lang.version>

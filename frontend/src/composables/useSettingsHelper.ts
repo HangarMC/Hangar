@@ -1,6 +1,6 @@
 import localeParser from "accept-language-parser";
 import { type ComputedRef, type Ref, watch } from "vue";
-import type { H3Event } from "h3";
+import { type H3Event, setResponseHeader } from "h3";
 
 export function useSettingsHelper(
   ssr: boolean,

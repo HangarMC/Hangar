@@ -10,14 +10,14 @@
     "def": "npx codeceptjs def"
   },
   "dependencies": {
-    "@types/chai": "4.3.11",
-    "browserstack-local": "^1.5.2",
+    "@types/chai": "4.3.14",
+    "browserstack-local": "^1.5.5",
     "chai": "4.4.1",
-    "codeceptjs": "^3.2.3",
-    "dotenv": "^16.0.0",
+    "codeceptjs": "^3.5.15",
+    "dotenv": "^16.4.5",
     "jwt-decode": "4.0.0",
     "totp-generator": "1.0.0",
     "ts-node": "10.9.2",
-    "webdriverio": "^7.17.4"
+    "webdriverio": "^7.36.0"
   }
 }
