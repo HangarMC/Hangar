@@ -1,5 +1,3 @@
-import path from "node:path";
-import VueI18nVitePlugin from "@intlify/unplugin-vue-i18n/vite";
 import IconsResolver from "unplugin-icons/resolver";
 // import EslintPlugin from "vite-plugin-eslint";
 import Components from "unplugin-vue-components/vite";
@@ -23,10 +21,6 @@ export default defineNuxtConfig({
   imports: {
     dirs: ["store"],
     presets: [
-      {
-        from: "vue-i18n",
-        imports: ["useI18n", "createI18n"],
-      },
       {
         from: "@vuelidate/core",
         imports: ["useVuelidate"],
@@ -52,6 +46,7 @@ export default defineNuxtConfig({
     "@nuxt-alt/proxy",
     "unplugin-icons/nuxt",
     "@vueuse/nuxt",
+    "@nuxtjs/i18n",
     [
       "unplugin-icons/nuxt",
       {
@@ -67,8 +62,32 @@ export default defineNuxtConfig({
     ],
     "./src/module/componentsFix",
   ],
-  build: {
-    transpile: ["vue-i18n"],
+  i18n: {
+    vueI18n: "./src/i18n/i18n.config.ts",
+    strategy: "no_prefix",
+    lazy: true,
+    langDir: "./i18n/locales",
+    defaultLocale: "en",
+    locales: [
+      {
+        code: "en",
+        file: "en.json",
+        name: "English",
+      },
+      {
+        code: "de",
+        file: "de.json",
+        name: "Deutsch",
+      },
+    ],
+    compilation: {
+      jit: false,
+      strictMessage: false,
+    },
+    bundle: {
+      runtimeOnly: true,
+      dropMessageCompiler: true,
+    },
   },
   vite: {
     plugins: [
@@ -83,12 +102,6 @@ export default defineNuxtConfig({
           }),
         ],
         dts: "types/generated/icons.d.ts",
-      }),
-
-      // https://github.com/intlify/bundle-tools/tree/main/packages/unplugin-vue-i18n
-      VueI18nVitePlugin({
-        runtimeOnly: false, // TODO figure out if using the message compiler and including all locales is better? maybe we can still treeshake locales with runtimeOnly?
-        include: [path.resolve(__dirname, "src/locales/*.json")],
       }),
 
       // TODO this seems slow as fuck, wtf

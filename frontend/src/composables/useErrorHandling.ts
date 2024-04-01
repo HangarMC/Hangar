@@ -1,11 +1,10 @@
 import type { AxiosError } from "axios";
 import { isAxiosError } from "axios";
 import type { Composer } from "vue-i18n";
-import { I18n } from "~/i18n";
 import type { HangarApiException, HangarValidationException, MultiHangarApiException } from "~/types/backend";
 
 export function handleRequestError(err: AxiosError | unknown, msg: string | undefined = undefined, alwaysShowErrorPage = false) {
-  const i18n: Composer = I18n.value;
+  const i18n = useNuxtApp().$i18n;
   if (import.meta.env.SSR || alwaysShowErrorPage) {
     _handleRequestError(err, i18n);
   }

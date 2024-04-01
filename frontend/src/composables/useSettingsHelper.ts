@@ -1,6 +1,6 @@
 import localeParser from "accept-language-parser";
 import { type ComputedRef, type Ref, watch } from "vue";
-import { SUPPORTED_LOCALES } from "~/i18n";
+import type { H3Event } from "h3";
 
 export function useSettingsHelper(
   ssr: boolean,
@@ -11,7 +11,7 @@ export function useSettingsHelper(
   saveSettings: () => Promise<void>,
   darkMode: Ref<boolean>
 ) {
-  function loadSettingsServer(request: any, response: any) {
+  function loadSettingsServer(event: H3Event) {
     if (!ssr) return;
     let newLocale;
     let theme;
@@ -20,13 +20,16 @@ export function useSettingsHelper(
       theme = userData.value.theme || "white";
       settingsLog("user is logged in, locale = " + newLocale + ", theme = " + theme);
     } else {
-      if (request?.headers?.["accept-language"]) {
-        const pickedLocale = localeParser.pick(SUPPORTED_LOCALES, request.headers["accept-language"]);
+      const acceptLanguageHeader = useRequestHeader("accept-language");
+      if (acceptLanguageHeader) {
+        const supportedLocales = useNuxtApp().$i18n.availableLocales;
+        console.log("supported locales", supportedLocales);
+        const pickedLocale = localeParser.pick(supportedLocales, acceptLanguageHeader);
         if (!pickedLocale) {
-          settingsLog("user is not logged in and could not pick locale from header, using default...", SUPPORTED_LOCALES, request.headers["accept-language"]);
+          settingsLog("user is not logged in and could not pick locale from header, using default...", supportedLocales, acceptLanguageHeader);
           newLocale = "en";
         } else {
-          settingsLog("user is not logged in, picking from locale header, locale = " + pickedLocale, SUPPORTED_LOCALES, request.headers["accept-language"]);
+          settingsLog("user is not logged in, picking from locale header, locale = " + pickedLocale, supportedLocales, acceptLanguageHeader);
           newLocale = pickedLocale;
         }
       } else {
@@ -39,10 +42,10 @@ export function useSettingsHelper(
         settingsLog("user is not logged in, using theme from cookie", cookie);
         theme = cookie === "dark" ? "dark" : "light";
       } else {
-        response?.setHeader("Accept-CH", "Sec-CH-Prefers-Color-Scheme");
-        response?.setHeader("Vary", "Sec-CH-Prefers-Color-Scheme");
-        response?.setHeader("Critical-CH", "Sec-CH-Prefers-Color-Scheme");
-        const themeHeader = request?.headers?.["sec-ch-prefers-color-scheme"];
+        setResponseHeader(event, "Accept-CH", "Sec-CH-Prefers-Color-Scheme");
+        setResponseHeader(event, "Vary", "Sec-CH-Prefers-Color-Scheme");
+        setResponseHeader(event, "Critical-CH", "Sec-CH-Prefers-Color-Scheme");
+        const themeHeader = useRequestHeader("sec-ch-prefers-color-scheme");
         if (themeHeader) {
           settingsLog("user is not logged in, using theme from header", themeHeader);
           theme = themeHeader === "dark" ? "dark" : "light";

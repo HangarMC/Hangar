@@ -4,7 +4,6 @@ import * as validators from "@vuelidate/validators";
 import { createI18nMessage, helpers, type ValidatorWrapper } from "@vuelidate/validators";
 import { difference, isEmpty, uniq } from "lodash-es";
 import { AxiosError } from "axios";
-import { I18n } from "~/i18n";
 
 export function isErrorObject(errorObject: string | ErrorObject): errorObject is ErrorObject {
   return typeof errorObject === "object" && "$message" in errorObject;
@@ -53,7 +52,7 @@ export const withI18nMessage = <T extends ValidationRule | ValidatorWrapper>(val
       if (overrideMsg) {
         msg = overrideMsg;
       }
-      return I18n.value.t(msg, params);
+      return useNuxtApp().$i18n.t(msg, params);
     },
   })(validator, { withArguments: true });
 };

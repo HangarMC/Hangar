@@ -17,14 +17,14 @@ settingsLog("render for user", authStore.user?.name, "with darkmode", settingsSt
 if (process.client) {
   document.documentElement.classList.remove("light", "dark");
   document.documentElement.classList.add(settingsStore.darkMode ? "dark" : "light");
-  
+
   window.hangarLoaded = true;
 }
 
 useHead({
   htmlAttrs: {
     class: computed(() => (settingsStore.darkMode ? "dark" : "light")),
-    lang: "en", // TODO load from user locale
+    lang: useI18n().locale,
   },
   bodyAttrs: {
     class: "background-body text-[#262626] dark:text-[#E0E6f0]",
