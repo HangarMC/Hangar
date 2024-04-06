@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { Dialog, DialogOverlay } from "@headlessui/vue";
-
 const props = withDefaults(
   defineProps<{
     title: string;
@@ -12,13 +10,16 @@ const props = withDefaults(
 );
 
 const isOpen = ref<boolean>(false);
+const dialog = ref<HTMLDialogElement>();
 
 function open() {
   isOpen.value = true;
+  dialog.value?.showModal();
 }
 
 function close() {
   isOpen.value = false;
+  dialog.value?.close();
 }
 
 const emit = defineEmits<{
@@ -28,8 +29,14 @@ const emit = defineEmits<{
 
 watch(isOpen, (newVal) => {
   if (newVal) {
+    if (!dialog.value?.open) {
+      dialog.value?.showModal();
+    }
     emit("open");
   } else {
+    if (dialog.value?.open) {
+      dialog.value?.close();
+    }
     emit("close");
   }
 });
@@ -42,20 +49,23 @@ defineExpose({
 </script>
 
 <template>
-  <client-only>
-    <Dialog :open="isOpen" class="fixed inset-0 z-10 overflow-y-auto" @close="close">
-      <div class="flex items-center justify-center min-h-screen">
-        <DialogOverlay class="fixed inset-0 bg-black opacity-60" />
-
-        <div class="relative mx-auto background-default rounded max-w-10/12 >md:max-w-250 py-6 px-5" :class="windowClasses">
-          <div class="inline-flex items-center w-full pb-4 pr-1 text-xl">
-            <IconMdiClose class="cursor-pointer mr-1" @click="close" />
-            <h2 class="font-bold">{{ props.title }}</h2>
-          </div>
-          <slot :on="{ click: close }"></slot>
-        </div>
-      </div>
-    </Dialog>
-  </client-only>
+  <dialog
+    ref="dialog"
+    class="background-default rounded max-w-10/12 >md:max-w-250 py-6 px-5 text-[#262626] dark:text-[#E0E6f0]"
+    :class="windowClasses"
+    @close="close"
+  >
+    <div class="inline-flex items-center w-full pb-4 pr-1 text-xl">
+      <IconMdiClose class="cursor-pointer mr-1" @click="close" />
+      <h2 class="font-bold">{{ props.title }}</h2>
+    </div>
+    <slot :on="{ click: close }"></slot>
+  </dialog>
   <slot name="activator" :on="{ click: open }"></slot>
 </template>
+
+<style lang="scss" scoped>
+dialog::backdrop {
+  @apply bg-black opacity-60;
+}
+</style>
