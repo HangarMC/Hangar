@@ -25,7 +25,7 @@ const filters = ref({
 
 const activeSorter = ref<string>((route.query.sort as string) || "-stars");
 const page = ref(route.query.page ? Number(route.query.page) : 0);
-const query = ref<string>((route.query.q as string) || "");
+const query = ref<string>((route.query.query as string) || "");
 const projects = ref<PaginatedResultProject | null>();
 
 const requestParams = computed(() => {
@@ -106,31 +106,27 @@ function updatePlatform(platform: any) {
   });
 }
 
-const meta = useSeo("Home", null, route, null);
 const config = useConfig();
-const script = {
-  type: "application/ld+json",
-  children: JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    url: config.publicHost,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: config.publicHost + "/?q={search_term_string}",
-      "query-input": "required name=search_term_string",
-    },
-  }),
-};
-if (isRef(meta.script)) {
-  meta.script.value.push(script);
-} else {
-  meta.script = (meta.script || []) as [];
-  meta.script.push(script);
-}
-
 const pageChangeScrollAnchor = ref<Element>();
 
-useHead(meta);
+useHead(
+  useSeo("Home", null, route, null, [
+    {
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        url: config.publicHost,
+        potentialAction: {
+          "@type": "SearchAction",
+          target: config.publicHost + "/?q={search_term_string}",
+          "query-input": "required name=search_term_string",
+        },
+      }),
+      key: "website",
+    },
+  ])
+);
 </script>
 
 <template>

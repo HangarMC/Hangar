@@ -6,7 +6,8 @@ export function useSeo(
   title: string | TranslateResult | null | undefined,
   description: string | TranslateResult | null | undefined,
   route: RouteLocationNormalized,
-  image: string | null
+  image: string | null,
+  additionalScripts?: { type: string; children: string; key: string }[]
 ): UseHeadInput {
   description = description || "Plugin repository for Paper, Velocity, Waterfall and Folia.";
   const config = useConfig();
@@ -33,6 +34,22 @@ export function useSeo(
     msapplicationConfig: "/browserconfig.xml",
   });
 
+  const script = [
+    {
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: generateBreadcrumbs(route),
+      }),
+      key: "breadcrumb",
+    },
+  ];
+
+  if (additionalScripts) {
+    script.push(...additionalScripts);
+  }
+
   const seo = {
     title,
     link: [
@@ -45,17 +62,7 @@ export function useSeo(
       { rel: "shortcut icon", href: "/favicon/favicon.ico" },
     ],
     meta: [],
-    script: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: generateBreadcrumbs(route),
-        }),
-        key: "breadcrumb",
-      },
-    ],
+    script,
   } as UseHeadInput;
 
   // todo renenable crowdin integration
