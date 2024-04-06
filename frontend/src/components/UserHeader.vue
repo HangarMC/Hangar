@@ -4,7 +4,7 @@ import type { HangarOrganization, User } from "~/types/backend";
 
 const props = defineProps<{
   viewingUser: User;
-  organization: HangarOrganization;
+  organization?: HangarOrganization;
 }>();
 
 const i18n = useI18n();

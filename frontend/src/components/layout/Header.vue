@@ -142,7 +142,7 @@ function isRecent(date: string): boolean {
       <!-- Left side items -->
       <div class="flex items-center gap-4">
         <Popover v-slot="{ close }" class="relative">
-          <PopoverButton v-slot="{ open }" class="flex" aria-label="Menu">
+          <PopoverButton id="menu-button" v-slot="{ open }" class="flex" aria-label="Menu">
             <icon-mdi-menu class="transition-transform text-[1.2em]" :class="open ? 'transform rotate-90' : ''" />
           </PopoverButton>
 
@@ -248,54 +248,56 @@ function isRecent(date: string): boolean {
               </div>
             </button>
             <template #content="{ close }">
-              <div class="-mt-1 flex flex-col rounded border-t-2 border-primary-500 background-default filter shadow-default overflow-auto max-w-150">
-                <div v-if="notifications.length === 0">
-                  <span class="flex shadow-0 p-2 mt-2 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
-                </div>
-                <div
-                  v-for="notification in notifications"
-                  v-else
-                  :key="notification.id"
-                  :class="'text-sm flex shadow-0 p-3 pt-2 pr-4 inline-flex items-center ' + (!notification.read ? 'bg-blue-100 dark:bg-slate-700' : '')"
-                  @click="close()"
-                >
-                  <span class="text-lg mr-2">
-                    <IconMdiInformationOutline v-if="notification.type === 'info'" class="text-sky-600" />
-                    <IconMdiCheck v-else-if="notification.type === 'success'" class="text-lime-600" />
-                    <IconMdiAlertOutline v-else-if="notification.type === 'warning'" class="text-red-600" />
-                    <IconMdiMessageOutline v-else-if="notification.type === 'neutral'" />
-                  </span>
-
-                  <NuxtLink
-                    v-if="notification.action"
-                    :to="'/' + notification.action"
-                    active-class=""
-                    @click="markNotificationRead(notification)"
-                    @click.middle="markNotificationRead(notification)"
+              <ClientOnly>
+                <div class="-mt-1 flex flex-col rounded border-t-2 border-primary-500 background-default filter shadow-default overflow-auto max-w-150">
+                  <div v-if="notifications.length === 0">
+                    <span class="flex shadow-0 p-2 mt-2 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
+                  </div>
+                  <div
+                    v-for="notification in notifications"
+                    v-else
+                    :key="notification.id"
+                    :class="'text-sm flex shadow-0 p-3 pt-2 pr-4 inline-flex items-center ' + (!notification.read ? 'bg-blue-100 dark:bg-slate-700' : '')"
+                    @click="close()"
                   >
-                    {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
-                    <div class="text-xs mt-1">{{ lastUpdated(new Date(notification.createdAt)) }}</div>
-                  </NuxtLink>
-                  <div v-else>
-                    {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
-                    <div class="text-xs mt-1">{{ lastUpdated(new Date(notification.createdAt)) }}</div>
+                    <span class="text-lg mr-2">
+                      <IconMdiInformationOutline v-if="notification.type === 'info'" class="text-sky-600" />
+                      <IconMdiCheck v-else-if="notification.type === 'success'" class="text-lime-600" />
+                      <IconMdiAlertOutline v-else-if="notification.type === 'warning'" class="text-red-600" />
+                      <IconMdiMessageOutline v-else-if="notification.type === 'neutral'" />
+                    </span>
+
+                    <NuxtLink
+                      v-if="notification.action"
+                      :to="'/' + notification.action"
+                      active-class=""
+                      @click="markNotificationRead(notification)"
+                      @click.middle="markNotificationRead(notification)"
+                    >
+                      {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
+                      <div class="text-xs mt-1">{{ lastUpdated(new Date(notification.createdAt)) }}</div>
+                    </NuxtLink>
+                    <div v-else>
+                      {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
+                      <div class="text-xs mt-1">{{ lastUpdated(new Date(notification.createdAt)) }}</div>
+                    </div>
+                  </div>
+                  <div class="p-2 mb-1 ml-2 space-x-3 text-sm">
+                    <Link to="/notifications" @click="close()">
+                      <span :class="loadedUnreadNotifications >= unreadNotifications ? 'font-normal' : ''">
+                        {{
+                          loadedUnreadNotifications >= unreadNotifications
+                            ? i18n.t("notifications.viewAll")
+                            : i18n.t("notifications.viewMoreUnread", [unreadNotifications - loadedUnreadNotifications])
+                        }}
+                      </span>
+                    </Link>
+                    <span v-if="loadedUnreadNotifications !== 0" class="color-primary hover:(underline cursor-pointer)" @click="markNotificationsRead">
+                      {{ i18n.t("notifications.markAsRead") }}
+                    </span>
                   </div>
                 </div>
-                <div class="p-2 mb-1 ml-2 space-x-3 text-sm">
-                  <Link to="/notifications" @click="close()">
-                    <span :class="loadedUnreadNotifications >= unreadNotifications ? 'font-normal' : ''">
-                      {{
-                        loadedUnreadNotifications >= unreadNotifications
-                          ? i18n.t("notifications.viewAll")
-                          : i18n.t("notifications.viewMoreUnread", [unreadNotifications - loadedUnreadNotifications])
-                      }}
-                    </span>
-                  </Link>
-                  <span v-if="loadedUnreadNotifications !== 0" class="color-primary hover:(underline cursor-pointer)" @click="markNotificationsRead">
-                    {{ i18n.t("notifications.markAsRead") }}
-                  </span>
-                </div>
-              </div>
+              </ClientOnly>
             </template>
           </Popper>
         </div>

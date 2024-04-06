@@ -4,7 +4,7 @@ import type { PaginatedResultProject } from "~/types/backend";
 const i18n = useI18n();
 
 defineProps<{
-  projects: PaginatedResultProject;
+  projects?: PaginatedResultProject;
   resetAnchor?: Element;
 }>();
 

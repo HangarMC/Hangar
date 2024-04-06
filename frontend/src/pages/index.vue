@@ -150,7 +150,10 @@ useHead(meta);
         />
         <div class="md:hidden flex">
           <Menu>
-            <MenuButton class="bg-gradient-to-r from-primary-500 to-primary-400 rounded-r-md text-left font-semibold flex items-center gap-2 text-white p-2">
+            <MenuButton
+              id="sort-button"
+              class="bg-gradient-to-r from-primary-500 to-primary-400 rounded-r-md text-left font-semibold flex items-center gap-2 text-white p-2"
+            >
               <span class="whitespace-nowrap">{{ i18n.t("hangar.projectSearch.sortBy") }}</span>
               <icon-mdi-sort-variant class="text-xl pointer-events-none" />
             </MenuButton>

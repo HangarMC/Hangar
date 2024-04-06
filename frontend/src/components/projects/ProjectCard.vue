@@ -29,7 +29,9 @@ defineProps<{
               <span class="text-sm">
                 by
                 <object type="html/sucks">
-                  <Link :to="'/' + project.namespace.owner" @click.stop="router.push('/' + project.namespace.owner)">{{ project.namespace.owner }}</Link>
+                  <Link v-slot="{ classes }" custom>
+                    <RouterLink :to="'/' + project.namespace.owner" :class="classes"> {{ project.namespace.owner }} </RouterLink>
+                  </Link>
                 </object>
               </span>
             </h2>
