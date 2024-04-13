@@ -58,6 +58,12 @@ function getText(val: any) {
   }
 }
 
+onMounted(() => {
+  if (internalVal.value) {
+    emit("search", internalVal.value);
+  }
+});
+
 watch(internalVal, (val) => emit("search", val));
 
 const errorMessages = computed(() => props.errorMessages);

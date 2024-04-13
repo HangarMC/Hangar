@@ -368,7 +368,7 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
               ref="dependencyTables"
               :key="`${platform.name}-deps-table`"
               :platform="platform.enumName"
-              :version="pendingVersion"
+              :plugin-dependencies="pendingVersion.pluginDependencies"
             />
           </div>
         </div>

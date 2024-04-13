@@ -1135,6 +1135,9 @@
     "maxFileSize": "File is too large, max size is 10mb",
     "validProjectName": "Project name is already taken"
   },
+  "fieldError": {
+    "url": "Invalid url value for {0}, got {1}"
+  },
   "prompts": {
     "confirm": "Got it!",
     "changeAvatar": {

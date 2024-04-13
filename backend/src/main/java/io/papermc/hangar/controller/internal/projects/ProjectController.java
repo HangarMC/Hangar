@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 // @el(author: String, slug: String, projectId: long, project: io.papermc.hangar.model.db.projects.ProjectTable)
 @RestController
@@ -102,6 +103,17 @@ public class ProjectController extends HangarComponent {
         final HangarProject hangarProject = this.projectService.getHangarProject(slug);
         this.statService.addProjectView(hangarProject);
         return ResponseEntity.ok(hangarProject);
+    }
+
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
+    @GetMapping("/project-redirect/{slug}")
+    public void projectRedirect(@PathVariable final String slug) {
+        final String url = this.projectService.getProjectUrlFromSlug(slug);
+        if (url == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unknown slug: " + slug);
+        }
+        this.response.setStatus(301);
+        this.response.setHeader("Location", url);
     }
 
     @Unlocked

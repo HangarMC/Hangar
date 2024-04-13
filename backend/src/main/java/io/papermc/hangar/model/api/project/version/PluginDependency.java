@@ -2,6 +2,7 @@ package io.papermc.hangar.model.api.project.version;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.controller.validations.AtLeastOneNotNull;
+import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.api.project.ProjectNamespace;
 import io.papermc.hangar.model.common.Platform;
@@ -19,7 +20,7 @@ public class PluginDependency implements Named {
     @Schema(description = "Whether the dependency is required for the plugin to function")
     private final boolean required;
     @Schema(description = "External url to download the dependency from if not a Hangar project, else null", example = "https://papermc.io/downloads")
-    private final String externalUrl;
+    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "fieldError.url") String externalUrl;
     @Schema(description = "Platform the dependency runs on")
     private final Platform platform;
 

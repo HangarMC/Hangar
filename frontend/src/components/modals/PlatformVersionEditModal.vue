@@ -39,7 +39,7 @@ async function save() {
   <Modal :title="i18n.t('version.edit.platformVersions', [platform.name])" window-classes="w-200">
     <VersionSelector
       v-model="selectedVersions"
-      :versions="platform.possibleVersions"
+      :versions="platform.platformVersions"
       open
       :rules="[required('Select at least one platform version!'), minLength()(1)]"
     />

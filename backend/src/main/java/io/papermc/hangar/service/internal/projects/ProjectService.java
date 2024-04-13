@@ -123,6 +123,16 @@ public class ProjectService extends HangarComponent {
         return pair.getLeft();
     }
 
+    public String getProjectUrlFromSlug(final String slug) {
+        final Long hangarUserId = this.getHangarUserId();
+        final Project project = this.hangarProjectsDAO.getProject(slug, hangarUserId);
+        if (project == null) {
+            return null;
+        } else {
+            return "/" + project.getNamespace().getOwner() + "/" + project.getNamespace().getSlug();
+        }
+    }
+
     public HangarProject getHangarProject(final String slug) {
         //TODO All of this is dumb and needs to be redone into as little queries as possible
         // Not with CompletableFuture

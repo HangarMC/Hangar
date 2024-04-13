@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { cloneDeep } from "lodash-es";
+import { useVuelidate } from "@vuelidate/core";
 import { NamedPermission } from "~/types/backend";
-import type { PluginDependency, Platform, HangarProject, HangarVersion, PlatformData } from "~/types/backend";
+import type { HangarProject, HangarVersion, PlatformData } from "~/types/backend";
+import { DependencyTable } from "#components";
 
 const props = defineProps<{
   project: HangarProject;
@@ -11,44 +13,29 @@ const props = defineProps<{
 
 const i18n = useI18n();
 const router = useRouter();
+const v = useVuelidate();
 
 const projectVersion = computed(() => {
   return props.version;
 });
 
 const loading = ref(false);
-const depTable = ref();
+const depTable = ref<typeof DependencyTable>();
 const modal = ref();
-const formVersion = ref<Partial<HangarVersion>>({
-  pluginDependencies: {} as Record<Platform, PluginDependency[]>,
-});
-
-const validInput = computed(() => {
-  if (depTable.value && hasInvalidDependency(depTable.value.dependencies)) {
-    return false;
-  }
-  for (const platform in formVersion.value.pluginDependencies) {
-    if (hasInvalidDependency(formVersion.value.pluginDependencies[platform as Platform])) {
-      return false;
-    }
-  }
-  return true;
-});
-
-function hasInvalidDependency(dependencies: PluginDependency[]) {
-  return dependencies.some((dependency) => {
-    // noinspection SuspiciousTypeOfGuard
-    if (dependency.namespace && typeof dependency.namespace === "string") {
-      // TODO: should get proper validation checks on input
-      return true;
-    }
-    return !dependency.name || (!dependency.externalUrl && !dependency.namespace);
-  });
-}
+const pluginDependencies = ref<HangarVersion["pluginDependencies"]>({});
 
 async function save() {
+  if (!(await v.value.$validate())) {
+    return;
+  }
   loading.value = true;
   try {
+    if (!depTable.value) return;
+    for (const dep of depTable.value.dependencies) {
+      if (dep.mode === "file") {
+        delete dep.externalUrl;
+      }
+    }
     await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/savePluginDependencies`, "post", {
       platform: props.platform.enumName,
       pluginDependencies: depTable.value.dependencies,
@@ -64,8 +51,7 @@ onMounted(() =>
   watch(
     () => modal.value.isOpen,
     (val) => {
-      formVersion.value.pluginDependencies =
-        val && projectVersion.value ? cloneDeep(projectVersion.value.pluginDependencies) : ({} as Record<Platform, PluginDependency[]>);
+      pluginDependencies.value = val && projectVersion.value ? cloneDeep(projectVersion.value.pluginDependencies) : ({} as HangarVersion["pluginDependencies"]);
       if (depTable.value) {
         depTable.value.reset();
       }
@@ -76,9 +62,9 @@ onMounted(() =>
 
 <template>
   <Modal ref="modal" :title="i18n.t('version.edit.pluginDeps', [platform.name])" window-classes="w-200">
-    <DependencyTable ref="depTable" :platform="platform.enumName" :version="formVersion" />
+    <DependencyTable ref="depTable" :platform="platform.enumName" :plugin-dependencies="pluginDependencies" />
 
-    <Button button-type="primary" class="mt-3" :disabled="loading || !validInput" @click="save">{{ i18n.t("general.save") }}</Button>
+    <Button button-type="primary" class="mt-3" :disabled="loading || v.$error" @click="save">{{ i18n.t("general.save") }}</Button>
     <template #activator="{ on }">
       <Button v-if="hasPerms(NamedPermission.EditVersion)" class="text-sm" v-on="on"><IconMdiPencil /></Button>
     </template>

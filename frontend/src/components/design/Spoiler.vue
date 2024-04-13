@@ -4,19 +4,36 @@ const props = withDefaults(
     withLine?: boolean;
     title?: string;
     open?: boolean;
+    alwaysOpen?: boolean;
   }>(),
   {
     withLine: true,
     title: undefined,
     open: false,
+    alwaysOpen: false,
   }
 );
-const open = ref(props.open);
+const el = ref<HTMLDetailsElement>();
+onMounted(() => {
+  if (!el.value) return;
+  if (props.alwaysOpen) {
+    el.value.open = true;
+  }
+  el.value?.addEventListener("toggle", (event) => {
+    if (!el.value) return;
+    if (props.alwaysOpen) {
+      el.value.open = true;
+      event.preventDefault();
+    } else {
+      el.value.open = !el.value.open;
+    }
+  });
+});
 </script>
 
 <template>
-  <details :open="open" class="spoiler-details">
-    <summary>
+  <details ref="el" :open="open" class="spoiler-details">
+    <summary :class="alwaysOpen && 'always-open'">
       <slot name="title">
         {{ title }}
       </slot>
@@ -26,7 +43,7 @@ const open = ref(props.open);
   </details>
 </template>
 
-<style>
+<style lang="scss">
 .spoiler-details {
   border: 1px solid #bbb;
   border-radius: 5px;
@@ -43,6 +60,10 @@ const open = ref(props.open);
   cursor: pointer;
   list-style: none;
   padding: 0.2rem;
+
+  &.always-open {
+    cursor: default;
+  }
 }
 
 .spoiler-details summary::-webkit-details-marker {

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ValidationRule } from "@vuelidate/core";
+import type { PlatformVersion } from "~/types/backend";
 
 const props = defineProps<{
   versions: PlatformVersion[];

@@ -317,7 +317,7 @@ async function restoreVersion() {
         </template>
 
         <div v-for="platform in platformsWithDependencies" :key="platform" class="py-1">
-          <Spoiler :with-line="projectVersion?.pluginDependencies[platform] !== undefined" open>
+          <Spoiler :with-line="projectVersion?.pluginDependencies[platform] !== undefined" always-open>
             <template #title>
               <div class="flex gap-1 w-full">
                 <PlatformLogo :platform="platform" :size="24" class="flex-shrink-0" />
@@ -331,9 +331,8 @@ async function restoreVersion() {
                 <ul>
                   <li v-for="dep in sortedDependencies(platform)" :key="dep.name">
                     <Link
-                      :href="dep.externalUrl || undefined"
+                      :href="dep.externalUrl || '/api/internal/projects/project-redirect/' + dep.name"
                       :target="dep.externalUrl ? '_blank' : undefined"
-                      :to="!!dep.namespace ? { name: 'user-project', params: { user: dep.namespace.owner, project: dep.namespace.slug } } : undefined"
                       class="font-normal ml-1"
                     >
                       {{ dep.name }}

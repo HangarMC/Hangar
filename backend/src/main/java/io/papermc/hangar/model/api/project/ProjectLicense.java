@@ -16,7 +16,7 @@ public class ProjectLicense {
     @Validate(SpEL = "@validations.max(#root, @hangarConfig.projects.maxLicenseNameLen)", message = "project.new.error.tooLongLicense") String name;
 
     // @el(root: String)
-    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl") String url;
+    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "fieldError.url") String url;
 
     // @el(root: String)
     private final @Validate(SpEL = "@validate.required(#root)")
