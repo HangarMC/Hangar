@@ -23,7 +23,10 @@ const requestParams = computed(() => {
     sort: sort.value,
   };
 });
-watch(query, () => staffData.refresh());
+watch(
+  query,
+  useDebounceFn(() => staffData.refresh(), 250)
+);
 const staffData = await useStaff(requestParams);
 const staff = staffData.data;
 

@@ -120,7 +120,7 @@ public class UsersApiService extends HangarComponent {
         final boolean hasQuery = !StringUtils.isBlank(query);
         final List<User> users = this.usersApiDAO.getAuthors(hasQuery, query, pagination);
         users.forEach(u -> u.setAvatarUrl(this.avatarService.getUserAvatarUrl(u)));
-        final long count = this.usersApiDAO.getAuthorsCount();
+        final long count = this.usersApiDAO.getAuthorsCount(hasQuery, query);
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
 
@@ -135,7 +135,7 @@ public class UsersApiService extends HangarComponent {
         final boolean hasQuery = !StringUtils.isBlank(query);
         final List<User> users = this.usersApiDAO.getStaff(hasQuery, query, this.config.user.staffRoles(), pagination);
         users.forEach(u -> u.setAvatarUrl(this.avatarService.getUserAvatarUrl(u)));
-        final long count = this.usersApiDAO.getStaffCount(this.config.user.staffRoles());
+        final long count = this.usersApiDAO.getStaffCount(hasQuery, query, this.config.user.staffRoles());
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
 

@@ -24,7 +24,7 @@ const requestParams = computed(() => {
     sort: sort.value,
   };
 });
-watch(query, update);
+watch(query, () => updatePage(0));
 const authors = await useAuthors(requestParams.value);
 
 async function updateSort(col: string, sorter: Record<string, number>) {
@@ -45,9 +45,9 @@ async function updatePage(newPage: number) {
   await update();
 }
 
-async function update() {
+const update = useDebounceFn(async () => {
   authors.value = await useApi<PaginatedResultUser>("authors", "GET", requestParams.value);
-}
+}, 250);
 
 useHead(useSeo(i18n.t("pages.authorsTitle"), "Hangar Project Authors", route, null));
 </script>
@@ -68,7 +68,9 @@ useHead(useSeo(i18n.t("pages.authorsTitle"), "Hangar Project Authors", route, nu
       @update:sort="updateSort"
       @update:page="updatePage"
     >
-      <template #pic="{ item }"><UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs"></UserAvatar></template>
+      <template #pic="{ item }">
+        <UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs"></UserAvatar>
+      </template>
       <template #createdAt="{ item }">{{ i18n.d(item?.createdAt, "date") }}</template>
       <template #name="{ item }">
         <Link :to="'/' + item.name">{{ item.name }}</Link>

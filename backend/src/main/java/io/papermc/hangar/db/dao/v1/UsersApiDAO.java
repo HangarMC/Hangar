@@ -9,6 +9,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import org.jdbi.v3.spring5.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
+import org.jdbi.v3.sqlobject.customizer.AllowUnusedBindings;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -113,8 +114,16 @@ public interface UsersApiDAO {
         "   <offsetLimit>")
     List<User> getAuthors(@Define boolean hasQuery, String query, @BindPagination RequestPagination pagination);
 
-    @SqlQuery("SELECT count(DISTINCT p.owner_id) FROM projects p WHERE p.visibility != 1")
-    long getAuthorsCount();
+    @AllowUnusedBindings
+    @UseStringTemplateEngine
+    @SqlQuery("""
+        SELECT count(DISTINCT p.owner_id)
+        FROM projects p
+        <if(hasQuery)> JOIN users u ON p.owner_id = u.id<endif>
+        WHERE p.visibility != 1
+        <if(hasQuery)> AND u.name ILIKE '%' || :query || '%'<endif>
+        """)
+    long getAuthorsCount(@Define boolean hasQuery, String query);
 
     @UseStringTemplateEngine
     @RegisterConstructorMapper(User.class)
@@ -136,12 +145,16 @@ public interface UsersApiDAO {
         "   <offsetLimit>")
     List<User> getStaff(@Define boolean hasQuery, String query, @BindList(onEmpty = BindList.EmptyHandling.NULL_STRING) List<String> staffRoles, @BindPagination RequestPagination pagination);
 
-    @SqlQuery(" SELECT count(u.id)" +
-        "   FROM users u " +
-        "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
-        "       JOIN roles r ON ugr.role_id = r.id" +
-        "   WHERE r.name IN (<staffRoles>)")
-    long getStaffCount(@BindList(onEmpty = BindList.EmptyHandling.NULL_STRING) List<String> staffRoles);
+    @UseStringTemplateEngine
+    @SqlQuery("""
+         SELECT count(u.id)
+           FROM users u
+               JOIN user_global_roles ugr ON u.id = ugr.user_id
+               JOIN roles r ON ugr.role_id = r.id
+           WHERE r.name IN (<staffRoles>)
+           <if(hasQuery)> AND u.name ILIKE '%' || :query || '%'<endif>
+        """)
+    long getStaffCount(@Define boolean hasQuery, String query, @BindList(onEmpty = BindList.EmptyHandling.NULL_STRING) List<String> staffRoles);
 
     @RegisterConstructorMapper(UserNameChange.class)
     @SqlQuery("""
