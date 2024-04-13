@@ -8,7 +8,7 @@ module.exports = new (class {
 
     public openHangarPage(path: string) {
         I.amOnPage(this.url + path);
-        I.waitForFunction(() => window["hangarLoaded"], 10);
+        I.waitForFunction(() => window["hangarLoaded"]);
     }
 
     public async browserStackStatus(passed: boolean, reason: string) {
@@ -23,12 +23,12 @@ module.exports = new (class {
         I.fillField("input[name='username']", admin ? "e2e_admin" : "e2e_user");
         I.fillField("input[name='password']", process.env.E2E_PASSWORD);
         I.click(locate("button").withText("Login"));
-        I.waitForText("Use totp", 10);
+        I.waitForText("Use totp");
         const totp = TOTP.generate(process.env.E2E_TOTP_SECRET);
         I.fillField("input", totp.otp);
         I.click("Use totp");
         I.waitInUrl("/?done");
-        I.waitForText("FIND YOUR", 5);
+        I.waitForText("FIND YOUR");
     }
 
     public async getJwt() {

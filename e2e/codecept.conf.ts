@@ -8,7 +8,7 @@ const BROWSERSTACK_ACCESS_KEY = process.env.BROWSERSTACK_ACCESS_KEY;
 const DEBUG = process.env.BROWSERSTACK_DEBUG === "true";
 const DEV = process.env.BROWSERSTACK_DEV === "true";
 const LOCAL = process.env.BROWSERSTACK_LOCAL === "true";
-const BUILD_NAME = process.env.BROWSERSTACK_BUILD_NAME || "browserstack-build-1" + (LOCAL ? "-local" : "");
+const BUILD_NAME = process.env.BROWSERSTACK_BUILD_NAME || "browserstack-build-" + new Date().getTime() + (LOCAL ? "-local" : "");
 
 console.table({
     DEBUG,
@@ -41,6 +41,7 @@ exports.config = {
             key: DEV ? undefined : BROWSERSTACK_ACCESS_KEY,
             browser: "Edge",
             windowSize,
+            waitForTimeout: 15000,
             capabilities: {
                 ...defaultCapabilities,
                 os: "Windows",
@@ -113,6 +114,13 @@ exports.config = {
             enabled: true,
         },
         screenshotOnFail: {
+            enabled: true,
+        },
+        BrowserstackHelper: {
+            require: "codeceptjs-bshelper",
+            user: process.env.BROWSERSTACK_USERNAME,
+            key: process.env.BROWSERSTACK_ACCESS_KEY,
+            shortUrl: false,
             enabled: true,
         },
     },

@@ -18,7 +18,7 @@ if (process.client) {
   document.documentElement.classList.remove("light", "dark");
   document.documentElement.classList.add(settingsStore.darkMode ? "dark" : "light");
 
-  window.hangarLoaded = true;
+  nextTick(() => (window.hangarLoaded = true));
 }
 
 useHead({

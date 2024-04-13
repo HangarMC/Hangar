@@ -20,8 +20,6 @@ Scenario("Test Project List", async ({ I, util, IndexPage }) => {
     I.click(IndexPage.mostDownloadsButton);
     I.waitInUrl("sort=-downloads");
     I.waitToHide("//*[contains(text(),'There are no projects.')]");
-
-    await util.browserStackStatus(true, "Test passed");
 });
 
 Scenario("Test Project List Query", async ({ I, util, IndexPage }) => {
@@ -33,6 +31,4 @@ Scenario("Test Project List Query", async ({ I, util, IndexPage }) => {
     I.seeElement(locate("button.bg-gradient-to-r").withText("Most Downloads"));
     // TODO test minecraft version (maybe selecting a sub version should open the tree too?)
     I.seeElement(locate("input").withAttr({ type: "checkbox", value: "admin_tools", checked: "" }));
-
-    await util.browserStackStatus(true, "Test passed");
 });

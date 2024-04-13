@@ -6,5 +6,5 @@ Scenario("Test Staff List", async ({ I, util, IndexPage }) => {
     I.dontSee("No staff found");
 
     I.fillField("input[type='text']", "Some Value That doesnt Exist");
-    I.waitForText("No staff found", 5);
+    I.waitForText("No staff found");
 });
