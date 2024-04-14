@@ -23,10 +23,10 @@ Scenario("Test Project List", async ({ I, util, IndexPage }) => {
 });
 
 Scenario("Test Project List Query", async ({ I, util, IndexPage }) => {
-    util.openHangarPage("/?page=1&query=Test&sort=-downloads&category=admin_tools");
+    util.openHangarPage("/?page=1&query=A&sort=-downloads&category=admin_tools");
 
     // check that query works
-    // I.seeInField(IndexPage.searchField, "Test"); // TODO fix me
+    I.seeInField(IndexPage.searchField, "A");
     I.seeElement(locate("button").withAttr({ "aria-label": "Page 2", disabled: "" }));
     I.seeElement(locate("button.bg-gradient-to-r").withText("Most Downloads"));
     // TODO test minecraft version (maybe selecting a sub version should open the tree too?)
