@@ -8,6 +8,8 @@ on:
     branches:
       - master
       - staging
+    paths-ignore:
+      - 'e2e/**'
 
 concurrency:
   group: ${{ github.ref }}

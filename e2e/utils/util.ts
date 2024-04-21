@@ -29,7 +29,7 @@ module.exports = new (class {
         I.fillField("input", totp.otp);
         I.click("Use totp");
         I.waitInUrl("/?done");
-        I.waitForText("FIND YOUR");
+        I.waitForElement("input[name='query']");
     }
 
     public async getJwt() {
