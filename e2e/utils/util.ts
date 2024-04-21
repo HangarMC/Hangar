@@ -1,6 +1,7 @@
 const { I } = inject();
 const { TOTP } = require("totp-generator");
 const { jwtDecode } = require("jwt-decode");
+const { expect } = require("chai");
 
 module.exports = new (class {
     url = process.env.BROWSERSTACK_LOCAL === "true" ? "http://localhost:3333" : "https://hangar.papermc.dev";
@@ -40,6 +41,11 @@ module.exports = new (class {
             method: "POST",
         });
         const json = await result.json();
+        if (result.status != 200) {
+            console.log(json);
+        }
+        expect(result.status, "JWT Authentication should return status 200").to.equal(200);
+        expect(json.token, "JWT Authentication should return a jwt").to.be.ok;
         this.jwt = json.token;
         return this.jwt;
     }
@@ -61,6 +67,10 @@ module.exports = new (class {
             headers: { Authorization: "Bearer " + (await this.getJwt()), "Content-Type": "application/json" },
             body: JSON.stringify({ content: "E2E" }),
         });
+        if (result.status != 204) {
+            console.log(await result.text());
+        }
+        expect(result.status, "project deletion to return 200").to.equal(204);
     }
 
     public async deleteOrg(name: string) {
@@ -69,6 +79,9 @@ module.exports = new (class {
             headers: { Authorization: "Bearer " + (await this.getJwt()), "Content-Type": "application/json" },
             body: JSON.stringify({ content: "E2E" }),
         });
-        console.log(await result.text());
+        if (result.status != 200) {
+            console.log(await result.text());
+        }
+        expect(result.status, "org deletion to return 200").to.equal(200);
     }
 })();

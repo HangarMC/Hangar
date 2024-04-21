@@ -64,4 +64,5 @@ jobs:
           BROWSERSTACK_DEBUG: ${{ github.event.inputs.debug || false }}
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
           E2E_TOTP_SECRET: ${{ secrets.E2E_TOTP_SECRET }}
+          E2E_API_KEY: ${{ secrets.E2E_API_KEY }}
         run: (cd e2e && pnpm run browserstack-multiple)
