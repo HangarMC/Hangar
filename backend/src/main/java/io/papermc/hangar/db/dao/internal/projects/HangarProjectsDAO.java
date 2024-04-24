@@ -70,19 +70,15 @@ public interface HangarProjectsDAO {
     List<JoinableMember<ProjectRoleTable>> getProjectMembers(long projectId, Long userId, @Define boolean canSeePending);
 
     @RegisterConstructorMapper(HangarProject.HangarProjectInfo.class)
-    @SqlQuery("SELECT count(DISTINCT pv.id) public_versions," +
-        "       count(DISTINCT pf.id) flag_count," +
-        "       count(DISTINCT ps.user_id) star_count," +
-        "       count(DISTINCT pw.user_id) watcher_count," +
-        "       count(DISTINCT pn.id) note_count" +
-        "   FROM projects p" +
-        "       LEFT JOIN project_versions pv ON p.id = pv.project_id AND pv.visibility = 0" +
-        "       LEFT JOIN project_stars ps ON p.id = ps.project_id" +
-        "       LEFT JOIN project_watchers pw ON p.id = pw.project_id" +
-        "       LEFT JOIN project_flags pf ON p.id = pf.project_id" +
-        "       LEFT JOIN project_notes pn ON p.id = pn.project_id" +
-        "   WHERE p.id = :projectId" +
-        "   GROUP BY p.id")
+    @SqlQuery("""
+        SELECT (SELECT count(DISTINCT pv.id) from project_versions pv where p.id = pv.project_id and pv.visibility = 0)  public_versions,
+               (SELECT count(DISTINCT pf.id) from project_flags pf where p.id = pf.project_id)                           flag_count,
+               (SELECT count(DISTINCT ps.user_id) from project_stars ps where p.id = ps.project_id)                      star_count,
+               (SELECT count(DISTINCT pw.user_id) from project_watchers pw where p.id = pw.project_id)                   watcher_count,
+               (SELECT count(DISTINCT pn.id) from project_notes pn where p.id = pn.project_id)                           note_count
+        FROM projects p
+        WHERE p.id = :projectId
+    """)
     HangarProject.HangarProjectInfo getHangarProjectInfo(long projectId);
 
     @RegisterConstructorMapper(HangarChannel.class)

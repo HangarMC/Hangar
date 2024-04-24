@@ -23,7 +23,6 @@ public class HangarOrganization implements Joinable<OrganizationRoleTable> {
         return this.id;
     }
 
-    @Override
     public ProjectOwner getOwner() {
         return this.owner;
     }

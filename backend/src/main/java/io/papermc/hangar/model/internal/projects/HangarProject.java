@@ -9,7 +9,6 @@ import io.papermc.hangar.model.api.project.ProjectChannel;
 import io.papermc.hangar.model.api.project.version.PlatformVersionDownload;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.identified.ProjectIdentified;
 import io.papermc.hangar.model.internal.Joinable;
@@ -24,7 +23,6 @@ import org.jdbi.v3.core.mapper.Nested;
 
 public class HangarProject extends Project implements Joinable<ProjectRoleTable>, ProjectIdentified {
 
-    private final ProjectOwner owner;
     private final List<JoinableMember<ProjectRoleTable>> members;
     private final String lastVisibilityChangeComment;
     private final String lastVisibilityChangeUserName;
@@ -34,9 +32,8 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     private final List<PinnedVersion> pinnedVersions;
     private final Map<Platform, HangarVersion> mainChannelVersions;
 
-    public HangarProject(final Project project, final ProjectOwner owner, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, HangarVersion> mainChannelVersions, final ExtendedProjectPage mainPage) {
+    public HangarProject(final Project project, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, HangarVersion> mainChannelVersions, final ExtendedProjectPage mainPage) {
         super(project);
-        this.owner = owner;
         this.members = members;
         this.lastVisibilityChangeComment = lastVisibilityChangeComment;
         this.lastVisibilityChangeUserName = lastVisibilityChangeUserName;
@@ -55,11 +52,6 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     @Override
     public long getProjectId() {
         return this.id;
-    }
-
-    @Override
-    public ProjectOwner getOwner() {
-        return this.owner;
     }
 
     @Override
@@ -104,7 +96,6 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     public String toString() {
         return "HangarProject{" +
             "id=" + this.id +
-            ", owner=" + this.owner +
             ", members=" + this.members +
             ", lastVisibilityChangeComment='" + this.lastVisibilityChangeComment + '\'' +
             ", lastVisibilityChangeUserName='" + this.lastVisibilityChangeUserName + '\'' +

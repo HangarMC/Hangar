@@ -210,14 +210,7 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
             </span>
           </Card>
         </template>
-        <MemberList
-          v-else-if="organization"
-          :members="organization.members"
-          :roles="orgRoles"
-          organization
-          :author="user.name"
-          :owner="organization.owner.userId"
-        />
+        <MemberList v-else-if="organization" :members="organization.members" :roles="orgRoles" organization :author="user.name" />
       </div>
     </div>
   </div>

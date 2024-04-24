@@ -20,7 +20,6 @@ const props = withDefaults(
     organization?: boolean;
     author?: string;
     slug?: string;
-    owner: number;
   }>(),
   {
     organization: false,
@@ -52,7 +51,7 @@ const canLeave = computed<boolean>(() => {
     return false;
   }
 
-  return props.members.some((member) => member.user.id === authStore.user?.id && member.user.id !== props.owner);
+  return props.members.some((member) => member.user.id === authStore.user?.id && member.user.name !== props.author);
 });
 const canEdit = computed<boolean>(() => hasPerms(NamedPermission.EditSubjectSettings));
 const saving = ref<boolean>(false);

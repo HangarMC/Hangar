@@ -134,8 +134,7 @@ public class ProjectService extends HangarComponent {
     }
 
     public HangarProject getHangarProject(final String slug) {
-        //TODO All of this is dumb and needs to be redone into as little queries as possible
-        // Not with CompletableFuture
+        // TODO All of this is dumb and needs to be redone into as little queries as possible
         final Long hangarUserId = this.getHangarUserId();
         final Project project = this.hangarProjectsDAO.getProject(slug, hangarUserId);
         final long projectId = project.getId();
@@ -166,27 +165,25 @@ public class ProjectService extends HangarComponent {
             }
         }));
 
-        final CompletableFuture<HangarProject.HangarProjectInfo> info = this.supply(() -> this.hangarProjectsDAO.getHangarProjectInfo(projectId));
-        final CompletableFuture<Map<Long, HangarProjectPage>> pages = this.supply(() -> this.projectPageService.getProjectPages(projectId));
+        final HangarProject.HangarProjectInfo info = this.hangarProjectsDAO.getHangarProjectInfo(projectId);
+        final Map<Long, HangarProjectPage> pages = this.projectPageService.getProjectPages(projectId);
         final CompletableFuture<List<HangarProject.PinnedVersion>> pinnedVersions = this.supply(() -> this.pinnedVersionService.getPinnedVersions(ownerName, project.getNamespace().getSlug(), projectId));
-        final CompletableFuture<ExtendedProjectPage> projectPage = this.supply(() -> this.projectPageService.getProjectHomePage(projectId));
-        final CompletableFuture<String> avatarUrl = this.supply(() -> this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner()));
-        final CompletableFuture<ProjectOwner> projectOwner = this.supply(() -> this.getProjectOwner(ownerName));
+        final ExtendedProjectPage projectPage = this.projectPageService.getProjectHomePage(projectId);
+        final String avatarUrl = this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner());
 
         mainChannelFuture.join();
         final HangarProject hangarProject = new HangarProject(
             project,
-            projectOwner.join(),
             membersFuture.join(),
             lastVisibilityChangeComment,
             lastVisibilityChangeUserName,
-            info.join(),
-            pages.join().values(),
+            info,
+            pages.values(),
             pinnedVersions.join(),
             mainChannelVersions,
-            projectPage.join()
+            projectPage
         );
-        hangarProject.setAvatarUrl(avatarUrl.join());
+        hangarProject.setAvatarUrl(avatarUrl);
         return hangarProject;
     }
 

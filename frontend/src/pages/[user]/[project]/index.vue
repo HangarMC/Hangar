@@ -139,7 +139,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
         </Card>
       </template>
 
-      <MemberList :members="project.members" :author="project.owner.name" :slug="project.name" :owner="project.owner.userId" class="overflow-visible" />
+      <MemberList v-if="project.members" :members="project.members" :author="project.namespace.owner" :slug="project.name" class="overflow-visible" />
     </section>
   </div>
 </template>

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface Joinable<R extends ExtendedRoleTable<?, ?>> {
 
-    ProjectOwner getOwner();
+    default ProjectOwner getOwner2() {return null; }
 
     RoleCategory getRoleCategory();
 
