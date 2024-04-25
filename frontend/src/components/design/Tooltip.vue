@@ -21,14 +21,12 @@ onErrorCaptured((err) => {
 </script>
 
 <template>
-  <ClientOnly>
-    <Popper :hover="hover" open-delay="200" close-delay="100" :show="show">
-      <slot />
-      <template #content>
-        <slot name="content" />
-      </template>
-    </Popper>
-  </ClientOnly>
+   <Popper :hover="hover" open-delay="200" close-delay="100" :show="show">
+     <slot />
+     <template #content>
+       <slot name="content" />
+     </template>
+   </Popper>
 </template>
 
 <style>
