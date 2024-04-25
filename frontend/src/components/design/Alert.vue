@@ -21,7 +21,7 @@ const color = computed(() => {
 </script>
 
 <template>
-  <div :class="'flex flex-row items-center rounded-md p-4 text-white border-l-6 border-solid ' + color">
+  <div :class="'flex flex-row items-center rounded-md p-4 text-white dark:text-black border-l-6 border-solid ' + color">
     <slot name="icon" clazz="mr-3 w-8 h-8 min-w-8">
       <IconMdiAlert v-if="props.type === 'danger'" class="mr-3 w-8 h-8 min-w-8" />
       <IconMdiAlertBox v-else-if="props.type === 'warning'" class="mr-3 w-8 h-8 min-w-8" />
