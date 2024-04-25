@@ -262,14 +262,14 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
             />
           </div>
           <div class="basis-full md:(basis-4/12) ml-2">
-            <ChannelModal :project-id="project.id" @create="addChannel">
+            <!--<ChannelModal :project-id="project.id" @create="addChannel">
               <template #activator="{ on }">
                 <Button class="basis-4/12" size="medium" v-on="on">
                   <IconMdiPlus />
                   {{ t("version.new.form.addChannel") }}
                 </Button>
               </template>
-            </ChannelModal>
+            </ChannelModal>-->
           </div>
         </div>
 
@@ -351,7 +351,7 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
               <VersionSelector
                 v-if="pendingVersion"
                 v-model="pendingVersion.platformDependencies[platform.enumName]"
-                :versions="platform.possibleVersions"
+                :versions="platform.platformVersions"
                 :rules="platformVersionRules"
                 open
               />

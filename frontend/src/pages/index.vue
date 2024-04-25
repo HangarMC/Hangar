@@ -94,7 +94,7 @@ function versions(platform: Platform): PlatformVersion[] {
     return [];
   }
 
-  return platformData.possibleVersions;
+  return platformData.platformVersions;
 }
 
 function updatePlatform(platform: any) {

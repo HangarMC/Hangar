@@ -53,7 +53,7 @@ async function savePlatformVersions() {
 
 function resetPlatformVersions() {
   for (const platform of useBackendData.platforms.values()) {
-    fullVersions.value[platform.enumName] = versions(platform.possibleVersions);
+    fullVersions.value[platform.enumName] = versions(platform.platformVersions);
   }
 }
 
