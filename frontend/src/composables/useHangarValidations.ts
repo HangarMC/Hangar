@@ -1,15 +1,14 @@
 import { helpers } from "@vuelidate/validators";
 
-export const validProjectName = withOverrideMessage((ownerId: () => number) =>
+export const validProjectName = withOverrideMessage(() =>
   helpers.withParams(
-    { ownerId, type: "validProjectName" },
+    { type: "validProjectName" },
     helpers.withAsync(async (value: string) => {
       if (!helpers.req(value)) {
         return { $valid: true };
       }
       try {
         await useInternalApi("projects/validateName", "get", {
-          userId: ownerId(),
           value,
         });
         return { $valid: true };
