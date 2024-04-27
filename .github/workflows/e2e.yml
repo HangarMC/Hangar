@@ -8,10 +8,12 @@ on:
         type: boolean
         required: false
         default: false
-  # run on pushes to staging
-  push:
-    branches:
-      - staging
+  # run after deploy
+  workflow_run:
+    workflows: ["Deploy"]
+    branches: ["staging"]
+    types:
+      - completed
 
 jobs:
   e2e:

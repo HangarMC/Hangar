@@ -5,6 +5,7 @@ Scenario("Test New Org", async ({ I, util, IndexPage }) => {
     util.openHangarPage("/neworganization");
     const name = "E2EOrg-" + Math.floor(Math.random() * 10000);
     I.fillField("input[name='name']", name);
+    I.wait(1);
     I.click("button[title='Create Org']");
     I.waitInUrl("/" + name);
     await I.see(name);
