@@ -6,6 +6,7 @@ import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
+import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.projects.ChannelForm;
 import io.papermc.hangar.model.internal.api.requests.projects.EditChannelForm;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 // @el(projectId: long)
+// @el(project: ProjectTable)
 @RestController
 @RateLimit(path = "channel")
 @RequestMapping(value = "/api/internal/channels", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -98,9 +100,9 @@ public class ChannelController extends HangarComponent {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_CHANNEL, args = "{#projectId}")
-    @PostMapping("/{projectId}/delete/{channelId}")
-    public void deleteChannel(@PathVariable final long projectId, @PathVariable final long channelId) {
-        this.channelService.deleteProjectChannel(projectId, channelId);
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_CHANNEL, args = "{#project}")
+    @PostMapping("/{project}/delete/{channel}")
+    public void deleteChannel(@PathVariable final ProjectTable project, @PathVariable final ProjectChannelTable channel) {
+        this.channelService.deleteProjectChannel(project.getProjectId(), channel.getId());
     }
 }
