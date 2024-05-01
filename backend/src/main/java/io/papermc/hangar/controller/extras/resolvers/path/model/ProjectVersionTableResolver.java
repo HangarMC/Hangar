@@ -6,6 +6,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.NativeWebRequest;
 
 @Component
 public class ProjectVersionTableResolver extends HangarModelPathVarResolver<ProjectVersionTable> {
@@ -23,7 +24,7 @@ public class ProjectVersionTableResolver extends HangarModelPathVarResolver<Proj
     }
 
     @Override
-    protected ProjectVersionTable resolveParameter(final @NotNull String param) {
+    protected ProjectVersionTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
         final Long versionId = NumberUtils.createLong(param);
         if (versionId == null) {
             return null;

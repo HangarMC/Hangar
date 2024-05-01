@@ -5,6 +5,7 @@ import io.papermc.hangar.service.internal.users.UserService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.NativeWebRequest;
 
 @Component
 public class UserTableResolver extends HangarModelPathVarResolver<UserTable> {
@@ -22,7 +23,7 @@ public class UserTableResolver extends HangarModelPathVarResolver<UserTable> {
     }
 
     @Override
-    protected UserTable resolveParameter(final @NotNull String param) {
+    protected UserTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
         return this.userService.getUserTable(param);
     }
 }

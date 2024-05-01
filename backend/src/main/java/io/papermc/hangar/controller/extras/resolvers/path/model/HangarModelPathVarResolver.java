@@ -28,8 +28,8 @@ public abstract class HangarModelPathVarResolver<M> extends PathVariableMethodAr
         if (param == null) {
             return null;
         }
-        return this.resolveParameter(param);
+        return this.resolveParameter(param, request);
     }
 
-    protected abstract M resolveParameter(@NotNull String param);
+    protected abstract M resolveParameter(@NotNull String param, NativeWebRequest request);
 }

@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.NativeWebRequest;
 
 @Component
 public class ProjectTableResolver extends HangarModelPathVarResolver<ProjectTable> {
@@ -25,10 +26,11 @@ public class ProjectTableResolver extends HangarModelPathVarResolver<ProjectTabl
     }
 
     @Override
-    protected ProjectTable resolveParameter(final @NotNull String param) {
+    protected ProjectTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
         if (!NumberUtils.isParsable(param)) {
             final ProjectTable projectTable = this.projectService.getProjectTable(param);
             if (projectTable != null) {
+                request.setAttribute("projectId", projectTable.getId(), NativeWebRequest.SCOPE_REQUEST);
                 return projectTable;
             }
             throw new HangarApiException(HttpStatus.NOT_FOUND);
