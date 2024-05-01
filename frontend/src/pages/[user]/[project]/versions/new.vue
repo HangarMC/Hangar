@@ -257,19 +257,20 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
               :values="channels"
               item-text="name"
               item-value="name"
+              name="channel"
               :label="t('version.new.form.channel')"
               :rules="[required()]"
             />
           </div>
           <div class="basis-full md:(basis-4/12) ml-2">
-            <!--<ChannelModal :project-id="project.id" @create="addChannel">
+            <ChannelModal :project-id="project.id" @create="addChannel">
               <template #activator="{ on }">
                 <Button class="basis-4/12" size="medium" v-on="on">
                   <IconMdiPlus />
                   {{ t("version.new.form.addChannel") }}
                 </Button>
               </template>
-            </ChannelModal>-->
+            </ChannelModal>
           </div>
         </div>
 
@@ -281,10 +282,10 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
           <div class="items-center">
             <Tabs v-model="platformFile.selectedTab" :tabs="selectedUploadTabs" :vertical="false" class="max-w-150">
               <template #file>
-                <InputFile v-model="platformFile.file" accept=".jar,.zip" :rules="fileRules(platformFile)" />
+                <InputFile v-model="platformFile.file" accept=".jar,.zip" name="file" :rules="fileRules(platformFile)" />
               </template>
               <template #url>
-                <InputText v-model="platformFile.url" :label="t('version.new.form.externalUrl')" :rules="artifactURLRules(platformFile)" />
+                <InputText v-model="platformFile.url" :label="t('version.new.form.externalUrl')" name="url" :rules="artifactURLRules(platformFile)" />
               </template>
             </Tabs>
             <div class="mt-4">
@@ -293,6 +294,7 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
                   <InputCheckbox
                     :model-value="platformFile.platforms.includes(platform.enumName)"
                     :label="platform.name"
+                    :name="platform.name + '-' + idx"
                     @update:model-value="togglePlatform(platformFile, platform.enumName)"
                   >
                     <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
@@ -317,6 +319,7 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
               :rules="versionRules"
               :maxlength="useBackendData.validations.version.max"
               counter
+              name="version"
             />
           </div>
         </div>

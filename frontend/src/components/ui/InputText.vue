@@ -19,10 +19,11 @@ const props = defineProps<{
   disabled?: boolean;
   rules?: ValidationRule<string | undefined>[];
   noErrorTooltip?: boolean;
+  readonly?: boolean;
 }>();
 
 const errorMessages = computed(() => props.errorMessages);
-const { v, errors, hasError } = useValidation(props.label, props.rules, value, errorMessages);
+const { v, errors, hasError } = useValidation(props.label, props.rules, value, errorMessages, false, props.readonly);
 
 defineExpose({ validation: v });
 </script>
@@ -38,10 +39,11 @@ defineExpose({ validation: v });
     :label="label"
     :value="value"
     :disabled="disabled"
+    :readonly="readonly"
     :no-error-tooltip="noErrorTooltip"
   >
     <template #default="slotProps">
-      <input v-model="value" type="text" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" :disabled="disabled" @input="v.$touch" />
+      <input v-model="value" type="text" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" :disabled :readonly @input="v.$touch" />
     </template>
     <template v-for="(_, name) in $slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData || {}" />

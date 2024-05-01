@@ -18,10 +18,11 @@ export function useValidation<T, V = any>(
   rules: ValidationRule<T | undefined>[] | undefined,
   state: Ref<V>,
   errorMessages: Ref<string[] | undefined> | undefined,
-  silentErrors = false
+  silentErrors = false,
+  autoDirty = false
 ) {
   const n = name || "val";
-  const v = useVuelidate(constructValidators(rules, n), { [n]: state });
+  const v = useVuelidate(constructValidators(rules, n), { [n]: state }, { $autoDirty: autoDirty });
   const errors = computed(() => {
     const e = [];
     if (errorMessages?.value) {

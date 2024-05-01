@@ -11,7 +11,7 @@ const emit = defineEmits<{
 }>();
 
 const i18n = useI18n();
-const v = useVuelidate();
+const v = useVuelidate({ $stopPropagation: true });
 
 const frozen = props.channel && props.channel.flags.includes(ChannelFlag.FROZEN);
 const possibleFlags = frozen ? [ChannelFlag.PINNED] : [ChannelFlag.UNSTABLE, ChannelFlag.PINNED, ChannelFlag.SENDS_NOTIFICATIONS];
@@ -80,6 +80,7 @@ function reset() {
     color.value = "";
     flags.value = [];
   }
+  v.value.$reset();
 }
 reset();
 </script>
@@ -91,6 +92,7 @@ reset();
         <InputText
           v-model.trim="name"
           :label="i18n.t('channel.modal.name')"
+          name="name"
           :rules="[
             required(),
             maxLength()(useBackendData.validations.project.channels.max!),
@@ -100,7 +102,7 @@ reset();
           counter
         />
         <div class="mt-3">
-          <InputText v-model.trim="description" :label="i18n.t('channel.modal.description')" :maxlength="50" counter />
+          <InputText v-model.trim="description" :label="i18n.t('channel.modal.description')" name="description" :maxlength="50" counter />
         </div>
         <p class="text-lg font-bold mt-3 mb-1">{{ i18n.t("channel.modal.color") }}</p>
         <div v-for="(arr, arrIndex) in swatches" :key="arrIndex" class="flex">
@@ -108,6 +110,7 @@ reset();
             <div
               :style="`background-color: ${c}`"
               class="w-27px h-25px cursor-pointer inline-flex justify-center items-center rounded-lg border-black border-1"
+              :data-value="c"
               @click="color = c"
             >
               <IconMdiCheckboxMarkedCircle
@@ -137,7 +140,9 @@ reset();
         </template>
       </InputCheckbox>
 
-      <Button class="mt-3" :disabled="noChange || v.$invalid" @click="create(on.click)">{{ edit ? i18n.t("general.save") : i18n.t("general.create") }}</Button>
+      <Button class="mt-3" :disabled="noChange || v.$errors.length > 0" @click="create(on.click)">
+        {{ edit ? i18n.t("general.save") : i18n.t("general.create") }}
+      </Button>
     </template>
     <template #activator="{ on }">
       <slot name="activator" :on="open(on)"></slot>

@@ -61,6 +61,7 @@ defineExpose({ dependencies, reset });
         v-for="(dep, index) in dependencies"
         :key="`${platform}-${dep.id}`"
         v-model="dependencies[index]"
+        :idx="index"
         :no-editing="noEditing"
         @delete="deleteDep(index)"
       />

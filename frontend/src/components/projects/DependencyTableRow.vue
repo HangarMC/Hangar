@@ -5,6 +5,7 @@ import { validUrl } from "~/composables/useValidationHelpers";
 
 defineProps<{
   noEditing?: boolean;
+  idx?: number;
 }>();
 
 const emit = defineEmits<{
@@ -49,6 +50,7 @@ async function onSearch(val: string | undefined) {
             :rules="[required(t('version.new.form.hangarProject'))]"
             @search="onSearch($event)"
             @change="dep.externalUrl = undefined"
+            :name="'hangarproject-' + idx"
           />
         </template>
         <template #url>
@@ -58,12 +60,22 @@ async function onSearch(val: string | undefined) {
             :disabled="noEditing"
             :rules="[required(t('version.new.form.externalUrl')), validUrl()]"
             clearable
+            :name="'externalurl-' + idx"
           />
         </template>
       </Tabs>
     </td>
     <td v-if="dep.mode === 'url'">
-      <InputText v-model.trim="dep.name" dense hide-details flat :label="t('general.name')" :rules="[required(t('general.name'))]" :disabled="noEditing" />
+      <InputText
+        v-model.trim="dep.name"
+        dense
+        hide-details
+        flat
+        :label="t('general.name')"
+        :rules="[required(t('general.name'))]"
+        :disabled="noEditing"
+        :name="'name-' + idx"
+      />
     </td>
     <td v-else />
     <td>

@@ -13,6 +13,7 @@ const props = defineProps<{
   loading?: boolean;
   value: any;
   noErrorTooltip?: boolean;
+  readonly?: boolean;
 }>();
 
 function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
@@ -23,7 +24,7 @@ function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
 <template>
   <component
     :is="noErrorTooltip ? 'div' : ErrorTooltip"
-    :error-messages="disabled || noErrorTooltip ? null : errors"
+    :error-messages="(disabled && !readonly) || noErrorTooltip ? null : errors"
     class="w-full"
     :class="{ filled: value, error: hasError && !disabled }"
   >

@@ -53,10 +53,13 @@ defineExpose({
     ref="dialog"
     class="background-default rounded max-w-10/12 >md:max-w-250 py-6 px-5 text-[#262626] dark:text-[#E0E6f0]"
     :class="windowClasses"
+    :data-title="title"
     @close="close"
   >
     <div class="inline-flex items-center w-full pb-4 pr-1 text-xl">
-      <IconMdiClose class="cursor-pointer mr-1" @click="close" />
+      <button data-close @click="close">
+        <IconMdiClose class="cursor-pointer mr-1" />
+      </button>
       <h2 class="font-bold">{{ props.title }}</h2>
     </div>
     <slot :on="{ click: close }"></slot>

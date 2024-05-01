@@ -154,17 +154,24 @@ function handleAddedSub(removedVersions: string[]) {
           <ArrowSpoiler :open="open">
             <template #title>
               <div class="mr-7">
-                <InputCheckbox v-model="selectedParents" :value="version.version" :label="version.version" />
+                <InputCheckbox v-model="selectedParents" :value="version.version" :label="version.version" :name="version.version" />
               </div>
             </template>
             <template #content>
               <div class="ml-4">
-                <InputCheckbox v-for="subversion in version.subVersions" :key="subversion" v-model="selectedSub" :value="subversion" :label="subversion" />
+                <InputCheckbox
+                  v-for="subversion in version.subVersions"
+                  :key="subversion"
+                  v-model="selectedSub"
+                  :value="subversion"
+                  :label="subversion"
+                  :name="subversion"
+                />
               </div>
             </template>
           </ArrowSpoiler>
         </template>
-        <InputCheckbox v-else v-model="selectedSub" :value="version.version" :label="version.version" />
+        <InputCheckbox v-else v-model="selectedSub" :value="version.version" :label="version.version" :name="version.version" />
       </div>
     </div>
   </InputGroup>
