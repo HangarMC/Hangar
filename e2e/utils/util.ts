@@ -32,6 +32,10 @@ module.exports = new (class {
         I.waitForElement("input[name='query']");
     }
 
+    public randomNumber(max: number = 1000) {
+        return Math.abs(Math.floor(Math.random() * max));
+    }
+
     public async getJwt() {
         if (this.validateToken(this.jwt)) {
             return this.jwt;
@@ -78,6 +82,29 @@ module.exports = new (class {
             method: "POST",
             headers: { Authorization: "Bearer " + (await this.getJwt()), "Content-Type": "application/json" },
             body: JSON.stringify({ content: "E2E" }),
+        });
+        if (result.status != 200) {
+            console.log(await result.text());
+        }
+        expect(result.status, "org deletion to return 200").to.equal(200);
+    }
+
+    public async deleteVersion(name: string, project: string) {
+        const result = await fetch(this.url + "/api/internal/versions/version/" + project + "/" + name + "/hardDelete", {
+            method: "POST",
+            headers: { Authorization: "Bearer " + (await this.getJwt()), "Content-Type": "application/json" },
+            body: JSON.stringify({ content: "E2E" }),
+        });
+        if (result.status != 200) {
+            console.log(await result.text());
+        }
+        expect(result.status, "org deletion to return 200").to.equal(200);
+    }
+
+    public async deleteChannel(project: string, channel: string) {
+        const result = await fetch(this.url + "/api/internal/channels/" + project + "/delete" + channel, {
+            method: "POST",
+            headers: { Authorization: "Bearer " + (await this.getJwt()), "Content-Type": "application/json" },
         });
         if (result.status != 200) {
             console.log(await result.text());
