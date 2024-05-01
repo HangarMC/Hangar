@@ -4,6 +4,7 @@ import markedLinkifyIt from "marked-linkify-it";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 import markedExtendedTables from "marked-extended-tables";
+import markedAlert from "marked-alert";
 
 const youtubeRegex = /(?:youtube\.com\/(?:[^\s/]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[&?]v=)|youtu\.be\/)([\w-]{11})(?:==(\d+))?/;
 const imageSizeParts = /(.*)==\s*(\d*)\s*x?\s*(\d*)\s*$/;
@@ -61,6 +62,7 @@ const renderer = {
 marked.use({ renderer });
 marked.use(markedExtendedTables());
 marked.use(markedLinkifyIt());
+marked.use(markedAlert());
 
 export function parseMarkdown(text?: string | null): string | undefined {
   if (!text) return undefined;

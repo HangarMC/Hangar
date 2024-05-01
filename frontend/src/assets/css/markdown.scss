@@ -102,6 +102,47 @@
   li > ol {
     margin: 0;
   }
+
+  .markdown-alert {
+    padding: 0 1em;
+    margin-bottom: 16px;
+    border-left: 0.25em solid var(--alert-color, #444c56);
+
+    > p {
+      margin: 0;
+    }
+
+    .markdown-alert-title {
+      display: inline-flex;
+      align-items: center;
+      font-weight: 500;
+      color: var(--alert-color, #444c56);
+
+      .dark & > svg {
+        fill: #E0E6f0;
+      }
+    }
+  }
+
+  .markdown-alert-note {
+    --alert-color: #539bf5;
+  }
+
+  .markdown-alert-tip {
+    --alert-color: #57ab5a;
+  }
+
+  .markdown-alert-important {
+    --alert-color: #986ee2;
+  }
+
+  .markdown-alert-warning {
+    --alert-color: #c69026;
+  }
+
+  .markdown-alert-caution {
+    --alert-color: #e5534b;
+  }
 }
 
 // override prism stuff
