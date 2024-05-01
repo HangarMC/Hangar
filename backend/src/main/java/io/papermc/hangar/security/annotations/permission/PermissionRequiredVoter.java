@@ -50,15 +50,17 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
                     if (arguments.length == 1) {
                         final long projectId;
                         final Object argument1 = arguments[0];
-                        if (argument1 instanceof String projectName) {
+                        if (argument1 instanceof final String projectName) {
                             currentPerm = this.permissionService.getProjectPermissions(userId, projectName);
                             break;
                         }
 
-                        if (argument1 instanceof ProjectTable) {
-                            projectId = ((ProjectTable) argument1).getId();
+                        if (argument1 instanceof final ProjectTable table) {
+                            projectId = table.getId();
+                        } else if (argument1 instanceof final Long id){
+                            projectId = id;
                         } else {
-                            projectId = (long) argument1;
+                            throw new IllegalStateException("Bad annotation configuration, expected ProjectTable or Long but got " + argument1 + " for expression " + attribute.expression().getExpressionString());
                         }
 
                         currentPerm = this.permissionService.getProjectPermissions(userId, projectId);
