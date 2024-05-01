@@ -68,6 +68,9 @@ dependencies:
   marked:
     specifier: 12.0.2
     version: 12.0.2
+  marked-alert:
+    specifier: 2.0.1
+    version: 2.0.1(marked@12.0.2)
   marked-extended-tables:
     specifier: 1.0.8
     version: 1.0.8(marked@12.0.2)
@@ -7211,6 +7214,14 @@ packages:
       ssri: 10.0.5
     transitivePeerDependencies:
       - supports-color
+
+  /marked-alert@2.0.1(marked@12.0.2):
+    resolution: {integrity: sha512-dREhBjpPEN87b5AdlpETVoEpYiROQJ2M01sqjvQetKqpfi92BQRfSFKPIEkm90RnMpv5CFLNpWfGO6bx+tnayQ==}
+    peerDependencies:
+      marked: '>=7.0.0'
+    dependencies:
+      marked: 12.0.2
+    dev: false
 
   /marked-extended-tables@1.0.8(marked@12.0.2):
     resolution: {integrity: sha512-GcVQP7EnfQ98o09ooqM4t4M0qfpKdKuk7/z4qZfgkLyXTXsIyFS1eeBmfC36o1NbR6aSq8ynL/LeTz3w4RS27Q==}
