@@ -11,9 +11,10 @@ import java.util.Objects;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 @AtLeastOneNotNull(fieldNames = {"name", "namespace"}, includeBlankStrings = true, message = "Must specify a name or namespace for a dependency")
-public class PluginDependency implements Named {
+public class PluginDependency implements Named, Comparable<PluginDependency> {
 
     @Schema(description = "Name of the plugin dependency. For non-external dependencies, this should be the Hangar project name", example = "Maintenance")
     private final String name;
@@ -72,15 +73,20 @@ public class PluginDependency implements Named {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
         final PluginDependency that = (PluginDependency) o;
-        return this.required == that.required && Objects.equals(this.name, that.name) && Objects.equals(this.externalUrl, that.externalUrl);
+        return this.required == that.required && Objects.equals(this.name, that.name) && Objects.equals(this.externalUrl, that.externalUrl) && Objects.equals(this.platform, that.platform);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.required, this.externalUrl);
+        return Objects.hash(this.name, this.required, this.externalUrl, this.platform);
     }
 
     public static PluginDependency of(final String name, final boolean required, final Platform platform) {
         return new PluginDependency(name, required, platform);
+    }
+
+    @Override
+    public int compareTo(final @NotNull PluginDependency o) {
+        return this.name.compareTo(o.name);
     }
 }

@@ -24,10 +24,12 @@ import io.papermc.hangar.service.internal.PlatformService;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import io.papermc.hangar.util.VersionFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,14 +80,14 @@ public class VersionDependencyService extends HangarComponent {
             platformDependenciesFormatted.put(entry.getKey(), formattedVersionRange);
         });
 
-        final Map<Platform, Set<PluginDependency>> pluginDependencies = this.versionsApiDAO.getPluginDependencies(versionId).stream()
-                .collect(Collectors.groupingBy(PluginDependency::getPlatform, Collectors.toSet()));
+        final Map<Platform, SortedSet<PluginDependency>> pluginDependencies = this.versionsApiDAO.getPluginDependencies(versionId).stream()
+                .collect(Collectors.groupingBy(PluginDependency::getPlatform, Collectors.toCollection(TreeSet::new)));
 
         final Map<Platform, PlatformVersionDownload> downloads = this.downloadService.getDownloads(user, project, versionName, versionId);
         return new DownloadsAndDependencies(pluginDependencies, platformDependencies, platformDependenciesFormatted, downloads);
     }
 
-    public record DownloadsAndDependencies(Map<Platform, Set<PluginDependency>> pluginDependencies,
+    public record DownloadsAndDependencies(Map<Platform, SortedSet<PluginDependency>> pluginDependencies,
                                     Map<Platform, SortedSet<String>> platformDependencies,
                                     Map<Platform, String> platformDependenciesFormatted,
                                     Map<Platform, PlatformVersionDownload> downloads
