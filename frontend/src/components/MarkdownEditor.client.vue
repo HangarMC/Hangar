@@ -102,7 +102,7 @@ async function startEditing() {
     maxHeight: props.maxHeight,
     previewClass: ["prose", "markdown", "background-default"],
     previewRender: (markdownPlaintext, previewElement) => {
-      const html = useDomPurify(parseMarkdown(markdownPlaintext));
+      const html = useDomPurify(parseMarkdown(markdownPlaintext)?.html);
       previewElement.innerHTML = html;
       if (typeof html.includes === "function" && html.includes("<code")) {
         usePrismStore().handlePrism();

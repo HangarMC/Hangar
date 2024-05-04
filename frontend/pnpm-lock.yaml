@@ -56,6 +56,9 @@ dependencies:
   filesize:
     specifier: 10.1.1
     version: 10.1.1
+  github-slugger:
+    specifier: 2.0.0
+    version: 2.0.0
   jsdom:
     specifier: 24.0.0
     version: 24.0.0
@@ -6200,6 +6203,10 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /github-slugger@2.0.0:
+    resolution: {integrity: sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==}
+    dev: false
 
   /glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
