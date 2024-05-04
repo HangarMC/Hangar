@@ -35,6 +35,7 @@ const emit = defineEmits<{
   (e: "update:raw", raw: string): void;
 }>();
 
+const editor = ref<HTMLTextAreaElement>();
 let easyMDE: Easymde | null = null;
 const rawEdited = ref(props.raw || "");
 const loading = reactive({
@@ -81,9 +82,8 @@ function deletePage() {
 async function startEditing() {
   internalEditing.value = true;
   await nextTick();
-  const el = document.getElementById("markdown-editor");
   easyMDE = new EasyMDE({
-    element: el as HTMLElement,
+    element: editor.value,
     autofocus: true,
     forceSync: true,
     indentWithTabs: false,
@@ -148,7 +148,7 @@ function stopEditing() {
     </div>
     <div v-if="internalEditing && !noPaddingTop" class="mt-11" :class="{ 'mt-2': hasSlotContent($slots.title) }" />
     <div v-if="internalEditing">
-      <textarea id="markdown-editor" v-model="rawEdited" class="text-left" :maxlength="maxlength"></textarea>
+      <textarea ref="editor" v-model="rawEdited" class="text-left" :maxlength="maxlength"></textarea>
     </div>
     <Markdown v-if="!internalEditing" :raw="raw" />
     <ErrorTooltip :error-messages="errors" class="w-full absolute">
