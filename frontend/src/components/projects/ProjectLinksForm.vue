@@ -7,7 +7,8 @@ const emit = defineEmits(["update:modelValue"]);
 const sections = useVModel(props, "modelValue", emit);
 const i18n = useI18n();
 
-const types = computed(() => sections.value.map((l) => l.type));
+// only top is not allowed to be duplicated... (#1342)
+const types = computed(() => sections.value.map((l) => (l.type !== "top" ? l.type + "-" + Math.random() : l.type)));
 
 function addSection() {
   let nextId = Math.max(...sections.value.map((l) => l.id)) + 1;
@@ -36,7 +37,7 @@ function removeSection(index: number) {
                 { value: 'sidebar', text: i18n.t('project.settings.links.sidebar') },
               ]"
               :label="i18n.t('project.settings.links.typeField')"
-              :rules="[required(), noDuplicated()(() => types)]"
+              :rules="[required(), noDuplicated('Can only have one top section')(() => types)]"
             />
             <InputText
               v-if="section.type !== 'top'"
