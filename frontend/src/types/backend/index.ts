@@ -392,6 +392,7 @@ export enum ChannelFlag {
   UNSTABLE = "UNSTABLE",
   PINNED = "PINNED",
   SENDS_NOTIFICATIONS = "SENDS_NOTIFICATIONS",
+  HIDE_BY_DEFAULT = "HIDE_BY_DEFAULT",
 }
 
 export enum Color {
