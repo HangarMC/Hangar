@@ -73,7 +73,7 @@ public interface IPermissionsController {
     @GetMapping(value = "/permissions",
         produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<UserPermissions> showPermissions(
-        @Parameter(description = "The slug of the project get the permissions for. Must not be used together with `organizationName`") @RequestParam(required = false) String slug,
-        @Parameter(description = "The organization to check permissions in. Must not be used together with `projectOwner` and `projectSlug`") @RequestParam(required = false) String organization
+        @Parameter(description = "The slug of the project get the permissions for. Must not be used together with `organization`") @RequestParam(required = false) String slug,
+        @Parameter(description = "The organization to check permissions in. Must not be used together with `slug`") @RequestParam(required = false) String organization
     );
 }

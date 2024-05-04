@@ -22,7 +22,6 @@ async function loadRoutePerms(to: RouteLocationNormalized) {
       }
 
       const perms = await useApi<UserPermissions>("permissions", "get", {
-        author: to.params.user,
         slug: to.params.project,
       }).catch(() => authStore.setRoutePerms(null));
       if (perms) {

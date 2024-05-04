@@ -26,13 +26,14 @@ public interface PermissionsDAO {
         return this._getGlobalPermission(null, userName);
     }
 
-    @SqlQuery("SELECT (coalesce(gt.permission, B'0'::bit(64)) | coalesce(pt.permission, B'0'::bit(64)) | coalesce(ot.permission, B'0'::bit(64)))::bigint AS perm_value" +
-        " FROM users u " +
-        "     LEFT JOIN global_trust gt ON u.id = gt.user_id" +
-        "     LEFT JOIN projects p ON lower(p.slug) = lower(:slug) OR p.id = :projectId" +
-        "     LEFT JOIN project_trust pt ON u.id = pt.user_id AND pt.project_id = p.id" +
-        "     LEFT JOIN organization_trust ot ON u.id = ot.user_id AND ot.organization_id = p.owner_id" +
-        " WHERE u.id = :userId")
+    @SqlQuery("""
+        with p as (SELECT p.id as id, p.owner_id as owner_id from projects p where lower(p.slug) = lower(:slug) OR p.id = :projectId)
+        SELECT
+            (coalesce((SELECT permission from global_trust where user_id = :userId), B'0'::bit(64)) |
+            coalesce((SELECT permission from project_trust where user_id = :userId and project_id = p.id), B'0'::bit(64)) |
+            coalesce((SELECT permission from organization_trust where user_id = :userId and organization_id = p.owner_id), B'0'::bit(64)))::bigint as perm_value
+        FROM p;
+    """)
     Permission _getProjectPermission(long userId, Long projectId, String slug);
 
     default Permission getProjectPermission(final long userId, final long projectId) {
