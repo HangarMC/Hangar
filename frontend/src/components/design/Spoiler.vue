@@ -13,60 +13,46 @@ const props = withDefaults(
     alwaysOpen: false,
   }
 );
-const el = ref<HTMLDetailsElement>();
-onMounted(() => {
-  if (!el.value) return;
-  if (props.alwaysOpen) {
-    el.value.open = true;
-  }
-  el.value?.addEventListener("toggle", (event) => {
-    if (!el.value) return;
-    if (props.alwaysOpen) {
-      el.value.open = true;
-      event.preventDefault();
-    } else {
-      el.value.open = !el.value.open;
-    }
-  });
-});
+const isOpen = ref(props.open);
+if (props.alwaysOpen) {
+  isOpen.value = true;
+}
+
+function click() {
+  if (props.alwaysOpen) return;
+  isOpen.value = !isOpen.value;
+}
 </script>
 
 <template>
-  <details ref="el" :open="open" class="spoiler-details">
-    <summary :class="alwaysOpen && 'always-open'">
+  <div class="spoiler-details">
+    <component :is="alwaysOpen ? 'div' : 'button'" class="spoiler-details__title" @click="click">
       <slot name="title">
         {{ title }}
       </slot>
-    </summary>
-    <hr v-if="withLine" class="mt-0.4rem py-1" />
-    <slot name="content" />
-  </details>
+    </component>
+    <div v-show="isOpen" :aria-hidden="isOpen">
+      <hr v-if="withLine" class="mt-0.4rem py-1" />
+      <slot name="content" />
+    </div>
+  </div>
 </template>
 
 <style lang="scss">
 .spoiler-details {
   border: 1px solid #bbb;
   border-radius: 5px;
-  padding: 0.4rem 0.4rem 0.4rem;
+  padding: 0.4rem;
   max-width: 50%;
   min-width: 300px;
-}
 
-.spoiler-details:has(.error) {
-  border-color: rgba(248, 113, 113); /* red-400 */
-}
-
-.spoiler-details summary {
-  cursor: pointer;
-  list-style: none;
-  padding: 0.2rem;
-
-  &.always-open {
-    cursor: default;
+  &__title {
+    width: 100%;
+    text-align: start;
   }
-}
 
-.spoiler-details summary::-webkit-details-marker {
-  display: none;
+  &:has(.error) {
+    border-color: rgba(248, 113, 113); /* red-400 */
+  }
 }
 </style>
