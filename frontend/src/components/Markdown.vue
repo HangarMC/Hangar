@@ -28,7 +28,7 @@ watchPostEffect(async () => {
 </script>
 
 <template>
-  <div v-if="renderedMarkdown.headings?.length > 0" class="mb-4 relative">
+  <div v-if="(renderedMarkdown.headings?.length || 0) > 0" class="mb-4 relative">
     <DropdownButton :button-arrow="false" button-size="small" class="absolute top-2 left-0">
       <template #button-label>
         <IconMdiFormatListBulleted />

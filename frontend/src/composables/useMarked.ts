@@ -85,7 +85,7 @@ marked.use(markedLinkifyIt());
 marked.use(markedAlert());
 
 export function parseMarkdown(text?: string | null) {
-  if (!text) return undefined;
+  if (!text) return {};
   return {
     html: marked.parse(text) as string,
     headings: [...headings],
