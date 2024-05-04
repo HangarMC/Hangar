@@ -22,3 +22,10 @@ export function useDomPurify(text?: string) {
 
   return dompurify.sanitize(text, config) as string;
 }
+
+export const aggressiveConfig = { ALLOWED_TAGS: ["#text"] } as Config;
+export function stripAllHtml(text?: string) {
+  if (!text) return "";
+  const dompurify = useNuxtApp().$dompurify as DOMPurifyI;
+  return dompurify.sanitize(text, aggressiveConfig) as string;
+}

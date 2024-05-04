@@ -14,7 +14,12 @@ const renderedMarkdown = computed(() => {
   const { html, headings } = parseMarkdown(props.raw);
   return {
     html: useDomPurify(html),
-    headings,
+    headings: headings
+      ?.map((heading) => ({
+        ...heading,
+        text: stripAllHtml(heading.text),
+      }))
+      .filter((heading) => heading.text.trim().length > 0),
   };
 });
 
@@ -34,7 +39,8 @@ watchPostEffect(async () => {
         <IconMdiFormatListBulleted />
       </template>
       <template #default="{ close }">
-        <div class="w-max flex flex-col">
+        <div class="w-max flex flex-col max-h-lg overflow-x-auto">
+          <!-- eslint-disable vue/no-v-html -->
           <a
             v-for="heading in renderedMarkdown.headings"
             :key="heading.id"
@@ -42,9 +48,9 @@ watchPostEffect(async () => {
             :class="'toc-' + heading.level"
             :href="`#${heading.id}`"
             @click="close"
-          >
-            {{ heading.text }}
-          </a>
+            v-html="heading.text"
+          />
+          <!-- eslint-enable vue/no-v-html -->
         </div>
       </template>
     </DropdownButton>
