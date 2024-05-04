@@ -23,12 +23,15 @@ const props = defineProps<{
 }>();
 
 const selectedTab = ref(route.params.slug?.[0] || "general");
-const tabs = [
+const tabs = ref([
   { value: "general", header: i18n.t("project.settings.tabs.general") },
   { value: "links", header: i18n.t("project.settings.tabs.links") },
-  { value: "management", header: i18n.t("project.settings.tabs.management") },
   // { value: "donation", header: i18n.t("project.settings.tabs.donation") },
-] as const satisfies Tab<string>[];
+] satisfies Tab<string>[]);
+
+if (hasPerms(NamedPermission.IsSubjectOwner) || hasPerms(NamedPermission.DeleteProject) || hasPerms(NamedPermission.HardDeleteProject)) {
+  tabs.value.push({ value: "management", header: i18n.t("project.settings.tabs.management") });
+}
 
 const form = reactive({
   settings: cloneDeep(props.project.settings),
@@ -345,12 +348,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
         <template #management>
           <ProjectSettingsSection v-if="hasPerms(NamedPermission.IsSubjectOwner)" title="project.settings.rename" description="project.settings.renameSub">
             <div class="flex items-center">
-              <InputText
-                ref="newNameField"
-                v-model.trim="newName"
-                :label="i18n.t('project.settings.newName')"
-                :rules="[validProjectName()()]"
-              />
+              <InputText ref="newNameField" v-model.trim="newName" :label="i18n.t('project.settings.newName')" :rules="[validProjectName()()]" />
               <Button :disabled="!newName || newNameField?.validation?.$invalid" :loading="loading.rename" class="ml-2" @click="rename">
                 <IconMdiRenameBox class="mr-2" />
                 {{ i18n.t("project.settings.rename") }}
