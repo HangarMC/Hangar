@@ -18,6 +18,8 @@ if (process.client) {
   document.documentElement.classList.remove("light", "dark");
   document.documentElement.classList.add(settingsStore.darkMode ? "dark" : "light");
 
+  useDebug();
+
   onNuxtReady(() => nextTick(() => (window.hangarLoaded = true)));
 }
 
