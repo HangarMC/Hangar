@@ -5,7 +5,7 @@ Scenario("Test New Project", async ({ I, util, IndexPage }) => {
     util.openHangarPage("/new");
     I.click("Agree");
 
-    const name = "E2E-" + Math.floor(Math.random() * 10000);
+    const name = "E2E-" + util.randomNumber(10000);
     I.fillField("input[name='name']", name);
     I.fillField("input[name='description']", "E2E Test Project");
     I.selectOption("select[name='category']", "Games");
