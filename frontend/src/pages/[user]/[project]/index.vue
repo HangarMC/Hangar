@@ -13,7 +13,7 @@ const openProjectPages = useOpenProjectPages(route, props.project);
 const sponsors = ref(props.project.settings.sponsors);
 const editingSponsors = ref(false);
 function saveSponsors(content: string) {
-  useInternalApi(`projects/project/${props.project.namespace.owner}/${props.project.namespace.slug}/sponsors`, "post", {
+  useInternalApi(`projects/project/${props.project.namespace.slug}/sponsors`, "post", {
     content,
   })
     .then(() => {
