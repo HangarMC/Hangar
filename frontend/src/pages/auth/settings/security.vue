@@ -300,12 +300,12 @@ function closeUnlinkModal() {
           v.$reset();
         "
       >
-        <InputText v-model="newAuthenticatorName" label="Name" :rules="[requiredIf()(() => authenticatorRenameModal.isOpen)]" />
+        <InputText v-model="newAuthenticatorName" label="Name" :rules="[requiredIf()(() => authenticatorRenameModal?.isOpen)]" />
         <Button class="mt-2" size="small" :disabled="loading" @click.prevent="renameAuthenticator">Rename</Button>
       </Modal>
     </ul>
     <div class="my-2">
-      <InputText v-model="authenticatorName" label="Name" :rules="[requiredIf()(() => totpData == undefined && !authenticatorRenameModal.isOpen)]" />
+      <InputText v-model="authenticatorName" label="Name" :rules="[requiredIf()(() => totpData == undefined && !authenticatorRenameModal?.isOpen)]" />
     </div>
     <Button :disabled="loading" @click="addAuthenticator">Setup 2FA via security key</Button>
 
@@ -365,7 +365,7 @@ function closeUnlinkModal() {
         </div>
       </div>
       Confirm that you saved the backup codes by entering one of them below
-      <InputText v-model="backupCodeConfirm" label="Backup Code" :rules="[requiredIf()(backupCodeModal.isOpen)]" />
+      <InputText v-model="backupCodeConfirm" label="Backup Code" :rules="[requiredIf()(backupCodeModal?.isOpen)]" />
       <Button class="mt-2" :disabled="v.$invalid" @click="confirmAndRepeat">Confirm</Button>
     </Modal>
 
