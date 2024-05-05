@@ -78,7 +78,7 @@ public class DownloadService extends HangarComponent {
         if (StringUtils.hasText(download.getExternalUrl())) {
             return ResponseEntity.status(301).header("Location", download.getExternalUrl()).build();
         } else if (this.fileService instanceof S3FileService){
-            return ResponseEntity.status(301).header("Location", this.fileService.getVersionDownloadUrl(ownerName, project, versionString, platform, download.getFileName())).build();
+            return ResponseEntity.status(301).header("Location", this.fileService.getVersionDownloadUrl(ownerName, projectTable.getName(), versionString, platform, download.getFileName())).build();
         } else {
             final String path = this.projectFiles.getVersionDir(ownerName, projectTable.getName(), versionString, platform, download.getFileName());
             if (!this.fileService.exists(path)) {
