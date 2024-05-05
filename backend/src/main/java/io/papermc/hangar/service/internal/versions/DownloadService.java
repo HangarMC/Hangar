@@ -80,7 +80,7 @@ public class DownloadService extends HangarComponent {
         } else if (this.fileService instanceof S3FileService){
             return ResponseEntity.status(301).header("Location", this.fileService.getVersionDownloadUrl(ownerName, project, versionString, platform, download.getFileName())).build();
         } else {
-            final String path = this.projectFiles.getVersionDir(ownerName, project, versionString, platform, download.getFileName());
+            final String path = this.projectFiles.getVersionDir(ownerName, projectTable.getName(), versionString, platform, download.getFileName());
             if (!this.fileService.exists(path)) {
                 throw new HangarApiException("Couldn't find a file for version " + versionString);
             }

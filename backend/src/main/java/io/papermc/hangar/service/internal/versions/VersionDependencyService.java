@@ -66,7 +66,7 @@ public class VersionDependencyService extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
-        return this.addDownloadsAndDependencies(projectTable.getOwnerName(), project, versionName, versionId);
+        return this.addDownloadsAndDependencies(projectTable.getOwnerName(), projectTable.getName(), versionName, versionId);
     }
 
     @Cacheable(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p3") // versionId is key
