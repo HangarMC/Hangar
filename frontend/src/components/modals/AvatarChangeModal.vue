@@ -56,6 +56,7 @@ const props = defineProps<{
   csrfToken?: string;
 }>();
 
+const v = useVuelidate({ $stopPropagation: true });
 const selectedFile = ref();
 const cropperInput = ref();
 const cropperResult = ref();
@@ -105,6 +106,7 @@ function changeImage({ canvas }: CropperResult) {
 }
 
 async function save() {
+  if (!(await v.value.$validate())) return;
   const form = new FormData();
   form.append("avatar", cropperResult.value);
   if (props.csrfToken) {
