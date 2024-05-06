@@ -35,7 +35,7 @@
         <springdoc.version>2.5.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20240303</org-json.version>
-        <bucket4j.version>7.6.1</bucket4j.version>
+        <bucket4j.version>8.0.1</bucket4j.version>
         <datafaker.version>2.2.2</datafaker.version>
         <apache-commons-lang.version>3.14.0</apache-commons-lang.version>
         <jwt.version>4.4.0</jwt.version>
