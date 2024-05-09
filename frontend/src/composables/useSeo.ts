@@ -44,10 +44,24 @@ export function useSeo(
       }),
       key: "breadcrumb",
     },
-  ];
+  ] as UseHeadInput["script"];
 
   if (additionalScripts) {
     script.push(...additionalScripts);
+  }
+
+  if (useI18n().locale.value === "dum") {
+    console.log("found crowdin language activated, lets inject the script");
+    script.push(
+      {
+        type: "text/javascript",
+        children: "var _jipt = []; _jipt.push(['project', '0cbf58a3d76226e92659632533015495']); _jipt.push(['domain', 'hangar']);",
+      },
+      {
+        type: "text/javascript",
+        src: "https://cdn.crowdin.com/jipt/jipt.js",
+      }
+    );
   }
 
   const seo = {
@@ -64,21 +78,6 @@ export function useSeo(
     meta: [],
     script,
   } as UseHeadInput;
-
-  // todo renenable crowdin integration
-  // if (context.app.i18n.locale === 'dum') {
-  //     console.log('found crowdin language activated, lets inject the script');
-  //     seo.script = seo.script ? seo.script : [];
-  //     seo.script.push({
-  //         type: 'text/javascript',
-  //         innerHTML: 'var _jipt = []; _jipt.push([\'project\', \'0cbf58a3d76226e92659632533015495\']); _jipt.push([\'domain\', \'hangar\']);'
-  //     });
-  //     seo.script.push({
-  //         type: 'text/javascript',
-  //         src: 'https://cdn.crowdin.com/jipt/jipt.js'
-  //     });
-  //     seo.__dangerouslyDisableSanitizers = ['script'];
-  // }
 
   return seo;
 }

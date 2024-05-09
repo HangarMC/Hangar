@@ -59,10 +59,11 @@ export const useSettingsStore = defineStore("settings", () => {
     import.meta.env.SSR,
     userData,
     () => useCookie("HANGAR_theme").value,
-    (loc) => (locale.value = loc),
     (dark) => (darkMode.value = dark),
     saveSettings,
-    darkMode
+    darkMode,
+    locale,
+    useNuxtApp().$i18n
   );
 
   function setupMobile() {

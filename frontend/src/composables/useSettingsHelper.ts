@@ -6,10 +6,11 @@ export function useSettingsHelper(
   ssr: boolean,
   userData: ComputedRef<{ hasUser: boolean; theme?: string; language?: string }>,
   getThemeCookie: () => string | undefined | null,
-  setLocale: (locale: string) => void,
   setTheme: (dark: boolean) => void,
   saveSettings: () => Promise<void>,
-  darkMode: Ref<boolean>
+  darkMode: Ref<boolean>,
+  locale: Ref<string>,
+  i18n: ReturnType<typeof useI18n>
 ) {
   function loadSettingsServer(event: H3Event) {
     if (!ssr) return;
@@ -55,11 +56,20 @@ export function useSettingsHelper(
       }
     }
 
-    setLocale(newLocale);
+    locale.value = newLocale;
     setTheme(theme === "dark");
   }
 
   watch(darkMode, async (newMode) => {
+    if (ssr) return;
+    await saveSettings();
+  });
+
+  watch(locale, async (newLocale) => {
+    if (!newLocale) return;
+    i18n.locale.value = newLocale;
+    await i18n.loadLocaleMessages(newLocale);
+
     if (ssr) return;
     await saveSettings();
   });

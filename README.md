@@ -1,4 +1,9 @@
 # Hangar - Paper's Plugin Repository
+[![Crowdin](https://badges.crowdin.net/e/b13e6a1c05002365ee9031712112bd63/localized.svg)](https://hangar.crowdin.com/hangar)
+[![Discord](https://img.shields.io/discord/855123416889163777?)](https://discord.gg/zvrAEbvJ4a)
+![GitHub License](https://img.shields.io/github/license/hangarmc/hangar)
+[![Swagger Validator](https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fhangar.papermc.io%2Fv3%2Fapi-docs%2Fpublic)](https://hangar.papermc.io/api-docs)
+[![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=OHFacEE0WmlHRldDajYrZFdsZUtDOFZBcmUyR1VWdWlUaStlQWJYS0xZVT0tLWRKODJVblZQblczRXMvejNQTGhEZ1E9PQ==--54e7c90dad3680579c945ff532d63909156aa024)](https://automate.browserstack.com/public-build/OHFacEE0WmlHRldDajYrZFdsZUtDOFZBcmUyR1VWdWlUaStlQWJYS0xZVT0tLWRKODJVblZQblczRXMvejNQTGhEZ1E9PQ==--54e7c90dad3680579c945ff532d63909156aa024)
 
 This is the repository for Hangar, a plugin repository used for Paper, Velocity, and Waterfall plugins and similar software.
 

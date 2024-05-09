@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-const { t } = useI18n();
+const i18n = useI18n();
+const settings = useSettingsStore();
 
 const accentColors = [
   { value: "blue", text: "Blue" },
@@ -22,12 +23,20 @@ const accentColors = [
   { value: "gray", text: "Gray" },
 ];
 const accentColor = useAccentColor();
+
+const languages = (useRuntimeConfig().public.i18n.configLocales as { code: string; name: string }[]).map((locale) => ({
+  value: locale.code,
+  text: locale.name,
+}));
 </script>
 
 <template>
   <div>
-    <PageTitle>{{ t("auth.settings.misc.header") }}</PageTitle>
+    <PageTitle>{{ i18n.t("auth.settings.misc.header") }}</PageTitle>
     <Alert type="warning" class="mb-4">The accent colors are mostly untested and full of contrast issues, proceed with caution!</Alert>
-    <InputSelect v-model="accentColor" :values="accentColors" :label="t('auth.settings.misc.accentColor')" />
+    <InputSelect v-model="accentColor" :values="accentColors" :label="i18n.t('auth.settings.misc.accentColor')" />
+
+    <Alert type="warning" class="my-4">Translations are experimental!</Alert>
+    <InputSelect v-model="settings.locale" :values="languages" :label="i18n.t('auth.settings.misc.language')" />
   </div>
 </template>

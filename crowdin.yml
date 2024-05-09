@@ -5,5 +5,5 @@ api_token_env: CROWDIN_PERSONAL_TOKEN
 preserve_hierarchy: true
 
 files:
-  - source: /frontend/locales/en.ts
-    translation: /frontend/locales/%two_letters_code%.ts
+  - source: /frontend/src/i18n/locales/en.json
+    translation: /frontend/src/i18n/locales/%two_letters_code%.ts

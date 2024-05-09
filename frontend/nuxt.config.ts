@@ -74,11 +74,16 @@ export default defineNuxtConfig({
         file: "en.json",
         name: "English",
       },
-      // {
-      //   code: "de",
-      //   file: "de.json",
-      //   name: "Deutsch",
-      // },
+      {
+        code: "de",
+        file: "de.json",
+        name: "Deutsch",
+      },
+      {
+        code: "dum",
+        file: "dum.json",
+        name: "in-context editing",
+      },
     ],
     compilation: {
       jit: false,
