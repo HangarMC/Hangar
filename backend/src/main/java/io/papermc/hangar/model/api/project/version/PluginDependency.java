@@ -8,9 +8,9 @@ import io.papermc.hangar.model.api.project.ProjectNamespace;
 import io.papermc.hangar.model.common.Platform;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 @AtLeastOneNotNull(fieldNames = {"name", "namespace"}, includeBlankStrings = true, message = "Must specify a name or namespace for a dependency")
@@ -29,6 +29,9 @@ public class PluginDependency implements Named, Comparable<PluginDependency> {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PluginDependency(final String name, final boolean required, @Nested("pn") @Deprecated(forRemoval = true) final @Nullable ProjectNamespace namespace, final @Nullable String externalUrl, final Platform platform) {
         // TODO Remove ProjectNamespace and always require name
+        if (name == null && namespace == null) {
+            throw new IllegalArgumentException("Must specify a name for a dependency");
+        }
         this.name = name != null ? name : namespace.getSlug();
         this.required = required;
         this.externalUrl = externalUrl;
