@@ -1,101 +1,129 @@
+import { watch } from "vue";
+import { type H3Event, setResponseHeader } from "h3";
+import localeParser from "accept-language-parser";
+
 export const useSettingsStore = defineStore("settings", () => {
   settingsLog("defineSettingsStore");
-  const darkMode = ref(false);
-  const locale = ref("en");
-
-  const mobile = ref(true); // True cause mobile first!!
-  const mobileBreakPoint = 700;
+  const darkMode = ref<boolean>();
 
   function toggleDarkMode() {
     darkMode.value = !unref(darkMode);
     settingsLog("toggleDarkMode", darkMode.value);
   }
 
-  function enableDarkMode() {
-    darkMode.value = true;
-    settingsLog("enableDarkMode", darkMode.value);
-  }
-
-  function disableDarkMode() {
-    darkMode.value = false;
-    settingsLog("disableDarkMode", darkMode.value);
-  }
-
-  function toggleMobile() {
-    mobile.value = !unref(mobile);
-  }
-
-  function enableMobile() {
-    mobile.value = true;
-  }
-
-  function disableMobile() {
-    mobile.value = false;
-  }
-
   const authStore = useAuthStore();
-  const userData = computed(() => {
-    return {
-      hasUser: Boolean(authStore.user),
-      theme: authStore.user?.theme,
-      language: authStore.user?.language,
-    };
-  });
+  const i18n = useNuxtApp().$i18n;
 
   async function saveSettings() {
-    const store = useAuthStore();
     const data = {
       theme: darkMode.value ? "dark" : "light",
-      language: locale.value,
+      language: useNuxtApp().$i18n.locale.value,
     };
     try {
-      await useInternalApi("users/" + (store.user?.name || "anon") + "/settings/", "post", data);
+      await useInternalApi("users/" + (authStore.user?.name || "anon") + "/settings/", "post", data);
+      if (authStore.user) {
+        authStore.user.theme = data.theme;
+        authStore.user.language = data.language;
+      }
     } catch (e) {
       settingsLog("cant save settings", e);
     }
   }
 
-  const { loadSettingsServer, loadSettingsClient } = useSettingsHelper(
-    import.meta.env.SSR,
-    userData,
-    () => useCookie("HANGAR_theme").value,
-    (dark) => (darkMode.value = dark),
-    saveSettings,
-    darkMode,
-    locale,
-    useNuxtApp().$i18n
-  );
-
-  function setupMobile() {
-    if (import.meta.env.SSR) return;
-    // For checking if on mobile or not
-    if (innerWidth <= mobileBreakPoint && !mobile.value) {
-      enableMobile();
-    } else if (innerWidth > mobileBreakPoint && mobile) {
-      disableMobile();
-    }
-    addEventListener("resize", () => {
-      if (innerWidth <= mobileBreakPoint && !mobile.value) {
-        enableMobile();
-      } else if (innerWidth > mobileBreakPoint && mobile) {
-        disableMobile();
+  function setupWatcher() {
+    watch([darkMode, () => i18n.locale.value], async (newSettings, oldSettings) => {
+      if (import.meta.env.SSR) return;
+      if (newSettings[0] === (authStore.user?.theme === "dark") && newSettings[1] === authStore.user?.language) {
+        settingsLog("settings did not change, not saving");
+        return;
       }
+      await saveSettings();
     });
+  }
+
+  async function loadSettingsServer(event: H3Event) {
+    if (!import.meta.env.SSR) return;
+    let newLocale: string;
+    let newDarkMode: boolean;
+    if (authStore.user) {
+      newLocale = authStore.user.language || "en";
+      newDarkMode = (authStore.user.theme || "light") === "dark";
+      settingsLog("user is logged in, locale = " + newLocale + ", darkMode = " + darkMode.value);
+    } else {
+      const acceptLanguageHeader = useRequestHeader("accept-language");
+      if (acceptLanguageHeader) {
+        const supportedLocales = useNuxtApp().$i18n.availableLocales;
+        const pickedLocale = localeParser.pick(supportedLocales, acceptLanguageHeader);
+        if (!pickedLocale) {
+          settingsLog("user is not logged in and could not pick locale from header, using default...", supportedLocales, acceptLanguageHeader);
+          newLocale = "en";
+        } else {
+          settingsLog("user is not logged in, picking from locale header, locale = " + pickedLocale, supportedLocales, acceptLanguageHeader);
+          newLocale = pickedLocale;
+        }
+      } else {
+        settingsLog("using default locale cause there was no header...");
+        newLocale = "en";
+      }
+
+      const cookie = useCookie("HANGAR_theme").value;
+      if (cookie) {
+        settingsLog("user is not logged in, using theme from cookie", cookie);
+        newDarkMode = cookie === "dark";
+      } else {
+        setResponseHeader(event, "Accept-CH", "Sec-CH-Prefers-Color-Scheme");
+        setResponseHeader(event, "Vary", "Sec-CH-Prefers-Color-Scheme");
+        setResponseHeader(event, "Critical-CH", "Sec-CH-Prefers-Color-Scheme");
+        const themeHeader = useRequestHeader("sec-ch-prefers-color-scheme");
+        if (themeHeader) {
+          settingsLog("user is not logged in, using theme from header", themeHeader);
+          newDarkMode = themeHeader === "dark";
+        } else {
+          settingsLog("user is not logged in and we got no theme header, using default...", themeHeader);
+          newDarkMode = false;
+        }
+      }
+    }
+
+    await i18n.loadLocaleMessages(newLocale);
+    i18n.locale.value = newLocale;
+    darkMode.value = newDarkMode;
+  }
+
+  async function loadSettingsClient() {
+    if (import.meta.env.SSR) return;
+    setupWatcher();
+
+    const cookie = useCookie("HANGAR_theme").value;
+    let newDarkMode;
+    if (authStore.user?.theme) {
+      newDarkMode = authStore.user?.theme === "dark";
+      settingsLog("user is logged in, darkmode = " + darkMode.value);
+    } else if (cookie) {
+      newDarkMode = cookie === "dark";
+      settingsLog("user is not logged in, using cookie, darkmode = " + darkMode.value);
+    } else {
+      newDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      settingsLog("user is not logged in, using media query, darkmode = " + darkMode.value);
+    }
+
+    let newLocale = authStore.user?.language;
+    if (newLocale) {
+      settingsLog("user is logged in, language = " + newLocale);
+    } else {
+      newLocale = "en";
+      settingsLog("user is not logged in, using default language");
+    }
+
+    await i18n.loadLocaleMessages(newLocale);
+    i18n.locale.value = newLocale;
+    darkMode.value = newDarkMode;
   }
 
   return {
     darkMode,
     toggleDarkMode,
-    enableDarkMode,
-    disableDarkMode,
-    mobile,
-    toggleMobile,
-    enableMobile,
-    disableMobile,
-    mobileBreakPoint,
     loadSettingsServer,
     loadSettingsClient,
-    setupMobile,
-    locale,
   };
 });

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 const i18n = useI18n();
-const settings = useSettingsStore();
 
 const accentColors = [
   { value: "blue", text: "Blue" },
@@ -24,10 +23,16 @@ const accentColors = [
 ];
 const accentColor = useAccentColor();
 
+const locale = ref(i18n.locale);
 const languages = (useRuntimeConfig().public.i18n.configLocales as { code: string; name: string }[]).map((locale) => ({
   value: locale.code,
   text: locale.name,
 }));
+
+watch(locale, async (newLocale) => {
+  await i18n.loadLocaleMessages(newLocale);
+  i18n.locale.value = newLocale;
+});
 </script>
 
 <template>
@@ -37,6 +42,6 @@ const languages = (useRuntimeConfig().public.i18n.configLocales as { code: strin
     <InputSelect v-model="accentColor" :values="accentColors" :label="i18n.t('auth.settings.misc.accentColor')" />
 
     <Alert type="warning" class="my-4">Translations are experimental!</Alert>
-    <InputSelect v-model="settings.locale" :values="languages" :label="i18n.t('auth.settings.misc.language')" />
+    <InputSelect v-model="locale" :values="languages" :label="i18n.t('auth.settings.misc.language')" />
   </div>
 </template>

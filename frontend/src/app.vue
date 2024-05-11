@@ -8,8 +8,7 @@ import type { HangarNuxtError } from "~/types/components/error";
 const runtimeConfig = useRuntimeConfig();
 const authStore = useAuthStore();
 const settingsStore = useSettingsStore();
-settingsStore.loadSettingsClient();
-settingsStore.setupMobile();
+await settingsStore.loadSettingsClient();
 useAccentColor();
 settingsLog("render for user", authStore.user?.name, "with darkmode", settingsStore.darkMode);
 

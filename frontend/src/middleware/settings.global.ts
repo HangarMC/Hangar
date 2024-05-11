@@ -1,6 +1,6 @@
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {
   if (!process.server || to.fullPath.includes("/@vite")) return;
   const event = useRequestEvent();
-
-  useSettingsStore().loadSettingsServer(event);
+  if (!event) return;
+  await useSettingsStore().loadSettingsServer(event);
 });

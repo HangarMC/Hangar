@@ -10,8 +10,7 @@ if (!(props.error?.data?.dummyError === true)) {
   // keep in sync with app.vue, cause reasons
   const authStore = useAuthStore();
   const settingsStore = useSettingsStore();
-  settingsStore.loadSettingsClient();
-  settingsStore.setupMobile();
+  await settingsStore.loadSettingsClient();
   useAccentColor();
   settingsLog("render for user", authStore.user?.name, "with darkmode", settingsStore.darkMode);
   useHead({
