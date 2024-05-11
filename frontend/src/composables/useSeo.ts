@@ -1,4 +1,4 @@
-import type { UseHeadInput } from "@unhead/vue";
+import type { UseHeadInput, Script } from "@unhead/vue";
 import type { TranslateResult } from "vue-i18n";
 import type { RouteLocationNormalized } from "vue-router/auto";
 
@@ -44,18 +44,51 @@ export function useSeo(
       }),
       key: "breadcrumb",
     },
-  ] as UseHeadInput["script"];
+  ] as Script[];
 
   if (additionalScripts) {
     script.push(...additionalScripts);
   }
 
-  if (useI18n().locale.value === "dum") {
+  if (useNuxtApp().$i18n.locale.value === "dum") {
     console.log("found crowdin language activated, lets inject the script");
     script.push(
       {
         type: "text/javascript",
-        children: "var _jipt = []; _jipt.push(['project', '0cbf58a3d76226e92659632533015495']); _jipt.push(['domain', 'hangar']);",
+        innerHTML: `var _jipt = [];
+                   _jipt.push(['project', '0cbf58a3d76226e92659632533015495']);
+                   _jipt.push(['domain', 'hangar']);
+                   _jipt.push([
+                       "edit_strings_context",
+                       (context) => {
+                           const separator = "\\n";
+                           const lineStart = "* ";
+                           const contextParts = context.split(separator);
+                           let linkCount = 0;
+
+                           for (const i in contextParts) {
+                               const line = contextParts[i];
+                               if (lineStart + window.location.href === line) {
+                                   return context;
+                               }
+
+                               if (line.indexOf(lineStart) === 0) {
+                                   linkCount++;
+                               }
+
+                               if (line === "And more...") {
+                                   return context;
+                               }
+                           }
+
+                           if (linkCount < 5) {
+                               return context + separator + lineStart + window.location.href;
+                           }
+
+                           return context + separator + "And more...";
+                       },
+                   ]);
+              `,
       },
       {
         type: "text/javascript",
@@ -64,7 +97,7 @@ export function useSeo(
     );
   }
 
-  const seo = {
+  return {
     title,
     link: [
       { rel: "canonical", href: canonical },
@@ -78,8 +111,6 @@ export function useSeo(
     meta: [],
     script,
   } as UseHeadInput;
-
-  return seo;
 }
 
 function generateBreadcrumbs(route: RouteLocationNormalized) {
