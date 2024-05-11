@@ -41,9 +41,9 @@ if (authStore.user) {
 type NavBarLinks = { link: string; label: string; icon?: any }[];
 
 const navBarLinks: NavBarLinks = [
-  { link: "index", label: "Home" },
-  { link: "authors", label: "Authors" },
-  { link: "staff", label: "Team" },
+  { link: "index", label: t("nav.indexTitle") },
+  { link: "authors", label: t("nav.authorsTitle") },
+  { link: "staff", label: t("nav.staffTitle") },
 ];
 
 const navBarMenuLinksHangar: NavBarLinks = [

@@ -6,6 +6,7 @@
     "icon": "US"
   },
   "general": {
+    "by": "by",
     "close": "Close",
     "submit": "Submit",
     "save": "Save",
@@ -83,6 +84,9 @@
     }
   },
   "nav": {
+    "indexTitle": "Home",
+    "authorsTitle": "Authors",
+    "staffTitle": "Staff",
     "login": "Login",
     "signup": "Signup",
     "user": {
@@ -946,7 +950,8 @@
       },
       "misc": {
         "header": "Other",
-        "accentColor": "Accent Color"
+        "accentColor": "Accent Color",
+        "language": "Language"
       }
     }
   },

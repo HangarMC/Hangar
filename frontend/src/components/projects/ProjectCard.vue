@@ -25,9 +25,9 @@ defineProps<{
         <div class="overflow-clip overflow-hidden min-w-0">
           <div class="inline-flex items-center gap-x-1">
             <h2>
-              <span class="text-xl font-bold">{{ project.name }}</span>
+              <span class="text-xl font-bold">{{ project.name }}&nbsp;</span>
+              <span class="text-sm"> {{i18n.t("general.by")}}&nbsp;</span>
               <span class="text-sm">
-                by
                 <object type="html/sucks">
                   <Link v-slot="{ classes }" custom>
                     <RouterLink :to="'/' + project.namespace.owner" :class="classes"> {{ project.namespace.owner }} </RouterLink>
