@@ -29,7 +29,7 @@ public class HangarApiException extends ResponseStatusException {
     }
 
     public HangarApiException(final HttpStatus status) {
-        super(status);
+        super(status, status.getReasonPhrase());
         this.httpHeaders = HttpHeaders.EMPTY;
         this.args = new String[0];
     }
@@ -47,7 +47,7 @@ public class HangarApiException extends ResponseStatusException {
     }
 
     public HangarApiException(final HttpStatus status, final HttpHeaders httpHeaders) {
-        super(status);
+        super(status, status.getReasonPhrase());
         this.httpHeaders = httpHeaders;
         this.args = new String[0];
     }
