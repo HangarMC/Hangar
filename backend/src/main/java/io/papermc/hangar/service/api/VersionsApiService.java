@@ -10,6 +10,7 @@ import io.papermc.hangar.model.api.project.version.UploadedVersion;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.api.requests.RequestPagination;
+import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.projects.ProjectTable;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -162,7 +164,7 @@ public class VersionsApiService extends HangarComponent {
     }
 
     @Transactional(readOnly = true)
-    public PaginatedResult<Version> getVersions(final String slug, final RequestPagination pagination) {
+    public PaginatedResult<Version> getVersions(final String slug, final RequestPagination pagination, final boolean includeHiddenChannels) {
         //TODO Squash queries
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final ProjectTable projectTable = this.projectService.getProjectTable(slug);
@@ -170,12 +172,16 @@ public class VersionsApiService extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
-        final List<Version> versions = this.versionsApiDAO.getVersions(projectTable.getSlug(), canSeeHidden, this.getHangarUserId(), pagination).entrySet().parallelStream()
+        Stream<Version> versions = this.versionsApiDAO.getVersions(projectTable.getSlug(), canSeeHidden, this.getHangarUserId(), pagination).entrySet().parallelStream()
             .map(entry -> this.versionDependencyService.addDownloadsAndDependencies(projectTable.getOwnerName(), projectTable.getSlug(), entry.getValue().getName(), entry.getKey()).applyTo(entry.getValue()))
-            .sorted((v1, v2) -> v2.getCreatedAt().compareTo(v1.getCreatedAt()))
-            .toList();
+            .sorted((v1, v2) -> v2.getCreatedAt().compareTo(v1.getCreatedAt()));
+
+        if (!includeHiddenChannels) {
+            versions = versions.filter(version -> !version.getChannel().getFlags().contains(ChannelFlag.HIDE_BY_DEFAULT));
+        }
+
         final Long versionCount = this.versionsApiDAO.getVersionCount(projectTable.getSlug(), canSeeHidden, this.getHangarUserId(), pagination);
-        return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount, pagination), versions);
+        return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount, pagination), versions.toList());
     }
 
     public Map<String, VersionStats> getVersionStats(final String slug, final String versionString, final OffsetDateTime fromDate, final OffsetDateTime toDate) {

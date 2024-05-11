@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -68,8 +69,10 @@ public class VersionsController implements IVersionsController {
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
     @ApplicableFilters({VersionChannelFilter.class, VersionPlatformFilter.class, VersionPlatformVersionFilter.class})
-    public PaginatedResult<Version> getVersions(final String slug, @ConfigurePagination(defaultLimitString = "@hangarConfig.projects.initVersionLoad", maxLimit = 25) final @NotNull RequestPagination pagination) {
-        return this.versionsApiService.getVersions(slug, pagination);
+    public PaginatedResult<Version> getVersions(final String slug,
+                                                @ConfigurePagination(defaultLimitString = "@hangarConfig.projects.initVersionLoad", maxLimit = 25) final @NotNull RequestPagination pagination,
+                                                @RequestParam(required = false, defaultValue = "true") final boolean includeHiddenChannels) {
+        return this.versionsApiService.getVersions(slug, pagination, includeHiddenChannels);
     }
 
     @Override

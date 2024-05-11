@@ -3,16 +3,19 @@ import { NamedPermission, Visibility, ChannelFlag } from "~/types/backend";
 import type { Platform, HangarProject, Version } from "~/types/backend";
 
 const i18n = useI18n();
+const router = useRouter();
 const route = useRoute("user-project-versions");
 
+const toArray = <T,>(input: unknown): T => (Array.isArray(input) ? input : input ? [input] : []) as T;
 const filter = reactive({
-  channels: [] as string[],
-  platforms: [] as Platform[],
+  channels: toArray<string[]>(route.query.channel),
+  platforms: toArray<Platform[]>(route.query.platform),
   allChecked: {
     channels: true,
     platforms: true,
   },
 });
+console.log("loaded filters", filter);
 
 const props = defineProps<{
   project: HangarProject;
@@ -20,7 +23,7 @@ const props = defineProps<{
 
 const platforms = computed(() => [...(useBackendData.platforms?.values() || [])]);
 const pagination = ref();
-const page = ref(0);
+const page = ref(route.query.page ? Number(route.query.page) : 0);
 const requestParams = computed(() => {
   const limit = 7;
   return {
@@ -31,17 +34,25 @@ const requestParams = computed(() => {
   };
 });
 
-const results = await Promise.all([useProjectChannels(route.params.project), useProjectVersions(route.params.project, requestParams.value)]);
+const results = await Promise.all([
+  useProjectChannels(route.params.project),
+  useProjectVersions(route.params.project, { ...requestParams.value, includeHiddenChannels: route.query.channel != null }),
+]);
 const channels = results[0].data;
 const versions = results[1];
-filter.channels.push(...channels.value.filter((c) => !c.flags.includes(ChannelFlag.HIDE_BY_DEFAULT)).map((c) => c.name));
-filter.platforms.push(...platforms.value.map((p) => p.enumName));
+if (!route.query.channel) {
+  filter.channels.push(...channels.value.filter((c) => !c.flags.includes(ChannelFlag.HIDE_BY_DEFAULT)).map((c) => c.name));
+}
+if (!route.query.platform) {
+  filter.platforms.push(...platforms.value.map((p) => p.enumName));
+}
 
 useHead(useSeo("Versions | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 
 const pageChangeScrollAnchor = ref<Element>();
 
 async function update(newPage: number) {
+  console.log("update", requestParams.value);
   page.value = newPage;
   versions.value = (await useProjectVersions(route.params.project, requestParams.value))?.value;
 }
@@ -56,7 +67,12 @@ watch(
       versions.value.result = [];
       return;
     }
-
+    // dont want limit in url, its hardcoded in frontend
+    // offset we dont want, we set page instead
+    const { limit, offset, ...paramsWithoutLimit } = requestParams.value;
+    // set the request params
+    await router.replace({ query: { page: page.value, ...paramsWithoutLimit } });
+    // do the update
     await update(0);
   },
   { deep: true }

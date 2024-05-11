@@ -105,14 +105,15 @@ public interface IVersionsController {
     })
     @GetMapping("/projects/{slug}/versions")
     PaginatedResult<Version> getVersions(@Parameter(description = "The slug of the project to return versions for") @PathVariable String slug,
-                                         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
+                                         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination,
+                                         @Parameter(description = "Whether to include hidden-by-default channels in the result, defaults to try") boolean includeHiddenChannels);
 
     @GetMapping("/projects/{author}/{slug}/versions")
     @Deprecated(forRemoval = true)
     default PaginatedResult<Version> getVersions(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
                                          @Parameter(description = "The slug of the project to return versions for") @PathVariable String slug,
                                          @Parameter(description = "Pagination information") @NotNull RequestPagination pagination) {
-        return this.getVersions(slug, pagination);
+        return this.getVersions(slug, pagination, true);
     }
 
     @Operation(
