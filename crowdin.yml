@@ -6,4 +6,4 @@ preserve_hierarchy: true
 
 files:
   - source: /frontend/src/i18n/locales/en.json
-    translation: /frontend/src/i18n/locales/%two_letters_code%.ts
+    translation: /frontend/src/i18n/locales/%two_letters_code%.json
