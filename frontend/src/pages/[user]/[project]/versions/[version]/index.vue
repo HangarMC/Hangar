@@ -351,14 +351,17 @@ async function restoreVersion() {
 
 <style lang="scss" scoped>
 /* firefox doesn't seem to respect flex-basis properly, so we add a max width, but we need to subtract the gap... */
-.firefox-hack {
-  > :first-child {
-    flex-basis: 73.3333333333%;
-    max-width: calc(73.3333333333% - 0.5rem);
-  }
-  > :last-child {
-    flex-basis: 26.6666666667%;
-    max-width: calc(26.6666666667% - 0.5rem);
+@media (min-width: 1024px) {
+  .firefox-hack {
+    > :first-child {
+      flex-basis: 73.3333333333%;
+      max-width: calc(73.3333333333% - 0.5rem);
+    }
+
+    > :last-child {
+      flex-basis: 26.6666666667%;
+      max-width: calc(26.6666666667% - 0.5rem);
+    }
   }
 }
 </style>
