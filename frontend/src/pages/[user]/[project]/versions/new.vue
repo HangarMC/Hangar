@@ -148,6 +148,7 @@ const changelogRules = [requiredIf()(() => selectedStep.value === "changelog")];
 
 const v = useVuelidate();
 
+const timeout = ref(30_000);
 async function createPendingVersion() {
   selectedPlatforms.value.splice(0);
 
@@ -172,9 +173,16 @@ async function createPendingVersion() {
     })
   );
 
-  pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project.id}/upload`, "post", formData, { timeout: 45000 }).catch<any>(
-    (e) => handleRequestError(e)
-  );
+  pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project.id}/upload`, "post", formData, {
+    timeout: timeout.value,
+  }).catch<any>((e) => {
+    if (e.code === "ECONNABORTED") {
+      notification.error("The request timed out, please try again.");
+      timeout.value = timeout.value * 2;
+    } else {
+      handleRequestError(e);
+    }
+  });
   loading.create = false;
 
   if (pendingVersion.value && currentChannel.value) {
