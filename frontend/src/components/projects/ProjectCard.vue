@@ -26,7 +26,7 @@ defineProps<{
           <div class="inline-flex items-center gap-x-1">
             <h2>
               <span class="text-xl font-bold">{{ project.name }}&nbsp;</span>
-              <span class="text-sm"> {{i18n.t("general.by")}}&nbsp;</span>
+              <span class="text-sm"> {{ i18n.t("general.by") }}&nbsp;</span>
               <span class="text-sm">
                 <object type="html/sucks">
                   <Link v-slot="{ classes }" custom>

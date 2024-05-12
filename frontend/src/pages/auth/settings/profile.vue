@@ -82,6 +82,6 @@ async function saveProfile() {
       </div>
     </div>
 
-    <Button type="submit" class="w-max mt-2" :disabled="loading" @click.prevent="saveProfile">{{ t('general.save') }}</Button>
+    <Button type="submit" class="w-max mt-2" :disabled="loading" @click.prevent="saveProfile">{{ t("general.save") }}</Button>
   </div>
 </template>

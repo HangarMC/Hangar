@@ -266,15 +266,15 @@ function closeUnlinkModal() {
 <template>
   <div v-if="auth.user">
     <PageTitle>{{ t("auth.settings.security.header") }}</PageTitle>
-    <h3 class="text-lg font-bold mb-2"> {{ t("auth.settings.security.authApp") }} </h3>
+    <h3 class="text-lg font-bold mb-2">{{ t("auth.settings.security.authApp") }}</h3>
     <Button v-if="settings?.hasTotp" :disabled="loading" @click="unlinkTotp">Unlink totp</Button>
     <Button v-else-if="!totpData" :disabled="loading" @click="setupTotp"> {{ t("auth.settings.security.button.setupAuthApp") }} </Button>
     <div v-else class="flex lt-sm:flex-col gap-8">
       <div class="flex flex-col gap-2 basis-1/2">
-        <p> {{ t("auth.settings.security.authAppSetup.scan") }} </p>
-        <p> {{ t("auth.settings.security.authAppSetup.cantScan") }} </p>
+        <p>{{ t("auth.settings.security.authAppSetup.scan") }}</p>
+        <p>{{ t("auth.settings.security.authAppSetup.cantScan") }}</p>
         <div class="mt-auto flex flex-col gap-2">
-          <p> {{ t("auth.settings.security.authAppSetup.enterTotp") }} </p>
+          <p>{{ t("auth.settings.security.authAppSetup.enterTotp") }}</p>
           <InputText v-model="totpCode" label="TOTP Code" inputmode="numeric" :rules="[requiredIf()(() => totpData != undefined)]" />
           <Button :disabled="loading || v.$invalid" @click="addTotp"> {{ t("auth.settings.security.authAppSetup.verifyTotp") }} </Button>
         </div>
@@ -285,12 +285,16 @@ function closeUnlinkModal() {
       </div>
     </div>
 
-    <h3 class="text-lg font-bold mt-4 mb-2"> {{ t("auth.settings.security.securityKeys.name") }} </h3>
+    <h3 class="text-lg font-bold mt-4 mb-2">{{ t("auth.settings.security.securityKeys.name") }}</h3>
     <ul v-if="settings?.authenticators">
       <li v-for="authenticator in settings.authenticators" :key="authenticator.id" class="my-1">
         {{ authenticator.displayName }} <small class="mr-2">(added at <PrettyTime :time="authenticator.addedAt" long />)</small>
-        <Button size="small" :disabled="loading" @click.prevent="unregisterAuthenticator(authenticator)"> {{ t("auth.settings.security.securityKeys.unregister") }} </Button>
-        <Button class="ml-2" size="small" :disabled="loading" @click.prevent="renameAuthenticatorModal(authenticator)"> {{ t("auth.settings.security.securityKeys.rename") }} </Button>
+        <Button size="small" :disabled="loading" @click.prevent="unregisterAuthenticator(authenticator)">
+          {{ t("auth.settings.security.securityKeys.unregister") }}
+        </Button>
+        <Button class="ml-2" size="small" :disabled="loading" @click.prevent="renameAuthenticatorModal(authenticator)">
+          {{ t("auth.settings.security.securityKeys.rename") }}
+        </Button>
       </li>
       <Modal
         ref="authenticatorRenameModal"
@@ -300,17 +304,27 @@ function closeUnlinkModal() {
           v.$reset();
         "
       >
-        <InputText v-model="newAuthenticatorName" :label="t('auth.settings.security.securityKeys.keyName')" :rules="[requiredIf()(() => authenticatorRenameModal?.isOpen)]" />
-        <Button class="mt-2" size="small" :disabled="loading" @click.prevent="renameAuthenticator"> {{ t("auth.settings.security.securityKeys.rename") }} </Button>
+        <InputText
+          v-model="newAuthenticatorName"
+          :label="t('auth.settings.security.securityKeys.keyName')"
+          :rules="[requiredIf()(() => authenticatorRenameModal?.isOpen)]"
+        />
+        <Button class="mt-2" size="small" :disabled="loading" @click.prevent="renameAuthenticator">
+          {{ t("auth.settings.security.securityKeys.rename") }}
+        </Button>
       </Modal>
     </ul>
     <div class="my-2">
-      <InputText v-model="authenticatorName" :label="t('auth.settings.security.securityKeys.keyName')" :rules="[requiredIf()(() => totpData == undefined && !authenticatorRenameModal?.isOpen)]" />
+      <InputText
+        v-model="authenticatorName"
+        :label="t('auth.settings.security.securityKeys.keyName')"
+        :rules="[requiredIf()(() => totpData == undefined && !authenticatorRenameModal?.isOpen)]"
+      />
     </div>
     <Button :disabled="loading" @click="addAuthenticator"> {{ t("auth.settings.security.button.setupSecurityKey") }} </Button>
 
     <template v-if="settings?.hasBackupCodes">
-      <h3 class="text-lg font-bold mt-4 mb-2"> {{ t("auth.settings.security.backupCodes.name") }} </h3>
+      <h3 class="text-lg font-bold mt-4 mb-2">{{ t("auth.settings.security.backupCodes.name") }}</h3>
       <div v-if="showCodes" class="flex flex-wrap mt-2 mb-2">
         <div v-for="code in codes" :key="code.code" class="basis-3/12">
           <code>{{ code["used_at"] ? t("general.used") : code.code }}</code>
@@ -339,8 +353,8 @@ function closeUnlinkModal() {
         :disabled="!settings?.hasPassword && settings?.oauthConnections.length === 1"
         :title="
           !settings?.hasPassword && settings?.oauthConnections.length === 1
-            // ? t('auth.settings.security.unlinkOAuth.cantUnlink') Doesn't work
-            ? 'You can\'t unlink your last oauth credential if you don\'t have a password set'
+            ? // ? t('auth.settings.security.unlinkOAuth.cantUnlink') Doesn't work
+              'You can\'t unlink your last oauth credential if you don\'t have a password set'
             : undefined
         "
         @click="unlinkOAuth(credential.provider, credential.id)"
@@ -354,7 +368,7 @@ function closeUnlinkModal() {
     </div>
 
     <Modal ref="oauthModal" :title="t('auth.settings.security.unlinkOAuth.modal.title')" @close="closeUnlinkModal">
-      <p> {{ t("auth.settings.security.unlinkOAuth.modal.message", [currentlyUnlinkingProvider]) }} </p>
+      <p>{{ t("auth.settings.security.unlinkOAuth.modal.message", [currentlyUnlinkingProvider]) }}</p>
       <Link :href="unlinkUrl" target="_blank"> {{ t("auth.settings.security.unlinkOAuth.modal.unlinkUrl", [currentlyUnlinkingProvider]) }} </Link>
     </Modal>
 
@@ -366,7 +380,11 @@ function closeUnlinkModal() {
         </div>
       </div>
       {{ t("auth.settings.security.backupCodes.modal.confirm") }}
-      <InputText v-model="backupCodeConfirm" :label="t('auth.settings.security.backupCodes.modal.backupCode')" :rules="[requiredIf()(backupCodeModal?.isOpen)]" />
+      <InputText
+        v-model="backupCodeConfirm"
+        :label="t('auth.settings.security.backupCodes.modal.backupCode')"
+        :rules="[requiredIf()(backupCodeModal?.isOpen)]"
+      />
       <Button class="mt-2" :disabled="v.$invalid" @click="confirmAndRepeat">{{ t("general.confirm") }}</Button>
     </Modal>
 
