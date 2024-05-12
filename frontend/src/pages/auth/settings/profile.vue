@@ -51,7 +51,7 @@ async function saveProfile() {
   <div v-if="auth.user">
     <PageTitle>{{ t("auth.settings.profile.header") }}</PageTitle>
 
-    <h3 class="text-lg font-bold mb-2">Avatar</h3>
+    <h3 class="text-lg font-bold mb-2">{{ t("auth.settings.profile.avatar") }}</h3>
     <div class="relative">
       <UserAvatar :username="auth.user.name" :avatar-url="auth.user.avatarUrl" />
       <AvatarChangeModal :avatar="auth.user.avatarUrl" :action="`users/${auth.user.name}/settings/avatar`">
@@ -61,15 +61,15 @@ async function saveProfile() {
       </AvatarChangeModal>
     </div>
 
-    <h3 class="text-lg font-bold mt-4 mb-2">Tagline</h3>
-    <InputText v-model="profileForm.tagline" label="Tagline" counter :maxlength="useBackendData.validations.userTagline.max" />
+    <h3 class="text-lg font-bold mt-4 mb-2">{{ t("auth.settings.profile.tagline") }}</h3>
+    <InputText v-model="profileForm.tagline" :label="t('auth.settings.profile.avatar')" counter :maxlength="useBackendData.validations.userTagline.max" />
 
-    <h3 class="text-lg font-bold mt-4">Social</h3>
+    <h3 class="text-lg font-bold mt-4">{{ t("auth.settings.profile.social") }}</h3>
     <div v-for="(link, idx) in profileForm.socials" :key="link[0]" class="flex items-center mt-2">
       <span class="w-25">{{ linkTypes.find((e) => e.value === link[0])?.text }}</span>
       <div class="w-75">
         <InputText v-if="link[0] === 'website'" v-model="link[1]" label="URL" :rules="[required(), validUrl()]" />
-        <InputText v-else v-model="link[1]" label="Username" :rules="[required()]" />
+        <InputText v-else v-model="link[1]" :label="t('auth.settings.account.username')" :rules="[required()]" />
       </div>
       <IconMdiBin class="ml-2 w-6 h-6 cursor-pointer hover:color-red" @click="removeLink(idx)" />
     </div>
@@ -78,10 +78,10 @@ async function saveProfile() {
         <Button button-type="secondary" @click.prevent="addLink">Add link</Button>
       </div>
       <div class="w-75">
-        <InputSelect v-model="linkType" :values="linkTypes" label="Type" />
+        <InputSelect v-model="linkType" :values="linkTypes" :label="t('project.settings.links.typeField')" />
       </div>
     </div>
 
-    <Button type="submit" class="w-max mt-2" :disabled="loading" @click.prevent="saveProfile">Save</Button>
+    <Button type="submit" class="w-max mt-2" :disabled="loading" @click.prevent="saveProfile">{{ t('general.save') }}</Button>
   </div>
 </template>
