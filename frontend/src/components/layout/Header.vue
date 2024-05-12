@@ -47,12 +47,12 @@ const navBarLinks: NavBarLinks = [
 ];
 
 const navBarMenuLinksHangar: NavBarLinks = [
-  { link: "index", label: "Home", icon: IconMdiHome },
-  { link: "guidelines", label: "Resource Guidelines", icon: IconMdiFileDocumentAlert },
-  { link: "new", label: "Create Project", icon: IconMdiFolderPlusOutline },
-  { link: "neworganization", label: "Create Organization", icon: IconMdiFolderPlusOutline },
-  { link: "authors", label: "Authors", icon: IconMdiAccountGroup },
-  { link: "staff", label: "Team", icon: IconMdiAccountGroup },
+  { link: "index", label: t("general.home"), icon: IconMdiHome },
+  { link: "guidelines", label: t("guidelines.title"), icon: IconMdiFileDocumentAlert },
+  { link: "new", label: t("nav.links.createProject"), icon: IconMdiFolderPlusOutline },
+  { link: "neworganization", label: t("nav.links.createOrganization"), icon: IconMdiFolderPlusOutline },
+  { link: "authors", label: t("nav.authorsTitle"), icon: IconMdiAccountGroup },
+  { link: "staff", label: t("nav.staffTitle"), icon: IconMdiAccountGroup },
 ];
 if (!authStore.user) {
   navBarMenuLinksHangar.splice(2, 2);

@@ -139,6 +139,10 @@
       "javadocs": "JavaDocs",
       "downloads": "Downloads",
       "community": "Community"
+    },
+    "links": {
+      "createProject": "Create Project",
+      "createOrganization": "Create Organization"
     }
   },
   "guidelines": {
