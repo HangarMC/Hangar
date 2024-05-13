@@ -302,7 +302,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
                 <p>{{ i18n.t("project.settings.iconSub") }}</p>
               </div>
               <div class="col-span-2">
-                <InputFile v-model="projectIcon" accept="image/png, image/jpeg" show-size />
+                <InputFile v-model="projectIcon" accept="image/png, image/jpeg, image/webp" show-size />
               </div>
               <Button :disabled="!cropperResult" :loading="loading.uploadIcon" @click="uploadIcon">
                 <IconMdiUpload />

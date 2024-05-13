@@ -11,7 +11,7 @@
         v-model="selectedFile"
         :placeholder="t('settings.avatar.inputPlaceholder')"
         :rules="[required(), maxFileSize()(useBackendData.validations.project.maxFileSize)]"
-        accept="image/png,image/jpeg"
+        accept="image/png,image/jpeg,image/webp"
       />
     </div>
     <cropper
