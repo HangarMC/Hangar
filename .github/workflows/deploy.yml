@@ -91,7 +91,7 @@ jobs:
         run: (cd frontend && pnpm lint:eslint)
 
       - name: Sync forth and back with crowdin
-        uses: crowdin/github-action@v1.20.3
+        uses: crowdin/github-action@v1.20.4
         with:
           upload_sources: true
           download_translations: true
