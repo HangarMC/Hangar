@@ -41,18 +41,18 @@ if (authStore.user) {
 type NavBarLinks = { link: string; label: string; icon?: any }[];
 
 const navBarLinks: NavBarLinks = [
-  { link: "index", label: "Home" },
-  { link: "authors", label: "Authors" },
-  { link: "staff", label: "Team" },
+  { link: "index", label: t("nav.indexTitle") },
+  { link: "authors", label: t("nav.authorsTitle") },
+  { link: "staff", label: t("nav.staffTitle") },
 ];
 
 const navBarMenuLinksHangar: NavBarLinks = [
-  { link: "index", label: "Home", icon: IconMdiHome },
-  { link: "guidelines", label: "Resource Guidelines", icon: IconMdiFileDocumentAlert },
-  { link: "new", label: "Create Project", icon: IconMdiFolderPlusOutline },
-  { link: "neworganization", label: "Create Organization", icon: IconMdiFolderPlusOutline },
-  { link: "authors", label: "Authors", icon: IconMdiAccountGroup },
-  { link: "staff", label: "Team", icon: IconMdiAccountGroup },
+  { link: "index", label: t("general.home"), icon: IconMdiHome },
+  { link: "guidelines", label: t("guidelines.title"), icon: IconMdiFileDocumentAlert },
+  { link: "new", label: t("nav.links.createProject"), icon: IconMdiFolderPlusOutline },
+  { link: "neworganization", label: t("nav.links.createOrganization"), icon: IconMdiFolderPlusOutline },
+  { link: "authors", label: t("nav.authorsTitle"), icon: IconMdiAccountGroup },
+  { link: "staff", label: t("nav.staffTitle"), icon: IconMdiAccountGroup },
 ];
 if (!authStore.user) {
   navBarMenuLinksHangar.splice(2, 2);

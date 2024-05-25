@@ -44,16 +44,16 @@ async function saveAccount() {
   <div v-if="auth.user">
     <PageTitle>{{ t("auth.settings.account.header") }}</PageTitle>
     <form class="flex flex-col gap-2">
-      <InputText v-model="accountForm.username" label="Username" :rules="[required()]" />
+      <InputText v-model="accountForm.username" :label="t('auth.settings.account.username')" :rules="[required()]" />
       <span class="text-sm opacity-85 -mt-1.5">Note that you can only change your username once every 30 days.</span>
       <InputText v-model="accountForm.email" label="Email" autofill="username" autocomplete="username" :rules="[required(), email()]" />
       <Button v-if="!settings?.emailConfirmed" class="w-max" size="small" :disabled="loading" @click.prevent="$emit('openEmailConfirmModal')">
-        Verify email
+        {{ t("auth.settings.account.verifyEmail") }}
       </Button>
       <template v-if="settings?.hasPassword">
         <InputPassword
           v-model="accountForm.currentPassword"
-          label="Current password"
+          :label="t('auth.settings.account.currentPassword')"
           name="current-password"
           autofill="current-password"
           autocomplete="current-password"
@@ -61,14 +61,14 @@ async function saveAccount() {
         />
         <InputPassword
           v-model="accountForm.newPassword"
-          label="New password (optional)"
+          :label="t('auth.settings.account.newPassword')"
           name="new-password"
           autofill="new-password"
           autocomplete="new-password"
         />
       </template>
       <div v-if="error" class="text-red">{{ error }}</div>
-      <Button type="submit" class="w-max" :disabled="loading" @click.prevent="saveAccount">Save</Button>
+      <Button type="submit" class="w-max" :disabled="loading" @click.prevent="saveAccount">{{ t("general.save") }}</Button>
     </form>
   </div>
 </template>
