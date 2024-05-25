@@ -1,4 +1,4 @@
-*.ts
 *.json
-!en.ts
 !en.json
+processed
+processed/en.json

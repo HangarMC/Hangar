@@ -1,34 +1,14 @@
-import * as fs from "node:fs";
 import IconsResolver from "unplugin-icons/resolver";
 // import EslintPlugin from "vite-plugin-eslint";
 import Components from "unplugin-vue-components/vite";
 import type { ProxyOptions } from "@nuxt-alt/proxy";
 import { defineNuxtConfig } from "nuxt/config";
-import type { LocaleObject } from "@nuxtjs/i18n";
+import { loadLocales } from "./src/i18n/i18n-util";
 
 const backendHost = process.env.BACKEND_HOST || "http://localhost:8080";
 const local = true; // set to false if backendData should be fetched from staging. You might need to hard reload (Ctrl+F5) the next page you're on when changing this value
 const backendDataHost = process.env.BACKEND_DATA_HOST || (local ? "http://localhost:8080" : "https://hangar.papermc.dev");
 const allowIndexing = process.env.HANGAR_ALLOW_INDEXING || "true";
-
-const locales: LocaleObject[] = [];
-for (const file of fs.readdirSync("./src/i18n/locales")) {
-  if (file === "dum.json") {
-    locales.push({
-      code: "dum",
-      file,
-      name: "In-Context Editor",
-    });
-  } else if (file.endsWith(".json")) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const locale = require("./src/i18n/locales/" + file.replace(".json", ""));
-    locales.push({
-      code: locale.meta.code,
-      file,
-      name: locale.meta.name,
-    });
-  }
-}
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
@@ -87,9 +67,9 @@ export default defineNuxtConfig({
     vueI18n: "./src/i18n/i18n.config.ts",
     strategy: "no_prefix",
     lazy: true,
-    langDir: "./i18n/locales",
+    langDir: "./i18n/locales/processed",
     defaultLocale: "en",
-    locales,
+    locales: loadLocales(),
     detectBrowserLanguage: false,
     compilation: {
       jit: false,
