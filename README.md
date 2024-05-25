@@ -65,7 +65,7 @@ new translations or comment/vote on existing translations. You can learn more ab
 
 #### Getting translations locally (mostly for developers, requires Crowdin CLI, ran in root folder):
 
-`crowdin pull --skip-untranslated-strings -b master -T <PAT>`
+`crowdin pull -b master -T <PAT>`
 
 You might want to set the env var `TRANSLATION_MODE` to true in order to get warnings about untranslated strings.
 

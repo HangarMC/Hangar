@@ -351,12 +351,7 @@ function closeUnlinkModal() {
         v-for="credential in settings?.oauthConnections"
         :key="credential.provider + credential.id"
         :disabled="!settings?.hasPassword && settings?.oauthConnections.length === 1"
-        :title="
-          !settings?.hasPassword && settings?.oauthConnections.length === 1
-            ? // ? t('auth.settings.security.unlinkOAuth.cantUnlink') Doesn't work
-              'You can\'t unlink your last oauth credential if you don\'t have a password set'
-            : undefined
-        "
+        :title="!settings?.hasPassword && settings?.oauthConnections.length === 1 ? t('auth.settings.security.unlinkOAuth.cantUnlink') : undefined"
         @click="unlinkOAuth(credential.provider, credential.id)"
       >
         <template v-if="credential.provider === 'github'">

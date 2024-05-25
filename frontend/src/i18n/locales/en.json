@@ -608,7 +608,6 @@
         "unstable": "Versions are to be considered unstable",
         "pinned": "Latest version is pinned on main project page",
         "sends_notifications": "New versions in this channel send notifications to watching users",
-        "pinned": "Latest version is pinned on main project page",
         "hide_by_default": "De-select this channel on the versions page"
       },
       "error": {
