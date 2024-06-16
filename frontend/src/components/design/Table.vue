@@ -6,6 +6,13 @@
 
 <style lang="scss">
 .simple-table {
+  table-layout: fixed;
+  overflow-wrap: break-word;
+
+  @media (min-width: 768px) {
+    table-layout: auto;
+  }
+
   td,
   th {
     padding: 0.5rem;

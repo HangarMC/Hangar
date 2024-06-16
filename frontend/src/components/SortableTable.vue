@@ -93,9 +93,9 @@ const slots = defineSlots<
         <th v-for="header in headers" :key="header.name" :style="header.width ? 'width: ' + header.width : ''" @click="click(header)">
           <div class="items-center inline-flex" :cursor="header.sortable ? 'pointer' : 'auto'">
             <span class="mr-2"> {{ header.title }}</span>
-            <IconMdiSortAscending v-if="sorter[header.name] === 1" />
-            <IconMdiSortDescending v-else-if="sorter[header.name] === -1" />
-            <IconMdiSort v-else-if="header.sortable" class="text-gray-400" />
+            <IconMdiSortAscending v-if="sorter[header.name] === 1" class="hidden md:block" />
+            <IconMdiSortDescending v-else-if="sorter[header.name] === -1" class="hidden md:block" />
+            <IconMdiSort v-else-if="header.sortable" class="text-gray-400 hidden md:block" />
           </div>
         </th>
       </tr>
