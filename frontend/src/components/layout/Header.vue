@@ -206,7 +206,7 @@ function isRecent(date: string): boolean {
             v-for="navBarLink in navBarLinks"
             :key="navBarLink.label"
             :to="{ name: navBarLink.link }"
-            class="relative"
+            class="header-link relative"
             after="absolute content-empty block w-0 top-30px left-1/10 h-4px rounded-8px"
           >
             {{ navBarLink.label }}
@@ -367,14 +367,14 @@ nav .router-link-active {
   font-weight: 700;
 }
 
-nav a.router-link-active:after {
+.header-link.router-link-active:after {
   content: "";
   background: linear-gradient(-270deg, var(--primary-500) 0%, var(--primary-400) 100%);
   transition: width 0.2s ease-in;
   width: 80%;
 }
 
-nav a:not(.router-link-active):hover:after {
+.header-link:not(.router-link-active):hover:after {
   background: #d3e1f6;
   transition: width 0.2s ease-in;
   width: 80%;
