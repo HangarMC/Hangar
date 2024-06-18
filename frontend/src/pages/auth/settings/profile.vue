@@ -62,7 +62,7 @@ async function saveProfile() {
     </div>
 
     <h3 class="text-lg font-bold mt-4 mb-2">{{ t("auth.settings.profile.tagline") }}</h3>
-    <InputText v-model="profileForm.tagline" :label="t('auth.settings.profile.avatar')" counter :maxlength="useBackendData.validations.userTagline.max" />
+    <InputText v-model="profileForm.tagline" :label="t('auth.settings.profile.tagline')" counter :maxlength="useBackendData.validations.userTagline.max" />
 
     <h3 class="text-lg font-bold mt-4">{{ t("auth.settings.profile.social") }}</h3>
     <div v-for="(link, idx) in profileForm.socials" :key="link[0]" class="flex items-center mt-2">
