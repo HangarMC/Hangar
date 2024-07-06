@@ -1,11 +1,13 @@
 package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.webhook.service.WebhookService;
 import io.papermc.hangar.db.dao.internal.table.JobsDAO;
 import io.papermc.hangar.model.db.JobTable;
 import io.papermc.hangar.model.internal.job.Job;
 import io.papermc.hangar.model.internal.job.JobException;
 import io.papermc.hangar.model.internal.job.SendMailJob;
+import io.papermc.hangar.model.internal.job.SendWebhookJob;
 import io.papermc.hangar.util.ThreadFactory;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
@@ -25,13 +27,15 @@ public class JobService extends HangarComponent {
 
     private final JobsDAO jobsDAO;
     private final MailService mailService;
+    private final WebhookService webhookService;
 
     private ExecutorService executorService;
 
     @Autowired
-    public JobService(final JobsDAO jobsDAO, @Lazy final MailService mailService) {
+    public JobService(final JobsDAO jobsDAO, @Lazy final MailService mailService, @Lazy final WebhookService webhookService) {
         this.jobsDAO = jobsDAO;
         this.mailService = mailService;
+        this.webhookService = webhookService;
     }
 
     @PostConstruct
@@ -55,8 +59,11 @@ public class JobService extends HangarComponent {
     }
 
     @Transactional
-    public void schedule(final Job job) {
-        this.jobsDAO.save(job.toTable());
+    public void schedule(final Job... jobs) {
+        for (final Job job : jobs) {
+            logger.info("Scheduling job: {}", job);
+            this.jobsDAO.save(job.toTable());
+        }
     }
 
     public void process() {
@@ -103,6 +110,11 @@ public class JobService extends HangarComponent {
             case SEND_EMAIL -> {
                 final SendMailJob sendMailJob = SendMailJob.loadFromTable(job);
                 this.mailService.sendMail(sendMailJob.getSubject(), sendMailJob.getRecipient(), sendMailJob.getText());
+            }
+            // webhook
+            case SEND_WEBHOOK -> {
+                final SendWebhookJob sendWebhookJob = SendWebhookJob.loadFromTable(job);
+                this.webhookService.sendWebhook(sendWebhookJob);
             }
             default -> throw new JobException("Unknown job type " + job, "unknown_job_type");
         }

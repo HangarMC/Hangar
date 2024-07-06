@@ -1,6 +1,10 @@
 package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.images.service.AvatarService;
+import io.papermc.hangar.components.webhook.model.event.ProjectPublishedEvent;
+import io.papermc.hangar.components.webhook.model.event.VersionPublishedEvent;
+import io.papermc.hangar.components.webhook.service.WebhookService;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
@@ -86,9 +90,11 @@ public class VersionFactory extends HangarComponent {
     private final FileService fileService;
     private final JarScanningService jarScanningService;
     private final ReviewService reviewService;
+    private final WebhookService webhookService;
+    private final AvatarService avatarService;
 
     @Autowired
-    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService) {
+    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService, final WebhookService webhookService, final AvatarService avatarService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.projectVersionsDAO = projectVersionDAO;
@@ -106,6 +112,8 @@ public class VersionFactory extends HangarComponent {
         this.fileService = fileService;
         this.jarScanningService = jarScanningService;
         this.reviewService = reviewService;
+        this.webhookService = webhookService;
+        this.avatarService = avatarService;
     }
 
     @Transactional
@@ -309,6 +317,16 @@ public class VersionFactory extends HangarComponent {
             }
             this.actionLogger.version(LogAction.VERSION_CREATED.create(VersionContext.of(projectId, projectVersionTable.getId()), "published", ""));
 
+            // send webhooks
+            final List<String> platformString = pendingVersion.getPlatformDependencies().keySet().stream().map(Platform::getName).toList();
+            final String avatarUrl = this.avatarService.getProjectAvatarUrl(projectTable.getProjectId(), projectTable.getOwnerName());
+            final String url = this.config.getBaseUrl() + "/" + projectTable.getOwnerName() + "/" + projectTable.getSlug();
+            if (projectTable.getVisibility() == Visibility.NEW) {
+                this.webhookService.handleEvent(new ProjectPublishedEvent(projectTable.getOwnerName(), projectTable.getName(), avatarUrl, url, projectTable.getDescription(), platformString));
+            }
+            this.webhookService.handleEvent(new VersionPublishedEvent(projectTable.getOwnerName(), projectTable.getName(), avatarUrl, url + "/versions/" + projectVersionTable.getVersionString(), projectVersionTable.getVersionString(), projectVersionTable.getDescription(), platformString));
+
+            // change visibility
             if (projectTable.getVisibility() == Visibility.NEW) {
                 this.projectVisibilityService.changeVisibility(projectTable, Visibility.PUBLIC, "First version");
             }
