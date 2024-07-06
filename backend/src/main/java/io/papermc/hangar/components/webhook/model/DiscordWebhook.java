@@ -11,7 +11,7 @@ public record DiscordWebhook(
 ) {
 
     public DiscordWebhook(final String embeds) {
-        this("HangarBot", "", embeds, new AllowedMentions());
+        this("HangarBot", "https://hangar.papermc.dev/hangar-logo.png", embeds, new AllowedMentions());
     }
 
     record AllowedMentions(
