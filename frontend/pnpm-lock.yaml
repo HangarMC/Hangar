@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  hookable: 5.4.2
-
 dependencies:
   '@github/webauthn-json':
     specifier: 2.1.1
@@ -1607,7 +1604,7 @@ packages:
       fast-npm-meta: 0.1.1
       flatted: 3.3.1
       get-port-please: 3.1.2
-      hookable: 5.4.2
+      hookable: 5.5.3
       image-meta: 0.2.1
       is-installed-globally: 1.0.0
       launch-editor: 2.8.0
@@ -1671,7 +1668,7 @@ packages:
       compatx: 0.1.8
       consola: 3.2.3
       defu: 6.1.4
-      hookable: 5.4.2
+      hookable: 5.5.3
       pathe: 1.1.2
       pkg-types: 1.1.3
       scule: 1.3.0
@@ -3149,7 +3146,7 @@ packages:
     dependencies:
       '@unhead/schema': 1.9.15
       '@unhead/shared': 1.9.15
-      hookable: 5.4.2
+      hookable: 5.5.3
       unhead: 1.9.15
       vue: 3.4.31(typescript@5.5.3)
 
@@ -3599,7 +3596,7 @@ packages:
     dependencies:
       '@vue/devtools-shared': 7.3.5
       birpc: 0.2.17
-      hookable: 5.4.2
+      hookable: 5.5.3
       mitt: 3.0.1
       perfect-debounce: 1.0.0
       speakingurl: 14.0.1
@@ -6354,6 +6351,9 @@ packages:
   /hookable@5.4.2:
     resolution: {integrity: sha512-6rOvaUiNKy9lET1X0ECnyZ5O5kSV0PJbtA5yZUgdEF7fGJEVwSLSislltyt7nFwVVALYHQJtfGeAR2Y0A0uJkg==}
 
+  /hookable@5.5.3:
+    resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
+
   /hosted-git-info@2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
     dev: true
@@ -7404,7 +7404,7 @@ packages:
       globby: 14.0.2
       gzip-size: 7.0.0
       h3: 1.12.0
-      hookable: 5.4.2
+      hookable: 5.5.3
       httpxy: 0.1.5
       ioredis: 5.4.1
       jiti: 1.21.6
@@ -7635,7 +7635,7 @@ packages:
       estree-walker: 3.0.3
       globby: 14.0.2
       h3: 1.12.0
-      hookable: 5.4.2
+      hookable: 5.5.3
       ignore: 5.3.1
       jiti: 1.21.6
       klona: 2.0.6
@@ -9735,7 +9735,7 @@ packages:
       '@unhead/dom': 1.9.15
       '@unhead/schema': 1.9.15
       '@unhead/shared': 1.9.15
-      hookable: 5.4.2
+      hookable: 5.5.3
 
   /unicode-emoji-modifier-base@1.0.0:
     resolution: {integrity: sha512-yLSH4py7oFH3oG/9K+XWrz1pSi3dfUrWEnInbxMfArOfc1+33BlGPQtLsOYwvdMy11AwUBetYuaRxSPqgkq+8g==}

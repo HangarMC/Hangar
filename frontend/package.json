@@ -99,13 +99,5 @@
     "vite": "5.3.3",
     "vite-plugin-eslint": "1.8.1",
     "vue-tsc": "2.0.26"
-  },
-  "comments": {
-    "hookable": "Hookable 5.5 seems to break with nuxt..."
-  },
-  "pnpm": {
-    "overrides": {
-      "hookable": "5.4.2"
-    }
   }
 }
