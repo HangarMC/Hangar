@@ -13,7 +13,7 @@
     "@types/chai": "4.3.16",
     "browserstack-local": "^1.5.5",
     "chai": "4.4.1",
-    "codeceptjs": "^3.6.2",
+    "codeceptjs": "^3.6.4",
     "dotenv": "^16.4.5",
     "jwt-decode": "4.0.0",
     "totp-generator": "1.0.0",

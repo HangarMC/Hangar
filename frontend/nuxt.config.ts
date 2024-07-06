@@ -13,6 +13,7 @@ const allowIndexing = process.env.HANGAR_ALLOW_INDEXING || "true";
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   telemetry: false,
+  compatibilityDate: "2024-07-06",
   components: [
     {
       path: "~/components",
