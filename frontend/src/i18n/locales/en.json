@@ -35,7 +35,7 @@
     "used": "Used",
     "reveal": "Reveal",
     "error": {
-      "invalidUrl": "Invalid URL format",
+      "invalidUrl": "Invalid URL format (did you forget the https://?)",
       "nameEmpty": "Name cannot be empty",
       "fieldEmpty": "This field is required to be set"
     }
@@ -1193,12 +1193,12 @@
     "minLength": "Minimum length is {min}",
     "pattern": "{property} is invalid, '{model}' doesn't match pattern '{regex}'",
     "noDuplicated": "Can only select each {property} once!",
-    "url": "Invalid URL format",
+    "url": "Invalid URL format (did you forget https://?)",
     "maxFileSize": "File is too large, max size is 10mb",
     "validProjectName": "Project name is already taken"
   },
   "fieldError": {
-    "url": "Invalid url value for {0}, got {1}"
+    "url": "Invalid url value for {0}, got {1} (did you forget https://?)"
   },
   "prompts": {
     "confirm": "Got it!",

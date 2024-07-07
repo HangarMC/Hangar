@@ -1,7 +1,5 @@
 package io.papermc.hangar.controller.internal;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.components.auth.service.TokenService;
@@ -78,7 +76,6 @@ public class HangarUserController extends HangarComponent {
 
     private static final Set<String> ACCEPTED_SOCIAL_TYPES = Set.of("discord", "github", "twitter", "youtube", "website");
 
-    private final ObjectMapper mapper;
     private final UsersApiService usersApiService;
     private final UserService userService;
     private final NotificationService notificationService;
@@ -93,8 +90,7 @@ public class HangarUserController extends HangarComponent {
     private final ProjectViewsDAO projectViewsDAO;
 
     @Autowired
-    public HangarUserController(final ObjectMapper mapper, final UsersApiService usersApiService, final UserService userService, final NotificationService notificationService, final ProjectRoleService projectRoleService, final OrganizationService organizationService, final OrganizationRoleService organizationRoleService, final ProjectInviteService projectInviteService, final OrganizationInviteService organizationInviteService, final TokenService tokenService, final AvatarService avatarService, final CredentialsService credentialsService, final ProjectViewsDAO projectViewsDAO) {
-        this.mapper = mapper;
+    public HangarUserController(final UsersApiService usersApiService, final UserService userService, final NotificationService notificationService, final ProjectRoleService projectRoleService, final OrganizationService organizationService, final OrganizationRoleService organizationRoleService, final ProjectInviteService projectInviteService, final OrganizationInviteService organizationInviteService, final TokenService tokenService, final AvatarService avatarService, final CredentialsService credentialsService, final ProjectViewsDAO projectViewsDAO) {
         this.usersApiService = usersApiService;
         this.userService = userService;
         this.notificationService = notificationService;
@@ -256,6 +252,9 @@ public class HangarUserController extends HangarComponent {
             }
             if (!ACCEPTED_SOCIAL_TYPES.contains(social[0])) {
                 throw new HangarApiException("Badly formatted request, social type " + social[0] + " is unknown!");
+            }
+            if ("website".equals(social[0]) && !social[1].matches(this.config.getUrlRegex())) {
+                throw new HangarApiException("Badly formatted request, website " + social[1] + " is not a valid url! (Did you add https://?)");
             }
             map.put(social[0], social[1]);
         }
