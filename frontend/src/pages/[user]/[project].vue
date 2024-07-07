@@ -7,8 +7,11 @@ defineProps<{
 }>();
 
 const route = useRoute("user-project");
-const project = await useProject(route.params.project);
-await verify(route);
+// for some reason this page is triggered twice on soft navigation, need to short circuit the case where the params are empty
+const project = route.params.project ? await useProject(route.params.project) : ref(null);
+if ("project" in route.params) {
+  await verify(route);
+}
 
 async function verify(to: RouteLocationNormalizedTyped<any>) {
   if (!project?.value) {
