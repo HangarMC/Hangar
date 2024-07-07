@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -92,6 +93,12 @@ public class HangarExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(RequestTooBigException.class)
     public ResponseEntity<HangarApiException> handleException(final RequestTooBigException exception) {
+        final HangarApiException apiException = new HangarApiException(HttpStatus.PAYLOAD_TOO_LARGE, "File too large - files have to be less than " + this.config.projects.maxTotalFilesSizeMB() + "MB total");
+        return new ResponseEntity<>(apiException, HttpStatus.PAYLOAD_TOO_LARGE);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(final MaxUploadSizeExceededException ex, final HttpHeaders headers, final HttpStatusCode status, final WebRequest request) {
         final HangarApiException apiException = new HangarApiException(HttpStatus.PAYLOAD_TOO_LARGE, "File too large - files have to be less than " + this.config.projects.maxTotalFilesSizeMB() + "MB total");
         return new ResponseEntity<>(apiException, HttpStatus.PAYLOAD_TOO_LARGE);
     }
