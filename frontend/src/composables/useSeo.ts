@@ -92,6 +92,7 @@ export function useSeo(
       },
       {
         type: "text/javascript",
+        defer: true,
         src: "https://cdn.crowdin.com/jipt/jipt.js",
       }
     );
