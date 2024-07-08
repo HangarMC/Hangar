@@ -1,13 +1,14 @@
 package io.papermc.hangar.components.webhook.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import java.util.List;
 
 public record DiscordWebhook(
     String username,
-    String avatarUrl,
+    @JsonProperty("avatar_url") String avatarUrl,
     @JsonRawValue String embeds,
-    AllowedMentions allowedMentions
+    @JsonProperty("allowed_mentions") AllowedMentions allowedMentions
 ) {
 
     public DiscordWebhook(final String embeds) {

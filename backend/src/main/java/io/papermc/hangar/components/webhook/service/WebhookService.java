@@ -31,7 +31,7 @@ public class WebhookService {
         [
           {
             "id": {{id}},
-            "title": "{{author}} / {{name}} is now available on Hangar!",
+            "title": "{{author}}/{{name}}",
             "description": "{{description}}",
             "color": 2326507,
             "fields": [],
@@ -50,7 +50,7 @@ public class WebhookService {
         [
           {
             "id": {{id}},
-            "title": "Version {{version}} for {{author}} / {{name}} has been released!",
+            "title": "Version {{version}} - {{author}}/{{name}}",
             "description": "{{description}}",
             "color": 2326507,
             "fields": [],

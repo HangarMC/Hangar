@@ -61,7 +61,7 @@ public class JobService extends HangarComponent {
     @Transactional
     public void schedule(final Job... jobs) {
         for (final Job job : jobs) {
-            logger.info("Scheduling job: {}", job);
+            this.logger.info("Scheduling job: {}", job);
             this.jobsDAO.save(job.toTable());
         }
     }

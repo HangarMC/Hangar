@@ -472,7 +472,7 @@ public class VersionFactory extends HangarComponent {
                 final Platform platform = entry.getKey();
                 final Set<String> versionsForPlatform = new HashSet<>(this.platformService.getFullVersionsForPlatform(platform));
                 if (!versionsForPlatform.containsAll(entry.getValue())) {
-                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPlatformVersion", entry.getValue());
+                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPlatformVersionList", entry.getValue());
                 }
             }
         }
