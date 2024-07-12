@@ -1,6 +1,5 @@
 package io.papermc.hangar.model.api.project.version;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.Visible;
@@ -11,7 +10,6 @@ import io.papermc.hangar.model.common.projects.Visibility;
 import java.time.OffsetDateTime;
 import java.util.EnumMap;
 import java.util.Map;
-import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
@@ -76,13 +74,5 @@ public class VersionCompact extends Model implements Named, Visible {
 
     public PinnedStatus getPinnedStatus() {
         return this.pinnedStatus;
-    }
-
-    @EnumByName
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    public enum PinnedStatus {
-        NONE,
-        VERSION,
-        CHANNEL
     }
 }

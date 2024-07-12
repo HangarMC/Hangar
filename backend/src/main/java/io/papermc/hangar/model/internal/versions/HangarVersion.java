@@ -3,6 +3,7 @@ package io.papermc.hangar.model.internal.versions;
 import io.papermc.hangar.config.jackson.RequiresPermission;
 import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.api.project.ProjectChannel;
+import io.papermc.hangar.model.api.project.version.PinnedStatus;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.common.NamedPermission;
