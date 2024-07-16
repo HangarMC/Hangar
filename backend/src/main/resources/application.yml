@@ -45,8 +45,9 @@ spring:
     graphiql:
       enabled: true
 
-springdoc:
-  use-fqn: true
+# Enable this if you want to regenerate the frontend types
+#springdoc:
+#  use-fqn: true
 
 management:
   tracing:

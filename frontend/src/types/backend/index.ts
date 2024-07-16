@@ -34,6 +34,26 @@ export interface RequestPagination {
   offset: number;
 }
 
+export interface HangarNotification {
+  /** @format date-time */
+  createdAt: string;
+  /** @format int64 */
+  id: number;
+  action: string;
+  message: string[];
+  read: boolean;
+  originUserName: string;
+  type: NotificationType;
+}
+
+export enum NotificationType {
+  Neutral = "neutral",
+  Success = "success",
+  Info = "info",
+  Warning = "warning",
+  Error = "error",
+}
+
 export interface PaginatedResultHangarNotification {
   pagination: Pagination;
   result: HangarNotification[];
@@ -59,33 +79,8 @@ export interface Pagination {
   count: number;
 }
 
-export interface HangarNotification {
-  /** @format date-time */
-  createdAt: string;
-  /** @format int64 */
-  id: number;
-  action: string;
-  message: string[];
-  read: boolean;
-  originUserName: string;
-  type: NotificationType;
-}
-
-export enum NotificationType {
-  Neutral = "neutral",
-  Success = "success",
-  Info = "info",
-  Warning = "warning",
-  Error = "error",
-}
-
 export enum Prompt {
   CHANGE_AVATAR = "CHANGE_AVATAR",
-}
-
-export interface Invites {
-  project: HangarProjectInvite[];
-  organization: HangarOrganizationInvite[];
 }
 
 export interface HangarOrganizationInvite {
@@ -103,7 +98,7 @@ export interface HangarProjectInvite {
   role: string;
   name: string;
   url: string;
-  representingOrg?: string;
+  representingOrg: string;
   type: InviteType;
 }
 
@@ -112,9 +107,38 @@ export enum InviteType {
   Organization = "organization",
 }
 
+export interface Invites {
+  project: HangarProjectInvite[];
+  organization: HangarOrganizationInvite[];
+}
+
 export enum InviteStatus {
   ACCEPT = "ACCEPT",
   DECLINE = "DECLINE",
+}
+
+/** List of different jars/external links that are part of the version */
+export interface MultipartFileOrUrl {
+  /**
+   * List of platforms this jar runs on
+   * @example "[PAPER, WATERFALL, VELOCITY]"
+   */
+  platforms: Platform[];
+  /**
+   * External url to download the jar from if not provided via an attached jar, else null
+   * @example "https://papermc.io/downloads"
+   */
+  externalUrl: string;
+}
+
+/**
+ * Server platform
+ * @example "PAPER"
+ */
+export enum Platform {
+  PAPER = "PAPER",
+  WATERFALL = "WATERFALL",
+  VELOCITY = "VELOCITY",
 }
 
 /** Map of each platform's plugin dependencies */
@@ -130,33 +154,9 @@ export interface PluginDependency {
    * External url to download the dependency from if not a Hangar project, else null
    * @example "https://papermc.io/downloads"
    */
-  externalUrl?: string;
+  externalUrl: string;
   /** Server platform */
   platform: Platform;
-}
-
-/**
- * Server platform
- * @example "PAPER"
- */
-export enum Platform {
-  PAPER = "PAPER",
-  WATERFALL = "WATERFALL",
-  VELOCITY = "VELOCITY",
-}
-
-/** List of different jars/external links that are part of the version */
-export interface MultipartFileOrUrl {
-  /**
-   * List of platforms this jar runs on
-   * @example "[PAPER, WATERFALL, VELOCITY]"
-   */
-  platforms: Platform[];
-  /**
-   * External url to download the jar from if not provided via an attached jar, else null
-   * @example "https://papermc.io/downloads"
-   */
-  externalUrl?: string;
 }
 
 /** Version data. See the VersionUpload schema for more info */
@@ -195,6 +195,19 @@ export interface UploadedVersion {
   url: string;
 }
 
+/** Data about the key to create */
+export interface CreateAPIKeyForm {
+  /**
+   * @min 5
+   * @max 36
+   * @minLength 5
+   * @maxLength 36
+   */
+  name: string;
+  /** @uniqueItems true */
+  permissions: NamedPermission[];
+}
+
 export enum NamedPermission {
   ViewPublicInfo = "view_public_info",
   EditOwnUserSettings = "edit_own_user_settings",
@@ -229,19 +242,6 @@ export enum NamedPermission {
   EditAllUserSettings = "edit_all_user_settings",
 }
 
-/** Data about the key to create */
-export interface CreateAPIKeyForm {
-  /**
-   * @min 5
-   * @max 36
-   * @minLength 5
-   * @maxLength 36
-   */
-  name: string;
-  /** @uniqueItems true */
-  permissions: NamedPermission[];
-}
-
 export interface ApiSession {
   /** JWT used for authentication */
   token: string;
@@ -269,25 +269,6 @@ export interface UpdatePlatformVersions {
   versions: string[];
 }
 
-export enum ReviewState {
-  Unreviewed = "unreviewed",
-  Reviewed = "reviewed",
-  UnderReview = "under_review",
-  PartiallyReviewed = "partially_reviewed",
-}
-
-/**
- * The visibility of a project or version
- * @example "PUBLIC"
- */
-export enum Visibility {
-  Public = "public",
-  New = "new",
-  NeedsChanges = "needsChanges",
-  NeedsApproval = "needsApproval",
-  SoftDelete = "softDelete",
-}
-
 export interface ProjectVersionTable {
   /** @format date-time */
   createdAt: string;
@@ -313,6 +294,39 @@ export interface ProjectVersionTable {
   versionId: number;
 }
 
+export enum ReviewState {
+  Unreviewed = "unreviewed",
+  Reviewed = "reviewed",
+  UnderReview = "under_review",
+  PartiallyReviewed = "partially_reviewed",
+}
+
+/**
+ * The visibility of a project or version
+ * @example "PUBLIC"
+ */
+export enum Visibility {
+  Public = "public",
+  New = "new",
+  NeedsChanges = "needsChanges",
+  NeedsApproval = "needsApproval",
+  SoftDelete = "softDelete",
+}
+
+export enum Category {
+  AdminTools = "admin_tools",
+  Chat = "chat",
+  DevTools = "dev_tools",
+  Economy = "economy",
+  Gameplay = "gameplay",
+  Games = "games",
+  Protection = "protection",
+  RolePlaying = "role_playing",
+  WorldManagement = "world_management",
+  Misc = "misc",
+  Undefined = "undefined",
+}
+
 export interface Link {
   /** @format int64 */
   id: number;
@@ -330,26 +344,6 @@ export interface LinkSection {
   type: string;
   title: string;
   links: Link[];
-}
-
-export enum Tag {
-  ADDON = "ADDON",
-  LIBRARY = "LIBRARY",
-  SUPPORTS_FOLIA = "SUPPORTS_FOLIA",
-}
-
-export enum Category {
-  AdminTools = "admin_tools",
-  Chat = "chat",
-  DevTools = "dev_tools",
-  Economy = "economy",
-  Gameplay = "gameplay",
-  Games = "games",
-  Protection = "protection",
-  RolePlaying = "role_playing",
-  WorldManagement = "world_management",
-  Misc = "misc",
-  Undefined = "undefined",
 }
 
 export interface ProjectTable {
@@ -380,11 +374,10 @@ export interface ProjectTable {
   projectId: number;
 }
 
-export interface FileInfo {
-  name: string;
-  /** @format int64 */
-  sizeBytes: number;
-  sha256Hash: string;
+export enum Tag {
+  ADDON = "ADDON",
+  LIBRARY = "LIBRARY",
+  SUPPORTS_FOLIA = "SUPPORTS_FOLIA",
 }
 
 export enum ChannelFlag {
@@ -416,6 +409,13 @@ export enum Color {
   Transparent = "transparent",
 }
 
+export interface FileInfo {
+  name: string;
+  /** @format int64 */
+  sizeBytes: number;
+  sha256Hash: string;
+}
+
 export interface PendingVersion {
   versionString: string;
   pluginDependencies: Record<string, PluginDependency[]>;
@@ -428,7 +428,7 @@ export interface PendingVersion {
   files: PendingVersionFile[];
   channelName: string;
   channelDescription: string;
-  channelColor?: Color;
+  channelColor: Color;
   /** @uniqueItems true */
   channelFlags: ChannelFlag[];
 }
@@ -439,8 +439,8 @@ export interface PendingVersionFile {
    * @minItems 1
    */
   platforms: Platform[];
-  fileInfo?: FileInfo;
-  externalUrl?: string;
+  fileInfo: FileInfo;
+  externalUrl: string;
 }
 
 export interface ReviewMessage {
@@ -465,7 +465,7 @@ export interface ProjectDonationSettings {
 
 export interface ProjectLicense {
   name: string;
-  url?: string;
+  url: string;
   type: string;
 }
 
@@ -484,6 +484,11 @@ export interface ProjectSettingsForm {
   description: string;
 }
 
+export interface ProjectMember {
+  name: string;
+  role: ProjectRole;
+}
+
 export enum ProjectRole {
   PROJECT_SUPPORT = "PROJECT_SUPPORT",
   PROJECT_EDITOR = "PROJECT_EDITOR",
@@ -491,11 +496,6 @@ export enum ProjectRole {
   PROJECT_MAINTAINER = "PROJECT_MAINTAINER",
   PROJECT_ADMIN = "PROJECT_ADMIN",
   PROJECT_OWNER = "PROJECT_OWNER",
-}
-
-export interface ProjectMember {
-  name: string;
-  role: ProjectRole;
 }
 
 export interface NewProjectForm {
@@ -506,13 +506,18 @@ export interface NewProjectForm {
   ownerId: number;
   name: string;
   pageContent: string;
-  avatarUrl?: string;
+  avatarUrl: string;
 }
 
 export interface NewProjectPage {
   name: string;
   /** @format int64 */
   parentId: number;
+}
+
+export interface OrgMember {
+  name: string;
+  role: OrganizationRole;
 }
 
 export enum OrganizationRole {
@@ -522,11 +527,6 @@ export enum OrganizationRole {
   ORGANIZATION_MAINTAINER = "ORGANIZATION_MAINTAINER",
   ORGANIZATION_ADMIN = "ORGANIZATION_ADMIN",
   ORGANIZATION_OWNER = "ORGANIZATION_OWNER",
-}
-
-export interface OrgMember {
-  name: string;
-  role: OrganizationRole;
 }
 
 export interface CreateOrganizationForm {
@@ -570,6 +570,20 @@ export enum FlagReason {
   other = "project.flag.flags.other",
 }
 
+export interface ProjectChannelTable {
+  /** @format date-time */
+  createdAt: string;
+  /** @format int64 */
+  id: number;
+  /** @format int64 */
+  projectId: number;
+  /** @uniqueItems true */
+  flags: ChannelFlag[];
+  name: string;
+  description: string;
+  color: Color;
+}
+
 export interface EditChannelForm {
   name: string;
   description: string;
@@ -610,6 +624,12 @@ export interface SignupForm {
   tos: boolean;
 }
 
+export interface Authenticator {
+  addedAt: string;
+  displayName: string;
+  id: string;
+}
+
 export interface OAuthConnection {
   provider: string;
   id: string;
@@ -626,12 +646,6 @@ export interface SettingsResponse {
   hasPassword: boolean;
 }
 
-export interface Authenticator {
-  addedAt: string;
-  displayName: string;
-  id: string;
-}
-
 export interface ResetForm {
   email: string;
   code: string;
@@ -644,28 +658,12 @@ export interface LoginWebAuthNForm {
   publicKeyCredentialJson: string;
 }
 
-export type JsonNode = Record<string, any>;
-
 export enum CredentialType {
   PASSWORD = "PASSWORD",
   BACKUP_CODES = "BACKUP_CODES",
   TOTP = "TOTP",
   WEBAUTHN = "WEBAUTHN",
   OAUTH = "OAUTH",
-}
-
-export interface LoginResponse {
-  /** @format int32 */
-  aal: number;
-  types: CredentialType[];
-  user: HangarUser;
-}
-
-export interface UserNameChange {
-  oldName: string;
-  newName: string;
-  /** @format date-time */
-  date: string;
 }
 
 export interface HangarUser {
@@ -711,6 +709,22 @@ export interface HeaderData {
   organizationCount: number;
 }
 
+export type JsonNode = Record<string, any>;
+
+export interface LoginResponse {
+  /** @format int32 */
+  aal: number;
+  types: CredentialType[];
+  user: HangarUser;
+}
+
+export interface UserNameChange {
+  oldName: string;
+  newName: string;
+  /** @format date-time */
+  date: string;
+}
+
 export interface LoginTotpForm {
   usernameOrEmail: string;
   password: string;
@@ -729,9 +743,9 @@ export interface LoginBackupForm {
 }
 
 export interface BackupCode {
+  code: string;
   /** @format date-time */
   used_at: string;
-  code: string;
 }
 
 export interface AccountForm {
@@ -749,7 +763,7 @@ export interface UserTable {
   /** @format uuid */
   uuid: string;
   name: string;
-  tagline?: string;
+  tagline: string;
   readPrompts: number[];
   locked: boolean;
   language: string;
@@ -767,7 +781,7 @@ export interface ChangeRoleForm {
   title: string;
   color: string;
   /** @format int32 */
-  rank?: number;
+  rank: number;
 }
 
 export interface ChangePlatformVersionsForm {
@@ -906,6 +920,20 @@ export interface PaginatedResultVersion {
   result: Version[];
 }
 
+export enum PinnedStatus {
+  NONE = "NONE",
+  VERSION = "VERSION",
+  CHANNEL = "CHANNEL",
+}
+
+export interface PlatformVersionDownload {
+  fileInfo: FileInfo;
+  /** External download url if not directly uploaded to Hangar */
+  externalUrl: string;
+  /** Hangar download url if not an external download */
+  downloadUrl: string;
+}
+
 export interface ProjectChannel {
   /** @format date-time */
   createdAt: string;
@@ -914,14 +942,6 @@ export interface ProjectChannel {
   color: Color;
   /** @uniqueItems true */
   flags: ChannelFlag[];
-}
-
-export interface PlatformVersionDownload {
-  fileInfo?: FileInfo;
-  /** External download url if not directly uploaded to Hangar */
-  externalUrl?: string;
-  /** Hangar download url if not an external download */
-  downloadUrl?: string;
 }
 
 export interface Version {
@@ -942,12 +962,6 @@ export interface Version {
   platformDependenciesFormatted: Record<string, string>;
 }
 
-export enum PinnedStatus {
-  NONE = "NONE",
-  VERSION = "VERSION",
-  CHANNEL = "CHANNEL",
-}
-
 export interface VersionStats {
   /** @format int64 */
   totalDownloads: number;
@@ -966,29 +980,16 @@ export interface PaginatedResultProjectMember {
   result: ProjectMember[];
 }
 
-export interface ProjectMember {
-  user: string;
-  roles: CompactRole[];
-}
-
-export interface CompactRole {
-  title: string;
-  color: Color;
-  /** @format int32 */
-  rank?: number;
-  category: string;
+export enum PermissionType {
+  Global = "global",
+  Project = "project",
+  Organization = "organization",
 }
 
 export interface UserPermissions {
   type: PermissionType;
   permissionBinString: string;
   permissions: NamedPermission[];
-}
-
-export enum PermissionType {
-  Global = "global",
-  Project = "project",
-  Organization = "organization",
 }
 
 export interface PermissionCheck {
@@ -1003,7 +1004,7 @@ export interface ApiKey {
   tokenIdentifier: string;
   permissions: NamedPermission[];
   /** @format date-time */
-  lastUsed?: string;
+  lastUsed: string;
 }
 
 export interface HangarVersion {
@@ -1027,16 +1028,6 @@ export interface HangarVersion {
   approvedBy: string;
 }
 
-export enum ReviewAction {
-  START = "START",
-  MESSAGE = "MESSAGE",
-  STOP = "STOP",
-  REOPEN = "REOPEN",
-  APPROVE = "APPROVE",
-  PARTIALLY_APPROVE = "PARTIALLY_APPROVE",
-  UNDO_APPROVAL = "UNDO_APPROVAL",
-}
-
 export interface HangarReview {
   /** @format date-time */
   createdAt: string;
@@ -1056,28 +1047,14 @@ export interface HangarReviewMessage {
   action: ReviewAction;
 }
 
-export interface ProjectOwner {
-  organization: boolean;
-  /** @format int64 */
-  userId: number;
-  /** @format int64 */
-  id: number;
-  name: string;
-}
-
-export interface ProjectRoleTable {
-  /** @format date-time */
-  createdAt: string;
-  /** @format int64 */
-  id: number;
-  /** @format int64 */
-  userId: number;
-  role: ProjectRole;
-  accepted: boolean;
-  /** @format int64 */
-  principalId: number;
-  /** @format int64 */
-  roleId: number;
+export enum ReviewAction {
+  START = "START",
+  MESSAGE = "MESSAGE",
+  STOP = "STOP",
+  REOPEN = "REOPEN",
+  APPROVE = "APPROVE",
+  PARTIALLY_APPROVE = "PARTIALLY_APPROVE",
+  UNDO_APPROVAL = "UNDO_APPROVAL",
 }
 
 export interface ExtendedProjectPage {
@@ -1121,7 +1098,6 @@ export interface HangarProject {
   /** Information about your interactions with the project */
   userActions: UserActions;
   settings: ProjectSettings;
-  owner: ProjectOwner;
   members: JoinableMemberProjectRoleTable[];
   lastVisibilityChangeComment: string;
   lastVisibilityChangeUserName: string;
@@ -1133,6 +1109,7 @@ export interface HangarProject {
   /** @format int64 */
   projectId: number;
   roleCategory: string;
+  owner2: ProjectOwner;
 }
 
 export interface HangarProjectInfo {
@@ -1146,21 +1123,6 @@ export interface HangarProjectInfo {
   starCount: number;
   /** @format int64 */
   watcherCount: number;
-}
-
-export interface PinnedVersion {
-  /** @format int64 */
-  versionId: number;
-  type: Type;
-  name: string;
-  channel: ProjectChannel;
-  platformDependenciesFormatted: Record<string, string>;
-  downloads: Record<string, PlatformVersionDownload>;
-}
-
-export enum Type {
-  CHANNEL = "CHANNEL",
-  VERSION = "VERSION",
 }
 
 export interface HangarProjectPage {
@@ -1177,6 +1139,45 @@ export interface JoinableMemberProjectRoleTable {
   user: UserTable;
   hidden: boolean;
   avatarUrl: string;
+}
+
+export interface PinnedVersion {
+  /** @format int64 */
+  versionId: number;
+  type: Type;
+  name: string;
+  channel: ProjectChannel;
+  platformDependenciesFormatted: Record<string, string>;
+  downloads: Record<string, PlatformVersionDownload>;
+}
+
+export interface ProjectOwner {
+  organization: boolean;
+  /** @format int64 */
+  userId: number;
+  /** @format int64 */
+  id: number;
+  name: string;
+}
+
+export interface ProjectRoleTable {
+  /** @format date-time */
+  createdAt: string;
+  /** @format int64 */
+  id: number;
+  /** @format int64 */
+  userId: number;
+  role: ProjectRole;
+  accepted: boolean;
+  /** @format int64 */
+  principalId: number;
+  /** @format int64 */
+  roleId: number;
+}
+
+export enum Type {
+  CHANNEL = "CHANNEL",
+  VERSION = "VERSION",
 }
 
 export interface PossibleProjectOwner {
@@ -1228,6 +1229,7 @@ export interface HangarOrganization {
   owner: ProjectOwner;
   members: JoinableMemberOrganizationRoleTable[];
   roleCategory: string;
+  owner2: ProjectOwner;
 }
 
 export interface JoinableMemberOrganizationRoleTable {
@@ -1314,24 +1316,6 @@ export interface VersionInfo {
   behind: string;
 }
 
-export interface Validation {
-  regex?: string;
-  /** @format int32 */
-  max?: number;
-  /** @format int32 */
-  min?: number;
-}
-
-export interface Validations {
-  project: ProjectValidations;
-  userTagline: Validation;
-  version: Validation;
-  org: Validation;
-  /** @format int32 */
-  maxOrgCount: number;
-  urlRegex: string;
-}
-
 export interface ProjectValidations {
   name: Validation;
   desc: Validation;
@@ -1348,6 +1332,24 @@ export interface ProjectValidations {
   maxChannelCount: number;
   /** @format int32 */
   maxFileSize: number;
+}
+
+export interface Validation {
+  regex: string;
+  /** @format int32 */
+  max: number;
+  /** @format int32 */
+  min: number;
+}
+
+export interface Validations {
+  project: ProjectValidations;
+  userTagline: Validation;
+  version: Validation;
+  org: Validation;
+  /** @format int32 */
+  maxOrgCount: number;
+  urlRegex: string;
 }
 
 export interface Sponsor {
@@ -1377,7 +1379,7 @@ export interface RoleData {
   title: string;
   color: string;
   /** @format int32 */
-  rank?: number;
+  rank: number;
   assignable: boolean;
 }
 
@@ -1388,11 +1390,6 @@ export interface PlatformData {
   enumName: string;
   visible: boolean;
   platformVersions: PlatformVersion[];
-}
-
-export enum Category {
-  Server = "Server",
-  Proxy = "Proxy",
 }
 
 export interface PlatformVersion {
@@ -1446,9 +1443,12 @@ export interface HangarChannel {
 
 export type ArrayNode = Record<string, any>;
 
-export interface PaginatedResultHangarLoggedAction {
-  pagination: Pagination;
-  result: HangarLoggedAction[];
+export enum Context {
+  PROJECT = "PROJECT",
+  VERSION = "VERSION",
+  PAGE = "PAGE",
+  USER = "USER",
+  ORGANIZATION = "ORGANIZATION",
 }
 
 export interface HangarLoggedAction {
@@ -1457,7 +1457,7 @@ export interface HangarLoggedAction {
   /** @format int64 */
   userId: number;
   userName: string;
-  action: Object;
+  action: LogActionObject;
   contextType: Context;
   newState: string;
   oldState: string;
@@ -1465,9 +1465,10 @@ export interface HangarLoggedAction {
   version: LogVersion;
   page: LogPage;
   subject: LogSubject;
-  address?: {
+  address: {
     hostAddress?: string;
-    address?: string[];
+    /** @format byte */
+    address?: string;
     hostName?: string;
     linkLocalAddress?: boolean;
     multicastAddress?: boolean;
@@ -1483,18 +1484,10 @@ export interface HangarLoggedAction {
   };
 }
 
-export interface Object {
+export interface LogActionObject {
   pgLoggedAction: string;
   name: string;
   description: string;
-}
-
-export enum Context {
-  PROJECT = "PROJECT",
-  VERSION = "VERSION",
-  PAGE = "PAGE",
-  USER = "USER",
-  ORGANIZATION = "ORGANIZATION",
 }
 
 export interface LogPage {
@@ -1524,9 +1517,20 @@ export interface LogVersion {
   platforms: Platform[];
 }
 
+export interface PaginatedResultHangarLoggedAction {
+  pagination: Pagination;
+  result: HangarLoggedAction[];
+}
+
+export interface HealthReport {
+  staleProjects: UnhealthyProject[];
+  missingFiles: MissingFileCheck[];
+  erroredJobs: JobTable[];
+}
+
 export interface JobState {
-  type?: string;
-  value?: string;
+  type: string;
+  value: string;
   null: boolean;
 }
 
@@ -1546,6 +1550,11 @@ export interface JobTable {
   jobProperties: JsonNode;
 }
 
+export enum JobType {
+  SEND_EMAIL = "SEND_EMAIL",
+  SEND_WEBHOOK = "SEND_WEBHOOK",
+}
+
 export interface MissingFileCheck {
   /** The namespace of the project */
   namespace: ProjectNamespace;
@@ -1561,21 +1570,6 @@ export interface UnhealthyProject {
   lastUpdated: string;
   /** The visibility of a project or version */
   visibility: Visibility;
-}
-
-export interface HealthReport {
-  staleProjects: UnhealthyProject[];
-  missingFiles: MissingFileCheck[];
-  erroredJobs: JobTable[];
-}
-
-export enum JobType {
-  SEND_EMAIL = "SEND_EMAIL",
-}
-
-export interface ReviewQueue {
-  underReview: HangarReviewQueueEntry[];
-  notStarted: HangarReviewQueueEntry[];
 }
 
 export interface HangarReviewQueueEntry {
@@ -1598,13 +1592,13 @@ export interface Review {
   /** @format date-time */
   reviewStarted: string;
   /** @format date-time */
-  reviewEnded?: string;
+  reviewEnded: string;
   lastAction: ReviewAction;
 }
 
-export interface ProjectApprovals {
-  needsApproval: HangarProjectApproval[];
-  waitingProjects: HangarProjectApproval[];
+export interface ReviewQueue {
+  underReview: HangarReviewQueueEntry[];
+  notStarted: HangarReviewQueueEntry[];
 }
 
 export interface HangarProjectApproval {
@@ -1616,6 +1610,11 @@ export interface HangarProjectApproval {
   visibility: Visibility;
   comment: string;
   changeRequester: string;
+}
+
+export interface ProjectApprovals {
+  needsApproval: HangarProjectApproval[];
+  waitingProjects: HangarProjectApproval[];
 }
 
 export interface ReviewActivity {
@@ -1632,6 +1631,36 @@ export interface FlagActivity {
   namespace: ProjectNamespace;
   /** @format date-time */
   resolvedAt: string;
+}
+
+export interface ContentDisposition {
+  type?: string;
+  name?: string;
+  filename?: string;
+  charset?: string;
+  /**
+   * @deprecated
+   * @format int64
+   */
+  size?: number;
+  /**
+   * @deprecated
+   * @format date-time
+   */
+  creationDate?: string;
+  /**
+   * @deprecated
+   * @format date-time
+   */
+  modificationDate?: string;
+  /**
+   * @deprecated
+   * @format date-time
+   */
+  readDate?: string;
+  inline?: boolean;
+  formData?: boolean;
+  attachment?: boolean;
 }
 
 export interface HangarApiException {
@@ -1662,14 +1691,14 @@ export interface HangarApiException {
     nativeMethod?: boolean;
   }[];
   headers?: {
-    range?: HttpRange[];
     empty?: boolean;
     /** @format uri */
     location?: string;
     host?: {
       address?: {
         hostAddress?: string;
-        address?: string[];
+        /** @format byte */
+        address?: string;
         hostName?: string;
         linkLocalAddress?: boolean;
         multicastAddress?: boolean;
@@ -1696,11 +1725,12 @@ export interface HangarApiException {
     date?: number;
     /** @format int64 */
     contentLength?: number;
+    connection?: string[];
+    /** @format int64 */
+    ifModifiedSince?: number;
+    contentType?: MediaType;
     origin?: string;
-    acceptCharset?: string[];
-    contentDisposition?: ContentDisposition;
-    /** @uniqueItems true */
-    allow?: HttpMethod[];
+    range?: HttpRange[];
     contentLanguage?: {
       language?: string;
       displayName?: string;
@@ -1720,25 +1750,29 @@ export interface HangarApiException {
       iso3Language?: string;
       iso3Country?: string;
     };
+    contentDisposition?: ContentDisposition;
+    acceptCharset?: string[];
+    /** @uniqueItems true */
+    allow?: HttpMethod[];
     cacheControl?: string;
-    ifMatch?: string[];
-    upgrade?: string;
+    accessControlAllowCredentials?: boolean;
+    accessControlAllowHeaders?: string[];
+    accessControlAllowMethods?: HttpMethod[];
+    accessControlAllowOrigin?: string;
+    accessControlExposeHeaders?: string[];
+    accessControlRequestHeaders?: string[];
+    acceptPatch?: MediaType[];
+    bearerAuth?: string;
+    ifNoneMatch?: string[];
     etag?: string;
-    pragma?: string;
-    vary?: string[];
+    accept?: MediaType[];
+    ifMatch?: string[];
     /** @format int64 */
     expires?: number;
-    accept?: MediaType[];
-    acceptLanguage?: {
-      range?: string;
-      /** @format double */
-      weight?: number;
-    }[];
-    basicAuth?: string;
-    /** @format int64 */
-    ifUnmodifiedSince?: number;
-    /** @format int64 */
-    accessControlMaxAge?: number;
+    pragma?: string;
+    upgrade?: string;
+    vary?: string[];
+    accessControlRequestMethod?: HttpMethod;
     acceptLanguageAsLocales?: {
       language?: string;
       displayName?: string;
@@ -1758,149 +1792,32 @@ export interface HangarApiException {
       iso3Language?: string;
       iso3Country?: string;
     }[];
-    ifNoneMatch?: string[];
-    acceptPatch?: MediaType[];
-    bearerAuth?: string;
-    connection?: string[];
-    accessControlAllowCredentials?: boolean;
-    accessControlAllowMethods?: HttpMethod[];
-    accessControlAllowOrigin?: string;
-    accessControlRequestHeaders?: string[];
-    accessControlRequestMethod?: HttpMethod;
-    accessControlExposeHeaders?: string[];
-    accessControlAllowHeaders?: string[];
     /** @format int64 */
-    ifModifiedSince?: number;
-    contentType?: MediaType;
+    accessControlMaxAge?: number;
+    /** @format int64 */
+    ifUnmodifiedSince?: number;
+    basicAuth?: string;
+    acceptLanguage?: {
+      range?: string;
+      /** @format double */
+      weight?: number;
+    }[];
     [key: string]: any;
   };
   body?: ProblemDetail;
   reason?: string;
   args?: Record<string, any>[];
   message?: string;
-  /** @deprecated */
-  responseHeaders?: {
-    range?: HttpRange[];
-    empty?: boolean;
-    /** @format uri */
-    location?: string;
-    host?: {
-      address?: {
-        hostAddress?: string;
-        address?: string[];
-        hostName?: string;
-        linkLocalAddress?: boolean;
-        multicastAddress?: boolean;
-        anyLocalAddress?: boolean;
-        loopbackAddress?: boolean;
-        siteLocalAddress?: boolean;
-        mcglobal?: boolean;
-        mcnodeLocal?: boolean;
-        mclinkLocal?: boolean;
-        mcsiteLocal?: boolean;
-        mcorgLocal?: boolean;
-        canonicalHostName?: string;
-      };
-      /** @format int32 */
-      port?: number;
-      unresolved?: boolean;
-      hostName?: string;
-      hostString?: string;
-    };
-    all?: Record<string, string>;
-    /** @format int64 */
-    lastModified?: number;
-    /** @format int64 */
-    date?: number;
-    /** @format int64 */
-    contentLength?: number;
-    origin?: string;
-    acceptCharset?: string[];
-    contentDisposition?: ContentDisposition;
-    /** @uniqueItems true */
-    allow?: HttpMethod[];
-    contentLanguage?: {
-      language?: string;
-      displayName?: string;
-      country?: string;
-      variant?: string;
-      script?: string;
-      /** @uniqueItems true */
-      unicodeLocaleAttributes?: string[];
-      /** @uniqueItems true */
-      unicodeLocaleKeys?: string[];
-      displayLanguage?: string;
-      displayScript?: string;
-      displayCountry?: string;
-      displayVariant?: string;
-      /** @uniqueItems true */
-      extensionKeys?: string[];
-      iso3Language?: string;
-      iso3Country?: string;
-    };
-    cacheControl?: string;
-    ifMatch?: string[];
-    upgrade?: string;
-    etag?: string;
-    pragma?: string;
-    vary?: string[];
-    /** @format int64 */
-    expires?: number;
-    accept?: MediaType[];
-    acceptLanguage?: {
-      range?: string;
-      /** @format double */
-      weight?: number;
-    }[];
-    basicAuth?: string;
-    /** @format int64 */
-    ifUnmodifiedSince?: number;
-    /** @format int64 */
-    accessControlMaxAge?: number;
-    acceptLanguageAsLocales?: {
-      language?: string;
-      displayName?: string;
-      country?: string;
-      variant?: string;
-      script?: string;
-      /** @uniqueItems true */
-      unicodeLocaleAttributes?: string[];
-      /** @uniqueItems true */
-      unicodeLocaleKeys?: string[];
-      displayLanguage?: string;
-      displayScript?: string;
-      displayCountry?: string;
-      displayVariant?: string;
-      /** @uniqueItems true */
-      extensionKeys?: string[];
-      iso3Language?: string;
-      iso3Country?: string;
-    }[];
-    ifNoneMatch?: string[];
-    acceptPatch?: MediaType[];
-    bearerAuth?: string;
-    connection?: string[];
-    accessControlAllowCredentials?: boolean;
-    accessControlAllowMethods?: HttpMethod[];
-    accessControlAllowOrigin?: string;
-    accessControlRequestHeaders?: string[];
-    accessControlRequestMethod?: HttpMethod;
-    accessControlExposeHeaders?: string[];
-    accessControlAllowHeaders?: string[];
-    /** @format int64 */
-    ifModifiedSince?: number;
-    contentType?: MediaType;
-    [key: string]: any;
-  };
+  responseHeaders?: HttpHeaders;
+  /** @format uri */
+  type?: string;
   statusCode?: HttpStatusCode;
   /** @format uri */
   instance?: string;
-  detail?: string;
   title?: string;
+  detail?: string;
   detailMessageArguments?: Record<string, any>[];
   detailMessageCode?: string;
-  /** @format uri */
-  type?: string;
   titleMessageCode?: string;
   typeMessageCode?: string;
   rootCause?: {
@@ -1981,46 +1898,15 @@ export interface HangarApiException {
   localizedMessage?: string;
 }
 
-export interface ContentDisposition {
-  type?: string;
-  name?: string;
-  filename?: string;
-  charset?: string;
-  /**
-   * @deprecated
-   * @format int64
-   */
-  size?: number;
-  /**
-   * @deprecated
-   * @format date-time
-   */
-  creationDate?: string;
-  /**
-   * @deprecated
-   * @format date-time
-   */
-  modificationDate?: string;
-  /**
-   * @deprecated
-   * @format date-time
-   */
-  readDate?: string;
-  inline?: boolean;
-  formData?: boolean;
-  attachment?: boolean;
-}
-
-/** @deprecated */
 export interface HttpHeaders {
-  range?: HttpRange[];
   empty?: boolean;
   /** @format uri */
   location?: string;
   host?: {
     address?: {
       hostAddress?: string;
-      address?: string[];
+      /** @format byte */
+      address?: string;
       hostName?: string;
       linkLocalAddress?: boolean;
       multicastAddress?: boolean;
@@ -2047,11 +1933,12 @@ export interface HttpHeaders {
   date?: number;
   /** @format int64 */
   contentLength?: number;
+  connection?: string[];
+  /** @format int64 */
+  ifModifiedSince?: number;
+  contentType?: MediaType;
   origin?: string;
-  acceptCharset?: string[];
-  contentDisposition?: ContentDisposition;
-  /** @uniqueItems true */
-  allow?: HttpMethod[];
+  range?: HttpRange[];
   contentLanguage?: {
     language?: string;
     displayName?: string;
@@ -2071,25 +1958,29 @@ export interface HttpHeaders {
     iso3Language?: string;
     iso3Country?: string;
   };
+  contentDisposition?: ContentDisposition;
+  acceptCharset?: string[];
+  /** @uniqueItems true */
+  allow?: HttpMethod[];
   cacheControl?: string;
-  ifMatch?: string[];
-  upgrade?: string;
+  accessControlAllowCredentials?: boolean;
+  accessControlAllowHeaders?: string[];
+  accessControlAllowMethods?: HttpMethod[];
+  accessControlAllowOrigin?: string;
+  accessControlExposeHeaders?: string[];
+  accessControlRequestHeaders?: string[];
+  acceptPatch?: MediaType[];
+  bearerAuth?: string;
+  ifNoneMatch?: string[];
   etag?: string;
-  pragma?: string;
-  vary?: string[];
+  accept?: MediaType[];
+  ifMatch?: string[];
   /** @format int64 */
   expires?: number;
-  accept?: MediaType[];
-  acceptLanguage?: {
-    range?: string;
-    /** @format double */
-    weight?: number;
-  }[];
-  basicAuth?: string;
-  /** @format int64 */
-  ifUnmodifiedSince?: number;
-  /** @format int64 */
-  accessControlMaxAge?: number;
+  pragma?: string;
+  upgrade?: string;
+  vary?: string[];
+  accessControlRequestMethod?: HttpMethod;
   acceptLanguageAsLocales?: {
     language?: string;
     displayName?: string;
@@ -2109,20 +2000,16 @@ export interface HttpHeaders {
     iso3Language?: string;
     iso3Country?: string;
   }[];
-  ifNoneMatch?: string[];
-  acceptPatch?: MediaType[];
-  bearerAuth?: string;
-  connection?: string[];
-  accessControlAllowCredentials?: boolean;
-  accessControlAllowMethods?: HttpMethod[];
-  accessControlAllowOrigin?: string;
-  accessControlRequestHeaders?: string[];
-  accessControlRequestMethod?: HttpMethod;
-  accessControlExposeHeaders?: string[];
-  accessControlAllowHeaders?: string[];
   /** @format int64 */
-  ifModifiedSince?: number;
-  contentType?: MediaType;
+  accessControlMaxAge?: number;
+  /** @format int64 */
+  ifUnmodifiedSince?: number;
+  basicAuth?: string;
+  acceptLanguage?: {
+    range?: string;
+    /** @format double */
+    weight?: number;
+  }[];
   [key: string]: any;
 }
 
@@ -2132,11 +2019,11 @@ export type HttpRange = Record<string, any>;
 
 export interface HttpStatusCode {
   error?: boolean;
-  is4xxClientError?: boolean;
-  is5xxServerError?: boolean;
   is3xxRedirection?: boolean;
   is2xxSuccessful?: boolean;
+  is4xxClientError?: boolean;
   is1xxInformational?: boolean;
+  is5xxServerError?: boolean;
 }
 
 export interface MediaType {
@@ -2147,8 +2034,8 @@ export interface MediaType {
   qualityValue?: number;
   charset?: string;
   concrete?: boolean;
-  wildcardType?: boolean;
   wildcardSubtype?: boolean;
+  wildcardType?: boolean;
   subtypeSuffix?: string;
 }
 
@@ -2192,14 +2079,14 @@ export interface MultiHangarApiException {
     nativeMethod?: boolean;
   }[];
   headers?: {
-    range?: HttpRange[];
     empty?: boolean;
     /** @format uri */
     location?: string;
     host?: {
       address?: {
         hostAddress?: string;
-        address?: string[];
+        /** @format byte */
+        address?: string;
         hostName?: string;
         linkLocalAddress?: boolean;
         multicastAddress?: boolean;
@@ -2226,11 +2113,12 @@ export interface MultiHangarApiException {
     date?: number;
     /** @format int64 */
     contentLength?: number;
+    connection?: string[];
+    /** @format int64 */
+    ifModifiedSince?: number;
+    contentType?: MediaType;
     origin?: string;
-    acceptCharset?: string[];
-    contentDisposition?: ContentDisposition;
-    /** @uniqueItems true */
-    allow?: HttpMethod[];
+    range?: HttpRange[];
     contentLanguage?: {
       language?: string;
       displayName?: string;
@@ -2250,25 +2138,29 @@ export interface MultiHangarApiException {
       iso3Language?: string;
       iso3Country?: string;
     };
+    contentDisposition?: ContentDisposition;
+    acceptCharset?: string[];
+    /** @uniqueItems true */
+    allow?: HttpMethod[];
     cacheControl?: string;
-    ifMatch?: string[];
-    upgrade?: string;
+    accessControlAllowCredentials?: boolean;
+    accessControlAllowHeaders?: string[];
+    accessControlAllowMethods?: HttpMethod[];
+    accessControlAllowOrigin?: string;
+    accessControlExposeHeaders?: string[];
+    accessControlRequestHeaders?: string[];
+    acceptPatch?: MediaType[];
+    bearerAuth?: string;
+    ifNoneMatch?: string[];
     etag?: string;
-    pragma?: string;
-    vary?: string[];
+    accept?: MediaType[];
+    ifMatch?: string[];
     /** @format int64 */
     expires?: number;
-    accept?: MediaType[];
-    acceptLanguage?: {
-      range?: string;
-      /** @format double */
-      weight?: number;
-    }[];
-    basicAuth?: string;
-    /** @format int64 */
-    ifUnmodifiedSince?: number;
-    /** @format int64 */
-    accessControlMaxAge?: number;
+    pragma?: string;
+    upgrade?: string;
+    vary?: string[];
+    accessControlRequestMethod?: HttpMethod;
     acceptLanguageAsLocales?: {
       language?: string;
       displayName?: string;
@@ -2288,149 +2180,32 @@ export interface MultiHangarApiException {
       iso3Language?: string;
       iso3Country?: string;
     }[];
-    ifNoneMatch?: string[];
-    acceptPatch?: MediaType[];
-    bearerAuth?: string;
-    connection?: string[];
-    accessControlAllowCredentials?: boolean;
-    accessControlAllowMethods?: HttpMethod[];
-    accessControlAllowOrigin?: string;
-    accessControlRequestHeaders?: string[];
-    accessControlRequestMethod?: HttpMethod;
-    accessControlExposeHeaders?: string[];
-    accessControlAllowHeaders?: string[];
     /** @format int64 */
-    ifModifiedSince?: number;
-    contentType?: MediaType;
+    accessControlMaxAge?: number;
+    /** @format int64 */
+    ifUnmodifiedSince?: number;
+    basicAuth?: string;
+    acceptLanguage?: {
+      range?: string;
+      /** @format double */
+      weight?: number;
+    }[];
     [key: string]: any;
   };
   body?: ProblemDetail;
   reason?: string;
   exceptions?: HangarApiException[];
   message?: string;
-  /** @deprecated */
-  responseHeaders?: {
-    range?: HttpRange[];
-    empty?: boolean;
-    /** @format uri */
-    location?: string;
-    host?: {
-      address?: {
-        hostAddress?: string;
-        address?: string[];
-        hostName?: string;
-        linkLocalAddress?: boolean;
-        multicastAddress?: boolean;
-        anyLocalAddress?: boolean;
-        loopbackAddress?: boolean;
-        siteLocalAddress?: boolean;
-        mcglobal?: boolean;
-        mcnodeLocal?: boolean;
-        mclinkLocal?: boolean;
-        mcsiteLocal?: boolean;
-        mcorgLocal?: boolean;
-        canonicalHostName?: string;
-      };
-      /** @format int32 */
-      port?: number;
-      unresolved?: boolean;
-      hostName?: string;
-      hostString?: string;
-    };
-    all?: Record<string, string>;
-    /** @format int64 */
-    lastModified?: number;
-    /** @format int64 */
-    date?: number;
-    /** @format int64 */
-    contentLength?: number;
-    origin?: string;
-    acceptCharset?: string[];
-    contentDisposition?: ContentDisposition;
-    /** @uniqueItems true */
-    allow?: HttpMethod[];
-    contentLanguage?: {
-      language?: string;
-      displayName?: string;
-      country?: string;
-      variant?: string;
-      script?: string;
-      /** @uniqueItems true */
-      unicodeLocaleAttributes?: string[];
-      /** @uniqueItems true */
-      unicodeLocaleKeys?: string[];
-      displayLanguage?: string;
-      displayScript?: string;
-      displayCountry?: string;
-      displayVariant?: string;
-      /** @uniqueItems true */
-      extensionKeys?: string[];
-      iso3Language?: string;
-      iso3Country?: string;
-    };
-    cacheControl?: string;
-    ifMatch?: string[];
-    upgrade?: string;
-    etag?: string;
-    pragma?: string;
-    vary?: string[];
-    /** @format int64 */
-    expires?: number;
-    accept?: MediaType[];
-    acceptLanguage?: {
-      range?: string;
-      /** @format double */
-      weight?: number;
-    }[];
-    basicAuth?: string;
-    /** @format int64 */
-    ifUnmodifiedSince?: number;
-    /** @format int64 */
-    accessControlMaxAge?: number;
-    acceptLanguageAsLocales?: {
-      language?: string;
-      displayName?: string;
-      country?: string;
-      variant?: string;
-      script?: string;
-      /** @uniqueItems true */
-      unicodeLocaleAttributes?: string[];
-      /** @uniqueItems true */
-      unicodeLocaleKeys?: string[];
-      displayLanguage?: string;
-      displayScript?: string;
-      displayCountry?: string;
-      displayVariant?: string;
-      /** @uniqueItems true */
-      extensionKeys?: string[];
-      iso3Language?: string;
-      iso3Country?: string;
-    }[];
-    ifNoneMatch?: string[];
-    acceptPatch?: MediaType[];
-    bearerAuth?: string;
-    connection?: string[];
-    accessControlAllowCredentials?: boolean;
-    accessControlAllowMethods?: HttpMethod[];
-    accessControlAllowOrigin?: string;
-    accessControlRequestHeaders?: string[];
-    accessControlRequestMethod?: HttpMethod;
-    accessControlExposeHeaders?: string[];
-    accessControlAllowHeaders?: string[];
-    /** @format int64 */
-    ifModifiedSince?: number;
-    contentType?: MediaType;
-    [key: string]: any;
-  };
+  responseHeaders?: HttpHeaders;
+  /** @format uri */
+  type?: string;
   statusCode?: HttpStatusCode;
   /** @format uri */
   instance?: string;
-  detail?: string;
   title?: string;
+  detail?: string;
   detailMessageArguments?: Record<string, any>[];
   detailMessageCode?: string;
-  /** @format uri */
-  type?: string;
   titleMessageCode?: string;
   typeMessageCode?: string;
   rootCause?: {
@@ -2511,15 +2286,6 @@ export interface MultiHangarApiException {
   localizedMessage?: string;
 }
 
-export interface HangarValidationException {
-  message?: string;
-  object?: string;
-  isHangarValidationException?: boolean;
-  httpError?: HttpError;
-  globalErrors?: GlobalError[];
-  fieldErrors?: FieldError[];
-}
-
 export interface FieldError {
   code?: string;
   errorMsg?: string;
@@ -2531,6 +2297,15 @@ export interface GlobalError {
   code?: string;
   errorMsg?: string;
   objectName?: string;
+}
+
+export interface HangarValidationException {
+  message?: string;
+  object?: string;
+  isHangarValidationException?: boolean;
+  httpError?: HttpError;
+  globalErrors?: GlobalError[];
+  fieldErrors?: FieldError[];
 }
 
 export interface HttpError {
@@ -2634,9 +2409,9 @@ export class HttpClient<SecurityDataType = unknown> {
   private contentFormatters: Record<ContentType, (input: any) => any> = {
     [ContentType.Json]: (input: any) => (input !== null && (typeof input === "object" || typeof input === "string") ? JSON.stringify(input) : input),
     [ContentType.Text]: (input: any) => (input !== null && typeof input !== "string" ? JSON.stringify(input) : input),
-    [ContentType.FormData]: (input: any) =>
-      Object.keys(input || {}).reduce((formData, key) => {
-        const property = input[key];
+    [ContentType.FormData]: (input: FormData) =>
+      (Array.from(input.keys()) || []).reduce((formData, key) => {
+        const property = input.get(key);
         formData.append(
           key,
           property instanceof Blob ? property : typeof property === "object" && property !== null ? JSON.stringify(property) : `${property}`
@@ -2709,7 +2484,7 @@ export class HttpClient<SecurityDataType = unknown> {
       signal: (cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal) || null,
       body: typeof body === "undefined" || body === null ? null : payloadFormatter(body),
     }).then(async (response) => {
-      const r = response as HttpResponse<T, E>;
+      const r = response.clone() as HttpResponse<T, E>;
       r.data = null as unknown as T;
       r.error = null as unknown as E;
 
@@ -4479,6 +4254,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags channel-controller
+     * @name DeleteChannel
+     * @request POST:/api/internal/channels/{project}/delete/{channel}
+     */
+    deleteChannel: (project: ProjectTable, channel: ProjectChannelTable, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/internal/channels/${project}/delete/${channel}`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags channel-controller
      * @name EditChannel
      * @request POST:/api/internal/channels/{projectId}/edit
      */
@@ -4488,20 +4277,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: "POST",
         body: data,
         type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags channel-controller
-     * @name DeleteChannel
-     * @request POST:/api/internal/channels/{projectId}/delete/{channelId}
-     */
-    deleteChannel: (projectId: number, channelId: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/api/internal/channels/${projectId}/delete/${channelId}`,
-        method: "POST",
         ...params,
       }),
 
@@ -5341,6 +5116,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query: {
         /** Pagination information */
         pagination: RequestPagination;
+        /**
+         * Whether to include hidden-by-default channels in the result, defaults to try
+         * @default true
+         */
+        includeHiddenChannels?: boolean;
       },
       params: RequestParams = {}
     ) =>
@@ -5385,6 +5165,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/v1/projects/${slug}/versions/${name}/${platform}/download`,
         method: "GET",
         secure: true,
+        format: "json",
         ...params,
       }),
 
@@ -5523,6 +5304,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/v1/projects/${slug}/latestrelease`,
         method: "GET",
         secure: true,
+        format: "json",
         ...params,
       }),
 
@@ -5548,6 +5330,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: "GET",
         query: query,
         secure: true,
+        format: "json",
         ...params,
       }),
 
@@ -5604,6 +5387,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<JsonNode, any>({
         path: `/api/v1/projects/${author}/${slug}/versions/${name}/${platform}/download`,
         method: "GET",
+        format: "json",
         ...params,
       }),
 
@@ -5653,6 +5437,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<string, any>({
         path: `/api/v1/projects/${author}/${slug}/latestrelease`,
         method: "GET",
+        format: "json",
         ...params,
       }),
 
@@ -5677,6 +5462,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/v1/projects/${author}/${slug}/latest`,
         method: "GET",
         query: query,
+        format: "json",
         ...params,
       }),
 
@@ -5691,9 +5477,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     showPermissions: (
       query?: {
-        /** The slug of the project get the permissions for. Must not be used together with `organizationName` */
+        /** The slug of the project get the permissions for. Must not be used together with `organization` */
         slug?: string;
-        /** The organization to check permissions in. Must not be used together with `projectOwner` and `projectSlug` */
+        /** The organization to check permissions in. Must not be used together with `slug` */
         organization?: string;
       },
       params: RequestParams = {}
@@ -5793,6 +5579,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/v1/pages/page/${slug}`,
         method: "GET",
         query: query,
+        format: "json",
         ...params,
       }),
 
@@ -5808,6 +5595,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<string, string>({
         path: `/api/v1/pages/main/${slug}`,
         method: "GET",
+        format: "json",
         ...params,
       }),
 
@@ -5928,6 +5716,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/internal/projects/project/${slug}`,
         method: "GET",
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags project-controller
+     * @name ProjectRedirect
+     * @request GET:/api/internal/projects/project-redirect/{slug}
+     */
+    projectRedirect: (slug: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/internal/projects/project-redirect/${slug}`,
+        method: "GET",
         ...params,
       }),
 
@@ -6246,6 +6048,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/internal/fakeData`,
         method: "GET",
         query: query,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags fake-data-controller
+     * @name GenerateE2EData
+     * @request GET:/api/internal/fakeData/generateE2EData
+     */
+    generateE2EData: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/internal/fakeData/generateE2EData`,
+        method: "GET",
         ...params,
       }),
 
