@@ -11,6 +11,7 @@ public class WebhookTable extends Table {
     private String url;
     private String secret;
     private boolean active;
+    // TODO rename type to template and link it to a template table
     private String type;
     private String[] events;
     private String scope;
