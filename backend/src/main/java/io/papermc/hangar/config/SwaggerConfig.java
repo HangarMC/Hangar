@@ -59,7 +59,7 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public GroupedOpenApi publicOpenApi() {
+    public GroupedOpenApi publicOpenApi(CustomScanner customScanner) {
         return GroupedOpenApi.builder().group("public").pathsToMatch("/api/v1/**").addOpenApiCustomizer((openApi -> {
             openApi.info(new Info().title("Hangar API").version("1.0").description("""
                 This page describes the format for the current Hangar REST API as well as general usage guidelines.<br>
@@ -94,17 +94,23 @@ public class SwaggerConfig {
 
                 If applicable, always cache responses. The Hangar API itself is cached by CloudFlare and internally."""));
             openApi.getComponents().addSecuritySchemes("HangarAuth", new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT"));
-        })).build();
+        }))
+        .addOperationCustomizer(customScanner)
+        .build();
     }
 
     @Bean
-    public GroupedOpenApi internalOpenApi() {
-        return GroupedOpenApi.builder().group("internal").pathsToMatch("/api/internal/**").build();
+    public GroupedOpenApi internalOpenApi(CustomScanner customScanner) {
+        return GroupedOpenApi.builder().group("internal").pathsToMatch("/api/internal/**").addOperationCustomizer(customScanner).build();
     }
 
     @Bean
-    public GroupedOpenApi combinedOpenApi() {
-        return GroupedOpenApi.builder().group("combined").pathsToMatch("/api/**").addOpenApiCustomizer(this.requiredByDefaultCustomizer()).addOpenApiCustomizer(this.exceptionCustomizer()).build();
+    public GroupedOpenApi combinedOpenApi(CustomScanner customScanner) {
+        return GroupedOpenApi.builder().group("combined").pathsToMatch("/api/**")
+            .addOpenApiCustomizer(this.requiredByDefaultCustomizer())
+            .addOpenApiCustomizer(this.exceptionCustomizer())
+            .addOperationCustomizer(customScanner)
+            .build();
     }
 
     public OpenApiCustomizer requiredByDefaultCustomizer() {
