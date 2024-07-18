@@ -90,20 +90,20 @@ public class UsersApiService extends HangarComponent {
     }
 
     @Transactional(readOnly = true)
-    public PaginatedResult<ProjectCompact> getUserStarred(final String userName, final ProjectSortingStrategy sortingStrategy, final RequestPagination pagination) {
+    public PaginatedResult<ProjectCompact> getUserStarred(final String userName, final RequestPagination pagination) {
         this.getUserRequired(userName, this.usersDAO::getUser, User.class);
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
-        final List<ProjectCompact> projects = this.usersApiDAO.getUserStarred(userName, canSeeHidden, this.getHangarUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
+        final List<ProjectCompact> projects = this.usersApiDAO.getUserStarred(userName, canSeeHidden, this.getHangarUserId(), pagination);
         projects.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
         final long count = this.usersApiDAO.getUserStarredCount(userName, canSeeHidden, this.getHangarUserId());
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
 
     @Transactional(readOnly = true)
-    public PaginatedResult<ProjectCompact> getUserWatching(final String userName, final ProjectSortingStrategy sortingStrategy, final RequestPagination pagination) {
+    public PaginatedResult<ProjectCompact> getUserWatching(final String userName,  final RequestPagination pagination) {
         this.getUserRequired(userName, this.usersDAO::getUser, User.class);
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
-        final List<ProjectCompact> projects = this.usersApiDAO.getUserWatching(userName, canSeeHidden, this.getHangarUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
+        final List<ProjectCompact> projects = this.usersApiDAO.getUserWatching(userName, canSeeHidden, this.getHangarUserId(), pagination);
         projects.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
         final long count = this.usersApiDAO.getUserWatchingCount(userName, canSeeHidden, this.getHangarUserId());
         return new PaginatedResult<>(new Pagination(count, pagination), projects);

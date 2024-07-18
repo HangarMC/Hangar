@@ -43,8 +43,9 @@ public interface UsersApiDAO {
         "     <if(!canSeeHidden)> (p.visibility = 0" +
         "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND<endif>" +
         "     lower(u.name) = lower(:user)" +
-        " ORDER BY <sortOrder> LIMIT :limit OFFSET :offset")
-    List<ProjectCompact> getUserStarred(String user, @Define boolean canSeeHidden, @Define Long userId, @Define String sortOrder, long limit, long offset);
+        "   <sorters>" +
+        "   <offsetLimit>")
+    List<ProjectCompact> getUserStarred(String user, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
     @UseStringTemplateEngine
     @SqlQuery("SELECT count(*)" +
@@ -82,8 +83,9 @@ public interface UsersApiDAO {
         "     <if(!canSeeHidden)> (p.visibility = 0" +
         "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND<endif>" +
         "     lower(u.name) = lower(:user)" +
-        " ORDER BY <sortOrder> LIMIT :limit OFFSET :offset")
-    List<ProjectCompact> getUserWatching(String user, @Define boolean canSeeHidden, @Define Long userId, @Define String sortOrder, long limit, long offset);
+        "   <sorters>" +
+        "   <offsetLimit>")
+    List<ProjectCompact> getUserWatching(String user, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
     @UseStringTemplateEngine
     @SqlQuery("SELECT count(*)" +

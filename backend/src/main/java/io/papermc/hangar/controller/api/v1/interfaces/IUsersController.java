@@ -70,7 +70,6 @@ public interface IUsersController {
     })
     @GetMapping("/users/{user}/starred")
     ResponseEntity<PaginatedResult<ProjectCompact>> getUserStarred(@Parameter(description = "The user to return starred projects for") @PathVariable("user") String userName,
-                                                                   @Parameter(description = "How to sort the projects") @RequestParam(defaultValue = "updated") ProjectSortingStrategy sort,
                                                                    @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
 
     @Operation(
@@ -87,7 +86,6 @@ public interface IUsersController {
     })
     @GetMapping("/users/{user}/watching")
     ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(@Parameter(description = "The user to return watched projects for") @PathVariable("user") String userName,
-                                                                    @Parameter(description = "How to sort the projects") @RequestParam(defaultValue = "updated") ProjectSortingStrategy sort,
                                                                     @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
 
     @Operation(

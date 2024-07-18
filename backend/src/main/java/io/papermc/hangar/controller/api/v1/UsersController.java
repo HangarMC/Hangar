@@ -42,15 +42,15 @@ public class UsersController extends HangarComponent implements IUsersController
     }
 
     @Override
-    @ApplicableSorters({SorterRegistry.USER_NAME, SorterRegistry.USER_JOIN_DATE, SorterRegistry.USER_PROJECT_COUNT, SorterRegistry.USER_LOCKED, SorterRegistry.USER_ORG, SorterRegistry.USER_ROLES})
-    public ResponseEntity<PaginatedResult<ProjectCompact>> getUserStarred(final String userName, final ProjectSortingStrategy sort, final @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(this.usersApiService.getUserStarred(userName, sort, pagination));
+    @ApplicableSorters({SorterRegistry.VIEWS, SorterRegistry.DOWNLOADS, SorterRegistry.NEWEST, SorterRegistry.STARS, SorterRegistry.UPDATED, SorterRegistry.RECENT_DOWNLOADS, SorterRegistry.RECENT_VIEWS, SorterRegistry.SLUG})
+    public ResponseEntity<PaginatedResult<ProjectCompact>> getUserStarred(final String userName, final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.usersApiService.getUserStarred(userName, pagination));
     }
 
     @Override
-    @ApplicableSorters({SorterRegistry.USER_NAME, SorterRegistry.USER_JOIN_DATE, SorterRegistry.USER_PROJECT_COUNT, SorterRegistry.USER_LOCKED, SorterRegistry.USER_ORG, SorterRegistry.USER_ROLES})
-    public ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(final String userName, final ProjectSortingStrategy sort, final @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(this.usersApiService.getUserWatching(userName, sort, pagination));
+    @ApplicableSorters({SorterRegistry.VIEWS, SorterRegistry.DOWNLOADS, SorterRegistry.NEWEST, SorterRegistry.STARS, SorterRegistry.UPDATED, SorterRegistry.RECENT_DOWNLOADS, SorterRegistry.RECENT_VIEWS, SorterRegistry.SLUG})
+    public ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(final String userName, final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.usersApiService.getUserWatching(userName, pagination));
     }
 
     @Override
