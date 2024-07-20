@@ -24,7 +24,7 @@ defineProps<{
         </div>
         <div class="overflow-clip overflow-hidden min-w-0">
           <div class="inline-flex items-center gap-x-1">
-            <h2>
+            <h3>
               <span class="text-xl font-bold">{{ project.name }}&nbsp;</span>
               <span class="text-sm"> {{ i18n.t("general.by") }}&nbsp;</span>
               <span class="text-sm">
@@ -34,12 +34,12 @@ defineProps<{
                   </Link>
                 </object>
               </span>
-            </h2>
+            </h3>
             <IconMdiCancel v-show="project.visibility === Visibility.SoftDelete" />
             <IconMdiEyeOff v-show="project.visibility !== Visibility.Public" />
           </div>
 
-          <h3 v-if="'description' in project && project.description" class="mb-1">{{ project.description }}</h3>
+          <div v-if="'description' in project && project.description" class="mb-1">{{ project.description }}</div>
           <div class="inline-flex items-center text-gray-500 dark:text-gray-400 lt-sm:hidden">
             <CategoryLogo :category="project.category" :size="16" class="mr-1" />
             {{ i18n.t("project.category." + project.category) }}

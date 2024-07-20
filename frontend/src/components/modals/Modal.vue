@@ -60,7 +60,7 @@ defineExpose({
       <button data-close @click="close">
         <IconMdiClose class="cursor-pointer mr-1" />
       </button>
-      <h2 class="font-bold">{{ props.title }}</h2>
+      <div class="font-bold">{{ props.title }}</div>
     </div>
     <slot :on="{ click: close }"></slot>
   </dialog>

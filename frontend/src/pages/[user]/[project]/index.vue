@@ -1,17 +1,20 @@
 <script lang="ts" setup>
 import { type HangarProject, NamedPermission, type PinnedVersion, type User } from "~/types/backend";
+import { upperFirst } from "scule";
 
 const props = defineProps<{
   user: User;
   project: HangarProject;
 }>();
 
+const config = useConfig();
 const i18n = useI18n();
 const route = useRoute("user-project-pages-all");
 const openProjectPages = useOpenProjectPages(route, props.project);
 
 const sponsors = ref(props.project.settings.sponsors);
 const editingSponsors = ref(false);
+
 function saveSponsors(content: string) {
   useInternalApi(`projects/project/${props.project.namespace.slug}/sponsors`, "post", {
     content,
@@ -27,7 +30,36 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
   return `/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${version.name}`;
 }
 
-// useSeo is in ProjectPageMarkdown
+const platform = computed(() =>
+  upperFirst(Object.keys(props.project.pinnedVersions?.[0]?.platformDependenciesFormatted || { Minecraft: "dum" })?.[0]?.toLowerCase() || "Minecraft")
+);
+useHead(
+  useSeo(
+    props.project.name + ` - ${platform.value} Plugin`,
+    `${props.project.description} - Download the ${platform.value} Plugin ${props.project.name} by ${props.project.namespace.owner} on Hangar`,
+    route,
+    props.project.avatarUrl,
+    [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebContent",
+          author: {
+            "@type": "Person",
+            name: props.project?.namespace.owner,
+            url: config.publicHost + "/" + props.project?.namespace?.owner,
+          },
+          name: props.project?.name,
+          datePublished: props.project?.createdAt,
+          dateCreated: props.project?.createdAt,
+          url: config.publicHost + route.fullPath,
+        }),
+        key: "project",
+      },
+    ]
+  )
+);
 </script>
 
 <template>
@@ -69,9 +101,9 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
           >
             <template #title>
               <div class="inline-flex items-center mt-2 gap-1.5">
-                <h1 class="ml-4 text-2xl">{{ i18n.t("project.sponsors") }}</h1>
+                <h2 class="ml-4 text-2xl">{{ i18n.t("project.sponsors") }}</h2>
                 <Tooltip class="overflow-visible">
-                  <template #content> {{ i18n.t("project.sponsorsTooltip") }} </template>
+                  <template #content> {{ i18n.t("project.sponsorsTooltip") }}</template>
                   <IconMdiInformation class="mt-1 text-xl" />
                 </Tooltip>
               </div>
@@ -92,7 +124,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
       <ProjectInfo :project="project" />
       <Card>
         <template #header>
-          <h3>{{ i18n.t("project.pinnedVersions") }}</h3>
+          <h2>{{ i18n.t("project.pinnedVersions") }}</h2>
         </template>
         <ul class="divide-y divide-blue-500/50">
           <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.name}`" class="p-1 py-2">
@@ -129,7 +161,7 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
       <template v-for="section in project.settings.links">
         <Card v-if="section.type === 'sidebar'" :key="section.id">
           <template #header>
-            <h3>{{ section.title }}</h3>
+            <h2>{{ section.title }}</h2>
           </template>
           <div class="flex flex-col">
             <template v-for="link in section.links" :key="link.id">

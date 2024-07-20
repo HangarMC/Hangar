@@ -11,7 +11,7 @@ const namespace = computed(() => props.project.namespace.owner + "/" + props.pro
 <template>
   <Card>
     <template #header>
-      <h3>{{ i18n.t("project.info.title") }}</h3>
+      <h2>{{ i18n.t("project.info.title") }}</h2>
     </template>
     <template #default>
       <table class="w-full">

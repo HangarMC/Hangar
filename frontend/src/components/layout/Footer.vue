@@ -5,7 +5,7 @@ const { t } = useI18n();
 <template>
   <footer class="relative mt-10 py-1 background-default text-light-10">
     <div class="mt-3 mb-3 max-w-screen-xl mx-auto px-4">
-      <div class="flex flex-wrap flex-row-reverse flex-grow-1 gap-4 justify-around items-center text-sm">
+      <div class="flex flex-wrap flex-col gap-4 justify-around items-center text-sm">
         <div class="flex flex-row flex-wrap justify-center">
           <a
             href="https://github.com/HangarMC"
@@ -37,6 +37,11 @@ const { t } = useI18n();
           <NuxtLink href="https://forums.papermc.io/help/legal-notice/" class="flex items-center rounded-md px-6 py-2" hover="text-primary-500 bg-primary-0">
             {{ t("hangar.footer.legalNotice") }}
           </NuxtLink>
+        </div>
+        <div class="flex flex-row flex-wrap justify-center gap-2">
+          <Link to="/paper">Download Paper Plugins</Link>
+          <Link to="/velocity">Download Velocity Plugins</Link>
+          <Link to="/waterfall">Download Waterfall Plugins</Link>
         </div>
         <div class="flex flex-grow-1 lt-md:justify-center">
           <p class="font-bold">© {{ new Date().getFullYear() }} <a href="https://papermc.io/">PaperMC</a></p>

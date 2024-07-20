@@ -12,9 +12,8 @@ const router = useRouter();
 const updateProjectPages = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
 
 const { editingPage, changeEditingPage, page, savePage, deletePage } = await useProjectPage(route, router, props.project, props.mainPage);
-if (page) {
-  const title = props.mainPage ? props.project.name : page.value?.name + " | " + props.project.name;
-  useHead(useSeo(title, props.project.description, route, props.project.avatarUrl));
+if (page && !props.mainPage) {
+  useHead(useSeo(page.value?.name + " | " + props.project.name, props.project.description, route, props.project.avatarUrl));
 }
 
 async function deletePageAndUpdateProject() {

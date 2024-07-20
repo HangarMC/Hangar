@@ -14,7 +14,7 @@ const route = useRoute("user-project");
   <Card>
     <template #header>
       <div class="inline-flex w-full flex-cols space-between">
-        <h3 class="flex-grow">{{ i18n.t("page.plural") }}</h3>
+        <h2 class="flex-grow">{{ i18n.t("page.plural") }}</h2>
         <NewPageModal v-if="hasPerms(NamedPermission.EditPage)" :pages="project.pages" :project-id="project.id" activator-class="mr-2" />
       </div>
     </template>

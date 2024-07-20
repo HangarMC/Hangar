@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { NamedPermission, Visibility, ChannelFlag } from "~/types/backend";
+import { NamedPermission, Visibility, ChannelFlag, type PaginatedResultVersion } from "~/types/backend";
 import type { Platform, HangarProject, Version } from "~/types/backend";
 
 const i18n = useI18n();
@@ -15,7 +15,6 @@ const filter = reactive({
     platforms: true,
   },
 });
-console.log("loaded filters", filter);
 
 const props = defineProps<{
   project: HangarProject;
@@ -39,7 +38,7 @@ const results = await Promise.all([
   useProjectVersions(route.params.project, { ...requestParams.value, includeHiddenChannels: route.query.channel != null }),
 ]);
 const channels = results[0].data;
-const versions = results[1];
+const versions = results[1] as Ref<PaginatedResultVersion>;
 if (!route.query.channel) {
   filter.channels.push(...channels.value.filter((c) => !c.flags.includes(ChannelFlag.HIDE_BY_DEFAULT)).map((c) => c.name));
 }
@@ -47,7 +46,14 @@ if (!route.query.platform) {
   filter.platforms.push(...platforms.value.map((p) => p.enumName));
 }
 
-useHead(useSeo("Versions | " + props.project.name, props.project.description, route, props.project.avatarUrl));
+useHead(
+  useSeo(
+    "Versions | " + props.project.name,
+    `Download ${versions.value.pagination?.count} ${props.project.name} versions. ${props.project.stats.downloads} total downloads. Last updated on ${lastUpdated(new Date(versions.value.result?.[0]?.createdAt || 0))}`,
+    route,
+    props.project.avatarUrl
+  )
+);
 
 const pageChangeScrollAnchor = ref<Element>();
 
@@ -110,6 +116,7 @@ function getVisibilityTitle(visibility: Visibility) {
 <template>
   <div ref="pageChangeScrollAnchor" class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-11/15 flex-grow">
+      <h2 class="font-bold text-2xl mb-4">Versions for {{ project.name }} by {{ project.namespace.owner }}</h2>
       <ul>
         <Alert v-if="!versions || !versions.result || versions.result.length === 0" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
         <Pagination
@@ -127,7 +134,7 @@ function getVisibilityTitle(visibility: Visibility) {
                   <div class="flex lt-lg:flex-wrap">
                     <div class="basis-full lg:(basis-6/15 pb-4) truncate">
                       <div class="flex flex-wrap items-center">
-                        <h2 class="lg:basis-full lt-lg:mr-1 text-1.15rem leading-relaxed">{{ item.name }}</h2>
+                        <h3 class="lg:basis-full lt-lg:mr-1 text-1.15rem leading-relaxed">{{ item.name }}</h3>
                         <span class="lg:hidden flex-grow" />
                         <Tag :name="item.channel.name" :color="{ background: item.channel.color }" :tooltip="item.channel.description" />
                         <IconMdiCancel v-if="item.visibility === Visibility.SoftDelete" class="ml-1"></IconMdiCancel>
@@ -181,7 +188,7 @@ function getVisibilityTitle(visibility: Visibility) {
           <template #header>
             <div class="inline-flex w-full flex-cols space-between">
               <InputCheckbox v-model="filter.allChecked.channels" @change="checkAllChannels" />
-              <h3 class="flex-grow">{{ i18n.t("version.channels") }}</h3>
+              <h2 class="flex-grow">{{ i18n.t("version.channels") }}</h2>
               <Link v-if="hasPerms(NamedPermission.EditChannels)" :to="`/${project.namespace.owner}/${project.name}/channels`">
                 <Button size="small" class="ml-2 text-sm"><IconMdiPencil /></Button>
               </Link>
@@ -201,7 +208,7 @@ function getVisibilityTitle(visibility: Visibility) {
           <template #header>
             <div class="inline-flex">
               <InputCheckbox v-model="filter.allChecked.platforms" class="flex-right" @change="checkAllPlatforms" />
-              <h3>{{ i18n.t("version.platforms") }}</h3>
+              <h2>{{ i18n.t("version.platforms") }}</h2>
             </div>
           </template>
 

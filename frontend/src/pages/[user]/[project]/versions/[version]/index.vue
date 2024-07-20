@@ -2,11 +2,13 @@
 import type { AxiosError } from "axios";
 import { ReviewState, PinnedStatus, NamedPermission, Visibility } from "~/types/backend";
 import type { Platform, HangarProject, HangarVersion, User } from "~/types/backend";
+import { titleCase } from "scule";
 
 const route = useRoute("user-project-versions-version");
 const i18n = useI18n();
 const router = useRouter();
 const notification = useNotificationStore();
+const config = useConfig();
 
 const props = defineProps<{
   version: HangarVersion;
@@ -53,7 +55,50 @@ function sortedDependencies(platform: Platform) {
   return [];
 }
 
-useHead(useSeo(props.project?.name + " " + projectVersion.value?.name, props.project.description, route, props.project.avatarUrl));
+const supportsString = computed(() => {
+  const result = [];
+  for (let platform in projectVersion.value?.platformDependenciesFormatted) {
+    result.push(titleCase(platform.toLowerCase()) + " " + projectVersion.value?.platformDependenciesFormatted[platform]);
+  }
+  return result.join(", ");
+});
+useHead(
+  useSeo(
+    props.project?.name + " " + projectVersion.value?.name,
+    `Download ${props.project?.name} ${projectVersion.value?.name} on Hangar.
+    Supports ${supportsString.value}.
+    Published on ${lastUpdated(new Date(projectVersion.value?.createdAt))}.
+    ${projectVersion.value?.stats?.totalDownloads} downloads.`,
+    route,
+    props.project.avatarUrl,
+    [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebContent",
+          about: {
+            "@type": "WebContent",
+            name: props.project?.name,
+            url: config.publicHost + "/" + props.project?.namespace?.owner + "/" + props.project?.namespace?.slug,
+            description: props.project?.description,
+          },
+          author: {
+            "@type": "Person",
+            name: props.project?.namespace.owner,
+            url: config.publicHost + "/" + props.project?.namespace?.owner,
+          },
+          name: props.project?.name + " " + projectVersion.value?.name,
+          datePublished: projectVersion.value?.createdAt,
+          dateCreated: projectVersion.value?.createdAt,
+          version: projectVersion.value?.name,
+          url: config.publicHost + route.fullPath,
+        }),
+        key: "version",
+      },
+    ]
+  )
+);
 
 async function savePage(content: string) {
   try {
@@ -138,7 +183,9 @@ async function restoreVersion() {
           </h2>
           <h3>
             <span class="inline-flex lt-md:flex-wrap">
-              {{ i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt))]) }}
+              {{
+                i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt)), project.name, projectVersion.name])
+              }}
             </span>
           </h3>
           <em v-if="hasPerms(NamedPermission.Reviewer) && projectVersion.approvedBy">
@@ -179,7 +226,7 @@ async function restoreVersion() {
     <section class="basis-full lg:basis-4/15 flex-grow space-y-4">
       <Card v-if="hasPerms(NamedPermission.DeleteVersion) || hasPerms(NamedPermission.ViewLogs) || hasPerms(NamedPermission.Reviewer)">
         <template #header>
-          <h3>{{ i18n.t("version.page.manage") }}</h3>
+          <h2>{{ i18n.t("version.page.manage") }}</h2>
         </template>
 
         <span class="inline-flex items-center">
@@ -256,7 +303,7 @@ async function restoreVersion() {
       <Card>
         <template #header>
           <div class="inline-flex w-full">
-            <h3 class="flex-grow">{{ i18n.t("project.info.title") }}</h3>
+            <h2 class="flex-grow">{{ i18n.t("project.info.title") }}</h2>
           </div>
         </template>
 
@@ -271,7 +318,7 @@ async function restoreVersion() {
                 {{ i18n.t(hasPerms(NamedPermission.IsSubjectMember) ? "project.info.totalTotalDownloads" : "project.info.totalDownloads", 0) }}
               </th>
               <td class="text-right">
-                {{ version.stats.totalDownloads.toLocaleString("en-US") }}
+                {{ projectVersion.stats.totalDownloads.toLocaleString("en-US") }}
               </td>
             </tr>
             <!-- Only show per platform downloads to project members, otherwise not too relevant and only adding to height -->
@@ -281,7 +328,7 @@ async function restoreVersion() {
                 {{ i18n.t("project.info.totalDownloads", 0) }}
               </th>
               <td class="text-right">
-                {{ version.stats.platformDownloads[platform].toLocaleString("en-US") }}
+                {{ projectVersion.stats.platformDownloads[platform].toLocaleString("en-US") }}
               </td>
             </tr>
           </tbody>
@@ -291,7 +338,7 @@ async function restoreVersion() {
       <Card>
         <template #header>
           <div class="inline-flex w-full">
-            <h3 class="flex-grow">{{ i18n.t("version.page.platforms") }}</h3>
+            <h2 class="flex-grow">{{ i18n.t("version.page.platforms") }}</h2>
           </div>
         </template>
 
@@ -312,7 +359,7 @@ async function restoreVersion() {
       <Card v-if="hasPerms(NamedPermission.EditVersion) || platformsWithDependencies.length !== 0">
         <template #header>
           <div class="inline-flex w-full">
-            <h3 class="flex-grow">{{ i18n.t("version.page.dependencies") }}</h3>
+            <h2 class="flex-grow">{{ i18n.t("version.page.dependencies") }}</h2>
           </div>
         </template>
 

@@ -11,6 +11,7 @@ const props = defineProps<{
 }>();
 const i18n = useI18n();
 
+const config = useConfig();
 const route = useRoute("user");
 const router = useRouter();
 
@@ -89,8 +90,42 @@ watchDebounced(
   { deep: true, debounce: 250 }
 );
 
-const description = props.user.name + " is an author on Hangar." + (props.user?.tagline ? " " + props.user.tagline : "");
-useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
+const description = (props.user?.tagline ? props.user.tagline + " - " : "") + "Download " + props.user.name + "'s plugins on Hangar.";
+useHead(
+  useSeo(props.user.name, description, route, props.user.avatarUrl, [
+    {
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "ProfilePage",
+        mainEntity: {
+          "@type": "Person",
+          name: props.user.name,
+          url: config.publicHost + "/" + route.fullPath,
+          description: props.user.tagline,
+          image: props.user.avatarUrl,
+          interactionStatistic: [
+            {
+              "@type": "InteractionCounter",
+              interactionType: "https://schema.org/CreateAction",
+              userInteractionCount: props.user.projectCount,
+            },
+            {
+              "@type": "InteractionCounter",
+              interactionType: "https://schema.org/LikeAction",
+              userInteractionCount: userData.value?.starred?.result?.length || 0,
+            },
+            {
+              "@type": "InteractionCounter",
+              interactionType: "https://schema.org/FollowAction",
+              userInteractionCount: userData.value?.watching?.result?.length || 0,
+            },
+          ],
+        },
+      }),
+    },
+  ])
+);
 </script>
 
 <template>
@@ -108,6 +143,7 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
           <InputText v-model="query" :label="i18n.t('hangar.projectSearch.query')" />
           <InputSelect v-model="activeSorter" :values="sorters" item-text="label" item-value="id" :label="i18n.t('hangar.projectSearch.sortBy')" />
         </div>
+        <h2 class="font-bold text-xl">{{ user.name }}'s Plugins</h2>
         <ProjectList :projects="projects" @update:page="(newPage) => (page = newPage)" />
       </div>
       <div class="flex-basis-full flex-grow lg:max-w-3/10 lg:min-w-2/10">
@@ -115,7 +151,9 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
           v-if="buttons.length !== 0 || (organization && hasPerms(NamedPermission.IsSubjectOwner))"
           class="mb-4 border-solid border-top-4 border-top-red-500 dark:border-top-red-500"
         >
-          <template #header>{{ i18n.t("author.management") }}</template>
+          <template #header>
+            <h2>{{ i18n.t("author.management") }}</h2>
+          </template>
           <template v-if="organization && hasPerms(NamedPermission.IsSubjectOwner)">
             <Tooltip :content="i18n.t('author.tooltips.transfer')">
               <OrgTransferModal :organization="user.name" />
@@ -130,7 +168,9 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
               {{ i18n.t(`author.tooltips.${btn.name}`) }}
             </template>
             <Link v-bind="btn.attr">
-              <Button size="small" class="mr-1 inline-flex"><component :is="btn.icon" /></Button>
+              <Button size="small" class="mr-1 inline-flex">
+                <component :is="btn.icon" />
+              </Button>
             </Link>
           </Tooltip>
 
@@ -139,7 +179,7 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
         </Card>
 
         <Card v-if="possibleAlts?.length" class="mb-4">
-          <template #header> Shares address with </template>
+          <template #header> Shares address with</template>
           <ul>
             <li v-for="name in possibleAlts" :key="name">
               <Link :to="'/' + name">
@@ -153,7 +193,7 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
           <Card class="mb-4" accent>
             <template #header>
               <div class="inline-flex w-full">
-                <span class="flex-grow">{{ i18n.t("author.orgs") }}</span>
+                <h2 class="flex-grow">{{ user.name }}'s {{ i18n.t("author.orgs") }}</h2>
                 <OrgVisibilityModal
                   v-if="organizationVisibility && organizations && Object.keys(organizations).length !== 0"
                   v-model="organizationVisibility"
@@ -179,7 +219,9 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
           </Card>
 
           <Card class="mb-4" accent>
-            <template #header>{{ i18n.t("author.stars") }}</template>
+            <template #header>
+              <h2>{{ i18n.t("author.stars") }}</h2>
+            </template>
 
             <ul v-if="starred?.result?.length">
               <li v-for="star in starred?.result" :key="star.name">
@@ -195,7 +237,9 @@ useHead(useSeo(props.user.name, description, route, props.user.avatarUrl));
           </Card>
 
           <Card accent>
-            <template #header>{{ i18n.t("author.watching") }}</template>
+            <template #header>
+              <h2>{{ i18n.t("author.watching") }}</h2>
+            </template>
 
             <ul v-if="watching?.result?.length">
               <li v-for="watched in watching?.result" :key="watched.name">

@@ -42,7 +42,7 @@
   },
   "hangar": {
     "footer": {
-      "api": "API",
+      "api": "Hangar API",
       "org": "GitHub",
       "terms": "Terms and Conditions",
       "privacypolicy": "Privacy Policy",
@@ -55,8 +55,6 @@
       "sortBy": "Sort by",
       "noProjects": "There are no projects. 😢",
       "noProjectsFound": "Found 0 projects. 😢",
-      "title": "Find your favorite plugins",
-      "subTitle": "Hangar allows you to find the best Paper, Velocity, or Waterfall plugins for your Minecraft server.",
       "categories": "Categories",
       "licenses": "Licenses",
       "versions": {
@@ -535,7 +533,7 @@
       }
     },
     "page": {
-      "subheader": "{0} released this version: {1}",
+      "subheader": "{0} released {2} version {3} on {1}",
       "dependencies": "Dependencies",
       "platforms": "Platforms",
       "required": "(required)",

@@ -32,6 +32,7 @@ const renderer = {
     const id = `${slugger.slug(raw)}`;
     const heading = { level, text, id };
     headings.push(heading);
+    level = level + 1;
 
     return `<h${level} id="${id}">
               ${text}

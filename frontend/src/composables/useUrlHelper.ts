@@ -9,6 +9,9 @@ const isSafeHost = (host: string) => {
 };
 
 const isSafe = (urlString: string) => {
+  if (!urlString) {
+    return false;
+  }
   if (urlString.startsWith("#") || urlString.startsWith("/")) {
     return true;
   }

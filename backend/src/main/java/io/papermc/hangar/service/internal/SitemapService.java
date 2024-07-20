@@ -48,6 +48,9 @@ public class SitemapService extends HangarComponent {
     public String getGlobalSitemap() {
         return SitemapGenerator.of(this.config.getBaseUrl())
             .addPage(WebPage.builder().name("").changeFreq(ChangeFreq.HOURLY).build())
+            .addPage(WebPage.builder().name("paper").changeFreq(ChangeFreq.HOURLY).build())
+            .addPage(WebPage.builder().name("waterfall").changeFreq(ChangeFreq.HOURLY).build())
+            .addPage(WebPage.builder().name("velocity").changeFreq(ChangeFreq.HOURLY).build())
             .addPage(WebPage.builder().name("authors").changeFreq(ChangeFreq.WEEKLY).build())
             .addPage(WebPage.builder().name("staff").changeFreq(ChangeFreq.WEEKLY).build())
             .addPage(WebPage.builder().name("guidelines").changeFreq(ChangeFreq.WEEKLY).build())

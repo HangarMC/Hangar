@@ -7,14 +7,17 @@ export function useSeo(
   description: string | TranslateResult | null | undefined,
   route: RouteLocationNormalized,
   image: string | null,
-  additionalScripts?: { type: string; children: string; key: string }[]
+  additionalScripts?: { type: string; children: string; key: string }[],
+  manualTitle?: boolean
 ): UseHeadInput {
   description = description || "Plugin repository for Paper, Velocity, Waterfall and Folia.";
   const config = useConfig();
   const canonical = config.publicHost + (route.fullPath.endsWith("/") ? route.fullPath.substring(0, route.fullPath.length - 1) : route.fullPath);
   image = image || "https://docs.papermc.io/img/paper.png";
   image = image.startsWith("http") ? image : config.publicHost + image;
-  title = title ? title + " | Hangar" : "Hangar";
+  if (!manualTitle) {
+    title = title ? title + " | Hangar" : "Hangar";
+  }
 
   useSeoMeta({
     title,
