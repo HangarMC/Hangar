@@ -4,5 +4,5 @@ import { Platform } from "~/types/backend";
 </script>
 
 <template>
-  <Homepage :platform="Platform.VELOCITY" platformName="Velocity" />
+  <Homepage :platform="Platform.VELOCITY" platform-name="Velocity" />
 </template>

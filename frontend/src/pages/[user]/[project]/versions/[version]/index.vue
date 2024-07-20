@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { AxiosError } from "axios";
+import { titleCase } from "scule";
 import { ReviewState, PinnedStatus, NamedPermission, Visibility } from "~/types/backend";
 import type { Platform, HangarProject, HangarVersion, User } from "~/types/backend";
-import { titleCase } from "scule";
 
 const route = useRoute("user-project-versions-version");
 const i18n = useI18n();
@@ -57,7 +57,7 @@ function sortedDependencies(platform: Platform) {
 
 const supportsString = computed(() => {
   const result = [];
-  for (let platform in projectVersion.value?.platformDependenciesFormatted) {
+  for (const platform in projectVersion.value?.platformDependenciesFormatted) {
     result.push(titleCase(platform.toLowerCase()) + " " + projectVersion.value?.platformDependenciesFormatted[platform]);
   }
   return result.join(", ");

@@ -4,5 +4,5 @@ import { Platform } from "~/types/backend";
 </script>
 
 <template>
-  <Homepage :platform="Platform.PAPER" platformName="Paper" />
+  <Homepage :platform="Platform.PAPER" platform-name="Paper" />
 </template>

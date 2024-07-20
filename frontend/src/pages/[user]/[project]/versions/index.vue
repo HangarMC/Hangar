@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { NamedPermission, Visibility, ChannelFlag, type PaginatedResultVersion } from "~/types/backend";
-import type { Platform, HangarProject, Version } from "~/types/backend";
+import { NamedPermission, Visibility, ChannelFlag } from "~/types/backend";
+import type { Platform, HangarProject, Version, PaginatedResultVersion } from "~/types/backend";
 
 const i18n = useI18n();
 const router = useRouter();

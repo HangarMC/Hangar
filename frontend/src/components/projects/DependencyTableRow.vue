@@ -48,9 +48,9 @@ async function onSearch(val: string | undefined) {
             :item-value="dep.name"
             :disabled="noEditing"
             :rules="[required(t('version.new.form.hangarProject'))]"
+            :name="'hangarproject-' + idx"
             @search="onSearch($event)"
             @change="dep.externalUrl = undefined"
-            :name="'hangarproject-' + idx"
           />
         </template>
         <template #url>

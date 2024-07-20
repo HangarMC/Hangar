@@ -4,5 +4,5 @@ import { Platform } from "~/types/backend";
 </script>
 
 <template>
-  <Homepage :platform="Platform.WATERFALL" platformName="Waterfall" />
+  <Homepage :platform="Platform.WATERFALL" platform-name="Waterfall" />
 </template>
