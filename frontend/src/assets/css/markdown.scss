@@ -119,7 +119,7 @@
       color: var(--alert-color, #444c56);
 
       .dark & > svg {
-        fill: #E0E6f0;
+        fill: #e0e6f0;
       }
     }
   }
@@ -145,7 +145,12 @@
   }
 
   summary {
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       display: inline;
     }
   }
