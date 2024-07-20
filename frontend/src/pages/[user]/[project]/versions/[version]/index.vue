@@ -92,7 +92,7 @@ useHead(
           datePublished: projectVersion.value?.createdAt,
           dateCreated: projectVersion.value?.createdAt,
           version: projectVersion.value?.name,
-          url: config.publicHost + route.fullPath,
+          url: config.publicHost + route.path,
         }),
         key: "version",
       },

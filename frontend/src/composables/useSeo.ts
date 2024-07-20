@@ -12,7 +12,7 @@ export function useSeo(
 ): UseHeadInput {
   description = description || "Plugin repository for Paper, Velocity, Waterfall and Folia.";
   const config = useConfig();
-  const canonical = config.publicHost + (route.fullPath.endsWith("/") ? route.fullPath.substring(0, route.fullPath.length - 1) : route.fullPath);
+  const canonical = config.publicHost + (route.path.endsWith("/") ? route.path.substring(0, route.path.length - 1) : route.path);
   image = image || "https://docs.papermc.io/img/paper.png";
   image = image.startsWith("http") ? image : config.publicHost + image;
   if (!manualTitle) {
@@ -119,7 +119,7 @@ export function useSeo(
 
 function generateBreadcrumbs(route: RouteLocationNormalized) {
   const arr = [];
-  const split = route.fullPath.split("/");
+  const split = route.path.split("/");
   let curr = "";
   const config = useConfig();
   for (let i = 0; i < split.length; i++) {

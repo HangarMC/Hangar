@@ -101,7 +101,7 @@ useHead(
         mainEntity: {
           "@type": "Person",
           name: props.user.name,
-          url: config.publicHost + "/" + route.fullPath,
+          url: config.publicHost + "/" + route.path,
           description: props.user.tagline,
           image: props.user.avatarUrl,
           interactionStatistic: [

@@ -8,7 +8,7 @@ const props = defineProps<{
 const route = useRoute();
 
 const selected = computed(() => {
-  const routerPath = route.fullPath.endsWith("/") ? route.fullPath.substr(0, route.fullPath.length - 1) : route.fullPath;
+  const routerPath = route.path.endsWith("/") ? route.path.substr(0, route.path.length - 1) : route.path;
   return routerPath === props.to;
 });
 

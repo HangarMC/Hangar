@@ -53,7 +53,7 @@ useHead(
           name: props.project?.name,
           datePublished: props.project?.createdAt,
           dateCreated: props.project?.createdAt,
-          url: config.publicHost + route.fullPath,
+          url: config.publicHost + route.path,
         }),
         key: "project",
       },
