@@ -249,7 +249,7 @@ useHead(
     <Container lg="flex items-start gap-6">
       <!-- Projects -->
       <div v-if="projects" class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
-        <h2 class="font-bold text-2xl absolute -mt-11">Projects</h2>
+        <h2 class="font-bold text-2xl lg:(absolute -mt-11)">Projects</h2>
         <ProjectList ref="projectList" :projects="projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage) => (page = newPage)" />
       </div>
       <!-- Sidebar -->
