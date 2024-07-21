@@ -38,7 +38,7 @@ const { t } = useI18n();
             {{ t("hangar.footer.legalNotice") }}
           </NuxtLink>
         </div>
-        <div class="flex flex-row flex-wrap justify-center gap-2">
+        <div class="flex flex-row flex-wrap justify-center gap-4">
           <Link to="/paper">Download Paper Plugins</Link>
           <Link to="/velocity">Download Velocity Plugins</Link>
           <Link to="/waterfall">Download Waterfall Plugins</Link>

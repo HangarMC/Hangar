@@ -116,7 +116,6 @@ function getVisibilityTitle(visibility: Visibility) {
 <template>
   <div ref="pageChangeScrollAnchor" class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-11/15 flex-grow">
-      <h2 class="font-bold text-2xl mb-4">Versions for {{ project.name }} by {{ project.namespace.owner }}</h2>
       <ul>
         <Alert v-if="!versions || !versions.result || versions.result.length === 0" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
         <Pagination

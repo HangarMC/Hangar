@@ -151,7 +151,7 @@ useHead(
   <div>
     <Container class="flex flex-col items-center gap-4">
       <template v-if="index">
-        <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4 flex flex-col">
+        <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4 flex flex-col w-full">
           <template v-if="ssr">
             Find your favorite <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Paper</strong> plugins
           </template>
@@ -159,12 +159,11 @@ useHead(
             Find your favorite
             <div class="h-[36px] overflow-hidden relative">
               <span class="flex flex-col absolute w-full anim">
-                <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Paper</strong>
-                <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Velocity</strong>
-                <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Waterfall</strong>
+                <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Paper plugins</strong>
+                <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Velocity plugins</strong>
+                <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Waterfall plugins</strong>
               </span>
             </div>
-            plugins
           </template>
         </h1>
         <div class="text-1xl text-center mb-2">
@@ -172,15 +171,20 @@ useHead(
         </div>
       </template>
       <template v-else>
-        <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4">Find your favorite {{ platformName }} plugins</h1>
+        <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4">
+          Find your favorite
+          <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">
+            {{platformName}} plugins
+          </strong>
+        </h1>
         <div class="text-1xl text-center mb-2">Hangar allows you to find and download the best {{ platformName }} plugins for your Minecraft server</div>
       </template>
-      <div v-if="!index" class="text-center">
-        Looking for more plugins?
+      <div v-if="!index" class="text-center -mt-2">
+        Looking for other platforms?
         <div class="flex gap-3 mt-2 mb-2">
-          <Button v-if="platform != 'PAPER'" to="/paper">Download Paper plugins</Button>
-          <Button v-if="platform != 'VELOCITY'" to="/velocity">Download Velocity Plugins</Button>
-          <Button v-if="platform != 'WATERFALL'" to="/waterfall">Download Waterfall plugins</Button>
+          <Button v-if="platform != 'PAPER'" to="/paper">Download Paper plugins <PlatformLogo platform="PAPER" :size="24" class="ml-1" /></Button>
+          <Button v-if="platform != 'VELOCITY'" to="/velocity">Download Velocity Plugins <PlatformLogo platform="VELOCITY" :size="24" class="ml-1" /></Button>
+          <Button v-if="platform != 'WATERFALL'" to="/waterfall">Download Waterfall plugins <PlatformLogo platform="WATERFALL" :size="24" class="ml-1" /></Button>
         </div>
       </div>
       <!-- Search Bar -->
@@ -245,12 +249,12 @@ useHead(
     <Container lg="flex items-start gap-6">
       <!-- Projects -->
       <div v-if="projects" class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
-        <h2 class="font-bold text-2xl mb-2">Projects</h2>
+        <h2 class="font-bold text-2xl absolute -mt-11">Projects</h2>
         <ProjectList ref="projectList" :projects="projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage) => (page = newPage)" />
       </div>
       <!-- Sidebar -->
       <Card accent class="min-w-300px flex flex-col gap-4">
-        <h2 class="font-bold text-xl">Filters</h2>
+        <h2 class="font-bold text-xl -mb-2">Filters</h2>
         <div v-if="!platform" class="platforms">
           <h3 class="font-bold mb-1">
             {{ i18n.t("hangar.projectSearch.platforms") }}
@@ -308,25 +312,35 @@ useHead(
         </div>
       </Card>
     </Container>
-    <h2 class="text-2xl font-bold mt-8">Frequently asked Questions about Hangar (FAQ)</h2>
-    <Card class="mt-4" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-      <h3 class="text-lg font-bold mb-1" itemprop="name">What is Hangar?</h3>
-      <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-        <div itemprop="text">
-          Hangar is the best place to download {{ platformName }} plugins. Created by the <Link href="https://papermc.io/team">PaperMC Team</Link>, we took
-          great care that you can find the newest and best {{ platformName }} plugins.
+    <h2 class="text-2xl text-center font-bold mt-8">Frequently asked Questions about Hangar (FAQ)</h2>
+    <div class="md:(ml-15 mr-15)">
+      <Card class="mt-4" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <h3 class="text-lg font-bold mb-1" itemprop="name">What is Hangar?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <div itemprop="text">
+            Hangar is the best place to download {{ platformName }} plugins. Created by the <Link href="https://papermc.io/team">PaperMC Team</Link>, we took
+            great care that you can find the newest and best {{ platformName }} plugins.
+          </div>
         </div>
-      </div>
-    </Card>
-    <Card class="mt-4" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-      <h3 class="text-lg font-bold mb-1" itemprop="name">How do I download {{ platformName }} plugins from Hangar?</h3>
-      <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-        <div itemprop="text">
-          To download {{ platformName }} plugins, simply use the search on this page to find the plugin you are looking for and download the
-          {{ platformName }} plugin from the resource page.
+      </Card>
+      <Card class="mt-4" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <h3 class="text-lg font-bold mb-1" itemprop="name">How do I download {{ platformName }} plugins from Hangar?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <div itemprop="text">
+            To download {{ platformName }} plugins, simply use the search on this page to find the plugin you are looking for and download the
+            {{ platformName }} plugin from the resource page. The main download button will always provide the latest release version.
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+      <Card class="mt-4" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <h3 class="text-lg font-bold mb-1" itemprop="name">Can I automate uploading {{ platformName }} plugins to Hangar?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <div itemprop="text">
+            Yes! Simply use the <Link href="https://github.com/HangarMC/hangar-publish-plugin">Hangar publish plugin for Gradle</Link>.
+          </div>
+        </div>
+      </Card>
+    </div>
   </div>
 </template>
 
