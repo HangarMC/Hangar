@@ -315,7 +315,7 @@ function isRecent(date: string): boolean {
                 <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
                 <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
                 <DropdownItem to="/auth/settings/profile">{{ t("nav.user.settings") }}</DropdownItem>
-                <hr />
+                <hr class="border-zinc-200 dark:border-zinc-700" />
                 <DropdownItem v-if="hasPerms(NamedPermission.ModNotesAndFlags)" to="/admin/flags">
                   {{ t("nav.user.flags") }}
                   <span v-if="authStore.user.headerData.unresolvedFlags !== 0">{{ "(" + authStore.user?.headerData.unresolvedFlags + ")" }}</span>
@@ -338,7 +338,7 @@ function isRecent(date: string): boolean {
                 <DropdownItem v-if="hasPerms(NamedPermission.EditAllUserSettings)" to="/admin/user/">
                   {{ t("nav.user.userList") }}
                 </DropdownItem>
-                <hr />
+                <hr class="border-zinc-200 dark:border-zinc-700" />
                 <DropdownItem @click="auth.logout()">{{ t("nav.user.logout") }}</DropdownItem>
               </div>
             </template>
