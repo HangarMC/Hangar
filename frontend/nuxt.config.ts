@@ -130,7 +130,7 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
-    preset: "node-cluster",
+    preset: "bun",
     compressPublicAssets: true,
     timing: false,
   },

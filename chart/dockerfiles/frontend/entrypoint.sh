@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-node server/index.mjs
+bun run server/index.mjs

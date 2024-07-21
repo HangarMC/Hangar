@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM oven/bun:latest
 
 USER node
 WORKDIR hangar-frontend
