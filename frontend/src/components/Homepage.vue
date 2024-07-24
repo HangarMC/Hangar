@@ -153,7 +153,7 @@ useHead(
       <template v-if="index">
         <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4 flex flex-col w-full">
           <template v-if="ssr">
-            Find your favorite <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Paper</strong> plugins
+            Find your favorite <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Paper plugins</strong>
           </template>
           <template v-else>
             Find your favorite
@@ -173,9 +173,7 @@ useHead(
       <template v-else>
         <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4">
           Find your favorite
-          <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">
-            {{platformName}} plugins
-          </strong>
+          <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent"> {{ platformName }} plugins </strong>
         </h1>
         <div class="text-1xl text-center mb-2">Hangar allows you to find and download the best {{ platformName }} plugins for your Minecraft server</div>
       </template>
@@ -184,7 +182,9 @@ useHead(
         <div class="flex gap-3 mt-2 mb-2">
           <Button v-if="platform != 'PAPER'" to="/paper">Download Paper plugins <PlatformLogo platform="PAPER" :size="24" class="ml-1" /></Button>
           <Button v-if="platform != 'VELOCITY'" to="/velocity">Download Velocity Plugins <PlatformLogo platform="VELOCITY" :size="24" class="ml-1" /></Button>
-          <Button v-if="platform != 'WATERFALL'" to="/waterfall">Download Waterfall plugins <PlatformLogo platform="WATERFALL" :size="24" class="ml-1" /></Button>
+          <Button v-if="platform != 'WATERFALL'" to="/waterfall"
+            >Download Waterfall plugins <PlatformLogo platform="WATERFALL" :size="24" class="ml-1"
+          /></Button>
         </div>
       </div>
       <!-- Search Bar -->
@@ -335,9 +335,7 @@ useHead(
       <Card class="mt-4" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <h3 class="text-lg font-bold mb-1" itemprop="name">Can I automate uploading {{ platformName }} plugins to Hangar?</h3>
         <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <div itemprop="text">
-            Yes! Simply use the <Link href="https://github.com/HangarMC/hangar-publish-plugin">Hangar publish plugin for Gradle</Link>.
-          </div>
+          <div itemprop="text">Yes! Simply use the <Link href="https://github.com/HangarMC/hangar-publish-plugin">Hangar publish plugin for Gradle</Link>.</div>
         </div>
       </Card>
     </div>
