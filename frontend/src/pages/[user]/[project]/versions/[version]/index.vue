@@ -67,7 +67,7 @@ useHead(
     props.project?.name + " " + projectVersion.value?.name,
     `Download ${props.project?.name} ${projectVersion.value?.name} on Hangar.
     Supports ${supportsString.value}.
-    Published on ${lastUpdated(new Date(projectVersion.value?.createdAt))}.
+    Published on ${i18n.d(new Date(projectVersion.value?.createdAt), "date")}.
     ${projectVersion.value?.stats?.totalDownloads} downloads.`,
     route,
     props.project.avatarUrl,
