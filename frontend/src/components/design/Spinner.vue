@@ -46,7 +46,7 @@ const circleRadius = computed(() => (props.diameter - props.stroke) / 2);
 const circleCircumference = computed(() => 2 * Math.PI * circleRadius.value);
 
 watch(
-  props,
+  () => props,
   () => {
     attachSvgStyle();
     attachCircleStyle();

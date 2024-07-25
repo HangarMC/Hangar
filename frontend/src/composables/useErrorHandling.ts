@@ -2,9 +2,15 @@ import type { AxiosError } from "axios";
 import { isAxiosError } from "axios";
 import type { Composer } from "vue-i18n";
 import type { HangarApiException, HangarValidationException, MultiHangarApiException } from "~/types/backend";
+import { tryUseNuxtApp } from "#app/nuxt";
 
 export function handleRequestError(err: AxiosError | unknown, msg: string | undefined = undefined, alwaysShowErrorPage = false) {
-  const i18n = useNuxtApp().$i18n;
+  const i18n = tryUseNuxtApp()?.$i18n;
+  if (!i18n) {
+    console.error("didnt find i18n!");
+    _handleRequestError(err, i18n);
+    return;
+  }
   if (import.meta.env.SSR || alwaysShowErrorPage) {
     _handleRequestError(err, i18n);
   }
@@ -55,7 +61,7 @@ export function handleRequestError(err: AxiosError | unknown, msg: string | unde
   }
 }
 
-function _handleRequestError(err: AxiosError | unknown, i18n: Composer) {
+function _handleRequestError(err: AxiosError | unknown, i18n?: Composer) {
   const transformed = transformAxiosError(err);
   if (!isAxiosError(err)) {
     // everything should be an AxiosError
@@ -69,7 +75,7 @@ function _handleRequestError(err: AxiosError | unknown, i18n: Composer) {
         "isMultiException" in err.response.data ? (err.response.data as MultiHangarApiException).exceptions?.[0] : (err.response.data as HangarApiException);
       createError({
         statusCode: data?.httpError.statusCode,
-        statusMessage: data?.message ? (i18n.te(data.message) ? i18n.t(data.message) : data.message) : undefined,
+        statusMessage: data?.message ? (i18n?.te(data.message) ? i18n.t(data.message) : data.message) : undefined,
       });
     } else if ("isHangarValidationException" in err.response.data) {
       const data = err.response.data as HangarValidationException;

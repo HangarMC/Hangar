@@ -16,15 +16,13 @@ const updateProjectPagesCallback = inject<(pages: HangarProjectPage[]) => void>(
 const modal = ref<any | null>(null); // Filled by vue
 
 const pageRoots = computed(() => [{ value: -1, text: "<none>" }, ...flatDeep(props.pages, "")]);
-const name = ref("");
-const parent = ref<number>();
 const loading = ref<boolean>(false);
 
-const body = computed(() => ({
+const body = reactive({
   projectId: props.projectId,
-  name: name.value,
-  parentId: parent.value === -1 ? undefined : parent.value,
-}));
+  name: "",
+  parentId: undefined as number | undefined,
+});
 const rules = [
   required(),
   maxLength()(useBackendData.validations.project.pageName.max!),
@@ -49,12 +47,12 @@ async function createPage() {
     loading.value = true;
     if (!(await v.value.$validate())) return;
     const slug = await useInternalApi<string>(`pages/create/${props.projectId}`, "post", {
-      name: name.value,
-      parentId: parent.value === -1 ? null : parent.value,
+      name: body.name,
+      parentId: body.parentId === -1 ? null : body.parentId,
     });
 
-    name.value = "";
-    parent.value = undefined;
+    body.name = "";
+    body.parentId = undefined;
 
     if (updateProjectPagesCallback) {
       updateProjectPagesCallback(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.projectId}`, "get"));
@@ -74,14 +72,14 @@ async function createPage() {
   <Modal ref="modal" :title="i18n.t('page.new.title')" window-classes="w-120">
     <div class="flex flex-col">
       <InputText
-        v-model.trim="name"
+        v-model.trim="body.name"
         :label="i18n.t('page.new.name')"
         counter
         :maxlength="useBackendData.validations.project.pageName.max"
         :minlength="useBackendData.validations.project.pageName.min"
         :rules="rules"
       />
-      <InputSelect v-model="parent" :values="pageRoots" :label="i18n.t('page.new.parent')" class="pt-2 pb-1" />
+      <InputSelect v-model="body.parentId" :values="pageRoots" :label="i18n.t('page.new.parent')" class="pt-2 pb-1" />
     </div>
     <div>
       <Button class="mt-3" :disabled="loading" @click="createPage">{{ i18n.t("general.create") }}</Button>

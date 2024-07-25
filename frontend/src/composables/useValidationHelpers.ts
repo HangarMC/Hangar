@@ -1,5 +1,5 @@
 import { type ErrorObject, useVuelidate, type ValidationRule } from "@vuelidate/core";
-import type { ComputedRef, Ref } from "vue";
+import type { Ref } from "vue";
 import * as validators from "@vuelidate/validators";
 import { createI18nMessage, helpers, type ValidatorWrapper } from "@vuelidate/validators";
 import { difference, isEmpty, uniq } from "lodash-es";
@@ -98,12 +98,12 @@ export const noDuplicated = withOverrideMessage((elements: any[] | (() => any[])
   })
 );
 
-export const validPageName = withOverrideMessage((body: ComputedRef<{ projectId: number; parentId?: number; name: string }>) =>
+export const validPageName = withOverrideMessage((body: { projectId: number; parentId?: number; name: string }) =>
   helpers.withParams(
     { body, type: "validPageName" },
     helpers.withAsync(async () => {
       try {
-        await useInternalApi("pages/checkName", "get", body.value);
+        await useInternalApi("pages/checkName", "get", body);
         return { $valid: true };
       } catch (e: AxiosError | any) {
         if (e?.response?.data?.detail) {
