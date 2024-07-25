@@ -10,7 +10,9 @@ if (blocking.value) {
   const u = await useUser(route.params.user);
   await cb(u);
 } else {
-  useUser(route.params.user).then(cb);
+  // manually carry nuxt content over cause ????
+  const nuxtApp = useNuxtApp();
+  useUser(route.params.user).then((u) => nuxtApp.runWithContext(() => cb(u)));
 }
 
 async function cb(u: Ref<User | null>) {
