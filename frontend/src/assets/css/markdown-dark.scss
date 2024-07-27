@@ -2,9 +2,9 @@
 
 .dark {
   .markdown {
-    @include meta.load-css("prismjs/themes/prism-tomorrow.min.css");
-
     --un-prose-hr: #e0e6f0;
+
+    @include meta.load-css("prismjs/themes/prism-tomorrow.min.css");
 
     table thead th {
       color: #e0e0e0;
