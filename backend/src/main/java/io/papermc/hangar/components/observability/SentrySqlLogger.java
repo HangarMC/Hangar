@@ -24,7 +24,7 @@ public class SentrySqlLogger implements SqlLogger {
 
         ISpan parentSpan = Sentry.getSpan();
         if (parentSpan == null) {
-            sqlLog.warn("No parent span for {}", this.getObservationName(context));
+            sqlLog.debug("No parent span for {}", this.getObservationName(context));
             parentSpan = Sentry.startTransaction("unknown", "task");
         }
 

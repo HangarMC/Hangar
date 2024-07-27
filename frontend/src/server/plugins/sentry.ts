@@ -12,10 +12,15 @@ export default defineNitroPlugin((nitroApp) => {
     return;
   }
 
+  let profiler = null;
+  if (typeof Bun === "undefined") {
+    profiler = nodeProfilingIntegration();
+  }
+
   Sentry.init({
     dsn: sentry.dsn,
     environment: sentry.environment,
-    integrations: [nodeProfilingIntegration()],
+    integrations: profiler ? [profiler] : [],
     tracesSampleRate: 1,
     profilesSampleRate: 0.2,
   });
