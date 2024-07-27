@@ -43,6 +43,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static io.papermc.hangar.components.observability.TransactionUtil.withTransaction;
+
 @Service
 public class JarScanningService {
 
@@ -73,18 +75,22 @@ public class JarScanningService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
-        this.jarScannerUser = this.createUser();
-        EXECUTOR_SERVICE.execute(this::scanRemainingProjectVersions);
+        withTransaction("task", "JarScanningService#init", () -> {
+            this.jarScannerUser = this.createUser();
+            EXECUTOR_SERVICE.execute(this::scanRemainingProjectVersions);
+        });
     }
 
     @Transactional
     public void scanRemainingProjectVersions() {
-        // TODO Pass this.scanner.version()
-        final List<VersionToScan> versionToScans = this.dao.versionsRequiringScans();
-        LOGGER.info("Rescanning " + versionToScans.size() + " versions");
-        for (final VersionToScan version : versionToScans) {
-            this.scan(version, false); // TODO partial parameter
-        }
+        withTransaction("task", "JarScanningService#scanRemainingProjectVersions", () -> {
+            // TODO Pass this.scanner.version()
+            final List<VersionToScan> versionToScans = this.dao.versionsRequiringScans();
+            LOGGER.info("Rescanning {} versions", versionToScans.size());
+            for (final VersionToScan version : versionToScans) {
+                this.scan(version, false); // TODO partial parameter
+            }
+        });
     }
 
     private UserTable createUser() {

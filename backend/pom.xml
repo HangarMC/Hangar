@@ -31,7 +31,7 @@
         <spring-cloud-aws.version>3.1.1</spring-cloud-aws.version>
 
         <!-- dependencies -->
-        <sentry.version>7.12.0</sentry.version>
+        <sentry.version>7.12.1</sentry.version>
         <springdoc.version>2.6.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20240303</org-json.version>
@@ -302,22 +302,6 @@
             <artifactId>datafaker</artifactId>
             <version>${datafaker.version}</version>
         </dependency>
-
-        <!-- tracing -->
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-tracing-bridge-otel</artifactId>
-        </dependency>
-        <!-- need this to fix an incompatibility with springboot 3.2/micrometer -->
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-semconv</artifactId>
-            <version>${otel-semconv.version}</version>
-        </dependency>
-        <!--dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-exporter-zipkin</artifactId>
-        </dependency-->
 
         <!-- cache -->
         <dependency>

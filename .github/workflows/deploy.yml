@@ -81,8 +81,10 @@ jobs:
         run: |
           if [[ $GITHUB_REF == 'refs/heads/master' ]]; then
               echo "BACKEND_DATA_HOST=https://hangar.papermc.io" >> $GITHUB_ENV
+              echo "SENTRY_ENV=production" >> $GITHUB_ENV
           else
               echo "BACKEND_DATA_HOST=https://hangar.papermc.dev" >> $GITHUB_ENV
+              echo "SENTRY_ENV=staging" >> $GITHUB_ENV
           fi
 
       - name: Lint frontend

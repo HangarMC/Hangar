@@ -9,6 +9,8 @@ const backendHost = process.env.BACKEND_HOST || "http://localhost:8080";
 const local = true; // set to false if backendData should be fetched from staging. You might need to hard reload (Ctrl+F5) the next page you're on when changing this value
 const backendDataHost = process.env.BACKEND_DATA_HOST || (local ? "http://localhost:8080" : "https://hangar.papermc.dev");
 const allowIndexing = process.env.HANGAR_ALLOW_INDEXING || "true";
+const sentryDSN = process.env.SENTRY_DSN || "https://801c6e3ec217457e94b8d360e861242d@o4504989579804672.ingest.sentry.io/4504989584850944";
+const sentryEnv = process.env.SENTRY_ENV || "local";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
@@ -40,6 +42,10 @@ export default defineNuxtConfig({
     backendHost,
     public: {
       allowIndexing,
+      sentry: {
+        dsn: sentryDSN,
+        environment: sentryEnv,
+      },
     },
   },
   modules: [

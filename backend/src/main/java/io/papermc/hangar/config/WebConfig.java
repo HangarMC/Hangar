@@ -9,6 +9,7 @@ import io.netty.handler.timeout.WriteTimeoutHandler;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimitInterceptor;
+import io.sentry.spring.jakarta.SentryTaskDecorator;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -204,8 +205,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     }
 
     @Bean
-    public RestClient restClient(final List<HttpMessageConverter<?>> messageConverters) {
-        final RestClient.Builder builder = RestClient.builder();
+    public RestClient restClient(final List<HttpMessageConverter<?>> messageConverters, RestClient.Builder builder) {
         if (interceptorLogger.isDebugEnabled()) {
             builder.requestInterceptor(new LoggingInterceptor());
         }
@@ -225,7 +225,9 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Bean
     protected ConcurrentTaskExecutor taskExecutor() {
-        return new ConcurrentTaskExecutor(Executors.newFixedThreadPool(10));
+        ConcurrentTaskExecutor taskExecutor = new ConcurrentTaskExecutor(Executors.newFixedThreadPool(10));
+        taskExecutor.setTaskDecorator(new SentryTaskDecorator());
+        return taskExecutor;
     }
 
     static class LoggingInterceptor implements ClientHttpRequestInterceptor {

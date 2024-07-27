@@ -1,4 +1,4 @@
-package io.papermc.hangar.observability;
+package io.papermc.hangar.components.observability;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;

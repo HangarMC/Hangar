@@ -1,6 +1,7 @@
 package io.papermc.hangar.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import io.papermc.hangar.components.observability.SentryCacheManager;
 import io.papermc.hangar.service.ReplicationService;
 import io.papermc.hangar.util.CacheWrapper;
 import jakarta.annotation.PostConstruct;
@@ -49,7 +50,7 @@ public class CacheConfig {
     public CacheConfig(@Lazy final CacheMetricsRegistrar cacheMetricsRegistrar, final ReplicationService replicationService) {
         this.cacheMetricsRegistrar = cacheMetricsRegistrar;
         this.replicationService = replicationService;
-        this.cacheManager = new CaffeineCacheManager();
+        this.cacheManager = new SentryCacheManager();
     }
 
     @Bean(STAFF)
@@ -203,7 +204,7 @@ public class CacheConfig {
             .recordStats()
             .build();
 
-        this.cacheManager.registerCustomCache(name, new CacheWrapper(name,caffineCache, this.replicationService));
+        this.cacheManager.registerCustomCache(name, new CacheWrapper<>(name,caffineCache, this.replicationService));
         return this.cacheManager.getCache(name);
     }
 }

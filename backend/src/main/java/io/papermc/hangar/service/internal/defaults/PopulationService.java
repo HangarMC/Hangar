@@ -19,6 +19,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import static io.papermc.hangar.components.observability.TransactionUtil.withTransaction;
+
 @Component
 public class PopulationService {
 
@@ -34,8 +36,10 @@ public class PopulationService {
 
     @EventListener
     public void populateTables(final ContextRefreshedEvent event) {
-        this.populateRoles();
-        this.populatePlatformVersions();
+        withTransaction("task", "PopulationService#populateTables()", () -> {
+            this.populateRoles();
+            this.populatePlatformVersions();
+        });
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
