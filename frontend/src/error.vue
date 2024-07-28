@@ -69,7 +69,7 @@ if (
   (typeof props.error?.data === "string" && JSON.parse(props.error?.data).logErrorMessage !== false) ||
   (typeof props.error?.data !== "string" && props.error?.data?.logErrorMessage !== false)
 ) {
-  console.log("error", text.value, title.value, props.error);
+  console.log("render error page", text.value, title.value);
 }
 try {
   useHead(useSeo(title.value, null, useRoute(), null));

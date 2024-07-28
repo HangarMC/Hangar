@@ -41,7 +41,7 @@ const requestParams = computed(() => {
   return params;
 });
 
-const userData = await useUserData(props.user.name, requestParams.value);
+const userData = await useUserData(route.params.user, requestParams.value);
 const { starred, watching, organizations, pinned, organizationVisibility, possibleAlts } = userData.value || { starred: null };
 const projects = ref(userData.value?.projects);
 const orgRoles = useBackendData.orgRoles.filter((role) => role.assignable);
@@ -74,7 +74,7 @@ const buttons = computed<UserButton[]>(() => {
   return list;
 });
 
-const isCurrentUser = computed<boolean>(() => authStore.user != null && authStore.user.name === props.user.name);
+const isCurrentUser = computed<boolean>(() => authStore.user != null && authStore.user.name === props.user?.name);
 
 watchDebounced(
   requestParams,
@@ -85,14 +85,14 @@ watchDebounced(
     // set the request params
     await router.replace({ query: { page: page.value, ...paramsWithoutLimit } });
     // do the update
-    projects.value = await useApi<PaginatedResultProject>("projects", "get", { owner: props.user.name, ...requestParams.value });
+    projects.value = await useApi<PaginatedResultProject>("projects", "get", { owner: props.user?.name, ...requestParams.value });
   },
   { deep: true, debounce: 250 }
 );
 
-const description = (props.user?.tagline ? props.user.tagline + " - " : "") + "Download " + props.user.name + "'s plugins on Hangar.";
+const description = (props.user?.tagline ? props.user.tagline + " - " : "") + "Download " + props.user?.name + "'s plugins on Hangar.";
 useHead(
-  useSeo(props.user.name, description, route, props.user.avatarUrl, [
+  useSeo(props.user?.name, description, route, props.user?.avatarUrl, [
     {
       type: "application/ld+json",
       children: JSON.stringify({
@@ -100,15 +100,15 @@ useHead(
         "@type": "ProfilePage",
         mainEntity: {
           "@type": "Person",
-          name: props.user.name,
+          name: props.user?.name,
           url: config.publicHost + "/" + route.path,
-          description: props.user.tagline,
-          image: props.user.avatarUrl,
+          description: props.user?.tagline,
+          image: props.user?.avatarUrl,
           interactionStatistic: [
             {
               "@type": "InteractionCounter",
               interactionType: "https://schema.org/CreateAction",
-              userInteractionCount: props.user.projectCount,
+              userInteractionCount: props.user?.projectCount,
             },
             {
               "@type": "InteractionCounter",

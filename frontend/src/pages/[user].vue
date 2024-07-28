@@ -7,7 +7,7 @@ const user = ref();
 const organization = ref();
 const blocking = computed(() => route.name === "user");
 if (blocking.value) {
-  const u = await useUser(route.params.user);
+  const u = await useUser(route.params.user).catch((err) => handleRequestError(err));
   await cb(u);
 } else {
   // manually carry nuxt content over cause ????
@@ -15,7 +15,7 @@ if (blocking.value) {
   useUser(route.params.user).then((u) => nuxtApp.runWithContext(() => cb(u)));
 }
 
-async function cb(u: Ref<User | null>) {
+async function cb(u: Ref<User | null> | void) {
   if (!u || !u.value) {
     throw useErrorRedirect(route, 404, "Not found");
   } else if (route.params.user !== u.value?.name) {

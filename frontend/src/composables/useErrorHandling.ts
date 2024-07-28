@@ -3,6 +3,7 @@ import { isAxiosError } from "axios";
 import type { Composer } from "vue-i18n";
 import type { HangarApiException, HangarValidationException, MultiHangarApiException } from "~/types/backend";
 import { tryUseNuxtApp } from "#app/nuxt";
+import { isError } from "h3";
 
 export function handleRequestError(err: AxiosError | unknown, msg: string | undefined = undefined, alwaysShowErrorPage = false) {
   const i18n = tryUseNuxtApp()?.$i18n;
@@ -11,8 +12,9 @@ export function handleRequestError(err: AxiosError | unknown, msg: string | unde
     _handleRequestError(err, i18n);
     return;
   }
-  if (import.meta.env.SSR || alwaysShowErrorPage) {
+  if (import.meta.server || alwaysShowErrorPage) {
     _handleRequestError(err, i18n);
+    return;
   }
   const notification = useNotificationStore();
   const transformed = transformAxiosError(err);
@@ -63,36 +65,45 @@ export function handleRequestError(err: AxiosError | unknown, msg: string | unde
 
 function _handleRequestError(err: AxiosError | unknown, i18n?: Composer) {
   const transformed = transformAxiosError(err);
-  if (!isAxiosError(err)) {
-    // everything should be an AxiosError
-    createError({
+  if (!isAxiosError(err) && !isError(err)) {
+    // everything should be an AxiosError or h3 error
+    fetchLog("handle not axios error", transformed);
+    throw createError({
       statusCode: 500,
     });
-    fetchLog("handle not axios error", transformed);
-  } else if (err.response && typeof err.response.data === "object" && err.response.data) {
-    if ("isHangarApiException" in err.response.data) {
-      const data =
-        "isMultiException" in err.response.data ? (err.response.data as MultiHangarApiException).exceptions?.[0] : (err.response.data as HangarApiException);
-      createError({
-        statusCode: data?.httpError.statusCode,
-        statusMessage: data?.message ? (i18n?.te(data.message) ? i18n.t(data.message) : data.message) : undefined,
-      });
-    } else if ("isHangarValidationException" in err.response.data) {
-      const data = err.response.data as HangarValidationException;
-      createError({
-        statusCode: data.httpError?.statusCode,
-        statusMessage: data.fieldErrors?.map((f) => f.errorMsg).join(", "),
-      });
-    } else {
-      createError({
-        statusCode: err.response.status,
-        statusMessage: err.response.statusText,
-      });
-    }
+  } else if (typeof err.response?.data === "object" && err.response.data) {
+    _handleErrorResponse(err.response.data, i18n);
+  } else if (err.cause?.response?.data) {
+    _handleErrorResponse(err.cause.response.data, i18n);
+  } else if (err.cause?.statusCode) {
+    // this error was rethrown, lets inform nuxt
+    showError(err.cause);
   } else {
-    createError({
+    throw createError({
       statusCode: 500,
       statusMessage: "Internal Error: " + transformed.code,
+      cause: err,
+    });
+  }
+}
+
+function _handleErrorResponse(responseData: object, i18n?: Composer) {
+  if ("isHangarApiException" in responseData) {
+    const data = "isMultiException" in responseData ? (responseData as MultiHangarApiException).exceptions?.[0] : (responseData as HangarApiException);
+    throw createError({
+      statusCode: data?.httpError.statusCode,
+      statusMessage: data?.message ? (i18n?.te(data.message) ? i18n.t(data.message) : data.message) : undefined,
+    });
+  } else if ("isHangarValidationException" in responseData) {
+    const data = responseData as HangarValidationException;
+    throw createError({
+      statusCode: data.httpError?.statusCode,
+      statusMessage: data.fieldErrors?.map((f) => f.errorMsg).join(", "),
+    });
+  } else {
+    throw createError({
+      statusCode: err.response.status,
+      statusMessage: err.response.statusText,
     });
   }
 }

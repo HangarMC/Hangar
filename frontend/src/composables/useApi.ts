@@ -39,7 +39,7 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
       })
       .catch((error: AxiosError) => {
         const { trace, ...err } = (error.response?.data as { trace: any }) || {};
-        authLog("failed", err);
+        fetchLog("failed", err);
         reject(error);
       });
   });
