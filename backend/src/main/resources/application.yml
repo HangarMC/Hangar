@@ -236,7 +236,7 @@ hangar:
       - api.spigotmc.org
 
   image:
-    quality: 0.35
+    quality: 0.75
     size: 256
 
   mail:
