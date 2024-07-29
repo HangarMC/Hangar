@@ -14,7 +14,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     app: nuxtApp.vueApp,
     dsn: sentry.dsn,
     environment: sentry.environment,
-    integrations: [Sentry.browserTracingIntegration({ router }), Sentry.replayIntegration()],
+    integrations: [Sentry.browserTracingIntegration({ router })],
 
     tracePropagationTargets: ["http://localhost:3333", "https://hangar.papermc.dev", "https://hangar.papermc.io"],
 
