@@ -53,6 +53,11 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
     }
 
     @Override
+    public ResponseEntity<Project> getProjectFromVersionHash(final String hash) {
+        return ResponseEntity.ok(this.projectsApiService.getProjectForVersionHash(hash));
+    }
+
+    @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
     public ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(final String slug, final @NotNull RequestPagination pagination) {
         return ResponseEntity.ok(this.projectsApiService.getProjectMembers(slug, pagination));

@@ -60,6 +60,19 @@ public interface ProjectsApiDAO {
     Project getProject(String slug, @Define boolean canSeeHidden, @Define @Bind Long requesterId);
 
     @UseStringTemplateEngine
+    @SqlQuery("SELECT p.slug" +
+        "   FROM projects p" +
+        "       WHERE EXISTS (" +
+        "          SELECT 1" +
+        "          FROM project_versions pv" +
+        "          JOIN project_version_downloads pvf ON pv.id = pvf.version_id" +
+        "          WHERE pv.project_id = p.id" +
+        "            AND pvf.hash = :hash" +
+        "   )" +
+        "   <if(!canSeeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(p.project_members) AND p.visibility != 4)<endif>) <endif>")
+    @Nullable String getProjectSlugFromVersionHash(String hash, @Define boolean canSeeHidden, @Define @Bind Long requesterId);
+
+    @UseStringTemplateEngine
     @SqlQuery("""
         SELECT DISTINCT (hp.id),
             p.created_at,

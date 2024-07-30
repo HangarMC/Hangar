@@ -50,6 +50,20 @@ public interface IProjectsController {
     }
 
     @Operation(
+        summary = "Returns project of the first version that matches the given file hash (SHA-256)",
+        operationId = "projectByVersionHash",
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
+        tags = "Projects"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
+    })
+    @GetMapping("/versions/hash/{hash}")
+    ResponseEntity<Project> getProjectFromVersionHash(@Parameter(description = "The SHA-256 hash of the version") @PathVariable String hash);
+
+    @Operation(
         summary = "Returns the members of a project",
         operationId = "getProjectMembers",
         description = "Returns the members of a project. Requires the `view_public_info` permission.",

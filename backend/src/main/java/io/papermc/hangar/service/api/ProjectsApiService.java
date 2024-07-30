@@ -17,6 +17,7 @@ import io.papermc.hangar.model.common.Permission;
 import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,15 @@ public class ProjectsApiService extends HangarComponent {
         }
         project.setAvatarUrl(this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner()));
         return project;
+    }
+
+    public Project getProjectForVersionHash(final String fileHash) {
+        final boolean seeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
+        final String projectSlug = this.projectsApiDAO.getProjectSlugFromVersionHash(fileHash.toLowerCase(Locale.ROOT), seeHidden, this.getHangarUserId());
+        if (projectSlug == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No project found for version hash " + fileHash);
+        }
+        return this.getProject(projectSlug);
     }
 
     @Transactional(readOnly = true)
