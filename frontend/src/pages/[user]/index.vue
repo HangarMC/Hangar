@@ -85,7 +85,7 @@ watchDebounced(
     // set the request params
     await router.replace({ query: { page: page.value, ...paramsWithoutLimit } });
     // do the update
-    projects.value = await useApi<PaginatedResultProject>("projects", "get", { owner: props.user?.name, ...requestParams.value });
+    projects.value = await useApi<PaginatedResultProject>("projects", "get", { member: props.user?.name, ...requestParams.value });
   },
   { deep: true, debounce: 250 }
 );

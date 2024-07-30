@@ -123,7 +123,7 @@ function updateSelectedNotifications() {
           </div>
         </template>
       </Pagination>
-      <Button v-if="notifications?.result && selectedTab === 'unread' && notifications.result.length !== 0" size="small" class="mt-2" @click="markAllAsRead">
+      <Button v-if="notifications?.result?.length && selectedTab === 'unread'" size="small" class="mt-2" @click="markAllAsRead">
         {{ i18n.t("notifications.readAll") }}
       </Button>
     </Card>

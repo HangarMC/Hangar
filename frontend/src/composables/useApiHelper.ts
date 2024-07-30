@@ -189,7 +189,7 @@ export async function useUserData(
         useApi<PaginatedResultProjectCompact>(`users/${user}/starred`),
         useApi<PaginatedResultProjectCompact>(`users/${user}/watching`),
         useApi<PaginatedResultProject>(`projects`, "get", {
-          owner: user,
+          member: user,
           ...projectsParams,
         }),
         useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${user}/userOrganizations`),

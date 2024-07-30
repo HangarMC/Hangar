@@ -25,6 +25,7 @@ DROP MATERIALIZED VIEW IF EXISTS home_projects CASCADE;
 CREATE MATERIALIZED VIEW home_projects AS
     SELECT p.id,
            array_agg(DISTINCT pm.user_id)                    AS project_members,
+           array_agg(DISTINCT lower(u.name))                 AS project_member_names,
            coalesce(pva.views::bigint, 0::bigint)            AS views,
            coalesce(pda.downloads::bigint, 0::bigint)        AS downloads,
            coalesce(pvr.recent_views::bigint, 0::bigint)     AS recent_views,
@@ -47,6 +48,7 @@ CREATE MATERIALIZED VIEW home_projects AS
     FROM projects p
         LEFT JOIN project_versions lv ON p.id = lv.project_id
         JOIN project_members_all pm ON p.id = pm.id
+        JOIN users u ON pm.user_id = u.id
         LEFT JOIN (SELECT p_1.id,
                           count(ps_1.user_id) AS stars
                    FROM projects p_1
