@@ -116,14 +116,14 @@ function updateSelectedNotifications() {
               </NuxtLink>
               <span v-else>
                 {{ i18n.t(item.message[0], item.message.slice(1)) }}
-                <div class="text-xs mt-1">{{ lastUpdated(new Date(item.createdAt)) }}</div>
+                <span class="text-xs mt-1">{{ lastUpdated(new Date(item.createdAt)) }}</span>
               </span>
             </div>
             <Button v-if="!item.read" class="ml-2" @click="markNotificationRead(item)"><IconMdiCheck /></Button>
           </div>
         </template>
       </Pagination>
-      <Button v-if="notifications?.result && selectedTab === 'unread'" size="small" @click="markAllAsRead">
+      <Button v-if="notifications?.result && selectedTab === 'unread' && notifications.result.length !== 0" size="small" class="mt-2" @click="markAllAsRead">
         {{ i18n.t("notifications.readAll") }}
       </Button>
     </Card>
