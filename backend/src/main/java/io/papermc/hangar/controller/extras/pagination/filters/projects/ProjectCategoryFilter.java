@@ -52,7 +52,7 @@ public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstan
 
         @Override
         public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
-            sb.append(" AND ").append("p.category").append(" IN (");
+            sb.append(" AND ").append("hp.category").append(" IN (");
             for (int i = 0; i < this.categories.length; i++) {
                 sb.append(":__category__").append(i);
                 if (i + 1 != this.categories.length) {

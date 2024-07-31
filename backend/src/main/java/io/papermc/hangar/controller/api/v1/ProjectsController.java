@@ -8,7 +8,7 @@ import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSort
 import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectAuthorFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectCategoryFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectLicenseFilter;
-import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectMCVersionFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectPlatformVersionFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectMemberFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectPlatformFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectQueryFilter;
@@ -64,7 +64,7 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
     }
 
     @Override
-    @ApplicableFilters({ProjectCategoryFilter.class, ProjectPlatformFilter.class, ProjectAuthorFilter.class, ProjectQueryFilter.class, ProjectLicenseFilter.class, ProjectMCVersionFilter.class, ProjectTagFilter.class, ProjectMemberFilter.class})
+    @ApplicableFilters({ProjectCategoryFilter.class, ProjectPlatformFilter.class, ProjectAuthorFilter.class, ProjectQueryFilter.class, ProjectLicenseFilter.class, ProjectPlatformVersionFilter.class, ProjectTagFilter.class, ProjectMemberFilter.class})
     @ApplicableSorters({SorterRegistry.VIEWS, SorterRegistry.DOWNLOADS, SorterRegistry.NEWEST, SorterRegistry.STARS, SorterRegistry.UPDATED, SorterRegistry.RECENT_DOWNLOADS, SorterRegistry.RECENT_VIEWS, SorterRegistry.SLUG})
     public ResponseEntity<PaginatedResult<Project>> getProjects(final boolean prioritizeExactMatch, final @NotNull RequestPagination pagination) {
         final boolean seeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);

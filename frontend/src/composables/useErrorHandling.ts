@@ -102,8 +102,8 @@ function _handleErrorResponse(responseData: object, i18n?: Composer) {
     });
   } else {
     throw createError({
-      statusCode: err.response.status,
-      statusMessage: err.response.statusText,
+      statusCode: responseData?.status || 500,
+      statusMessage: responseData?.statusText || "Internal Server Error",
     });
   }
 }

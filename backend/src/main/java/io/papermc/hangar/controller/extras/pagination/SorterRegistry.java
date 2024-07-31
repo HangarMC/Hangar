@@ -18,11 +18,11 @@ public enum SorterRegistry implements Sorter {
     VIEWS("views", simpleSorter("hp.views")),
     STARS("stars", simpleSorter("hp.stars")),
     DOWNLOADS("downloads", simpleSorter("hp.downloads")),
-    NEWEST("newest", simpleSorter("p.created_at")),
+    NEWEST("newest", simpleSorter("hp.created_at")),
     UPDATED("updated", simpleSorter("last_updated_double")),
     RECENT_VIEWS("recent_views", simpleSorter("hp.recent_views")),
     RECENT_DOWNLOADS("recent_downloads", simpleSorter("hp.recent_downloads")),
-    SLUG("slug", simpleSorter("LOWER(p.slug)"));
+    SLUG("slug", simpleSorter("LOWER(hp.slug)"));
 
     private static final Map<String, SorterRegistry> SORTERS = new HashMap<>();
 

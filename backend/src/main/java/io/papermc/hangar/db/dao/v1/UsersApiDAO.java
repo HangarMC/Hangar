@@ -21,82 +21,82 @@ public interface UsersApiDAO {
 
     @RegisterConstructorMapper(ProjectCompact.class)
     @UseStringTemplateEngine
-    @SqlQuery("SELECT p.created_at," +
-        " p.id," +
-        " p.name," +
-        " p.owner_name \"owner\"," +
-        " p.slug," +
-        " hp.views," +
-        " hp.downloads," +
-        " hp.recent_views," +
-        " hp.recent_downloads," +
-        " hp.stars," +
-        " hp.watchers," +
-        " p.category," +
-        " coalesce(hp.last_updated, p.created_at) AS last_updated," +
-        " p.visibility" +
-        " FROM users u " +
-        "     JOIN project_stars ps ON u.id = ps.user_id" +
-        "     JOIN home_projects hp ON ps.project_id = hp.id" +
-        "     JOIN projects p ON ps.project_id = p.id" +
-        " WHERE " +
-        "     <if(!canSeeHidden)> (p.visibility = 0" +
-        "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND<endif>" +
-        "     lower(u.name) = lower(:user)" +
-        "   <sorters>" +
-        "   <offsetLimit>")
+    @SqlQuery("""
+        SELECT hp.created_at,
+         hp.id,
+         hp.name,
+         hp.owner_name "owner",
+         hp.slug,
+         hp.views,
+         hp.downloads,
+         hp.recent_views,
+         hp.recent_downloads,
+         hp.stars,
+         hp.watchers,
+         hp.category,
+         hp.last_updated,
+         hp.visibility
+         FROM users u
+             JOIN project_stars ps ON u.id = ps.user_id
+             JOIN home_projects hp ON ps.project_id = hp.id
+         WHERE
+             <if(!canSeeHidden)> (p.visibility = 0
+             <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND<endif>
+             lower(u.name) = lower(:user)
+           <sorters>
+           <offsetLimit>""")
     List<ProjectCompact> getUserStarred(String user, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
     @UseStringTemplateEngine
-    @SqlQuery("SELECT count(*)" +
-        " FROM users u " +
-        "     JOIN project_stars ps ON u.id = ps.user_id" +
-        "     JOIN home_projects hp ON ps.project_id = hp.id" +
-        "     JOIN projects p ON ps.project_id = p.id" +
-        " WHERE " +
-        "     <if(!canSeeHidden)> (p.visibility = 0" +
-        "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND<endif>" +
-        "     lower(u.name) = lower(:user)")
+    @SqlQuery("""
+        SELECT count(*)
+         FROM users u
+             JOIN project_stars ps ON u.id = ps.user_id
+             JOIN home_projects hp ON ps.project_id = hp.id
+         WHERE
+             <if(!canSeeHidden)> (p.visibility = 0
+             <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND<endif>
+             lower(u.name) = lower(:user)""")
     long getUserStarredCount(String user, @Define boolean canSeeHidden, @Define Long userId);
 
     @RegisterConstructorMapper(ProjectCompact.class)
     @UseStringTemplateEngine
-    @SqlQuery("SELECT p.created_at," +
-        " p.id," +
-        " p.name," +
-        " p.owner_name \"owner\"," +
-        " p.slug," +
-        " hp.views," +
-        " hp.downloads," +
-        " hp.recent_views," +
-        " hp.recent_downloads," +
-        " hp.stars," +
-        " hp.watchers," +
-        " p.category," +
-        " coalesce(hp.last_updated, p.created_at) AS last_updated," +
-        " p.visibility" +
-        " FROM users u " +
-        "     JOIN project_watchers pw ON u.id = pw.user_id" +
-        "     JOIN home_projects hp ON pw.project_id = hp.id" +
-        "     JOIN projects p ON pw.project_id = p.id" +
-        " WHERE " +
-        "     <if(!canSeeHidden)> (p.visibility = 0" +
-        "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND<endif>" +
-        "     lower(u.name) = lower(:user)" +
-        "   <sorters>" +
-        "   <offsetLimit>")
+    @SqlQuery("""
+        SELECT hp.created_at,
+         hp.id,
+         hp.name,
+         hp.owner_name "owner",
+         hp.slug,
+         hp.views,
+         hp.downloads,
+         hp.recent_views,
+         hp.recent_downloads,
+         hp.stars,
+         hp.watchers,
+         hp.category,
+         hp.last_updated,
+         hp.visibility
+         FROM users u
+             JOIN project_watchers pw ON u.id = pw.user_id
+             JOIN home_projects hp ON pw.project_id = hp.id
+         WHERE
+             <if(!canSeeHidden)> (p.visibility = 0
+             <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND<endif>
+             lower(u.name) = lower(:user)
+           <sorters>
+           <offsetLimit>""")
     List<ProjectCompact> getUserWatching(String user, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
     @UseStringTemplateEngine
-    @SqlQuery("SELECT count(*)" +
-        " FROM users u " +
-        "     JOIN project_watchers pw ON u.id = pw.user_id" +
-        "     JOIN home_projects hp ON pw.project_id = hp.id" +
-        "     JOIN projects p ON pw.project_id = p.id" +
-        " WHERE " +
-        "     <if(!canSeeHidden)> (p.visibility = 0" +
-        "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND<endif>" +
-        "     lower(u.name) = lower(:user)")
+    @SqlQuery("""
+        SELECT count(*)
+         FROM users u
+             JOIN project_watchers pw ON u.id = pw.user_id
+             JOIN home_projects hp ON pw.project_id = hp.id
+         WHERE
+             <if(!canSeeHidden)> (p.visibility = 0
+             <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND<endif>
+             lower(u.name) = lower(:user)""")
     long getUserWatchingCount(String user, @Define boolean canSeeHidden, @Define Long userId);
 
     @UseStringTemplateEngine

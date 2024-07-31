@@ -50,7 +50,7 @@ public class ProjectLicenseFilter implements Filter<ProjectLicenseFilter.Project
 
         @Override
         public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
-            sb.append(" AND p.license_type").append(" IN (");
+            sb.append(" AND hp.license_type").append(" IN (");
             for (int i = 0; i < this.licenses.length; i++) {
                 sb.append(":__licenses__").append(i);
                 if (i + 1 != this.licenses.length) {

@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
 @Component
-public class ProjectMCVersionFilter implements Filter<ProjectMCVersionFilter.ProjectMCVersionFilterInstance, String[]> {
+public class ProjectPlatformVersionFilter implements Filter<ProjectPlatformVersionFilter.ProjectPlatformVersionFilterInstance, String[]> {
 
     private final ConversionService conversionService;
 
     @Autowired
-    public ProjectMCVersionFilter(final ConversionService conversionService) {
+    public ProjectPlatformVersionFilter(final ConversionService conversionService) {
         this.conversionService = conversionService;
     }
 
@@ -27,7 +27,7 @@ public class ProjectMCVersionFilter implements Filter<ProjectMCVersionFilter.Pro
 
     @Override
     public String getDescription() {
-        return "A Minecraft version to filter for";
+        return "A platform version to filter for";
     }
 
     @Override
@@ -36,21 +36,28 @@ public class ProjectMCVersionFilter implements Filter<ProjectMCVersionFilter.Pro
     }
 
     @Override
-    public @NotNull ProjectMCVersionFilterInstance create(final NativeWebRequest webRequest) {
-        return new ProjectMCVersionFilterInstance(this.conversionService.convert(this.getValue(webRequest), String[].class));
+    public @NotNull ProjectPlatformVersionFilterInstance create(final NativeWebRequest webRequest) {
+        return new ProjectPlatformVersionFilterInstance(this.conversionService.convert(this.getValue(webRequest), String[].class));
     }
 
-    static class ProjectMCVersionFilterInstance implements Filter.FilterInstance {
+    static class ProjectPlatformVersionFilterInstance implements Filter.FilterInstance {
 
         private final String[] versions;
 
-        ProjectMCVersionFilterInstance(final String[] versions) {
+        ProjectPlatformVersionFilterInstance(final String[] versions) {
             this.versions = versions;
         }
 
         @Override
         public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
-            sb.append(" AND v.version").append(" IN (");
+            sb.append(" ");
+            sb.append("""
+                AND EXISTS (
+                    SELECT 1
+                    FROM jsonb_array_elements(hp.supported_platforms) AS sp,
+                          jsonb_array_elements_text(sp->'versions') AS version
+                    WHERE version IN (
+                """);
             for (int i = 0; i < this.versions.length; i++) {
                 sb.append(":__version__").append(i);
                 if (i + 1 != this.versions.length) {
@@ -58,12 +65,12 @@ public class ProjectMCVersionFilter implements Filter<ProjectMCVersionFilter.Pro
                 }
                 q.bind("__version__" + i, this.versions[i]);
             }
-            sb.append(')');
+            sb.append("))");
         }
 
         @Override
         public String toString() {
-            return "ProjectMCVersionFilterInstance{" +
+            return "ProjectPlatformVersionFilter{" +
                 "versions=" + Arrays.toString(this.versions) +
                 '}';
         }

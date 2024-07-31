@@ -51,15 +51,21 @@ public class ProjectPlatformFilter implements Filter<ProjectPlatformFilter.Proje
 
         @Override
         public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
-            sb.append(" AND v.platform").append(" IN (");
+            sb.append(" ");
+            sb.append("""
+                AND EXISTS (
+                    SELECT 1
+                    FROM jsonb_array_elements(hp.supported_platforms) AS sp
+                    WHERE sp->>'platform' IN (
+                """);
             for (int i = 0; i < this.platforms.length; i++) {
                 sb.append(":__platform__").append(i);
                 if (i + 1 != this.platforms.length) {
                     sb.append(',');
                 }
-                q.bind("__platform__" + i, this.platforms[i]);
+                q.bind("__platform__" + i, this.platforms[i].ordinal() + "");
             }
-            sb.append(')');
+            sb.append("))");
         }
 
         @Override
