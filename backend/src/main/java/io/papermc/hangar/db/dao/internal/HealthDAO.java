@@ -14,24 +14,22 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 @RegisterConstructorMapper(UnhealthyProject.class)
 public interface HealthDAO {
 
-    @SqlQuery(" SELECT p.owner_name \"owner\"," +
-        "          p.slug," +
-        "          coalesce(hp.last_updated, p.created_at) AS last_updated," +
-        "          p.visibility" +
-        "   FROM projects p " +
-        "       JOIN home_projects hp ON p.id = hp.id" +
+    @SqlQuery(" SELECT hp.owner_name \"owner\"," +
+        "          hp.slug," +
+        "          hp.last_updated," +
+        "          hp.visibility" +
+        "   FROM home_projects hp" +
         "   WHERE hp.last_updated < (now() - interval <age>)" +
-        "   ORDER BY p.created_at DESC")
+        "   ORDER BY hp.created_at DESC")
     List<UnhealthyProject> getStaleProjects(@Define("age") String staleAgeSeconds);
 
-    @SqlQuery(" SELECT p.owner_name \"owner\"," +
-        "          p.slug," +
-        "          coalesce(hp.last_updated, p.created_at) AS last_updated," +
-        "          p.visibility" +
-        "   FROM projects p " +
-        "       JOIN home_projects hp ON p.id = hp.id" +
-        "   WHERE p.visibility != 0" +
-        "   ORDER BY p.created_at DESC")
+    @SqlQuery(" SELECT hp.owner_name \"owner\"," +
+        "          hp.slug," +
+        "          hp.last_updated," +
+        "          hp.visibility" +
+        "   FROM home_projects hp" +
+        "   WHERE hp.visibility != 0" +
+        "   ORDER BY hp.created_at DESC")
     List<UnhealthyProject> getNonPublicProjects();
 
     @UseEnumStrategy(EnumStrategy.BY_ORDINAL)
