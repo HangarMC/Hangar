@@ -26,12 +26,12 @@
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
         <!-- dependency management -->
-        <jdbi3-bom.version>3.45.2</jdbi3-bom.version>
+        <jdbi3-bom.version>3.45.3</jdbi3-bom.version>
         <configurate.version>4.2.0-SNAPSHOT</configurate.version>
         <spring-cloud-aws.version>3.1.1</spring-cloud-aws.version>
 
         <!-- dependencies -->
-        <sentry.version>7.12.1</sentry.version>
+        <sentry.version>7.13.0</sentry.version>
         <springdoc.version>2.6.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20240303</org-json.version>
@@ -53,7 +53,7 @@
         <otel-semconv.version>1.30.0-alpha</otel-semconv.version>
 
         <!-- test -->
-        <pg.version>1.20.0</pg.version>
+        <pg.version>1.20.1</pg.version>
         <openapi-generator.version>7.7.0</openapi-generator.version>
 
         <!-- plugins -->

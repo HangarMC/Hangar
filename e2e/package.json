@@ -10,10 +10,10 @@
     "def": "npx codeceptjs def"
   },
   "dependencies": {
-    "@types/chai": "4.3.16",
+    "@types/chai": "4.3.17",
     "browserstack-local": "^1.5.5",
-    "chai": "4.4.1",
-    "codeceptjs": "^3.6.4",
+    "chai": "4.5.0",
+    "codeceptjs": "^3.6.5",
     "dotenv": "^16.4.5",
     "jwt-decode": "4.0.0",
     "totp-generator": "1.0.0",
