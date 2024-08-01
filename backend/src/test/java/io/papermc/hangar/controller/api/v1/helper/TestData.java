@@ -60,6 +60,7 @@ public class TestData {
     public static OrganizationTable ORG;
 
     public static ProjectTable PROJECT;
+    public static ProjectTable PRIVATE_PROJECT;
 
     public static ProjectPageTable PAGE_PARENT;
     public static ProjectPageTable PAGE_CHILD;
@@ -107,6 +108,9 @@ public class TestData {
             Category.CHAT, "", ORG.getUserId(), "TestProject", "# Test", null));
         PAGE_PARENT = this.projectPageService.createPage(PROJECT.getProjectId(), "TestParentPage", "testparentpage", "# TestParentPage", true, null, false);
         PAGE_CHILD = this.projectPageService.createPage(PROJECT.getProjectId(), "TestChildPage", "testparentpage/testchild", "# TestChildPage", true, PAGE_PARENT.getId(), false);
+
+        PRIVATE_PROJECT = this.projectFactory.createProject(new NewProjectForm(new ProjectSettings(List.of(), List.of(), new ProjectLicense(null, null, "MIT"), List.of(), null),
+            Category.CHAT, "", ORG.getUserId(), "PrivateProject", "# PrivateProject", null));
 
         logger.info("Creating some test versions...");
         this.versionFactory.publishPendingVersion(PROJECT.getProjectId(), new PendingVersion("1.0", Map.of(), new EnumMap<>(Map.of(Platform.PAPER, new TreeSet<>(Set.of("1.8")))), "# 1.0", List.of(new PendingVersionFile(List.of(Platform.PAPER), null, "https://google.com")), "Release", "Release channel", null, Set.of()));

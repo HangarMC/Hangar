@@ -22,7 +22,7 @@ class ProjectsControllerTest extends ControllerTest {
 
     @Test
     void testGetHiddenProject() throws Exception {
-        this.mockMvc.perform(get("/api/v1/projects/TestProject")
+        this.mockMvc.perform(get("/api/v1/projects/PrivateProject")
                         .with(this.apiKey(TestData.KEY_PROJECT_ONLY)))
                 .andExpect(status().is(404));
     }
@@ -45,17 +45,21 @@ class ProjectsControllerTest extends ControllerTest {
     }
 
     @Test
-    @Disabled
     void testGetStargazers() throws Exception {
-        // TODO
-        throw new RuntimeException();
+        this.mockMvc.perform(get("/api/v1/projects/TestProject/stargazers")
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.pagination.count", is(1)))
+            .andExpect(jsonPath("$.result[0].name", is("TestUser")));
     }
 
     @Test
-    @Disabled
     void testGetWatchers() throws Exception {
-        // TODO
-        throw new RuntimeException();
+        this.mockMvc.perform(get("/api/v1/projects/TestProject/watchers")
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.pagination.count", is(1)))
+            .andExpect(jsonPath("$.result[0].name", is("TestUser")));
     }
 
     @Test
@@ -63,7 +67,7 @@ class ProjectsControllerTest extends ControllerTest {
         this.mockMvc.perform(get("/api/v1/projects?owner=PaperMC")
                         .with(this.apiKey(TestData.KEY_ADMIN)))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.pagination.count", is(1)))
+                .andExpect(jsonPath("$.pagination.count", is(2)))
                 .andExpect(jsonPath("$.result[0].name", is("TestProject")))
                 .andExpect(jsonPath("$.result[0].namespace.owner", is("PaperMC")));
     }
