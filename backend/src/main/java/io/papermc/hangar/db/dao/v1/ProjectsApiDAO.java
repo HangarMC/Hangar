@@ -123,7 +123,7 @@ public interface ProjectsApiDAO {
         SELECT count(hp.id)
         FROM home_projects hp
         WHERE TRUE <filters>
-        <if(!seehidden)> AND (hp.visibility = 0 <if(requesterid)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif>""")
+        <if(!seehidden)> AND (hp.visibility = 0 <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif>""")
     long countProjects(@Define boolean seeHidden, @Define Long requesterId, @BindPagination(isCount = true) RequestPagination pagination);
 
     @RegisterConstructorMapper(ProjectMember.class)

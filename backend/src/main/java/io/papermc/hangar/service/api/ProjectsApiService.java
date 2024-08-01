@@ -104,10 +104,11 @@ public class ProjectsApiService extends HangarComponent {
             sorters.putAll(copy);
         }
 
-        final List<Project> projects = this.projectsApiDAO.getProjects(seeHidden, this.getHangarUserId(), pagination, query);
+        final Long userId = this.getHangarUserId();
+        final List<Project> projects = this.projectsApiDAO.getProjects(seeHidden, userId, pagination, query);
         for (final Project project : projects) {
             project.setAvatarUrl(this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner()));
         }
-        return new PaginatedResult<>(new Pagination(this.projectsApiDAO.countProjects(seeHidden, this.getHangarUserId(), pagination), pagination), projects);
+        return new PaginatedResult<>(new Pagination(this.projectsApiDAO.countProjects(seeHidden, userId, pagination), pagination), projects);
     }
 }
