@@ -158,7 +158,7 @@ public class ProjectService extends HangarComponent {
 
         final Map<Platform, HangarVersion> mainChannelVersions = new EnumMap<>(Platform.class);
         final CompletableFuture<Void> mainChannelFuture = CompletableFuture.runAsync(() -> Arrays.stream(Platform.getValues()).parallel().forEach(platform -> {
-            final HangarVersion version = this.getLastVersion(ownerName, slug, platform, this.config.channels.nameDefault());
+            final HangarVersion version = this.getLastVersion(slug, platform, this.config.channels.nameDefault());
             if (version != null) {
                 this.versionDependencyService.addDownloadsAndDependencies(ownerName, slug, version.getName(), version.getId()).applyTo(version);
                 mainChannelVersions.put(platform, version);
@@ -191,7 +191,7 @@ public class ProjectService extends HangarComponent {
         return CompletableFuture.supplyAsync(supplier);
     }
 
-    public @Nullable HangarVersion getLastVersion(final String author, final String slug, final Platform platform, final @Nullable String channel) {
+    public @Nullable HangarVersion getLastVersion(final String slug, final Platform platform, final @Nullable String channel) {
         final RequestPagination pagination = new RequestPagination(1L, 0L);
         pagination.getFilters().put("platform", new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
         if (channel != null) {
@@ -199,13 +199,14 @@ public class ProjectService extends HangarComponent {
             pagination.getFilters().put("channel", new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
         }
 
-        final Long versionId = this.versionsApiDAO.getVersions(slug, false, this.getHangarUserId(), pagination).keySet().stream().findAny().orElse(null);
+        final Long userId = this.getHangarUserId();
+        final Long versionId = this.versionsApiDAO.getVersions(slug, false, userId, pagination).keySet().stream().findAny().orElse(null);
         if (versionId != null) {
-            return this.hangarVersionsDAO.getVersion(versionId, this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
+            return this.hangarVersionsDAO.getVersion(versionId, this.getGlobalPermissions().has(Permission.SeeHidden), userId);
         }
 
         // Try again with any channel, else empty
-        return channel != null ? this.getLastVersion(author, slug, platform, null) : null;
+        return channel != null ? this.getLastVersion(slug, platform, null) : null;
     }
 
     public void validateSettings(final ProjectSettingsForm settingsForm) {

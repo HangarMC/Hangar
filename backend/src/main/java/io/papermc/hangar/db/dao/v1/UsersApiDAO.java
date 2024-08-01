@@ -41,7 +41,7 @@ public interface UsersApiDAO {
              JOIN home_projects hp ON ps.project_id = hp.id
          WHERE
              <if(!canSeeHidden)> (p.visibility = 0
-             <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND<endif>
+             <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND <endif>
              lower(u.name) = lower(:user)
            <sorters>
            <offsetLimit>""")
@@ -55,7 +55,7 @@ public interface UsersApiDAO {
              JOIN home_projects hp ON ps.project_id = hp.id
          WHERE
              <if(!canSeeHidden)> (p.visibility = 0
-             <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND<endif>
+             <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND <endif>
              lower(u.name) = lower(:user)""")
     long getUserStarredCount(String user, @Define boolean canSeeHidden, @Define Long userId);
 
@@ -81,7 +81,7 @@ public interface UsersApiDAO {
              JOIN home_projects hp ON pw.project_id = hp.id
          WHERE
              <if(!canSeeHidden)> (p.visibility = 0
-             <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND<endif>
+             <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND <endif>
              lower(u.name) = lower(:user)
            <sorters>
            <offsetLimit>""")
@@ -95,7 +95,7 @@ public interface UsersApiDAO {
              JOIN home_projects hp ON pw.project_id = hp.id
          WHERE
              <if(!canSeeHidden)> (p.visibility = 0
-             <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND<endif>
+             <if(userId)>OR (<userId> = ANY(hp.project_members) AND p.visibility != 4)<endif>) AND <endif>
              lower(u.name) = lower(:user)""")
     long getUserWatchingCount(String user, @Define boolean canSeeHidden, @Define Long userId);
 

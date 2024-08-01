@@ -172,7 +172,8 @@ public class VersionsApiService extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
-        Stream<Version> versions = this.versionsApiDAO.getVersions(projectTable.getSlug(), canSeeHidden, this.getHangarUserId(), pagination).entrySet().parallelStream()
+        final Long userId = this.getHangarUserId();
+        Stream<Version> versions = this.versionsApiDAO.getVersions(projectTable.getSlug(), canSeeHidden, userId, pagination).entrySet().parallelStream()
             .map(entry -> this.versionDependencyService.addDownloadsAndDependencies(projectTable.getOwnerName(), projectTable.getSlug(), entry.getValue().getName(), entry.getKey()).applyTo(entry.getValue()))
             .sorted((v1, v2) -> v2.getCreatedAt().compareTo(v1.getCreatedAt()));
 
@@ -180,7 +181,7 @@ public class VersionsApiService extends HangarComponent {
             versions = versions.filter(version -> !version.getChannel().getFlags().contains(ChannelFlag.HIDE_BY_DEFAULT));
         }
 
-        final Long versionCount = this.versionsApiDAO.getVersionCount(projectTable.getSlug(), canSeeHidden, this.getHangarUserId(), pagination);
+        final Long versionCount = this.versionsApiDAO.getVersionCount(projectTable.getSlug(), canSeeHidden, userId, pagination);
         return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount, pagination), versions.toList());
     }
 
