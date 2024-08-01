@@ -7,6 +7,7 @@ import io.papermc.hangar.model.api.project.ProjectLicense;
 import io.papermc.hangar.model.api.project.settings.ProjectSettings;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
@@ -17,6 +18,8 @@ import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
+import io.papermc.hangar.model.internal.versions.PendingVersion;
+import io.papermc.hangar.model.internal.versions.PendingVersionFile;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.APIKeyService;
 import io.papermc.hangar.service.internal.organizations.OrganizationFactory;
@@ -26,10 +29,14 @@ import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.users.UserService;
+import io.papermc.hangar.service.internal.versions.VersionFactory;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +82,8 @@ public class TestData {
     private ProjectService projectService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private VersionFactory versionFactory;
 
     @EventListener(ApplicationStartedEvent.class)
     public void prepare() {
@@ -98,6 +107,9 @@ public class TestData {
             Category.CHAT, "", ORG.getUserId(), "TestProject", "# Test", null));
         PAGE_PARENT = this.projectPageService.createPage(PROJECT.getProjectId(), "TestParentPage", "testparentpage", "# TestParentPage", true, null, false);
         PAGE_CHILD = this.projectPageService.createPage(PROJECT.getProjectId(), "TestChildPage", "testparentpage/testchild", "# TestChildPage", true, PAGE_PARENT.getId(), false);
+
+        logger.info("Creating some test versions...");
+        this.versionFactory.publishPendingVersion(PROJECT.getProjectId(), new PendingVersion("1.0", Map.of(), new EnumMap<>(Map.of(Platform.PAPER, new TreeSet<>(Set.of("1.8")))), "# 1.0", List.of(new PendingVersionFile(List.of(Platform.PAPER), null, "https://google.com")), "Release", "Release channel", null, Set.of()));
 
         logger.info("Creating test api keys...");
         KEY_ADMIN = this.apiKeyService.createApiKey(USER_ADMIN, new CreateAPIKeyForm("Admin", Set.of(NamedPermission.values())), Permission.All);

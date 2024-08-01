@@ -48,7 +48,7 @@ class UserControllerTest extends ControllerTest {
         this.mockMvc.perform(get("/api/v1/users/TestAdmin/starred")
                 .with(this.apiKey(TestData.KEY_ADMIN)))
             .andExpect(status().is(200))
-            .andExpect(jsonPath("$.pagination.count", is(1)));
+            .andExpect(jsonPath("$.pagination.count", is(0)));
     }
 
     @Test
@@ -58,6 +58,10 @@ class UserControllerTest extends ControllerTest {
             .andExpect(status().is(200))
             .andExpect(jsonPath("$.pagination.count", is(1)))
             .andExpect(jsonPath("$.result[*].name", contains("TestProject")));
+        this.mockMvc.perform(get("/api/v1/users/TestAdmin/watching")
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.pagination.count", is(0)));
     }
 
     @Test
@@ -68,7 +72,6 @@ class UserControllerTest extends ControllerTest {
     }
 
     @Test
-    @Disabled // TODO fix this
     void testGetAuthors() throws Exception {
         this.mockMvc.perform(get("/api/v1/authors?query=PaperMC")
                         .with(this.apiKey(TestData.KEY_ADMIN)))
