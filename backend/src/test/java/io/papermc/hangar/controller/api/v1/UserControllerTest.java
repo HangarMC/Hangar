@@ -39,24 +39,32 @@ class UserControllerTest extends ControllerTest {
     }
 
     @Test
-    @Disabled
-    void testGetStarred() {
-        // TODO
-        throw new RuntimeException();
+    void testGetStarred() throws Exception {
+        this.mockMvc.perform(get("/api/v1/users/TestUser/starred")
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.pagination.count", is(1)))
+            .andExpect(jsonPath("$.result[*].name", contains("TestProject")));
+        this.mockMvc.perform(get("/api/v1/users/TestAdmin/starred")
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.pagination.count", is(1)));
     }
 
     @Test
-    @Disabled
-    void testGetWatching() {
-        // TODO
-        throw new RuntimeException();
+    void testGetWatching() throws Exception {
+        this.mockMvc.perform(get("/api/v1/users/TestUser/watching")
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.pagination.count", is(1)))
+            .andExpect(jsonPath("$.result[*].name", contains("TestProject")));
     }
 
     @Test
-    @Disabled
-    void testGetPinned() {
-        // TODO
-        throw new RuntimeException();
+    void testGetPinned() throws Exception {
+        this.mockMvc.perform(get("/api/v1/users/TestUser/pinned")
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(200));
     }
 
     @Test

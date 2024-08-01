@@ -222,7 +222,7 @@ public class ProjectController extends HangarComponent {
     @PostMapping("/project/{id}/star/{state}")
     @ResponseStatus(HttpStatus.OK)
     public void setProjectStarred(@PathVariable("id") final long projectId, @PathVariable final boolean state) {
-        this.userService.toggleStarred(projectId, state);
+        this.userService.toggleStarred(this.getHangarPrincipal().getUserId(), projectId, state);
     }
 
     @Unlocked
@@ -231,7 +231,7 @@ public class ProjectController extends HangarComponent {
     @PostMapping("/project/{id}/watch/{state}")
     @ResponseStatus(HttpStatus.OK)
     public void setProjectWatching(@PathVariable("id") final long projectId, @PathVariable final boolean state) {
-        this.userService.toggleWatching(projectId, state);
+        this.userService.toggleWatching(this.getHangarPrincipal().getUserId(), projectId, state);
     }
 
     @Unlocked

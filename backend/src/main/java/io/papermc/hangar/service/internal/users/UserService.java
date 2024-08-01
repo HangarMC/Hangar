@@ -44,19 +44,19 @@ public class UserService extends HangarComponent {
         return this.getUserTable(userId, this.userDAO::getUserTable);
     }
 
-    public void toggleWatching(final long projectId, final boolean state) {
+    public void toggleWatching(final long userId, final long projectId, final boolean state) {
         if (state) {
-            this.hangarUsersDAO.setWatching(projectId, this.getHangarPrincipal().getUserId());
+            this.hangarUsersDAO.setWatching(projectId, userId);
         } else {
-            this.hangarUsersDAO.setNotWatching(projectId, this.getHangarPrincipal().getUserId());
+            this.hangarUsersDAO.setNotWatching(projectId, userId);
         }
     }
 
-    public void toggleStarred(final long projectId, final boolean state) {
+    public void toggleStarred(final long userId, final long projectId, final boolean state) {
         if (state) {
-            this.hangarUsersDAO.setStarred(projectId, this.getHangarPrincipal().getUserId());
+            this.hangarUsersDAO.setStarred(projectId, userId);
         } else {
-            this.hangarUsersDAO.setNotStarred(projectId, this.getHangarPrincipal().getUserId());
+            this.hangarUsersDAO.setNotStarred(projectId, userId);
         }
     }
 
