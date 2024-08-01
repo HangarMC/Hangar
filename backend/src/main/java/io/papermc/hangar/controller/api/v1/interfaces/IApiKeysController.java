@@ -32,7 +32,7 @@ public interface IApiKeysController {
         tags = "API Keys"
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Key created", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "201", description = "Key created", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE, schema = @Schema(type = "string"))),
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")})
     @PostMapping(path = "/keys", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
