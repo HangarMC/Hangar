@@ -58,7 +58,7 @@ function sortedDependencies(platform: Platform) {
 const supportsString = computed(() => {
   const result = [];
   for (const platform in projectVersion.value?.platformDependenciesFormatted) {
-    result.push(titleCase(platform.toLowerCase()) + " " + projectVersion.value?.platformDependenciesFormatted[platform]);
+    result.push(titleCase(platform.toLowerCase()) + " " + projectVersion.value?.platformDependenciesFormatted[platform].join(", "));
   }
   return result.join(", ");
 });
@@ -345,7 +345,7 @@ async function restoreVersion() {
         <div v-for="platform in versionPlatforms" :key="platform" class="flex items-center mb-1">
           <PlatformLogo :platform="platform" :size="24" class="mr-1 flex-shrink-0" />
           {{ useBackendData.platforms.get(platform)?.name }}
-          ({{ projectVersion?.platformDependenciesFormatted[platform] }})
+          ({{ projectVersion?.platformDependenciesFormatted[platform].join(", ") }})
           <span class="flex-grow" />
           <PlatformVersionEditModal
             v-if="hasPerms(NamedPermission.EditVersion)"

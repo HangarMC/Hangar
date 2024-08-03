@@ -150,7 +150,7 @@ function getVisibilityTitle(visibility: Visibility) {
                       <div v-for="(v, p) in item.platformDependenciesFormatted" :key="p" class="basis-full">
                         <div class="inline-flex items-center">
                           <PlatformLogo :platform="p" :size="22" class="mr-1 flex-shrink-0" />
-                          <span class="mr-3 text-0.95rem">{{ v }}</span>
+                          <span class="mr-3 text-0.95rem">{{ v.join(", ") }}</span>
                         </div>
                       </div>
                     </div>

@@ -19,6 +19,6 @@ class FormattedVersionsTest {
     }
 
     private void testFormatVersionNumbers(final String expected, final String... versions) {
-        Assertions.assertEquals(expected, VersionFormatter.formatVersionRange(new ArrayList<>(List.of(versions)), this.versions));
+        Assertions.assertEquals(expected, VersionFormatter.formatVersionRangeString(new ArrayList<>(List.of(versions)), this.versions));
     }
 }

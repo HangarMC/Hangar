@@ -959,7 +959,7 @@ export interface Version {
   downloads: Record<string, PlatformVersionDownload>;
   pluginDependencies: Record<string, PluginDependency[]>;
   platformDependencies: Record<string, string[]>;
-  platformDependenciesFormatted: Record<string, string>;
+  platformDependenciesFormatted: Record<string, string[]>;
 }
 
 export interface VersionStats {
@@ -1022,7 +1022,7 @@ export interface HangarVersion {
   downloads: Record<string, PlatformVersionDownload>;
   pluginDependencies: Record<string, PluginDependency[]>;
   platformDependencies: Record<string, string[]>;
-  platformDependenciesFormatted: Record<string, string>;
+  platformDependenciesFormatted: Record<string, string[]>;
   /** @format int64 */
   id: number;
   approvedBy: string;
@@ -1147,7 +1147,7 @@ export interface PinnedVersion {
   type: Type;
   name: string;
   channel: ProjectChannel;
-  platformDependenciesFormatted: Record<string, string>;
+  platformDependenciesFormatted: Record<string, string[]>;
   downloads: Record<string, PlatformVersionDownload>;
 }
 

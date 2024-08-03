@@ -73,11 +73,12 @@ public class VersionDependencyService extends HangarComponent {
     public DownloadsAndDependencies addDownloadsAndDependencies(final String user, final String project, final String versionName, final long versionId) {
         //TODO All of this is dumb and needs to be redone into as little queries as possible
         final Map<Platform, SortedSet<String>> platformDependencies = this.versionsApiDAO.getPlatformDependencies(versionId);
-        final Map<Platform, String> platformDependenciesFormatted = new EnumMap<>(Platform.class);
+        final Map<Platform, List<String>> platformDependenciesFormatted = new EnumMap<>(Platform.class);
         platformDependencies.entrySet().parallelStream().forEach(entry -> {
-            final List<String> fullVersionsForPlatform = this.platformService.getFullVersionsForPlatform(entry.getKey());
-            final String formattedVersionRange = VersionFormatter.formatVersionRange(new ArrayList<>(entry.getValue()), fullVersionsForPlatform);
-            platformDependenciesFormatted.put(entry.getKey(), formattedVersionRange);
+            final Platform platform = entry.getKey();
+            final List<String> fullVersionsForPlatform = this.platformService.getFullVersionsForPlatform(platform);
+            final List<String> formattedVersionRange = VersionFormatter.formatVersionRange(new ArrayList<>(entry.getValue()), fullVersionsForPlatform);
+            platformDependenciesFormatted.put(platform, formattedVersionRange);
         });
 
         final Map<Platform, SortedSet<PluginDependency>> pluginDependencies = this.versionsApiDAO.getPluginDependencies(versionId).stream()
@@ -89,7 +90,7 @@ public class VersionDependencyService extends HangarComponent {
 
     public record DownloadsAndDependencies(Map<Platform, SortedSet<PluginDependency>> pluginDependencies,
                                     Map<Platform, SortedSet<String>> platformDependencies,
-                                    Map<Platform, String> platformDependenciesFormatted,
+                                    Map<Platform, List<String>> platformDependenciesFormatted,
                                     Map<Platform, PlatformVersionDownload> downloads
     ) {
         public <T extends Version> T applyTo(final T version) {

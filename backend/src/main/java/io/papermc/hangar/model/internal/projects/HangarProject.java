@@ -125,7 +125,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         private final Type type;
         private final String name;
         private final ProjectChannel channel;
-        private final Map<Platform, String> platformDependenciesFormatted;
+        private final Map<Platform, List<String>> platformDependenciesFormatted;
         private final Map<Platform, PlatformVersionDownload> downloads;
 
         public PinnedVersion(final long versionId, final Type type, final String name, @Nested("pc") final ProjectChannel channel) {
@@ -149,7 +149,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
             return this.name;
         }
 
-        public Map<Platform, String> getPlatformDependenciesFormatted() {
+        public Map<Platform, List<String>> getPlatformDependenciesFormatted() {
             return this.platformDependenciesFormatted;
         }
 

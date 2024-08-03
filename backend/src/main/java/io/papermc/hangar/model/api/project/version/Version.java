@@ -6,6 +6,7 @@ import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
 import java.time.OffsetDateTime;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
@@ -16,7 +17,7 @@ public class Version extends VersionCompact {
 
     private final Map<Platform, Set<PluginDependency>> pluginDependencies = new EnumMap<>(Platform.class);
     private final Map<Platform, Set<String>> platformDependencies = new EnumMap<>(Platform.class);
-    private final Map<Platform, String> platformDependenciesFormatted = new EnumMap<>(Platform.class);
+    private final Map<Platform, List<String>> platformDependenciesFormatted = new EnumMap<>(Platform.class);
 
     public Version(final OffsetDateTime createdAt, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final PinnedStatus pinnedStatus) {
         super(createdAt, name, visibility, description, stats, author, reviewState, channel, pinnedStatus);
@@ -30,7 +31,7 @@ public class Version extends VersionCompact {
         return this.platformDependencies;
     }
 
-    public Map<Platform, String> getPlatformDependenciesFormatted() {
+    public Map<Platform, List<String>> getPlatformDependenciesFormatted() {
         return this.platformDependenciesFormatted;
     }
 

@@ -64,6 +64,11 @@ function trackDownload(platform: string, version: { id?: number; versionId?: num
   const id = version.id || version.versionId;
   useInternalApi(`versions/version/${id}/${platform}/track`);
 }
+
+function formatVersionRange(versions: string[]): string {
+  // In download buttons, only show the latest version/version range + the remaining amount
+  return versions.length > 1 ? i18n.t("version.page.shortVersions", [versions.at(-1), versions.length - 1]) : versions[0];
+}
 </script>
 
 <template>
@@ -107,7 +112,7 @@ function trackDownload(platform: string, version: { id?: number; versionId?: num
         >
           <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
           {{ useBackendData.platforms.get(p)?.name }}
-          <span v-if="showVersions" class="ml-1">({{ v }})</span>
+          <span v-if="showVersions" class="ml-1">({{ formatVersionRange(v) }})</span>
           <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" class="ml-0.5 text-sm pb-0.5" />
         </DropdownItem>
       </DropdownButton>
@@ -132,7 +137,7 @@ function trackDownload(platform: string, version: { id?: number; versionId?: num
           <div v-if="showSinglePlatform" class="inline-flex justify-center items-center font-normal text-0.75rem">
             <PlatformLogo :platform="singlePlatform" :size="15" class="mr-1 flex-shrink-0" />
             <span v-if="singleVersion?.platformDependencies && showVersions">
-              {{ singleVersion?.platformDependenciesFormatted[singlePlatform] }}
+              {{ formatVersionRange(singleVersion?.platformDependenciesFormatted[singlePlatform]) }}
             </span>
           </div>
         </div>
@@ -158,7 +163,7 @@ function trackDownload(platform: string, version: { id?: number; versionId?: num
       >
         <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
         {{ useBackendData.platforms.get(p)?.name }}
-        <span v-if="showVersions && version.platformDependencies" class="ml-1">({{ version.platformDependenciesFormatted[p] }})</span>
+        <span v-if="showVersions && version.platformDependencies" class="ml-1">({{ formatVersionRange(version.platformDependenciesFormatted[p]) }})</span>
         <span v-if="v.fileInfo?.sizeBytes" class="ml-1"> ({{ formatSize(v.fileInfo.sizeBytes) }}) </span>
         <IconMdiOpenInNew v-if="v.externalUrl" class="ml-0.5 text-sm pb-0.5" />
       </DropdownItem>
@@ -183,7 +188,7 @@ function trackDownload(platform: string, version: { id?: number; versionId?: num
       >
         <PlatformLogo :platform="p" :size="24" class="mr-1 flex-shrink-0" />
         {{ useBackendData.platforms.get(p)?.name }}
-        <span v-if="v.platformDependencies && showVersions" class="ml-1">({{ v.platformDependenciesFormatted[p] }})</span>
+        <span v-if="v.platformDependencies && showVersions" class="ml-1">({{ formatVersionRange(v.platformDependenciesFormatted[p]) }})</span>
         <IconMdiOpenInNew v-if="v.downloads[p]?.externalUrl" class="ml-0.5 text-sm pb-0.5" />
       </DropdownItem>
     </DropdownButton>

@@ -144,7 +144,7 @@ useHead(
                   <div class="flex flex-col">
                     <div v-for="(v, p) in version.platformDependenciesFormatted" :key="p" class="flex flex-row items-center">
                       <PlatformLogo :key="p" :platform="p" :size="20" class="mr-1 flex-shrink-0" />
-                      <span :key="p" class="text-0.875rem light:text-gray-600">{{ v }}</span>
+                      <span :key="p" class="text-0.875rem light:text-gray-600">{{ v.join(", ") }}</span>
                     </div>
                   </div>
                 </div>

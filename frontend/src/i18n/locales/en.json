@@ -564,6 +564,7 @@
       "restore": "Restore",
       "download": "Download",
       "downloadExternal": "Download External",
+      "shortVersions": "{0} and {1} more",
       "adminActions": "Admin actions",
       "partiallyApproved": "Partially approved",
       "approved": "Approved",

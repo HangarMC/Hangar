@@ -1,5 +1,6 @@
 package io.papermc.hangar.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class VersionFormatter {
@@ -12,14 +13,14 @@ public final class VersionFormatter {
      *
      * @param versions    list of versions to stringify
      * @param allVersions sorted list of all valid versions
-     * @return formatted version range string
+     * @return formatted version range strings from oldest to newest
      * @throws IllegalArgumentException if versions contains a string not included in allVersions
      */
-    public static String formatVersionRange(final List<String> versions, final List<String> allVersions) {
+    public static List<String> formatVersionRange(final List<String> versions, final List<String> allVersions) {
         if (versions.isEmpty()) {
-            return "";
+            return List.of("");
         } else if (versions.size() == 1) {
-            return versions.get(0);
+            return List.of(versions.getFirst());
         }
 
         versions.sort((version1, version2) -> {
@@ -33,8 +34,8 @@ public final class VersionFormatter {
             return index1 - index2;
         });
 
-        final StringBuilder builder = new StringBuilder();
-        String fromVersion = versions.get(0);
+        final List<String> formattedVersions = new ArrayList<>();
+        String fromVersion = versions.getFirst();
         String lastVersion = fromVersion;
         int lastVersionIndex = allVersions.indexOf(fromVersion);
         for (int i = 1; i < versions.size(); i++) {
@@ -43,12 +44,11 @@ public final class VersionFormatter {
             if (versionIndex != lastVersionIndex + 1) {
                 // Append last version/range if a new range starts
                 if (!lastVersion.equals(fromVersion)) {
-                    builder.append(fromVersion).append('-').append(lastVersion);
+                    formattedVersions.add(fromVersion + '-' + lastVersion);
                 } else {
-                    builder.append(fromVersion);
+                    formattedVersions.add(fromVersion);
                 }
 
-                builder.append(", ");
                 fromVersion = version;
             }
 
@@ -57,10 +57,15 @@ public final class VersionFormatter {
         }
 
         // Append last version or range
-        builder.append(fromVersion);
         if (!fromVersion.equals(lastVersion)) {
-            builder.append('-').append(lastVersion);
+            formattedVersions.add(fromVersion + '-' + lastVersion);
+        } else {
+            formattedVersions.add(fromVersion);
         }
-        return builder.toString();
+        return formattedVersions;
+    }
+
+    public static String formatVersionRangeString(final List<String> versions, final List<String> allVersions) {
+        return String.join(", ", formatVersionRange(versions, allVersions));
     }
 }
