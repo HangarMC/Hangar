@@ -41,10 +41,6 @@ spring:
       secrets:
         enableApi: true
 
-  graphql:
-    graphiql:
-      enabled: true
-
 # Enable this if you want to regenerate the frontend types
 #springdoc:
 #  use-fqn: true
@@ -262,7 +258,6 @@ logging:
     io.papermc.hangar.service.internal.JobService: DEBUG
     http-client-logger: INFO
     io.papermc.hangar.service.ReplicationService: DEBUG
-    # graphql: TRACE
     # org.springframework.cache: TRACE
     # org.springframework.beans: TRACE
     # io.papermc.hangar.security: TRACE

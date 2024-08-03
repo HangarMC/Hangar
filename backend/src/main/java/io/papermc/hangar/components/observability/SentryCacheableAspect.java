@@ -36,7 +36,7 @@ public class SentryCacheableAspect {
             if (CompletionStage.class.isAssignableFrom(method.getReturnType())) {
                 try {
                 return ((CompletionStage<?>) pjp.proceed())
-                    .whenComplete((_, _) -> childSpan.finish());
+                    .whenComplete((result, ex) -> childSpan.finish());
                 } finally {
                     childSpan.finish();
                 }
