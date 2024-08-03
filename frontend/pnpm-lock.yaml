@@ -123,9 +123,6 @@ importers:
       '@iconify-json/mdi':
         specifier: 1.1.67
         version: 1.1.67
-      '@nuxt-alt/proxy':
-        specifier: 2.5.8
-        version: 2.5.8(magicast@0.3.4)(rollup@4.19.2)
       '@nuxtjs/eslint-config-typescript':
         specifier: 12.1.0
         version: 12.1.0(eslint@8.57.0)(typescript@5.5.4)
@@ -1051,9 +1048,6 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@nuxt-alt/proxy@2.5.8':
-    resolution: {integrity: sha512-5Rrh31rMKSi7Atr/bbYTuKJnmMQJ/UlQhQCiI4GIPZwO+oNnKvpH1s2XRWaMfLwKGn3LI7dBdBrhrBklCxcCKg==}
-
   '@nuxt/devalue@2.0.2':
     resolution: {integrity: sha512-GBzP8zOc7CGWyFQS6dv1lQz8VVpz5C2yRszbXufwG/9zhStTIH50EtD87NmWbTMwXDvZLNg8GIpb1UFdH93JCA==}
 
@@ -1355,13 +1349,6 @@ packages:
 
   '@prisma/instrumentation@5.17.0':
     resolution: {integrity: sha512-c1Sle4ji8aasMcYfBBHFM56We4ljfenVtRmS8aY06BllS7SoU6SmJBwG7vil+GHiR0Yrh+t9iBwt4AY0Jr4KNQ==}
-
-  '@refactorjs/http-proxy@0.2.14':
-    resolution: {integrity: sha512-JI35e5QjEWns3KPRw5j6cCiPN60GtOLR2bgr4hPr0kIgQaxVCVIEsWnalC0Avvy02a5a8NSmpjFbpoDESD1PxQ==}
-    engines: {node: '>=16.0.0'}
-
-  '@refactorjs/serialize@1.0.7':
-    resolution: {integrity: sha512-6fdXkxp06pZ/E8YjxxCBm0gF234VadKvma2ut1vNkG991IDOnCr0DjIlxKmB44yg0hSMYfiG9s6rMOKg03WDSg==}
 
   '@rollup/plugin-alias@5.1.0':
     resolution: {integrity: sha512-lpA3RZ9PdIG7qqhEfv79tBffNaoDuukFDrmhLqg9ifv99u/ehn+lOg30x2zmhf8AQqQUZaMk/B9fZraQ6/acDQ==}
@@ -6919,18 +6906,6 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
-  '@nuxt-alt/proxy@2.5.8(magicast@0.3.4)(rollup@4.19.2)':
-    dependencies:
-      '@nuxt/kit': 3.12.4(magicast@0.3.4)(rollup@4.19.2)
-      '@refactorjs/http-proxy': 0.2.14
-      '@refactorjs/serialize': 1.0.7
-      defu: 6.1.4
-      picocolors: 1.0.1
-    transitivePeerDependencies:
-      - magicast
-      - rollup
-      - supports-color
-
   '@nuxt/devalue@2.0.2': {}
 
   '@nuxt/devtools-kit@1.3.9(magicast@0.3.4)(rollup@4.19.2)(vite@5.3.5(@types/node@22.0.2)(sass@1.77.8)(terser@5.31.3))':
@@ -7485,12 +7460,6 @@ snapshots:
       '@opentelemetry/sdk-trace-base': 1.25.1(@opentelemetry/api@1.9.0)
     transitivePeerDependencies:
       - supports-color
-
-  '@refactorjs/http-proxy@0.2.14':
-    dependencies:
-      requires-port: 1.0.0
-
-  '@refactorjs/serialize@1.0.7': {}
 
   '@rollup/plugin-alias@5.1.0(rollup@4.19.2)':
     dependencies:

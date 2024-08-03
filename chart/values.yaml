@@ -40,12 +40,6 @@ ingress:
     - path: /global-sitemap.xml
       pathType: ImplementationSpecific
       target: backend
-    - path: /graphiql
-      pathType: ImplementationSpecific
-      target: backend
-    - path: /graphql
-      pathType: ImplementationSpecific
-      target: backend
     - path: /.well-known
       pathType: ImplementationSpecific
       target: backend

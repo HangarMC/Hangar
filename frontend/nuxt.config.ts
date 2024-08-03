@@ -1,7 +1,6 @@
 import IconsResolver from "unplugin-icons/resolver";
 // import EslintPlugin from "vite-plugin-eslint";
 import Components from "unplugin-vue-components/vite";
-import type { ProxyOptions } from "@nuxt-alt/proxy";
 import { defineNuxtConfig } from "nuxt/config";
 import { loadLocales } from "./src/i18n/i18n-util";
 
@@ -51,7 +50,6 @@ export default defineNuxtConfig({
   modules: [
     "@unocss/nuxt",
     "@pinia/nuxt",
-    "@nuxt-alt/proxy",
     "unplugin-icons/nuxt",
     "@vueuse/nuxt",
     "@nuxtjs/i18n",
@@ -149,41 +147,25 @@ export default defineNuxtConfig({
       isCustomElement: (tag) => ["lottie-player", "rapi-doc"].includes(tag),
     },
   },
-  proxy: {
-    proxies: {
-      // for performance, these should be mirrored in ingress
-      "/api/": defineProxyBackend(),
-      "/signup": defineProxyBackend(),
-      "/login": defineProxyBackend(),
-      "/logout": defineProxyBackend(),
-      "/handle-logout": defineProxyBackend(),
-      "/refresh": defineProxyBackend(),
-      "/invalidate": defineProxyBackend(),
-      "/v3/api-docs": defineProxyBackend(),
-      "/robots.txt": defineProxyBackend(),
-      "/sitemap.xml": defineProxyBackend(),
-      "/global-sitemap.xml": defineProxyBackend(),
-      "^/.*/sitemap.xml": defineProxyBackend(),
-      "/statusz": defineProxyBackend(),
-    },
-  },
   // cache statics for a year
   routeRules: {
-    "/_nuxt/**": { headers: { "Cache-Control": "max-age=31536000, immutable" } },
-    "/**/*.js": { headers: { "Cache-Control": "max-age=31536000, immutable" } },
-    "/**/*.mjs": { headers: { "Cache-Control": "max-age=31536000, immutable" } },
-    "/**/*.css": { headers: { "Cache-Control": "max-age=31536000, immutable" } },
-    "/**/*.json": { headers: { "Cache-Control": "max-age=31536000, immutable" } },
-    "/**/*.xml": { headers: { "Cache-Control": "max-age=31536000, immutable" } },
-    "/**/*.svg": { headers: { "Cache-Control": "max-age=31536000, immutable" } },
+    "/_nuxt/**": cache(),
+    "/**/*.js": cache(),
+    "/**/*.mjs": cache(),
+    "/**/*.css": cache(),
+    "/**/*.json": cache(),
+    "/**/*.xml": cache(),
+    "/**/*.svg": cache(),
+    "/api/**": proxy(),
   },
 });
 
-function defineProxyBackend(): ProxyOptions {
+function cache() {
+  return { headers: { "Cache-Control": "max-age=31536000, immutable" } };
+}
+
+function proxy() {
   return {
-    configure: (proxy, options) => {
-      options.target = process.env.BACKEND_HOST || process.env.NITRO_BACKEND_HOST || "http://localhost:8080";
-    },
-    changeOrigin: true,
+    proxy: (process.env.BACKEND_HOST || process.env.NITRO_BACKEND_HOST || "http://localhost:8080") + "/api/**",
   };
 }
