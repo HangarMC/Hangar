@@ -20,7 +20,6 @@ work/
 ### IntelliJ IDEA ###
 .idea/*
 *.iws
-*.iml
 *.ipr
 
 ### NetBeans ###
@@ -46,3 +45,7 @@ build/
 !/.idea/scopes/
 !/.idea/encodings.xml
 !/.idea/IntelliLang.xml
+!/.idea/modules.xml
+!/.idea/misc.xml
+!/.idea/compiler.xml
+!/.idea/codeStyles/Project.xml
