@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="backend-community" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="io.papermc.hangar.HangarApplication" />
+    <module name="hangar" />
+    <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

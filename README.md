@@ -28,23 +28,29 @@ Fork the project and pull it in your IDE.
 ### Prerequisites
 
 * Docker is required in order to run the PostgreSQL database and the dummy email server
-* Java 17 or higher
-* [pnpm]
+* Java 21 or higher
+* [pnpm](https://pnpm.io/installation)
 * mvn
 * git
+* we strongly recommend using Intellij IDEA (Ultimate) as your IDE
 
 ### Setting up
 
 To get the project running locally, you need to follow a few steps:
 
-1. Get the dummy database, storage and email server up and running. Move to the docker folder `cd docker` then run `docker-compose -f dev.yml up -d` (`-d` as an optional parameter
-   to run the containers in the background).
-   Alternatively, if you are using IntelliJ you can press the green arrow in the `docker/dev.yml` file.
-2. Move to the `backend` directory: `cd ../backend`. In that directory, run `mvn spring-boot:run`, or if you're using IntelliJ, it is included in the run
-   configurations.
-3. Move to the `frontend` directory: `cd ../frontend`. In that directory, run `pnpm install`. This will install all the needed Node modules.
-4. After the installation, run `pnpm run dev` in the frontend directory to initiate the build and launch. Changes you do to the frontend will be reloaded
-   automatically.
+1. Get the dummy database, storage and email server up and running.  
+   **Using Intellij**: Run the `docker` run config (or click the green arrow in the gutter on this line)  
+   **Manually**: Move to the docker folder `cd docker` then run `docker-compose -f dev.yml up -d` (`-d` as an optional parameter to run the containers in the background).
+2. Start the backend.  
+   **Using Intellij Ultimate**: Run the `backend` run config (or click the green arrow in the gutter on this line)  
+   **Using Intellij Community**: Run the `backend-community` run config (or click the green arrow in the gutter on this line)  
+   **Manually**: Move to the backend directory: `cd backend` then run `mvn spring-boot:run`. Alternatively you can start the `HangarApplication` class via your IDE.
+3. Install the frontend deps:  
+   **Using Intellij**: Right-click the package.json file in the frontend directory and click `Run 'pnpm install'` (or click the button in the `Update dependencies` toast)  
+   **Manually**: Move to the frontend directory: `cd frontend` then run `pnpm install`.
+4. Start the frontend.  
+   **Using Intellij**: Run the `frontend` run config (or click the green arrow in the gutter on this line)  
+   **Manually**: Move to the frontend directory: `cd frontend` then run `pnpm run dev`.
 5. After that, open http://localhost:3333, and if all went well, Hangar should be up and running.
 
 ### Notes
@@ -78,18 +84,6 @@ massive project, any contributions are welcome!
 Updating the frontend dependencies can be done best by running `npx npm-check -u` and going through the changelogs. Note that package.json might contain hints
 to which dependencies are broken.
 
-## Tracing
-
-If you want to have traces available locally, you can run zipkin via the docker-compose file `zipkin.yml` in the docker folder like this:
-
-```shell
-cd docker
-docker-compose -f zipkin.yml up -d
-```
-
-Then just enable it in the `application.yml` under `management.tracing`.
-You also need to comment in the dependency in the pom.xml
-
 ## License
 
 Hangar is licensed under the permissive [MIT License](LICENSE).
@@ -110,7 +104,3 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 ```
-
-[pnpm]: https://pnpm.io/installation
-
-[HangarAuth]: https://github.com/HangarMC/HangarAuth
