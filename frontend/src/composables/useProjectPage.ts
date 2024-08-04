@@ -1,17 +1,13 @@
-import type { RouteLocationNormalizedLoadedTyped } from "unplugin-vue-router";
-import type { RouterTyped } from "vue-router/auto";
 import type { HangarProject } from "~/types/backend";
+import type { Router } from "vue-router";
+import type { RouteLocationNormalized } from "vue-router/auto";
 
-export async function useProjectPage(
-  route: RouteLocationNormalizedLoadedTyped<any, "user-project-pages-all">,
-  router: RouterTyped,
-  project: HangarProject,
-  mainPage: boolean
-) {
-  const page = mainPage ? ref(project.mainPage) : await usePage(route.params.project, route.params.all);
-  if (!page?.value) {
-    throw useErrorRedirect(route, 404, "Not found");
-  }
+export async function useProjectPage(route: RouteLocationNormalized<"user-project-pages-all">, router: Router, project?: HangarProject, mainPage?: boolean) {
+  const page = mainPage ? computed(() => project?.mainPage) : usePage(() => ({ project: route.params.project, path: route.params.all?.toString() })).page;
+  // TODO fix this
+  // if (!page?.value) {
+  //   throw useErrorRedirect(404, "Not found");
+  // }
 
   const editingPage = ref<boolean>(false);
 
@@ -22,7 +18,7 @@ export async function useProjectPage(
 
   async function savePage(content: string) {
     if (!page?.value) return;
-    await useInternalApi(`pages/save/${project.id}/${page.value?.id}`, "post", {
+    await useInternalApi(`pages/save/${project?.id}/${page.value?.id}`, "post", {
       content,
     }).catch((e) => handleRequestError(e, "page.new.error.save"));
     if (page.value && "contents" in page.value) {
@@ -32,8 +28,8 @@ export async function useProjectPage(
   }
 
   async function deletePage() {
-    if (!page) return;
-    await useInternalApi(`pages/delete/${project.id}/${page.value?.id}`, "post").catch((e) => handleRequestError(e, "page.new.error.save"));
+    if (!page?.value) return;
+    await useInternalApi(`pages/delete/${project?.id}/${page.value?.id}`, "post").catch((e) => handleRequestError(e, "page.new.error.save"));
     await router.replace(`/${route.params.user}/${route.params.project}`);
   }
 

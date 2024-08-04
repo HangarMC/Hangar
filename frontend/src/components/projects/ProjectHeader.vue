@@ -8,27 +8,29 @@ const i18n = useI18n();
 const router = useRouter();
 const notification = useNotificationStore();
 const props = defineProps<{
-  project: HangarProject;
+  project?: HangarProject;
 }>();
 
 const user = useAuthStore().user;
 
-const starred = ref(props.project.userActions.starred);
-const watching = ref(props.project.userActions.watching);
-const starredCount = ref(props.project.stats.stars);
-const watchingCount = ref(props.project.stats.watchers);
-const reported = ref(props.project.userActions.flagged);
+const starred = computed(() => props.project?.userActions?.starred);
+const watching = computed(() => props.project?.userActions?.watching);
+const starredCount = computed(() => props.project?.stats?.stars);
+const watchingCount = computed(() => props.project?.stats?.watchers);
+const reported = computed(() => props.project?.userActions?.flagged);
 
-const isOwn = computed(() => !user || user.name === props.project.namespace.owner);
+const isOwn = computed(() => !user || user.name === props.project?.namespace?.owner);
 
-function toggleState(route: string, completedKey: string, revokedKey: string, value: Ref<boolean>, count: Ref<number>) {
-  useInternalApi(`projects/project/${props.project.id}/${route}/${!value.value}`, "post")
+function toggleState(route: string, completedKey: string, revokedKey: string, value: Ref<boolean | undefined>, count: Ref<number | undefined>) {
+  useInternalApi(`projects/project/${props.project?.id}/${route}/${!value.value}`, "post")
     .then(() => {
       value.value = !value.value;
-      if (value.value) {
-        count.value++;
-      } else {
-        count.value--;
+      if (count.value) {
+        if (value.value) {
+          count.value++;
+        } else {
+          count.value--;
+        }
       }
 
       notification.success(i18n.t("project.actions." + (value.value ? completedKey : revokedKey)));
@@ -46,7 +48,7 @@ function toggleWatch() {
 
 async function sendForApproval() {
   try {
-    await useInternalApi(`projects/visibility/${props.project.id}/sendforapproval`, "post");
+    await useInternalApi(`projects/visibility/${props.project?.id}/sendforapproval`, "post");
     notification.success(i18n.t("projectApproval.sendForApproval"));
     await router.go(0);
   } catch (e) {
@@ -61,7 +63,7 @@ enum ConfirmationType {
 }
 
 function requiresConfirmation(): ConfirmationType {
-  for (const platform in props.project.mainChannelVersions) {
+  for (const platform in props.project?.mainChannelVersions) {
     const version = props.project.mainChannelVersions[platform as Platform];
     if (version.reviewState !== ReviewState.Reviewed) {
       return ConfirmationType.REQUIRED;
@@ -77,7 +79,7 @@ function requiresConfirmation(): ConfirmationType {
 </script>
 
 <template>
-  <div v-if="project.visibility !== Visibility.Public" class="mb-4">
+  <div v-if="project && project.visibility !== Visibility.Public" class="mb-4">
     <Alert v-if="project.visibility === Visibility.NeedsChanges" type="danger">
       <div>
         <div class="text-bold">{{ i18n.t("visibility.notice." + project.visibility) }}</div>
@@ -99,30 +101,36 @@ function requiresConfirmation(): ConfirmationType {
     <div class="flex lt-sm:flex-col">
       <UserAvatar
         class="flex-shrink-0 mr-3 lt-sm:hidden"
-        :username="project.namespace.owner"
-        :to="'/' + project.namespace.owner + '/' + project.name"
-        :img-src="project.avatarUrl"
+        :loading="!project"
+        :username="project?.namespace?.owner"
+        :to="'/' + project?.namespace?.owner + '/' + project?.name"
+        :img-src="project?.avatarUrl"
       />
       <div class="flex-grow sm:mr-4 lt-sm:mb-4 overflow-clip overflow-hidden">
         <div class="text-2xl lt-sm:text-lg pb-1 inline-flex space-x-0.3 items-center">
           <UserAvatar
             class="!w-8 !h-8 sm:hidden"
-            :username="project.namespace.owner"
-            :to="'/' + project.namespace.owner + '/' + project.name"
-            :img-src="project.avatarUrl"
+            :loading="!project"
+            :username="project?.namespace?.owner"
+            :to="'/' + project?.namespace?.owner + '/' + project?.name"
+            :img-src="project?.avatarUrl"
           />
-          <NuxtLink class="!sm:ml-0 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner">
-            {{ project.namespace.owner }}
-          </NuxtLink>
-          <span class="text-gray-500 dark:text-gray-400"> / </span>
-          <NuxtLink class="px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner + '/' + project.name">
-            <h1 class="font-semibold">{{ project.name }}</h1>
-          </NuxtLink>
+          <template v-if="project">
+            <NuxtLink class="!sm:ml-0 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner">
+              {{ project.namespace.owner }}
+            </NuxtLink>
+            <span class="text-gray-500 dark:text-gray-400"> / </span>
+            <NuxtLink class="px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner + '/' + project.name">
+              <h1 class="font-semibold">{{ project.name }}</h1>
+            </NuxtLink>
+          </template>
+          <Skeleton v-else />
         </div>
-        <p class="sm:ml-1">{{ project.description }}</p>
+        <p v-if="project" class="sm:ml-1">{{ project.description }}</p>
+        <Skeleton v-else />
       </div>
       <div class="flex flex-col justify-around lt-sm:items-center space-y-2 items-end justify-between flex-shrink-0">
-        <span v-if="project.mainChannelVersions" class="inline-flex items-center">
+        <span v-if="project?.mainChannelVersions" class="inline-flex items-center">
           <Tooltip v-if="requiresConfirmation() !== ConfirmationType.NO" :content="i18n.t(requiresConfirmation())">
             <div class="mr-2 text-2xl">
               <IconMdiAlert v-if="requiresConfirmation() === ConfirmationType.EXTERNAL_URL" />
@@ -141,7 +149,7 @@ function requiresConfirmation(): ConfirmationType {
             <Button button-type="secondary" size="small" @click="toggleStar">
               <IconMdiStar v-if="starred" />
               <IconMdiStarOutline v-else />
-              <span class="ml-2">{{ starredCount.toLocaleString("en-US") }}</span>
+              <span class="ml-2">{{ starredCount?.toLocaleString("en-US") }}</span>
             </Button>
           </Tooltip>
           <!-- Tooltips mess with normal margins so this is a workaround -->
@@ -155,11 +163,11 @@ function requiresConfirmation(): ConfirmationType {
             <Button button-type="secondary" size="small" @click="toggleWatch">
               <IconMdiBell v-if="watching" />
               <IconMdiBellOutline v-else />
-              <span class="ml-2">{{ watchingCount.toLocaleString("en-US") }}</span>
+              <span class="ml-2">{{ watchingCount?.toLocaleString("en-US") }}</span>
             </Button>
           </Tooltip>
           <div class="px-1"></div>
-          <FlagModal :project="project" :disabled="isOwn" :open-report="reported" @reported="reported = true" />
+          <FlagModal v-if="project" :project="project" :disabled="isOwn" :open-report="reported" @reported="reported = true" />
         </div>
       </div>
     </div>

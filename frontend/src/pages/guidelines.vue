@@ -2,6 +2,7 @@
 const i18n = useI18n();
 const route = useRoute("guidelines");
 
+// language=Markdown
 const text = `
 # Resource Guidelines
 

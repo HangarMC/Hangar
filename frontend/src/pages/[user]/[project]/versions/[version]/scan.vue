@@ -6,37 +6,43 @@ definePageMeta({
 });
 
 const props = defineProps<{
-  version: HangarVersion;
-  project: HangarProject;
+  version?: HangarVersion;
+  project?: HangarProject;
   versionPlatforms: Set<Platform>;
 }>();
 
 const route = useRoute("user-project-versions-version-scan");
 
 const results = ref<JarScanResult[]>([]);
-for (const platform of props.versionPlatforms) {
-  if (!props.version.downloads[platform]?.fileInfo) {
-    continue;
-  }
+watch(
+  () => props.version,
+  async () => {
+    results.value = [];
+    for (const platform of props.versionPlatforms) {
+      if (!props.version?.downloads?.[platform]?.fileInfo) {
+        continue;
+      }
 
-  const result = await useJarScan(props.version.id, platform);
-  if (result.value) {
-    results.value.push(result.value);
+      const result = await useInternalApi<JarScanResult>(`jarscanning/result/${platform}/${props.version?.id}`);
+      if (result) {
+        results.value.push(result);
+      }
+    }
   }
-}
+);
 
 async function scan() {
   for (const platform of props.versionPlatforms) {
-    if (!props.version.downloads[platform]?.fileInfo) {
+    if (!props.version?.downloads?.[platform]?.fileInfo) {
       continue;
     }
 
-    await useInternalApi(`jarscanning/scan/${platform}/${props.version.id}`, "POST");
+    await useInternalApi(`jarscanning/scan/${platform}/${props.version?.id}`, "POST");
   }
   await useNotificationStore().success("Scheduled scan");
 }
 
-useHead(useSeo("Scan | " + props.project.name, props.project.description, route, props.project.avatarUrl));
+useHead(useSeo("Scan | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
 </script>
 
 <template>

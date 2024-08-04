@@ -4,7 +4,6 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.PermissionType;
-import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
 import io.papermc.hangar.model.internal.api.requests.StringContent;

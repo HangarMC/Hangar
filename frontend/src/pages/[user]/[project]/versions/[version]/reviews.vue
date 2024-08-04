@@ -13,8 +13,8 @@ const t = i18n.t;
 const v = useVuelidate();
 
 const props = defineProps<{
-  version: HangarVersion;
-  project: HangarProject;
+  version?: HangarVersion;
+  project?: HangarProject;
   versionPlatforms: Set<Platform>;
 }>();
 
@@ -53,20 +53,16 @@ const filteredReviews = computed<HangarReview[]>(() => {
   return reviews.value;
 });
 
-const projectVersion = computed<HangarVersion>(() => {
-  return props.version;
-});
-
 const isReviewStateChecked = computed<boolean>(() => {
-  return projectVersion.value.reviewState === ReviewState.PartiallyReviewed || projectVersion.value.reviewState === ReviewState.Reviewed;
+  return props.version?.reviewState === ReviewState.PartiallyReviewed || props.version?.reviewState === ReviewState.Reviewed;
 });
 
-if (projectVersion.value) {
-  reviews.value = await useInternalApi<HangarReview[]>(`reviews/${projectVersion.value.id}/reviews`);
+if (props.version) {
+  reviews.value = await useInternalApi<HangarReview[]>(`reviews/${props.version?.id}/reviews`);
 }
 
 async function refresh() {
-  reviews.value = await useInternalApi<HangarReview[]>(`reviews/${projectVersion.value.id}/reviews`);
+  reviews.value = await useInternalApi<HangarReview[]>(`reviews/${props.version?.id}/reviews`);
 }
 
 function getReviewStateString(review: HangarReview): string {
@@ -155,7 +151,7 @@ function startReview() {
         userName: currentUser.value.name,
         userId: currentUser.value.id,
         createdAt: new Date().toISOString(),
-        endedAt: null,
+        endedAt: undefined,
         messages: [
           {
             message: "reviews.presets.start",
@@ -219,7 +215,7 @@ function reopenReview() {
     "reopen",
     { name: review.userName },
     ReviewAction.REOPEN,
-    () => (review.endedAt = null),
+    () => (review.endedAt = undefined),
     () => (loadingValues.reopen = false)
   );
 }
@@ -266,7 +262,7 @@ function undoApproval() {
     "undoApproval",
     { name: currentUser.value.name },
     ReviewAction.UNDO_APPROVAL,
-    () => (reviews.value.find((r) => r.userId === currentUser.value.id)!.endedAt = null),
+    () => (reviews.value.find((r) => r.userId === currentUser.value.id)!.endedAt = undefined),
     () => (loadingValues.undoApproval = false)
   );
 }
@@ -281,7 +277,7 @@ function sendReviewRequest(
   }
 ): Promise<void> {
   const msg = `reviews.presets.${urlPath}`;
-  return useInternalApi(`reviews/${projectVersion.value.id}/reviews/${urlPath}`, "post", { message: msg, args })
+  return useInternalApi(`reviews/${props.version?.id}/reviews/${urlPath}`, "post", { message: msg, args })
     .then(() => {
       if (currentUserReview.value) {
         currentUserReview.value.messages.push({
@@ -298,11 +294,11 @@ function sendReviewRequest(
     .finally(final);
 }
 
-useHead(useSeo("Reviews | " + props.project.name, props.project.description, route, props.project.avatarUrl));
+useHead(useSeo("Reviews | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
 </script>
 
 <template>
-  <div v-if="projectVersion" class="mt-4">
+  <div v-if="version" class="mt-4">
     <div class="float-right inline-flex">
       <template v-if="!isReviewStateChecked">
         <Button size="large" :to="{ name: 'user-project', params: route.params }" exact>
@@ -313,15 +309,15 @@ useHead(useSeo("Reviews | " + props.project.name, props.project.description, rou
           <IconMdiAlertDecagram class="mr-1" />
           {{ i18n.t("version.page.scans") }}
         </Button>
-        <DownloadButton :project="project" :version="projectVersion" class="ml-1" />
+        <DownloadButton v-if="project" :project="project" :version="version" class="ml-1" />
       </template>
     </div>
 
     <h2 class="my-3 text-2xl">
       {{ t("reviews.title") }}
       <span class="text-base">
-        {{ t("reviews.headline", [projectVersion.author, projectVersion.name]) }}
-        <PrettyTime :time="projectVersion.createdAt" long />
+        {{ t("reviews.headline", [version.author, version.name]) }}
+        <PrettyTime :time="version.createdAt" long />
       </span>
     </h2>
     <div class="my-1 flex space-x-2">

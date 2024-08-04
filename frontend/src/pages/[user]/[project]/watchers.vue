@@ -3,13 +3,13 @@ import type { HangarProject } from "~/types/backend";
 
 const route = useRoute("user-project-watchers");
 const i18n = useI18n();
-const watchers = await useWatchers(route.params.project);
+const { watchers, watchersStatus } = useWatchers(() => route.params.project);
 
 const props = defineProps<{
-  project: HangarProject;
+  project?: HangarProject;
 }>();
 
-useHead(useSeo(i18n.t("project.watchers") + " | " + props.project.name, props.project.description, route, props.project.avatarUrl));
+useHead(useSeo(i18n.t("project.watchers") + " | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
 </script>
 
 <template>
@@ -18,7 +18,8 @@ useHead(useSeo(i18n.t("project.watchers") + " | " + props.project.name, props.pr
       <PageTitle>{{ i18n.t("project.watchers") }}</PageTitle>
     </template>
 
-    <div v-if="watchers?.result?.length" class="flex flex-wrap gap-4">
+    <Skeleton v-if="watchersStatus === 'loading'" />
+    <div v-else-if="watchers?.result?.length" class="flex flex-wrap gap-4">
       <div v-for="watcher in watchers?.result" :key="watcher.name">
         <div class="inline-flex items-center space-x-1">
           <UserAvatar size="xs" :username="watcher.name" :avatar-url="watcher.avatarUrl" />

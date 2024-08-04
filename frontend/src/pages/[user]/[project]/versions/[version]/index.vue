@@ -11,28 +11,27 @@ const notification = useNotificationStore();
 const config = useConfig();
 
 const props = defineProps<{
-  version: HangarVersion;
-  project: HangarProject;
+  version?: HangarVersion;
+  project?: HangarProject;
   versionPlatforms: Set<Platform>;
   user?: User;
 }>();
 
-const projectVersion = computed<HangarVersion | undefined>(() => props.version);
-if (!projectVersion.value) {
-  throw useErrorRedirect(route, 404, "Not found");
+if (!props.version) {
+  throw useErrorRedirect(404, "Not found");
 }
 const isReviewStateChecked = computed<boolean>(
-  () => projectVersion.value?.reviewState === ReviewState.PartiallyReviewed || projectVersion.value?.reviewState === ReviewState.Reviewed
+  () => props.version?.reviewState === ReviewState.PartiallyReviewed || props.version?.reviewState === ReviewState.Reviewed
 );
-const isUnderReview = computed<boolean>(() => projectVersion.value?.reviewState === ReviewState.UnderReview);
-const currentVisibility = computed(() => useBackendData.visibilities.find((v) => v.name === projectVersion.value?.visibility));
+const isUnderReview = computed<boolean>(() => props.version?.reviewState === ReviewState.UnderReview);
+const currentVisibility = computed(() => useBackendData.visibilities.find((v) => v.name === props.version?.visibility));
 const editingPage = ref(false);
 const confirmationWarningKey = computed<string | null>(() => {
-  if (projectVersion.value?.reviewState !== ReviewState.Reviewed) {
+  if (props.version?.reviewState !== ReviewState.Reviewed) {
     return "version.page.unsafeWarning";
   }
-  for (const platform in projectVersion.value?.downloads) {
-    if (projectVersion.value.downloads[platform as Platform].externalUrl !== null) {
+  for (const platform in props.version?.downloads) {
+    if (props.version.downloads[platform as Platform].externalUrl !== null) {
       return "version.page.unsafeWarningExternal";
     }
   }
@@ -41,7 +40,7 @@ const confirmationWarningKey = computed<string | null>(() => {
 const platformsWithDependencies = computed(() => {
   const platforms = [];
   for (const platform of props.versionPlatforms) {
-    if ((projectVersion.value && projectVersion.value.pluginDependencies[platform]) || hasPerms(NamedPermission.EditVersion)) {
+    if ((props.version && props.version.pluginDependencies[platform]) || hasPerms(NamedPermission.EditVersion)) {
       platforms.push(platform);
     }
   }
@@ -49,28 +48,28 @@ const platformsWithDependencies = computed(() => {
 });
 
 function sortedDependencies(platform: Platform) {
-  if (projectVersion.value && projectVersion.value.pluginDependencies[platform]) {
-    return [...projectVersion.value.pluginDependencies[platform]].sort((a, b) => Number(b.required) - Number(a.required));
+  if (props.version && props.version.pluginDependencies[platform]) {
+    return [...props.version.pluginDependencies[platform]].sort((a, b) => Number(b.required) - Number(a.required));
   }
   return [];
 }
 
 const supportsString = computed(() => {
   const result = [];
-  for (const platform in projectVersion.value?.platformDependenciesFormatted) {
-    result.push(titleCase(platform.toLowerCase()) + " " + projectVersion.value?.platformDependenciesFormatted[platform].join(", "));
+  for (const platform in props.version?.platformDependenciesFormatted) {
+    result.push(titleCase(platform.toLowerCase()) + " " + props.version?.platformDependenciesFormatted[platform].join(", "));
   }
   return result.join(", ");
 });
 useHead(
   useSeo(
-    props.project?.name + " " + projectVersion.value?.name,
-    `Download ${props.project?.name} ${projectVersion.value?.name} on Hangar.
+    props.project?.name + " " + props.version?.name,
+    `Download ${props.project?.name} ${props.version?.name} on Hangar.
     Supports ${supportsString.value}.
-    Published on ${i18n.d(new Date(projectVersion.value?.createdAt), "date")}.
-    ${projectVersion.value?.stats?.totalDownloads} downloads.`,
+    Published on ${i18n.d(new Date(props.version?.createdAt), "date")}.
+    ${props.version?.stats?.totalDownloads} downloads.`,
     route,
-    props.project.avatarUrl,
+    props.project?.avatarUrl,
     [
       {
         type: "application/ld+json",
@@ -88,10 +87,10 @@ useHead(
             name: props.project?.namespace.owner,
             url: config.publicHost + "/" + props.project?.namespace?.owner,
           },
-          name: props.project?.name + " " + projectVersion.value?.name,
-          datePublished: projectVersion.value?.createdAt,
-          dateCreated: projectVersion.value?.createdAt,
-          version: projectVersion.value?.name,
+          name: props.project?.name + " " + props.version?.name,
+          datePublished: props.version?.createdAt,
+          dateCreated: props.version?.createdAt,
+          version: props.version?.name,
           url: config.publicHost + route.path,
         }),
         key: "version",
@@ -101,25 +100,23 @@ useHead(
 );
 
 async function savePage(content: string) {
+  if (!props.version) return;
   try {
-    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/saveDescription`, "post", {
+    await useInternalApi(`versions/version/${props.project?.id}/${props.version.id}/saveDescription`, "post", {
       content,
     });
-    if (projectVersion.value) {
-      projectVersion.value.description = content;
-    }
+    props.version.description = content;
     editingPage.value = false;
   } catch (err) {
     handleRequestError(err, "page.new.error.save");
   }
 }
 
-const pinnedStatus = ref(projectVersion.value?.pinnedStatus);
-
 async function setPinned(value: boolean) {
+  if (!props.version) return;
   try {
-    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/pinned?value=${value}`, "post");
-    pinnedStatus.value = value ? PinnedStatus.VERSION : PinnedStatus.NONE;
+    await useInternalApi(`versions/version/${props.project?.id}/${props.version.id}/pinned?value=${value}`, "post");
+    props.version!.pinnedStatus = value ? PinnedStatus.VERSION : PinnedStatus.NONE;
     notification.success(i18n.t(`version.page.pinned.request.${value}`));
   } catch (e) {
     handleRequestError(e as AxiosError);
@@ -127,8 +124,9 @@ async function setPinned(value: boolean) {
 }
 
 async function deleteVersion(comment: string) {
+  if (!props.version) return;
   try {
-    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/delete`, "post", {
+    await useInternalApi(`versions/version/${props.project?.id}/${props.version.id}/delete`, "post", {
       content: comment,
     });
     notification.success(i18n.t("version.success.softDelete"));
@@ -139,8 +137,9 @@ async function deleteVersion(comment: string) {
 }
 
 async function hardDeleteVersion(comment: string) {
+  if (!props.version) return;
   try {
-    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/hardDelete`, "post", {
+    await useInternalApi(`versions/version/${props.project?.id}/${props.version.id}/hardDelete`, "post", {
       content: comment,
     });
     notification.success(i18n.t("version.success.hardDelete"));
@@ -156,8 +155,9 @@ async function hardDeleteVersion(comment: string) {
 }
 
 async function restoreVersion() {
+  if (!props.version) return;
   try {
-    await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/restore`, "post");
+    await useInternalApi(`versions/version/${props.project?.id}/${props.version.id}/restore`, "post");
     notification.success(i18n.t("version.success.restore"));
     await router.replace(`/${route.params.user}/${route.params.project}/versions`);
   } catch (e) {
@@ -167,29 +167,27 @@ async function restoreVersion() {
 </script>
 
 <template>
-  <div v-if="projectVersion" class="flex lt-md:flex-col flex-wrap lg:flex-nowrap gap-4 firefox-hack">
+  <div v-if="version" class="flex lt-md:flex-col flex-wrap lg:flex-nowrap gap-4 firefox-hack">
     <section class="max-w-full basis-full lg:basis-11/15 overflow-clip">
       <div class="flex gap-2 justify-between">
         <div>
           <h2 class="text-3xl sm:inline-flex items-center gap-x-1">
             <Tag
               class="mr-1"
-              :name="projectVersion.channel.name"
-              :color="{ background: projectVersion.channel.color }"
+              :name="version.channel.name"
+              :color="{ background: version.channel.color }"
               :short-form="true"
-              :tooltip="projectVersion.channel.description"
+              :tooltip="version.channel.description"
             />
-            {{ projectVersion.name }}
+            {{ version.name }}
           </h2>
           <h3>
             <span class="inline-flex lt-md:flex-wrap">
-              {{
-                i18n.t("version.page.subheader", [projectVersion.author, lastUpdated(new Date(projectVersion.createdAt)), project.name, projectVersion.name])
-              }}
+              {{ i18n.t("version.page.subheader", [version.author, lastUpdated(new Date(version.createdAt)), project?.name, version.name]) }}
             </span>
           </h3>
-          <em v-if="hasPerms(NamedPermission.Reviewer) && projectVersion.approvedBy">
-            {{ i18n.t("version.page.adminMsg", [projectVersion.approvedBy, i18n.d(projectVersion.createdAt, "date")]) }}
+          <em v-if="hasPerms(NamedPermission.Reviewer) && version.approvedBy">
+            {{ i18n.t("version.page.adminMsg", [version.approvedBy, i18n.d(version.createdAt, "date")]) }}
           </em>
         </div>
         <div class="inline-flex items-center flex-grow space-x-2">
@@ -200,7 +198,7 @@ async function restoreVersion() {
               <IconMdiProgressQuestion v-else class="text-gray-400" />
             </div>
           </Tooltip>
-          <DownloadButton :version="projectVersion" :project="project" :show-single-platform="false" :show-versions="false" show-file-size />
+          <DownloadButton v-if="version && project" :version="version" :project="project" :show-single-platform="false" :show-versions="false" show-file-size />
         </div>
       </div>
 
@@ -209,7 +207,7 @@ async function restoreVersion() {
           <MarkdownEditor
             ref="editor"
             v-model:editing="editingPage"
-            :raw="projectVersion.description"
+            :raw="version.description"
             :deletable="false"
             :cancellable="true"
             :saveable="true"
@@ -217,10 +215,10 @@ async function restoreVersion() {
             @save="savePage"
           />
           <template #fallback>
-            <Markdown :raw="projectVersion.description" />
+            <Markdown :raw="version.description" />
           </template>
         </ClientOnly>
-        <Markdown v-else :raw="projectVersion.description" />
+        <Markdown v-else :raw="version.description" />
       </Card>
     </section>
     <section class="basis-full lg:basis-4/15 flex-grow space-y-4">
@@ -237,13 +235,13 @@ async function restoreVersion() {
         <div class="flex gap-2 flex-wrap mt-2">
           <Tooltip>
             <template #content>
-              <span v-if="pinnedStatus === PinnedStatus.CHANNEL">{{ i18n.t("version.page.pinned.tooltip.channel") }}</span>
-              <span v-else>{{ i18n.t(`version.page.pinned.tooltip.${pinnedStatus.toLowerCase()}`) }}</span>
+              <span v-if="version?.pinnedStatus === PinnedStatus.CHANNEL">{{ i18n.t("version.page.pinned.tooltip.channel") }}</span>
+              <span v-else>{{ i18n.t(`version.page.pinned.tooltip.${version?.pinnedStatus?.toLowerCase()}`) }}</span>
             </template>
-            <Button size="small" :disabled="pinnedStatus === PinnedStatus.CHANNEL" @click="setPinned(pinnedStatus === PinnedStatus.NONE)">
-              <IconMdiPinOff v-if="pinnedStatus !== PinnedStatus.NONE" class="mr-1" />
+            <Button size="small" :disabled="version?.pinnedStatus === PinnedStatus.CHANNEL" @click="setPinned(version?.pinnedStatus === PinnedStatus.NONE)">
+              <IconMdiPinOff v-if="version?.pinnedStatus !== PinnedStatus.NONE" class="mr-1" />
               <IconMdiPin v-else class="mr-1" />
-              {{ i18n.t(`version.page.pinned.button.${pinnedStatus.toLowerCase()}`) }}
+              {{ i18n.t(`version.page.pinned.button.${version?.pinnedStatus?.toLowerCase()}`) }}
             </Button>
           </Tooltip>
 
@@ -272,11 +270,11 @@ async function restoreVersion() {
             </Button>
           </template>
 
-          <Button v-if="hasPerms(NamedPermission.Reviewer) && projectVersion.visibility === Visibility.SoftDelete" @click="restoreVersion">
+          <Button v-if="hasPerms(NamedPermission.Reviewer) && version.visibility === Visibility.SoftDelete" @click="restoreVersion">
             {{ i18n.t("version.page.restore") }}
           </Button>
           <TextAreaModal
-            v-if="hasPerms(NamedPermission.DeleteVersion) && projectVersion.visibility !== Visibility.SoftDelete"
+            v-if="hasPerms(NamedPermission.DeleteVersion) && version.visibility !== Visibility.SoftDelete"
             :title="i18n.t('version.page.delete')"
             :label="i18n.t('general.comment')"
             :submit="deleteVersion"
@@ -311,24 +309,25 @@ async function restoreVersion() {
           <tbody>
             <tr>
               <th class="text-left">{{ i18n.t("project.info.publishDate") }}</th>
-              <td class="text-right">{{ i18n.d(version.createdAt, "date") }}</td>
+              <td v-if="version" class="text-right">{{ i18n.d(version.createdAt, "date") }}</td>
+              <td v-else><Skeleton /></td>
             </tr>
             <tr>
               <th class="text-left">
                 {{ i18n.t(hasPerms(NamedPermission.IsSubjectMember) ? "project.info.totalTotalDownloads" : "project.info.totalDownloads", 0) }}
               </th>
               <td class="text-right">
-                {{ projectVersion.stats.totalDownloads.toLocaleString("en-US") }}
+                {{ version.stats.totalDownloads.toLocaleString("en-US") }}
               </td>
             </tr>
             <!-- Only show per platform downloads to project members, otherwise not too relevant and only adding to height -->
-            <tr v-for="platform in hasPerms(NamedPermission.IsSubjectMember) ? Object.keys(version.stats.platformDownloads) : []" :key="platform">
+            <tr v-for="platform in version && hasPerms(NamedPermission.IsSubjectMember) ? Object.keys(version.stats.platformDownloads) : []" :key="platform">
               <th class="text-left inline-flex">
-                <PlatformLogo :platform="platform" :size="24" class="mr-1" />
+                <PlatformLogo :platform="platform as Platform" :size="24" class="mr-1" />
                 {{ i18n.t("project.info.totalDownloads", 0) }}
               </th>
               <td class="text-right">
-                {{ projectVersion.stats.platformDownloads[platform].toLocaleString("en-US") }}
+                {{ version.stats.platformDownloads[platform].toLocaleString("en-US") }}
               </td>
             </tr>
           </tbody>
@@ -345,13 +344,13 @@ async function restoreVersion() {
         <div v-for="platform in versionPlatforms" :key="platform" class="flex items-center mb-1">
           <PlatformLogo :platform="platform" :size="24" class="mr-1 flex-shrink-0" />
           {{ useBackendData.platforms.get(platform)?.name }}
-          ({{ projectVersion?.platformDependenciesFormatted[platform].join(", ") }})
+          ({{ version?.platformDependenciesFormatted[platform].join(", ") }})
           <span class="flex-grow" />
           <PlatformVersionEditModal
-            v-if="hasPerms(NamedPermission.EditVersion)"
+            v-if="project && version && hasPerms(NamedPermission.EditVersion)"
             :project="project"
             :version="version"
-            :platform="useBackendData.platforms.get(platform)"
+            :platform="useBackendData.platforms.get(platform)!"
           />
         </div>
       </Card>
@@ -364,13 +363,13 @@ async function restoreVersion() {
         </template>
 
         <div v-for="platform in platformsWithDependencies" :key="platform" class="py-1">
-          <Spoiler :with-line="projectVersion?.pluginDependencies[platform] !== undefined" always-open>
+          <Spoiler :with-line="version?.pluginDependencies[platform] !== undefined" always-open>
             <template #title>
               <div class="flex gap-1 w-full">
                 <PlatformLogo :platform="platform" :size="24" class="flex-shrink-0" />
                 {{ useBackendData.platforms.get(platform)?.name }}
                 <span class="flex-grow" />
-                <DependencyEditModal :project="project" :version="version" :platform="useBackendData.platforms.get(platform)" />
+                <DependencyEditModal v-if="project && version" :project="project" :version="version" :platform="useBackendData.platforms.get(platform)!" />
               </div>
             </template>
             <template #content>

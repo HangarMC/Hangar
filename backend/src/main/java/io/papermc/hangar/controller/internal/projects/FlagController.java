@@ -56,10 +56,10 @@ public class FlagController extends HangarComponent {
         this.flagService.markAsResolved(id, resolve);
     }
 
-    @GetMapping(path = "/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
-    public List<HangarProjectFlag> getFlags(@PathVariable final long projectId) {
-        return this.flagService.getFlags(projectId);
+    public List<HangarProjectFlag> getFlags(@PathVariable final String slug) {
+        return this.flagService.getFlags(slug);
     }
 
     @GetMapping(path = "/resolved", produces = MediaType.APPLICATION_JSON_VALUE)

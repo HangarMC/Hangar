@@ -18,8 +18,8 @@ const i18n = useI18n();
 const v = useVuelidate();
 const notificationStore = useNotificationStore();
 const props = defineProps<{
-  project: HangarProject;
-  user: HangarUser;
+  project?: HangarProject;
+  user?: HangarUser;
 }>();
 
 const selectedTab = ref(route.params.slug?.[0] || "general");
@@ -45,11 +45,11 @@ if (!form.settings.links) {
   form.settings.links = [];
 }
 
-const hasCustomIcon = computed(() => props.project.avatarUrl.includes("project"));
+const hasCustomIcon = computed(() => props.project?.avatarUrl?.includes("project"));
 const projectIcon = ref<File | null>(null);
 const cropperInput = ref();
 const cropperResult = ref();
-const imgSrc = ref(props.project.avatarUrl);
+const imgSrc = ref(props.project?.avatarUrl);
 let reader: FileReader | null = null;
 onMounted(() => {
   reader = new FileReader();
@@ -152,7 +152,7 @@ async function rename() {
 
 async function softDelete(comment: string) {
   try {
-    await useInternalApi(`projects/project/${props.project.id}/manage/delete`, "post", {
+    await useInternalApi(`projects/project/${props.project?.id}/manage/delete`, "post", {
       content: comment,
     });
     await notificationStore.success(i18n.t("project.settings.success.softDelete"));
@@ -168,7 +168,7 @@ async function softDelete(comment: string) {
 
 async function hardDelete(comment: string) {
   try {
-    await useInternalApi(`projects/project/${props.project.id}/manage/hardDelete`, "post", {
+    await useInternalApi(`projects/project/${props.project?.id}/manage/hardDelete`, "post", {
       content: comment,
     });
     await notificationStore.success(i18n.t("project.settings.success.hardDelete"));
@@ -208,7 +208,7 @@ async function resetIcon() {
     await (response
       ? notificationStore.success(i18n.t("project.settings.success.resetIconWarn", [response]))
       : notificationStore.success(i18n.t("project.settings.success.resetIcon")));
-    imgSrc.value = props.user.avatarUrl; // set temporary source so it changes right away
+    imgSrc.value = props.user?.avatarUrl; // set temporary source so it changes right away
     projectIcon.value = null;
     cropperInput.value = null;
     cropperResult.value = null;
@@ -218,7 +218,7 @@ async function resetIcon() {
   loading.resetIcon = false;
 }
 
-useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, props.project.description, route, props.project.avatarUrl));
+useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
 </script>
 
 <template>
@@ -365,7 +365,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
             </div>
           </ProjectSettingsSection>
           <ProjectSettingsSection
-            v-if="hasPerms(NamedPermission.DeleteProject) && project.visibility !== Visibility.SoftDelete"
+            v-if="hasPerms(NamedPermission.DeleteProject) && project?.visibility !== Visibility.SoftDelete"
             title="project.settings.delete"
             description="project.settings.deleteSub"
             class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"
@@ -405,6 +405,6 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
         </template>-->
       </Tabs>
     </Card>
-    <MemberList :members="project.members" :author="project.namespace.owner" :slug="project.name" class="basis-full md:basis-3/12 h-max" />
+    <MemberList :members="project?.members || []" :author="project?.namespace?.owner" :slug="project?.name" class="basis-full md:basis-3/12 h-max" />
   </div>
 </template>

@@ -2,6 +2,7 @@
 const i18n = useI18n();
 const route = useRoute("terms");
 
+// language=Markdown
 const text = `
 Terms and Conditions
 ====================

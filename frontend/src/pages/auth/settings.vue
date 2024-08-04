@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { Tab } from "~/types/components/design/Tabs";
-import type { SettingsResponse } from "~/types/backend";
 
 definePageMeta({
   loginRequired: true,
@@ -13,7 +12,7 @@ const notification = useNotificationStore();
 const i18n = useI18n();
 const { t } = useI18n();
 
-const settings = await useAuthSettings();
+const { authSettings, refreshAuthSettings } = useAuthSettings();
 
 if (process.client && route.path.endsWith("settings")) {
   window.location.replace("/auth/settings/profile");
@@ -28,7 +27,7 @@ const tabs = [
 ] as const satisfies Tab<string>[];
 
 const emailConfirmModal = ref();
-const hasPendingMail = ref(settings.value?.emailPending);
+const hasPendingMail = ref(authSettings.value?.emailPending);
 const emailCode = ref();
 
 const loading = ref(false);
@@ -51,12 +50,12 @@ async function sendEmailCode() {
 }
 
 async function verifyEmail(emailCode: string) {
-  if (!settings.value) return;
+  if (!authSettings.value) return;
   loading.value = true;
   try {
     await useInternalApi("auth/email/verify", "POST", emailCode, { headers: { "content-type": "text/plain" } });
-    settings.value!.emailConfirmed = true;
-    settings.value!.emailPending = false;
+    authSettings.value!.emailConfirmed = true;
+    authSettings.value!.emailPending = false;
     emailConfirmModal.value.isOpen = false;
     notification.success("Email verified!");
     await router.replace({ query: { verify: undefined } });
@@ -66,20 +65,16 @@ async function verifyEmail(emailCode: string) {
   loading.value = false;
 }
 
-async function refreshSettings() {
-  settings.value = await useInternalApi<SettingsResponse>("auth/settings", "POST");
-}
-
 useHead(useSeo("Settings", null, route, null));
 </script>
 
 <template>
   <div v-if="auth.user" class="space-y-3">
-    <Alert v-if="settings?.emailPending" class="col-span-1 md:col-span-2">
+    <Alert v-if="authSettings?.emailPending" class="col-span-1 md:col-span-2">
       Enter the email verification code
       <Button size="small" :disabled="loading" @click="emailConfirmModal.isOpen = true">here</Button>
     </Alert>
-    <Alert v-else-if="!settings?.emailConfirmed" class="col-span-1 md:col-span-2">
+    <Alert v-else-if="!authSettings?.emailConfirmed" class="col-span-1 md:col-span-2">
       You haven't verified your email yet, click
       <Button size="small" :disabled="loading" @click="emailConfirmModal.isOpen = true">here</Button>
       to change that
@@ -90,7 +85,12 @@ useHead(useSeo("Settings", null, route, null));
         <router-view v-slot="{ Component }">
           <Suspense>
             <div>
-              <component :is="Component" :settings="settings" @refresh-settings="refreshSettings" @open-email-confirm-modal="emailConfirmModal.isOpen = true" />
+              <component
+                :is="Component"
+                :settings="authSettings"
+                @refresh-settings="refreshAuthSettings"
+                @open-email-confirm-modal="emailConfirmModal.isOpen = true"
+              />
             </div>
             <template #fallback><Delayed> Loading... </Delayed></template>
           </Suspense>

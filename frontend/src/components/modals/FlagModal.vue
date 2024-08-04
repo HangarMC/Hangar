@@ -3,7 +3,7 @@ import type { HangarProject } from "~/types/backend";
 
 const props = defineProps<{
   project: HangarProject;
-  openReport: boolean;
+  openReport?: boolean;
   disabled?: boolean;
 }>();
 

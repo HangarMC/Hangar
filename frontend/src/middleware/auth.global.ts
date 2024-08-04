@@ -65,7 +65,7 @@ type handlersType = {
   [key: string]: (
     authStore: ReturnType<typeof useAuthStore>,
     to: RouteLocationNormalized
-  ) => Promise<RouteLocationNamedRaw | undefined> | RouteLocationNamedRaw | undefined;
+  ) => Promise<RouteLocationNamedRaw | void> | RouteLocationNamedRaw | void;
 };
 const handlers: handlersType = {
   loginRequired,
@@ -77,7 +77,6 @@ const handlers: handlersType = {
 function loginRequired(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
   routePermLog("route loginRequired");
   checkLogin(authStore, to, 401);
-  return undefined;
 }
 
 function currentUserRequired(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
@@ -88,7 +87,7 @@ function currentUserRequired(authStore: ReturnType<typeof useAuthStore>, to: Rou
   checkLogin(authStore, to, 404);
   if (!hasPerms(NamedPermission.EditAllUserSettings)) {
     if (to.params.user !== authStore.user?.name) {
-      return useErrorRedirect(to, 403, undefined, { logErrorMessage: false });
+      return useErrorRedirect(403, undefined, { logErrorMessage: false });
     }
   }
 }
@@ -110,7 +109,7 @@ async function globalPermsRequired(authStore: ReturnType<typeof useAuthStore>, t
   routePermLog("result", check);
   if (check && (check.type !== PermissionType.Global || !check.result)) {
     routePermLog("404?");
-    return useErrorRedirect(to, 404, "Not found", { logErrorMessage: false });
+    return useErrorRedirect(404, "Not found", { logErrorMessage: false });
   }
 }
 
@@ -121,17 +120,17 @@ function projectPermsRequired(authStore: ReturnType<typeof useAuthStore>, to: Ro
   }
   checkLogin(authStore, to, 404);
   if (!authStore.routePermissions) {
-    return useErrorRedirect(to, 404, undefined, { logErrorMessage: false });
+    return useErrorRedirect(404, undefined, { logErrorMessage: false });
   }
   routePermLog("check has perms", to.meta.projectPermsRequired, toNamedPermission(to.meta.projectPermsRequired as string[]));
   if (!hasPerms(...toNamedPermission(to.meta.projectPermsRequired as string[]))) {
-    return useErrorRedirect(to, 404, undefined, { logErrorMessage: false });
+    return useErrorRedirect(404, undefined, { logErrorMessage: false });
   }
 }
 
 function checkLogin(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized, status: number, msg?: string) {
   if (!authStore.authenticated) {
     routePermLog("not logged in!");
-    return useErrorRedirect(to, status, msg || "Not logged in!", { logErrorMessage: false });
+    return useErrorRedirect(status, msg || "Not logged in!", { logErrorMessage: false });
   }
 }

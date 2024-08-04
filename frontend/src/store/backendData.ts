@@ -15,8 +15,6 @@ const permissionResult = serverBackendData.permissions?.map(({ value, frontendNa
 
 // convert to maps
 typedBackendData.projectCategories = convertToMap(serverBackendData.projectCategories, (value) => value.apiName);
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 typedBackendData.permissions = convertToMap(permissionResult, (value) => value.value);
 typedBackendData.platforms = convertToMap(serverBackendData.platforms, (value) => value.name.toUpperCase());
 typedBackendData.prompts = convertToMap(serverBackendData.prompts, (value) => value.name);

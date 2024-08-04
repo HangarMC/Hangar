@@ -2,7 +2,7 @@
 import type { ExtendedProjectPage, HangarProject, HangarProjectPage } from "~/types/backend";
 
 const props = defineProps<{
-  project: HangarProject;
+  project?: HangarProject;
   mainPage: boolean;
 }>();
 
@@ -12,8 +12,8 @@ const router = useRouter();
 const updateProjectPages = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
 
 const { editingPage, changeEditingPage, page, savePage, deletePage } = await useProjectPage(route, router, props.project, props.mainPage);
-if (page && !props.mainPage) {
-  useHead(useSeo(page.value?.name + " | " + props.project.name, props.project.description, route, props.project.avatarUrl));
+if (!props.mainPage) {
+  useHead(useSeo(page.value?.name + " | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
 }
 
 async function deletePageAndUpdateProject() {
@@ -21,7 +21,7 @@ async function deletePageAndUpdateProject() {
 
   try {
     if (updateProjectPages) {
-      updateProjectPages(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.project.id}`, "get"));
+      updateProjectPages(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.project?.id}`, "get"));
     }
   } catch (e: any) {
     handleRequestError(e);
@@ -30,7 +30,7 @@ async function deletePageAndUpdateProject() {
 
 defineSlots<{
   default: (props: {
-    page: ExtendedProjectPage | HangarProjectPage | null;
+    page?: ExtendedProjectPage | null;
     editingPage: boolean;
     changeEditingPage: (editing: boolean) => void;
     savePage: (content: string) => void;

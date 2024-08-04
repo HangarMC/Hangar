@@ -20,6 +20,7 @@ import IconMdiFolderWrenchOutline from "~icons/mdi/folder-wrench-outline";
 import IconMdiFolderInformationOutline from "~icons/mdi/folder-information-outline";
 
 import { type HangarNotification, type HangarUser, NamedPermission } from "~/types/backend";
+import type { RouteMap } from "vue-router";
 
 // marker so that you can inspect backend data in dev tools
 // @ts-expect-error dum
@@ -29,6 +30,7 @@ const settings = useSettingsStore();
 const i18n = useI18n();
 const t = i18n.t;
 const authStore = useAuthStore();
+const route = useRoute();
 
 const notifications = ref<HangarNotification[]>([]);
 const unreadNotifications = ref<number>(0);
@@ -38,7 +40,7 @@ if (authStore.user) {
   updateNotifications();
 }
 
-type NavBarLinks = { link: string; label: string; icon?: any }[];
+type NavBarLinks = { link: keyof RouteMap; label: string; icon?: any }[];
 
 const navBarLinks: NavBarLinks = [
   { link: "index", label: t("nav.indexTitle") },
@@ -102,28 +104,32 @@ function updateNavData() {
 }
 
 function updateNotifications() {
-  useUnreadNotificationsCount().then((v) => {
-    if (v && v.value) {
-      unreadNotifications.value = v.value;
-    }
-  });
-  useRecentNotifications(30).then((v) => {
-    if (v && v.value) {
-      // Only show notifications that are recent or unread (from the last 30 notifications)
-      let filteredAmount = 0;
-      notifications.value = v.value.filter((notification: HangarNotification) => {
-        if (filteredAmount < 8 && (!notification.read || isRecent(notification.createdAt))) {
-          if (!notification.read) {
-            loadedUnreadNotifications.value++;
-          }
+  useInternalApi<number>("unreadcount")
+    .catch(handleRequestError)
+    .then((v) => {
+      if (v) {
+        unreadNotifications.value = v;
+      }
+    });
+  useInternalApi<HangarNotification[]>("recentnotifications?amount=30")
+    .catch(handleRequestError)
+    .then((v) => {
+      if (v) {
+        // Only show notifications that are recent or unread (from the last 30 notifications)
+        let filteredAmount = 0;
+        notifications.value = v.filter((notification: HangarNotification) => {
+          if (filteredAmount < 8 && (!notification.read || isRecent(notification.createdAt))) {
+            if (!notification.read) {
+              loadedUnreadNotifications.value++;
+            }
 
-          filteredAmount++;
-          return true;
-        }
-        return false;
-      });
-    }
-  });
+            filteredAmount++;
+            return true;
+          }
+          return false;
+        });
+      }
+    });
 }
 
 function isRecent(date: string): boolean {
@@ -347,11 +353,11 @@ function isRecent(date: string): boolean {
 
         <!-- Login/register buttons -->
         <div v-else class="flex gap-2">
-          <NuxtLink class="flex items-center rounded-md p-2 hover:(text-primary-500 bg-primary-0)" :to="auth.loginUrl($route.fullPath)" rel="nofollow">
+          <NuxtLink class="flex items-center rounded-md p-2 hover:(text-primary-500 bg-primary-0)" :to="auth.loginUrl(route.fullPath)" rel="nofollow">
             <icon-mdi-key-outline class="mr-1 flex-shrink-0 text-[1.2em]" />
             {{ t("nav.login") }}
           </NuxtLink>
-          <NuxtLink class="flex items-center rounded-md p-2 hover:(text-primary-500 bg-primary-0)" :to="auth.signupUrl($route.fullPath)">
+          <NuxtLink class="flex items-center rounded-md p-2 hover:(text-primary-500 bg-primary-0)" :to="auth.signupUrl(route.fullPath)">
             <icon-mdi-clipboard-outline class="mr-1 flex-shrink-0 text-[1.2em]" />
             {{ t("nav.signup") }}
           </NuxtLink>
