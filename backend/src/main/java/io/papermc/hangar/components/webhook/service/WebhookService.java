@@ -11,7 +11,6 @@ import io.papermc.hangar.components.webhook.model.event.WebhookEvent;
 import io.papermc.hangar.model.internal.job.Job;
 import io.papermc.hangar.model.internal.job.SendWebhookJob;
 import io.papermc.hangar.service.internal.JobService;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;

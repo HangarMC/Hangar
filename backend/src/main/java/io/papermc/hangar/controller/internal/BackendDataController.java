@@ -22,8 +22,6 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.internal.PlatformService;
-import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
