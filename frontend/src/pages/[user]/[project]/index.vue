@@ -3,8 +3,8 @@ import { upperFirst } from "scule";
 import { type HangarProject, NamedPermission, type PinnedVersion, type User } from "~/types/backend";
 
 const props = defineProps<{
-  user: User;
-  project: HangarProject;
+  user?: User;
+  project?: HangarProject;
 }>();
 
 const config = useConfig();
@@ -12,11 +12,11 @@ const i18n = useI18n();
 const route = useRoute("user-project-pages-all");
 const openProjectPages = useOpenProjectPages(route, props.project);
 
-const sponsors = ref(props.project.settings.sponsors);
+const sponsors = ref(props.project?.settings?.sponsors);
 const editingSponsors = ref(false);
 
 function saveSponsors(content: string) {
-  useInternalApi(`projects/project/${props.project.namespace.slug}/sponsors`, "post", {
+  useInternalApi(`projects/project/${props.project?.namespace?.slug}/sponsors`, "post", {
     content,
   })
     .then(() => {
@@ -27,18 +27,18 @@ function saveSponsors(content: string) {
 }
 
 function createPinnedVersionUrl(version: PinnedVersion): string {
-  return `/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${version.name}`;
+  return `/${props.project?.namespace?.owner}/${props.project?.namespace?.slug}/versions/${version.name}`;
 }
 
 const platform = computed(() =>
-  upperFirst(Object.keys(props.project.pinnedVersions?.[0]?.platformDependenciesFormatted || { Minecraft: "dum" })?.[0]?.toLowerCase() || "Minecraft")
+  upperFirst(Object.keys(props.project?.pinnedVersions?.[0]?.platformDependenciesFormatted || { Minecraft: "dum" })?.[0]?.toLowerCase() || "Minecraft")
 );
 useHead(
   useSeo(
-    props.project.name + ` - ${platform.value} Plugin`,
-    `${props.project.description} - Download the ${platform.value} Plugin ${props.project.name} by ${props.project.namespace.owner} on Hangar`,
+    props.project?.name + ` - ${platform.value} Plugin`,
+    `${props.project?.description} - Download the ${platform.value} Plugin ${props.project?.name} by ${props.project?.namespace?.owner} on Hangar`,
     route,
-    props.project.avatarUrl,
+    props.project?.avatarUrl,
     [
       {
         type: "application/ld+json",
@@ -127,7 +127,7 @@ useHead(
           <h2>{{ i18n.t("project.pinnedVersions") }}</h2>
         </template>
         <ul class="divide-y divide-blue-500/50">
-          <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.name}`" class="p-1 py-2">
+          <li v-for="(version, index) in project?.pinnedVersions" :key="`${index}-${version.name}`" class="p-1 py-2">
             <div class="flex">
               <NuxtLink :to="createPinnedVersionUrl(version)" class="flex-grow truncate">
                 <div class="truncate">
@@ -150,15 +150,16 @@ useHead(
                 </div>
               </NuxtLink>
               <div class="ml-1 space-y-2 flex flex-col mt-1">
-                <DownloadButton :project="project" :pinned-version="version" small :show-versions="false" class="self-end" />
+                <DownloadButton v-if="project" :project="project" :pinned-version="version" small :show-versions="false" class="self-end" />
               </div>
             </div>
           </li>
         </ul>
+        <Skeleton v-if="!project" />
       </Card>
       <ProjectPageList :project="project" :open="openProjectPages" />
 
-      <template v-for="section in project.settings.links">
+      <template v-for="section in project?.settings?.links">
         <Card v-if="section.type === 'sidebar'" :key="section.id">
           <template #header>
             <h2>{{ section.title }}</h2>
@@ -171,7 +172,7 @@ useHead(
         </Card>
       </template>
 
-      <MemberList v-if="project.members" :members="project.members" :author="project.namespace.owner" :slug="project.name" class="overflow-visible" />
+      <MemberList v-if="project?.members" :members="project.members" :author="project.namespace.owner" :slug="project.name" class="overflow-visible" />
     </section>
   </div>
 </template>

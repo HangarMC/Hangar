@@ -28,8 +28,7 @@ export function hasPerms(...namedPermission: NamedPermission[]): boolean {
     if (!perm) {
       throw new Error(namedPermission + " is not valid");
     }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+
     const val = BigInt("0b" + perm.permission.toString(2));
     result = result && (_perms & val) === val;
   }

@@ -8,6 +8,8 @@ definePageMeta({
   loginRequired: true,
 });
 
+type ImportedProject = NewProjectForm & { externalId: string; util: { isCustomLicense?: boolean; licenseUnset?: boolean } };
+
 const { t } = useI18n();
 const route = useRoute();
 const auth = useAuthStore();
@@ -51,7 +53,7 @@ const steps: Step[] = [
       if (auth.user) {
         const ownerId = auth.user.id;
         const selected = spigotResources.value.filter((r) => selectedSpigotResources.value.includes(r.id));
-        hangarResources.value = await convertSpigotProjects(selected, ownerId);
+        hangarResources.value = (await convertSpigotProjects(selected, ownerId)) as ImportedProject[];
         return true;
       } else {
         return false;
@@ -73,12 +75,12 @@ const steps: Step[] = [
   { value: "finishing", header: t("importer.step5.title"), showNext: false, showBack: false },
 ];
 
-const projectOwners = await usePossibleOwners();
+const { projectOwners } = usePossibleOwners();
 const username = ref();
 const spigotAuthor = ref<SpigotAuthor | null>(null);
 const spigotResources = ref<SpigotResource[]>([]);
 const selectedSpigotResources = ref<string[]>([]);
-const hangarResources = ref<NewProjectForm[]>([]);
+const hangarResources = ref<ImportedProject[]>([]);
 
 const additionalRules = {
   spigotAuthor: {
@@ -106,15 +108,15 @@ watchDebounced(
   { debounce: 250 }
 );
 
-function remove(project: NewProjectForm) {
+function remove(project: ImportedProject) {
   hangarResources.value = hangarResources.value.filter((p) => p !== project);
 }
 
-function updatePageContent(project: NewProjectForm, raw: string) {
+function updatePageContent(project: ImportedProject, raw: string) {
   project.pageContent = raw;
 }
 
-const status = reactive<Record<string, { project: NewProjectForm; loading: boolean; success: boolean; result: string; errors: string[] }>>({});
+const status = reactive<Record<string, { project: ImportedProject; loading: boolean; success: boolean; result: string; errors: string[] }>>({});
 
 function createProjects() {
   for (const project of hangarResources.value) {
@@ -122,16 +124,16 @@ function createProjects() {
   }
 }
 
-function createProject(project: NewProjectForm) {
+function createProject(project: ImportedProject) {
   status[project.name] = { project, loading: true, success: true, result: "", errors: [] };
   if (!project.pageContent) {
     project.pageContent = "# " + project.name + "  \nWelcome to your new project!";
   }
   if (!project.util.isCustomLicense) {
-    project.settings.license.name = null;
+    project.settings.license.name = undefined as unknown as string;
   }
   if (project.util.licenseUnset) {
-    project.settings.license.url = null;
+    project.settings.license.url = undefined;
   }
   useInternalApi<string>("projects/create", "post", project, { timeout: 10000 })
     .then((u) => {
@@ -223,7 +225,7 @@ useHead(useSeo(t("importer.title"), null, route, null));
                     required(),
                     maxLength()(useBackendData.validations.project.name.max!),
                     pattern()(useBackendData.validations.project.name.regex!),
-                    validProjectName()(() => project.ownerId),
+                    validProjectName()(),
                   ]"
                 />
               </div>

@@ -2,8 +2,8 @@
 import { type HangarProject, NamedPermission, type User } from "~/types/backend";
 
 const props = defineProps<{
-  user: User;
-  project: HangarProject;
+  user?: User;
+  project?: HangarProject;
 }>();
 
 const route = useRoute("user-project-pages-all");

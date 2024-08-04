@@ -2,6 +2,8 @@ import IconsResolver from "unplugin-icons/resolver";
 // import EslintPlugin from "vite-plugin-eslint";
 import Components from "unplugin-vue-components/vite";
 import { defineNuxtConfig } from "nuxt/config";
+
+// noinspection ES6PreferShortImport
 import { loadLocales } from "./src/i18n/i18n-util";
 
 const backendHost = process.env.BACKEND_HOST || "http://localhost:8080";
@@ -156,7 +158,8 @@ export default defineNuxtConfig({
     "/**/*.json": cache(),
     "/**/*.xml": cache(),
     "/**/*.svg": cache(),
-    "/api/**": proxy(),
+    "/api/**": proxy("/api/**"),
+    "/v3/**": proxy("/v3/**"),
   },
 });
 
@@ -164,8 +167,8 @@ function cache() {
   return { headers: { "Cache-Control": "max-age=31536000, immutable" } };
 }
 
-function proxy() {
+function proxy(path: string) {
   return {
-    proxy: (process.env.BACKEND_HOST || process.env.NITRO_BACKEND_HOST || "http://localhost:8080") + "/api/**",
+    proxy: (process.env.BACKEND_HOST || process.env.NITRO_BACKEND_HOST || "http://localhost:8080") + path,
   };
 }

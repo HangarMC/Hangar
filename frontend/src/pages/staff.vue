@@ -13,7 +13,7 @@ const headers = [
 
 const page = ref(0);
 const sort = ref<string[]>(["roles"]);
-const query = ref();
+const query = ref<string>();
 const requestParams = computed(() => {
   const limit = 25;
   return {
@@ -23,12 +23,8 @@ const requestParams = computed(() => {
     sort: sort.value,
   };
 });
-watch(
-  query,
-  useDebounceFn(() => staffData.refresh(), 250)
-);
-const staffData = await useStaff(requestParams);
-const staff = staffData.data;
+
+const { staff } = useStaff(() => requestParams.value);
 
 async function updateSort(col: string, sorter: Record<string, number>) {
   sort.value = [...Object.keys(sorter)]
@@ -39,13 +35,6 @@ async function updateSort(col: string, sorter: Record<string, number>) {
       return null;
     })
     .filter((v) => v !== null) as string[];
-
-  await staffData.refresh();
-}
-
-async function updatePage(newPage: number) {
-  page.value = newPage;
-  await staffData.refresh();
 }
 
 useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));
@@ -62,10 +51,10 @@ useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));
     <SortableTable
       :headers="headers"
       :items="staff?.result || []"
-      :server-pagination="staff.pagination"
+      :server-pagination="staff?.pagination"
       :initial-sorter="{ roles: 1 }"
       @update:sort="updateSort"
-      @update:page="updatePage"
+      @update:page="(p) => (page = p)"
     >
       <template #pic="{ item }"><UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs"></UserAvatar></template>
       <template #createdAt="{ item }">{{ i18n.d(item.createdAt, "date") }}</template>

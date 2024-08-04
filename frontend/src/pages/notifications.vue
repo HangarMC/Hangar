@@ -11,12 +11,20 @@ const route = useRoute("notifications");
 const router = useRouter();
 const notificationStore = useNotificationStore();
 
+const { invites } = useInvites();
 // TODO send in one
-const unreadNotifications = await useUnreadNotifications();
-const readNotifications = await useReadNotifications();
-const allNotifications = await useNotifications();
-const notifications = ref(unreadNotifications.value);
-const invites = await useInvites();
+const { unreadNotifications } = useUnreadNotifications();
+const { readNotifications } = useReadNotifications();
+const { notifications: allNotifications } = useNotifications();
+const notifications = computed(() => {
+  if (selectedTab.value === "unread") {
+    return unreadNotifications.value;
+  } else if (selectedTab.value === "read") {
+    return readNotifications.value;
+  } else {
+    return allNotifications.value;
+  }
+});
 
 const selectedTab = ref("unread");
 const selectedTabs = [
@@ -32,7 +40,7 @@ const selectedInvitesTabs = [
   { value: "organizations", header: i18n.t("notifications.invite.organizations") },
 ] as const satisfies Tab<string>[];
 
-const filteredInvites = computed<HangarProjectInvite[] | HangarOrganizationInvite[]>(() => {
+const filteredInvites = computed<((HangarProjectInvite | HangarOrganizationInvite) & { accepted?: boolean })[]>(() => {
   if (!invites || !invites.value) return [];
   switch (selectedInvitesTab.value) {
     case "projects":
@@ -65,7 +73,7 @@ async function markNotificationRead(notification: HangarNotification, push = tru
   }
 }
 
-async function updateInvite(invite: HangarProjectInvite, status: "accept" | "decline") {
+async function updateInvite(invite: HangarProjectInvite & { accepted?: boolean }, status: "accept" | "decline") {
   await useInternalApi(`invites/${invite.type}/${invite.roleId}/${status}`, "post").catch((e) => handleRequestError(e));
   if (status === "accept") {
     invite.accepted = true;
@@ -74,16 +82,6 @@ async function updateInvite(invite: HangarProjectInvite, status: "accept" | "dec
     invites.value[invite.type] = invites.value[invite.type].filter((i) => i.roleId !== invite.roleId);
   }
   notificationStore.success(i18n.t(`notifications.invite.msgs.${status}`, [invite.name]));
-}
-
-function updateSelectedNotifications() {
-  if (selectedTab.value === "unread") {
-    notifications.value = unreadNotifications.value;
-  } else if (selectedTab.value === "read") {
-    notifications.value = readNotifications.value;
-  } else {
-    notifications.value = allNotifications.value;
-  }
 }
 </script>
 
@@ -95,7 +93,7 @@ function updateSelectedNotifications() {
       </template>
 
       <!-- Abuse tabs a little -->
-      <Tabs v-model="selectedTab" :tabs="selectedTabs" :vertical="false" @click="updateSelectedNotifications()" />
+      <Tabs v-model="selectedTab" :tabs="selectedTabs" :vertical="false" />
       <div v-if="notifications?.result.length === 0" class="text-lg">
         {{ i18n.t(`notifications.empty.${selectedTab}`) }}
       </div>

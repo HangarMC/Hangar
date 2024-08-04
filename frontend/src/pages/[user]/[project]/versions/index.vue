@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { NamedPermission, Visibility, ChannelFlag } from "~/types/backend";
-import type { Platform, HangarProject, Version, PaginatedResultVersion } from "~/types/backend";
+import type { HangarProject, Platform, Version } from "~/types/backend";
+import { ChannelFlag, NamedPermission, Visibility } from "~/types/backend";
 
 const i18n = useI18n();
 const router = useRouter();
@@ -17,7 +17,7 @@ const filter = reactive({
 });
 
 const props = defineProps<{
-  project: HangarProject;
+  project?: HangarProject;
 }>();
 
 const platforms = computed(() => [...(useBackendData.platforms?.values() || [])]);
@@ -33,14 +33,14 @@ const requestParams = computed(() => {
   };
 });
 
-const results = await Promise.all([
-  useProjectChannels(route.params.project),
-  useProjectVersions(route.params.project, { ...requestParams.value, includeHiddenChannels: route.query.channel != null }),
-]);
-const channels = results[0].data;
-const versions = results[1] as Ref<PaginatedResultVersion>;
+const { channels } = useProjectChannels(() => route.params.project);
+const { versions } = useProjectVersions(() => ({
+  project: route.params.project,
+  data: { ...requestParams.value, includeHiddenChannels: route.query.channel != null },
+}));
+
 if (!route.query.channel) {
-  filter.channels.push(...channels.value.filter((c) => !c.flags.includes(ChannelFlag.HIDE_BY_DEFAULT)).map((c) => c.name));
+  filter.channels.push(...channels.value?.filter((c) => !c.flags.includes(ChannelFlag.HIDE_BY_DEFAULT)).map((c) => c.name));
 }
 if (!route.query.platform) {
   filter.platforms.push(...platforms.value.map((p) => p.enumName));
@@ -48,20 +48,14 @@ if (!route.query.platform) {
 
 useHead(
   useSeo(
-    "Versions | " + props.project.name,
-    `Download ${versions.value.pagination?.count} ${props.project.name} versions. ${props.project.stats.downloads} total downloads. Last updated on ${lastUpdated(new Date(versions.value.result?.[0]?.createdAt || 0))}`,
+    "Versions | " + props.project?.name,
+    `Download ${versions.value?.pagination?.count} ${props.project?.name} versions. ${props.project?.stats?.downloads} total downloads. Last updated on ${lastUpdated(new Date(versions.value?.result?.[0]?.createdAt || 0))}`,
     route,
-    props.project.avatarUrl
+    props.project?.avatarUrl
   )
 );
 
 const pageChangeScrollAnchor = ref<Element>();
-
-async function update(newPage: number) {
-  console.log("update", requestParams.value);
-  page.value = newPage;
-  versions.value = (await useProjectVersions(route.params.project, requestParams.value))?.value;
-}
 
 watch(
   filter,
@@ -79,13 +73,13 @@ watch(
     // set the request params
     await router.replace({ query: { page: page.value, ...paramsWithoutLimit } });
     // do the update
-    await update(0);
+    // await update(0);
   },
   { deep: true }
 );
 
 function checkAllChannels() {
-  filter.channels = filter.allChecked.channels ? channels.value.map((c) => c.name) : [];
+  filter.channels = filter.allChecked.channels ? channels.value?.map((c) => c.name) || [] : [];
 }
 
 function checkAllPlatforms() {
@@ -93,7 +87,7 @@ function checkAllPlatforms() {
 }
 
 function updateChannelCheckAll() {
-  filter.allChecked.channels = filter.channels.length === (channels.value.length || 0);
+  filter.allChecked.channels = filter.channels.length === (channels.value?.length || 0);
 }
 
 function updatePlatformCheckAll() {
@@ -124,7 +118,7 @@ function getVisibilityTitle(visibility: Visibility) {
           :items="versions.result"
           :server-pagination="versions.pagination"
           :reset-anchor="pageChangeScrollAnchor"
-          @update:page="update"
+          @update:page="(p) => (page = p)"
         >
           <template #default="{ item }">
             <li class="mb-2">
@@ -147,9 +141,9 @@ function getVisibilityTitle(visibility: Visibility) {
                     </div>
                     <hr class="lg:hidden basis-full mt-1 border-gray-400 dark:border-gray-500" />
                     <div class="basis-6/15 lt-lg:(mt-2 basis-6/12)">
-                      <div v-for="(v, p) in item.platformDependenciesFormatted" :key="p" class="basis-full">
+                      <div v-for="(v, p) in item?.platformDependenciesFormatted" :key="p" class="basis-full">
                         <div class="inline-flex items-center">
-                          <PlatformLogo :platform="p" :size="22" class="mr-1 flex-shrink-0" />
+                          <PlatformLogo :platform="p as Platform" :size="22" class="mr-1 flex-shrink-0" />
                           <span class="mr-3 text-0.95rem">{{ v.join(", ") }}</span>
                         </div>
                       </div>
@@ -188,7 +182,7 @@ function getVisibilityTitle(visibility: Visibility) {
             <div class="inline-flex w-full flex-cols space-between">
               <InputCheckbox v-model="filter.allChecked.channels" @change="checkAllChannels" />
               <h2 class="flex-grow">{{ i18n.t("version.channels") }}</h2>
-              <Link v-if="hasPerms(NamedPermission.EditChannels)" :to="`/${project.namespace.owner}/${project.name}/channels`">
+              <Link v-if="project && hasPerms(NamedPermission.EditChannels)" :to="`/${project.namespace.owner}/${project.name}/channels`">
                 <Button size="small" class="ml-2 text-sm"><IconMdiPencil /></Button>
               </Link>
             </div>

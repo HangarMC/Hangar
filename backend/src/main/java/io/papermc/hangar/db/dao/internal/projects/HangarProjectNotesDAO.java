@@ -10,9 +10,10 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 @RegisterConstructorMapper(HangarProjectNote.class)
 public interface HangarProjectNotesDAO {
 
-    @SqlQuery("SELECT pn.*, u.name" +
-        "   FROM project_notes pn" +
-        "       LEFT JOIN users u ON pn.user_id = u.id" +
-        "   WHERE pn.project_id = :projectId")
-    List<HangarProjectNote> getProjectNotes(long projectId);
+    @SqlQuery("""
+        SELECT pn.*, (SELECT u.name FROM users u WHERE u.id = pn.user_id) AS name
+        FROM project_notes pn
+        WHERE pn.project_id = (SELECT p.id FROM projects p WHERE lower(p.slug) = lower(:slug))
+        """)
+    List<HangarProjectNote> getProjectNotes(String slug);
 }

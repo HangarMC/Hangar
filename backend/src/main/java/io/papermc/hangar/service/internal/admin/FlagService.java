@@ -95,8 +95,8 @@ public class FlagService extends HangarComponent {
         return this.hangarProjectFlagNofiticationsDAO.getNotifications(flagId);
     }
 
-    public List<HangarProjectFlag> getFlags(final long projectId) {
-        return this.hangarProjectFlagsDAO.getFlags(projectId);
+    public List<HangarProjectFlag> getFlags(final String slug) {
+        return this.hangarProjectFlagsDAO.getFlags(slug);
     }
 
     @Transactional(readOnly = true)

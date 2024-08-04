@@ -2,7 +2,6 @@
 import { type Project, type ProjectCompact, Tag, Visibility } from "~/types/backend";
 
 const i18n = useI18n();
-const router = useRouter();
 
 defineProps<{
   project: Project | ProjectCompact;

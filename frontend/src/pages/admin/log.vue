@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { debounce } from "lodash-es";
 import type { Header } from "~/types/components/SortableTable";
-import { NamedPermission, type PaginatedResultHangarLoggedAction, type PaginatedResultProject, type PaginatedResultUser } from "~/types/backend";
+import { NamedPermission, type PaginatedResultProject, type PaginatedResultUser } from "~/types/backend";
 
 definePageMeta({
   globalPermsRequired: ["ViewLogs"],
@@ -10,7 +9,6 @@ definePageMeta({
 const i18n = useI18n();
 const route = useRoute("admin-log");
 const router = useRouter();
-const loggedActions = ref<PaginatedResultHangarLoggedAction>();
 
 // TODO add support for sorting
 const headers = [
@@ -58,10 +56,7 @@ const requestParams = computed(() => {
     sort: sort.value,
   };
 });
-
-await update();
-
-watch(filter, debounce(update, 500), { deep: true });
+const { actionLogs } = useActionLogs(() => requestParams.value, router);
 
 async function updateSort(col: string, sorter: Record<string, number>) {
   sort.value = [...Object.keys(sorter)]
@@ -72,19 +67,6 @@ async function updateSort(col: string, sorter: Record<string, number>) {
       return null;
     })
     .filter((v) => v !== null) as string[];
-
-  await update();
-}
-
-async function updatePage(newPage: number) {
-  page.value = newPage;
-  await update();
-}
-
-async function update() {
-  loggedActions.value = await useInternalApi<PaginatedResultHangarLoggedAction>("admin/log", "GET", requestParams.value);
-  const { limit, offset, ...paramsWithoutLimit } = requestParams.value;
-  await router.replace({ query: { ...paramsWithoutLimit } });
 }
 
 const userSearchResult = ref<string[]>([]);
@@ -151,13 +133,12 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
       </div>
 
       <SortableTable
-        v-if="loggedActions"
         :loading="true"
         :headers="headers"
-        :items="loggedActions?.result"
-        :server-pagination="loggedActions?.pagination"
+        :items="actionLogs?.result || []"
+        :server-pagination="actionLogs?.pagination"
         @update:sort="updateSort"
-        @update:page="updatePage"
+        @update:page="(p) => (page = p)"
       >
         <template #userName="{ item }">
           <Link :to="'/' + item.userName">{{ item.userName }}</Link>

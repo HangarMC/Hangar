@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { Header } from "~/types/components/SortableTable";
-import type { PaginatedResultUser } from "~/types/backend";
 
 const i18n = useI18n();
 const route = useRoute("authors");
@@ -14,7 +13,7 @@ const headers = [
 
 const page = ref(0);
 const sort = ref<string[]>(["-projectCount"]);
-const query = ref();
+const query = ref<string>();
 const requestParams = computed(() => {
   const limit = 25;
   return {
@@ -24,8 +23,7 @@ const requestParams = computed(() => {
     sort: sort.value,
   };
 });
-watch(query, () => updatePage(0));
-const authors = await useAuthors(requestParams.value);
+const { authors } = useAuthors(() => requestParams.value);
 
 async function updateSort(col: string, sorter: Record<string, number>) {
   sort.value = [...Object.keys(sorter)]
@@ -36,18 +34,7 @@ async function updateSort(col: string, sorter: Record<string, number>) {
       return null;
     })
     .filter((v) => v !== null) as string[];
-
-  await update();
 }
-
-async function updatePage(newPage: number) {
-  page.value = newPage;
-  await update();
-}
-
-const update = useDebounceFn(async () => {
-  authors.value = await useApi<PaginatedResultUser>("authors", "GET", requestParams.value);
-}, 250);
 
 useHead(useSeo(i18n.t("pages.authorsTitle"), "Hangar Project Authors", route, null));
 </script>
@@ -66,7 +53,7 @@ useHead(useSeo(i18n.t("pages.authorsTitle"), "Hangar Project Authors", route, nu
       :server-pagination="authors?.pagination"
       :initial-sorter="{ projectCount: -1 }"
       @update:sort="updateSort"
-      @update:page="updatePage"
+      @update:page="(p) => (page = p)"
     >
       <template #pic="{ item }">
         <UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs"></UserAvatar>

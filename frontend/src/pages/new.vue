@@ -10,7 +10,7 @@ const i18n = useI18n();
 const router = useRouter();
 const route = useRoute("new");
 
-const projectOwners = await usePossibleOwners();
+const { projectOwners } = usePossibleOwners();
 const projectCreationErrors = ref<string[]>([]);
 const projectLoading = ref(true);
 const form = ref<NewProjectForm>({
@@ -23,10 +23,6 @@ const form = ref<NewProjectForm>({
     tags: [],
   } as unknown as ProjectSettingsForm["settings"],
 } as NewProjectForm);
-
-if (projectOwners.value) {
-  form.value.ownerId = projectOwners.value[0].userId;
-}
 
 const rules = {
   name: {
@@ -46,6 +42,13 @@ const steps: Step[] = [
     value: "tos",
     header: i18n.t("project.new.step1.title"),
     showBack: false,
+    beforeNext: () => {
+      const firstId = projectOwners.value?.[0]?.id;
+      if (firstId) {
+        form.value.ownerId = firstId;
+      }
+      return true;
+    },
   },
   {
     value: "basic",
@@ -83,10 +86,10 @@ function createProject() {
     form.value.pageContent = "# " + form.value.name + "  \nWelcome to your new project!";
   }
   if (!isCustomLicense.value) {
-    form.value.settings.license.name = null;
+    form.value.settings.license.name = undefined as unknown as string;
   }
   if (licenseUnset.value) {
-    form.value.settings.license.url = null;
+    form.value.settings.license.url = undefined;
   }
   useInternalApi<string>("projects/create", "post", form.value)
     .then((u) => {
@@ -156,7 +159,7 @@ function createProject() {
               required(),
               maxLength()(useBackendData.validations.project.name.max!),
               pattern()(useBackendData.validations.project.name.regex!),
-              validProjectName()(() => form.ownerId),
+              validProjectName()(),
             ]"
           />
         </div>
