@@ -130,6 +130,7 @@ export function useReadNotifications() {
 }
 
 export function useUnreadNotificationCount() {
+  const authStore = useAuthStore();
   const {
     data: unreadNotifications,
     status: unreadCountStatus,
@@ -139,7 +140,7 @@ export function useUnreadNotificationCount() {
     () => "unreadCount",
     () => useInternalApi<number>("unreadcount"),
     true,
-    () => false,
+    () => !authStore.user,
     () => {},
     0
   );
