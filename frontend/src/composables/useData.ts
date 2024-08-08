@@ -5,8 +5,10 @@ import {
   type HangarChannel,
   type HangarProjectFlag,
   type HangarProjectNote,
+  type HangarReview,
   type HealthReport,
   type Invites,
+  type JarScanResult,
   NamedPermission,
   type OrganizationRoleTable,
   type PaginatedResultHangarLoggedAction,
@@ -16,6 +18,7 @@ import {
   type PaginatedResultProjectCompact,
   type PaginatedResultUser,
   type PaginatedResultVersion,
+  Platform,
   type ProjectCompact,
   type ProjectOwner,
   type ReviewQueue,
@@ -124,6 +127,24 @@ export function useReadNotifications() {
     () => useInternalApi<PaginatedResultHangarNotification>("readnotifications")
   );
   return { readNotifications, readNotificationsStatus };
+}
+
+export function useUnreadNotificationCount() {
+  const {
+    data: unreadNotifications,
+    status: unreadCountStatus,
+    refresh: refreshUnreadNotifications,
+  } = useData(
+    () => ({}),
+    () => "unreadCount",
+    () => useInternalApi<number>("unreadcount"),
+    true,
+    () => false,
+    () => {},
+    0
+  );
+  // TODO a default value should change the type so that this cast isnt needed
+  return { unreadNotifications: unreadNotifications as Ref<number>, unreadCountStatus, refreshUnreadNotifications };
 }
 
 export function useNotifications() {
@@ -316,12 +337,13 @@ export function useProjectChannels(project: () => string) {
     data: channels,
     status: channelsStatus,
     refresh: refreshChannels,
+    promise: channelPromise,
   } = useData(
     project,
     (p) => "channels:" + p,
     (p) => useInternalApi<(HangarChannel & { temp?: boolean })[]>(`channels/${p}`)
   );
-  return { channels, channelsStatus, refreshChannels };
+  return { channels, channelsStatus, refreshChannels, channelPromise };
 }
 
 export function useProjectNotes(project: () => string) {
@@ -346,11 +368,22 @@ export function useProjectFlags(project: () => string) {
   return { flags, flagsStatus };
 }
 
-export function useProjectVersions(params: () => { project: string; data: object }) {
+export function useProjectVersions(
+  params: () => { project: string; data: { limit: number; offset: number; channel: string[]; platform: Platform[]; includeHiddenChannels: boolean } },
+  router: Router
+) {
   const { data: versions, status: versionsStatus } = useData(
     params,
     (p) => "versions:" + p.project,
-    (p) => useApi<PaginatedResultVersion>(`projects/${p.project}/versions`, "GET", p.data)
+    (p) => useApi<PaginatedResultVersion>(`projects/${p.project}/versions`, "GET", p.data),
+    true,
+    () => false,
+    ({ data }) => {
+      const { offset, limit, channel, platform } = data;
+      if (router) {
+        router.replace({ query: { page: offset && limit ? Math.floor(offset / limit) : undefined, channel, platform } });
+      }
+    }
   );
   return { versions, versionsStatus };
 }
@@ -362,4 +395,30 @@ export function usePage(params: () => { project: string; path?: string }) {
     (p) => useInternalApi<ExtendedProjectPage>(`pages/page/${p.project}` + (p.path ? "/" + p.path.replaceAll(",", "/") : ""))
   );
   return { page, pageStatus };
+}
+
+export function useReviews(version: () => string) {
+  const {
+    data: reviews,
+    status: reviewsStatus,
+    refresh: refreshReviews,
+  } = useData(
+    version,
+    (v) => "reviews:" + v,
+    (v) => useInternalApi<HangarReview[]>(`reviews/${v}/reviews`)
+  );
+  return { reviews, reviewsStatus, refreshReviews };
+}
+
+export function useJarScans(version: () => string) {
+  const {
+    data: jarScans,
+    status: jarScansStatus,
+    refresh: refreshJarScans,
+  } = useData(
+    version,
+    (v) => "jarScans:" + v,
+    (v) => useInternalApi<JarScanResult[]>(`jarscanning/result/${v}`)
+  );
+  return { jarScans, jarScansStatus, refreshJarScans };
 }

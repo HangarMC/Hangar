@@ -1,5 +1,7 @@
 import { Category, type NewProjectForm } from "~/types/backend";
 
+export type ImportedProject = NewProjectForm & { externalId: string; util: { isCustomLicense?: ComputedRef<boolean>; licenseUnset?: ComputedRef<boolean> } };
+
 export interface SpigotAuthor {
   avatar: string;
   id: string;
@@ -88,23 +90,23 @@ const categoryMapping = {
 const unspecifiedLicenseName = "Unspecified";
 
 export async function convertSpigotProjects(spigotResources: SpigotResource[], ownerId: number) {
-  const hangarResources = [] as NewProjectForm[];
+  const hangarResources = [] as ImportedProject[];
   for (const spigotResource of spigotResources) {
     const hangarResource = {
       ownerId,
       settings: {
-        license: { type: "Unspecified" } as NewProjectForm["settings"]["license"],
-        donation: {} as NewProjectForm["settings"]["donation"],
+        license: { type: "Unspecified" } as ImportedProject["settings"]["license"],
+        donation: {} as ImportedProject["settings"]["donation"],
         keywords: [],
         links: [],
         tags: [],
-      } as unknown as NewProjectForm["settings"],
+      } as unknown as ImportedProject["settings"],
       externalId: spigotResource.id,
       name: spigotResource.title,
       description: spigotResource.tag,
       avatarUrl: spigotResource.icon_link,
       util: {},
-    } as NewProjectForm;
+    } as ImportedProject;
     try {
       hangarResource.pageContent = await useInternalApi<string>("pages/convert-bbcode", "post", {
         content: spigotResource.description,

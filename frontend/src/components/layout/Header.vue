@@ -20,7 +20,8 @@ import IconMdiFolderWrenchOutline from "~icons/mdi/folder-wrench-outline";
 import IconMdiFolderInformationOutline from "~icons/mdi/folder-information-outline";
 
 import { type HangarNotification, type HangarUser, NamedPermission } from "~/types/backend";
-import type { RouteMap } from "vue-router";
+import type { RouteLocationRaw, RouteMap } from "vue-router";
+import { useUnreadNotificationCount } from "~/composables/useData";
 
 // marker so that you can inspect backend data in dev tools
 // @ts-expect-error dum
@@ -33,12 +34,8 @@ const authStore = useAuthStore();
 const route = useRoute();
 
 const notifications = ref<HangarNotification[]>([]);
-const unreadNotifications = ref<number>(0);
+const { unreadNotifications, refreshUnreadNotifications } = useUnreadNotificationCount();
 const loadedUnreadNotifications = ref<number>(0);
-
-if (authStore.user) {
-  updateNotifications();
-}
 
 type NavBarLinks = { link: keyof RouteMap; label: string; icon?: any }[];
 
@@ -104,13 +101,8 @@ function updateNavData() {
 }
 
 function updateNotifications() {
-  useInternalApi<number>("unreadcount")
-    .catch(handleRequestError)
-    .then((v) => {
-      if (v) {
-        unreadNotifications.value = v;
-      }
-    });
+  refreshUnreadNotifications();
+  // only actually load them when clicked
   useInternalApi<HangarNotification[]>("recentnotifications?amount=30")
     .catch(handleRequestError)
     .then((v) => {
@@ -161,7 +153,7 @@ function isRecent(date: string): boolean {
               <NuxtLink
                 v-for="link in navBarMenuLinksHangar"
                 :key="link.label"
-                :to="{ name: link.link }"
+                :to="{ name: link.link } as RouteLocationRaw"
                 class="flex items-center rounded-md px-6 py-2"
                 hover="text-primary-500 bg-primary-0"
                 @click="close()"
@@ -176,7 +168,7 @@ function isRecent(date: string): boolean {
               <NuxtLink
                 v-for="link in navBarMenuLinksTools"
                 :key="link.label"
-                :to="{ name: link.link }"
+                :to="{ name: link.link } as RouteLocationRaw"
                 class="flex items-center rounded-md px-6 py-2"
                 hover="text-primary-500 bg-primary-0"
                 @click="close()"
@@ -211,7 +203,7 @@ function isRecent(date: string): boolean {
           <NuxtLink
             v-for="navBarLink in navBarLinks"
             :key="navBarLink.label"
-            :to="{ name: navBarLink.link }"
+            :to="{ name: navBarLink.link } as RouteLocationRaw"
             class="header-link relative"
             after="absolute content-empty block w-0 top-30px left-1/10 h-4px rounded-8px"
           >

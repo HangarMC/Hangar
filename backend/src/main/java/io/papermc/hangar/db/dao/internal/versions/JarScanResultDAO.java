@@ -30,6 +30,14 @@ public interface JarScanResultDAO {
     @SqlQuery("SELECT * FROM jar_scan_result WHERE version_id = :versionId AND platform = :platform ORDER BY created_at DESC LIMIT 1")
     JarScanResultTable getLastResult(long versionId, @EnumByOrdinal final Platform platform);
 
+    @SqlQuery("""
+            SELECT DISTINCT ON (platform) *
+            FROM jar_scan_result
+            WHERE version_id = :versionId
+            ORDER BY platform, created_at DESC;
+            """)
+    List<JarScanResultTable> getLastResults(long versionId);
+
     @SqlQuery("SELECT * FROM jar_scan_result_entry WHERE result_id = :resultId")
     List<JarScanResultEntryTable> getEntries(long resultId);
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { upperFirst } from "scule";
-import { type HangarProject, NamedPermission, type PinnedVersion, type User } from "~/types/backend";
+import { type HangarProject, NamedPermission, type PinnedVersion, Platform, type User } from "~/types/backend";
 
 const props = defineProps<{
   user?: User;
@@ -143,7 +143,7 @@ useHead(
                 <div class="inline-flex items-center mt-1">
                   <div class="flex flex-col">
                     <div v-for="(v, p) in version.platformDependenciesFormatted" :key="p" class="flex flex-row items-center">
-                      <PlatformLogo :key="p" :platform="p" :size="20" class="mr-1 flex-shrink-0" />
+                      <PlatformLogo :key="p" :platform="p as Platform" :size="20" class="mr-1 flex-shrink-0" />
                       <span :key="p" class="text-0.875rem light:text-gray-600">{{ v.join(", ") }}</span>
                     </div>
                   </div>

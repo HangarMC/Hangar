@@ -107,10 +107,10 @@ async function save() {
   loading.save = true;
   try {
     if (!isCustomLicense.value) {
-      form.settings.license.name = null;
+      form.settings.license.name = undefined as unknown as string;
     }
     if (isUnspecifiedLicense.value) {
-      form.settings.license.url = null;
+      form.settings.license.url = undefined;
     }
 
     await useInternalApi(`projects/project/${route.params.project}/settings`, "post", {

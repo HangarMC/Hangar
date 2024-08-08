@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ReviewAction, ReviewState } from "~/types/backend";
 import type { Platform, HangarProject, HangarReview, HangarReviewMessage, HangarVersion } from "~/types/backend";
+import { useReviews } from "~/composables/useData";
 
 definePageMeta({
   globalPermsRequired: ["Reviewer"],
@@ -18,7 +19,7 @@ const props = defineProps<{
   versionPlatforms: Set<Platform>;
 }>();
 
-const reviews = ref<HangarReview[]>([]);
+const { reviews, refreshReviews } = useReviews(() => props.version?.id as unknown as string);
 const hideClosed = ref<boolean>(false);
 const message = ref<string>("");
 const loadingValues = reactive({
@@ -34,7 +35,7 @@ const currentUser = computed(() => authStore.user!);
 
 const currentUserReview = computed<HangarReview | undefined>(() => {
   if (!currentUser.value) return;
-  return reviews.value.find((r) => r.userId === currentUser.value.id);
+  return reviews.value?.find((r) => r.userId === currentUser.value.id);
 });
 
 const isCurrentReviewOpen = computed<boolean>(() => {
@@ -46,9 +47,9 @@ const currentReviewLastAction = computed<ReviewAction>(() => {
   return lastMsg.action;
 });
 
-const filteredReviews = computed<HangarReview[]>(() => {
+const filteredReviews = computed<HangarReview[] | undefined>(() => {
   if (hideClosed.value) {
-    return reviews.value.filter((r) => !r.endedAt);
+    return reviews.value?.filter((r) => !r.endedAt);
   }
   return reviews.value;
 });
@@ -56,14 +57,6 @@ const filteredReviews = computed<HangarReview[]>(() => {
 const isReviewStateChecked = computed<boolean>(() => {
   return props.version?.reviewState === ReviewState.PartiallyReviewed || props.version?.reviewState === ReviewState.Reviewed;
 });
-
-if (props.version) {
-  reviews.value = await useInternalApi<HangarReview[]>(`reviews/${props.version?.id}/reviews`);
-}
-
-async function refresh() {
-  reviews.value = await useInternalApi<HangarReview[]>(`reviews/${props.version?.id}/reviews`);
-}
 
 function getReviewStateString(review: HangarReview): string {
   if (!review.messages) return "error";
@@ -147,7 +140,7 @@ function startReview() {
     { name: currentUser.value.name },
     ReviewAction.START,
     () => {
-      reviews.value.push({
+      reviews.value?.push({
         userName: currentUser.value.name,
         userId: currentUser.value.id,
         createdAt: new Date().toISOString(),
@@ -262,7 +255,7 @@ function undoApproval() {
     "undoApproval",
     { name: currentUser.value.name },
     ReviewAction.UNDO_APPROVAL,
-    () => (reviews.value.find((r) => r.userId === currentUser.value.id)!.endedAt = undefined),
+    () => reviews.value && (reviews.value.find((r) => r.userId === currentUser.value.id)!.endedAt = undefined),
     () => (loadingValues.undoApproval = false)
   );
 }
@@ -288,7 +281,7 @@ function sendReviewRequest(
         });
       }
       then();
-      refresh();
+      refreshReviews();
     })
     .catch((e) => handleRequestError(e))
     .finally(final);
@@ -328,7 +321,7 @@ useHead(useSeo("Reviews | " + props.project?.name, props.project?.description, r
         </Button>
       </div>
       <div class="flex-grow-0">
-        <Button @click="refresh">
+        <Button @click="refreshReviews">
           <IconMdiRefresh />
           {{ t("general.refresh") }}
         </Button>
@@ -338,7 +331,7 @@ useHead(useSeo("Reviews | " + props.project?.name, props.project?.description, r
       </div>
     </div>
 
-    <Accordeon :values="filteredReviews" class="mt-4">
+    <Accordeon v-if="filteredReviews" :values="filteredReviews" class="mt-4">
       <template #header="{ entry: review }">
         <div class="flex">
           <div class="flex-grow items-center inline-flex">
@@ -417,7 +410,7 @@ useHead(useSeo("Reviews | " + props.project?.name, props.project?.description, r
       </template>
     </Accordeon>
 
-    <Alert v-if="!reviews.length" type="info" class="mt-2">
+    <Alert v-if="!reviews?.length" type="info" class="mt-2">
       {{ t("reviews.notUnderReview") }}
     </Alert>
   </div>
