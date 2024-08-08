@@ -17,21 +17,18 @@ const props = defineProps<{
   user?: User;
 }>();
 
-if (!props.version) {
-  throw useErrorRedirect(404, "Not found");
-}
 const isReviewStateChecked = computed<boolean>(
   () => props.version?.reviewState === ReviewState.PartiallyReviewed || props.version?.reviewState === ReviewState.Reviewed
 );
 const isUnderReview = computed<boolean>(() => props.version?.reviewState === ReviewState.UnderReview);
-const currentVisibility = computed(() => useBackendData.visibilities.find((v) => v.name === props.version?.visibility));
+const currentVisibility = computed(() => useBackendData.visibilities.find((v) => (v.name as Visibility) === props.version?.visibility));
 const editingPage = ref(false);
 const confirmationWarningKey = computed<string | null>(() => {
   if (props.version?.reviewState !== ReviewState.Reviewed) {
     return "version.page.unsafeWarning";
   }
   for (const platform in props.version?.downloads) {
-    if (props.version.downloads[platform as Platform].externalUrl !== null) {
+    if (props.version.downloads[platform as Platform].externalUrl) {
       return "version.page.unsafeWarningExternal";
     }
   }
@@ -66,7 +63,7 @@ useHead(
     props.project?.name + " " + props.version?.name,
     `Download ${props.project?.name} ${props.version?.name} on Hangar.
     Supports ${supportsString.value}.
-    Published on ${i18n.d(new Date(props.version?.createdAt), "date")}.
+    Published on ${props.version && i18n.d(new Date(props.version.createdAt), "date")}.
     ${props.version?.stats?.totalDownloads} downloads.`,
     route,
     props.project?.avatarUrl,

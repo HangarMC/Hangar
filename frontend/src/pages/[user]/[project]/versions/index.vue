@@ -20,6 +20,7 @@ const props = defineProps<{
   project?: HangarProject;
 }>();
 
+const pageChangeScrollAnchor = ref<Element>();
 const platforms = computed(() => [...(useBackendData.platforms?.values() || [])]);
 const pagination = ref();
 const page = ref(route.query.page ? Number(route.query.page) : 0);
@@ -33,18 +34,21 @@ const requestParams = computed(() => {
   };
 });
 
-const { channels } = useProjectChannels(() => route.params.project);
-const { versions } = useProjectVersions(() => ({
-  project: route.params.project,
-  data: { ...requestParams.value, includeHiddenChannels: route.query.channel != null },
-}));
-
+const { channels, channelPromise } = useProjectChannels(() => route.params.project);
 if (!route.query.channel) {
-  filter.channels.push(...channels.value?.filter((c) => !c.flags.includes(ChannelFlag.HIDE_BY_DEFAULT)).map((c) => c.name));
+  await channelPromise;
+  filter.channels.push(...channels.value!.filter((c) => !c.flags.includes(ChannelFlag.HIDE_BY_DEFAULT)).map((c) => c.name));
 }
 if (!route.query.platform) {
   filter.platforms.push(...platforms.value.map((p) => p.enumName));
 }
+const { versions } = useProjectVersions(
+  () => ({
+    project: route.params.project,
+    data: { ...requestParams.value, includeHiddenChannels: filter.channels?.length > 0 },
+  }),
+  router
+);
 
 useHead(
   useSeo(
@@ -53,29 +57,6 @@ useHead(
     route,
     props.project?.avatarUrl
   )
-);
-
-const pageChangeScrollAnchor = ref<Element>();
-
-watch(
-  filter,
-  async () => {
-    if (import.meta.env.SSR) return;
-    if (!versions || !versions.value) return;
-    if (filter.channels.length === 0 || filter.platforms.length === 0) {
-      versions.value.pagination.count = 0;
-      versions.value.result = [];
-      return;
-    }
-    // dont want limit in url, its hardcoded in frontend
-    // offset we dont want, we set page instead
-    const { limit, offset, ...paramsWithoutLimit } = requestParams.value;
-    // set the request params
-    await router.replace({ query: { page: page.value, ...paramsWithoutLimit } });
-    // do the update
-    // await update(0);
-  },
-  { deep: true }
 );
 
 function checkAllChannels() {
@@ -123,7 +104,7 @@ function getVisibilityTitle(visibility: Visibility) {
           <template #default="{ item }">
             <li class="mb-2">
               <Card :class="getBorderClasses(item)" class="pb-1">
-                <NuxtLink :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${item.name}`">
+                <NuxtLink :to="`/${project?.namespace?.owner}/${project?.namespace?.slug}/versions/${item.name}`">
                   <div class="flex lt-lg:flex-wrap">
                     <div class="basis-full lg:(basis-6/15 pb-4) truncate">
                       <div class="flex flex-wrap items-center">

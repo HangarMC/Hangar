@@ -138,7 +138,7 @@ async function rescanSafeLinks() {
               <InputText v-model="role.color" />
             </td>
             <td>
-              <InputText v-model.number="role.rank" :rules="[integer()]" />
+              <InputText v-model.number="role.rank as unknown as string" :rules="[integer()]" />
             </td>
             <td>
               <Tag :color="{ background: role.color }" :name="role.title" class="ml-1" />

@@ -60,6 +60,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
   // TODO make this reactive somehow
   const data = useState<T | undefined>(key(params()));
   const status = ref<"idle" | "loading" | "success" | "error">("idle");
+  let promise: Promise<void> | undefined;
 
   function refresh() {
     return load(params());
@@ -99,7 +100,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
   }
 
   if (!data.value) {
-    const promise = load(params());
+    promise = load(params());
 
     if (import.meta.server && server && promise) {
       onServerPrefetch(async () => {
@@ -112,20 +113,26 @@ export function useData<T, P extends Record<string, unknown> | string>(
   watchDebounced(
     params,
     (newParams, oldParams) => {
-      if (shallowEqual(newParams, oldParams)) {
+      if (checkEqual(newParams, oldParams)) {
         console.log("equals");
         return;
       }
-      console.log("watch", newParams, oldParams, newParams === oldParams);
+      console.log("watch", key(params()), newParams, oldParams, newParams === oldParams, checkEqual(newParams, oldParams));
       load(params());
     },
     { debounce: 250 }
   );
 
-  return { data, status, refresh };
+  return { data, status, refresh, promise };
 }
 
-function shallowEqual(a: Record<string, unknown> | string, b: Record<string, unknown> | string) {
+function checkEqual(a: Record<string, unknown> | string, b: Record<string, unknown> | string) {
+  if (!a) {
+    return !b;
+  } else if (!b) {
+    return false;
+  }
+
   if (typeof a === "string" || typeof b === "string") {
     return a === b;
   }
@@ -139,7 +146,13 @@ function shallowEqual(a: Record<string, unknown> | string, b: Record<string, unk
 
   for (let key of keys1) {
     if (a[key] !== b[key]) {
-      return false;
+      if (typeof a[key] === "object" && typeof b[key] === "object") {
+        if (!checkEqual(a[key] as Record<string, unknown>, b[key] as Record<string, unknown>)) {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
   }
 

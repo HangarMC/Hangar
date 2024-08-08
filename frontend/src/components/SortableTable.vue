@@ -21,7 +21,7 @@ const props = withDefaults(
 );
 
 const expanded = ref<Record<number, boolean>>({});
-const sorter = reactive<Record<H, number>>({ ...props.initialSorter }) as Record<H, number>;
+const sorter = reactive({ ...props.initialSorter } as Record<H, number>) as Record<H, number>;
 const sorted = ref<T[]>(props.items) as Ref<T[]>; // idk why I need a cast here...
 
 function sort() {
@@ -93,8 +93,8 @@ const slots = defineSlots<
         <th v-for="header in headers" :key="header.name" :style="header.width ? 'width: ' + header.width : ''" @click="click(header)">
           <div class="items-center inline-flex" :cursor="header.sortable ? 'pointer' : 'auto'">
             <span class="mr-2"> {{ header.title }}</span>
-            <IconMdiSortAscending v-if="sorter[header.name] === 1" class="hidden md:block" />
-            <IconMdiSortDescending v-else-if="sorter[header.name] === -1" class="hidden md:block" />
+            <IconMdiSortAscending v-if="(sorter as Record<H, number>)[header.name] === 1" class="hidden md:block" />
+            <IconMdiSortDescending v-else-if="(sorter as Record<H, number>)[header.name] === -1" class="hidden md:block" />
             <IconMdiSort v-else-if="header.sortable" class="text-gray-400 hidden md:block" />
           </div>
         </th>

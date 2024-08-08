@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { isAxiosError } from "axios";
 import type { Step } from "~/types/components/design/Steps";
-import type { SpigotAuthor, SpigotResource } from "~/composables/useProjectImporter";
-import { Category, type NewProjectForm, Tag } from "~/types/backend";
+import type { ImportedProject, SpigotAuthor, SpigotResource } from "~/composables/useProjectImporter";
+import { Category, Tag } from "~/types/backend";
 
 definePageMeta({
   loginRequired: true,
 });
-
-type ImportedProject = NewProjectForm & { externalId: string; util: { isCustomLicense?: boolean; licenseUnset?: boolean } };
 
 const { t } = useI18n();
 const route = useRoute();
@@ -80,7 +78,7 @@ const username = ref();
 const spigotAuthor = ref<SpigotAuthor | null>(null);
 const spigotResources = ref<SpigotResource[]>([]);
 const selectedSpigotResources = ref<string[]>([]);
-const hangarResources = ref<ImportedProject[]>([]);
+const hangarResources: Ref<ImportedProject[]> = ref([]);
 
 const additionalRules = {
   spigotAuthor: {

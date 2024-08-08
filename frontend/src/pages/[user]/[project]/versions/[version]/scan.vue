@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Platform, HangarProject, HangarVersion, JarScanResult } from "~/types/backend";
+import type { Platform, HangarProject, HangarVersion } from "~/types/backend";
 
 definePageMeta({
   globalPermsRequired: ["Reviewer"],
@@ -13,23 +13,7 @@ const props = defineProps<{
 
 const route = useRoute("user-project-versions-version-scan");
 
-const results = ref<JarScanResult[]>([]);
-watch(
-  () => props.version,
-  async () => {
-    results.value = [];
-    for (const platform of props.versionPlatforms) {
-      if (!props.version?.downloads?.[platform]?.fileInfo) {
-        continue;
-      }
-
-      const result = await useInternalApi<JarScanResult>(`jarscanning/result/${platform}/${props.version?.id}`);
-      if (result) {
-        results.value.push(result);
-      }
-    }
-  }
-);
+const { jarScans } = useJarScans(() => props.version?.id as unknown as string);
 
 async function scan() {
   for (const platform of props.versionPlatforms) {
@@ -37,7 +21,7 @@ async function scan() {
       continue;
     }
 
-    await useInternalApi(`jarscanning/scan/${platform}/${props.version?.id}`, "POST");
+    await useInternalApi(`jarscanning/scan/${props.version?.id}/${platform}`, "POST");
   }
   await useNotificationStore().success("Scheduled scan");
 }
@@ -47,12 +31,12 @@ useHead(useSeo("Scan | " + props.project?.name, props.project?.description, rout
 
 <template>
   <div v-if="version" class="mt-4">
-    <div v-for="result in results" :key="result.id" class="mb-4">
+    <div v-for="scan in jarScans" :key="scan.id" class="mb-4">
       <h3 class="text-2xl inline-flex items-center space-x-1">
         <IconMdiInformation class="mr-1" />
-        Results for {{ version.name }} {{ result.platform }} (last scanned: <PrettyTime :time="result.createdAt" short-relative />)
+        Results for {{ version.name }} {{ scan.platform }} (last scanned: <PrettyTime :time="scan.createdAt" short-relative />)
       </h3>
-      <div v-for="(line, idx) in result.entries" :key="idx">
+      <div v-for="(line, idx) in scan.entries" :key="idx">
         {{ line }}
         <hr class="my-1" />
       </div>
