@@ -6,15 +6,6 @@ definePageMeta({
   globalPermsRequired: ["ViewStats"],
 });
 
-interface DayStats {
-  day: string;
-  flagsClosed: number;
-  flagsOpened: number;
-  reviews: number;
-  totalDownloads: number;
-  uploads: number;
-}
-
 const i18n = useI18n();
 const route = useRoute("admin-stats");
 
@@ -23,57 +14,52 @@ const oneMonthBefore = new Date(now.getFullYear(), now.getMonth() - 1, now.getDa
 const startDate = ref<string>(toISODateString(oneMonthBefore));
 const endDate = ref<string>(toISODateString(now));
 
-const data = ref<DayStats[] | void>(
-  await useInternalApi<DayStats[]>("admin/stats", "get", {
-    from: startDate.value,
-    to: endDate.value,
-  }).catch((e) => handleRequestError(e))
-);
+const { adminStats } = useAdminStats(() => ({ from: startDate.value, to: endDate.value }));
 
-const labels = computed(() => data.value?.map((day) => i18n.d(fromISOString(day.day), "date")));
+const labels = computed(() => adminStats.value?.map((day) => i18n.d(fromISOString(day.day), "date")));
 
-const pluginData = ref<ChartData<"line", number[], string>>({
+const pluginData = computed<ChartData<"line", number[], string>>(() => ({
   labels: labels.value,
   datasets: [
     {
       label: i18n.t("stats.reviews"),
-      data: data.value?.map((day) => day.reviews) || [],
+      data: adminStats.value?.map((day) => day.reviews) || [],
       tension: 0.2,
     },
     {
       label: i18n.t("stats.uploads"),
-      data: data.value?.map((day) => day.uploads) || [],
+      data: adminStats.value?.map((day) => day.uploads) || [],
       tension: 0.2,
     },
   ],
-});
+}));
 
-const downloadData = ref<ChartData<"line", number[], string>>({
+const downloadData = computed<ChartData<"line", number[], string>>(() => ({
   labels: labels.value,
   datasets: [
     {
       label: i18n.t("stats.totalDownloads"),
-      data: data.value?.map((day) => day.totalDownloads) || [],
+      data: adminStats.value?.map((day) => day.totalDownloads) || [],
       tension: 0.2,
     },
   ],
-});
+}));
 
-const flagData = ref<ChartData<"line", number[], string>>({
+const flagData = computed<ChartData<"line", number[], string>>(() => ({
   labels: labels.value,
   datasets: [
     {
       label: i18n.t("stats.openedFlags"),
-      data: data.value?.map((day) => day.flagsOpened) || [],
+      data: adminStats.value?.map((day) => day.flagsOpened) || [],
       tension: 0.2,
     },
     {
       label: i18n.t("stats.closedFlags"),
-      data: data.value?.map((day) => day.flagsClosed) || [],
+      data: adminStats.value?.map((day) => day.flagsClosed) || [],
       tension: 0.2,
     },
   ],
-});
+}));
 
 const options = {
   responsive: true,
@@ -82,16 +68,6 @@ const options = {
 Chart.register(CategoryScale, LinearScale, Tooltip, Legend, PointElement, LineElement, LineController, Colors);
 
 useHead(useSeo(i18n.t("stats.title"), null, route, null));
-
-watch(startDate, updateDate);
-watch(endDate, updateDate);
-
-async function updateDate() {
-  data.value = (await useInternalApi<DayStats[]>("admin/stats", "get", {
-    from: startDate.value,
-    to: endDate.value,
-  }).catch((e) => handleRequestError(e))) as DayStats[];
-}
 </script>
 
 <template>

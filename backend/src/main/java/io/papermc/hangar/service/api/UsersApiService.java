@@ -11,7 +11,6 @@ import io.papermc.hangar.model.api.Pagination;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.api.project.ProjectCompact;
-import io.papermc.hangar.model.api.project.ProjectSortingStrategy;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.internal.user.HangarUser;

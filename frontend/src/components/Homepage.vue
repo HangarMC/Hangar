@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
-import { Tag } from "~/types/backend";
-import type { Platform, PaginatedResultProject, PlatformVersion } from "~/types/backend";
+import { Category, Platform, type PlatformVersion, Tag } from "~/types/backend";
 
 const props = defineProps<{
   platform?: Platform;
@@ -25,7 +24,7 @@ const toArray = (input: unknown) => (Array.isArray(input) ? input : input ? [inp
 const filters = ref({
   versions: toArray(route.query.version),
   categories: toArray(route.query.category),
-  platform: (route.query.platform || undefined) as string | undefined,
+  platform: (route.query.platform || undefined) as Platform | undefined,
   tags: toArray(route.query.tag),
 });
 
@@ -36,7 +35,6 @@ if (props.platform) {
 const activeSorter = ref<string>((route.query.sort as string) || "-stars");
 const page = ref(route.query.page ? Number(route.query.page) : 0);
 const query = ref<string>((route.query.query as string) || "");
-const projects = ref<PaginatedResultProject | null>();
 
 const requestParams = computed(() => {
   const limit = 10;
@@ -57,46 +55,14 @@ const requestParams = computed(() => {
 
   return params;
 });
-const p = await useProjects(requestParams.value);
-if (p && p.value) {
-  projects.value = p.value;
-  await checkOffsetLargerCount();
-}
-
-const projectList = ref();
-function resetPage() {
-  projectList.value.updatePage(0);
-}
-
-watch(filters, resetPage, { deep: true });
-watch(query, resetPage);
-watch(activeSorter, resetPage);
-watchDebounced(
-  requestParams,
-  async () => {
-    // dont want limit in url, its hardcoded in frontend
-    // offset we dont want, we set page instead
-    const { limit, offset, ...paramsWithoutLimit } = requestParams.value;
-    // set the request params
-    await router.replace({ query: { page: page.value, ...paramsWithoutLimit } });
-    // do the update
-    return updateProjects();
-  },
-  { deep: true, debounce: 250 }
-);
-
-async function updateProjects() {
-  projects.value = await useApi<PaginatedResultProject>("projects", "get", requestParams.value);
-  await checkOffsetLargerCount();
-}
+const { projects } = useProjects(() => requestParams.value, router);
 
 // if somebody set page too high, lets reset it back
-async function checkOffsetLargerCount() {
+watch(projects, () => {
   if (projects.value && projects.value.pagination?.offset !== 0 && projects.value.pagination?.offset > projects.value.pagination?.count) {
     page.value = 0;
-    await updateProjects();
   }
-}
+});
 
 function versions(platform: Platform): PlatformVersion[] {
   const platformData = useBackendData.platforms?.get(platform);
@@ -180,11 +146,15 @@ useHead(
       <div v-if="!index" class="text-center -mt-2">
         Looking for other platforms?
         <div class="flex gap-3 mt-2 mb-2">
-          <Button v-if="platform != 'PAPER'" to="/paper">Download Paper plugins <PlatformLogo platform="PAPER" :size="24" class="ml-1" /></Button>
-          <Button v-if="platform != 'VELOCITY'" to="/velocity">Download Velocity Plugins <PlatformLogo platform="VELOCITY" :size="24" class="ml-1" /></Button>
-          <Button v-if="platform != 'WATERFALL'" to="/waterfall"
-            >Download Waterfall plugins <PlatformLogo platform="WATERFALL" :size="24" class="ml-1"
-          /></Button>
+          <Button v-if="platform != Platform.PAPER" to="/paper">
+            Download Paper plugins <PlatformLogo :platform="Platform.PAPER" :size="24" class="ml-1" />
+          </Button>
+          <Button v-if="platform != Platform.VELOCITY" to="/velocity">
+            Download Velocity Plugins <PlatformLogo :platform="Platform.VELOCITY" :size="24" class="ml-1" />
+          </Button>
+          <Button v-if="platform != Platform.WATERFALL" to="/waterfall">
+            Download Waterfall plugins <PlatformLogo :platform="Platform.WATERFALL" :size="24" class="ml-1" />
+          </Button>
         </div>
       </div>
       <!-- Search Bar -->
@@ -248,9 +218,15 @@ useHead(
     </Container>
     <Container lg="flex items-start gap-6">
       <!-- Projects -->
-      <div v-if="projects" class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
+      <div class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
         <h2 class="font-bold text-2xl lg:(absolute -mt-11)">Projects</h2>
-        <ProjectList ref="projectList" :projects="projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage) => (page = newPage)" />
+        <ProjectList
+          ref="projectList"
+          :projects="projects"
+          :loading="!projects"
+          :reset-anchor="pageChangeScrollAnchor"
+          @update:page="(newPage) => (page = newPage)"
+        />
       </div>
       <!-- Sidebar -->
       <Card accent class="min-w-300px flex flex-col gap-4">
@@ -306,7 +282,7 @@ useHead(
               :value="category.apiName"
               :label="i18n.t(category.title)"
             >
-              <CategoryLogo :category="category.apiName" :size="22" class="mr-1" />
+              <CategoryLogo :category="category.apiName as Category" :size="22" class="mr-1" />
             </InputCheckbox>
           </div>
         </div>

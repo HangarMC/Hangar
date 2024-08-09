@@ -1,7 +1,6 @@
 package io.papermc.hangar.model.internal.api.requests;
 
 import io.papermc.hangar.controller.validations.Validate;
-import io.papermc.hangar.model.common.roles.OrganizationRole;
 import java.util.List;
 
 public class CreateOrganizationForm extends EditMembersForm.EditOrgMembersForm {

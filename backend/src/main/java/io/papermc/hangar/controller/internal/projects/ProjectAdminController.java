@@ -42,9 +42,9 @@ public class ProjectAdminController extends HangarComponent {
     }
 
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
-    @GetMapping(path = "/notes/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<HangarProjectNote>> getProjectNotes(@PathVariable final long projectId) {
-        return ResponseEntity.ok(this.projectNoteService.getNotes(projectId));
+    @GetMapping(path = "/notes/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<HangarProjectNote>> getProjectNotes(@PathVariable final String slug) {
+        return ResponseEntity.ok(this.projectNoteService.getNotes(slug));
     }
 
     @ResponseStatus(HttpStatus.CREATED)

@@ -27,9 +27,9 @@ public interface HangarProjectFlagsDAO {
         "   JOIN projects p ON pf.project_id = p.id " +
         "   JOIN users fu ON pf.user_id = fu.id " +
         "   LEFT OUTER JOIN users ru ON ru.id = pf.resolved_by " +
-        "WHERE pf.project_id = :projectId " +
+        "WHERE lower(p.slug) = lower(:slug) " +
         "GROUP BY pf.id, fu.id, ru.id, p.id")
-    List<HangarProjectFlag> getFlags(long projectId);
+    List<HangarProjectFlag> getFlags(String slug);
 
     @SqlQuery("SELECT pf.*, fu.name reported_by_name, ru.name resolved_by_name, p.owner_name project_owner_name, p.slug project_slug, p.visibility project_visibility " +
         "FROM project_flags pf " +

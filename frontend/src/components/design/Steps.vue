@@ -2,7 +2,6 @@
 import type { Step } from "~/types/components/design/Steps";
 
 const router = useRouter();
-const settings = useSettingsStore();
 const i18n = useI18n();
 
 const emit = defineEmits<{

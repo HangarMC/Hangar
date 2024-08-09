@@ -7,12 +7,12 @@ definePageMeta({
 });
 
 const props = defineProps<{
-  user: User;
-  project: HangarProject;
+  user?: User;
+  project?: HangarProject;
 }>();
 const i18n = useI18n();
 const route = useRoute("user-project-flags");
-const flags = await useProjectFlags(props.project.id);
+const { flags } = useProjectFlags(() => route.params.project);
 
 const headers = [
   { title: "Submitter", name: "user" },
@@ -22,19 +22,20 @@ const headers = [
   { title: "Resolved", name: "resolved" },
 ] as const satisfies Header<string>[];
 
-useHead(useSeo("Flags | " + props.project.name, props.project.description, route, props.project.avatarUrl));
+useHead(useSeo("Flags | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
 </script>
 
 <template>
   <Card>
     <template #header>
       {{ i18n.t("flags.header") }}
-      <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
+      <Skeleton v-if="!project" />
+      <Link v-else :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
         {{ project.namespace.owner + "/" + project.namespace.slug }}
       </Link>
     </template>
 
-    <SortableTable v-if="flags" :items="flags" :headers="headers">
+    <SortableTable :items="flags || []" :headers="headers">
       <template #empty>
         <Alert type="info">
           {{ i18n.t("flags.noFlags") }}

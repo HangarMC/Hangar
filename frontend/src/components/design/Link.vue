@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { RouteLocation } from "vue-router";
-
 const props = withDefaults(
   defineProps<{
     to?: string | object;

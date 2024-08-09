@@ -201,6 +201,18 @@ public class JarScanningService {
         return new JarScanResult(lastResult.getId(), platform, lastResult.getCreatedAt(), lastResult.getHighestSeverity(), entries);
     }
 
+    public @Nullable List<JarScanResult> getLastResults(final long versionId) {
+        final List<JarScanResultTable> lastResult = this.dao.getLastResults(versionId);
+        if (lastResult == null) {
+            return null;
+        }
+
+        return lastResult.stream().map(result -> {
+            final List<String> entries = this.dao.getEntries(result.getId()).stream().sorted(Comparator.comparing(s -> Severity.valueOf(s.getSeverity()))).map(this::format).toList();
+            return new JarScanResult(result.getId(), result.getPlatform(), result.getCreatedAt(), result.getHighestSeverity(), entries);
+        }).toList();
+    }
+
     private String format(final JarScanResultEntryTable entry) {
         return "[" + entry.getSeverity() + "]: " + entry.getMessage() + " at " + entry.getLocation();
     }

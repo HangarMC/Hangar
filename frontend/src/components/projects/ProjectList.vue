@@ -6,6 +6,7 @@ const i18n = useI18n();
 defineProps<{
   projects?: PaginatedResultProject;
   resetAnchor?: Element;
+  loading?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -34,5 +35,6 @@ defineExpose({ updatePage });
       <ProjectCard :project="item" />
     </template>
   </Pagination>
-  <div v-if="projects?.result.length === 0">{{ i18n.t("hangar.projectSearch.noProjects") }}</div>
+  <div v-if="projects?.result?.length === 0">{{ i18n.t("hangar.projectSearch.noProjects") }}</div>
+  <Skeleton v-if="loading" class="h-100" />
 </template>

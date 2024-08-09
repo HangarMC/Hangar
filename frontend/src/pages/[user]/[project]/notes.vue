@@ -1,18 +1,18 @@
 <script lang="ts" setup>
 import type { Header } from "~/types/components/SortableTable";
-import type { HangarProject, HangarProjectNote, User } from "~/types/backend";
+import type { HangarProject, User } from "~/types/backend";
 
 definePageMeta({
   projectPermsRequired: ["ModNotesAndFlags"],
 });
 
 const props = defineProps<{
-  user: User;
-  project: HangarProject;
+  user?: User;
+  project?: HangarProject;
 }>();
 const i18n = useI18n();
 const route = useRoute("user-project-notes");
-const notes = await useProjectNotes(props.project.id);
+const { notes, refreshNotes } = useProjectNotes(() => route.params.project);
 const text = ref("");
 const loading = ref(false);
 
@@ -22,21 +22,18 @@ const headers = [
   { title: "Message", name: "message", width: "80%" },
 ] as const satisfies Header<string>[];
 
-useHead(useSeo("Notes | " + props.project.name, props.project.description, route, props.project.avatarUrl));
+useHead(useSeo("Notes | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
 
 async function addNote() {
   if (!text.value) {
     return;
   }
   loading.value = true;
-  await useInternalApi(`projects/notes/${props.project.id}`, "post", {
+  await useInternalApi(`projects/notes/${props.project?.id}`, "post", {
     content: text.value,
   }).catch((e) => handleRequestError(e));
   text.value = "";
-  const newNotes = await useInternalApi<HangarProjectNote[]>("projects/notes/" + props.project.id).catch((e) => handleRequestError(e));
-  if (notes?.value && newNotes) {
-    notes.value = newNotes;
-  }
+  await refreshNotes();
   loading.value = false;
 }
 </script>
@@ -45,9 +42,10 @@ async function addNote() {
   <Card>
     <template #header>
       {{ i18n.t("notes.header") }}
-      <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
+      <Link v-if="project" :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
         {{ project.namespace.owner + "/" + project.namespace.slug }}
       </Link>
+      <Skeleton v-else />
     </template>
 
     <div class="flex">

@@ -5,7 +5,6 @@ import io.papermc.hangar.controller.extras.RobotsBuilder;
 import io.papermc.hangar.security.annotations.Anyone;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Anyone

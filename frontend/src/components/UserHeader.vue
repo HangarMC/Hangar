@@ -3,7 +3,7 @@ import { NamedPermission } from "~/types/backend";
 import type { HangarOrganization, User } from "~/types/backend";
 
 const props = defineProps<{
-  viewingUser: User;
+  viewingUser?: User;
   organization?: HangarOrganization;
 }>();
 
@@ -11,7 +11,7 @@ const i18n = useI18n();
 const authStore = useAuthStore();
 
 const isCurrentUser = computed<boolean>(() => {
-  return authStore.user !== null && authStore.user.name === props.viewingUser.name;
+  return authStore.user !== null && authStore.user.name === props.viewingUser?.name;
 });
 
 const canEditCurrentUser = computed<boolean>(() => {
@@ -23,9 +23,9 @@ const canEditCurrentUser = computed<boolean>(() => {
   <Card accent class="overflow-y-hidden">
     <div class="flex mb-4 md:mb-0">
       <div class="relative mr-3">
-        <UserAvatar :username="viewingUser.name" :avatar-url="viewingUser.avatarUrl" />
+        <UserAvatar :username="viewingUser?.name" :avatar-url="viewingUser?.avatarUrl" :loading="!viewingUser" />
         <AvatarChangeModal
-          v-if="hasPerms(NamedPermission.EditSubjectSettings)"
+          v-if="viewingUser && hasPerms(NamedPermission.EditSubjectSettings)"
           :avatar="viewingUser.avatarUrl"
           :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/avatar`"
         >
@@ -36,7 +36,7 @@ const canEditCurrentUser = computed<boolean>(() => {
       </div>
 
       <div class="overflow-clip overflow-hidden">
-        <h1 class="text-2xl px-1 text-strong inline-flex items-center">
+        <h1 v-if="viewingUser" class="text-2xl px-1 text-strong inline-flex items-center">
           {{ viewingUser.name }}
           <a
             v-if="viewingUser.socials?.github"
@@ -87,8 +87,9 @@ const canEditCurrentUser = computed<boolean>(() => {
             </template>
           </Popper>
         </h1>
+        <Skeleton class="text-2xl px-1 w-50" v-else />
 
-        <div class="ml-1">
+        <div v-if="viewingUser" class="ml-1">
           <span v-if="viewingUser.tagline">{{ viewingUser.tagline }}</span>
           <span v-else-if="canEditCurrentUser">{{ i18n.t("author.addTagline") }}</span>
           <TaglineModal
@@ -97,17 +98,24 @@ const canEditCurrentUser = computed<boolean>(() => {
             :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/tagline`"
           />
         </div>
+        <Skeleton v-else class="mt-1 w-100" />
       </div>
       <div class="flex-grow" />
       <div class="lt-md:hidden flex flex-col space-y-1 items-end flex-shrink-0">
-        <span>{{ i18n.t("author.memberSince", [i18n.d(viewingUser.createdAt, "date")]) }}</span>
-        <span>{{ i18n.t("author.numProjects", [viewingUser.projectCount], viewingUser.projectCount) }}</span>
-        <span class="inline-flex space-x-1">
-          <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
-        </span>
+        <template v-if="viewingUser">
+          <span>{{ i18n.t("author.memberSince", [i18n.d(viewingUser.createdAt, "date")]) }}</span>
+          <span>{{ i18n.t("author.numProjects", [viewingUser.projectCount], viewingUser.projectCount) }}</span>
+          <span class="inline-flex space-x-1">
+            <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
+          </span>
+        </template>
+        <template v-else>
+          <Skeleton />
+          <Skeleton />
+        </template>
       </div>
     </div>
-    <div class="md:hidden flex flex-col items-center space-y-1 flex-shrink-0">
+    <div v-if="viewingUser" class="md:hidden flex flex-col items-center space-y-1 flex-shrink-0">
       <span>{{ i18n.t("author.memberSince", [i18n.d(viewingUser.createdAt, "date")]) }}</span>
       <span>{{ i18n.t("author.numProjects", [viewingUser.projectCount], viewingUser.projectCount) }}</span>
       <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />

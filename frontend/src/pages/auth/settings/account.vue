@@ -1,7 +1,13 @@
 <script lang="ts" setup>
+import type { SettingsResponse } from "~/types/backend";
+
 const emit = defineEmits<{
   openEmailConfirmModal: [];
   refreshSettings: [];
+}>();
+
+defineProps<{
+  settings?: SettingsResponse;
 }>();
 
 const auth = useAuthStore();
@@ -13,7 +19,6 @@ const v = useVuelidate();
 const loading = ref(false);
 const error = ref<string>();
 
-const settings = await useAuthSettings();
 const accountForm = reactive({
   username: auth.user?.name,
   email: auth.user?.email,

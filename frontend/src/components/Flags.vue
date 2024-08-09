@@ -6,7 +6,7 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
-const flags = await (props.resolved ? useResolvedFlags() : useUnresolvedFlags());
+const { flags } = props.resolved ? useResolvedFlags() : useUnresolvedFlags();
 const loading = ref<{ [key: number]: boolean }>({});
 
 function resolve(flag: HangarProjectFlag) {

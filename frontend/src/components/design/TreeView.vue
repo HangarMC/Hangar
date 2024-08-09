@@ -1,8 +1,6 @@
-<script lang="ts" setup>
-type Item = Record<Exclude<string, "children">, string> & { children?: Record<string, string>[] };
-
+<script lang="ts" setup generic="T extends Record<string, any>">
 const props = defineProps<{
-  items?: Item[];
+  items?: T[];
   itemKey: string;
   clazz?: string;
   open: string[];
@@ -19,12 +17,9 @@ watch(
   },
   { immediate: true }
 );
-
-// hack to fix vue-tsc from complaining
-const itemSlot = useSlots().item;
-function FakeSlot(props: { item: Item }) {
-  return itemSlot?.({ item: props.item });
-}
+defineSlots<{
+  item?: (props: { item: T }) => any;
+}>();
 </script>
 
 <template>
@@ -38,7 +33,7 @@ function FakeSlot(props: { item: Item }) {
         <span class="pl-5" />
       </div>
       <span v-else class="pl-5" />
-      <FakeSlot :item="item"></FakeSlot>
+      <slot name="item" :item="item" />
     </div>
     <TreeView
       v-if="expanded[item[itemKey]] && 'children' in item && item.children?.length"
@@ -49,10 +44,8 @@ function FakeSlot(props: { item: Item }) {
       clazz="pl-4"
     >
       <template #item="slotProp">
-        <FakeSlot :item="slotProp.item"></FakeSlot>
+        <slot name="item" :item="slotProp.item" />
       </template>
     </TreeView>
-    <!-- to trick IJ that the slot exists -->
-    <slot v-if="false" name="item" :item="item"></slot>
   </div>
 </template>

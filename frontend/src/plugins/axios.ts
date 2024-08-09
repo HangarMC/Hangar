@@ -95,7 +95,7 @@ function addAuthHeader(config: AxiosRequestConfig, token: string | undefined | n
 }
 
 function forwardRequestHeaders(config: AxiosRequestConfig, nuxtApp: NuxtApp) {
-  if (!process.server) return;
+  if (import.meta.client) return;
   const req = useRequestEvent(nuxtApp)?.node?.req;
 
   const forward = (header: string) => {
@@ -117,7 +117,7 @@ function forwardRequestHeaders(config: AxiosRequestConfig, nuxtApp: NuxtApp) {
 }
 
 function forwardResponseHeaders(axiosResponse: AxiosResponse, nuxtApp: NuxtApp) {
-  if (!process.server) return;
+  if (import.meta.client) return;
   const res = useRequestEvent(nuxtApp)?.node?.res;
 
   const forward = (header: string) => {
@@ -125,6 +125,8 @@ function forwardResponseHeaders(axiosResponse: AxiosResponse, nuxtApp: NuxtApp) 
       res?.setHeader(header, axiosResponse.headers[header]);
     }
   };
+
+  console.log("forward headers from", axiosResponse.request?.path);
 
   forward("set-cookie");
   forward("server");

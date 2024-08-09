@@ -2,7 +2,7 @@
 import { type HangarProject, NamedPermission } from "~/types/backend";
 
 const props = defineProps<{
-  project: HangarProject;
+  project?: HangarProject;
 }>();
 const i18n = useI18n();
 
@@ -30,7 +30,7 @@ function childRoute(route = ""): string {
     <ProjectNavItem v-if="hasPerms(NamedPermission.EditSubjectSettings)" :to="childRoute('/settings')">
       {{ i18n.t("project.tabs.settings") }}
     </ProjectNavItem>
-    <template v-for="section in props.project.settings.links">
+    <template v-for="section in props.project?.settings?.links">
       <template v-if="section.type === 'top'">
         <ProjectNavItem v-for="item in section.links" :key="item.id" :href="item.url">
           {{ item.name }}

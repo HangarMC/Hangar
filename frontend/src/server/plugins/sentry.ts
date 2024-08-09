@@ -1,6 +1,6 @@
 // import * as Sentry from "@sentry/node";
 // import { nodeProfilingIntegration } from "@sentry/profiling-node";
-import { H3Error } from "h3";
+// import { H3Error } from "h3";
 
 export default defineNitroPlugin((nitroApp) => {
   const {
@@ -13,10 +13,11 @@ export default defineNitroPlugin((nitroApp) => {
   }
 
   // TODO make this work with bun
-  let profiler = null;
-  if (typeof Bun === "undefined") {
-    // profiler = nodeProfilingIntegration();
-  }
+
+  // let profiler = null;
+  // if (typeof Bun === "undefined") {
+  //   // profiler = nodeProfilingIntegration();
+  // }
 
   // Sentry.init({
   //   dsn: sentry.dsn,

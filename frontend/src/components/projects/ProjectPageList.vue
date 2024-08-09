@@ -2,7 +2,7 @@
 import { type HangarProject, NamedPermission } from "~/types/backend";
 
 defineProps<{
-  project: HangarProject;
+  project?: HangarProject;
   open: string[];
 }>();
 
@@ -15,11 +15,11 @@ const route = useRoute("user-project");
     <template #header>
       <div class="inline-flex w-full flex-cols space-between">
         <h2 class="flex-grow">{{ i18n.t("page.plural") }}</h2>
-        <NewPageModal v-if="hasPerms(NamedPermission.EditPage)" :pages="project.pages" :project-id="project.id" activator-class="mr-2" />
+        <NewPageModal v-if="project && hasPerms(NamedPermission.EditPage)" :pages="project.pages" :project-id="project.id" activator-class="mr-2" />
       </div>
     </template>
 
-    <TreeView :items="project.pages" item-key="slug" :open="open">
+    <TreeView :items="project?.pages || []" item-key="slug" :open="open">
       <template #item="{ item }">
         <Link v-if="item.home" :to="`/${route.params.user}/${route.params.project}`" exact class="inline-flex items-center" active-underline>
           <IconMdiHome class="mr-1" />
@@ -28,5 +28,6 @@ const route = useRoute("user-project");
         <Link v-else :to="`/${route.params.user}/${route.params.project}/pages/${item.slug}`" exact active-underline> {{ item.name }}</Link>
       </template>
     </TreeView>
+    <Skeleton v-if="!project" />
   </Card>
 </template>

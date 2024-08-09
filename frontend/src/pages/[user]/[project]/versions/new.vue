@@ -2,7 +2,7 @@
 import { remove } from "lodash-es";
 import type { Step } from "~/types/components/design/Steps";
 import type { Tab } from "~/types/components/design/Tabs";
-import type { Platform, HangarProject, PendingVersion, PlatformData, ProjectChannel } from "~/types/backend";
+import type { HangarChannel, HangarProject, PendingVersion, Platform, PlatformData } from "~/types/backend";
 
 definePageMeta({
   projectPermsRequired: ["CreateVersion"],
@@ -14,7 +14,7 @@ const i18n = useI18n();
 const t = i18n.t;
 const notification = useNotificationStore();
 const props = defineProps<{
-  project: HangarProject;
+  project?: HangarProject;
 }>();
 
 const selectedStep = ref("artifact");
@@ -103,7 +103,7 @@ function removePlatformFile(id: number) {
 
 const dependencyTables = ref();
 const pendingVersion = ref<PendingVersion>();
-const channels = (await useProjectChannels(route.params.project)).data;
+const { channels } = useProjectChannels(() => route.params.project);
 const selectedPlatforms = ref<Platform[]>([]);
 const descriptionEditor = ref();
 const lastDescription = ref();
@@ -120,7 +120,7 @@ const descriptionToLoad = computed(() => {
 });
 
 const selectedChannel = ref<string>("Release");
-const currentChannel = computed(() => channels.value.find((c) => c.name === selectedChannel.value));
+const currentChannel = computed(() => channels.value?.find((c) => c.name === selectedChannel.value));
 
 const platforms = computed<PlatformData[]>(() => {
   return [...useBackendData.platforms.values()];
@@ -173,7 +173,7 @@ async function createPendingVersion() {
     })
   );
 
-  pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project.id}/upload`, "post", formData, {
+  pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project?.id}/upload`, "post", formData, {
     timeout: timeout.value,
   }).catch<any>((e) => {
     if (e.code === "ECONNABORTED") {
@@ -226,7 +226,7 @@ async function createVersion() {
   }
 
   try {
-    await useInternalApi(`versions/version/${props.project.id}/create`, "post", pendingVersion.value, { timeout: 45000 });
+    await useInternalApi(`versions/version/${props.project?.id}/create`, "post", pendingVersion.value, { timeout: 45000 });
     await router.push(`/${route.params.user}/${route.params.project}/versions`);
   } catch (e: any) {
     handleRequestError(e);
@@ -235,7 +235,8 @@ async function createVersion() {
   }
 }
 
-function addChannel(channel: ProjectChannel) {
+function addChannel(channel: HangarChannel) {
+  if (!channels.value) return;
   remove(channels.value, (c) => c.temp);
   channels.value.push(Object.assign({ temp: true }, channel));
   selectedChannel.value = channel.name;
@@ -250,7 +251,7 @@ function togglePlatform(platformFile: PlatformFile, platform: Platform) {
   platformFile.platforms.sort((a, b) => platforms.value.findIndex((p) => p.enumName === a) - platforms.value.findIndex((p) => p.enumName === b));
 }
 
-useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.project.description, route, props.project.avatarUrl));
+useHead(useSeo(i18n.t("version.new.title") + " | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
 </script>
 
 <template>
@@ -262,7 +263,7 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
           <div class="basis-full md:basis-4/12">
             <InputSelect
               v-model="selectedChannel"
-              :values="channels"
+              :values="channels || []"
               item-text="name"
               item-value="name"
               name="channel"
@@ -271,7 +272,7 @@ useHead(useSeo(i18n.t("version.new.title") + " | " + props.project.name, props.p
             />
           </div>
           <div class="basis-full md:(basis-4/12) ml-2">
-            <ChannelModal :project-id="project.id" @create="addChannel">
+            <ChannelModal v-if="project" :project-id="project.id" @create="addChannel as unknown as HangarChannel">
               <template #activator="{ on }">
                 <Button class="basis-4/12" size="medium" v-on="on">
                   <IconMdiPlus />

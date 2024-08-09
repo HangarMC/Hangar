@@ -6,6 +6,8 @@ const props = defineProps<{
   error: NuxtError<HangarNuxtError>;
 }>();
 
+const route = useRoute();
+
 if (!(props.error?.data?.dummyError === true)) {
   // keep in sync with app.vue, cause reasons
   const authStore = useAuthStore();
@@ -93,7 +95,7 @@ try {
       <template v-else>
         <h1 class="text-4xl font-bold">{{ title }}</h1>
         <h2 class="text-xl font-bold">{{ text }}</h2>
-        <Button v-if="statusCode === 401" class="mt-2" :to="auth.loginUrl($route.fullPath)">Login</Button>
+        <Button v-if="statusCode === 401" class="mt-2" :to="auth.loginUrl(route.fullPath)">Login</Button>
       </template>
     </div>
   </NuxtLayout>

@@ -2,6 +2,7 @@
 const i18n = useI18n();
 const route = useRoute("privacy");
 
+// language=Markdown
 const text = `
 # Privacy Policy
 This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about

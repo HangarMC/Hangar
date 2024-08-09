@@ -22,8 +22,8 @@ public class ProjectNoteService extends HangarComponent {
         this.hangarProjectNotesDAO = hangarProjectNotesDAO;
     }
 
-    public List<HangarProjectNote> getNotes(final long projectId) {
-        return this.hangarProjectNotesDAO.getProjectNotes(projectId);
+    public List<HangarProjectNote> getNotes(final String slug) {
+        return this.hangarProjectNotesDAO.getProjectNotes(slug);
     }
 
     public void addNote(final long projectId, final String msg) {

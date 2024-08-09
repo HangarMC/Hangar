@@ -1,17 +1,18 @@
 <script lang="ts" setup>
-import type { NamedPermission, ApiKey } from "~/types/backend";
+import type { ApiKey, SettingsResponse } from "~/types/backend";
+import { useApiKeys, usePossiblePerms } from "~/composables/useData";
+
+defineProps<{
+  settings?: SettingsResponse;
+}>();
 
 const i18n = useI18n();
 const notification = useNotificationStore();
 const v = useVuelidate();
 const auth = useAuthStore();
 
-const results = await Promise.all([
-  useInternalApi<ApiKey[]>("api-keys/existing-keys/" + auth.user?.name),
-  useInternalApi<NamedPermission[]>("api-keys/possible-perms/" + auth.user?.name),
-]);
-const apiKeys = ref(results[0]);
-const possiblePerms = results[1];
+const { apiKeys } = useApiKeys(() => auth.user!.name);
+const { possiblePerms } = usePossiblePerms(() => auth.user!.name);
 
 const name = ref("");
 const loadingCreate = ref(false);
@@ -28,6 +29,9 @@ async function create() {
   }).catch((err) => handleRequestError(err));
   if (key) {
     createdKey.value = key;
+    if (!apiKeys.value) {
+      apiKeys.value = [];
+    }
     apiKeys.value.unshift({
       tokenIdentifier: key.substring(0, key.indexOf(".")),
       name: name.value,
@@ -48,7 +52,7 @@ async function deleteKey(key: ApiKey) {
   await useInternalApi(`api-keys/delete-key/${auth.user?.name}`, "post", {
     content: key.name,
   }).catch((err) => handleRequestError(err));
-  apiKeys.value = apiKeys.value.filter((k) => k.name !== key.name);
+  apiKeys.value = apiKeys.value?.filter((k) => k.name !== key.name);
   notification.success(i18n.t("apiKeys.success.delete", [key.name]));
   loadingDelete[key.name] = false;
 }
@@ -127,7 +131,7 @@ function copy(event: any) {
               <Button button-type="red" :loading="loadingDelete[key.name]" @click="deleteKey(key)"><IconMdiDelete /></Button>
             </td>
           </tr>
-          <tr v-if="apiKeys.length === 0">
+          <tr v-if="apiKeys?.length === 0">
             <td colspan="5">
               {{ i18n.t("apiKeys.noKeys") }}
             </td>

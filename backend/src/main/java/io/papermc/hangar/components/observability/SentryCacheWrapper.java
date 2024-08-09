@@ -2,7 +2,6 @@ package io.papermc.hangar.components.observability;
 
 import io.sentry.ISpan;
 import io.sentry.Sentry;
-import io.sentry.util.StringUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;

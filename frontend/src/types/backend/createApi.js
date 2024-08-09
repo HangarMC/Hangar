@@ -35,8 +35,43 @@ generateApi({
   }),
 })
   .then(({ files, configuration }) => {
-    for (const { fileName, fileExtension, fileContent } of files) {
+    for (let { fileName, fileExtension, fileContent } of files) {
       const prefix = "// noinspection JSValidateJSDoc,JSUnusedGlobalSymbols\n\n";
+
+      // patch permission data
+      fileContent = fileContent.replace(
+        `export interface PermissionData {
+  value: string;
+  frontendName: string;
+  permission: string;
+}`,
+        `export interface PermissionData {
+  value: string;
+  frontendName: string;
+  permission: bigint;
+}`
+      );
+
+      // patch platform data
+      fileContent = fileContent.replace(
+        `export interface PlatformData {
+  name: string;
+  category: Category;
+  url: string;
+  enumName: string;
+  visible: boolean;
+  platformVersions: PlatformVersion[];
+}`,
+        `export interface PlatformData {
+  name: string;
+  category: Category;
+  url: string;
+  enumName: Platform;
+  visible: boolean;
+  platformVersions: PlatformVersion[];
+}`
+      );
+
       fs.writeFileSync(fileName + fileExtension, prefix + fileContent);
     }
   })

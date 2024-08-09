@@ -6,7 +6,7 @@ export function useSeo(
   title: string | TranslateResult | null | undefined,
   description: string | TranslateResult | null | undefined,
   route: RouteLocationNormalized,
-  image: string | null,
+  image: string | null | undefined,
   additionalScripts?: { type: string; children: string; key: string }[],
   manualTitle?: boolean
 ): UseHeadInput {
