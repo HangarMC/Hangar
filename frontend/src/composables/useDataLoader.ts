@@ -1,7 +1,7 @@
 import type { RouteLocationNormalized } from "vue-router";
 
-type dataLoaders = "user" | "project" | "version" | "organization";
-type routeParams = "user" | "project" | "version" | "organization";
+type dataLoaders = "user" | "project" | "version" | "organization" | "page";
+type routeParams = "user" | "project" | "version" | "organization" | "page";
 
 // TODO check every handling of the reject stuff (for both composables)
 
