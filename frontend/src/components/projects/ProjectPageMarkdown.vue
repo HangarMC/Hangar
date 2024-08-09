@@ -3,17 +3,23 @@ import type { ExtendedProjectPage, HangarProject, HangarProjectPage } from "~/ty
 
 const props = defineProps<{
   project?: HangarProject;
+  page?: ExtendedProjectPage;
   mainPage: boolean;
 }>();
 
-const route = useRoute("user-project-pages-all");
+const route = useRoute("user-project-pages-page");
 const router = useRouter();
 
 const updateProjectPages = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
 
-const { editingPage, changeEditingPage, page, savePage, deletePage } = await useProjectPage(route, router, props.project, props.mainPage);
+const { editingPage, changeEditingPage, savePage, deletePage } = useProjectPage(
+  route,
+  router,
+  props.project,
+  props.mainPage ? props.project?.mainPage : props.page
+);
 if (!props.mainPage) {
-  useHead(useSeo(page.value?.name + " | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
+  useHead(useSeo(props.page?.name + " | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
 }
 
 async function deletePageAndUpdateProject() {
@@ -29,22 +35,10 @@ async function deletePageAndUpdateProject() {
 }
 
 defineSlots<{
-  default: (props: {
-    page?: ExtendedProjectPage | null;
-    editingPage: boolean;
-    changeEditingPage: (editing: boolean) => void;
-    savePage: (content: string) => void;
-    deletePage: () => void;
-  }) => any;
+  default: (props: { editingPage: boolean; changeEditingPage: (editing: boolean) => void; savePage: (content: string) => void; deletePage: () => void }) => any;
 }>();
 </script>
 
 <template>
-  <slot
-    :page="page"
-    :save-page="savePage"
-    :delete-page="deletePageAndUpdateProject"
-    :editing-page="editingPage"
-    :change-editing-page="changeEditingPage"
-  ></slot>
+  <slot :save-page="savePage" :delete-page="deletePageAndUpdateProject" :editing-page="editingPage" :change-editing-page="changeEditingPage"></slot>
 </template>

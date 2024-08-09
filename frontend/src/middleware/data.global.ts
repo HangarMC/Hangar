@@ -1,4 +1,4 @@
-import type { HangarOrganization, HangarProject, HangarVersion, User } from "~/types/backend";
+import type { ExtendedProjectPage, HangarOrganization, HangarProject, HangarVersion, User } from "~/types/backend";
 import { useDataLoader } from "~/composables/useDataLoader";
 import { isAxiosError } from "axios";
 
@@ -44,6 +44,20 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     promises
   );
 
+  const { loader: pageLoader, data: page } = useDataLoader<ExtendedProjectPage>("page");
+  const pageName = pageLoader(
+    "page",
+    to,
+    from,
+    async (pagePath) => {
+      if ("project" in to.params) {
+        return useInternalApi<ExtendedProjectPage>(`pages/page/${to.params.project}/` + pagePath.toString().replaceAll(",", "/"));
+      }
+      throw createError({ statusCode: 500, statusMessage: "No project param?!" });
+    },
+    promises
+  ) as string[] | undefined;
+
   if (import.meta.server && promises?.length) {
     try {
       await Promise.all(promises);
@@ -60,17 +74,23 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     let newPath = to.fullPath;
     if (userName) {
       if (user.value && user.value.name !== userName) {
-        newPath = newPath.replace(userName, user.value?.name);
+        newPath = newPath.replace(userName, user.value.name);
       }
     }
     if (projectName) {
       if (project.value && project.value.name !== projectName) {
-        newPath = newPath.replace(projectName, project.value?.name);
+        newPath = newPath.replace(projectName, project.value.name);
       }
     }
     if (versionName) {
       if (version.value && version.value.name !== versionName) {
-        newPath = newPath.replace(versionName, version.value?.name);
+        newPath = newPath.replace(versionName, version.value.name);
+      }
+    }
+    if (pageName) {
+      const pageSlug = pageName.join("/");
+      if (page.value && page.value.slug !== pageSlug) {
+        newPath = newPath.replace(pageSlug, page.value.slug);
       }
     }
     if (newPath != to.fullPath) {

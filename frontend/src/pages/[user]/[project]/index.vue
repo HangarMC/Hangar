@@ -9,7 +9,7 @@ const props = defineProps<{
 
 const config = useConfig();
 const i18n = useI18n();
-const route = useRoute("user-project-pages-all");
+const route = useRoute("user-project-pages-page");
 const openProjectPages = useOpenProjectPages(route, props.project);
 
 const sponsors = ref(props.project?.settings?.sponsors);
@@ -65,12 +65,12 @@ useHead(
 <template>
   <div class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-11/15 flex-grow overflow-auto">
-      <ProjectPageMarkdown v-slot="{ page, editingPage, changeEditingPage, savePage }" :project="props.project" main-page>
-        <Card v-if="page?.contents" class="pb-0 overflow-clip overflow-hidden">
+      <ProjectPageMarkdown v-slot="{ editingPage, changeEditingPage, savePage }" :project="props.project" :page="props.project?.mainPage" main-page>
+        <Card v-if="project?.mainPage?.contents" class="pb-0 overflow-clip overflow-hidden">
           <ClientOnly v-if="hasPerms(NamedPermission.EditPage)">
             <MarkdownEditor
               :editing="editingPage"
-              :raw="page.contents"
+              :raw="project?.mainPage.contents"
               :deletable="false"
               :saveable="true"
               :cancellable="true"
@@ -80,11 +80,11 @@ useHead(
               @save="savePage"
             />
             <template #fallback>
-              <Markdown :raw="page.contents" />
+              <Markdown :raw="project?.mainPage.contents" />
             </template>
           </ClientOnly>
           <!--We have to blow up v-model:editing into :editing and @update:editing as we are inside a scope--->
-          <Markdown v-else :raw="page.contents" />
+          <Markdown v-else :raw="project?.mainPage.contents" />
         </Card>
       </ProjectPageMarkdown>
       <Card v-if="sponsors || hasPerms(NamedPermission.EditSubjectSettings)" class="mt-2 pb-0 overflow-clip overflow-visible">
