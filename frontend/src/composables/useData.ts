@@ -50,10 +50,28 @@ export function usePossibleAlts(user: () => string) {
   return { possibleAlts, possibleAltsStatus };
 }
 
-export function useProjects(params: () => { member?: string; limit?: number; offset?: number; q?: string; owner?: string }, router?: Router) {
-  const { data: projects, status: projectsStatus } = useData(
+export function useProjects(
+  params: () => {
+    member?: string;
+    limit?: number;
+    offset?: number;
+    query?: string;
+    owner?: string;
+    version?: string[];
+    category?: string[];
+    platform?: Platform[];
+    tag?: string[];
+    sort?: string;
+  },
+  router?: Router
+) {
+  const {
+    data: projects,
+    status: projectsStatus,
+    refresh: refreshProjects,
+  } = useData(
     params,
-    (p) => "projects:" + p,
+    (p) => "projects:" + (p.member || p.owner || "main") + ":" + p.offset,
     (p) => useApi<PaginatedResultProject>("projects", "get", { ...p }),
     true,
     () => false,
@@ -63,7 +81,7 @@ export function useProjects(params: () => { member?: string; limit?: number; off
       }
     }
   );
-  return { projects, projectsStatus };
+  return { projects, projectsStatus, refreshProjects };
 }
 
 export function useStarred(user: () => string) {
@@ -214,8 +232,8 @@ export function usePossiblePerms(user: () => string) {
 export function useAdminStats(params: () => { from: string; to: string }) {
   const { data: adminStats, status: adminStatsStatus } = useData(
     params,
-    () => "adminStats:" + params().from + params().to,
-    (params) => useInternalApi<DayStats[]>("admin/stats", "get", params)
+    (p) => "adminStats:" + p.from + ":" + p.to,
+    (p) => useInternalApi<DayStats[]>("admin/stats", "get", p)
   );
   return { adminStats, adminStatsStatus };
 }
@@ -272,7 +290,7 @@ export function useUser(userName: () => string) {
 export function useUsers(params: () => { query?: string; limit?: number; offset?: number; sort?: string[] }) {
   const { data: users, status: usersStatus } = useData(
     params,
-    () => "users",
+    (p) => "users:" + p.query + ":" + p.offset + ":" + p.sort,
     (p) => useApi<PaginatedResultUser>("users", "get", p)
   );
   return { users, usersStatus };
@@ -284,7 +302,7 @@ export function useActionLogs(
 ) {
   const { data: actionLogs, status: actionLogsStatus } = useData(
     params,
-    () => "actionLogs",
+    (p) => "actionLogs:" + p.offset + ":" + p.sort + ":" + p.user + ":" + p.logAction + ":" + p.authorName + ":" + p.projectSlug,
     (p) => useInternalApi<PaginatedResultHangarLoggedAction>("admin/log", "get", p),
     true,
     () => false,
@@ -300,7 +318,7 @@ export function useActionLogs(
 export function useStaff(params: () => { offset?: number; limit?: number; sort?: string[]; query?: string }) {
   const { data: staff, status: staffStatus } = useData(
     params,
-    () => "staff",
+    (p) => "staff:" + p.offset + ":" + p.sort + ":" + p.query,
     (p) => useApi<PaginatedResultUser>("staff", "GET", p)
   );
   return { staff, staffStatus };
@@ -309,7 +327,7 @@ export function useStaff(params: () => { offset?: number; limit?: number; sort?:
 export function useAuthors(params: () => { offset?: number; limit?: number; sort?: string[]; query?: string }) {
   const { data: authors, status: authorStatus } = useData(
     params,
-    () => "authors",
+    (p) => "authors:" + p.offset + ":" + p.sort + ":" + p.query,
     (p) => useApi<PaginatedResultUser>("authors", "GET", p)
   );
   return { authors, authorStatus };
@@ -375,7 +393,7 @@ export function useProjectVersions(
 ) {
   const { data: versions, status: versionsStatus } = useData(
     params,
-    (p) => "versions:" + p.project,
+    (p) => "versions:" + p.project + ":" + p.data.offset + ":" + p.data.channel + ":" + p.data.platform + ":" + p.data.includeHiddenChannels,
     (p) => useApi<PaginatedResultVersion>(`projects/${p.project}/versions`, "GET", p.data),
     true,
     () => false,

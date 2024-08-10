@@ -2,12 +2,15 @@ import type { ExtendedProjectPage, HangarOrganization, HangarProject, HangarVers
 import { useDataLoader } from "~/composables/useDataLoader";
 import { isAxiosError } from "axios";
 
+// this middleware takes care of fetching the "important" data for pages, like user/project/org/version/page, based on route params
+// it also handles 404s and redirects to the proper casing
 export default defineNuxtRouteMiddleware(async (to, from) => {
   // don't call on router.replace when we just update the query
   if (import.meta.client && to.path === from?.path) {
     return;
   }
 
+  // if we are in an error state, dont waste time loading this data
   const error = useError();
   if (error.value) {
     return;
@@ -22,13 +25,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const projectName = projectLoader("project", to, from, async (projectName) => useInternalApi<HangarProject>("projects/project/" + projectName), promises);
 
   const { loader: organizationLoader } = useDataLoader<HangarOrganization>("organization");
-  organizationLoader(
-    "organization",
-    to,
-    from,
-    async (organizationName) => useInternalApi<HangarOrganization>("organizations/org/" + organizationName),
-    promises
-  );
+  organizationLoader("user", to, from, async (organizationName) => useInternalApi<HangarOrganization>("organizations/org/" + organizationName), promises);
 
   const { loader: versionLoader, data: version } = useDataLoader<HangarVersion>("version");
   const versionName = versionLoader(

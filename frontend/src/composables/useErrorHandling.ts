@@ -73,11 +73,11 @@ function _handleRequestError(err: AxiosError | H3Error | unknown, i18n?: Compose
     });
   } else if ("response" in err && typeof err.response?.data === "object" && err.response.data) {
     _handleErrorResponse(err.response.data, i18n);
-  } else if (err.cause?.response?.data) {
-    _handleErrorResponse(err.cause.response.data, i18n);
-  } else if (err.cause?.statusCode) {
+  } else if ((err.cause as any)?.response?.data) {
+    _handleErrorResponse((err.cause as any).response.data, i18n);
+  } else if ((err.cause as any)?.statusCode) {
     // this error was rethrown, lets inform nuxt
-    showError(err.cause);
+    showError(err.cause as any);
   } else {
     throw createError({
       statusCode: 500,

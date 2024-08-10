@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { HangarProject, HangarProjectPage, User } from "~/types/backend";
+import type { HangarProjectPage, User } from "~/types/backend";
 import { useDataLoader } from "~/composables/useDataLoader";
 
 defineProps<{
   user?: User;
 }>();
 
-const { data: project } = useDataLoader<HangarProject>("project");
+const { data: project } = useDataLoader("project");
 
 definePageMeta({
   dataLoader_project: true,

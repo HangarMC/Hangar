@@ -119,7 +119,7 @@ export default defineNuxtConfig({
     typedPages: true,
   },
   typescript: {
-    // typeCheck: "build", // TODO enable typechecking on build
+    typeCheck: "build",
     tsConfig: {
       include: ["./types/typed-router.d.ts"],
       compilerOptions: {

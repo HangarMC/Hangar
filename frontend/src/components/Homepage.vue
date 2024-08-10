@@ -20,7 +20,7 @@ const sorters = [
   { id: "-newest", label: i18n.t("project.sorting.newest") },
 ];
 
-const toArray = (input: unknown) => (Array.isArray(input) ? input : input ? [input] : []);
+const toArray = (input: (string | null)[] | string | null): string[] => (Array.isArray(input) ? (input as string[]) : input ? [input!] : []);
 const filters = ref({
   versions: toArray(route.query.version),
   categories: toArray(route.query.category),
@@ -38,12 +38,12 @@ const query = ref<string>((route.query.query as string) || "");
 
 const requestParams = computed(() => {
   const limit = 10;
-  const params: Record<string, any> = {
+  const params: ReturnType<Parameters<typeof useProjects>[0]> = {
     limit,
     offset: page.value * limit,
     version: filters.value.versions,
     category: filters.value.categories,
-    platform: filters.value.platform !== null ? [filters.value.platform] : [],
+    platform: filters.value.platform ? [filters.value.platform] : [],
     tag: filters.value.tags,
   };
   if (query.value) {
@@ -55,7 +55,7 @@ const requestParams = computed(() => {
 
   return params;
 });
-const { projects } = useProjects(() => requestParams.value, router);
+const { projects, refreshProjects } = useProjects(() => requestParams.value, router);
 
 // if somebody set page too high, lets reset it back
 watch(projects, () => {
@@ -63,6 +63,12 @@ watch(projects, () => {
     page.value = 0;
   }
 });
+// for some reason the watch in useProjects doesn't work for filters 🤷‍♂️
+watch(
+  () => filters.value.versions,
+  () => refreshProjects(),
+  { deep: true }
+);
 
 function versions(platform: Platform): PlatformVersion[] {
   const platformData = useBackendData.platforms?.get(platform);
@@ -76,9 +82,9 @@ function versions(platform: Platform): PlatformVersion[] {
 function updatePlatform(platform: any) {
   filters.value.platform = platform;
 
-  const allowedVersion: PlatformVersion[] = versions(platform);
+  const allowedVersion = versions(platform);
   filters.value.versions = filters.value.versions.filter((existingVersion) => {
-    return allowedVersion.find((allowedNewVersion) => allowedNewVersion === existingVersion);
+    return allowedVersion.find((allowedNewVersion) => allowedNewVersion.version === existingVersion);
   });
 }
 

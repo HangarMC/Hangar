@@ -7,6 +7,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     console.log("hit vite path???????????????????????", to.fullPath);
     return;
   }
+  // don't call on router.replace when we just update the query
+  if (import.meta.client && to.path === from?.path) {
+    return;
+  }
 
   await useAuth.updateUser();
   await loadRoutePerms(to);
