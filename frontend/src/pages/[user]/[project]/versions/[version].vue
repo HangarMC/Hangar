@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { HangarProject, HangarVersion, Platform } from "~/types/backend";
+import type { HangarProject, Platform } from "~/types/backend";
 import { useDataLoader } from "~/composables/useDataLoader";
 
 defineProps<{
