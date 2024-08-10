@@ -9,7 +9,6 @@ export default defineNitroPlugin((nitroApp) => {
 
   if (!sentry.dsn) {
     console.warn("Sentry DSN not set, skipping Sentry initialization");
-    return;
   }
 
   // TODO make this work with bun

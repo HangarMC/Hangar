@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
-import { Category, Platform, type PlatformVersion, Tag } from "~/types/backend";
+import { Platform, Tag } from "~/types/backend";
+import type { PlatformVersion , Category } from "~/types/backend";
 
 const props = defineProps<{
   platform?: Platform;
@@ -251,9 +252,14 @@ useHead(
           </h3>
           <div class="flex flex-col gap-1">
             <ul>
-              <li v-for="platform in useVisiblePlatforms" :key="platform.enumName" class="inline-flex w-full">
-                <InputRadio :label="platform.name" :model-value="filters.platform" :value="platform.enumName" @update:model-value="updatePlatform">
-                  <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
+              <li v-for="visiblePlatform in useVisiblePlatforms" :key="visiblePlatform.enumName" class="inline-flex w-full">
+                <InputRadio
+                  :label="visiblePlatform.name"
+                  :model-value="filters.platform"
+                  :value="visiblePlatform.enumName"
+                  @update:model-value="updatePlatform"
+                >
+                  <PlatformLogo :platform="visiblePlatform.enumName" :size="24" class="mr-1" />
                 </InputRadio>
               </li>
             </ul>

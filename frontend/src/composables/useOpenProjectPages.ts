@@ -1,5 +1,5 @@
-import type { HangarProject } from "~/types/backend";
 import type { RouteLocationTyped, RouteMapGeneric } from "vue-router";
+import type { HangarProject } from "~/types/backend";
 
 export function useOpenProjectPages(route: RouteLocationTyped<RouteMapGeneric, "user-project-pages-page">, project?: HangarProject) {
   const open = ref<string[]>([]);

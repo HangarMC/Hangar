@@ -30,6 +30,7 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
         return newParam;
       } else if (newParam) {
         promises.push(
+          // eslint-disable-next-line no-async-promise-executor
           new Promise<void>(async (resolve, reject) => {
             console.log("load loading", key);
             const result = await loader(newParam).catch(reject);
@@ -95,10 +96,11 @@ export function useData<T, P extends Record<string, unknown> | string>(
       status.value = "idle";
       return undefined;
     }
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise<void>(async (resolve, reject) => {
       console.log("load", key(params));
       const result = await loader(params).catch(reject);
-      //await new Promise((resolve) => setTimeout(resolve, 5000));
+      // await new Promise((resolve) => setTimeout(resolve, 5000));
       console.log("loaded", key(params));
       if (result) {
         setState(result);
@@ -176,7 +178,7 @@ function checkEqual(a: Record<string, unknown> | string, b: Record<string, unkno
     return false;
   }
 
-  for (let key of keys1) {
+  for (const key of keys1) {
     if (a[key] !== b[key]) {
       if (typeof a[key] === "object" && typeof b[key] === "object") {
         if (!checkEqual(a[key] as Record<string, unknown>, b[key] as Record<string, unknown>)) {

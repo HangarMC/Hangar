@@ -1,6 +1,6 @@
+import { isAxiosError } from "axios";
 import type { ExtendedProjectPage, HangarOrganization, HangarProject, HangarVersion, User } from "~/types/backend";
 import { useDataLoader } from "~/composables/useDataLoader";
-import { isAxiosError } from "axios";
 
 // this middleware takes care of fetching the "important" data for pages, like user/project/org/version/page, based on route params
 // it also handles 404s and redirects to the proper casing
@@ -18,21 +18,21 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   const promises: Promise<any>[] = [];
 
-  const { loader: userLoader, data: user } = useDataLoader<User>("user");
-  const userName = userLoader("user", to, from, async (userName) => useApi<User>("users/" + userName), promises);
+  const { loader: userLoader, data: user } = useDataLoader("user");
+  const userName = userLoader("user", to, from, (userName) => useApi<User>("users/" + userName), promises);
 
-  const { loader: projectLoader, data: project } = useDataLoader<HangarProject>("project");
-  const projectName = projectLoader("project", to, from, async (projectName) => useInternalApi<HangarProject>("projects/project/" + projectName), promises);
+  const { loader: projectLoader, data: project } = useDataLoader("project");
+  const projectName = projectLoader("project", to, from, (projectName) => useInternalApi<HangarProject>("projects/project/" + projectName), promises);
 
-  const { loader: organizationLoader } = useDataLoader<HangarOrganization>("organization");
-  organizationLoader("user", to, from, async (organizationName) => useInternalApi<HangarOrganization>("organizations/org/" + organizationName), promises);
+  const { loader: organizationLoader } = useDataLoader("organization");
+  organizationLoader("user", to, from, (organizationName) => useInternalApi<HangarOrganization>("organizations/org/" + organizationName), promises);
 
-  const { loader: versionLoader, data: version } = useDataLoader<HangarVersion>("version");
+  const { loader: versionLoader, data: version } = useDataLoader("version");
   const versionName = versionLoader(
     "version",
     to,
     from,
-    async (versionName) => {
+    (versionName) => {
       if ("project" in to.params) {
         return useInternalApi<HangarVersion>(`versions/version/${to.params.project}/versions/${versionName}`);
       }
@@ -41,12 +41,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     promises
   );
 
-  const { loader: pageLoader, data: page } = useDataLoader<ExtendedProjectPage>("page");
+  const { loader: pageLoader, data: page } = useDataLoader("page");
   const pageName = pageLoader(
     "page",
     to,
     from,
-    async (pagePath) => {
+    (pagePath) => {
       if ("project" in to.params) {
         return useInternalApi<ExtendedProjectPage>(`pages/page/${to.params.project}/` + pagePath.toString().replaceAll(",", "/"));
       }
@@ -90,7 +90,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         newPath = newPath.replace(pageSlug, page.value.slug);
       }
     }
-    if (newPath != to.fullPath) {
+    if (newPath !== to.fullPath) {
       console.log("Redirect to " + newPath + " from (" + to.fullPath + ")");
       return navigateTo(newPath, { redirectCode: 301 });
     }

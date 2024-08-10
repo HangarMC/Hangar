@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 
+import type { RouteLocationRaw, RouteMap } from "vue-router";
 import hangarLogo from "~/assets/hangar-logo.svg";
 
 import IconMdiHome from "~icons/mdi/home";
@@ -20,7 +21,6 @@ import IconMdiFolderWrenchOutline from "~icons/mdi/folder-wrench-outline";
 import IconMdiFolderInformationOutline from "~icons/mdi/folder-information-outline";
 
 import { type HangarNotification, type HangarUser, NamedPermission } from "~/types/backend";
-import type { RouteLocationRaw, RouteMap } from "vue-router";
 import { useUnreadNotificationCount } from "~/composables/useData";
 
 // marker so that you can inspect backend data in dev tools

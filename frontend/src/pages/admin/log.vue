@@ -58,7 +58,7 @@ const requestParams = computed(() => {
 });
 const { actionLogs } = useActionLogs(() => requestParams.value, router);
 
-async function updateSort(col: string, sorter: Record<string, number>) {
+function updateSort(col: string, sorter: Record<string, number>) {
   sort.value = [...Object.keys(sorter)]
     .map((k) => {
       const val = sorter[k];

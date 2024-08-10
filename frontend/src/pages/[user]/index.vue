@@ -124,12 +124,13 @@ useHead(
 
 <template>
   <UserHeader :viewing-user="user" :organization="organization" />
-  <div class="flex-basis-full flex flex-col gap-2 flex-grow lg:max-w-7/10 lg:min-w-6/10" v-if="pinned">
+  <div v-if="pinned" class="flex-basis-full flex flex-col gap-2 flex-grow lg:max-w-7/10 lg:min-w-6/10">
     <div v-for="project in pinned" :key="project.namespace.slug">
       <ProjectCard :project="project" />
     </div>
   </div>
 
+  <!-- eslint-disable-next-line vue/no-multiple-template-root -->
   <div class="flex gap-4 flex-basis-full flex-col lg:flex-row">
     <div class="flex-basis-full flex flex-col gap-2 flex-grow lg:max-w-7/10 lg:min-w-6/10">
       <div class="flex gap-2">

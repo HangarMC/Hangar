@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
 import { defineNuxtModule } from "@nuxt/kit";
-import type { AxiosInstance } from "axios";
+import { type AxiosInstance, isAxiosError } from "axios";
 import axios from "axios";
 // noinspection ES6PreferShortImport
 import { backendDataLog } from "../composables/useLog";
@@ -61,7 +61,7 @@ async function generateBackendData(state: ServerBackendData, path: string, retry
 
     backendDataLog("Backend data generated!");
   } catch (err) {
-    if (axios.isAxiosError(err)) {
+    if (isAxiosError(err)) {
       const transformedError = {
         code: err?.code,
         requestUrl: err?.request?.path,
@@ -118,7 +118,7 @@ function prepareAxios(serverUrl: string): AxiosInstance {
     baseURL: serverUrl + "/api/internal/data",
   });
   axiosInstance.interceptors.response.use(undefined, (err) => {
-    if (axios.isAxiosError(err)) {
+    if (isAxiosError(err)) {
       if (err.response?.status === 404) {
         backendDataLog("Couldn't load " + err.request?.path + ", skipping");
         return null;

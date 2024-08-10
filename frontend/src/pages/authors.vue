@@ -25,7 +25,7 @@ const requestParams = computed(() => {
 });
 const { authors } = useAuthors(() => requestParams.value);
 
-async function updateSort(col: string, sorter: Record<string, number>) {
+function updateSort(col: string, sorter: Record<string, number>) {
   sort.value = [...Object.keys(sorter)]
     .map((k) => {
       const val = sorter[k];
