@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { useDataLoader } from "~/composables/useDataLoader";
-import type { User } from "~/types/backend";
 
-const { data: user } = useDataLoader<User>("user");
+const { data: user } = useDataLoader("user");
+const { data: org } = useDataLoader("organization");
 
 definePageMeta({
   dataLoader_user: true,
+  dataLoader_organization: true,
 });
 </script>
 
@@ -14,8 +15,7 @@ definePageMeta({
     <router-view v-slot="{ Component }">
       <Suspense>
         <div>
-          <!-- todo fix org -->
-          <component :is="Component" :user="user" :organization="undefined" />
+          <component :is="Component" :user="user" :organization="org" />
         </div>
       </Suspense>
     </router-view>

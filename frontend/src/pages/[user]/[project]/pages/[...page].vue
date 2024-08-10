@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type ExtendedProjectPage, type HangarProject, NamedPermission, type User } from "~/types/backend";
+import { type HangarProject, NamedPermission, type User } from "~/types/backend";
 import { useDataLoader } from "~/composables/useDataLoader";
 
 const props = defineProps<{
@@ -9,7 +9,7 @@ const props = defineProps<{
 
 const route = useRoute("user-project-pages-page");
 
-const { data: page } = useDataLoader<ExtendedProjectPage>("page");
+const { data: page } = useDataLoader("page");
 
 definePageMeta({
   dataLoader_page: true,

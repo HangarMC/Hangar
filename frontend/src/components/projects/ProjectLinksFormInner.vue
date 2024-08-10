@@ -11,6 +11,10 @@ function remove(index: number) {
   model.value.splice(index, 1);
 }
 function add() {
+  if (!model.value) {
+    model.value = [{ id: 0, name: "", url: "" }];
+    return;
+  }
   let nextId = Math.max(...model.value.map((l) => l.id)) + 1;
   if (nextId === -Infinity) {
     nextId = 0;

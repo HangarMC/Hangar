@@ -6,7 +6,7 @@ defineProps<{
   project?: HangarProject;
 }>();
 
-const { data: version } = useDataLoader<HangarVersion>("version");
+const { data: version } = useDataLoader("version");
 
 definePageMeta({
   dataLoader_version: true,
