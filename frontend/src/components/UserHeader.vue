@@ -87,7 +87,7 @@ const canEditCurrentUser = computed<boolean>(() => {
             </template>
           </Popper>
         </h1>
-        <Skeleton class="text-2xl px-1 w-50" v-else />
+        <Skeleton v-else class="text-2xl px-1 w-50" />
 
         <div v-if="viewingUser" class="ml-1">
           <span v-if="viewingUser.tagline">{{ viewingUser.tagline }}</span>

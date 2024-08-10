@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { upperFirst } from "scule";
-import { type HangarProject, NamedPermission, type PinnedVersion, Platform, type User } from "~/types/backend";
+import { NamedPermission } from "~/types/backend";
+import type { HangarProject, PinnedVersion, User , Platform } from "~/types/backend";
 
 const props = defineProps<{
   user?: User;

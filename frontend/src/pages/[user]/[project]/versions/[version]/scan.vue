@@ -15,7 +15,7 @@ const route = useRoute("user-project-versions-version-scan");
 
 const { jarScans } = useJarScans(() => props.version?.id as unknown as string);
 
-async function scan() {
+async function doScan() {
   for (const platform of props.versionPlatforms) {
     if (!props.version?.downloads?.[platform]?.fileInfo) {
       continue;
@@ -41,6 +41,6 @@ useHead(useSeo("Scan | " + props.project?.name, props.project?.description, rout
         <hr class="my-1" />
       </div>
     </div>
-    <Button @click="scan">Scan</Button>
+    <Button @click="doScan">Scan</Button>
   </div>
 </template>

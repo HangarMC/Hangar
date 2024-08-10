@@ -4,16 +4,8 @@ import { useVuelidate } from "@vuelidate/core";
 import { Cropper, type CropperResult } from "vue-advanced-cropper";
 import type { Tab } from "~/types/components/design/Tabs";
 import InputText from "~/components/ui/InputText.vue";
-import {
-  Category,
-  type HangarProject,
-  type HangarUser,
-  NamedPermission,
-  type PaginatedResultUser,
-  type ProjectSettings,
-  Tag,
-  Visibility,
-} from "~/types/backend";
+import { NamedPermission, Tag, Visibility } from "~/types/backend";
+import type { HangarProject, HangarUser, PaginatedResultUser, ProjectSettings , Category } from "~/types/backend";
 
 import "vue-advanced-cropper/dist/style.css";
 

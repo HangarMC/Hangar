@@ -102,6 +102,8 @@ async function savePage(content: string) {
     await useInternalApi(`versions/version/${props.project?.id}/${props.version.id}/saveDescription`, "post", {
       content,
     });
+    // this is fine (tm)
+    // eslint-disable-next-line vue/no-mutating-props
     props.version.description = content;
     editingPage.value = false;
   } catch (err) {
