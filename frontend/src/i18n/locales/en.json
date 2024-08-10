@@ -939,6 +939,23 @@
     }
   },
   "auth": {
+    "login": {
+      "main": {
+        "title": "Log in to Hangar"
+      },
+      "sudo": {
+        "title": "Verify your identity",
+        "info": "You need to authenticate again to perform this action."
+      },
+      "twoFactor": {
+        "title": "Two-factor authentication",
+        "info": "Your account uses two-factor authentication. Use one of your saved methods to continue.",
+        "webauthn": {
+          "button": "Use passkey",
+          "genericError": "Passkey authentication failed. Try again, or use another method."
+        }
+      }
+    },
     "settings": {
       "profile": {
         "header": "Profile",
