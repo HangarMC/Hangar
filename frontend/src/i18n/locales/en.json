@@ -1008,9 +1008,9 @@
           "generateNew": "Generate new codes",
           "modal": {
             "title": "Save your backup codes",
-            "needConfigure": "If you ever lose access to your main two-factor authentication methods, you can use these backup codes once to log in.",
-            "confirm": "Store these backup codes somewhere. To finish setting up two-factor authentication, confirm that you saved the backup codes by entering one of them below:",
-            "backupCode": "Backup Code"
+            "needConfigure": "If you ever lose access to your main two-factor authentication methods, you can use these backup codes to log in. Store these somewhere safe.",
+            "confirm": "To finish setting up two-factor authentication, confirm that you saved the backup codes by entering one of them below:",
+            "backupCode": "Enter a backup code"
           }
         },
         "unlinkOAuth": {
