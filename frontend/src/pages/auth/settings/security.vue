@@ -266,8 +266,9 @@ function closeUnlinkModal() {
 <template>
   <div v-if="auth.user">
     <PageTitle>{{ t("auth.settings.security.header") }}</PageTitle>
-    <h3 class="text-lg font-bold mb-2">{{ t("auth.settings.security.authApp") }}</h3>
-    <Button v-if="settings?.hasTotp" :disabled="loading" @click="unlinkTotp">Unlink totp</Button>
+    <h3 class="text-lg font-bold mb-2">{{ t("auth.settings.security.authApp.name") }}</h3>
+    <p class="mb-2">{{ settings?.hasTotp ? t("auth.settings.security.authApp.active") : t("auth.settings.security.authApp.none") }}</p>
+    <Button v-if="settings?.hasTotp" :disabled="loading" @click="unlinkTotp">{{ t("auth.settings.security.button.unlinkTotp") }}</Button>
     <Button v-else-if="!totpData" :disabled="loading" @click="setupTotp"> {{ t("auth.settings.security.button.setupAuthApp") }} </Button>
     <div v-else class="flex lt-sm:flex-col gap-8">
       <div class="flex flex-col gap-2 basis-1/2">
@@ -314,6 +315,8 @@ function closeUnlinkModal() {
         </Button>
       </Modal>
     </ul>
+    <p v-if="settings?.authenticators.length == 0">{{ t("auth.settings.security.securityKeys.none") }}</p>
+    <h4 class="font-semibold mt-4 mb-2">{{ t("auth.settings.security.securityKeys.registerTitle") }}</h4>
     <div class="my-2">
       <InputText
         v-model="authenticatorName"
@@ -325,6 +328,7 @@ function closeUnlinkModal() {
 
     <template v-if="settings?.hasBackupCodes">
       <h3 class="text-lg font-bold mt-4 mb-2">{{ t("auth.settings.security.backupCodes.name") }}</h3>
+      <p>{{ t("auth.settings.security.backupCodes.info") }}</p>
       <div v-if="showCodes" class="flex flex-wrap mt-2 mb-2">
         <div v-for="code in codes" :key="code.code" class="basis-3/12">
           <code>{{ code["used_at"] ? t("general.used") : code.code }}</code>
@@ -342,6 +346,14 @@ function closeUnlinkModal() {
         <template v-if="provider === 'github'">
           <IconMdiGithub class="mr-1" />
           {{ t("auth.settings.security.button.linkGithub") }}
+        </template>
+        <template v-else-if="provider === 'google'">
+          <IconMdiGoogle class="mr-1" />
+          {{ t("auth.settings.security.button.linkGoogle") }}
+        </template>
+        <template v-else-if="provider === 'microsoft'">
+          <IconMdiMicrosoft class="mr-1" />
+          {{ t("auth.settings.security.button.linkMicrosoft") }}
         </template>
         <template v-else> {{ t("auth.settings.security.button.linkOther", [provider]) }} </template>
       </Button>
@@ -383,11 +395,13 @@ function closeUnlinkModal() {
       <Button class="mt-2" :disabled="v.$invalid" @click="confirmAndRepeat">{{ t("general.confirm") }}</Button>
     </Modal>
 
+    <!-- TODO: implement session list
     <h3 class="text-lg font-bold mt-4 mb-2">{{ t("auth.settings.security.devices") }}</h3>
     <ComingSoon>
       last login<br />
       on revoke iphone<br />
       revoke all
     </ComingSoon>
+    -->
   </div>
 </template>

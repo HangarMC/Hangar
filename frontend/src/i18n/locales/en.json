@@ -87,8 +87,8 @@
     "indexTitle": "Home",
     "authorsTitle": "Authors",
     "staffTitle": "Staff",
-    "login": "Login",
-    "signup": "Signup",
+    "login": "Log in",
+    "signup": "Sign up",
     "user": {
       "profile": "Profile",
       "notifications": "Notifications",
@@ -972,14 +972,21 @@
       },
       "security": {
         "header": "Security",
-        "authApp": "Authenticator App",
+        "authApp": {
+          "name": "Authenticator App",
+          "none": "Set up a mobile authenticator app to generate one-time passcodes as a two-factor authentication method.",
+          "active": "You have set up an authenticator app as a two-factor method."
+        },
         "devices": "Devices",
         "button": {
           "setupAuthApp": "Setup 2FA via authenticator app",
           "setupSecurityKey": "Setup 2FA via security key",
           "linkGithub": "Link a GitHub account",
+          "linkGoogle": "Link a Google account",
+          "linkMicrosoft": "Link a Microsoft account",
           "linkOther": "Link {0} account",
-          "unlinkAccount": "Unlink {0} account {1}"
+          "unlinkAccount": "Unlink {0} account {1}",
+          "unlinkTotp": "Remove authenticator app"
         },
         "authAppSetup": {
           "scan": "Scan the QR code on the right using your favorite authenticator app",
@@ -991,10 +998,13 @@
           "name": "Security Keys",
           "keyName": "Name",
           "unregister": "Unregister",
-          "rename": "Rename"
+          "rename": "Rename",
+          "registerTitle": "Register a new security key",
+          "none": "You have no security keys registered. You can add a trusted device to your account as a two-factor authentication method."
         },
         "backupCodes": {
           "name": "Backup Codes",
+          "info": "If you lose access to your other two-factor methods, you can use a backup code to log in.",
           "generateNew": "Generate new codes",
           "modal": {
             "title": "Confirm backup codes",
