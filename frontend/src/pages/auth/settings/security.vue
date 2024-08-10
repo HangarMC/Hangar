@@ -281,7 +281,7 @@ function closeUnlinkModal() {
         </div>
       </div>
       <div class="basis-1/2">
-        <img :src="totpData.qrCode" alt="totp qr code" class="w-60" />
+        <img :src="totpData.qrCode" alt="QR code for TOTP setup" class="w-60" />
         <small>{{ totpData.secret }}</small>
       </div>
     </div>
@@ -328,7 +328,7 @@ function closeUnlinkModal() {
 
     <template v-if="settings?.hasBackupCodes">
       <h3 class="text-lg font-bold mt-4 mb-2">{{ t("auth.settings.security.backupCodes.name") }}</h3>
-      <p>{{ t("auth.settings.security.backupCodes.info") }}</p>
+      <p class="mb-2">{{ t("auth.settings.security.backupCodes.info") }}</p>
       <div v-if="showCodes" class="flex flex-wrap mt-2 mb-2">
         <div v-for="code in codes" :key="code.code" class="basis-3/12">
           <code>{{ code["used_at"] ? t("general.used") : code.code }}</code>
@@ -386,7 +386,7 @@ function closeUnlinkModal() {
           <code>{{ code.code }}</code>
         </div>
       </div>
-      {{ t("auth.settings.security.backupCodes.modal.confirm") }}
+      <p class="mb-2">{{ t("auth.settings.security.backupCodes.modal.confirm") }}</p>
       <InputText
         v-model="backupCodeConfirm"
         :label="t('auth.settings.security.backupCodes.modal.backupCode')"

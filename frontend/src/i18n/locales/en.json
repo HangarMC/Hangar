@@ -1007,9 +1007,9 @@
           "info": "If you lose access to your other two-factor methods, you can use a backup code to log in.",
           "generateNew": "Generate new codes",
           "modal": {
-            "title": "Confirm backup codes",
-            "needConfigure": "You need to configure backup codes before you can activate 2fa. Please save these codes securely!",
-            "confirm": "Confirm that you saved the backup codes by entering one of them below",
+            "title": "Save your backup codes",
+            "needConfigure": "If you ever lose access to your main two-factor authentication methods, you can use these backup codes once to log in.",
+            "confirm": "Store these backup codes somewhere. To finish setting up two-factor authentication, confirm that you saved the backup codes by entering one of them below:",
             "backupCode": "Backup Code"
           }
         },
