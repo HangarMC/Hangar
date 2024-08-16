@@ -103,7 +103,7 @@ async function searchProject(val?: string) {
   projectSearchResult.value = projects.result.map((u) => u.namespace.slug);
 }
 
-useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
+useSeo(computed(() => ({ title: i18n.t("userActionLog.title"), route })));
 </script>
 
 <template>

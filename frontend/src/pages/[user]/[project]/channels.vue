@@ -15,7 +15,7 @@ const { channels, refreshChannels } = useProjectChannels(() => route.params.proj
 const validations = useBackendData.validations;
 const notifications = useNotificationStore();
 
-useHead(useSeo("Channels | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
+useSeo(computed(() => ({ title: "Channels | " + props.project?.name, route, description: props.project?.description, image: props.project?.avatarUrl })));
 
 async function deleteChannel(channel: HangarChannel) {
   await useInternalApi(`channels/${props.project?.id}/delete/${channel.id}`, "post")

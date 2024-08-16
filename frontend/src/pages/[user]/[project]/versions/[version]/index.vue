@@ -58,16 +58,17 @@ const supportsString = computed(() => {
   }
   return result.join(", ");
 });
-useHead(
-  useSeo(
-    props.project?.name + " " + props.version?.name,
-    `Download ${props.project?.name} ${props.version?.name} on Hangar.
-    Supports ${supportsString.value}.
-    Published on ${props.version && i18n.d(new Date(props.version.createdAt), "date")}.
-    ${props.version?.stats?.totalDownloads} downloads.`,
+
+useSeo(
+  computed(() => ({
+    title: `${props.project?.name} ${props.version?.name}`,
     route,
-    props.project?.avatarUrl,
-    [
+    description: `Download ${props.project?.name} ${props.version?.name} on Hangar.
+  Supports ${supportsString.value}.
+  Published on ${props.version && i18n.d(new Date(props.version.createdAt), "date")}.
+  ${props.version?.stats?.totalDownloads} downloads.`,
+    image: props.project?.avatarUrl,
+    additionalScripts: [
       {
         type: "application/ld+json",
         children: JSON.stringify({
@@ -92,8 +93,8 @@ useHead(
         }),
         key: "version",
       },
-    ]
-  )
+    ],
+  }))
 );
 
 async function savePage(content: string) {

@@ -3,7 +3,7 @@ const i18n = useI18n();
 const route = useRoute("api-docs");
 
 const server = import.meta.env.SSR;
-useHead(useSeo(i18n.t("apiDocs.title"), "API Docs for the Hangar REST API", route, null));
+useSeo(computed(() => ({ title: i18n.t("apiDocs.title"), description: "API Docs for the Hangar REST API", route })));
 </script>
 
 <template>

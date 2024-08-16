@@ -14,7 +14,7 @@ const selectedTabs = [
   { value: "resolved", header: i18n.t("flagReview.resolved") },
 ] as const satisfies Tab<string>[];
 
-useHead(useSeo(i18n.t("flagReview.title"), null, route, null));
+useSeo(computed(() => ({ title: i18n.t("flagReview.title"), route })));
 </script>
 
 <template>

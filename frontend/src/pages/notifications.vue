@@ -52,7 +52,7 @@ const filteredInvites = computed<((HangarProjectInvite | HangarOrganizationInvit
   }
 });
 
-useHead(useSeo("Notifications", null, route, null));
+useSeo(computed(() => ({ title: "Notifications", route })));
 
 async function markAllAsRead() {
   await useInternalApi(`markallread`, "post").catch((e) => handleRequestError(e));

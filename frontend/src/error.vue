@@ -74,7 +74,7 @@ if (
   console.log("render error page", text.value, title.value);
 }
 try {
-  useHead(useSeo(title.value, null, useRoute(), null));
+  useSeo(computed(() => ({ title: title.value, route })));
 } catch (e) {
   console.log("seo error?!", e);
 }

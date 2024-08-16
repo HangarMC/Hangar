@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const { version } = useVersionInfo();
 const route = useRoute("version");
-useHead(useSeo("Hangar Version", null, route, null));
+useSeo(computed(() => ({ title: "Hangar Version", route })));
 </script>
 
 <template>

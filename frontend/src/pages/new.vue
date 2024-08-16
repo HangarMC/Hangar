@@ -77,7 +77,7 @@ const steps: Step[] = [
   { value: "finishing", header: i18n.t("project.new.step4.title"), showNext: false, showBack: false },
 ];
 
-useHead(useSeo("New Project", null, route, null));
+useSeo(computed(() => ({ title: "New Project", route })));
 
 function createProject() {
   projectCreationErrors.value = [];

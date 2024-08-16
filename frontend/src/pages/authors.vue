@@ -36,7 +36,7 @@ function updateSort(col: string, sorter: Record<string, number>) {
     .filter((v) => v !== null) as string[];
 }
 
-useHead(useSeo(i18n.t("pages.authorsTitle"), "Hangar Project Authors", route, null));
+useSeo(computed(() => ({ title: i18n.t("pages.authorsTitle"), description: "Hangar Project Authors", route })));
 </script>
 
 <template>

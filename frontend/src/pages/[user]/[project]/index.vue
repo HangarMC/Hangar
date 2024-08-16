@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { upperFirst } from "scule";
 import { NamedPermission } from "~/types/backend";
-import type { HangarProject, PinnedVersion, User , Platform } from "~/types/backend";
+import type { HangarProject, PinnedVersion, User, Platform } from "~/types/backend";
 
 const props = defineProps<{
   user?: User;
@@ -34,13 +34,14 @@ function createPinnedVersionUrl(version: PinnedVersion): string {
 const platform = computed(() =>
   upperFirst(Object.keys(props.project?.pinnedVersions?.[0]?.platformDependenciesFormatted || { Minecraft: "dum" })?.[0]?.toLowerCase() || "Minecraft")
 );
-useHead(
-  useSeo(
-    props.project?.name + ` - ${platform.value} Plugin`,
-    `${props.project?.description} - Download the ${platform.value} Plugin ${props.project?.name} by ${props.project?.namespace?.owner} on Hangar`,
+
+useSeo(
+  computed(() => ({
+    title: `${props.project?.name} - ${platform.value} Plugin`,
     route,
-    props.project?.avatarUrl,
-    [
+    description: `${props.project?.description} - Download the ${platform.value} Plugin ${props.project?.name} by ${props.project?.namespace?.owner} on Hangar`,
+    image: props.project?.avatarUrl,
+    additionalScripts: [
       {
         type: "application/ld+json",
         children: JSON.stringify({
@@ -58,8 +59,8 @@ useHead(
         }),
         key: "project",
       },
-    ]
-  )
+    ],
+  }))
 );
 </script>
 

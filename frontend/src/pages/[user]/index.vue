@@ -83,42 +83,48 @@ const buttons = computed(() => {
 
 const isCurrentUser = computed<boolean>(() => authStore.user?.name === props.user?.name);
 
-const description = (props.user?.tagline ? props.user.tagline + " - " : "") + "Download " + props.user?.name + "'s plugins on Hangar.";
-useHead(
-  useSeo(props.user?.name, description, route, props.user?.avatarUrl, [
-    {
-      key: "profilePage",
-      type: "application/ld+json",
-      children: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "ProfilePage",
-        mainEntity: {
-          "@type": "Person",
-          name: props.user?.name,
-          url: config.publicHost + "/" + route.path,
-          description: props.user?.tagline,
-          image: props.user?.avatarUrl,
-          interactionStatistic: [
-            {
-              "@type": "InteractionCounter",
-              interactionType: "https://schema.org/CreateAction",
-              userInteractionCount: props.user?.projectCount,
-            },
-            {
-              "@type": "InteractionCounter",
-              interactionType: "https://schema.org/LikeAction",
-              userInteractionCount: starred.value?.result?.length || 0,
-            },
-            {
-              "@type": "InteractionCounter",
-              interactionType: "https://schema.org/FollowAction",
-              userInteractionCount: watching.value?.result?.length || 0,
-            },
-          ],
-        },
-      }),
-    },
-  ])
+const description = computed(() => (props.user?.tagline ? props.user.tagline + " - " : "") + "Download " + props.user?.name + "'s plugins on Hangar.");
+useSeo(
+  computed(() => ({
+    title: props.user?.name,
+    description: description.value,
+    route,
+    image: props.user?.avatarUrl,
+    additionalScripts: [
+      {
+        key: "profilePage",
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ProfilePage",
+          mainEntity: {
+            "@type": "Person",
+            name: props.user?.name,
+            url: config.publicHost + "/" + route.path,
+            description: props.user?.tagline,
+            image: props.user?.avatarUrl,
+            interactionStatistic: [
+              {
+                "@type": "InteractionCounter",
+                interactionType: "https://schema.org/CreateAction",
+                userInteractionCount: props.user?.projectCount,
+              },
+              {
+                "@type": "InteractionCounter",
+                interactionType: "https://schema.org/LikeAction",
+                userInteractionCount: starred.value?.result?.length || 0,
+              },
+              {
+                "@type": "InteractionCounter",
+                interactionType: "https://schema.org/FollowAction",
+                userInteractionCount: watching.value?.result?.length || 0,
+              },
+            ],
+          },
+        }),
+      },
+    ],
+  }))
 );
 </script>
 

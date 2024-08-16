@@ -9,7 +9,14 @@ const props = defineProps<{
   project?: HangarProject;
 }>();
 
-useHead(useSeo(i18n.t("project.watchers") + " | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
+useSeo(
+  computed(() => ({
+    title: i18n.t("project.watchers") + " | " + props.project?.name,
+    route,
+    description: props.project?.description,
+    image: props.project?.avatarUrl,
+  }))
+);
 </script>
 
 <template>

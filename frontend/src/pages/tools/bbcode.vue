@@ -5,7 +5,7 @@ const input = ref("");
 const output = ref("");
 const loading = ref(false);
 
-useHead(useSeo("BBCode Converter", null, route, null));
+useSeo(computed(() => ({ title: "BBCode Converter", route })));
 
 async function convertBBCode() {
   loading.value = true;

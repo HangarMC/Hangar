@@ -3,7 +3,7 @@ const route = useRoute();
 
 const markdown = ref("# Your input  \nEnter your *markdown* here!");
 
-useHead(useSeo("Markdown Editor", null, route, null));
+useSeo(computed(() => ({ title: "Markdown Editor", route })));
 </script>
 
 <template>

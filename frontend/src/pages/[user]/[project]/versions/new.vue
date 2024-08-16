@@ -251,7 +251,14 @@ function togglePlatform(platformFile: PlatformFile, platform: Platform) {
   platformFile.platforms.sort((a, b) => platforms.value.findIndex((p) => p.enumName === a) - platforms.value.findIndex((p) => p.enumName === b));
 }
 
-useHead(useSeo(i18n.t("version.new.title") + " | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
+useSeo(
+  computed(() => ({
+    title: i18n.t("version.new.title") + " | " + props.project?.name,
+    route,
+    description: props.project?.description,
+    image: props.project?.avatarUrl,
+  }))
+);
 </script>
 
 <template>

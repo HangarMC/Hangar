@@ -50,13 +50,13 @@ const { versions } = useProjectVersions(
   router
 );
 
-useHead(
-  useSeo(
-    "Versions | " + props.project?.name,
-    `Download ${versions.value?.pagination?.count} ${props.project?.name} versions. ${props.project?.stats?.downloads} total downloads. Last updated on ${lastUpdated(new Date(versions.value?.result?.[0]?.createdAt || 0))}`,
+useSeo(
+  computed(() => ({
+    title: "Versions | " + props.project?.name,
     route,
-    props.project?.avatarUrl
-  )
+    description: `Download ${versions.value?.pagination?.count} ${props.project?.name} versions. ${props.project?.stats?.downloads} total downloads. Last updated on ${lastUpdated(new Date(versions.value?.result?.[0]?.createdAt || 0), i18n)}`,
+    image: props.project?.avatarUrl,
+  }))
 );
 
 function checkAllChannels() {

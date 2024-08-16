@@ -14,7 +14,7 @@ const platformMap = useBackendData.platforms;
 const platforms = platformMap ? [...platformMap.values()] : [];
 const loading = ref<boolean>(false);
 
-useHead(useSeo(i18n.t("platformVersions.title"), null, route, null));
+useSeo(computed(() => ({ title: i18n.t("platformVersions.title"), route })));
 
 const fullVersions = ref<Record<Platform, string[]>>({
   PAPER: [],

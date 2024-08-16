@@ -127,7 +127,7 @@ Last updated: May 08, 2023
 
 `;
 
-useHead(useSeo(i18n.t("pages.guidelinesTitle"), null, route, null));
+useSeo(computed(() => ({ title: i18n.t("pages.guidelinesTitle"), route })));
 </script>
 
 <template>

@@ -67,7 +67,7 @@ const options = {
 
 Chart.register(CategoryScale, LinearScale, Tooltip, Legend, PointElement, LineElement, LineController, Colors);
 
-useHead(useSeo(i18n.t("stats.title"), null, route, null));
+useSeo(computed(() => ({ title: i18n.t("stats.title"), route })));
 </script>
 
 <template>

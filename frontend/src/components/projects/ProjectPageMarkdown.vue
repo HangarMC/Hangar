@@ -19,7 +19,9 @@ const { editingPage, changeEditingPage, savePage, deletePage } = useProjectPage(
   props.mainPage ? props.project?.mainPage : props.page
 );
 if (!props.mainPage) {
-  useHead(useSeo(props.page?.name + " | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
+  useSeo(
+    computed(() => ({ title: props.page?.name + " | " + props.project?.name, description: props.project?.description, route, image: props.project?.avatarUrl }))
+  );
 }
 
 async function deletePageAndUpdateProject() {

@@ -22,7 +22,7 @@ const headers = [
   { title: "Message", name: "message", width: "80%" },
 ] as const satisfies Header<string>[];
 
-useHead(useSeo("Notes | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
+useSeo(computed(() => ({ title: "Notes | " + props.project?.name, route, description: props.project?.description, image: props.project?.avatarUrl })));
 
 async function addNote() {
   if (!text.value) {

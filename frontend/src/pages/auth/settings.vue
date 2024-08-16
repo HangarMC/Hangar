@@ -65,7 +65,7 @@ async function verifyEmail(emailCode: string) {
   loading.value = false;
 }
 
-useHead(useSeo("Settings", null, route, null));
+useSeo(computed(() => ({ title: "Settings", route })));
 </script>
 
 <template>

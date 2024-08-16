@@ -9,7 +9,7 @@ const i18n = useI18n();
 const route = useRoute("admin-health");
 const { healthReport } = useHealthReport();
 
-useHead(useSeo(i18n.t("health.title"), null, route, null));
+useSeo(computed(() => ({ title: i18n.t("health.title"), route })));
 </script>
 
 <template>

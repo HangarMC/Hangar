@@ -49,7 +49,7 @@ async function processRole(add: boolean) {
   }
 }
 
-useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route, null));
+useSeo(computed(() => ({ title: i18n.t("userAdmin.title") + " " + route.params.user, route })));
 </script>
 
 <template>

@@ -5,7 +5,7 @@ import { Cropper, type CropperResult } from "vue-advanced-cropper";
 import type { Tab } from "~/types/components/design/Tabs";
 import InputText from "~/components/ui/InputText.vue";
 import { NamedPermission, Tag, Visibility } from "~/types/backend";
-import type { HangarProject, HangarUser, PaginatedResultUser, ProjectSettings , Category } from "~/types/backend";
+import type { HangarProject, HangarUser, PaginatedResultUser, ProjectSettings, Category } from "~/types/backend";
 
 import "vue-advanced-cropper/dist/style.css";
 
@@ -230,7 +230,14 @@ async function resetIcon() {
   loading.resetIcon = false;
 }
 
-useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
+useSeo(
+  computed(() => ({
+    title: i18n.t("project.settings.title") + " | " + props.project?.name,
+    route,
+    description: props.project?.description,
+    image: props.project?.avatarUrl,
+  }))
+);
 </script>
 
 <template>

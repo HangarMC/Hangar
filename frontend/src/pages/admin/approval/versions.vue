@@ -31,7 +31,7 @@ const notStartedHeaders = [
   { title: "", name: "startBtn", sortable: false },
 ] as const satisfies Header<string>[];
 
-useHead(useSeo(i18n.t("versionApproval.title"), null, route, null));
+useSeo(computed(() => ({ title: i18n.t("versionApproval.title"), route })));
 
 // TODO There's no actual endpoint with filters
 // function getRouteParams(entry: HangarReviewQueueEntry) {

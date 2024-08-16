@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { Platform, Tag } from "~/types/backend";
-import type { PlatformVersion , Category } from "~/types/backend";
+import type { PlatformVersion, Category } from "~/types/backend";
 
 const props = defineProps<{
   platform?: Platform;
@@ -93,13 +93,12 @@ const config = useConfig();
 const pageChangeScrollAnchor = ref<Element>();
 const ssr = import.meta.server;
 
-useHead(
-  useSeo(
-    `Hangar - The best place to download ${!props.index ? props.platformName : "Minecraft"} plugins`,
-    `Hangar allows you to find and download the best ${!props.index ? props.platformName : "Minecraft"} plugins for your Minecraft server`,
+useSeo(
+  computed(() => ({
+    title: `Hangar - The best place to download ${!props.index ? props.platformName : "Minecraft"} plugins`,
+    description: `Hangar allows you to find and download the best ${!props.index ? props.platformName : "Minecraft"} plugins for your Minecraft server`,
     route,
-    null,
-    [
+    additionalScripts: [
       {
         type: "application/ld+json",
         children: JSON.stringify({
@@ -115,8 +114,8 @@ useHead(
         key: "website",
       },
     ],
-    true
-  )
+    manualTitle: true,
+  }))
 );
 </script>
 

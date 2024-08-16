@@ -6,7 +6,7 @@ const props = defineProps<{
   project?: HangarProject;
 }>();
 
-useHead(useSeo("Discuss | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
+useSeo(computed(() => ({ title: "Discuss | " + props.project?.name, route, description: props.project?.description, image: props.project?.avatarUrl })));
 </script>
 
 <template>

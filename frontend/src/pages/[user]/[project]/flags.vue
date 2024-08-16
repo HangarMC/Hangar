@@ -22,7 +22,7 @@ const headers = [
   { title: "Resolved", name: "resolved" },
 ] as const satisfies Header<string>[];
 
-useHead(useSeo("Flags | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
+useSeo(computed(() => ({ title: "Flags | " + props.project?.name, route, description: props.project?.description, image: props.project?.avatarUrl })));
 </script>
 
 <template>

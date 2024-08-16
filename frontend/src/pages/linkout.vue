@@ -40,7 +40,7 @@ function back() {
   }
 }
 
-useHead(useSeo(i18n.t("linkout.title"), null, route, null));
+useSeo(computed(() => ({ title: i18n.t("linkout.title"), route })));
 </script>
 <template>
   <Card>

@@ -26,7 +26,14 @@ async function doScan() {
   await useNotificationStore().success("Scheduled scan");
 }
 
-useHead(useSeo("Scan | " + props.project?.name, props.project?.description, route, props.project?.avatarUrl));
+useSeo(
+  computed(() => ({
+    title: "Scan | " + props.project?.name,
+    route,
+    description: props.project?.description,
+    image: props.project?.avatarUrl,
+  }))
+);
 </script>
 
 <template>
