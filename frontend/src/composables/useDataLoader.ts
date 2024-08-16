@@ -36,7 +36,7 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
             console.log("load loading", key);
             const result = await loader(newParam).catch((err) => {
               if (lenient) resolve();
-              else reject();
+              else reject(err);
             });
             // await new Promise((resolve) => setTimeout(resolve, 5000));
             if (result) {
