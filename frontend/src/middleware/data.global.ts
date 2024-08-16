@@ -24,8 +24,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const { loader: projectLoader, data: project } = useDataLoader("project");
   const projectName = projectLoader("project", to, from, (projectName) => useInternalApi<HangarProject>("projects/project/" + projectName), promises);
 
+  // TODO ideally we only make this request _after_ the user request returned and we know we need to fetch an org
+  // alternatively we could make a new controller that returns both
   const { loader: organizationLoader } = useDataLoader("organization");
-  organizationLoader("user", to, from, (organizationName) => useInternalApi<HangarOrganization>("organizations/org/" + organizationName), promises);
+  organizationLoader("user", to, from, (organizationName) => useInternalApi<HangarOrganization>("organizations/org/" + organizationName), promises, true);
 
   const { loader: versionLoader, data: version } = useDataLoader("version");
   const versionName = versionLoader(

@@ -19,7 +19,8 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
     to: RouteLocationNormalized,
     from: RouteLocationNormalized,
     loader: (param: string) => Promise<DataLoaderTypes[K]>,
-    promises: Promise<any>[]
+    promises: Promise<any>[],
+    lenient = false
   ) {
     const meta = to.meta["dataLoader_" + key];
     if (meta) {
@@ -33,7 +34,10 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
           // eslint-disable-next-line no-async-promise-executor
           new Promise<void>(async (resolve, reject) => {
             console.log("load loading", key);
-            const result = await loader(newParam).catch(reject);
+            const result = await loader(newParam).catch((err) => {
+              if (lenient) resolve();
+              else reject();
+            });
             // await new Promise((resolve) => setTimeout(resolve, 5000));
             if (result) {
               data.value = result;
