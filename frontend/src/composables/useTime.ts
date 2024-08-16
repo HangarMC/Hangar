@@ -1,7 +1,7 @@
 import type { Composer } from "vue-i18n";
 
 export function lastUpdated(date: Date | string, i18n?: Composer): string {
-  if (!i18n) i18n = useI18n();
+  i18n = i18n ?? useI18n();
   date = new Date(date);
   const today: Date = new Date();
   const todayTime = today.getTime();
