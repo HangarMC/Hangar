@@ -4,6 +4,7 @@ import io.papermc.hangar.model.api.ApiKey;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -46,7 +47,7 @@ public interface IApiKeysController {
         tags = "API Keys"
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Key created", content = @Content(schema = @Schema(implementation = ApiKey.class))),
+        @ApiResponse(responseCode = "200", description = "The keys", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ApiKey.class)))),
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")})
     @GetMapping(path = "/keys", produces = MediaType.APPLICATION_JSON_VALUE)
