@@ -25,7 +25,8 @@ import type {
   SettingsResponse,
   User,
   VersionInfo,
- Platform } from "~/types/backend";
+  Platform,
+} from "~/types/backend";
 
 export function useOrganizationVisibility(user: () => string) {
   const { data: organizationVisibility, status: organizationVisibilityStatus } = useData(

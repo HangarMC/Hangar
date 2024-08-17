@@ -79,6 +79,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
   let promise: Promise<void> | undefined;
 
   function refresh() {
+    console.log("refresh", key(params()));
     return load(params());
   }
 
@@ -103,16 +104,18 @@ export function useData<T, P extends Record<string, unknown> | string>(
     // eslint-disable-next-line no-async-promise-executor
     return new Promise<void>(async (resolve, reject) => {
       console.log("load", key(params));
-      const result = await loader(params).catch(reject);
-      // await new Promise((resolve) => setTimeout(resolve, 5000));
-      console.log("loaded", key(params));
-      if (result) {
+      try {
+        const result = await loader(params);
+        // await new Promise((resolve) => setTimeout(resolve, 5000));
+        console.log("loaded", key(params));
         setState(result);
         status.value = "success";
         callback(params);
         resolve();
-      } else {
+      } catch (err) {
         status.value = "error";
+        callback(params);
+        reject(err);
       }
     });
   }
@@ -128,6 +131,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
       onServerPrefetch(async () => {
         console.log("server prefetch", key(params()));
         await promise;
+        console.log("server prefetch done", key(params()));
       });
     }
   }
