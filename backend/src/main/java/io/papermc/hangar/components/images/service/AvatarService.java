@@ -80,14 +80,17 @@ public class AvatarService extends HangarComponent {
     /*
      * Get methods
      */
+    @Deprecated(forRemoval = true)
     public String getUserAvatarUrl(final UserTable userTable) {
         return this.getAvatarUrl(USER, userTable.getUuid().toString(), null);
     }
 
+    @Deprecated(forRemoval = true)
     public String getUserAvatarUrl(final UUID orgUserUuid) {
         return this.getAvatarUrl(USER, orgUserUuid.toString(), null);
     }
 
+    @Deprecated(forRemoval = true)
     public String getUserAvatarUrl(final User user) {
         final String uuid;
         if (user instanceof final HangarUser hangarUser) {
@@ -99,6 +102,7 @@ public class AvatarService extends HangarComponent {
         return this.getAvatarUrl(USER, uuid, null);
     }
 
+    @Deprecated(forRemoval = true)
     public String getProjectAvatarUrl(final long projectId, final String ownerName) {
         return this.getAvatarUrl(PROJECT, String.valueOf(projectId), () -> {
             final UserTable userTable = this.userService.getUserTable(ownerName);
@@ -109,6 +113,7 @@ public class AvatarService extends HangarComponent {
         });
     }
 
+    @Deprecated(forRemoval = true)
     private String getAvatarUrl(final String type, final String subject, final Supplier<String> fallbackSupplier) {
         if (type.equals("default") && subject.equals("default")) {
             return this.defaultAvatarUrl;

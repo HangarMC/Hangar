@@ -69,6 +69,7 @@ public class UsersApiService extends HangarComponent {
     public <T extends User> T getUser(final String name, final Class<T> type) {
         final T user = this.getUserRequired(name, this.usersDAO::getUser, type);
         this.supplyNameHistory(user);
+        // TODO rewrite avatar fetching
         this.supplyAvatarUrl(user);
         return user instanceof HangarUser ? (T) this.supplyHeaderData((HangarUser) user) : user;
     }
@@ -76,6 +77,7 @@ public class UsersApiService extends HangarComponent {
     public <T extends User> T getUser(final long id, final Class<T> type) {
         final T user = this.getUserRequired(id, this.usersDAO::getUser, type);
         this.supplyNameHistory(user);
+        // TODO rewrite avatar fetching
         this.supplyAvatarUrl(user);
         return user instanceof HangarUser ? (T) this.supplyHeaderData((HangarUser) user) : user;
     }
@@ -84,6 +86,7 @@ public class UsersApiService extends HangarComponent {
     public <T extends User> PaginatedResult<T> getUsers(final String query, final RequestPagination pagination, final Class<T> type) {
         final boolean hasQuery = !StringUtils.isBlank(query);
         final List<T> users = this.usersDAO.getUsers(hasQuery, query, pagination, type);
+        // TODO rewrite avatar fetching
         users.forEach(u -> u.setAvatarUrl(this.avatarService.getUserAvatarUrl(u)));
         return new PaginatedResult<>(new Pagination(this.usersDAO.getUsersCount(hasQuery, query), pagination), users);
     }
@@ -94,6 +97,7 @@ public class UsersApiService extends HangarComponent {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final Long userId = this.getHangarUserId();
         final List<ProjectCompact> projects = this.usersApiDAO.getUserStarred(userName, canSeeHidden, userId, pagination);
+        // TODO rewrite avatar fetching
         projects.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
         final long count = this.usersApiDAO.getUserStarredCount(userName, canSeeHidden, userId);
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
@@ -105,6 +109,7 @@ public class UsersApiService extends HangarComponent {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final Long userId = this.getHangarUserId();
         final List<ProjectCompact> projects = this.usersApiDAO.getUserWatching(userName, canSeeHidden, userId, pagination);
+        // TODO rewrite avatar fetching
         projects.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
         final long count = this.usersApiDAO.getUserWatchingCount(userName, canSeeHidden, userId);
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
@@ -120,6 +125,7 @@ public class UsersApiService extends HangarComponent {
     public PaginatedResult<User> getAuthors(final String query, final RequestPagination pagination) {
         final boolean hasQuery = !StringUtils.isBlank(query);
         final List<User> users = this.usersApiDAO.getAuthors(hasQuery, query, pagination);
+        // TODO rewrite avatar fetching (less important)
         users.forEach(u -> u.setAvatarUrl(this.avatarService.getUserAvatarUrl(u)));
         final long count = this.usersApiDAO.getAuthorsCount(hasQuery, query);
         return new PaginatedResult<>(new Pagination(count, pagination), users);
@@ -135,6 +141,7 @@ public class UsersApiService extends HangarComponent {
     public PaginatedResult<User> getStaff(final String query, final RequestPagination pagination) {
         final boolean hasQuery = !StringUtils.isBlank(query);
         final List<User> users = this.usersApiDAO.getStaff(hasQuery, query, this.config.user.staffRoles(), pagination);
+        // TODO rewrite avatar fetching (less important)
         users.forEach(u -> u.setAvatarUrl(this.avatarService.getUserAvatarUrl(u)));
         final long count = this.usersApiDAO.getStaffCount(hasQuery, query, this.config.user.staffRoles());
         return new PaginatedResult<>(new Pagination(count, pagination), users);
@@ -181,12 +188,14 @@ public class UsersApiService extends HangarComponent {
         user.setNameHistory(userNameHistory);
     }
 
+    @Deprecated(forRemoval = true)
     public void supplyAvatarUrl(final User user) {
         user.setAvatarUrl(this.avatarService.getUserAvatarUrl(user));
     }
 
     public List<ProjectCompact> getUserPinned(final String userName) {
         final List<ProjectCompact> pinnedVersions = this.pinnedProjectService.getPinnedVersions(this.getUserRequired(userName, this.usersDAO::getUser, HangarUser.class).getId());
+        // TODO rewrite avatar fetching
         pinnedVersions.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
         return pinnedVersions;
     }

@@ -152,6 +152,7 @@ public class ProjectService extends HangarComponent {
 
         final CompletableFuture<List<JoinableMember<ProjectRoleTable>>> membersFuture = this.supply(() -> {
             final List<JoinableMember<ProjectRoleTable>> members = this.hangarProjectsDAO.getProjectMembers(projectId, hangarUserId, this.permissionService.getProjectPermissions(hangarUserId, projectId).has(Permission.EditProjectSettings));
+            // TODO rewrite avatar fetching
             members.parallelStream().forEach((member) -> member.setAvatarUrl(this.avatarService.getUserAvatarUrl(member.getUser())));
             return members;
         });
@@ -169,6 +170,7 @@ public class ProjectService extends HangarComponent {
         final Map<Long, HangarProjectPage> pages = this.projectPageService.getProjectPages(projectId);
         final CompletableFuture<List<HangarProject.PinnedVersion>> pinnedVersions = this.supply(() -> this.pinnedVersionService.getPinnedVersions(ownerName, project.getNamespace().getSlug(), projectId));
         final ExtendedProjectPage projectPage = this.projectPageService.getProjectHomePage(projectId);
+        // TODO rewrite avatar fetching
         final String avatarUrl = this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner());
 
         mainChannelFuture.join();
