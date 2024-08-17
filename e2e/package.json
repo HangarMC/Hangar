@@ -21,6 +21,6 @@
     "webdriverio": "^7.36.0"
   },
   "devDependencies": {
-    "codeceptjs-bshelper": "3.1.2"
+    "codeceptjs-bshelper": "3.1.3"
   }
 }

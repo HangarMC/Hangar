@@ -31,18 +31,18 @@
         <spring-cloud-aws.version>3.1.1</spring-cloud-aws.version>
 
         <!-- dependencies -->
-        <sentry.version>7.13.0</sentry.version>
+        <sentry.version>7.14.0</sentry.version>
         <springdoc.version>2.6.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20240303</org-json.version>
         <bucket4j.version>8.13.1</bucket4j.version>
         <datafaker.version>2.3.1</datafaker.version>
-        <apache-commons-lang.version>3.15.0</apache-commons-lang.version>
+        <apache-commons-lang.version>3.16.0</apache-commons-lang.version>
         <jwt.version>4.4.0</jwt.version>
         <jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
         <caffeine.version>3.1.8</caffeine.version>
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
-        <jgroups.version>5.3.9.Final</jgroups.version>
+        <jgroups.version>5.3.11.Final</jgroups.version>
         <jgroups-kube.version>2.0.2.Final</jgroups-kube.version>
         <totp.version>1.7.2-SNAPSHOT</totp.version>
         <webp.version>0.1.6</webp.version>
