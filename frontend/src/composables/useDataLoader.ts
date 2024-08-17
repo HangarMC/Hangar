@@ -123,7 +123,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
   // load initial state
   data.value = state.value[key(params())];
   // if we have no state, queue a load
-  if (data.value == undefined) {
+  if (data.value === undefined) {
     promise = load(params());
 
     // if on server (and we dont wanna skip server fetching, we need await the promise onServerPrefetch)
