@@ -94,7 +94,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
 
   function load(params: P) {
     status.value = "loading";
-    setState(defaultValue || undefined);
+    setState(defaultValue ?? undefined);
 
     if (skip(params)) {
       console.log("skip", key(params));
