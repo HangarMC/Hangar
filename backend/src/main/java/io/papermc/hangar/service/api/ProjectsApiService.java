@@ -47,6 +47,7 @@ public class ProjectsApiService extends HangarComponent {
         if (project == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project " + slug + " not found");
         }
+        // TODO rewrite avatar fetching
         project.setAvatarUrl(this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner()));
         return project;
     }
@@ -73,6 +74,7 @@ public class ProjectsApiService extends HangarComponent {
     @Transactional(readOnly = true)
     public PaginatedResult<User> getProjectStargazers(final String slug, final RequestPagination pagination) {
         final List<User> stargazers = this.projectsApiDAO.getProjectStargazers(slug, pagination.getLimit(), pagination.getOffset());
+        // TODO rewrite avatar fetching
         stargazers.forEach(this.usersApiService::supplyAvatarUrl);
         return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectStargazersCount(slug), pagination), stargazers);
     }
@@ -80,6 +82,7 @@ public class ProjectsApiService extends HangarComponent {
     @Transactional(readOnly = true)
     public PaginatedResult<User> getProjectWatchers(final String slug, final RequestPagination pagination) {
         final List<User> watchers = this.projectsApiDAO.getProjectWatchers(slug, pagination.getLimit(), pagination.getOffset());
+        // TODO rewrite avatar fetching
         watchers.forEach(this.usersApiService::supplyAvatarUrl);
         return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectWatchersCount(slug), pagination), watchers);
     }
@@ -107,6 +110,7 @@ public class ProjectsApiService extends HangarComponent {
         final Long userId = this.getHangarUserId();
         final List<Project> projects = this.projectsApiDAO.getProjects(seeHidden, userId, pagination, query);
         for (final Project project : projects) {
+            // TODO rewrite avatar fetching
             project.setAvatarUrl(this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner()));
         }
         return new PaginatedResult<>(new Pagination(this.projectsApiDAO.countProjects(seeHidden, userId, pagination), pagination), projects);

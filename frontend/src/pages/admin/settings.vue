@@ -14,7 +14,7 @@ const platformMap = useBackendData.platforms;
 const platforms = platformMap ? [...platformMap.values()] : [];
 const loading = ref<boolean>(false);
 
-useHead(useSeo(i18n.t("platformVersions.title"), null, route, null));
+useSeo(computed(() => ({ title: i18n.t("platformVersions.title"), route })));
 
 const fullVersions = ref<Record<Platform, string[]>>({
   PAPER: [],
@@ -138,7 +138,7 @@ async function rescanSafeLinks() {
               <InputText v-model="role.color" />
             </td>
             <td>
-              <InputText v-model="role.rank" :rules="[integer()]" />
+              <InputText v-model.number="role.rank as unknown as string" :rules="[integer()]" />
             </td>
             <td>
               <Tag :color="{ background: role.color }" :name="role.title" class="ml-1" />

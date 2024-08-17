@@ -2,6 +2,7 @@
 const i18n = useI18n();
 const route = useRoute("privacy");
 
+// language=Markdown
 const text = `
 # Privacy Policy
 This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about
@@ -117,7 +118,7 @@ If you have any questions about this Privacy Policy, You can contact Us via emai
 Last updated: December 25, 2022
 `;
 
-useHead(useSeo(i18n.t("pages.privacypolicyTitle"), null, route, null));
+useSeo(computed(() => ({ title: i18n.t("pages.privacypolicyTitle"), route })));
 </script>
 
 <template>

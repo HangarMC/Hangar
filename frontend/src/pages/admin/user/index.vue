@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { Header } from "~/types/components/SortableTable";
-import type { PaginatedResultUser } from "~/types/backend";
 
 definePageMeta({
   globalPermsRequired: ["EditAllUserSettings"],
@@ -19,10 +18,9 @@ const headers = [
   { name: "org", title: i18n.t("pages.headers.organization"), sortable: true },
 ] as const satisfies Header<string>[];
 
-const users = await useUsers();
 const page = ref(0);
 const sort = ref<string[]>([]);
-const query = ref();
+const query = ref<string>();
 const requestParams = computed(() => {
   const limit = 25;
   return {
@@ -32,10 +30,9 @@ const requestParams = computed(() => {
     sort: sort.value,
   };
 });
+const { users } = useUsers(() => requestParams.value);
 
-watch(query, update);
-
-async function updateSort(col: string, sorter: Record<string, number>) {
+function updateSort(col: string, sorter: Record<string, number>) {
   sort.value = [...Object.keys(sorter)]
     .map((k) => {
       const val = sorter[k];
@@ -44,20 +41,9 @@ async function updateSort(col: string, sorter: Record<string, number>) {
       return null;
     })
     .filter((v) => v !== null) as string[];
-
-  await update();
 }
 
-async function updatePage(newPage: number) {
-  page.value = newPage;
-  await update();
-}
-
-async function update() {
-  users.value = await useApi<PaginatedResultUser>("users", "GET", requestParams.value);
-}
-
-useHead(useSeo(i18n.t("userList.title"), null, route, null));
+useSeo(computed(() => ({ title: i18n.t("userList.title"), route })));
 </script>
 
 <template>
@@ -69,12 +55,11 @@ useHead(useSeo(i18n.t("userList.title"), null, route, null));
     </div>
 
     <SortableTable
-      v-if="users"
       :headers="headers"
-      :items="users.result"
+      :items="users?.result || []"
       :server-pagination="users?.pagination"
       @update:sort="updateSort"
-      @update:page="updatePage"
+      @update:page="(newPage) => (page = newPage)"
     >
       <template #pic="{ item }">
         <UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs" />

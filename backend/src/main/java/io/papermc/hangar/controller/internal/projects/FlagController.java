@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,10 +55,10 @@ public class FlagController extends HangarComponent {
         this.flagService.markAsResolved(id, resolve);
     }
 
-    @GetMapping(path = "/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
-    public List<HangarProjectFlag> getFlags(@PathVariable final long projectId) {
-        return this.flagService.getFlags(projectId);
+    public List<HangarProjectFlag> getFlags(@PathVariable final String slug) {
+        return this.flagService.getFlags(slug);
     }
 
     @GetMapping(path = "/resolved", produces = MediaType.APPLICATION_JSON_VALUE)

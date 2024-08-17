@@ -14,7 +14,7 @@ const name = ref<string>("");
 
 const canCreate = computed<boolean>(() => !v.value.$invalid && !v.value.$pending);
 
-useHead(useSeo(i18n.t("organization.new.title"), null, route, null));
+useSeo(computed(() => ({ title: i18n.t("organization.new.title"), route })));
 
 async function create() {
   try {

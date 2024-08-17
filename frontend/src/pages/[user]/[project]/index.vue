@@ -1,22 +1,23 @@
 <script lang="ts" setup>
 import { upperFirst } from "scule";
-import { type HangarProject, NamedPermission, type PinnedVersion, type User } from "~/types/backend";
+import { NamedPermission } from "~/types/backend";
+import type { HangarProject, PinnedVersion, User, Platform } from "~/types/backend";
 
 const props = defineProps<{
-  user: User;
-  project: HangarProject;
+  user?: User;
+  project?: HangarProject;
 }>();
 
 const config = useConfig();
 const i18n = useI18n();
-const route = useRoute("user-project-pages-all");
+const route = useRoute("user-project-pages-page");
 const openProjectPages = useOpenProjectPages(route, props.project);
 
-const sponsors = ref(props.project.settings.sponsors);
+const sponsors = ref(props.project?.settings?.sponsors);
 const editingSponsors = ref(false);
 
 function saveSponsors(content: string) {
-  useInternalApi(`projects/project/${props.project.namespace.slug}/sponsors`, "post", {
+  useInternalApi(`projects/project/${props.project?.namespace?.slug}/sponsors`, "post", {
     content,
   })
     .then(() => {
@@ -27,19 +28,20 @@ function saveSponsors(content: string) {
 }
 
 function createPinnedVersionUrl(version: PinnedVersion): string {
-  return `/${props.project.namespace.owner}/${props.project.namespace.slug}/versions/${version.name}`;
+  return `/${props.project?.namespace?.owner}/${props.project?.namespace?.slug}/versions/${version.name}`;
 }
 
 const platform = computed(() =>
-  upperFirst(Object.keys(props.project.pinnedVersions?.[0]?.platformDependenciesFormatted || { Minecraft: "dum" })?.[0]?.toLowerCase() || "Minecraft")
+  upperFirst(Object.keys(props.project?.pinnedVersions?.[0]?.platformDependenciesFormatted || { Minecraft: "dum" })?.[0]?.toLowerCase() || "Minecraft")
 );
-useHead(
-  useSeo(
-    props.project.name + ` - ${platform.value} Plugin`,
-    `${props.project.description} - Download the ${platform.value} Plugin ${props.project.name} by ${props.project.namespace.owner} on Hangar`,
+
+useSeo(
+  computed(() => ({
+    title: `${props.project?.name} - ${platform.value} Plugin`,
     route,
-    props.project.avatarUrl,
-    [
+    description: `${props.project?.description} - Download the ${platform.value} Plugin ${props.project?.name} by ${props.project?.namespace?.owner} on Hangar`,
+    image: props.project?.avatarUrl,
+    additionalScripts: [
       {
         type: "application/ld+json",
         children: JSON.stringify({
@@ -57,20 +59,20 @@ useHead(
         }),
         key: "project",
       },
-    ]
-  )
+    ],
+  }))
 );
 </script>
 
 <template>
   <div class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-11/15 flex-grow overflow-auto">
-      <ProjectPageMarkdown v-slot="{ page, editingPage, changeEditingPage, savePage }" :project="props.project" main-page>
-        <Card v-if="page?.contents" class="pb-0 overflow-clip overflow-hidden">
+      <ProjectPageMarkdown v-slot="{ editingPage, changeEditingPage, savePage }" :project="props.project" :page="props.project?.mainPage" main-page>
+        <Card v-if="project?.mainPage?.contents" class="pb-0 overflow-clip overflow-hidden">
           <ClientOnly v-if="hasPerms(NamedPermission.EditPage)">
             <MarkdownEditor
               :editing="editingPage"
-              :raw="page.contents"
+              :raw="project?.mainPage.contents"
               :deletable="false"
               :saveable="true"
               :cancellable="true"
@@ -80,11 +82,11 @@ useHead(
               @save="savePage"
             />
             <template #fallback>
-              <Markdown :raw="page.contents" />
+              <Markdown :raw="project?.mainPage.contents" />
             </template>
           </ClientOnly>
           <!--We have to blow up v-model:editing into :editing and @update:editing as we are inside a scope--->
-          <Markdown v-else :raw="page.contents" />
+          <Markdown v-else :raw="project?.mainPage.contents" />
         </Card>
       </ProjectPageMarkdown>
       <Card v-if="sponsors || hasPerms(NamedPermission.EditSubjectSettings)" class="mt-2 pb-0 overflow-clip overflow-visible">
@@ -127,7 +129,7 @@ useHead(
           <h2>{{ i18n.t("project.pinnedVersions") }}</h2>
         </template>
         <ul class="divide-y divide-blue-500/50">
-          <li v-for="(version, index) in project.pinnedVersions" :key="`${index}-${version.name}`" class="p-1 py-2">
+          <li v-for="(version, index) in project?.pinnedVersions" :key="`${index}-${version.name}`" class="p-1 py-2">
             <div class="flex">
               <NuxtLink :to="createPinnedVersionUrl(version)" class="flex-grow truncate">
                 <div class="truncate">
@@ -143,22 +145,23 @@ useHead(
                 <div class="inline-flex items-center mt-1">
                   <div class="flex flex-col">
                     <div v-for="(v, p) in version.platformDependenciesFormatted" :key="p" class="flex flex-row items-center">
-                      <PlatformLogo :key="p" :platform="p" :size="20" class="mr-1 flex-shrink-0" />
+                      <PlatformLogo :key="p" :platform="p as Platform" :size="20" class="mr-1 flex-shrink-0" />
                       <span :key="p" class="text-0.875rem light:text-gray-600">{{ v.join(", ") }}</span>
                     </div>
                   </div>
                 </div>
               </NuxtLink>
               <div class="ml-1 space-y-2 flex flex-col mt-1">
-                <DownloadButton :project="project" :pinned-version="version" small :show-versions="false" class="self-end" />
+                <DownloadButton v-if="project" :project="project" :pinned-version="version" small :show-versions="false" class="self-end" />
               </div>
             </div>
           </li>
         </ul>
+        <Skeleton v-if="!project" />
       </Card>
       <ProjectPageList :project="project" :open="openProjectPages" />
 
-      <template v-for="section in project.settings.links">
+      <template v-for="section in project?.settings?.links">
         <Card v-if="section.type === 'sidebar'" :key="section.id">
           <template #header>
             <h2>{{ section.title }}</h2>
@@ -171,7 +174,7 @@ useHead(
         </Card>
       </template>
 
-      <MemberList v-if="project.members" :members="project.members" :author="project.namespace.owner" :slug="project.name" class="overflow-visible" />
+      <MemberList v-if="project?.members" :members="project.members" :author="project.namespace.owner" :slug="project.name" class="overflow-visible" />
     </section>
   </div>
 </template>

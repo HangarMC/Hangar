@@ -1,64 +1,80 @@
-import type { UseHeadInput, Script } from "@unhead/vue";
+import type { Script } from "@unhead/vue";
 import type { TranslateResult } from "vue-i18n";
 import type { RouteLocationNormalized } from "vue-router/auto";
 
 export function useSeo(
-  title: string | TranslateResult | null | undefined,
-  description: string | TranslateResult | null | undefined,
-  route: RouteLocationNormalized,
-  image: string | null,
-  additionalScripts?: { type: string; children: string; key: string }[],
-  manualTitle?: boolean
-): UseHeadInput {
-  description = description || "Plugin repository for Paper, Velocity, Waterfall and Folia.";
+  input: ComputedRef<{
+    title: string | TranslateResult | null | undefined;
+    description?: string | TranslateResult | null;
+    route: RouteLocationNormalized;
+    image?: string | null;
+    additionalScripts?: { type: string; children: string; key: string }[];
+    manualTitle?: boolean;
+  }>
+) {
   const config = useConfig();
-  const canonical = config.publicHost + (route.path.endsWith("/") ? route.path.substring(0, route.path.length - 1) : route.path);
-  image = image || "https://docs.papermc.io/img/paper.png";
-  image = image.startsWith("http") ? image : config.publicHost + image;
-  if (!manualTitle) {
-    title = title ? title + " | Hangar" : "Hangar";
-  }
+  const i18n = useNuxtApp().$i18n;
+
+  const description = computed(() => input.value.description || "Plugin repository for Paper, Velocity, Waterfall and Folia.");
+  const canonical = computed(
+    () =>
+      config.publicHost +
+      (input.value.route.path.endsWith("/") ? input.value.route.path.substring(0, input.value.route.path.length - 1) : input.value.route.path)
+  );
+  const image = computed(() => {
+    let img = input.value.image || "https://docs.papermc.io/img/paper.png";
+    img = img.startsWith("http") ? img : config.publicHost + img;
+    return img;
+  });
+  const title = computed(() => {
+    let title = input.value.title;
+    if (!input.value.manualTitle) {
+      title = title ? title + " | Hangar" : "Hangar";
+    }
+    return title!;
+  });
 
   useSeoMeta({
-    title,
-    description,
-    ogUrl: canonical,
-    ogTitle: title,
-    twitterTitle: title,
-    ogDescription: description,
-    twitterDescription: description,
+    title: () => title.value,
+    description: () => description.value,
+    ogUrl: () => canonical.value,
+    ogTitle: () => title.value,
+    twitterTitle: () => title.value,
+    ogDescription: () => description.value,
+    twitterDescription: () => description.value,
     ogType: "website",
     ogSiteName: "Hangar",
-    ogImage: image,
-    twitterImage: image,
-    msapplicationTileImage: image,
+    ogImage: () => image.value,
+    twitterImage: () => image.value,
+    msapplicationTileImage: () => image.value,
     themeColor: "#ffffff",
     msapplicationTileColor: "#ffffff",
     msapplicationConfig: "/browserconfig.xml",
   });
 
-  const script = [
-    {
-      type: "application/ld+json",
-      children: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        itemListElement: generateBreadcrumbs(route),
-      }),
-      key: "breadcrumb",
-    },
-  ] as Script[];
-
-  if (additionalScripts) {
-    script.push(...additionalScripts);
-  }
-
-  if (useNuxtApp().$i18n.locale.value === "dum") {
-    console.log("found crowdin language activated, lets inject the script");
-    script.push(
+  const script = computed(() => {
+    const result = [
       {
-        type: "text/javascript",
-        innerHTML: `var _jipt = [];
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: generateBreadcrumbs(input.value.route),
+        }),
+        key: "breadcrumb",
+      },
+    ] as Script[];
+
+    if (input.value.additionalScripts) {
+      result.push(...input.value.additionalScripts);
+    }
+
+    if (i18n.locale.value === "dum") {
+      console.log("found crowdin language activated, lets inject the script");
+      result.push(
+        {
+          type: "text/javascript",
+          innerHTML: `var _jipt = [];
                    _jipt.push(['project', '0cbf58a3d76226e92659632533015495']);
                    _jipt.push(['domain', 'hangar']);
                    _jipt.push([
@@ -92,19 +108,21 @@ export function useSeo(
                        },
                    ]);
               `,
-      },
-      {
-        type: "text/javascript",
-        defer: true,
-        src: "https://cdn.crowdin.com/jipt/jipt.js",
-      }
-    );
-  }
+        },
+        {
+          type: "text/javascript",
+          defer: true,
+          src: "https://cdn.crowdin.com/jipt/jipt.js",
+        }
+      );
+    }
+    return result;
+  });
 
-  return {
-    title,
+  useHead({
+    title: () => title.value,
     link: [
-      { rel: "canonical", href: canonical },
+      { rel: "canonical", href: () => title.value },
       { rel: "apple-touch-icon", sizes: "180x180", href: "/favicon/apple-touch-icon.png" },
       { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon/favicon-32x32.png" },
       { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon/favicon-16x16.png" },
@@ -112,9 +130,8 @@ export function useSeo(
       { rel: "mask-icon", href: "/favicon/safari-pinned-tab.svg", color: "#686868" },
       { rel: "shortcut icon", href: "/favicon/favicon.ico" },
     ],
-    meta: [],
     script,
-  } as UseHeadInput;
+  });
 }
 
 function generateBreadcrumbs(route: RouteLocationNormalized) {

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ReviewAction, ReviewState } from "~/types/backend";
 import type { Platform, HangarProject, HangarReview, HangarReviewMessage, HangarVersion } from "~/types/backend";
+import { useReviews } from "~/composables/useData";
 
 definePageMeta({
   globalPermsRequired: ["Reviewer"],
@@ -13,12 +14,12 @@ const t = i18n.t;
 const v = useVuelidate();
 
 const props = defineProps<{
-  version: HangarVersion;
-  project: HangarProject;
+  version?: HangarVersion;
+  project?: HangarProject;
   versionPlatforms: Set<Platform>;
 }>();
 
-const reviews = ref<HangarReview[]>([]);
+const { reviews, refreshReviews } = useReviews(() => props.version?.id as unknown as string);
 const hideClosed = ref<boolean>(false);
 const message = ref<string>("");
 const loadingValues = reactive({
@@ -34,7 +35,7 @@ const currentUser = computed(() => authStore.user!);
 
 const currentUserReview = computed<HangarReview | undefined>(() => {
   if (!currentUser.value) return;
-  return reviews.value.find((r) => r.userId === currentUser.value.id);
+  return reviews.value?.find((r) => r.userId === currentUser.value.id);
 });
 
 const isCurrentReviewOpen = computed<boolean>(() => {
@@ -46,28 +47,16 @@ const currentReviewLastAction = computed<ReviewAction>(() => {
   return lastMsg.action;
 });
 
-const filteredReviews = computed<HangarReview[]>(() => {
+const filteredReviews = computed<HangarReview[] | undefined>(() => {
   if (hideClosed.value) {
-    return reviews.value.filter((r) => !r.endedAt);
+    return reviews.value?.filter((r) => !r.endedAt);
   }
   return reviews.value;
 });
 
-const projectVersion = computed<HangarVersion>(() => {
-  return props.version;
-});
-
 const isReviewStateChecked = computed<boolean>(() => {
-  return projectVersion.value.reviewState === ReviewState.PartiallyReviewed || projectVersion.value.reviewState === ReviewState.Reviewed;
+  return props.version?.reviewState === ReviewState.PartiallyReviewed || props.version?.reviewState === ReviewState.Reviewed;
 });
-
-if (projectVersion.value) {
-  reviews.value = await useInternalApi<HangarReview[]>(`reviews/${projectVersion.value.id}/reviews`);
-}
-
-async function refresh() {
-  reviews.value = await useInternalApi<HangarReview[]>(`reviews/${projectVersion.value.id}/reviews`);
-}
 
 function getReviewStateString(review: HangarReview): string {
   if (!review.messages) return "error";
@@ -151,11 +140,11 @@ function startReview() {
     { name: currentUser.value.name },
     ReviewAction.START,
     () => {
-      reviews.value.push({
+      reviews.value?.push({
         userName: currentUser.value.name,
         userId: currentUser.value.id,
         createdAt: new Date().toISOString(),
-        endedAt: null,
+        endedAt: undefined,
         messages: [
           {
             message: "reviews.presets.start",
@@ -219,7 +208,7 @@ function reopenReview() {
     "reopen",
     { name: review.userName },
     ReviewAction.REOPEN,
-    () => (review.endedAt = null),
+    () => (review.endedAt = undefined),
     () => (loadingValues.reopen = false)
   );
 }
@@ -266,7 +255,7 @@ function undoApproval() {
     "undoApproval",
     { name: currentUser.value.name },
     ReviewAction.UNDO_APPROVAL,
-    () => (reviews.value.find((r) => r.userId === currentUser.value.id)!.endedAt = null),
+    () => reviews.value && (reviews.value.find((r) => r.userId === currentUser.value.id)!.endedAt = undefined),
     () => (loadingValues.undoApproval = false)
   );
 }
@@ -281,7 +270,7 @@ function sendReviewRequest(
   }
 ): Promise<void> {
   const msg = `reviews.presets.${urlPath}`;
-  return useInternalApi(`reviews/${projectVersion.value.id}/reviews/${urlPath}`, "post", { message: msg, args })
+  return useInternalApi(`reviews/${props.version?.id}/reviews/${urlPath}`, "post", { message: msg, args })
     .then(() => {
       if (currentUserReview.value) {
         currentUserReview.value.messages.push({
@@ -292,17 +281,17 @@ function sendReviewRequest(
         });
       }
       then();
-      refresh();
+      refreshReviews();
     })
     .catch((e) => handleRequestError(e))
     .finally(final);
 }
 
-useHead(useSeo("Reviews | " + props.project.name, props.project.description, route, props.project.avatarUrl));
+useSeo(computed(() => ({ title: "Reviews | " + props.project?.name, route, description: props.project?.description, image: props.project?.avatarUrl })));
 </script>
 
 <template>
-  <div v-if="projectVersion" class="mt-4">
+  <div v-if="version" class="mt-4">
     <div class="float-right inline-flex">
       <template v-if="!isReviewStateChecked">
         <Button size="large" :to="{ name: 'user-project', params: route.params }" exact>
@@ -313,15 +302,15 @@ useHead(useSeo("Reviews | " + props.project.name, props.project.description, rou
           <IconMdiAlertDecagram class="mr-1" />
           {{ i18n.t("version.page.scans") }}
         </Button>
-        <DownloadButton :project="project" :version="projectVersion" class="ml-1" />
+        <DownloadButton v-if="project" :project="project" :version="version" class="ml-1" />
       </template>
     </div>
 
     <h2 class="my-3 text-2xl">
       {{ t("reviews.title") }}
       <span class="text-base">
-        {{ t("reviews.headline", [projectVersion.author, projectVersion.name]) }}
-        <PrettyTime :time="projectVersion.createdAt" long />
+        {{ t("reviews.headline", [version.author, version.name]) }}
+        <PrettyTime :time="version.createdAt" long />
       </span>
     </h2>
     <div class="my-1 flex space-x-2">
@@ -332,7 +321,7 @@ useHead(useSeo("Reviews | " + props.project.name, props.project.description, rou
         </Button>
       </div>
       <div class="flex-grow-0">
-        <Button @click="refresh">
+        <Button @click="refreshReviews">
           <IconMdiRefresh />
           {{ t("general.refresh") }}
         </Button>
@@ -342,7 +331,7 @@ useHead(useSeo("Reviews | " + props.project.name, props.project.description, rou
       </div>
     </div>
 
-    <Accordeon :values="filteredReviews" class="mt-4">
+    <Accordeon v-if="filteredReviews" :values="filteredReviews" class="mt-4">
       <template #header="{ entry: review }">
         <div class="flex">
           <div class="flex-grow items-center inline-flex">
@@ -421,7 +410,7 @@ useHead(useSeo("Reviews | " + props.project.name, props.project.description, rou
       </template>
     </Accordeon>
 
-    <Alert v-if="!reviews.length" type="info" class="mt-2">
+    <Alert v-if="!reviews?.length" type="info" class="mt-2">
       {{ t("reviews.notUnderReview") }}
     </Alert>
   </div>

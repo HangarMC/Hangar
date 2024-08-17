@@ -7,16 +7,17 @@ import io.papermc.hangar.model.common.ReviewAction;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 public class HangarReview extends Model {
 
-    private final OffsetDateTime endedAt;
+    private final @Nullable OffsetDateTime endedAt;
     private final String userName;
     private final long userId;
     private final List<HangarReviewMessage> messages;
 
-    public HangarReview(final OffsetDateTime createdAt, final OffsetDateTime endedAt, final String userName, final long userId) {
+    public HangarReview(final OffsetDateTime createdAt, final @Nullable OffsetDateTime endedAt, final String userName, final long userId) {
         super(createdAt);
         this.endedAt = endedAt;
         this.userName = userName;
@@ -24,6 +25,7 @@ public class HangarReview extends Model {
         this.messages = new ArrayList<>();
     }
 
+    @Nullable
     public OffsetDateTime getEndedAt() {
         return this.endedAt;
     }

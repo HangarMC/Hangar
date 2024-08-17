@@ -1,9 +1,9 @@
 import type { AxiosError } from "axios";
 import { isAxiosError } from "axios";
 import type { Composer } from "vue-i18n";
-import type { HangarApiException, HangarValidationException, MultiHangarApiException } from "~/types/backend";
 import { tryUseNuxtApp } from "#app/nuxt";
-import { isError } from "h3";
+import { type H3Error, isError as isH3Error } from "h3";
+import type { HangarApiException, HangarValidationException, MultiHangarApiException } from "~/types/backend";
 
 export function handleRequestError(err: AxiosError | unknown, msg: string | undefined = undefined, alwaysShowErrorPage = false) {
   const i18n = tryUseNuxtApp()?.$i18n;
@@ -63,21 +63,21 @@ export function handleRequestError(err: AxiosError | unknown, msg: string | unde
   }
 }
 
-function _handleRequestError(err: AxiosError | unknown, i18n?: Composer) {
+function _handleRequestError(err: AxiosError | H3Error | unknown, i18n?: Composer) {
   const transformed = transformAxiosError(err);
-  if (!isAxiosError(err) && !isError(err)) {
+  if (!isAxiosError(err) && !isH3Error(err)) {
     // everything should be an AxiosError or h3 error
-    fetchLog("handle not axios error", transformed);
+    fetchLog("handle not axios error", transformed, err);
     throw createError({
       statusCode: 500,
     });
-  } else if (typeof err.response?.data === "object" && err.response.data) {
+  } else if ("response" in err && typeof err.response?.data === "object" && err.response.data) {
     _handleErrorResponse(err.response.data, i18n);
-  } else if (err.cause?.response?.data) {
-    _handleErrorResponse(err.cause.response.data, i18n);
-  } else if (err.cause?.statusCode) {
+  } else if ((err.cause as any)?.response?.data) {
+    _handleErrorResponse((err.cause as any).response.data, i18n);
+  } else if ((err.cause as any)?.statusCode) {
     // this error was rethrown, lets inform nuxt
-    showError(err.cause);
+    showError(err.cause as any);
   } else {
     throw createError({
       statusCode: 500,
@@ -91,7 +91,7 @@ function _handleErrorResponse(responseData: object, i18n?: Composer) {
   if ("isHangarApiException" in responseData) {
     const data = "isMultiException" in responseData ? (responseData as MultiHangarApiException).exceptions?.[0] : (responseData as HangarApiException);
     throw createError({
-      statusCode: data?.httpError.statusCode,
+      statusCode: (data as HangarValidationException | undefined)?.httpError?.statusCode,
       statusMessage: data?.message ? (i18n?.te(data.message) ? i18n.t(data.message) : data.message) : undefined,
     });
   } else if ("isHangarValidationException" in responseData) {
@@ -102,15 +102,17 @@ function _handleErrorResponse(responseData: object, i18n?: Composer) {
     });
   } else {
     throw createError({
-      statusCode: responseData?.status || 500,
-      statusMessage: responseData?.statusText || "Internal Server Error",
+      statusCode: ("status" in responseData ? (responseData?.status as number) : undefined) || 500,
+      statusMessage: ("statusText" in responseData ? (responseData?.statusText as string) : undefined) || "Internal Server Error",
     });
   }
 }
 
 function collectErrors(exception: HangarApiException | MultiHangarApiException, i18n: Composer): string[] {
   if (!("isMultiException" in exception) || !exception.isMultiException) {
-    return exception.message ? [i18n.te(exception.message) ? i18n.t(exception.message, [...exception.messageArgs]) : exception.message] : [];
+    return exception.message
+      ? [i18n.te(exception.message) ? i18n.t(exception.message, [...(exception as { messageArgs: string }).messageArgs]) : exception.message]
+      : [];
   } else {
     const res: string[] = [];
     const exceptions = (exception as MultiHangarApiException).exceptions;
@@ -120,7 +122,7 @@ function collectErrors(exception: HangarApiException | MultiHangarApiException, 
         res.push("Unknown error");
         continue;
       }
-      res.push(i18n.te(ex.message) ? i18n.t(ex.message, ex.messageArgs) : ex.message);
+      res.push(i18n.te(ex.message) ? i18n.t(ex.message, (ex as { messageArgs: string }).messageArgs) : ex.message);
     }
     return res;
   }

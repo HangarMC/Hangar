@@ -49,7 +49,7 @@ async function submit() {
   loading.value = false;
 }
 
-useHead(useSeo("OAuth Signup", null, route, null));
+useSeo(computed(() => ({ title: "OAuth Signup", route })));
 </script>
 
 <template>

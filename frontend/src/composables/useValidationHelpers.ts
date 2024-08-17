@@ -91,9 +91,12 @@ export const maxFileSize = withOverrideMessage((maxSize: number) =>
   })
 );
 
-export const noDuplicated = withOverrideMessage((elements: any[] | (() => any[])) =>
+export const noDuplicated = withOverrideMessage((elements: any[] | (() => any[] | undefined) | undefined) =>
   helpers.withParams({ elements, type: "noDuplicated" }, () => {
     const els = typeof elements === "function" ? elements() : unref(elements);
+    if (!els) {
+      return { $valid: true };
+    }
     return { $valid: new Set(els).size === els.length };
   })
 );

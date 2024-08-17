@@ -8,7 +8,7 @@ definePageMeta({
 
 const i18n = useI18n();
 const route = useRoute("admin-approval-versions");
-const data = await useVersionApprovals();
+const { versionApprovals } = useVersionApprovals();
 
 const actions = {
   ongoing: [ReviewAction.START, ReviewAction.MESSAGE, ReviewAction.UNDO_APPROVAL, ReviewAction.REOPEN],
@@ -31,7 +31,7 @@ const notStartedHeaders = [
   { title: "", name: "startBtn", sortable: false },
 ] as const satisfies Header<string>[];
 
-useHead(useSeo(i18n.t("versionApproval.title"), null, route, null));
+useSeo(computed(() => ({ title: i18n.t("versionApproval.title"), route })));
 
 // TODO There's no actual endpoint with filters
 // function getRouteParams(entry: HangarReviewQueueEntry) {
@@ -83,7 +83,7 @@ function getCount(entry: HangarReviewQueueEntry, ..._actions: ReviewAction[]) {
     <Card>
       <template #header>{{ i18n.t("versionApproval.approvalQueue") }}</template>
 
-      <SortableTable v-if="data" :headers="notStartedHeaders" :items="data.notStarted">
+      <SortableTable v-if="versionApprovals" :headers="notStartedHeaders" :items="versionApprovals.notStarted">
         <template #project="{ item }">
           <Link :to="`/${item.namespace.owner}/${item.namespace.slug}`">
             {{ `${item.namespace.owner}/${item.namespace.slug}` }}
@@ -117,7 +117,7 @@ function getCount(entry: HangarReviewQueueEntry, ..._actions: ReviewAction[]) {
     <Card class="mt-4">
       <template #header>{{ i18n.t("versionApproval.inReview") }}</template>
 
-      <SortableTable v-if="data" :headers="underReviewHeaders" :items="data.underReview" expandable>
+      <SortableTable v-if="versionApprovals" :headers="underReviewHeaders" :items="versionApprovals.underReview" expandable>
         <template #project="{ item }">
           <Link :to="`/${item.namespace.owner}/${item.namespace.slug}`">
             {{ `${item.namespace.owner}/${item.namespace.slug}` }}

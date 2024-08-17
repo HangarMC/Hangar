@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { AxiosError } from "axios";
 import type { Header } from "~/types/components/SortableTable";
-import type { OrganizationRoleTable, User } from "~/types/backend";
+import type { OrganizationRoleTable } from "~/types/backend";
 
 definePageMeta({
   globalPermsRequired: ["EditAllUserSettings"],
@@ -10,11 +10,11 @@ definePageMeta({
 const i18n = useI18n();
 const route = useRoute("admin-user-user");
 
-const projects = await useProjects({ owner: route.params.user });
+const { projects } = useProjects(() => ({ owner: route.params.user }));
 const orgs = (await useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${route.params.user}/userOrganizations`).catch((e) =>
   handleRequestError(e)
 )) as { [key: string]: OrganizationRoleTable };
-const user = await useUser(route.params.user);
+const { user, refreshUser } = useUser(() => route.params.user);
 
 const projectsConfig = [
   { title: i18n.t("userAdmin.project"), name: "name" },
@@ -39,18 +39,17 @@ const orgList = computed(() => {
 });
 
 const selectedRole = ref();
+
 async function processRole(add: boolean) {
   try {
     await useInternalApi("admin/user/" + route.params.user + "/" + selectedRole.value, add ? "POST" : "DELETE");
-    if (user?.value) {
-      user.value = await useApi<User>("users/" + route.params.user);
-    }
+    refreshUser();
   } catch (e) {
     handleRequestError(e as AxiosError);
   }
 }
 
-useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route, null));
+useSeo(computed(() => ({ title: i18n.t("userAdmin.title") + " " + route.params.user, route })));
 </script>
 
 <template>

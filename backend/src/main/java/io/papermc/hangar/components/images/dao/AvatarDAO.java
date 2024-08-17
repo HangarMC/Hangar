@@ -16,6 +16,7 @@ public interface AvatarDAO {
     @SqlUpdate("INSERT INTO avatars (type, subject, created_at, optimized_hash, unoptimized_hash, version) VALUES (:type, :subject, :now, :optimizedHash, :unoptimizedHash, :version)")
     void createAvatar(@BindBean AvatarTable table);
 
+    @Deprecated(forRemoval = true)
     @SqlQuery("SELECT * FROM avatars WHERE type = :type AND subject = :subject")
     AvatarTable getAvatar(String type, String subject);
 

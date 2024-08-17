@@ -1,12 +1,19 @@
 <script lang="ts" setup>
 import { type HangarProject, NamedPermission, type User } from "~/types/backend";
+import { useDataLoader } from "~/composables/useDataLoader";
 
 const props = defineProps<{
-  user: User;
-  project: HangarProject;
+  user?: User;
+  project?: HangarProject;
 }>();
 
-const route = useRoute("user-project-pages-all");
+const route = useRoute("user-project-pages-page");
+
+const { data: page } = useDataLoader("page");
+
+definePageMeta({
+  dataLoader_page: true,
+});
 
 const open = useOpenProjectPages(route, props.project);
 // useSeo is in ProjectPageMarkdown
@@ -17,8 +24,9 @@ const open = useOpenProjectPages(route, props.project);
     <section class="basis-full md:basis-9/12 flex-grow overflow-auto">
       <ProjectPageMarkdown
         :key="route.fullPath"
-        v-slot="{ page, editingPage, changeEditingPage, savePage, deletePage }"
+        v-slot="{ editingPage, changeEditingPage, savePage, deletePage }"
         :project="props.project"
+        :page="page"
         :main-page="false"
       >
         <Card v-if="page" class="pb-0 overflow-clip overflow-hidden">

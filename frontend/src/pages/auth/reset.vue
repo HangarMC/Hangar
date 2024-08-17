@@ -45,7 +45,7 @@ async function gotoLogin() {
   await router.push("/auth/login");
 }
 
-useHead(useSeo("Reset your password", null, route, null));
+useSeo(computed(() => ({ title: "Reset your password", route })));
 </script>
 
 <template>

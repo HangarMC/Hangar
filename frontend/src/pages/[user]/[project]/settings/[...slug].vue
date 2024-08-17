@@ -4,7 +4,8 @@ import { useVuelidate } from "@vuelidate/core";
 import { Cropper, type CropperResult } from "vue-advanced-cropper";
 import type { Tab } from "~/types/components/design/Tabs";
 import InputText from "~/components/ui/InputText.vue";
-import { type HangarProject, type HangarUser, NamedPermission, type PaginatedResultUser, Tag, Visibility } from "~/types/backend";
+import { NamedPermission, Tag, Visibility } from "~/types/backend";
+import type { HangarProject, HangarUser, PaginatedResultUser, ProjectSettings, Category } from "~/types/backend";
 
 import "vue-advanced-cropper/dist/style.css";
 
@@ -18,8 +19,8 @@ const i18n = useI18n();
 const v = useVuelidate();
 const notificationStore = useNotificationStore();
 const props = defineProps<{
-  project: HangarProject;
-  user: HangarUser;
+  project?: HangarProject;
+  user?: HangarUser;
 }>();
 
 const selectedTab = ref(route.params.slug?.[0] || "general");
@@ -34,22 +35,33 @@ if (hasPerms(NamedPermission.IsSubjectOwner) || hasPerms(NamedPermission.DeleteP
 }
 
 const form = reactive({
-  settings: cloneDeep(props.project.settings),
-  description: props.project.description,
-  category: props.project.category,
-});
-if (!form.settings.license.type) {
-  form.settings.license.type = "Unspecified";
-}
-if (!form.settings.links) {
-  form.settings.links = [];
-}
+  settings: undefined,
+  description: undefined,
+  category: undefined,
+} as { settings?: ProjectSettings; description?: string; category?: Category });
 
-const hasCustomIcon = computed(() => props.project.avatarUrl.includes("project"));
+watch(
+  () => props.project,
+  (val) => {
+    form.settings = cloneDeep(val?.settings);
+    form.description = val?.description;
+    form.category = val?.category;
+
+    if (form.settings && !form.settings?.license?.type) {
+      form.settings.license.type = "Unspecified";
+    }
+    if (form.settings && !form.settings?.links) {
+      form.settings.links = [];
+    }
+  },
+  { immediate: true }
+);
+
+const hasCustomIcon = computed(() => props.project?.avatarUrl?.includes("project"));
 const projectIcon = ref<File | null>(null);
 const cropperInput = ref();
 const cropperResult = ref();
-const imgSrc = ref(props.project.avatarUrl);
+const imgSrc = ref(props.project?.avatarUrl);
 let reader: FileReader | null = null;
 onMounted(() => {
   reader = new FileReader();
@@ -84,8 +96,8 @@ const loading = reactive({
   transfer: false,
 });
 
-const isCustomLicense = computed(() => form.settings.license.type === "Other");
-const isUnspecifiedLicense = computed(() => form.settings.license.type === "Unspecified");
+const isCustomLicense = computed(() => form.settings?.license?.type === "Other");
+const isUnspecifiedLicense = computed(() => form.settings?.license?.type === "Unspecified");
 
 watch(route, (val) => (selectedTab.value = val.params.slug?.[0] || "general"), { deep: true });
 watch(selectedTab, (val) => router.replace("/" + route.params.user + "/" + route.params.project + "/settings/" + val));
@@ -106,11 +118,11 @@ async function save() {
   if (!(await v.value.$validate())) return;
   loading.save = true;
   try {
-    if (!isCustomLicense.value) {
-      form.settings.license.name = null;
+    if (form.settings && !isCustomLicense.value) {
+      form.settings.license.name = undefined as unknown as string;
     }
-    if (isUnspecifiedLicense.value) {
-      form.settings.license.url = null;
+    if (form.settings && isUnspecifiedLicense.value) {
+      form.settings.license.url = undefined;
     }
 
     await useInternalApi(`projects/project/${route.params.project}/settings`, "post", {
@@ -152,7 +164,7 @@ async function rename() {
 
 async function softDelete(comment: string) {
   try {
-    await useInternalApi(`projects/project/${props.project.id}/manage/delete`, "post", {
+    await useInternalApi(`projects/project/${props.project?.id}/manage/delete`, "post", {
       content: comment,
     });
     await notificationStore.success(i18n.t("project.settings.success.softDelete"));
@@ -168,7 +180,7 @@ async function softDelete(comment: string) {
 
 async function hardDelete(comment: string) {
   try {
-    await useInternalApi(`projects/project/${props.project.id}/manage/hardDelete`, "post", {
+    await useInternalApi(`projects/project/${props.project?.id}/manage/hardDelete`, "post", {
       content: comment,
     });
     await notificationStore.success(i18n.t("project.settings.success.hardDelete"));
@@ -208,7 +220,7 @@ async function resetIcon() {
     await (response
       ? notificationStore.success(i18n.t("project.settings.success.resetIconWarn", [response]))
       : notificationStore.success(i18n.t("project.settings.success.resetIcon")));
-    imgSrc.value = props.user.avatarUrl; // set temporary source so it changes right away
+    imgSrc.value = props.user?.avatarUrl; // set temporary source so it changes right away
     projectIcon.value = null;
     cropperInput.value = null;
     cropperResult.value = null;
@@ -218,7 +230,14 @@ async function resetIcon() {
   loading.resetIcon = false;
 }
 
-useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, props.project.description, route, props.project.avatarUrl));
+useSeo(
+  computed(() => ({
+    title: i18n.t("project.settings.title") + " | " + props.project?.name,
+    route,
+    description: props.project?.description,
+    image: props.project?.avatarUrl,
+  }))
+);
 </script>
 
 <template>
@@ -252,35 +271,44 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.keywords" description="project.settings.keywordsSub">
             <InputTag
+              v-if="form.settings"
               v-model="form.settings.keywords"
               counter
               :maxlength="useBackendData.validations?.project?.keywords?.max || 5"
               :tag-maxlength="useBackendData.validations?.project?.keywordName?.max || 16"
               :label="i18n.t('project.new.step3.keywords')"
-              :rules="[maxLength()(useBackendData.validations?.project?.keywords?.max || 5), noDuplicated()(() => form.settings.keywords)]"
+              :rules="[maxLength()(useBackendData.validations?.project?.keywords?.max || 5), noDuplicated()(() => form.settings?.keywords)]"
             />
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.tags.title" description="project.settings.tagsSub">
-            <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="form.settings.tags" :value="tag">
-              <template #label>
-                <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
-                <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
-                <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
-                <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
-                <Tooltip>
-                  <template #content> {{ i18n.t("project.settings.tags." + tag + ".description") }} </template>
-                  <IconMdiHelpCircleOutline class="ml-1 text-gray-500 dark:text-gray-400 text-sm" />
-                </Tooltip>
-              </template>
-            </InputCheckbox>
+            <template v-if="form.settings">
+              <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="form.settings.tags" :value="tag">
+                <template #label>
+                  <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
+                  <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
+                  <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
+                  <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
+                  <Tooltip>
+                    <template #content> {{ i18n.t("project.settings.tags." + tag + ".description") }} </template>
+                    <IconMdiHelpCircleOutline class="ml-1 text-gray-500 dark:text-gray-400 text-sm" />
+                  </Tooltip>
+                </template>
+              </InputCheckbox>
+            </template>
           </ProjectSettingsSection>
           <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
             <div class="flex md:gap-2 lt-md:flex-wrap">
               <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
-                <InputSelect v-model="form.settings.license.type" :values="useLicenseOptions" :label="i18n.t('project.settings.licenseType')" />
+                <InputSelect
+                  v-if="form.settings"
+                  v-model="form.settings.license.type"
+                  :values="useLicenseOptions"
+                  :label="i18n.t('project.settings.licenseType')"
+                />
               </div>
               <div v-if="isCustomLicense" class="basis-full md:basis-8/12">
                 <InputText
+                  v-if="form.settings"
                   v-model.trim="form.settings.license.name"
                   :label="i18n.t('project.settings.licenseCustom')"
                   :rules="[
@@ -291,7 +319,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
                 />
               </div>
               <div v-if="!isUnspecifiedLicense" class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
-                <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[validUrl()]" />
+                <InputText v-if="form.settings" v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[validUrl()]" />
               </div>
             </div>
           </ProjectSettingsSection>
@@ -342,7 +370,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
         </template>
         <template #links>
           <ProjectSettingsSection title="project.settings.links.title" description="project.settings.links.sub">
-            <ProjectLinksForm v-model="form.settings.links" />
+            <ProjectLinksForm v-if="form.settings" v-model="form.settings.links" />
           </ProjectSettingsSection>
         </template>
         <template #management>
@@ -365,7 +393,7 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
             </div>
           </ProjectSettingsSection>
           <ProjectSettingsSection
-            v-if="hasPerms(NamedPermission.DeleteProject) && project.visibility !== Visibility.SoftDelete"
+            v-if="hasPerms(NamedPermission.DeleteProject) && project?.visibility !== Visibility.SoftDelete"
             title="project.settings.delete"
             description="project.settings.deleteSub"
             class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"
@@ -405,6 +433,6 @@ useHead(useSeo(i18n.t("project.settings.title") + " | " + props.project.name, pr
         </template>-->
       </Tabs>
     </Card>
-    <MemberList :members="project.members" :author="project.namespace.owner" :slug="project.name" class="basis-full md:basis-3/12 h-max" />
+    <MemberList :members="project?.members || []" :author="project?.namespace?.owner" :slug="project?.name" class="basis-full md:basis-3/12 h-max" />
   </div>
 </template>

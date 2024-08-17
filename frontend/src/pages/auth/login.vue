@@ -120,7 +120,7 @@ async function finish(response: LoginResponse) {
   }
 }
 
-useHead(useSeo("Login", null, route, null));
+useSeo(computed(() => ({ title: "Login", route })));
 </script>
 
 <template>

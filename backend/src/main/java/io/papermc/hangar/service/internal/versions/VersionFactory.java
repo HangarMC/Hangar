@@ -319,6 +319,7 @@ public class VersionFactory extends HangarComponent {
 
             // send webhooks
             final List<String> platformString = pendingVersion.getPlatformDependencies().keySet().stream().map(Platform::getName).toList();
+            // TODO rewrite avatar fetching (for move this code to an async method)
             final String avatarUrl = this.avatarService.getProjectAvatarUrl(projectTable.getProjectId(), projectTable.getOwnerName());
             final String url = this.config.getBaseUrl() + "/" + projectTable.getOwnerName() + "/" + projectTable.getSlug();
             if (projectTable.getVisibility() == Visibility.NEW) {

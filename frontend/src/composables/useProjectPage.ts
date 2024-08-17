@@ -1,18 +1,8 @@
-import type { RouteLocationNormalizedLoadedTyped } from "unplugin-vue-router";
-import type { RouterTyped } from "vue-router/auto";
-import type { HangarProject } from "~/types/backend";
+import type { Router } from "vue-router";
+import type { RouteLocationNormalized } from "vue-router/auto";
+import type { ExtendedProjectPage, HangarProject } from "~/types/backend";
 
-export async function useProjectPage(
-  route: RouteLocationNormalizedLoadedTyped<any, "user-project-pages-all">,
-  router: RouterTyped,
-  project: HangarProject,
-  mainPage: boolean
-) {
-  const page = mainPage ? ref(project.mainPage) : await usePage(route.params.project, route.params.all);
-  if (!page?.value) {
-    throw useErrorRedirect(route, 404, "Not found");
-  }
-
+export function useProjectPage(route: RouteLocationNormalized<"user-project-pages-page">, router: Router, project?: HangarProject, page?: ExtendedProjectPage) {
   const editingPage = ref<boolean>(false);
 
   // Helper setter function, v-model cannot directly edit from inside a slot.
@@ -21,21 +11,21 @@ export async function useProjectPage(
   }
 
   async function savePage(content: string) {
-    if (!page?.value) return;
-    await useInternalApi(`pages/save/${project.id}/${page.value?.id}`, "post", {
+    if (!page) return;
+    await useInternalApi(`pages/save/${project?.id}/${page?.id}`, "post", {
       content,
     }).catch((e) => handleRequestError(e, "page.new.error.save"));
-    if (page.value && "contents" in page.value) {
-      page.value.contents = content;
+    if (page && "contents" in page) {
+      page.contents = content;
     }
     editingPage.value = false;
   }
 
   async function deletePage() {
     if (!page) return;
-    await useInternalApi(`pages/delete/${project.id}/${page.value?.id}`, "post").catch((e) => handleRequestError(e, "page.new.error.save"));
+    await useInternalApi(`pages/delete/${project?.id}/${page?.id}`, "post").catch((e) => handleRequestError(e, "page.new.error.save"));
     await router.replace(`/${route.params.user}/${route.params.project}`);
   }
 
-  return { editingPage, changeEditingPage, page, savePage, deletePage };
+  return { editingPage, changeEditingPage, savePage, deletePage };
 }

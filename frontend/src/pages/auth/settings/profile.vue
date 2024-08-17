@@ -1,4 +1,10 @@
 <script lang="ts" setup>
+import type { SettingsResponse } from "~/types/backend";
+
+defineProps<{
+  settings?: SettingsResponse;
+}>();
+
 const auth = useAuthStore();
 const notification = useNotificationStore();
 const i18n = useI18n();

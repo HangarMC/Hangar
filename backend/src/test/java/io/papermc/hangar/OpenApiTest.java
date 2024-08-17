@@ -3,18 +3,15 @@ package io.papermc.hangar;
 import io.papermc.hangar.controller.api.v1.helper.ControllerTest;
 import io.swagger.parser.OpenAPIParser;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.parser.core.models.ParseOptions;
 import io.swagger.v3.parser.core.models.SwaggerParseResult;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openapitools.codegen.validation.ValidationResult;
 import org.openapitools.codegen.validations.oas.OpenApiEvaluator;
 import org.openapitools.codegen.validations.oas.RuleConfiguration;
-import org.springframework.util.StreamUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

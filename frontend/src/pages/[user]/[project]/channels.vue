@@ -6,36 +6,35 @@ definePageMeta({
 });
 
 const props = defineProps<{
-  user: User;
-  project: HangarProject;
+  user?: User;
+  project?: HangarProject;
 }>();
 const i18n = useI18n();
 const route = useRoute("user-project-channels");
-const channelData = await useProjectChannels(props.project.namespace.slug);
-const channels = channelData.data;
+const { channels, refreshChannels } = useProjectChannels(() => route.params.project);
 const validations = useBackendData.validations;
 const notifications = useNotificationStore();
 
-useHead(useSeo("Channels | " + props.project.name, props.project.description, route, props.project.avatarUrl));
+useSeo(computed(() => ({ title: "Channels | " + props.project?.name, route, description: props.project?.description, image: props.project?.avatarUrl })));
 
 async function deleteChannel(channel: HangarChannel) {
-  await useInternalApi(`channels/${props.project.id}/delete/${channel.id}`, "post")
+  await useInternalApi(`channels/${props.project?.id}/delete/${channel.id}`, "post")
     .then(() => {
-      channelData.refresh();
+      refreshChannels();
       notifications.warn(i18n.t("channel.modal.success.deletedChannel", [channel.name]));
     })
     .catch((e) => handleRequestError(e));
 }
 
 async function addChannel(channel: HangarChannel | ProjectChannel) {
-  await useInternalApi(`channels/${props.project.id}/create`, "post", {
+  await useInternalApi(`channels/${props.project?.id}/create`, "post", {
     name: channel.name,
     description: channel.description,
     color: channel.color,
     flags: channel.flags,
   })
     .then(() => {
-      channelData.refresh();
+      refreshChannels();
       notifications.success(i18n.t("channel.modal.success.addedChannel", [channel.name]));
     })
     .catch((e) => handleRequestError(e));
@@ -43,7 +42,7 @@ async function addChannel(channel: HangarChannel | ProjectChannel) {
 
 async function editChannel(channel: HangarChannel | ProjectChannel) {
   if (!("id" in channel)) return;
-  await useInternalApi(`channels/${props.project.id}/edit`, "post", {
+  await useInternalApi(`channels/${props.project?.id}/edit`, "post", {
     id: channel.id,
     name: channel.name,
     description: channel.description,
@@ -51,7 +50,7 @@ async function editChannel(channel: HangarChannel | ProjectChannel) {
     flags: channel.flags,
   })
     .then(() => {
-      channelData.refresh();
+      refreshChannels();
       notifications.success(i18n.t("channel.modal.success.editedChannel", [channel.name]));
     })
     .catch((e) => handleRequestError(e));
@@ -85,7 +84,7 @@ async function editChannel(channel: HangarChannel | ProjectChannel) {
           <td>{{ channel.description }}</td>
           <td>{{ channel.versionCount }}</td>
           <td>
-            <ChannelModal :project-id="props.project.id" edit :channel="channel" @create="editChannel">
+            <ChannelModal v-if="project" :project-id="project.id" edit :channel="channel" @create="editChannel">
               <template #activator="{ on }">
                 <Button v-on="on">
                   {{ i18n.t("channel.manage.editButton") }}
@@ -102,10 +101,10 @@ async function editChannel(channel: HangarChannel | ProjectChannel) {
       </tbody>
     </Table>
 
-    <ChannelModal :project-id="props.project.id" @create="addChannel">
+    <ChannelModal v-if="project" :project-id="project.id" @create="addChannel">
       <template #activator="{ on }">
         <Button
-          v-if="channels.length < validations.project.maxChannelCount"
+          v-if="channels && channels.length < validations.project.maxChannelCount"
           :disabled="channels.length >= validations.project.maxChannelCount"
           class="mt-2"
           v-on="on"

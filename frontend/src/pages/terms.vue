@@ -2,6 +2,7 @@
 const i18n = useI18n();
 const route = useRoute("terms");
 
+// language=Markdown
 const text = `
 Terms and Conditions
 ====================
@@ -105,7 +106,7 @@ If you have any questions about these Terms and Conditions, You can contact Us v
 Last updated: December 25, 2022
 `;
 
-useHead(useSeo(i18n.t("pages.termsTitle"), null, route, null));
+useSeo(computed(() => ({ title: i18n.t("pages.termsTitle"), route })));
 </script>
 
 <template>

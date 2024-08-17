@@ -1,5 +1,8 @@
-export function lastUpdated(date: Date | string): string {
-  const i18n = useI18n();
+import type { Composer } from "vue-i18n";
+
+export function lastUpdated(date: Date | string, i18n?: Composer): string {
+  // some dum linter hates me
+  const lang = (i18n ?? useI18n())!;
   date = new Date(date);
   const today: Date = new Date();
   const todayTime = today.getTime();
@@ -7,12 +10,12 @@ export function lastUpdated(date: Date | string): string {
   const todayDays = Math.floor(todayTime / (1000 * 60 * 60 * 24));
   const dateDays = Math.floor(dateTime / (1000 * 60 * 60 * 24));
   if (todayDays === dateDays) {
-    return i18n.t("general.today") + " " + i18n.d(date, "clock");
+    return lang.t("general.today") + " " + lang.d(date, "clock");
   } else if (todayDays === dateDays + 1) {
-    return i18n.t("general.yesterday") + " " + i18n.d(date, "clock");
+    return lang.t("general.yesterday") + " " + lang.d(date, "clock");
   } else if (todayDays - dateDays < 7) {
-    return i18n.d(date, "shortweektime");
+    return lang.d(date, "shortweektime");
   } else {
-    return i18n.d(date, "date");
+    return lang.d(date, "date");
   }
 }

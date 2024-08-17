@@ -3,13 +3,20 @@ import type { HangarProject } from "~/types/backend";
 
 const route = useRoute("user-project-stars");
 const i18n = useI18n();
-const stargazers = await useStargazers(route.params.project);
+const { stargazers, stargazersStatus } = useStargazers(() => route.params.project);
 
 const props = defineProps<{
-  project: HangarProject;
+  project?: HangarProject;
 }>();
 
-useHead(useSeo(i18n.t("project.stargazers") + " | " + props.project.name, props.project.description, route, props.project.avatarUrl));
+useSeo(
+  computed(() => ({
+    title: i18n.t("project.stargazers") + " | " + props.project?.name,
+    route,
+    description: props.project?.description,
+    image: props.project?.avatarUrl,
+  }))
+);
 </script>
 
 <template>
@@ -18,7 +25,8 @@ useHead(useSeo(i18n.t("project.stargazers") + " | " + props.project.name, props.
       <PageTitle>{{ i18n.t("project.stargazers") }}</PageTitle>
     </template>
 
-    <div v-if="stargazers?.result" class="flex flex-wrap gap-4">
+    <Skeleton v-if="stargazersStatus === 'loading'" />
+    <div v-else-if="stargazers?.result" class="flex flex-wrap gap-4">
       <div v-for="stargazer in stargazers?.result" :key="stargazer.name">
         <div class="inline-flex items-center space-x-1">
           <UserAvatar size="xs" :username="stargazer.name" :avatar-url="stargazer.avatarUrl" />
