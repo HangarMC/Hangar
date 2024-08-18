@@ -2,10 +2,18 @@
 import { type Project, type ProjectCompact, Tag, Visibility } from "~/types/backend";
 
 const i18n = useI18n();
+const router = useRouter();
 
-defineProps<{
+const props = defineProps<{
   project: Project | ProjectCompact;
+  canEdit?: boolean;
+  pinned?: boolean;
 }>();
+
+async function togglePin() {
+  await useInternalApi(`/projects/project/${props.project.namespace.slug}/pin/${!props.pinned}`, "POST").catch(handleRequestError);
+  router.go(0); // I am lazy
+}
 </script>
 
 <template>
@@ -14,7 +22,7 @@ defineProps<{
       :class="{
         '!border-red-500 border-1px': project.visibility === Visibility.SoftDelete,
         '!border-gray-300 !dark:border-gray-700 border-1px': project.visibility === Visibility.Public,
-        'hover:background-card': true,
+        'hover:background-card group': true,
       }"
     >
       <div class="flex space-x-4">
@@ -34,11 +42,16 @@ defineProps<{
                 </object>
               </span>
             </h3>
-            <IconMdiCancel v-show="project.visibility === Visibility.SoftDelete" />
-            <IconMdiEyeOff v-show="project.visibility !== Visibility.Public" />
+            <IconMdiCancel v-if="project.visibility === Visibility.SoftDelete" />
+            <IconMdiEyeOff v-if="project.visibility !== Visibility.Public" />
+            <button v-if="canEdit" @click.prevent="togglePin" :title="'Toggle pinned status for project ' + project.namespace.slug">
+              <IconMdiPinOff class="hidden group-hover:block" v-if="pinned" />
+              <IconMdiPin v-else class="hidden group-hover:block" />
+            </button>
           </div>
 
           <div v-if="'description' in project && project.description" class="mb-1">{{ project.description }}</div>
+          <div v-else />
           <div class="inline-flex items-center text-gray-500 dark:text-gray-400 lt-sm:hidden">
             <CategoryLogo :category="project.category" :size="16" class="mr-1" />
             {{ i18n.t("project.category." + project.category) }}

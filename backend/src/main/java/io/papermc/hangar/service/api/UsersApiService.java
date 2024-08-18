@@ -190,9 +190,6 @@ public class UsersApiService extends HangarComponent {
     }
 
     public List<ProjectCompact> getUserPinned(final String userName) {
-        final List<ProjectCompact> pinnedVersions = this.pinnedProjectService.getPinnedVersions(this.getUserRequired(userName, this.usersDAO::getUser, HangarUser.class).getId());
-        // TODO rewrite avatar fetching
-        pinnedVersions.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
-        return pinnedVersions;
+        return this.pinnedProjectService.getPinnedProjects(this.getUserRequired(userName, this.usersDAO::getUser, HangarUser.class).getId());
     }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PaginatedResultProject } from "~/types/backend";
+import type { PaginatedResultProject, ProjectCompact } from "~/types/backend";
 
 const i18n = useI18n();
 
@@ -7,6 +7,8 @@ defineProps<{
   projects?: PaginatedResultProject;
   resetAnchor?: Element;
   loading?: boolean;
+  canEdit?: boolean;
+  pinned?: ProjectCompact[];
 }>();
 
 const emit = defineEmits<{
@@ -32,7 +34,7 @@ defineExpose({ updatePage });
     @update:page="emitPageUpdate"
   >
     <template #default="{ item }">
-      <ProjectCard :project="item" />
+      <ProjectCard :project="item" :can-edit :pinned="pinned?.some((p) => p.namespace.slug === item.namespace.slug)" />
     </template>
   </Pagination>
   <div v-if="projects?.result?.length === 0">{{ i18n.t("hangar.projectSearch.noProjects") }}</div>

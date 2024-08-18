@@ -6,8 +6,10 @@ import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.Visible;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
+import io.papermc.hangar.util.AvatarUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.OffsetDateTime;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 
@@ -29,16 +31,20 @@ public class ProjectCompact extends Model implements Named, Visible {
     protected final Visibility visibility;
     @Schema(description = "The url to the project's icon")
     protected String avatarUrl;
+    @Schema(description = "The short description of the project")
+    protected final String description;
 
-    public ProjectCompact(final OffsetDateTime createdAt, final long id, final String name, @Nested final ProjectNamespace namespace, @Nested final ProjectStats stats, @EnumByOrdinal final Category category, final OffsetDateTime lastUpdated, @EnumByOrdinal final Visibility visibility) {
+    public ProjectCompact(final OffsetDateTime createdAt, final long id, final String name, @Nested final ProjectNamespace namespace, final String description, @Nested final ProjectStats stats, @EnumByOrdinal final Category category, final OffsetDateTime lastUpdated, @EnumByOrdinal final Visibility visibility, @Nullable final String avatar, @Nullable final String avatarFallback) {
         super(createdAt);
         this.id = id;
         this.name = name;
         this.namespace = namespace;
+        this.description = description;
         this.stats = stats;
         this.category = category;
         this.visibility = visibility;
         this.lastUpdated = lastUpdated;
+        this.setAvatarUrl(AvatarUtil.avatarUrl(avatar, avatarFallback));
     }
 
     @Override
@@ -56,6 +62,10 @@ public class ProjectCompact extends Model implements Named, Visible {
 
     public Category getCategory() {
         return this.category;
+    }
+
+    public String getDescription() {
+        return this.description;
     }
 
     public OffsetDateTime getLastUpdated() {
@@ -85,6 +95,7 @@ public class ProjectCompact extends Model implements Named, Visible {
         return "ProjectCompact{" +
             "name='" + this.name + '\'' +
             ", namespace=" + this.namespace +
+            ", description=" + this.description +
             ", stats=" + this.stats +
             ", category=" + this.category +
             ", visibility=" + this.visibility +

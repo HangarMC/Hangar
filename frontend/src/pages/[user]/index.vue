@@ -46,7 +46,7 @@ const requestParams = computed(() => {
 // todo we can skip some of those if user is org
 const { organizationVisibility } = useOrganizationVisibility(() => route.params.user);
 const { possibleAlts } = usePossibleAlts(() => route.params.user);
-const { projects } = useProjects(() => ({ member: route.params.user, ...requestParams.value }), router);
+const { projects, projectsStatus } = useProjects(() => ({ member: route.params.user, ...requestParams.value }), router);
 const { starred } = useStarred(() => route.params.user);
 const { watching } = useWatching(() => route.params.user);
 const { pinned } = usePinned(() => route.params.user);
@@ -130,22 +130,28 @@ useSeo(
 
 <template>
   <UserHeader :viewing-user="user" :organization="organization" />
-  <div v-if="pinned" class="flex-basis-full flex flex-col gap-2 flex-grow lg:max-w-7/10 lg:min-w-6/10">
-    <div v-for="project in pinned" :key="project.namespace.slug">
-      <ProjectCard :project="project" />
-    </div>
-  </div>
 
   <!-- eslint-disable-next-line vue/no-multiple-template-root -->
   <div class="flex gap-4 flex-basis-full flex-col lg:flex-row">
     <div class="flex-basis-full flex flex-col gap-2 flex-grow lg:max-w-7/10 lg:min-w-6/10">
+      <template v-if="pinned?.length">
+        <h2 v-if="user" class="font-bold text-xl mb-2">{{ user.name }}'s pinned Plugins</h2>
+        <ProjectCard v-for="project in pinned" :key="project.namespace.slug" :project pinned :can-edit="hasPerms(NamedPermission.EditOwnUserSettings)" />
+        <hr class="my-2 border-zinc-200 dark:border-zinc-700" />
+      </template>
       <div class="flex gap-2">
         <InputText v-model="query" :label="i18n.t('hangar.projectSearch.query')" />
         <InputSelect v-model="activeSorter" :values="sorters" item-text="label" item-value="id" :label="i18n.t('hangar.projectSearch.sortBy')" />
       </div>
       <h2 v-if="user" class="font-bold text-xl">{{ user.name }}'s Plugins</h2>
       <Skeleton v-else class="text-xl" />
-      <ProjectList :projects="projects" :loading="!projects" @update:page="(newPage) => (page = newPage)" />
+      <ProjectList
+        :projects="projects"
+        :loading="projectsStatus === 'loading'"
+        :can-edit="hasPerms(NamedPermission.EditOwnUserSettings)"
+        :pinned
+        @update:page="(newPage) => (page = newPage)"
+      />
     </div>
     <div class="flex-basis-full flex-grow lg:max-w-3/10 lg:min-w-2/10">
       <Card v-if="!user" class="mb-4" accent>

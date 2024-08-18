@@ -37,7 +37,8 @@ public interface UsersApiDAO {
          hp.last_updated,
          hp.visibility,
          hp.avatar,
-         hp.avatar_fallback
+         hp.avatar_fallback,
+         hp.description
          FROM users u
              JOIN project_stars ps ON u.id = ps.user_id
              JOIN home_projects hp ON ps.project_id = hp.id
@@ -79,7 +80,8 @@ public interface UsersApiDAO {
          hp.last_updated,
          hp.visibility,
          hp.avatar,
-         hp.avatar_fallback
+         hp.avatar_fallback,
+         hp.description
          FROM users u
              JOIN project_watchers pw ON u.id = pw.user_id
              JOIN home_projects hp ON pw.project_id = hp.id

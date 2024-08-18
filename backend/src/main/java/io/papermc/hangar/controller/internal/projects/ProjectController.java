@@ -237,13 +237,13 @@ public class ProjectController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 10, refillTokens = 3, refillSeconds = 10)
     @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#projectId}")
-    @PostMapping(path = "/project/{id}/pin/{state}")
-    public void setPinnedStatus(@PathVariable("id") final long projectId, @PathVariable final boolean state) {
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
+    @PostMapping(path = "/project/{slug}/pin/{state}")
+    public void setPinnedStatus(@PathVariable("slug") final String slug, @PathVariable final boolean state) {
         if (state) {
-            this.pinnedProjectService.addPinnedProject(this.getHangarUserId(), projectId);
+            this.pinnedProjectService.addPinnedProject(this.getHangarUserId(), slug);
         } else {
-            this.pinnedProjectService.removePinnedProject(this.getHangarUserId(), projectId);
+            this.pinnedProjectService.removePinnedProject(this.getHangarUserId(), slug);
         }
     }
 

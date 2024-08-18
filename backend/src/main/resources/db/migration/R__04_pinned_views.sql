@@ -1,4 +1,5 @@
 DROP VIEW IF EXISTS pinned_versions;
+
 DROP VIEW IF EXISTS pinned_projects;
 
 CREATE OR REPLACE VIEW pinned_versions AS
@@ -19,7 +20,7 @@ CREATE OR REPLACE VIEW pinned_versions AS
                                  JOIN platform_versions plv ON plv.id = pvpd.platform_version_id
                              WHERE pvpd.version_id = pv.id
                              ORDER BY plv.platform
-                           )     AS platforms,
+                       )         AS platforms,
                        'version' AS type,
                        pv.project_id
                 FROM pinned_project_versions ppv
@@ -34,7 +35,7 @@ CREATE OR REPLACE VIEW pinned_versions AS
                                   JOIN platform_versions plv ON plv.id = pvpd.platform_version_id
                               WHERE pvpd.version_id = pv.id
                               ORDER BY plv.platform
-                            )     AS platforms,
+                        )         AS platforms,
                         'channel' AS type,
                         pv.project_id
                  FROM project_channels pc
@@ -62,7 +63,10 @@ CREATE OR REPLACE VIEW pinned_projects AS
                                     name,
                                     created_at,
                                     license_type,
-                                    last_updated
+                                    description,
+                                    last_updated,
+                                    avatar,
+                                    avatar_fallback
     FROM (SELECT pp.id,
                  pp.user_id,
                  pp.project_id,
@@ -81,7 +85,10 @@ CREATE OR REPLACE VIEW pinned_projects AS
                  p.name,
                  p.created_at,
                  p.license_type,
-                 hp.last_updated
+                 p.description,
+                 hp.last_updated,
+                 hp.avatar,
+                 hp.avatar_fallback
           FROM pinned_user_projects pp
               JOIN home_projects hp ON hp.id = pp.project_id
               JOIN projects p ON pp.project_id = p.id) AS pvs;
