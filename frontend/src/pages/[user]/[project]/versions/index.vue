@@ -93,8 +93,8 @@ function getVisibilityTitle(visibility: Visibility) {
     <section class="basis-full md:basis-11/15 flex-grow">
       <ul>
         <template v-if="versionsStatus === 'loading'">
-          <Skeleton class="mb-2 h-[90px]" />
-          <Skeleton class="mb-2 h-[90px]" />
+          <Skeleton class="mb-2 h-[90px]" delay />
+          <Skeleton class="mb-2 h-[90px]" delay />
         </template>
         <Alert v-else-if="!versions?.result?.length" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
         <Pagination

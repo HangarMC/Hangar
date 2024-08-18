@@ -1,15 +1,17 @@
 <script lang="ts" setup>
-withDefaults(
+const props = withDefaults(
   defineProps<{
     animated?: boolean;
+    delay?: boolean;
   }>(),
   {
     animated: true,
+    delay: false,
   }
 );
 
 const show = ref(false);
-if (import.meta.client) {
+if (import.meta.client && props.delay) {
   onMounted(() => {
     setTimeout(() => {
       show.value = true;
