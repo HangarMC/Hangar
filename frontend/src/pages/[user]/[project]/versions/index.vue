@@ -92,7 +92,10 @@ function getVisibilityTitle(visibility: Visibility) {
   <div ref="pageChangeScrollAnchor" class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-11/15 flex-grow">
       <ul>
-        <Skeleton v-if="versionsStatus === 'loading'" class="h-100" />
+        <template v-if="versionsStatus === 'loading'">
+          <Skeleton class="mb-2 h-[90px]" />
+          <Skeleton class="mb-2 h-[90px]" />
+        </template>
         <Alert v-else-if="!versions?.result?.length" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
         <Pagination
           v-else

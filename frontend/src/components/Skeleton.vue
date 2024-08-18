@@ -7,10 +7,19 @@ withDefaults(
     animated: true,
   }
 );
+
+const show = ref(false);
+if (import.meta.client) {
+  onMounted(() => {
+    setTimeout(() => {
+      show.value = true;
+    }, 400);
+  });
+}
 </script>
 
 <template>
-  <div class="skeleton" :class="animated && 'skeleton--animated'">
+  <div v-show="show" class="skeleton rounded-md shadow-md" :class="animated && 'skeleton--animated'">
     <div class="skeleton__content">Loading...</div>
   </div>
 </template>
