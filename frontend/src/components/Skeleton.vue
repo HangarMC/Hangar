@@ -10,7 +10,7 @@ const props = withDefaults(
   }
 );
 
-const show = ref(false);
+const show = ref(!props.delay);
 if (import.meta.client && props.delay) {
   onMounted(() => {
     setTimeout(() => {
