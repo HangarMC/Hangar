@@ -42,7 +42,7 @@ if (!route.query.channel) {
 if (!route.query.platform) {
   filter.platforms.push(...platforms.value.map((p) => p.enumName));
 }
-const { versions } = useProjectVersions(
+const { versions, versionsStatus } = useProjectVersions(
   () => ({
     project: route.params.project,
     data: { ...requestParams.value, includeHiddenChannels: filter.channels?.length > 0 },
@@ -92,9 +92,10 @@ function getVisibilityTitle(visibility: Visibility) {
   <div ref="pageChangeScrollAnchor" class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-11/15 flex-grow">
       <ul>
-        <Alert v-if="!versions || !versions.result || versions.result.length === 0" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
+        <Skeleton v-if="versionsStatus === 'loading'" class="h-100" />
+        <Alert v-else-if="!versions?.result?.length" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
         <Pagination
-          v-else-if="versions"
+          v-else
           ref="pagination"
           :items="versions.result"
           :server-pagination="versions.pagination"
