@@ -32,13 +32,11 @@ public class ProjectsApiService extends HangarComponent {
 
     private final ProjectsApiDAO projectsApiDAO;
     private final UsersApiService usersApiService;
-    private final AvatarService avatarService;
 
     @Autowired
-    public ProjectsApiService(final ProjectsApiDAO projectsApiDAO, final UsersApiService usersApiService, final AvatarService avatarService) {
+    public ProjectsApiService(final ProjectsApiDAO projectsApiDAO, final UsersApiService usersApiService) {
         this.projectsApiDAO = projectsApiDAO;
         this.usersApiService = usersApiService;
-        this.avatarService = avatarService;
     }
 
     public Project getProject(final String slug) {
@@ -47,8 +45,6 @@ public class ProjectsApiService extends HangarComponent {
         if (project == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project " + slug + " not found");
         }
-        // TODO rewrite avatar fetching
-        project.setAvatarUrl(this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner()));
         return project;
     }
 
@@ -109,10 +105,6 @@ public class ProjectsApiService extends HangarComponent {
 
         final Long userId = this.getHangarUserId();
         final List<Project> projects = this.projectsApiDAO.getProjects(seeHidden, userId, pagination, query);
-        for (final Project project : projects) {
-            // TODO rewrite avatar fetching
-            project.setAvatarUrl(this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner()));
-        }
         return new PaginatedResult<>(new Pagination(this.projectsApiDAO.countProjects(seeHidden, userId, pagination), pagination), projects);
     }
 }

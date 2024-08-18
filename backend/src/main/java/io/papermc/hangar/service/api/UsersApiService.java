@@ -97,8 +97,6 @@ public class UsersApiService extends HangarComponent {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final Long userId = this.getHangarUserId();
         final List<ProjectCompact> projects = this.usersApiDAO.getUserStarred(userName, canSeeHidden, userId, pagination);
-        // TODO rewrite avatar fetching
-        projects.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
         final long count = this.usersApiDAO.getUserStarredCount(userName, canSeeHidden, userId);
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
@@ -109,8 +107,6 @@ public class UsersApiService extends HangarComponent {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final Long userId = this.getHangarUserId();
         final List<ProjectCompact> projects = this.usersApiDAO.getUserWatching(userName, canSeeHidden, userId, pagination);
-        // TODO rewrite avatar fetching
-        projects.forEach(p -> p.setAvatarUrl(this.avatarService.getProjectAvatarUrl(p.getId(), p.getNamespace().getOwner())));
         final long count = this.usersApiDAO.getUserWatchingCount(userName, canSeeHidden, userId);
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }

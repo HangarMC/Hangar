@@ -158,7 +158,7 @@ public class S3FileService implements FileService {
     }
 
     @Override
-    public String getAvatarUrl(final String type, final String subject, final String version) {
-        return this.config.cdnEndpoint() + (this.config.cdnIncludeBucket() ? "/" + this.config.bucket() : "") + "/avatars/" + type + "/" + subject + ".webp?v=" + version;
+    public String getAvatarUrlPrefix() {
+        return this.config.cdnEndpoint() + (this.config.cdnIncludeBucket() ? "/" + this.config.bucket() : "") + "/avatars";
     }
 }

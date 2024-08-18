@@ -46,7 +46,9 @@ public interface HangarProjectsDAO {
         "       p.keywords," +
         "       p.donation_enabled," +
         "       p.donation_subject," +
-        "       p.sponsors" +
+        "       p.sponsors," +
+        "       hp.avatar," +
+        "       hp.avatar_fallback" +
         "  FROM home_projects hp" +
         "         JOIN projects_extra p ON hp.id = p.id" +
         "         JOIN users u ON p.owner_id = u.id" +

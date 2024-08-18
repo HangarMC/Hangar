@@ -37,5 +37,9 @@ public interface FileService {
 
     String getVersionDownloadUrl(String user, String project, String version, Platform platform, String fileName);
 
-    String getAvatarUrl(String type, String subject, String version);
+    default String getAvatarUrl(String type, String subject, String version) {
+        return getAvatarUrlPrefix() + "/" + type + "/" + subject + ".webp?v=" + version;
+    }
+
+    String getAvatarUrlPrefix();
 }

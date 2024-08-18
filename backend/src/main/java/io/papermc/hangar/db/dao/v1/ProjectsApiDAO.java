@@ -52,7 +52,9 @@ public interface ProjectsApiDAO {
         "       p.keywords," +
         "       p.donation_enabled," +
         "       p.donation_subject," +
-        "       p.sponsors" +
+        "       p.sponsors," +
+        "       hp.avatar," +
+        "       hp.avatar_fallback" +
         "  FROM home_projects hp" +
         "         JOIN projects_extra p ON hp.id = p.id" +
         "         WHERE lower(p.slug) = lower(:slug)" +
@@ -99,6 +101,8 @@ public interface ProjectsApiDAO {
                hp.sponsors,
                hp.last_updated,
                hp.supported_platforms,
+               hp.avatar,
+               hp.avatar_fallback,
                ((extract(EPOCH FROM hp.last_updated) - 1609459200) / 604800) * 1 AS last_updated_double,-- for ordering --
                exists(SELECT 1 FROM project_stars ps WHERE ps.project_id = hp.id AND ps.user_id = :requesterId) AS starred,
                exists(SELECT 1 FROM project_watchers pw WHERE pw.project_id = hp.id AND pw.user_id = :requesterId) AS watching,

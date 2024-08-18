@@ -31,20 +31,28 @@ CREATE MATERIALIZED VIEW home_projects AS
                                        JOIN project_versions pv ON pvpd.version_id = pv.id
                                    GROUP BY pv.project_id, v.platform)
     SELECT p.*,
-           array_agg(DISTINCT pm.user_id)                    AS project_members,
-           array_agg(DISTINCT lower(u.name))                 AS project_member_names,
-           coalesce(pva.views::bigint, 0::bigint)            AS views,
-           coalesce(pda.downloads::bigint, 0::bigint)        AS downloads,
-           coalesce(pvr.recent_views::bigint, 0::bigint)     AS recent_views,
-           coalesce(pdr.recent_downloads::bigint, 0::bigint) AS recent_downloads,
-           coalesce(ps.stars::bigint, 0::bigint)             AS stars,
-           coalesce(pw.watchers::bigint, 0::bigint)          AS watchers,
-           coalesce(max(lv.created_at), p.created_at)        AS last_updated,
+           array_agg(DISTINCT pm.user_id)                                             AS project_members,
+           array_agg(DISTINCT lower(u.name))                                          AS project_member_names,
+           coalesce(pva.views::bigint, 0::bigint)                                     AS views,
+           coalesce(pda.downloads::bigint, 0::bigint)                                 AS downloads,
+           coalesce(pvr.recent_views::bigint, 0::bigint)                              AS recent_views,
+           coalesce(pdr.recent_downloads::bigint, 0::bigint)                          AS recent_downloads,
+           coalesce(ps.stars::bigint, 0::bigint)                                      AS stars,
+           coalesce(pw.watchers::bigint, 0::bigint)                                   AS watchers,
+           coalesce(max(lv.created_at), p.created_at)                                 AS last_updated,
+        /* avatar stuff */
+           (SELECT '/project/' || p.id || '.webp?v=' || a.version
+            FROM avatars a
+            WHERE a.type = 'project' AND a.subject = p.id::text)                      AS avatar,
+           (SELECT '/user/' || o.uuid::text || '.webp?v=' || a.version
+            FROM avatars a
+                JOIN users o ON a.subject = o.uuid::text
+            WHERE o.id = p.owner_id AND a.type = 'user' AND a.subject = o.uuid::text) AS avatar_fallback,
         /* store the supported platforms and versions */
         /* format: [{"platform": 0, "versions": ["1.19.4"]}, {"platform": 1, "versions": ["1.18"]}, {"platform": 2, "versions": ["3.2"]}] */
            (SELECT jsonb_agg(jsonb_build_object('platform', pva.platform, 'versions', pva.versions))
             FROM platform_versions_agg pva
-            WHERE pva.project_id = p.id)                     AS supported_platforms,
+            WHERE pva.project_id = p.id)                                              AS supported_platforms,
         /* search stuff
             we want to search in the name, description, keywords and owner_name, in that priority
             for name and owner name we search the original name and a snake_case version so tsvector can find submatches
@@ -68,7 +76,7 @@ CREATE MATERIALIZED VIEW home_projects AS
                        to_tsvector('english'::regconfig, regexp_replace(p.owner_name::text, '([a-z])([A-Z]+)'::text, '\1_\2'::text, 'g'::text))
                        ), 'D'::"char"
                )
-               )                                             AS search_words
+               )                                                                      AS search_words
     FROM projects p
         LEFT JOIN project_versions lv ON p.id = lv.project_id
         JOIN project_members_all pm ON p.id = pm.id

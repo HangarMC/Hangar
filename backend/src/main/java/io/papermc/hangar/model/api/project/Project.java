@@ -3,6 +3,7 @@ package io.papermc.hangar.model.api.project;
 import io.papermc.hangar.model.api.project.settings.ProjectSettings;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
+import io.papermc.hangar.util.AvatarUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
@@ -19,11 +20,12 @@ public class Project extends ProjectCompact {
     private final ProjectSettings settings;
 
     @JdbiConstructor
-    public Project(final OffsetDateTime createdAt, final long id, final String name, @Nested final ProjectNamespace namespace, @Nested final ProjectStats stats, @EnumByOrdinal final Category category, final String description, final OffsetDateTime lastUpdated, @EnumByOrdinal final Visibility visibility, @Nested final UserActions userActions, @Nested final ProjectSettings settings) {
+    public Project(final OffsetDateTime createdAt, final long id, final String name, @Nested final ProjectNamespace namespace, @Nested final ProjectStats stats, @EnumByOrdinal final Category category, final String description, final OffsetDateTime lastUpdated, @EnumByOrdinal final Visibility visibility, @Nested final UserActions userActions, @Nested final ProjectSettings settings, final String avatar, final String avatarFallback) {
         super(createdAt, id, name, namespace, stats, category, lastUpdated, visibility);
         this.description = description;
         this.userActions = userActions;
         this.settings = settings;
+        this.setAvatarUrl(AvatarUtil.avatarUrl(avatar, avatarFallback));
     }
 
     public Project(final Project other) {
@@ -31,6 +33,7 @@ public class Project extends ProjectCompact {
         this.description = other.description;
         this.userActions = other.userActions;
         this.settings = other.settings;
+        this.avatarUrl = other.avatarUrl;
     }
 
     public String getDescription() {

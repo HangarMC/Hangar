@@ -170,11 +170,9 @@ public class ProjectService extends HangarComponent {
         final Map<Long, HangarProjectPage> pages = this.projectPageService.getProjectPages(projectId);
         final CompletableFuture<List<HangarProject.PinnedVersion>> pinnedVersions = this.supply(() -> this.pinnedVersionService.getPinnedVersions(ownerName, project.getNamespace().getSlug(), projectId));
         final ExtendedProjectPage projectPage = this.projectPageService.getProjectHomePage(projectId);
-        // TODO rewrite avatar fetching
-        final String avatarUrl = this.avatarService.getProjectAvatarUrl(project.getId(), project.getNamespace().getOwner());
 
         mainChannelFuture.join();
-        final HangarProject hangarProject = new HangarProject(
+        return new HangarProject(
             project,
             membersFuture.join(),
             lastVisibilityChangeComment,
@@ -185,8 +183,6 @@ public class ProjectService extends HangarComponent {
             mainChannelVersions,
             projectPage
         );
-        hangarProject.setAvatarUrl(avatarUrl);
-        return hangarProject;
     }
 
     private <T> CompletableFuture<T> supply(final Supplier<T> supplier) {

@@ -35,6 +35,8 @@ public class AvatarService extends HangarComponent {
     public static final String USER = "user";
     public static final String PROJECT = "project";
 
+    private static AvatarService instance;
+
     private final FileService fileService;
     private final ImageService imageService;
     private final AvatarDAO avatarDAO;
@@ -71,10 +73,19 @@ public class AvatarService extends HangarComponent {
         }
         this.defaultAvatarUrl = this.fileService.getAvatarUrl("default", "default", "0");
         logger.info("Default avatar url is {}", this.defaultAvatarUrl);
+        instance = this;
+    }
+
+    public static AvatarService getInstance() {
+        return instance;
     }
 
     public String getDefaultAvatarUrl() {
         return this.defaultAvatarUrl;
+    }
+
+    public String getAvatarUrlPrefix() {
+        return this.fileService.getAvatarUrlPrefix();
     }
 
     /*
