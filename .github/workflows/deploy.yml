@@ -90,7 +90,7 @@ jobs:
       - name: Lint frontend
         env:
           DEBUG: "hangar:*"
-        run: (cd frontend && pnpm lint:eslint)
+        run: (cd frontend && pnpm lint:oxlint && pnpm lint:eslint)
 
       - name: Sync forth and back with crowdin
         uses: crowdin/github-action@v2
