@@ -31,7 +31,6 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
         return newParam;
       } else if (newParam) {
         promises.push(
-          // eslint-disable-next-line no-async-promise-executor
           new Promise<void>(async (resolve, reject) => {
             console.log("load loading", key);
             const result = await loader(newParam).catch((err) => {
@@ -101,7 +100,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
       status.value = "idle";
       return undefined;
     }
-    // eslint-disable-next-line no-async-promise-executor
+
     return new Promise<void>(async (resolve, reject) => {
       console.log("load", key(params));
       try {

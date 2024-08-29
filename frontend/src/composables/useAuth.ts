@@ -55,7 +55,7 @@ class Auth {
       authLog("lock over", result);
       return result;
     }
-    // eslint-disable-next-line no-async-promise-executor
+
     this.refreshPromise = new Promise<false | string>(async (resolve) => {
       const refreshToken = useCookie("HangarAuth_REFRESH").value;
       if (import.meta.env.SSR && !refreshToken) {

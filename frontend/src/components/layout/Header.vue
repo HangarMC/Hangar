@@ -225,7 +225,12 @@ function isRecent(date: string): boolean {
             </template>
           </DropdownButton>
         </div>
-        <button class="flex rounded-md p-2" hover="text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700)" aria-label="Toogle dark mode" @click="settings.toggleDarkMode()">
+        <button
+          class="flex rounded-md p-2"
+          hover="text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700)"
+          aria-label="Toogle dark mode"
+          @click="settings.toggleDarkMode()"
+        >
           <icon-mdi-weather-night v-if="settings.darkMode" class="text-[1.2em]"></icon-mdi-weather-night>
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
@@ -345,11 +350,18 @@ function isRecent(date: string): boolean {
 
         <!-- Login/register buttons -->
         <div v-else class="flex gap-2">
-          <NuxtLink class="flex items-center rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))" :to="auth.loginUrl(route.fullPath)" rel="nofollow">
+          <NuxtLink
+            class="flex items-center rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))"
+            :to="auth.loginUrl(route.fullPath)"
+            rel="nofollow"
+          >
             <icon-mdi-key-outline class="mr-1 flex-shrink-0 text-[1.2em]" />
             {{ t("nav.login") }}
           </NuxtLink>
-          <NuxtLink class="flex items-center rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))" :to="auth.signupUrl(route.fullPath)">
+          <NuxtLink
+            class="flex items-center rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))"
+            :to="auth.signupUrl(route.fullPath)"
+          >
             <icon-mdi-clipboard-outline class="mr-1 flex-shrink-0 text-[1.2em]" />
             {{ t("nav.signup") }}
           </NuxtLink>
