@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.2</version>
+        <version>3.3.3</version>
         <relativePath/>
     </parent>
 
@@ -26,7 +26,7 @@
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
         <!-- dependency management -->
-        <jdbi3-bom.version>3.45.3</jdbi3-bom.version>
+        <jdbi3-bom.version>3.45.4</jdbi3-bom.version>
         <configurate.version>4.2.0-SNAPSHOT</configurate.version>
         <spring-cloud-aws.version>3.1.1</spring-cloud-aws.version>
 
@@ -35,7 +35,7 @@
         <springdoc.version>2.6.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20240303</org-json.version>
-        <bucket4j.version>8.13.1</bucket4j.version>
+        <bucket4j.version>8.14.0</bucket4j.version>
         <datafaker.version>2.3.1</datafaker.version>
         <apache-commons-lang.version>3.16.0</apache-commons-lang.version>
         <jwt.version>4.4.0</jwt.version>
@@ -54,7 +54,7 @@
 
         <!-- test -->
         <pg.version>1.20.1</pg.version>
-        <openapi-generator.version>7.7.0</openapi-generator.version>
+        <openapi-generator.version>7.8.0</openapi-generator.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
@@ -430,7 +430,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>3.5.0</version>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
