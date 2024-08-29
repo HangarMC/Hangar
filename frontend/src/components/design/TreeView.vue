@@ -44,7 +44,7 @@ defineSlots<{
       clazz="pl-4"
     >
       <template #item="slotProp">
-        <slot name="item" :item="slotProp.item" />
+        <slot name="item" :item="slotProp.item as T" />
       </template>
     </TreeView>
   </div>
