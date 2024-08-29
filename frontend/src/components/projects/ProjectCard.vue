@@ -44,8 +44,8 @@ async function togglePin() {
             </h3>
             <IconMdiCancel v-if="project.visibility === Visibility.SoftDelete" />
             <IconMdiEyeOff v-if="project.visibility !== Visibility.Public" />
-            <button v-if="canEdit" @click.prevent="togglePin" :title="'Toggle pinned status for project ' + project.namespace.slug">
-              <IconMdiPinOff class="hidden group-hover:block" v-if="pinned" />
+            <button v-if="canEdit" :title="'Toggle pinned status for project ' + project.namespace.slug" @click.prevent="togglePin">
+              <IconMdiPinOff v-if="pinned" class="hidden group-hover:block" />
               <IconMdiPin v-else class="hidden group-hover:block" />
             </button>
           </div>

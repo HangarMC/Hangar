@@ -19,6 +19,7 @@ module.exports = {
     "@vue/typescript/recommended",
     "plugin:eslint-comments/recommended",
     "prettier",
+    "plugin:oxlint/recommended",
   ],
   plugins: ["unicorn"],
   ignorePatterns: ["src/types/backend/**"],
