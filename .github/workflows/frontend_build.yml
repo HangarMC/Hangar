@@ -63,7 +63,7 @@ jobs:
         env:
           CI: true
           DEBUG: "hangar:*"
-        run: (cd frontend && pnpm lint:eslint)
+        run: (cd frontend && pnpm lint:oxlint && pnpm lint:eslint)
 
       - name: Build frontend
         env:
