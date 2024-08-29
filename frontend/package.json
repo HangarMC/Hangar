@@ -11,11 +11,13 @@
     "previewBuild": "nuxt build && nuxt preview",
     "lint:eslint": "eslint --ext \".js,.vue,.ts,.html\" --ignore-path .gitignore --fix .",
     "lint:prettier": "prettier -w .",
+    "lint:oxlint": "oxlint --fix",
     "lint:typecheck": "nuxt typecheck",
     "prepare": "nuxt prepare && cd .. && husky install frontend/.husky"
   },
   "lint-staged": {
     "*.{ts,js,vue,html}": [
+      "oxlint --fix",
       "prettier -c",
       "eslint"
     ]
@@ -92,6 +94,7 @@
     "husky": "9.1.4",
     "lint-staged": "15.2.9",
     "nuxt": "3.12.4",
+    "oxlint": "0.9.1",
     "pnpm": "9.7.1",
     "prettier": "3.3.3",
     "regenerator-runtime": "0.14.1",

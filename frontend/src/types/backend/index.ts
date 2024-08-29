@@ -2371,7 +2371,7 @@ export interface HttpResponse<D extends unknown, E extends unknown = unknown> ex
   error: E;
 }
 
-type CancelToken = Symbol | string | number;
+type CancelToken = symbol | string | number;
 
 export enum ContentType {
   Json = "application/json",
@@ -2446,11 +2446,11 @@ export class HttpClient<SecurityDataType = unknown> {
     return {
       ...this.baseApiParams,
       ...params1,
-      ...(params2 || {}),
+      ...params2,
       headers: {
-        ...(this.baseApiParams.headers || {}),
-        ...(params1.headers || {}),
-        ...((params2 && params2.headers) || {}),
+        ...this.baseApiParams.headers,
+        ...params1.headers,
+        ...(params2 && params2.headers),
       },
     };
   }
@@ -2499,7 +2499,7 @@ export class HttpClient<SecurityDataType = unknown> {
     return this.customFetch(`${baseUrl || this.baseUrl || ""}${path}${queryString ? `?${queryString}` : ""}`, {
       ...requestParams,
       headers: {
-        ...(requestParams.headers || {}),
+        ...requestParams.headers,
         ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
       },
       signal: (cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal) || null,
