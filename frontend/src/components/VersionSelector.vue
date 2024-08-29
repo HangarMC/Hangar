@@ -46,12 +46,12 @@ for (const version of selected.value) {
 
 // TODO All of this is horrible
 watch(selectedParents, (oldValue, newValue) => {
-  handleRemovedParent([...newValue.filter((x) => !oldValue.includes(x))]);
-  handleAddedParent([...oldValue.filter((x) => !newValue.includes(x))]);
+  handleRemovedParent(newValue.filter((x) => !oldValue.includes(x)));
+  handleAddedParent(oldValue.filter((x) => !newValue.includes(x)));
 });
 watch(selectedSub, (oldValue, newValue) => {
-  handleRemovedSub([...newValue.filter((x) => !oldValue.includes(x))]);
-  handleAddedSub([...oldValue.filter((x) => !newValue.includes(x))]);
+  handleRemovedSub(newValue.filter((x) => !oldValue.includes(x)));
+  handleAddedSub(oldValue.filter((x) => !newValue.includes(x)));
 });
 
 function handleRemovedParent(removedVersions: string[]) {
