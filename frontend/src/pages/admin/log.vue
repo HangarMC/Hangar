@@ -59,7 +59,7 @@ const requestParams = computed(() => {
 const { actionLogs } = useActionLogs(() => requestParams.value, router);
 
 function updateSort(col: string, sorter: Record<string, number>) {
-  sort.value = [...Object.keys(sorter)]
+  sort.value = Object.keys(sorter)
     .map((k) => {
       const val = sorter[k];
       if (val === -1) return "-" + k;
