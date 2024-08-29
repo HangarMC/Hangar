@@ -11,7 +11,7 @@
     "previewBuild": "nuxt build && nuxt preview",
     "lint:eslint": "eslint --ext \".js,.vue,.ts,.html\" --ignore-path .gitignore --fix .",
     "lint:prettier": "prettier -w .",
-    "lint:oxlint": "oxlint --import-plugin -W correctness -W import/namespace -W import/no-cycle -A no-unused-vars --fix",
+    "lint:oxlint": "oxlint -c .oxlint.json --import-plugin --fix",
     "lint:typecheck": "nuxt typecheck",
     "prepare": "nuxt prepare && cd .. && husky install frontend/.husky"
   },

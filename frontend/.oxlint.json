@@ -1,0 +1,13 @@
+{
+  "env": {
+    "browser": true
+  },
+  "settings": {},
+  "rules": {
+    "no-unused-vars": "allow",
+    "import/namespace": "warn",
+    "import/no-cycle": "warn",
+    "import/named": "warn",
+    "import/default": "warn"
+  }
+}
