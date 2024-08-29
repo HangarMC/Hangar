@@ -205,8 +205,8 @@ importers:
         specifier: 0.9.1
         version: 0.9.1
       eslint-plugin-unicorn:
-        specifier: 51.0.1
-        version: 51.0.1(eslint@8.57.0)
+        specifier: 55.0.0
+        version: 55.0.0(eslint@8.57.0)
       eslint-plugin-vue:
         specifier: 9.27.0
         version: 9.27.0(eslint@8.57.0)
@@ -3290,9 +3290,9 @@ packages:
     peerDependencies:
       eslint: '>=8.23.1'
 
-  eslint-plugin-unicorn@51.0.1:
-    resolution: {integrity: sha512-MuR/+9VuB0fydoI0nIn2RDA5WISRn4AsJyNSaNKLVwie9/ONvQhxOBbkfSICBPnzKrB77Fh6CZZXjgTt/4Latw==}
-    engines: {node: '>=16'}
+  eslint-plugin-unicorn@55.0.0:
+    resolution: {integrity: sha512-n3AKiVpY2/uDcGrS3+QsYDkjPfaOrNrsfQxU9nt5nitd9KuvVXrfAvgCO9DYPSfap+Gqjw9EOrXIsBp5tlHZjA==}
+    engines: {node: '>=18.18'}
     peerDependencies:
       eslint: '>=8.56.0'
 
@@ -3622,6 +3622,10 @@ packages:
   globals@13.24.0:
     resolution: {integrity: sha512-AhO5QUcj8llrbG09iWhPU2B204J1xnPeL8kQmVorSsy+Sjj1sk8gIyh6cUocGmH4L0UuhAJy+hJMRA4mgA4mFQ==}
     engines: {node: '>=8'}
+
+  globals@15.9.0:
+    resolution: {integrity: sha512-SmSKyLLKFbSr6rptvP8izbyxJL4ILwqO9Jg23UA0sDlGlu58V59D1//I3vlc0KJphVdUR7vMjHIplYnzBxorQA==}
+    engines: {node: '>=18'}
 
   globalthis@1.0.4:
     resolution: {integrity: sha512-DpLKbNU4WylpxJykQujfCcwYWiV/Jhm50Goo0wrVILAv5jOr9d+H+UR3PhSCD2rCCEIg0uc+G+muBTwD54JhDQ==}
@@ -10233,16 +10237,16 @@ snapshots:
       semver: 7.6.3
       strip-indent: 3.0.0
 
-  eslint-plugin-unicorn@51.0.1(eslint@8.57.0):
+  eslint-plugin-unicorn@55.0.0(eslint@8.57.0):
     dependencies:
       '@babel/helper-validator-identifier': 7.24.7
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
-      '@eslint/eslintrc': 2.1.4
       ci-info: 4.0.0
       clean-regexp: 1.0.0
       core-js-compat: 3.38.1
       eslint: 8.57.0
       esquery: 1.6.0
+      globals: 15.9.0
       indent-string: 4.0.0
       is-builtin-module: 3.2.1
       jsesc: 3.0.2
@@ -10252,8 +10256,6 @@ snapshots:
       regjsparser: 0.10.0
       semver: 7.6.3
       strip-indent: 3.0.0
-    transitivePeerDependencies:
-      - supports-color
 
   eslint-plugin-vue@9.27.0(eslint@8.57.0):
     dependencies:
@@ -10635,6 +10637,8 @@ snapshots:
   globals@13.24.0:
     dependencies:
       type-fest: 0.20.2
+
+  globals@15.9.0: {}
 
   globalthis@1.0.4:
     dependencies:
