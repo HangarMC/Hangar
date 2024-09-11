@@ -49,7 +49,7 @@ public interface IVersionsController {
         tags = "Versions"
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Ok"),
+        @ApiResponse(responseCode = "200", description = "Ok"),
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
