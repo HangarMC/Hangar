@@ -1193,7 +1193,7 @@
     "pattern": "{property} is invalid, '{model}' doesn't match pattern '{regex}'",
     "noDuplicated": "Can only select each {property} once!",
     "url": "Invalid URL format (did you forget https://?)",
-    "maxFileSize": "File is too large, max size is 10mb",
+    "maxFileSize": "File is too large, max size is 10MB",
     "validProjectName": "Project name is already taken"
   },
   "fieldError": {
