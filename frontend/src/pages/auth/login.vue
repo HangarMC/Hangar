@@ -30,6 +30,26 @@ if (privileged) {
   loading.value = false;
 }
 
+const dialogTitle = computed(() => {
+  if (privileged) {
+    return i18n.t("auth.login.sudo.title");
+  }
+  if (supportedMethods.value.length > 0) {
+    return i18n.t("auth.login.twoFactor.title");
+  }
+  return i18n.t("auth.login.main.title");
+})
+
+const dialogInfo = computed(() => {
+  if (privileged) {
+    return i18n.t("auth.login.sudo.info");
+  }
+  if (supportedMethods.value.length > 0) {
+    return i18n.t("auth.login.twoFactor.info");
+  }
+  return null;
+})
+
 async function loginPassword() {
   if (!(await v.value.$validate())) return;
   loading.value = true;
@@ -125,9 +145,9 @@ useSeo(computed(() => ({ title: "Login", route })));
 
 <template>
   <Card class="w-xl mx-auto max-w-full">
-    <template #header>{{ privileged ? "Sudo" : "Login" }}</template>
+    <template #header>{{ dialogTitle }}</template>
 
-    <div v-if="privileged" class="mb-2">Please authenticate again to do this action</div>
+    <div v-if="!!dialogInfo" class="mb-2">{{ dialogInfo }}</div>
 
     <form v-if="supportedMethods.length === 0" class="flex flex-col gap-2">
       <InputText
@@ -185,15 +205,14 @@ useSeo(computed(() => ({ title: "Login", route })));
     </form>
 
     <form v-if="supportedMethods.length > 0" class="flex flex-col gap-2 hide-last-hr">
-      <p>Please verify your sign in using one of your second factors</p>
       <template v-if="supportedMethods.includes('WEBAUTHN')">
-        <Button class="w-max" :disabled="loading" @click.prevent="loginWebAuthN">Use WebAuthN</Button>
+        <Button class="w-max" :disabled="loading" @click.prevent="loginWebAuthN">Use WebAuthn</Button>
         <hr />
       </template>
       <template v-if="supportedMethods.includes('TOTP')">
         <div class="flex flex-col gap-2">
-          <InputText v-model="totpCode" label="Totp code" inputmode="numeric" />
-          <Button class="w-max" :disabled="loading" @click.prevent="loginTotp">Use totp</Button>
+          <InputText v-model="totpCode" label="TOTP code" inputmode="numeric" />
+          <Button class="w-max" :disabled="loading" @click.prevent="loginTotp">Use TOTP</Button>
         </div>
         <hr />
       </template>
