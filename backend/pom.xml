@@ -39,7 +39,7 @@
         <datafaker.version>2.3.1</datafaker.version>
         <apache-commons-lang.version>3.16.0</apache-commons-lang.version>
         <jwt.version>4.4.0</jwt.version>
-        <jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
+        <jetbrains-annotations.version>26.0.0</jetbrains-annotations.version>
         <caffeine.version>3.1.8</caffeine.version>
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
         <jgroups.version>5.3.11.Final</jgroups.version>
