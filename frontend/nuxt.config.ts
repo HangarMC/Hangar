@@ -111,6 +111,13 @@ export default defineNuxtConfig({
       // Workaround until they support native ESM
       noExternal: ["vue3-popper"],
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ["legacy-js-api"],
+        },
+      },
+    },
   },
   experimental: {
     writeEarlyHints: false,
