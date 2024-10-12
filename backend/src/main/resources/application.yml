@@ -40,6 +40,8 @@ spring:
     kubernetes:
       secrets:
         enableApi: true
+  jmx:
+    enabled: false
 
 # Enable this if you want to regenerate the frontend types
 #springdoc:
@@ -47,10 +49,13 @@ spring:
 
 management:
   endpoints:
-    enabled-by-default: true
+    enabled-by-default: false
     web:
       exposure:
         include: "*"
+  endpoint:
+    health:
+      enabled: true
 
 hangar:
   dev: true

@@ -12,6 +12,9 @@ spring:
       - classpath:db/migration
     baseline-version: 0.0
 
+springdoc:
+  use-fqn: false
+
 hangar:
   disable-ratelimiting: true
   storage:
