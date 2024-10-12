@@ -96,7 +96,7 @@ jobs:
           fi
 
       - name: Lint frontend
-        env:
+        #env:
           # DEBUG: "hangar:*"
         run: (cd frontend && pnpm lint:oxlint && pnpm lint:eslint)
 
