@@ -123,7 +123,7 @@ useSeo(
   <div>
     <Container class="flex flex-col items-center gap-4">
       <template v-if="index">
-        <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4 flex flex-col w-full">
+        <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4 flex flex-col w-full" data-allow-mismatch>
           <template v-if="ssr">
             Find your favorite <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Paper plugins</strong>
           </template>

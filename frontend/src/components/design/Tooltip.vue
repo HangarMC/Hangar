@@ -21,7 +21,7 @@ onErrorCaptured((err) => {
 </script>
 
 <template>
-  <Popper :hover="hover" open-delay="200" close-delay="100" :show="show">
+  <Popper :hover="hover" open-delay="200" close-delay="100" :show="show" data-allow-mismatch="style">
     <slot />
     <template #content>
       <slot name="content" />
