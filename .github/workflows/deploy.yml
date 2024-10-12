@@ -119,6 +119,7 @@ jobs:
           BACKEND_HOST: "http://hangar_backend:8080"
           PUBLIC_HOST: "https://hangar.papermc.dev"
           DEBUG: "hangar:*"
+          NODE_ENV: "production"
         run: (cd frontend && pnpm build)
 
       - name: Login to registry
