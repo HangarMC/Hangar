@@ -82,7 +82,7 @@
     "@types/prismjs": "1.26.4",
     "@types/qs": "6.9.16",
     "@unocss/nuxt": "0.63.4",
-    "@vue/eslint-config-typescript": "13.0.0",
+    "@vue/eslint-config-typescript": "14.1.1",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-import-resolver-alias": "1.1.2",
