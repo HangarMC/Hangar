@@ -62,7 +62,7 @@ watchPostEffect(async () => {
 </template>
 
 <style lang="scss">
-@import "@/assets/css/markdown.scss";
+@use "@/assets/css/markdown.scss";
 
 .iframe-container iframe {
   max-width: 100%;

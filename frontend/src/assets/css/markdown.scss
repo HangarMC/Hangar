@@ -1,5 +1,5 @@
-@import "markdown-light";
-@import "markdown-dark";
+@use "markdown-light";
+@use "markdown-dark";
 
 .markdown {
   margin-top: -10px;

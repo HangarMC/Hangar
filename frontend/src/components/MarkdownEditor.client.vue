@@ -158,7 +158,7 @@ function stopEditing() {
 </template>
 
 <style lang="scss">
-@import "easymde/dist/easymde.min.css";
+@use "easymde/dist/easymde.min.css";
 
 .EasyMDEContainer {
   .editor-toolbar,
