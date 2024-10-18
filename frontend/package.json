@@ -57,7 +57,7 @@
     "universal-cookie": "7.2.1",
     "vue-advanced-cropper": "2.8.9",
     "vue-chartjs": "5.3.1",
-    "vue-i18n": "9.14.0",
+    "vue-i18n": "9.14.1",
     "vue3-popper": "1.5.0",
     "vuedraggable": "4.1.0"
   },
@@ -83,7 +83,7 @@
     "@types/qs": "6.9.16",
     "@unocss/nuxt": "0.63.4",
     "@vue/eslint-config-typescript": "13.0.0",
-    "eslint": "8.57.0",
+    "eslint": "8.57.1",
     "eslint-config-prettier": "9.1.0",
     "eslint-import-resolver-alias": "1.1.2",
     "eslint-import-resolver-typescript": "3.6.3",
