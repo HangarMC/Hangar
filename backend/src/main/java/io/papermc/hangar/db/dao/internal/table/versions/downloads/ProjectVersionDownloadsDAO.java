@@ -2,6 +2,7 @@ package io.papermc.hangar.db.dao.internal.table.versions.downloads;
 
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable;
+import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTableWithPlatform;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 @JdbiRepository
 @RegisterConstructorMapper(ProjectVersionPlatformDownloadTable.class)
 @RegisterConstructorMapper(ProjectVersionDownloadTable.class)
+@RegisterConstructorMapper(ProjectVersionDownloadTableWithPlatform.class)
 public interface ProjectVersionDownloadsDAO {
 
     @SqlBatch("INSERT INTO project_version_platform_downloads (version_id, platform, download_id) VALUES (:versionId, :platform, :downloadId)")
@@ -53,15 +55,21 @@ public interface ProjectVersionDownloadsDAO {
     @SqlQuery("SELECT * FROM project_version_downloads WHERE version_id = :versionId AND id = :downloadId")
     ProjectVersionDownloadTable getDownload(long versionId, long downloadId);
 
+    // we need to find the first version platform download for the given download ID, since only that is being uploaded to object storage
+    // see comment in VersionFactory#processPendingVersionFile
     @SqlQuery("""
-        SELECT pvd.*
+        SELECT pvd.*,
+               (SELECT platform
+                FROM project_version_platform_downloads first
+                WHERE first.download_id = pvpd.download_id
+                LIMIT 1) AS platform
         FROM project_version_downloads pvd
-            JOIN project_versions pv ON pv.id = pvd.version_id
-            JOIN projects p ON pv.project_id = p.id
             JOIN project_version_platform_downloads pvpd ON pvd.id = pvpd.download_id
-        WHERE p.id = :projectId
-          AND pv.version_string = :versionString
-          AND pvpd.platform = :platform
+        WHERE pvpd.version_id = (SELECT id
+                                 FROM project_versions pv
+                                 WHERE pv.project_id = :projectId
+                                   AND pv.version_string = :versionString)
+          AND pvpd.platform = :platform;
         """)
-    ProjectVersionDownloadTable getDownloadByPlatform(long projectId, String versionString, @EnumByOrdinal Platform platform);
+    ProjectVersionDownloadTableWithPlatform getDownloadByPlatform(long projectId, String versionString, @EnumByOrdinal Platform platform);
 }

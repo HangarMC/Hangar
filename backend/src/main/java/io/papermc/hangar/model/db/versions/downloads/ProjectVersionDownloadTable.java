@@ -3,7 +3,7 @@ package io.papermc.hangar.model.db.versions.downloads;
 import io.papermc.hangar.model.db.Table;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
-public final class ProjectVersionDownloadTable extends Table {
+public class ProjectVersionDownloadTable extends Table {
 
     private final long versionId;
     private final Long fileSize;
