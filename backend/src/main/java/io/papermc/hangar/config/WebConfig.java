@@ -47,6 +47,7 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.web.client.RestClient;
@@ -153,6 +154,13 @@ public class WebConfig extends WebMvcConfigurationSupport {
             @Override
             public void afterPropertiesSet() {
                 super.afterPropertiesSet();
+
+                for (final HttpMessageConverter<?> messageConverter : this.getMessageConverters()) {
+                    if (messageConverter instanceof StringHttpMessageConverter stringConverter) {
+                        stringConverter.setDefaultCharset(StandardCharsets.UTF_8);
+                    }
+                }
+
                 final List<HandlerMethodArgumentResolver> existingResolvers = new ArrayList<>(Objects.requireNonNull(this.getArgumentResolvers()));
                 existingResolvers.addAll(0, WebConfig.this.resolvers);
                 this.setArgumentResolvers(existingResolvers);
