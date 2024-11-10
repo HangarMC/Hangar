@@ -6,6 +6,7 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.security.annotations.LoggedIn;
+import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.currentuser.CurrentUser;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
@@ -63,6 +64,7 @@ public class ApiKeyController {
     }
 
     @Unlocked
+    @RequireAal(1)
     @CurrentUser("#user")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
     @PostMapping(path = "/create-key/{user}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
@@ -70,6 +72,7 @@ public class ApiKeyController {
         return this.apiKeyService.createApiKey(user, apiKeyForm, this.permissionService.getAllPossiblePermissions(user.getId()));
     }
 
+    @RequireAal(1)
     @CurrentUser("#user")
     @PostMapping(path = "/delete-key/{user}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void deleteApiKey(@PathVariable final UserTable user, @RequestBody @Valid final StringContent nameContent) {

@@ -8,6 +8,7 @@ import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.security.annotations.Anyone;
+import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -50,6 +51,7 @@ public class PagesController extends HangarComponent implements IPagesController
     }
 
     @Unlocked
+    @RequireAal(1)
     @Override
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#slug}")
@@ -59,6 +61,7 @@ public class PagesController extends HangarComponent implements IPagesController
     }
 
     @Unlocked
+    @RequireAal(1)
     @Override
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#slug}")

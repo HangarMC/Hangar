@@ -17,6 +17,7 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.LoggedIn;
+import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -83,6 +84,7 @@ public class OrganizationController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#orgName}")
@@ -96,6 +98,7 @@ public class OrganizationController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 5, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#orgName}")
@@ -106,6 +109,7 @@ public class OrganizationController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#orgName}")
@@ -116,6 +120,7 @@ public class OrganizationController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#orgName}")
     @PostMapping(path = "/org/{orgName}/members/leave", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -125,6 +130,7 @@ public class OrganizationController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#orgName}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
@@ -135,6 +141,7 @@ public class OrganizationController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#orgName}")
     @PostMapping(path = "/org/{orgName}/canceltransfer", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -144,6 +151,7 @@ public class OrganizationController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 60)
     @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -152,6 +160,7 @@ public class OrganizationController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 60)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.DELETE_ORGANIZATION, args = "{#orgName}")
@@ -162,6 +171,7 @@ public class OrganizationController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#orgName}")
@@ -185,6 +195,7 @@ public class OrganizationController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseBody
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#orgName}")

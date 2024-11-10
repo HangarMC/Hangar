@@ -9,6 +9,7 @@ import io.papermc.hangar.model.internal.api.requests.projects.NewProjectPage;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.security.annotations.Anyone;
+import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -80,6 +81,7 @@ public class ProjectPageController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#projectId}")
     @PostMapping(value = "/create/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -89,6 +91,7 @@ public class ProjectPageController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#projectId}")
     @PostMapping(value = "/save/{projectId}/{pageId}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -98,6 +101,7 @@ public class ProjectPageController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#projectId}")
     @PostMapping("/delete/{projectId}/{pageId}")
     @ResponseStatus(HttpStatus.OK)

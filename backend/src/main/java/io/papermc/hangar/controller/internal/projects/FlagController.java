@@ -9,6 +9,7 @@ import io.papermc.hangar.model.internal.api.requests.admin.ReportNotificationFor
 import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlagNotification;
 import io.papermc.hangar.security.annotations.LoggedIn;
+import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -40,6 +41,7 @@ public class FlagController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.CREATED)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE)

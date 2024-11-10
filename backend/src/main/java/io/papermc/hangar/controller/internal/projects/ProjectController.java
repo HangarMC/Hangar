@@ -12,6 +12,7 @@ import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsFor
 import io.papermc.hangar.model.internal.api.responses.PossibleProjectOwner;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.security.annotations.LoggedIn;
+import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -86,6 +87,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createProject(@RequestBody @Valid final NewProjectForm newProject) {
@@ -116,6 +118,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#slug}")
@@ -125,6 +128,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 5)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#slug}")
@@ -134,6 +138,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#slug}")
@@ -143,6 +148,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#slug}")
     @PostMapping("/project/{slug}/resetIcon")
@@ -151,6 +157,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#slug}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PostMapping(path = "/project/{slug}/rename", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -159,6 +166,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#slug}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
@@ -169,6 +177,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#slug}")
     @PostMapping(path = "/project/{slug}/canceltransfer", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -178,6 +187,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#slug}")
@@ -188,6 +198,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#slug}")
@@ -198,6 +209,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#slug}")
     @PostMapping(path = "/project/{slug}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -207,6 +219,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#slug}")
     @PostMapping(path = "/project/{slug}/members/leave", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -216,6 +229,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#projectId}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping("/project/{id}/star/{state}")
@@ -225,6 +239,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#projectId}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PostMapping("/project/{id}/watch/{state}")
@@ -234,6 +249,7 @@ public class ProjectController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 10, refillTokens = 3, refillSeconds = 10)
     @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)

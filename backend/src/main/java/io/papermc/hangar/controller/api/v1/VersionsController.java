@@ -17,6 +17,7 @@ import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.internal.versions.VersionUpload;
 import io.papermc.hangar.security.annotations.Anyone;
+import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -53,6 +54,7 @@ public class VersionsController implements IVersionsController {
     }
 
     @Unlocked
+    @RequireAal(1)
     @Override
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#slug}")

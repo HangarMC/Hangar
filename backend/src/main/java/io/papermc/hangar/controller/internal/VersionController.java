@@ -18,6 +18,7 @@ import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.model.internal.versions.MultipartFileOrUrl;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.security.annotations.Anyone;
+import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -78,6 +79,7 @@ public class VersionController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -90,6 +92,7 @@ public class VersionController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 30)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#projectId}")
@@ -99,6 +102,7 @@ public class VersionController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
@@ -120,6 +124,7 @@ public class VersionController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
@@ -129,6 +134,7 @@ public class VersionController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
@@ -138,6 +144,7 @@ public class VersionController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 10)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#projectId}")
@@ -151,6 +158,7 @@ public class VersionController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RateLimit(overdraft = 3, refillTokens = 1, refillSeconds = 30)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.DELETE_VERSION, args = "{#projectId}")

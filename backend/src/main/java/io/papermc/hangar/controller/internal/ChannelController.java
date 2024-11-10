@@ -12,6 +12,7 @@ import io.papermc.hangar.model.internal.api.requests.projects.ChannelForm;
 import io.papermc.hangar.model.internal.api.requests.projects.EditChannelForm;
 import io.papermc.hangar.model.internal.projects.HangarChannel;
 import io.papermc.hangar.security.annotations.Anyone;
+import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -77,6 +78,7 @@ public class ChannelController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.CREATED)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 15)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_CHANNEL, args = "{#projectId}")
@@ -88,6 +90,7 @@ public class ChannelController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 15)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_CHANNEL, args = "{#projectId}")
@@ -99,6 +102,7 @@ public class ChannelController extends HangarComponent {
     }
 
     @Unlocked
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_CHANNEL, args = "{#project}")
     @PostMapping("/{project}/delete/{channel}")

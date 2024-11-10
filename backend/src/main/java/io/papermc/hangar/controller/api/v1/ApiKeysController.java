@@ -5,6 +5,7 @@ import io.papermc.hangar.controller.api.v1.interfaces.IApiKeysController;
 import io.papermc.hangar.model.api.ApiKey;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
+import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -34,6 +35,7 @@ public class ApiKeysController extends HangarComponent implements IApiKeysContro
     @Override
     @ResponseBody
     @Unlocked
+    @RequireAal(1)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 15)
     @ResponseStatus(HttpStatus.CREATED)
     public String createKey(final CreateAPIKeyForm apiKeyForm) {
@@ -48,6 +50,7 @@ public class ApiKeysController extends HangarComponent implements IApiKeysContro
     }
 
     @Override
+    @RequireAal(1)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteKey(final String name) {
         this.apiKeyService.deleteApiKey(this.getHangarPrincipal(), name);
