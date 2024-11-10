@@ -166,6 +166,7 @@ hangar:
     refresh-token-expiry: 30 # days
     rp-name: "Hangar"
     rp-id: "localhost"
+    turnstileSecret: ""
     safe-download-hosts:
       - "dev.bukkit.org"
       - "github.com"

@@ -21,7 +21,8 @@ public record HangarSecurityConfig(
     String rpName,
     String rpId,
     List<OAuthProvider> oAuthProviders,
-    @DefaultValue("false") boolean oAuthEnabled
+    @DefaultValue("false") boolean oAuthEnabled,
+    String turnstileSecret
 ) {
 
     public boolean checkSafe(final String url) {

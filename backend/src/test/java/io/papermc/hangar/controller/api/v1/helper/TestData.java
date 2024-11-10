@@ -95,9 +95,9 @@ public class TestData {
         HangarApplication.TEST_MODE = true;
         logger.info("Preparing test data...");
         logger.info("Creating some test users...");
-        USER_NORMAL = this.authService.registerUser(new SignupForm("TestUser", "testuser@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true));
-        USER_MEMBER = this.authService.registerUser(new SignupForm("TestMember", "testmember@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true));
-        USER_ADMIN = this.authService.registerUser(new SignupForm("TestAdmin", "testadmin@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true));
+        USER_NORMAL = this.authService.registerUser(new SignupForm("TestUser", "testuser@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true, null));
+        USER_MEMBER = this.authService.registerUser(new SignupForm("TestMember", "testmember@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true, null));
+        USER_ADMIN = this.authService.registerUser(new SignupForm("TestAdmin", "testadmin@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true, null));
 
         USER_NORMAL.setEmailVerified(true);
         USER_MEMBER.setEmailVerified(true);

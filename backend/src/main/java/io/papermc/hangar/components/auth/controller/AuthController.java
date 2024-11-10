@@ -13,6 +13,7 @@ import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.components.auth.service.AuthService;
 import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.components.auth.service.TokenService;
+import io.papermc.hangar.components.auth.service.TurnstileService;
 import io.papermc.hangar.components.auth.service.VerificationService;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.UserTable;
@@ -47,18 +48,22 @@ public class AuthController extends HangarComponent {
     private final VerificationService verificationService;
     private final CredentialsService credentialsService;
     private final UserService userService;
+    private final TurnstileService turnstileService;
 
-    public AuthController(final AuthService authService, final TokenService tokenService, final VerificationService verificationService, final CredentialsService credentialsService, final UserService userService) {
+    public AuthController(final AuthService authService, final TokenService tokenService, final VerificationService verificationService, final CredentialsService credentialsService, final UserService userService, final TurnstileService turnstileService) {
         this.authService = authService;
         this.tokenService = tokenService;
         this.verificationService = verificationService;
         this.credentialsService = credentialsService;
         this.userService = userService;
+        this.turnstileService = turnstileService;
     }
 
     @Anyone
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody final SignupForm signupForm) {
+        this.turnstileService.validate(signupForm.captcha());
+
         final UserTable userTable = this.authService.registerUser(signupForm);
         if (userTable == null) {
             return ResponseEntity.badRequest().build();

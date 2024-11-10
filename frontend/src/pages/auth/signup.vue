@@ -8,7 +8,10 @@ interface SignupForm {
   email?: string;
   password?: string;
   tos?: boolean;
+  captcha?: string;
 }
+
+const config = useRuntimeConfig();
 
 const done = ref(false);
 
@@ -90,6 +93,7 @@ useSeo(computed(() => ({ title: "Sign up", route })));
         <InputText v-model="form.username" label="Username" name="username" autocomplete="username" :rules="[required()]" />
         <InputText v-model="form.email" type="email" label="E-Mail" name="email" autocomplete="email" :rules="[required(), email()]" />
         <InputPassword v-model="form.password" label="Password" name="new-password" :rules="[required()]" />
+        <LazyNuxtTurnstile v-if="config.public.turnstile?.siteKey != '1x00000000000000000000AA'" v-model="form.captcha" />
         <div v-if="errorMessage" class="c-red">{{ errorMessage }}</div>
         <Button type="submit" :disabled="loading" @click.prevent="submit">Sign up</Button>
         <div class="w-max">

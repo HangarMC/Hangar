@@ -100,6 +100,11 @@ site. We strongly advise You to review the Privacy Policy of every site You visi
 
 We have no control over and assume no responsibility for the content, privacy policies or practices of any third party sites or services.
 
+Cloudflare
+----------
+
+This Website is protected by various Cloudflare technologies. You can view their Privacy Policy here: https://www.cloudflare.com/privacypolicy/
+
 Changes to this Privacy Policy
 ------------------------------
 

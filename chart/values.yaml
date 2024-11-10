@@ -111,6 +111,7 @@ frontend:
   config:
     configEnv: "hangar.test"
     backendHost: "http://hangar-backend:8080"
+    turnstileSiteKey: "todo"
 
 backend:
   replicaCount: 1
@@ -186,6 +187,7 @@ backend:
       options: "?currentSchema=hangar"
     tokenSecret: "secret"
     rpId: "localhost"
+    turnstileSecret: ""
     oauthEnabled: true
     githubClientId: "todo"
     githubClientSecret: "todo"

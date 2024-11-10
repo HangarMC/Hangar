@@ -65,6 +65,7 @@
     "@iconify-json/mdi": "1.2.1",
     "@nuxtjs/eslint-config-typescript": "12.1.0",
     "@nuxtjs/i18n": "8.5.5",
+    "@nuxtjs/turnstile": "0.9.11",
     "@sentry/bun": "8.37.1",
     "@sentry/nuxt": "8.37.1",
     "@sentry/profiling-node": "8.37.1",
