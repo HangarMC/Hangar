@@ -41,7 +41,15 @@ useSeo(computed(() => ({ title: "Sign up", route })));
       <h1>Sign up</h1>
     </template>
 
-    <div class="flex flex-col gap-2">
+    <div v-if="done" class="flex flex-col gap-2">
+      <p>Your account has been created! Please check your emails to complete the signup process.</p>
+      <div class="flex gap-2">
+        <Button v-if="route.query.returnUrl" :to="route.query.returnUrl">Back to last page</Button>
+        <Button to="/auth/settings/account">Go to account settings</Button>
+      </div>
+    </div>
+
+    <div v-else class="flex flex-col gap-2">
       Login using an OAuth provider
       <div class="flex flex-row gap-x-4">
         <Button
@@ -78,7 +86,7 @@ useSeo(computed(() => ({ title: "Sign up", route })));
       </div>
       Create a new account
 
-      <form v-if="!done" class="flex flex-col gap-2">
+      <form class="flex flex-col gap-2">
         <InputText v-model="form.username" label="Username" name="username" autocomplete="username" :rules="[required()]" />
         <InputText v-model="form.email" type="email" label="E-Mail" name="email" autocomplete="email" :rules="[required(), email()]" />
         <InputPassword v-model="form.password" label="Password" name="new-password" :rules="[required()]" />
@@ -96,14 +104,6 @@ useSeo(computed(() => ({ title: "Sign up", route })));
 
         <Link to="login">Login with existing account</Link>
       </form>
-    </div>
-
-    <div v-if="done" class="flex flex-col gap-2">
-      <p>Your account has been created! Please check your emails to complete the signup process.</p>
-      <div class="flex gap-2">
-        <Button v-if="route.query.returnUrl" :to="route.query.returnUrl">Back to last page</Button>
-        <Button to="/auth/settings/account">Go to account settings</Button>
-      </div>
     </div>
   </Card>
 </template>
