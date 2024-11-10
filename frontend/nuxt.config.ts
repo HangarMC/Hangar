@@ -55,6 +55,7 @@ export default defineNuxtConfig({
     "unplugin-icons/nuxt",
     "@vueuse/nuxt",
     "@nuxtjs/i18n",
+    "@sentry/nuxt/module",
     [
       "unplugin-icons/nuxt",
       {

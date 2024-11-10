@@ -1,4 +1,4 @@
-import * as Sentry from "@sentry/vue";
+import * as Sentry from "@sentry/nuxt";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const router = useRouter();
@@ -11,10 +11,9 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   Sentry.init({
-    app: nuxtApp.vueApp,
     dsn: sentry.dsn,
     environment: sentry.environment,
-    integrations: [Sentry.browserTracingIntegration({ router })],
+    integrations: [Sentry.browserTracingIntegration({ router }), Sentry.piniaIntegration(usePinia(), {})],
 
     tracePropagationTargets: ["http://localhost:3333", "https://hangar.papermc.dev", "https://hangar.papermc.io"],
 
