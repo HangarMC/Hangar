@@ -26,7 +26,7 @@ onErrorCaptured((err) => {
 </script>
 
 <template>
-  <Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" class="text-center reset-popper">
+  <Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" class="text-center reset-popper" data-allow-mismatch="style">
     <slot />
     <template #content>
       {{ formattedError || "error" }}
