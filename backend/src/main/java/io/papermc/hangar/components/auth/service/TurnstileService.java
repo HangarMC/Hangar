@@ -1,9 +1,10 @@
 package io.papermc.hangar.components.auth.service;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.util.RequestUtil;
-import java.util.Arrays;
+import java.util.List;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -34,10 +35,10 @@ public class TurnstileService extends HangarComponent {
             var response = this.restTemplate.postForEntity(url, entity, TurnstileResponse.class);
 
             if (response.getBody() != null && !response.getBody().success()) {
-                throw new HangarApiException("error.captcha", Arrays.toString(response.getBody().errorCodes()));
+                throw new HangarApiException("error.captcha", response.getBody().errorCodes());
             }
         }
     }
 
-    record TurnstileResponse(boolean success, String[] errorCodes){}
+    record TurnstileResponse(boolean success, @JsonProperty("error-codes") List<String> errorCodes){}
 }

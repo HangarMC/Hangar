@@ -19,6 +19,7 @@ const notification = useNotificationStore();
 const i18n = useI18n();
 const form = reactive<SignupForm>({});
 const loading = ref(false);
+const turnstile = useTemplateRef("turnstile");
 
 const errorMessage = ref<string | undefined>();
 
@@ -31,6 +32,9 @@ async function submit() {
     done.value = true;
   } catch (e) {
     notification.fromError(i18n, e);
+    if (e?.response?.data?.message === "error.captcha") {
+      turnstile.value?.reset();
+    }
   }
   loading.value = false;
 }
@@ -93,7 +97,7 @@ useSeo(computed(() => ({ title: "Sign up", route })));
         <InputText v-model="form.username" label="Username" name="username" autocomplete="username" :rules="[required()]" />
         <InputText v-model="form.email" type="email" label="E-Mail" name="email" autocomplete="email" :rules="[required(), email()]" />
         <InputPassword v-model="form.password" label="Password" name="new-password" :rules="[required()]" />
-        <LazyNuxtTurnstile v-if="config.public.turnstile?.siteKey != '1x00000000000000000000AA'" v-model="form.captcha" />
+        <LazyNuxtTurnstile v-if="config.public.turnstile?.siteKey != '1x00000000000000000000AA'" ref="turnstile" v-model="form.captcha" />
         <div v-if="errorMessage" class="c-red">{{ errorMessage }}</div>
         <Button type="submit" :disabled="loading" @click.prevent="submit">Sign up</Button>
         <div class="w-max">

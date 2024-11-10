@@ -49,8 +49,9 @@ public class AuthService extends HangarComponent implements UserDetailsService {
     private final TokenService tokenService;
     private final UsersApiService usersApiService;
     private final BucketService bucketService;
+    private final TurnstileService turnstileService;
 
-    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService, final HibpService hibpService, final MailService mailService, final TokenService tokenService, final UsersApiService usersApiService, final BucketService bucketService) {
+    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService, final HibpService hibpService, final MailService mailService, final TokenService tokenService, final UsersApiService usersApiService, final BucketService bucketService, final TurnstileService turnstileService) {
         this.userDAO = userDAO;
         this.userCredentialDAO = userCredentialDAO;
         this.passwordEncoder = passwordEncoder;
@@ -62,6 +63,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         this.tokenService = tokenService;
         this.usersApiService = usersApiService;
         this.bucketService = bucketService;
+        this.turnstileService = turnstileService;
     }
 
     @Transactional
@@ -70,6 +72,8 @@ public class AuthService extends HangarComponent implements UserDetailsService {
             throw new HangarApiException("dum");
         }
         this.validateNewUser(form.username(), form.email(), form.tos());
+
+        this.turnstileService.validate(form.captcha());
 
         if (!this.config.isDisableRateLimiting()) {
             Bucket bucket = this.bucketService.bucket("register-user", new RateLimit.Model(1, 1, 60 * 5, false, "register-user"));

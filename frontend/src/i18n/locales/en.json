@@ -1214,6 +1214,7 @@
     "unknown": "An error occurred",
     "aal1": "You need to verify your email first",
     "aal2": "You need to setup 2fa first",
-    "privileged": "You need to be in a privileged session to do this"
+    "privileged": "You need to be in a privileged session to do this",
+    "captcha": "Error while verifying the security challenge: {0}. Please try again."
   }
 }
