@@ -62,4 +62,16 @@ public @interface RateLimit {
      * @return path to rate limit that differs from the final path
      */
     String path() default "";
+
+    record Model(
+        int overdraft,
+        int refillTokens,
+        int refillSeconds,
+        boolean greedy,
+        String path
+    ) {
+        public static Model fromAnnotation(RateLimit rateLimit) {
+            return new Model(rateLimit.overdraft(), rateLimit.refillTokens(), rateLimit.refillSeconds(), rateLimit.greedy(), rateLimit.path());
+        }
+    }
 }

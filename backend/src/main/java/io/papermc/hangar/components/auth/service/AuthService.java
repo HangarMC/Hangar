@@ -1,5 +1,6 @@
 package io.papermc.hangar.components.auth.service;
 
+import io.github.bucket4j.Bucket;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.dao.UserCredentialDAO;
 import io.papermc.hangar.components.auth.model.credential.CredentialType;
@@ -14,9 +15,11 @@ import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.user.HangarUser;
+import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.api.UsersApiService;
+import io.papermc.hangar.service.internal.BucketService;
 import io.papermc.hangar.service.internal.MailService;
 import jakarta.validation.constraints.NotEmpty;
 import java.time.OffsetDateTime;
@@ -45,8 +48,9 @@ public class AuthService extends HangarComponent implements UserDetailsService {
     private final MailService mailService;
     private final TokenService tokenService;
     private final UsersApiService usersApiService;
+    private final BucketService bucketService;
 
-    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService, final HibpService hibpService, final MailService mailService, final TokenService tokenService, final UsersApiService usersApiService) {
+    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService, final HibpService hibpService, final MailService mailService, final TokenService tokenService, final UsersApiService usersApiService, final BucketService bucketService) {
         this.userDAO = userDAO;
         this.userCredentialDAO = userCredentialDAO;
         this.passwordEncoder = passwordEncoder;
@@ -57,6 +61,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         this.mailService = mailService;
         this.tokenService = tokenService;
         this.usersApiService = usersApiService;
+        this.bucketService = bucketService;
     }
 
     @Transactional
@@ -65,6 +70,13 @@ public class AuthService extends HangarComponent implements UserDetailsService {
             throw new HangarApiException("dum");
         }
         this.validateNewUser(form.username(), form.email(), form.tos());
+
+        if (!this.config.isDisableRateLimiting()) {
+            Bucket bucket = this.bucketService.bucket("register-user", new RateLimit.Model(1, 1, 60 * 5, false, "register-user"));
+            if (bucket != null && !bucket.tryConsume(1)) {
+                throw HangarApiException.rateLimited();
+            }
+        }
 
         final UserTable userTable = this.userDAO.create(UUID.randomUUID(), form.username(), form.email(), null, "en", List.of(), false, "light", false, new JSONB(Map.of()));
         this.credentialsService.registerCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(form.password())));

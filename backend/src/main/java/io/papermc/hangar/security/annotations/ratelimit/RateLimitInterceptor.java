@@ -56,7 +56,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
             path = limit.path();
         }
 
-        final Bucket bucket = this.bucketService.bucket(path, limit);
+        final Bucket bucket = this.bucketService.bucket(path, RateLimit.Model.fromAnnotation(limit));
         if (bucket != null && !bucket.tryConsume(1)) {
             LOGGER.debug("Applying rate limit for path {} due to limit at {}", path, limit.path());
             throw HangarApiException.rateLimited();
