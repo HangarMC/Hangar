@@ -107,5 +107,6 @@
     "vite": "5.4.9",
     "vite-plugin-eslint": "1.8.1",
     "vue-tsc": "2.1.6"
-  }
+  },
+  "packageManager": "pnpm@9.12.3+sha256.24235772cc4ac82a62627cd47f834c72667a2ce87799a846ec4e8e555e2d4b8b"
 }
