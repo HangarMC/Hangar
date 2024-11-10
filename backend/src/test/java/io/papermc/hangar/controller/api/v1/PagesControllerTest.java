@@ -4,7 +4,6 @@ import io.papermc.hangar.controller.api.v1.helper.ControllerTest;
 import io.papermc.hangar.controller.api.v1.helper.TestData;
 import io.papermc.hangar.model.api.project.PageEditForm;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
@@ -12,7 +11,6 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Disabled // TODO
 class PagesControllerTest extends ControllerTest {
 
     @Test

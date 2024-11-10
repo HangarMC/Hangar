@@ -3,6 +3,8 @@ package io.papermc.hangar.controller.api.v1.helper;
 import io.papermc.hangar.HangarApplication;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.components.auth.service.AuthService;
+import io.papermc.hangar.components.auth.service.VerificationService;
+import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.model.api.project.ProjectLicense;
 import io.papermc.hangar.model.api.project.settings.ProjectSettings;
 import io.papermc.hangar.model.common.NamedPermission;
@@ -85,6 +87,8 @@ public class TestData {
     private UserService userService;
     @Autowired
     private VersionFactory versionFactory;
+    @Autowired
+    private UserDAO userDAO;
 
     @EventListener(ApplicationStartedEvent.class)
     public void prepare() {
@@ -94,6 +98,13 @@ public class TestData {
         USER_NORMAL = this.authService.registerUser(new SignupForm("TestUser", "testuser@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true));
         USER_MEMBER = this.authService.registerUser(new SignupForm("TestMember", "testmember@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true));
         USER_ADMIN = this.authService.registerUser(new SignupForm("TestAdmin", "testadmin@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true));
+
+        USER_NORMAL.setEmailVerified(true);
+        USER_MEMBER.setEmailVerified(true);
+        USER_ADMIN.setEmailVerified(true);
+        this.userDAO.update(USER_NORMAL);
+        this.userDAO.update(USER_MEMBER);
+        this.userDAO.update(USER_ADMIN);
 
         this.globalRoleService.addRole(new GlobalRoleTable(USER_ADMIN.getUserId(), GlobalRole.HANGAR_ADMIN));
 
