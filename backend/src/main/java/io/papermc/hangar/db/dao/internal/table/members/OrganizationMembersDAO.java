@@ -2,7 +2,7 @@ package io.papermc.hangar.db.dao.internal.table.members;
 
 import io.papermc.hangar.model.db.members.OrganizationMemberTable;
 import java.util.Map;
-import org.jdbi.v3.spring5.JdbiRepository;
+import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.ValueColumn;

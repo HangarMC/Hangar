@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
-import org.jdbi.v3.spring5.JdbiRepository;
+import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;

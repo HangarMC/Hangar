@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
-import org.jdbi.v3.spring5.JdbiRepository;
+import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;

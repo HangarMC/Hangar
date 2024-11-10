@@ -4,7 +4,7 @@ import io.papermc.hangar.model.db.projects.ProjectFlagNotificationTable;
 import io.papermc.hangar.model.db.projects.ProjectFlagTable;
 import java.util.Collection;
 import java.util.List;
-import org.jdbi.v3.spring5.JdbiRepository;
+import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;

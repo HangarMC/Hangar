@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.enums.EnumStrategy;
-import org.jdbi.v3.spring5.JdbiRepository;
+import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.UseEnumStrategy;

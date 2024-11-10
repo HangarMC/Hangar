@@ -3,7 +3,7 @@ package io.papermc.hangar;
 import io.papermc.hangar.config.hangar.PagesConfig;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import java.util.Optional;
-import org.jdbi.v3.spring5.EnableJdbiRepositories;
+import org.jdbi.v3.spring.EnableJdbiRepositories;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;

@@ -2,7 +2,7 @@ package io.papermc.hangar.db.dao.internal.table.auth;
 
 import io.papermc.hangar.model.db.auth.ApiKeyTable;
 import java.util.UUID;
-import org.jdbi.v3.spring5.JdbiRepository;
+import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;

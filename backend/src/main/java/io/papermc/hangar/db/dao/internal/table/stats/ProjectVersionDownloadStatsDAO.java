@@ -3,7 +3,7 @@ package io.papermc.hangar.db.dao.internal.table.stats;
 import io.papermc.hangar.model.db.stats.ProjectVersionDownloadIndividualTable;
 import java.net.InetAddress;
 import java.util.Optional;
-import org.jdbi.v3.spring5.JdbiRepository;
+import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;

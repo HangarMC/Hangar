@@ -7,7 +7,7 @@ import io.papermc.hangar.model.db.UserTable;
 import java.util.List;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.JoinRow;
-import org.jdbi.v3.spring5.JdbiRepository;
+import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.RegisterJoinRowMapper;
 import org.jdbi.v3.sqlobject.customizer.Define;

@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.dao.internal.table.projects;
 
 import io.papermc.hangar.model.db.projects.ProjectNoteTable;
-import org.jdbi.v3.spring5.JdbiRepository;
+import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;

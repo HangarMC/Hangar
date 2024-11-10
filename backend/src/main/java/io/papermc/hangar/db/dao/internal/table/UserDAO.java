@@ -5,7 +5,7 @@ import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.db.UserTable;
 import java.util.List;
 import java.util.UUID;
-import org.jdbi.v3.spring5.JdbiRepository;
+import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;

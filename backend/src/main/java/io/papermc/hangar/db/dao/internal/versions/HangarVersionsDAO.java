@@ -5,7 +5,7 @@ import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import java.util.List;
 import org.jdbi.v3.core.enums.EnumStrategy;
-import org.jdbi.v3.spring5.JdbiRepository;
+import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.UseEnumStrategy;

@@ -217,7 +217,7 @@
         </dependency>
         <dependency>
             <groupId>org.jdbi</groupId>
-            <artifactId>jdbi3-spring5</artifactId>
+            <artifactId>jdbi3-spring</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jdbi</groupId>

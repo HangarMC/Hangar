@@ -2,7 +2,7 @@ package io.papermc.hangar.components.auth.dao;
 
 import io.papermc.hangar.components.auth.model.db.UserRefreshToken;
 import java.util.UUID;
-import org.jdbi.v3.spring5.JdbiRepository;
+import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
