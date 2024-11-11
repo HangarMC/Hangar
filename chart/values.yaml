@@ -10,9 +10,8 @@ base:
 ingress:
   enabled: false
   className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
   host: hangar.test
   tls:
    - secretName: hangar-tls
@@ -32,6 +31,9 @@ ingress:
       pathType: ImplementationSpecific
       target: backend
     - path: /robots.txt
+      pathType: ImplementationSpecific
+      target: backend
+    - path: /(.+)/sitemap.xml
       pathType: ImplementationSpecific
       target: backend
     - path: /sitemap.xml
