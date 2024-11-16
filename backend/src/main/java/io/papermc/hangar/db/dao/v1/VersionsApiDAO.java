@@ -112,6 +112,12 @@ public interface VersionsApiDAO {
     @KeyColumn("id")
     @RegisterColumnMapper(VersionStatsMapper.class)
     @SqlQuery("""
+        <if(platformfilter)>
+        WITH sq AS (SELECT array_agg(DISTINCT plv.platform) platforms, array_agg(DISTINCT plv.version) versions, pvpd.version_id
+                    FROM project_version_platform_dependencies pvpd
+                             JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
+                    GROUP BY pvpd.version_id)
+        <endif>
         SELECT pv.id,
                pv.created_at,
                pv.version_string,
@@ -119,7 +125,7 @@ public interface VersionsApiDAO {
                pv.description,
                coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_totalDownloads,
                (select array_agg(d) from (SELECT pvd.platform, sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id GROUP BY pvd.platform) d) vs_platformDownloads,
-               u.name author,
+               (select u.name from users u where u.id = pv.author_id) as author,
                pv.review_state,
                pc.created_at pc_created_at,
                pc.name pc_name,
@@ -134,12 +140,7 @@ public interface VersionsApiDAO {
            FROM project_versions pv
                JOIN projects p ON pv.project_id = p.id
                JOIN project_channels pc ON pv.channel_id = pc.id
-               LEFT JOIN users u ON pv.author_id = u.id
-               INNER JOIN (SELECT array_agg(DISTINCT plv.platform) platforms, array_agg(DISTINCT plv.version) versions, pvpd.version_id
-                   FROM project_version_platform_dependencies pvpd
-                       JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
-                   GROUP BY pvpd.version_id
-               ) sq ON pv.id = sq.version_id
+               <if(platformfilter)>INNER JOIN sq ON pv.id = sq.version_id<endif>
            WHERE TRUE <filters>
                <if(!canSeeHidden)>
                    AND (pv.visibility = 0
@@ -148,27 +149,30 @@ public interface VersionsApiDAO {
                    <endif>)
                <endif>
                AND lower(p.slug) = lower(:slug)
-         GROUP BY pv.id, p.id, u.name, pc.id, pv.created_at ORDER BY pv.created_at DESC <offsetLimit>
+           ORDER BY pv.created_at DESC <offsetLimit>
     """)
     SortedMap<Long, Version> getVersions(String slug, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
-    @SqlQuery("SELECT count(DISTINCT pv.id)" +
-        "   FROM project_versions pv" +
-        "       JOIN projects p ON pv.project_id = p.id" +
-        "       JOIN project_channels pc ON pv.channel_id = pc.id" +
-        "       INNER JOIN (SELECT array_agg(DISTINCT plv.platform) platforms, array_agg(DISTINCT plv.version) versions, pvpd.version_id" +
-        "           FROM project_version_platform_dependencies pvpd" +
-        "               JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
-        "           GROUP BY pvpd.version_id" +
-        "       ) sq ON pv.id = sq.version_id" +
-        "   WHERE TRUE <filters> " +
-        "       <if(!canSeeHidden)>" +
-        "           AND (pv.visibility = 0 " +
-        "           <if(userId)>" +
-        "              OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)" +
-        "           <endif>)" +
-        "       <endif> " +
-        "   AND lower(p.slug) = lower(:slug)")
+    @SqlQuery("""
+           <if(platformfilter)>
+           WITH sq AS (SELECT array_agg(DISTINCT plv.platform) platforms, array_agg(DISTINCT plv.version) versions, pvpd.version_id
+                       FROM project_version_platform_dependencies pvpd
+                                JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
+                       GROUP BY pvpd.version_id)
+           <endif>
+           SELECT count(DISTINCT pv.id)
+           FROM project_versions pv
+                    JOIN projects p ON pv.project_id = p.id
+                    JOIN project_channels pc ON pv.channel_id = pc.id
+                    <if(platformfilter)>INNER JOIN sq ON pv.id = sq.version_id<endif>
+           WHERE TRUE <filters>
+               <if(!canSeeHidden)>
+                   AND (pv.visibility = 0
+                   <if(userId)>
+                      OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)
+                   <endif>)
+               <endif>
+           AND lower(p.slug) = lower(:slug)""")
     Long getVersionCount(String slug, @Define boolean canSeeHidden, @Define Long userId, @BindPagination(isCount = true) RequestPagination pagination);
 
     @SqlQuery("SELECT " +

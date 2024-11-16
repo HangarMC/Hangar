@@ -52,6 +52,12 @@ public class VersionPlatformFilter implements Filter<VersionPlatformFilterInstan
 
         @Override
         public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
+            if (this.platforms.length == Platform.values().length) {
+                return;
+            }
+
+            q.define("platformfilter", true);
+
             sb.append(" AND (");
             for (int i = 0; i < this.platforms.length; i++) {
                 sb.append(":__platform_").append(i).append(" = ANY(sq.platforms)");
