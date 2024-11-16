@@ -10,7 +10,7 @@ onErrorCaptured((err) => {
 </script>
 
 <template>
-  <Popper v-bind="$attrs">
+  <Popper v-bind="$attrs" data-allow-mismatch="style">
     <slot />
     <template #content="{ close }">
       <slot name="content" :close="close" />
