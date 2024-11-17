@@ -73,7 +73,6 @@
     "@types/bun": "1.1.13",
     "@types/debug": "4.1.12",
     "@types/diff-match-patch": "1.0.36",
-    "@types/dompurify": "3.0.5",
     "@types/jsdom": "21.1.7",
     "@types/locale": "0.1.4",
     "@types/lodash-es": "4.17.12",

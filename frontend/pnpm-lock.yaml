@@ -153,9 +153,6 @@ importers:
       '@types/diff-match-patch':
         specifier: 1.0.36
         version: 1.0.36
-      '@types/dompurify':
-        specifier: 3.0.5
-        version: 3.0.5
       '@types/jsdom':
         specifier: 21.1.7
         version: 21.1.7
@@ -1947,9 +1944,6 @@ packages:
 
   '@types/diff-match-patch@1.0.36':
     resolution: {integrity: sha512-xFdR6tkm0MWvBfO8xXCSsinYxHcqkQUlcHeSpMC2ukzOb6lwQAfDmW+Qt0AvlGd8HpsS28qKsB+oPeJn9I39jg==}
-
-  '@types/dompurify@3.0.5':
-    resolution: {integrity: sha512-1Wg0g3BtQF7sSb27fJQAKck1HECM6zV1EB66j8JH9i3LCjYabJa0FSdiSgsD5K/RbrsR0SiraKacLB+T8ZVYAg==}
 
   '@types/eslint@8.56.12':
     resolution: {integrity: sha512-03ruubjWyOHlmljCVoxSuNDdmfZDzsrrz0P2LeJsOXr+ZwFQ+0yQIwNCwt/GYhV7Z31fgtXJTAEs+FYlEL851g==}
@@ -9041,10 +9035,6 @@ snapshots:
       '@types/ms': 0.7.34
 
   '@types/diff-match-patch@1.0.36': {}
-
-  '@types/dompurify@3.0.5':
-    dependencies:
-      '@types/trusted-types': 2.0.7
 
   '@types/eslint@8.56.12':
     dependencies:
