@@ -74,4 +74,7 @@ public interface UserDAO {
     @Timestamped
     @SqlUpdate("INSERT INTO users_history(uuid, old_name, new_name, date) VALUES (:uuid, :oldName, :newName, :now)")
     void recordNameChange(final @NotNull UUID uuid, final @NotNull String oldName, final @NotNull String newName);
+
+    @SqlQuery("SELECT * FROM users")
+    List<UserTable> getUsers();
 }

@@ -39,6 +39,9 @@ ingress:
     - path: /sitemap.xml
       pathType: ImplementationSpecific
       target: backend
+    - path: /total-sitemap.xml
+      pathType: ImplementationSpecific
+      target: backend
     - path: /global-sitemap.xml
       pathType: ImplementationSpecific
       target: backend

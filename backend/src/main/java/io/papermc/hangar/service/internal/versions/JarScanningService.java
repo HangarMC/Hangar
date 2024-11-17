@@ -27,6 +27,8 @@ import io.papermc.hangar.util.ThreadFactory;
 import io.sentry.Sentry;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -86,10 +88,11 @@ public class JarScanningService {
         withTransaction("task", "JarScanningService#scanRemainingProjectVersions", () -> {
             // TODO Pass this.scanner.version()
             final List<VersionToScan> versionToScans = this.dao.versionsRequiringScans();
+            LocalDateTime start = LocalDateTime.now();
             LOGGER.info("Rescanning {} versions", versionToScans.size());
-            for (final VersionToScan version : versionToScans) {
-                this.scan(version, false); // TODO partial parameter
-            }
+            // TODO partial parameter
+            versionToScans.forEach(version -> this.scan(version, false));
+            LOGGER.info("Rescanned. Took {}.", Duration.between(start, LocalDateTime.now()));
         });
     }
 

@@ -26,6 +26,12 @@ public class SitemapController extends HangarComponent {
     }
 
     @Anyone
+    @GetMapping(value = "/total-sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
+    public String totalSitemap() {
+        return this.sitemapService.getTotalSitemap();
+    }
+
+    @Anyone
     @GetMapping(value = "/global-sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
     public String globalSitemap() {
         return this.sitemapService.getGlobalSitemap();
