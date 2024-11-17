@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="backend json logging" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="SCHEDULED_DEBUGGER" value="true" />
     <envs>
       <env name="JSON_LOGS_ENABLED" value="true" />
     </envs>
