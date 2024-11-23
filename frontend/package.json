@@ -82,7 +82,7 @@
     "@types/qs": "6.9.17",
     "@unocss/nuxt": "0.64.1",
     "@vue/eslint-config-typescript": "13.0.0",
-    "eslint": "8.57.0",
+    "eslint": "9.15.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-import-resolver-alias": "1.1.2",
     "eslint-import-resolver-typescript": "3.6.3",
