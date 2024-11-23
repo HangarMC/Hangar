@@ -1,6 +1,6 @@
 <template>
   <table class="simple-table">
-    <slot></slot>
+    <slot />
   </table>
 </template>
 

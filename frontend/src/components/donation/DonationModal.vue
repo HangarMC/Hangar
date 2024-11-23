@@ -8,7 +8,7 @@ const props = defineProps<{
   donationSubject: string;
 }>();
 
-let button: HTMLElement | null = null;
+let button: HTMLElement | undefined;
 
 onMounted(() => {
   if (!import.meta.env.SSR) {
@@ -16,7 +16,7 @@ onMounted(() => {
     const script = document.createElement("script");
     script.setAttribute("src", "https://www.paypalobjects.com/donate/sdk/donate-sdk.js");
     const config = useConfig();
-    script.onload = () => {
+    script.addEventListener("load", () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
 
@@ -38,11 +38,11 @@ onMounted(() => {
         custom: authStore.user?.id || "anonymous",
       }).render("#paypal-donate-button-container");
 
-      button = document.querySelector("#paypal-donate-button-container img") as HTMLElement | null;
+      button = document.querySelector("#paypal-donate-button-container img") as HTMLElement | undefined;
       if (button) {
         button.style.display = "none";
       }
-    };
+    });
     document.head.append(script);
   }
 });
@@ -57,6 +57,6 @@ function click() {
 </script>
 
 <template>
-  <div id="paypal-donate-button-container"></div>
+  <div id="paypal-donate-button-container" />
   <Button size="medium" @click="click">{{ i18n.t("general.donate") }}</Button>
 </template>

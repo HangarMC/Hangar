@@ -26,7 +26,7 @@ async function _submit(close: () => void) {
       <Button class="mt-3" :disabled="loading || (requireInput && message.length === 0)" @click="_submit(on.click)">{{ i18n.t("general.submit") }}</Button>
     </template>
     <template #activator="{ on }">
-      <slot name="activator" :on="on"></slot>
+      <slot name="activator" :on="on" />
     </template>
   </Modal>
 </template>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type TranslateResult } from "vue-i18n";
+import type { TranslateResult } from "vue-i18n";
 import { DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diff_match_patch as Diff } from "diff-match-patch";
 
 const props = defineProps<{
@@ -23,9 +23,9 @@ const prettyDiff = computed(() => {
   const patternLt = /</g;
   const patternGt = />/g;
   const patternPara = /\n/g;
-  for (let x = 0; x < diffs.length; x++) {
-    const op = diffs[x][0]; // Operation (insert, delete, equal)
-    const data = diffs[x][1]; // Text of change.
+  for (const [x, diff_] of diffs.entries()) {
+    const op = diff_[0]; // Operation (insert, delete, equal)
+    const data = diff_[1]; // Text of change.
     const text = data.replaceAll(patternAmp, "&amp;").replaceAll(patternLt, "&lt;").replaceAll(patternGt, "&gt;").replaceAll(patternPara, "&para;<br>");
     switch (op) {
       case DIFF_INSERT:
@@ -46,9 +46,9 @@ const prettyDiff = computed(() => {
 <template>
   <Modal :title="props.title" window-classes="w-250">
     <!-- eslint-disable-next-line vue/no-v-html -->
-    <div v-html="prettyDiff"></div>
+    <div v-html="prettyDiff" />
     <template #activator="{ on }">
-      <slot name="activator" :on="on"></slot>
+      <slot name="activator" :on="on" />
     </template>
   </Modal>
 </template>

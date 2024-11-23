@@ -7,7 +7,7 @@ const props = withDefaults(
     itemsPerPage?: number;
     serverPagination?: Pagination;
     alwaysShow?: boolean;
-    resetAnchor?: Element;
+    resetAnchor?: HTMLElement | null;
   }>(),
   {
     itemsPerPage: 10,
@@ -61,7 +61,7 @@ function updatePage(newPage: number) {
   }
 
   page.value = newPage;
-  if (process.client && props.resetAnchor) {
+  if (import.meta.client && props.resetAnchor) {
     window.scrollBy(0, props.resetAnchor.getBoundingClientRect().y);
   }
   emit("update:page", newPage);

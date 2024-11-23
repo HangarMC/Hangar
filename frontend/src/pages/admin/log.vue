@@ -64,9 +64,9 @@ function updateSort(col: string, sorter: Record<string, number>) {
       const val = sorter[k];
       if (val === -1) return "-" + k;
       if (val === 1) return k;
-      return null;
+      return;
     })
-    .filter((v) => v !== null) as string[];
+    .filter((v) => v !== undefined) as string[];
 }
 
 const userSearchResult = ref<string[]>([]);

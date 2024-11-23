@@ -8,7 +8,7 @@ if (!import.meta.env.SSR) {
     if (document.querySelector("[data-lottie-loaded=true]")) return;
     const script = document.createElement("script");
     script.setAttribute("src", "https://unpkg.com/@lottiefiles/lottie-player@1.5.7/dist/lottie-player.js");
-    script.setAttribute("data-lottie-loaded", "true");
+    script.dataset.lottieLoaded = "true";
     document.head.append(script);
   });
 }

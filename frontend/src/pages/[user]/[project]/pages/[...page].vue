@@ -32,7 +32,6 @@ const open = useOpenProjectPages(route, props.project);
         <Card v-if="page" class="pb-0 overflow-clip overflow-hidden">
           <ClientOnly v-if="hasPerms(NamedPermission.EditPage)">
             <MarkdownEditor
-              ref="editor"
               :editing="editingPage"
               :raw="page.contents"
               :deletable="page.deletable"

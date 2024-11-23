@@ -48,10 +48,10 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
         return newParam;
       }
       console.warn("dataLoader " + key + " is miss configured for " + to.path + "! (no param " + param + ")");
-      return undefined;
+      return;
     } else {
       data.value = undefined;
-      return undefined;
+      return;
     }
   }
 
@@ -65,7 +65,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
   server = true,
   skip: (params: P) => boolean = () => false,
   callback: (params: P) => void = () => {},
-  defaultValue: T | undefined = undefined
+  defaultValue?: T | undefined
 ) {
   // state tracking is twofold.
   // `state` is used store data in the nuxt payload, so it will be shared between server and client side and on client side navigation
@@ -98,7 +98,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
     if (skip(params)) {
       console.log("skip", key(params));
       status.value = "idle";
-      return undefined;
+      return;
     }
 
     return new Promise<void>(async (resolve, reject) => {

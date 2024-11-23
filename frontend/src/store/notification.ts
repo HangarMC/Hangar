@@ -10,7 +10,7 @@ function waitTimeout(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-const defaultTimeout = 7_000;
+const defaultTimeout = 7000;
 export const useNotificationStore = defineStore("notification", () => {
   const notifications = ref<Set<Notification>>(new Set<Notification>());
 

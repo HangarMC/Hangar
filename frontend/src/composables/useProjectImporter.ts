@@ -111,8 +111,8 @@ export async function convertSpigotProjects(spigotResources: SpigotResource[], o
       hangarResource.pageContent = await useInternalApi<string>("pages/convert-bbcode", "post", {
         content: spigotResource.description,
       });
-    } catch (e) {
-      console.log("failed to convert", hangarResource, e);
+    } catch (err) {
+      console.log("failed to convert", hangarResource, err);
     }
 
     hangarResource.category = categoryMapping[spigotResource.category.id] || Category.Undefined;

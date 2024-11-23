@@ -6,7 +6,7 @@ export function hasSlotContent(slot: Slot | undefined, slotProps = {}): boolean 
   return slot(slotProps).some((vnode: VNode) => {
     if (vnode.type === Comment) return false;
 
-    if (Array.isArray(vnode.children) && !vnode.children.length) return false;
+    if (Array.isArray(vnode.children) && vnode.children.length === 0) return false;
 
     return vnode.type !== Text || (typeof vnode.children === "string" && vnode.children.trim() !== "");
   });

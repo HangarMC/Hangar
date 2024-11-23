@@ -3,7 +3,7 @@ import "rapidoc";
 
 const settings = useSettingsStore();
 
-const dom = ref<HTMLElement>();
+const dom = useTemplateRef<HTMLElement>("dom");
 
 watch(dom, () => {
   if (!dom.value) {
@@ -46,8 +46,7 @@ const primaryColor = computed(() => window.getComputedStyle(document.body).getPr
     :primary-color="primaryColor"
     regular-font="inherit"
     :text-color="settings.darkMode ? '#E0E6f0' : '#262626'"
-  >
-  </rapi-doc>
+  />
 </template>
 
 <style lang="scss">

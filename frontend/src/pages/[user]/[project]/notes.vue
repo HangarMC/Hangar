@@ -31,7 +31,7 @@ async function addNote() {
   loading.value = true;
   await useInternalApi(`projects/notes/${props.project?.id}`, "post", {
     content: text.value,
-  }).catch((e) => handleRequestError(e));
+  }).catch((err) => handleRequestError(err));
   text.value = "";
   await refreshNotes();
   loading.value = false;
@@ -49,7 +49,7 @@ async function addNote() {
     </template>
 
     <div class="flex">
-      <div class="flex-grow"><InputText v-model="text" :placeholder="i18n.t('notes.placeholder')"></InputText></div>
+      <div class="flex-grow"><InputText v-model="text" :placeholder="i18n.t('notes.placeholder')" /></div>
       <Button :disabled="!text || loading" size="medium" class="ml-4 w-max" @click="addNote">{{ i18n.t("notes.addNote") }}</Button>
     </div>
 

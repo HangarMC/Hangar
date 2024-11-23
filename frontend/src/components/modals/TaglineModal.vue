@@ -17,8 +17,8 @@ async function save() {
       content: newTagline.value,
     });
     router.go(0);
-  } catch (e) {
-    handleRequestError(e);
+  } catch (err) {
+    handleRequestError(err);
   }
   loading.value = false;
 }

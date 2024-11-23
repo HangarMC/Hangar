@@ -111,6 +111,6 @@ useSeo(computed(() => ({ title: i18n.t("pages.termsTitle"), route })));
 
 <template>
   <div>
-    <Markdown :raw="text"></Markdown>
+    <Markdown :raw="text" />
   </div>
 </template>

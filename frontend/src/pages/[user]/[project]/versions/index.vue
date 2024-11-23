@@ -20,9 +20,8 @@ const props = defineProps<{
   project?: HangarProject;
 }>();
 
-const pageChangeScrollAnchor = ref<Element>();
+const pageChangeScrollAnchor = useTemplateRef("pageChangeScrollAnchor");
 const platforms = computed(() => [...(useBackendData.platforms?.values() || [])]);
-const pagination = ref();
 const page = ref(route.query.page ? Number(route.query.page) : 0);
 const requestParams = computed(() => {
   const limit = 7;
@@ -84,7 +83,7 @@ function getBorderClasses(version: Version): string {
 
 function getVisibilityTitle(visibility: Visibility) {
   const value = useBackendData.visibilities.find((v) => v.name === visibility);
-  return value ? i18n.t(value.title) : null;
+  return value ? i18n.t(value.title) : undefined;
 }
 </script>
 
@@ -99,7 +98,6 @@ function getVisibilityTitle(visibility: Visibility) {
         <Alert v-else-if="!versions?.result?.length" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
         <Pagination
           v-else
-          ref="pagination"
           :items="versions.result"
           :server-pagination="versions.pagination"
           :reset-anchor="pageChangeScrollAnchor"
@@ -115,7 +113,7 @@ function getVisibilityTitle(visibility: Visibility) {
                         <h3 class="lg:basis-full lt-lg:mr-1 text-1.15rem leading-relaxed">{{ item.name }}</h3>
                         <span class="lg:hidden flex-grow" />
                         <Tag :name="item.channel.name" :color="{ background: item.channel.color }" :tooltip="item.channel.description" />
-                        <IconMdiCancel v-if="item.visibility === Visibility.SoftDelete" class="ml-1"></IconMdiCancel>
+                        <IconMdiCancel v-if="item.visibility === Visibility.SoftDelete" class="ml-1" />
                         <span v-else-if="item.visibility !== Visibility.Public" class="ml-1 inline-flex items-center">
                           <span class="text-gray-600 dark:text-gray-300 text-sm">
                             {{ getVisibilityTitle(item.visibility) }}
@@ -128,7 +126,7 @@ function getVisibilityTitle(visibility: Visibility) {
                     <div class="basis-6/15 lt-lg:(mt-2 basis-6/12)">
                       <div v-for="(v, p) in item?.platformDependenciesFormatted" :key="p" class="basis-full">
                         <div class="inline-flex items-center">
-                          <PlatformLogo :platform="p as Platform" :size="22" class="mr-1 flex-shrink-0" />
+                          <PlatformLogo :platform="p as unknown as Platform" :size="22" class="mr-1 flex-shrink-0" />
                           <span class="mr-3 text-0.95rem">{{ v.join(", ") }}</span>
                         </div>
                       </div>
@@ -176,7 +174,7 @@ function getVisibilityTitle(visibility: Visibility) {
           <ul>
             <li v-for="channel in channels" :key="channel.name" class="inline-flex w-full">
               <InputCheckbox v-model="filter.channels" :value="channel.name" @change="updateChannelCheckAll">
-                <Tag :name="channel.name" :color="{ background: channel.color }" :tooltip="channel.description"></Tag>
+                <Tag :name="channel.name" :color="{ background: channel.color }" :tooltip="channel.description" />
               </InputCheckbox>
             </li>
           </ul>

@@ -5,16 +5,16 @@ const i18n = useI18n();
 const router = useRouter();
 
 const trustedHosts = useLocalStorage("trustedHosts", [] as string[]);
-const host = computed<string | null>(() => {
+// eslint-disable-next-line vue/return-in-computed-property
+const host = computed<string | undefined>(() => {
   if (remoteUrl) {
     try {
       return new URL(remoteUrl as string).host;
     } catch {
-      return null;
+      return;
     }
-  } else {
-    return null;
   }
+  return;
 });
 
 if (host.value && trustedHosts.value.includes(host.value!)) {
@@ -33,7 +33,7 @@ function go() {
 }
 
 function back() {
-  if (window.opener != null || window.history.length === 1) {
+  if (window.opener != undefined || window.history.length === 1) {
     window.close(); // close tab
   } else {
     router.back();

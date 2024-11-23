@@ -23,7 +23,7 @@ async function deleteChannel(channel: HangarChannel) {
       refreshChannels();
       notifications.warn(i18n.t("channel.modal.success.deletedChannel", [channel.name]));
     })
-    .catch((e) => handleRequestError(e));
+    .catch((err) => handleRequestError(err));
 }
 
 async function addChannel(channel: HangarChannel | ProjectChannel) {
@@ -37,7 +37,7 @@ async function addChannel(channel: HangarChannel | ProjectChannel) {
       refreshChannels();
       notifications.success(i18n.t("channel.modal.success.addedChannel", [channel.name]));
     })
-    .catch((e) => handleRequestError(e));
+    .catch((err) => handleRequestError(err));
 }
 
 async function editChannel(channel: HangarChannel | ProjectChannel) {
@@ -53,7 +53,7 @@ async function editChannel(channel: HangarChannel | ProjectChannel) {
       refreshChannels();
       notifications.success(i18n.t("channel.modal.success.editedChannel", [channel.name]));
     })
-    .catch((e) => handleRequestError(e));
+    .catch((err) => handleRequestError(err));
 }
 </script>
 

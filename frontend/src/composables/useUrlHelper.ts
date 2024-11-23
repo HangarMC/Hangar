@@ -23,7 +23,9 @@ const isSafe = (urlString: string) => {
     } else if (!host || isSafeHost(host)) {
       return true;
     }
-  } catch {}
+  } catch {
+    return false;
+  }
 
   return false;
 };

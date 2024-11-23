@@ -28,7 +28,7 @@ const props = withDefaults(
 
 function downloadLink(platform: string | undefined, version: HangarVersion | PinnedVersion | undefined) {
   if (!version || !platform) return;
-  return version.downloads[platform]?.externalUrl ? version.downloads[platform].externalUrl : version.downloads[platform].downloadUrl;
+  return version.downloads[platform]?.externalUrl ?? version.downloads[platform].downloadUrl;
 }
 
 function isExternal(platform: string | undefined, version: HangarVersion | PinnedVersion | undefined): boolean {

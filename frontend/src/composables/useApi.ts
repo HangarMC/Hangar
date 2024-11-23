@@ -10,7 +10,7 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
       .request<T>({
         method,
         url: `/api/${url}`,
-        data: method?.toLowerCase() !== "get" ? data : {},
+        data: method?.toLowerCase() === "get" ? {} : data,
         params: method?.toLowerCase() === "get" ? data : {},
         ...axiosOptions,
         paramsSerializer: (params) => {
@@ -32,15 +32,15 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
               authLog("got stats cookie from backend", statCookie);
             }
           }
-        } catch (e) {
-          authLog("failed to parse stats cookie", e);
+        } catch (err) {
+          authLog("failed to parse stats cookie", err);
         }
         resolve(data);
       })
-      .catch((error: AxiosError) => {
-        const { trace, ...err } = (error.response?.data as { trace: any }) || {};
+      .catch((err_: AxiosError) => {
+        const { trace, ...err } = (err_.response?.data as { trace: any }) || {};
         fetchLog("failed", err);
-        reject(error);
+        reject(err_);
       });
   });
 }

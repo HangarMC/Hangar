@@ -146,7 +146,7 @@ reset();
       </Button>
     </template>
     <template #activator="{ on }">
-      <slot name="activator" :on="open(on)"></slot>
+      <slot name="activator" :on="open(on)" />
     </template>
   </Modal>
 </template>

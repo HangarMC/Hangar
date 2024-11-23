@@ -47,15 +47,15 @@ watch(tag, (t) => {
     let remainingString = t;
     do {
       const commaIndex = remainingString.indexOf(",");
-      const separatorIndex = commaIndex !== -1 ? commaIndex : remainingString.indexOf(" ");
+      const separatorIndex = commaIndex === -1 ? remainingString.indexOf(" ") : commaIndex;
       if (separatorIndex === -1) {
         // No more separators!
-        tag.value = remainingString.substring(0, props.tagMaxlength);
+        tag.value = remainingString.slice(0, Math.max(0, props.tagMaxlength));
         add();
         return;
       }
 
-      tag.value = remainingString.substring(0, Math.min(separatorIndex, props.tagMaxlength));
+      tag.value = remainingString.slice(0, Math.max(0, Math.min(separatorIndex, props.tagMaxlength)));
       if (separatorIndex === remainingString.length - 1) {
         // The last character is a separator
         add();
@@ -63,17 +63,18 @@ watch(tag, (t) => {
       }
 
       // Add the current tag and check for more
+      // eslint-disable-next-line unicorn/prefer-string-slice
       remainingString = remainingString.substring(separatorIndex + 1, remainingString.length);
       add();
     } while (remainingString.includes(",") || remainingString.includes(" "));
 
-    if (remainingString.length !== 0) {
+    if (remainingString.length > 0) {
       // And the last one
-      tag.value = remainingString.substring(0, props.tagMaxlength);
+      tag.value = remainingString.slice(0, Math.max(0, props.tagMaxlength));
       add();
     }
   } else {
-    tag.value = t.substring(0, props.tagMaxlength);
+    tag.value = t.slice(0, Math.max(0, props.tagMaxlength));
   }
 });
 
@@ -86,10 +87,8 @@ function remove(t: string) {
 
 function add() {
   if (tag.value && (!props.maxlength || tags.value.length < props.maxlength)) {
-    if (props.options) {
-      if (!filteredOptions.value?.includes(tag.value)) {
-        return;
-      }
+    if (props.options && !filteredOptions.value?.includes(tag.value)) {
+      return;
     }
     tags.value.push(tag.value);
     tag.value = "";
@@ -147,7 +146,7 @@ const filteredOptions = computed(() => {
         class="pointer-events-auto relative flex flex-column items-center flex-grow !bg-gray-100 rounded-xl px-2 dark:(!bg-gray-500 text-white)"
         :class="slotProps.class"
       >
-        <IconMdiSubdirectoryArrowLeft class="absolute right-2"> </IconMdiSubdirectoryArrowLeft>
+        <IconMdiSubdirectoryArrowLeft class="absolute right-2" />
         <input v-model="tag" type="text" :class="slotProps.class" @keydown.enter="add" @blur="v.$touch()" />
       </div>
     </div>

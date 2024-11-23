@@ -18,5 +18,5 @@ export function useDebug() {
 
   window.hangarDebug.vueApp = () => window?.useNuxtApp?.().vueApp;
 
-  window.hangarDebug.pinia = () => JSON.parse(JSON.stringify(window?.useNuxtApp?.().$pinia.state.value));
+  window.hangarDebug.pinia = () => structuredClone(window?.useNuxtApp?.().$pinia.state.value);
 }

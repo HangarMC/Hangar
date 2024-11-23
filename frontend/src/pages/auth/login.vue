@@ -43,8 +43,8 @@ async function loginPassword() {
     } else {
       await finish(response);
     }
-  } catch (e) {
-    notification.fromError(i18n, e);
+  } catch (err) {
+    notification.fromError(i18n, err);
   }
   loading.value = false;
 }
@@ -63,11 +63,11 @@ async function loginWebAuthN() {
       publicKeyCredentialJson: JSON.stringify(publicKeyCredential),
     });
     await finish(response);
-  } catch (e) {
-    if (e?.toString()?.startsWith("NotAllowedError")) {
+  } catch (err) {
+    if (err?.toString()?.startsWith("NotAllowedError")) {
       notification.error("Security Key Authentication failed!");
     } else {
-      notification.fromError(i18n, e);
+      notification.fromError(i18n, err);
     }
   }
   loading.value = false;
@@ -84,8 +84,8 @@ async function loginTotp() {
       totpCode: totpCode.value,
     });
     await finish(response);
-  } catch (e) {
-    notification.fromError(i18n, e);
+  } catch (err) {
+    notification.fromError(i18n, err);
   }
   loading.value = false;
 }
@@ -101,8 +101,8 @@ async function loginBackupCode() {
       backupCode: backupCode.value,
     });
     await finish(response);
-  } catch (e) {
-    notification.fromError(i18n, e);
+  } catch (err) {
+    notification.fromError(i18n, err);
   }
   loading.value = false;
 }

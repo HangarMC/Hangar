@@ -16,8 +16,8 @@ async function confirm(close: () => void) {
     });
     close();
     useNotificationStore().success("Deleted user");
-  } catch (e) {
-    handleRequestError(e);
+  } catch (err) {
+    handleRequestError(err);
   }
 }
 </script>

@@ -8,7 +8,7 @@ const props = defineProps<{
 const route = useRoute();
 
 const selected = computed(() => {
-  const routerPath = route.path.endsWith("/") ? route.path.substr(0, route.path.length - 1) : route.path;
+  const routerPath = route.path.endsWith("/") ? route.path.slice(0, Math.max(0, route.path.length - 1)) : route.path;
   return routerPath === props.to;
 });
 
@@ -23,11 +23,11 @@ const clazz = computed(() => {
 <template>
   <div v-if="to || href" class="mb-[-2px] mr-1">
     <NuxtLink v-if="to" :to="to" :class="clazz">
-      <slot></slot>
+      <slot />
     </NuxtLink>
     <a v-if="href" :href="linkout(href)" :class="clazz" target="_blank">
       <span class="mx-1">
-        <slot></slot>
+        <slot />
       </span>
       <IconMdiOpenInNew class="text-xs" />
     </a>

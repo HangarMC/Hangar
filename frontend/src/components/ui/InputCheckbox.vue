@@ -14,7 +14,7 @@ const props = defineProps<{
 }>();
 
 // uses InputGroup for validation
-const { v } = useValidation(props.label, undefined, internalVal, undefined);
+const { v } = useValidation(props.label, undefined, internalVal);
 </script>
 
 <template>

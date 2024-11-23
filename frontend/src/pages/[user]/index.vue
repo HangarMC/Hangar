@@ -162,7 +162,7 @@ useSeo(
       </Card>
 
       <Card
-        v-if="user && (buttons.length !== 0 || (organization && hasPerms(NamedPermission.IsSubjectOwner)))"
+        v-if="user && (buttons.length > 0 || (organization && hasPerms(NamedPermission.IsSubjectOwner)))"
         class="mb-4 border-solid border-top-4 border-top-red-500 dark:border-top-red-500"
       >
         <template #header>
@@ -208,7 +208,7 @@ useSeo(
           <template #header>
             <div class="inline-flex w-full">
               <h2 class="flex-grow">{{ user.name }}'s {{ i18n.t("author.orgs") }}</h2>
-              <OrgVisibilityModal v-if="organizationVisibility && organizations && Object.keys(organizations).length !== 0" v-model="organizationVisibility" />
+              <OrgVisibilityModal v-if="organizationVisibility && organizations && Object.keys(organizations).length > 0" v-model="organizationVisibility" />
             </div>
           </template>
 

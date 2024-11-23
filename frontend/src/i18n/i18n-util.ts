@@ -8,7 +8,7 @@ export function loadLocales() {
   const locales: LocaleObject[] = [];
   for (const file of fs.readdirSync(localeFolder)) {
     if (!file.endsWith(".json")) continue;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line unicorn/prefer-module,@typescript-eslint/no-require-imports
     const locale = require("./locales/" + file.replace(".json", ""));
     removeEmptyStrings(locale);
     if (!fs.existsSync(processedFolder)) fs.mkdirSync(processedFolder, {});

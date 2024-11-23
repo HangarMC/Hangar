@@ -30,10 +30,10 @@ function onFileChange(e: Event) {
 }
 
 // check if we got reset from the outside
-const input = ref();
+const input = useTemplateRef("input");
 watch(file, (newVal) => {
   if (!newVal) {
-    input.value.value = null;
+    input.value!.value = "";
   }
 });
 </script>

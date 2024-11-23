@@ -10,7 +10,7 @@ const props = withDefaults(
 );
 
 const isOpen = ref<boolean>(false);
-const dialog = ref<HTMLDialogElement>();
+const dialog = useTemplateRef("dialog");
 
 function open() {
   isOpen.value = true;
@@ -62,9 +62,9 @@ defineExpose({
       </button>
       <div class="font-bold">{{ props.title }}</div>
     </div>
-    <slot :on="{ click: close }"></slot>
+    <slot :on="{ click: close }" />
   </dialog>
-  <slot name="activator" :on="{ click: open }"></slot>
+  <slot name="activator" :on="{ click: open }" />
 </template>
 
 <style lang="scss" scoped>

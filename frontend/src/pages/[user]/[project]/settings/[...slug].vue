@@ -58,11 +58,11 @@ watch(
 );
 
 const hasCustomIcon = computed(() => props.project?.avatarUrl?.includes("project"));
-const projectIcon = ref<File | null>(null);
+const projectIcon = ref<File | undefined>();
 const cropperInput = ref();
 const cropperResult = ref();
 const imgSrc = ref(props.project?.avatarUrl);
-let reader: FileReader | null = null;
+let reader: FileReader | undefined;
 onMounted(() => {
   reader = new FileReader();
   reader.addEventListener(
@@ -75,7 +75,7 @@ onMounted(() => {
 });
 
 watch(projectIcon, (newValue) => {
-  if (!newValue) return null;
+  if (!newValue) return;
   cropperResult.value = newValue;
   reader?.readAsDataURL(newValue);
 });
@@ -87,7 +87,7 @@ function changeImage({ canvas }: CropperResult) {
 }
 
 const newName = ref<string | null | undefined>("");
-const newNameField = ref<InstanceType<typeof InputText> | null>(null);
+const newNameField = useTemplateRef("newNameField");
 const loading = reactive({
   save: false,
   uploadIcon: false,
@@ -129,8 +129,8 @@ async function save() {
       ...form,
     });
     await router.go(0);
-  } catch (e: any) {
-    handleRequestError(e);
+  } catch (err: any) {
+    handleRequestError(err);
   }
   loading.save = false;
 }
@@ -142,8 +142,8 @@ async function transfer() {
       content: search.value,
     });
     notificationStore.success(i18n.t("project.settings.success.transferRequest", [search.value]));
-  } catch (e: any) {
-    handleRequestError(e);
+  } catch (err: any) {
+    handleRequestError(err);
   }
   loading.transfer = false;
 }
@@ -156,8 +156,8 @@ async function rename() {
     });
     await notificationStore.success(i18n.t("project.settings.success.rename", [newName.value]));
     await router.push("/" + route.params.user + "/" + newSlug);
-  } catch (e: any) {
-    handleRequestError(e);
+  } catch (err: any) {
+    handleRequestError(err);
   }
   loading.rename = false;
 }
@@ -173,8 +173,8 @@ async function softDelete(comment: string) {
     } else {
       await router.push("/");
     }
-  } catch (e: any) {
-    handleRequestError(e);
+  } catch (err: any) {
+    handleRequestError(err);
   }
 }
 
@@ -185,8 +185,8 @@ async function hardDelete(comment: string) {
     });
     await notificationStore.success(i18n.t("project.settings.success.hardDelete"));
     await router.push("/");
-  } catch (e: any) {
-    handleRequestError(e);
+  } catch (err: any) {
+    handleRequestError(err);
   }
 }
 
@@ -201,14 +201,14 @@ async function uploadIcon() {
   try {
     const response = await useInternalApi<string | null>(`projects/project/${route.params.project}/saveIcon`, "post", data);
     imgSrc.value = URL.createObjectURL(cropperResult.value); // set temporary source so it changes right away
-    projectIcon.value = null;
-    cropperInput.value = null;
-    cropperResult.value = null;
+    projectIcon.value = undefined;
+    cropperInput.value = undefined;
+    cropperResult.value = undefined;
     await (response
       ? notificationStore.success(i18n.t("project.settings.success.changedIconWarn", [response]))
       : notificationStore.success(i18n.t("project.settings.success.changedIcon")));
-  } catch (e: any) {
-    handleRequestError(e);
+  } catch (err: any) {
+    handleRequestError(err);
   }
   loading.uploadIcon = false;
 }
@@ -221,11 +221,11 @@ async function resetIcon() {
       ? notificationStore.success(i18n.t("project.settings.success.resetIconWarn", [response]))
       : notificationStore.success(i18n.t("project.settings.success.resetIcon")));
     imgSrc.value = props.user?.avatarUrl; // set temporary source so it changes right away
-    projectIcon.value = null;
-    cropperInput.value = null;
-    cropperResult.value = null;
-  } catch (e: any) {
-    handleRequestError(e);
+    projectIcon.value = undefined;
+    cropperInput.value = undefined;
+    cropperResult.value = undefined;
+  } catch (err: any) {
+    handleRequestError(err);
   }
   loading.resetIcon = false;
 }

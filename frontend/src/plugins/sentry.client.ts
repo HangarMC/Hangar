@@ -17,8 +17,8 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     tracePropagationTargets: ["http://localhost:3333", "https://hangar.papermc.dev", "https://hangar.papermc.io"],
 
-    tracesSampleRate: 1.0,
+    tracesSampleRate: 1,
     replaysSessionSampleRate: 0.1,
-    replaysOnErrorSampleRate: 1.0,
+    replaysOnErrorSampleRate: 1,
   });
 });

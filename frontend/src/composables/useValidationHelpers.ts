@@ -17,7 +17,7 @@ export function useValidation<T, V = any>(
   name: string | undefined,
   rules: ValidationRule<T | undefined>[] | undefined,
   state: Ref<V>,
-  errorMessages: Ref<string[] | undefined> | undefined,
+  errorMessages?: Ref<string[] | undefined>,
   silentErrors = false,
   autoDirty = false
 ) {
@@ -108,11 +108,11 @@ export const validPageName = withOverrideMessage((body: { projectId: number; par
       try {
         await useInternalApi("pages/checkName", "get", body);
         return { $valid: true };
-      } catch (e: AxiosError | any) {
-        if (e?.response?.data?.detail) {
-          return { $valid: false, $message: e.response.data.detail };
-        } else if (e?.response?.data?.message) {
-          return { $valid: false, $message: e.response.data.message };
+      } catch (err: AxiosError | any) {
+        if (err?.response?.data?.detail) {
+          return { $valid: false, $message: err.response.data.detail };
+        } else if (err?.response?.data?.message) {
+          return { $valid: false, $message: err.response.data.message };
         } else {
           return { $valid: false };
         }

@@ -24,10 +24,8 @@ const renderedMarkdown = computed(() => {
 });
 
 watchPostEffect(async () => {
-  if (!import.meta.env.SSR) {
-    if (typeof renderedMarkdown.value?.html.includes === "function" && renderedMarkdown.value?.html.includes("<code")) {
-      await usePrismStore().handlePrism();
-    }
+  if (!import.meta.env.SSR && typeof renderedMarkdown.value?.html.includes === "function" && renderedMarkdown.value?.html.includes("<code")) {
+    await usePrismStore().handlePrism();
   }
 });
 </script>

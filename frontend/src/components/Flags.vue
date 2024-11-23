@@ -12,11 +12,11 @@ const loading = ref<{ [key: number]: boolean }>({});
 function resolve(flag: HangarProjectFlag) {
   loading.value[flag.id] = true;
   useInternalApi(`flags/${flag.id}/resolve/${props.resolved ? "false" : "true"}`, "POST")
-    .catch<any>((e) => handleRequestError(e))
+    .catch<any>((err) => handleRequestError(err))
     .then(async () => {
       if (flags && flags.value) {
-        const newFlags = await useInternalApi<PaginatedResultHangarProjectFlag>("flags/" + (props.resolved ? "resolved" : "unresolved")).catch((e) =>
-          handleRequestError(e)
+        const newFlags = await useInternalApi<PaginatedResultHangarProjectFlag>("flags/" + (props.resolved ? "resolved" : "unresolved")).catch((err) =>
+          handleRequestError(err)
         );
         if (newFlags) {
           flags.value = newFlags;
@@ -37,8 +37,8 @@ async function getNotifications(flag: HangarProjectFlag) {
     return;
   }
 
-  notifications.value = (await useInternalApi<HangarProjectFlagNotification[]>(`flags/${flag.id}/notifications`, "get").catch((e) =>
-    handleRequestError(e)
+  notifications.value = (await useInternalApi<HangarProjectFlagNotification[]>(`flags/${flag.id}/notifications`, "get").catch((err) =>
+    handleRequestError(err)
   )) as HangarProjectFlagNotification[];
   currentId.value = flag.id;
 }
@@ -50,7 +50,7 @@ async function getNotifications(flag: HangarProjectFlag) {
       <template #default="{ item }">
         <Card class="mb-2">
           <div class="flex space-x-1 items-center">
-            <UserAvatar :username="item.reportedByName" size="sm" class="flex-shrink-0"></UserAvatar>
+            <UserAvatar :username="item.reportedByName" size="sm" class="flex-shrink-0" />
             <div class="flex flex-col flex-grow">
               <h2>
                 <Link :to="'/' + item.reportedByName" target="_blank">

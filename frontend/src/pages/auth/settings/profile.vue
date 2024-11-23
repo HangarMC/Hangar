@@ -46,8 +46,8 @@ async function saveProfile() {
   try {
     await useInternalApi("users/" + auth.user?.name + "/settings/profile", "POST", profileForm);
     notification.success("Saved!");
-  } catch (e) {
-    notification.fromError(i18n, e);
+  } catch (err) {
+    notification.fromError(i18n, err);
   }
   loading.value = false;
 }

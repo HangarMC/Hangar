@@ -75,7 +75,7 @@ const steps: Step[] = [
 
 const { projectOwners } = usePossibleOwners();
 const username = ref();
-const spigotAuthor = ref<SpigotAuthor | null>(null);
+const spigotAuthor = ref<SpigotAuthor | undefined>();
 const spigotResources = ref<SpigotResource[]>([]);
 const selectedSpigotResources = ref<string[]>([]);
 const hangarResources: Ref<ImportedProject[]> = ref([]);
@@ -93,13 +93,13 @@ const v = useVuelidate(additionalRules, additionalModel);
 watchDebounced(
   username,
   async () => {
-    spigotAuthor.value = null;
+    spigotAuthor.value = undefined;
     try {
       spigotAuthor.value = await getSpigotAuthor(username.value);
-    } catch (e) {
+    } catch (err) {
       // don't need popup about not found and wrong format
-      if (!isAxiosError(e) || (!e.message?.includes("404") && !e.message?.includes("400"))) {
-        handleRequestError(e);
+      if (!isAxiosError(err) || (!err.message?.includes("404") && !err.message?.includes("400"))) {
+        handleRequestError(err);
       }
     }
   },
@@ -133,18 +133,18 @@ function createProject(project: ImportedProject) {
   if (project.util.licenseUnset) {
     project.settings.license.url = undefined;
   }
-  useInternalApi<string>("projects/create", "post", project, { timeout: 10000 })
+  useInternalApi<string>("projects/create", "post", project, { timeout: 10_000 })
     .then((u) => {
       status[project.name].success = true;
       status[project.name].result = u;
     })
     .catch((err) => {
-      if (err.response?.data.fieldErrors != null) {
+      if (err.response?.data.fieldErrors == undefined) {
+        status[project.name].errors.push("Unknown error");
+      } else {
         for (const e of err.response.data.fieldErrors) {
           status[project.name].errors.push(t(e.errorMsg));
         }
-      } else {
-        status[project.name].errors.push("Unknown error");
       }
 
       handleRequestError(err);

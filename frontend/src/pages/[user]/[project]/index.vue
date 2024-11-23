@@ -24,7 +24,7 @@ function saveSponsors(content: string) {
       sponsors.value = content;
       editingSponsors.value = false;
     })
-    .catch((e) => handleRequestError(e, "page.new.error.save"));
+    .catch((err) => handleRequestError(err, "page.new.error.save"));
 }
 
 function createPinnedVersionUrl(version: PinnedVersion): string {

@@ -12,8 +12,8 @@ export const validProjectName = withOverrideMessage(() =>
           value,
         });
         return { $valid: true };
-      } catch (e: any) {
-        return !e.response?.data.isHangarApiException ? { $valid: false } : { $valid: false, $message: e.response?.data.message };
+      } catch (err: any) {
+        return err.response?.data.isHangarApiException ? { $valid: false, $message: err.response?.data.message } : { $valid: false };
       }
     })
   )
@@ -34,7 +34,7 @@ export const validOrgName = withOverrideMessage(
         name: value,
       });
       return { $valid: true };
-    } catch (e: any) {
+    } catch {
       return { $valid: false, $message: "organization.new.error.duplicateName" };
     }
   })
@@ -52,8 +52,8 @@ export const validApiKeyName = withOverrideMessage((username: string) =>
           name: value,
         });
         return { $valid: true };
-      } catch (e: any) {
-        return !e.response?.data.isHangarApiException ? { $valid: false } : { $valid: false, $message: e.response?.data.message };
+      } catch (err: any) {
+        return err.response?.data.isHangarApiException ? { $valid: false, $message: err.response?.data.message } : { $valid: false };
       }
     })
   )
@@ -73,8 +73,8 @@ export const validChannelName = withOverrideMessage((projectId: string, existing
           existingName,
         });
         return { $valid: true };
-      } catch (e: any) {
-        return !e.response?.data.isHangarApiException ? { $valid: false } : { $valid: false, $message: e.response?.data.message };
+      } catch (err: any) {
+        return err.response?.data.isHangarApiException ? { $valid: false, $message: err.response?.data.message } : { $valid: false };
       }
     })
   )
@@ -94,8 +94,8 @@ export const validChannelColor = withOverrideMessage((projectId: string, existin
           existingColor,
         });
         return { $valid: true };
-      } catch (e: any) {
-        return !e.response?.data.isHangarApiException ? { $valid: false } : { $valid: false, $message: e.response?.data.message };
+      } catch (err: any) {
+        return err.response?.data.isHangarApiException ? { $valid: false, $message: err.response?.data.message } : { $valid: false };
       }
     })
   )

@@ -53,7 +53,7 @@ const steps: Step[] = [
       for (let i = 0; i < selectedPlatforms.value.length; i++) {
         const platform = selectedPlatforms.value[i];
         const dependencyTable = dependencyTables.value[i];
-        pendingVersion.value.pluginDependencies[platform as Platform] = dependencyTable.dependencies;
+        pendingVersion.value.pluginDependencies[platform as Platform] = dependencyTable!.dependencies;
       }
 
       return true;
@@ -101,11 +101,11 @@ function removePlatformFile(id: number) {
   platformFiles.value.splice(id, 1);
 }
 
-const dependencyTables = ref();
+const dependencyTables = useTemplateRef("dependencyTables");
 const pendingVersion = ref<PendingVersion>();
 const { channels } = useProjectChannels(() => route.params.project);
 const selectedPlatforms = ref<Platform[]>([]);
-const descriptionEditor = ref();
+const descriptionEditor = useTemplateRef("descriptionEditor");
 const lastDescription = ref();
 const loading = reactive({
   create: false,
@@ -175,12 +175,12 @@ async function createPendingVersion() {
 
   pendingVersion.value = await useInternalApi<PendingVersion>(`versions/version/${props.project?.id}/upload`, "post", formData, {
     timeout: timeout.value,
-  }).catch<any>((e) => {
-    if (e.code === "ECONNABORTED") {
+  }).catch<any>((err) => {
+    if (err.code === "ECONNABORTED") {
       notification.error("The request timed out, please try again.");
       timeout.value = timeout.value * 2;
     } else {
-      handleRequestError(e);
+      handleRequestError(err);
     }
   });
   loading.create = false;
@@ -201,19 +201,19 @@ async function createVersion() {
   }
 
   loading.submit = true;
-  pendingVersion.value.description = descriptionEditor.value.rawEdited;
+  pendingVersion.value.description = descriptionEditor.value!.rawEdited;
   pendingVersion.value.channelDescription = currentChannel.value.description;
   pendingVersion.value.channelColor = currentChannel.value.color;
   pendingVersion.value.channelFlags = currentChannel.value.flags;
 
   // played around trying to get this to happen in jackson's deserialization, but couldn't figure it out.
   for (const platform in pendingVersion.value.platformDependencies) {
-    if (pendingVersion.value.platformDependencies[platform as Platform].length < 1) {
+    if (pendingVersion.value.platformDependencies[platform as Platform].length === 0) {
       delete pendingVersion.value.platformDependencies[platform as Platform];
     }
   }
   for (const platform in pendingVersion.value.pluginDependencies) {
-    if (pendingVersion.value.pluginDependencies[platform as Platform].length < 1) {
+    if (pendingVersion.value.pluginDependencies[platform as Platform].length === 0) {
       delete pendingVersion.value.pluginDependencies[platform as Platform];
     }
   }
@@ -226,10 +226,10 @@ async function createVersion() {
   }
 
   try {
-    await useInternalApi(`versions/version/${props.project?.id}/create`, "post", pendingVersion.value, { timeout: 45000 });
+    await useInternalApi(`versions/version/${props.project?.id}/create`, "post", pendingVersion.value, { timeout: 45_000 });
     await router.push(`/${route.params.user}/${route.params.project}/versions`);
-  } catch (e: any) {
-    handleRequestError(e);
+  } catch (err: any) {
+    handleRequestError(err);
   } finally {
     loading.submit = false;
   }
@@ -320,7 +320,7 @@ useSeo(
             </div>
           </div>
         </div>
-        <Button :disabled="useBackendData.platforms.size !== 0 && platformFiles.length >= useBackendData.platforms.size" @click="addPlatformFile()">
+        <Button :disabled="useBackendData.platforms.size > 0 && platformFiles.length >= useBackendData.platforms.size" @click="addPlatformFile()">
           <IconMdiPlus /> Add file/url for another platform
         </Button>
       </template>

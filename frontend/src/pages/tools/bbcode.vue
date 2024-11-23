@@ -11,7 +11,7 @@ async function convertBBCode() {
   loading.value = true;
   output.value = await useInternalApi<string>("pages/convert-bbcode", "post", {
     content: input.value,
-  }).catch<any>((e) => handleRequestError(e));
+  }).catch<any>((err) => handleRequestError(err));
   loading.value = false;
 }
 </script>
@@ -31,6 +31,6 @@ async function convertBBCode() {
     <InputTextarea v-model="output" class="mb-2 rounded-lg w-full min-h-50" />
 
     <h2 class="text-lg my-2">Markdown preview</h2>
-    <Markdown :raw="output"></Markdown>
+    <Markdown :raw="output" />
   </div>
 </template>

@@ -12,7 +12,7 @@ const props = defineProps<{
 }>();
 
 // uses InputGroup for validation
-const { v } = useValidation(props.label, undefined, internalVal, undefined);
+const { v } = useValidation(props.label, undefined, internalVal);
 </script>
 
 <template>
@@ -26,7 +26,7 @@ const { v } = useValidation(props.label, undefined, internalVal, undefined);
       @blur="v.$touch()"
     />
     <icon-mdi-circle class="absolute h-4 w-4 p-1 opacity-0 text-white" />
-    <slot></slot>
+    <slot />
     <template v-if="props.label">{{ props.label }}</template>
   </label>
 </template>

@@ -38,8 +38,8 @@ async function saveAccount() {
     emit("refreshSettings");
     useAuth.updateUser(true);
     v.value.$reset();
-  } catch (e) {
-    notification.fromError(i18n, e);
+  } catch (err) {
+    notification.fromError(i18n, err);
   }
   loading.value = false;
 }

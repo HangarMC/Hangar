@@ -11,7 +11,7 @@ const i18n = useI18n();
 const authStore = useAuthStore();
 
 const isCurrentUser = computed<boolean>(() => {
-  return authStore.user !== null && authStore.user.name === props.viewingUser?.name;
+  return authStore.user !== null && authStore.user?.name === props.viewingUser?.name;
 });
 
 const canEditCurrentUser = computed<boolean>(() => {

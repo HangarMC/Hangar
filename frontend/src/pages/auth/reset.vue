@@ -26,8 +26,8 @@ async function verifyCode() {
   try {
     await useInternalApi("auth/reset/verify", "POST", { email: email.value, code: code.value });
     codeVerified.value = true;
-  } catch (e) {
-    codeError.value = isAxiosError(e) && e.response?.status === 400 ? ["Invalid code"] : ["Unknown error"];
+  } catch (err) {
+    codeError.value = isAxiosError(err) && err.response?.status === 400 ? ["Invalid code"] : ["Unknown error"];
   }
 }
 
@@ -36,8 +36,8 @@ async function sendNewPassword() {
   try {
     await useInternalApi("auth/reset/set", "POST", { email: email.value, code: code.value, password: password.value });
     passwordUpdated.value = true;
-  } catch (e) {
-    handleRequestError(e);
+  } catch (err) {
+    handleRequestError(err);
   }
 }
 

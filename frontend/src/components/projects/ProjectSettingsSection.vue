@@ -25,6 +25,6 @@ const i18n = useI18n();
         <p v-if="props.description">{{ i18n.t(props.description) }}</p>
       </slot>
     </div>
-    <slot></slot>
+    <slot />
   </section>
 </template>

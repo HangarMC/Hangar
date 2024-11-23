@@ -22,8 +22,8 @@ async function confirm(close: () => void) {
     useNotificationStore().success(
       i18n.t(`author.lock.success${props.user.locked ? "Unlock" : "Lock"}${props.user.isOrganization ? "Org" : ""}`, [props.user.name])
     );
-  } catch (e) {
-    handleRequestError(e);
+  } catch (err) {
+    handleRequestError(err);
   }
 }
 </script>

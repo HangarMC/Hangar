@@ -22,10 +22,10 @@ const ccColor = computed(() => {
         ?.replace("rgb(", "")
         .replace(")", "")
         .split(",")
-        .map((c) => parseInt(c));
+        .map((c) => Number.parseInt(c));
     } else if (background?.startsWith("#")) {
-      const bg = background?.substring(1, 7);
-      colors = [parseInt(bg?.substring(0, 2), 16), parseInt(bg?.substring(2, 4), 16), parseInt(bg?.substring(4, 6), 16)];
+      const bg = background?.slice(1, 7);
+      colors = [Number.parseInt(bg?.slice(0, 2), 16), Number.parseInt(bg?.slice(2, 4), 16), Number.parseInt(bg?.slice(4, 6), 16)];
     } else {
       console.error("Can't figure out color value for", background);
       return props.color;
@@ -33,7 +33,7 @@ const ccColor = computed(() => {
     colors = colors
       .map((col) => col / 255)
       .map((col) => {
-        if (col <= 0.03928) {
+        if (col <= 0.039_28) {
           return col / 12.92;
         }
         return Math.pow((col + 0.055) / 1.055, 2.4);

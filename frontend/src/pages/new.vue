@@ -97,7 +97,7 @@ function createProject() {
     })
     .catch((err) => {
       projectCreationErrors.value = [];
-      if (err.response?.data.fieldErrors != null) {
+      if (err.response?.data.fieldErrors != undefined) {
         for (const e of err.response.data.fieldErrors) {
           projectCreationErrors.value.push(i18n.t(e.errorMsg));
         }

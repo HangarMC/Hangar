@@ -77,15 +77,15 @@ useSeo(computed(() => ({ title: i18n.t("stats.title"), route })));
     <InputDate v-model="endDate" />
     <Card class="mt-4">
       <template #header> {{ i18n.t("stats.plugins") }}</template>
-      <Line :data="pluginData" :options="options"></Line>
+      <Line :data="pluginData" :options="options" />
     </Card>
     <Card class="mt-4">
       <template #header>{{ i18n.t("stats.downloads") }}</template>
-      <Line :data="downloadData" :options="options"></Line>
+      <Line :data="downloadData" :options="options" />
     </Card>
     <Card class="mt-4">
       <template #header>{{ i18n.t("stats.flags") }}</template>
-      <Line :data="flagData" :options="options"></Line>
+      <Line :data="flagData" :options="options" />
     </Card>
   </div>
 </template>

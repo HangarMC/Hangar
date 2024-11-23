@@ -11,7 +11,7 @@ const i18n = useI18n();
     <p>{{ i18n.t("page.delete.text") }}</p>
     <Button class="mt-3" @click="emit('delete')">{{ i18n.t("general.delete") }}</Button>
     <template #activator="{ on }">
-      <slot name="activator" :on="on"></slot>
+      <slot name="activator" :on="on" />
     </template>
   </Modal>
 </template>

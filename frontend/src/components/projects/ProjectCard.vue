@@ -70,7 +70,7 @@ async function togglePin() {
             </div>
           </div>
         </div>
-        <div class="flex-grow"></div>
+        <div class="flex-grow" />
         <div class="lt-sm:hidden flex flex-col flex-shrink-0 min-w-40">
           <span class="inline-flex items-center">
             <IconMdiStar class="mx-1" /> {{ project.stats.stars.toLocaleString("en-US") }} {{ i18n.t("project.info.stars", project.stats.stars) }}

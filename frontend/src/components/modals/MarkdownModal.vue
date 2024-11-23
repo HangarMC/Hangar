@@ -11,7 +11,7 @@ defineProps<{
   <Modal :title="title" window-classes="w-250">
     <Markdown :raw="markdownInput" />
     <template #activator="{ on }">
-      <slot name="activator" :on="on"></slot>
+      <slot name="activator" :on="on" />
     </template>
   </Modal>
 </template>

@@ -1,7 +1,7 @@
 import type { highlightAll, Languages } from "prismjs";
 
 export const usePrismStore = defineStore("prism", () => {
-  const prism = ref<{ highlightAll: typeof highlightAll; languages: Languages } | null>(null);
+  const prism = ref<{ highlightAll: typeof highlightAll; languages: Languages } | undefined>(undefined);
   const languages = ref<string[]>([]);
 
   async function loadPrism() {
@@ -20,8 +20,8 @@ export const usePrismStore = defineStore("prism", () => {
     for (const lang of langs) {
       try {
         await loadLanguage(lang);
-      } catch (e: any) {
-        prismLog("failed to load lang %s", lang, e);
+      } catch (err: any) {
+        prismLog("failed to load lang %s", lang, err);
       }
     }
     prismLog("done");

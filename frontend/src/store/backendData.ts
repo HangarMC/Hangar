@@ -57,7 +57,7 @@ function convertToMap<E, T>(values: T[] = [], toStringFunc: (value: T) => string
   const map = new Map<E, T>();
   for (const value of values) {
     const key: E = toStringFunc(value) as unknown as E;
-    if (key == null) {
+    if (key == undefined) {
       throw new Error("Could not find an enum for " + value);
     }
     map.set(key, value);

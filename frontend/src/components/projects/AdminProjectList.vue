@@ -8,7 +8,7 @@ defineProps<{
 </script>
 
 <template>
-  <ul v-if="projects.length">
+  <ul v-if="projects.length > 0">
     <template v-for="project in projects" :key="project.projectId">
       <hr />
       <li>

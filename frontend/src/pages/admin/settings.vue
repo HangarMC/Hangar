@@ -26,7 +26,7 @@ resetPlatformVersions();
 function versions(versions: PlatformVersion[]): string[] {
   const fullVersions = [];
   for (const version of versions) {
-    if (version.subVersions.length !== 0) {
+    if (version.subVersions.length > 0) {
       fullVersions.push(...version.subVersions);
     } else {
       fullVersions.push(version.version);
@@ -45,9 +45,9 @@ async function savePlatformVersions() {
     await useInternalApi("admin/platformVersions", "post", data);
     notification.success(i18n.t("platformVersions.success"));
     router.go(0);
-  } catch (e: any) {
+  } catch (err: any) {
     loading.value = false;
-    handleRequestError(e);
+    handleRequestError(err);
   }
 }
 
@@ -68,9 +68,9 @@ async function saveRoles() {
     await useInternalApi("admin/roles", "post", roles.value);
     notification.success("Updated roles!");
     router.go(0);
-  } catch (e: any) {
+  } catch (err: any) {
     loading.value = false;
-    handleRequestError(e);
+    handleRequestError(err);
   }
 }
 
@@ -80,9 +80,9 @@ async function rescanSafeLinks() {
     const errors = await useInternalApi("admin/scanSafeLinks", "post", undefined, { timeout: 120_000 });
     console.log(errors);
     notification.success("Updated!");
-  } catch (e: any) {
+  } catch (err: any) {
     loading.value = false;
-    handleRequestError(e);
+    handleRequestError(err);
   }
 }
 </script>
@@ -102,7 +102,7 @@ async function rescanSafeLinks() {
           <tr v-for="platform in platforms" :key="platform.name">
             <td>{{ platform.name }}</td>
             <td>
-              <InputTag v-model="fullVersions[platform.enumName]"></InputTag>
+              <InputTag v-model="fullVersions[platform.enumName]" />
             </td>
           </tr>
         </tbody>

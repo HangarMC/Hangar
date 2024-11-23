@@ -17,7 +17,7 @@ async function submit() {
     warning: warning.value,
     toReporter: props.sendToReporter,
     content: content.value,
-  }).catch((e) => handleRequestError(e));
+  }).catch((err) => handleRequestError(err));
   content.value = "";
   router.go(0);
 }

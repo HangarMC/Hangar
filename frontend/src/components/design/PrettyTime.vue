@@ -9,7 +9,7 @@ const props = defineProps<{
   shortRelative?: boolean;
 }>();
 
-const date = computed(() => (typeof props.time !== "object" ? new Date(props.time) : props.time));
+const date = computed(() => (typeof props.time === "object" ? props.time : new Date(props.time)));
 
 const options = computed<DateTimeFormatOptions & { prefix?: string }>(() => {
   if (props.shortRelative) {

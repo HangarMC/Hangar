@@ -84,7 +84,7 @@ defineSlots<
     </div>
     <div class="flex-grow">
       <template v-if="router">
-        <slot v-if="router"></slot>
+        <slot v-if="router" />
       </template>
       <template v-else>
         <template v-for="tab in tabs" :key="tab.value">

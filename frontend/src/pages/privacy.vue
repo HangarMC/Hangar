@@ -128,6 +128,6 @@ useSeo(computed(() => ({ title: i18n.t("pages.privacypolicyTitle"), route })));
 
 <template>
   <div>
-    <Markdown :raw="text"></Markdown>
+    <Markdown :raw="text" />
   </div>
 </template>

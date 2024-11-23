@@ -7,8 +7,8 @@ definePageMeta({
 
 const route = useRoute("admin-activities-user");
 const i18n = useI18n();
-const flagActivities = await useInternalApi<FlagActivity[]>(`admin/activity/${route.params.user}/flags`).catch((e) => handleRequestError(e));
-const reviewActivities = await useInternalApi<ReviewActivity[]>(`admin/activity/${route.params.user}/reviews`).catch((e) => handleRequestError(e));
+const flagActivities = await useInternalApi<FlagActivity[]>(`admin/activity/${route.params.user}/flags`).catch((err) => handleRequestError(err));
+const reviewActivities = await useInternalApi<ReviewActivity[]>(`admin/activity/${route.params.user}/reviews`).catch((err) => handleRequestError(err));
 
 useSeo(computed(() => ({ title: i18n.t("userActivity.title", [route.params.user]) + route.params.constructor, route })));
 
@@ -29,7 +29,7 @@ function getRouteParams(activity: ReviewActivity) {
       <Card>
         <template #header>{{ i18n.t("userActivity.reviews") }}</template>
 
-        <Table v-if="reviewActivities && reviewActivities.length">
+        <Table v-if="reviewActivities && reviewActivities.length > 0">
           <tbody>
             <tr v-for="(activity, idx) in reviewActivities" :key="`review-${idx}`">
               <td>{{ i18n.t("userActivity.reviewApproved") }}</td>
@@ -44,7 +44,7 @@ function getRouteParams(activity: ReviewActivity) {
                     params: getRouteParams(activity),
                   }"
                 >
-                  <IconMdiListStatus class="float-left"></IconMdiListStatus>
+                  <IconMdiListStatus class="float-left" />
                   {{ i18n.t("version.page.reviewLogs") }}
                 </Link>
               </td>
@@ -58,7 +58,7 @@ function getRouteParams(activity: ReviewActivity) {
       <Card>
         <template #header>{{ i18n.t("userActivity.flags") }}</template>
 
-        <Table v-if="flagActivities && flagActivities.length">
+        <Table v-if="flagActivities && flagActivities.length > 0">
           <tbody>
             <tr v-for="(activity, idx) in flagActivities" :key="`flag-${idx}`">
               <td>{{ i18n.t("userActivity.flagResolved") }}</td>

@@ -22,10 +22,10 @@ useSeo(computed(() => ({ title: i18n.t("flagReview.title"), route })));
     <PageTitle>{{ i18n.t("flagReview.title") }}</PageTitle>
     <Tabs v-model="selectedTab" :tabs="selectedTabs" :vertical="false">
       <template #unresolved>
-        <Flags :resolved="false"></Flags>
+        <Flags :resolved="false" />
       </template>
       <template #resolved>
-        <Flags resolved></Flags>
+        <Flags resolved />
       </template>
     </Tabs>
   </div>

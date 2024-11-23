@@ -25,8 +25,8 @@ export const useSettingsStore = defineStore("settings", () => {
         authStore.user.theme = data.theme;
         authStore.user.language = data.language;
       }
-    } catch (e) {
-      settingsLog("cant save settings", e);
+    } catch (err) {
+      settingsLog("cant save settings", err);
     }
   }
 
@@ -54,12 +54,12 @@ export const useSettingsStore = defineStore("settings", () => {
       if (acceptLanguageHeader) {
         const supportedLocales = useNuxtApp().$i18n.availableLocales;
         const pickedLocale = localeParser.pick(supportedLocales, acceptLanguageHeader);
-        if (!pickedLocale) {
-          settingsLog("user is not logged in and could not pick locale from header, using default...", supportedLocales, acceptLanguageHeader);
-          newLocale = "en";
-        } else {
+        if (pickedLocale) {
           settingsLog("user is not logged in, picking from locale header, locale = " + pickedLocale, supportedLocales, acceptLanguageHeader);
           newLocale = pickedLocale;
+        } else {
+          settingsLog("user is not logged in and could not pick locale from header, using default...", supportedLocales, acceptLanguageHeader);
+          newLocale = "en";
         }
       } else {
         settingsLog("using default locale cause there was no header...");

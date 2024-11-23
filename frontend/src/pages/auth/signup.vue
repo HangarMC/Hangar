@@ -30,9 +30,9 @@ async function submit() {
   try {
     await useInternalApi("auth/signup", "POST", form);
     done.value = true;
-  } catch (e: any) {
-    notification.fromError(i18n, e);
-    if (e?.response?.data?.message === "error.captcha") {
+  } catch (err: any) {
+    notification.fromError(i18n, err);
+    if (err?.response?.data?.message === "error.captcha") {
       turnstile.value?.reset();
     }
   }

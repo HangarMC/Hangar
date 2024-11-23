@@ -11,8 +11,8 @@ const i18n = useI18n();
 const route = useRoute("admin-user-user");
 
 const { projects } = useProjects(() => ({ owner: route.params.user }));
-const orgs = (await useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${route.params.user}/userOrganizations`).catch((e) =>
-  handleRequestError(e)
+const orgs = (await useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${route.params.user}/userOrganizations`).catch((err) =>
+  handleRequestError(err)
 )) as { [key: string]: OrganizationRoleTable };
 const { user, refreshUser } = useUser(() => route.params.user);
 
@@ -44,8 +44,8 @@ async function processRole(add: boolean) {
   try {
     await useInternalApi("admin/user/" + route.params.user + "/" + selectedRole.value, add ? "POST" : "DELETE");
     refreshUser();
-  } catch (e) {
-    handleRequestError(e as AxiosError);
+  } catch (err) {
+    handleRequestError(err as AxiosError);
   }
 }
 

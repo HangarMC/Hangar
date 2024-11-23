@@ -27,7 +27,7 @@ async function loadRoutePerms(to: RouteLocationNormalized) {
 
       const perms = await useApi<UserPermissions>("permissions", "get", {
         slug: to.params.project,
-      }).catch(() => authStore.setRoutePerms(null));
+      }).catch(() => authStore.setRoutePerms());
       if (perms) {
         authStore.setRoutePerms(perms.permissionBinString, to.params.user as string, to.params.project as string);
       }
@@ -41,7 +41,7 @@ async function loadRoutePerms(to: RouteLocationNormalized) {
 
       const perms = await useApi<UserPermissions>("permissions", "get", {
         organization: to.params.user,
-      }).catch(() => authStore.setRoutePerms(null));
+      }).catch(() => authStore.setRoutePerms());
       if (perms) {
         authStore.setRoutePerms(perms.permissionBinString, to.params.user as string);
       }
@@ -49,10 +49,10 @@ async function loadRoutePerms(to: RouteLocationNormalized) {
     }
   } else if (authStore.authenticated) {
     // fall back to global perms
-    authStore.setRoutePerms(authStore.user?.headerData?.globalPermission || null);
+    authStore.setRoutePerms(authStore.user?.headerData?.globalPermission);
     return;
   }
-  authStore.setRoutePerms(null);
+  authStore.setRoutePerms();
 }
 
 async function handleRoutePerms(to: RouteLocationNormalized, from: RouteLocationNormalized) {
@@ -69,6 +69,7 @@ type handlersType = {
   [key: string]: (
     authStore: ReturnType<typeof useAuthStore>,
     to: RouteLocationNormalized
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
   ) => Promise<RouteLocationNamedRaw | void> | RouteLocationNamedRaw | void;
 };
 const handlers: handlersType = {
@@ -89,10 +90,8 @@ function currentUserRequired(authStore: ReturnType<typeof useAuthStore>, to: Rou
     throw new TypeError("Must have 'user' as a route param to use CurrentUser");
   }
   checkLogin(authStore, to, 404);
-  if (!hasPerms(NamedPermission.EditAllUserSettings)) {
-    if (to.params.user !== authStore.user?.name) {
-      return useErrorRedirect(403, undefined, { logErrorMessage: false });
-    }
+  if (!hasPerms(NamedPermission.EditAllUserSettings) && to.params.user !== authStore.user?.name) {
+    return useErrorRedirect(403, undefined, { logErrorMessage: false });
   }
 }
 
@@ -101,13 +100,13 @@ async function globalPermsRequired(authStore: ReturnType<typeof useAuthStore>, t
   checkLogin(authStore, to, 403);
   const check = await useApi<PermissionCheck>("permissions/hasAll", "get", {
     permissions: toNamedPermission(to.meta.globalPermsRequired as string[]),
-  }).catch((e) => {
+  }).catch((err) => {
     try {
-      routePermLog("error!", e);
-      handleRequestError(e);
-    } catch (e2) {
-      routePermLog("error while checking perm", e);
-      routePermLog("encountered additional error while error handling", e2);
+      routePermLog("error!", err);
+      handleRequestError(err);
+    } catch (err_) {
+      routePermLog("error while checking perm", err);
+      routePermLog("encountered additional error while error handling", err_);
     }
   });
   routePermLog("result", check);

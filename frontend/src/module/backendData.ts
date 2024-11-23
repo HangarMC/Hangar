@@ -1,4 +1,4 @@
-import { promises as fs } from "fs";
+import { promises as fs } from "node:fs";
 import { defineNuxtModule } from "@nuxt/kit";
 import { type AxiosInstance, isAxiosError } from "axios";
 import axios from "axios";
@@ -118,11 +118,9 @@ function prepareAxios(serverUrl: string): AxiosInstance {
     baseURL: serverUrl + "/api/internal/data",
   });
   axiosInstance.interceptors.response.use(undefined, (err) => {
-    if (isAxiosError(err)) {
-      if (err.response?.status === 404) {
-        backendDataLog("Couldn't load " + err.request?.path + ", skipping");
-        return null;
-      }
+    if (isAxiosError(err) && err.response?.status === 404) {
+      backendDataLog("Couldn't load " + err.request?.path + ", skipping");
+      return;
     }
     throw err;
   });
@@ -130,6 +128,23 @@ function prepareAxios(serverUrl: string): AxiosInstance {
 }
 
 async function loadData(state: ServerBackendData, axiosInstance: AxiosInstance) {
+  const result = await Promise.all([
+    axiosInstance.get<CategoryData[]>("/categories"),
+    axiosInstance.get<PermissionData[]>("/permissions"),
+    axiosInstance.get<PlatformData[]>("/platforms"),
+    axiosInstance.get<Validations>("/validations"),
+    axiosInstance.get<PromptData[]>("/prompts"),
+    axiosInstance.get<Announcement[]>("/announcements"),
+    axiosInstance.get<VisibilityData[]>("/visibilities"),
+    axiosInstance.get<string[]>("/licenses"),
+    axiosInstance.get<RoleData[]>("/orgRoles"),
+    axiosInstance.get<RoleData[]>("/projectRoles"),
+    axiosInstance.get<RoleData[]>("/globalRoles"),
+    axiosInstance.get<ColorData[]>("/channelColors"),
+    axiosInstance.get<FlagReasonData[]>("/flagReasons"),
+    axiosInstance.get<string[]>("/loggedActions"),
+    axiosInstance.get<Security>("/security"),
+  ]);
   const [
     projectCategories,
     permissions,
@@ -146,25 +161,7 @@ async function loadData(state: ServerBackendData, axiosInstance: AxiosInstance) 
     flagReasons,
     loggedActions,
     security,
-  ] = (
-    await Promise.all([
-      axiosInstance.get<CategoryData[]>("/categories"),
-      axiosInstance.get<PermissionData[]>("/permissions"),
-      axiosInstance.get<PlatformData[]>("/platforms"),
-      axiosInstance.get<Validations>("/validations"),
-      axiosInstance.get<PromptData[]>("/prompts"),
-      axiosInstance.get<Announcement[]>("/announcements"),
-      axiosInstance.get<VisibilityData[]>("/visibilities"),
-      axiosInstance.get<string[]>("/licenses"),
-      axiosInstance.get<RoleData[]>("/orgRoles"),
-      axiosInstance.get<RoleData[]>("/projectRoles"),
-      axiosInstance.get<RoleData[]>("/globalRoles"),
-      axiosInstance.get<ColorData[]>("/channelColors"),
-      axiosInstance.get<FlagReasonData[]>("/flagReasons"),
-      axiosInstance.get<string[]>("/loggedActions"),
-      axiosInstance.get<Security>("/security"),
-    ])
-  ).map((it) => it?.data || it);
+  ] = result.map((it) => it?.data || it);
 
   state.projectCategories = projectCategories as typeof state.projectCategories;
   state.permissions = permissions as typeof state.permissions;

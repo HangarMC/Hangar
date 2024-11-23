@@ -26,8 +26,8 @@ async function submit(close: () => void) {
     emit("reported");
     close();
     useNotificationStore().success(i18n.t("project.flag.flagSend"));
-  } catch (e) {
-    handleRequestError(e);
+  } catch (err) {
+    handleRequestError(err);
   }
 }
 </script>

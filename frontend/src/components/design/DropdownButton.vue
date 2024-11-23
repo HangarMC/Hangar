@@ -19,7 +19,6 @@ const props = withDefaults(
 );
 
 const open = ref(false);
-const popper = ref();
 function close() {
   open.value = false;
 }
@@ -29,14 +28,14 @@ defineExpose({ close });
 
 <template>
   <OnClickOutside @trigger="open = false">
-    <Popper ref="popper" as="div" :show="open" :placement="placement">
+    <Popper as="div" :show="open" :placement="placement">
       <Button :button-type="props.buttonType" :size="props.buttonSize" @click="open = !open">
         <slot name="button-label">
           <span class="mx-1">{{ props.name }}</span>
         </slot>
         <template v-if="props.buttonArrow">
-          <IconMdiMenu v-if="open" class="text-lg"></IconMdiMenu>
-          <IconMdiMenuDown v-else class="text-lg"></IconMdiMenuDown>
+          <IconMdiMenu v-if="open" class="text-lg" />
+          <IconMdiMenuDown v-else class="text-lg" />
         </template>
       </Button>
       <template #content>

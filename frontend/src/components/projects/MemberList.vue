@@ -80,7 +80,7 @@ function cancelTransfer() {
   const url = props.organization ? `organizations/org/${props.author}/canceltransfer` : `projects/project/${props.slug}/canceltransfer`;
   useInternalApi(url, "post")
     .then(() => router.go(0))
-    .catch((e) => handleRequestError(e))
+    .catch((err) => handleRequestError(err))
     .finally(() => (saving.value = false));
 }
 
@@ -112,8 +112,8 @@ function post(member: EditableMember, action: "edit" | "add" | "remove") {
     .then(() => {
       router.go(0);
     })
-    .catch((e) => {
-      handleRequestError(e);
+    .catch((err) => {
+      handleRequestError(err);
       // addErrors.value.push(i18n.te(e.response?.data.message) ? i18n.t(e.response?.data.message, e.response?.data.messageArgs) : e.response?.data.message);
     })
     .finally(() => {

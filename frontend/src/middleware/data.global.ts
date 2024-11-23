@@ -60,31 +60,25 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   if (import.meta.server && promises?.length) {
     try {
       await Promise.all(promises);
-    } catch (e) {
-      if (isAxiosError(e) && e.response?.status === 404) {
+    } catch (err) {
+      if (isAxiosError(err) && err.response?.status === 404) {
         throw createError({ statusCode: 404, statusMessage: "Not found" });
       } else {
-        console.error("Failed to load data for route " + to.fullPath, e);
+        console.error("Failed to load data for route " + to.fullPath, err);
         throw createError({ statusCode: 500, statusMessage: "Failed to load data" });
       }
     }
 
     // check if we need to redirect to a proper casing
     let newPath = to.fullPath;
-    if (userName) {
-      if (user.value && user.value.name !== userName) {
-        newPath = newPath.replace(userName, user.value.name);
-      }
+    if (userName && user.value && user.value.name !== userName) {
+      newPath = newPath.replace(userName, user.value.name);
     }
-    if (projectName) {
-      if (project.value && project.value.name !== projectName) {
-        newPath = newPath.replace(projectName, project.value.name);
-      }
+    if (projectName && project.value && project.value.name !== projectName) {
+      newPath = newPath.replace(projectName, project.value.name);
     }
-    if (versionName) {
-      if (version.value && version.value.name !== versionName) {
-        newPath = newPath.replace(versionName, version.value.name);
-      }
+    if (versionName && version.value && version.value.name !== versionName) {
+      newPath = newPath.replace(versionName, version.value.name);
     }
     if (pageName) {
       const pageSlug = pageName.join("/");

@@ -36,17 +36,17 @@ async function addAuthenticator() {
     authenticatorName.value = "";
     emit("refreshSettings");
     v.value.$reset();
-  } catch (e) {
-    if (isAxiosError(e) && e.response?.status === 499) {
-      codes.value = e.response.data.body;
-      backupCodeModal.value.isOpen = true;
-      savedRequest.value = e.config;
-    } else if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
+  } catch (err) {
+    if (isAxiosError(err) && err.response?.status === 499) {
+      codes.value = err.response.data.body;
+      backupCodeModal.value!.isOpen = true;
+      savedRequest.value = err.config;
+    } else if (isAxiosError(err) && err.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
-    } else if (e?.toString()?.startsWith("NotAllowedError")) {
+    } else if (err?.toString()?.startsWith("NotAllowedError")) {
       notification.error("Security Key Authentication failed!");
     } else {
-      notification.fromError(i18n, e);
+      notification.fromError(i18n, err);
     }
   }
   loading.value = false;
@@ -57,13 +57,13 @@ async function unregisterAuthenticator(authenticator: Authenticator) {
   try {
     await useInternalApi("auth/webauthn/unregister", "POST", authenticator.id, { headers: { "content-type": "text/plain" } });
     emit("refreshSettings");
-  } catch (e) {
-    if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
+  } catch (err) {
+    if (isAxiosError(err) && err.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
-    } else if (e?.toString()?.startsWith("NotAllowedError")) {
+    } else if (err?.toString()?.startsWith("NotAllowedError")) {
       notification.error("Security Key Authentication failed!");
     } else {
-      notification.fromError(i18n, e);
+      notification.fromError(i18n, err);
     }
   }
   loading.value = false;
@@ -71,12 +71,12 @@ async function unregisterAuthenticator(authenticator: Authenticator) {
 
 const newAuthenticatorName = ref<string>();
 const currentlyRenamingAuthenticator = ref<Authenticator>();
-const authenticatorRenameModal = ref();
+const authenticatorRenameModal = useTemplateRef("authenticatorRenameModal");
 
 function renameAuthenticatorModal(authenticator: Authenticator) {
   newAuthenticatorName.value = authenticator.displayName;
   currentlyRenamingAuthenticator.value = authenticator;
-  authenticatorRenameModal.value.isOpen = true;
+  authenticatorRenameModal.value!.isOpen = true;
   v.value.$reset();
 }
 
@@ -89,15 +89,15 @@ async function renameAuthenticator() {
   loading.value = true;
   try {
     await useInternalApi("auth/webauthn/rename", "POST", { id: currentlyRenamingAuthenticator.value.id, displayName: newAuthenticatorName.value });
-    authenticatorRenameModal.value.isOpen = false;
+    authenticatorRenameModal.value!.isOpen = false;
     emit("refreshSettings");
-  } catch (e) {
-    if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
+  } catch (err) {
+    if (isAxiosError(err) && err.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
-    } else if (e?.toString()?.startsWith("NotAllowedError")) {
+    } else if (err?.toString()?.startsWith("NotAllowedError")) {
       notification.error("Security Key Authentication failed!");
     } else {
-      notification.fromError(i18n, e);
+      notification.fromError(i18n, err);
     }
   }
   loading.value = false;
@@ -109,11 +109,11 @@ async function setupTotp() {
   loading.value = true;
   try {
     totpData.value = await useInternalApi<{ secret: string; qrCode: string }>("auth/totp/setup", "POST");
-  } catch (e) {
-    if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
+  } catch (err) {
+    if (isAxiosError(err) && err.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
-      notification.fromError(i18n, e);
+      notification.fromError(i18n, err);
     }
   }
   loading.value = false;
@@ -127,16 +127,16 @@ async function addTotp() {
     await useInternalApi("auth/totp/register", "POST", { secret: totpData.value?.secret, code: totpCode.value });
     totpCode.value = undefined;
     emit("refreshSettings");
-  } catch (e) {
-    if (isAxiosError(e) && e.response?.status === 499) {
-      codes.value = e.response.data.body;
-      backupCodeModal.value.isOpen = true;
-      savedRequest.value = e.config;
-      otp.value = e.response.headers["x-hangar-verify"];
-    } else if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
+  } catch (err) {
+    if (isAxiosError(err) && err.response?.status === 499) {
+      codes.value = err.response.data.body;
+      backupCodeModal.value!.isOpen = true;
+      savedRequest.value = err.config;
+      otp.value = err.response.headers["x-hangar-verify"];
+    } else if (isAxiosError(err) && err.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
-      notification.fromError(i18n, e);
+      notification.fromError(i18n, err);
     }
   }
   loading.value = false;
@@ -147,11 +147,11 @@ async function unlinkTotp() {
   try {
     await useInternalApi("auth/totp/remove", "POST");
     emit("refreshSettings");
-  } catch (e) {
-    if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
+  } catch (err) {
+    if (isAxiosError(err) && err.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
-      notification.fromError(i18n, e);
+      notification.fromError(i18n, err);
     }
   }
   loading.value = false;
@@ -161,7 +161,7 @@ const showCodes = ref(false);
 const codes = ref();
 
 const savedRequest = ref<AxiosRequestConfig>();
-const backupCodeModal = ref();
+const backupCodeModal = useTemplateRef("backupCodeModal");
 const backupCodeConfirm = ref();
 const otp = ref<string>();
 
@@ -181,7 +181,7 @@ async function confirmAndRepeat() {
       await useAxios()(req);
       // close modal
       backupCodeConfirm.value = undefined;
-      backupCodeModal.value.isOpen = false;
+      backupCodeModal.value!.isOpen = false;
       // reset stuff
       emit("refreshSettings");
       totpCode.value = undefined;
@@ -192,8 +192,8 @@ async function confirmAndRepeat() {
     } else {
       notification.error("no saved request?");
     }
-  } catch (e) {
-    notification.fromError(i18n, e);
+  } catch (err) {
+    notification.fromError(i18n, err);
   }
   loading.value = false;
 }
@@ -205,11 +205,11 @@ async function revealCodes() {
       codes.value = await useInternalApi("auth/codes/show", "POST");
     }
     showCodes.value = true;
-  } catch (e) {
-    if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
+  } catch (err) {
+    if (isAxiosError(err) && err.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
-      notification.fromError(i18n, e);
+      notification.fromError(i18n, err);
     }
   }
   loading.value = false;
@@ -221,28 +221,28 @@ async function generateNewCodes() {
     codes.value = await useInternalApi("auth/codes/regenerate", "POST");
     notification.success("Regenerated backup codes!");
     emit("refreshSettings");
-  } catch (e) {
-    if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
+  } catch (err) {
+    if (isAxiosError(err) && err.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
-      notification.fromError(i18n, e);
+      notification.fromError(i18n, err);
     }
   }
   loading.value = false;
 }
 
 const currentlyUnlinkingProvider = ref<string>();
-const oauthModal = ref();
+const oauthModal = useTemplateRef("oauthModal");
 const unlinkUrl = ref<string>();
 
 async function setupOAuth(provider: string) {
   try {
     window.location.href = await useInternalApi<string>("oauth/" + provider + "/login?mode=settings&returnUrl=" + encodeURIComponent(route.fullPath), "GET");
-  } catch (e) {
-    if (isAxiosError(e) && e.response?.data?.message === "error.privileged") {
+  } catch (err) {
+    if (isAxiosError(err) && err.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");
     } else {
-      notification.fromError(i18n, e);
+      notification.fromError(i18n, err);
     }
   }
 }
@@ -251,14 +251,14 @@ async function unlinkOAuth(provider: string, id: string) {
   try {
     unlinkUrl.value = await useInternalApi("oauth/" + provider + "/unlink/" + id, "POST");
     currentlyUnlinkingProvider.value = provider;
-    oauthModal.value.isOpen = true;
-  } catch (e) {
-    notification.fromError(i18n, e);
+    oauthModal.value!.isOpen = true;
+  } catch (err) {
+    notification.fromError(i18n, err);
   }
 }
 
 function closeUnlinkModal() {
-  oauthModal.value.isOpen = false;
+  oauthModal.value!.isOpen = false;
   emit("refreshSettings");
 }
 </script>
@@ -300,14 +300,14 @@ function closeUnlinkModal() {
         ref="authenticatorRenameModal"
         title="Rename authenticator"
         @close="
-          authenticatorRenameModal.isOpen = false;
+          authenticatorRenameModal!.isOpen = false;
           v.$reset();
         "
       >
         <InputText
           v-model="newAuthenticatorName"
           :label="t('auth.settings.security.securityKeys.keyName')"
-          :rules="[requiredIf()(() => authenticatorRenameModal?.isOpen)]"
+          :rules="[requiredIf()(() => authenticatorRenameModal!.isOpen)]"
         />
         <Button class="mt-2" size="small" :disabled="loading" @click.prevent="renameAuthenticator">
           {{ t("auth.settings.security.securityKeys.rename") }}
@@ -367,7 +367,7 @@ function closeUnlinkModal() {
       <Link :href="unlinkUrl" target="_blank"> {{ t("auth.settings.security.unlinkOAuth.modal.unlinkUrl", [currentlyUnlinkingProvider]) }} </Link>
     </Modal>
 
-    <Modal ref="backupCodeModal" :title="t('auth.settings.security.backupCodes.modal.title')" @close="backupCodeModal.isOpen = false">
+    <Modal ref="backupCodeModal" :title="t('auth.settings.security.backupCodes.modal.title')" @close="backupCodeModal!.isOpen = false">
       {{ t("auth.settings.security.backupCodes.modal.needConfigure") }}
       <div class="flex flex-wrap mt-2 mb-2">
         <div v-for="code in codes" :key="code.code" class="basis-3/12">
@@ -378,7 +378,7 @@ function closeUnlinkModal() {
       <InputText
         v-model="backupCodeConfirm"
         :label="t('auth.settings.security.backupCodes.modal.backupCode')"
-        :rules="[requiredIf()(backupCodeModal?.isOpen)]"
+        :rules="[requiredIf()(backupCodeModal!.isOpen)]"
       />
       <Button class="mt-2" :disabled="v.$invalid" @click="confirmAndRepeat">{{ t("general.confirm") }}</Button>
     </Modal>

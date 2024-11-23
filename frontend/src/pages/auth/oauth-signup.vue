@@ -43,8 +43,8 @@ async function submit() {
     const result = await useInternalApi<{ emailVerificationNeeded: boolean }>("oauth/register", "POST", form);
     emailVerificationNeeded.value = result.emailVerificationNeeded;
     done.value = true;
-  } catch (e) {
-    notification.fromError(i18n, e);
+  } catch (err) {
+    notification.fromError(i18n, err);
   }
   loading.value = false;
 }

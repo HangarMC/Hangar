@@ -8,7 +8,7 @@ const sections = useVModel(props, "modelValue", emit);
 const i18n = useI18n();
 
 // only top is not allowed to be duplicated... (#1342)
-const types = computed(() => sections.value.map((l) => (l.type !== "top" ? l.type + "-" + Math.random() : l.type)));
+const types = computed(() => sections.value.map((l) => (l.type === "top" ? l.type : l.type + "-" + Math.random())));
 
 function addSection() {
   let nextId = Math.max(...sections.value.map((l) => l.id)) + 1;

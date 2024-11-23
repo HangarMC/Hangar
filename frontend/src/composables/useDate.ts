@@ -3,7 +3,7 @@
  * @param dateString
  */
 export function fromISOString(dateString: string): Date {
-  const ds = dateString.split("-").map((s) => parseInt(s));
+  const ds = dateString.split("-").map((s) => Number.parseInt(s));
   return new Date(ds[0], ds[1] - 1, ds[2]);
 }
 

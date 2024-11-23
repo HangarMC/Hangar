@@ -23,7 +23,7 @@ const notificationStore = useNotificationStore();
           </div>
         </div>
         <div class="bar">
-          <div class="progress" :style="'animation-duration: ' + notification.timeout + 'ms'"></div>
+          <div class="progress" :style="'animation-duration: ' + notification.timeout + 'ms'" />
         </div>
       </div>
     </div>

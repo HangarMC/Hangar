@@ -13,7 +13,7 @@ useAccentColor();
 settingsLog("render for user", authStore.user?.name, "with darkmode", settingsStore.darkMode);
 
 // for some dum reason useHead will not always replace the "light" from server side with "dark" from client side so we just force it.
-if (process.client) {
+if (import.meta.client) {
   document.documentElement.classList.remove("light", "dark");
   document.documentElement.classList.add(settingsStore.darkMode ? "dark" : "light");
 

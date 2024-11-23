@@ -20,8 +20,8 @@ const projectVersion = computed(() => {
 });
 
 const loading = ref(false);
-const depTable = ref<typeof DependencyTable>();
-const modal = ref();
+const depTable = useTemplateRef("depTable");
+const modal = useTemplateRef("modal");
 const pluginDependencies = ref<HangarVersion["pluginDependencies"]>({});
 
 async function save() {
@@ -41,15 +41,15 @@ async function save() {
       pluginDependencies: depTable.value.dependencies,
     });
     await router.go(0);
-  } catch (e) {
-    handleRequestError(e);
+  } catch (err) {
+    handleRequestError(err);
   }
   loading.value = false;
 }
 
 onMounted(() =>
   watch(
-    () => modal.value.isOpen,
+    () => modal.value?.isOpen,
     (val) => {
       pluginDependencies.value = val && projectVersion.value ? cloneDeep(projectVersion.value.pluginDependencies) : ({} as HangarVersion["pluginDependencies"]);
       if (depTable.value) {

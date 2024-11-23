@@ -51,8 +51,8 @@ async function sendForApproval() {
     await useInternalApi(`projects/visibility/${props.project?.id}/sendforapproval`, "post");
     notification.success(i18n.t("projectApproval.sendForApproval"));
     await router.go(0);
-  } catch (e) {
-    handleRequestError(e as AxiosError);
+  } catch (err) {
+    handleRequestError(err as AxiosError);
   }
 }
 
@@ -153,7 +153,7 @@ function requiresConfirmation(): ConfirmationType {
             </Button>
           </Tooltip>
           <!-- Tooltips mess with normal margins so this is a workaround -->
-          <div class="px-1"></div>
+          <div class="px-1" />
           <Tooltip>
             <template #content>
               <span v-if="isOwn">{{ i18n.t("project.info.watchers", 0) }}</span>
@@ -166,7 +166,7 @@ function requiresConfirmation(): ConfirmationType {
               <span class="ml-2">{{ watchingCount?.toLocaleString("en-US") }}</span>
             </Button>
           </Tooltip>
-          <div class="px-1"></div>
+          <div class="px-1" />
           <FlagModal v-if="project" :project="project" :disabled="isOwn" :open-report="reported" @reported="reported = true" />
         </div>
       </div>

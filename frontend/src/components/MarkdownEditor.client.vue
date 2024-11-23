@@ -35,8 +35,8 @@ const emit = defineEmits<{
   (e: "update:raw", raw: string): void;
 }>();
 
-const editor = ref<HTMLTextAreaElement>();
-let easyMDE: Easymde | null = null;
+const editor = useTemplateRef("editor");
+let easyMDE: Easymde | undefined;
 const rawEdited = ref(props.raw || "");
 const loading = reactive({
   save: false,
@@ -50,7 +50,7 @@ const internalEditing = computed({
 const errorMessages = computed(() => props.errorMessages);
 const { v, errors } = useValidation(props.label, props.rules, rawEdited, errorMessages);
 
-if (process.client && props.editing) {
+if (import.meta.client && props.editing) {
   onMounted(startEditing);
 }
 
@@ -83,7 +83,7 @@ async function startEditing() {
   internalEditing.value = true;
   await nextTick();
   easyMDE = new EasyMDE({
-    element: editor.value,
+    element: editor.value!,
     autofocus: true,
     forceSync: true,
     indentWithTabs: false,
@@ -107,6 +107,7 @@ async function startEditing() {
       if (typeof html.includes === "function" && html.includes("<code")) {
         usePrismStore().handlePrism();
       }
+      // eslint-disable-next-line unicorn/no-null
       return null;
     },
     renderingConfig: {
@@ -148,7 +149,7 @@ function stopEditing() {
     </div>
     <div v-if="internalEditing && !noPaddingTop" class="mt-11" :class="{ 'mt-2': hasSlotContent($slots.title) }" />
     <div v-if="internalEditing">
-      <textarea ref="editor" v-model="rawEdited" class="text-left" :maxlength="maxlength"></textarea>
+      <textarea ref="editor" v-model="rawEdited" class="text-left" :maxlength="maxlength" />
     </div>
     <Markdown v-if="!internalEditing" :raw="raw" />
     <ErrorTooltip :error-messages="errors" class="w-full absolute">

@@ -13,7 +13,7 @@ const router = useRouter();
 const v = useVuelidate();
 
 const updateProjectPagesCallback = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
-const modal = ref<any | null>(null); // Filled by vue
+const modal = useTemplateRef("modal");
 
 const pageRoots = computed(() => [{ value: -1, text: "<none>" }, ...flatDeep(props.pages, "")]);
 const loading = ref<boolean>(false);
@@ -48,7 +48,7 @@ async function createPage() {
     if (!(await v.value.$validate())) return;
     const slug = await useInternalApi<string>(`pages/create/${props.projectId}`, "post", {
       name: body.name,
-      parentId: body.parentId === -1 ? null : body.parentId,
+      parentId: body.parentId === -1 ? undefined : body.parentId,
     });
 
     body.name = "";
@@ -59,8 +59,8 @@ async function createPage() {
     }
 
     await router.push(`/${route.params.user}/${route.params.project}/pages/${slug}`);
-  } catch (e) {
-    handleRequestError(e);
+  } catch (err) {
+    handleRequestError(err);
   }
   loading.value = false;
 

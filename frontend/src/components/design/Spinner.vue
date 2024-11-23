@@ -39,8 +39,8 @@ const props = withDefaults(
   }
 );
 
-const svg = ref();
-const circle = ref();
+const svg = useTemplateRef("svg");
+const circle = useTemplateRef("circle");
 
 const circleRadius = computed(() => (props.diameter - props.stroke) / 2);
 const circleCircumference = computed(() => 2 * Math.PI * circleRadius.value);
@@ -61,18 +61,18 @@ onMounted(() => {
 
 function attachSvgStyle() {
   const size = props.diameter + props.unit;
-  svg.value.style.width = size;
-  svg.value.style.height = size;
+  svg.value!.style.width = size;
+  svg.value!.style.height = size;
 }
 
 function attachCircleStyle() {
   if (!props.indeterminate) {
-    circle.value.style.strokeDashoffset = (circleCircumference.value * (100 - props.value)) / 100 + props.unit;
+    circle.value!.style.strokeDashoffset = (circleCircumference.value * (100 - props.value)) / 100 + props.unit;
   }
-  circle.value.style.strokeDasharray = circleCircumference.value;
-  circle.value.style.strokeWidth = props.stroke + props.unit;
-  circle.value.style.setProperty("--md-progress-spinner-start-value", String(0.95 * circleCircumference.value));
-  circle.value.style.setProperty("--md-progress-spinner-end-value", String(0.2 * circleCircumference.value));
+  circle.value!.style.strokeDasharray = circleCircumference.value + "";
+  circle.value!.style.strokeWidth = props.stroke + props.unit;
+  circle.value!.style.setProperty("--md-progress-spinner-start-value", String(0.95 * circleCircumference.value));
+  circle.value!.style.setProperty("--md-progress-spinner-end-value", String(0.2 * circleCircumference.value));
 }
 </script>
 
@@ -83,7 +83,7 @@ function attachCircleStyle() {
       :class="{ 'md-progress-spinner-indeterminate': true, 'md-determinate': !indeterminate, 'md-indeterminate': indeterminate }"
     >
       <svg ref="svg" class="md-progress-spinner-draw" preserveAspectRatio="xMidYMid meet" focusable="false" :viewBox="`0 0 ${diameter} ${diameter}`">
-        <circle ref="circle" class="md-progress-spinner-circle" cx="50%" cy="50%" :r="circleRadius"></circle>
+        <circle ref="circle" class="md-progress-spinner-circle" cx="50%" cy="50%" :r="circleRadius" />
       </svg>
     </div>
   </transition>

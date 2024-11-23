@@ -14,7 +14,7 @@ export function useProjectPage(route: RouteLocationNormalized<"user-project-page
     if (!page) return;
     await useInternalApi(`pages/save/${project?.id}/${page?.id}`, "post", {
       content,
-    }).catch((e) => handleRequestError(e, "page.new.error.save"));
+    }).catch((err) => handleRequestError(err, "page.new.error.save"));
     if (page && "contents" in page) {
       page.contents = content;
     }
@@ -23,7 +23,7 @@ export function useProjectPage(route: RouteLocationNormalized<"user-project-page
 
   async function deletePage() {
     if (!page) return;
-    await useInternalApi(`pages/delete/${project?.id}/${page?.id}`, "post").catch((e) => handleRequestError(e, "page.new.error.save"));
+    await useInternalApi(`pages/delete/${project?.id}/${page?.id}`, "post").catch((err) => handleRequestError(err, "page.new.error.save"));
     await router.replace(`/${route.params.user}/${route.params.project}`);
   }
 

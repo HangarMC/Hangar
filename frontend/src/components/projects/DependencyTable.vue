@@ -47,7 +47,7 @@ defineExpose({ dependencies, reset });
 </script>
 
 <template>
-  <Table v-if="dependencies.length !== 0" class="mb-2">
+  <Table v-if="dependencies.length > 0" class="mb-2">
     <thead>
       <tr>
         <th>{{ t("version.new.form.linkOrProject") }}</th>
@@ -67,7 +67,7 @@ defineExpose({ dependencies, reset });
       />
     </tbody>
   </Table>
-  <div v-if="!noEditing" class="m-2" :class="dependencies.length !== 0 ? '-mt-2' : ''">
+  <div v-if="!noEditing" class="m-2" :class="dependencies.length > 0 ? '-mt-2' : ''">
     <Button block @click="addDep">
       <IconMdiPlus />
       {{ t("general.add") }}

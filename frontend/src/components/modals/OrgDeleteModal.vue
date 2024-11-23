@@ -13,7 +13,7 @@ async function deleteOrg() {
   loading.value = true;
   await useInternalApi(`organizations/org/${props.organization}/delete`, "post", {
     content: comment.value,
-  }).catch((e) => handleRequestError(e));
+  }).catch((err) => handleRequestError(err));
   await router.push("/");
   loading.value = false;
 }

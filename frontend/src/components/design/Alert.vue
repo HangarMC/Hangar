@@ -28,6 +28,6 @@ const color = computed(() => {
       <IconMdiInformation v-else-if="props.type === 'info' || props.type === 'neutral'" class="mr-3 w-8 h-8 min-w-8" />
       <IconMdiTrophy v-else-if="props.type === 'success'" class="mr-3 w-8 h-8 min-w-8" />
     </slot>
-    <slot></slot>
+    <slot />
   </div>
 </template>

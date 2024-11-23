@@ -18,7 +18,7 @@ const name = ref("");
 const loadingCreate = ref(false);
 const loadingDelete = reactive<Record<string, boolean>>({});
 const selectedPerms = ref([]);
-const createdKey = ref<string | null>(null);
+const createdKey = ref<string | undefined>();
 
 async function create() {
   if (!(await v.value.$validate())) return;
@@ -33,7 +33,7 @@ async function create() {
       apiKeys.value = [];
     }
     apiKeys.value.unshift({
-      tokenIdentifier: key.substring(0, key.indexOf(".")),
+      tokenIdentifier: key.slice(0, Math.max(0, key.indexOf("."))),
       name: name.value,
       permissions: selectedPerms.value,
       createdAt: new Date().toISOString(),

@@ -19,7 +19,7 @@ export function useSeo(
   const canonical = computed(
     () =>
       config.publicHost +
-      (input.value.route.path.endsWith("/") ? input.value.route.path.substring(0, input.value.route.path.length - 1) : input.value.route.path)
+      (input.value.route.path.endsWith("/") ? input.value.route.path.slice(0, Math.max(0, input.value.route.path.length - 1)) : input.value.route.path)
   );
   const image = computed(() => {
     let img = input.value.image || "https://docs.papermc.io/img/paper.png";
@@ -139,14 +139,14 @@ function generateBreadcrumbs(route: RouteLocationNormalized) {
   const split = route.path.split("/");
   let curr = "";
   const config = useConfig();
-  for (let i = 0; i < split.length; i++) {
+  for (const [i, element] of split.entries()) {
     // skip trailing slash
-    if ((split[i] === "" || split[i] === "/") && curr !== "") continue;
-    curr = `${curr + split[i]}/`;
+    if ((element === "" || element === "/") && curr !== "") continue;
+    curr = `${curr + element}/`;
     arr.push({
       "@type": "ListItem",
       position: i,
-      name: guessTitle(split[i]),
+      name: guessTitle(element),
       item: config.publicHost + curr,
     });
   }

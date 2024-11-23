@@ -25,7 +25,7 @@ async function changeOrgVisibility(org: string) {
 
   loading.value = true;
   const hidden = internalVisibility.value[org];
-  await useInternalApi(`organizations/${org}/userOrganizationsVisibility?hidden=${hidden}`, "post").catch((e) => handleRequestError(e));
+  await useInternalApi(`organizations/${org}/userOrganizationsVisibility?hidden=${hidden}`, "post").catch((err) => handleRequestError(err));
   loading.value = false;
 }
 </script>
@@ -37,7 +37,7 @@ async function changeOrgVisibility(org: string) {
 
     <ul class="p-2">
       <li v-for="org in orgs" :key="org">
-        <InputCheckbox v-model="internalVisibility[org]" :label="org" :disabled="loading" @change="changeOrgVisibility(org)"></InputCheckbox>
+        <InputCheckbox v-model="internalVisibility[org]" :label="org" :disabled="loading" @change="changeOrgVisibility(org)" />
       </li>
     </ul>
     <template #activator="{ on }">

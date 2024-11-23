@@ -23,7 +23,8 @@ const isReviewStateChecked = computed<boolean>(
 const isUnderReview = computed<boolean>(() => props.version?.reviewState === ReviewState.UnderReview);
 const currentVisibility = computed(() => useBackendData.visibilities.find((v) => (v.name as Visibility) === props.version?.visibility));
 const editingPage = ref(false);
-const confirmationWarningKey = computed<string | null>(() => {
+// eslint-disable-next-line vue/return-in-computed-property
+const confirmationWarningKey = computed<string | undefined>(() => {
   if (props.version?.reviewState !== ReviewState.Reviewed) {
     return "version.page.unsafeWarning";
   }
@@ -32,7 +33,7 @@ const confirmationWarningKey = computed<string | null>(() => {
       return "version.page.unsafeWarningExternal";
     }
   }
-  return null;
+  return;
 });
 const platformsWithDependencies = computed(() => {
   const platforms = [];
@@ -118,8 +119,8 @@ async function setPinned(value: boolean) {
     await useInternalApi(`versions/version/${props.project?.id}/${props.version.id}/pinned?value=${value}`, "post");
     props.version!.pinnedStatus = value ? PinnedStatus.VERSION : PinnedStatus.NONE;
     notification.success(i18n.t(`version.page.pinned.request.${value}`));
-  } catch (e) {
-    handleRequestError(e as AxiosError);
+  } catch (err) {
+    handleRequestError(err as AxiosError);
   }
 }
 
@@ -131,8 +132,8 @@ async function deleteVersion(comment: string) {
     });
     notification.success(i18n.t("version.success.softDelete"));
     await router.replace(`/${route.params.user}/${route.params.project}/versions`);
-  } catch (e) {
-    handleRequestError(e as AxiosError);
+  } catch (err) {
+    handleRequestError(err as AxiosError);
   }
 }
 
@@ -149,8 +150,8 @@ async function hardDeleteVersion(comment: string) {
         ...route.params,
       },
     });
-  } catch (e) {
-    handleRequestError(e as AxiosError);
+  } catch (err) {
+    handleRequestError(err as AxiosError);
   }
 }
 
@@ -160,8 +161,8 @@ async function restoreVersion() {
     await useInternalApi(`versions/version/${props.project?.id}/${props.version.id}/restore`, "post");
     notification.success(i18n.t("version.success.restore"));
     await router.replace(`/${route.params.user}/${route.params.project}/versions`);
-  } catch (e) {
-    handleRequestError(e as AxiosError);
+  } catch (err) {
+    handleRequestError(err as AxiosError);
   }
 }
 </script>
@@ -205,7 +206,6 @@ async function restoreVersion() {
       <Card class="relative mt-4 pb-0 overflow-clip overflow-hidden">
         <ClientOnly v-if="hasPerms(NamedPermission.EditVersion)">
           <MarkdownEditor
-            ref="editor"
             v-model:editing="editingPage"
             :raw="version.description"
             :deletable="false"
@@ -355,7 +355,7 @@ async function restoreVersion() {
         </div>
       </Card>
 
-      <Card v-if="hasPerms(NamedPermission.EditVersion) || platformsWithDependencies.length !== 0">
+      <Card v-if="hasPerms(NamedPermission.EditVersion) || platformsWithDependencies.length > 0">
         <template #header>
           <div class="inline-flex w-full">
             <h2 class="flex-grow">{{ i18n.t("version.page.dependencies") }}</h2>

@@ -23,8 +23,7 @@ import IconMdiFolderInformationOutline from "~icons/mdi/folder-information-outli
 import { type HangarNotification, type HangarUser, NamedPermission } from "~/types/backend";
 import { useUnreadNotificationCount } from "~/composables/useData";
 
-// marker so that you can inspect backend data in dev tools
-// @ts-expect-error dum
+// @ts-expect-error marker so that you can inspect backend data in dev tools
 const backendData = useBackendData;
 
 const settings = useSettingsStore();
@@ -87,13 +86,13 @@ function markNotificationRead(notification: HangarNotification) {
     notification.read = true;
     unreadNotifications.value--;
     loadedUnreadNotifications.value--;
-    useInternalApi(`notifications/${notification.id}`, "post").catch((e) => handleRequestError(e));
+    useInternalApi(`notifications/${notification.id}`, "post").catch((err) => handleRequestError(err));
   }
 }
 
 function updateNavData() {
   useInternalApi<HangarUser>("users/@me")
-    .catch((e) => handleRequestError(e))
+    .catch((err) => handleRequestError(err))
     .then((user) => {
       if (!user) return;
       authStore.user = unref(user);
@@ -231,8 +230,8 @@ function isRecent(date: string): boolean {
           aria-label="Toogle dark mode"
           @click="settings.toggleDarkMode()"
         >
-          <icon-mdi-weather-night v-if="settings.darkMode" class="text-[1.2em]"></icon-mdi-weather-night>
-          <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
+          <icon-mdi-weather-night v-if="settings.darkMode" class="text-[1.2em]" />
+          <icon-mdi-white-balance-sunny v-else class="text-[1.2em]" />
         </button>
         <div v-if="authStore.user">
           <Popper placement="bottom-end">

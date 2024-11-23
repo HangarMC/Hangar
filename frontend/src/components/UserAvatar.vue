@@ -54,7 +54,7 @@ const src = computed(() => {
 
 const url = computed(() => {
   if (props.disableLink) {
-    return undefined;
+    return;
   } else if (props.to) {
     return props.to;
   } else if (props.username) {

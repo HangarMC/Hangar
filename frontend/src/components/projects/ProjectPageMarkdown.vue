@@ -31,8 +31,8 @@ async function deletePageAndUpdateProject() {
     if (updateProjectPages) {
       updateProjectPages(await useInternalApi<HangarProjectPage[]>(`pages/list/${props.project?.id}`, "get"));
     }
-  } catch (e: any) {
-    handleRequestError(e);
+  } catch (err: any) {
+    handleRequestError(err);
   }
 }
 
@@ -42,5 +42,5 @@ defineSlots<{
 </script>
 
 <template>
-  <slot :save-page="savePage" :delete-page="deletePageAndUpdateProject" :editing-page="editingPage" :change-editing-page="changeEditingPage"></slot>
+  <slot :save-page="savePage" :delete-page="deletePageAndUpdateProject" :editing-page="editingPage" :change-editing-page="changeEditingPage" />
 </template>

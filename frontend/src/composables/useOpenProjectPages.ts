@@ -8,7 +8,7 @@ export function useOpenProjectPages(route: RouteLocationTyped<RouteMapGeneric, "
     route,
     () => {
       const slugs = route.path.split("/").slice(4);
-      if (slugs.length) {
+      if (slugs.length > 0) {
         for (let i = 0; i < slugs.length; i++) {
           const slug = slugs.slice(0, i + 1).join("/");
           if (!open.value.includes(slug)) {

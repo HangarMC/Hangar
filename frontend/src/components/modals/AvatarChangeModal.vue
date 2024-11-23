@@ -60,9 +60,9 @@ const v = useVuelidate({ $stopPropagation: true });
 const selectedFile = ref();
 const cropperInput = ref();
 const cropperResult = ref();
-const modal = ref();
+const modal = useTemplateRef("modal");
 
-let reader: FileReader | null = null;
+let reader: FileReader | undefined;
 onMounted(() => {
   reader = new FileReader();
   reader.addEventListener(
@@ -76,12 +76,12 @@ onMounted(() => {
 
 watch(selectedFile, (newValue) => {
   if (!newValue) {
-    return null;
+    return;
   }
   if (newValue.size >= useBackendData.validations.project.maxFileSize) {
     notifications.error(t("validation.maxFileSize"));
-    selectedFile.value = null;
-    return null;
+    selectedFile.value = undefined;
+    return;
   }
 
   cropperResult.value = newValue;
@@ -93,9 +93,9 @@ async function openModal() {
     const response = await fetch(props.avatar, { cache: "no-cache" });
     const data = await response.blob();
     reader?.readAsDataURL(data);
-  } catch (e) {
+  } catch (err) {
     notifications.error("Error while fetching existing avatar");
-    console.error("error while fetching existing avatar", e);
+    console.error("error while fetching existing avatar", err);
   }
 }
 
@@ -114,13 +114,13 @@ async function save() {
   }
 
   try {
-    await useInternalApi(props.action, "POST", form, { timeout: 10000 });
+    await useInternalApi(props.action, "POST", form, { timeout: 10_000 });
 
     window.location.reload();
-  } catch (e) {
+  } catch (err) {
     notifications.error("Error while saving avatar");
-    console.error("Error while saving avatar", e);
-    modal.value.close();
+    console.error("Error while saving avatar", err);
+    modal.value?.close();
   }
 }
 </script>

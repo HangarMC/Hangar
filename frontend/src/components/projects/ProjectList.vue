@@ -5,7 +5,7 @@ const i18n = useI18n();
 
 defineProps<{
   projects?: PaginatedResultProject;
-  resetAnchor?: Element;
+  resetAnchor?: HTMLElement | null;
   loading?: boolean;
   canEdit?: boolean;
   pinned?: ProjectCompact[];
@@ -17,9 +17,9 @@ const emit = defineEmits<{
 function emitPageUpdate(newPage: number) {
   emit("update:page", newPage);
 }
-const pagination = ref();
+const pagination = useTemplateRef("pagination");
 function updatePage(newPage: number) {
-  pagination.value.updatePage(newPage);
+  pagination.value?.updatePage(newPage);
 }
 defineExpose({ updatePage });
 </script>

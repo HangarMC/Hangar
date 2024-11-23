@@ -25,7 +25,7 @@ async function save() {
     platform: props.platform.name.toUpperCase(),
     versions: selectedVersions.value,
   })
-    .catch((e) => handleRequestError(e))
+    .catch((err) => handleRequestError(err))
     .then(async () => {
       await router.go(0);
     })

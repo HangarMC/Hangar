@@ -106,7 +106,7 @@ const slots = defineSlots<
           <tr>
             <td v-for="header in headers" :key="header.name" :style="header.width ? 'width: ' + header.width : ''" @click="expanded[idx] = !expanded[idx]">
               <template v-if="hasSlotContent(slots[header.name], { item: item })">
-                <slot :name="header.name" :item="item"></slot>
+                <slot :name="header.name" :item="item" />
               </template>
               <template v-else>
                 {{ item[header.name] }}
@@ -115,7 +115,7 @@ const slots = defineSlots<
           </tr>
 
           <tr v-if="expandable && expanded[idx]" class="!border-dashed">
-            <slot name="expanded-item" :item="item" :headers="headers"></slot>
+            <slot name="expanded-item" :item="item" :headers="headers" />
           </tr>
         </template>
         <template #pagination="slotProps">
@@ -128,7 +128,7 @@ const slots = defineSlots<
       </PaginationComponent>
       <tr v-if="!items || items?.length === 0">
         <td :colspan="headers.length">
-          <slot name="empty"></slot>
+          <slot name="empty" />
         </td>
       </tr>
     </tbody>

@@ -283,7 +283,7 @@ function sendReviewRequest(
       then();
       refreshReviews();
     })
-    .catch((e) => handleRequestError(e))
+    .catch((err) => handleRequestError(err))
     .finally(final);
 }
 

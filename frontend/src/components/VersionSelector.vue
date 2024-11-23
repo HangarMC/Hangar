@@ -27,7 +27,7 @@ for (const version of selected.value) {
   if (lastSeparator === -1) {
     continue;
   }
-  const cutVersion = version.substring(0, lastSeparator);
+  const cutVersion = version.slice(0, Math.max(0, lastSeparator));
   const platformVersion = props.versions.find((v) => v.version === cutVersion || v.version === version);
   if (!platformVersion) {
     continue;
@@ -95,7 +95,7 @@ function handleRemovedSub(removedVersions: string[]) {
       continue;
     }
 
-    const cutVersion = version.substring(0, lastSeparator);
+    const cutVersion = version.slice(0, Math.max(0, lastSeparator));
     const platformVersion = props.versions.find((v) => v.version === cutVersion || v.version === version);
     if (!platformVersion) {
       continue;
@@ -119,7 +119,7 @@ function handleAddedSub(removedVersions: string[]) {
       continue;
     }
 
-    const cutVersion = version.substring(0, lastSeparator);
+    const cutVersion = version.slice(0, Math.max(0, lastSeparator));
     const platformVersion = props.versions.find((v) => v.version === cutVersion || v.version === version);
     if (!platformVersion) {
       continue;

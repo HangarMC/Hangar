@@ -28,8 +28,8 @@ async function transfer() {
       content: search.value,
     });
     notificationStore.success(i18n.t("organization.settings.success.transferRequest", [search.value]));
-  } catch (e) {
-    handleRequestError(e);
+  } catch (err) {
+    handleRequestError(err);
   }
   loading.value = false;
 }

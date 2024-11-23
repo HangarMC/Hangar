@@ -24,7 +24,7 @@ class Auth {
   async logout() {
     const result = await useAxios()
       .get(`/api/internal/auth/logout`)
-      .catch((e) => handleRequestError(e));
+      .catch((err) => handleRequestError(err));
     if (result?.status === 200) {
       location.replace("/?loggedOut");
     } else {
@@ -44,7 +44,7 @@ class Auth {
   }
 
   // TODO do we need to scope this to the user?
-  refreshPromise: Promise<false | string> | null = null;
+  refreshPromise: Promise<false | string> | undefined;
 
   async refreshToken(): Promise<false | string> {
     // we use a promise as a lock here to make sure only one request is doing a refresh, avoids too many requests
@@ -61,7 +61,7 @@ class Auth {
       if (import.meta.env.SSR && !refreshToken) {
         authLog("no cookie, no point in refreshing");
         resolve(false);
-        this.refreshPromise = null;
+        this.refreshPromise = undefined;
         return;
       }
 
@@ -91,11 +91,11 @@ class Auth {
             resolve(false);
           }
         }
-        this.refreshPromise = null;
-      } catch (e) {
-        this.refreshPromise = null;
-        if ((e as AxiosError).response?.data) {
-          authLog("Refresh failed", transformAxiosError(e));
+        this.refreshPromise = undefined;
+      } catch (err) {
+        this.refreshPromise = undefined;
+        if ((err as AxiosError).response?.data) {
+          authLog("Refresh failed", transformAxiosError(err));
         } else {
           authLog("Refresh failed");
         }
@@ -108,12 +108,12 @@ class Auth {
   async invalidate(axios: AxiosInstance) {
     const store = useAuthStore();
     store.$patch({
-      user: null,
+      user: undefined,
       authenticated: false,
-      token: null,
+      token: undefined,
     });
     if (!store.invalidated) {
-      await axios.get("/api/internal/auth/invalidate").catch((e) => authLog("Invalidate failed", e.message));
+      await axios.get("/api/internal/auth/invalidate").catch((err) => authLog("Invalidate failed", err.message));
     }
     store.invalidated = true;
   }

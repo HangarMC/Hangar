@@ -31,8 +31,8 @@ if (!(props.error?.data?.dummyError === true)) {
 let i18n: ReturnType<typeof useI18n>;
 try {
   i18n = useI18n();
-} catch (e) {
-  console.log("cant load i18n?!", e);
+} catch (err) {
+  console.log("cant load i18n?!", err);
 }
 
 const auth = useAuth;
@@ -75,8 +75,8 @@ if (
 }
 try {
   useSeo(computed(() => ({ title: title.value, route })));
-} catch (e) {
-  console.log("seo error?!", e);
+} catch (err) {
+  console.log("seo error?!", err);
 }
 </script>
 

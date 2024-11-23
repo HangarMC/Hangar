@@ -55,7 +55,7 @@ const filteredInvites = computed<((HangarProjectInvite | HangarOrganizationInvit
 useSeo(computed(() => ({ title: "Notifications", route })));
 
 async function markAllAsRead() {
-  await useInternalApi(`markallread`, "post").catch((e) => handleRequestError(e));
+  await useInternalApi(`markallread`, "post").catch((err) => handleRequestError(err));
   if (!unreadNotifications.value) return;
   unreadNotifications.value.result = [];
   unreadNotifications.value.pagination.limit = 0;
@@ -64,7 +64,7 @@ async function markAllAsRead() {
 }
 
 async function markNotificationRead(notification: HangarNotification, push = true) {
-  await useInternalApi(`notifications/${notification.id}`, "post").catch((e) => handleRequestError(e));
+  await useInternalApi(`notifications/${notification.id}`, "post").catch((err) => handleRequestError(err));
   notification.read = true;
   if (!notifications.value) return;
   notifications.value.result = notifications.value.result.filter((n) => n !== notification);
@@ -74,7 +74,7 @@ async function markNotificationRead(notification: HangarNotification, push = tru
 }
 
 async function updateInvite(invite: HangarProjectInvite & { accepted?: boolean }, status: "accept" | "decline") {
-  await useInternalApi(`invites/${invite.type}/${invite.roleId}/${status}`, "post").catch((e) => handleRequestError(e));
+  await useInternalApi(`invites/${invite.type}/${invite.roleId}/${status}`, "post").catch((err) => handleRequestError(err));
   if (status === "accept") {
     invite.accepted = true;
   } else {
@@ -145,7 +145,7 @@ async function updateInvite(invite: HangarProjectInvite & { accepted?: boolean }
           <Button @click="updateInvite(invite, 'decline')">{{ i18n.t("notifications.invite.btns.decline") }}</Button>
         </div>
       </Card>
-      <div v-if="!filteredInvites.length" class="text-lg">
+      <div v-if="filteredInvites.length === 0" class="text-lg">
         {{ i18n.t("notifications.empty.invites") }}
       </div>
     </Card>

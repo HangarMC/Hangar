@@ -13,6 +13,7 @@ function doDelay(time: number) {
 }
 
 const show = ref(false);
+// eslint-disable-next-line unicorn/prefer-top-level-await
 doDelay(props.delay).then(() => {
   show.value = true;
 });

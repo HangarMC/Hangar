@@ -5,7 +5,7 @@ import { tryUseNuxtApp } from "#app/nuxt";
 import { type H3Error, isError as isH3Error } from "h3";
 import type { HangarApiException, HangarValidationException, MultiHangarApiException } from "~/types/backend";
 
-export function handleRequestError(err: AxiosError | unknown, msg: string | undefined = undefined, alwaysShowErrorPage = false) {
+export function handleRequestError(err: AxiosError | unknown, msg?: string | undefined, alwaysShowErrorPage = false) {
   const i18n = tryUseNuxtApp()?.$i18n;
   if (!i18n) {
     console.error("didnt find i18n!");

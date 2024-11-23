@@ -22,8 +22,8 @@ async function create() {
       name: name.value,
     });
     await router.push("/" + name.value);
-  } catch (e: any) {
-    handleRequestError(e);
+  } catch (err: any) {
+    handleRequestError(err);
   }
 }
 </script>
