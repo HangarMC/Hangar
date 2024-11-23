@@ -10,7 +10,7 @@ import markedAlert from "marked-alert";
 const youtubeRegex = /(?:youtube\.com\/(?:[^\s/]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[&?]v=)|youtu\.be\/)([\w-]{11})(?:==(\d+))?/;
 const imageSizeParts = /(.*)==\s*(\d*)\s*x?\s*(\d*)\s*$/;
 
-let headings: { id: string; text: string; level: number }[] = [];
+let headings: { id: string; text?: string; level: number }[] = [];
 let slugger: GithubSlugger;
 
 const hooks = {
@@ -22,7 +22,7 @@ const hooks = {
 } satisfies Partial<Hooks>;
 
 const renderer = {
-  heading(text, level, raw) {
+  heading({ tokens, depth, raw }) {
     // https://github.com/markedjs/marked-gfm-heading-id/blob/main/src/index.js#L17
     // Licenced as MIT, copied because we want an anchor
     raw = raw
@@ -30,9 +30,10 @@ const renderer = {
       .trim()
       .replaceAll(/<[!/a-z].*?>/gi, "");
     const id = `${slugger.slug(raw)}`;
-    const heading = { level, text, id };
+    const text = this.parser?.parseInline(tokens) + "DUM";
+    const heading = { level: depth, text, id };
     headings.push(heading);
-    level = level + 1;
+    const level = depth + 1;
 
     return `<h${level} id="${id}">
               ${text}
@@ -42,7 +43,7 @@ const renderer = {
               </a>
             </h${level}>`;
   },
-  image(href, title, alt) {
+  image({ href, title, text }) {
     const parts = imageSizeParts.exec(href);
     let url = href;
     let height;
@@ -65,10 +66,10 @@ const renderer = {
         if (title) res += ' title="' + title + '"';
       }
 
-      res += ">" + alt + "</iframe>";
+      res += ">" + text + "</iframe>";
       return res;
     } else {
-      let res = '<img src="' + proxyImage(url) + '" alt="' + alt + '"';
+      let res = '<img src="' + proxyImage(url) + '" alt="' + text + '"';
       if (height) res += ' height="' + height + '"';
       if (width) res += ' width="' + width + '"';
       if (title) res += ' title="' + title + '"';
@@ -76,8 +77,9 @@ const renderer = {
       return res;
     }
   },
-  link(href, title, text) {
-    return `<a href="${linkout(href)}"` + (title ? ` title="${title}">` : ">") + text + "</a>";
+  link({ href, title, tokens }) {
+    console.log("link", href, title, tokens, linkout(href));
+    return `<a href="${linkout(href)}"` + (title ? ` title="${title}">` : ">") + this.parser?.parseInline(tokens) + "DUM</a>";
   },
 } satisfies Partial<Renderer>;
 marked.use({ hooks, renderer });

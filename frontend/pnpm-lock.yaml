@@ -69,17 +69,17 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       marked:
-        specifier: 12.0.2
-        version: 12.0.2
+        specifier: 15.0.2
+        version: 15.0.2
       marked-alert:
         specifier: 2.1.2
-        version: 2.1.2(marked@12.0.2)
+        version: 2.1.2(marked@15.0.2)
       marked-extended-tables:
         specifier: 1.0.10
-        version: 1.0.10(marked@12.0.2)
+        version: 1.0.10(marked@15.0.2)
       marked-linkify-it:
         specifier: 3.1.12
-        version: 3.1.12(marked@12.0.2)
+        version: 3.1.12(marked@15.0.2)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -184,8 +184,8 @@ importers:
         specifier: 1.1.2
         version: 1.1.2(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.15.0(eslint@9.15.0(jiti@2.4.0))(typescript@5.6.3))(eslint@9.15.0(jiti@2.4.0)))
       eslint-plugin-oxlint:
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       eslint-plugin-unicorn:
         specifier: 56.0.1
         version: 56.0.1(eslint@9.15.0(jiti@2.4.0))
@@ -199,8 +199,8 @@ importers:
         specifier: 3.14.1592
         version: 3.14.1592(@parcel/watcher@2.5.0)(@types/node@22.9.3)(eslint@9.15.0(jiti@2.4.0))(ioredis@5.4.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.27.4)(sass@1.81.0)(terser@5.36.0)(typescript@5.6.3)(vite@5.4.11(@types/node@22.9.3)(sass@1.81.0)(terser@5.36.0))(vue-tsc@2.1.10(typescript@5.6.3))
       oxlint:
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       pnpm:
         specifier: 9.14.2
         version: 9.14.2
@@ -1401,43 +1401,43 @@ packages:
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
 
-  '@oxlint/darwin-arm64@0.13.0':
-    resolution: {integrity: sha512-TFVi4gWKmn4oUoaS6AUU6cvlA+xLCIHQWA27LdnyfmRDerxHSWaG4yPNq9bvhDAeeEWqid5+TR5ndu4WRhEr5A==}
+  '@oxlint/darwin-arm64@0.13.1':
+    resolution: {integrity: sha512-r2lMzuOhEO1j4NQe/A7kBcziuHvx2PZzCz3ip1eI6zUrwKqRtHZF3e9EdU0M2VLVV+1Mt1rJIYqHo4lXC3TCdw==}
     cpu: [arm64]
     os: [darwin]
 
-  '@oxlint/darwin-x64@0.13.0':
-    resolution: {integrity: sha512-ihbegvRXcED2Bgz9Lt4AGFoNfvh/tUZPrFR5DZ3Hn8muab+PEFfXXXKcelSDpTB4za5bDXz6dZcAUUfQUWPwxg==}
+  '@oxlint/darwin-x64@0.13.1':
+    resolution: {integrity: sha512-kQa5MAOlBx9F5nBs1S5dk7ZUJ8wWKxPPQ2OvjZpqKCGQe5YlMEPWdTJK21SmNIf/V0WOUV3PIexZwVJ2kzuMrQ==}
     cpu: [x64]
     os: [darwin]
 
-  '@oxlint/linux-arm64-gnu@0.13.0':
-    resolution: {integrity: sha512-k4r03/29d+IdcT30B6H5TpWT7bFrkqbRrFQ5VS6GX5ISN0yRdagu4Q08sDimCTTXvg5H9Z/sHmxbw7tbjGGW4w==}
+  '@oxlint/linux-arm64-gnu@0.13.1':
+    resolution: {integrity: sha512-zrN/1LvHq+s8CBi1u59tR/xVC0rb9ONJAXXTwfnf2QM3lbCjFXi8sgFDcffL6KoMzVrZwwIK+qFnbl7daHaqvA==}
     cpu: [arm64]
     os: [linux]
 
-  '@oxlint/linux-arm64-musl@0.13.0':
-    resolution: {integrity: sha512-m+LFHCwNydIrGHDz1VPTaQsZewaqYadKhzyjsw4TRf0g5fxeEC4tkv6MI80D2S//QO6DJi8VcnPfVqGWoS5vQQ==}
+  '@oxlint/linux-arm64-musl@0.13.1':
+    resolution: {integrity: sha512-TWG/dCh6WBi9OfO+rJJ45smLvFShy/6ZwOg7f2MWTcfkEKdCLJP+bkVwZFVwB+WndBFAMk45lyli83uaHJfNpg==}
     cpu: [arm64]
     os: [linux]
 
-  '@oxlint/linux-x64-gnu@0.13.0':
-    resolution: {integrity: sha512-Kixb9MXi5muDKsrNo5k7TANEE3DuUUSKIgoBN68LbX4n2owjCsq/gnzVjQ/rDK0vFn0JQMxMXWjBZvV64ybXMQ==}
+  '@oxlint/linux-x64-gnu@0.13.1':
+    resolution: {integrity: sha512-lk9X72DJ5EZpDpc4fM+O+Qk5GuZ37LHeHhUNzjQ01uywwGVCkW2cDmTKIs/PYfxcDA53bwW/Ddsljn71BLtWoA==}
     cpu: [x64]
     os: [linux]
 
-  '@oxlint/linux-x64-musl@0.13.0':
-    resolution: {integrity: sha512-wCCsesDf05G0bjXMrxAvH36Cl4q0oavR3fo4N5NJyyrRdZ+feAZSsfaHRpvlqkJyUM3vhP6emKrXzIN5fp22dw==}
+  '@oxlint/linux-x64-musl@0.13.1':
+    resolution: {integrity: sha512-Hb8wiT6KnyljDeMN7exSRRTkKH1n/8pczqWkPT5fCklahs721/z+vnxp49U5yvDdrD1LyppFKieEnKKg4uWtOw==}
     cpu: [x64]
     os: [linux]
 
-  '@oxlint/win32-arm64@0.13.0':
-    resolution: {integrity: sha512-xO6oZ+0yjYuEviKqRUVWMuYvzYqJDHd0IcBss8J2o45OS9SH+mNNk5gZJm9uKbDdmFZcDn2OlZxAiygVMxHt9g==}
+  '@oxlint/win32-arm64@0.13.1':
+    resolution: {integrity: sha512-Z3sHxYSGz+ZByScbe01Tqv9DEIr4ve/mgrFPFMxL0ve18CAnMe/2Psxj4A+T/BW4zINXdQyeiPkcWDNX+eUEQg==}
     cpu: [arm64]
     os: [win32]
 
-  '@oxlint/win32-x64@0.13.0':
-    resolution: {integrity: sha512-NiiaQ/AD1ILQ8cXRxdjE/dRMCRABFbelSYqoFrrklV2Y7hwtF0Law48GvM5ysQbz/NHVpQpnVNQOQ3cevywn3w==}
+  '@oxlint/win32-x64@0.13.1':
+    resolution: {integrity: sha512-9BKvquGa9nloHEXXNPnro7inzbX6BNFun9+ti9LvWEn1uNL/m6mmfMbwEmqXeDaeJACuQB3/9te1DRNUOE5ULw==}
     cpu: [x64]
     os: [win32]
 
@@ -3581,8 +3581,8 @@ packages:
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0 || ^9.0.0
 
-  eslint-plugin-oxlint@0.13.0:
-    resolution: {integrity: sha512-EjIpgAJr1ZQBHyHqAjhOvra1CD9W49MnV4jcaF44RWfkTVlg04OHPH2HL/ciQRYJM9WFsJd0l07ShbzvBtVAMw==}
+  eslint-plugin-oxlint@0.13.1:
+    resolution: {integrity: sha512-gzjweRs6I9vdopBAQx2jfFfsHYEPHb6Ejigy+OJNOzFcNscgkKUF1m+fyP64EdAjfCpiApL1bR/PGsmKP703iA==}
 
   eslint-plugin-regexp@2.7.0:
     resolution: {integrity: sha512-U8oZI77SBtH8U3ulZ05iu0qEzIizyEDXd+BWHvyVxTOjGwcDcvy/kEpgFG4DYca2ByRLiVPFZ2GeH7j1pdvZTA==}
@@ -4576,8 +4576,8 @@ packages:
     peerDependencies:
       marked: '>=4 <16'
 
-  marked@12.0.2:
-    resolution: {integrity: sha512-qXUm7e/YKFoqFPYPa3Ukg9xlI5cyAtGmyEIzMfW//m6kXwCy2Ps9DYf5ioijFKQ8qyuscrHoY04iJGctu2Kg0Q==}
+  marked@15.0.2:
+    resolution: {integrity: sha512-85RUkoYKIVB21PbMKrnD6aCl9ws+XKEyhJNMbLn206NyD3jbBo7Ec7Wi4Jrsn4dV1a2ng7K/jfkmIN0DNoS41w==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -4978,8 +4978,8 @@ packages:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
 
-  oxlint@0.13.0:
-    resolution: {integrity: sha512-YUwybs9U5siS54Q+vVkxMQXiNF6LHeLRxihj6toUFwrYSxL1wsV6HUiAS8Vig+USDIGoEDdGBgpq29iwWDjYHw==}
+  oxlint@0.13.1:
+    resolution: {integrity: sha512-XkH9kzbWv9VWiVF76GFij33ZCVCznRItZc50kAIoVdqWpPYjvZk4oc71fKIfxoLxChB+ZNwU2PmsHLBDXAmhuw==}
     engines: {node: '>=14.*'}
     hasBin: true
 
@@ -8234,28 +8234,28 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.28.0(@opentelemetry/api@1.9.0)
 
-  '@oxlint/darwin-arm64@0.13.0':
+  '@oxlint/darwin-arm64@0.13.1':
     optional: true
 
-  '@oxlint/darwin-x64@0.13.0':
+  '@oxlint/darwin-x64@0.13.1':
     optional: true
 
-  '@oxlint/linux-arm64-gnu@0.13.0':
+  '@oxlint/linux-arm64-gnu@0.13.1':
     optional: true
 
-  '@oxlint/linux-arm64-musl@0.13.0':
+  '@oxlint/linux-arm64-musl@0.13.1':
     optional: true
 
-  '@oxlint/linux-x64-gnu@0.13.0':
+  '@oxlint/linux-x64-gnu@0.13.1':
     optional: true
 
-  '@oxlint/linux-x64-musl@0.13.0':
+  '@oxlint/linux-x64-musl@0.13.1':
     optional: true
 
-  '@oxlint/win32-arm64@0.13.0':
+  '@oxlint/win32-arm64@0.13.1':
     optional: true
 
-  '@oxlint/win32-x64@0.13.0':
+  '@oxlint/win32-x64@0.13.1':
     optional: true
 
   '@parcel/watcher-android-arm64@2.5.0':
@@ -11169,7 +11169,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-oxlint@0.13.0:
+  eslint-plugin-oxlint@0.13.1:
     dependencies:
       jsonc-parser: 3.3.1
 
@@ -12255,21 +12255,21 @@ snapshots:
     dependencies:
       semver: 6.3.1
 
-  marked-alert@2.1.2(marked@12.0.2):
+  marked-alert@2.1.2(marked@15.0.2):
     dependencies:
-      marked: 12.0.2
+      marked: 15.0.2
 
-  marked-extended-tables@1.0.10(marked@12.0.2):
+  marked-extended-tables@1.0.10(marked@15.0.2):
     dependencies:
-      marked: 12.0.2
+      marked: 15.0.2
 
-  marked-linkify-it@3.1.12(marked@12.0.2):
+  marked-linkify-it@3.1.12(marked@15.0.2):
     dependencies:
       '@types/linkify-it': 5.0.0
       linkify-it: 5.0.0
-      marked: 12.0.2
+      marked: 15.0.2
 
-  marked@12.0.2: {}
+  marked@15.0.2: {}
 
   marked@4.3.0: {}
 
@@ -12842,16 +12842,16 @@ snapshots:
       type-check: 0.4.0
       word-wrap: 1.2.5
 
-  oxlint@0.13.0:
+  oxlint@0.13.1:
     optionalDependencies:
-      '@oxlint/darwin-arm64': 0.13.0
-      '@oxlint/darwin-x64': 0.13.0
-      '@oxlint/linux-arm64-gnu': 0.13.0
-      '@oxlint/linux-arm64-musl': 0.13.0
-      '@oxlint/linux-x64-gnu': 0.13.0
-      '@oxlint/linux-x64-musl': 0.13.0
-      '@oxlint/win32-arm64': 0.13.0
-      '@oxlint/win32-x64': 0.13.0
+      '@oxlint/darwin-arm64': 0.13.1
+      '@oxlint/darwin-x64': 0.13.1
+      '@oxlint/linux-arm64-gnu': 0.13.1
+      '@oxlint/linux-arm64-musl': 0.13.1
+      '@oxlint/linux-x64-gnu': 0.13.1
+      '@oxlint/linux-x64-musl': 0.13.1
+      '@oxlint/win32-arm64': 0.13.1
+      '@oxlint/win32-x64': 0.13.1
 
   p-limit@2.3.0:
     dependencies:
