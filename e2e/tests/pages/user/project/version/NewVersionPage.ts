@@ -2,7 +2,10 @@ Feature("New Version Page");
 
 Scenario("Test New Version", async ({ I, util }) => {
     await util.login();
-    util.openHangarPage("/e2e_user/e2e_test/versions/new");
+
+    const projectName = "e2e_test-" + util.randomNumber();
+    await util.createProject(projectName, process.env.E2E_USER_ID);
+    util.openHangarPage("/e2e_user/" + projectName + "/versions/new");
 
     const name = "1." + util.randomNumber() + "." + util.randomNumber();
 
@@ -79,6 +82,7 @@ Scenario("Test New Version", async ({ I, util }) => {
     I.seeElement(locate("span").withText("1.18.2, 1.19.4"));
     await I.seeElement(locate(".tags").withText("e2etest"));
 
-    await util.deleteVersion("e2e_test", name);
-    await util.deleteChannel("e2e_test", "e2etest");
+    await util.deleteVersion(projectName, name);
+    await util.deleteChannel(projectName, "e2etest");
+    await util.deleteProject(projectName);
 });

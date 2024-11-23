@@ -74,7 +74,7 @@ module.exports = new (class {
         if (result.status != 204) {
             console.log(await result.text());
         }
-        expect(result.status, "project deletion to return 200").to.equal(204);
+        await I.expectEqual(result.status, 204, "project deletion to return 204");
     }
 
     public async deleteOrg(name: string) {
@@ -86,7 +86,7 @@ module.exports = new (class {
         if (result.status != 200) {
             console.log(await result.text());
         }
-        expect(result.status, "org deletion to return 200").to.equal(200);
+        await I.expectEqual(result.status, 200, "org deletion to return 200");
     }
 
     public async deleteVersion(name: string, project: string) {
@@ -98,7 +98,7 @@ module.exports = new (class {
         if (result.status != 200) {
             console.log(await result.text());
         }
-        expect(result.status, "org deletion to return 200").to.equal(200);
+        await I.expectEqual(result.status, 200, "version deletion to return 200");
     }
 
     public async deleteChannel(project: string, channel: string) {
@@ -109,6 +109,25 @@ module.exports = new (class {
         if (result.status != 200) {
             console.log(await result.text());
         }
-        expect(result.status, "org deletion to return 200").to.equal(200);
+        await I.expectEqual(result.status, 200, "channel deletion to return 200");
+    }
+
+    public async createProject(project: string, owner_id: number) {
+        const result = await fetch(this.url + "/api/internal/projects/create", {
+            method: "POST",
+            headers: { Authorization: "Bearer " + (await this.getJwt()), "Content-Type": "application/json" },
+            body: JSON.stringify({
+                category: "admin_tools",
+                settings: { license: { type: "Unspecified" }, donation: {}, keywords: [], links: [], tags: [] },
+                ownerId: owner_id,
+                name: project,
+                description: "E2E Test Project",
+                pageContent: "# " + project + "  \nWelcome to your new project!",
+            }),
+        });
+        if (result.status != 200) {
+            console.log(await result.text());
+        }
+        await I.expectEqual(result.status, 200, "project creation to return 200");
     }
 })();

@@ -4,7 +4,7 @@ type IndexPage = typeof import('./utils/IndexPage');
 
 declare namespace CodeceptJS {
   interface SupportObject { I: I, current: any, util: util, IndexPage: IndexPage }
-  interface Methods extends WebDriver {}
+  interface Methods extends WebDriver, ExpectHelper {}
   interface I extends WithTranslation<Methods> {}
   namespace Translation {
     interface Actions {}

@@ -48,6 +48,7 @@ exports.config = {
                 osVersion: "11",
             },
         },
+        ExpectHelper: {},
     },
 
     multiple: {
