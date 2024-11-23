@@ -77,7 +77,8 @@ export function useProjects(
     () => false,
     ({ offset, limit, member, ...paramsWithoutLimit }) => {
       if (router) {
-        router.replace({ query: { page: offset && limit ? Math.floor(offset / limit) : undefined, ...paramsWithoutLimit } });
+        const oldQuery = router.currentRoute.value.query;
+        router.replace({ query: { ...oldQuery, page: offset && limit ? Math.floor(offset / limit) : undefined, ...paramsWithoutLimit } });
       }
     }
   );
@@ -308,7 +309,8 @@ export function useActionLogs(
     () => false,
     ({ offset, limit, ...paramsWithoutLimit }) => {
       if (router) {
-        router.replace({ query: { ...paramsWithoutLimit } });
+        const oldQuery = router.currentRoute.value.query;
+        router.replace({ query: { ...oldQuery, ...paramsWithoutLimit } });
       }
     }
   );
@@ -400,7 +402,8 @@ export function useProjectVersions(
     ({ data }) => {
       const { offset, limit, channel, platform } = data;
       if (router) {
-        router.replace({ query: { page: offset && limit ? Math.floor(offset / limit) : undefined, channel, platform } });
+        const oldQuery = router.currentRoute.value.query;
+        router.replace({ query: { ...oldQuery, page: offset && limit ? Math.floor(offset / limit) : undefined, channel, platform } });
       }
     }
   );
