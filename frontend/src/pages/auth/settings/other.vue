@@ -30,7 +30,7 @@ const accentColors = [
 const accentColor = useAccentColor();
 
 const locale = ref(i18n.locale);
-const languages = (useRuntimeConfig().public.i18n.configLocales as { code: string; name: string }[]).map((locale) => ({
+const languages = (useRuntimeConfig().public.i18n.locales as { code: string; name: string }[]).map((locale) => ({
   value: locale.code,
   text: locale.name,
 }));

@@ -57,7 +57,6 @@
     "universal-cookie": "7.2.2",
     "vue-advanced-cropper": "2.8.9",
     "vue-chartjs": "5.3.2",
-    "vue-i18n": "9.14.0",
     "vue3-popper": "1.5.0",
     "vuedraggable": "4.1.0"
   },
@@ -65,7 +64,7 @@
     "@eslint-community/eslint-plugin-eslint-comments": "4.4.1",
     "@iconify-json/mdi": "1.2.1",
     "@nuxt/eslint": "0.7.1",
-    "@nuxtjs/i18n": "8.5.5",
+    "@nuxtjs/i18n": "9.1.0",
     "@nuxtjs/turnstile": "0.9.11",
     "@sentry/bun": "8.40.0",
     "@sentry/nuxt": "8.40.0",
@@ -98,5 +97,5 @@
     "unplugin-vue-components": "0.27.4",
     "vue-tsc": "2.1.10"
   },
-  "packageManager": "pnpm@9.12.3+sha256.24235772cc4ac82a62627cd47f834c72667a2ce87799a846ec4e8e555e2d4b8b"
+  "packageManager": "pnpm@9.14.2+sha256.06e65a4965baff6d6097f9c8f75c35f6d420974dbc03d775009056a69edfd271"
 }

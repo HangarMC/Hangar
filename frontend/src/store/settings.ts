@@ -43,10 +43,10 @@ export const useSettingsStore = defineStore("settings", () => {
 
   async function loadSettingsServer(event: H3Event) {
     if (!import.meta.env.SSR) return;
-    let newLocale: string;
+    let newLocale: typeof i18n.locale.value;
     let newDarkMode: boolean;
     if (authStore.user) {
-      newLocale = authStore.user.language || "en";
+      newLocale = (authStore.user.language || "en") as typeof i18n.locale.value;
       newDarkMode = (authStore.user.theme || "light") === "dark";
       settingsLog("user is logged in, locale = " + newLocale + ", darkMode = " + darkMode.value);
     } else {
@@ -107,7 +107,7 @@ export const useSettingsStore = defineStore("settings", () => {
       settingsLog("user is not logged in, using media query, darkmode = " + darkMode.value);
     }
 
-    let newLocale = authStore.user?.language;
+    let newLocale = authStore.user?.language as typeof i18n.locale.value;
     if (newLocale) {
       settingsLog("user is logged in, language = " + newLocale);
     } else {

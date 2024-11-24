@@ -76,12 +76,11 @@ export default defineNuxtConfig({
     vueI18n: "./src/i18n/i18n.config.ts",
     strategy: "no_prefix",
     lazy: true,
-    langDir: "./i18n/locales/processed",
+    langDir: "../src/i18n/locales/processed",
     defaultLocale: "en",
     locales: loadLocales(),
     detectBrowserLanguage: false,
     compilation: {
-      jit: false,
       strictMessage: false,
     },
     bundle: {
