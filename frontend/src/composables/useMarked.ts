@@ -78,7 +78,6 @@ const renderer = {
     }
   },
   link({ href, title, tokens }) {
-    console.log("link", href, title, tokens, linkout(href));
     return `<a href="${linkout(href)}"` + (title ? ` title="${title}">` : ">") + this.parser?.parseInline(tokens) + "DUM</a>";
   },
 } satisfies Partial<Renderer>;

@@ -9,31 +9,24 @@ const isSafeHost = (host: string) => {
 };
 
 const isSafe = (urlString: string) => {
-  console.log("safe?", urlString, useBackendData.security.safeDownloadHosts);
   if (!urlString) {
-    console.log("1");
     return false;
   }
   if (urlString.startsWith("#") || urlString.startsWith("/")) {
-    console.log("2");
     return true;
   }
   try {
     const url = new URL(urlString);
     const host = url.hostname;
     if (url.protocol?.startsWith("mailto")) {
-      console.log("3");
       return true;
     } else if (!host || isSafeHost(host)) {
-      console.log("4");
       return true;
     }
   } catch {
-    console.log("5");
     return false;
   }
 
-  console.log("6");
   return false;
 };
 
