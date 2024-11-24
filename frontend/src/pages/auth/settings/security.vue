@@ -307,7 +307,7 @@ function closeUnlinkModal() {
         <InputText
           v-model="newAuthenticatorName"
           :label="t('auth.settings.security.securityKeys.keyName')"
-          :rules="[requiredIf()(() => authenticatorRenameModal!.isOpen)]"
+          :rules="[requiredIf()(() => authenticatorRenameModal?.isOpen || false)]"
         />
         <Button class="mt-2" size="small" :disabled="loading" @click.prevent="renameAuthenticator">
           {{ t("auth.settings.security.securityKeys.rename") }}
@@ -378,7 +378,7 @@ function closeUnlinkModal() {
       <InputText
         v-model="backupCodeConfirm"
         :label="t('auth.settings.security.backupCodes.modal.backupCode')"
-        :rules="[requiredIf()(backupCodeModal!.isOpen)]"
+        :rules="[requiredIf()(backupCodeModal?.isOpen || false)]"
       />
       <Button class="mt-2" :disabled="v.$invalid" @click="confirmAndRepeat">{{ t("general.confirm") }}</Button>
     </Modal>
