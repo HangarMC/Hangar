@@ -11,6 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ApplicationController extends HangarComponent {
 
+    @GetMapping(path = "/api")
+    public void apiRootRedirect() {
+        this.response.setStatus(301);
+        this.response.setHeader("Location", "/api-docs");
+    }
+
     @GetMapping(path = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
     public String robots() {
         if (!this.config.isAllowIndexing()) {

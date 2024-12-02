@@ -21,7 +21,7 @@ ingress:
     - path: /
       pathType: ImplementationSpecific
       target: frontend
-    - path: /api/
+    - path: /api
       pathType: ImplementationSpecific
       target: backend
     - path: /v3/api-docs
