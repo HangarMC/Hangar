@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { AxiosError } from "axios";
-import type { Ref } from "vue";
 import { NamedPermission, ReviewState, Visibility } from "~/types/backend";
 import type { Platform, HangarProject } from "~/types/backend";
 
