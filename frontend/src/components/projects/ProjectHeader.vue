@@ -21,29 +21,55 @@ const reported = computed(() => props.project?.userActions?.flagged);
 
 const isOwn = computed(() => !user || user.name === props.project?.namespace?.owner);
 
-function toggleState(route: string, completedKey: string, revokedKey: string, value: Ref<boolean | undefined>, count: Ref<number | undefined>) {
-  useInternalApi(`projects/project/${props.project?.id}/${route}/${!value.value}`, "post")
-    .then(() => {
-      value.value = !value.value;
-      if (count.value) {
-        if (value.value) {
-          count.value++;
-        } else {
-          count.value--;
-        }
-      }
+const starredChanged = ref(false);
+const watchingChanged = ref(false);
 
-      notification.success(i18n.t("project.actions." + (value.value ? completedKey : revokedKey)));
+function toggleState(route: string, completedKey: string, revokedKey: string, value: boolean|undefined) {
+  useInternalApi(`projects/project/${props.project?.id}/${route}/${value}`, "post")
+    .then(() => {
+      notification.success(i18n.t("project.actions." + (value ? completedKey : revokedKey)));
     })
     .catch((err) => handleRequestError(err, i18n.t(`project.error.${route}`)));
 }
 
 function toggleStar() {
-  toggleState("star", "starred", "unstarred", starred, starredCount);
+  starredChanged.value = !starredChanged.value;
+  toggleState("star", "starred", "unstarred", hasStarred());
 }
 
 function toggleWatch() {
-  toggleState("watch", "watched", "unwatched", watching, watchingCount);
+  watchingChanged.value = !watchingChanged.value;
+  toggleState("watch", "watched", "unwatched", isWatching());
+}
+
+function hasStarred() {
+  return starredChanged.value ? !starred.value : starred.value;
+}
+
+function isWatching() {
+  return watchingChanged.value ? !watching.value : watching.value;
+}
+
+function getStarredCount() {
+  if (starredCount.value === undefined) {
+    return 0;
+  }
+  if (starredChanged.value) {
+    return starred.value ? starredCount.value - 1 : starredCount.value + 1;
+  } else {
+    return starredCount.value;
+  }
+}
+
+function getWatchingCount() {
+  if (watchingCount.value === undefined) {
+    return 0;
+  }
+  if (watchingChanged.value) {
+    return watching.value ? watchingCount.value - 1 : watchingCount.value + 1;
+  } else {
+    return watchingCount.value;
+  }
 }
 
 async function sendForApproval() {
@@ -143,13 +169,13 @@ function requiresConfirmation(): ConfirmationType {
           <Tooltip>
             <template #content>
               <span v-if="isOwn">{{ i18n.t("project.info.stars", 0) }}</span>
-              <span v-else-if="starred">{{ i18n.t("project.actions.unstar") }}</span>
+              <span v-else-if="hasStarred()">{{ i18n.t("project.actions.unstar") }}</span>
               <span v-else>{{ i18n.t("project.actions.star") }}</span>
             </template>
             <Button button-type="secondary" size="small" @click="toggleStar">
-              <IconMdiStar v-if="starred" />
+              <IconMdiStar v-if="hasStarred()" />
               <IconMdiStarOutline v-else />
-              <span class="ml-2">{{ starredCount?.toLocaleString("en-US") }}</span>
+              <span class="ml-2">{{ getStarredCount()?.toLocaleString("en-US") }}</span>
             </Button>
           </Tooltip>
           <!-- Tooltips mess with normal margins so this is a workaround -->
@@ -157,13 +183,13 @@ function requiresConfirmation(): ConfirmationType {
           <Tooltip>
             <template #content>
               <span v-if="isOwn">{{ i18n.t("project.info.watchers", 0) }}</span>
-              <span v-else-if="watching">{{ i18n.t("project.actions.unwatch") }}</span>
+              <span v-else-if="isWatching()">{{ i18n.t("project.actions.unwatch") }}</span>
               <span v-else>{{ i18n.t("project.actions.watch") }}</span>
             </template>
             <Button button-type="secondary" size="small" @click="toggleWatch">
-              <IconMdiBell v-if="watching" />
+              <IconMdiBell v-if="isWatching()" />
               <IconMdiBellOutline v-else />
-              <span class="ml-2">{{ watchingCount?.toLocaleString("en-US") }}</span>
+              <span class="ml-2">{{ getWatchingCount()?.toLocaleString("en-US") }}</span>
             </Button>
           </Tooltip>
           <div class="px-1" />
