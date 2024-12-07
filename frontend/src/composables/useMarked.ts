@@ -30,7 +30,7 @@ const renderer = {
       .trim()
       .replaceAll(/<[!/a-z].*?>/gi, "");
     const id = `${slugger.slug(raw)}`;
-    const text = this.parser?.parseInline(tokens) + "DUM";
+    const text = this.parser?.parseInline(tokens);
     const heading = { level: depth, text, id };
     headings.push(heading);
     const level = depth + 1;
