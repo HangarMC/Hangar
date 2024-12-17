@@ -1,6 +1,6 @@
 package io.papermc.hangar.model.api.project;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.Visible;
@@ -13,7 +13,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 
-public class ProjectCompact extends Model implements Named, Visible {
+public class ProjectCompact extends Model implements Named, Visible, Identified {
 
     @Schema(description = "The internal id of the project")
     protected final long id;
@@ -45,6 +45,11 @@ public class ProjectCompact extends Model implements Named, Visible {
         this.visibility = visibility;
         this.lastUpdated = lastUpdated;
         this.setAvatarUrl(AvatarUtil.avatarUrl(avatar, avatarFallback));
+    }
+
+    @Override
+    public long getId() {
+        return this.id;
     }
 
     @Override
@@ -85,15 +90,11 @@ public class ProjectCompact extends Model implements Named, Visible {
         this.avatarUrl = avatarUrl;
     }
 
-    @JsonIgnore
-    public long getId() {
-        return this.id;
-    }
-
     @Override
     public String toString() {
         return "ProjectCompact{" +
-            "name='" + this.name + '\'' +
+            "id=" + this.id +
+            ", name='" + this.name + '\'' +
             ", namespace=" + this.namespace +
             ", description=" + this.description +
             ", stats=" + this.stats +
