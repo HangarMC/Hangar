@@ -39,28 +39,26 @@ public interface UsersApiDAO {
          hp.avatar,
          hp.avatar_fallback,
          hp.description
-         FROM users u
-             JOIN project_stars ps ON u.id = ps.user_id
+         FROM project_stars ps
              JOIN home_projects hp ON ps.project_id = hp.id
          WHERE
              <if(!canSeeHidden)> (hp.visibility = 0
-             <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND <endif>
-             lower(u.name) = lower(:user)
+             <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND <endif>
+             ps.user_id = :userId
            <sorters>
            <offsetLimit>""")
-    List<ProjectCompact> getUserStarred(String user, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
+    List<ProjectCompact> getUserStarred(long userId, @Define boolean canSeeHidden, @Define Long requesterId, @BindPagination RequestPagination pagination);
 
     @UseStringTemplateEngine
     @SqlQuery("""
         SELECT count(*)
-         FROM users u
-             JOIN project_stars ps ON u.id = ps.user_id
+         FROM project_stars ps
              JOIN home_projects hp ON ps.project_id = hp.id
          WHERE
              <if(!canSeeHidden)> (hp.visibility = 0
-             <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND <endif>
-             lower(u.name) = lower(:user)""")
-    long getUserStarredCount(String user, @Define boolean canSeeHidden, @Define Long userId);
+             <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND <endif>
+             ps.user_id = :userId""")
+    long getUserStarredCount(long userId, @Define boolean canSeeHidden, @Define Long requesterId);
 
     @RegisterConstructorMapper(ProjectCompact.class)
     @UseStringTemplateEngine
@@ -82,32 +80,31 @@ public interface UsersApiDAO {
          hp.avatar,
          hp.avatar_fallback,
          hp.description
-         FROM users u
-             JOIN project_watchers pw ON u.id = pw.user_id
+         FROM project_watchers pw
              JOIN home_projects hp ON pw.project_id = hp.id
          WHERE
              <if(!canSeeHidden)> (hp.visibility = 0
-             <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND <endif>
-             lower(u.name) = lower(:user)
+             <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND <endif>
+             pw.user_id = :userId
            <sorters>
            <offsetLimit>""")
-    List<ProjectCompact> getUserWatching(String user, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
+    List<ProjectCompact> getUserWatching(long userId, @Define boolean canSeeHidden, @Define Long requesterId, @BindPagination RequestPagination pagination);
 
     @UseStringTemplateEngine
     @SqlQuery("""
         SELECT count(*)
-         FROM users u
-             JOIN project_watchers pw ON u.id = pw.user_id
+         FROM project_watchers pw
              JOIN home_projects hp ON pw.project_id = hp.id
          WHERE
              <if(!canSeeHidden)> (hp.visibility = 0
-             <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND <endif>
-             lower(u.name) = lower(:user)""")
-    long getUserWatchingCount(String user, @Define boolean canSeeHidden, @Define Long userId);
+             <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND <endif>
+             pw.user_id = :userId""")
+    long getUserWatchingCount(long userId, @Define boolean canSeeHidden, @Define Long requesterId);
 
     @UseStringTemplateEngine
     @RegisterConstructorMapper(User.class)
-    @SqlQuery("SELECT u.created_at," +
+    @SqlQuery("SELECT u.id," +
+        "       u.created_at," +
         "       u.name," +
         "       u.tagline," +
         "       u.locked," +

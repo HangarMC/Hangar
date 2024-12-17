@@ -51,6 +51,15 @@ public interface ProjectVersionsDAO {
     ProjectVersionTable getLastVersionOnChannel(long channelId);
 
     @SqlQuery("SELECT pv.* FROM project_versions pv" +
+        "   JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
+        "   JOIN platform_versions v ON pvpd.platform_version_id = v.id" +
+        "   WHERE" +
+        "       pv.project_id = :id AND" +
+        "       pv.version_string = :versionString" +
+        "   LIMIT 1")
+    ProjectVersionTable getProjectVersionTableWithProjectId(long id, String versionString);
+
+    @SqlQuery("SELECT pv.* FROM project_versions pv" +
         "   JOIN projects p ON pv.project_id = p.id" +
         "   JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
         "   JOIN platform_versions v ON pvpd.platform_version_id = v.id" +
@@ -58,7 +67,7 @@ public interface ProjectVersionsDAO {
         "       lower(p.slug) = lower(:slug) AND" +
         "       pv.version_string = :versionString" +
         "   LIMIT 1")
-    ProjectVersionTable getProjectVersionTable(String slug, String versionString);
+    ProjectVersionTable getProjectVersionTableWithProjectSlug(String slug, String versionString);
 
     @SingleValue
     @UseEnumStrategy(EnumStrategy.BY_ORDINAL)

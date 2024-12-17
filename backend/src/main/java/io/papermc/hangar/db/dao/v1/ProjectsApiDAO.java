@@ -57,12 +57,12 @@ public interface ProjectsApiDAO {
         "       hp.avatar_fallback" +
         "  FROM home_projects hp" +
         "         JOIN projects_extra p ON hp.id = p.id" +
-        "         WHERE lower(p.slug) = lower(:slug)" +
+        "         WHERE p.id = :id" +
         "         <if(!canSeeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(p.project_members) AND p.visibility != 4)<endif>) <endif>")
-    Project getProject(String slug, @Define boolean canSeeHidden, @Define @Bind Long requesterId);
+    Project getProject(long id, @Define boolean canSeeHidden, @Define @Bind Long requesterId);
 
     @UseStringTemplateEngine
-    @SqlQuery("SELECT p.slug" +
+    @SqlQuery("SELECT p.id" +
         "   FROM projects p" +
         "       WHERE EXISTS (" +
         "          SELECT 1" +
@@ -72,7 +72,7 @@ public interface ProjectsApiDAO {
         "            AND pvf.hash = :hash" +
         "   )" +
         "   <if(!canSeeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(p.project_members) AND p.visibility != 4)<endif>) <endif>")
-    @Nullable String getProjectSlugFromVersionHash(String hash, @Define boolean canSeeHidden, @Define @Bind Long requesterId);
+    @Nullable Long getProjectIdFromVersionHash(String hash, @Define boolean canSeeHidden, @Define @Bind Long requesterId);
 
     @UseStringTemplateEngine
     @SqlQuery("""
@@ -137,18 +137,18 @@ public interface ProjectsApiDAO {
         "       JOIN user_project_roles upr ON p.id = upr.project_id " +
         "       JOIN users u ON upr.user_id = u.id " +
         "       JOIN roles r ON upr.role_type = r.name " +
-        "   WHERE lower(p.slug) = lower(:slug) " +
+        "   WHERE p.id = :id " +
         "   GROUP BY u.name ORDER BY max(r.permission::bigint) DESC " +
         "   <offsetLimit>")
-    List<ProjectMember> getProjectMembers(String slug, @BindPagination RequestPagination pagination);
+    List<ProjectMember> getProjectMembers(long id, @BindPagination RequestPagination pagination);
 
     @SqlQuery("SELECT count(*) " +
         "   FROM projects p " +
         "       JOIN user_project_roles upr ON p.id = upr.project_id " +
         "       JOIN users u ON upr.user_id = u.id " +
-        "   WHERE lower(p.slug) = lower(:slug) " +
+        "   WHERE p.id = :id " +
         "   GROUP BY u.name")
-    long getProjectMembersCount(String slug);
+    long getProjectMembersCount(long id);
 
     @RegisterConstructorMapper(User.class)
     @SqlQuery("SELECT u.id," +
@@ -167,17 +167,17 @@ public interface ProjectsApiDAO {
         "       JOIN users u ON ps.user_id = u.id " +
         "       LEFT JOIN user_global_roles ugr ON u.id = ugr.user_id" +
         "       LEFT JOIN roles r ON ugr.role_id = r.id" +
-        "   WHERE lower(p.slug) = lower(:slug) " +
+        "   WHERE p.id = :id " +
         "   GROUP BY u.id" +
         "   LIMIT :limit OFFSET :offset")
-    List<User> getProjectStargazers(String slug, long limit, long offset);
+    List<User> getProjectStargazers(long id, long limit, long offset);
 
     @SqlQuery("SELECT count(ps.user_id) " +
         "   FROM projects p " +
         "       JOIN project_stars ps ON p.id = ps.project_id " +
-        "   WHERE lower(p.slug) = lower(:slug) " +
+        "   WHERE p.id = :id " +
         "   GROUP BY ps.user_id")
-    Long getProjectStargazersCount(String slug);
+    Long getProjectStargazersCount(long id);
 
     @RegisterConstructorMapper(User.class)
     @SqlQuery("SELECT u.id," +
@@ -196,17 +196,17 @@ public interface ProjectsApiDAO {
         "       JOIN users u ON pw.user_id = u.id " +
         "       LEFT JOIN user_global_roles ugr ON u.id = ugr.user_id" +
         "       LEFT JOIN roles r ON ugr.role_id = r.id" +
-        "   WHERE lower(p.slug) = lower(:slug)" +
+        "   WHERE p.id = :id" +
         "   GROUP BY u.id" +
         "   LIMIT :limit OFFSET :offset")
-    List<User> getProjectWatchers(String slug, long limit, long offset);
+    List<User> getProjectWatchers(long id, long limit, long offset);
 
     @SqlQuery("SELECT count(pw.user_id) " +
         "   FROM projects p " +
         "       JOIN project_watchers pw ON p.id = pw.project_id " +
-        "   WHERE lower(p.slug) = lower(:slug) " +
+        "   WHERE p.id = :id " +
         "   GROUP BY pw.user_id")
-    Long getProjectWatchersCount(String slug);
+    Long getProjectWatchersCount(long id);
 
     @KeyColumn("dateKey")
     @RegisterConstructorMapper(DayProjectStats.class)
@@ -216,8 +216,8 @@ public interface ProjectsApiDAO {
         "       LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day" +
         "       LEFT JOIN project_views pv ON dates.day = pv.day AND pvd.project_id = pv.project_id" +
         "   WHERE " +
-        "       lower(p.slug) = lower(:slug) AND" +
+        "       p.id = :id AND" +
         "       (pvd IS NULL OR pvd.project_id = p.id)" +
         "   GROUP BY pv.views, dates.day")
-    Map<String, DayProjectStats> getProjectStats(String slug, OffsetDateTime fromDate, OffsetDateTime toDate);
+    Map<String, DayProjectStats> getProjectStats(long id, OffsetDateTime fromDate, OffsetDateTime toDate);
 }

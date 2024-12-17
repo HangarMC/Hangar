@@ -6,6 +6,7 @@ import io.papermc.hangar.db.dao.internal.table.projects.ProjectPagesDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.projects.ProjectHomePageTable;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectPage;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.PageContext;
@@ -106,12 +107,12 @@ public class ProjectPageService extends HangarComponent {
         return null;
     }
 
-    public ExtendedProjectPage getProjectPageFromURI(final String slug, final String uri) {
+    public ExtendedProjectPage getProjectPageFromURI(final ProjectTable slug, final String uri) {
         final String path = uri.replace("/api/internal/pages/page/" + slug, "");
         return this.getProjectPage(slug, path);
     }
 
-    public ExtendedProjectPage getProjectPage(final String slug, String path) {
+    public ExtendedProjectPage getProjectPage(final ProjectTable project, String path) {
         final ExtendedProjectPage pageTable;
         if (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
@@ -120,7 +121,7 @@ public class ProjectPageService extends HangarComponent {
             path = path.substring(1);
         }
 
-        pageTable = path.isEmpty() ? this.hangarProjectPagesDAO.getHomePage(slug) : this.hangarProjectPagesDAO.getProjectPage(slug, path);
+        pageTable = path.isEmpty() ? this.hangarProjectPagesDAO.getHomePage(project.getId()) : this.hangarProjectPagesDAO.getProjectPage(project.getId(), path);
         if (pageTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "Page not found");
         }

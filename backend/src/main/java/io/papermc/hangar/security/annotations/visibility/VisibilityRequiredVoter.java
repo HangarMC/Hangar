@@ -1,9 +1,12 @@
 package io.papermc.hangar.security.annotations.visibility;
 
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.security.annotations.HangarDecisionVoter;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.versions.VersionService;
+import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import java.util.Arrays;
 import org.aopalliance.intercept.MethodInvocation;
 import org.jetbrains.annotations.NotNull;
@@ -15,12 +18,14 @@ import org.springframework.stereotype.Component;
 public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequiredMetadataExtractor.VisibilityRequiredAttribute> {
 
     private final ProjectService projectService;
+    private final ProjectVisibilityService projectVisibilityService;
     private final VersionService versionService;
 
     @Autowired
-    public VisibilityRequiredVoter(final ProjectService projectService, final VersionService versionService) {
+    public VisibilityRequiredVoter(final ProjectService projectService, final ProjectVisibilityService projectVisibilityService, final VersionService versionService) {
         super(VisibilityRequiredMetadataExtractor.VisibilityRequiredAttribute.class);
         this.projectService = projectService;
+        this.projectVisibilityService = projectVisibilityService;
         this.versionService = versionService;
     }
 
@@ -34,7 +39,12 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
         switch (attribute.type()) {
             case PROJECT:
                 if (arguments.length == 1) {
-                    if (arguments[0] instanceof String slug) {
+                    if (arguments[0] instanceof ProjectTable projectTable) {
+                        if (this.projectVisibilityService.checkVisibility(projectTable) != null) {
+                            return ACCESS_GRANTED;
+                        }
+                    }
+                    else if (arguments[0] instanceof String slug) {
                         if (this.projectService.getProjectTable(slug) != null) {
                             return ACCESS_GRANTED;
                         }
@@ -49,6 +59,10 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
                         return ACCESS_GRANTED;
                     }
                 } else if (arguments.length == 3) {
+                    if (arguments[1] instanceof ProjectVersionTable) {
+                        return ACCESS_GRANTED;
+                    }
+
                     if (this.versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1]) != null) { // TODO is platform needed here?
                         return ACCESS_GRANTED;
                     }

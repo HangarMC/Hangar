@@ -104,10 +104,10 @@ public interface VersionsApiDAO {
                    <endif>)
                    AND
                <endif>
-               lower(p.slug) = lower(:slug) AND
-               pv.version_string = :versionString
+               p.id = :projectId AND
+               pv.id = :versionId
     """)
-    @Nullable Map.Entry<Long, Version> getVersionWithVersionString(String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
+    @Nullable Map.Entry<Long, Version> getVersionWithVersionString(long projectId, long versionId, @Define boolean canSeeHidden, @Define Long userId);
 
     @KeyColumn("id")
     @RegisterColumnMapper(VersionStatsMapper.class)
@@ -224,13 +224,13 @@ public interface VersionsApiDAO {
                    project_versions pv,
                    (SELECT generate_series(:fromDate::date, :toDate::date, INTERVAL '1 DAY') AS day) dates
                        LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day
-              WHERE lower(p.slug) = lower(:slug)
-                AND pv.version_string = :versionString
+              WHERE p.id = :projectId
+                AND pv.id = :versionId
                 AND (pvd IS NULL OR (pvd.project_id = p.id AND pvd.version_id = pv.id))
               GROUP BY date, platform) subquery
         GROUP BY date;
-            """)
-    Map<String, VersionStats> getVersionStats(String slug, String versionString, OffsetDateTime fromDate, OffsetDateTime toDate);
+        """)
+    Map<String, VersionStats> getVersionStats(long projectId, long versionId, OffsetDateTime fromDate, OffsetDateTime toDate);
 
     @SqlQuery("""
         SELECT pv.version_string
@@ -246,10 +246,10 @@ public interface VersionsApiDAO {
                    <endif>)
                    AND
                <endif>
-               lower(p.slug) = lower(:slug) AND
+               p.id = :projectId AND
                pc.name = :channel
            ORDER BY pv.created_at DESC
            LIMIT 1
     """)
-    @Nullable String getLatestVersion(String slug, String channel, @Define boolean canSeeHidden, @Define Long userId);
+    @Nullable String getLatestVersion(long projectId, String channel, @Define boolean canSeeHidden, @Define Long userId);
 }
