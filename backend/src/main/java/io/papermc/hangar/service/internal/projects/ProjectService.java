@@ -101,7 +101,7 @@ public class ProjectService extends HangarComponent {
     }
 
     public ProjectTable getProjectTable(final String slug) {
-        return this.projectsDAO.getBySlug(slug);
+        return this.getProjectTable(slug, this.projectsDAO::getBySlug);
     }
 
     public List<ProjectTable> getProjectTables(final long userId) {
