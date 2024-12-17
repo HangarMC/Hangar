@@ -6,6 +6,7 @@ import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.security.annotations.HangarDecisionVoter;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.versions.VersionService;
+import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilityService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import java.util.Arrays;
 import org.aopalliance.intercept.MethodInvocation;
@@ -20,13 +21,15 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
     private final ProjectService projectService;
     private final ProjectVisibilityService projectVisibilityService;
     private final VersionService versionService;
+    private final ProjectVersionVisibilityService projectVersionVisibilityService;
 
     @Autowired
-    public VisibilityRequiredVoter(final ProjectService projectService, final ProjectVisibilityService projectVisibilityService, final VersionService versionService) {
+    public VisibilityRequiredVoter(final ProjectService projectService, final ProjectVisibilityService projectVisibilityService, final VersionService versionService, final ProjectVersionVisibilityService projectVersionVisibilityService) {
         super(VisibilityRequiredMetadataExtractor.VisibilityRequiredAttribute.class);
         this.projectService = projectService;
         this.projectVisibilityService = projectVisibilityService;
         this.versionService = versionService;
+        this.projectVersionVisibilityService = projectVersionVisibilityService;
     }
 
     @Override
@@ -59,11 +62,11 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
                         return ACCESS_GRANTED;
                     }
                 } else if (arguments.length == 3) {
-                    if (arguments[1] instanceof ProjectVersionTable) {
-                        return ACCESS_GRANTED;
-                    }
-
-                    if (this.versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1]) != null) { // TODO is platform needed here?
+                    if (arguments[1] instanceof ProjectVersionTable projectVersionTable) {
+                        if (this.projectVersionVisibilityService.checkVisibility(projectVersionTable) != null) {
+                            return ACCESS_GRANTED;
+                        }
+                    } else if (this.versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1]) != null) { // TODO is platform needed here?
                         return ACCESS_GRANTED;
                     }
                 }
