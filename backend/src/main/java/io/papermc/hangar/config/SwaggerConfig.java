@@ -8,6 +8,9 @@ import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSort
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.exceptions.MethodArgumentNotValidExceptionSerializer;
 import io.papermc.hangar.exceptions.MultiHangarApiException;
+import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.info.Info;
@@ -27,6 +30,7 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.customizers.OperationCustomizer;
+import org.springdoc.core.customizers.ParameterCustomizer;
 import org.springdoc.core.customizers.SpringDocCustomizers;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springdoc.core.properties.SpringDocConfigProperties;
@@ -41,7 +45,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.method.HandlerMethod;
@@ -158,6 +164,17 @@ public class SwaggerConfig {
     @Bean
     public CustomScanner customScanner(final FilterRegistry filterRegistry) {
         return new CustomScanner(filterRegistry);
+    }
+
+    @Component
+    public static class SlugOrIdCustomizer implements ParameterCustomizer {
+        @Override
+        public Parameter customize(final Parameter parameter, final MethodParameter methodParameter) {
+            if (Set.of(ProjectTable.class, ProjectVersionTable.class, UserTable.class).contains(methodParameter.getParameterType())) {
+                return parameter.schema(new StringSchema());
+            }
+            return parameter;
+        }
     }
 
     public static class CustomScanner implements OperationCustomizer {
