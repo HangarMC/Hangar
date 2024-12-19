@@ -30,6 +30,7 @@ import java.util.SortedSet;
 import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -192,10 +193,12 @@ public class VersionsApiService extends HangarComponent {
         return this.versionsApiDAO.getVersionStats(slug, versionString, fromDate, toDate);
     }
 
+    @Cacheable("latestVersion")
     public @Nullable String latestVersion(final String slug) {
         return this.latestVersion(slug, this.config.channels.nameDefault());
     }
 
+    @Cacheable("latestVersion")
     public @Nullable String latestVersion(final String slug, final String channel) {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final String version = this.versionsApiDAO.getLatestVersion(slug, channel, canSeeHidden, this.getHangarUserId());
