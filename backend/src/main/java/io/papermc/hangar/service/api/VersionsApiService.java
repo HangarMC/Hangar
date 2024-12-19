@@ -157,7 +157,7 @@ public class VersionsApiService extends HangarComponent {
         return true;
     }
 
-    @Transactional(readOnly = true)
+    //@Transactional(readOnly = true) // TODO in an ideal world this would be an transaction, but right now this fries the DB
     public Version getVersion(final String slug, final String versionString) {
         final Map.Entry<Long, Version> version = this.versionsApiDAO.getVersionWithVersionString(slug, versionString, this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
         if (version == null) {
@@ -166,7 +166,7 @@ public class VersionsApiService extends HangarComponent {
         return this.versionDependencyService.addDownloadsAndDependencies(slug, versionString, version.getKey()).applyTo(version.getValue());
     }
 
-    @Transactional(readOnly = true)
+    //@Transactional(readOnly = true) // TODO in an ideal world this would be an transaction, but right now this fries the DB
     public PaginatedResult<Version> getVersions(final String slug, final RequestPagination pagination, final boolean includeHiddenChannels) {
         //TODO Squash queries
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
