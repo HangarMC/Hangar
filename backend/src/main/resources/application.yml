@@ -52,13 +52,14 @@ spring:
 
 management:
   endpoints:
-    enabled-by-default: false
+    access:
+      default: none
     web:
       exposure:
         include: "*"
   endpoint:
     health:
-      enabled: true
+      access: read_only
 
 hangar:
   dev: true
@@ -263,7 +264,7 @@ logging:
   level:
     root: INFO
     org.springframework: INFO
-    org.springframework.context.support.PostProcessorRegistrationDelegate: WARN
+    org.springframework.context.support.PostProcessorRegistrationDelegate: ERROR
     io.papermc.hangar.service.internal.JobService: DEBUG
     http-client-logger: INFO
     io.papermc.hangar.service.ReplicationService: DEBUG

@@ -68,12 +68,18 @@ public class AuthService extends HangarComponent implements UserDetailsService {
 
     @Transactional
     public UserTable registerUser(final SignupForm form) {
+        return this.registerUserInternal(form, false, false);
+    }
+
+    public UserTable registerUserInternal(final SignupForm form, final boolean skipCaptcha, final boolean emailVerified) {
         if (!this.validPassword(form.password(), form.username())) {
             throw new HangarApiException("dum");
         }
         this.validateNewUser(form.username(), form.email(), form.tos());
 
-        this.turnstileService.validate(form.captcha());
+        if (!skipCaptcha) {
+            this.turnstileService.validate(form.captcha());
+        }
 
         if (!this.config.isDisableRateLimiting()) {
             Bucket bucket = this.bucketService.bucket("register-user", new RateLimit.Model(1, 1, 60 * 5, false, "register-user"));
@@ -82,9 +88,11 @@ public class AuthService extends HangarComponent implements UserDetailsService {
             }
         }
 
-        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), form.username(), form.email(), null, "en", List.of(), false, "light", false, new JSONB(Map.of()));
+        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), form.username(), form.email(), null, "en", List.of(), false, "light", emailVerified, new JSONB(Map.of()));
         this.credentialsService.registerCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(form.password())));
-        this.verificationService.sendVerificationCode(userTable.getUserId(), userTable.getEmail(), userTable.getName());
+        if (!emailVerified) {
+            this.verificationService.sendVerificationCode(userTable.getUserId(), userTable.getEmail(), userTable.getName());
+        }
 
         return userTable;
     }

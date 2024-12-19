@@ -38,7 +38,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FakeDataService extends HangarComponent {
@@ -65,7 +64,6 @@ public class FakeDataService extends HangarComponent {
         this.qrDataFactory = qrDataFactory;
     }
 
-    @Transactional
     @CacheEvict(cacheNames = CacheConfig.PROJECTS, allEntries = true)
     public void generate(final int users, final int projectsPerUser) {
         final HangarAuthenticationToken oldAuth = (HangarAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
