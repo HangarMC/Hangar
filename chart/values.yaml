@@ -187,6 +187,8 @@ backend:
 
   envFrom: {}
 
+  env: {}
+
   config:
     postgresql:
       hostname: "hangar-postgresql"

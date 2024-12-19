@@ -64,6 +64,9 @@ spec:
               value: {{ .Values.base.namespace }}
             - name: JSON_LOGS_ENABLED
               value: "true"
+            {{- with .Values.backend.env -}}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           volumeMounts:
             - name: {{ include "hangar.fullname" . }}-backend-config-volume
               mountPath: /hangar/config
