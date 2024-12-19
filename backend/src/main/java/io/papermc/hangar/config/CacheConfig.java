@@ -186,7 +186,7 @@ public class CacheConfig {
 
     @Bean(LATEST_VERSION)
     Cache latestVersionCache() {
-        return this.createCache(LATEST_VERSION, Duration.ofMinutes(30), 2000);
+        return this.createCache(LATEST_VERSION, Duration.ofHours(6), 2000);
     }
 
     @PostConstruct

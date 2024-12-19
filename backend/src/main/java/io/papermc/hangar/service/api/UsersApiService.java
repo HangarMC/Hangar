@@ -116,7 +116,7 @@ public class UsersApiService extends HangarComponent {
         // Clears a cache
     }
 
-    @Cacheable(CacheConfig.AUTHORS)
+    @Cacheable(value = CacheConfig.AUTHORS, keyGenerator = "ignoringCaseCacheKeyGenerator")
     @Transactional(readOnly = true)
     public PaginatedResult<User> getAuthors(final String query, final RequestPagination pagination) {
         final boolean hasQuery = !StringUtils.isBlank(query);
@@ -132,7 +132,7 @@ public class UsersApiService extends HangarComponent {
         // Clears a cache
     }
 
-    @Cacheable(CacheConfig.STAFF)
+    @Cacheable(value = CacheConfig.STAFF, keyGenerator = "ignoringCaseCacheKeyGenerator")
     @Transactional(readOnly = true)
     public PaginatedResult<User> getStaff(final String query, final RequestPagination pagination) {
         final boolean hasQuery = !StringUtils.isBlank(query);
