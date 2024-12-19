@@ -27,14 +27,19 @@ public class ProjectTableResolver extends HangarModelPathVarResolver<ProjectTabl
 
     @Override
     protected ProjectTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
-        if (!NumberUtils.isParsable(param)) {
-            final ProjectTable projectTable = this.projectService.getProjectTable(param);
+        if (NumberUtils.isParsable(param)) {
+            final ProjectTable projectTable = this.projectService.getProjectTable(Long.parseLong(param));
             if (projectTable != null) {
                 request.setAttribute("projectId", projectTable.getId(), NativeWebRequest.SCOPE_REQUEST);
                 return projectTable;
             }
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        return this.projectService.getProjectTable(Long.parseLong(param));
+
+        final ProjectTable projectTable = this.projectService.getProjectTable(param);
+        if (projectTable != null) {
+            request.setAttribute("projectId", projectTable.getId(), NativeWebRequest.SCOPE_REQUEST);
+            return projectTable;
+        }
+        throw new HangarApiException(HttpStatus.NOT_FOUND);
     }
 }

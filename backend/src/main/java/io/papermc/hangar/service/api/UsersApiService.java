@@ -13,6 +13,7 @@ import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.PermissionService;
@@ -92,22 +93,20 @@ public class UsersApiService extends HangarComponent {
     }
 
     @Transactional(readOnly = true)
-    public PaginatedResult<ProjectCompact> getUserStarred(final String userName, final RequestPagination pagination) {
-        this.getUserRequired(userName, this.usersDAO::getUser, User.class);
+    public PaginatedResult<ProjectCompact> getUserStarred(final UserTable user, final RequestPagination pagination) {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
-        final Long userId = this.getHangarUserId();
-        final List<ProjectCompact> projects = this.usersApiDAO.getUserStarred(userName, canSeeHidden, userId, pagination);
-        final long count = this.usersApiDAO.getUserStarredCount(userName, canSeeHidden, userId);
+        final Long requesterId = this.getHangarUserId();
+        final List<ProjectCompact> projects = this.usersApiDAO.getUserStarred(user.getId(), canSeeHidden, requesterId, pagination);
+        final long count = this.usersApiDAO.getUserStarredCount(user.getId(), canSeeHidden, requesterId);
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
 
     @Transactional(readOnly = true)
-    public PaginatedResult<ProjectCompact> getUserWatching(final String userName,  final RequestPagination pagination) {
-        this.getUserRequired(userName, this.usersDAO::getUser, User.class);
+    public PaginatedResult<ProjectCompact> getUserWatching(final UserTable user,  final RequestPagination pagination) {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
-        final Long userId = this.getHangarUserId();
-        final List<ProjectCompact> projects = this.usersApiDAO.getUserWatching(userName, canSeeHidden, userId, pagination);
-        final long count = this.usersApiDAO.getUserWatchingCount(userName, canSeeHidden, userId);
+        final Long requesterId = this.getHangarUserId();
+        final List<ProjectCompact> projects = this.usersApiDAO.getUserWatching(user.getId(), canSeeHidden, requesterId, pagination);
+        final long count = this.usersApiDAO.getUserWatchingCount(user.getId(), canSeeHidden, requesterId);
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
 
@@ -189,7 +188,7 @@ public class UsersApiService extends HangarComponent {
         user.setAvatarUrl(this.avatarService.getUserAvatarUrl(user));
     }
 
-    public List<ProjectCompact> getUserPinned(final String userName) {
-        return this.pinnedProjectService.getPinnedProjects(this.getUserRequired(userName, this.usersDAO::getUser, HangarUser.class).getId());
+    public List<ProjectCompact> getUserPinned(final UserTable user) {
+        return this.pinnedProjectService.getPinnedProjects(user.getId());
     }
 }

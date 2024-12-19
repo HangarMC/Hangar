@@ -68,8 +68,8 @@ public interface ProjectVersionDownloadsDAO {
         WHERE pvpd.version_id = (SELECT id
                                  FROM project_versions pv
                                  WHERE pv.project_id = :projectId
-                                   AND pv.version_string = :versionString)
+                                   AND pv.id = :versionId)
           AND pvpd.platform = :platform;
         """)
-    ProjectVersionDownloadTableWithPlatform getDownloadByPlatform(long projectId, String versionString, @EnumByOrdinal Platform platform);
+    ProjectVersionDownloadTableWithPlatform getDownloadByPlatform(long projectId, long versionId, @EnumByOrdinal Platform platform);
 }

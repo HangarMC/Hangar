@@ -4,6 +4,7 @@ import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.api.requests.RequestPagination;
+import io.papermc.hangar.model.db.UserTable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -37,7 +38,7 @@ public interface IUsersController {
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/users/{user}")
-    ResponseEntity<User> getUser(@Parameter(description = "The name of the user to return") @PathVariable("user") String userName);
+    ResponseEntity<User> getUser(@Parameter(description = "The name or id of the user to return") @PathVariable UserTable user);
 
     @Operation(
         summary = "Searches for users",
@@ -68,7 +69,7 @@ public interface IUsersController {
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/users/{user}/starred")
-    ResponseEntity<PaginatedResult<ProjectCompact>> getUserStarred(@Parameter(description = "The user to return starred projects for") @PathVariable("user") String userName,
+    ResponseEntity<PaginatedResult<ProjectCompact>> getUserStarred(@Parameter(description = "The name or id of the user to return starred projects for") @PathVariable UserTable user,
                                                                    @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
 
     @Operation(
@@ -84,7 +85,7 @@ public interface IUsersController {
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/users/{user}/watching")
-    ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(@Parameter(description = "The user to return watched projects for") @PathVariable("user") String userName,
+    ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(@Parameter(description = "The name or id of the user to return watched projects for") @PathVariable UserTable user,
                                                                     @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
 
     @Operation(
@@ -100,7 +101,7 @@ public interface IUsersController {
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/users/{user}/pinned")
-    ResponseEntity<List<ProjectCompact>> getUserPinnedProjects(@Parameter(description = "The user to return pinned projects for") @PathVariable("user") String userName);
+    ResponseEntity<List<ProjectCompact>> getUserPinnedProjects(@Parameter(description = "The name or id of the user to return pinned projects for") @PathVariable UserTable user);
 
     @Operation(
         summary = "Returns all users with at least one public project",

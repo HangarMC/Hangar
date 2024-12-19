@@ -22,6 +22,7 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.PermissionType;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
@@ -47,9 +48,9 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
-    public ResponseEntity<Project> getProject(final String slug) {
-        return ResponseEntity.ok(this.projectsApiService.getProject(slug));
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    public ResponseEntity<Project> getProject(final ProjectTable project) {
+        return ResponseEntity.ok(this.projectsApiService.getProject(project.getId()));
     }
 
     @Override
@@ -58,9 +59,9 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
-    public ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(final String slug, final @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(this.projectsApiService.getProjectMembers(slug, pagination));
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    public ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(final ProjectTable project, final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.projectsApiService.getProjectMembers(project, pagination));
     }
 
     @Override
@@ -72,20 +73,20 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
     }
 
     @Override
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#slug}")
-    public ResponseEntity<Map<String, DayProjectStats>> getProjectStats(final String slug, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
-        return ResponseEntity.ok(this.projectsApiService.getProjectStats(slug, fromDate, toDate));
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#project}")
+    public ResponseEntity<Map<String, DayProjectStats>> getProjectStats(final ProjectTable project, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
+        return ResponseEntity.ok(this.projectsApiService.getProjectStats(project, fromDate, toDate));
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
-    public ResponseEntity<PaginatedResult<User>> getProjectStargazers(final String slug, final @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(this.projectsApiService.getProjectStargazers(slug, pagination));
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    public ResponseEntity<PaginatedResult<User>> getProjectStargazers(final ProjectTable project, final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.projectsApiService.getProjectStargazers(project, pagination));
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
-    public ResponseEntity<PaginatedResult<User>> getProjectWatchers(final String slug, final @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(this.projectsApiService.getProjectWatchers(slug, pagination));
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    public ResponseEntity<PaginatedResult<User>> getProjectWatchers(final ProjectTable project, final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.projectsApiService.getProjectWatchers(project, pagination));
     }
 }
