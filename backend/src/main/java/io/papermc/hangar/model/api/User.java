@@ -2,6 +2,7 @@ package io.papermc.hangar.model.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.db.customtypes.JSONB;
+import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.roles.GlobalRole;
@@ -11,7 +12,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
-public class User extends Model implements Named {
+public class User extends Model implements Named, Identified {
 
     private final long id;
     private final String name;
@@ -38,6 +39,7 @@ public class User extends Model implements Named {
         this.socials = socials;
     }
 
+    @Override
     public long getId() {
         return this.id;
     }
