@@ -17,6 +17,7 @@ import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.model.internal.versions.VersionUpload;
 import io.papermc.hangar.service.internal.PlatformService;
+import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.versions.VersionFactory;
 import java.time.OffsetDateTime;
@@ -41,13 +42,15 @@ public class VersionsApiService extends HangarComponent {
     private final VersionDependencyService versionDependencyService;
     private final VersionFactory versionFactory;
     private final PlatformService platformService;
+    private final ProjectService projectService;
 
     @Autowired
-    public VersionsApiService(final VersionsApiDAO versionsApiDAO, final VersionDependencyService versionDependencyService, final VersionFactory versionFactory, final PlatformService platformService) {
+    public VersionsApiService(final VersionsApiDAO versionsApiDAO, final VersionDependencyService versionDependencyService, final VersionFactory versionFactory, final PlatformService platformService, final ProjectService projectService) {
         this.versionsApiDAO = versionsApiDAO;
         this.versionDependencyService = versionDependencyService;
         this.versionFactory = versionFactory;
         this.platformService = platformService;
+        this.projectService = projectService;
     }
 
     @Transactional
@@ -155,6 +158,15 @@ public class VersionsApiService extends HangarComponent {
         return this.versionDependencyService.addDownloadsAndDependencies(project, pvt, version.getKey()).applyTo(version.getValue());
     }
 
+    public Version getVersion(final ProjectVersionTable version) {
+        final ProjectTable project = this.projectService.getProjectTable(version.getProjectId());
+        if (project == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+
+        return this.getVersion(project, version);
+    }
+
     @Transactional(readOnly = true)
     public PaginatedResult<Version> getVersions(final ProjectTable project, final RequestPagination pagination, final boolean includeHiddenChannels) {
         //TODO Squash queries
@@ -181,6 +193,16 @@ public class VersionsApiService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "From date is after to date");
         }
         return this.versionsApiDAO.getVersionStats(project.getId(), version.getId(), fromDate, toDate);
+    }
+
+
+    public Map<String, VersionStats> getVersionStats(final ProjectVersionTable version, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
+        final ProjectTable project = this.projectService.getProjectTable(version.getProjectId());
+        if (project == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+
+        return this.getVersionStats(project, version, fromDate, toDate);
     }
 
     public @Nullable String latestVersion(final ProjectTable project) {

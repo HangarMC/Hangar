@@ -13,6 +13,7 @@ import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.file.S3FileService;
+import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -32,12 +33,14 @@ public class DownloadService extends HangarComponent {
     private final ProjectFiles projectFiles;
     private final ProjectVersionDownloadsDAO downloadsDAO;
     private final FileService fileService;
+    private final ProjectService projectService;
 
     @Autowired
-    public DownloadService(final ProjectFiles projectFiles, final ProjectVersionDownloadsDAO downloadsDAO, final FileService fileService) {
+    public DownloadService(final ProjectFiles projectFiles, final ProjectVersionDownloadsDAO downloadsDAO, final FileService fileService, final ProjectService projectService) {
         this.projectFiles = projectFiles;
         this.downloadsDAO = downloadsDAO;
         this.fileService = fileService;
+        this.projectService = projectService;
     }
 
     public Map<Platform, PlatformVersionDownload> getDownloads(final String user, final String project, final String version, final long versionId) {
@@ -80,5 +83,14 @@ public class DownloadService extends HangarComponent {
             }
             return ResponseEntity.status(200).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + download.getFileName() + "\"").body(this.fileService.getResource(path));
         }
+    }
+
+    public ResponseEntity<?> downloadVersion(final ProjectVersionTable version, final Platform platform) {
+        final ProjectTable project = this.projectService.getProjectTable(version.getProjectId());
+        if (project == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+
+        return this.downloadVersion(project, version, platform);
     }
 }

@@ -70,6 +70,12 @@ public class VersionsController implements IVersionsController {
     }
 
     @Override
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#version}")
+    public Version getVersionById(final ProjectVersionTable version) {
+        return this.versionsApiService.getVersion(version);
+    }
+
+    @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
     @ApplicableFilters({VersionChannelFilter.class, VersionPlatformFilter.class})
     public PaginatedResult<Version> getVersions(final ProjectTable project,
@@ -96,9 +102,21 @@ public class VersionsController implements IVersionsController {
     }
 
     @Override
+    public Map<String, VersionStats> getVersionStatsById(final ProjectVersionTable version, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
+        return this.versionsApiService.getVersionStats(version, fromDate, toDate);
+    }
+
+    @Override
     @RateLimit(overdraft = 10, refillTokens = 2)
     @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#project, #version, #platform}")
     public ResponseEntity<?> downloadVersion(final ProjectTable project, final ProjectVersionTable version, final Platform platform, final HttpServletResponse response) {
         return this.downloadService.downloadVersion(project, version, platform);
+    }
+
+    @Override
+    @RateLimit(overdraft = 10, refillTokens = 2)
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#version}")
+    public ResponseEntity<?> downloadVersionById(final ProjectVersionTable version, final Platform platform, final HttpServletResponse response) {
+        return this.downloadService.downloadVersion(version, platform);
     }
 }

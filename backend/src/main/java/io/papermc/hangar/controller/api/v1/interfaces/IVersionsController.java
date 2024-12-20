@@ -95,6 +95,21 @@ public interface IVersionsController {
     }
 
     @Operation(
+        summary = "Returns a specific version by its ID",
+        operationId = "showVersionById",
+        description = "Returns a specific version by its ID. Requires the `view_public_info` permission in the project or owning organization.",
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "view_public_info"),
+        tags = "Versions"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
+    })
+    @GetMapping("/versions/{id}")
+    Version getVersionById(@Parameter(description = "The id of the version to return") @PathVariable("id") ProjectVersionTable version);
+
+    @Operation(
         summary = "Returns all versions of a project",
         operationId = "listVersions",
         description = "Returns all versions of a project. Requires the `view_public_info` permission in the project or owning organization.",
@@ -187,11 +202,28 @@ public interface IVersionsController {
     @Deprecated(forRemoval = true)
     default Map<String, VersionStats> getVersionStats(@Parameter(description = "The author of the version to return the stats for") @PathVariable String author,
                                               @Parameter(description = "The slug or id of the project to return stats for") @PathVariable("slugOrId") ProjectTable project,
-                                              @Parameter(description = "The version to return the stats for") @PathVariable("nameOrId") ProjectVersionTable version,
+                                              @Parameter(description = "The name or id of the version to return the stats for") @PathVariable("nameOrId") ProjectVersionTable version,
                                               @Parameter(description = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
                                               @Parameter(description = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate) {
         return this.getVersionStats(project, version, fromDate, toDate);
     }
+
+    @Operation(
+        summary = "Returns the stats for a version by its ID",
+        operationId = "showVersionStatsById",
+        description = "Returns the stats (downloads) for a version per day for a certain date range. Requires the `is_subject_member` permission.",
+        security = @SecurityRequirement(name = "HangarAuth", scopes = "is_subject_member"),
+        tags = "Versions"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
+    })
+    @GetMapping("/versions/{id}/stats")
+    Map<String, VersionStats> getVersionStatsById(@Parameter(description = "The id of version to return the stats for") @PathVariable("id") ProjectVersionTable version,
+                                              @Parameter(description = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
+                                              @Parameter(description = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate);
 
     @Operation(
         summary = "Downloads a version",
@@ -224,4 +256,24 @@ public interface IVersionsController {
     ) {
         return this.downloadVersion(project, version, platform, response);
     }
+
+    @Operation(
+        summary = "Downloads a version by its ID",
+        operationId = "downloadVersionById",
+        description = "Downloads the file for a specific platform of a version. Requires visibility of the project and version.",
+        security = @SecurityRequirement(name = "HangarAuth"),
+        tags = "Versions"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "303", description = "Version has an external download url"),
+        @ApiResponse(responseCode = "400", description = "Version doesn't have a file attached to it"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
+        @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
+    })
+    @GetMapping(value = "/versions/{id}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    ResponseEntity<?> downloadVersionById(@Parameter(description = "The id of the version to download") @PathVariable("id") ProjectVersionTable version,
+                                      @Parameter(description = "The platform of the version to download") @PathVariable Platform platform,
+                                      HttpServletResponse response
+    );
 }
