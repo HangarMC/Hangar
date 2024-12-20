@@ -98,7 +98,7 @@ public class VersionsController implements IVersionsController {
 
     @Override
     public Map<String, VersionStats> getVersionStats(final ProjectTable project, final ProjectVersionTable version, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
-        return this.versionsApiService.getVersionStats(project, version, fromDate, toDate);
+        return this.versionsApiService.getVersionStats(version, fromDate, toDate);
     }
 
     @Override

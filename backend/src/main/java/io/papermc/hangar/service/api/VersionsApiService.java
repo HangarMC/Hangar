@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.PaginatedResult;
@@ -30,6 +31,8 @@ import java.util.SortedSet;
 import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -147,11 +150,10 @@ public class VersionsApiService extends HangarComponent {
         return true;
     }
 
-    @Transactional(readOnly = true)
+    //@Transactional(readOnly = true) // TODO in an ideal world this would be an transaction, but right now this fries the DB
     public Version getVersion(final ProjectTable project, final ProjectVersionTable pvt) {
         final Map.Entry<Long, Version> version = this.versionsApiDAO.getVersionWithVersionString(project.getId(), pvt.getId(),
             this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
-
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
@@ -167,7 +169,7 @@ public class VersionsApiService extends HangarComponent {
         return this.getVersion(project, version);
     }
 
-    @Transactional(readOnly = true)
+    //@Transactional(readOnly = true) // TODO in an ideal world this would be an transaction, but right now this fries the DB
     public PaginatedResult<Version> getVersions(final ProjectTable project, final RequestPagination pagination, final boolean includeHiddenChannels) {
         //TODO Squash queries
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
@@ -188,27 +190,27 @@ public class VersionsApiService extends HangarComponent {
         return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount, pagination), versions.toList());
     }
 
-    public Map<String, VersionStats> getVersionStats(final ProjectTable project, final ProjectVersionTable version, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
+    public Map<String, VersionStats> getVersionStats(final ProjectVersionTable version, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
         if (fromDate.isAfter(toDate)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "From date is after to date");
         }
-        return this.versionsApiDAO.getVersionStats(project.getId(), version.getId(), fromDate, toDate);
+        return this.versionsApiDAO.getVersionStats(version.getProjectId(), version.getId(), fromDate, toDate);
     }
 
-
-    public Map<String, VersionStats> getVersionStats(final ProjectVersionTable version, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
-        final ProjectTable project = this.projectService.getProjectTable(version.getProjectId());
-        if (project == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
-
-        return this.getVersionStats(project, version, fromDate, toDate);
+    @CacheEvict(value = CacheConfig.LATEST_VERSION, keyGenerator = "ignoringCaseCacheKeyGenerator")
+    public void evictLatestRelease(final String slug) {
     }
 
+    @Cacheable(value = CacheConfig.LATEST_VERSION, keyGenerator = "ignoringCaseCacheKeyGenerator")
     public @Nullable String latestVersion(final ProjectTable project) {
         return this.latestVersion(project, this.config.channels.nameDefault());
     }
 
+    @CacheEvict(value = CacheConfig.LATEST_VERSION, keyGenerator = "ignoringCaseCacheKeyGenerator")
+    public void evictLatest(final String slug, final String channel) {
+    }
+
+    @Cacheable(value = CacheConfig.LATEST_VERSION, keyGenerator = "ignoringCaseCacheKeyGenerator")
     public @Nullable String latestVersion(final ProjectTable project, final String channel) {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final String version = this.versionsApiDAO.getLatestVersion(project.getId(), channel, canSeeHidden, this.getHangarUserId());

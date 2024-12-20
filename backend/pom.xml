@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.5</version>
+        <version>3.4.0</version>
         <relativePath/>
     </parent>
 
@@ -31,30 +31,30 @@
         <spring-cloud-aws.version>3.2.1</spring-cloud-aws.version>
 
         <!-- dependencies -->
-        <sentry.version>7.16.0</sentry.version>
-        <springdoc.version>2.6.0</springdoc.version>
+        <sentry.version>7.19.0</sentry.version>
+        <springdoc.version>2.7.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20240303</org-json.version>
         <bucket4j.version>8.14.0</bucket4j.version>
-        <datafaker.version>2.4.1</datafaker.version>
+        <datafaker.version>2.4.2</datafaker.version>
         <apache-commons-lang.version>3.17.0</apache-commons-lang.version>
         <jwt.version>4.4.0</jwt.version>
         <jetbrains-annotations.version>26.0.1</jetbrains-annotations.version>
         <caffeine.version>3.1.8</caffeine.version>
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
-        <jgroups.version>5.3.13.Final</jgroups.version>
+        <jgroups.version>5.4.0.Final</jgroups.version>
         <jgroups-kube.version>2.0.2.Final</jgroups-kube.version>
         <totp.version>1.7.2-SNAPSHOT</totp.version>
         <webp.version>0.1.6</webp.version>
-        <webauthn.version>2.5.3</webauthn.version>
+        <webauthn.version>2.5.4</webauthn.version>
         <logback-contrib.version>0.1.5</logback-contrib.version>
         <janino.version>3.1.12</janino.version>
         <mockito-inline.version>5.2.0</mockito-inline.version>
         <otel-semconv.version>1.30.0-alpha</otel-semconv.version>
 
         <!-- test -->
-        <pg.version>1.20.3</pg.version>
-        <openapi-generator.version>7.9.0</openapi-generator.version>
+        <pg.version>1.20.4</pg.version>
+        <openapi-generator.version>7.10.0</openapi-generator.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>

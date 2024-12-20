@@ -5,6 +5,7 @@ import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.components.webhook.model.event.ProjectPublishedEvent;
 import io.papermc.hangar.components.webhook.model.event.VersionPublishedEvent;
 import io.papermc.hangar.components.webhook.service.WebhookService;
+import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
@@ -35,6 +36,7 @@ import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.model.internal.versions.PendingVersionFile;
 import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.api.UsersApiService;
+import io.papermc.hangar.service.api.VersionsApiService;
 import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.file.S3FileService;
@@ -45,6 +47,7 @@ import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.versions.plugindata.PluginDataService;
 import io.papermc.hangar.service.internal.versions.plugindata.PluginFileWithData;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
+import io.papermc.hangar.util.CacheWrapper;
 import io.papermc.hangar.util.CryptoUtils;
 import io.papermc.hangar.util.StringUtils;
 import java.io.IOException;
@@ -65,6 +68,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.Cache;
+import org.springframework.cache.interceptor.SimpleKey;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,9 +99,10 @@ public class VersionFactory extends HangarComponent {
     private final ReviewService reviewService;
     private final WebhookService webhookService;
     private final AvatarService avatarService;
+    private final VersionsApiService versionApiService;
 
     @Autowired
-    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService, final WebhookService webhookService, final AvatarService avatarService) {
+    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService, final WebhookService webhookService, final AvatarService avatarService, final @Lazy VersionsApiService versionApiService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.projectVersionsDAO = projectVersionDAO;
@@ -114,6 +122,7 @@ public class VersionFactory extends HangarComponent {
         this.reviewService = reviewService;
         this.webhookService = webhookService;
         this.avatarService = avatarService;
+        this.versionApiService = versionApiService;
     }
 
     @Transactional
@@ -335,6 +344,8 @@ public class VersionFactory extends HangarComponent {
             // cache purging
             this.projectService.refreshHomeProjects();
             this.usersApiService.clearAuthorsCache();
+            this.versionApiService.evictLatestRelease(projectTable.getSlug());
+            this.versionApiService.evictLatest(projectTable.getSlug(), projectChannelTable.getName());
 
             final List<Platform> platformsToScan = new ArrayList<>();
             boolean hasExternalLink = false;

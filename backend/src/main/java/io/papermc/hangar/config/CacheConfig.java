@@ -42,6 +42,7 @@ public class CacheConfig {
     public static final String AVATARS = "avatars-cache";
     public static final String USERNAME = "username-cache";
     public static final String VERSION_DEPENDENCIES = "version-dependencies-cache";
+    public static final String LATEST_VERSION = "latest-version-cache";
 
     private final CacheMetricsRegistrar cacheMetricsRegistrar;
     private final CaffeineCacheManager cacheManager;
@@ -75,7 +76,7 @@ public class CacheConfig {
 
     @Bean(PROJECTS)
     Cache projectsCache() {
-        return this.createCache(PROJECTS, Duration.ofHours(1), 10);
+        return this.createCache(PROJECTS, Duration.ofHours(1), 100);
     }
 
     @Bean(CATEGORIES)
@@ -170,7 +171,7 @@ public class CacheConfig {
 
     @Bean(AVATARS)
     Cache avatarsCache() {
-        return this.createCache(AVATARS, Duration.ofMinutes(30), 200);
+        return this.createCache(AVATARS, Duration.ofMinutes(30), 2000);
     }
 
     @Bean(USERNAME)
@@ -180,7 +181,12 @@ public class CacheConfig {
 
     @Bean(VERSION_DEPENDENCIES)
     Cache versionDependenciesCache() {
-        return this.createCache(VERSION_DEPENDENCIES, Duration.ofMinutes(30), 200);
+        return this.createCache(VERSION_DEPENDENCIES, Duration.ofMinutes(30), 2000);
+    }
+
+    @Bean(LATEST_VERSION)
+    Cache latestVersionCache() {
+        return this.createCache(LATEST_VERSION, Duration.ofHours(6), 2000);
     }
 
     @PostConstruct

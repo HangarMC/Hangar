@@ -185,6 +185,10 @@ backend:
 
   affinity: {}
 
+  envFrom: {}
+
+  env: {}
+
   config:
     postgresql:
       hostname: "hangar-postgresql"

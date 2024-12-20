@@ -52,6 +52,7 @@ To get the project running locally, you need to follow a few steps:
    **Using Intellij**: Run the `frontend` run config (or click the green arrow in the gutter on this line)  
    **Manually**: Move to the frontend directory: `cd frontend` then run `pnpm run dev`.
 5. After that, open http://localhost:3333, and if all went well, Hangar should be up and running.
+6. You can open http://localhost:3333/onboarding and create an admin account, or once you logged in, generate fake data.
 
 ### Notes
 
