@@ -13,20 +13,13 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
-public class HangarVersion extends Version implements Identified {
+public class HangarVersion extends Version {
 
-    private final long id;
     private final String approvedBy;
 
-    public HangarVersion(final OffsetDateTime createdAt, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final PinnedStatus pinnedStatus, final long id, final String approvedBy) {
-        super(createdAt, name, visibility, description, stats, author, reviewState, channel, pinnedStatus);
-        this.id = id;
+    public HangarVersion(final OffsetDateTime createdAt, final long id, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final PinnedStatus pinnedStatus, final String approvedBy) {
+        super(createdAt, id, name, visibility, description, stats, author, reviewState, channel, pinnedStatus);
         this.approvedBy = approvedBy;
-    }
-
-    @Override
-    public long getId() {
-        return this.id;
     }
 
     @RequiresPermission(NamedPermission.REVIEWER)
@@ -37,7 +30,6 @@ public class HangarVersion extends Version implements Identified {
     @Override
     public String toString() {
         return "HangarVersion{" +
-            "id=" + this.id +
             ", approvedBy='" + this.approvedBy + '\'' +
             "} " + super.toString();
     }

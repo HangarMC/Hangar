@@ -14,6 +14,8 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.versions.VersionUpload;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.aal.RequireAal;
@@ -56,47 +58,65 @@ public class VersionsController implements IVersionsController {
     @RequireAal(1)
     @Override
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#slug}")
-    public UploadedVersion uploadVersion(final String slug, final List<MultipartFile> files, final VersionUpload versionUpload) {
-        return this.versionsApiService.uploadVersion(slug, files, versionUpload);
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#project}")
+    public UploadedVersion uploadVersion(final ProjectTable project, final List<MultipartFile> files, final VersionUpload versionUpload) {
+        return this.versionsApiService.uploadVersion(project, files, versionUpload);
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
-    public Version getVersion(final String slug, final String name) {
-        return this.versionsApiService.getVersion(slug, name);
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    public Version getVersion(final ProjectTable project, final ProjectVersionTable version) {
+        return this.versionsApiService.getVersion(project, version);
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#version}")
+    public Version getVersionById(final ProjectVersionTable version) {
+        return this.versionsApiService.getVersion(version);
+    }
+
+    @Override
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
     @ApplicableFilters({VersionChannelFilter.class, VersionPlatformFilter.class})
-    public PaginatedResult<Version> getVersions(final String slug,
+    public PaginatedResult<Version> getVersions(final ProjectTable project,
                                                 @ConfigurePagination(defaultLimitString = "@hangarConfig.projects.initVersionLoad", maxLimit = 25) final @NotNull RequestPagination pagination,
                                                 @RequestParam(required = false, defaultValue = "true") final boolean includeHiddenChannels) {
-        return this.versionsApiService.getVersions(slug, pagination, includeHiddenChannels);
+        return this.versionsApiService.getVersions(project, pagination, includeHiddenChannels);
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
-    public String getLatestReleaseVersion(final String slug) {
-        return this.versionsApiService.latestVersion(slug);
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    public String getLatestReleaseVersion(final ProjectTable project) {
+        return this.versionsApiService.latestVersion(project);
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
-    public String getLatestVersion(final String slug, final @NotNull String channel) {
-        return this.versionsApiService.latestVersion(slug, channel);
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    public String getLatestVersion(final ProjectTable project, final @NotNull String channel) {
+        return this.versionsApiService.latestVersion(project, channel);
     }
 
     @Override
-    public Map<String, VersionStats> getVersionStats(final String slug, final String versionString, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
-        return this.versionsApiService.getVersionStats(slug, versionString, fromDate, toDate);
+    public Map<String, VersionStats> getVersionStats(final ProjectTable project, final ProjectVersionTable version, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
+        return this.versionsApiService.getVersionStats(version, fromDate, toDate);
+    }
+
+    @Override
+    public Map<String, VersionStats> getVersionStatsById(final ProjectVersionTable version, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
+        return this.versionsApiService.getVersionStats(version, fromDate, toDate);
     }
 
     @Override
     @RateLimit(overdraft = 10, refillTokens = 2)
-    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#slug, #version, #platform}")
-    public ResponseEntity<?> downloadVersion(final String slug, final String version, final Platform platform, final HttpServletResponse response) {
-        return this.downloadService.downloadVersion(slug, version, platform);
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#project, #version, #platform}")
+    public ResponseEntity<?> downloadVersion(final ProjectTable project, final ProjectVersionTable version, final Platform platform, final HttpServletResponse response) {
+        return this.downloadService.downloadVersion(project, version, platform);
+    }
+
+    @Override
+    @RateLimit(overdraft = 10, refillTokens = 2)
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#version}")
+    public ResponseEntity<?> downloadVersionById(final ProjectVersionTable version, final Platform platform, final HttpServletResponse response) {
+        return this.downloadService.downloadVersion(version, platform);
     }
 }
