@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public class HangarUser extends User implements Identified {
+public class HangarUser extends User {
 
     private final UUID uuid;
     private final String email;

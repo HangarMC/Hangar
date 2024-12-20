@@ -13,7 +13,7 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
-public class HangarVersion extends Version implements Identified {
+public class HangarVersion extends Version {
 
     private final String approvedBy;
 
