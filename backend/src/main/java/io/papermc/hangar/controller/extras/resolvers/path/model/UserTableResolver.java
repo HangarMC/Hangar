@@ -27,19 +27,20 @@ public class UserTableResolver extends HangarModelPathVarResolver<UserTable> {
 
     @Override
     protected UserTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
+        UserTable userTable = null;
         if (NumberUtils.isParsable(param)) {
-            final UserTable userTable = this.userService.getUserTable(Long.parseLong(param));
-            if (userTable != null) {
-                request.setAttribute("userId", userTable.getId(), NativeWebRequest.SCOPE_REQUEST);
-                return userTable;
-            }
+            userTable = this.userService.getUserTable(Long.parseLong(param));
         }
 
-        final UserTable userTable = this.userService.getUserTable(param);
+        if (userTable == null) {
+            userTable = this.userService.getUserTable(param);
+        }
+
         if (userTable != null) {
             request.setAttribute("userId", userTable.getId(), NativeWebRequest.SCOPE_REQUEST);
             return userTable;
         }
+
         throw new HangarApiException(HttpStatus.NOT_FOUND);
     }
 }

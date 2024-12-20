@@ -27,19 +27,24 @@ public class ProjectVersionTableResolver extends HangarModelPathVarResolver<Proj
 
     @Override
     protected ProjectVersionTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
+        ProjectVersionTable projectVersionTable = null;
         if (NumberUtils.isParsable(param)) {
-            final ProjectVersionTable projectVersionTable = this.versionService.getProjectVersionTable(Long.parseLong(param));
-            if (projectVersionTable != null) {
-                request.setAttribute("versionId", projectVersionTable.getId(), NativeWebRequest.SCOPE_REQUEST);
-                return projectVersionTable;
+            projectVersionTable = this.versionService.getProjectVersionTable(Long.parseLong(param));
+        }
+
+        if (projectVersionTable == null) {
+            final Object projectId = request.getAttribute("projectId", NativeWebRequest.SCOPE_REQUEST);
+            if (!(projectId instanceof final Long projectIdLong)) {
+                throw new HangarApiException(HttpStatus.NOT_FOUND);
             }
+            projectVersionTable = this.versionService.getProjectVersionTable(projectIdLong, param);
         }
 
-        final Object projectId = request.getAttribute("projectId", NativeWebRequest.SCOPE_REQUEST);
-        if (!(projectId instanceof final Long projectIdLong)) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        if (projectVersionTable != null) {
+            request.setAttribute("versionId", projectVersionTable.getId(), NativeWebRequest.SCOPE_REQUEST);
+            return projectVersionTable;
         }
 
-        return this.versionService.getProjectVersionTable(projectIdLong, param);
+        throw new HangarApiException(HttpStatus.NOT_FOUND);
     }
 }
