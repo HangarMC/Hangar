@@ -66,7 +66,7 @@ public class DownloadService extends HangarComponent {
     }
 
     public ResponseEntity<?> downloadVersion(final ProjectTable project, final ProjectVersionTable version, final Platform platform) {
-        final ProjectVersionDownloadTableWithPlatform download = this.downloadsDAO.getDownloadByPlatform(project.getProjectId(), version.getVersionId(), platform);
+        final ProjectVersionDownloadTableWithPlatform download = this.downloadsDAO.getDownloadByPlatform(version.getVersionId(), platform);
         if (download == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
