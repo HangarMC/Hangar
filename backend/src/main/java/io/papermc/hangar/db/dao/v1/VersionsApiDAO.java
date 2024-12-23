@@ -236,17 +236,15 @@ public interface VersionsApiDAO {
         SELECT pv.version_string
            FROM project_versions pv
                JOIN project_channels pc ON pv.channel_id = pc.id
-               JOIN projects p ON pv.project_id = p.id
                LEFT JOIN users u ON pv.author_id = u.id
            WHERE
                <if(!canSeeHidden)>
                    (pv.visibility = 0
                    <if(userId)>
-                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)
+                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = :projectId) AND pv.visibility != 4)
                    <endif>)
                    AND
                <endif>
-               p.id = :projectId AND
                pc.name = :channel
            ORDER BY pv.created_at DESC
            LIMIT 1
