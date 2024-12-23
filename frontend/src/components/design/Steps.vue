@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Step } from "~/types/components/design/Steps";
+import { track } from "~/composables/useTracking";
 
 const router = useRouter();
 const i18n = useI18n();
@@ -16,12 +17,23 @@ const props = defineProps<{
   modelValue: string;
   steps: Step[];
   buttonLangKey: string;
+  trackingName: string;
 }>();
 
 const v = useVuelidate();
 
 const activeStep = computed(() => props.steps.find((s) => s.value === internalValue.value));
 const activeStepIndex = computed(() => props.steps.indexOf(activeStep.value as Step) + 1);
+
+watch(
+  () => activeStep.value,
+  () => {
+    track("funnel", props.trackingName + "-step-" + activeStepIndex.value + "-" + activeStep.value?.value);
+  },
+  {
+    immediate: true,
+  }
+);
 
 const loading = ref(false);
 const disableBack = computed(() => loading.value || (activeStep.value?.disableBack === undefined ? false : unref(activeStep.value?.disableBack)));
@@ -105,13 +117,35 @@ async function goto(step: Step) {
         <div v-for="step in steps" :key="step.value">
           <slot v-if="internalValue === step.value" :name="step.value" />
         </div>
-        <Button v-if="showBack && activeStepIndex === 1" button-type="red" :disabled="disableBack" size="medium" class="mt-3 mr-2" @click="back">
+        <Button
+          v-if="showBack && activeStepIndex === 1"
+          button-type="red"
+          :disabled="disableBack"
+          size="medium"
+          class="mt-3 mr-2"
+          @click="back"
+          v-on="useTracking(trackingName + '-back', { step: internalValue })"
+        >
           {{ i18n.t(buttonLangKey + activeStepIndex + ".back") }}
         </Button>
-        <Button v-else-if="showBack" :disabled="disableBack" size="medium" class="mt-3 mr-2" @click="back">
+        <Button
+          v-else-if="showBack"
+          :disabled="disableBack"
+          size="medium"
+          class="mt-3 mr-2"
+          @click="back"
+          v-on="useTracking(trackingName + '-back', { step: internalValue })"
+        >
           {{ i18n.t(buttonLangKey + activeStepIndex + ".back") }}
         </Button>
-        <Button v-if="showNext" :disabled="disableNext" size="medium" class="mt-3" @click="next">
+        <Button
+          v-if="showNext"
+          :disabled="disableNext"
+          size="medium"
+          class="mt-3"
+          @click="next"
+          v-on="useTracking(trackingName + '-next', { step: internalValue })"
+        >
           {{ i18n.t(buttonLangKey + activeStepIndex + ".continue") }}
         </Button>
       </Card>

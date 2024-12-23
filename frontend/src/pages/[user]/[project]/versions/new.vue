@@ -263,7 +263,7 @@ useSeo(
 
 <template>
   <div>
-    <Steps v-model="selectedStep" :steps="steps" button-lang-key="version.new.steps.">
+    <Steps v-model="selectedStep" :steps="steps" button-lang-key="version.new.steps." tracking-name="new-version">
       <template #artifact>
         <p class="mb-4">{{ t("version.new.form.artifactTitle") }}</p>
         <div class="flex mb-8 items-center">

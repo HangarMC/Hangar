@@ -164,7 +164,7 @@ useSeo(computed(() => ({ title: t("importer.title"), route })));
     <PageTitle>{{ t("importer.title") }}</PageTitle>
     <p v-if="!loggedIn">{{ t("importer.notLoggedIn") }}</p>
 
-    <Steps v-else v-model="selectedStep" :steps="steps" button-lang-key="importer.step">
+    <Steps v-else v-model="selectedStep" :steps="steps" button-lang-key="importer.step" tracking-name="importer">
       <template #intro>
         <p>{{ t("importer.step1.text1") }}</p>
         <p class="inline-flex items-center space-x-2">

@@ -12,6 +12,7 @@ const backendDataHost = process.env.BACKEND_DATA_HOST || (local ? "http://localh
 const allowIndexing = process.env.HANGAR_ALLOW_INDEXING || "true";
 const sentryDSN = process.env.SENTRY_DSN || "https://801c6e3ec217457e94b8d360e861242d@o4504989579804672.ingest.sentry.io/4504989584850944";
 const sentryEnvironment = process.env.SENTRY_ENV || "local";
+const umamiWebsiteId = process.env.UMAMI_WEBSIDE_ID || "8530c6aa-8fb3-4421-8503-4e8de6bc19ef"; // hangar local;
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
@@ -43,6 +44,7 @@ export default defineNuxtConfig({
     backendHost,
     public: {
       allowIndexing,
+      umamiWebsiteId,
       sentry: {
         dsn: sentryDSN,
         environment: sentryEnvironment,

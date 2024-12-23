@@ -112,7 +112,7 @@ function createProject() {
 </script>
 
 <template>
-  <Steps v-model="selectedStep" :steps="steps" button-lang-key="project.new.step">
+  <Steps v-model="selectedStep" :steps="steps" button-lang-key="project.new.step" tracking-name="new-project">
     <template #tos>
       <div class="flex-col flex inline-flex">
         <Alert class="mb-4">

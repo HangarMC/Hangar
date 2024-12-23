@@ -105,6 +105,11 @@ Cloudflare
 
 This Website is protected by various Cloudflare technologies. You can view their Privacy Policy here: https://www.cloudflare.com/privacypolicy/
 
+Sentry
+----------
+
+This Website uses Sentry for error tracking. You can view their Privacy Policy here: https://sentry.io/privacy/
+
 Changes to this Privacy Policy
 ------------------------------
 
@@ -120,7 +125,7 @@ Contact Us
 
 If you have any questions about this Privacy Policy, You can contact Us via email at admin@papermc.io.
 
-Last updated: December 25, 2022
+Last updated: December 23, 2024
 `;
 
 useSeo(computed(() => ({ title: i18n.t("pages.privacypolicyTitle"), route })));

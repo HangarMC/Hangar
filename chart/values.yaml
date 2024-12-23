@@ -120,6 +120,7 @@ frontend:
     configEnv: "hangar.test"
     backendHost: "http://hangar-backend:8080"
     turnstileSiteKey: "todo"
+    umamiWebsiteId: "todo"
 
 backend:
   replicaCount: 1

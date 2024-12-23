@@ -84,6 +84,7 @@ function formatVersionRange(versions: string[]): string {
           rel="noopener noreferrer"
           @click="trackDownload(p, pinnedVersion)"
           @click.middle="trackDownload(p, pinnedVersion)"
+          v-on="useTracking('download-link', { pinned: true, dropdown: false, mainchannel: false, platform: p, project: project.name })"
         >
           <Button :size="small ? 'medium' : 'large'">
             <IconMdiDownloadOutline />
@@ -109,6 +110,7 @@ function formatVersionRange(versions: string[]): string {
           rel="noopener noreferrer"
           @click="trackDownload(p, pinnedVersion)"
           @click.middle="trackDownload(p, pinnedVersion)"
+          v-on="useTracking('download-link', { pinned: false, dropdown: true, mainchannel: false, platform: p, project: project.name })"
         >
           <PlatformLogo :platform="p as Platform" :size="24" class="mr-1 flex-shrink-0" />
           {{ useBackendData.platforms.get(p as Platform)?.name }}
@@ -125,6 +127,7 @@ function formatVersionRange(versions: string[]): string {
       rel="noopener noreferrer"
       @click="trackDownload(singlePlatform, singleVersion)"
       @click.middle="trackDownload(singlePlatform, singleVersion)"
+      v-on="useTracking('download-link', { pinned: false, dropdown: false, mainchannel: false, platform: singlePlatform, project: project.name })"
     >
       <Button :size="small ? 'medium' : 'large'">
         <div class="flex flex-col" :class="{ '-mb-0.5': showSinglePlatform }">
@@ -160,6 +163,7 @@ function formatVersionRange(versions: string[]): string {
         rel="noopener noreferrer"
         @click="trackDownload(p, version)"
         @click.middle="trackDownload(p, version)"
+        v-on="useTracking('download-link', { pinned: false, dropdown: true, mainchannel: false, platform: p, project: project.name })"
       >
         <PlatformLogo :platform="p as Platform" :size="24" class="mr-1 flex-shrink-0" />
         {{ useBackendData.platforms.get(p as Platform)?.name }}
@@ -185,6 +189,7 @@ function formatVersionRange(versions: string[]): string {
         rel="noopener noreferrer"
         @click="trackDownload(p, v)"
         @click.middle="trackDownload(p, v)"
+        v-on="useTracking('download-link', { pinned: false, dropdown: true, mainchannel: true, platform: p, project: project.name })"
       >
         <PlatformLogo :platform="p as Platform" :size="24" class="mr-1 flex-shrink-0" />
         {{ useBackendData.platforms.get(p as Platform)?.name }}

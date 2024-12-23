@@ -3,6 +3,7 @@ import "./assets/css/main.css";
 // popper needs this?
 import "regenerator-runtime/runtime";
 import type { HangarNuxtError } from "~/types/components/error";
+import { identify } from "~/composables/useTracking";
 
 // keep in sync with error.vue, cause reasons
 const runtimeConfig = useRuntimeConfig();
@@ -11,6 +12,7 @@ const settingsStore = useSettingsStore();
 await settingsStore.loadSettingsClient();
 useAccentColor();
 settingsLog("render for user", authStore.user?.name, "with darkmode", settingsStore.darkMode);
+identify();
 
 // for some dum reason useHead will not always replace the "light" from server side with "dark" from client side so we just force it.
 if (import.meta.client) {
@@ -31,6 +33,13 @@ useHead({
     class: "background-body text-[#262626] dark:text-[#E0E6f0]",
   },
   meta: [{ name: "robots", content: runtimeConfig.public.allowIndexing === "false" ? "noindex,nofollow" : "index,follow" }],
+  script: [
+    {
+      src: "https://trk.papermc.io/api/init",
+      defer: true,
+      "data-website-id": useRuntimeConfig().public.umamiWebsiteId,
+    },
+  ],
 });
 
 onErrorCaptured((err) => {

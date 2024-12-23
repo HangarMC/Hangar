@@ -138,8 +138,8 @@ function isRecent(date: string): boolean {
     <nav class="max-w-screen-xl mx-auto flex flex-wrap justify-end px-4 py-2 gap-3">
       <!-- Left side items -->
       <div class="flex items-center gap-4">
-        <Popover v-slot="{ close }" class="relative">
-          <PopoverButton id="menu-button" v-slot="{ open }" class="flex" aria-label="Menu">
+        <Popover v-slot="{ close, open }" class="relative">
+          <PopoverButton id="menu-button" aria-label="Menu" v-on="useTracking('nav-burger-button', { open })" class="flex">
             <icon-mdi-menu class="transition-transform text-[1.2em]" :class="open ? 'transform rotate-90' : ''" />
           </PopoverButton>
 
@@ -155,6 +155,7 @@ function isRecent(date: string): boolean {
                 :to="{ name: link.link } as RouteLocationRaw"
                 class="flex items-center rounded-md px-6 py-2"
                 hover="text-primary-500 bg-primary-0"
+                v-on="useTracking('nav-burger-link', { link: link.link })"
                 @click="close()"
               >
                 <component :is="link.icon" class="mr-3 text-[1.2em]" />
@@ -170,6 +171,7 @@ function isRecent(date: string): boolean {
                 :to="{ name: link.link } as RouteLocationRaw"
                 class="flex items-center rounded-md px-6 py-2"
                 hover="text-primary-500 bg-primary-0"
+                v-on="useTracking('nav-burger-link', { link: link.link })"
                 @click="close()"
               >
                 <component :is="link.icon" class="mr-3 text-[1.2em]" />
@@ -184,6 +186,7 @@ function isRecent(date: string): boolean {
                 :key="link.label"
                 class="flex items-center rounded-md px-6 py-2 hover:(text-primary-500 bg-primary-0)"
                 :href="link.link"
+                v-on="useTracking('nav-burger-link', { link: link.link })"
               >
                 <component :is="link.icon" class="mr-3 text-[1.2em]" />
                 {{ link.label }}
@@ -193,7 +196,7 @@ function isRecent(date: string): boolean {
         </Popover>
 
         <!-- Site logo -->
-        <NuxtLink to="/" class="flex-shrink-0">
+        <NuxtLink to="/" class="flex-shrink-0" v-on="useTracking('nav-logo')">
           <img alt="Hangar Logo" :src="hangarLogo" height="34" width="32" />
         </NuxtLink>
 
@@ -205,6 +208,7 @@ function isRecent(date: string): boolean {
             :to="{ name: navBarLink.link } as RouteLocationRaw"
             class="header-link relative"
             after="absolute content-empty block w-0 top-30px left-1/10 h-4px rounded-8px"
+            v-on="useTracking('nav-desktop-link', { link: navBarLink.link })"
           >
             {{ navBarLink.label }}
           </NuxtLink>
@@ -217,10 +221,10 @@ function isRecent(date: string): boolean {
       <!-- Right side items -->
       <div class="flex items-center gap-2">
         <div v-if="authStore.user" class="flex items-center lt-sm:hidden">
-          <DropdownButton :name="t('nav.new.title')">
+          <DropdownButton :name="t('nav.new.title')" v-on="useTracking('nav-create-dropdwon')">
             <template #default="{ close }">
-              <DropdownItem to="/new" @click="close()">{{ t("nav.new.project") }}</DropdownItem>
-              <DropdownItem to="/neworganization" @click="close()">{{ t("nav.new.organization") }}</DropdownItem>
+              <DropdownItem to="/new" @click="close()" v-on="useTracking('nav-new')">{{ t("nav.new.project") }}</DropdownItem>
+              <DropdownItem to="/neworganization" @click="close()" v-on="useTracking('nav-new-org')">{{ t("nav.new.organization") }}</DropdownItem>
             </template>
           </DropdownButton>
         </div>
@@ -229,6 +233,7 @@ function isRecent(date: string): boolean {
           hover="text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700)"
           aria-label="Toogle dark mode"
           @click="settings.toggleDarkMode()"
+          v-on="useTracking('nav-theme', { darkMode: settings.darkMode })"
         >
           <icon-mdi-weather-night v-if="settings.darkMode" class="text-[1.2em]" />
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]" />
@@ -239,6 +244,7 @@ function isRecent(date: string): boolean {
               class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))"
               aria-label="Notifications"
               @click="updateNotifications"
+              v-on="useTracking('nav-notifications', { unread: unreadNotifications })"
             >
               <IconMdiBellOutline v-show="unreadNotifications === 0" class="text-[1.2em]" />
               <div v-show="unreadNotifications !== 0" class="relative">
@@ -308,7 +314,11 @@ function isRecent(date: string): boolean {
         <!-- Profile dropdown -->
         <div v-if="authStore.user">
           <Popper placement="bottom-end">
-            <button class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))" @click="updateNavData">
+            <button
+              class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))"
+              @click="updateNavData"
+              v-on="useTracking('nav-profile-dropdown')"
+            >
               <UserAvatar :username="authStore.user.name" :avatar-url="authStore.user.avatarUrl" size="xs" :disable-link="true" />
               {{ authStore.user.name }}
             </button>
