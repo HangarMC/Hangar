@@ -187,7 +187,7 @@ public interface ProjectsApiDAO {
         "           FROM project_members_all pma" +
         "           WHERE pma.user_id = u.id" +
         "       ) AS project_count" +
-        "   FROM projects project_watchers pw " +
+        "   FROM project_watchers pw " +
         "       JOIN users u ON pw.user_id = u.id " +
         "       LEFT JOIN user_global_roles ugr ON u.id = ugr.user_id" +
         "       LEFT JOIN roles r ON ugr.role_id = r.id" +
