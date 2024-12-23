@@ -28,9 +28,9 @@
     "@pinia/nuxt": "0.9.0",
     "@vuelidate/core": "2.0.3",
     "@vuelidate/validators": "2.0.4",
-    "@vueuse/components": "12.0.0",
-    "@vueuse/core": "12.0.0",
-    "@vueuse/nuxt": "12.0.0",
+    "@vueuse/components": "12.2.0",
+    "@vueuse/core": "12.2.0",
+    "@vueuse/nuxt": "12.2.0",
     "accept-language-parser": "1.5.0",
     "axios": "1.7.9",
     "chart.js": "4.4.7",
@@ -63,7 +63,7 @@
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "4.4.1",
     "@iconify-json/mdi": "1.2.2",
-    "@nuxt/eslint": "0.7.3",
+    "@nuxt/eslint": "0.7.4",
     "@nuxtjs/i18n": "9.1.1",
     "@nuxtjs/turnstile": "0.9.11",
     "@sentry/bun": "8.47.0",
@@ -88,14 +88,14 @@
     "lint-staged": "15.2.11",
     "nuxt": "3.14.1592",
     "oxlint": "0.15.3",
-    "pnpm": "9.15.0",
+    "pnpm": "9.15.1",
     "prettier": "3.4.2",
     "regenerator-runtime": "0.14.1",
     "sass": "1.83.0",
     "typescript": "5.7.2",
     "unplugin-icons": "0.22.0",
     "unplugin-vue-components": "0.28.0",
-    "vue-tsc": "2.1.10"
+    "vue-tsc": "2.2.0"
   },
-  "packageManager": "pnpm@9.14.2+sha256.06e65a4965baff6d6097f9c8f75c35f6d420974dbc03d775009056a69edfd271"
+  "packageManager": "pnpm@9.15.1+sha512.1acb565e6193efbebda772702950469150cf12bcc764262e7587e71d19dc98a423dff9536e57ea44c49bdf790ff694e83c27be5faa23d67e0c033b583be4bfcf"
 }
