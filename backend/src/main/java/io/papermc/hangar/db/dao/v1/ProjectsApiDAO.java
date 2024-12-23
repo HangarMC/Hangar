@@ -133,20 +133,18 @@ public interface ProjectsApiDAO {
     @RegisterConstructorMapper(ProjectMember.class)
     @RegisterColumnMapperFactory(CompactRoleColumnMapperFactory.class)
     @SqlQuery("SELECT u.name AS \"user\", array_agg(r.name) roles " +
-        "   FROM projects p " +
-        "       JOIN user_project_roles upr ON p.id = upr.project_id " +
+        "   FROM user_project_roles upr" +
         "       JOIN users u ON upr.user_id = u.id " +
         "       JOIN roles r ON upr.role_type = r.name " +
-        "   WHERE p.id = :id " +
+        "   WHERE upr.project_id = :id " +
         "   GROUP BY u.name ORDER BY max(r.permission::bigint) DESC " +
         "   <offsetLimit>")
     List<ProjectMember> getProjectMembers(long id, @BindPagination RequestPagination pagination);
 
     @SqlQuery("SELECT count(*) " +
-        "   FROM projects p " +
-        "       JOIN user_project_roles upr ON p.id = upr.project_id " +
+        "   FROM user_project_roles upr " +
         "       JOIN users u ON upr.user_id = u.id " +
-        "   WHERE p.id = :id " +
+        "   WHERE upr.project_id = :id " +
         "   GROUP BY u.name")
     long getProjectMembersCount(long id);
 
@@ -162,20 +160,18 @@ public interface ProjectsApiDAO {
         "           FROM project_members_all pma" +
         "           WHERE pma.user_id = u.id" +
         "       ) AS project_count" +
-        "   FROM projects p " +
-        "       JOIN project_stars ps ON p.id = ps.project_id " +
+        "   FROM project_stars ps " +
         "       JOIN users u ON ps.user_id = u.id " +
         "       LEFT JOIN user_global_roles ugr ON u.id = ugr.user_id" +
         "       LEFT JOIN roles r ON ugr.role_id = r.id" +
-        "   WHERE p.id = :id " +
+        "   WHERE ps.project_id = :id " +
         "   GROUP BY u.id" +
         "   LIMIT :limit OFFSET :offset")
     List<User> getProjectStargazers(long id, long limit, long offset);
 
     @SqlQuery("SELECT count(ps.user_id) " +
-        "   FROM projects p " +
-        "       JOIN project_stars ps ON p.id = ps.project_id " +
-        "   WHERE p.id = :id " +
+        "   FROM project_stars ps " +
+        "   WHERE ps.project_id = :id " +
         "   GROUP BY ps.user_id")
     Long getProjectStargazersCount(long id);
 
@@ -191,33 +187,29 @@ public interface ProjectsApiDAO {
         "           FROM project_members_all pma" +
         "           WHERE pma.user_id = u.id" +
         "       ) AS project_count" +
-        "   FROM projects p " +
-        "       JOIN project_watchers pw ON p.id = pw.project_id " +
+        "   FROM projects project_watchers pw " +
         "       JOIN users u ON pw.user_id = u.id " +
         "       LEFT JOIN user_global_roles ugr ON u.id = ugr.user_id" +
         "       LEFT JOIN roles r ON ugr.role_id = r.id" +
-        "   WHERE p.id = :id" +
+        "   WHERE pw.project_id = :id" +
         "   GROUP BY u.id" +
         "   LIMIT :limit OFFSET :offset")
     List<User> getProjectWatchers(long id, long limit, long offset);
 
     @SqlQuery("SELECT count(pw.user_id) " +
-        "   FROM projects p " +
-        "       JOIN project_watchers pw ON p.id = pw.project_id " +
-        "   WHERE p.id = :id " +
+        "   FROM project_watchers pw " +
+        "   WHERE pw.project_id = :id " +
         "   GROUP BY pw.user_id")
     Long getProjectWatchersCount(long id);
 
     @KeyColumn("dateKey")
     @RegisterConstructorMapper(DayProjectStats.class)
     @SqlQuery("SELECT cast(dates.day AS date) datekey, coalesce(sum(pvd.downloads), 0) AS downloads, coalesce(pv.views, 0) AS views" +
-        "   FROM projects p," +
-        "   (SELECT generate_series(:fromDate::date, :toDate::date, INTERVAL '1 DAY') AS day) dates " +
+        "   FROM (SELECT generate_series(:fromDate::date, :toDate::date, INTERVAL '1 DAY') AS day) dates " +
         "       LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day" +
         "       LEFT JOIN project_views pv ON dates.day = pv.day AND pvd.project_id = pv.project_id" +
         "   WHERE " +
-        "       p.id = :id AND" +
-        "       (pvd IS NULL OR pvd.project_id = p.id)" +
+        "       (pvd IS NULL OR pvd.project_id = :id)" +
         "   GROUP BY pv.views, dates.day")
     Map<String, DayProjectStats> getProjectStats(long id, OffsetDateTime fromDate, OffsetDateTime toDate);
 }
