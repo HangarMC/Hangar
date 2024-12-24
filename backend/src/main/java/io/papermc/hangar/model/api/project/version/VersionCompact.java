@@ -1,6 +1,7 @@
 package io.papermc.hangar.model.api.project.version;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.Visible;
@@ -16,8 +17,9 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
-public class VersionCompact extends Model implements Named, Visible {
+public class VersionCompact extends Model implements Named, Visible, Identified {
 
+    private final long id;
     private final String name;
     private final Visibility visibility;
     private final String description;
@@ -28,8 +30,9 @@ public class VersionCompact extends Model implements Named, Visible {
     private final PinnedStatus pinnedStatus;
     private final Map<Platform, PlatformVersionDownload> downloads = new EnumMap<>(Platform.class);
 
-    protected VersionCompact(final OffsetDateTime createdAt, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final PinnedStatus pinnedStatus) {
+    protected VersionCompact(final OffsetDateTime createdAt, final long id, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final PinnedStatus pinnedStatus) {
         super(createdAt);
+        this.id = id;
         this.name = name;
         this.visibility = visibility;
         this.description = description;
@@ -38,6 +41,11 @@ public class VersionCompact extends Model implements Named, Visible {
         this.reviewState = reviewState;
         this.channel = channel;
         this.pinnedStatus = pinnedStatus;
+    }
+
+    @Override
+    public long getId() {
+        return this.id;
     }
 
     @Override
@@ -76,6 +84,22 @@ public class VersionCompact extends Model implements Named, Visible {
 
     public PinnedStatus getPinnedStatus() {
         return this.pinnedStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "VersionCompact{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", visibility=" + visibility +
+            ", description='" + description + '\'' +
+            ", stats=" + stats +
+            ", author='" + author + '\'' +
+            ", reviewState=" + reviewState +
+            ", channel=" + channel +
+            ", pinnedStatus=" + pinnedStatus +
+            ", downloads=" + downloads +
+            "} " + super.toString();
     }
 
     @EnumByName

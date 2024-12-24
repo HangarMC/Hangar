@@ -110,21 +110,25 @@ public class VersionService extends HangarComponent {
         return this.projectVersionVisibilityService.checkVisibility(this.projectVersionsDAO.getProjectVersionTable(versionId));
     }
 
+    public @Nullable ProjectVersionTable getProjectVersionTable(final long projectId, final String versionString) {
+        return this.projectVersionVisibilityService.checkVisibility(this.projectVersionsDAO.getProjectVersionTableWithProjectId(projectId, versionString));
+    }
+
     public @Nullable ProjectVersionTable getProjectVersionTable(final String slug, final String versionString) {
-        return this.projectVersionVisibilityService.checkVisibility(this.projectVersionsDAO.getProjectVersionTable(slug, versionString));
+        return this.projectVersionVisibilityService.checkVisibility(this.projectVersionsDAO.getProjectVersionTableWithProjectSlug(slug, versionString));
     }
 
     public void updateProjectVersionTable(final ProjectVersionTable projectVersionTable) {
         this.projectVersionsDAO.update(projectVersionTable);
     }
 
-    public HangarVersion getHangarVersion(final String slug, final String versionString) {
-        final HangarVersion version = this.hangarVersionsDAO.getVersionWithVersionString(slug, versionString, this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
+    public HangarVersion getHangarVersion(final ProjectTable project, final ProjectVersionTable pvt) {
+        final HangarVersion version = this.hangarVersionsDAO.getVersion(pvt.getId(), this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
-        return this.versionDependencyService.addDownloadsAndDependencies(slug, versionString, version.getId()).applyTo(version);
+        return this.versionDependencyService.addDownloadsAndDependencies(project, pvt, version.getId()).applyTo(version);
     }
 
     @Transactional

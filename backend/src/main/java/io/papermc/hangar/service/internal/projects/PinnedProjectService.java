@@ -17,12 +17,12 @@ public class PinnedProjectService extends HangarComponent {
         this.pinnedProjectDAO = pinnedProjectDAO;
     }
 
-    public void addPinnedProject(final long userId, final String slug) {
-        this.pinnedProjectDAO.insert(userId, slug);
+    public void addPinnedProject(final long userId, final long projectId) {
+        this.pinnedProjectDAO.insert(userId, projectId);
     }
 
-    public void removePinnedProject(final long userId, final String slug) {
-        this.pinnedProjectDAO.delete(userId, slug);
+    public void removePinnedProject(final long userId, final long projectId) {
+        this.pinnedProjectDAO.delete(userId, projectId);
     }
 
     public List<ProjectCompact> getPinnedProjects(final long userid) {

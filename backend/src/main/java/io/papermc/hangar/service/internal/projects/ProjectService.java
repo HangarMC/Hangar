@@ -123,20 +123,14 @@ public class ProjectService extends HangarComponent {
         return pair.getLeft();
     }
 
-    public String getProjectUrlFromSlug(final String slug) {
-        final Long hangarUserId = this.getHangarUserId();
-        final Project project = this.hangarProjectsDAO.getProject(slug, hangarUserId);
-        if (project == null) {
-            return null;
-        } else {
-            return "/" + project.getNamespace().getOwner() + "/" + project.getNamespace().getSlug();
-        }
+    public String getProjectUrlFromSlug(final ProjectTable project) {
+        return "/" + project.getOwnerName() + "/" + project.getSlug();
     }
 
-    public HangarProject getHangarProject(final String slug) {
+    public HangarProject getHangarProject(final ProjectTable projectTable) {
         // TODO All of this is dumb and needs to be redone into as little queries as possible
         final Long hangarUserId = this.getHangarUserId();
-        final Project project = this.hangarProjectsDAO.getProject(slug, hangarUserId);
+        final Project project = this.hangarProjectsDAO.getProject(projectTable.getId(), hangarUserId);
         final long projectId = project.getId();
         final String ownerName = project.getNamespace().getOwner();
 
@@ -159,9 +153,9 @@ public class ProjectService extends HangarComponent {
 
         final Map<Platform, HangarVersion> mainChannelVersions = new EnumMap<>(Platform.class);
         final CompletableFuture<Void> mainChannelFuture = CompletableFuture.runAsync(() -> Arrays.stream(Platform.getValues()).parallel().forEach(platform -> {
-            final HangarVersion version = this.getLastVersion(slug, platform, this.config.channels.nameDefault());
+            final HangarVersion version = this.getLastVersion(projectTable, platform, this.config.channels.nameDefault());
             if (version != null) {
-                this.versionDependencyService.addDownloadsAndDependencies(ownerName, slug, version.getName(), version.getId()).applyTo(version);
+                this.versionDependencyService.addDownloadsAndDependencies(ownerName, projectTable.getSlug(), version.getName(), version.getId()).applyTo(version);
                 mainChannelVersions.put(platform, version);
             }
         }));
@@ -189,7 +183,7 @@ public class ProjectService extends HangarComponent {
         return CompletableFuture.supplyAsync(supplier);
     }
 
-    public @Nullable HangarVersion getLastVersion(final String slug, final Platform platform, final @Nullable String channel) {
+    public @Nullable HangarVersion getLastVersion(final ProjectTable project, final Platform platform, final @Nullable String channel) {
         final RequestPagination pagination = new RequestPagination(1L, 0L);
         pagination.getFilters().put("platform", new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
         if (channel != null) {
@@ -198,13 +192,13 @@ public class ProjectService extends HangarComponent {
         }
 
         final Long userId = this.getHangarUserId();
-        final Long versionId = this.versionsApiDAO.getVersions(slug, false, userId, pagination).keySet().stream().findAny().orElse(null);
+        final Long versionId = this.versionsApiDAO.getVersions(project.getId(), false, userId, pagination).keySet().stream().findAny().orElse(null);
         if (versionId != null) {
             return this.hangarVersionsDAO.getVersion(versionId, this.getGlobalPermissions().has(Permission.SeeHidden), userId);
         }
 
         // Try again with any channel, else empty
-        return channel != null ? this.getLastVersion(slug, platform, null) : null;
+        return channel != null ? this.getLastVersion(project, platform, null) : null;
     }
 
     public void validateSettings(final ProjectSettingsForm settingsForm) {
@@ -226,10 +220,9 @@ public class ProjectService extends HangarComponent {
         }
     }
 
-    public void saveSettings(final String slug, final ProjectSettingsForm settingsForm) {
+    public void saveSettings(final ProjectTable projectTable, final ProjectSettingsForm settingsForm) {
         this.validateSettings(settingsForm);
 
-        final ProjectTable projectTable = this.getProjectTable(slug);
         // final boolean requiresHomepageUpdate = !projectTable.getKeywords().equals(settingsForm.getSettings().getKeywords())
         //    || !projectTable.getDescription().equals(settingsForm.getDescription());
 
@@ -282,33 +275,24 @@ public class ProjectService extends HangarComponent {
     }
 
     @Transactional
-    public void saveSponsors(final String slug, final @Nullable String content) {
+    public void saveSponsors(final ProjectTable projectTable, final @Nullable String content) {
         final String trimmedContent = content != null ? content.trim() : "";
         if (trimmedContent.length() > this.config.projects.maxSponsorsLen()) {
             throw new HangarApiException("page.new.error.maxLength");
         }
 
-        final ProjectTable projectTable = this.getProjectTable(slug);
         projectTable.setSponsors(trimmedContent);
         this.projectsDAO.update(projectTable);
         // TODO what settings changed
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
     }
 
-    public void changeAvatar(final String slug, final byte[] avatar) throws IOException {
-        final ProjectTable table = this.getProjectTable(slug);
-        if (table == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown project " + slug);
-        }
+    public void changeAvatar(final ProjectTable table, final byte[] avatar) throws IOException {
         this.avatarService.changeProjectAvatar(table.getProjectId(), avatar);
         this.actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(table.getId()), Base64.getEncoder().encodeToString(avatar), "#unknown"));
     }
 
-    public void deleteAvatar(final String slug) {
-        final ProjectTable table = this.getProjectTable(slug);
-        if (table == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown project " + slug);
-        }
+    public void deleteAvatar(final ProjectTable table) {
         this.avatarService.deleteProjectAvatar(table.getProjectId());
         this.actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(table.getId()), "#empty", "#unknown"));
     }

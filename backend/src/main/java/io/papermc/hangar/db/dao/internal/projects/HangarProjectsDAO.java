@@ -52,8 +52,8 @@ public interface HangarProjectsDAO {
         "  FROM home_projects hp" +
         "         JOIN projects_extra p ON hp.id = p.id" +
         "         JOIN users u ON p.owner_id = u.id" +
-        "         WHERE lower(p.slug) = lower(:slug)")
-    Project getProject(String slug, Long currentUserId);
+        "         WHERE p.id = :projectId")
+    Project getProject(long projectId, Long currentUserId);
 
     @RegisterRowMapperFactory(JoinableRowMapperFactory.class)
     @RegisterConstructorMapper(UserTable.class)

@@ -13,7 +13,7 @@ public interface HangarProjectNotesDAO {
     @SqlQuery("""
         SELECT pn.*, (SELECT u.name FROM users u WHERE u.id = pn.user_id) AS name
         FROM project_notes pn
-        WHERE pn.project_id = (SELECT p.id FROM projects p WHERE lower(p.slug) = lower(:slug))
+        WHERE pn.project_id = :projectId
         """)
-    List<HangarProjectNote> getProjectNotes(String slug);
+    List<HangarProjectNote> getProjectNotes(long projectId);
 }

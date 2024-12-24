@@ -97,22 +97,19 @@ public class ProjectController extends HangarComponent {
         return ResponseEntity.ok(projectTable.getUrl());
     }
 
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
-    @GetMapping("/project/{slug}")
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    @GetMapping("/project/{slugOrId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<HangarProject> getHangarProject(@PathVariable final String slug) {
-        final HangarProject hangarProject = this.projectService.getHangarProject(slug);
+    public ResponseEntity<HangarProject> getHangarProject(@PathVariable("slugOrId") final ProjectTable project) {
+        final HangarProject hangarProject = this.projectService.getHangarProject(project);
         this.statService.addProjectView(hangarProject);
         return ResponseEntity.ok(hangarProject);
     }
 
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
-    @GetMapping("/project-redirect/{slug}")
-    public void projectRedirect(@PathVariable final String slug) {
-        final String url = this.projectService.getProjectUrlFromSlug(slug);
-        if (url == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unknown slug: " + slug);
-        }
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    @GetMapping("/project-redirect/{slugOrId}")
+    public void projectRedirect(@PathVariable("slugOrId") final ProjectTable project) {
+        final String url = this.projectService.getProjectUrlFromSlug(project);
         this.response.setStatus(301);
         this.response.setHeader("Location", url);
     }
@@ -121,111 +118,105 @@ public class ProjectController extends HangarComponent {
     @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 10)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#slug}")
-    @PostMapping(path = "/project/{slug}/settings", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveProjectSettings(@PathVariable final String slug, @RequestBody final @Valid ProjectSettingsForm settingsForm) {
-        this.projectService.saveSettings(slug, settingsForm);
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#project}")
+    @PostMapping(path = "/project/{slugOrId}/settings", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void saveProjectSettings(@PathVariable("slugOrId") final ProjectTable project, @RequestBody final @Valid ProjectSettingsForm settingsForm) {
+        this.projectService.saveSettings(project, settingsForm);
     }
 
     @Unlocked
     @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 5)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#slug}")
-    @PostMapping(path = "/project/{slug}/sponsors", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveProjectSettings(@PathVariable final String slug, @RequestBody final StringContent content) {
-        this.projectService.saveSponsors(slug, content.getContent());
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#project}")
+    @PostMapping(path = "/project/{slugOrId}/sponsors", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void saveProjectSettings(@PathVariable("slugOrId") final ProjectTable project, @RequestBody final StringContent content) {
+        this.projectService.saveSponsors(project, content.getContent());
     }
 
     @Unlocked
     @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#slug}")
-    @PostMapping(path = "/project/{slug}/saveIcon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void saveProjectIcon(@PathVariable final String slug, @RequestParam final MultipartFile projectIcon) throws IOException {
-        this.projectService.changeAvatar(slug, projectIcon.getBytes());
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#project}")
+    @PostMapping(path = "/project/{slugOrId}/saveIcon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void saveProjectIcon(@PathVariable("slugOrId") final ProjectTable project, @RequestParam final MultipartFile projectIcon) throws IOException {
+        this.projectService.changeAvatar(project, projectIcon.getBytes());
     }
 
     @Unlocked
     @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#slug}")
-    @PostMapping("/project/{slug}/resetIcon")
-    public void resetProjectIcon(@PathVariable final String slug) {
-        this.projectService.deleteAvatar(slug);
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#project}")
+    @PostMapping("/project/{slugOrId}/resetIcon")
+    public void resetProjectIcon(@PathVariable("slugOrId") final ProjectTable project) {
+        this.projectService.deleteAvatar(project);
     }
 
     @Unlocked
     @RequireAal(1)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#slug}")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#project}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
-    @PostMapping(path = "/project/{slug}/rename", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> renameProject(@PathVariable final String slug, @RequestBody @Valid final StringContent nameContent) {
-        return ResponseEntity.ok(this.projectFactory.renameProject(slug, nameContent.getContent()));
+    @PostMapping(path = "/project/{slugOrId}/rename", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> renameProject(@PathVariable("slugOrId") final ProjectTable project, @RequestBody @Valid final StringContent nameContent) {
+        return ResponseEntity.ok(this.projectFactory.renameProject(project, nameContent.getContent()));
     }
 
     @Unlocked
     @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#slug}")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#project}")
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
-    @PostMapping(path = "/project/{slug}/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void transferProject(@PathVariable final String slug, @RequestBody @Valid final StringContent nameContent) {
-        final ProjectTable projectTable = this.projectService.getProjectTable(slug);
-        this.projectInviteService.sendTransferRequest(nameContent.getContent(), projectTable);
+    @PostMapping(path = "/project/{slugOrId}/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void transferProject(@PathVariable("slugOrId") final ProjectTable project, @RequestBody @Valid final StringContent nameContent) {
+        this.projectInviteService.sendTransferRequest(nameContent.getContent(), project);
     }
 
     @Unlocked
     @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#slug}")
-    @PostMapping(path = "/project/{slug}/canceltransfer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void cancelProjectTransfer(@PathVariable final String slug) {
-        final ProjectTable projectTable = this.projectService.getProjectTable(slug);
-        this.projectInviteService.cancelTransferRequest(projectTable);
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_OWNER, args = "{#project}")
+    @PostMapping(path = "/project/{slugOrId}/canceltransfer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void cancelProjectTransfer(@PathVariable("slugOrId") final ProjectTable project) {
+        this.projectInviteService.cancelTransferRequest(project);
     }
 
     @Unlocked
     @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 2, refillSeconds = 10)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#slug}")
-    @PostMapping(path = "/project/{slug}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.ProjectMember member) {
-        final ProjectTable projectTable = this.projectService.getProjectTable(slug);
-        this.projectInviteService.sendInvite(member, projectTable);
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#project}")
+    @PostMapping(path = "/project/{slugOrId}/members/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addProjectMember(@PathVariable("slugOrId") final ProjectTable project, @RequestBody @Valid final EditMembersForm.ProjectMember member) {
+        this.projectInviteService.sendInvite(member, project);
     }
 
     @Unlocked
     @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 10)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#slug}")
-    @PostMapping(path = "/project/{slug}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void editProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.ProjectMember member) {
-        final ProjectTable projectTable = this.projectService.getProjectTable(slug);
-        this.projectMemberService.editMember(member, projectTable);
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#project}")
+    @PostMapping(path = "/project/{slugOrId}/members/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void editProjectMember(@PathVariable("slugOrId") final ProjectTable project, @RequestBody @Valid final EditMembersForm.ProjectMember member) {
+        this.projectMemberService.editMember(member, project);
     }
 
     @Unlocked
     @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#slug}")
-    @PostMapping(path = "/project/{slug}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void removeProjectMember(@PathVariable final String slug, @RequestBody @Valid final EditMembersForm.ProjectMember member) {
-        final ProjectTable projectTable = this.projectService.getProjectTable(slug);
-        this.projectMemberService.removeMember(member, projectTable);
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MANAGE_SUBJECT_MEMBERS, args = "{#project}")
+    @PostMapping(path = "/project/{slugOrId}/members/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void removeProjectMember(@PathVariable("slugOrId") final ProjectTable project, @RequestBody @Valid final EditMembersForm.ProjectMember member) {
+        this.projectMemberService.removeMember(member, project);
     }
 
     @Unlocked
     @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#slug}")
-    @PostMapping(path = "/project/{slug}/members/leave", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void leaveProject(@PathVariable final String slug) {
-        final ProjectTable projectTable = this.projectService.getProjectTable(slug);
-        this.projectMemberService.leave(projectTable);
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#project}")
+    @PostMapping(path = "/project/{slugOrId}/members/leave", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void leaveProject(@PathVariable("slugOrId") final ProjectTable project) {
+        this.projectMemberService.leave(project);
     }
 
     @Unlocked
@@ -253,13 +244,13 @@ public class ProjectController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 10, refillTokens = 3, refillSeconds = 10)
     @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
-    @PostMapping(path = "/project/{slug}/pin/{state}")
-    public void setPinnedStatus(@PathVariable("slug") final String slug, @PathVariable final boolean state) {
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    @PostMapping(path = "/project/{slugOrId}/pin/{state}")
+    public void setPinnedStatus(@PathVariable("slugOrId") final ProjectTable project, @PathVariable final boolean state) {
         if (state) {
-            this.pinnedProjectService.addPinnedProject(this.getHangarUserId(), slug);
+            this.pinnedProjectService.addPinnedProject(this.getHangarUserId(), project.getId());
         } else {
-            this.pinnedProjectService.removePinnedProject(this.getHangarUserId(), slug);
+            this.pinnedProjectService.removePinnedProject(this.getHangarUserId(), project.getId());
         }
     }
 

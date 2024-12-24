@@ -111,7 +111,7 @@ public class SitemapService extends HangarComponent {
 
         // add all versions of said projects
         projects.forEach(p -> {
-            final SortedMap<Long, Version> projectVersions = this.versionsApiDAO.getVersions(p.getSlug(), false, null, new RequestPagination(100L, 0L));
+            final SortedMap<Long, Version> projectVersions = this.versionsApiDAO.getVersions(p.getId(), false, null, new RequestPagination(100L, 0L));
             projectVersions.values().stream()
                 .filter(pv -> pv.getVisibility() == Visibility.PUBLIC || pv.getVisibility() == Visibility.NEEDSAPPROVAL)
                 .forEach(pv -> generator.addPage(WebPage.builder().name(this.path(userTable.getName(), p.getSlug(), "versions", pv.getName()))

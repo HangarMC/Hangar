@@ -93,14 +93,13 @@ public class ProjectFactory extends HangarComponent {
         return projectTable;
     }
 
-    public String renameProject(final String slug, final String newName) {
-        return this.renameProject(slug, newName, false);
+    public String renameProject(final ProjectTable project, final String newName) {
+        return this.renameProject(project, newName, false);
     }
 
     @Transactional
-    public String renameProject(final String slug, final String newName, final boolean skipNameCheck) {
+    public String renameProject(final ProjectTable projectTable, final String newName, final boolean skipNameCheck) {
         final String compactNewName = StringUtils.compact(newName);
-        final ProjectTable projectTable = this.projectService.getProjectTable(slug);
         this.checkProjectAvailability(compactNewName, skipNameCheck);
 
         final String oldName = projectTable.getName();
@@ -157,7 +156,7 @@ public class ProjectFactory extends HangarComponent {
             }
 
             final String newName = projectTable.getName() + SOFT_DELETION_SUFFIX + deletedId;
-            this.renameProject(projectTable.getSlug(), newName, true);
+            this.renameProject(projectTable, newName, true);
             projectTable.setName(newName);
             projectTable.setSlug(StringUtils.slugify(newName));
             this.projectVisibilityService.changeVisibility(projectTable, Visibility.SOFTDELETE, comment);

@@ -7,6 +7,7 @@ import io.papermc.hangar.model.api.project.version.FileInfo;
 import io.papermc.hangar.model.api.project.version.PlatformVersionDownload;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTableWithPlatform;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
@@ -64,28 +65,32 @@ public class DownloadService extends HangarComponent {
         return versionDownloadsMap;
     }
 
-    public ResponseEntity<?> downloadVersion(final String project, final String versionString, final Platform platform) {
-        final ProjectTable projectTable = this.projectService.getProjectTable(project);
-        if (projectTable == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
-
-        final ProjectVersionDownloadTableWithPlatform download = this.downloadsDAO.getDownloadByPlatform(projectTable.getProjectId(), versionString, platform);
+    public ResponseEntity<?> downloadVersion(final ProjectTable project, final ProjectVersionTable version, final Platform platform) {
+        final ProjectVersionDownloadTableWithPlatform download = this.downloadsDAO.getDownloadByPlatform(version.getVersionId(), platform);
         if (download == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
-        final String ownerName = projectTable.getOwnerName(); // TODO Move away from owner name dirs
+        final String ownerName = project.getOwnerName(); // TODO Move away from owner name dirs
         if (StringUtils.hasText(download.getExternalUrl())) {
             return ResponseEntity.status(301).header("Location", download.getExternalUrl()).build();
         } else if (this.fileService instanceof S3FileService){
-            return ResponseEntity.status(301).header("Location", this.fileService.getVersionDownloadUrl(ownerName, projectTable.getName(), versionString, download.getPlatform(), download.getFileName())).build();
+            return ResponseEntity.status(301).header("Location", this.fileService.getVersionDownloadUrl(ownerName, project.getName(), version.getName(), download.getPlatform(), download.getFileName())).build();
         } else {
-            final String path = this.projectFiles.getVersionDir(ownerName, projectTable.getName(), versionString, platform, download.getFileName());
+            final String path = this.projectFiles.getVersionDir(ownerName, project.getName(), version.getName(), platform, download.getFileName());
             if (!this.fileService.exists(path)) {
-                throw new HangarApiException("Couldn't find a file for version " + versionString);
+                throw new HangarApiException("Couldn't find a file for version " + version.getName());
             }
             return ResponseEntity.status(200).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + download.getFileName() + "\"").body(this.fileService.getResource(path));
         }
+    }
+
+    public ResponseEntity<?> downloadVersion(final ProjectVersionTable version, final Platform platform) {
+        final ProjectTable project = this.projectService.getProjectTable(version.getProjectId());
+        if (project == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+
+        return this.downloadVersion(project, version, platform);
     }
 }
