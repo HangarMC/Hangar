@@ -83,8 +83,8 @@ public interface VersionsApiDAO {
                pv.version_string,
                pv.visibility,
                pv.description,
-               coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_totalDownloads,
-               (select array_agg(d) from (SELECT pvd.platform, sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id GROUP BY pvd.platform) d) vs_platformDownloads,
+               coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id), 0) vs_totalDownloads,
+               (select array_agg(d) from (SELECT pvd.platform, sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id GROUP BY pvd.platform) d) vs_platformDownloads,
                (select u.name from users u where u.id = pv.author_id) as author,
                pv.review_state,
                pc.created_at pc_created_at,
@@ -98,20 +98,19 @@ public interface VersionsApiDAO {
                    ELSE 'NONE'
                END AS pinnedStatus
            FROM project_versions pv
-               JOIN projects p ON pv.project_id = p.id
                JOIN project_channels pc ON pv.channel_id = pc.id
                <if(platformfilter)>INNER JOIN sq ON pv.id = sq.version_id<endif>
            WHERE TRUE <filters>
                <if(!canSeeHidden)>
                    AND (pv.visibility = 0
                    <if(userId)>
-                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)
+                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = :projectId) AND pv.visibility != 4)
                    <endif>)
                <endif>
-               AND lower(p.slug) = lower(:slug)
+               AND pv.project_id = :projectId
            ORDER BY pv.created_at DESC <offsetLimit>
     """)
-    SortedMap<Long, Version> getVersions(String slug, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
+    SortedMap<Long, Version> getVersions(long projectId, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
     @SqlQuery("""
            <if(platformfilter)>
@@ -122,18 +121,17 @@ public interface VersionsApiDAO {
            <endif>
            SELECT count(DISTINCT pv.id)
            FROM project_versions pv
-                    JOIN projects p ON pv.project_id = p.id
                     JOIN project_channels pc ON pv.channel_id = pc.id
                     <if(platformfilter)>INNER JOIN sq ON pv.id = sq.version_id<endif>
            WHERE TRUE <filters>
                <if(!canSeeHidden)>
                    AND (pv.visibility = 0
                    <if(userId)>
-                      OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)
+                      OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = :projectId) AND pv.visibility != 4)
                    <endif>)
                <endif>
-           AND lower(p.slug) = lower(:slug)""")
-    Long getVersionCount(String slug, @Define boolean canSeeHidden, @Define Long userId, @BindPagination(isCount = true) RequestPagination pagination);
+               AND pv.project_id = :projectId""")
+    Long getVersionCount(long projectId, @Define boolean canSeeHidden, @Define Long userId, @BindPagination(isCount = true) RequestPagination pagination);
 
     @SqlQuery("SELECT " +
         "       pvd.name," +
