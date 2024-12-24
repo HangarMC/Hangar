@@ -1,7 +1,6 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.NamedPermission;
@@ -18,7 +17,6 @@ import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.service.internal.projects.ChannelService;
-import io.papermc.hangar.service.internal.projects.ProjectService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Set;
@@ -43,12 +41,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChannelController extends HangarComponent {
 
     private final ChannelService channelService;
-    private final ProjectService projectService;
 
     @Autowired
-    public ChannelController(final ChannelService channelService, final ProjectService projectService) {
+    public ChannelController(final ChannelService channelService) {
         this.channelService = channelService;
-        this.projectService = projectService;
     }
 
     @GetMapping("/checkName")
@@ -67,14 +63,10 @@ public class ChannelController extends HangarComponent {
 
     // @el(author: String, slug: String)
     @Anyone
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
-    @GetMapping(path = "/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<HangarChannel>> getChannels(@PathVariable final String slug) {
-        final ProjectTable projectTable = this.projectService.getProjectTable(slug);
-        if (projectTable == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(this.channelService.getProjectChannels(projectTable.getId()));
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    @GetMapping(path = "/{project}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<HangarChannel>> getChannels(@PathVariable final ProjectTable project) {
+        return ResponseEntity.ok(this.channelService.getProjectChannels(project.getId()));
     }
 
     @Unlocked

@@ -5,6 +5,7 @@ import io.papermc.hangar.db.dao.internal.projects.HangarProjectNotesDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectNotesDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.projects.ProjectNoteTable;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.projects.HangarProjectNote;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ public class ProjectNoteService extends HangarComponent {
         this.hangarProjectNotesDAO = hangarProjectNotesDAO;
     }
 
-    public List<HangarProjectNote> getNotes(final String slug) {
-        return this.hangarProjectNotesDAO.getProjectNotes(slug);
+    public List<HangarProjectNote> getNotes(final ProjectTable project) {
+        return this.hangarProjectNotesDAO.getProjectNotes(project.getId());
     }
 
     public void addNote(final long projectId, final String msg) {
