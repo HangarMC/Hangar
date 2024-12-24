@@ -123,7 +123,7 @@ public class VersionService extends HangarComponent {
     }
 
     public HangarVersion getHangarVersion(final ProjectTable project, final ProjectVersionTable pvt) {
-        final HangarVersion version = this.hangarVersionsDAO.getVersionWithVersionString(project.getId(), pvt.getId(), this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
+        final HangarVersion version = this.hangarVersionsDAO.getVersion(pvt.getId(), this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }

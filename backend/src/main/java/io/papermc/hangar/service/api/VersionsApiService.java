@@ -152,7 +152,7 @@ public class VersionsApiService extends HangarComponent {
 
     //@Transactional(readOnly = true) // TODO in an ideal world this would be an transaction, but right now this fries the DB
     public Version getVersion(final ProjectTable project, final ProjectVersionTable pvt) {
-        final Map.Entry<Long, Version> version = this.versionsApiDAO.getVersionWithVersionString(project.getId(), pvt.getId(),
+        final Map.Entry<Long, Version> version = this.versionsApiDAO.getVersion(pvt.getId(),
             this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
@@ -197,20 +197,20 @@ public class VersionsApiService extends HangarComponent {
         return this.versionsApiDAO.getVersionStats(version.getProjectId(), version.getId(), fromDate, toDate);
     }
 
-    @CacheEvict(value = CacheConfig.LATEST_VERSION, keyGenerator = "ignoringCaseCacheKeyGenerator")
-    public void evictLatestRelease(final String slug) {
+    @CacheEvict(value = CacheConfig.LATEST_VERSION)
+    public void evictLatestRelease(final long projectId) {
     }
 
-    @Cacheable(value = CacheConfig.LATEST_VERSION, keyGenerator = "ignoringCaseCacheKeyGenerator")
+    @Cacheable(value = CacheConfig.LATEST_VERSION, key = "#project.getId()")
     public @Nullable String latestVersion(final ProjectTable project) {
         return this.latestVersion(project, this.config.channels.nameDefault());
     }
 
     @CacheEvict(value = CacheConfig.LATEST_VERSION, keyGenerator = "ignoringCaseCacheKeyGenerator")
-    public void evictLatest(final String slug, final String channel) {
+    public void evictLatest(final long id, final String channel) {
     }
 
-    @Cacheable(value = CacheConfig.LATEST_VERSION, keyGenerator = "ignoringCaseCacheKeyGenerator")
+    @Cacheable(value = CacheConfig.LATEST_VERSION, key = "#project.getId(), #channel", keyGenerator = "ignoringCaseCacheKeyGenerator")
     public @Nullable String latestVersion(final ProjectTable project, final String channel) {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final String version = this.versionsApiDAO.getLatestVersion(project.getId(), channel, canSeeHidden, this.getHangarUserId());

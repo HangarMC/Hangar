@@ -344,8 +344,8 @@ public class VersionFactory extends HangarComponent {
             // cache purging
             this.projectService.refreshHomeProjects();
             this.usersApiService.clearAuthorsCache();
-            this.versionApiService.evictLatestRelease(projectTable.getSlug());
-            this.versionApiService.evictLatest(projectTable.getSlug(), projectChannelTable.getName());
+            this.versionApiService.evictLatestRelease(projectTable.getId());
+            this.versionApiService.evictLatest(projectTable.getId(), projectChannelTable.getName());
 
             final List<Platform> platformsToScan = new ArrayList<>();
             boolean hasExternalLink = false;
