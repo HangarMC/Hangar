@@ -206,11 +206,11 @@ public class VersionsApiService extends HangarComponent {
         return this.latestVersion(project, this.config.channels.nameDefault());
     }
 
-    @CacheEvict(value = CacheConfig.LATEST_VERSION, keyGenerator = "ignoringCaseCacheKeyGenerator")
+    @CacheEvict(value = CacheConfig.LATEST_VERSION, key = "{#id, #channel != null ? #channel.toLowerCase() : null}")
     public void evictLatest(final long id, final String channel) {
     }
 
-    @Cacheable(value = CacheConfig.LATEST_VERSION, key = "#project.getId(), #channel", keyGenerator = "ignoringCaseCacheKeyGenerator")
+    @Cacheable(value = CacheConfig.LATEST_VERSION, key = "{#project.getId(), #channel != null ? #channel.toLowerCase() : null}")
     public @Nullable String latestVersion(final ProjectTable project, final String channel) {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         final String version = this.versionsApiDAO.getLatestVersion(project.getId(), channel, canSeeHidden, this.getHangarUserId());
