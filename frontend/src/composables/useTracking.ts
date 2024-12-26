@@ -13,7 +13,7 @@ export function track(type: string, elementName: MaybeRefOrGetter<string>, addit
     data[k] = toValue(v);
   }
   data["type"] = type;
-  window.umami.track(name, data);
+  window.umami?.track(name, data);
 }
 
 export function identify() {
@@ -26,5 +26,5 @@ export function identify() {
   props.user = authStore.user ? authStore.user.name : "<anonymous>";
   props.theme = settingsStore.darkMode ? "dark" : "light";
   props.language = i18n.locale.value;
-  window.umami.identify(props);
+  window.umami?.identify(props);
 }
