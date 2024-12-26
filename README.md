@@ -32,21 +32,34 @@ Fork the project and pull it in your IDE.
 * [pnpm](https://pnpm.io/installation)
 * mvn
 * git
-* we strongly recommend using Intellij IDEA (Ultimate) as your IDE
+* we strongly recommend using IntelliJ IDEA (Ultimate) as your IDE
 
 ### Setting up
 
 To get the project running locally, you need to follow a few steps:
 
+#### Frontend only
+
+1. Install the frontend deps:  
+   **Using IntelliJ**: Right-click the package.json file in the frontend directory and click `Run 'pnpm install'` (or click the button in the `Update dependencies` toast)  
+   **Manually**: Move to the frontend directory: `cd frontend` then run `pnpm install`.
+2. Start the frontend.  
+   **Using IntelliJ**: Run the `frontend without backend` run config (or click the green arrow in the gutter on this line)  
+   **Manually**: Move to the frontend directory: `cd frontend` then run `pnpm run devStaging`.
+3. After that, open http://localhost:3333, and if all went well, Hangar should be up and running.
+4. You can open http://localhost:3333/onboarding and create an admin account, or once you logged in, generate fake data.
+
+#### Frontend and Backend
+
 1. Get the dummy database, storage and email server up and running.  
    **Using Intellij**: Run the `docker` run config (or click the green arrow in the gutter on this line)  
    **Manually**: Move to the docker folder `cd docker` then run `docker-compose -f dev.yml up -d` (`-d` as an optional parameter to run the containers in the background).
 2. Start the backend.  
-   **Using Intellij Ultimate**: Run the `backend` run config (or click the green arrow in the gutter on this line)  
-   **Using Intellij Community**: Run the `backend-community` run config (or click the green arrow in the gutter on this line)  
+   **Using IntelliJ Ultimate**: Run the `backend` run config (or click the green arrow in the gutter on this line)  
+   **Using IntelliJ Community**: Run the `backend-community` run config (or click the green arrow in the gutter on this line)  
    **Manually**: Move to the backend directory: `cd backend` then run `mvn spring-boot:run`. Alternatively you can start the `HangarApplication` class via your IDE.
 3. Install the frontend deps:  
-   **Using Intellij**: Right-click the package.json file in the frontend directory and click `Run 'pnpm install'` (or click the button in the `Update dependencies` toast)  
+   **Using IntelliJ**: Right-click the package.json file in the frontend directory and click `Run 'pnpm install'` (or click the button in the `Update dependencies` toast)  
    **Manually**: Move to the frontend directory: `cd frontend` then run `pnpm install`.
 4. Start the frontend.  
    **Using Intellij**: Run the `frontend` run config (or click the green arrow in the gutter on this line)  

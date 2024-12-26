@@ -16,9 +16,9 @@ const stopProgressBar = () => {
 };
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const config = useConfig();
+  const config = useRuntimeConfig();
   const options: AxiosRequestConfig = {
-    baseURL: import.meta.env.SSR ? config.proxyHost : config.publicHost,
+    baseURL: import.meta.client ? config.public.host : config.backendHost,
     timeout: 10_000,
   };
   axiosLog("axios options", options);

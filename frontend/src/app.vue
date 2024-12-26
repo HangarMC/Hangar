@@ -34,10 +34,10 @@ useHead({
   },
   meta: [{ name: "robots", content: runtimeConfig.public.allowIndexing === "false" ? "noindex,nofollow" : "index,follow" }],
   script: [
-    {
+    runtimeConfig.public.umamiWebsiteId && {
       src: "https://trk.papermc.io/api/init",
       defer: true,
-      "data-website-id": useRuntimeConfig().public.umamiWebsiteId,
+      "data-website-id": runtimeConfig.public.umamiWebsiteId,
     },
   ],
 });

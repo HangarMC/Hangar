@@ -4,8 +4,10 @@
     "node": ">=16"
   },
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev --port 3333",
+    "build": "nuxt build --dotenv .config/prod.env",
+    "buildStaging": "nuxt build --dotenv .config/staging.env",
+    "dev": "nuxt dev --port 3333 --dotenv .config/local.env",
+    "devStaging": "nuxt dev --port 3333 --dotenv .config/localStaging.env",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "previewBuild": "nuxt build && nuxt preview",

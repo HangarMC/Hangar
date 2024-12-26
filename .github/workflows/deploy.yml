@@ -18,13 +18,12 @@ concurrency:
 env:
   REGISTRY: ghcr.io
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  CI: true
+  NODE_ENV: "production"
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    env:
-      CI: true
 
     steps:
       - name: Checkout
@@ -85,19 +84,7 @@ jobs:
       - name: Install frontend deps
         run: (cd frontend && pnpm install --frozen-lockfile)
 
-      - name: Set environment for branch
-        run: |
-          if [[ $GITHUB_REF == 'refs/heads/master' ]]; then
-              echo "BACKEND_DATA_HOST=https://hangar.papermc.io" >> $GITHUB_ENV
-              echo "SENTRY_ENV=production" >> $GITHUB_ENV
-          else
-              echo "BACKEND_DATA_HOST=https://hangar.papermc.dev" >> $GITHUB_ENV
-              echo "SENTRY_ENV=staging" >> $GITHUB_ENV
-          fi
-
       - name: Lint frontend
-        #env:
-          # DEBUG: "hangar:*"
         run: (cd frontend && pnpm lint:oxlint && pnpm lint:eslint)
 
       - name: Sync forth and back with crowdin
@@ -113,14 +100,12 @@ jobs:
         env:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
-      - name: Build frontend
-        env:
-          # keep these in sync with compose!
-          BACKEND_HOST: "http://hangar_backend:8080"
-          PUBLIC_HOST: "https://hangar.papermc.dev"
-          # DEBUG: "hangar:*"
-          NODE_ENV: "production"
+      - name: Build frontend (prod)
+        if: ${{ github.ref == 'refs/heads/master' }}
         run: (cd frontend && pnpm build)
+      - name: Build frontend (staging)
+        if: ${{ github.ref == 'refs/heads/staging' }}
+        run: (cd frontend && pnpm buildStaging)
 
       - name: Login to registry
         uses: docker/login-action@v3

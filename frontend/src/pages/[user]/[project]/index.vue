@@ -8,7 +8,7 @@ const props = defineProps<{
   project?: HangarProject;
 }>();
 
-const config = useConfig();
+const config = useRuntimeConfig();
 const i18n = useI18n();
 const route = useRoute("user-project-pages-page");
 const openProjectPages = useOpenProjectPages(route, props.project);
@@ -50,12 +50,12 @@ useSeo(
           author: {
             "@type": "Person",
             name: props.project?.namespace.owner,
-            url: config.publicHost + "/" + props.project?.namespace?.owner,
+            url: config.public.host + "/" + props.project?.namespace?.owner,
           },
           name: props.project?.name,
           datePublished: props.project?.createdAt,
           dateCreated: props.project?.createdAt,
-          url: config.publicHost + route.path,
+          url: config.public.host + route.path,
         }),
         key: "project",
       },

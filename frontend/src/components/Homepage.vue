@@ -89,7 +89,7 @@ function updatePlatform(platform: any) {
   });
 }
 
-const config = useConfig();
+const config = useRuntimeConfig();
 const pageChangeScrollAnchor = useTemplateRef<HTMLElement>("pageChangeScrollAnchor");
 const ssr = import.meta.server;
 
@@ -104,10 +104,10 @@ useSeo(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
-          url: config.publicHost,
+          url: config.public.host,
           potentialAction: {
             "@type": "SearchAction",
-            target: config.publicHost + "/?q={search_term_string}",
+            target: config.public.host + "/?q={search_term_string}",
             "query-input": "required name=search_term_string",
           },
         }),

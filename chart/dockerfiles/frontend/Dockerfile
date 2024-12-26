@@ -7,6 +7,7 @@ ENV HOST 0.0.0.0
 
 EXPOSE 1337
 ENV PORT=1337
+ENV NODE_ENV=production
 ENTRYPOINT ["./entrypoint.sh"]
 
 COPY --chown=bun:bun --chmod=744 /chart/dockerfiles/frontend/entrypoint.sh /hangar-frontend/entrypoint.sh

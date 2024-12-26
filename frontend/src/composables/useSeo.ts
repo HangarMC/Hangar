@@ -12,18 +12,18 @@ export function useSeo(
     manualTitle?: boolean;
   }>
 ) {
-  const config = useConfig();
+  const config = useRuntimeConfig();
   const i18n = useNuxtApp().$i18n;
 
   const description = computed(() => input.value.description || "Plugin repository for Paper, Velocity, Waterfall and Folia.");
   const canonical = computed(
     () =>
-      config.publicHost +
+      config.public.host +
       (input.value.route.path.endsWith("/") ? input.value.route.path.slice(0, Math.max(0, input.value.route.path.length - 1)) : input.value.route.path)
   );
   const image = computed(() => {
     let img = input.value.image || "https://docs.papermc.io/img/paper.png";
-    img = img.startsWith("http") ? img : config.publicHost + img;
+    img = img.startsWith("http") ? img : config.public.host + img;
     return img;
   });
   const title = computed(() => {
@@ -59,7 +59,7 @@ export function useSeo(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
-          itemListElement: generateBreadcrumbs(input.value.route),
+          itemListElement: generateBreadcrumbs(input.value.route, config.public.host),
         }),
         key: "breadcrumb",
       },
@@ -134,11 +134,10 @@ export function useSeo(
   });
 }
 
-function generateBreadcrumbs(route: RouteLocationNormalized) {
+function generateBreadcrumbs(route: RouteLocationNormalized, host: string) {
   const arr = [];
   const split = route.path.split("/");
   let curr = "";
-  const config = useConfig();
   for (const [i, element] of split.entries()) {
     // skip trailing slash
     if ((element === "" || element === "/") && curr !== "") continue;
@@ -147,7 +146,7 @@ function generateBreadcrumbs(route: RouteLocationNormalized) {
       "@type": "ListItem",
       position: i,
       name: guessTitle(element),
-      item: config.publicHost + curr,
+      item: host + curr,
     });
   }
 

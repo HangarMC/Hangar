@@ -13,7 +13,7 @@ const props = defineProps<{
 
 const i18n = useI18n();
 const authStore = useAuthStore();
-const config = useConfig();
+const config = useRuntimeConfig();
 const route = useRoute("user");
 const router = useRouter();
 
@@ -100,7 +100,7 @@ useSeo(
           mainEntity: {
             "@type": "Person",
             name: props.user?.name,
-            url: config.publicHost + "/" + route.path,
+            url: config.public.host + "/" + route.path,
             description: props.user?.tagline,
             image: props.user?.avatarUrl,
             interactionStatistic: [

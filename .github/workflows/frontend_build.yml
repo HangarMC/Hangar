@@ -12,6 +12,10 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  CI: true
+  NODE_ENV: "production"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -47,31 +51,14 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install frontend deps
-        env:
-          CI: true
         run: (cd frontend && pnpm install --frozen-lockfile)
-
-      - name: Set environment for branch
-        run: |
-          if [[ $GITHUB_REF == 'refs/heads/master' ]]; then
-              echo "BACKEND_DATA_HOST=https://hangar.papermc.io" >> $GITHUB_ENV
-          else
-              echo "BACKEND_DATA_HOST=https://hangar.papermc.dev" >> $GITHUB_ENV
-          fi
 
       - name: Lint frontend
         env:
-          CI: true
           DEBUG: "hangar:*"
         run: (cd frontend && pnpm lint:oxlint && pnpm lint:eslint)
 
       - name: Build frontend
         env:
-          CI: true
-          # keep these in sync with compose!
-          BACKEND_HOST: "http://hangar_backend:8080"
-          PUBLIC_HOST: "https://hangar.papermc.dev"
-          BACKEND_DATA_HOST: "https://hangar.papermc.dev"
           DEBUG: "hangar:*"
         run: (cd frontend && pnpm build)
-

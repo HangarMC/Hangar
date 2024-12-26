@@ -8,7 +8,7 @@ const route = useRoute("user-project-versions-version");
 const i18n = useI18n();
 const router = useRouter();
 const notification = useNotificationStore();
-const config = useConfig();
+const config = useRuntimeConfig();
 
 const props = defineProps<{
   version?: HangarVersion;
@@ -78,19 +78,19 @@ useSeo(
           about: {
             "@type": "WebContent",
             name: props.project?.name,
-            url: config.publicHost + "/" + props.project?.namespace?.owner + "/" + props.project?.namespace?.slug,
+            url: config.public.host + "/" + props.project?.namespace?.owner + "/" + props.project?.namespace?.slug,
             description: props.project?.description,
           },
           author: {
             "@type": "Person",
             name: props.project?.namespace.owner,
-            url: config.publicHost + "/" + props.project?.namespace?.owner,
+            url: config.public.host + "/" + props.project?.namespace?.owner,
           },
           name: props.project?.name + " " + props.version?.name,
           datePublished: props.version?.createdAt,
           dateCreated: props.version?.createdAt,
           version: props.version?.name,
-          url: config.publicHost + route.path,
+          url: config.public.host + route.path,
         }),
         key: "version",
       },

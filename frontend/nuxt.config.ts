@@ -6,14 +6,6 @@ import { defineNuxtConfig } from "nuxt/config";
 // noinspection ES6PreferShortImport
 import { loadLocales } from "./src/i18n/i18n-util";
 
-const backendHost = process.env.BACKEND_HOST || "http://localhost:8080";
-const local = true; // set to false if backendData should be fetched from staging. You might need to hard reload (Ctrl+F5) the next page you're on when changing this value
-const backendDataHost = process.env.BACKEND_DATA_HOST || (local ? "http://localhost:8080" : "https://hangar.papermc.dev");
-const allowIndexing = process.env.HANGAR_ALLOW_INDEXING || "true";
-const sentryDSN = process.env.SENTRY_DSN || "https://801c6e3ec217457e94b8d360e861242d@o4504989579804672.ingest.sentry.io/4504989584850944";
-const sentryEnvironment = process.env.SENTRY_ENV || "local";
-const umamiWebsiteId = process.env.UMAMI_WEBSIDE_ID || "8530c6aa-8fb3-4421-8503-4e8de6bc19ef"; // hangar local;
-
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   telemetry: false,
@@ -41,13 +33,14 @@ export default defineNuxtConfig({
   },
   srcDir: "src",
   runtimeConfig: {
-    backendHost,
+    backendHost: "",
     public: {
-      allowIndexing,
-      umamiWebsiteId,
+      host: "",
+      allowIndexing: "",
+      umamiWebsiteId: "",
       sentry: {
-        dsn: sentryDSN,
-        environment: sentryEnvironment,
+        dsn: "",
+        environment: "",
       },
     },
   },
@@ -69,7 +62,7 @@ export default defineNuxtConfig({
     [
       "./src/module/backendData",
       {
-        serverUrl: backendDataHost,
+        serverUrl: process.env.BACKEND_DATA_HOST,
       },
     ],
     "./src/module/componentsFix",
@@ -163,17 +156,9 @@ export default defineNuxtConfig({
     "/**/*.json": cache(),
     "/**/*.xml": cache(),
     "/**/*.svg": cache(),
-    "/api/**": proxy("/api/**"),
-    "/v3/**": proxy("/v3/**"),
   },
 });
 
 function cache() {
   return { headers: { "Cache-Control": "max-age=31536000, immutable" } };
-}
-
-function proxy(path: string) {
-  return {
-    proxy: (process.env.BACKEND_HOST || process.env.NITRO_BACKEND_HOST || "http://localhost:8080") + path,
-  };
 }

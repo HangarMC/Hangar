@@ -15,7 +15,7 @@ onMounted(() => {
     // load script
     const script = document.createElement("script");
     script.setAttribute("src", "https://www.paypalobjects.com/donate/sdk/donate-sdk.js");
-    const config = useConfig();
+    const config = useRuntimeConfig().public;
     script.addEventListener("load", () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
