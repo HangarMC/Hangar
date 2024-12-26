@@ -61,4 +61,5 @@ jobs:
       - name: Build frontend
         env:
           DEBUG: "hangar:*"
+          NODE_ENV: "production"
         run: (cd frontend && pnpm build)
