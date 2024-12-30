@@ -3,6 +3,7 @@ package io.papermc.hangar.controller.internal.projects;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.VisibilityChangeForm;
 import io.papermc.hangar.model.internal.projects.HangarProjectNote;
@@ -42,9 +43,9 @@ public class ProjectAdminController extends HangarComponent {
     }
 
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
-    @GetMapping(path = "/notes/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<HangarProjectNote>> getProjectNotes(@PathVariable final String slug) {
-        return ResponseEntity.ok(this.projectNoteService.getNotes(slug));
+    @GetMapping(path = "/notes/{slugOrId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<HangarProjectNote>> getProjectNotes(@PathVariable("slugOrId") final ProjectTable project) {
+        return ResponseEntity.ok(this.projectNoteService.getNotes(project));
     }
 
     @ResponseStatus(HttpStatus.CREATED)

@@ -53,7 +53,7 @@ public class ProjectAdminService extends HangarComponent {
             final int suffixIndex = projectTable.getName().indexOf(ProjectFactory.SOFT_DELETION_SUFFIX);
             if (suffixIndex != -1) {
                 final String newName = projectTable.getName().substring(0, suffixIndex);
-                this.projectFactory.renameProject(projectTable.getName(), newName, true);
+                this.projectFactory.renameProject(projectTable, newName, true);
                 projectTable.setName(newName);
                 projectTable.setSlug(StringUtils.slugify(newName));
             }

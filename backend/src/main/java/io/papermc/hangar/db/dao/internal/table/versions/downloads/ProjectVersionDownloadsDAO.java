@@ -65,11 +65,8 @@ public interface ProjectVersionDownloadsDAO {
                 LIMIT 1) AS platform
         FROM project_version_downloads pvd
             JOIN project_version_platform_downloads pvpd ON pvd.id = pvpd.download_id
-        WHERE pvpd.version_id = (SELECT id
-                                 FROM project_versions pv
-                                 WHERE pv.project_id = :projectId
-                                   AND pv.version_string = :versionString)
+        WHERE pvpd.version_id = :versionId
           AND pvpd.platform = :platform;
         """)
-    ProjectVersionDownloadTableWithPlatform getDownloadByPlatform(long projectId, String versionString, @EnumByOrdinal Platform platform);
+    ProjectVersionDownloadTableWithPlatform getDownloadByPlatform(long versionId, @EnumByOrdinal Platform platform);
 }

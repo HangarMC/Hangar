@@ -4,6 +4,7 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectPage;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
@@ -66,10 +67,10 @@ public class ProjectPageController extends HangarComponent {
         this.projectPageService.checkDuplicateName(projectId, name, parentId);
     }
 
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
-    @GetMapping(path = "/page/{slug}/**", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ExtendedProjectPage> getProjectPage(@PathVariable final String slug) {
-        return ResponseEntity.ok(this.projectPageService.getProjectPageFromURI(slug, this.request.getRequestURI()));
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    @GetMapping(path = "/page/{project}/**", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ExtendedProjectPage> getProjectPage(@PathVariable final ProjectTable project) {
+        return ResponseEntity.ok(this.projectPageService.getProjectPageFromURI(project, this.request.getRequestURI()));
     }
 
     @Unlocked

@@ -26,8 +26,8 @@ public interface HangarVersionsDAO {
                pv.version_string,
                pv.visibility,
                pv.description,
-               coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_totalDownloads,
-               (select array_agg(d) from (SELECT pvd.platform, sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id GROUP BY pvd.platform) d) vs_platformDownloads,
+               coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id), 0) vs_totalDownloads,
+               (select array_agg(d) from (SELECT pvd.platform, sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id GROUP BY pvd.platform) d) vs_platformDownloads,
                u.name author,
                pv.review_state,
                pc.created_at pc_created_at,
@@ -43,14 +43,13 @@ public interface HangarVersionsDAO {
                ru.name approved_by
            FROM project_versions pv
                JOIN project_channels pc ON pv.channel_id = pc.id
-               JOIN projects p ON pv.project_id = p.id
                LEFT JOIN users u ON pv.author_id = u.id
                LEFT JOIN users ru ON pv.reviewer_id = ru.id
            WHERE
                <if(!canSeeHidden)>
                    (pv.visibility = 0
                    <if(userId)>
-                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)
+                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = pv.project_id) AND pv.visibility != 4)
                    <endif>)
                    AND
                <endif>
@@ -58,46 +57,6 @@ public interface HangarVersionsDAO {
            ORDER BY pv.created_at DESC
         """)
     HangarVersion getVersion(long versionId, @Define boolean canSeeHidden, @Define Long userId);
-
-    @RegisterColumnMapper(VersionStatsMapper.class)
-    @SqlQuery("""
-        SELECT pv.id,
-               pv.created_at,
-               pv.version_string,
-               pv.visibility,
-               pv.description,
-               coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_totalDownloads,
-               (select array_agg(d) from (SELECT pvd.platform, sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id GROUP BY pvd.platform) d) vs_platformDownloads,
-               u.name author,
-               pv.review_state,
-               pc.created_at pc_created_at,
-               pc.name pc_name,
-               pc.description pc_description,
-               pc.color pc_color,
-               pc.flags pc_flags,
-               CASE
-                   WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'
-                   WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'
-                   ELSE 'NONE'
-               END AS pinnedStatus,
-               ru.name approved_by
-           FROM project_versions pv
-               JOIN project_channels pc ON pv.channel_id = pc.id
-               JOIN projects p ON pv.project_id = p.id
-               LEFT JOIN users u ON pv.author_id = u.id
-               LEFT JOIN users ru ON pv.reviewer_id = ru.id
-           WHERE
-               <if(!canSeeHidden)>
-                   (pv.visibility = 0
-                   <if(userId)>
-                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)
-                   <endif>)
-                   AND
-               <endif>
-               lower(p.slug) = lower(:slug) AND
-               pv.version_string = :versionString
-        """)
-    HangarVersion getVersionWithVersionString(String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
 
     // TODO fixup view and this
     @SqlQuery("""

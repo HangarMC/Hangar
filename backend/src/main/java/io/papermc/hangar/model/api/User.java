@@ -2,6 +2,7 @@ package io.papermc.hangar.model.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.db.customtypes.JSONB;
+import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.roles.GlobalRole;
@@ -11,8 +12,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
-public class User extends Model implements Named {
+public class User extends Model implements Named, Identified {
 
+    private final long id;
     private final String name;
     private final String tagline;
     private final List<Long> roles;
@@ -24,8 +26,9 @@ public class User extends Model implements Named {
     private final JSONB socials;
 
     @JdbiConstructor
-    public User(final OffsetDateTime createdAt, final String name, final String tagline, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory, final JSONB socials) {
+    public User(final OffsetDateTime createdAt, final long id, final String name, final String tagline, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory, final JSONB socials) {
         super(createdAt);
+        this.id = id;
         this.name = name;
         this.tagline = tagline;
         this.roles = roles;
@@ -34,6 +37,11 @@ public class User extends Model implements Named {
         this.locked = locked;
         this.nameHistory = nameHistory;
         this.socials = socials;
+    }
+
+    @Override
+    public long getId() {
+        return this.id;
     }
 
     @Override

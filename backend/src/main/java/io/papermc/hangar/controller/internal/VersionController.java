@@ -72,10 +72,10 @@ public class VersionController extends HangarComponent {
         this.pinnedVersionService = pinnedVersionService;
     }
 
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#slug}")
-    @GetMapping(path = "/version/{slug}/versions/{versionString}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HangarVersion> getVersion(@PathVariable final String slug, @PathVariable final String versionString) {
-        return ResponseEntity.ok(this.versionService.getHangarVersion(slug, versionString));
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    @GetMapping(path = "/version/{project}/versions/{versionString}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HangarVersion> getVersion(@PathVariable final ProjectTable project, @PathVariable("versionString") final ProjectVersionTable version) {
+        return ResponseEntity.ok(this.versionService.getHangarVersion(project, version));
     }
 
     @Unlocked
@@ -185,11 +185,11 @@ public class VersionController extends HangarComponent {
 
     @ErrorRedirect
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
-    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#slug, #versionString, #platform}")
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#project, #version, #platform}")
     // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
-    @GetMapping(path = "/version/{slug}/versions/{versionString}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<?> download(@PathVariable final String slug, @PathVariable final String versionString, @PathVariable final Platform platform) {
-        return this.downloadService.downloadVersion(slug, versionString, platform);
+    @GetMapping(path = "/version/{project}/versions/{version}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<?> download(@PathVariable final ProjectTable project, @PathVariable final ProjectVersionTable version, @PathVariable final Platform platform) {
+        return this.downloadService.downloadVersion(project, version, platform);
     }
 
     @Anyone

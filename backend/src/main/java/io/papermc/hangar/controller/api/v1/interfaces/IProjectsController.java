@@ -6,6 +6,7 @@ import io.papermc.hangar.model.api.project.DayProjectStats;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectMember;
 import io.papermc.hangar.model.api.requests.RequestPagination;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,14 +40,14 @@ public interface IProjectsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @GetMapping("/projects/{slug}")
-    ResponseEntity<Project> getProject(@Parameter(description = "The slug of the project to return") @PathVariable String slug);
+    @GetMapping("/projects/{slugOrId}")
+    ResponseEntity<Project> getProject(@Parameter(description = "The slug or id or id of the project to return") @PathVariable("slugOrId") ProjectTable project);
 
-    @GetMapping("/projects/{author}/{slug}")
+    @GetMapping("/projects/{author}/{slugOrId}")
     @Deprecated(forRemoval = true)
     default ResponseEntity<Project> getProject(@Parameter(description = "The author of the project to return") @PathVariable String author,
-                                       @Parameter(description = "The slug of the project to return") @PathVariable String slug) {
-        return this.getProject(slug);
+                                       @Parameter(description = "The slug or id of the project to return") @PathVariable("slugOrId") ProjectTable project) {
+        return this.getProject(project);
     }
 
     @Operation(
@@ -75,20 +76,20 @@ public interface IProjectsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @GetMapping("/projects/{slug}/members")
+    @GetMapping("/projects/{slugOrId}/members")
     ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(
-        @Parameter(description = "The slug of the project to return members for") @PathVariable("slug") String slug,
+        @Parameter(description = "The slug or id of the project to return members for") @PathVariable("slugOrId") ProjectTable project,
         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
     );
 
-    @GetMapping("/projects/{author}/{slug}/members")
+    @GetMapping("/projects/{author}/{slugOrId}/members")
     @Deprecated(forRemoval = true)
     default ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(
         @Parameter(description = "The author of the project to return members for") @PathVariable("author") String author,
-        @Parameter(description = "The slug of the project to return members for") @PathVariable("slug") String slug,
+        @Parameter(description = "The slug or id of the project to return members for") @PathVariable("slugOrId") ProjectTable project,
         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
     ) {
-        return this.getProjectMembers(slug, pagination);
+        return this.getProjectMembers(project, pagination);
     }
 
     @Operation(
@@ -121,20 +122,20 @@ public interface IProjectsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @GetMapping("/projects/{slug}/stats")
-    ResponseEntity<Map<String, DayProjectStats>> getProjectStats(@Parameter(description = "The slug of the project to return stats for") @PathVariable String slug,
+    @GetMapping("/projects/{slugOrId}/stats")
+    ResponseEntity<Map<String, DayProjectStats>> getProjectStats(@Parameter(description = "The slug or id of the project to return stats for") @PathVariable("slugOrId") ProjectTable project,
                                                                  @NotNull @Parameter(description = "The first date to include in the result", required = true) @RequestParam OffsetDateTime fromDate,
                                                                  @NotNull @Parameter(description = "The last date to include in the result", required = true) @RequestParam OffsetDateTime toDate
     );
 
-    @GetMapping("/projects/{author}/{slug}/stats")
+    @GetMapping("/projects/{author}/{slugOrId}/stats")
     @Deprecated(forRemoval = true)
     default ResponseEntity<Map<String, DayProjectStats>> getProjectStats(@Parameter(description = "The author of the project to return stats for") @PathVariable String author,
-                                                                 @Parameter(description = "The slug of the project to return stats for") @PathVariable String slug,
+                                                                 @Parameter(description = "The slug or id of the project to return stats for") @PathVariable("slugOrId") ProjectTable project,
                                                                  @NotNull @Parameter(description = "The first date to include in the result", required = true) @RequestParam OffsetDateTime fromDate,
                                                                  @NotNull @Parameter(description = "The last date to include in the result", required = true) @RequestParam OffsetDateTime toDate
     ) {
-        return this.getProjectStats(slug, fromDate, toDate);
+        return this.getProjectStats(project, fromDate, toDate);
     }
 
     @Operation(
@@ -149,20 +150,20 @@ public interface IProjectsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @GetMapping("/projects/{slug}/stargazers")
+    @GetMapping("/projects/{slugOrId}/stargazers")
     ResponseEntity<PaginatedResult<User>> getProjectStargazers(
-        @Parameter(description = "The slug of the project to return stargazers for") @PathVariable("slug") String slug,
+        @Parameter(description = "The slug or id of the project to return stargazers for") @PathVariable("slugOrId") ProjectTable project,
         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
     );
 
-    @GetMapping("/projects/{author}/{slug}/stargazers")
+    @GetMapping("/projects/{author}/{slugOrId}/stargazers")
     @Deprecated(forRemoval = true)
     default ResponseEntity<PaginatedResult<User>> getProjectStargazers(
         @Parameter(description = "The author of the project to return stargazers for") @PathVariable("author") String author,
-        @Parameter(description = "The slug of the project to return stargazers for") @PathVariable("slug") String slug,
+        @Parameter(description = "The slug or id of the project to return stargazers for") @PathVariable("slugOrId") ProjectTable project,
         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
     ) {
-        return this.getProjectStargazers(slug, pagination);
+        return this.getProjectStargazers(project, pagination);
     }
 
     @Operation(
@@ -177,19 +178,19 @@ public interface IProjectsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired"),
         @ApiResponse(responseCode = "403", description = "Not enough permissions to use this endpoint")
     })
-    @GetMapping("/projects/{slug}/watchers")
+    @GetMapping("/projects/{slugOrId}/watchers")
     ResponseEntity<PaginatedResult<User>> getProjectWatchers(
-        @Parameter(description = "The slug of the project to return watchers for") @PathVariable("slug") String slug,
+        @Parameter(description = "The slug or id of the project to return watchers for") @PathVariable("slugOrId") ProjectTable project,
         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
     );
 
-    @GetMapping("/projects/{author}/{slug}/watchers")
+    @GetMapping("/projects/{author}/{slugOrId}/watchers")
     @Deprecated(forRemoval = true)
     default ResponseEntity<PaginatedResult<User>> getProjectWatchers(
         @Parameter(description = "The author of the project to return watchers for") @PathVariable("author") String author,
-        @Parameter(description = "The slug of the project to return watchers for") @PathVariable("slug") String slug,
+        @Parameter(description = "The slug or id of the project to return watchers for") @PathVariable("slugOrId") ProjectTable project,
         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
     ) {
-        return this.getProjectWatchers(slug, pagination);
+        return this.getProjectWatchers(project, pagination);
     }
 }

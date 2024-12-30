@@ -10,9 +10,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public class HangarUser extends User implements Identified {
+public class HangarUser extends User {
 
-    private final long id;
     private final UUID uuid;
     private final String email;
     private HeaderData headerData;
@@ -27,19 +26,13 @@ public class HangarUser extends User implements Identified {
     private Integer aal;
 
     public HangarUser(final OffsetDateTime createdAt, final String name, final String tagline, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory, final long id, final UUID uuid, final String email, final List<Integer> readPrompts, final String language, final String theme, final JSONB socials) {
-        super(createdAt, name, tagline, roles, projectCount, locked, nameHistory, socials);
-        this.id = id;
+        super(createdAt, id, name, tagline, roles, projectCount, locked, nameHistory, socials);
         this.uuid = uuid;
         this.email = email;
         this.readPrompts = readPrompts;
         this.language = language;
         this.theme = theme;
         this.socials = socials;
-    }
-
-    @Override
-    public long getId() {
-        return this.id;
     }
 
     public HeaderData getHeaderData() {
