@@ -1,0 +1,891 @@
+{
+    "categories": [
+        {
+            "icon": "mdi-server",
+            "apiName": "admin_tools",
+            "visible": true,
+            "title": "project.category.admin_tools"
+        },
+        {
+            "icon": "mdi-chat",
+            "apiName": "chat",
+            "visible": true,
+            "title": "project.category.chat"
+        },
+        {
+            "icon": "mdi-wrench",
+            "apiName": "dev_tools",
+            "visible": true,
+            "title": "project.category.dev_tools"
+        },
+        {
+            "icon": "mdi-cash-multiple",
+            "apiName": "economy",
+            "visible": true,
+            "title": "project.category.economy"
+        },
+        {
+            "icon": "mdi-puzzle",
+            "apiName": "gameplay",
+            "visible": true,
+            "title": "project.category.gameplay"
+        },
+        {
+            "icon": "mdi-controller-classic",
+            "apiName": "games",
+            "visible": true,
+            "title": "project.category.games"
+        },
+        {
+            "icon": "mdi-lock",
+            "apiName": "protection",
+            "visible": true,
+            "title": "project.category.protection"
+        },
+        {
+            "icon": "mdi-auto-fix",
+            "apiName": "role_playing",
+            "visible": true,
+            "title": "project.category.role_playing"
+        },
+        {
+            "icon": "mdi-earth",
+            "apiName": "world_management",
+            "visible": true,
+            "title": "project.category.world_management"
+        },
+        {
+            "icon": "mdi-asterisk",
+            "apiName": "misc",
+            "visible": true,
+            "title": "project.category.misc"
+        },
+        {
+            "icon": null,
+            "apiName": "undefined",
+            "visible": false,
+            "title": "project.category.undefined"
+        }
+    ],
+    "permissions": [
+        {
+            "value": "view_public_info",
+            "frontendName": "ViewPublicInfo",
+            "permission": "1"
+        },
+        {
+            "value": "edit_own_user_settings",
+            "frontendName": "EditOwnUserSettings",
+            "permission": "10"
+        },
+        {
+            "value": "edit_api_keys",
+            "frontendName": "EditApiKeys",
+            "permission": "100"
+        },
+        {
+            "value": "edit_subject_settings",
+            "frontendName": "EditSubjectSettings",
+            "permission": "10000"
+        },
+        {
+            "value": "manage_subject_members",
+            "frontendName": "ManageSubjectMembers",
+            "permission": "100000"
+        },
+        {
+            "value": "is_subject_owner",
+            "frontendName": "IsSubjectOwner",
+            "permission": "1000000"
+        },
+        {
+            "value": "is_subject_member",
+            "frontendName": "IsSubjectMember",
+            "permission": "10000000"
+        },
+        {
+            "value": "create_project",
+            "frontendName": "CreateProject",
+            "permission": "100000000"
+        },
+        {
+            "value": "edit_page",
+            "frontendName": "EditPage",
+            "permission": "1000000000"
+        },
+        {
+            "value": "delete_project",
+            "frontendName": "DeleteProject",
+            "permission": "10000000000"
+        },
+        {
+            "value": "create_version",
+            "frontendName": "CreateVersion",
+            "permission": "1000000000000"
+        },
+        {
+            "value": "edit_version",
+            "frontendName": "EditVersion",
+            "permission": "10000000000000"
+        },
+        {
+            "value": "delete_version",
+            "frontendName": "DeleteVersion",
+            "permission": "100000000000000"
+        },
+        {
+            "value": "edit_channels",
+            "frontendName": "EditTags",
+            "permission": "1000000000000000"
+        },
+        {
+            "value": "create_organization",
+            "frontendName": "CreateOrganization",
+            "permission": "100000000000000000000"
+        },
+        {
+            "value": "delete_organization",
+            "frontendName": "DeleteOrganization",
+            "permission": "10000000000000000000000"
+        },
+        {
+            "value": "post_as_organization",
+            "frontendName": "PostAsOrganization",
+            "permission": "1000000000000000000000"
+        },
+        {
+            "value": "mod_notes_and_flags",
+            "frontendName": "ModNotesAndFlags",
+            "permission": "1000000000000000000000000"
+        },
+        {
+            "value": "see_hidden",
+            "frontendName": "SeeHidden",
+            "permission": "10000000000000000000000000"
+        },
+        {
+            "value": "is_staff",
+            "frontendName": "IsStaff",
+            "permission": "100000000000000000000000000"
+        },
+        {
+            "value": "reviewer",
+            "frontendName": "Reviewer",
+            "permission": "1000000000000000000000000000"
+        },
+        {
+            "value": "view_health",
+            "frontendName": "ViewHealth",
+            "permission": "100000000000000000000000000000000"
+        },
+        {
+            "value": "view_ip",
+            "frontendName": "ViewIp",
+            "permission": "1000000000000000000000000000000000"
+        },
+        {
+            "value": "view_stats",
+            "frontendName": "ViewStats",
+            "permission": "10000000000000000000000000000000000"
+        },
+        {
+            "value": "view_logs",
+            "frontendName": "ViewLogs",
+            "permission": "100000000000000000000000000000000000"
+        },
+        {
+            "value": "manual_value_changes",
+            "frontendName": "ManualValueChanges",
+            "permission": "10000000000000000000000000000000000000000"
+        },
+        {
+            "value": "restore_version",
+            "frontendName": "RestoreVersion",
+            "permission": "100000000000000000000000000000000000000000000"
+        },
+        {
+            "value": "restore_project",
+            "frontendName": "RestoreProject",
+            "permission": "100000000000000"
+        },
+        {
+            "value": "hard_delete_project",
+            "frontendName": "HardDeleteProject",
+            "permission": "100000000000000000000000000000000000000000"
+        },
+        {
+            "value": "hard_delete_version",
+            "frontendName": "HardDeleteVersion",
+            "permission": "1000000000000000000000000000000000000000000"
+        },
+        {
+            "value": "edit_all_user_settings",
+            "frontendName": "EditAllUserSettings",
+            "permission": "10000000000000000000000000000000000000000000"
+        }
+    ],
+    "platforms": [
+        {
+            "name": "Paper",
+            "category": "Server",
+            "url": "https://papermc.io/downloads",
+            "enumName": "PAPER",
+            "visible": true,
+            "platformVersions": [
+                {
+                    "version": "1.19",
+                    "subVersions": [
+                        "1.19.4",
+                        "1.19.3",
+                        "1.19.2",
+                        "1.19.1",
+                        "1.19"
+                    ]
+                },
+                {
+                    "version": "1.18",
+                    "subVersions": [
+                        "1.18.2",
+                        "1.18.1",
+                        "1.18"
+                    ]
+                },
+                {
+                    "version": "1.17",
+                    "subVersions": [
+                        "1.17.1",
+                        "1.17"
+                    ]
+                },
+                {
+                    "version": "1.16",
+                    "subVersions": [
+                        "1.16.5",
+                        "1.16.4",
+                        "1.16.3",
+                        "1.16.2",
+                        "1.16.1",
+                        "1.16"
+                    ]
+                },
+                {
+                    "version": "1.15",
+                    "subVersions": [
+                        "1.15.2",
+                        "1.15.1",
+                        "1.15"
+                    ]
+                },
+                {
+                    "version": "1.14",
+                    "subVersions": [
+                        "1.14.4",
+                        "1.14.3",
+                        "1.14.2",
+                        "1.14.1",
+                        "1.14"
+                    ]
+                },
+                {
+                    "version": "1.13",
+                    "subVersions": [
+                        "1.13.2",
+                        "1.13.1",
+                        "1.13"
+                    ]
+                },
+                {
+                    "version": "1.12",
+                    "subVersions": [
+                        "1.12.2",
+                        "1.12.1",
+                        "1.12"
+                    ]
+                },
+                {
+                    "version": "1.11",
+                    "subVersions": [
+                        "1.11.2",
+                        "1.11.1",
+                        "1.11"
+                    ]
+                },
+                {
+                    "version": "1.10",
+                    "subVersions": [
+                        "1.10.2",
+                        "1.10.1",
+                        "1.10"
+                    ]
+                },
+                {
+                    "version": "1.9",
+                    "subVersions": [
+                        "1.9.4",
+                        "1.9.3",
+                        "1.9.2",
+                        "1.9.1",
+                        "1.9"
+                    ]
+                },
+                {
+                    "version": "1.8",
+                    "subVersions": []
+                }
+            ]
+        },
+        {
+            "name": "Waterfall",
+            "category": "Proxy",
+            "url": "https://papermc.io/downloads#Waterfall",
+            "enumName": "WATERFALL",
+            "visible": true,
+            "platformVersions": [
+                {
+                    "version": "1.19",
+                    "subVersions": []
+                },
+                {
+                    "version": "1.18",
+                    "subVersions": []
+                },
+                {
+                    "version": "1.17",
+                    "subVersions": []
+                },
+                {
+                    "version": "1.16",
+                    "subVersions": []
+                },
+                {
+                    "version": "1.15",
+                    "subVersions": []
+                },
+                {
+                    "version": "1.14",
+                    "subVersions": []
+                },
+                {
+                    "version": "1.13",
+                    "subVersions": []
+                },
+                {
+                    "version": "1.12",
+                    "subVersions": []
+                },
+                {
+                    "version": "1.11",
+                    "subVersions": []
+                }
+            ]
+        },
+        {
+            "name": "Velocity",
+            "category": "Proxy",
+            "url": "https://www.velocitypowered.com/downloads",
+            "enumName": "VELOCITY",
+            "visible": true,
+            "platformVersions": [
+                {
+                    "version": "3.2",
+                    "subVersions": []
+                },
+                {
+                    "version": "3.1",
+                    "subVersions": []
+                },
+                {
+                    "version": "3.0",
+                    "subVersions": []
+                },
+                {
+                    "version": "1.1",
+                    "subVersions": []
+                },
+                {
+                    "version": "1.0",
+                    "subVersions": []
+                }
+            ]
+        }
+    ],
+    "validations": {
+        "project": {
+            "name": {
+                "regex": "^[a-zA-Z0-9-_]{3,}$",
+                "max": 28
+            },
+            "desc": {
+                "max": 120
+            },
+            "license": {
+                "regex": "^[a-zA-Z0-9-_.() +]*$",
+                "max": 15
+            },
+            "keywords": {
+                "max": 5
+            },
+            "keywordName": {
+                "max": 16
+            },
+            "channels": {
+                "regex": "^[a-zA-Z0-9]+$",
+                "max": 15,
+                "min": 1
+            },
+            "pageName": {
+                "regex": "^[a-zA-Z0-9-_ ]+$",
+                "max": 25,
+                "min": 3
+            },
+            "pageContent": {
+                "max": 75000,
+                "min": 15
+            },
+            "sponsorsContent": {
+                "max": 1500
+            },
+            "maxPageCount": 50,
+            "maxChannelCount": 5,
+            "maxFileSize": 10000000
+        },
+        "userTagline": {
+            "max": 100
+        },
+        "version": {
+            "regex": "^[a-zA-Z0-9-_.+]+$",
+            "max": 30
+        },
+        "org": {
+            "regex": "^[a-zA-Z0-9-_]+$",
+            "max": 20,
+            "min": 3
+        },
+        "maxOrgCount": 5,
+        "urlRegex": "^(https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})"
+    },
+    "prompts": [
+        {
+            "name": "CHANGE_AVATAR",
+            "titleKey": "prompts.changeAvatar.title",
+            "messageKey": "prompts.changeAvatar.message"
+        }
+    ],
+    "announcements": [
+        {
+            "text": "This is a local server for testing purposes. There is a public staging instance at <a href=\"https://hangar.papermc.dev\" style=\"text-decoration: underline\">https://hangar.papermc.dev</a> and the production site can be found at <a href=\"https://hangar.papermc.io\" style=\"text-decoration: underline\">https://hangar.papermc.io</a>.",
+            "color": "#2f4476"
+        }
+    ],
+    "visibilities": [
+        {
+            "name": "public",
+            "showModal": false,
+            "canChangeTo": true,
+            "cssClass": null,
+            "title": "visibility.name.public"
+        },
+        {
+            "name": "new",
+            "showModal": false,
+            "canChangeTo": false,
+            "cssClass": "project-new",
+            "title": "visibility.name.new"
+        },
+        {
+            "name": "needsChanges",
+            "showModal": true,
+            "canChangeTo": true,
+            "cssClass": "striped project-needsChanges",
+            "title": "visibility.name.needsChanges"
+        },
+        {
+            "name": "needsApproval",
+            "showModal": false,
+            "canChangeTo": false,
+            "cssClass": "striped project-needsChanges",
+            "title": "visibility.name.needsApproval"
+        },
+        {
+            "name": "softDelete",
+            "showModal": true,
+            "canChangeTo": true,
+            "cssClass": "striped project-hidden",
+            "title": "visibility.name.softDelete"
+        }
+    ],
+    "licenses": [
+        "Unspecified",
+        "MIT",
+        "Apache 2.0",
+        "GPL",
+        "LGPL",
+        "AGPL",
+        "Other"
+    ],
+    "orgRoles": [
+        {
+            "value": "Organization_Owner",
+            "roleId": 25,
+            "permissions": "11000001111011111110100",
+            "roleCategory": "organization",
+            "title": "Owner",
+            "color": "#B400FF",
+            "rank": 10,
+            "assignable": false
+        },
+        {
+            "value": "Organization_Admin",
+            "roleId": 24,
+            "permissions": "1000001111011111110100",
+            "roleCategory": "organization",
+            "title": "Owner",
+            "color": "#B400FF",
+            "rank": 20,
+            "assignable": true
+        },
+        {
+            "value": "Organization_Maintainer",
+            "roleId": 23,
+            "permissions": "1000001111001110010000",
+            "roleCategory": "organization",
+            "title": "Maintainer",
+            "color": "#0096FF",
+            "rank": 30,
+            "assignable": true
+        },
+        {
+            "value": "Organization_Developer",
+            "roleId": 22,
+            "permissions": "1000000000001010000000",
+            "roleCategory": "organization",
+            "title": "Developer",
+            "color": "#FF8200",
+            "rank": 40,
+            "assignable": true
+        },
+        {
+            "value": "Organization_Editor",
+            "roleId": 21,
+            "permissions": "1000000000001010000000",
+            "roleCategory": "organization",
+            "title": "Editor",
+            "color": "#FFC800",
+            "rank": 50,
+            "assignable": true
+        },
+        {
+            "value": "Organization_Support",
+            "roleId": 20,
+            "permissions": "1000000000000010000000",
+            "roleCategory": "organization",
+            "title": "Support",
+            "color": "#FFC800",
+            "rank": 60,
+            "assignable": true
+        }
+    ],
+    "projectRoles": [
+        {
+            "value": "Project_Owner",
+            "roleId": 35,
+            "permissions": "1111011011110100",
+            "roleCategory": "project",
+            "title": "Owner",
+            "color": "#B400FF",
+            "rank": 10,
+            "assignable": false
+        },
+        {
+            "value": "Project_Admin",
+            "roleId": 34,
+            "permissions": "1111001010110100",
+            "roleCategory": "project",
+            "title": "Admin",
+            "color": "#B400FF",
+            "rank": 20,
+            "assignable": true
+        },
+        {
+            "value": "Project_Maintainer",
+            "roleId": 33,
+            "permissions": "1111001010000000",
+            "roleCategory": "project",
+            "title": "Maintainer",
+            "color": "#0096FF",
+            "rank": 30,
+            "assignable": true
+        },
+        {
+            "value": "Project_Developer",
+            "roleId": 32,
+            "permissions": "1010000000",
+            "roleCategory": "project",
+            "title": "Developer",
+            "color": "#FF8200",
+            "rank": 40,
+            "assignable": true
+        },
+        {
+            "value": "Project_Editor",
+            "roleId": 31,
+            "permissions": "1010000000",
+            "roleCategory": "project",
+            "title": "Editor",
+            "color": "#FFC800",
+            "rank": 50,
+            "assignable": true
+        },
+        {
+            "value": "Project_Support",
+            "roleId": 30,
+            "permissions": "10000000",
+            "roleCategory": "project",
+            "title": "Support",
+            "color": "#FFC800",
+            "rank": 60,
+            "assignable": true
+        }
+    ],
+    "globalRoles": [
+        {
+            "value": "PaperMC_Core",
+            "roleId": 4,
+            "permissions": "111111111111111111111111111111111111111111111111111111111111",
+            "roleCategory": "global",
+            "title": "PaperMC Core",
+            "color": "#FFC800",
+            "rank": 0,
+            "assignable": false
+        },
+        {
+            "value": "Hangar_Admin",
+            "roleId": 1,
+            "permissions": "111111111111111111111111111111111111111111111111111111111111",
+            "roleCategory": "global",
+            "title": "Hangar Admin",
+            "color": "#DC0000",
+            "rank": 10,
+            "assignable": false
+        },
+        {
+            "value": "PaperMC_CM",
+            "roleId": 6,
+            "permissions": "111111111111111111101111111111111111111111111111111111111111",
+            "roleCategory": "global",
+            "title": "Community Manager",
+            "color": "#FFC800",
+            "rank": 20,
+            "assignable": false
+        },
+        {
+            "value": "Hangar_Dev",
+            "roleId": 2,
+            "permissions": "110100000110000000000000000000000000",
+            "roleCategory": "global",
+            "title": "Hangar Developer",
+            "color": "#FF8200",
+            "rank": 30,
+            "assignable": false
+        },
+        {
+            "value": "Hangar_Mod",
+            "roleId": 3,
+            "permissions": "1100000000000000001100000000000100010000000000",
+            "roleCategory": "global",
+            "title": "Hangar Moderator",
+            "color": "#0096FF",
+            "rank": 40,
+            "assignable": false
+        },
+        {
+            "value": "Dummy",
+            "roleId": 42,
+            "permissions": "1",
+            "roleCategory": "global",
+            "title": "Dummy",
+            "color": "#7FFF00",
+            "rank": 42,
+            "assignable": false
+        },
+        {
+            "value": "PaperMC_Staff",
+            "roleId": 5,
+            "permissions": "111000000000000000000000000",
+            "roleCategory": "global",
+            "title": "PaperMC Staff",
+            "color": "#FFC800",
+            "rank": 50,
+            "assignable": false
+        },
+        {
+            "value": "Organization",
+            "roleId": 100,
+            "permissions": "11000001111011111110100",
+            "roleCategory": "global",
+            "title": "Organization",
+            "color": "#B400FF",
+            "rank": null,
+            "assignable": false
+        }
+    ],
+    "channelColors": [
+        {
+            "name": "PURPLE",
+            "hex": "#B400FF"
+        },
+        {
+            "name": "VIOLET",
+            "hex": "#C87DFF"
+        },
+        {
+            "name": "MAGENTA",
+            "hex": "#E100E1"
+        },
+        {
+            "name": "BLUE",
+            "hex": "#0000FF"
+        },
+        {
+            "name": "LIGHTBLUE",
+            "hex": "#B9F2FF"
+        },
+        {
+            "name": "QUARTZ",
+            "hex": "#E7FEFF"
+        },
+        {
+            "name": "AQUA",
+            "hex": "#0096FF"
+        },
+        {
+            "name": "CYAN",
+            "hex": "#00E1E1"
+        },
+        {
+            "name": "GREEN",
+            "hex": "#00DC00"
+        },
+        {
+            "name": "DARKGREEN",
+            "hex": "#009600"
+        },
+        {
+            "name": "CHARTREUSE",
+            "hex": "#7FFF00"
+        },
+        {
+            "name": "AMBER",
+            "hex": "#FFC800"
+        },
+        {
+            "name": "GOLD",
+            "hex": "#CFB53B"
+        },
+        {
+            "name": "ORANGE",
+            "hex": "#FF8200"
+        },
+        {
+            "name": "RED",
+            "hex": "#DC0000"
+        },
+        {
+            "name": "SILVER",
+            "hex": "#C0C0C0"
+        }
+    ],
+    "flagReasons": [
+        {
+            "type": "INAPPROPRIATE_CONTENT",
+            "title": "project.flag.flags.inappropriateContent"
+        },
+        {
+            "type": "IMPERSONATION",
+            "title": "project.flag.flags.impersonation"
+        },
+        {
+            "type": "SPAM",
+            "title": "project.flag.flags.spam"
+        },
+        {
+            "type": "MAL_INTENT",
+            "title": "project.flag.flags.malIntent"
+        },
+        {
+            "type": "OTHER",
+            "title": "project.flag.flags.other"
+        }
+    ],
+    "loggedActions": [
+        "organization_invite_declined",
+        "organization_invites_sent",
+        "organization_member_added",
+        "organization_member_roles_changed",
+        "organization_members_removed",
+        "project_channel_created",
+        "project_channel_deleted",
+        "project_channel_edited",
+        "project_flag_resolved",
+        "project_flagged",
+        "project_icon_changed",
+        "project_invite_declined",
+        "project_invite_unaccepted",
+        "project_invites_sent",
+        "project_member_added",
+        "project_member_roles_changed",
+        "project_members_removed",
+        "project_page_created",
+        "project_page_deleted",
+        "project_page_edited",
+        "project_renamed",
+        "project_settings_changed",
+        "project_visibility_changed",
+        "user_apikey_created",
+        "user_apikey_deleted",
+        "user_locked",
+        "user_tagline_changed",
+        "user_unlocked",
+        "version_created",
+        "version_deleted",
+        "version_description_changed",
+        "version_platform_dependencies_added",
+        "version_platform_dependencies_removed",
+        "version_plugin_dependencies_added",
+        "version_plugin_dependencies_edited",
+        "version_plugin_dependencies_removed",
+        "version_review_state_changed",
+        "version_visibility_changed"
+    ],
+    "security": {
+        "safeDownloadHosts": [
+            "dev.bukkit.org",
+            "github.com",
+            "githubusercontent.com",
+            "gitlab.com",
+            "youtu.be",
+            "youtube.com",
+            "papermc.io",
+            "papermc.dev",
+            "discord.gg",
+            "markdownguide.org",
+            "spongepowered.org",
+            "bugs.mojang.com",
+            "patreon.com",
+            "ko-fi.com",
+            "crowdin.com",
+            "kyori.net",
+            "modrinth.com",
+            "i.imgur.com",
+            "imgur.com",
+            "giphy.com",
+            "media.giphy.com",
+            "bstats.org"
+        ],
+        "oauthProviders": [
+            "github",
+            "google",
+            "microsoft"
+        ]
+    }
+}

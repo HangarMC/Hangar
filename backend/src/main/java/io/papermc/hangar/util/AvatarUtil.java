@@ -8,7 +8,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public final class AvatarUtil {
 
     @NonNull
-    @SuppressWarnings("ReplaceNullCheck")
     public static String avatarUrl(@Nullable String avatar, @Nullable String fallback) {
         String prefix = AvatarService.getInstance().getAvatarUrlPrefix();
 

@@ -65,7 +65,7 @@ public interface VersionsApiDAO {
                    AND
                <endif>
                pv.id = :versionId
-           ORDERED BY pv.created_at DESC
+           ORDER BY pv.created_at DESC
     """)
     @Nullable Map.Entry<Long, Version> getVersion(long versionId, @Define boolean canSeeHidden, @Define Long userId);
 
@@ -195,17 +195,9 @@ public interface VersionsApiDAO {
            FROM project_versions pv
                JOIN project_channels pc ON pv.channel_id = pc.id
                LEFT JOIN users u ON pv.author_id = u.id
-           WHERE
-               <if(!canSeeHidden)>
-                   (pv.visibility = 0
-                   <if(userId)>
-                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = :projectId) AND pv.visibility != 4)
-                   <endif>)
-                   AND
-               <endif>
-               pc.name = :channel
+           WHERE pv.visibility = 0 AND pc.name = :channel
            ORDER BY pv.created_at DESC
            LIMIT 1
     """)
-    @Nullable String getLatestVersion(long projectId, String channel, @Define boolean canSeeHidden, @Define Long userId);
+    @Nullable String getLatestVersion(long projectId, String channel);
 }

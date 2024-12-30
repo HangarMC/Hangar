@@ -3,7 +3,7 @@ package io.papermc.hangar.controller.extras.resolvers.path.model;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.service.internal.versions.VersionService;
-import org.apache.commons.lang3.math.NumberUtils;
+import io.papermc.hangar.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ public class ProjectVersionTableResolver extends HangarModelPathVarResolver<Proj
     @Override
     protected ProjectVersionTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
         ProjectVersionTable projectVersionTable = null;
-        if (NumberUtils.isParsable(param)) {
+        if (StringUtils.isLong(param)) {
             projectVersionTable = this.versionService.getProjectVersionTable(Long.parseLong(param));
         }
 

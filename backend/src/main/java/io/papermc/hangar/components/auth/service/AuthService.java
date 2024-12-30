@@ -222,7 +222,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         // issue access token
         final String token = this.tokenService.newPrivilegedToken(userTable);
         // get user
-        final HangarUser user = this.usersApiService.getUser(userTable.getName(), HangarUser.class);
+        final HangarUser user = this.usersApiService.getUser(userTable.getUserId(), HangarUser.class);
         user.setAccessToken(token);
         user.setAal(aal);
         // return

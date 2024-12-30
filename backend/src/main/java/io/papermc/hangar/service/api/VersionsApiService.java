@@ -212,8 +212,7 @@ public class VersionsApiService extends HangarComponent {
 
     @Cacheable(value = CacheConfig.LATEST_VERSION, key = "{#project.getId(), #channel != null ? #channel.toLowerCase() : null}")
     public @Nullable String latestVersion(final ProjectTable project, final String channel) {
-        final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
-        final String version = this.versionsApiDAO.getLatestVersion(project.getId(), channel, canSeeHidden, this.getHangarUserId());
+        final String version = this.versionsApiDAO.getLatestVersion(project.getId(), channel);
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "No version found for " + project.getSlug() + " on channel " + channel);
         }

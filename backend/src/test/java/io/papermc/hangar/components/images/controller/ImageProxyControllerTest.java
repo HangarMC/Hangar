@@ -1,6 +1,6 @@
 package io.papermc.hangar.components.images.controller;
 
-import io.papermc.hangar.controller.api.v1.helper.ControllerTest;
+import io.papermc.hangar.controller.helper.ControllerTest;
 import java.net.URI;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

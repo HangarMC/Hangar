@@ -102,12 +102,6 @@ public class BackendDataController extends HangarComponent {
     public record FlagReasonData(String type, String title) {
     }
 
-    @GetMapping("/sponsor")
-    @Cacheable(CacheConfig.SPONSOR)
-    public HangarConfig.Sponsor getSponsor() {
-        return this.config.getSponsors().get(ThreadLocalRandom.current().nextInt(this.config.getSponsors().size()));
-    }
-
     @GetMapping("/announcements")
     @Cacheable(CacheConfig.ANNOUNCEMENTS)
     public List<Announcement> getAnnouncements() {

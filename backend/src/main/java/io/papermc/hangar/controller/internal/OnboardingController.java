@@ -56,9 +56,7 @@ public class OnboardingController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/createUser")
     public void createUser(@RequestBody final CreateUserRequest request) {
-        if (!this.config.isDev()) {
-            throw new HangarApiException("This endpoint is only available in dev mode");
-        }
+        this.config.checkDev();
         final UserTable userTable = authService.registerUserInternal(new SignupForm(request.username, request.email, request.password, true, null), true, true);
         if (request.admin) {
             globalRoleService.addRole(new GlobalRoleTable(userTable.getUserId(), GlobalRole.HANGAR_ADMIN));

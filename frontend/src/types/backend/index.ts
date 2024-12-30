@@ -1355,12 +1355,6 @@ export interface ProjectValidations {
   maxFileSize: number;
 }
 
-export interface Sponsor {
-  name: string;
-  image: string;
-  link: string;
-}
-
 export interface Security {
   safeDownloadHosts: string[];
   /** @uniqueItems true */
@@ -6175,21 +6169,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     getValidations: (params: RequestParams = {}) =>
       this.request<Validations, any>({
         path: `/api/internal/data/validations`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags backend-data-controller
-     * @name GetSponsor
-     * @request GET:/api/internal/data/sponsor
-     */
-    getSponsor: (params: RequestParams = {}) =>
-      this.request<Sponsor, any>({
-        path: `/api/internal/data/sponsor`,
         method: "GET",
         format: "json",
         ...params,

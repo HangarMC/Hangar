@@ -1,7 +1,7 @@
 package io.papermc.hangar.controller.api.v1;
 
-import io.papermc.hangar.controller.api.v1.helper.ControllerTest;
-import io.papermc.hangar.controller.api.v1.helper.TestData;
+import io.papermc.hangar.controller.helper.ControllerTest;
+import io.papermc.hangar.controller.helper.TestData;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

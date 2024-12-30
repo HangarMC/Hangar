@@ -1,6 +1,6 @@
 package io.papermc.hangar;
 
-import io.papermc.hangar.controller.api.v1.helper.ControllerTest;
+import io.papermc.hangar.controller.helper.ControllerTest;
 import io.swagger.parser.OpenAPIParser;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;

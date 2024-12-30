@@ -67,14 +67,6 @@ public class UsersApiService extends HangarComponent {
         this.avatarService = avatarService;
     }
 
-    public <T extends User> T getUser(final String name, final Class<T> type) {
-        final T user = this.getUserRequired(name, this.usersDAO::getUser, type);
-        this.supplyNameHistory(user);
-        // TODO rewrite avatar fetching
-        this.supplyAvatarUrl(user);
-        return user instanceof HangarUser ? (T) this.supplyHeaderData((HangarUser) user) : user;
-    }
-
     public <T extends User> T getUser(final long id, final Class<T> type) {
         final T user = this.getUserRequired(id, this.usersDAO::getUser, type);
         this.supplyNameHistory(user);

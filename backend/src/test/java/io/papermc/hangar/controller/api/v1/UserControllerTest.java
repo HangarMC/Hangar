@@ -1,7 +1,8 @@
 package io.papermc.hangar.controller.api.v1;
 
-import io.papermc.hangar.controller.api.v1.helper.ControllerTest;
-import io.papermc.hangar.controller.api.v1.helper.TestData;
+import io.papermc.hangar.controller.helper.ControllerTest;
+import io.papermc.hangar.controller.helper.TestData;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.Matchers.*;
@@ -29,12 +30,44 @@ class UserControllerTest extends ControllerTest {
     }
 
     @Test
+    void testGetInvalidUser() throws Exception {
+        this.mockMvc.perform(get("/api/v1/users/Dum")
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(404));
+    }
+
+    @Test
+    void testGetUserById() throws Exception {
+        this.mockMvc.perform(get("/api/v1/users/" + TestData.USER_ADMIN.getId())
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.name", is(TestData.USER_ADMIN.getName())))
+            .andExpect(jsonPath("$.isOrganization", is(false)));
+    }
+
+    @Test
+    void testGetBannedUser() throws Exception {
+        this.mockMvc.perform(get("/api/v1/users/" + TestData.USER_BANNED.getId())
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.name", is(TestData.USER_BANNED.getName())))
+            .andExpect(jsonPath("$.isOrganization", is(false)));
+    }
+
+    @Test
+    @Disabled // TODO should banned users be hidden?
+    void testGetBannedUserHidden() throws Exception {
+        this.mockMvc.perform(get("/api/v1/users/" + TestData.USER_BANNED.getId()))
+            .andExpect(status().is(404));
+    }
+
+    @Test
     void testGetUsers() throws Exception {
         this.mockMvc.perform(get("/api/v1/users?query=Test")
                         .with(this.apiKey(TestData.KEY_ADMIN)))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.pagination.count", is(3)))
-                .andExpect(jsonPath("$.result[*].name", contains("TestUser", "TestMember", "TestAdmin")));
+                .andExpect(jsonPath("$.pagination.count", is(4)))
+                .andExpect(jsonPath("$.result[*].name", contains("TestUser", "TestMember", "TestAdmin", TestData.USER_BANNED.getName())));
     }
 
     @Test

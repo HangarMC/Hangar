@@ -3,7 +3,7 @@ package io.papermc.hangar.controller.extras.resolvers.path.model;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.service.internal.projects.ChannelService;
-import org.apache.commons.lang3.math.NumberUtils;
+import io.papermc.hangar.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class ProjectChannelResolver extends HangarModelPathVarResolver<ProjectCh
 
     @Override
     protected ProjectChannelTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
-        if (!NumberUtils.isParsable(param)) {
+        if (!StringUtils.isLong(param)) {
             final Object projectId = request.getAttribute("projectId", NativeWebRequest.SCOPE_REQUEST);
             if (!(projectId instanceof final Long projectIdLong)) {
                 throw new HangarApiException(HttpStatus.NOT_FOUND);

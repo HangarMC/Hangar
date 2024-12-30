@@ -5,7 +5,6 @@ import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.components.webhook.model.event.ProjectPublishedEvent;
 import io.papermc.hangar.components.webhook.model.event.VersionPublishedEvent;
 import io.papermc.hangar.components.webhook.service.WebhookService;
-import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
@@ -47,7 +46,6 @@ import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.versions.plugindata.PluginDataService;
 import io.papermc.hangar.service.internal.versions.plugindata.PluginFileWithData;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
-import io.papermc.hangar.util.CacheWrapper;
 import io.papermc.hangar.util.CryptoUtils;
 import io.papermc.hangar.util.StringUtils;
 import java.io.IOException;
@@ -68,9 +66,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.Cache;
-import org.springframework.cache.interceptor.SimpleKey;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -256,7 +251,7 @@ public class VersionFactory extends HangarComponent {
     }
 
     @Transactional
-    public void publishPendingVersion(final long projectId, final PendingVersion pendingVersion) {
+    public ProjectVersionTable publishPendingVersion(final long projectId, final PendingVersion pendingVersion) {
         // basic validation
         if (!this.validationService.isValidVersionName(pendingVersion.getVersionString())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidName");
@@ -367,6 +362,7 @@ public class VersionFactory extends HangarComponent {
                 // External links will always show a secondary warning, even if from a safe website, so approving is ok
                 this.reviewService.autoReviewLinks(projectVersionTable, this.jarScanningService.getJarScannerUser().getUserId());
             }
+            return projectVersionTable;
         } catch (final HangarApiException e) {
             throw e;
         } catch (final Exception e) {

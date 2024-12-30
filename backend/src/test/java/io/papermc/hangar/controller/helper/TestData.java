@@ -1,16 +1,17 @@
-package io.papermc.hangar.controller.api.v1.helper;
+package io.papermc.hangar.controller.helper;
 
 import io.papermc.hangar.HangarApplication;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.components.auth.service.AuthService;
-import io.papermc.hangar.components.auth.service.VerificationService;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
+import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.model.api.project.ProjectLicense;
 import io.papermc.hangar.model.api.project.settings.ProjectSettings;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Category;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.db.OrganizationTable;
@@ -18,6 +19,7 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
@@ -32,6 +34,7 @@ import io.papermc.hangar.service.internal.projects.ProjectPageService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.service.internal.versions.VersionFactory;
+import io.papermc.hangar.service.internal.versions.VersionService;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
@@ -53,6 +56,7 @@ public class TestData {
     public static UserTable USER_NORMAL;
     public static UserTable USER_MEMBER;
     public static UserTable USER_ADMIN;
+    public static UserTable USER_BANNED;
 
     public static String KEY_ADMIN;
     public static String KEY_ALL;
@@ -66,6 +70,9 @@ public class TestData {
 
     public static ProjectPageTable PAGE_PARENT;
     public static ProjectPageTable PAGE_CHILD;
+
+    public static ProjectVersionTable VERSION;
+    public static ProjectVersionTable VERSION_HIDDEN;
 
     @Autowired
     private AuthService authService;
@@ -89,6 +96,8 @@ public class TestData {
     private VersionFactory versionFactory;
     @Autowired
     private UserDAO userDAO;
+    @Autowired
+    private ProjectVersionsDAO projectVersionsDAO;
 
     @EventListener(ApplicationStartedEvent.class)
     public void prepare() {
@@ -98,13 +107,17 @@ public class TestData {
         USER_NORMAL = this.authService.registerUser(new SignupForm("TestUser", "testuser@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true, null));
         USER_MEMBER = this.authService.registerUser(new SignupForm("TestMember", "testmember@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true, null));
         USER_ADMIN = this.authService.registerUser(new SignupForm("TestAdmin", "testadmin@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true, null));
+        USER_BANNED = this.authService.registerUser(new SignupForm("TestBanned", "testbanned@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true, null));
 
         USER_NORMAL.setEmailVerified(true);
         USER_MEMBER.setEmailVerified(true);
         USER_ADMIN.setEmailVerified(true);
+        USER_BANNED.setEmailVerified(true);
+        USER_BANNED.setLocked(true);
         this.userDAO.update(USER_NORMAL);
         this.userDAO.update(USER_MEMBER);
         this.userDAO.update(USER_ADMIN);
+        this.userDAO.update(USER_BANNED);
 
         this.globalRoleService.addRole(new GlobalRoleTable(USER_ADMIN.getUserId(), GlobalRole.HANGAR_ADMIN));
 
@@ -124,7 +137,10 @@ public class TestData {
             Category.CHAT, "", ORG.getUserId(), "PrivateProject", "# PrivateProject", null));
 
         logger.info("Creating some test versions...");
-        this.versionFactory.publishPendingVersion(PROJECT.getProjectId(), new PendingVersion("1.0", Map.of(), new EnumMap<>(Map.of(Platform.PAPER, new TreeSet<>(Set.of("1.8")))), "# 1.0", List.of(new PendingVersionFile(List.of(Platform.PAPER), null, "https://google.com")), "Release", "Release channel", null, Set.of()));
+        VERSION = this.versionFactory.publishPendingVersion(PROJECT.getProjectId(), new PendingVersion("1.0", Map.of(), new EnumMap<>(Map.of(Platform.PAPER, new TreeSet<>(Set.of("1.8")))), "# 1.0", List.of(new PendingVersionFile(List.of(Platform.PAPER), null, "https://google.com")), "Release", "Release channel", null, Set.of()));
+        VERSION_HIDDEN = this.versionFactory.publishPendingVersion(PROJECT.getProjectId(), new PendingVersion("2.0", Map.of(), new EnumMap<>(Map.of(Platform.PAPER, new TreeSet<>(Set.of("1.8")))), "# 2.0", List.of(new PendingVersionFile(List.of(Platform.PAPER), null, "https://google.com")), "Release", "Release channel", null, Set.of()));
+        VERSION_HIDDEN.setVisibility(Visibility.NEEDSAPPROVAL);
+        this.projectVersionsDAO.update(VERSION_HIDDEN);
 
         logger.info("Creating test api keys...");
         KEY_ADMIN = this.apiKeyService.createApiKey(USER_ADMIN, new CreateAPIKeyForm("Admin", Set.of(NamedPermission.values())), Permission.All);

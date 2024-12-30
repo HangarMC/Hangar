@@ -13,12 +13,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "hangar")
 public class HangarConfig {
 
-    private String logo = "https://docs.papermc.io/img/paper.png";
-    private List<Sponsor> sponsors;
-
     private boolean dev = true;
     private String baseUrl;
-    private String gaCode = "";
     private List<Announcement> announcements = new ArrayList<>();
     private String urlRegex = "^(https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})";
     private List<String> licenses = new ArrayList<>();
@@ -57,37 +53,6 @@ public class HangarConfig {
     @NestedConfigurationProperty
     public E2EConfig e2e;
 
-    @Component
-    public static class Sponsor {
-        private String name;
-        private String image;
-        private String link;
-
-        public String getName() {
-            return this.name;
-        }
-
-        public void setName(final String name) {
-            this.name = name;
-        }
-
-        public String getImage() {
-            return this.image;
-        }
-
-        public void setImage(final String image) {
-            this.image = image;
-        }
-
-        public String getLink() {
-            return this.link;
-        }
-
-        public void setLink(final String link) {
-            this.link = link;
-        }
-    }
-
     @Autowired
     public HangarConfig(final UpdateTasksConfig updateTasks, final ChannelsConfig channels, final PagesConfig pages, final ProjectsConfig projects, final UserConfig user, final OrganizationsConfig org, final ApiConfig api, final HangarSecurityConfig security, final QueueConfig queue, final JobsConfig jobs, final StorageConfig storage, final CorsConfig cors, final ImageConfig image, final MailConfig mail, final E2EConfig e2e) {
         this.updateTasks = updateTasks;
@@ -113,22 +78,6 @@ public class HangarConfig {
         }
     }
 
-    public String getLogo() {
-        return this.logo;
-    }
-
-    public void setLogo(final String logo) {
-        this.logo = logo;
-    }
-
-    public List<Sponsor> getSponsors() {
-        return this.sponsors;
-    }
-
-    public void setSponsors(final List<Sponsor> sponsors) {
-        this.sponsors = sponsors;
-    }
-
     public List<Announcement> getAnnouncements() {
         return this.announcements;
     }
@@ -151,14 +100,6 @@ public class HangarConfig {
 
     public void setBaseUrl(final String baseUrl) {
         this.baseUrl = baseUrl;
-    }
-
-    public String getGaCode() {
-        return this.gaCode;
-    }
-
-    public void setGaCode(final String gaCode) {
-        this.gaCode = gaCode;
     }
 
     public String getUrlRegex() {

@@ -1,4 +1,4 @@
-package io.papermc.hangar.controller.api.v1.helper;
+package io.papermc.hangar.controller.helper;
 
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.exceptions.JWTVerificationException;

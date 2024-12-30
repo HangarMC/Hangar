@@ -16,6 +16,8 @@ class FormattedVersionsTest {
         this.testFormatVersionNumbers("1.11.1-1.11.2", "1.11.1", "1.11.2");
         this.testFormatVersionNumbers("1.11, 1.11.2, 1.15.1", "1.11", "1.11.2", "1.15.1");
         this.testFormatVersionNumbers("1.11, 1.12-1.13", "1.11", "1.12", "1.13");
+        this.testFormatVersionNumbers("1.11", "1.11");
+        this.testFormatVersionNumbers("");
     }
 
     private void testFormatVersionNumbers(final String expected, final String... versions) {

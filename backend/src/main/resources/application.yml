@@ -64,7 +64,6 @@ management:
 hangar:
   dev: true
   base-url: "http://localhost:3333"
-  ga-code: "UA-38006759-9"
   allow-indexing: true
   disable-jgroups: true
   disable-ratelimiting: false
@@ -82,14 +81,6 @@ hangar:
     - text: |
         This is a local server for testing purposes. There is a public staging instance at <a href="https://hangar.papermc.dev" style="text-decoration: underline">https://hangar.papermc.dev</a> and the production site can be found at <a href="https://hangar.papermc.io" style="text-decoration: underline">https://hangar.papermc.io</a>.
       color: "#2f4476"
-
-  sponsors:
-    - name: Beer
-      image: /images/sponsors/beer.jpg
-      link: https://benndorf.dev
-    - name: MiniDigger
-      image: /images/sponsors/minidigger.png
-      link: https://benndorf.dev
 
   update-tasks:
     homepage: 2m

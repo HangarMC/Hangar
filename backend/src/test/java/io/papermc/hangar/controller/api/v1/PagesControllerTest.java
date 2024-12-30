@@ -1,7 +1,7 @@
 package io.papermc.hangar.controller.api.v1;
 
-import io.papermc.hangar.controller.api.v1.helper.ControllerTest;
-import io.papermc.hangar.controller.api.v1.helper.TestData;
+import io.papermc.hangar.controller.helper.ControllerTest;
+import io.papermc.hangar.controller.helper.TestData;
 import io.papermc.hangar.model.api.project.PageEditForm;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import org.junit.jupiter.api.Test;

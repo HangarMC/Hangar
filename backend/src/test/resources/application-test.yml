@@ -19,3 +19,5 @@ hangar:
   disable-ratelimiting: true
   storage:
     type: "local"
+  security:
+    turnstile-secret: ""
