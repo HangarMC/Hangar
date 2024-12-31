@@ -55,6 +55,7 @@
         <!-- test -->
         <pg.version>1.20.4</pg.version>
         <openapi-generator.version>7.10.0</openapi-generator.version>
+        <argLine/>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
