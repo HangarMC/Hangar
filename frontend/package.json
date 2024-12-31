@@ -41,6 +41,7 @@
     "dompurify": "3.2.3",
     "easymde": "2.18.0",
     "filesize": "10.1.6",
+    "floating-vue": "5.2.2",
     "github-slugger": "2.0.0",
     "jsdom": "25.0.1",
     "jwt-decode": "4.0.0",
@@ -59,7 +60,6 @@
     "universal-cookie": "7.2.2",
     "vue-advanced-cropper": "2.8.9",
     "vue-chartjs": "5.3.2",
-    "vue3-popper": "1.5.0",
     "vuedraggable": "4.1.0"
   },
   "devDependencies": {
@@ -92,7 +92,6 @@
     "oxlint": "0.15.4",
     "pnpm": "9.15.2",
     "prettier": "3.4.2",
-    "regenerator-runtime": "0.14.1",
     "sass": "1.83.0",
     "typescript": "5.7.2",
     "unplugin-icons": "0.22.0",

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Popper from "vue3-popper";
+import { Tooltip } from "floating-vue";
 
 withDefaults(
   defineProps<{
@@ -11,31 +11,28 @@ withDefaults(
     show: undefined,
   }
 );
-
-onErrorCaptured((err) => {
-  if (err.stack?.includes("popper")) {
-    popperLog("Captured popper error", err);
-    return false;
-  }
-});
 </script>
 
 <template>
-  <Popper :hover="hover" open-delay="200" close-delay="100" :show="show" data-allow-mismatch="style">
+  <!-- hardcoding the id is meh, but else hydration breaks and it doesn't actually seem to be used for accessibility? -->
+  <Tooltip :triggers="hover ? ['hover'] : []" :delay="{ show: 200, hide: 100 }" :shown="show" aria-id="tooltip">
     <slot />
-    <template #content>
+    <template #popper>
       <slot name="content" />
     </template>
-  </Popper>
+  </Tooltip>
 </template>
 
 <style>
-.popper {
+.v-popper--theme-tooltip .v-popper__inner {
   max-width: 700px;
-  --popper-theme-background-color: #464646;
-  --popper-theme-background-color-hover: #464646;
-  --popper-theme-padding: 0.5rem;
-  --popper-theme-border-radius: 0.375rem;
-  --popper-theme-text-color: #fff;
+  background-color: #464646;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  color: #fff;
+}
+
+.v-popper--theme-tooltip .v-popper__arrow-outer {
+  border-color: #464646;
 }
 </style>

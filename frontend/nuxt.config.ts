@@ -47,12 +47,12 @@ export default defineNuxtConfig({
   modules: [
     "@unocss/nuxt",
     "@pinia/nuxt",
-    "unplugin-icons/nuxt",
     "@vueuse/nuxt",
     "@nuxt/eslint",
     "@nuxtjs/i18n",
     "@sentry/nuxt/module",
     "@nuxtjs/turnstile",
+    "floating-vue/nuxt",
     [
       "unplugin-icons/nuxt",
       {

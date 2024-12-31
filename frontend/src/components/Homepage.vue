@@ -175,7 +175,7 @@ useSeo(
           v-on="useTracking('homepage-search', { platformName })"
         />
         <div class="md:hidden flex">
-          <Menu>
+          <Menu as="div">
             <MenuButton
               id="sort-button"
               class="bg-gradient-to-r from-primary-500 to-primary-400 rounded-r-md text-left font-semibold flex items-center gap-2 text-white p-2"

@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import "./assets/css/main.css";
-// popper needs this?
-import "regenerator-runtime/runtime";
 import type { HangarNuxtError } from "~/types/components/error";
 import { identify } from "~/composables/useTracking";
 

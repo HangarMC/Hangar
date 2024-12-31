@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Popper from "vue3-popper";
+import { Tooltip } from "floating-vue";
 import type { ErrorObject } from "@vuelidate/core";
 
 const props = defineProps<{
@@ -16,40 +16,37 @@ const formattedError = computed<string | Ref<string>>(() => {
 const hasError = computed<boolean>(() => {
   return props.errorMessages ? props.errorMessages.length > 0 : false;
 });
-
-onErrorCaptured((err) => {
-  if (err.stack?.includes("popper")) {
-    popperLog("Captured popper error", err);
-    return false;
-  }
-});
 </script>
 
 <template>
-  <Popper v-bind="$attrs" :show="hasError" arrow placement="bottom" class="text-center reset-popper" data-allow-mismatch="style">
+  <!-- hardcoding the id is meh, but else hydration breaks and it doesn't actually seem to be used for accessibility? -->
+  <Tooltip
+    v-bind="$attrs"
+    :shown="hasError"
+    theme="error-tooltip"
+    :triggers="[]"
+    :delay="0"
+    placement="bottom"
+    class="text-center reset-popper"
+    aria-id="tooltip"
+  >
     <slot />
-    <template #content>
+    <template #popper>
       {{ formattedError || "error" }}
     </template>
-  </Popper>
+  </Tooltip>
 </template>
 
-<style scoped>
-:deep(.popper) {
-  padding: 0.4rem;
+<style>
+.v-popper--theme-error-tooltip .v-popper__inner {
+  max-width: 700px;
+  background-color: #d62e22;
+  padding: 0.5rem;
   border-radius: 0.375rem;
   color: #fff;
 }
 
-:deep(.popper),
-:deep(.popper #arrow::before),
-:deep(.popper:hover),
-:deep(.popper:hover > #arrow::before) {
-  background: #d62e22 !important;
-}
-
-.reset-popper {
-  border: unset !important;
-  margin: unset !important;
+.v-popper--theme-error-tooltip .v-popper__arrow-outer {
+  border-color: #d62e22;
 }
 </style>

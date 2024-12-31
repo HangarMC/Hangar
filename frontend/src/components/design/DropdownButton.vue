@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { OnClickOutside } from "@vueuse/components";
-
 const props = withDefaults(
   defineProps<{
     name?: string;
@@ -17,32 +15,25 @@ const props = withDefaults(
     placement: "bottom-end",
   }
 );
-
-const open = ref(false);
-function close() {
-  open.value = false;
-}
-
-defineExpose({ close });
 </script>
 
 <template>
-  <OnClickOutside @trigger="open = false">
-    <Popper as="div" :show="open" :placement="placement">
-      <Button :button-type="props.buttonType" :size="props.buttonSize" @click="open = !open">
+  <Popper :placement="placement">
+    <template #default="{ shown }">
+      <Button :button-type="props.buttonType" :size="props.buttonSize">
         <slot name="button-label">
           <span class="mx-1">{{ props.name }}</span>
         </slot>
         <template v-if="props.buttonArrow">
-          <IconMdiMenu v-if="open" class="text-lg" />
+          <IconMdiMenu v-if="shown" class="text-lg" />
           <IconMdiMenuDown v-else class="text-lg" />
         </template>
       </Button>
-      <template #content>
-        <div class="flex flex-col z-10 -mt-2 py-1 rounded border-t-2 border-primary-500 background-default shadow-default">
-          <slot :close="close" />
-        </div>
-      </template>
-    </Popper>
-  </OnClickOutside>
+    </template>
+    <template #content="{ close }">
+      <div class="flex flex-col z-10 py-1 rounded border-t-2 border-primary-500 background-default shadow-default">
+        <slot :close="close" />
+      </div>
+    </template>
+  </Popper>
 </template>
