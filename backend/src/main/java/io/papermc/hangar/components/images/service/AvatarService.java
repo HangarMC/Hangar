@@ -4,6 +4,7 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.images.controller.AvatarController;
 import io.papermc.hangar.components.images.dao.AvatarDAO;
 import io.papermc.hangar.components.images.model.AvatarTable;
+import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.users.UserService;
@@ -11,6 +12,7 @@ import io.papermc.hangar.util.CryptoUtils;
 import jakarta.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,16 +37,18 @@ public class AvatarService extends HangarComponent {
     private final AvatarDAO avatarDAO;
     private final UserService userService;
     private final RestTemplate restTemplate;
+    private final UserDAO userDAO;
 
     private String defaultAvatarUrl;
     private String defaultAvatarPath;
 
-    public AvatarService(final FileService fileService, final ImageService imageService, final AvatarDAO avatarDAO, final UserService userService, final RestTemplate restTemplate) {
+    public AvatarService(final FileService fileService, final ImageService imageService, final AvatarDAO avatarDAO, final UserService userService, final RestTemplate restTemplate, final UserDAO userDAO) {
         this.fileService = fileService;
         this.imageService = imageService;
         this.avatarDAO = avatarDAO;
         this.userService = userService;
         this.restTemplate = restTemplate;
+        this.userDAO = userDAO;
     }
 
     @PostConstruct
@@ -195,8 +199,13 @@ public class AvatarService extends HangarComponent {
         }
     }
 
-    public void fixAvatarUrls() {
-        // TODO implement
-        //this.avatarDAO.getUsersWithBrokenAvatars();
+    public int fixAvatarUrls(final boolean force) {
+        List<UserTable> usersWithBrokenAvatars = force ? this.userDAO.getUsers() : this.userDAO.getUsersWithBrokenAvatars();
+        for (final UserTable user : usersWithBrokenAvatars) {
+            final String newUrl = this.getUserAvatarUrl(user);
+            user.setAvatarUrl(newUrl);
+            this.userService.updateUser(user);
+        }
+        return usersWithBrokenAvatars.size();
     }
 }

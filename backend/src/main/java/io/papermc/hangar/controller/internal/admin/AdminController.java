@@ -3,6 +3,7 @@ package io.papermc.hangar.controller.internal.admin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
 import io.papermc.hangar.controller.extras.pagination.annotations.ConfigurePagination;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogActionFilter;
@@ -88,9 +89,10 @@ public class AdminController extends HangarComponent {
     private final VersionService versionService;
     private final ReviewService reviewService;
     private final RolesDAO rolesDAO;
+    private final AvatarService avatarService;
 
     @Autowired
-    public AdminController(final PlatformService platformService, final StatService statService, final HealthService healthService, final JobService jobService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectService projectService, final ProjectAdminService projectAdminService, final VersionService versionService, final ReviewService reviewService, final RolesDAO rolesDAO) {
+    public AdminController(final PlatformService platformService, final StatService statService, final HealthService healthService, final JobService jobService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectService projectService, final ProjectAdminService projectAdminService, final VersionService versionService, final ReviewService reviewService, final RolesDAO rolesDAO, final AvatarService avatarService) {
         this.platformService = platformService;
         this.statService = statService;
         this.healthService = healthService;
@@ -104,6 +106,7 @@ public class AdminController extends HangarComponent {
         this.versionService = versionService;
         this.reviewService = reviewService;
         this.rolesDAO = rolesDAO;
+        this.avatarService = avatarService;
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -137,6 +140,14 @@ public class AdminController extends HangarComponent {
     @RateLimit(overdraft = 1, refillSeconds = RateLimit.MAX_REFILL_DELAY, refillTokens = 1)
     public void approveVersionsWithSafeLinks() {
         this.reviewService.approveVersionsWithSafeLinks();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(path = "/fixAvatars", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
+    @RateLimit(overdraft = 1, refillSeconds = RateLimit.MAX_REFILL_DELAY, refillTokens = 1)
+    public String fixAvatarUrls(@RequestParam(required = false) boolean force) {
+        return this.avatarService.fixAvatarUrls(force) + "";
     }
 
     @PermissionRequired(NamedPermission.VIEW_STATS)

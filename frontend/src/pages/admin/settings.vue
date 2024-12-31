@@ -81,9 +81,21 @@ async function rescanSafeLinks() {
     console.log(errors);
     notification.success("Updated!");
   } catch (err: any) {
-    loading.value = false;
     handleRequestError(err);
   }
+  loading.value = false;
+}
+
+const forceFixAvatars = ref(false);
+async function fixAvatars() {
+  loading.value = true;
+  try {
+    const result = await useInternalApi<number>("admin/fixAvatars?force=" + forceFixAvatars.value, "post", undefined, { timeout: 120_000 });
+    notification.success("Updated " + result + " avatars!");
+  } catch (err: any) {
+    handleRequestError(err);
+  }
+  loading.value = false;
 }
 </script>
 
@@ -157,7 +169,14 @@ async function rescanSafeLinks() {
       <PageTitle>Rescan versions for safe links</PageTitle>
       Approves all versions with only external links that are safe as per config
       <br />
-      <Button button-type="red" :disabled="loading" @click="rescanSafeLinks">Run</Button>
+      <Button button-type="red" class="mt-2" :disabled="loading" @click="rescanSafeLinks">Run</Button>
+    </Card>
+    <Card class="mt-5">
+      <PageTitle>Fix broken (user) avatars </PageTitle>
+      Goes thru all users with avatar_url = null and tries to fix it
+      <br />
+      <InputCheckbox v-model="forceFixAvatars" label="Force" />
+      <Button button-type="red" class="mt-2" :disabled="loading" @click="fixAvatars">Run</Button>
     </Card>
   </div>
 </template>

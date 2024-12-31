@@ -77,4 +77,7 @@ public interface UserDAO {
 
     @SqlQuery("SELECT * FROM users")
     List<UserTable> getUsers();
+
+    @SqlQuery("SELECT * FROM users WHERE avatar_url IS NULL OR avatar_url = ''")
+    List<UserTable> getUsersWithBrokenAvatars();
 }
