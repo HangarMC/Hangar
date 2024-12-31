@@ -24,6 +24,10 @@ withDefaults(
 </template>
 
 <style>
+.v-popper--theme-tooltip {
+  display: inline-block;
+}
+
 .v-popper--theme-tooltip .v-popper__inner {
   max-width: 700px;
   background-color: #464646;
