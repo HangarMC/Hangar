@@ -204,7 +204,7 @@ public class HangarUserController extends HangarComponent {
         if (table == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown org " + userName);
         }
-        this.avatarService.changeUserAvatar(table.getUuid(), avatar.getBytes());
+        this.avatarService.changeUserAvatar(table, avatar.getBytes());
     }
 
     // @el(userName: String)

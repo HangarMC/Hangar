@@ -1,26 +1,19 @@
 package io.papermc.hangar.components.images.service;
 
-import com.github.benmanes.caffeine.cache.Cache;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.images.controller.AvatarController;
 import io.papermc.hangar.components.images.dao.AvatarDAO;
 import io.papermc.hangar.components.images.model.AvatarTable;
-import io.papermc.hangar.config.CacheConfig;
-import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.db.UserTable;
-import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.util.CryptoUtils;
 import jakarta.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Objects;
-import java.util.UUID;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -46,17 +39,12 @@ public class AvatarService extends HangarComponent {
     private String defaultAvatarUrl;
     private String defaultAvatarPath;
 
-    private final Cache<String, String> usernameCache;
-
-    public AvatarService(final FileService fileService, final ImageService imageService, final AvatarDAO avatarDAO, final UserService userService, @Qualifier(CacheConfig.USERNAME) final org.springframework.cache.Cache usernameCache, final RestTemplate restTemplate) {
+    public AvatarService(final FileService fileService, final ImageService imageService, final AvatarDAO avatarDAO, final UserService userService, final RestTemplate restTemplate) {
         this.fileService = fileService;
         this.imageService = imageService;
         this.avatarDAO = avatarDAO;
         this.userService = userService;
         this.restTemplate = restTemplate;
-
-        //noinspection unchecked
-        this.usernameCache = (Cache<String, String>) usernameCache.getNativeCache();
     }
 
     @PostConstruct
@@ -92,25 +80,8 @@ public class AvatarService extends HangarComponent {
      * Get methods
      */
     @Deprecated(forRemoval = true)
-    public String getUserAvatarUrl(final UserTable userTable) {
+    private String getUserAvatarUrl(final UserTable userTable) {
         return this.getAvatarUrl(USER, userTable.getUuid().toString(), null);
-    }
-
-    @Deprecated(forRemoval = true)
-    public String getUserAvatarUrl(final UUID orgUserUuid) {
-        return this.getAvatarUrl(USER, orgUserUuid.toString(), null);
-    }
-
-    @Deprecated(forRemoval = true)
-    public String getUserAvatarUrl(final User user) {
-        final String uuid;
-        if (user instanceof final HangarUser hangarUser) {
-            uuid = hangarUser.getUuid().toString();
-        } else {
-            uuid = this.usernameCache.get(user.getName(), (key) -> Objects.requireNonNull(this.userService.getUserTable(user.getName())).getUuid().toString());
-        }
-
-        return this.getAvatarUrl(USER, uuid, null);
     }
 
     @Deprecated(forRemoval = true)
@@ -149,15 +120,17 @@ public class AvatarService extends HangarComponent {
     /*
      * change methods
      */
-    public void changeUserAvatar(final UUID uuid, final byte[] avatar) throws IOException {
-        this.changeAvatar(USER, uuid.toString(), avatar);
+    public void changeUserAvatar(final UserTable user, final byte[] avatar) throws IOException {
+        final String newUrl = this.changeAvatar(USER, user.getUuid().toString(), avatar);
+        user.setAvatarUrl(newUrl);
+        this.userService.updateUser(user);
     }
 
     public void changeProjectAvatar(final long projectId, final byte[] avatar) throws IOException {
         this.changeAvatar(PROJECT, String.valueOf(projectId), avatar);
     }
 
-    private void changeAvatar(final String type, final String subject, byte[] avatar) throws IOException {
+    private String changeAvatar(final String type, final String subject, byte[] avatar) throws IOException {
         final String unoptimizedHash = CryptoUtils.md5ToHex(avatar);
         AvatarTable table = this.avatarDAO.getAvatar(type, subject);
         if (table != null && table.getUnoptimizedHash().equals(unoptimizedHash)) {
@@ -175,6 +148,7 @@ public class AvatarService extends HangarComponent {
             this.avatarDAO.updateAvatar(table);
         }
         this.fileService.write(new ByteArrayInputStream(avatar), this.getPath(type, subject), AvatarController.WEBP.toString());
+        return fileService.getAvatarUrl(type, subject, String.valueOf(table.getVersion()));
     }
 
     /*
@@ -219,5 +193,10 @@ public class AvatarService extends HangarComponent {
         } else {
             return this.fileService.bytes(this.getPath(type, subject));
         }
+    }
+
+    public void fixAvatarUrls() {
+        // TODO implement
+        //this.avatarDAO.getUsersWithBrokenAvatars();
     }
 }

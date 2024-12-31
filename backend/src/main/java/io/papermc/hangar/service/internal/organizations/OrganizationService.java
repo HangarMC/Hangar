@@ -75,8 +75,6 @@ public class OrganizationService extends HangarComponent {
         }
         final UserTable owner = this.userDAO.getUserTable(organizationTable.getOwnerId());
         final List<JoinableMember<OrganizationRoleTable>> members = this.hangarOrganizationsDAO.getOrganizationMembers(organizationTable.getId(), this.getHangarUserId(), this.permissionService.getOrganizationPermissions(this.getHangarUserId(), organizationTable.getId()).has(Permission.ManageOrganizationMembers));
-        // TODO rewrite avatar fetching
-        members.forEach(member -> member.setAvatarUrl(this.avatarService.getUserAvatarUrl(member.getUser())));
         return new HangarOrganization(organizationTable.getId(), owner, members);
     }
 
@@ -86,8 +84,6 @@ public class OrganizationService extends HangarComponent {
             final Map<String, Boolean> visibility = this.organizationMemberService.getUserOrganizationMembershipVisibility(user);
             roles.keySet().removeIf(org -> Boolean.TRUE.equals(visibility.getOrDefault(org, true)));
         }
-        // TODO rewrite avatar fetching
-        roles.values().forEach(org -> org.setAvatarUrl(this.avatarService.getUserAvatarUrl(org.getUuid())));
         return roles;
     }
 

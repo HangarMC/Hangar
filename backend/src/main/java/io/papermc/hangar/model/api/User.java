@@ -26,7 +26,7 @@ public class User extends Model implements Named, Identified {
     private final JSONB socials;
 
     @JdbiConstructor
-    public User(final OffsetDateTime createdAt, final long id, final String name, final String tagline, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory, final JSONB socials) {
+    public User(final OffsetDateTime createdAt, final long id, final String name, final String tagline, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory, final String avatarUrl, final JSONB socials) {
         super(createdAt);
         this.id = id;
         this.name = name;
@@ -36,6 +36,7 @@ public class User extends Model implements Named, Identified {
         this.isOrganization = roles.contains(GlobalRole.ORGANIZATION.getRoleId());
         this.locked = locked;
         this.nameHistory = nameHistory;
+        this.avatarUrl = avatarUrl;
         this.socials = socials;
     }
 

@@ -5,6 +5,7 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.model.credential.PasswordCredential;
 import io.papermc.hangar.components.auth.model.credential.TotpCredential;
 import io.papermc.hangar.components.auth.service.CredentialsService;
+import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
@@ -52,8 +53,9 @@ public class FakeDataService extends HangarComponent {
     private final CredentialsService credentialsService;
     private final PasswordEncoder passwordEncoder;
     private final QrDataFactory qrDataFactory;
+    private final AvatarService avatarService;
 
-    public FakeDataService(final UserDAO userDAO, final GlobalRoleService globalRoleService, final ProjectService projectService, final ProjectFactory projectFactory, final ProjectsDAO projectsDAO, final CredentialsService credentialsService, final PasswordEncoder passwordEncoder, final QrDataFactory qrDataFactory) {
+    public FakeDataService(final UserDAO userDAO, final GlobalRoleService globalRoleService, final ProjectService projectService, final ProjectFactory projectFactory, final ProjectsDAO projectsDAO, final CredentialsService credentialsService, final PasswordEncoder passwordEncoder, final QrDataFactory qrDataFactory, final AvatarService avatarService) {
         this.userDAO = userDAO;
         this.globalRoleService = globalRoleService;
         this.projectService = projectService;
@@ -62,6 +64,7 @@ public class FakeDataService extends HangarComponent {
         this.credentialsService = credentialsService;
         this.passwordEncoder = passwordEncoder;
         this.qrDataFactory = qrDataFactory;
+        this.avatarService = avatarService;
     }
 
     @CacheEvict(cacheNames = CacheConfig.PROJECTS, allEntries = true)
@@ -101,6 +104,7 @@ public class FakeDataService extends HangarComponent {
             false,
             "dark",
             true,
+            this.avatarService.getDefaultAvatarUrl(),
             new JSONB(Map.of()));
         this.globalRoleService.addRole(new GlobalRoleTable(userTable.getId(), GlobalRole.DUMMY));
         return userTable;
@@ -158,6 +162,7 @@ public class FakeDataService extends HangarComponent {
             false,
             "dark",
             true,
+            this.avatarService.getDefaultAvatarUrl(),
             new JSONB(Map.of()));
         this.globalRoleService.addRole(new GlobalRoleTable(admin.getId(), GlobalRole.HANGAR_ADMIN));
 
@@ -169,6 +174,7 @@ public class FakeDataService extends HangarComponent {
             false,
             "dark",
             true,
+            this.avatarService.getDefaultAvatarUrl(),
             new JSONB(Map.of()));
 
         final String password = this.config.e2e.password();

@@ -17,21 +17,23 @@ public class OrganizationRoleTable extends ExtendedRoleTable<OrganizationRole, O
     private final UUID uuid;
     private final long ownerId;
     private final String ownerName;
-    private String avatarUrl;
+    private final String avatarUrl;
 
     @JdbiConstructor
-    public OrganizationRoleTable(final OffsetDateTime createdAt, final long id, final long userId, @ColumnName("role_type") final OrganizationRole role, final boolean accepted, final long organizationId, @Nullable final UUID uuid, @Nullable final Long ownerId, @Nullable final String ownerName) {
+    public OrganizationRoleTable(final OffsetDateTime createdAt, final long id, final long userId, @ColumnName("role_type") final OrganizationRole role, final boolean accepted, final long organizationId, @Nullable final UUID uuid, @Nullable final Long ownerId, @Nullable final String ownerName, @Nullable final String avatarUrl) {
         super(createdAt, id, userId, role, accepted);
         this.organizationId = organizationId;
         this.uuid = uuid;
         this.ownerId = ownerId == null ? -1 : ownerId;
         this.ownerName = ownerName;
+        this.avatarUrl = avatarUrl;
     }
 
-    public OrganizationRoleTable(final long userId, final OrganizationRole role, final boolean accepted, final long organizationId, @Nullable final UUID uuid) {
+    public OrganizationRoleTable(final long userId, final OrganizationRole role, final boolean accepted, final long organizationId, @Nullable final UUID uuid, @Nullable final String avatarUrl) {
         super(userId, role, accepted);
         this.organizationId = organizationId;
         this.uuid = uuid;
+        this.avatarUrl = avatarUrl;
         this.ownerId = -1;
         this.ownerName = null;
     }
@@ -61,10 +63,6 @@ public class OrganizationRoleTable extends ExtendedRoleTable<OrganizationRole, O
 
     public String getAvatarUrl() {
         return this.avatarUrl;
-    }
-
-    public void setAvatarUrl(final String avatarUrl) {
-        this.avatarUrl = avatarUrl;
     }
 
     @Override

@@ -70,16 +70,12 @@ public class ProjectsApiService extends HangarComponent {
     @Transactional(readOnly = true)
     public PaginatedResult<User> getProjectStargazers(final ProjectTable project, final RequestPagination pagination) {
         final List<User> stargazers = this.projectsApiDAO.getProjectStargazers(project.getId(), pagination.getLimit(), pagination.getOffset());
-        // TODO rewrite avatar fetching
-        stargazers.forEach(this.usersApiService::supplyAvatarUrl);
         return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectStargazersCount(project.getId()), pagination), stargazers);
     }
 
     @Transactional(readOnly = true)
     public PaginatedResult<User> getProjectWatchers(final ProjectTable project, final RequestPagination pagination) {
         final List<User> watchers = this.projectsApiDAO.getProjectWatchers(project.getId(), pagination.getLimit(), pagination.getOffset());
-        // TODO rewrite avatar fetching
-        watchers.forEach(this.usersApiService::supplyAvatarUrl);
         return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectWatchersCount(project.getId()), pagination), watchers);
     }
 

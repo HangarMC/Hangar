@@ -85,6 +85,6 @@ public enum OrganizationRole implements Role<OrganizationRoleTable> {
     @Override
     public @NotNull OrganizationRoleTable create(final Long organizationId, final UUID uuid, final long userId, final boolean isAccepted) {
         Preconditions.checkNotNull(organizationId, "organization id");
-        return new OrganizationRoleTable(userId, this, isAccepted, organizationId, uuid);
+        return new OrganizationRoleTable(userId, this, isAccepted, organizationId, uuid, null);
     }
 }

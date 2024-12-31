@@ -160,7 +160,7 @@ async function doSearch(val?: string) {
       :key="member.user.name"
       class="p-2 w-full border border-gray-100 dark:border-gray-800 rounded inline-flex flex-row space-x-4"
     >
-      <UserAvatar :username="member.user.name" :avatar-url="member.avatarUrl" size="sm" class="flex-shrink-0" />
+      <UserAvatar :username="member.user.name" :avatar-url="member.user.avatarUrl" size="sm" class="flex-shrink-0" />
       <div class="flex-grow truncate">
         <p class="font-semibold">
           <Link :to="'/' + member.user.name">{{ member.user.name }}</Link>

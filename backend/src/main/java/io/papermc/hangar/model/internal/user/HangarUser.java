@@ -25,8 +25,8 @@ public class HangarUser extends User {
     @Nullable
     private Integer aal;
 
-    public HangarUser(final OffsetDateTime createdAt, final String name, final String tagline, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory, final long id, final UUID uuid, final String email, final List<Integer> readPrompts, final String language, final String theme, final JSONB socials) {
-        super(createdAt, id, name, tagline, roles, projectCount, locked, nameHistory, socials);
+    public HangarUser(final OffsetDateTime createdAt, final String name, final String tagline, final List<Long> roles, final long projectCount, final boolean locked, @Nullable final List<UserNameChange> nameHistory, final long id, final UUID uuid, final String email, final List<Integer> readPrompts, final String language, final String theme, final String avatarUrl, final JSONB socials) {
+        super(createdAt, id, name, tagline, roles, projectCount, locked, nameHistory, avatarUrl, socials);
         this.uuid = uuid;
         this.email = email;
         this.readPrompts = readPrompts;

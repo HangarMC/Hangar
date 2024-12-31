@@ -60,7 +60,7 @@ public interface OrganizationRolesDAO extends IRolesDAO<OrganizationRoleTable> {
 
     @KeyColumn("name")
     @SqlQuery("""
-        SELECT o.name, uor.*, ow.id AS ownerId, ow.name AS ownerName, ou.uuid
+        SELECT o.name, uor.*, ow.id AS ownerId, ow.name AS ownerName, ou.uuid, ou.avatar_url
            FROM user_organization_roles uor
                JOIN organizations o ON o.id = uor.organization_id
                JOIN users u ON uor.user_id = u.id

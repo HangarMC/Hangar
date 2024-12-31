@@ -8,6 +8,7 @@ import io.papermc.hangar.components.auth.model.credential.PasswordCredential;
 import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.components.auth.model.dto.login.LoginResponse;
+import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -50,8 +51,9 @@ public class AuthService extends HangarComponent implements UserDetailsService {
     private final UsersApiService usersApiService;
     private final BucketService bucketService;
     private final TurnstileService turnstileService;
+    private final AvatarService avatarService;
 
-    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService, final HibpService hibpService, final MailService mailService, final TokenService tokenService, final UsersApiService usersApiService, final BucketService bucketService, final TurnstileService turnstileService) {
+    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService, final HibpService hibpService, final MailService mailService, final TokenService tokenService, final UsersApiService usersApiService, final BucketService bucketService, final TurnstileService turnstileService, final AvatarService avatarService) {
         this.userDAO = userDAO;
         this.userCredentialDAO = userCredentialDAO;
         this.passwordEncoder = passwordEncoder;
@@ -64,6 +66,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         this.usersApiService = usersApiService;
         this.bucketService = bucketService;
         this.turnstileService = turnstileService;
+        this.avatarService = avatarService;
     }
 
     @Transactional
@@ -88,7 +91,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
             }
         }
 
-        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), form.username(), form.email(), null, "en", List.of(), false, "light", emailVerified, new JSONB(Map.of()));
+        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), form.username(), form.email(), null, "en", List.of(), false, "light", emailVerified, avatarService.getDefaultAvatarUrl(), new JSONB(Map.of()));
         this.credentialsService.registerCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(form.password())));
         if (!emailVerified) {
             this.verificationService.sendVerificationCode(userTable.getUserId(), userTable.getEmail(), userTable.getName());

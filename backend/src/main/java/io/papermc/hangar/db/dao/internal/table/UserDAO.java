@@ -21,24 +21,24 @@ public interface UserDAO {
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("""
-        INSERT INTO users (uuid, created_at, name, email, tagline, read_prompts, locked, language, theme, email_verified, socials)
-        VALUES (:uuid, :now, :name, :email, :tagline, :readPrompts, :locked, :language, :theme, :emailVerified, :socials)
+        INSERT INTO users (uuid, created_at, name, email, tagline, read_prompts, locked, language, theme, email_verified, avatar_url, socials)
+        VALUES (:uuid, :now, :name, :email, :tagline, :readPrompts, :locked, :language, :theme, :emailVerified, :avatarUrl, :socials)
         """)
     UserTable insert(@BindBean UserTable user);
 
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("""
-        INSERT INTO users (uuid, created_at, name, email, tagline, read_prompts, locked, language, theme, email_verified, socials)
-        VALUES (:uuid, :now, :name, :email, :tagline, :readPrompts, :locked, :language, :theme, :emailVerified, :socials)
+        INSERT INTO users (uuid, created_at, name, email, tagline, read_prompts, locked, language, theme, email_verified, avatar_url, socials)
+        VALUES (:uuid, :now, :name, :email, :tagline, :readPrompts, :locked, :language, :theme, :emailVerified, :avatarUrl, :socials)
         """)
-    UserTable create(UUID uuid, String name, String email, String tagline, String language, List<Integer> readPrompts, boolean locked, String theme, boolean emailVerified, JSONB socials);
+    UserTable create(UUID uuid, String name, String email, String tagline, String language, List<Integer> readPrompts, boolean locked, String theme, boolean emailVerified, String avatarUrl, JSONB socials);
 
     @SqlUpdate("DELETE FROM users WHERE id = :id")
     void delete(long id);
 
     @GetGeneratedKeys
-    @SqlUpdate("UPDATE users SET name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language, theme = :theme, email_verified = :emailVerified, socials = :socials WHERE id = :id")
+    @SqlUpdate("UPDATE users SET name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language, theme = :theme, email_verified = :emailVerified, avatar_url = :avatarUrl, socials = :socials WHERE id = :id")
     UserTable update(@BindBean UserTable user);
 
     @SqlUpdate("DELETE FROM users WHERE id = :id")

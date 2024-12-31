@@ -21,10 +21,11 @@ public class UserTable extends Table implements ProjectOwner {
     private String language;
     private String theme;
     private boolean emailVerified;
+    private String avatarUrl;
     private JSONB socials;
 
     @JdbiConstructor
-    public UserTable(final OffsetDateTime createdAt, @PropagateNull final long id, final UUID uuid, final String name, final String email, final String tagline, final List<Integer> readPrompts, final boolean locked, final String language, final String theme, final boolean emailVerified, final JSONB socials) {
+    public UserTable(final OffsetDateTime createdAt, @PropagateNull final long id, final UUID uuid, final String name, final String email, final String tagline, final List<Integer> readPrompts, final boolean locked, final String language, final String theme, final boolean emailVerified, final String avatarUrl, final JSONB socials) {
         super(createdAt, id);
         this.uuid = uuid;
         this.name = name;
@@ -35,10 +36,11 @@ public class UserTable extends Table implements ProjectOwner {
         this.language = language;
         this.theme = theme;
         this.emailVerified = emailVerified;
+        this.avatarUrl = avatarUrl;
         this.socials = socials;
     }
 
-    public UserTable(final long id, final UUID uuid, final String name, final String email, final List<Integer> readPrompts, final boolean locked, final String language, final String theme, final boolean emailVerified, final JSONB socials) {
+    public UserTable(final long id, final UUID uuid, final String name, final String email, final List<Integer> readPrompts, final boolean locked, final String language, final String theme, final boolean emailVerified, final String avatarUrl, final JSONB socials) {
         super(id);
         this.uuid = uuid;
         this.name = name;
@@ -48,6 +50,7 @@ public class UserTable extends Table implements ProjectOwner {
         this.language = language;
         this.theme = theme;
         this.emailVerified = emailVerified;
+        this.avatarUrl = avatarUrl;
         this.socials = socials;
     }
 
@@ -131,6 +134,14 @@ public class UserTable extends Table implements ProjectOwner {
 
     public void setSocials(final JSONB socials) {
         this.socials = socials;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(final String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     @Override

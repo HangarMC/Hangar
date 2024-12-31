@@ -118,9 +118,16 @@ async function save() {
 
     window.location.reload();
   } catch (err) {
-    notifications.error("Error while saving avatar");
-    console.error("Error while saving avatar", err);
+    handleRequestError(err, "Error while saving avatar");
+    reset();
     modal.value?.close();
   }
+}
+
+function reset() {
+  cropperResult.value = undefined;
+  selectedFile.value = undefined;
+  cropperInput.value = undefined;
+  v.value.$reset();
 }
 </script>

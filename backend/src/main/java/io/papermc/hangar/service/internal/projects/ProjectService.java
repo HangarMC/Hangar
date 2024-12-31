@@ -145,10 +145,7 @@ public class ProjectService extends HangarComponent {
         }
 
         final CompletableFuture<List<JoinableMember<ProjectRoleTable>>> membersFuture = this.supply(() -> {
-            final List<JoinableMember<ProjectRoleTable>> members = this.hangarProjectsDAO.getProjectMembers(projectId, hangarUserId, this.permissionService.getProjectPermissions(hangarUserId, projectId).has(Permission.EditProjectSettings));
-            // TODO rewrite avatar fetching
-            members.parallelStream().forEach((member) -> member.setAvatarUrl(this.avatarService.getUserAvatarUrl(member.getUser())));
-            return members;
+            return this.hangarProjectsDAO.getProjectMembers(projectId, hangarUserId, this.permissionService.getProjectPermissions(hangarUserId, projectId).has(Permission.EditProjectSettings));
         });
 
         final Map<Platform, HangarVersion> mainChannelVersions = new EnumMap<>(Platform.class);

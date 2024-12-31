@@ -13,6 +13,7 @@ import io.papermc.hangar.components.auth.model.oauth.OAuthCodeResponse;
 import io.papermc.hangar.components.auth.model.oauth.OAuthMode;
 import io.papermc.hangar.components.auth.model.oauth.OAuthProvider;
 import io.papermc.hangar.components.auth.model.oauth.OAuthUserDetails;
+import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -41,10 +42,11 @@ public class OAuthService extends HangarComponent {
     private final VerificationService verificationService;
     private final UserCredentialDAO userCredentialDAO;
     private final CredentialsService credentialsService;
+    private final AvatarService avatarService;
 
     private final Map<String, OAuthProvider> providers = new HashMap<>();
 
-    public OAuthService(final RestClient restClient, final Algorithm algo, final JWT jwt, final AuthService authService, final UserDAO userDAO, final VerificationService verificationService, final UserCredentialDAO userCredentialDAO, final CredentialsService credentialsService) {
+    public OAuthService(final RestClient restClient, final Algorithm algo, final JWT jwt, final AuthService authService, final UserDAO userDAO, final VerificationService verificationService, final UserCredentialDAO userCredentialDAO, final CredentialsService credentialsService, final AvatarService avatarService) {
         this.restClient = restClient;
         this.algo = algo;
         this.jwt = jwt;
@@ -53,6 +55,7 @@ public class OAuthService extends HangarComponent {
         this.verificationService = verificationService;
         this.userCredentialDAO = userCredentialDAO;
         this.credentialsService = credentialsService;
+        this.avatarService = avatarService;
     }
 
     @PostConstruct
@@ -211,7 +214,7 @@ public class OAuthService extends HangarComponent {
             throw new HangarApiException("This " + provider + " account is already linked to a Hangar account");
         }
 
-        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), username, email, null, "en", List.of(), false, "light", emailVerified, new JSONB(Map.of()));
+        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), username, email, null, "en", List.of(), false, "light", emailVerified, this.avatarService.getDefaultAvatarUrl(), new JSONB(Map.of()));
         if (!emailVerified) {
             this.verificationService.sendVerificationCode(userTable.getUserId(), userTable.getEmail(), userTable.getName());
         }

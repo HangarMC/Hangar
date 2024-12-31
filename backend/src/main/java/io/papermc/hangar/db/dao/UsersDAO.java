@@ -38,6 +38,7 @@ public interface UsersDAO {
                    u.language,
                    u.theme,
                    u.socials,
+                   u.avatar_url,
                    exists(SELECT 1 FROM organizations o WHERE u.id = o.user_id) AS is_organization
                FROM users u
                WHERE lower(u.name) = lower(:name)
@@ -67,6 +68,7 @@ public interface UsersDAO {
         "       u.locked," +
         "       u.language," +
         "       u.theme," +
+        "       u.avatar_url," +
         "       exists(SELECT 1 FROM organizations o WHERE u.id = o.user_id) AS is_organization" +
         "   FROM users u" +
         "   <if(hasQuery)>WHERE u.name ILIKE '%' || :query || '%'<endif>" +

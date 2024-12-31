@@ -769,6 +769,7 @@ export interface UserTable {
   language: string;
   theme: string;
   emailVerified: boolean;
+  avatarUrl: string;
   socials: JsonNode;
   /** @format int64 */
   userId: number;
@@ -1180,7 +1181,6 @@ export interface JoinableMemberProjectRoleTable {
   role: ProjectRoleTable;
   user: UserTable;
   hidden: boolean;
-  avatarUrl: string;
 }
 
 export interface PossibleProjectOwner {
@@ -1239,7 +1239,6 @@ export interface JoinableMemberOrganizationRoleTable {
   role: OrganizationRoleTable;
   user: UserTable;
   hidden: boolean;
-  avatarUrl: string;
 }
 
 export enum OAuthMode {

@@ -40,7 +40,6 @@ public class CacheConfig {
     public static final String GLOBAL_SITEMAP = "globalSitemap-cache";
     public static final String USER_SITEMAP = "userSitemap-cache";
     public static final String AVATARS = "avatars-cache";
-    public static final String USERNAME = "username-cache";
     public static final String VERSION_DEPENDENCIES = "version-dependencies-cache";
     public static final String LATEST_VERSION = "latest-version-cache";
 
@@ -172,11 +171,6 @@ public class CacheConfig {
     @Bean(AVATARS)
     Cache avatarsCache() {
         return this.createCache(AVATARS, Duration.ofMinutes(30), 2000);
-    }
-
-    @Bean(USERNAME)
-    Cache usernameCache() {
-        return this.createCache(USERNAME, Duration.ofHours(2), 500);
     }
 
     @Bean(VERSION_DEPENDENCIES)

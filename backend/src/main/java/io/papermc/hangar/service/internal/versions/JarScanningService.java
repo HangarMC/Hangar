@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.versions;
 
+import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
@@ -62,9 +63,10 @@ public class JarScanningService {
     private final FileService fileService;
     private final ReviewService reviewService;
     private final UserService userService;
+    private final AvatarService avatarService;
     private UserTable jarScannerUser;
 
-    public JarScanningService(final JarScanResultDAO dao, final ProjectVersionsDAO projectVersionsDAO, final ProjectVersionDownloadsDAO downloadsDAO, final ProjectsDAO projectsDAO, final ProjectFiles projectFiles, final FileService fileService, final ReviewService reviewService, final UserService userService) {
+    public JarScanningService(final JarScanResultDAO dao, final ProjectVersionsDAO projectVersionsDAO, final ProjectVersionDownloadsDAO downloadsDAO, final ProjectsDAO projectsDAO, final ProjectFiles projectFiles, final FileService fileService, final ReviewService reviewService, final UserService userService, final AvatarService avatarService) {
         this.dao = dao;
         this.projectVersionsDAO = projectVersionsDAO;
         this.downloadsDAO = downloadsDAO;
@@ -73,6 +75,7 @@ public class JarScanningService {
         this.fileService = fileService;
         this.reviewService = reviewService;
         this.userService = userService;
+        this.avatarService = avatarService;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -112,6 +115,7 @@ public class JarScanningService {
             Locale.ENGLISH.toLanguageTag(),
             "white",
             true,
+            this.avatarService.getDefaultAvatarUrl(),
             new JSONB(Map.of())
         );
         return this.userService.insertUser(userTable);

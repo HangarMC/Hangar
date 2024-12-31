@@ -9,7 +9,6 @@ public class JoinableMember<R extends ExtendedRoleTable<?, ?>> {
     private final R role;
     private final UserTable user;
     private final boolean hidden;
-    private String avatarUrl;
 
     public JoinableMember(@Nested final R role, final UserTable user, final boolean hidden) {
         this.role = role;
@@ -27,14 +26,6 @@ public class JoinableMember<R extends ExtendedRoleTable<?, ?>> {
 
     public boolean isHidden() {
         return this.hidden;
-    }
-
-    public String getAvatarUrl() {
-        return this.avatarUrl;
-    }
-
-    public void setAvatarUrl(final String avatarUrl) {
-        this.avatarUrl = avatarUrl;
     }
 
     @Override

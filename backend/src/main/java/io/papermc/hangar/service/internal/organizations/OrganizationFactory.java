@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.internal.organizations;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.OrganizationDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
@@ -34,9 +35,10 @@ public class OrganizationFactory extends HangarComponent {
     private final ProjectInviteService inviteService;
     private final ProjectsDAO projectsDAO;
     private final ProjectFactory projectFactory;
+    private final AvatarService avatarService;
 
     @Autowired
-    public OrganizationFactory(final UserDAO userDAO, final OrganizationDAO organizationDAO, final OrganizationService organizationService, final OrganizationMemberService organizationMemberService, final GlobalRoleService globalRoleService, final ProjectInviteService inviteService, final ProjectsDAO projectsDAO, final ProjectFactory projectFactory) {
+    public OrganizationFactory(final UserDAO userDAO, final OrganizationDAO organizationDAO, final OrganizationService organizationService, final OrganizationMemberService organizationMemberService, final GlobalRoleService globalRoleService, final ProjectInviteService inviteService, final ProjectsDAO projectsDAO, final ProjectFactory projectFactory, final AvatarService avatarService) {
         this.userDAO = userDAO;
         this.organizationDAO = organizationDAO;
         this.organizationService = organizationService;
@@ -45,6 +47,7 @@ public class OrganizationFactory extends HangarComponent {
         this.inviteService = inviteService;
         this.projectsDAO = projectsDAO;
         this.projectFactory = projectFactory;
+        this.avatarService = avatarService;
     }
 
     @Transactional
@@ -57,7 +60,7 @@ public class OrganizationFactory extends HangarComponent {
         }
 
         final String dummyEmail = name.replaceAll("[^a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]", "") + '@' + this.config.org.dummyEmailDomain();
-        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), name, dummyEmail, "", "", List.of(), false, null, true, new JSONB(Map.of()));
+        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), name, dummyEmail, "", "", List.of(), false, null, true, this.avatarService.getDefaultAvatarUrl(), new JSONB(Map.of()));
         final OrganizationTable organizationTable = this.organizationDAO.insert(new OrganizationTable(userTable.getId(), name, this.getHangarPrincipal().getId(), userTable.getId(), userTable.getUuid()));
         this.globalRoleService.addRole(GlobalRole.ORGANIZATION.create(null, userTable.getUuid(), userTable.getId(), false));
         this.organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_OWNER.create(organizationTable.getId(), userTable.getUuid(), this.getHangarPrincipal().getId(), true));
