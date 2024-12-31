@@ -11,17 +11,17 @@
   },
   "dependencies": {
     "@types/chai": "4.3.20",
-    "browserstack-local": "1.5.5",
+    "browserstack-local": "1.5.6",
     "chai": "4.5.0",
-    "codeceptjs": "3.6.7",
-    "dotenv": "16.4.5",
+    "codeceptjs": "3.6.10",
+    "dotenv": "16.4.7",
     "jwt-decode": "4.0.0",
     "totp-generator": "1.0.0",
     "ts-node": "10.9.2",
-    "webdriverio": "7.36.0"
+    "webdriverio": "7.40.0"
   },
   "devDependencies": {
     "codeceptjs-bshelper": "3.1.3"
   },
-  "packageManager": "pnpm@9.14.2+sha256.06e65a4965baff6d6097f9c8f75c35f6d420974dbc03d775009056a69edfd271"
+  "packageManager": "pnpm@9.15.2+sha512.93e57b0126f0df74ce6bff29680394c0ba54ec47246b9cf321f0121d8d9bb03f750a705f24edc3c1180853afd7c2c3b94196d0a3d53d3e069d9e2793ef11f321"
 }

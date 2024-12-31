@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.1</version>
         <relativePath/>
     </parent>
 
@@ -31,7 +31,7 @@
         <spring-cloud-aws.version>3.2.1</spring-cloud-aws.version>
 
         <!-- dependencies -->
-        <sentry.version>7.19.0</sentry.version>
+        <sentry.version>7.19.1</sentry.version>
         <springdoc.version>2.7.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20240303</org-json.version>
@@ -42,7 +42,7 @@
         <jetbrains-annotations.version>26.0.1</jetbrains-annotations.version>
         <caffeine.version>3.1.8</caffeine.version>
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
-        <jgroups.version>5.4.0.Final</jgroups.version>
+        <jgroups.version>5.4.1.Final</jgroups.version>
         <jgroups-kube.version>2.0.2.Final</jgroups-kube.version>
         <totp.version>1.7.2-SNAPSHOT</totp.version>
         <webp.version>0.1.6</webp.version>
