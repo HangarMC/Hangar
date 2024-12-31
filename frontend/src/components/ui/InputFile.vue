@@ -53,6 +53,7 @@ watch(file, (newVal) => {
       <!-- todo make button fancy -->
       <input ref="input" type="file" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" @change="onFileChange" />
     </template>
+    <!-- @vue-ignore -->
     <template v-for="(_, name) in $slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData || {}" />
     </template>

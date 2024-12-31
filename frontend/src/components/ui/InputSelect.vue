@@ -68,6 +68,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
       </select>
       <IconMdiMenuDown class="absolute flex right-2 self-center -z-index-1" />
     </template>
+    <!-- @vue-ignore -->
     <template v-for="(_, name) in $slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData || {}" />
     </template>

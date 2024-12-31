@@ -12,6 +12,8 @@ onErrorCaptured((err) => {
 <template>
   <Popper v-bind="$attrs" data-allow-mismatch="style">
     <slot />
+    <!-- todo replace popper with floating-vue -->
+    <!-- @vue-ignore -->
     <template #content="{ close }">
       <slot name="content" :close="close" />
     </template>

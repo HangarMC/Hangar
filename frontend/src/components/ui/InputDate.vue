@@ -38,6 +38,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, date, er
       <!-- todo make fancy -->
       <input v-model="date" type="date" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" />
     </template>
+    <!-- @vue-ignore -->
     <template v-for="(_, name) in $slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData || {}" />
     </template>

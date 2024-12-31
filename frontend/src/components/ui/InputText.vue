@@ -45,6 +45,7 @@ defineExpose({ validation: v });
     <template #default="slotProps">
       <input v-model="value" type="text" v-bind="$attrs" :maxlength="maxlength" :class="slotProps.class" :disabled :readonly @input="v.$touch" />
     </template>
+    <!-- @vue-ignore -->
     <template v-for="(_, name) in $slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData || {}" />
     </template>

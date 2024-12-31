@@ -57,6 +57,7 @@ defineExpose({ validation: v });
       <IconMdiEye v-if="show" @click="show = false" />
       <IconMdiEyeOff v-else @click="show = true" />
     </template>
+    <!-- @vue-ignore -->
     <template v-for="(_, name) in $slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData || {}" />
     </template>

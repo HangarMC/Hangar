@@ -48,6 +48,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, value, e
     <template #default="slotProps">
       <textarea v-model="value" v-bind="$attrs" :maxlength="maxlength" :rows="rows" :class="slotProps.class" :disabled="disabled" @blur="v.$touch()" />
     </template>
+    <!-- @vue-ignore -->
     <template v-for="(_, name) in $slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData || {}" />
     </template>

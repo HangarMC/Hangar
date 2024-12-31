@@ -89,6 +89,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
         </option>
       </datalist>
     </template>
+    <!-- @vue-ignore -->
     <template v-for="(_, name) in $slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData || {}" />
     </template>

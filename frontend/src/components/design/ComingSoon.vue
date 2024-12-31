@@ -11,7 +11,7 @@ const props = defineProps<{
   short?: boolean;
 }>();
 
-const slot = useSlots();
+const slot = defineSlots<{ default: any }>();
 
 const content = computed(() => {
   const slotContent = slot?.default?.();
