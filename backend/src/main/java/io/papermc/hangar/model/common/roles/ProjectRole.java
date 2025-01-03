@@ -16,7 +16,7 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
     PROJECT_SUPPORT("Project_Support", 30, Permission.IsProjectMember, "Support", Color.AMBER, 60),
     PROJECT_EDITOR("Project_Editor", 31, Permission.EditPage.add(PROJECT_SUPPORT.getPermissions()), "Editor", Color.AMBER, 50),
     PROJECT_DEVELOPER("Project_Developer", 32, PROJECT_EDITOR.getPermissions(), "Developer", Color.ORANGE, 40),
-    PROJECT_MAINTAINER("Project_Maintainer", 33, Permission.CreateVersion.add(Permission.EditVersion).add(Permission.DeleteVersion).add(Permission.EditTags).add(PROJECT_DEVELOPER.getPermissions()), "Maintainer", Color.AQUA, 30),
+    PROJECT_MAINTAINER("Project_Maintainer", 33, Permission.CreateVersion.add(Permission.EditVersion).add(Permission.DeleteVersion).add(Permission.EditTags).add(PROJECT_DEVELOPER.getPermissions()), "Maintainer", Color.TEAL, 30),
     PROJECT_ADMIN("Project_Admin", 34, Permission.IsProjectAdmin.add(Permission.EditApiKeys).add(PROJECT_MAINTAINER.getPermissions()), "Admin", Color.PURPLE, 20),
     PROJECT_OWNER("Project_Owner", 35, Permission.IsProjectOwner.add(PROJECT_ADMIN.getPermissions()), "Owner", Color.PURPLE, 10, false);
 

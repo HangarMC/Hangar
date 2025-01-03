@@ -60,7 +60,7 @@ public class PendingVersion {
         // Keep data from frontend
         this.channelName = "";
         this.channelDescription = "";
-        this.channelColor = Color.CYAN;
+        this.channelColor = Color.EMERALD;
         this.channelFlags = Set.of();
     }
 

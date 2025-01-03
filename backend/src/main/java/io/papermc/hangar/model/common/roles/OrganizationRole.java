@@ -15,7 +15,7 @@ public enum OrganizationRole implements Role<OrganizationRoleTable> {
     ORGANIZATION_SUPPORT("Organization_Support", 20, Permission.PostAsOrganization.add(Permission.IsOrganizationMember), "Support", Color.AMBER, 60),
     ORGANIZATION_EDITOR("Organization_Editor", 21, ProjectRole.PROJECT_EDITOR.getPermissions().add(ORGANIZATION_SUPPORT.permissions), "Editor", Color.AMBER, 50),
     ORGANIZATION_DEVELOPER("Organization_Developer", 22, ProjectRole.PROJECT_DEVELOPER.getPermissions().add(ORGANIZATION_EDITOR.permissions), "Developer", Color.ORANGE, 40),
-    ORGANIZATION_MAINTAINER("Organization_Maintainer", 23, Permission.CreateProject.add(Permission.EditProjectSettings).add(ProjectRole.PROJECT_MAINTAINER.getPermissions()).add(ORGANIZATION_DEVELOPER.permissions), "Maintainer", Color.AQUA, 30),
+    ORGANIZATION_MAINTAINER("Organization_Maintainer", 23, Permission.CreateProject.add(Permission.EditProjectSettings).add(ProjectRole.PROJECT_MAINTAINER.getPermissions()).add(ORGANIZATION_DEVELOPER.permissions), "Maintainer", Color.TEAL, 30),
     ORGANIZATION_ADMIN("Organization_Admin", 24, Permission.IsOrganizationAdmin.add(ORGANIZATION_MAINTAINER.permissions).add(ProjectRole.PROJECT_ADMIN.getPermissions()), "Owner", Color.PURPLE, 20),
     ORGANIZATION_OWNER("Organization_Owner", 25, Permission.IsOrganizationOwner.add(ProjectRole.PROJECT_OWNER.getPermissions()).add(ORGANIZATION_ADMIN.permissions), "Owner", Color.PURPLE, 10, false);
 

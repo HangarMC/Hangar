@@ -27,21 +27,6 @@ const name = ref<string>(props.channel ? props.channel.name : "");
 const description = ref<string>(props.channel?.description || "");
 const color = ref<string>(props.channel ? props.channel.color : "");
 const flags = ref<ChannelFlag[]>(props.channel ? props.channel.flags : []);
-const swatches = computed<string[][]>(() => {
-  const result: string[][] = [];
-  const backendColors = useBackendData.channelColors;
-  const columns = Math.floor(Math.sqrt(backendColors.length));
-  const rows = Math.ceil(Math.sqrt(backendColors.length));
-  for (let i = 0; i < rows; i++) {
-    result[i] = [];
-    for (let j = 0; j < columns; j++) {
-      if (backendColors[i * columns + j]) {
-        result[i][j] = backendColors[i * columns + j].hex;
-      }
-    }
-  }
-  return result;
-});
 
 const noChange = computed(() => {
   return (
@@ -105,19 +90,19 @@ reset();
           <InputText v-model.trim="description" :label="i18n.t('channel.modal.description')" name="description" :maxlength="50" counter />
         </div>
         <p class="text-lg font-bold mt-3 mb-1">{{ i18n.t("channel.modal.color") }}</p>
-        <div v-for="(arr, arrIndex) in swatches" :key="arrIndex" class="flex">
-          <div v-for="(c, n) in arr" :key="n" class="flex-grow-0 flex-shrink-1 pa-2 pr-1 mb-1">
-            <div
-              :style="`background-color: ${c}`"
-              class="w-27px h-25px cursor-pointer inline-flex justify-center items-center rounded-lg border-black border-1"
-              :data-value="c"
-              @click="color = c"
-            >
-              <IconMdiCheckboxMarkedCircle
-                class="ma-auto transition-all ease-in-out duration-100"
-                :class="color === c ? 'visible opacity-100' : 'invisible opacity-0'"
-              />
-            </div>
+        <div class="grid gap-10px mb-2" style="grid-template-columns: repeat(auto-fit, 30px)">
+          <div
+            v-for="clr in useBackendData.channelColors"
+            :key="clr.name"
+            :style="`background-color: ${clr.hex}`"
+            class="h-30px w-30px cursor-pointer inline-flex justify-center items-center rounded-lg border-black border-1"
+            :data-value="clr.hex"
+            @click="color = clr.hex"
+          >
+            <IconMdiCheckboxMarkedCircle
+              class="transition-all ease-in-out duration-100 w-full h-full"
+              :class="color === clr.hex ? 'visible opacity-100' : 'invisible opacity-0'"
+            />
           </div>
         </div>
         <InputText
