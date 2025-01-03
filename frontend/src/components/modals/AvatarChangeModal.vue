@@ -57,9 +57,10 @@ const props = defineProps<{
 }>();
 
 const v = useVuelidate({ $stopPropagation: true });
-const selectedFile = ref();
-const cropperInput = ref();
-const cropperResult = ref();
+const selectedFile = ref<File>();
+const cropperInput = ref<ArrayBuffer>();
+const mimeType = ref<string>();
+const cropperResult = ref<Blob | null>();
 const modal = useTemplateRef("modal");
 
 let reader: FileReader | undefined;
@@ -68,10 +69,36 @@ onMounted(() => {
   reader.addEventListener(
     "load",
     () => {
-      cropperInput.value = reader?.result;
+      cropperInput.value = reader?.result as ArrayBuffer;
     },
     false
   );
+  reader.addEventListener("loadend", (e) => {
+    if (!e || !e.target || !e.target.result) return;
+    const arr = new Uint8Array(e.target.result as ArrayBuffer).subarray(0, 4);
+    let header = "";
+    for (const element of arr) {
+      header += element.toString(16);
+    }
+    switch (header) {
+      case "89504e47":
+        mimeType.value = "image/png";
+        break;
+      case "47494638":
+        mimeType.value = "image/gif";
+        break;
+      case "ffd8ffe0":
+      case "ffd8ffe1":
+      case "ffd8ffe2":
+      case "ffd8ffe3":
+      case "ffd8ffe8":
+        mimeType.value = "image/jpeg";
+        break;
+      default:
+        mimeType.value = selectedFile.value?.type;
+        break;
+    }
+  });
 });
 
 watch(selectedFile, (newValue) => {
@@ -102,13 +129,13 @@ async function openModal() {
 function changeImage({ canvas }: CropperResult) {
   canvas?.toBlob((blob) => {
     cropperResult.value = blob;
-  });
+  }, mimeType.value);
 }
 
 async function save() {
   if (!(await v.value.$validate())) return;
   const form = new FormData();
-  form.append("avatar", cropperResult.value);
+  form.append("avatar", cropperResult.value!);
   if (props.csrfToken) {
     form.append("csrf_token", props.csrfToken);
   }
