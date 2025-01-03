@@ -36,6 +36,9 @@ ingress:
     - path: /robots.txt
       pathType: ImplementationSpecific
       target: backend
+    - path: /security.txt
+      pathType: ImplementationSpecific
+      target: backend
     - path: /(.+)/sitemap.xml
       pathType: ImplementationSpecific
       target: backend

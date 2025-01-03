@@ -17,6 +17,16 @@ public class ApplicationController extends HangarComponent {
         this.response.setHeader("Location", "/api-docs");
     }
 
+    @GetMapping(path = "/security.txt", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String security() {
+        return """
+            Contact: mailto:security@papermc.io
+            Expires: 2027-01-01T00:00:00.000Z
+            Preferred-Languages: en,de
+            Canonical: https://hangar.papermc.io/security.txt
+            """;
+    }
+
     @GetMapping(path = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
     public String robots() {
         if (!this.config.isAllowIndexing()) {
