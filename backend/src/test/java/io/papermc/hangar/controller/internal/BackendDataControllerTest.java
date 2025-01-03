@@ -32,12 +32,12 @@ class BackendDataControllerTest extends ControllerTest {
         @SuppressWarnings("unchecked")
         Map<String, Object> expected = objectMapper.readValue(getClass().getResourceAsStream("backendData.json"), Map.class);
 
+        //System.out.println(objectMapper.writeValueAsString(stuff));
+
         // compare each method individually
         for (final String key : expected.keySet()) {
             assertEquals(expected.get(key), stuff.get(key));
         }
-
-        // System.out.println(objectMapper.writeValueAsString(stuff));
     }
 
     private Object doGet(final String url) throws Exception {

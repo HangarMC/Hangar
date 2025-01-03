@@ -530,7 +530,7 @@
             "permissions": "11000001111011111110100",
             "roleCategory": "organization",
             "title": "Owner",
-            "color": "#B400FF",
+            "color": "#a855f7",
             "rank": 10,
             "assignable": false
         },
@@ -540,7 +540,7 @@
             "permissions": "1000001111011111110100",
             "roleCategory": "organization",
             "title": "Owner",
-            "color": "#B400FF",
+            "color": "#a855f7",
             "rank": 20,
             "assignable": true
         },
@@ -550,7 +550,7 @@
             "permissions": "1000001111001110010000",
             "roleCategory": "organization",
             "title": "Maintainer",
-            "color": "#0096FF",
+            "color": "#14b8a6",
             "rank": 30,
             "assignable": true
         },
@@ -560,7 +560,7 @@
             "permissions": "1000000000001010000000",
             "roleCategory": "organization",
             "title": "Developer",
-            "color": "#FF8200",
+            "color": "#f97316",
             "rank": 40,
             "assignable": true
         },
@@ -570,7 +570,7 @@
             "permissions": "1000000000001010000000",
             "roleCategory": "organization",
             "title": "Editor",
-            "color": "#FFC800",
+            "color": "#f59e0b",
             "rank": 50,
             "assignable": true
         },
@@ -580,7 +580,7 @@
             "permissions": "1000000000000010000000",
             "roleCategory": "organization",
             "title": "Support",
-            "color": "#FFC800",
+            "color": "#f59e0b",
             "rank": 60,
             "assignable": true
         }
@@ -592,7 +592,7 @@
             "permissions": "1111011011110100",
             "roleCategory": "project",
             "title": "Owner",
-            "color": "#B400FF",
+            "color": "#a855f7",
             "rank": 10,
             "assignable": false
         },
@@ -602,7 +602,7 @@
             "permissions": "1111001010110100",
             "roleCategory": "project",
             "title": "Admin",
-            "color": "#B400FF",
+            "color": "#a855f7",
             "rank": 20,
             "assignable": true
         },
@@ -612,7 +612,7 @@
             "permissions": "1111001010000000",
             "roleCategory": "project",
             "title": "Maintainer",
-            "color": "#0096FF",
+            "color": "#14b8a6",
             "rank": 30,
             "assignable": true
         },
@@ -622,7 +622,7 @@
             "permissions": "1010000000",
             "roleCategory": "project",
             "title": "Developer",
-            "color": "#FF8200",
+            "color": "#f97316",
             "rank": 40,
             "assignable": true
         },
@@ -632,7 +632,7 @@
             "permissions": "1010000000",
             "roleCategory": "project",
             "title": "Editor",
-            "color": "#FFC800",
+            "color": "#f59e0b",
             "rank": 50,
             "assignable": true
         },
@@ -642,7 +642,7 @@
             "permissions": "10000000",
             "roleCategory": "project",
             "title": "Support",
-            "color": "#FFC800",
+            "color": "#f59e0b",
             "rank": 60,
             "assignable": true
         }
@@ -654,7 +654,7 @@
             "permissions": "111111111111111111111111111111111111111111111111111111111111",
             "roleCategory": "global",
             "title": "PaperMC Core",
-            "color": "#FFC800",
+            "color": "#f59e0b",
             "rank": 0,
             "assignable": false
         },
@@ -664,7 +664,7 @@
             "permissions": "111111111111111111111111111111111111111111111111111111111111",
             "roleCategory": "global",
             "title": "Hangar Admin",
-            "color": "#DC0000",
+            "color": "#ef4444",
             "rank": 10,
             "assignable": false
         },
@@ -674,7 +674,7 @@
             "permissions": "111111111111111111101111111111111111111111111111111111111111",
             "roleCategory": "global",
             "title": "Community Manager",
-            "color": "#FFC800",
+            "color": "#f59e0b",
             "rank": 20,
             "assignable": false
         },
@@ -684,7 +684,7 @@
             "permissions": "110100000110000000000000000000000000",
             "roleCategory": "global",
             "title": "Hangar Developer",
-            "color": "#FF8200",
+            "color": "#f97316",
             "rank": 30,
             "assignable": false
         },
@@ -694,7 +694,7 @@
             "permissions": "1100000000000000001100000000000100010000000000",
             "roleCategory": "global",
             "title": "Hangar Moderator",
-            "color": "#0096FF",
+            "color": "#14b8a6",
             "rank": 40,
             "assignable": false
         },
@@ -704,7 +704,7 @@
             "permissions": "1",
             "roleCategory": "global",
             "title": "Dummy",
-            "color": "#7FFF00",
+            "color": "#84cc16",
             "rank": 42,
             "assignable": false
         },
@@ -714,7 +714,7 @@
             "permissions": "111000000000000000000000000",
             "roleCategory": "global",
             "title": "PaperMC Staff",
-            "color": "#FFC800",
+            "color": "#f59e0b",
             "rank": 50,
             "assignable": false
         },
@@ -724,75 +724,75 @@
             "permissions": "11000001111011111110100",
             "roleCategory": "global",
             "title": "Organization",
-            "color": "#B400FF",
+            "color": "#a855f7",
             "rank": null,
             "assignable": false
         }
     ],
     "channelColors": [
         {
+            "name": "FUCHSIA",
+            "hex": "#d946ef"
+        },
+        {
             "name": "PURPLE",
-            "hex": "#B400FF"
+            "hex": "#a855f7"
         },
         {
             "name": "VIOLET",
-            "hex": "#C87DFF"
+            "hex": "#8b5cf6"
         },
         {
-            "name": "MAGENTA",
-            "hex": "#E100E1"
+            "name": "INDIGO",
+            "hex": "#6366f1"
         },
         {
             "name": "BLUE",
-            "hex": "#0000FF"
+            "hex": "#3b82f6"
         },
         {
-            "name": "LIGHTBLUE",
-            "hex": "#B9F2FF"
-        },
-        {
-            "name": "QUARTZ",
-            "hex": "#E7FEFF"
-        },
-        {
-            "name": "AQUA",
-            "hex": "#0096FF"
+            "name": "SKY",
+            "hex": "#0ea5e9"
         },
         {
             "name": "CYAN",
-            "hex": "#00E1E1"
+            "hex": "#06b6d4"
+        },
+        {
+            "name": "TEAL",
+            "hex": "#14b8a6"
+        },
+        {
+            "name": "EMERALD",
+            "hex": "#34d399"
         },
         {
             "name": "GREEN",
-            "hex": "#00DC00"
+            "hex": "#22c55e"
         },
         {
-            "name": "DARKGREEN",
-            "hex": "#009600"
+            "name": "LIME",
+            "hex": "#84cc16"
         },
         {
-            "name": "CHARTREUSE",
-            "hex": "#7FFF00"
+            "name": "YELLOW",
+            "hex": "#eab308"
         },
         {
             "name": "AMBER",
-            "hex": "#FFC800"
-        },
-        {
-            "name": "GOLD",
-            "hex": "#CFB53B"
+            "hex": "#f59e0b"
         },
         {
             "name": "ORANGE",
-            "hex": "#FF8200"
+            "hex": "#f97316"
         },
         {
             "name": "RED",
-            "hex": "#DC0000"
+            "hex": "#ef4444"
         },
         {
-            "name": "SILVER",
-            "hex": "#C0C0C0"
+            "name": "STONE",
+            "hex": "#78716c"
         }
     ],
     "flagReasons": [
