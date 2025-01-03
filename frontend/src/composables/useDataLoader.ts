@@ -30,6 +30,12 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
         console.log("skip loading", key); // TODO test this
         return newParam;
       } else if (newParam) {
+        // sanitize a bit to make undertow happy
+        const regex = /["#<>\\^`{|}]/;
+        if (regex.test(newParam)) {
+          throw createError({ statusCode: 404, statusMessage: "Not found" });
+        }
+
         promises.push(
           new Promise<void>(async (resolve, reject) => {
             console.log("load loading", key);
