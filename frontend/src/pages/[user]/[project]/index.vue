@@ -124,7 +124,7 @@ useSeo(
     </section>
     <section class="basis-full md:basis-4/15 space-y-4 min-w-280px">
       <ProjectInfo :project="project" />
-      <Card>
+      <Card v-if="project?.pinnedVersions?.length">
         <template #header>
           <h2>{{ i18n.t("project.pinnedVersions") }}</h2>
         </template>

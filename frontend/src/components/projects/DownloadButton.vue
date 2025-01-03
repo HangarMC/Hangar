@@ -173,7 +173,7 @@ function formatVersionRange(versions: string[]): string {
       </DropdownItem>
     </DropdownButton>
 
-    <DropdownButton v-else :button-size="small ? 'medium' : 'large'">
+    <DropdownButton v-else-if="project.mainChannelVersions?.length" :button-size="small ? 'medium' : 'large'">
       <template #button-label>
         <span class="items-center inline-flex">
           <IconMdiDownloadOutline />

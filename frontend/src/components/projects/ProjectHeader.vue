@@ -23,7 +23,7 @@ const isOwn = computed(() => !user || user.name === props.project?.namespace?.ow
 const starredChanged = ref(false);
 const watchingChanged = ref(false);
 
-function toggleState(route: string, completedKey: string, revokedKey: string, value: boolean|undefined) {
+function toggleState(route: string, completedKey: string, revokedKey: string, value?: boolean) {
   useInternalApi(`projects/project/${props.project?.id}/${route}/${value}`, "post")
     .then(() => {
       notification.success(i18n.t("project.actions." + (value ? completedKey : revokedKey)));
