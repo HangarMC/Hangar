@@ -194,8 +194,7 @@ public interface VersionsApiDAO {
         SELECT pv.version_string
            FROM project_versions pv
                JOIN project_channels pc ON pv.channel_id = pc.id
-               LEFT JOIN users u ON pv.author_id = u.id
-           WHERE pv.visibility = 0 AND pc.name = :channel
+           WHERE pv.visibility = 0 AND pc.name = :channel AND pv.project_id = :projectId
            ORDER BY pv.created_at DESC
            LIMIT 1
     """)
