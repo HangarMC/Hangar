@@ -29,6 +29,7 @@ const hasError = computed<boolean>(() => {
     placement="bottom"
     class="text-center reset-popper"
     aria-id="tooltip"
+    :container="false"
   >
     <slot />
     <template #popper>
