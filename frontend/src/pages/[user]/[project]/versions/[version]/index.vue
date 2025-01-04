@@ -193,7 +193,10 @@ async function restoreVersion() {
         </div>
         <div class="inline-flex items-center flex-grow space-x-2">
           <div class="flex-grow" />
-          <Tooltip v-if="confirmationWarningKey" :content="i18n.t(confirmationWarningKey)">
+          <Tooltip v-if="confirmationWarningKey">
+            <template #content>
+              {{ i18n.t(confirmationWarningKey) }}
+            </template>
             <div class="text-2xl">
               <IconMdiAlert v-if="confirmationWarningKey === 'version.page.unsafeWarningExternal'" />
               <IconMdiProgressQuestion v-else class="text-gray-400" />

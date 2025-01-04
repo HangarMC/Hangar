@@ -169,10 +169,16 @@ useSeo(
           <h2>{{ i18n.t("author.management") }}</h2>
         </template>
         <template v-if="organization && hasPerms(NamedPermission.IsSubjectOwner)">
-          <Tooltip :content="i18n.t('author.tooltips.transfer')">
+          <Tooltip>
+            <template #content>
+              {{ i18n.t("author.tooltips.transfer") }}
+            </template>
             <OrgTransferModal :organization="user.name" />
           </Tooltip>
-          <Tooltip :content="i18n.t('author.tooltips.delete')">
+          <Tooltip>
+            <template #content>
+              {{ i18n.t("author.tooltips.delete") }}
+            </template>
             <OrgDeleteModal :organization="user.name" />
           </Tooltip>
         </template>

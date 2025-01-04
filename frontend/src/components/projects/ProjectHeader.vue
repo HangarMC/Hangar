@@ -156,7 +156,10 @@ function requiresConfirmation(): ConfirmationType {
       </div>
       <div class="flex flex-col justify-around lt-sm:items-center space-y-2 items-end justify-between flex-shrink-0">
         <span v-if="project?.mainChannelVersions" class="inline-flex items-center">
-          <Tooltip v-if="requiresConfirmation() !== ConfirmationType.NO" :content="i18n.t(requiresConfirmation())">
+          <Tooltip v-if="requiresConfirmation() !== ConfirmationType.NO">
+            <template #content>
+              {{ i18n.t(requiresConfirmation()) }}
+            </template>
             <div class="mr-2 text-2xl">
               <IconMdiAlert v-if="requiresConfirmation() === ConfirmationType.EXTERNAL_URL" />
               <IconMdiProgressQuestion v-else class="text-gray-400" />
