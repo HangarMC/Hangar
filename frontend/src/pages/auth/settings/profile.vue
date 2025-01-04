@@ -50,7 +50,7 @@ async function saveProfile() {
     <InputText v-model="profileForm.tagline" :label="t('auth.settings.profile.tagline')" counter :maxlength="useBackendData.validations.userTagline.max" />
 
     <h3 class="text-lg font-bold mt-4">{{ t("auth.settings.profile.social") }}</h3>
-    <SocialForm v-model="profileForm.socials" />
+    <SocialForm v-model="profileForm.socials!" />
 
     <Button type="submit" class="w-max mt-2" :disabled="loading" @click.prevent="saveProfile">{{ t("general.save") }}</Button>
   </div>
