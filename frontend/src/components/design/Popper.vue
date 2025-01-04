@@ -8,8 +8,8 @@ import { Tooltip } from "floating-vue";
     <template #default="{ shown }">
       <slot :shown="shown" />
     </template>
-    <template #popper="{ close }">
-      <slot name="content" :close="close" />
+    <template #popper="{ hide }">
+      <slot name="content" :close="hide" />
     </template>
   </Tooltip>
 </template>
