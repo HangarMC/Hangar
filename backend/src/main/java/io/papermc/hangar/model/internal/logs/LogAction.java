@@ -55,6 +55,7 @@ public class LogAction<LC extends LogContext<? extends LoggedActionTable, LC>> {
 
     // Users
     public static final LogAction<UserContext> USER_TAGLINE_CHANGED = new LogAction<>(PGLoggedAction.USER_TAGLINE_CHANGED, "User Tagline Changed");
+    public static final LogAction<UserContext> USER_SOCIALS_CHANGED = new LogAction<>(PGLoggedAction.USER_SOCIALS_CHANGED, "User Socials Changed");
     public static final LogAction<UserContext> USER_LOCKED = new LogAction<>(PGLoggedAction.USER_LOCKED, "User Locked");
     public static final LogAction<UserContext> USER_UNLOCKED = new LogAction<>(PGLoggedAction.USER_UNLOCKED, "User Unlocked");
     public static final LogAction<UserContext> USER_APIKEY_CREATED = new LogAction<>(PGLoggedAction.USER_APIKEY_CREATED, "User Apikey Created");

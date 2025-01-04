@@ -1,7 +1,9 @@
 package io.papermc.hangar.controller.internal;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.images.service.AvatarService;
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
@@ -192,6 +194,27 @@ public class OrganizationController extends HangarComponent {
         userTable.setTagline(s);
         this.userService.updateUser(userTable);
         this.actionLogger.user(LogAction.USER_TAGLINE_CHANGED.create(UserContext.of(userTable.getId()), userTable.getTagline(), oldTagline));
+    }
+
+    @Unlocked
+    @RequireAal(1)
+    @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 20)
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#orgName}")
+    @PostMapping(path = "/org/{orgName}/settings/socials", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void saveSocials(@PathVariable final String orgName, @RequestBody final Map<String, String> socials) {
+        final UserTable userTable = this.userService.getUserTable(orgName);
+        final OrganizationTable organizationTable = this.organizationService.getOrganizationTable(orgName);
+        if (userTable == null || organizationTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+
+        this.userService.validateSocials(socials);
+
+        final JSONB oldSocials = userTable.getSocials() == null ? new JSONB("[]") : userTable.getSocials();
+        userTable.setSocials(new JSONB(socials));
+        this.userService.updateUser(userTable);
+        this.actionLogger.user(LogAction.USER_SOCIALS_CHANGED.create(UserContext.of(userTable.getId()), userTable.getSocials().toString(), oldSocials.toString()));
     }
 
     @Unlocked

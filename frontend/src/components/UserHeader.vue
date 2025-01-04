@@ -86,6 +86,11 @@ const canEditCurrentUser = computed<boolean>(() => {
               </div>
             </template>
           </Popper>
+          <SocialsModal
+            v-if="canEditCurrentUser"
+            :socials="viewingUser.socials"
+            :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/socials`"
+          />
         </h1>
         <Skeleton v-else class="text-2xl px-1 w-50" />
 

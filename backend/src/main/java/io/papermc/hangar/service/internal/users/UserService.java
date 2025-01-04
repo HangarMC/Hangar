@@ -3,11 +3,16 @@ package io.papermc.hangar.service.internal.users;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.LoggedAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +26,8 @@ public class UserService extends HangarComponent {
 
     private final UserDAO userDAO;
     private final HangarUsersDAO hangarUsersDAO;
+
+    private static final Set<String> ACCEPTED_SOCIAL_TYPES = Set.of("discord", "github", "twitter", "youtube", "website");
 
     @Autowired
     public UserService(final UserDAO userDAO, final HangarUsersDAO hangarUsersDAO) {
@@ -87,6 +94,17 @@ public class UserService extends HangarComponent {
 
     public void updateUser(final UserTable userTable) {
         this.userDAO.update(userTable);
+    }
+
+    public void validateSocials(Map<String, String> socials) {
+        for (final Map.Entry<String, String> social : socials.entrySet()) {
+            if (!ACCEPTED_SOCIAL_TYPES.contains(social.getKey())) {
+                throw new HangarApiException("Badly formatted request, social type " + social.getKey() + " is unknown!");
+            }
+            if ("website".equals(social.getKey()) && !social.getValue().matches(this.config.getUrlRegex())) {
+                throw new HangarApiException("Badly formatted request, website " + social.getValue() + " is not a valid url! (Did you add https://?)");
+            }
+        }
     }
 
     private @Nullable <T> UserTable getUserTable(final @Nullable T identifier, final @NotNull Function<T, UserTable> userTableFunction) {

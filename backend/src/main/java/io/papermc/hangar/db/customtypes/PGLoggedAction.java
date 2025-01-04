@@ -45,6 +45,7 @@ public class PGLoggedAction extends PGobject {
 
     // Users
     public static final PGLoggedAction USER_TAGLINE_CHANGED = new PGLoggedAction("user_tagline_changed");
+    public static final PGLoggedAction USER_SOCIALS_CHANGED = new PGLoggedAction("user_socials_changed");
     public static final PGLoggedAction USER_LOCKED = new PGLoggedAction("user_locked");
     public static final PGLoggedAction USER_UNLOCKED = new PGLoggedAction("user_unlocked");
     public static final PGLoggedAction USER_APIKEY_CREATED = new PGLoggedAction("user_apikey_created");

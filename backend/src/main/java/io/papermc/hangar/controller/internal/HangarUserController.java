@@ -25,7 +25,6 @@ import io.papermc.hangar.model.internal.user.notifications.HangarInvite;
 import io.papermc.hangar.model.internal.user.notifications.HangarNotification;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.LoggedIn;
-import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.currentuser.CurrentUser;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
@@ -45,12 +44,9 @@ import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -74,8 +70,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RateLimit(path = "hangaruser")
 @RequestMapping(path = "/api/internal", produces = MediaType.APPLICATION_JSON_VALUE, method = {RequestMethod.GET, RequestMethod.POST})
 public class HangarUserController extends HangarComponent {
-
-    private static final Set<String> ACCEPTED_SOCIAL_TYPES = Set.of("discord", "github", "twitter", "youtube", "website");
 
     private final UsersApiService usersApiService;
     private final UserService userService;
@@ -176,6 +170,27 @@ public class HangarUserController extends HangarComponent {
     @Unlocked
     @CurrentUser("#userName")
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 7, refillTokens = 1, refillSeconds = 20)
+    @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
+    @PostMapping(path = "/users/{userName}/settings/socials", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void saveSocials(@PathVariable final String userName, @RequestBody final Map<String, String> socials) {
+        final UserTable userTable = this.userService.getUserTable(userName);
+        if (userTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+
+        this.userService.validateSocials(socials);
+
+        final JSONB oldSocials = userTable.getSocials() == null ? new JSONB("[]") : userTable.getSocials();
+        userTable.setSocials(new JSONB(socials));
+        this.userService.updateUser(userTable);
+        this.actionLogger.user(LogAction.USER_SOCIALS_CHANGED.create(UserContext.of(userTable.getId()), userTable.getSocials().toString(), oldSocials.toString()));
+    }
+
+    // @el(userName: String)
+    @Unlocked
+    @CurrentUser("#userName")
+    @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
     @PostMapping("/users/{userName}/settings/resetTagline")
     public void resetTagline(@PathVariable final String userName) {
@@ -246,20 +261,8 @@ public class HangarUserController extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
-        Map<String, String> map = new HashMap<>();
-        for (final String[] social : settings.socials()) {
-            if (social.length != 2) {
-                throw new HangarApiException("Badly formatted request, " + Arrays.toString(social) + " wasn't of length 2!");
-            }
-            if (!ACCEPTED_SOCIAL_TYPES.contains(social[0])) {
-                throw new HangarApiException("Badly formatted request, social type " + social[0] + " is unknown!");
-            }
-            if ("website".equals(social[0]) && !social[1].matches(this.config.getUrlRegex())) {
-                throw new HangarApiException("Badly formatted request, website " + social[1] + " is not a valid url! (Did you add https://?)");
-            }
-            map.put(social[0], social[1]);
-        }
-        userTable.setSocials(new JSONB(map));
+        this.userService.validateSocials(settings.socials());
+        userTable.setSocials(new JSONB(settings.socials()));
         userTable.setTagline(settings.tagline());
         // TODO user action logging
         this.userService.updateUser(userTable);
