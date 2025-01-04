@@ -844,6 +844,7 @@
         "user_apikey_created",
         "user_apikey_deleted",
         "user_locked",
+        "user_socials_changed",
         "user_tagline_changed",
         "user_unlocked",
         "version_created",
