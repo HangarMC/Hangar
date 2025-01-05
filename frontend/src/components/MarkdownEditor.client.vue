@@ -153,7 +153,7 @@ function stopEditing() {
     </div>
     <Markdown v-if="!internalEditing" :raw="raw" />
     <ErrorTooltip :error-messages="errors" class="w-full absolute">
-      <slot />
+      <span />
     </ErrorTooltip>
   </div>
 </template>
