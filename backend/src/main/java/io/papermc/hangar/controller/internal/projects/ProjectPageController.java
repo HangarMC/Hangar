@@ -75,6 +75,7 @@ public class ProjectPageController extends HangarComponent {
 
     @Unlocked
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
     @GetMapping("/list/{projectId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Collection<HangarProjectPage>> listProjectPages(@PathVariable final long projectId) {
