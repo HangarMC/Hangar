@@ -97,11 +97,13 @@ public class VersionsController implements IVersionsController {
     }
 
     @Override
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#version}")
     public Map<String, VersionStats> getVersionStats(final ProjectTable project, final ProjectVersionTable version, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
         return this.versionsApiService.getVersionStats(version, fromDate, toDate);
     }
 
     @Override
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#version}")
     public Map<String, VersionStats> getVersionStatsById(final ProjectVersionTable version, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
         return this.versionsApiService.getVersionStats(version, fromDate, toDate);
     }
