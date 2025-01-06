@@ -64,7 +64,7 @@ public class VersionsController implements IVersionsController {
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#version}")
     public Version getVersion(final ProjectTable project, final ProjectVersionTable version) {
         return this.versionsApiService.getVersion(project, version);
     }
