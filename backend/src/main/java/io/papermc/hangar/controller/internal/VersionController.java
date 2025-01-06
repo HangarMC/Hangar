@@ -185,8 +185,7 @@ public class VersionController extends HangarComponent {
 
     @ErrorRedirect
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
-    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#project, #version, #platform}")
-    // TODO is platform needed in the visibility check? it's not used in the VisibilityRequiredVoter
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#project, #version}")
     @GetMapping(path = "/version/{project}/versions/{version}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<?> download(@PathVariable final ProjectTable project, @PathVariable final ProjectVersionTable version, @PathVariable final Platform platform) {
         return this.downloadService.downloadVersion(project, version, platform);
