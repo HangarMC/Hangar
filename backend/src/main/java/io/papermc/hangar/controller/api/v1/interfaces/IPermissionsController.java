@@ -34,11 +34,34 @@ public interface IPermissionsController {
         @ApiResponse(responseCode = "400", description = "Bad Request"),
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired")
     })
-    @GetMapping("/permissions/hasAll")
-    ResponseEntity<PermissionCheck> hasAllPermissions(@Parameter(description = "The permissions to check", required = true) @RequestParam @Size(max = 50) Set<NamedPermission> permissions,
-                                                      @Parameter(description = "The project slug of the project to check permissions in. Must not be used together with `organizationName`") @RequestParam(required = false) String slug,
-                                                      @Parameter(description = "The organization to check permissions in. Must not be used together with `projectOwner` and `projectSlug`") @RequestParam(required = false) String organization
+    @GetMapping(value = "/permissions/hasAll", params = "!slug")
+    ResponseEntity<PermissionCheck> hasAllPermissions(
+        @Parameter(description = "The permissions to check", required = true) @RequestParam @Size(max = 50) Set<NamedPermission> permissions,
+        @Parameter(description = "The id or slug of the project to check permissions in. Must not be used together with `organization`") @RequestParam(required = false) String project,
+        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false) String organization
     );
+
+    @Operation(
+        summary = "Checks whether you have all the provided permissions",
+        operationId = "hasAllLegacy",
+        description = "Checks whether you have all the provided permissions in the given context",
+        security = @SecurityRequirement(name = "HangarAuth"),
+        tags = "Permissions"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "400", description = "Bad Request"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired")
+    })
+    @GetMapping(value = "/permissions/hasAll", params = "slug")
+    default ResponseEntity<PermissionCheck> hasAllPermissionsLegacy(
+        @Parameter(description = "The permissions to check", required = true) @RequestParam final @Size(max = 50) Set<NamedPermission> permissions,
+        @Deprecated @Parameter(description = "Deprecated alias for `project`") @RequestParam(required = false) final String slug,
+        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `slug`") @RequestParam(required = false) final String organization
+    ) {
+        return this.hasAllPermissions(permissions, slug, organization);
+    }
+
 
     @Operation(
         summary = "Checks whether you have at least one of the provided permissions",
@@ -52,11 +75,33 @@ public interface IPermissionsController {
         @ApiResponse(responseCode = "400", description = "Bad Request"),
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired")
     })
-    @GetMapping("/permissions/hasAny")
-    ResponseEntity<PermissionCheck> hasAny(@Parameter(description = "The permissions to check", required = true) @RequestParam Set<NamedPermission> permissions,
-                                           @Parameter(description = "The slug of the project to check permissions in. Must not be used together with `organization`") @RequestParam(required = false) String slug,
-                                           @Parameter(description = "The organization to check permissions in. Must not be used together with `slug`") @RequestParam(required = false) String organization
+    @GetMapping(value = "/permissions/hasAny", params = "!slug")
+    ResponseEntity<PermissionCheck> hasAny(
+        @Parameter(description = "The permissions to check", required = true) @RequestParam Set<NamedPermission> permissions,
+        @Parameter(description = "The id or slug of the project to check permissions in. Must not be used together with `organization`") @RequestParam(required = false) String project,
+        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false) String organization
     );
+
+    @Operation(
+        summary = "Checks whether you have at least one of the provided permissions",
+        operationId = "hasAnyLegacy",
+        description = "Checks whether you have at least one of the provided permissions in the given context",
+        security = @SecurityRequirement(name = "HangarAuth"),
+        tags = "Permissions"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "400", description = "Bad Request"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired")
+    })
+    @GetMapping(value = "/permissions/hasAny", params = "slug")
+    default ResponseEntity<PermissionCheck> hasAnyLegacy(
+        @Parameter(description = "The permissions to check", required = true) @RequestParam final Set<NamedPermission> permissions,
+        @Deprecated @Parameter(description = "Deprecated alias for `project`") @RequestParam(required = false) final String slug,
+        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false) final String organization
+    ) {
+        return this.hasAny(permissions, slug, organization);
+    }
 
     @Operation(
         summary = "Returns your permissions",
@@ -70,10 +115,29 @@ public interface IPermissionsController {
         @ApiResponse(responseCode = "400", description = "Bad Request"),
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired")
     })
-    @GetMapping(value = "/permissions",
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/permissions", params = "!slug", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<UserPermissions> showPermissions(
-        @Parameter(description = "The slug of the project get the permissions for. Must not be used together with `organization`") @RequestParam(required = false) String slug,
-        @Parameter(description = "The organization to check permissions in. Must not be used together with `slug`") @RequestParam(required = false) String organization
+        @Parameter(description = "The id or slug of the project to check permissions in. Must not be used together with `organization`") @RequestParam(required = false) String project,
+        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false) String organization
     );
+
+    @Operation(
+        summary = "Returns your permissions",
+        operationId = "showPermissionsLegacy",
+        description = "Returns a list of permissions you have in the given context",
+        security = @SecurityRequirement(name = "HangarAuth"),
+        tags = "Permissions"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "400", description = "Bad Request"),
+        @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired")
+    })
+    @GetMapping(value = "/permissions", params = "slug", produces = MediaType.APPLICATION_JSON_VALUE)
+    default ResponseEntity<UserPermissions> showPermissionsLegacy(
+        @Deprecated @Parameter(description = "Deprecated alias for `project`") @RequestParam(required = false) final String slug,
+        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false) final String organization
+    ) {
+        return this.showPermissions(slug, organization);
+    }
 }
