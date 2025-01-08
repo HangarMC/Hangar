@@ -46,8 +46,9 @@ spring:
   jmx:
     enabled: false
 
+springdoc:
+  writer-with-order-by-keys: true
 # Enable this if you want to regenerate the frontend types
-#springdoc:
 #  use-fqn: true
 
 management:
