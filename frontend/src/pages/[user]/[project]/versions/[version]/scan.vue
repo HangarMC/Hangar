@@ -21,9 +21,13 @@ async function doScan() {
       continue;
     }
 
-    await useInternalApi(`jarscanning/scan/${props.version?.id}/${platform}`, "POST");
+    try {
+      await useInternalApi(`jarscanning/scan/${props.version?.id}/${platform}`, "POST");
+      useNotificationStore().success("Scheduled scan for " + platform);
+    } catch (err) {
+      useNotificationStore().error("Failed to schedule scan for " + platform + ": " + err?.response?.data?.message ?? err);
+    }
   }
-  await useNotificationStore().success("Scheduled scan");
 }
 
 useSeo(
