@@ -9,17 +9,13 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable;
-import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTableWithPlatform;
-import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.file.S3FileService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,28 +41,19 @@ public class DownloadService extends HangarComponent {
 
     public Map<Platform, PlatformVersionDownload> getDownloads(final String user, final String project, final String version, final long versionId) {
         final Map<Platform, PlatformVersionDownload> versionDownloadsMap = new EnumMap<>(Platform.class);
-        final List<Pair<ProjectVersionPlatformDownloadTable, ProjectVersionDownloadTable>> platformDownloadsFull = this.downloadsDAO.getPlatformDownloadsFull(versionId);
-        final Map<Long, PlatformVersionDownload> downloads = new HashMap<>();
-        for (final Pair<ProjectVersionPlatformDownloadTable, ProjectVersionDownloadTable> platformDownloadPair : platformDownloadsFull) {
-            final ProjectVersionPlatformDownloadTable platformDownload = platformDownloadPair.getLeft();
-            PlatformVersionDownload download = downloads.get(platformDownload.getDownloadId());
-            if (download != null) {
-                versionDownloadsMap.put(platformDownload.getPlatform(), download);
-                continue;
+        final List<ProjectVersionDownloadTable> downloads = this.downloadsDAO.getDownloads(versionId);
+        for (final ProjectVersionDownloadTable download : downloads) {
+            final FileInfo fileInfo = download.getFileName() != null ? new FileInfo(download.getFileName(), download.getFileSize(), download.getHash()) : null;
+            final String downloadUrl = fileInfo != null ? this.fileService.getVersionDownloadUrl(user, project, version, download.getDownloadPlatform(), fileInfo.getName()) : null;
+            for (final Platform platform : download.getPlatforms()) {
+                versionDownloadsMap.put(platform, new PlatformVersionDownload(fileInfo, download.getExternalUrl(), downloadUrl));
             }
-
-            final ProjectVersionDownloadTable downloadTable = platformDownloadPair.getRight();
-            final FileInfo fileInfo = downloadTable.getFileName() != null ? new FileInfo(downloadTable.getFileName(), downloadTable.getFileSize(), downloadTable.getHash()) : null;
-            final String downloadUrl = fileInfo != null ? this.fileService.getVersionDownloadUrl(user, project, version, platformDownload.getPlatform(), fileInfo.getName()) : null;
-            download = new PlatformVersionDownload(fileInfo, downloadTable.getExternalUrl(), downloadUrl);
-            downloads.put(platformDownload.getDownloadId(), download);
-            versionDownloadsMap.put(platformDownload.getPlatform(), download);
         }
         return versionDownloadsMap;
     }
 
     public ResponseEntity<?> downloadVersion(final ProjectTable project, final ProjectVersionTable version, final Platform platform) {
-        final ProjectVersionDownloadTableWithPlatform download = this.downloadsDAO.getDownloadByPlatform(version.getVersionId(), platform);
+        final ProjectVersionDownloadTable download = this.downloadsDAO.getDownloadByPlatform(version.getVersionId(), platform);
         if (download == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
@@ -75,7 +62,7 @@ public class DownloadService extends HangarComponent {
         if (StringUtils.hasText(download.getExternalUrl())) {
             return ResponseEntity.status(301).header("Location", download.getExternalUrl()).build();
         } else if (this.fileService instanceof S3FileService){
-            return ResponseEntity.status(301).header("Location", this.fileService.getVersionDownloadUrl(ownerName, project.getName(), version.getName(), download.getPlatform(), download.getFileName())).build();
+            return ResponseEntity.status(301).header("Location", this.fileService.getVersionDownloadUrl(ownerName, project.getName(), version.getName(), download.getDownloadPlatform(), download.getFileName())).build();
         } else {
             final String path = this.projectFiles.getVersionDir(ownerName, project.getName(), version.getName(), platform, download.getFileName());
             if (!this.fileService.exists(path)) {

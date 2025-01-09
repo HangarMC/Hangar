@@ -26,7 +26,6 @@ import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionDependencyTable;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionPlatformDependencyTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable;
-import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.LastDependencies;
@@ -61,8 +60,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,7 +152,7 @@ public class VersionFactory extends HangarComponent {
                     throw new HangarApiException("Missing a file for platform(s): " + fileOrUrl.platforms());
                 }
 
-                final MultipartFile file = files.remove(0);
+                final MultipartFile file = files.removeFirst();
                 versionString = this.createPendingFile(file, channel, projectTable, pluginDependencies, platformDependencies, pendingFiles, versionString, userTempDir, fileOrUrl, prefillDependencies);
             }
         }
@@ -180,7 +177,7 @@ public class VersionFactory extends HangarComponent {
         // move file into temp
         final PluginFileWithData pluginDataFile;
         try {
-            final Platform platformToResolve = fileOrUrl.platforms().get(0); // Just save it by the first platform
+            final Platform platformToResolve = fileOrUrl.platforms().getFirst(); // Just save it by the first platform
             // read file
             final String tmpDir = this.fileService.resolve(userTempDir, platformToResolve.name());
             final String tmpPluginFile = this.fileService.resolve(tmpDir, pluginFileName);
@@ -299,21 +296,13 @@ public class VersionFactory extends HangarComponent {
             this.processDependencies(pendingVersion, projectVersionTable.getId());
 
             // move over files
-            final List<Pair<ProjectVersionDownloadTable, List<Platform>>> downloadsTables = new ArrayList<>();
+            final List<ProjectVersionDownloadTable> downloadsTables = new ArrayList<>();
             for (final PendingVersionFile pendingVersionFile : pendingVersion.getFiles()) {
                 this.processPendingVersionFile(pendingVersion, userTempDir, projectVersionTable, versionDir, downloadsTables, pendingVersionFile);
             }
 
             // Insert download data
-            final List<ProjectVersionDownloadTable> tables = this.downloadsDAO.insertDownloads(downloadsTables.stream().map(Pair::getLeft).toList());
-            final List<ProjectVersionPlatformDownloadTable> platformDownloadsTables = new ArrayList<>();
-            for (int i = 0; i < downloadsTables.size(); i++) {
-                final ProjectVersionDownloadTable downloadTable = tables.get(i);
-                for (final Platform platform : downloadsTables.get(i).getRight()) {
-                    platformDownloadsTables.add(new ProjectVersionPlatformDownloadTable(projectVersionTable.getVersionId(), platform, downloadTable.getId()));
-                }
-            }
-            this.downloadsDAO.insertPlatformDownloads(platformDownloadsTables);
+            this.downloadsDAO.insertDownloads(downloadsTables);
 
             // send notifications
             if (projectChannelTable.getFlags().contains(ChannelFlag.SENDS_NOTIFICATIONS)) {
@@ -347,7 +336,7 @@ public class VersionFactory extends HangarComponent {
             boolean safeLinks = true;
             for (final PendingVersionFile file : pendingVersion.getFiles()) {
                 if (file.fileInfo() != null) {
-                    platformsToScan.add(file.platforms().get(0));
+                    platformsToScan.add(file.platforms().getFirst());
                     continue;
                 }
 
@@ -411,19 +400,19 @@ public class VersionFactory extends HangarComponent {
         this.projectVersionDependenciesDAO.insertAll(pluginDependencyTables);
     }
 
-    private void processPendingVersionFile(final PendingVersion pendingVersion, final String userTempDir, final ProjectVersionTable projectVersionTable, final String versionDir, final List<Pair<ProjectVersionDownloadTable, List<Platform>>> downloadsTables, final PendingVersionFile pendingVersionFile) throws IOException {
+    private void processPendingVersionFile(final PendingVersion pendingVersion, final String userTempDir, final ProjectVersionTable projectVersionTable, final String versionDir, final List<ProjectVersionDownloadTable> downloadsTables, final PendingVersionFile pendingVersionFile) throws IOException {
+        final Platform downloadPlatform = pendingVersionFile.platforms().getFirst();
         final FileInfo fileInfo = pendingVersionFile.fileInfo();
         if (fileInfo == null) {
-            final ProjectVersionDownloadTable table = new ProjectVersionDownloadTable(projectVersionTable.getVersionId(), null, null, null, pendingVersionFile.externalUrl());
-            downloadsTables.add(ImmutablePair.of(table, pendingVersionFile.platforms()));
+            final ProjectVersionDownloadTable table = new ProjectVersionDownloadTable(projectVersionTable.getVersionId(), null, null, null, pendingVersionFile.externalUrl(), pendingVersionFile.platforms().toArray(new Platform[0]), downloadPlatform);
+            downloadsTables.add(table);
             return;
         }
 
         // Move file for first platform
-        final Platform platformToResolve = pendingVersionFile.platforms().get(0);
-        final String tmpVersionJar = this.fileService.resolve(this.fileService.resolve(userTempDir, platformToResolve.name()), fileInfo.getName());
+        final String tmpVersionJar = this.fileService.resolve(this.fileService.resolve(userTempDir, downloadPlatform.name()), fileInfo.getName());
 
-        final String newVersionJarPath = this.fileService.resolve(this.fileService.resolve(versionDir, platformToResolve.name()), fileInfo.getName());
+        final String newVersionJarPath = this.fileService.resolve(this.fileService.resolve(versionDir, downloadPlatform.name()), fileInfo.getName());
         this.fileService.moveFile(tmpVersionJar, newVersionJarPath);
 
         // Create links for the other platforms
@@ -444,8 +433,8 @@ public class VersionFactory extends HangarComponent {
             }
         }
 
-        final ProjectVersionDownloadTable table = new ProjectVersionDownloadTable(projectVersionTable.getVersionId(), fileInfo.sizeBytes(), fileInfo.sha256Hash(), fileInfo.getName(), null);
-        downloadsTables.add(ImmutablePair.of(table, pendingVersionFile.platforms()));
+        final ProjectVersionDownloadTable table = new ProjectVersionDownloadTable(projectVersionTable.getVersionId(), fileInfo.sizeBytes(), fileInfo.sha256Hash(), fileInfo.getName(), null, pendingVersionFile.platforms().toArray(new Platform[0]), downloadPlatform);
+        downloadsTables.add(table);
     }
 
     private void verifyPendingPlatforms(final PendingVersion pendingVersion, final String userTempDir) {
@@ -457,7 +446,7 @@ public class VersionFactory extends HangarComponent {
 
             final FileInfo fileInfo = pendingVersionFile.fileInfo();
             if (fileInfo != null) { // verify file
-                final Platform platform = pendingVersionFile.platforms().get(0); // Use the first platform to resolve
+                final Platform platform = pendingVersionFile.platforms().getFirst(); // Use the first platform to resolve
                 final String tmpVersionJar = this.fileService.resolve(this.fileService.resolve(userTempDir, platform.name()), fileInfo.getName());
                 try {
                     if (!this.fileService.exists(tmpVersionJar)) {

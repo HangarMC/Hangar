@@ -15,7 +15,6 @@ import io.papermc.hangar.model.db.versions.JarScanResultEntryTable;
 import io.papermc.hangar.model.db.versions.JarScanResultTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable;
-import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
 import io.papermc.hangar.model.internal.versions.JarScanResult;
 import io.papermc.hangar.scanner.HangarJarScanner;
 import io.papermc.hangar.scanner.check.Check;
@@ -179,23 +178,18 @@ public class JarScanningService {
 
     private NamedResource getFile(final VersionToScan version, final Platform platform) {
         final long versionId = version.versionId();
-        final ProjectVersionPlatformDownloadTable platformDownload = this.downloadsDAO.getPlatformDownload(versionId, platform);
+        final ProjectVersionDownloadTable platformDownload = this.downloadsDAO.getDownloadByPlatform(versionId, platform);
         // TODO Why can platformDownload be null at this stage
         if (platformDownload == null) {
             throw new RuntimeException("Couldn't find a download for version " + version + " in platform " + platform);
         }
 
-        final ProjectVersionDownloadTable download = this.downloadsDAO.getDownload(versionId, platformDownload.getDownloadId());
-        if (download.getFileName() == null) {
-            throw new RuntimeException("Couldn't find a file for version " + version + " in download " + download);
-        }
-
         final ProjectTable project = this.projectsDAO.getById(version.projectId());
-        final String path = this.projectFiles.getVersionDir(project.getOwnerName(), project.getSlug(), version.versionString(), platform, download.getFileName());
+        final String path = this.projectFiles.getVersionDir(project.getOwnerName(), project.getSlug(), version.versionString(), platformDownload.getDownloadPlatform(), platformDownload.getFileName());
         if (!this.fileService.exists(path)) {
             throw new RuntimeException("Couldn't find a file for version " + version + " in path " + path);
         }
-        return new NamedResource(this.fileService.getResource(path), download.getFileName());
+        return new NamedResource(this.fileService.getResource(path), platformDownload.getFileName());
     }
 
     public @Nullable JarScanResult getLastResult(final long versionId, final Platform platform) {

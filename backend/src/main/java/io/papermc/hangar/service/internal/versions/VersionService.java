@@ -11,7 +11,6 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
-import io.papermc.hangar.model.db.versions.downloads.ProjectVersionPlatformDownloadTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
@@ -70,13 +69,7 @@ public class VersionService extends HangarComponent {
 
             final ProjectVersionTable versionTable = this.projectVersionsDAO.getProjectVersionTable(downloadTable.getVersionId());
             final ProjectTable projectTable = this.projectsDAO.getById(versionTable.getProjectId());
-            final List<ProjectVersionPlatformDownloadTable> platformDownloads = this.projectVersionDownloadsDAO.getPlatformDownloads(versionTable.getVersionId(), downloadTable.getId());
-            if (platformDownloads.isEmpty()) {
-                errors.add("No platform downloads for " + projectTable.getOwnerName() + "/" + projectTable.getSlug() + "/" + versionTable.getVersionString() + "/" + downloadTable.getFileName());
-                return;
-            }
-
-            final Platform platform = platformDownloads.get(0).getPlatform();
+            final Platform platform = downloadTable.getDownloadPlatform();
             final String versionPath = this.projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getSlug(),
                 versionTable.getVersionString(), platform, downloadTable.getFileName());
             if (!this.fileService.exists(versionPath)) {

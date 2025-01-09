@@ -5,10 +5,12 @@ import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.JobState;
 import io.papermc.hangar.db.customtypes.PGLoggedAction;
 import io.papermc.hangar.db.customtypes.RoleCategory;
+import io.papermc.hangar.model.common.Platform;
 import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.array.SqlArrayType;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.mapper.RowMapperFactory;
@@ -57,6 +59,18 @@ public class JDBIConfig {
         config.registerCustomType(RoleCategory.class, "role_category");
         config.registerCustomType(JobState.class, "job_state");
         config.registerCustomType(JSONB.class, "jsonb");
+
+        jdbi.registerArrayType(new SqlArrayType<Platform>() {
+            @Override
+            public String getTypeName() {
+                return "integer";
+            }
+
+            @Override
+            public Integer convertArrayElement(final Platform element) {
+                return element.ordinal();
+            }
+        });
 
         return jdbi;
     }
