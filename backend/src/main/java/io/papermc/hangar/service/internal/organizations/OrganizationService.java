@@ -68,11 +68,7 @@ public class OrganizationService extends HangarComponent {
         return this.organizationDAO.getOrganizationsOwnedBy(ownerId);
     }
 
-    public HangarOrganization getHangarOrganization(final String name) {
-        final OrganizationTable organizationTable = this.organizationDAO.getByName(name);
-        if (organizationTable == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
+    public HangarOrganization getHangarOrganization(final OrganizationTable organizationTable) {
         final UserTable owner = this.userDAO.getUserTable(organizationTable.getOwnerId());
         final List<JoinableMember<OrganizationRoleTable>> members = this.hangarOrganizationsDAO.getOrganizationMembers(organizationTable.getId(), this.getHangarUserId(), this.permissionService.getOrganizationPermissions(this.getHangarUserId(), organizationTable.getId()).has(Permission.ManageOrganizationMembers));
         return new HangarOrganization(organizationTable.getId(), owner, members);

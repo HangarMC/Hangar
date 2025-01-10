@@ -3,6 +3,7 @@ package io.papermc.hangar.security.annotations.permission;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.security.annotations.HangarDecisionVoter;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
@@ -70,7 +71,13 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
                 }
                 case ORGANIZATION -> {
                     if (arguments.length == 1) {
-                        currentPerm = this.permissionService.getOrganizationPermissions(userId, (String) arguments[0]);
+                        currentPerm = switch (arguments[0]) {
+                            case final Long id -> this.permissionService.getOrganizationPermissions(userId, id);
+                            case final String name -> this.permissionService.getOrganizationPermissions(userId, name);
+                            case final OrganizationTable org -> this.permissionService.getOrganizationPermissions(userId, org.getId());
+                            case null, default ->
+                                throw new IllegalStateException("Bad annotation configuration, expected Long or String but got " + arguments[0] + " for expression " + attribute.expression().getExpressionString());
+                        };
                     } else {
                         currentPerm = Permission.None;
                     }
