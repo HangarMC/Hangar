@@ -1,17 +1,15 @@
 package io.papermc.hangar.controller.extras.resolvers.path.model;
 
-import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
 @Component
-public class UserTableResolver extends HangarModelPathVarResolver<UserTable> {
+public class UserTableResolver extends HangarModelResolver<UserTable> {
 
     private final UserService userService;
 
@@ -41,6 +39,6 @@ public class UserTableResolver extends HangarModelPathVarResolver<UserTable> {
             return userTable;
         }
 
-        throw new HangarApiException(HttpStatus.NOT_FOUND);
+        return null;
     }
 }
