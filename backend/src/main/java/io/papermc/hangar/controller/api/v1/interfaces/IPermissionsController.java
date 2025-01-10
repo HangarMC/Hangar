@@ -3,6 +3,8 @@ package io.papermc.hangar.controller.api.v1.interfaces;
 import io.papermc.hangar.model.api.permissions.PermissionCheck;
 import io.papermc.hangar.model.api.permissions.UserPermissions;
 import io.papermc.hangar.model.common.NamedPermission;
+import io.papermc.hangar.model.db.OrganizationTable;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -37,8 +39,8 @@ public interface IPermissionsController {
     @GetMapping(value = "/permissions/hasAll", params = "!slug")
     ResponseEntity<PermissionCheck> hasAllPermissions(
         @Parameter(description = "The permissions to check", required = true) @RequestParam @Size(max = 50) Set<NamedPermission> permissions,
-        @Parameter(description = "The id or slug of the project to check permissions in. Must not be used together with `organization`") @RequestParam(required = false) String project,
-        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false) String organization
+        @Parameter(description = "The id or slug of the project to check permissions in. Must not be used together with `organization`") @RequestParam(required = false, name = "project") ProjectTable project,
+        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false, name = "organization") OrganizationTable organization
     );
 
     @Operation(
@@ -56,8 +58,8 @@ public interface IPermissionsController {
     @GetMapping(value = "/permissions/hasAll", params = "slug")
     default ResponseEntity<PermissionCheck> hasAllPermissionsLegacy(
         @Parameter(description = "The permissions to check", required = true) @RequestParam final @Size(max = 50) Set<NamedPermission> permissions,
-        @Deprecated @Parameter(description = "Deprecated alias for `project`") @RequestParam(required = false) final String slug,
-        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `slug`") @RequestParam(required = false) final String organization
+        @Deprecated @Parameter(description = "Deprecated alias for `project`") @RequestParam(required = false, name = "slug") final ProjectTable slug,
+        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `slug`") @RequestParam(required = false, name = "organization") final OrganizationTable organization
     ) {
         return this.hasAllPermissions(permissions, slug, organization);
     }
@@ -78,8 +80,8 @@ public interface IPermissionsController {
     @GetMapping(value = "/permissions/hasAny", params = "!slug")
     ResponseEntity<PermissionCheck> hasAny(
         @Parameter(description = "The permissions to check", required = true) @RequestParam Set<NamedPermission> permissions,
-        @Parameter(description = "The id or slug of the project to check permissions in. Must not be used together with `organization`") @RequestParam(required = false) String project,
-        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false) String organization
+        @Parameter(description = "The id or slug of the project to check permissions in. Must not be used together with `organization`") @RequestParam(required = false, name = "project") ProjectTable project,
+        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false, name = "organization") OrganizationTable organization
     );
 
     @Operation(
@@ -97,8 +99,8 @@ public interface IPermissionsController {
     @GetMapping(value = "/permissions/hasAny", params = "slug")
     default ResponseEntity<PermissionCheck> hasAnyLegacy(
         @Parameter(description = "The permissions to check", required = true) @RequestParam final Set<NamedPermission> permissions,
-        @Deprecated @Parameter(description = "Deprecated alias for `project`") @RequestParam(required = false) final String slug,
-        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false) final String organization
+        @Deprecated @Parameter(description = "Deprecated alias for `project`") @RequestParam(required = false, name = "slug") final ProjectTable slug,
+        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false, name = "organization") final OrganizationTable organization
     ) {
         return this.hasAny(permissions, slug, organization);
     }
@@ -117,8 +119,8 @@ public interface IPermissionsController {
     })
     @GetMapping(value = "/permissions", params = "!slug", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<UserPermissions> showPermissions(
-        @Parameter(description = "The id or slug of the project to check permissions in. Must not be used together with `organization`") @RequestParam(required = false) String project,
-        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false) String organization
+        @Parameter(description = "The id or slug of the project to check permissions in. Must not be used together with `organization`") @RequestParam(required = false, name = "project") ProjectTable project,
+        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false, name = "organization") OrganizationTable organization
     );
 
     @Operation(
@@ -135,8 +137,8 @@ public interface IPermissionsController {
     })
     @GetMapping(value = "/permissions", params = "slug", produces = MediaType.APPLICATION_JSON_VALUE)
     default ResponseEntity<UserPermissions> showPermissionsLegacy(
-        @Deprecated @Parameter(description = "Deprecated alias for `project`") @RequestParam(required = false) final String slug,
-        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false) final String organization
+        @Deprecated @Parameter(description = "Deprecated alias for `project`") @RequestParam(required = false, name = "slug") final ProjectTable slug,
+        @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`", name = "organization") @RequestParam(required = false) final OrganizationTable organization
     ) {
         return this.showPermissions(slug, organization);
     }
