@@ -64,7 +64,7 @@ public class VersionsController implements IVersionsController {
     }
 
     @Override
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#version}")
     public Version getVersion(final ProjectTable project, final ProjectVersionTable version) {
         return this.versionsApiService.getVersion(project, version);
     }
@@ -97,18 +97,20 @@ public class VersionsController implements IVersionsController {
     }
 
     @Override
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#version}")
     public Map<String, VersionStats> getVersionStats(final ProjectTable project, final ProjectVersionTable version, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
         return this.versionsApiService.getVersionStats(version, fromDate, toDate);
     }
 
     @Override
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#version}")
     public Map<String, VersionStats> getVersionStatsById(final ProjectVersionTable version, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
         return this.versionsApiService.getVersionStats(version, fromDate, toDate);
     }
 
     @Override
     @RateLimit(overdraft = 10, refillTokens = 2)
-    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#project, #version, #platform}")
+    @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#project, #version}")
     public ResponseEntity<?> downloadVersion(final ProjectTable project, final ProjectVersionTable version, final Platform platform, final HttpServletResponse response) {
         return this.downloadService.downloadVersion(project, version, platform);
     }

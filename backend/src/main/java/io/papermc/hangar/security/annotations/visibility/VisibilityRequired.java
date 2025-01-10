@@ -32,7 +32,7 @@ public @interface VisibilityRequired {
 
     enum Type {
         PROJECT(1),
-        VERSION(1, 3);
+        VERSION(1, 2);
 
         private final Set<Integer> argCount;
 
