@@ -59,7 +59,6 @@ public class TestData {
     public static UserTable USER_BANNED;
 
     public static String KEY_ADMIN;
-    public static String KEY_ALL;
     public static String KEY_PROJECT_ONLY;
     public static String KEY_SEE_HIDDEN;
 
@@ -144,7 +143,6 @@ public class TestData {
 
         logger.info("Creating test api keys...");
         KEY_ADMIN = this.apiKeyService.createApiKey(USER_ADMIN, new CreateAPIKeyForm("Admin", Set.of(NamedPermission.values())), Permission.All);
-        KEY_ALL = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("All", new HashSet<>(Permission.fromBinString("0000000000000000000011110000111100001111001100001111011111110111").toNamed())), Permission.All);
         KEY_PROJECT_ONLY = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("Project Only", Set.of(NamedPermission.CREATE_PROJECT)), Permission.All);
         KEY_SEE_HIDDEN = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("See Hidden", Set.of(NamedPermission.SEE_HIDDEN)), Permission.All);
 

@@ -18,10 +18,9 @@ class PermissionsControllerTest extends ControllerTest {
     }
 
     @Test
-    @Disabled //TODO fix wtf is going on here
     void testHasAllWithAll() throws Exception {
         this.mockMvc.perform(get("/api/v1/permissions/hasAll?permissions=create_organization&permissions=create_project")
-                .with(this.apiKey(TestData.KEY_ALL)))
+                .with(this.apiKey(TestData.KEY_ADMIN)))
             .andExpect(jsonPath("$.result").value(true));
     }
 
@@ -34,10 +33,9 @@ class PermissionsControllerTest extends ControllerTest {
     }
 
     @Test
-    @Disabled //TODO fix wtf is going on here
     void testHasAnyWithAll() throws Exception {
         this.mockMvc.perform(get("/api/v1/permissions/hasAny?permissions=create_organization&permissions=create_project")
-                .with(this.apiKey(TestData.KEY_ALL)))
+                .with(this.apiKey(TestData.KEY_ADMIN)))
             .andExpect(jsonPath("$.result").value(true));
     }
 
