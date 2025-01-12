@@ -2,12 +2,12 @@
 import { cloneDeep } from "lodash-es";
 import { useVuelidate } from "@vuelidate/core";
 import { NamedPermission } from "~/types/backend";
-import type { HangarProject, HangarVersion, PlatformData } from "~/types/backend";
+import type { HangarProject, PlatformData, Version } from "~/types/backend";
 import { DependencyTable } from "#components";
 
 const props = defineProps<{
   project: HangarProject;
-  version: HangarVersion;
+  version: Version;
   platform: PlatformData;
 }>();
 
@@ -22,7 +22,7 @@ const projectVersion = computed(() => {
 const loading = ref(false);
 const depTable = useTemplateRef("depTable");
 const modal = useTemplateRef("modal");
-const pluginDependencies = ref<HangarVersion["pluginDependencies"]>({});
+const pluginDependencies = ref<Version["pluginDependencies"]>({});
 
 async function save() {
   if (!(await v.value.$validate())) {
@@ -51,7 +51,7 @@ onMounted(() =>
   watch(
     () => modal.value?.isOpen,
     (val) => {
-      pluginDependencies.value = val && projectVersion.value ? cloneDeep(projectVersion.value.pluginDependencies) : ({} as HangarVersion["pluginDependencies"]);
+      pluginDependencies.value = val && projectVersion.value ? cloneDeep(projectVersion.value.pluginDependencies) : ({} as Version["pluginDependencies"]);
       if (depTable.value) {
         depTable.value.reset();
       }

@@ -31,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
 @RegisterConstructorMapper(Version.class)
 public interface VersionsApiDAO {
 
-    @KeyColumn("id")
     @RegisterColumnMapper(VersionStatsMapper.class)
     @SqlQuery("""
         SELECT pv.id,
@@ -67,7 +66,7 @@ public interface VersionsApiDAO {
                pv.id = :versionId
            ORDER BY pv.created_at DESC
     """)
-    @Nullable Map.Entry<Long, Version> getVersion(long versionId, @Define boolean canSeeHidden, @Define Long userId);
+    @Nullable Version getVersion(long versionId, @Define boolean canSeeHidden, @Define Long userId);
 
     @KeyColumn("id")
     @RegisterColumnMapper(VersionStatsMapper.class)

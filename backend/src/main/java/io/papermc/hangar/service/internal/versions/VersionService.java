@@ -4,16 +4,13 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.downloads.ProjectVersionDownloadsDAO;
-import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
-import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
@@ -35,24 +32,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class VersionService extends HangarComponent {
 
     private final ProjectVersionsDAO projectVersionsDAO;
-    private final HangarVersionsDAO hangarVersionsDAO;
     private final ProjectVisibilityService projectVisibilityService;
     private final ProjectVersionVisibilityService projectVersionVisibilityService;
     private final ProjectVersionDownloadsDAO projectVersionDownloadsDAO;
-    private final VersionDependencyService versionDependencyService;
     private final ProjectFiles projectFiles;
     private final ProjectsDAO projectsDAO;
     private final FileService fileService;
     private final StatService statService;
 
     @Autowired
-    public VersionService(final ProjectVersionsDAO projectVersionDAO, final HangarVersionsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final ProjectVersionVisibilityService projectVersionVisibilityService, final ProjectVersionDownloadsDAO projectVersionDownloadsDAO, final VersionDependencyService versionDependencyService, final ProjectFiles projectFiles, final ProjectsDAO projectsDAO, final FileService fileService, final StatService statService) {
+    public VersionService(final ProjectVersionsDAO projectVersionDAO, final ProjectVisibilityService projectVisibilityService, final ProjectVersionVisibilityService projectVersionVisibilityService, final ProjectVersionDownloadsDAO projectVersionDownloadsDAO, final ProjectFiles projectFiles, final ProjectsDAO projectsDAO, final FileService fileService, final StatService statService) {
         this.projectVersionsDAO = projectVersionDAO;
-        this.hangarVersionsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
         this.projectVersionVisibilityService = projectVersionVisibilityService;
         this.projectVersionDownloadsDAO = projectVersionDownloadsDAO;
-        this.versionDependencyService = versionDependencyService;
         this.projectFiles = projectFiles;
         this.projectsDAO = projectsDAO;
         this.fileService = fileService;
@@ -113,15 +106,6 @@ public class VersionService extends HangarComponent {
 
     public void updateProjectVersionTable(final ProjectVersionTable projectVersionTable) {
         this.projectVersionsDAO.update(projectVersionTable);
-    }
-
-    public HangarVersion getHangarVersion(final ProjectTable project, final ProjectVersionTable pvt) {
-        final HangarVersion version = this.hangarVersionsDAO.getVersion(pvt.getId(), this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
-        if (version == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
-
-        return this.versionDependencyService.addDownloadsAndDependencies(project, pvt, version.getId()).applyTo(version);
     }
 
     @Transactional

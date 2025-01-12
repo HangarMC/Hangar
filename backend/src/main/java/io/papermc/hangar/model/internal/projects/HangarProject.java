@@ -6,13 +6,13 @@ import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectChannel;
 import io.papermc.hangar.model.api.project.version.PlatformVersionDownload;
+import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.identified.ProjectIdentified;
 import io.papermc.hangar.model.internal.Joinable;
 import io.papermc.hangar.model.internal.user.JoinableMember;
-import io.papermc.hangar.model.internal.versions.HangarVersion;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
@@ -29,9 +29,9 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     private final Collection<HangarProjectPage> pages;
     private final ExtendedProjectPage mainPage;
     private final List<PinnedVersion> pinnedVersions;
-    private final Map<Platform, HangarVersion> mainChannelVersions;
+    private final Map<Platform, Version> mainChannelVersions;
 
-    public HangarProject(final Project project, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, HangarVersion> mainChannelVersions, final ExtendedProjectPage mainPage) {
+    public HangarProject(final Project project, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, Version> mainChannelVersions, final ExtendedProjectPage mainPage) {
         super(project);
         this.members = members;
         this.lastVisibilityChangeComment = lastVisibilityChangeComment;
@@ -78,7 +78,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         return this.pinnedVersions;
     }
 
-    public Map<Platform, HangarVersion> getMainChannelVersions() {
+    public Map<Platform, Version> getMainChannelVersions() {
         return this.mainChannelVersions;
     }
 

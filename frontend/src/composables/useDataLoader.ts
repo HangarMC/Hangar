@@ -1,11 +1,11 @@
 import type { RouteLocationNormalized } from "vue-router";
-import type { ExtendedProjectPage, HangarOrganization, HangarProject, HangarVersion, User } from "~/types/backend";
+import type { ExtendedProjectPage, HangarOrganization, HangarProject, Version, User } from "~/types/backend";
 
 type routeParams = "user" | "project" | "version" | "page";
 type DataLoaderTypes = {
   user: User;
   project: HangarProject;
-  version: HangarVersion;
+  version: Version;
   organization: HangarOrganization;
   page: ExtendedProjectPage;
 };

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ReviewAction, ReviewState } from "~/types/backend";
-import type { Platform, HangarProject, HangarReview, HangarReviewMessage, HangarVersion } from "~/types/backend";
+import type { Platform, HangarProject, HangarReview, HangarReviewMessage, Version } from "~/types/backend";
 import { useReviews } from "~/composables/useData";
 
 definePageMeta({
@@ -14,7 +14,7 @@ const t = i18n.t;
 const v = useVuelidate();
 
 const props = defineProps<{
-  version?: HangarVersion;
+  version?: Version;
   project?: HangarProject;
   versionPlatforms: Set<Platform>;
 }>();

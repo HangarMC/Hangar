@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Platform, HangarProject, HangarVersion, PinnedVersion } from "~/types/backend";
+import type { Platform, HangarProject, Version, PinnedVersion } from "~/types/backend";
 
 const i18n = useI18n();
 
@@ -11,7 +11,7 @@ const props = withDefaults(
     showSinglePlatform?: boolean;
     // Define either version and platform or pinnedVersion, or neither to use main channel versions
     platform?: Platform;
-    version?: HangarVersion;
+    version?: Version;
     pinnedVersion?: PinnedVersion;
     showFileSize?: boolean;
   }>(),
@@ -26,12 +26,12 @@ const props = withDefaults(
   }
 );
 
-function downloadLink(platform: string | undefined, version: HangarVersion | PinnedVersion | undefined) {
+function downloadLink(platform: string | undefined, version: Version | PinnedVersion | undefined) {
   if (!version || !platform) return;
   return version.downloads[platform]?.externalUrl ?? version.downloads[platform].downloadUrl;
 }
 
-function isExternal(platform: string | undefined, version: HangarVersion | PinnedVersion | undefined): boolean {
+function isExternal(platform: string | undefined, version: Version | PinnedVersion | undefined): boolean {
   if (!version || !platform) return false;
   return !!version.downloads[platform]?.externalUrl;
 }
@@ -50,7 +50,7 @@ const singlePlatform = computed<Platform | undefined>(() => {
   }
   return props.platform;
 });
-const singleVersion = computed<HangarVersion | undefined>(() => {
+const singleVersion = computed<Version | undefined>(() => {
   if (!props.version && props.project?.mainChannelVersions && singlePlatform.value) {
     return props.project.mainChannelVersions[singlePlatform.value];
   }

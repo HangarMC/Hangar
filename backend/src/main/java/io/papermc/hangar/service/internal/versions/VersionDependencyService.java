@@ -13,7 +13,6 @@ import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.PlatformVersionTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
-import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionDependencyTable;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionPlatformDependencyTable;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePlatformVersions;
@@ -56,15 +55,6 @@ public class VersionDependencyService extends HangarComponent {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.platformService = platformService;
         this.downloadService = downloadService;
-    }
-
-    @Cacheable(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p2") // versionId is key
-    public DownloadsAndDependencies addDownloadsAndDependencies(final ProjectTable project, final ProjectVersionTable version, final long versionId) {
-        if (project == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
-
-        return this.addDownloadsAndDependencies(project.getOwnerName(), project.getName(), version.getName(), versionId);
     }
 
     @Cacheable(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p3") // versionId is key

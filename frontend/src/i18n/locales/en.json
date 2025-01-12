@@ -537,7 +537,6 @@
       "dependencies": "Dependencies",
       "platforms": "Platforms",
       "required": "(required)",
-      "adminMsg": "Approved by {0} {1}",
       "reviewLogs": "Review logs",
       "reviewStart": "Review",
       "scans": "Scans",

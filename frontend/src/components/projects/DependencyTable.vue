@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Platform, HangarVersion, PluginDependency } from "~/types/backend";
+import type { Platform, Version, PluginDependency } from "~/types/backend";
 import DependencyTableRow from "~/components/projects/DependencyTableRow.vue";
 
 const i18n = useI18n();
@@ -7,7 +7,7 @@ const t = i18n.t;
 
 const props = withDefaults(
   defineProps<{
-    pluginDependencies: HangarVersion["pluginDependencies"];
+    pluginDependencies: Version["pluginDependencies"];
     platform: Platform;
     noEditing?: boolean;
   }>(),

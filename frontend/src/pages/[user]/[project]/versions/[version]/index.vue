@@ -2,7 +2,7 @@
 import type { AxiosError } from "axios";
 import { titleCase } from "scule";
 import { ReviewState, PinnedStatus, NamedPermission, Visibility } from "~/types/backend";
-import type { Platform, HangarProject, HangarVersion, User } from "~/types/backend";
+import type { Platform, HangarProject, Version, User } from "~/types/backend";
 
 const route = useRoute("user-project-versions-version");
 const i18n = useI18n();
@@ -11,7 +11,7 @@ const notification = useNotificationStore();
 const config = useRuntimeConfig();
 
 const props = defineProps<{
-  version?: HangarVersion;
+  version?: Version;
   project?: HangarProject;
   versionPlatforms: Set<Platform>;
   user?: User;
@@ -187,9 +187,6 @@ async function restoreVersion() {
               {{ i18n.t("version.page.subheader", [version.author, lastUpdated(new Date(version.createdAt)), project?.name, version.name]) }}
             </span>
           </h3>
-          <em v-if="hasPerms(NamedPermission.Reviewer) && version.approvedBy">
-            {{ i18n.t("version.page.adminMsg", [version.approvedBy, i18n.d(version.createdAt, "date")]) }}
-          </em>
         </div>
         <div class="inline-flex items-center flex-grow space-x-2">
           <div class="flex-grow" />

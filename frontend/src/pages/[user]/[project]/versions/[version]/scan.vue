@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import type { Platform, HangarProject, HangarVersion } from "~/types/backend";
+import type { Platform, HangarProject, Version } from "~/types/backend";
+import type { AxiosError } from "axios";
 
 definePageMeta({
   globalPermsRequired: ["Reviewer"],
 });
 
 const props = defineProps<{
-  version?: HangarVersion;
+  version?: Version;
   project?: HangarProject;
   versionPlatforms: Set<Platform>;
 }>();
@@ -25,7 +26,9 @@ async function doScan() {
       await useInternalApi(`jarscanning/scan/${props.version?.id}/${platform}`, "POST");
       useNotificationStore().success("Scheduled scan for " + platform);
     } catch (err) {
-      useNotificationStore().error("Failed to schedule scan for " + platform + ": " + err?.response?.data?.message ?? err);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      useNotificationStore().error("Failed to schedule scan for " + platform + ": " + (err as AxiosError)?.response?.data?.message || err);
     }
   }
 }

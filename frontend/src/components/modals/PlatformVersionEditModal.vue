@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { Platform, HangarProject, HangarVersion, PlatformData } from "~/types/backend";
+import type { Platform, HangarProject, Version, PlatformData } from "~/types/backend";
 
 const props = defineProps<{
   project: HangarProject;
-  version: HangarVersion;
+  version: Version;
   platform: PlatformData;
 }>();
 

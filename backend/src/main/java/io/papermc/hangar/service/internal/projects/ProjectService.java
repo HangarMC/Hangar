@@ -5,16 +5,15 @@ import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
-import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.settings.LinkSection;
 import io.papermc.hangar.model.api.project.settings.LinkSectionType;
 import io.papermc.hangar.model.api.project.settings.Tag;
+import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
@@ -30,7 +29,6 @@ import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.model.internal.user.JoinableMember;
-import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.versions.PinnedVersionService;
@@ -65,7 +63,6 @@ public class ProjectService extends HangarComponent {
 
     private static final Pattern KEYWORD_PATTERN = Pattern.compile("^[a-zA-Z0-9-]+$");
     private final ProjectsDAO projectsDAO;
-    private final HangarUsersDAO hangarUsersDAO;
     private final HangarProjectsDAO hangarProjectsDAO;
     private final ProjectVisibilityService projectVisibilityService;
     private final OrganizationService organizationService;
@@ -73,14 +70,12 @@ public class ProjectService extends HangarComponent {
     private final PermissionService permissionService;
     private final PinnedVersionService pinnedVersionService;
     private final VersionsApiDAO versionsApiDAO;
-    private final HangarVersionsDAO hangarVersionsDAO;
     private final AvatarService avatarService;
     private final VersionDependencyService versionDependencyService;
 
     @Autowired
-    public ProjectService(final ProjectsDAO projectDAO, final HangarUsersDAO hangarUsersDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, final HangarVersionsDAO hangarVersionsDAO, @Lazy final AvatarService avatarService, @Lazy final VersionDependencyService versionDependencyService) {
+    public ProjectService(final ProjectsDAO projectDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, @Lazy final AvatarService avatarService, @Lazy final VersionDependencyService versionDependencyService) {
         this.projectsDAO = projectDAO;
-        this.hangarUsersDAO = hangarUsersDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
         this.organizationService = organizationService;
@@ -88,7 +83,6 @@ public class ProjectService extends HangarComponent {
         this.permissionService = permissionService;
         this.pinnedVersionService = pinnedVersionService;
         this.versionsApiDAO = versionsApiDAO;
-        this.hangarVersionsDAO = hangarVersionsDAO;
         this.avatarService = avatarService;
         this.versionDependencyService = versionDependencyService;
     }
@@ -137,9 +131,9 @@ public class ProjectService extends HangarComponent {
             return this.hangarProjectsDAO.getProjectMembers(projectId, hangarUserId, this.permissionService.getProjectPermissions(hangarUserId, projectId).has(Permission.EditProjectSettings));
         });
 
-        final Map<Platform, HangarVersion> mainChannelVersions = new EnumMap<>(Platform.class);
+        final Map<Platform, Version> mainChannelVersions = new EnumMap<>(Platform.class);
         final CompletableFuture<Void> mainChannelFuture = CompletableFuture.runAsync(() -> Arrays.stream(Platform.getValues()).parallel().forEach(platform -> {
-            final HangarVersion version = this.getLastVersion(projectTable, platform, this.config.channels.nameDefault());
+            final Version version = this.getLastVersion(projectTable.getProjectId(), platform, this.config.channels.nameDefault());
             if (version != null) {
                 this.versionDependencyService.addDownloadsAndDependencies(ownerName, projectTable.getSlug(), version.getName(), version.getId()).applyTo(version);
                 mainChannelVersions.put(platform, version);
@@ -169,7 +163,7 @@ public class ProjectService extends HangarComponent {
         return CompletableFuture.supplyAsync(supplier);
     }
 
-    public @Nullable HangarVersion getLastVersion(final ProjectTable project, final Platform platform, final @Nullable String channel) {
+    public @Nullable Version getLastVersion(final long projectId, final Platform platform, final @Nullable String channel) {
         final RequestPagination pagination = new RequestPagination(1L, 0L);
         pagination.getFilters().put("platform", new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
         if (channel != null) {
@@ -178,13 +172,13 @@ public class ProjectService extends HangarComponent {
         }
 
         final Long userId = this.getHangarUserId();
-        final Long versionId = this.versionsApiDAO.getVersions(project.getId(), false, userId, pagination).keySet().stream().findAny().orElse(null);
+        final Long versionId = this.versionsApiDAO.getVersions(projectId, false, userId, pagination).keySet().stream().findAny().orElse(null);
         if (versionId != null) {
-            return this.hangarVersionsDAO.getVersion(versionId, this.getGlobalPermissions().has(Permission.SeeHidden), userId);
+            return this.versionsApiDAO.getVersion(versionId, this.getGlobalPermissions().has(Permission.SeeHidden), userId);
         }
 
         // Try again with any channel, else empty
-        return channel != null ? this.getLastVersion(project, platform, null) : null;
+        return channel != null ? this.getLastVersion(projectId, platform, null) : null;
     }
 
     public void validateSettings(final ProjectSettingsForm settingsForm) {
