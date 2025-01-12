@@ -27,10 +27,6 @@ public class PermissionService extends HangarComponent {
         return this.getPermissions(userId, this.permissionsDAO::getGlobalPermission);
     }
 
-    public @NotNull Permission getGlobalPermissions(final @Nullable String userName) {
-        return this.getPermissions(userName, this.permissionsDAO::getGlobalPermission);
-    }
-
     // Project permissions
     public Permission getProjectPermissions(final @Nullable Long userId, final long projectId) {
         //TODO still leaks not listed projects (e.g. via pages api) as the perm is technically given

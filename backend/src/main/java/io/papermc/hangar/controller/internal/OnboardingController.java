@@ -3,7 +3,6 @@ package io.papermc.hangar.controller.internal;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.components.auth.service.AuthService;
-import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.UserTable;

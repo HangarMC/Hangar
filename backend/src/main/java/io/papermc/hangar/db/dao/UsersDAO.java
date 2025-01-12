@@ -41,19 +41,10 @@ public interface UsersDAO {
                    u.avatar_url,
                    exists(SELECT 1 FROM organizations o WHERE u.id = o.user_id) AS is_organization
                FROM users u
-               WHERE lower(u.name) = lower(:name)
-                   OR u.id = :id
+               WHERE u.id = :id
                GROUP BY u.id
      """)
-    <T extends User> T _getUser(String name, Long id, @MapTo Class<T> type);
-
-    default <T extends User> T getUser(final String name, final Class<T> type) {
-        return this._getUser(name, null, type);
-    }
-
-    default <T extends User> T getUser(final long id, final Class<T> type) {
-        return this._getUser(null, id, type);
-    }
+    <T extends User> T getUser(final Long id, @MapTo final Class<T> type);
 
     @AllowUnusedBindings // query can be unused
     @UseStringTemplateEngine

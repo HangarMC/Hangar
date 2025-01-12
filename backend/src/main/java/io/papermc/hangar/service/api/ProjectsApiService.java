@@ -31,12 +31,10 @@ import org.springframework.web.server.ResponseStatusException;
 public class ProjectsApiService extends HangarComponent {
 
     private final ProjectsApiDAO projectsApiDAO;
-    private final UsersApiService usersApiService;
 
     @Autowired
-    public ProjectsApiService(final ProjectsApiDAO projectsApiDAO, final UsersApiService usersApiService) {
+    public ProjectsApiService(final ProjectsApiDAO projectsApiDAO) {
         this.projectsApiDAO = projectsApiDAO;
-        this.usersApiService = usersApiService;
     }
 
     public Project getProject(final long id) {

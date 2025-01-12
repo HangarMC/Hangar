@@ -5,7 +5,6 @@ import io.papermc.hangar.db.dao.internal.HangarOrganizationsDAO;
 import io.papermc.hangar.db.dao.internal.table.OrganizationDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.roles.OrganizationRolesDAO;
-import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
@@ -13,13 +12,10 @@ import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.HangarOrganization;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,17 +27,15 @@ public class OrganizationService extends HangarComponent {
     private final UserDAO userDAO;
     private final PermissionService permissionService;
     private final OrganizationMemberService organizationMemberService;
-    private final AvatarService avatarService;
 
     @Autowired
-    public OrganizationService(final HangarOrganizationsDAO hangarOrganizationsDAO, final OrganizationRolesDAO organizationRolesDAO, final OrganizationDAO organizationDAO, final UserDAO userDAO, final PermissionService permissionService, final OrganizationMemberService organizationMemberService, @Lazy final AvatarService avatarService) {
+    public OrganizationService(final HangarOrganizationsDAO hangarOrganizationsDAO, final OrganizationRolesDAO organizationRolesDAO, final OrganizationDAO organizationDAO, final UserDAO userDAO, final PermissionService permissionService, final OrganizationMemberService organizationMemberService) {
         this.hangarOrganizationsDAO = hangarOrganizationsDAO;
         this.organizationRolesDAO = organizationRolesDAO;
         this.organizationDAO = organizationDAO;
         this.userDAO = userDAO;
         this.permissionService = permissionService;
         this.organizationMemberService = organizationMemberService;
-        this.avatarService = avatarService;
     }
 
     public OrganizationTable getOrganizationTable(final long id) {

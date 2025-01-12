@@ -25,7 +25,6 @@ import io.papermc.hangar.service.internal.PlatformService;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.cache.annotation.Cacheable;

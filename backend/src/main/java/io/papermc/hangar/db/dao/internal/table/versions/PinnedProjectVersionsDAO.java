@@ -5,7 +5,6 @@ import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 @JdbiRepository
 public interface PinnedProjectVersionsDAO {
@@ -14,14 +13,6 @@ public interface PinnedProjectVersionsDAO {
     @SqlUpdate("INSERT INTO pinned_project_versions (created_at, project_id, version_id) VALUES (:now, :projectId, :versionId) ON CONFLICT DO NOTHING")
     void insert(@BindBean PinnedProjectVersionTable pinnedProjectVersionTable);
 
-    @SqlUpdate("DELETE FROM pinned_project_versions WHERE project_id = :projectId AND (id = :ppvId OR version_id = :versionId)")
-    void _delete(long projectId, @Nullable Long ppvId, @Nullable Long versionId);
-
-    default void deletePinnedProjectVersion(final long projectId, final long ppvId) {
-        this._delete(projectId, ppvId, null);
-    }
-
-    default void deleteVersion(final long projectId, final long versionId) {
-        this._delete(projectId, null, versionId);
-    }
+    @SqlUpdate("DELETE FROM pinned_project_versions WHERE project_id = :projectId AND version_id = :versionId")
+    void deleteVersion(long projectId, Long versionId);
 }

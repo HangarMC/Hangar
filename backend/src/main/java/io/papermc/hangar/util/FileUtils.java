@@ -6,8 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,14 +14,6 @@ public final class FileUtils {
     private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
     private FileUtils() {
-    }
-
-    public static void deletedFiles(final Path superDir) {
-        try (final Stream<Path> files = Files.list(superDir)) {
-            files.filter(Predicate.not(Files::isDirectory)).forEach(FileUtils::delete);
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static boolean delete(final Path path) {

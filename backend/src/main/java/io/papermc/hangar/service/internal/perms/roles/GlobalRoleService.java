@@ -19,8 +19,4 @@ public class GlobalRoleService extends RoleService<GlobalRoleTable, GlobalRole, 
     public List<GlobalRole> getGlobalRoles(final long userId) {
         return this.roleDao.getGlobalRoleTables(userId).stream().map(GlobalRoleTable::getRole).collect(Collectors.toList());
     }
-
-    public void removeAllGlobalRoles(final long userId) {
-        this.roleDao.deleteAll(userId);
-    }
 }

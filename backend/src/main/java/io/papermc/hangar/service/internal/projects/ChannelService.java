@@ -142,24 +142,12 @@ public class ChannelService extends HangarComponent {
         return this.hangarProjectsDAO.getHangarChannels(projectId);
     }
 
-    public ProjectChannelTable getProjectChannel(final long projectId, final String name, final Color color) {
-        return this.projectChannelsDAO.getProjectChannel(projectId, name, color);
-    }
-
     public ProjectChannelTable getProjectChannel(final long projectId, final String name) {
         return this.projectChannelsDAO.getProjectChannel(projectId, name);
     }
 
     public ProjectChannelTable getProjectChannel(final long channelId) {
         return this.projectChannelsDAO.getProjectChannel(channelId);
-    }
-
-    public ProjectChannelTable getProjectChannelForVersion(final long versionId) {
-        return this.projectChannelsDAO.getProjectChannelForVersion(versionId);
-    }
-
-    public ProjectChannelTable getFirstChannel(final long projectId) {
-        return this.projectChannelsDAO.getFirstChannel(projectId);
     }
 
     private static String formatChannelChange(final ProjectChannelTable channelTable) {

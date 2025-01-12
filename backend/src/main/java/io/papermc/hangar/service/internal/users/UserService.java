@@ -9,8 +9,6 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.LoggedAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;

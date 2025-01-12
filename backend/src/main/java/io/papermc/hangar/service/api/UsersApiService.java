@@ -17,7 +17,6 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.service.internal.admin.FlagService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.projects.PinnedProjectService;
@@ -51,10 +50,9 @@ public class UsersApiService extends HangarComponent {
     private final ReviewService reviewService;
     private final ProjectAdminService projectAdminService;
     private final FlagService flagService;
-    private final AvatarService avatarService;
 
     @Autowired
-    public UsersApiService(final UsersDAO usersDAO, final UsersApiDAO usersApiDAO, final NotificationsDAO notificationsDAO, final PermissionService permissionService, final OrganizationService organizationService, final PinnedProjectService pinnedProjectService, final ReviewService reviewService, @Lazy final ProjectAdminService projectAdminService, final FlagService flagService, final AvatarService avatarService) {
+    public UsersApiService(final UsersDAO usersDAO, final UsersApiDAO usersApiDAO, final NotificationsDAO notificationsDAO, final PermissionService permissionService, final OrganizationService organizationService, final PinnedProjectService pinnedProjectService, final ReviewService reviewService, @Lazy final ProjectAdminService projectAdminService, final FlagService flagService) {
         this.usersDAO = usersDAO;
         this.usersApiDAO = usersApiDAO;
         this.notificationsDAO = notificationsDAO;
@@ -64,7 +62,6 @@ public class UsersApiService extends HangarComponent {
         this.reviewService = reviewService;
         this.projectAdminService = projectAdminService;
         this.flagService = flagService;
-        this.avatarService = avatarService;
     }
 
     public <T extends User> T getUser(final long id, final Class<T> type) {

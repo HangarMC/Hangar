@@ -19,7 +19,6 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
-import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
@@ -51,7 +50,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
-import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +59,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ProjectService extends HangarComponent {
@@ -113,14 +110,6 @@ public class ProjectService extends HangarComponent {
             return this.getHangarPrincipal();
         }
         return this.organizationService.getOrganizationTableWithPermission(this.getHangarPrincipal().getId(), userId, Permission.CreateProject);
-    }
-
-    public ProjectOwner getProjectOwner(final String userName) {
-        final Pair<UserTable, OrganizationTable> pair = this.hangarUsersDAO.getUserAndOrg(userName);
-        if (pair.getRight() != null) {
-            return pair.getRight();
-        }
-        return pair.getLeft();
     }
 
     public String getProjectUrlFromSlug(final ProjectTable project) {

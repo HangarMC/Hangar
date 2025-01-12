@@ -128,10 +128,6 @@ public class ProjectPageService extends HangarComponent {
         return pageTable;
     }
 
-    public ExtendedProjectPage getProjectPage(final long id) {
-        return this.hangarProjectPagesDAO.getProjectPage(id);
-    }
-
     public ExtendedProjectPage getProjectHomePage(final long projectId) {
         return this.hangarProjectPagesDAO.getProjectHomePage(projectId);
     }

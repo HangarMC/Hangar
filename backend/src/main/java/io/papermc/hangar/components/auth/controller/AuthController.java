@@ -13,7 +13,6 @@ import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.components.auth.service.AuthService;
 import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.components.auth.service.TokenService;
-import io.papermc.hangar.components.auth.service.TurnstileService;
 import io.papermc.hangar.components.auth.service.VerificationService;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.UserTable;
