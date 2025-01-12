@@ -1,17 +1,20 @@
 import backendData from "~/generated/backendData.json";
 import type { Option } from "~/types/components/ui/InputAutocomplete";
-import type { CategoryData, RoleData } from "~/types/backend";
+import type { CategoryData, PermissionData, RoleData } from "~/types/backend";
 import type { BackendData, ServerBackendData } from "~/types/backendData";
 
 const serverBackendData = { ...backendData } as unknown as ServerBackendData;
 const typedBackendData = { ...serverBackendData } as unknown as BackendData;
 
 // convert to bigint
-const permissionResult = serverBackendData.permissions?.map(({ value, frontendName, permission }) => ({
-  value,
-  frontendName,
-  permission: BigInt("0b" + permission),
-}));
+const permissionResult = serverBackendData.permissions?.map(
+  ({ value, frontendName, permission }) =>
+    ({
+      value,
+      frontendName,
+      permission: BigInt("0b" + permission),
+    }) as PermissionData
+);
 
 // convert to maps
 typedBackendData.projectCategories = convertToMap(serverBackendData.projectCategories, (value) => value.apiName);

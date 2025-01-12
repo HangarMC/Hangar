@@ -14,7 +14,6 @@ import io.papermc.hangar.model.internal.api.requests.versions.UpdatePlatformVers
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDependencies;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
-import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.model.internal.versions.MultipartFileOrUrl;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.security.annotations.Anyone;
@@ -70,12 +69,6 @@ public class VersionController extends HangarComponent {
         this.versionDependencyService = versionDependencyService;
         this.downloadService = downloadService;
         this.pinnedVersionService = pinnedVersionService;
-    }
-
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
-    @GetMapping(path = "/version/{project}/versions/{versionString}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HangarVersion> getVersion(@PathVariable final ProjectTable project, @PathVariable("versionString") final ProjectVersionTable version) {
-        return ResponseEntity.ok(this.versionService.getHangarVersion(project, version));
     }
 
     @Unlocked

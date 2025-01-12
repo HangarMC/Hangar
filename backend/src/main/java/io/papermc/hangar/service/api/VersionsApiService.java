@@ -152,12 +152,12 @@ public class VersionsApiService extends HangarComponent {
 
     //@Transactional(readOnly = true) // TODO in an ideal world this would be an transaction, but right now this fries the DB
     public Version getVersion(final ProjectTable project, final ProjectVersionTable pvt) {
-        final Map.Entry<Long, Version> version = this.versionsApiDAO.getVersion(pvt.getId(),
+        final Version version = this.versionsApiDAO.getVersion(pvt.getId(),
             this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        return this.versionDependencyService.addDownloadsAndDependencies(project, pvt, version.getKey()).applyTo(version.getValue());
+        return this.versionDependencyService.addDownloadsAndDependencies(project.getOwnerName(), project.getName(), version.getName(), version.getId()).applyTo(version);
     }
 
     public Version getVersion(final ProjectVersionTable version) {
