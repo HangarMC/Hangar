@@ -8,9 +8,7 @@ import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSort
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.exceptions.MethodArgumentNotValidExceptionSerializer;
 import io.papermc.hangar.exceptions.MultiHangarApiException;
-import io.papermc.hangar.model.db.UserTable;
-import io.papermc.hangar.model.db.projects.ProjectTable;
-import io.papermc.hangar.model.db.versions.ProjectVersionTable;
+import io.papermc.hangar.model.db.Table;
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.info.Info;
@@ -170,7 +168,7 @@ public class SwaggerConfig {
     public static class SlugOrIdCustomizer implements ParameterCustomizer {
         @Override
         public Parameter customize(final Parameter parameter, final MethodParameter methodParameter) {
-            if (Set.of(ProjectTable.class, ProjectVersionTable.class, UserTable.class).contains(methodParameter.getParameterType())) {
+            if (Table.class.isAssignableFrom(methodParameter.getParameterType())) {
                 return parameter.schema(new StringSchema());
             }
             return parameter;
