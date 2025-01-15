@@ -132,12 +132,12 @@ public interface ProjectsApiDAO {
 
     @RegisterConstructorMapper(ProjectMember.class)
     @RegisterColumnMapperFactory(CompactRoleColumnMapperFactory.class)
-    @SqlQuery("SELECT u.name AS \"user\", array_agg(r.name) roles " +
+    @SqlQuery("SELECT u.name AS \"user\", u.id AS \"userId\", array_agg(r.name) roles " +
         "   FROM user_project_roles upr" +
         "       JOIN users u ON upr.user_id = u.id " +
         "       JOIN roles r ON upr.role_type = r.name " +
         "   WHERE upr.project_id = :id " +
-        "   GROUP BY u.name ORDER BY max(r.permission::bigint) DESC " +
+        "   GROUP BY u.name, u.id ORDER BY max(r.permission::bigint) DESC " +
         "   <offsetLimit>")
     List<ProjectMember> getProjectMembers(long id, @BindPagination RequestPagination pagination);
 
