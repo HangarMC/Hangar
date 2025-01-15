@@ -6,6 +6,7 @@ import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.api.project.ProjectNamespace;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.identified.ProjectIdentified;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -14,10 +15,12 @@ import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @AtLeastOneNotNull(fieldNames = {"name", "namespace"}, includeBlankStrings = true, message = "Must specify a name or namespace for a dependency")
-public class PluginDependency implements Named, Comparable<PluginDependency> {
+public class PluginDependency implements Named, ProjectIdentified, Comparable<PluginDependency> {
 
     @Schema(description = "Name of the plugin dependency. For non-external dependencies, this should be the Hangar project name", example = "Maintenance")
     private final String name;
+    @Schema(description = "Project ID of the dependency. Only for non-external dependencies", example = "1")
+    private final Long projectId;
     @Schema(description = "Whether the dependency is required for the plugin to function")
     private final boolean required;
     @Schema(description = "External url to download the dependency from if not a Hangar project, else null", example = "https://papermc.io/downloads")
@@ -27,12 +30,13 @@ public class PluginDependency implements Named, Comparable<PluginDependency> {
 
     @JdbiConstructor
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PluginDependency(final String name, final boolean required, @Nested("pn") @Deprecated(forRemoval = true) final @Nullable ProjectNamespace namespace, final @Nullable String externalUrl, final Platform platform) {
+    public PluginDependency(final String name, final Long projectId, final boolean required, @Nested("pn") @Deprecated(forRemoval = true) final @Nullable ProjectNamespace namespace, final @Nullable String externalUrl, final Platform platform) {
         // TODO Remove ProjectNamespace and always require name
         if (name == null && namespace == null) {
             throw new IllegalArgumentException("Must specify a name for a dependency");
         }
         this.name = name != null ? name : namespace.getSlug();
+        this.projectId = projectId;
         this.required = required;
         this.externalUrl = externalUrl;
         this.platform = platform;
@@ -40,9 +44,15 @@ public class PluginDependency implements Named, Comparable<PluginDependency> {
 
     private PluginDependency(final String name, final boolean required, final Platform platform) {
         this.name = name;
+        this.projectId = null;
         this.required = required;
         this.externalUrl = null;
         this.platform = platform;
+    }
+
+    @Override
+    public long getProjectId() {
+        return this.projectId;
     }
 
     @Override
@@ -65,9 +75,11 @@ public class PluginDependency implements Named, Comparable<PluginDependency> {
     @Override
     public String toString() {
         return "PluginDependency{" +
-                "name='" + this.name + '\'' +
+                "projectId=" + this.projectId +
+                ", name='" + this.name + '\'' +
                 ", required=" + this.required +
                 ", externalUrl='" + this.externalUrl + '\'' +
+                ", platform=" + this.platform +
                 '}';
     }
 
