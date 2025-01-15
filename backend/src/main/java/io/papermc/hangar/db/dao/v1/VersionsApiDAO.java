@@ -135,6 +135,7 @@ public interface VersionsApiDAO {
 
     @SqlQuery("SELECT " +
         "       pvd.name," +
+        "       pvd.project_id," +
         "       pvd.required," +
         "       pvd.external_url," +
         "       pvd.platform," +
@@ -148,6 +149,7 @@ public interface VersionsApiDAO {
 
     @SqlQuery("SELECT " +
         "       pvd.name," +
+        "       pvd.project_id," +
         "       pvd.required," +
         "       pvd.external_url," +
         "       p.owner_name pn_owner," +
