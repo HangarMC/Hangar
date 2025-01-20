@@ -15,7 +15,7 @@ import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @AtLeastOneNotNull(fieldNames = {"name", "namespace"}, includeBlankStrings = true, message = "Must specify a name or namespace for a dependency")
-public class PluginDependency implements Named, ProjectIdentified, Comparable<PluginDependency> {
+public class PluginDependency implements Named, Comparable<PluginDependency> {
 
     @Schema(description = "Name of the plugin dependency. For non-external dependencies, this should be the Hangar project name", example = "Maintenance")
     private final String name;
@@ -50,8 +50,7 @@ public class PluginDependency implements Named, ProjectIdentified, Comparable<Pl
         this.platform = platform;
     }
 
-    @Override
-    public long getProjectId() {
+    public Long getProjectId() {
         return this.projectId;
     }
 
