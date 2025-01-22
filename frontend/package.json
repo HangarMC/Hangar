@@ -82,7 +82,7 @@
     "@types/nprogress": "0.2.3",
     "@types/prismjs": "1.26.5",
     "@types/qs": "6.9.17",
-    "@unocss/nuxt": "0.65.4",
+    "@unocss/nuxt": "65.4.3",
     "eslint-import-resolver-alias": "1.1.2",
     "eslint-plugin-oxlint": "0.15.5",
     "eslint-plugin-unicorn": "56.0.1",
