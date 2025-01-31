@@ -107,9 +107,9 @@ public class ProjectPageService extends HangarComponent {
         return null;
     }
 
-    public ExtendedProjectPage getProjectPageFromURI(final ProjectTable slug, final String uri) {
-        final String path = uri.replace("/api/internal/pages/page/" + slug, "");
-        return this.getProjectPage(slug, path);
+    public ExtendedProjectPage getProjectPageFromURI(final ProjectTable project, final String uri) {
+        final String path = uri.replace("/api/internal/pages/page/" + project.getSlug(), "");
+        return this.getProjectPage(project, path);
     }
 
     public ExtendedProjectPage getProjectPage(final ProjectTable project, String path) {

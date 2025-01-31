@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-// @el(author: String, slug: String, projectId: long)
+// @el(author: String, slug: String, projectId: long, project: ProjectTable)
 @Anyone
 @RestController
 @RateLimit(path = "projectpage")
@@ -75,7 +75,7 @@ public class ProjectPageController extends HangarComponent {
 
     @Unlocked
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 20)
-    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#projectId}")
     @GetMapping("/list/{projectId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Collection<HangarProjectPage>> listProjectPages(@PathVariable final long projectId) {
