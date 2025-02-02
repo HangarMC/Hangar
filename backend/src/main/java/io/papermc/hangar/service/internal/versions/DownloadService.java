@@ -3,8 +3,6 @@ package io.papermc.hangar.service.internal.versions;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.versions.downloads.ProjectVersionDownloadsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.api.project.version.FileInfo;
-import io.papermc.hangar.model.api.project.version.PlatformVersionDownload;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
@@ -13,9 +11,6 @@ import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.file.S3FileService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,19 +32,6 @@ public class DownloadService extends HangarComponent {
         this.downloadsDAO = downloadsDAO;
         this.fileService = fileService;
         this.projectService = projectService;
-    }
-
-    public Map<Platform, PlatformVersionDownload> getDownloads(final String user, final String project, final String version, final long versionId) {
-        final Map<Platform, PlatformVersionDownload> versionDownloadsMap = new EnumMap<>(Platform.class);
-        final List<ProjectVersionDownloadTable> downloads = this.downloadsDAO.getDownloads(versionId);
-        for (final ProjectVersionDownloadTable download : downloads) {
-            final FileInfo fileInfo = download.getFileName() != null ? new FileInfo(download.getFileName(), download.getFileSize(), download.getHash()) : null;
-            final String downloadUrl = fileInfo != null ? this.fileService.getVersionDownloadUrl(user, project, version, download.getDownloadPlatform(), fileInfo.getName()) : null;
-            for (final Platform platform : download.getPlatforms()) {
-                versionDownloadsMap.put(platform, new PlatformVersionDownload(fileInfo, download.getExternalUrl(), downloadUrl));
-            }
-        }
-        return versionDownloadsMap;
     }
 
     public ResponseEntity<?> downloadVersion(final ProjectTable project, final ProjectVersionTable version, final Platform platform) {

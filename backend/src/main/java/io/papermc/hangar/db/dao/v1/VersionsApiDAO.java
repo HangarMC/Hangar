@@ -40,7 +40,8 @@ public interface VersionsApiDAO {
                pv.description,
                coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id), 0) vs_totalDownloads,
                (select array_agg(d) from (SELECT pvd.platform, sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id GROUP BY pvd.platform) d) vs_platformDownloads,
-               u.name author,
+               (SELECT ARRAY[p.owner_name, p.slug] FROM projects p WHERE p.id = pv.project_id limit 1) AS project_namespace,
+               (select u.name from users u where u.id = pv.author_id) as author,
                pv.review_state,
                pc.created_at pc_created_at,
                pc.name pc_name,
@@ -51,10 +52,18 @@ public interface VersionsApiDAO {
                    WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'
                    WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'
                    ELSE 'NONE'
-               END AS pinnedStatus
+               END AS pinnedStatus,
+               (SELECT json_agg(json_build_object('file_size', file_size,
+                                                  'hash', hash,
+                                                  'file_name', file_name,
+                                                  'external_url', external_url,
+                                                  'platforms', platforms,
+                                                  'download_platform', download_platform)) AS value
+                FROM project_version_downloads
+                WHERE version_id = pv.id
+                GROUP BY version_id)                                  AS downloads
            FROM project_versions pv
                JOIN project_channels pc ON pv.channel_id = pc.id
-               LEFT JOIN users u ON pv.author_id = u.id
            WHERE
                <if(!canSeeHidden)>
                    (pv.visibility = 0
@@ -84,6 +93,7 @@ public interface VersionsApiDAO {
                pv.description,
                coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id), 0) vs_totalDownloads,
                (select array_agg(d) from (SELECT pvd.platform, sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id GROUP BY pvd.platform) d) vs_platformDownloads,
+               (SELECT ARRAY[p.owner_name, p.slug] FROM projects p WHERE p.id = pv.project_id limit 1) AS project_namespace,
                (select u.name from users u where u.id = pv.author_id) as author,
                pv.review_state,
                pc.created_at pc_created_at,
@@ -95,7 +105,16 @@ public interface VersionsApiDAO {
                    WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'
                    WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'
                    ELSE 'NONE'
-               END AS pinnedStatus
+               END AS pinnedStatus,
+               (SELECT json_agg(json_build_object('file_size', file_size,
+                                                  'hash', hash,
+                                                  'file_name', file_name,
+                                                  'external_url', external_url,
+                                                  'platforms', platforms,
+                                                  'download_platform', download_platform)) AS value
+                FROM project_version_downloads
+                WHERE version_id = pv.id
+                GROUP BY version_id)                                  AS downloads
            FROM project_versions pv
                JOIN project_channels pc ON pv.channel_id = pc.id
                <if(platformfilter)>INNER JOIN sq ON pv.id = sq.version_id<endif>

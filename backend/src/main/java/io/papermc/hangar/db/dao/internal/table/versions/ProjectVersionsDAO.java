@@ -43,13 +43,6 @@ public interface ProjectVersionsDAO {
     @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId AND version_string = :versionString")
     ProjectVersionTable getProjectVersion(long projectId, String versionString);
 
-    @SqlQuery("SELECT pv.*" +
-        "   FROM project_versions pv" +
-        "       JOIN project_channels pc ON pv.channel_id = pc.id" +
-        "   WHERE pc.id = :channelId" +
-        "   ORDER BY pv.created_at DESC")
-    ProjectVersionTable getLastVersionOnChannel(long channelId);
-
     @SqlQuery("SELECT pv.* FROM project_versions pv" +
         "   JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
         "   JOIN platform_versions v ON pvpd.platform_version_id = v.id" +
@@ -68,13 +61,4 @@ public interface ProjectVersionsDAO {
         "       pv.version_string = :versionString" +
         "   LIMIT 1")
     ProjectVersionTable getProjectVersionTableWithProjectSlug(String slug, String versionString);
-
-    @SingleValue
-    @UseEnumStrategy(EnumStrategy.BY_ORDINAL)
-    @SqlQuery("SELECT array_agg(DISTINCT plv.platform)" +
-        "   FROM project_versions pv" +
-        "       JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
-        "       JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
-        "   WHERE pv.id = :versionId GROUP BY pv.id")
-    List<Platform> getVersionPlatforms(long versionId);
 }
