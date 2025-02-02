@@ -10,7 +10,6 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
 import java.time.OffsetDateTime;
-import java.util.EnumMap;
 import java.util.Map;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
@@ -28,9 +27,19 @@ public class VersionCompact extends Model implements Named, Visible, Identified 
     private final ReviewState reviewState;
     private final ProjectChannel channel;
     private final PinnedStatus pinnedStatus;
-    private final Map<Platform, PlatformVersionDownload> downloads = new EnumMap<>(Platform.class);
+    private final Map<Platform, PlatformVersionDownload> downloads;
 
-    protected VersionCompact(final OffsetDateTime createdAt, final long id, @ColumnName("version_string") final String name, final Visibility visibility, final String description, @Nested("vs") final VersionStats stats, final String author, @EnumByOrdinal final ReviewState reviewState, @Nested("pc") final ProjectChannel channel, final PinnedStatus pinnedStatus) {
+    protected VersionCompact(final OffsetDateTime createdAt,
+                             final long id,
+                             @ColumnName("version_string") final String name,
+                             final Visibility visibility,
+                             final String description,
+                             @Nested("vs") final VersionStats stats,
+                             final String author,
+                             @EnumByOrdinal final ReviewState reviewState,
+                             @Nested("pc") final ProjectChannel channel,
+                             final PinnedStatus pinnedStatus,
+                             final Map<Platform, PlatformVersionDownload> downloads) {
         super(createdAt);
         this.id = id;
         this.name = name;
@@ -41,6 +50,7 @@ public class VersionCompact extends Model implements Named, Visible, Identified 
         this.reviewState = reviewState;
         this.channel = channel;
         this.pinnedStatus = pinnedStatus;
+        this.downloads = downloads;
     }
 
     @Override

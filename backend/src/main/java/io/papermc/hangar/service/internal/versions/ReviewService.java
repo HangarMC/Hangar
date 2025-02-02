@@ -2,20 +2,18 @@ package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionReviewsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
+import io.papermc.hangar.db.dao.internal.table.versions.downloads.ProjectVersionDownloadsDAO;
 import io.papermc.hangar.db.dao.internal.versions.HangarReviewsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.api.project.version.PlatformVersionDownload;
 import io.papermc.hangar.model.api.project.version.VersionToScan;
-import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.ReviewAction;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.UserTable;
-import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
+import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable;
 import io.papermc.hangar.model.db.versions.reviews.ProjectVersionReviewMessageTable;
 import io.papermc.hangar.model.db.versions.reviews.ProjectVersionReviewTable;
 import io.papermc.hangar.model.internal.api.requests.versions.ReviewMessage;
@@ -28,7 +26,6 @@ import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilityService;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,20 +41,18 @@ public class ReviewService extends HangarComponent {
     private final ProjectVersionsDAO projectVersionsDAO;
     private final ProjectVersionVisibilityService projectVersionVisibilityService;
     private final NotificationService notificationService;
-    private final ProjectsDAO projectsDAO;
-    private final DownloadService downloadService;
     private final UserService userService;
+    private final ProjectVersionDownloadsDAO downloadsDAO;
 
     @Autowired
-    public ReviewService(final ProjectVersionReviewsDAO projectVersionReviewsDAO, final HangarReviewsDAO hangarReviewsDAO, final ProjectVersionsDAO projectVersionsDAO, final ProjectVersionVisibilityService projectVersionVisibilityService, final NotificationService notificationService, final ProjectsDAO projectsDAO, final DownloadService downloadService, final UserService userService) {
+    public ReviewService(final ProjectVersionReviewsDAO projectVersionReviewsDAO, final HangarReviewsDAO hangarReviewsDAO, final ProjectVersionsDAO projectVersionsDAO, final ProjectVersionVisibilityService projectVersionVisibilityService, final NotificationService notificationService, final UserService userService, final ProjectVersionDownloadsDAO downloadsDAO) {
         this.projectVersionReviewsDAO = projectVersionReviewsDAO;
         this.hangarReviewsDAO = hangarReviewsDAO;
         this.projectVersionsDAO = projectVersionsDAO;
         this.projectVersionVisibilityService = projectVersionVisibilityService;
         this.notificationService = notificationService;
-        this.projectsDAO = projectsDAO;
-        this.downloadService = downloadService;
         this.userService = userService;
+        this.downloadsDAO = downloadsDAO;
     }
 
     public List<HangarReview> getHangarReviews(final long versionId) {
@@ -226,10 +221,8 @@ public class ReviewService extends HangarComponent {
         final List<HangarReviewQueueEntry> reviewQueue = this.getReviewQueue(ReviewState.UNREVIEWED);
         for (final HangarReviewQueueEntry entry : reviewQueue) {
             final ProjectVersionTable projectVersionTable = this.projectVersionsDAO.getProjectVersionTable(entry.getVersionId());
-            final ProjectTable projectTable = this.projectsDAO.getById(projectVersionTable.getProjectId());
-            final Map<Platform, PlatformVersionDownload> downloads = this.downloadService.getDownloads(projectTable.getOwnerName(), projectTable.getSlug(),
-                projectVersionTable.getVersionString(), projectVersionTable.getVersionId());
-            if (downloads.values().stream().anyMatch(download -> download.externalUrl() == null || !this.config.security.checkSafe(download.externalUrl()))) {
+            final List<ProjectVersionDownloadTable> downloads = this.downloadsDAO.getDownloads(projectVersionTable.getVersionId());
+            if (downloads.stream().anyMatch(download -> download.getExternalUrl() == null || !this.config.security.checkSafe(download.getExternalUrl()))) {
                 continue;
             }
 

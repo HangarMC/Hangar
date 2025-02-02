@@ -44,6 +44,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -172,9 +173,9 @@ public class ProjectService extends HangarComponent {
         }
 
         final Long userId = this.getHangarUserId();
-        final Long versionId = this.versionsApiDAO.getVersions(projectId, false, userId, pagination).keySet().stream().findAny().orElse(null);
-        if (versionId != null) {
-            return this.versionsApiDAO.getVersion(versionId, this.getGlobalPermissions().has(Permission.SeeHidden), userId);
+        final SortedMap<Long, Version> versions = this.versionsApiDAO.getVersions(projectId, this.getGlobalPermissions().has(Permission.SeeHidden), userId, pagination);
+        if (!versions.isEmpty()) {
+            return versions.values().iterator().next();
         }
 
         // Try again with any channel, else empty

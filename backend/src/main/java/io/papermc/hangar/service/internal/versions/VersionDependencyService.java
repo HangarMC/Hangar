@@ -7,7 +7,6 @@ import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVers
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionPlatformDependenciesDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.api.project.version.PlatformVersionDownload;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.common.Platform;
@@ -45,16 +44,14 @@ public class VersionDependencyService extends HangarComponent {
     private final ProjectsDAO projectsDAO;
     private final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependenciesDAO;
     private final PlatformService platformService;
-    private final DownloadService downloadService;
 
     @Autowired
-    public VersionDependencyService(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final VersionsApiDAO versionsApiDAO, final ProjectsDAO projectsDAO, final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final PlatformService platformService, final DownloadService downloadService) {
+    public VersionDependencyService(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final VersionsApiDAO versionsApiDAO, final ProjectsDAO projectsDAO, final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final PlatformService platformService) {
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.versionsApiDAO = versionsApiDAO;
         this.projectsDAO = projectsDAO;
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.platformService = platformService;
-        this.downloadService = downloadService;
     }
 
     @Cacheable(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p3") // versionId is key
@@ -72,26 +69,22 @@ public class VersionDependencyService extends HangarComponent {
         final Map<Platform, SortedSet<PluginDependency>> pluginDependencies = this.versionsApiDAO.getPluginDependencies(versionId).stream()
                 .collect(Collectors.groupingBy(PluginDependency::getPlatform, Collectors.toCollection(TreeSet::new)));
 
-        final Map<Platform, PlatformVersionDownload> downloads = this.downloadService.getDownloads(user, project, versionName, versionId);
-        return new DownloadsAndDependencies(pluginDependencies, platformDependencies, platformDependenciesFormatted, downloads);
+        return new DownloadsAndDependencies(pluginDependencies, platformDependencies, platformDependenciesFormatted);
     }
 
     public record DownloadsAndDependencies(Map<Platform, SortedSet<PluginDependency>> pluginDependencies,
                                     Map<Platform, SortedSet<String>> platformDependencies,
-                                    Map<Platform, List<String>> platformDependenciesFormatted,
-                                    Map<Platform, PlatformVersionDownload> downloads
+                                    Map<Platform, List<String>> platformDependenciesFormatted
     ) {
         public <T extends Version> T applyTo(final T version) {
             version.getPluginDependencies().putAll(this.pluginDependencies);
             version.getPlatformDependencies().putAll(this.platformDependencies);
             version.getPlatformDependenciesFormatted().putAll(this.platformDependenciesFormatted);
-            version.getDownloads().putAll(this.downloads);
             return version;
         }
 
         public HangarProject.PinnedVersion applyTo(final HangarProject.PinnedVersion version) {
             version.getPlatformDependenciesFormatted().putAll(this.platformDependenciesFormatted);
-            version.getDownloads().putAll(this.downloads);
             return version;
         }
     }
