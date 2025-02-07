@@ -65,7 +65,7 @@
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "4.4.1",
     "@iconify-json/mdi": "1.2.2",
-    "@nuxt/eslint": "0.7.5",
+    "@nuxt/eslint": "1.0.1",
     "@nuxtjs/i18n": "9.1.1",
     "@nuxtjs/turnstile": "0.9.11",
     "@sentry/bun": "8.48.0",
