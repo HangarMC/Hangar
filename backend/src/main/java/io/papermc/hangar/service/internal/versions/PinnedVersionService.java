@@ -7,22 +7,18 @@ import io.papermc.hangar.model.db.versions.PinnedProjectVersionTable;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PinnedVersionService extends HangarComponent {
 
     private final HangarVersionsDAO hangarVersionsDAO;
     private final PinnedProjectVersionsDAO pinnedProjectVersionsDAO;
-    private final VersionDependencyService versionDependencyService;
 
     @Autowired
-    public PinnedVersionService(final HangarVersionsDAO hangarVersionsDAO, final PinnedProjectVersionsDAO pinnedProjectVersionsDAO, @Lazy final VersionDependencyService versionDependencyService) {
+    public PinnedVersionService(final HangarVersionsDAO hangarVersionsDAO, final PinnedProjectVersionsDAO pinnedProjectVersionsDAO) {
         this.hangarVersionsDAO = hangarVersionsDAO;
         this.pinnedProjectVersionsDAO = pinnedProjectVersionsDAO;
-        this.versionDependencyService = versionDependencyService;
     }
 
     public void addPinnedVersion(final long projectId, final long versionId) {
@@ -34,11 +30,7 @@ public class PinnedVersionService extends HangarComponent {
         this.pinnedProjectVersionsDAO.deleteVersion(projectId, versionId);
     }
 
-    @Transactional(readOnly = true)
     public List<HangarProject.PinnedVersion> getPinnedVersions(final long projectId) {
-        final List<HangarProject.PinnedVersion> versions = this.hangarVersionsDAO.getPinnedVersions(projectId);
-        //TODO This is dumb and needs to be redone into as little queries as possible
-        versions.parallelStream().forEach(version -> this.versionDependencyService.addDownloadsAndDependencies(version.getVersionId()).applyTo(version));
-        return versions;
+        return this.hangarVersionsDAO.getPinnedVersions(projectId);
     }
 }

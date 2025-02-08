@@ -156,7 +156,7 @@ public class VersionsApiService extends HangarComponent {
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        return this.versionDependencyService.addDownloadsAndDependencies(version.getId()).applyTo(version);
+        return version;
     }
 
     //@Transactional(readOnly = true) // TODO in an ideal world this would be an transaction, but right now this fries the DB
@@ -168,8 +168,7 @@ public class VersionsApiService extends HangarComponent {
         }
 
         final Long userId = this.getHangarUserId();
-        Stream<Version> versions = this.versionsApiDAO.getVersions(project.getId(), canSeeHidden, userId, pagination).entrySet().parallelStream()
-            .map(entry -> this.versionDependencyService.addDownloadsAndDependencies(entry.getKey()).applyTo(entry.getValue()))
+        Stream<Version> versions = this.versionsApiDAO.getVersions(project.getId(), canSeeHidden, userId, pagination).values().stream()
             .sorted((v1, v2) -> v2.getCreatedAt().compareTo(v1.getCreatedAt()));
 
         if (!includeHiddenChannels) {

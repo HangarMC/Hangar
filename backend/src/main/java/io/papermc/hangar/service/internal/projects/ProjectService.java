@@ -32,7 +32,6 @@ import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.versions.PinnedVersionService;
-import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import java.io.IOException;
 import java.util.Arrays;
@@ -72,10 +71,9 @@ public class ProjectService extends HangarComponent {
     private final PinnedVersionService pinnedVersionService;
     private final VersionsApiDAO versionsApiDAO;
     private final AvatarService avatarService;
-    private final VersionDependencyService versionDependencyService;
 
     @Autowired
-    public ProjectService(final ProjectsDAO projectDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, @Lazy final AvatarService avatarService, @Lazy final VersionDependencyService versionDependencyService) {
+    public ProjectService(final ProjectsDAO projectDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, @Lazy final AvatarService avatarService) {
         this.projectsDAO = projectDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
@@ -85,7 +83,6 @@ public class ProjectService extends HangarComponent {
         this.pinnedVersionService = pinnedVersionService;
         this.versionsApiDAO = versionsApiDAO;
         this.avatarService = avatarService;
-        this.versionDependencyService = versionDependencyService;
     }
 
     public @Nullable ProjectTable getProjectTable(final @Nullable Long projectId) {
@@ -135,7 +132,6 @@ public class ProjectService extends HangarComponent {
         final CompletableFuture<Void> mainChannelFuture = CompletableFuture.runAsync(() -> Arrays.stream(Platform.getValues()).parallel().forEach(platform -> {
             final Version version = this.getLastVersion(projectTable.getProjectId(), platform, this.config.channels.nameDefault());
             if (version != null) {
-                this.versionDependencyService.addDownloadsAndDependencies(version.getId()).applyTo(version);
                 mainChannelVersions.put(platform, version);
             }
         }));
