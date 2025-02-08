@@ -40,7 +40,7 @@ public interface VersionsApiDAO {
                pv.description,
                coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id), 0) vs_totalDownloads,
                (select array_agg(d) from (SELECT pvd.platform, sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id GROUP BY pvd.platform) d) vs_platformDownloads,
-               (SELECT ARRAY[p.owner_name, p.slug] FROM projects p WHERE p.id = pv.project_id limit 1) AS project_namespace,
+               (SELECT ARRAY[p.owner_name, p.slug] FROM projects p WHERE p.id = pv.project_id limit 1) AS project_namespace,-- needed for downloads
                (select u.name from users u where u.id = pv.author_id) as author,
                pv.review_state,
                pc.created_at pc_created_at,
@@ -107,7 +107,7 @@ public interface VersionsApiDAO {
                pv.description,
                coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id), 0) vs_totalDownloads,
                (select array_agg(d) from (SELECT pvd.platform, sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id GROUP BY pvd.platform) d) vs_platformDownloads,
-               (SELECT ARRAY[p.owner_name, p.slug] FROM projects p WHERE p.id = pv.project_id limit 1) AS project_namespace,
+               (SELECT ARRAY[p.owner_name, p.slug] FROM projects p WHERE p.id = pv.project_id limit 1) AS project_namespace,-- needed for downloads
                (select u.name from users u where u.id = pv.author_id) as author,
                pv.review_state,
                pc.created_at pc_created_at,

@@ -6,7 +6,6 @@ import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.api.project.ProjectNamespace;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.identified.ProjectIdentified;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.Nullable;
