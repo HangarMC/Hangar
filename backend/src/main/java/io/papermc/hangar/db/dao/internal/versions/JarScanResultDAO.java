@@ -31,36 +31,30 @@ public interface JarScanResultDAO {
     JarScanResultTable getLastResult(long versionId, @EnumByOrdinal final Platform platform);
 
     @SqlQuery("""
-            SELECT DISTINCT ON (platform) *
-            FROM jar_scan_result
-            WHERE version_id = :versionId
-            ORDER BY platform, created_at DESC;
-            """)
+        SELECT DISTINCT ON (platform) *
+        FROM jar_scan_result
+        WHERE version_id = :versionId
+        ORDER BY platform, created_at DESC;
+        """)
     List<JarScanResultTable> getLastResults(long versionId);
 
     @SqlQuery("SELECT * FROM jar_scan_result_entry WHERE result_id = :resultId")
     List<JarScanResultEntryTable> getEntries(long resultId);
 
-    //TODO Don't skip approved versions if HIGHEST severity should unlist it
+    // TODO Don't skip approved versions if HIGHEST severity should unlist it
     // WHERE jsr.version_id = pv.id AND jsr.scanner_version >= :scannerVersion
     @RegisterConstructorMapper(VersionToScan.class)
     @SqlQuery("""
-        SELECT pv.id AS version_id, pv.project_id, pv.review_state, pv.version_string, array_agg(DISTINCT pvpd.platform) AS platforms
+        SELECT pv.id AS version_id, pv.project_id, pv.review_state, pv.version_string, array_agg(DISTINCT pvd.platforms) AS platforms
         FROM project_versions pv
-        LEFT JOIN (
-            SELECT DISTINCT ON (pvpd.download_id) pvpd.id, pvpd.version_id, pvpd.platform
-            FROM project_version_platform_downloads pvpd
-            LEFT JOIN project_version_downloads pvd ON pvd.id = pvpd.download_id AND pvd.file_name IS NOT NULL
-            WHERE pvd.id IS NOT NULL
-            ORDER BY pvpd.download_id
-        ) pvpd ON pvpd.version_id = pv.id
-        WHERE pv.review_state != 1 AND pv.visibility = 0 AND pvpd.id IS NOT NULL
-        AND NOT EXISTS (
+            JOIN project_version_downloads pvd ON pv.id = pvd.version_id
+        WHERE pv.review_state != 1 AND pv.visibility = 0 AND pvd.file_name IS NOT NULL
+          AND NOT exists (
             SELECT 1
             FROM jar_scan_result jsr
             WHERE jsr.version_id = pv.id
         )
         GROUP BY pv.id;
-                        """)
+        """)
     List<VersionToScan> versionsRequiringScans();
 }

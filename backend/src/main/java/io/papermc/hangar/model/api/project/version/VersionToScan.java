@@ -9,5 +9,5 @@ public record VersionToScan(long versionId,
                      long projectId,
                      @EnumByOrdinal ReviewState reviewState,
                      String versionString,
-                     List<Platform> platforms) {
+                     List<List<Platform>> platforms) {
 }

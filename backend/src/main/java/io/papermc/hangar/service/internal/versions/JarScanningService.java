@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -121,12 +122,12 @@ public class JarScanningService {
     }
 
     public void scanAsync(final ProjectVersionTable pvt, final List<Platform> platforms, final boolean partial) {
-        EXECUTOR_SERVICE.execute(() -> this.scan(new VersionToScan(pvt.getVersionId(), pvt.getProjectId(), pvt.getReviewState(), pvt.getVersionString(), platforms), partial));
+        EXECUTOR_SERVICE.execute(() -> this.scan(new VersionToScan(pvt.getVersionId(), pvt.getProjectId(), pvt.getReviewState(), pvt.getVersionString(), List.of(platforms)), partial));
     }
 
     private void scan(final VersionToScan versionToScan, final boolean partial) {
         Severity highestSeverity = Severity.UNKNOWN;
-        for (final Platform platform : versionToScan.platforms()) {
+        for (final Platform platform : versionToScan.platforms().stream().flatMap(Collection::stream).toList()) {
             Severity severity = Severity.HIGH;
             try {
                 severity = this.scanPlatform(versionToScan, platform);
@@ -158,7 +159,7 @@ public class JarScanningService {
             throw new HangarApiException("Version not found");
         }
 
-        this.scanPlatform(new VersionToScan(pvt.getVersionId(), pvt.getProjectId(), pvt.getReviewState(), pvt.getVersionString(), List.of(platform)), platform);
+        this.scanPlatform(new VersionToScan(pvt.getVersionId(), pvt.getProjectId(), pvt.getReviewState(), pvt.getVersionString(), List.of(List.of(platform))), platform);
     }
 
     public Severity scanPlatform(final VersionToScan versionToScan, final Platform platform) throws IOException {
