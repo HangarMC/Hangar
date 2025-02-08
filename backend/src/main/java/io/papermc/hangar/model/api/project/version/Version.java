@@ -15,7 +15,6 @@ import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 public class Version extends VersionCompact {
 
-    private final Map<Platform, Set<PluginDependency>> pluginDependencies = new EnumMap<>(Platform.class);
     private final Map<Platform, Set<String>> platformDependencies = new EnumMap<>(Platform.class);
     private final Map<Platform, List<String>> platformDependenciesFormatted = new EnumMap<>(Platform.class);
 
@@ -29,13 +28,10 @@ public class Version extends VersionCompact {
                    @EnumByOrdinal final ReviewState reviewState,
                    @Nested("pc") final ProjectChannel channel,
                    final PinnedStatus pinnedStatus,
-                   final Map<Platform, PlatformVersionDownload> downloads
+                   final Map<Platform, PlatformVersionDownload> downloads,
+                   final Map<Platform, Set<PluginDependency>> pluginDependencies
     ) {
-        super(createdAt, id, name, visibility, description, stats, author, reviewState, channel, pinnedStatus, downloads);
-    }
-
-    public Map<Platform, Set<PluginDependency>> getPluginDependencies() {
-        return this.pluginDependencies;
+        super(createdAt, id, name, visibility, description, stats, author, reviewState, channel, pinnedStatus, downloads, pluginDependencies);
     }
 
     public Map<Platform, Set<String>> getPlatformDependencies() {
@@ -49,7 +45,6 @@ public class Version extends VersionCompact {
     @Override
     public String toString() {
         return "Version{" +
-            "pluginDependencies=" + this.pluginDependencies +
             ", platformDependencies=" + this.platformDependencies +
             ", platformDependenciesFormatted=" + this.platformDependenciesFormatted +
             "} " + super.toString();

@@ -35,10 +35,10 @@ public class PinnedVersionService extends HangarComponent {
     }
 
     @Transactional(readOnly = true)
-    public List<HangarProject.PinnedVersion> getPinnedVersions(final String user, final String project, final long projectId) {
+    public List<HangarProject.PinnedVersion> getPinnedVersions(final long projectId) {
         final List<HangarProject.PinnedVersion> versions = this.hangarVersionsDAO.getPinnedVersions(projectId);
         //TODO This is dumb and needs to be redone into as little queries as possible
-        versions.parallelStream().forEach(version -> this.versionDependencyService.addDownloadsAndDependencies(user, project, version.getName(), version.getVersionId()).applyTo(version));
+        versions.parallelStream().forEach(version -> this.versionDependencyService.addDownloadsAndDependencies(version.getVersionId()).applyTo(version));
         return versions;
     }
 }

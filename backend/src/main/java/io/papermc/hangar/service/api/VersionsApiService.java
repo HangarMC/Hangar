@@ -151,27 +151,17 @@ public class VersionsApiService extends HangarComponent {
     }
 
     //@Transactional(readOnly = true) // TODO in an ideal world this would be an transaction, but right now this fries the DB
-    public Version getVersion(final ProjectTable project, final ProjectVersionTable pvt) {
-        final Version version = this.versionsApiDAO.getVersion(pvt.getId(),
-            this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
+    public Version getVersion(final ProjectVersionTable pvt) {
+        final Version version = this.versionsApiDAO.getVersion(pvt.getId(), this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        return this.versionDependencyService.addDownloadsAndDependencies(project.getOwnerName(), project.getName(), version.getName(), version.getId()).applyTo(version);
-    }
-
-    public Version getVersion(final ProjectVersionTable version) {
-        final ProjectTable project = this.projectService.getProjectTable(version.getProjectId());
-        if (project == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
-
-        return this.getVersion(project, version);
+        return this.versionDependencyService.addDownloadsAndDependencies(version.getId()).applyTo(version);
     }
 
     //@Transactional(readOnly = true) // TODO in an ideal world this would be an transaction, but right now this fries the DB
     public PaginatedResult<Version> getVersions(final ProjectTable project, final RequestPagination pagination, final boolean includeHiddenChannels) {
-        //TODO Squash queries
+        // TODO Squash queries
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         if (project == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
@@ -179,7 +169,7 @@ public class VersionsApiService extends HangarComponent {
 
         final Long userId = this.getHangarUserId();
         Stream<Version> versions = this.versionsApiDAO.getVersions(project.getId(), canSeeHidden, userId, pagination).entrySet().parallelStream()
-            .map(entry -> this.versionDependencyService.addDownloadsAndDependencies(project.getOwnerName(), project.getSlug(), entry.getValue().getName(), entry.getKey()).applyTo(entry.getValue()))
+            .map(entry -> this.versionDependencyService.addDownloadsAndDependencies(entry.getKey()).applyTo(entry.getValue()))
             .sorted((v1, v2) -> v2.getCreatedAt().compareTo(v1.getCreatedAt()));
 
         if (!includeHiddenChannels) {

@@ -11,6 +11,7 @@ import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
 import java.time.OffsetDateTime;
 import java.util.Map;
+import java.util.Set;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
@@ -28,6 +29,7 @@ public class VersionCompact extends Model implements Named, Visible, Identified 
     private final ProjectChannel channel;
     private final PinnedStatus pinnedStatus;
     private final Map<Platform, PlatformVersionDownload> downloads;
+    private final Map<Platform, Set<PluginDependency>> pluginDependencies;
 
     protected VersionCompact(final OffsetDateTime createdAt,
                              final long id,
@@ -39,7 +41,8 @@ public class VersionCompact extends Model implements Named, Visible, Identified 
                              @EnumByOrdinal final ReviewState reviewState,
                              @Nested("pc") final ProjectChannel channel,
                              final PinnedStatus pinnedStatus,
-                             final Map<Platform, PlatformVersionDownload> downloads) {
+                             final Map<Platform, PlatformVersionDownload> downloads,
+                             final Map<Platform, Set<PluginDependency>> pluginDependencies) {
         super(createdAt);
         this.id = id;
         this.name = name;
@@ -51,6 +54,7 @@ public class VersionCompact extends Model implements Named, Visible, Identified 
         this.channel = channel;
         this.pinnedStatus = pinnedStatus;
         this.downloads = downloads;
+        this.pluginDependencies = pluginDependencies;
     }
 
     @Override
@@ -76,10 +80,6 @@ public class VersionCompact extends Model implements Named, Visible, Identified 
         return this.stats;
     }
 
-    public Map<Platform, PlatformVersionDownload> getDownloads() {
-        return this.downloads;
-    }
-
     public String getAuthor() {
         return this.author;
     }
@@ -96,19 +96,28 @@ public class VersionCompact extends Model implements Named, Visible, Identified 
         return this.pinnedStatus;
     }
 
+    public Map<Platform, PlatformVersionDownload> getDownloads() {
+        return this.downloads;
+    }
+
+    public Map<Platform, Set<PluginDependency>> getPluginDependencies() {
+        return this.pluginDependencies;
+    }
+
     @Override
     public String toString() {
         return "VersionCompact{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", visibility=" + visibility +
-            ", description='" + description + '\'' +
-            ", stats=" + stats +
-            ", author='" + author + '\'' +
-            ", reviewState=" + reviewState +
-            ", channel=" + channel +
-            ", pinnedStatus=" + pinnedStatus +
-            ", downloads=" + downloads +
+            "id=" + this.id +
+            ", name='" + this.name + '\'' +
+            ", visibility=" + this.visibility +
+            ", description='" + this.description + '\'' +
+            ", stats=" + this.stats +
+            ", author='" + this.author + '\'' +
+            ", reviewState=" + this.reviewState +
+            ", channel=" + this.channel +
+            ", pinnedStatus=" + this.pinnedStatus +
+            ", downloads=" + this.downloads +
+            ", pluginDependencies=" + this.pluginDependencies +
             "} " + super.toString();
     }
 

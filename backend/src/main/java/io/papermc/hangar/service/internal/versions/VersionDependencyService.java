@@ -54,8 +54,8 @@ public class VersionDependencyService extends HangarComponent {
         this.platformService = platformService;
     }
 
-    @Cacheable(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p3") // versionId is key
-    public DownloadsAndDependencies addDownloadsAndDependencies(final String user, final String project, final String versionName, final long versionId) {
+    @Cacheable(value = CacheConfig.VERSION_DEPENDENCIES)
+    public DownloadsAndDependencies addDownloadsAndDependencies(final long versionId) {
         //TODO All of this is dumb and needs to be redone into as little queries as possible
         final Map<Platform, SortedSet<String>> platformDependencies = this.versionsApiDAO.getPlatformDependencies(versionId);
         final Map<Platform, List<String>> platformDependenciesFormatted = new EnumMap<>(Platform.class);
@@ -66,18 +66,13 @@ public class VersionDependencyService extends HangarComponent {
             platformDependenciesFormatted.put(platform, formattedVersionRange);
         });
 
-        final Map<Platform, SortedSet<PluginDependency>> pluginDependencies = this.versionsApiDAO.getPluginDependencies(versionId).stream()
-                .collect(Collectors.groupingBy(PluginDependency::getPlatform, Collectors.toCollection(TreeSet::new)));
-
-        return new DownloadsAndDependencies(pluginDependencies, platformDependencies, platformDependenciesFormatted);
+        return new DownloadsAndDependencies(platformDependencies, platformDependenciesFormatted);
     }
 
-    public record DownloadsAndDependencies(Map<Platform, SortedSet<PluginDependency>> pluginDependencies,
-                                    Map<Platform, SortedSet<String>> platformDependencies,
+    public record DownloadsAndDependencies(Map<Platform, SortedSet<String>> platformDependencies,
                                     Map<Platform, List<String>> platformDependenciesFormatted
     ) {
         public <T extends Version> T applyTo(final T version) {
-            version.getPluginDependencies().putAll(this.pluginDependencies);
             version.getPlatformDependencies().putAll(this.platformDependencies);
             version.getPlatformDependenciesFormatted().putAll(this.platformDependenciesFormatted);
             return version;

@@ -116,7 +116,6 @@ public class ProjectService extends HangarComponent {
         final Long hangarUserId = this.getHangarUserId();
         final Project project = this.hangarProjectsDAO.getProject(projectTable.getId(), hangarUserId);
         final long projectId = project.getId();
-        final String ownerName = project.getNamespace().getOwner();
 
         String lastVisibilityChangeComment = "";
         String lastVisibilityChangeUserName = "";
@@ -136,14 +135,14 @@ public class ProjectService extends HangarComponent {
         final CompletableFuture<Void> mainChannelFuture = CompletableFuture.runAsync(() -> Arrays.stream(Platform.getValues()).parallel().forEach(platform -> {
             final Version version = this.getLastVersion(projectTable.getProjectId(), platform, this.config.channels.nameDefault());
             if (version != null) {
-                this.versionDependencyService.addDownloadsAndDependencies(ownerName, projectTable.getSlug(), version.getName(), version.getId()).applyTo(version);
+                this.versionDependencyService.addDownloadsAndDependencies(version.getId()).applyTo(version);
                 mainChannelVersions.put(platform, version);
             }
         }));
 
         final HangarProject.HangarProjectInfo info = this.hangarProjectsDAO.getHangarProjectInfo(projectId);
         final Map<Long, HangarProjectPage> pages = this.projectPageService.getProjectPages(projectId);
-        final CompletableFuture<List<HangarProject.PinnedVersion>> pinnedVersions = this.supply(() -> this.pinnedVersionService.getPinnedVersions(ownerName, project.getNamespace().getSlug(), projectId));
+        final CompletableFuture<List<HangarProject.PinnedVersion>> pinnedVersions = this.supply(() -> this.pinnedVersionService.getPinnedVersions(projectId));
         final ExtendedProjectPage projectPage = this.projectPageService.getProjectHomePage(projectId);
 
         mainChannelFuture.join();
