@@ -61,7 +61,14 @@ public interface VersionsApiDAO {
                                                   'download_platform', download_platform)) AS value
                 FROM project_version_downloads
                 WHERE version_id = pv.id
-                GROUP BY version_id)                                  AS downloads
+                GROUP BY version_id)                                  AS downloads,
+               (SELECT json_agg(json_build_object('name', pvd.name,
+                                                  'project_id', pvd.project_id,
+                                                  'required', pvd.required,
+                                                  'external_url', pvd.external_url,
+                                                  'platform', pvd.platform)) AS value
+                FROM project_version_dependencies pvd
+                WHERE pvd.version_id = pv.id)                         AS plugin_dependencies
            FROM project_versions pv
                JOIN project_channels pc ON pv.channel_id = pc.id
            WHERE
@@ -114,7 +121,14 @@ public interface VersionsApiDAO {
                                                   'download_platform', download_platform)) AS value
                 FROM project_version_downloads
                 WHERE version_id = pv.id
-                GROUP BY version_id)                                  AS downloads
+                GROUP BY version_id)                                  AS downloads,
+               (SELECT json_agg(json_build_object('name', pvd.name,
+                                                  'project_id', pvd.project_id,
+                                                  'required', pvd.required,
+                                                  'external_url', pvd.external_url,
+                                                  'platform', pvd.platform)) AS value
+                FROM project_version_dependencies pvd
+                WHERE pvd.version_id = pv.id)                         AS plugin_dependencies
            FROM project_versions pv
                JOIN project_channels pc ON pv.channel_id = pc.id
                <if(platformfilter)>INNER JOIN sq ON pv.id = sq.version_id<endif>
