@@ -1,15 +1,11 @@
 package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionPlatformDependenciesDAO;
-import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
-import io.papermc.hangar.model.api.project.version.Version;
-import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.PlatformVersionTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionDependencyTable;
@@ -18,20 +14,13 @@ import io.papermc.hangar.model.internal.api.requests.versions.UpdatePlatformVers
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDependencies;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
-import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.service.internal.PlatformService;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
-import io.papermc.hangar.util.VersionFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,52 +29,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class VersionDependencyService extends HangarComponent {
 
     private final ProjectVersionDependenciesDAO projectVersionDependenciesDAO;
-    private final VersionsApiDAO versionsApiDAO;
     private final ProjectsDAO projectsDAO;
     private final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependenciesDAO;
     private final PlatformService platformService;
 
     @Autowired
-    public VersionDependencyService(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final VersionsApiDAO versionsApiDAO, final ProjectsDAO projectsDAO, final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final PlatformService platformService) {
+    public VersionDependencyService(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectsDAO projectsDAO, final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final PlatformService platformService) {
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
-        this.versionsApiDAO = versionsApiDAO;
         this.projectsDAO = projectsDAO;
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.platformService = platformService;
     }
 
-    @Cacheable(value = CacheConfig.VERSION_DEPENDENCIES)
-    public DownloadsAndDependencies addDownloadsAndDependencies(final long versionId) {
-        //TODO All of this is dumb and needs to be redone into as little queries as possible
-        final Map<Platform, SortedSet<String>> platformDependencies = this.versionsApiDAO.getPlatformDependencies(versionId);
-        final Map<Platform, List<String>> platformDependenciesFormatted = new EnumMap<>(Platform.class);
-        platformDependencies.entrySet().parallelStream().forEach(entry -> {
-            final Platform platform = entry.getKey();
-            final List<String> fullVersionsForPlatform = this.platformService.getFullVersionsForPlatform(platform);
-            final List<String> formattedVersionRange = VersionFormatter.formatVersionRange(new ArrayList<>(entry.getValue()), fullVersionsForPlatform);
-            platformDependenciesFormatted.put(platform, formattedVersionRange);
-        });
-
-        return new DownloadsAndDependencies(platformDependencies, platformDependenciesFormatted);
-    }
-
-    public record DownloadsAndDependencies(Map<Platform, SortedSet<String>> platformDependencies,
-                                    Map<Platform, List<String>> platformDependenciesFormatted
-    ) {
-        public <T extends Version> T applyTo(final T version) {
-            version.getPlatformDependencies().putAll(this.platformDependencies);
-            version.getPlatformDependenciesFormatted().putAll(this.platformDependenciesFormatted);
-            return version;
-        }
-
-        public HangarProject.PinnedVersion applyTo(final HangarProject.PinnedVersion version) {
-            version.getPlatformDependenciesFormatted().putAll(this.platformDependenciesFormatted);
-            return version;
-        }
-    }
-
     @Transactional
-    @CacheEvict(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p1") // versionId is key
     public void updateVersionPlatformVersions(final long projectId, final long versionId, final UpdatePlatformVersions form) {
         if (form.versions().size() > this.platformService.getFullVersionsForPlatform(form.platform()).size()) {
             throw new HangarApiException("Too many platform versions");
@@ -121,7 +77,6 @@ public class VersionDependencyService extends HangarComponent {
     }
 
     @Transactional
-    @CacheEvict(value = CacheConfig.VERSION_DEPENDENCIES, key = "#p1") // versionId is key
     public void updateVersionPluginDependencies(final long projectId, final long versionId, final UpdatePluginDependencies form) {
         if (form.getPluginDependencies().size() > this.config.projects.maxDependencies()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.tooManyDependencies");
