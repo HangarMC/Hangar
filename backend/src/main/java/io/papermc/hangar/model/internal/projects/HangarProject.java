@@ -14,9 +14,9 @@ import io.papermc.hangar.model.identified.ProjectIdentified;
 import io.papermc.hangar.model.internal.Joinable;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.mapper.Nested;
 
@@ -114,64 +114,34 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     }
 
 
-    public static class PinnedVersion {
-        private final long versionId;
-        private final Type type;
-        private final String name;
-        private final ProjectChannel channel;
-        private final Map<Platform, List<String>> platformDependenciesFormatted;
-        private final Map<Platform, PlatformVersionDownload> downloads;
+    public record PinnedVersion(long versionId,
+                                HangarProject.PinnedVersion.Type type,
+                                String name,
+                                ProjectChannel channel,
+                                Map<Platform, PlatformVersionDownload> downloads,
+                                Map<Platform, Set<String>> platformDependencies,
+                                Map<Platform, List<String>> platformDependenciesFormatted) {
+            public PinnedVersion(final long versionId,
+                                 final Type type,
+                                 final String name,
+                                 @Nested("pc") final ProjectChannel channel,
+                                 final Map<Platform, PlatformVersionDownload> downloads,
+                                 final Map<Platform, Set<String>> platformDependencies,
+                                 final Map<Platform, List<String>> platformDependenciesFormatted) {
+                this.versionId = versionId;
+                this.type = type;
+                this.name = name;
+                this.channel = channel;
+                this.downloads = downloads;
+                this.platformDependencies = platformDependencies;
+                this.platformDependenciesFormatted = platformDependenciesFormatted;
+            }
 
-        public PinnedVersion(final long versionId, final Type type, final String name, @Nested("pc") final ProjectChannel channel) {
-            this.versionId = versionId;
-            this.type = type;
-            this.name = name;
-            this.channel = channel;
-            this.platformDependenciesFormatted = new EnumMap<>(Platform.class);
-            this.downloads = new EnumMap<>(Platform.class);
+            @EnumByName
+            @JsonFormat(shape = JsonFormat.Shape.STRING)
+            public enum Type {
+                CHANNEL,
+                VERSION
+            }
         }
-
-        public long getVersionId() {
-            return this.versionId;
-        }
-
-        public Type getType() {
-            return this.type;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public Map<Platform, List<String>> getPlatformDependenciesFormatted() {
-            return this.platformDependenciesFormatted;
-        }
-
-        public ProjectChannel getChannel() {
-            return this.channel;
-        }
-
-        public Map<Platform, PlatformVersionDownload> getDownloads() {
-            return this.downloads;
-        }
-
-        @Override
-        public String toString() {
-            return "PinnedVersion{" +
-                "versionId=" + this.versionId +
-                ", type=" + this.type +
-                ", name='" + this.name + '\'' +
-                ", channel=" + this.channel +
-                ", platformDependenciesFormatted=" + this.platformDependenciesFormatted +
-                ", downloads=" + this.downloads +
-                '}';
-        }
-
-        @EnumByName
-        @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public enum Type {
-            CHANNEL,
-            VERSION
-        }
-    }
 }

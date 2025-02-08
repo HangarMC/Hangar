@@ -28,8 +28,13 @@ public class VersionDownloadsMapper implements ColumnMapper<Map<Platform, Platfo
 
     @Override
     public Map<Platform, PlatformVersionDownload> map(final ResultSet r, final int columnNumber, final StatementContext ctx) throws SQLException {
-        final String raw = r.getString(columnNumber);
         final Map<Platform, PlatformVersionDownload> result = new EnumMap<>(Platform.class);
+        final String raw = r.getString(columnNumber);
+
+        if (raw == null) {
+            return result;
+        }
+
         final String[] projectNamespace = (String[]) r.getArray("project_namespace").getArray();
         final String version = r.getString("version_string");
         try {
