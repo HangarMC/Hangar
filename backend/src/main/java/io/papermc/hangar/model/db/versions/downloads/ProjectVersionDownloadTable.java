@@ -3,7 +3,6 @@ package io.papermc.hangar.model.db.versions.downloads;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.Table;
 import java.util.Arrays;
-import java.util.List;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
