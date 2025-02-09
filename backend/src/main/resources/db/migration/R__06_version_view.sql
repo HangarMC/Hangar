@@ -1,4 +1,4 @@
-DROP VIEW IF EXISTS version_view;
+DROP MATERIALIZED VIEW IF EXISTS version_view;
 
 CREATE MATERIALIZED VIEW version_view AS
     SELECT pv.id,
@@ -53,3 +53,5 @@ CREATE MATERIALIZED VIEW version_view AS
     FROM project_versions pv
         JOIN project_channels pc ON pv.channel_id = pc.id
         JOIN version_stats_view vsv ON pv.id = vsv.id;
+
+CREATE UNIQUE INDEX version_view_id_idx ON version_view (id);
