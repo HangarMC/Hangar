@@ -7,6 +7,7 @@ import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.UseEnumStrategy;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 
 @JdbiRepository
@@ -83,4 +84,7 @@ public interface HangarVersionsDAO {
         """)
     @RegisterConstructorMapper(HangarProject.PinnedVersion.class)
     List<HangarProject.PinnedVersion> getPinnedVersions(long projectId);
+
+    @SqlUpdate("REFRESH MATERIALIZED VIEW version_view")
+    void refreshVersionView();
 }

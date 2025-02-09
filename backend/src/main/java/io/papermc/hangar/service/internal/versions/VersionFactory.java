@@ -11,6 +11,7 @@ import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionPlatformDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.downloads.ProjectVersionDownloadsDAO;
+import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.version.FileInfo;
@@ -59,6 +60,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
@@ -92,9 +94,10 @@ public class VersionFactory extends HangarComponent {
     private final WebhookService webhookService;
     private final AvatarService avatarService;
     private final VersionsApiService versionApiService;
+    private final HangarVersionsDAO hangarVersionsDAO;
 
     @Autowired
-    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService, final WebhookService webhookService, final AvatarService avatarService, final @Lazy VersionsApiService versionApiService) {
+    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService, final WebhookService webhookService, final AvatarService avatarService, final @Lazy VersionsApiService versionApiService, final HangarVersionsDAO hangarVersionsDAO) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.projectVersionsDAO = projectVersionDAO;
@@ -115,6 +118,7 @@ public class VersionFactory extends HangarComponent {
         this.webhookService = webhookService;
         this.avatarService = avatarService;
         this.versionApiService = versionApiService;
+        this.hangarVersionsDAO = hangarVersionsDAO;
     }
 
     @Transactional
@@ -304,53 +308,18 @@ public class VersionFactory extends HangarComponent {
             // Insert download data
             this.downloadsDAO.insertDownloads(downloadsTables);
 
-            // send notifications
-            if (projectChannelTable.getFlags().contains(ChannelFlag.SENDS_NOTIFICATIONS)) {
-                this.notificationService.notifyUsersNewVersion(projectTable, projectVersionTable, this.projectService.getProjectWatchers(projectTable.getId()));
-            }
             this.actionLogger.version(LogAction.VERSION_CREATED.create(VersionContext.of(projectId, projectVersionTable.getId()), "published", ""));
-
-            // send webhooks
-            final List<String> platformString = pendingVersion.getPlatformDependencies().keySet().stream().map(Platform::getName).toList();
-            // TODO rewrite avatar fetching (for move this code to an async method)
-            final String avatarUrl = this.avatarService.getProjectAvatarUrl(projectTable.getProjectId(), projectTable.getOwnerName());
-            final String url = this.config.getBaseUrl() + "/" + projectTable.getOwnerName() + "/" + projectTable.getSlug();
-            if (projectTable.getVisibility() == Visibility.NEW) {
-                this.webhookService.handleEvent(new ProjectPublishedEvent(projectTable.getOwnerName(), projectTable.getName(), avatarUrl, url, projectTable.getDescription(), platformString));
-            }
-            this.webhookService.handleEvent(new VersionPublishedEvent(projectTable.getOwnerName(), projectTable.getName(), avatarUrl, url + "/versions/" + projectVersionTable.getVersionString(), projectVersionTable.getVersionString(), projectVersionTable.getDescription(), platformString));
 
             // change visibility
             if (projectTable.getVisibility() == Visibility.NEW) {
                 this.projectVisibilityService.changeVisibility(projectTable, Visibility.PUBLIC, "First version");
             }
 
-            // cache purging
-            this.projectService.refreshHomeProjects();
-            this.usersApiService.clearAuthorsCache();
-            this.versionApiService.evictLatestRelease(projectTable.getId());
-            this.versionApiService.evictLatest(projectTable.getId(), projectChannelTable.getName());
+            // do slow stuff later
+            final ProjectChannelTable finalProjectChannelTable = projectChannelTable;
+            final ProjectVersionTable finalProjectVersionTable = projectVersionTable;
+            CompletableFuture.runAsync(() -> postPublish(pendingVersion, projectTable, finalProjectChannelTable, finalProjectVersionTable));
 
-            final List<Platform> platformsToScan = new ArrayList<>();
-            boolean hasExternalLink = false;
-            boolean safeLinks = true;
-            for (final PendingVersionFile file : pendingVersion.getFiles()) {
-                if (file.fileInfo() != null) {
-                    platformsToScan.add(file.platforms().getFirst());
-                    continue;
-                }
-
-                hasExternalLink = true;
-                safeLinks = safeLinks && this.config.security.checkSafe(file.externalUrl());
-            }
-
-            final boolean hasUnsafeLinks = hasExternalLink && !safeLinks;
-            if (!platformsToScan.isEmpty()) {
-                this.jarScanningService.scanAsync(projectVersionTable, platformsToScan, hasUnsafeLinks);
-            } else if (!hasUnsafeLinks) {
-                // External links will always show a secondary warning, even if from a safe website, so approving is ok
-                this.reviewService.autoReviewLinks(projectVersionTable, this.jarScanningService.getJarScannerUser().getUserId());
-            }
             return projectVersionTable;
         } catch (final HangarApiException e) {
             throw e;
@@ -365,6 +334,52 @@ public class VersionFactory extends HangarComponent {
             } else {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.unknown");
             }
+        }
+    }
+
+    private void postPublish(PendingVersion pendingVersion, ProjectTable projectTable, ProjectChannelTable projectChannelTable, ProjectVersionTable projectVersionTable) {
+        // send notifications
+        if (projectChannelTable.getFlags().contains(ChannelFlag.SENDS_NOTIFICATIONS)) {
+            this.notificationService.notifyUsersNewVersion(projectTable, projectVersionTable, this.projectService.getProjectWatchers(projectTable.getId()));
+        }
+
+        // send webhooks
+        final List<String> platformString = pendingVersion.getPlatformDependencies().keySet().stream().map(Platform::getName).toList();
+        // TODO rewrite avatar fetching (for move this code to an async method)
+        final String avatarUrl = this.avatarService.getProjectAvatarUrl(projectTable.getProjectId(), projectTable.getOwnerName());
+        final String url = this.config.getBaseUrl() + "/" + projectTable.getOwnerName() + "/" + projectTable.getSlug();
+        if (projectTable.getVisibility() == Visibility.NEW) {
+            this.webhookService.handleEvent(new ProjectPublishedEvent(projectTable.getOwnerName(), projectTable.getName(), avatarUrl, url, projectTable.getDescription(), platformString));
+        }
+        this.webhookService.handleEvent(new VersionPublishedEvent(projectTable.getOwnerName(), projectTable.getName(), avatarUrl, url + "/versions/" + projectVersionTable.getVersionString(), projectVersionTable.getVersionString(), projectVersionTable.getDescription(), platformString));
+
+        // cache purging
+        this.projectService.refreshHomeProjects();
+        this.hangarVersionsDAO.refreshVersionView();
+        this.usersApiService.clearAuthorsCache();
+        this.versionApiService.evictLatestRelease(projectTable.getId());
+        this.versionApiService.evictLatest(projectTable.getId(), projectChannelTable.getName());
+
+        // jar scanning
+        final List<Platform> platformsToScan = new ArrayList<>();
+        boolean hasExternalLink = false;
+        boolean safeLinks = true;
+        for (final PendingVersionFile file : pendingVersion.getFiles()) {
+            if (file.fileInfo() != null) {
+                platformsToScan.add(file.platforms().getFirst());
+                continue;
+            }
+
+            hasExternalLink = true;
+            safeLinks = safeLinks && this.config.security.checkSafe(file.externalUrl());
+        }
+
+        final boolean hasUnsafeLinks = hasExternalLink && !safeLinks;
+        if (!platformsToScan.isEmpty()) {
+            this.jarScanningService.scanAsync(projectVersionTable, platformsToScan, hasUnsafeLinks);
+        } else if (!hasUnsafeLinks) {
+            // External links will always show a secondary warning, even if from a safe website, so approving is ok
+            this.reviewService.autoReviewLinks(projectVersionTable, this.jarScanningService.getJarScannerUser().getUserId());
         }
     }
 

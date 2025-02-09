@@ -1,6 +1,6 @@
 DROP VIEW IF EXISTS version_view;
 
-CREATE OR REPLACE VIEW version_view AS
+CREATE MATERIALIZED VIEW version_view AS
     SELECT pv.id,
            pv.created_at,
            pv.version_string,

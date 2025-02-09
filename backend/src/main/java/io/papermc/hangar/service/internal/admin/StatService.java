@@ -4,6 +4,7 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.HangarStatsDAO;
 import io.papermc.hangar.db.dao.internal.table.stats.ProjectVersionDownloadStatsDAO;
 import io.papermc.hangar.db.dao.internal.table.stats.ProjectViewsDAO;
+import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.stats.ProjectVersionDownloadIndividualTable;
 import io.papermc.hangar.model.db.stats.ProjectViewIndividualTable;
@@ -35,12 +36,14 @@ public class StatService extends HangarComponent {
     private final HangarStatsDAO hangarStatsDAO;
     private final ProjectViewsDAO projectViewsDAO;
     private final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO;
+    private final HangarVersionsDAO hangarVersionsDAO;
 
     @Autowired
-    public StatService(final HangarStatsDAO hangarStatsDAO, final ProjectViewsDAO projectViewsDAO, final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO) {
+    public StatService(final HangarStatsDAO hangarStatsDAO, final ProjectViewsDAO projectViewsDAO, final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO, final HangarVersionsDAO hangarVersionsDAO) {
         this.hangarStatsDAO = hangarStatsDAO;
         this.projectViewsDAO = projectViewsDAO;
         this.projectVersionDownloadStatsDAO = projectVersionDownloadStatsDAO;
+        this.hangarVersionsDAO = hangarVersionsDAO;
     }
 
     public List<DayStats> getStats(final LocalDate from, final LocalDate to) {
@@ -104,6 +107,7 @@ public class StatService extends HangarComponent {
     public void processVersionDownloads() {
         this.processStats("project_versions_downloads_individual", "project_versions_downloads", "downloads", true);
         this.hangarStatsDAO.refreshVersionStatsView();
+        this.hangarVersionsDAO.refreshVersionView();
     }
 
     @Transactional
