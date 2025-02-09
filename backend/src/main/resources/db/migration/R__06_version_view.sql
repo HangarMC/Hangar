@@ -7,13 +7,8 @@ CREATE OR REPLACE VIEW version_view AS
            pv.visibility,
            pv.description,
            pv.project_id,
-           coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id),
-                    0)                                            AS vs_totaldownloads,
-           (SELECT json_agg(d.res)
-            FROM (SELECT json_build_object('platform', pvd.platform, 'downloads', sum(pvd.downloads)) res
-                  FROM project_versions_downloads pvd
-                  WHERE pv.id = pvd.version_id
-                  GROUP BY pvd.platform) d)                       AS vs_platformdownloads,
+           vsv.totaldownloads                                     AS vs_totaldownloads,
+           vsv.platformdownloads                                  AS vs_platformdownloads,
            (SELECT u.name FROM users u WHERE u.id = pv.author_id) AS author,
            pv.review_state,
            pc.created_at                                          AS pc_created_at,
@@ -56,4 +51,5 @@ CREATE OR REPLACE VIEW version_view AS
             WHERE pvpd.version_id = pv.id)                        AS platform_dependencies,
            'dum'                                                  AS platform_dependencies_formatted
     FROM project_versions pv
-        JOIN project_channels pc ON pv.channel_id = pc.id;
+        JOIN project_channels pc ON pv.channel_id = pc.id
+        JOIN version_stats_view vsv ON pv.id = vsv.id;
