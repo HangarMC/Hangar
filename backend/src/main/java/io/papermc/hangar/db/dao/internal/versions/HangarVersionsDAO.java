@@ -85,6 +85,6 @@ public interface HangarVersionsDAO {
     @RegisterConstructorMapper(HangarProject.PinnedVersion.class)
     List<HangarProject.PinnedVersion> getPinnedVersions(long projectId);
 
-    @SqlUpdate("REFRESH MATERIALIZED VIEW CONCURRENTLY version_view")
+    @SqlUpdate("REFRESH MATERIALIZED VIEW version_view")
     void refreshVersionView();
 }

@@ -98,6 +98,6 @@ public interface HangarProjectsDAO {
         "   ORDER BY pc.created_at")
     List<HangarChannel> getHangarChannels(long projectId);
 
-    @SqlUpdate("REFRESH MATERIALIZED VIEW CONCURRENTLY home_projects")
+    @SqlUpdate("REFRESH MATERIALIZED VIEW home_projects")
     void refreshHomeProjects();
 }
