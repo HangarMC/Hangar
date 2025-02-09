@@ -63,6 +63,6 @@ public interface HangarStatsDAO {
     @SqlUpdate("DELETE FROM <table> WHERE processed != 0 AND created_at < now() - '7 days'::INTERVAL")
     void deleteOldIndividual(@Define String table);
 
-    @SqlUpdate("REFRESH MATERIALIZED VIEW version_stats_view")
+    @SqlUpdate("REFRESH MATERIALIZED VIEW CONCURRENTLY version_stats_view")
     void refreshVersionStatsView();
 }

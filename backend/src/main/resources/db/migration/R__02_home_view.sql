@@ -118,3 +118,5 @@ CREATE MATERIALIZED VIEW home_projects AS
                      AND pv.day <= current_date
                    GROUP BY pv.project_id) pdr ON p.id = pdr.project_id
     GROUP BY p.id, ps.stars, pw.watchers, pva.views, pda.downloads, pvr.recent_views, pdr.recent_downloads;
+
+CREATE UNIQUE INDEX home_projects_id_idx ON home_projects (id);
