@@ -228,6 +228,7 @@ async function createVersion() {
   try {
     await useInternalApi(`versions/version/${props.project?.id}/create`, "post", pendingVersion.value, { timeout: 45_000 });
     await router.push(`/${route.params.user}/${route.params.project}/versions`);
+    notification.success("Version created successfully! Please wait a few minutes while its processing in the background...");
   } catch (err: any) {
     handleRequestError(err);
   } finally {
