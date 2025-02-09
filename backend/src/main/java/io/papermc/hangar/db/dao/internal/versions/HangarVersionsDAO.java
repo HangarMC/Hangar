@@ -15,6 +15,7 @@ import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 public interface HangarVersionsDAO {
 
     // TODO fixup view and this
+    // TODO use the version view here
     @SqlQuery("""
         (SELECT pv.version_id,
                 pv.version_string,

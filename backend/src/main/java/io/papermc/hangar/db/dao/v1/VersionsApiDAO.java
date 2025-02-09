@@ -1,7 +1,6 @@
 package io.papermc.hangar.db.dao.v1;
 
 import io.papermc.hangar.db.extras.BindPagination;
-import io.papermc.hangar.db.mappers.VersionStatsMapper;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
@@ -16,7 +15,6 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.enums.EnumStrategy;
 import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
-import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.UseEnumStrategy;
 import org.jdbi.v3.sqlobject.config.ValueColumn;
@@ -31,68 +29,22 @@ import org.jetbrains.annotations.Nullable;
 @RegisterConstructorMapper(Version.class)
 public interface VersionsApiDAO {
 
-    @RegisterColumnMapper(VersionStatsMapper.class)
     @SqlQuery("""
-        SELECT pv.id,
-               pv.created_at,
-               pv.version_string,
-               pv.visibility,
-               pv.description,
-               coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id), 0) vs_totalDownloads,
-               (select array_agg(d) from (SELECT pvd.platform, sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id GROUP BY pvd.platform) d) vs_platformDownloads,
-               (SELECT ARRAY[p.owner_name, p.slug] FROM projects p WHERE p.id = pv.project_id limit 1) AS project_namespace,-- needed for downloads
-               (select u.name from users u where u.id = pv.author_id) as author,
-               pv.review_state,
-               pc.created_at pc_created_at,
-               pc.name pc_name,
-               pc.description pc_description,
-               pc.color pc_color,
-               pc.flags pc_flags,
-               CASE
-                   WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'
-                   WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'
-                   ELSE 'NONE'
-               END AS pinnedStatus,
-               (SELECT json_agg(json_build_object('file_size', file_size,
-                                                  'hash', hash,
-                                                  'file_name', file_name,
-                                                  'external_url', external_url,
-                                                  'platforms', platforms,
-                                                  'download_platform', download_platform)) AS value
-                FROM project_version_downloads
-                WHERE version_id = pv.id
-                GROUP BY version_id)                                  AS downloads,
-               (SELECT json_agg(json_build_object('name', pvd.name,
-                                                  'project_id', pvd.project_id,
-                                                  'required', pvd.required,
-                                                  'external_url', pvd.external_url,
-                                                  'platform', pvd.platform)) AS value
-                FROM project_version_dependencies pvd
-                WHERE pvd.version_id = pv.id)                         AS plugin_dependencies,
-               (SELECT json_agg(json_build_object(
-                   'platform', plv.platform,
-                   'version', plv.version)) AS value
-                   FROM project_version_platform_dependencies pvpd
-                    JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
-                WHERE pvpd.version_id = pv.id)                        AS platform_dependencies,
-                'dum'                                                 AS platform_dependencies_formatted
-           FROM project_versions pv
-               JOIN project_channels pc ON pv.channel_id = pc.id
+           SELECT * FROM version_view vv
            WHERE
                <if(!canSeeHidden)>
-                   (pv.visibility = 0
+                   (vv.visibility = 0
                    <if(userId)>
-                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = pv.project_id) AND pv.visibility != 4)
+                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = vv.project_id) AND vv.visibility != 4)
                    <endif>)
                    AND
                <endif>
-               pv.id = :versionId
-           ORDER BY pv.created_at DESC
+               vv.id = :versionId
+           ORDER BY vv.created_at DESC
     """)
     @Nullable Version getVersion(long versionId, @Define boolean canSeeHidden, @Define Long userId);
 
     @KeyColumn("id")
-    @RegisterColumnMapper(VersionStatsMapper.class)
     @SqlQuery("""
         <if(platformfilter)>
         WITH sq AS (SELECT array_agg(DISTINCT plv.platform) platforms, array_agg(DISTINCT plv.version) versions, pvpd.version_id
@@ -100,61 +52,17 @@ public interface VersionsApiDAO {
                              JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
                     GROUP BY pvpd.version_id)
         <endif>
-        SELECT pv.id,
-               pv.created_at,
-               pv.version_string,
-               pv.visibility,
-               pv.description,
-               coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id), 0) vs_totalDownloads,
-               (select array_agg(d) from (SELECT pvd.platform, sum(pvd.downloads) FROM project_versions_downloads pvd WHERE pv.id = pvd.version_id GROUP BY pvd.platform) d) vs_platformDownloads,
-               (SELECT ARRAY[p.owner_name, p.slug] FROM projects p WHERE p.id = pv.project_id limit 1) AS project_namespace,-- needed for downloads
-               (select u.name from users u where u.id = pv.author_id) as author,
-               pv.review_state,
-               pc.created_at pc_created_at,
-               pc.name pc_name,
-               pc.description pc_description,
-               pc.color pc_color,
-               pc.flags pc_flags,
-               CASE
-                   WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel') THEN 'CHANNEL'
-                   WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version') THEN 'VERSION'
-                   ELSE 'NONE'
-               END AS pinnedStatus,
-               (SELECT json_agg(json_build_object('file_size', file_size,
-                                                  'hash', hash,
-                                                  'file_name', file_name,
-                                                  'external_url', external_url,
-                                                  'platforms', platforms,
-                                                  'download_platform', download_platform)) AS value
-                FROM project_version_downloads
-                WHERE version_id = pv.id
-                GROUP BY version_id)                                  AS downloads,
-               (SELECT json_agg(json_build_object('name', pvd.name,
-                                                  'project_id', pvd.project_id,
-                                                  'required', pvd.required,
-                                                  'external_url', pvd.external_url,
-                                                  'platform', pvd.platform)) AS value
-                FROM project_version_dependencies pvd
-                WHERE pvd.version_id = pv.id)                         AS plugin_dependencies,
-               (SELECT json_agg(json_build_object(
-                   'platform', plv.platform,
-                   'version', plv.version)) AS value
-                   FROM project_version_platform_dependencies pvpd
-                    JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
-                WHERE pvpd.version_id = pv.id)                        AS platform_dependencies,
-                'dum'                                                 AS platform_dependencies_formatted
-           FROM project_versions pv
-               JOIN project_channels pc ON pv.channel_id = pc.id
-               <if(platformfilter)>INNER JOIN sq ON pv.id = sq.version_id<endif>
+        SELECT * FROM version_view vv
+               <if(platformfilter)>INNER JOIN sq ON vv.id = sq.version_id<endif>
            WHERE TRUE <filters>
                <if(!canSeeHidden)>
-                   AND (pv.visibility = 0
+                   AND (vv.visibility = 0
                    <if(userId)>
-                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = :projectId) AND pv.visibility != 4)
+                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = :projectId) AND vv.visibility != 4)
                    <endif>)
                <endif>
-               AND pv.project_id = :projectId
-           ORDER BY pv.created_at DESC <offsetLimit>
+               AND vv.project_id = :projectId
+           ORDER BY vv.created_at DESC <offsetLimit>
     """)
     SortedMap<Long, Version> getVersions(long projectId, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
@@ -165,18 +73,17 @@ public interface VersionsApiDAO {
                                 JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
                        GROUP BY pvpd.version_id)
            <endif>
-           SELECT count(DISTINCT pv.id)
-           FROM project_versions pv
-                    JOIN project_channels pc ON pv.channel_id = pc.id
-                    <if(platformfilter)>INNER JOIN sq ON pv.id = sq.version_id<endif>
+           SELECT count(DISTINCT vv.id)
+           FROM version_view vv
+                    <if(platformfilter)>INNER JOIN sq ON vv.id = sq.version_id<endif>
            WHERE TRUE <filters>
                <if(!canSeeHidden)>
-                   AND (pv.visibility = 0
+                   AND (vv.visibility = 0
                    <if(userId)>
-                      OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = :projectId) AND pv.visibility != 4)
+                      OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = :projectId) AND vv.visibility != 4)
                    <endif>)
                <endif>
-               AND pv.project_id = :projectId""")
+               AND vv.project_id = :projectId""")
     Long getVersionCount(long projectId, @Define boolean canSeeHidden, @Define Long userId, @BindPagination(isCount = true) RequestPagination pagination);
 
     @SqlQuery("SELECT " +
@@ -193,20 +100,6 @@ public interface VersionsApiDAO {
     @RegisterConstructorMapper(PluginDependency.class)
     Set<PluginDependency> getPluginDependencies(long versionId, @EnumByOrdinal Platform platform); // TODO make into one db call for all platforms?
 
-    @SqlQuery("SELECT " +
-        "       pvd.name," +
-        "       pvd.project_id," +
-        "       pvd.required," +
-        "       pvd.external_url," +
-        "       p.owner_name pn_owner," +
-        "       p.slug pn_slug," +
-        "       pvd.platform" +
-        "   FROM project_version_dependencies pvd" +
-        "       LEFT JOIN projects p ON pvd.project_id = p.id" +
-        "   WHERE pvd.version_id = :versionId")
-    @RegisterConstructorMapper(PluginDependency.class)
-    Set<PluginDependency> getPluginDependencies(long versionId);
-
     @KeyColumn("platform")
     @ValueColumn("versions")
     @SqlQuery("SELECT" +
@@ -220,7 +113,6 @@ public interface VersionsApiDAO {
 
     @KeyColumn("date")
     @RegisterConstructorMapper(value = VersionStats.class, prefix = "vs")
-    @RegisterColumnMapper(VersionStatsMapper.class)
     @SqlQuery("""
         SELECT date, sum(platform_downloads) vs_totalDownloads, array_agg((ARRAY[subquery.platform, subquery.platform_downloads])) AS vs_platformDownloads
         FROM (SELECT cast(dates.day AS date) date,
