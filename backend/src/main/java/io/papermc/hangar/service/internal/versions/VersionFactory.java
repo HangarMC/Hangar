@@ -311,14 +311,15 @@ public class VersionFactory extends HangarComponent {
             this.actionLogger.version(LogAction.VERSION_CREATED.create(VersionContext.of(projectId, projectVersionTable.getId()), "published", ""));
 
             // change visibility
-            if (projectTable.getVisibility() == Visibility.NEW) {
+            final boolean firstPublish = projectTable.getVisibility() == Visibility.NEW;
+            if (firstPublish) {
                 this.projectVisibilityService.changeVisibility(projectTable, Visibility.PUBLIC, "First version");
             }
 
             // do slow stuff later
             final ProjectChannelTable finalProjectChannelTable = projectChannelTable;
             final ProjectVersionTable finalProjectVersionTable = projectVersionTable;
-            CompletableFuture.runAsync(() -> postPublish(pendingVersion, projectTable, finalProjectChannelTable, finalProjectVersionTable));
+            CompletableFuture.runAsync(() -> postPublish(pendingVersion, projectTable, finalProjectChannelTable, finalProjectVersionTable, firstPublish));
 
             return projectVersionTable;
         } catch (final HangarApiException e) {
@@ -337,7 +338,7 @@ public class VersionFactory extends HangarComponent {
         }
     }
 
-    private void postPublish(PendingVersion pendingVersion, ProjectTable projectTable, ProjectChannelTable projectChannelTable, ProjectVersionTable projectVersionTable) {
+    private void postPublish(PendingVersion pendingVersion, ProjectTable projectTable, ProjectChannelTable projectChannelTable, ProjectVersionTable projectVersionTable, boolean firstPublish) {
         // send notifications
         if (projectChannelTable.getFlags().contains(ChannelFlag.SENDS_NOTIFICATIONS)) {
             this.notificationService.notifyUsersNewVersion(projectTable, projectVersionTable, this.projectService.getProjectWatchers(projectTable.getId()));
@@ -348,7 +349,7 @@ public class VersionFactory extends HangarComponent {
         // TODO rewrite avatar fetching (for move this code to an async method)
         final String avatarUrl = this.avatarService.getProjectAvatarUrl(projectTable.getProjectId(), projectTable.getOwnerName());
         final String url = this.config.getBaseUrl() + "/" + projectTable.getOwnerName() + "/" + projectTable.getSlug();
-        if (projectTable.getVisibility() == Visibility.NEW) {
+        if (firstPublish) {
             this.webhookService.handleEvent(new ProjectPublishedEvent(projectTable.getOwnerName(), projectTable.getName(), avatarUrl, url, projectTable.getDescription(), platformString));
         }
         this.webhookService.handleEvent(new VersionPublishedEvent(projectTable.getOwnerName(), projectTable.getName(), avatarUrl, url + "/versions/" + projectVersionTable.getVersionString(), projectVersionTable.getVersionString(), projectVersionTable.getDescription(), platformString));
