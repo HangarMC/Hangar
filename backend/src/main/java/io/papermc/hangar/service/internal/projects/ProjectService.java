@@ -100,6 +100,10 @@ public class ProjectService extends HangarComponent {
         return this.organizationService.getOrganizationTableWithPermission(this.getHangarPrincipal().getId(), userId, Permission.CreateProject);
     }
 
+    public Long getProjectId(String slug) {
+        return this.projectsDAO.getIdBySlug(slug);
+    }
+
     public String getProjectUrlFromSlug(final ProjectTable project) {
         return "/" + project.getOwnerName() + "/" + project.getSlug();
     }
