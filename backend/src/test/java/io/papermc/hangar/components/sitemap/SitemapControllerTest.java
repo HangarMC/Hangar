@@ -1,8 +1,7 @@
-package io.papermc.hangar.controller;
+package io.papermc.hangar.components.sitemap;
 
 import io.papermc.hangar.controller.helper.ControllerTest;
 import io.papermc.hangar.controller.helper.TestData;
-import io.papermc.hangar.service.internal.SitemapService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
