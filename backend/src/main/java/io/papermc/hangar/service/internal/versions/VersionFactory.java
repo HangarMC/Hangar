@@ -398,13 +398,10 @@ public class VersionFactory extends HangarComponent {
             for (final PluginDependency pluginDependency : platformListEntry.getValue()) {
                 Long depProjectId = null;
                 if (pluginDependency.getExternalUrl() == null) {
-                    // TODO only get id
-                    // Hangar project dependency
-                    final ProjectTable depProjectTable = this.projectService.getProjectTable(pluginDependency.getName());
-                    if (depProjectTable == null) {
+                    depProjectId = this.projectService.getProjectId(pluginDependency.getName());
+                    if (depProjectId == null) {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPluginDependencyNamespace", pluginDependency.getName());
                     }
-                    depProjectId = depProjectTable.getProjectId();
                 }
 
                 pluginDependencyTables.add(new ProjectVersionDependencyTable(versionId, platformListEntry.getKey(), pluginDependency.getName(), pluginDependency.isRequired(), depProjectId, pluginDependency.getExternalUrl()));
