@@ -5,6 +5,7 @@ import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.components.auth.service.AuthService;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
+import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.model.api.project.ProjectLicense;
 import io.papermc.hangar.model.api.project.settings.ProjectSettings;
 import io.papermc.hangar.model.common.NamedPermission;
@@ -42,6 +43,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +100,8 @@ public class TestData {
     private UserDAO userDAO;
     @Autowired
     private ProjectVersionsDAO projectVersionsDAO;
+    @Autowired
+    private HangarVersionsDAO hangarVersionsDAO;
 
     @EventListener(ApplicationStartedEvent.class)
     public void prepare() {
@@ -150,6 +155,7 @@ public class TestData {
         this.userService.toggleWatching(USER_NORMAL.getUserId(), PROJECT.getProjectId(), true);
 
         this.projectService.refreshHomeProjects();
+        this.hangarVersionsDAO.refreshVersionView();
 
         HangarApplication.TEST_PRINCIPAL = Optional.empty();
         HangarApplication.TEST_MODE = false;

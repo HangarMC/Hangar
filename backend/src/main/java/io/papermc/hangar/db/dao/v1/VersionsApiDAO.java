@@ -66,26 +66,6 @@ public interface VersionsApiDAO {
     """)
     SortedMap<Long, Version> getVersions(long projectId, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
-    @SqlQuery("""
-           <if(platformfilter)>
-           WITH sq AS (SELECT array_agg(DISTINCT plv.platform) platforms, array_agg(DISTINCT plv.version) versions, pvpd.version_id
-                       FROM project_version_platform_dependencies pvpd
-                                JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
-                       GROUP BY pvpd.version_id)
-           <endif>
-           SELECT count(DISTINCT vv.id)
-           FROM version_view vv
-                    <if(platformfilter)>INNER JOIN sq ON vv.id = sq.version_id<endif>
-           WHERE TRUE <filters>
-               <if(!canSeeHidden)>
-                   AND (vv.visibility = 0
-                   <if(userId)>
-                      OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = :projectId) AND vv.visibility != 4)
-                   <endif>)
-               <endif>
-               AND vv.project_id = :projectId""")
-    Long getVersionCount(long projectId, @Define boolean canSeeHidden, @Define Long userId, @BindPagination(isCount = true) RequestPagination pagination);
-
     @SqlQuery("SELECT " +
         "       pvd.name," +
         "       pvd.project_id," +
@@ -139,4 +119,15 @@ public interface VersionsApiDAO {
            LIMIT 1
     """)
     @Nullable String getLatestVersion(long projectId, String channel);
+
+    // TODO platform
+    @SqlQuery("""
+        SELECT pv.version_string
+           FROM project_versions pv
+               JOIN project_channels pc ON pv.channel_id = pc.id
+           WHERE pv.visibility = 0 AND pc.name = :channel AND pv.project_id = :projectId
+           ORDER BY pv.created_at DESC
+           LIMIT 1
+    """)
+    Long getLatestVersionId(long projectId, @Nullable String channel, Platform platform);
 }

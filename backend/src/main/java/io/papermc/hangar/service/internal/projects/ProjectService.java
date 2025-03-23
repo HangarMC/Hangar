@@ -2,8 +2,6 @@ package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.images.service.AvatarService;
-import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
-import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -14,7 +12,6 @@ import io.papermc.hangar.model.api.project.settings.LinkSection;
 import io.papermc.hangar.model.api.project.settings.LinkSectionType;
 import io.papermc.hangar.model.api.project.settings.Tag;
 import io.papermc.hangar.model.api.project.version.Version;
-import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
@@ -43,7 +40,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -160,21 +156,11 @@ public class ProjectService extends HangarComponent {
     }
 
     public @Nullable Version getLastVersion(final long projectId, final Platform platform, final @Nullable String channel) {
-        final RequestPagination pagination = new RequestPagination(1L, 0L);
-        pagination.getFilters().put("platform", new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
-        if (channel != null) {
-            // Find the last version with the specified channel
-            pagination.getFilters().put("channel", new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
+        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(projectId, channel == null ? this.config.channels.nameDefault() : channel, platform);
+        if (lastVersion == null) {
+            return null;
         }
-
-        final Long userId = this.getHangarUserId();
-        final SortedMap<Long, Version> versions = this.versionsApiDAO.getVersions(projectId, this.getGlobalPermissions().has(Permission.SeeHidden), userId, pagination);
-        if (!versions.isEmpty()) {
-            return versions.values().iterator().next();
-        }
-
-        // Try again with any channel, else empty
-        return channel != null ? this.getLastVersion(projectId, platform, null) : null;
+        return this.versionsApiDAO.getVersion(lastVersion, false, null);
     }
 
     public void validateSettings(final ProjectSettingsForm settingsForm) {

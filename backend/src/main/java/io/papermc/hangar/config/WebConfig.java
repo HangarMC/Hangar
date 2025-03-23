@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesAnnotationIntrospec
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import io.papermc.hangar.components.index.webhook.WebhookMessageConverter;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimitInterceptor;
@@ -145,6 +146,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
         // order is important!
         converters.add(new ByteArrayHttpMessageConverter());
         converters.add(this.mappingJackson2HttpMessageConverter(this.mapper));
+        converters.add(new WebhookMessageConverter(this.mapper));
         this.addDefaultHttpMessageConverters(converters);
     }
 

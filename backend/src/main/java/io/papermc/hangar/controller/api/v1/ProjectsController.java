@@ -68,8 +68,7 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
     @ApplicableFilters({ProjectCategoryFilter.class, ProjectPlatformFilter.class, ProjectAuthorFilter.class, ProjectQueryFilter.class, ProjectLicenseFilter.class, ProjectPlatformVersionFilter.class, ProjectTagFilter.class, ProjectMemberFilter.class})
     @ApplicableSorters({SorterRegistry.VIEWS, SorterRegistry.DOWNLOADS, SorterRegistry.NEWEST, SorterRegistry.STARS, SorterRegistry.UPDATED, SorterRegistry.RECENT_DOWNLOADS, SorterRegistry.RECENT_VIEWS, SorterRegistry.SLUG})
     public ResponseEntity<PaginatedResult<Project>> getProjects(final boolean prioritizeExactMatch, final @NotNull RequestPagination pagination) {
-        final boolean seeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
-        return ResponseEntity.ok(this.projectsApiService.getProjects(pagination, seeHidden, prioritizeExactMatch));
+        return ResponseEntity.ok(this.projectsApiService.getProjects(pagination));
     }
 
     @Override

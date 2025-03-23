@@ -6,7 +6,6 @@ import io.papermc.hangar.components.auth.model.credential.PasswordCredential;
 import io.papermc.hangar.components.auth.model.credential.TotpCredential;
 import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.components.images.service.AvatarService;
-import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -35,7 +34,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import net.datafaker.Faker;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -67,7 +65,6 @@ public class FakeDataService extends HangarComponent {
         this.avatarService = avatarService;
     }
 
-    @CacheEvict(cacheNames = CacheConfig.PROJECTS, allEntries = true)
     public void generate(final int users, final int projectsPerUser) {
         final HangarAuthenticationToken oldAuth = (HangarAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         try {

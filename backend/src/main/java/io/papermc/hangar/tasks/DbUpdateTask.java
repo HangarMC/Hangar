@@ -1,5 +1,6 @@
 package io.papermc.hangar.tasks;
 
+import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.sentry.spring.jakarta.tracing.SentryTransaction;
@@ -12,17 +13,25 @@ public class DbUpdateTask {
 
     private final ProjectService projectService;
     private final StatService statService;
+    private final HangarVersionsDAO hangarVersionsDAO;
 
     @Autowired
-    public DbUpdateTask(final ProjectService projectService, final StatService statService) {
+    public DbUpdateTask(final ProjectService projectService, final StatService statService, final HangarVersionsDAO hangarVersionsDAO) {
         this.projectService = projectService;
         this.statService = statService;
+        this.hangarVersionsDAO = hangarVersionsDAO;
     }
 
     @SentryTransaction(operation = "task", name = "DbUpdateTask#refreshHomePage")
     @Scheduled(fixedRateString = "#{@hangarConfig.updateTasks.homepage.toMillis()}", initialDelay = 5_000)
     public void refreshHomePage() {
         this.projectService.refreshHomeProjects();
+    }
+
+    @SentryTransaction(operation = "task", name = "DbUpdateTask#refreshVersionView")
+    @Scheduled(fixedRateString = "#{@hangarConfig.updateTasks.homepage.toMillis()}", initialDelay = 5_000)
+    public void refreshVersionView() {
+        this.hangarVersionsDAO.refreshVersionView();
     }
 
     @SentryTransaction(operation = "task", name = "DbUpdateTask#updateVersionDownloads")

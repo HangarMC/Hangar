@@ -5,8 +5,6 @@ import io.papermc.hangar.components.images.service.AvatarService;
 import io.papermc.hangar.components.webhook.model.event.ProjectPublishedEvent;
 import io.papermc.hangar.components.webhook.model.event.VersionPublishedEvent;
 import io.papermc.hangar.components.webhook.service.WebhookService;
-import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
-import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionPlatformDependenciesDAO;
@@ -16,7 +14,6 @@ import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.version.FileInfo;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
-import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
@@ -493,25 +490,14 @@ public class VersionFactory extends HangarComponent {
 
     @Transactional(readOnly = true)
     public @Nullable LastDependencies getLastVersionDependencies(final ProjectTable project, final @Nullable String channel, final Platform platform) {
-        // TODO Optimize with specific query
-        final RequestPagination pagination = new RequestPagination(1L, 0L);
-        pagination.getFilters().put("platform", new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
-        if (channel != null) {
-            // Find the last version with the specified channel
-            pagination.getFilters().put("channel", new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
-        }
-
-        final Long versionId = this.versionsApiDAO.getVersions(project.getId(), false, this.getHangarUserId(), pagination).keySet().stream().findAny().orElse(null);
-        if (versionId != null) {
-            final SortedSet<String> platformDependency = this.versionsApiDAO.getPlatformDependencies(versionId).get(platform);
+        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(project.getProjectId(), channel == null ? this.config.channels.nameDefault() : channel, platform);
+        if (lastVersion != null) {
+            final SortedSet<String> platformDependency = this.versionsApiDAO.getPlatformDependencies(lastVersion).get(platform);
             if (platformDependency != null) {
-                return new LastDependencies(platformDependency, this.versionsApiDAO.getPluginDependencies(versionId, platform));
+                return new LastDependencies(platformDependency, this.versionsApiDAO.getPluginDependencies(lastVersion, platform));
             }
-            return null;
         }
-
-        // Try again with any channel, else empty
-        return channel != null ? this.getLastVersionDependencies(project, null, platform) : null;
+        return null;
     }
 
     private boolean exists(final long projectId, final String versionString) {
