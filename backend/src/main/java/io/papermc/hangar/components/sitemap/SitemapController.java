@@ -1,8 +1,7 @@
-package io.papermc.hangar.controller;
+package io.papermc.hangar.components.sitemap;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.security.annotations.Anyone;
-import io.papermc.hangar.service.internal.SitemapService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;

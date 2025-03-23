@@ -1,15 +1,12 @@
 package io.papermc.hangar.db.dao.v1;
 
-import io.papermc.hangar.db.extras.BindPagination;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
-import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Platform;
 import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.SortedSet;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.enums.EnumStrategy;
@@ -43,28 +40,6 @@ public interface VersionsApiDAO {
            ORDER BY vv.created_at DESC
     """)
     @Nullable Version getVersion(long versionId, @Define boolean canSeeHidden, @Define Long userId);
-
-    @KeyColumn("id")
-    @SqlQuery("""
-        <if(platformfilter)>
-        WITH sq AS (SELECT array_agg(DISTINCT plv.platform) platforms, array_agg(DISTINCT plv.version) versions, pvpd.version_id
-                    FROM project_version_platform_dependencies pvpd
-                             JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
-                    GROUP BY pvpd.version_id)
-        <endif>
-        SELECT * FROM version_view vv
-               <if(platformfilter)>INNER JOIN sq ON vv.id = sq.version_id<endif>
-           WHERE TRUE <filters>
-               <if(!canSeeHidden)>
-                   AND (vv.visibility = 0
-                   <if(userId)>
-                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = :projectId) AND vv.visibility != 4)
-                   <endif>)
-               <endif>
-               AND vv.project_id = :projectId
-           ORDER BY vv.created_at DESC <offsetLimit>
-    """)
-    SortedMap<Long, Version> getVersions(long projectId, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
     @SqlQuery("SELECT " +
         "       pvd.name," +
