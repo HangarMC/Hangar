@@ -112,6 +112,7 @@ public class SitemapService extends HangarComponent {
         // add all versions of said projects
         projects.forEach(p -> {
             // TODO version compact, we dont need downloads here
+            // TODO sitemap dao, move to components, then remove the method in the dao
             final SortedMap<Long, Version> projectVersions = this.versionsApiDAO.getVersions(p.getId(), false, null, new RequestPagination(100L, 0L));
             projectVersions.values().stream()
                 .filter(pv -> pv.getVisibility() == Visibility.PUBLIC || pv.getVisibility() == Visibility.NEEDSAPPROVAL)

@@ -21,6 +21,7 @@ import org.jdbi.v3.core.mapper.reflect.ColumnName;
 public class Version extends Model implements Named, Visible, Identified {
 
     private final long id;
+    private final long projectId;
     private final String name;
     private final Visibility visibility;
     private final String description;
@@ -35,9 +36,9 @@ public class Version extends Model implements Named, Visible, Identified {
     private final Map<Platform, List<String>> platformDependenciesFormatted;
 
     public Version(final OffsetDateTime createdAt,
-                   final long id,
+                   final long id, final long projectId,
                    @ColumnName("version_string") final String name,
-                   final Visibility visibility,
+                   @EnumByOrdinal final Visibility visibility,
                    final String description,
                    @Nested("vs") final VersionStats stats,
                    final String author,
@@ -50,6 +51,7 @@ public class Version extends Model implements Named, Visible, Identified {
                    final Map<Platform, List<String>> platformDependenciesFormatted) {
         super(createdAt);
         this.id = id;
+        this.projectId = projectId;
         this.name = name;
         this.visibility = visibility;
         this.description = description;
@@ -67,6 +69,10 @@ public class Version extends Model implements Named, Visible, Identified {
     @Override
     public long getId() {
         return this.id;
+    }
+
+    public long getProjectId() {
+        return projectId;
     }
 
     @Override
@@ -124,6 +130,7 @@ public class Version extends Model implements Named, Visible, Identified {
         return "Version{" +
                 "id=" + this.id +
                 ", name='" + this.name + '\'' +
+                ", projectId='" + this.projectId + '\'' +
                 ", visibility=" + this.visibility +
                 ", description='" + this.description + '\'' +
                 ", stats=" + this.stats +

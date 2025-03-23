@@ -1,9 +1,10 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.config.CacheConfig;
+import io.papermc.hangar.components.index.MeiliService;
+import io.papermc.hangar.components.index.MeiliService.SearchResult;
 import io.papermc.hangar.controller.extras.pagination.Filter;
-import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectQueryFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectQueryFilter.ProjectQueryFilterInstance;
 import io.papermc.hangar.db.dao.v1.ProjectsApiDAO;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
@@ -15,13 +16,10 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import java.time.OffsetDateTime;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,10 +29,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class ProjectsApiService extends HangarComponent {
 
     private final ProjectsApiDAO projectsApiDAO;
+    private final MeiliService meiliService;
 
     @Autowired
-    public ProjectsApiService(final ProjectsApiDAO projectsApiDAO) {
+    public ProjectsApiService(final ProjectsApiDAO projectsApiDAO, final MeiliService meiliService) {
         this.projectsApiDAO = projectsApiDAO;
+        this.meiliService = meiliService;
     }
 
     public Project getProject(final long id) {
@@ -77,28 +77,37 @@ public class ProjectsApiService extends HangarComponent {
         return new PaginatedResult<>(new Pagination(this.projectsApiDAO.getProjectWatchersCount(project.getId()), pagination), watchers);
     }
 
-    @Transactional(readOnly = true)
-    @Cacheable(CacheConfig.PROJECTS)
-    public PaginatedResult<Project> getProjects(final RequestPagination pagination, final boolean seeHidden, final boolean prioritizeExactMatch) {
+    public PaginatedResult<Project> getProjects(final RequestPagination pagination) {
         // get query from filter
-        String query = null;
+        String query = "";
         for (final Filter.FilterInstance filterInstance : pagination.getFilters().values()) {
-            if (filterInstance instanceof final ProjectQueryFilter.ProjectQueryFilterInstance queryFilter) {
-                query = queryFilter.query().toLowerCase();
+            if (filterInstance instanceof ProjectQueryFilterInstance(String q)) {
+                query = q.toLowerCase();
             }
         }
 
-        if (prioritizeExactMatch && query != null && !query.isBlank()) {
-            // This sorter needs to be first
-            final Map<String, Consumer<StringBuilder>> sorters = pagination.getSorters();
-            final Map<String, Consumer<StringBuilder>> copy = new LinkedHashMap<>(sorters);
-            sorters.clear();
-            sorters.put("exact_match", sb -> sb.append(" exact_match ASC"));
-            sorters.putAll(copy);
-        }
+        // TODO this is horrible
+        List<String> sort = pagination.getSorters().keySet().stream().map(s -> switch (s) {
+            case "-views" -> "stats.views:desc";
+            case "views" -> "stats.views:asc";
+            case "-downloads" -> "stats.downloads:desc";
+            case "downloads" -> "stats.downloads:asc";
+            case "-recentDownloads" -> "stats.recentDownloads:desc";
+            case "recentDownloads" -> "stats.recentDownloads:asc";
+            case "-stars" -> "stats.stars:desc";
+            case "stars" -> "stats.stars:asc";
+            case "-updated" -> "lastUpdated:desc";
+            case "updated" -> "lastUpdated:asc";
+            case "-newest" -> "createdAt:desc";
+            case "newest" -> "createdAt:asc";
+            case "-recentViews" -> "stats.recentViews:desc";
+            case "recentViews" -> "stats.recentViews:asc";
+            case "-slug" -> "name:desc";
+            case "slug" -> "name:asc";
+            default -> throw new IllegalArgumentException("Invalid filter parameter " + s);
+        }).toList();
 
-        final Long userId = this.getHangarUserId();
-        final List<Project> projects = this.projectsApiDAO.getProjects(seeHidden, userId, pagination, query);
-        return new PaginatedResult<>(new Pagination(this.projectsApiDAO.countProjects(seeHidden, userId, pagination), pagination), projects);
+        SearchResult<Project> result = this.meiliService.searchProjects(query, "", sort, pagination.getOffset(), pagination.getLimit());// TODO filter, pagination
+        return result.asPaginatedResult();
     }
 }

@@ -106,8 +106,8 @@ public interface IProjectsController {
     })
     @GetMapping("/projects")
     ResponseEntity<PaginatedResult<Project>> getProjects(
-            @Parameter(description = "Whether to prioritize the project with an exact name match if present") @RequestParam(defaultValue = "true", required = false) boolean prioritizeExactMatch,
-            @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
+        @Deprecated(forRemoval = true) @Parameter(description = "Whether to prioritize the project with an exact name match if present") @RequestParam(defaultValue = "true", required = false) boolean prioritizeExactMatch,
+        @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
     );
 
     @Operation(

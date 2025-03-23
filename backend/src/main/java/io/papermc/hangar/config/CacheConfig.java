@@ -20,7 +20,6 @@ public class CacheConfig {
     public static final String STAFF = "staff-cache";
     public static final String PLATFORMS = "platforms-cache";
     public static final String PLATFORMS_FULL = "platforms-full-cache";
-    public static final String PROJECTS = "projects-cache";
     public static final String CATEGORIES = "categories-cache";
     public static final String PERMISSIONS = "permissions-cache";
     public static final String CHANNEL_COLORS = "channelColors-cache";
@@ -70,11 +69,6 @@ public class CacheConfig {
     @Bean(PLATFORMS_FULL)
     Cache platformFullCache() {
         return this.createCache(PLATFORMS_FULL, Duration.ofHours(24), 10);
-    }
-
-    @Bean(PROJECTS)
-    Cache projectsCache() {
-        return this.createCache(PROJECTS, Duration.ofHours(1), 100);
     }
 
     @Bean(CATEGORIES)

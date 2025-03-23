@@ -14,6 +14,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 @RegisterConstructorMapper(UnhealthyProject.class)
 public interface HealthDAO {
 
+    // TODO remove view, what about last_updated?
     @SqlQuery(" SELECT hp.owner_name \"owner\"," +
         "          hp.slug," +
         "          hp.last_updated," +
@@ -23,6 +24,7 @@ public interface HealthDAO {
         "   ORDER BY hp.created_at DESC")
     List<UnhealthyProject> getStaleProjects(@Define("age") String staleAgeSeconds);
 
+    // TODO remove view, what about last_updated?
     @SqlQuery(" SELECT hp.owner_name \"owner\"," +
         "          hp.slug," +
         "          hp.last_updated," +
