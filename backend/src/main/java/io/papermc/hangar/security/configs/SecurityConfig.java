@@ -93,7 +93,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsFilter corsFilter() {
+    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("*");
@@ -101,7 +101,7 @@ public class SecurityConfig {
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/api/v1/", config);
         // TODO more cors?
-        return new CorsFilter(source);
+        return source;
     }
 
     @Bean
