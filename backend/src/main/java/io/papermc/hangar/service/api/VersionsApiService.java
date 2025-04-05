@@ -4,6 +4,7 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.index.MeiliService;
 import io.papermc.hangar.components.index.MeiliService.SearchResult;
 import io.papermc.hangar.config.CacheConfig;
+import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.PaginatedResult;
@@ -20,6 +21,7 @@ import io.papermc.hangar.model.internal.versions.VersionUpload;
 import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.versions.VersionFactory;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -158,14 +160,31 @@ public class VersionsApiService extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
-        // TODO includeHiddenChannels
+        // TODO includeHiddenChannels <---
         if (!includeHiddenChannels) {
-            //versions = versions.filter(version -> !version.getChannel().getFlags().contains(ChannelFlag.HIDE_BY_DEFAULT));
+            // versions = versions.filter(version -> !version.getChannel().getFlags().contains(ChannelFlag.HIDE_BY_DEFAULT));
         }
 
-        // TODO channel filter
-        // TODO platform filter
-        final SearchResult<Version> result = this.meiliService.searchVersions("", "projectId = " + project.getId(), List.of("createdAt:desc"), pagination.getOffset(), pagination.getLimit());
+        final StringBuilder filters = new StringBuilder();
+        filters.append("projectId = ").append(project.getId());
+        if (!pagination.getFilters().isEmpty()) {
+            filters.append(" AND ");
+        }
+        for (final Filter.FilterInstance filterInstance : pagination.getFilters().values()) {
+            filterInstance.createMeili(filters);
+        }
+
+        final List<String> sort = new ArrayList<>();
+        pagination.getSorters().forEach((key, value) -> {
+            StringBuilder sb = new StringBuilder();
+            value.accept(sb);
+            sort.add(sb.toString());
+        });
+        if (sort.isEmpty()) {
+            sort.add("createdAt:desc");
+        }
+
+        final SearchResult<Version> result = this.meiliService.searchVersions("", filters.toString(), sort, pagination.getOffset(), pagination.getLimit());
         return result.asPaginatedResult();
     }
 

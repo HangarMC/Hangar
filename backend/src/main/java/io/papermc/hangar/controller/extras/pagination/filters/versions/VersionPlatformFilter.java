@@ -70,6 +70,22 @@ public class VersionPlatformFilter implements Filter<VersionPlatformFilterInstan
         }
 
         @Override
+        public void createMeili(final StringBuilder sb) {
+            if (this.platforms.length == Platform.values().length) {
+                return;
+            }
+
+            sb.append("platformDependencies IN [");
+            for (int i = 0; i < this.platforms.length; i++) {
+                sb.append(this.platforms[i].getName());
+                if (i + 1 != this.platforms.length) {
+                    sb.append(",");
+                }
+            }
+            sb.append("]");
+        }
+
+        @Override
         public String toString() {
             return "VersionPlatformFilterInstance{" +
                 "platforms=" + Arrays.toString(this.platforms) +
