@@ -7,7 +7,6 @@ import io.papermc.hangar.components.webhook.model.event.VersionPublishedEvent;
 import io.papermc.hangar.components.webhook.service.WebhookService;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionDependenciesDAO;
-import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionPlatformDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.downloads.ProjectVersionDownloadsDAO;
 import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
@@ -17,12 +16,10 @@ import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
-import io.papermc.hangar.model.db.PlatformVersionTable;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionDependencyTable;
-import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionPlatformDependencyTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
@@ -71,7 +68,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class VersionFactory extends HangarComponent {
 
-    private final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependenciesDAO;
     private final ProjectVersionDependenciesDAO projectVersionDependenciesDAO;
     private final ProjectVersionsDAO projectVersionsDAO;
     private final ProjectFiles projectFiles;
@@ -94,8 +90,7 @@ public class VersionFactory extends HangarComponent {
     private final HangarVersionsDAO hangarVersionsDAO;
 
     @Autowired
-    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService, final WebhookService webhookService, final AvatarService avatarService, final @Lazy VersionsApiService versionApiService, final HangarVersionsDAO hangarVersionsDAO) {
-        this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
+    public VersionFactory(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService, final WebhookService webhookService, final AvatarService avatarService, final @Lazy VersionsApiService versionApiService, final HangarVersionsDAO hangarVersionsDAO) {
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.projectVersionsDAO = projectVersionDAO;
         this.projectFiles = projectFiles;
@@ -290,7 +285,8 @@ public class VersionFactory extends HangarComponent {
                 pendingVersion.getDescription(),
                 projectId,
                 projectChannelTable.getId(),
-                this.getHangarPrincipal().getUserId()
+                this.getHangarPrincipal().getUserId(),
+                pendingVersion.getPlatformDependencies()
             ));
 
             // insert dependencies
@@ -382,17 +378,6 @@ public class VersionFactory extends HangarComponent {
     }
 
     private void processDependencies(final PendingVersion pendingVersion, final long versionId) {
-        // platform deps
-        final List<ProjectVersionPlatformDependencyTable> platformDependencyTables = new ArrayList<>();
-        for (final Map.Entry<Platform, SortedSet<String>> entry : pendingVersion.getPlatformDependencies().entrySet()) {
-            for (final String version : entry.getValue()) {
-                final PlatformVersionTable platformVersionTable = this.platformService.getByPlatformAndVersion(entry.getKey(), version);
-                platformDependencyTables.add(new ProjectVersionPlatformDependencyTable(versionId, platformVersionTable.getId()));
-            }
-        }
-        this.projectVersionPlatformDependenciesDAO.insertAll(platformDependencyTables);
-
-        // plugin deps
         final List<ProjectVersionDependencyTable> pluginDependencyTables = new ArrayList<>();
         for (final Map.Entry<Platform, Set<PluginDependency>> platformListEntry : pendingVersion.getPluginDependencies().entrySet()) {
             for (final PluginDependency pluginDependency : platformListEntry.getValue()) {
@@ -489,9 +474,9 @@ public class VersionFactory extends HangarComponent {
     public @Nullable LastDependencies getLastVersionDependencies(final ProjectTable project, final @Nullable String channel, final Platform platform) {
         final Long lastVersion = this.versionsApiDAO.getLatestVersionId(project.getProjectId(), channel == null ? this.config.channels.nameDefault() : channel, platform);
         if (lastVersion != null) {
-            final SortedSet<String> platformDependency = this.versionsApiDAO.getPlatformDependencies(lastVersion).get(platform);
-            if (platformDependency != null) {
-                return new LastDependencies(platformDependency, this.versionsApiDAO.getPluginDependencies(lastVersion, platform));
+            final ProjectVersionTable projectVersionTable = this.projectVersionsDAO.getProjectVersionTable(lastVersion);
+            if (projectVersionTable != null) {
+                return new LastDependencies(projectVersionTable.getPlatformsAsMap().get(platform), this.versionsApiDAO.getPluginDependencies(lastVersion, platform));
             }
         }
         return null;

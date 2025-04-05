@@ -116,12 +116,7 @@ CREATE MATERIALIZED VIEW version_view AS
                                               'platform', pvd.platform)) AS value
             FROM project_version_dependencies pvd
             WHERE pvd.version_id = pv.id)                         AS plugin_dependencies,
-           (SELECT json_agg(json_build_object(
-               'platform', plv.platform,
-               'version', plv.version)) AS value
-            FROM project_version_platform_dependencies pvpd
-                JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
-            WHERE pvpd.version_id = pv.id)                        AS platform_dependencies,
+           pv.platforms                                           AS platform_dependencies,
            'dum'                                                  AS platform_dependencies_formatted
     FROM project_versions pv
         JOIN project_channels pc ON pv.channel_id = pc.id

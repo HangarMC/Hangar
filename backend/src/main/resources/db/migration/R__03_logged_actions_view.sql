@@ -1,3 +1,5 @@
+DROP VIEW IF EXISTS v_logged_actions;
+
 CREATE OR REPLACE VIEW v_logged_actions
         (id, created_at, user_id, user_name, address, action, context_type, new_state, old_state, p_id, p_slug, p_owner_name, pv_id, pv_version_string,
          pv_platforms, pp_id, pp_name, pp_slug, s_id, s_name)
@@ -16,7 +18,7 @@ AS
            ou.name                      AS p_owner_name,
            NULL::bigint                 AS pv_id,
            NULL::character varying(255) AS pv_version_string,
-           NULL::bigint[]               AS pv_platforms,
+           '[]'::jsonb                  AS pv_platforms,
            NULL::bigint                 AS pp_id,
            NULL::character varying(255) AS pp_name,
            NULL::character varying(255) AS pp_slug,
@@ -41,12 +43,7 @@ AS
            ou.name                 AS p_owner_name,
            pv.id                   AS pv_id,
            pv.version_string       AS pv_version_string,
-           array(SELECT DISTINCT plv.platform
-                 FROM project_version_platform_dependencies pvpd
-                     JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
-                 WHERE pv.id = pvpd.version_id
-                 ORDER BY plv.platform
-               )                   AS pv_platforms,
+           pv.platforms            AS platforms,
            NULL::bigint            AS pp_id,
            NULL::character varying AS pp_name,
            NULL::character varying AS pp_slug,
@@ -72,7 +69,7 @@ AS
            ou.name                 AS p_owner_name,
            NULL::bigint            AS pv_id,
            NULL::character varying AS pv_version_string,
-           NULL::bigint[]          AS pv_platforms,
+           '[]'::jsonb             AS pv_platforms,
            pp.id                   AS pp_id,
            pp.name                 AS pp_name,
            pp.slug                 AS pp_slug,
@@ -98,7 +95,7 @@ AS
            NULL::character varying AS p_owner_name,
            NULL::bigint            AS pv_id,
            NULL::character varying AS pv_version_string,
-           NULL::bigint[]          AS pv_platforms,
+           '[]'::jsonb             AS pv_platforms,
            NULL::bigint            AS pp_id,
            NULL::character varying AS pp_name,
            NULL::character varying AS pp_slug,
@@ -122,7 +119,7 @@ AS
            NULL::character varying AS p_owner_name,
            NULL::bigint            AS pv_id,
            NULL::character varying AS pv_version_string,
-           NULL::bigint[]          AS pv_platforms,
+           '[]'::jsonb             AS pv_platforms,
            NULL::bigint            AS pp_id,
            NULL::character varying AS pp_name,
            NULL::character varying AS pp_slug,

@@ -17,13 +17,13 @@ public interface ProjectVersionsDAO {
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("INSERT INTO project_versions " +
-        "(created_at, version_string, description, project_id, channel_id, author_id, visibility) VALUES " +
-        "(:now, :versionString, :description, :projectId, :channelId, :authorId, :visibility)")
+        "(created_at, version_string, description, project_id, channel_id, author_id, visibility, platforms) VALUES " +
+        "(:now, :versionString, :description, :projectId, :channelId, :authorId, :visibility, :platforms)")
     ProjectVersionTable insert(@BindBean ProjectVersionTable projectVersionTable);
 
     @GetGeneratedKeys
     @SqlUpdate("UPDATE project_versions SET version_string = :versionString, visibility = :visibility, reviewer_id = :reviewerId, approved_at = :approvedAt, " +
-        "description = :description, review_state = :reviewState " +
+        "description = :description, review_state = :reviewState, platforms = :platforms " +
         "WHERE id = :id")
     ProjectVersionTable update(@BindBean ProjectVersionTable projectVersionsTable);
 
@@ -40,8 +40,6 @@ public interface ProjectVersionsDAO {
     ProjectVersionTable getProjectVersion(long projectId, String versionString);
 
     @SqlQuery("SELECT pv.* FROM project_versions pv" +
-        "   JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
-        "   JOIN platform_versions v ON pvpd.platform_version_id = v.id" +
         "   WHERE" +
         "       pv.project_id = :id AND" +
         "       pv.version_string = :versionString" +
@@ -50,8 +48,6 @@ public interface ProjectVersionsDAO {
 
     @SqlQuery("SELECT pv.* FROM project_versions pv" +
         "   JOIN projects p ON pv.project_id = p.id" +
-        "   JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
-        "   JOIN platform_versions v ON pvpd.platform_version_id = v.id" +
         "   WHERE" +
         "       lower(p.slug) = lower(:slug) AND" +
         "       pv.version_string = :versionString" +

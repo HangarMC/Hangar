@@ -59,7 +59,7 @@ public class MeiliService implements ApplicationListener<ContextRefreshedEvent> 
             "distinctAttribute", "id",
             "searchableAttributes", List.of("name", "namespace.owner", "description", "category", "createdAt", "lastUpdated", "stats", "settings.keywords", "settings.tags"),
             "displayedAttributes", List.of("*"),
-            "filterableAttributes", List.of("category", "settings.tags", "namespace.owner", "createdAt", "lastUpdated", "settings.license.type"), // TODO platforms, platform versions, members <---
+            "filterableAttributes", List.of("category", "settings.tags", "namespace.owner", "createdAt", "lastUpdated", "settings.license.type", "supportedPlatforms", "supportedPlatforms.PAPER", "supportedPlatforms.VELOCITY", "supportedPlatforms.WATERFALL"), // TODO platforms, platform versions, members <---
             "sortableAttributes", List.of("stats.views", "stats.downloads", "stats.recentDownloads", "stats.recentViews", "stats.stars", "createdAt", "lastUpdated", "name")
         );
         restClient.patch().uri("/indexes/projects/settings").contentType(MediaType.APPLICATION_JSON).body(settings).retrieve().onStatus(errorHandler).toEntity(Task.class);
@@ -119,9 +119,6 @@ public class MeiliService implements ApplicationListener<ContextRefreshedEvent> 
             "filter", filter,
             "sort", sort,
             "offset", offset,
-            "limit", limit,
-            "facets", List.of("platformDependencies", "channel.name")
-            // TODO display facet stats in UI
             "limit", limit
             // "facets", List.of("platformDependencies", "channel.name")
         );

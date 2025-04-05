@@ -2,6 +2,7 @@ package io.papermc.hangar.model.db.versions;
 
 import io.papermc.hangar.model.ModelVisible;
 import io.papermc.hangar.model.Named;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.Table;
@@ -12,9 +13,14 @@ import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.loggable.Loggable;
 import io.papermc.hangar.service.internal.UserActionLogService;
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
+import org.jdbi.v3.json.Json;
 
 public class ProjectVersionTable extends Table implements Named, ModelVisible, ProjectIdentified, VersionIdentified, Loggable<VersionContext> {
 
@@ -27,9 +33,10 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
     private final long authorId;
     private Visibility visibility = Visibility.PUBLIC;
     private ReviewState reviewState = ReviewState.UNREVIEWED;
+    private Map<Platform, SortedSet<String>> platforms;
 
     @JdbiConstructor
-    public ProjectVersionTable(final OffsetDateTime createdAt, final long id, final String versionString, final String description, final long projectId, final long channelId, final Long reviewerId, final OffsetDateTime approvedAt, final long authorId, @EnumByOrdinal final Visibility visibility, @EnumByOrdinal final ReviewState reviewState) {
+    public ProjectVersionTable(final OffsetDateTime createdAt, final long id, final String versionString, final String description, final long projectId, final long channelId, final Long reviewerId, final OffsetDateTime approvedAt, final long authorId, @EnumByOrdinal final Visibility visibility, @EnumByOrdinal final ReviewState reviewState, Map<Platform, SortedSet<String>> platforms) {
         super(createdAt, id);
         this.versionString = versionString;
         this.description = description;
@@ -40,14 +47,16 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
         this.authorId = authorId;
         this.visibility = visibility;
         this.reviewState = reviewState;
+        this.platforms = platforms;
     }
 
-    public ProjectVersionTable(final String versionString, final String description, final long projectId, final long channelId, final long authorId) {
+    public ProjectVersionTable(final String versionString, final String description, final long projectId, final long channelId, final long authorId, Map<Platform, SortedSet<String>> platforms) {
         this.versionString = versionString;
         this.description = description;
         this.projectId = projectId;
         this.channelId = channelId;
         this.authorId = authorId;
+        this.platforms = platforms;
     }
 
     public String getVersionString() {
@@ -117,6 +126,22 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
 
     public void setReviewState(final ReviewState reviewState) {
         this.reviewState = reviewState;
+    }
+
+    @Json
+    public List<PlatformVersion> getPlatforms() {
+        // I don't like this, but it's the best I got
+        return this.platforms.entrySet().stream().map(entry -> new PlatformVersion(entry.getKey().ordinal(), entry.getValue())).collect(Collectors.toList());
+    }
+
+    public Map<Platform, SortedSet<String>> getPlatformsAsMap() {
+        return this.platforms;
+    }
+
+    public record PlatformVersion(Integer platform, SortedSet<String> versions) {}
+
+    public void setPlatforms(final Map<Platform, SortedSet<String>> platforms) {
+        this.platforms = platforms;
     }
 
     @Override

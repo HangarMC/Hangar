@@ -10,17 +10,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VersionPlatformDependenciesMapper implements ColumnMapper<Map<Platform, Set<String>>> {
+public class VersionPlatformDependenciesMapper implements ColumnMapper<Map<Platform, SortedSet<String>>> {
 
     private static final String KEY = "platformDependenciesAttribute";
 
@@ -31,9 +31,9 @@ public class VersionPlatformDependenciesMapper implements ColumnMapper<Map<Platf
     }
 
     @Override
-    public Map<Platform, Set<String>> map(final ResultSet r, final int columnNumber, final StatementContext ctx) throws SQLException {
+    public Map<Platform, SortedSet<String>> map(final ResultSet r, final int columnNumber, final StatementContext ctx) throws SQLException {
         final String raw = r.getString(columnNumber);
-        final Map<Platform, Set<String>> result = new EnumMap<>(Platform.class);
+        final Map<Platform, SortedSet<String>> result = new EnumMap<>(Platform.class);
 
         if (raw == null) {
             ctx.define(KEY, result);
@@ -44,13 +44,14 @@ public class VersionPlatformDependenciesMapper implements ColumnMapper<Map<Platf
             final JsonNode parsedPlatforms = this.objectMapper.readTree(raw);
             for (final JsonNode plat : parsedPlatforms) {
                 final Platform platform = Platform.values()[plat.get("platform").asInt()];
-                final String version = plat.get("version").asText();
-                result.computeIfAbsent(platform, k -> new HashSet<>()).add(version);
-                ctx.define(KEY, result);
+                //noinspection unchecked
+                SortedSet<String> versions = this.objectMapper.convertValue(plat.get("versions"), SortedSet.class);
+                result.put(platform, versions);
             }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+        ctx.define(KEY, result);
         return result;
     }
 
