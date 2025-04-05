@@ -46,6 +46,11 @@ public class ProjectAuthorFilter implements Filter<ProjectAuthorFilterInstance, 
         }
 
         @Override
+        public void createMeili(StringBuilder sb) {
+            sb.append("namespace.owner = ").append(this.ownerName);
+        }
+
+        @Override
         public String toString() {
             return "ProjectAuthorFilterInstance{" +
                 "ownerName='" + this.ownerName + '\'' +

@@ -97,7 +97,7 @@ public interface VersionsApiDAO {
 
     // TODO platform
     @SqlQuery("""
-        SELECT pv.version_string
+        SELECT pv.id
            FROM project_versions pv
                JOIN project_channels pc ON pv.channel_id = pc.id
            WHERE pv.visibility = 0 AND pc.name = :channel AND pv.project_id = :projectId

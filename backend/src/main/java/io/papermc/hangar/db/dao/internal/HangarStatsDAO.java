@@ -65,4 +65,7 @@ public interface HangarStatsDAO {
 
     @SqlUpdate("REFRESH MATERIALIZED VIEW version_stats_view")
     void refreshVersionStatsView();
+
+    @SqlUpdate("REFRESH MATERIALIZED VIEW project_stats_view")
+    void refreshProjectStatsView();
 }

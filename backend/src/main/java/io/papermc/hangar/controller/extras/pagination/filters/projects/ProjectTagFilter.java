@@ -65,6 +65,21 @@ public class ProjectTagFilter implements Filter<ProjectTagFilter.ProjectTagFilte
         }
 
         @Override
+        public void createMeili(final StringBuilder sb) {
+            sb.append("settings.tags IN [");
+            boolean first = true;
+            for (final Tag tag : this.tags) {
+                if (first) {
+                    first = false;
+                } else {
+                    sb.append(',');
+                }
+                sb.append(tag);
+            }
+            sb.append(']');
+        }
+
+        @Override
         public String toString() {
             return "ProjectTagFilterInstance{" +
                 "tag=" + Arrays.toString(this.tags) +

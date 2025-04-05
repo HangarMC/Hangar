@@ -57,9 +57,9 @@ public class MeiliService implements ApplicationListener<ContextRefreshedEvent> 
         restClient.post().uri("/indexes").contentType(MediaType.APPLICATION_JSON).body(createIndexBody).retrieve().onStatus(errorHandler).toEntity(Task.class);
         var settings = Map.of(
             "distinctAttribute", "id",
-            "searchableAttributes", List.of("name", "namespace.owner", "description", "category", "createdAt", "lastUpdated", "stats", "settings.keywords"),
+            "searchableAttributes", List.of("name", "namespace.owner", "description", "category", "createdAt", "lastUpdated", "stats", "settings.keywords", "settings.tags"),
             "displayedAttributes", List.of("*"),
-            "filterableAttributes", List.of("category", "settings.keywords", "namespace.owner", "createdAt", "lastUpdated"), // TODO platforms, maybe license later
+            "filterableAttributes", List.of("category", "settings.tags", "namespace.owner", "createdAt", "lastUpdated", "settings.license.type"), // TODO platforms, platform versions, members <---
             "sortableAttributes", List.of("stats.views", "stats.downloads", "stats.recentDownloads", "stats.recentViews", "stats.stars", "createdAt", "lastUpdated", "name")
         );
         restClient.patch().uri("/indexes/projects/settings").contentType(MediaType.APPLICATION_JSON).body(settings).retrieve().onStatus(errorHandler).toEntity(Task.class);
@@ -84,7 +84,6 @@ public class MeiliService implements ApplicationListener<ContextRefreshedEvent> 
     // TODO can see hidden?
     // TODO what about main page content?
 
-    // TODO try against prod db and check speed, both for indexing and searching (also for db fetch)
     public void sendProjects(List<Project> projects) {
         restClient.post().uri("/indexes/projects/documents").contentType(MediaType.APPLICATION_JSON).body(projects).retrieve().onStatus(errorHandler).toEntity(Task.class);
     }
@@ -100,10 +99,10 @@ public class MeiliService implements ApplicationListener<ContextRefreshedEvent> 
             "sort", sort,
             "offset", offset,
             "limit", limit
-            // TODO highlight stuff in UI
+            // TODO highlight stuff in UI <---
             //"attributesToHighlight", List.of("name", "namespace.owner", "description", "category"),
             //"showMatchesPosition", true,
-            // TODO show facet stats in UI
+            // TODO show facet stats in UI <---
             //"facets", List.of("*")
         );
         var entity = restClient.post().uri("/indexes/projects/search").contentType(MediaType.APPLICATION_JSON).body(searchBody).retrieve().onStatus(errorHandler).toEntity(SearchResult.class);
@@ -123,6 +122,8 @@ public class MeiliService implements ApplicationListener<ContextRefreshedEvent> 
             "limit", limit,
             "facets", List.of("platformDependencies", "channel.name")
             // TODO display facet stats in UI
+            "limit", limit
+            // "facets", List.of("platformDependencies", "channel.name")
         );
         var entity = restClient.post().uri("/indexes/versions/search").contentType(MediaType.APPLICATION_JSON).body(searchBody).retrieve().onStatus(errorHandler).toEntity(SearchResult.class);
         if (entity.getStatusCode().is2xxSuccessful()) {

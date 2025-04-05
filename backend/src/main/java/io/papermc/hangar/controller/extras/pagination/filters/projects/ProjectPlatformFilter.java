@@ -69,6 +69,18 @@ public class ProjectPlatformFilter implements Filter<ProjectPlatformFilter.Proje
         }
 
         @Override
+        public void createMeili(StringBuilder sb) {
+            sb.append("platform IN [");
+            for (int i = 0; i < this.platforms.length; i++) {
+                sb.append(platforms[i].name());
+                if (i + 1 != this.platforms.length) {
+                    sb.append(',');
+                }
+            }
+            sb.append(']');
+        }
+
+        @Override
         public String toString() {
             return "ProjectPlatformFilterInstance{" +
                 "platforms=" + Arrays.toString(this.platforms) +

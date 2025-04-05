@@ -64,6 +64,18 @@ public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstan
         }
 
         @Override
+        public void createMeili(StringBuilder sb) {
+            sb.append("category IN [");
+            for (int i = 0; i < this.categories.length; i++) {
+                sb.append(categories[i]);
+                if (i + 1 != this.categories.length) {
+                    sb.append(',');
+                }
+            }
+            sb.append("]");
+        }
+
+        @Override
         public String toString() {
             return "ProjectCategoryFilterInstance{" +
                 "categories=" + Arrays.toString(this.categories) +
