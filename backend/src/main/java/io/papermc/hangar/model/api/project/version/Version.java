@@ -13,6 +13,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
@@ -32,7 +33,7 @@ public class Version extends Model implements Named, Visible, Identified {
     private final PinnedStatus pinnedStatus;
     private final Map<Platform, PlatformVersionDownload> downloads;
     private final Map<Platform, Set<PluginDependency>> pluginDependencies;
-    private final Map<Platform, Set<String>> platformDependencies;
+    private final Map<Platform, SortedSet<String>> platformDependencies;
     private final Map<Platform, List<String>> platformDependenciesFormatted;
 
     public Version(final OffsetDateTime createdAt,
@@ -47,7 +48,7 @@ public class Version extends Model implements Named, Visible, Identified {
                    final PinnedStatus pinnedStatus,
                    final Map<Platform, PlatformVersionDownload> downloads,
                    final Map<Platform, Set<PluginDependency>> pluginDependencies,
-                   final Map<Platform, Set<String>> platformDependencies,
+                   final Map<Platform, SortedSet<String>> platformDependencies,
                    final Map<Platform, List<String>> platformDependenciesFormatted) {
         super(createdAt);
         this.id = id;
@@ -117,7 +118,7 @@ public class Version extends Model implements Named, Visible, Identified {
         return this.pluginDependencies;
     }
 
-    public Map<Platform, Set<String>> getPlatformDependencies() {
+    public Map<Platform, SortedSet<String>> getPlatformDependencies() {
         return this.platformDependencies;
     }
 

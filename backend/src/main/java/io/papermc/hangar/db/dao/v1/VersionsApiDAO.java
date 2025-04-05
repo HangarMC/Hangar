@@ -55,17 +55,6 @@ public interface VersionsApiDAO {
     @RegisterConstructorMapper(PluginDependency.class)
     Set<PluginDependency> getPluginDependencies(long versionId, @EnumByOrdinal Platform platform); // TODO make into one db call for all platforms?
 
-    @KeyColumn("platform")
-    @ValueColumn("versions")
-    @SqlQuery("SELECT" +
-        "       pv.platform," +
-        "       array_agg(pv.version ORDER BY pv.created_at) versions" +
-        "   FROM project_version_platform_dependencies pvpd " +
-        "       JOIN platform_versions pv ON pvpd.platform_version_id = pv.id" +
-        "   WHERE pvpd.version_id = :versionId" +
-        "   GROUP BY pv.platform")
-    Map<Platform, SortedSet<String>> getPlatformDependencies(long versionId);
-
     @KeyColumn("date")
     @RegisterConstructorMapper(value = VersionStats.class, prefix = "vs")
     @SqlQuery("""
@@ -95,7 +84,7 @@ public interface VersionsApiDAO {
     """)
     @Nullable String getLatestVersion(long projectId, String channel);
 
-    // TODO platform
+    // TODO platform <---
     @SqlQuery("""
         SELECT pv.id
            FROM project_versions pv

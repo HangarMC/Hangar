@@ -23,13 +23,6 @@ CREATE OR REPLACE VIEW projects_extra AS
 DROP MATERIALIZED VIEW IF EXISTS home_projects CASCADE;
 
 CREATE MATERIALIZED VIEW home_projects AS
-    WITH platform_versions_agg AS (SELECT pv.project_id,
-                                          v.platform,
-                                          array_agg(v.version) AS versions
-                                   FROM platform_versions v
-                                       JOIN project_version_platform_dependencies pvpd ON v.id = pvpd.platform_version_id
-                                       JOIN project_versions pv ON pvpd.version_id = pv.id
-                                   GROUP BY pv.project_id, v.platform)
     SELECT p.*,
            array_agg(DISTINCT pm.user_id)                                             AS project_members,
            array_agg(DISTINCT lower(u.name))                                          AS project_member_names,
@@ -50,9 +43,14 @@ CREATE MATERIALIZED VIEW home_projects AS
             WHERE o.id = p.owner_id AND a.type = 'user' AND a.subject = o.uuid::text) AS avatar_fallback,
         /* store the supported platforms and versions */
         /* format: [{"platform": 0, "versions": ["1.19.4"]}, {"platform": 1, "versions": ["1.18"]}, {"platform": 2, "versions": ["3.2"]}] */
-           (SELECT jsonb_agg(jsonb_build_object('platform', pva.platform, 'versions', pva.versions))
-            FROM platform_versions_agg pva
-            WHERE pva.project_id = p.id)                                              AS supported_platforms,
+           (SELECT jsonb_agg(jsonb_build_object('platform', platform, 'versions', versions)) AS platforms
+            FROM (SELECT platformelement ->> 'platform'            AS platform,
+                         json_agg(DISTINCT platformversionelement) AS versions
+                  FROM project_versions pv,
+                       LATERAL jsonb_array_elements(pv.platforms) AS platformelement,
+                       LATERAL jsonb_array_elements(platformelement -> 'versions') AS platformversionelement
+                  WHERE pv.project_id = p.id
+                  GROUP BY platformelement ->> 'platform') sub)                                              AS supported_platforms,
         /* search stuff
             we want to search in the name, description, keywords and owner_name, in that priority
             for name and owner name we search the original name and a snake_case version so tsvector can find submatches

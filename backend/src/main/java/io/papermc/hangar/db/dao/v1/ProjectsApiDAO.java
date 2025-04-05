@@ -25,39 +25,42 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public interface ProjectsApiDAO {
 
     @UseStringTemplateEngine
-    @SqlQuery("SELECT p.id," +
-        "       p.created_at," +
-        "       p.name," +
-        "       p.owner_name \"owner\"," +
-        "       p.slug," +
-        "       hp.views," +
-        "       hp.downloads," +
-        "       hp.recent_views," +
-        "       hp.recent_downloads," +
-        "       p.stars," +
-        "       p.watchers," +
-        "       p.category," +
-        "       p.description," +
-        "       coalesce(p.last_updated, p.created_at) AS last_updated," +
-        "       p.visibility, " +
-        "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred, " +
-        "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching, " +
-        "       exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) AS flagged," +
-        "       p.links," +
-        "       p.tags," +
-        "       p.license_name," +
-        "       p.license_url," +
-        "       p.license_type," +
-        "       p.keywords," +
-        "       p.donation_enabled," +
-        "       p.donation_subject," +
-        "       p.sponsors," +
-        "       hp.avatar," +
-        "       hp.avatar_fallback" +
-        "  FROM home_projects hp" +
-        "         JOIN projects_extra p ON hp.id = p.id" +
-        "         WHERE p.id = :id" +
-        "         <if(!canSeeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(p.project_members) AND p.visibility != 4)<endif>) <endif>")
+    @SqlQuery("""
+        SELECT p.id,
+               p.created_at,
+               p.name,
+               p.owner_name "owner",
+               p.slug,
+               hp.views,
+               hp.downloads,
+               hp.recent_views,
+               hp.recent_downloads,
+               p.stars,
+               p.watchers,
+               p.category,
+               p.description,
+               coalesce(p.last_updated, p.created_at) AS last_updated,
+               p.visibility,
+               exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred,
+               exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching,
+               exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) AS flagged,
+               p.links,
+               p.tags,
+               p.license_name,
+               p.license_url,
+               p.license_type,
+               p.keywords,
+               p.donation_enabled,
+               p.donation_subject,
+               p.sponsors,
+               hp.avatar,
+               hp.avatar_fallback,
+               hp.supported_platforms
+          FROM home_projects hp
+                 JOIN projects_extra p ON hp.id = p.id
+                 WHERE p.id = :id
+                 <if(!canSeeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(p.project_members) AND p.visibility != 4)<endif>) <endif>
+       """)
     Project getProject(long id, @Define boolean canSeeHidden, @Define @Bind Long requesterId);
 
     @UseStringTemplateEngine

@@ -1,5 +1,6 @@
 package io.papermc.hangar.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariDataSource;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.JobState;
@@ -15,6 +16,8 @@ import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.core.spi.JdbiPlugin;
+import org.jdbi.v3.jackson2.Jackson2Config;
+import org.jdbi.v3.jackson2.Jackson2Plugin;
 import org.jdbi.v3.postgres.PostgresPlugin;
 import org.jdbi.v3.postgres.PostgresTypes;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
@@ -38,6 +41,11 @@ public class JDBIConfig {
     }
 
     @Bean
+    public JdbiPlugin jacksonPlugin() {
+        return new Jackson2Plugin();
+    }
+
+    @Bean
     DataSource dataSource(@Value("${spring.datasource.url}") final String url, @Value("${spring.datasource.username}") final String username, @Value("${spring.datasource.password}") final String password) {
         final HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).url(url).username(username).password(password).build();
         dataSource.setPoolName(UUID.randomUUID().toString());
@@ -45,10 +53,11 @@ public class JDBIConfig {
     }
 
     @Bean
-    public Jdbi jdbi(final DataSource dataSource, final List<JdbiPlugin> jdbiPlugins, final List<RowMapper<?>> rowMappers, final List<RowMapperFactory> rowMapperFactories, final List<ColumnMapper<?>> columnMappers) {
+    public Jdbi jdbi(final DataSource dataSource, final List<JdbiPlugin> jdbiPlugins, final List<RowMapper<?>> rowMappers, final List<RowMapperFactory> rowMapperFactories, final List<ColumnMapper<?>> columnMappers, final ObjectMapper objectMapper) {
         final TransactionAwareDataSourceProxy dataSourceProxy = new TransactionAwareDataSourceProxy(dataSource);
         final Jdbi jdbi = Jdbi.create(dataSourceProxy);
         final PostgresTypes config = jdbi.getConfig(PostgresTypes.class);
+        jdbi.getConfig(Jackson2Config.class).setMapper(objectMapper);
 
         jdbiPlugins.forEach(jdbi::installPlugin);
         rowMappers.forEach(jdbi::registerRowMapper);

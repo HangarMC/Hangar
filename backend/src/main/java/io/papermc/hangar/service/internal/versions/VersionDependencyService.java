@@ -2,23 +2,25 @@ package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
+import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionDependenciesDAO;
-import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionPlatformDependenciesDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
-import io.papermc.hangar.model.db.PlatformVersionTable;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionDependencyTable;
-import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionPlatformDependencyTable;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePlatformVersions;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDependencies;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.service.internal.PlatformService;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,15 +32,15 @@ public class VersionDependencyService extends HangarComponent {
 
     private final ProjectVersionDependenciesDAO projectVersionDependenciesDAO;
     private final ProjectsDAO projectsDAO;
-    private final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependenciesDAO;
     private final PlatformService platformService;
+    private final ProjectVersionsDAO projectVersionsDAO;
 
     @Autowired
-    public VersionDependencyService(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectsDAO projectsDAO, final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final PlatformService platformService) {
+    public VersionDependencyService(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectsDAO projectsDAO, final PlatformService platformService, final ProjectVersionsDAO projectVersionsDAO) {
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.projectsDAO = projectsDAO;
-        this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.platformService = platformService;
+        this.projectVersionsDAO = projectVersionsDAO;
     }
 
     @Transactional
@@ -47,32 +49,36 @@ public class VersionDependencyService extends HangarComponent {
             throw new HangarApiException("Too many platform versions");
         }
 
-        final Map<String, ProjectVersionPlatformDependencyTable> platformDependencyTables = this.projectVersionPlatformDependenciesDAO.getPlatformVersions(versionId, form.platform());
-        final Map<String, ProjectVersionPlatformDependencyTable> toBeRemoved = new HashMap<>();
-        final Map<String, ProjectVersionPlatformDependencyTable> toBeAdded = new HashMap<>();
-        for (final Map.Entry<String, ProjectVersionPlatformDependencyTable> entry : platformDependencyTables.entrySet()) {
-            final String key = entry.getKey();
-            if (!form.versions().contains(key)) {
-                toBeRemoved.put(key, entry.getValue());
-            }
+        final ProjectVersionTable version = this.projectVersionsDAO.getProjectVersionTable(versionId);
+        if (version == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        for (final String version : form.versions()) {
-            if (!platformDependencyTables.containsKey(version)) {
-                final PlatformVersionTable platformVersionTable = this.platformService.getByPlatformAndVersion(form.platform(), version);
-                if (platformVersionTable == null) {
-                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidVersionForPlatform", version, form.platform().getName());
-                }
-                toBeAdded.put(version, new ProjectVersionPlatformDependencyTable(versionId, platformVersionTable.getId()));
+
+        final Set<String> toBeRemoved = new HashSet<>();
+        final Set<String> toBeAdded = new HashSet<>();
+
+        final Map<Platform, SortedSet<String>> platforms = version.getPlatformsAsMap();
+        final SortedSet<String> oldVersions = platforms.get(form.platform());
+
+        for (final String platformVersion : form.versions()) {
+            if (!oldVersions.contains(platformVersion)) {
+                toBeAdded.add(platformVersion);
             }
         }
 
+        for (final String platformVersion : oldVersions) {
+            if (!form.versions().contains(platformVersion)) {
+                toBeRemoved.add(platformVersion);
+            }
+        }
+
+        platforms.put(form.platform(), form.versions());
+
         if (!toBeAdded.isEmpty()) {
-            this.projectVersionPlatformDependenciesDAO.insertAll(toBeAdded.values());
-            this.actionLogger.version(LogAction.VERSION_PLATFORM_DEPENDENCIES_ADDED.create(VersionContext.of(projectId, versionId), "Added: " + String.join(", ", toBeAdded.keySet()), String.join(", ", platformDependencyTables.keySet())));
+            this.actionLogger.version(LogAction.VERSION_PLATFORM_DEPENDENCIES_ADDED.create(VersionContext.of(projectId, versionId), "Added: " + String.join(", ", toBeAdded), String.join(", ", oldVersions)));
         }
         if (!toBeRemoved.isEmpty()) {
-            this.projectVersionPlatformDependenciesDAO.deleteAll(toBeRemoved.values());
-            this.actionLogger.version(LogAction.VERSION_PLATFORM_DEPENDENCIES_REMOVED.create(VersionContext.of(projectId, versionId), "Removed: " + String.join(", ", toBeRemoved.keySet()), String.join(", ", platformDependencyTables.keySet())));
+            this.actionLogger.version(LogAction.VERSION_PLATFORM_DEPENDENCIES_REMOVED.create(VersionContext.of(projectId, versionId), "Removed: " + String.join(", ", toBeRemoved), String.join(", ", oldVersions)));
         }
     }
 
