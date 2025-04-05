@@ -12,35 +12,55 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 @RegisterConstructorMapper(Version.class)
 public interface IndexDAO {
 
-    // TODO dont use view here
     @SqlQuery("""
-        SELECT hp.id,
-               hp.created_at,
-               hp.name,
-               hp.owner_name "owner",
-               hp.slug,
-               hp.views,
-               hp.downloads,
-               hp.recent_views,
-               hp.recent_downloads,
-               hp.stars,
-               hp.watchers,
-               hp.category,
-               hp.description,
-               coalesce(hp.last_updated, hp.created_at) AS last_updated,
-               hp.visibility,
-               hp.links,
-               hp.tags,
-               hp.license_name,
-               hp.license_url,
-               hp.license_type,
-               hp.keywords,
-               hp.donation_enabled,
-               hp.donation_subject,
-               hp.sponsors,
-               hp.avatar,
-               hp.avatar_fallback
-          FROM home_projects hp
+        SELECT p.id,
+               p.created_at,
+               p.name,
+               p.owner_name                                                               AS owner,
+               p.slug,
+               p.category,
+               p.description,
+               p.sponsors,
+               p.donation_enabled,
+               p.donation_subject,
+               p.keywords,
+               p.license_name,
+               p.license_url,
+               p.license_type,
+               p.visibility,
+               p.links,
+               p.tags,
+               /* stats */
+               ps.views,
+               ps.downloads,
+               ps.recent_views,
+               ps.recent_downloads,
+               ps.stars,
+               ps.watchers,
+               ps.last_updated,
+               /* avatar stuff */
+               (SELECT '/project/' || p.id || '.webp?v=' || a.version
+                FROM avatars a
+                WHERE a.type = 'project' AND a.subject = p.id::text)                      AS avatar,
+               (SELECT '/user/' || o.uuid::text || '.webp?v=' || a.version
+                FROM avatars a
+                    JOIN users o ON a.subject = o.uuid::text
+                WHERE o.id = p.owner_id AND a.type = 'user' AND a.subject = o.uuid::text) AS avatar_fallback,
+        /* platforms todo maybe we dont need this and instead should optimize platforms into versions */
+               (WITH aggregated_versions AS (SELECT plv.platform,
+                                                    json_agg(DISTINCT plv.version) AS versions
+                                             FROM project_versions pv
+                                                 JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id
+                                                 JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
+                                             WHERE pv.project_id = p.id
+                                             GROUP BY plv.platform)
+                SELECT json_agg(
+                           json_build_object('platform', av.platform, 'versions', av.versions)
+                       ) AS platform_versions
+                FROM aggregated_versions av)
+        /* todo project memebers, for user profile page */
+        FROM projects p
+            JOIN project_stats_view ps on ps.id = p.id
         """)
     List<Project> getAllProjects();
 

@@ -16,6 +16,7 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -78,36 +79,30 @@ public class ProjectsApiService extends HangarComponent {
     }
 
     public PaginatedResult<Project> getProjects(final RequestPagination pagination) {
-        // get query from filter
         String query = "";
+        final StringBuilder filters = new StringBuilder();
+        boolean first = true;
         for (final Filter.FilterInstance filterInstance : pagination.getFilters().values()) {
             if (filterInstance instanceof ProjectQueryFilterInstance(String q)) {
                 query = q.toLowerCase();
+            } else {
+                if (first) {
+                    first = false;
+                } else {
+                    filters.append(" AND ");
+                }
+                filterInstance.createMeili(filters);
             }
         }
 
-        // TODO this is horrible
-        List<String> sort = pagination.getSorters().keySet().stream().map(s -> switch (s) {
-            case "-views" -> "stats.views:desc";
-            case "views" -> "stats.views:asc";
-            case "-downloads" -> "stats.downloads:desc";
-            case "downloads" -> "stats.downloads:asc";
-            case "-recentDownloads" -> "stats.recentDownloads:desc";
-            case "recentDownloads" -> "stats.recentDownloads:asc";
-            case "-stars" -> "stats.stars:desc";
-            case "stars" -> "stats.stars:asc";
-            case "-updated" -> "lastUpdated:desc";
-            case "updated" -> "lastUpdated:asc";
-            case "-newest" -> "createdAt:desc";
-            case "newest" -> "createdAt:asc";
-            case "-recentViews" -> "stats.recentViews:desc";
-            case "recentViews" -> "stats.recentViews:asc";
-            case "-slug" -> "name:desc";
-            case "slug" -> "name:asc";
-            default -> throw new IllegalArgumentException("Invalid filter parameter " + s);
-        }).toList();
+        final List<String> sort = new ArrayList<>();
+        pagination.getSorters().forEach((key, value) -> {
+            StringBuilder sb = new StringBuilder();
+            value.accept(sb);
+            sort.add(sb.toString());
+        });
 
-        SearchResult<Project> result = this.meiliService.searchProjects(query, "", sort, pagination.getOffset(), pagination.getLimit());// TODO filter, pagination
+        SearchResult<Project> result = this.meiliService.searchProjects(query, filters.toString(), sort, pagination.getOffset(), pagination.getLimit());
         return result.asPaginatedResult();
     }
 }

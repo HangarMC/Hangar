@@ -113,6 +113,7 @@ public class StatService extends HangarComponent {
     @Transactional
     public void processProjectViews() {
         this.processStats("project_views_individual", "project_views", "views", false);
+        this.hangarStatsDAO.refreshProjectStatsView();
     }
 
     private void processStats(final String individualTable, final String dayTable, final String statColumn, final boolean downloads) {
