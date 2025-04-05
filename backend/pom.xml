@@ -44,7 +44,7 @@
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
         <jgroups.version>5.4.4.Final</jgroups.version>
         <jgroups-kube.version>2.0.2.Final</jgroups-kube.version>
-        <totp.version>1.7.2-SNAPSHOT</totp.version>
+        <totp.version>1.8.0</totp.version>
         <webp.version>0.1.6</webp.version>
         <webauthn.version>2.6.0</webauthn.version>
         <logback-contrib.version>0.1.5</logback-contrib.version>
@@ -326,8 +326,8 @@
         </dependency>
 
         <dependency>
-            <groupId>dev.samstevens.totp</groupId>
-            <artifactId>totp-spring-boot-starter-hangar</artifactId>
+            <groupId>io.papermc.hangar.totp</groupId>
+            <artifactId>totp-spring-boot-starter</artifactId>
             <version>${totp.version}</version>
         </dependency>
         <dependency>
