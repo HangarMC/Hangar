@@ -49,9 +49,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -265,12 +263,6 @@ public class ProjectService extends HangarComponent {
 
     public List<UserTable> getProjectWatchers(final long projectId) {
         return this.projectsDAO.getProjectWatchers(projectId);
-    }
-
-    @Async
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void refreshHomeProjects() {
-        this.hangarProjectsDAO.refreshHomeProjects();
     }
 
     private @Nullable <T> ProjectTable getProjectTable(final @Nullable T identifier, final @NotNull Function<T, ProjectTable> projectTableFunction) {

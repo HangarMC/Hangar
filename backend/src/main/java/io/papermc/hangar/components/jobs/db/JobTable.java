@@ -1,8 +1,9 @@
-package io.papermc.hangar.model.db;
+package io.papermc.hangar.components.jobs.db;
 
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.JobState;
-import io.papermc.hangar.model.internal.job.JobType;
+import io.papermc.hangar.components.jobs.model.JobType;
+import io.papermc.hangar.model.db.Table;
 import java.time.OffsetDateTime;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;

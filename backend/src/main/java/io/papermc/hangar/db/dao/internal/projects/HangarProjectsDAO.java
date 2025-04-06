@@ -99,7 +99,4 @@ public interface HangarProjectsDAO {
         "   WHERE pc.project_id = :projectId" +
         "   ORDER BY pc.created_at")
     List<HangarChannel> getHangarChannels(long projectId);
-
-    @SqlUpdate("REFRESH MATERIALIZED VIEW home_projects")
-    void refreshHomeProjects();
 }

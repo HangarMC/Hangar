@@ -87,10 +87,10 @@ public class VersionFactory extends HangarComponent {
     private final WebhookService webhookService;
     private final AvatarService avatarService;
     private final VersionsApiService versionApiService;
-    private final HangarVersionsDAO hangarVersionsDAO;
+    private final IndexService indexService;
 
     @Autowired
-    public VersionFactory(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService, final WebhookService webhookService, final AvatarService avatarService, final @Lazy VersionsApiService versionApiService, final HangarVersionsDAO hangarVersionsDAO) {
+    public VersionFactory(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService, final WebhookService webhookService, final AvatarService avatarService, final @Lazy VersionsApiService versionApiService, final IndexService indexService) {
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.projectVersionsDAO = projectVersionDAO;
         this.projectFiles = projectFiles;
@@ -110,7 +110,7 @@ public class VersionFactory extends HangarComponent {
         this.webhookService = webhookService;
         this.avatarService = avatarService;
         this.versionApiService = versionApiService;
-        this.hangarVersionsDAO = hangarVersionsDAO;
+        this.indexService = indexService;
     }
 
     @Transactional
@@ -348,8 +348,8 @@ public class VersionFactory extends HangarComponent {
         this.webhookService.handleEvent(new VersionPublishedEvent(projectTable.getOwnerName(), projectTable.getName(), avatarUrl, url + "/versions/" + projectVersionTable.getVersionString(), projectVersionTable.getVersionString(), projectVersionTable.getDescription(), platformString));
 
         // cache purging
-        this.projectService.refreshHomeProjects();
-        this.hangarVersionsDAO.refreshVersionView();
+        this.indexService.updateProject(projectTable.getId());
+        this.indexService.updateVersion(projectVersionTable.getId());
         this.usersApiService.clearAuthorsCache();
         this.versionApiService.evictLatestRelease(projectTable.getId());
         this.versionApiService.evictLatest(projectTable.getId(), projectChannelTable.getName());
@@ -419,6 +419,7 @@ public class VersionFactory extends HangarComponent {
 
             final String platformPath = this.fileService.resolve(versionDir, platform.name());
             final String platformJarPath = this.fileService.resolve(platformPath, fileInfo.getName());
+            //noinspection StatementWithEmptyBody
             if (this.fileService instanceof S3FileService) {
                 // this isn't nice, but we cant link, so what am I supposed to do?
                 // fileService.move(tmpVersionJar.toString(), platformJarPath);

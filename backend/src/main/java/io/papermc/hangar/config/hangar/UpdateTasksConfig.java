@@ -9,7 +9,10 @@ import org.springframework.boot.convert.DurationUnit;
 @ConfigurationProperties(prefix = "hangar.homepage")
 public record UpdateTasksConfig(
     @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("2") Duration homepage,
+    @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("2") Duration versionView,
     @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("2") Duration versionDownloads,
-    @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration projectViews
+    @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration projectViews,
+    @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration projectIndex,
+    @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration versionIndex
 ) {
 }

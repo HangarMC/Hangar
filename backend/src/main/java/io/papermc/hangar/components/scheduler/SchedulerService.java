@@ -1,0 +1,76 @@
+package io.papermc.hangar.components.scheduler;
+
+import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.index.IndexService;
+import io.papermc.hangar.components.jobs.JobService;
+import io.papermc.hangar.components.jobs.model.ScheduledTaskJob;
+import io.papermc.hangar.service.internal.admin.StatService;
+import io.sentry.ITransaction;
+import io.sentry.Sentry;
+import io.sentry.SpanStatus;
+import jakarta.annotation.PostConstruct;
+import org.springframework.stereotype.Service;
+
+@Service
+public class SchedulerService extends HangarComponent {
+
+    private final SchedulerDAO schedulerDAO;
+    private final StatService statService;
+    private final IndexService indexService;
+    private final JobService jobService;
+
+    public SchedulerService(final SchedulerDAO schedulerDAO, final StatService statService, final IndexService indexService, final JobService jobService) {
+        this.schedulerDAO = schedulerDAO;
+        this.statService = statService;
+        this.indexService = indexService;
+        this.jobService = jobService;
+    }
+
+    public void runScheduledTask(String taskName) {
+        ITransaction transaction = Sentry.startTransaction("runScheduledTask(" + taskName + ")", "task");
+        try {
+            switch (taskName) {
+                case "updateVersionDownloads" -> {
+                    this.statService.processVersionDownloads();
+                    this.schedulerDAO.refreshVersionStatsView();
+                }
+                case "updateProjectViews" -> {
+                    this.statService.processProjectViews();
+                    this.schedulerDAO.refreshProjectStatsView();
+                }
+                case "updateProjectIndex" -> this.indexService.fullUpdateProjects();
+                case "updateVersionIndex" -> this.indexService.fullUpdateVersions();
+                case "refreshHomePage" -> this.schedulerDAO.refreshHomeProjects();
+                case "refreshVersionView" -> this.schedulerDAO.refreshVersionView();
+                default -> throw new RuntimeException("Unknown scheduled task name: " + taskName);
+            }
+        } catch (Exception e) {
+            transaction.setThrowable(e);
+            transaction.setStatus(SpanStatus.INTERNAL_ERROR);
+            throw e;
+        } finally {
+            transaction.finish();
+        }
+    }
+
+    @Deprecated
+    @SuppressWarnings("DeprecatedIsStillUsed")
+    public void runAllJobs() {
+        this.runScheduledTask("updateVersionDownloads");
+        this.runScheduledTask("updateProjectViews");
+        this.runScheduledTask("updateProjectIndex");
+        this.runScheduledTask("updateVersionIndex");
+        this.runScheduledTask("refreshHomePage");
+        this.runScheduledTask("refreshVersionView");
+    }
+
+    @PostConstruct
+    public void ensureJobsExist() {
+        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateVersionDownloads", this.config.updateTasks.versionDownloads().toMillis()));
+        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateProjectViews", this.config.updateTasks.projectViews().toMillis()));
+        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateProjectIndex", this.config.updateTasks.projectIndex().toMillis()));
+        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateVersionIndex", this.config.updateTasks.versionIndex().toMillis()));
+        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("refreshHomePage", this.config.updateTasks.homepage().toMillis()));
+        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("refreshVersionView", this.config.updateTasks.versionView().toMillis()));
+    }
+}

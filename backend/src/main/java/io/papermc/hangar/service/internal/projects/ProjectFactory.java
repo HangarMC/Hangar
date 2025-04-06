@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.index.IndexService;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.ChannelFlag;
@@ -41,9 +42,10 @@ public class ProjectFactory extends HangarComponent {
     private final ValidationService validationService;
     private final FileService fileService;
     private final AvatarService avatarService;
+    private final IndexService indexService;
 
     @Autowired
-    public ProjectFactory(final ProjectsDAO projectDAO, final ProjectService projectService, final ChannelService channelService, final ProjectPageService projectPageService, final ProjectMemberService projectMemberService, final ProjectVisibilityService projectVisibilityService, final UsersApiService usersApiService, final ProjectFiles projectFiles, final ValidationService validationService, final FileService fileService, final AvatarService avatarService) {
+    public ProjectFactory(final ProjectsDAO projectDAO, final ProjectService projectService, final ChannelService channelService, final ProjectPageService projectPageService, final ProjectMemberService projectMemberService, final ProjectVisibilityService projectVisibilityService, final UsersApiService usersApiService, final ProjectFiles projectFiles, final ValidationService validationService, final FileService fileService, final AvatarService avatarService, final IndexService indexService) {
         this.projectsDAO = projectDAO;
         this.projectService = projectService;
         this.channelService = channelService;
@@ -55,6 +57,7 @@ public class ProjectFactory extends HangarComponent {
         this.validationService = validationService;
         this.fileService = fileService;
         this.avatarService = avatarService;
+        this.indexService = indexService;
     }
 
     @Transactional
@@ -90,6 +93,7 @@ public class ProjectFactory extends HangarComponent {
         }
 
         this.usersApiService.clearAuthorsCache();
+        this.indexService.updateProject(projectTable.getId());
         return projectTable;
     }
 
@@ -171,7 +175,7 @@ public class ProjectFactory extends HangarComponent {
 
         this.actionLogger.project(LogAction.PROJECT_VISIBILITY_CHANGED.create(ProjectContext.of(projectTable.getId()), "Deleted: " + comment, projectTable.getVisibility().getTitle()));
         this.projectsDAO.delete(projectTable);
-        this.projectService.refreshHomeProjects();
+        this.indexService.removeProject(projectTable.getId());
         this.fileService.deleteDirectory(this.projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getSlug()));
     }
 
