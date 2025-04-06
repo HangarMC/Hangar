@@ -1,8 +1,9 @@
 package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.jobs.JobService;
 import io.papermc.hangar.config.hangar.MailConfig;
-import io.papermc.hangar.model.internal.job.SendMailJob;
+import io.papermc.hangar.components.jobs.model.SendMailJob;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.io.BufferedReader;

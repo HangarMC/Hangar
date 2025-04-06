@@ -1,6 +1,5 @@
-package io.papermc.hangar.tasks;
+package io.papermc.hangar.components.jobs;
 
-import io.papermc.hangar.service.internal.JobService;
 import io.sentry.spring.jakarta.tracing.SentryTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

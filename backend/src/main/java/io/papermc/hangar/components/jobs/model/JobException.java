@@ -1,4 +1,4 @@
-package io.papermc.hangar.model.internal.job;
+package io.papermc.hangar.components.jobs.model;
 
 public class JobException extends RuntimeException {
     private final String descriptor;

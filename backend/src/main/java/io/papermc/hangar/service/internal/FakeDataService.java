@@ -45,7 +45,6 @@ public class FakeDataService extends HangarComponent {
 
     private final UserDAO userDAO;
     private final GlobalRoleService globalRoleService;
-    private final ProjectService projectService;
     private final ProjectFactory projectFactory;
     private final ProjectsDAO projectsDAO;
     private final CredentialsService credentialsService;
@@ -53,10 +52,9 @@ public class FakeDataService extends HangarComponent {
     private final QrDataFactory qrDataFactory;
     private final AvatarService avatarService;
 
-    public FakeDataService(final UserDAO userDAO, final GlobalRoleService globalRoleService, final ProjectService projectService, final ProjectFactory projectFactory, final ProjectsDAO projectsDAO, final CredentialsService credentialsService, final PasswordEncoder passwordEncoder, final QrDataFactory qrDataFactory, final AvatarService avatarService) {
+    public FakeDataService(final UserDAO userDAO, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectsDAO projectsDAO, final CredentialsService credentialsService, final PasswordEncoder passwordEncoder, final QrDataFactory qrDataFactory, final AvatarService avatarService) {
         this.userDAO = userDAO;
         this.globalRoleService = globalRoleService;
-        this.projectService = projectService;
         this.projectFactory = projectFactory;
         this.projectsDAO = projectsDAO;
         this.credentialsService = credentialsService;
@@ -87,7 +85,6 @@ public class FakeDataService extends HangarComponent {
             e.printStackTrace();
         } finally {
             SecurityContextHolder.getContext().setAuthentication(oldAuth);
-            this.projectService.refreshHomeProjects();
         }
     }
 

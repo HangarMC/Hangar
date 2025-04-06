@@ -81,7 +81,7 @@ public class ProjectController extends HangarComponent {
     @GetMapping("/possibleOwners")
     public ResponseEntity<List<PossibleProjectOwner>> possibleProjectCreators() {
         final List<PossibleProjectOwner> possibleProjectOwners = this.organizationService.getOrganizationTablesWithPermission(this.getHangarPrincipal().getId(), Permission.CreateProject).stream().map(PossibleProjectOwner::new).collect(Collectors.toList());
-        possibleProjectOwners.add(0, new PossibleProjectOwner(this.getHangarPrincipal()));
+        possibleProjectOwners.addFirst(new PossibleProjectOwner(this.getHangarPrincipal()));
         return ResponseEntity.ok(possibleProjectOwners);
     }
 
@@ -91,8 +91,6 @@ public class ProjectController extends HangarComponent {
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createProject(@RequestBody @Valid final NewProjectForm newProject) {
         final ProjectTable projectTable = this.projectFactory.createProject(newProject);
-        // need to do this here, outside the transactional
-        this.projectService.refreshHomeProjects();
         return ResponseEntity.ok(projectTable.getUrl());
     }
 

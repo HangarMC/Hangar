@@ -12,7 +12,7 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.LogContext;
 import io.papermc.hangar.model.loggable.Loggable;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.internal.JobService;
+import io.papermc.hangar.components.jobs.JobService;
 import java.util.Map;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;

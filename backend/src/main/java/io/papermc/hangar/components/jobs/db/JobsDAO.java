@@ -1,6 +1,5 @@
-package io.papermc.hangar.db.dao.internal.table;
+package io.papermc.hangar.components.jobs.db;
 
-import io.papermc.hangar.model.db.JobTable;
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.jdbi.v3.spring.JdbiRepository;
@@ -25,7 +24,7 @@ public interface JobsDAO {
     long countAwaitingJobs();
 
     @SqlQuery("UPDATE jobs SET state = 'started', last_updated = now() WHERE id = (" +
-        "    SELECT id FROM jobs WHERE state = 'not_started' AND (retry_at IS NULL OR retry_at < now()) ORDER BY id /*FOR UPDATE SKIP LOCKED*/ LIMIT 1" +
+        "    SELECT id FROM jobs WHERE state = 'not_started' AND (retry_at IS NULL OR retry_at < now()) ORDER BY id FOR UPDATE SKIP LOCKED LIMIT 1" +
         ") RETURNING *")
     JobTable fetchJob();
 
@@ -37,4 +36,7 @@ public interface JobsDAO {
 
     @SqlUpdate("UPDATE jobs SET state = 'fatal_failure', last_updated = now(), last_error = :lastError, last_error_descriptor = :lastErrorDescriptor WHERE id = :id")
     void fail(long id, String lastError, String lastErrorDescriptor);
+
+    @SqlQuery("SELECT count(*) from jobs WHERE job_type = 'SCHEDULED_TASK' and job_properties->>'taskName' = :taskName")
+    long exists(String taskName);
 }

@@ -1,15 +1,21 @@
-package io.papermc.hangar.service.internal;
+package io.papermc.hangar.components.jobs;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.jobs.model.JobType;
+import io.papermc.hangar.components.jobs.model.ScheduledTaskJob;
+import io.papermc.hangar.components.scheduler.SchedulerService;
 import io.papermc.hangar.components.webhook.service.WebhookService;
-import io.papermc.hangar.db.dao.internal.table.JobsDAO;
-import io.papermc.hangar.model.db.JobTable;
-import io.papermc.hangar.model.internal.job.Job;
-import io.papermc.hangar.model.internal.job.JobException;
-import io.papermc.hangar.model.internal.job.SendMailJob;
-import io.papermc.hangar.model.internal.job.SendWebhookJob;
+import io.papermc.hangar.components.jobs.db.JobsDAO;
+import io.papermc.hangar.components.jobs.db.JobTable;
+import io.papermc.hangar.components.jobs.model.Job;
+import io.papermc.hangar.components.jobs.model.JobException;
+import io.papermc.hangar.components.jobs.model.SendMailJob;
+import io.papermc.hangar.components.jobs.model.SendWebhookJob;
+import io.papermc.hangar.service.internal.MailService;
 import io.papermc.hangar.util.ThreadFactory;
 import jakarta.annotation.PostConstruct;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
@@ -20,7 +26,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class JobService extends HangarComponent {
@@ -28,14 +33,16 @@ public class JobService extends HangarComponent {
     private final JobsDAO jobsDAO;
     private final MailService mailService;
     private final WebhookService webhookService;
+    private final SchedulerService schedulerService;
 
     private ExecutorService executorService;
 
     @Autowired
-    public JobService(final JobsDAO jobsDAO, @Lazy final MailService mailService, @Lazy final WebhookService webhookService) {
+    public JobService(final JobsDAO jobsDAO, @Lazy final MailService mailService, @Lazy final WebhookService webhookService, @Lazy final SchedulerService schedulerService) {
         this.jobsDAO = jobsDAO;
         this.mailService = mailService;
         this.webhookService = webhookService;
+        this.schedulerService = schedulerService;
     }
 
     @PostConstruct
@@ -58,7 +65,6 @@ public class JobService extends HangarComponent {
         return this.jobsDAO.getErroredJobs();
     }
 
-    @Transactional
     public void schedule(final Job... jobs) {
         for (final Job job : jobs) {
             this.logger.info("Scheduling job: {}", job);
@@ -66,7 +72,13 @@ public class JobService extends HangarComponent {
         }
     }
 
-    public void process() {
+    public void scheduleIfNotExists(ScheduledTaskJob scheduledTaskJob) {
+        if (this.jobsDAO.exists(scheduledTaskJob.getTaskName()) == 0) {
+            schedule(scheduledTaskJob);
+        }
+    }
+
+    private void process() {
         SecurityContextHolder.getContext().setAuthentication(new JobAuthentication());
 
         final JobTable jobTable = this.jobsDAO.fetchJob();
@@ -78,7 +90,10 @@ public class JobService extends HangarComponent {
 
         try {
             this.processJob(jobTable);
-            this.jobsDAO.finishJob(jobTable.getId());
+            if (jobTable.getJobType() != JobType.SCHEDULED_TASK) {
+                // scheduled tasks are retried
+                this.jobsDAO.finishJob(jobTable.getId());
+            }
         } catch (final JobException jobException) {
             this.logger.debug("job failed to process: {} {}", jobException.getMessage(), jobTable);
             final String error = "Encountered error when processing job\n" +
@@ -104,7 +119,7 @@ public class JobService extends HangarComponent {
         return "Message: " + error.getMessage();
     }
 
-    public void processJob(final JobTable job) throws Exception {
+    private void processJob(final JobTable job) throws Exception {
         switch (job.getJobType()) {
             // email
             case SEND_EMAIL -> {
@@ -115,6 +130,12 @@ public class JobService extends HangarComponent {
             case SEND_WEBHOOK -> {
                 final SendWebhookJob sendWebhookJob = SendWebhookJob.loadFromTable(job);
                 this.webhookService.sendWebhook(sendWebhookJob);
+            }
+            // scheduled repeating things
+            case SCHEDULED_TASK -> {
+                final ScheduledTaskJob scheduledTaskJob = ScheduledTaskJob.loadFromTable(job);
+                this.schedulerService.runScheduledTask(scheduledTaskJob.getTaskName());
+                this.jobsDAO.retryIn(job.getId(), OffsetDateTime.now().plus(scheduledTaskJob.getInterval(), ChronoUnit.MILLIS), null, null);
             }
             default -> throw new JobException("Unknown job type " + job, "unknown_job_type");
         }

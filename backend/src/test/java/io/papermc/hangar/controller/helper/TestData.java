@@ -3,6 +3,8 @@ package io.papermc.hangar.controller.helper;
 import io.papermc.hangar.HangarApplication;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.components.auth.service.AuthService;
+import io.papermc.hangar.components.index.IndexService;
+import io.papermc.hangar.components.scheduler.SchedulerService;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
@@ -91,8 +93,6 @@ public class TestData {
     @Autowired
     private ProjectPageService projectPageService;
     @Autowired
-    private ProjectService projectService;
-    @Autowired
     private UserService userService;
     @Autowired
     private VersionFactory versionFactory;
@@ -101,7 +101,7 @@ public class TestData {
     @Autowired
     private ProjectVersionsDAO projectVersionsDAO;
     @Autowired
-    private HangarVersionsDAO hangarVersionsDAO;
+    private SchedulerService schedulerService;
 
     @EventListener(ApplicationStartedEvent.class)
     public void prepare() {
@@ -154,8 +154,8 @@ public class TestData {
         this.userService.toggleStarred(USER_NORMAL.getUserId(), PROJECT.getProjectId(), true);
         this.userService.toggleWatching(USER_NORMAL.getUserId(), PROJECT.getProjectId(), true);
 
-        this.projectService.refreshHomeProjects();
-        this.hangarVersionsDAO.refreshVersionView();
+        //noinspection deprecation
+        this.schedulerService.runAllJobs();
 
         HangarApplication.TEST_PRINCIPAL = Optional.empty();
         HangarApplication.TEST_MODE = false;

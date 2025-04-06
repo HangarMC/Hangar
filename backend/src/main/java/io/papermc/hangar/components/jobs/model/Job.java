@@ -1,9 +1,9 @@
-package io.papermc.hangar.model.internal.job;
+package io.papermc.hangar.components.jobs.model;
 
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.JobState;
 import io.papermc.hangar.model.Model;
-import io.papermc.hangar.model.db.JobTable;
+import io.papermc.hangar.components.jobs.db.JobTable;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
