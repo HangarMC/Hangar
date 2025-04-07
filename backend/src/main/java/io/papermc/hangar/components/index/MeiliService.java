@@ -59,7 +59,7 @@ public class MeiliService implements ApplicationListener<ContextRefreshedEvent> 
             "distinctAttribute", "id",
             "searchableAttributes", List.of("name", "namespace.owner", "description", "category", "createdAt", "lastUpdated", "stats", "settings.keywords", "settings.tags"),
             "displayedAttributes", List.of("*"),
-            "filterableAttributes", List.of("category", "settings.tags", "namespace.owner", "createdAt", "lastUpdated", "settings.license.type", "supportedPlatforms", "supportedPlatforms.PAPER", "supportedPlatforms.VELOCITY", "supportedPlatforms.WATERFALL"), // TODO platforms, platform versions, members <---
+            "filterableAttributes", List.of("category", "settings.tags", "namespace.owner", "createdAt", "lastUpdated", "settings.license.type", "supportedPlatforms"), // TODO members <---
             "sortableAttributes", List.of("stats.views", "stats.downloads", "stats.recentDownloads", "stats.recentViews", "stats.stars", "createdAt", "lastUpdated", "name")
         );
         restClient.patch().uri("/indexes/projects/settings").contentType(MediaType.APPLICATION_JSON).body(settings).retrieve().onStatus(errorHandler).toEntity(Task.class);
@@ -85,11 +85,27 @@ public class MeiliService implements ApplicationListener<ContextRefreshedEvent> 
     // TODO what about main page content?
 
     public void sendProjects(List<Project> projects) {
-        restClient.post().uri("/indexes/projects/documents").contentType(MediaType.APPLICATION_JSON).body(projects).retrieve().onStatus(errorHandler).toEntity(Task.class);
+        sendDocuments("projects", projects);
     }
 
     public void sendVersions(List<Version> versions) {
-        restClient.post().uri("/indexes/versions/documents").contentType(MediaType.APPLICATION_JSON).body(versions).retrieve().onStatus(errorHandler).toEntity(Task.class);
+        sendDocuments("versions", versions);
+    }
+
+    private <T> void  sendDocuments(String index, List<T> documents) {
+        restClient.post().uri("/indexes/" + index + "/documents").contentType(MediaType.APPLICATION_JSON).body(documents).retrieve().onStatus(errorHandler).toEntity(Task.class);
+    }
+
+    public void removeProject(long id) {
+        removeDocument("projects", id);
+    }
+
+    public void removeVersion(long id) {
+        removeDocument("versions", id);
+    }
+
+    private void removeDocument(String index, long id) {
+        restClient.delete().uri("/indexes/" + index + "/documents/" + id).retrieve().onStatus(errorHandler).toEntity(Task.class);
     }
 
     public SearchResult<Project> searchProjects(final String query, final String filter, final List<String> sort, final long offset, final long limit) {

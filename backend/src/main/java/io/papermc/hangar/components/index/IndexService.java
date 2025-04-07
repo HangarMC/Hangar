@@ -23,11 +23,13 @@ public class IndexService {
     }
 
     public void updateProject(long id) {
-        // TODO
+        // TODO --
+        //Project project = this.indexDAO.getProject(id);
+        //this.meiliService.sendProjects(List.of(project));
     }
 
     public void removeProject(long id) {
-        // TODO
+        this.meiliService.removeProject(id);
     }
 
     public void fullUpdateVersions() {
@@ -37,6 +39,13 @@ public class IndexService {
     }
 
     public void updateVersion(long id) {
-        // TODO
+        // TODO --
+        //Version version = this.indexDAO.getVersion(id);
+        //this.meiliService.sendVersions(List.of(version));
+    }
+
+    // TODO when do we need to call this
+    public void removeVersion(long id) {
+        this.meiliService.removeVersion(id);
     }
 }
