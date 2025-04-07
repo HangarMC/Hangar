@@ -5,13 +5,16 @@ import io.papermc.hangar.model.api.project.version.Version;
 import java.util.List;
 import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
+import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 
 @JdbiRepository
 @RegisterConstructorMapper(Project.class)
 @RegisterConstructorMapper(Version.class)
 public interface IndexDAO {
 
+    @UseStringTemplateEngine
     @SqlQuery("""
         SELECT p.id,
                p.created_at,
@@ -56,12 +59,15 @@ public interface IndexDAO {
                       WHERE pv.project_id = p.id
                       GROUP BY platformelement ->> 'platform') sub)                       AS supported_platforms
             /* todo project memebers, for user profile page */
+            /* todo main page content */
         FROM projects p
             JOIN project_stats_view ps ON ps.id = p.id;
+        <where>
         """)
-    List<Project> getAllProjects();
+    List<Project> getAllProjects(@Define String where);
 
     // TODO dont use view here <---
-    @SqlQuery("SELECT * FROM version_view vv")
-    List<Version> getAllVersions();
+    @UseStringTemplateEngine
+    @SqlQuery("SELECT * FROM version_view vv <where>")
+    List<Version> getAllVersions(@Define String where);
 }

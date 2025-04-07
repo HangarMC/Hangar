@@ -17,15 +17,14 @@ public class IndexService {
     }
 
     public void fullUpdateProjects() {
-        // TODO index switch instead of full update?
-        List<Project> projects = this.indexDAO.getAllProjects();
+        // TODO index switch instead of full update? <---
+        List<Project> projects = this.indexDAO.getAllProjects("");
         this.meiliService.sendProjects(projects);
     }
 
     public void updateProject(long id) {
-        // TODO --
-        //Project project = this.indexDAO.getProject(id);
-        //this.meiliService.sendProjects(List.of(project));
+        List<Project> projects = this.indexDAO.getAllProjects("p.id = " + id + " LIMIT 1");
+        this.meiliService.sendProjects(projects);
     }
 
     public void removeProject(long id) {
@@ -34,14 +33,13 @@ public class IndexService {
 
     public void fullUpdateVersions() {
         // TODO index switch instead of full update?
-        List<Version> versions = this.indexDAO.getAllVersions();
+        List<Version> versions = this.indexDAO.getAllVersions("");
         this.meiliService.sendVersions(versions);
     }
 
     public void updateVersion(long id) {
-        // TODO --
-        //Version version = this.indexDAO.getVersion(id);
-        //this.meiliService.sendVersions(List.of(version));
+        List<Version> versions = this.indexDAO.getAllVersions("v.id = " + id + " LIMIT 1");
+        this.meiliService.sendVersions(versions);
     }
 
     // TODO when do we need to call this
