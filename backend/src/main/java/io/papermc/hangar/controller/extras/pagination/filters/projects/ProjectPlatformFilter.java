@@ -70,14 +70,14 @@ public class ProjectPlatformFilter implements Filter<ProjectPlatformFilter.Proje
 
         @Override
         public void createMeili(StringBuilder sb) {
-            sb.append("platform IN [");
+            sb.append("(");
             for (int i = 0; i < this.platforms.length; i++) {
-                sb.append(platforms[i].name());
+                sb.append("supportedPlatforms.").append(platforms[i].name()).append(" EXISTS");
                 if (i + 1 != this.platforms.length) {
-                    sb.append(',');
+                    sb.append(" OR ");
                 }
             }
-            sb.append(']');
+            sb.append(")");
         }
 
         @Override

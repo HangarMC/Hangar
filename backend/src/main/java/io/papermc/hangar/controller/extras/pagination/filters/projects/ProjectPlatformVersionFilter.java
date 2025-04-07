@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.extras.pagination.filters.projects;
 
 import io.papermc.hangar.controller.extras.pagination.Filter;
+import io.papermc.hangar.model.common.Platform;
 import java.util.Arrays;
 import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
@@ -37,14 +38,18 @@ public class ProjectPlatformVersionFilter implements Filter<ProjectPlatformVersi
 
     @Override
     public @NotNull ProjectPlatformVersionFilterInstance create(final NativeWebRequest webRequest) {
-        return new ProjectPlatformVersionFilterInstance(this.conversionService.convert(this.getValue(webRequest), String[].class));
+        return new ProjectPlatformVersionFilterInstance(
+            this.conversionService.convert(webRequest.getParameterValues("platform"), Platform[].class),
+            this.conversionService.convert(this.getValue(webRequest), String[].class));
     }
 
     static class ProjectPlatformVersionFilterInstance implements Filter.FilterInstance {
 
+        private final Platform[] platforms;
         private final String[] versions;
 
-        ProjectPlatformVersionFilterInstance(final String[] versions) {
+        ProjectPlatformVersionFilterInstance(final Platform[] platforms, final String[] versions) {
+            this.platforms = platforms;
             this.versions = versions;
         }
 
@@ -66,6 +71,28 @@ public class ProjectPlatformVersionFilter implements Filter<ProjectPlatformVersi
                 q.bind("__version__" + i, this.versions[i]);
             }
             sb.append("))");
+        }
+
+        @Override
+        public void createMeili(final StringBuilder sb) {
+            StringBuilder versionSb = new StringBuilder(" IN [");
+            for (int i = 0; i < this.versions.length; i++) {
+                versionSb.append(versions[i]);
+                if (i + 1 != this.versions.length) {
+                    versionSb.append(",");
+                }
+            }
+            versionSb.append("]");
+            String version = versionSb.toString();
+
+            sb.append("(");
+            for (int i = 0; i < this.platforms.length; i++) {
+                sb.append("supportedPlatforms.").append(platforms[i].name()).append(version);
+                if (i + 1 != this.platforms.length) {
+                    sb.append(" OR ");
+                }
+            }
+            sb.append(")");
         }
 
         @Override
