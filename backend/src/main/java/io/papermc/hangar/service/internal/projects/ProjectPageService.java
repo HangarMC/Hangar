@@ -1,16 +1,13 @@
 package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.internal.projects.HangarProjectPagesDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectPagesDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.db.projects.ProjectHomePageTable;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectPage;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.PageContext;
-import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.util.StringUtils;
@@ -26,12 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProjectPageService extends HangarComponent {
 
     private final ProjectPagesDAO projectPagesDAO;
-    private final HangarProjectPagesDAO hangarProjectPagesDAO;
     private final ValidationService validationService;
 
-    public ProjectPageService(final ProjectPagesDAO projectPagesDAO, final HangarProjectPagesDAO hangarProjectPagesDAO, final ValidationService validationService) {
+    public ProjectPageService(final ProjectPagesDAO projectPagesDAO, final ValidationService validationService) {
         this.projectPagesDAO = projectPagesDAO;
-        this.hangarProjectPagesDAO = hangarProjectPagesDAO;
         this.validationService = validationService;
     }
 
@@ -66,27 +61,25 @@ public class ProjectPageService extends HangarComponent {
             slug,
             contents,
             deletable,
-            parentId
+            parentId,
+            isHome
         );
         projectPageTable = this.projectPagesDAO.insert(projectPageTable);
-        if (isHome) {
-            this.projectPagesDAO.insertHomePage(new ProjectHomePageTable(projectPageTable.getProjectId(), projectPageTable.getId()));
-        }
         this.actionLogger.projectPage(LogAction.PROJECT_PAGE_CREATED.create(PageContext.of(projectPageTable.getProjectId(), projectPageTable.getId()), contents, ""));
         return projectPageTable;
     }
 
     public Map<Long, HangarProjectPage> getProjectPages(final long projectId) {
         final Map<Long, HangarProjectPage> hangarProjectPages = new LinkedHashMap<>();
-        for (final ExtendedProjectPage projectPage : this.hangarProjectPagesDAO.getProjectPages(projectId)) {
+        for (final ProjectPageTable projectPage : this.projectPagesDAO.getProjectPages(projectId)) {
             if (projectPage.getParentId() == null) {
-                hangarProjectPages.put(projectPage.getId(), new HangarProjectPage(projectPage, projectPage.isHome()));
+                hangarProjectPages.put(projectPage.getId(), new HangarProjectPage(projectPage));
             } else {
                 final HangarProjectPage parent = this.findById(projectPage.getParentId(), hangarProjectPages);
                 if (parent == null) {
                     throw new IllegalStateException("Should always find a parent");
                 }
-                parent.getChildren().put(projectPage.getId(), new HangarProjectPage(projectPage, projectPage.isHome()));
+                parent.getChildren().put(projectPage.getId(), new HangarProjectPage(projectPage));
             }
         }
 
@@ -107,13 +100,13 @@ public class ProjectPageService extends HangarComponent {
         return null;
     }
 
-    public ExtendedProjectPage getProjectPageFromURI(final ProjectTable project, final String uri) {
+    public ProjectPageTable getProjectPageFromURI(final ProjectTable project, final String uri) {
         final String path = uri.replace("/api/internal/pages/page/" + project.getSlug(), "");
         return this.getProjectPage(project, path);
     }
 
-    public ExtendedProjectPage getProjectPage(final ProjectTable project, String path) {
-        final ExtendedProjectPage pageTable;
+    public ProjectPageTable getProjectPage(final ProjectTable project, String path) {
+        final ProjectPageTable pageTable;
         if (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
         }
@@ -121,15 +114,15 @@ public class ProjectPageService extends HangarComponent {
             path = path.substring(1);
         }
 
-        pageTable = path.isEmpty() ? this.hangarProjectPagesDAO.getHomePage(project.getId()) : this.hangarProjectPagesDAO.getProjectPage(project.getId(), path);
+        pageTable = path.isEmpty() ? this.projectPagesDAO.getHomePage(project.getId()) : this.projectPagesDAO.getProjectPage(project.getId(), path);
         if (pageTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "Page not found");
         }
         return pageTable;
     }
 
-    public ExtendedProjectPage getProjectHomePage(final long projectId) {
-        return this.hangarProjectPagesDAO.getProjectHomePage(projectId);
+    public ProjectPageTable getProjectHomePage(final long projectId) {
+        return this.projectPagesDAO.getHomePage(projectId);
     }
 
     @Transactional

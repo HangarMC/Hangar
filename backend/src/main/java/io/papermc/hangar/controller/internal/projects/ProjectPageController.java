@@ -4,10 +4,10 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
+import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectPage;
-import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.aal.RequireAal;
@@ -69,7 +69,7 @@ public class ProjectPageController extends HangarComponent {
 
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
     @GetMapping(path = "/page/{project}/**", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ExtendedProjectPage> getProjectPage(@PathVariable final ProjectTable project) {
+    public ResponseEntity<ProjectPageTable> getProjectPage(@PathVariable final ProjectTable project) {
         return ResponseEntity.ok(this.projectPageService.getProjectPageFromURI(project, this.request.getRequestURI()));
     }
 

@@ -1,6 +1,5 @@
 package io.papermc.hangar.db.dao.internal.table.projects;
 
-import io.papermc.hangar.model.db.projects.ProjectHomePageTable;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import java.util.Collection;
 import java.util.List;
@@ -19,7 +18,7 @@ public interface ProjectPagesDAO {
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO project_pages (created_at, project_id, name, slug, contents, deletable, parent_id) VALUES (:now, :projectId, :name, :slug, :contents, :deletable, :parentId)")
+    @SqlUpdate("INSERT INTO project_pages (created_at, project_id, name, slug, contents, deletable, parent_id, homepage) VALUES (:now, :projectId, :name, :slug, :contents, :deletable, :parentId, :homepage)")
     ProjectPageTable insert(@BindBean ProjectPageTable projectPageTable);
 
     @SqlUpdate("UPDATE project_pages SET contents = :contents WHERE id = :id")
@@ -30,10 +29,6 @@ public interface ProjectPagesDAO {
 
     @SqlUpdate("DELETE FROM project_pages WHERE id = :id")
     void delete(@BindBean ProjectPageTable projectPageTable);
-
-    @Timestamped
-    @SqlUpdate("INSERT INTO project_home_pages (created_at, project_id, page_id) VALUES (:now, :projectId, :pageId)")
-    void insertHomePage(@BindBean ProjectHomePageTable projectHomePageTable);
 
     @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND parent_id = :parentId")
     List<ProjectPageTable> getChildPages(long projectId, long parentId);
@@ -46,4 +41,26 @@ public interface ProjectPagesDAO {
 
     @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND id = :pageId")
     ProjectPageTable getProjectPage(long projectId, long pageId);
+
+    @SqlQuery("""
+        SELECT pp.*
+           FROM project_pages pp
+               WHERE pp.project_id = :projectId
+           ORDER BY created_at
+        """)
+    List<ProjectPageTable> getProjectPages(long projectId);
+
+    @SqlQuery("""
+        SELECT pp.*
+           FROM project_pages pp
+           WHERE lower(pp.slug) = lower(:pageSlug)
+        """)
+    ProjectPageTable getProjectPage(long projectId, String pageSlug);
+
+    @SqlQuery("""
+        SELECT pp.*
+           FROM project_pages pp
+           WHERE pp.project_id = :projectId AND homepage = true
+        """)
+    ProjectPageTable getHomePage(long projectId);
 }

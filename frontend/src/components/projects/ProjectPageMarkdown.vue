@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { ExtendedProjectPage, HangarProject, HangarProjectPage } from "~/types/backend";
+import type { HangarProject, HangarProjectPage, ProjectPageTable } from "~/types/backend";
 
 const props = defineProps<{
   project?: HangarProject;
-  page?: ExtendedProjectPage;
+  page?: ProjectPageTable;
   mainPage: boolean;
 }>();
 

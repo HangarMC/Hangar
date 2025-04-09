@@ -1,5 +1,5 @@
 import { isAxiosError } from "axios";
-import type { ExtendedProjectPage, HangarOrganization, HangarProject, Version, User } from "~/types/backend";
+import type { HangarOrganization, HangarProject, Version, User, ProjectPageTable } from "~/types/backend";
 import { useDataLoader } from "~/composables/useDataLoader";
 
 // this middleware takes care of fetching the "important" data for pages, like user/project/org/version/page, based on route params
@@ -50,7 +50,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     from,
     (pagePath) => {
       if ("project" in to.params) {
-        return useInternalApi<ExtendedProjectPage>(`pages/page/${to.params.project}/` + pagePath.toString().replaceAll(",", "/"));
+        return useInternalApi<ProjectPageTable>(`pages/page/${to.params.project}/` + pagePath.toString().replaceAll(",", "/"));
       }
       throw createError({ statusCode: 500, statusMessage: "No project param?!" });
     },

@@ -121,6 +121,71 @@ export enum OAuthMode {
   SETTINGS = "SETTINGS",
 }
 
+export interface Webhook {
+  canceledBy: string;
+  details: Details;
+  duration: {
+    /** @format int32 */
+    nano?: number;
+    negative?: boolean;
+    positive?: boolean;
+    /** @format int64 */
+    seconds?: number;
+    units?: {
+      dateBased?: boolean;
+      durationEstimated?: boolean;
+      timeBased?: boolean;
+    }[];
+    zero?: boolean;
+  };
+  enqueuedAt: string;
+  error: Error;
+  /** @format date-time */
+  finishedAt: string;
+  indexUid: string;
+  /** @format date-time */
+  startedAt: string;
+  status: string;
+  type: string;
+  uid: string;
+}
+
+export interface Details {
+  /** @format int32 */
+  indexedDocuments: number;
+  /** @format int32 */
+  receivedDocuments: number;
+}
+
+export interface Error {
+  code: string;
+  link: string;
+  message: string;
+  type: string;
+}
+
+export interface JobTable {
+  /** @format date-time */
+  createdAt: string;
+  /** @format int64 */
+  id: number;
+  jobProperties: JsonNode;
+  jobType: JobType;
+  lastError: string;
+  lastErrorDescriptor: string;
+  /** @format date-time */
+  lastUpdated: string;
+  /** @format date-time */
+  retryAt: string;
+  state: JobState;
+}
+
+export enum JobType {
+  SEND_EMAIL = "SEND_EMAIL",
+  SEND_WEBHOOK = "SEND_WEBHOOK",
+  SCHEDULED_TASK = "SCHEDULED_TASK",
+}
+
 export interface CategoryData {
   apiName: string;
   icon: string;
@@ -239,10 +304,7 @@ export interface HangarApiException {
     }[];
     acceptLanguage?: {
       range?: string;
-      /**
-       * @format double
-       * @example null
-       */
+      /** @format double */
       weight?: number;
     }[];
     acceptLanguageAsLocales?: {
@@ -378,10 +440,7 @@ export interface HangarApiException {
     }[];
     acceptLanguage?: {
       range?: string;
-      /**
-       * @format double
-       * @example null
-       */
+      /** @format double */
       weight?: number;
     }[];
     acceptLanguageAsLocales?: {
@@ -625,10 +684,7 @@ export interface MultiHangarApiException {
     }[];
     acceptLanguage?: {
       range?: string;
-      /**
-       * @format double
-       * @example null
-       */
+      /** @format double */
       weight?: number;
     }[];
     acceptLanguageAsLocales?: {
@@ -764,10 +820,7 @@ export interface MultiHangarApiException {
     }[];
     acceptLanguage?: {
       range?: string;
-      /**
-       * @format double
-       * @example null
-       */
+      /** @format double */
       weight?: number;
     }[];
     acceptLanguageAsLocales?: {
@@ -1115,6 +1168,8 @@ export interface Project {
   settings: ProjectSettings;
   /** Stats of the project */
   stats: ProjectStats;
+  /** The platforms and versions the project supports */
+  supportedPlatforms: Record<string, string[]>;
   /** Information about your interactions with the project */
   userActions: UserActions;
   /** The visibility of the project */
@@ -1174,6 +1229,8 @@ export interface ProjectLicense {
 export interface ProjectMember {
   roles: CompactRole[];
   user: string;
+  /** @format int64 */
+  userId: number;
 }
 
 export interface ProjectNamespace {
@@ -1269,6 +1326,12 @@ export interface PluginDependency {
   name: string;
   /** Platform the dependency runs on */
   platform: Platform;
+  /**
+   * Project ID of the dependency. Only for non-external dependencies
+   * @format int64
+   * @example 1
+   */
+  projectId: number;
   /** Whether the dependency is required for the plugin to function */
   required: boolean;
 }
@@ -1296,6 +1359,8 @@ export interface Version {
   platformDependencies: Record<string, string[]>;
   platformDependenciesFormatted: Record<string, string[]>;
   pluginDependencies: Record<string, PluginDependency[]>;
+  /** @format int64 */
+  projectId: number;
   reviewState: ReviewState;
   stats: VersionStats;
   /** The visibility of a project or version */
@@ -1522,40 +1587,6 @@ export interface RoleData {
   value: string;
 }
 
-export interface JobTable {
-  /** @format date-time */
-  createdAt: string;
-  /** @format int64 */
-  id: number;
-  jobProperties: JsonNode;
-  jobType: JobType;
-  lastError: string;
-  lastErrorDescriptor: string;
-  /** @format date-time */
-  lastUpdated: string;
-  /** @format date-time */
-  retryAt: string;
-  state: JobState;
-}
-
-export interface OrganizationTable {
-  /** @format date-time */
-  createdAt: string;
-  /** @format int64 */
-  id: number;
-  name: string;
-  organization: boolean;
-  /** @format int64 */
-  organizationId: number;
-  /** @format int64 */
-  ownerId: number;
-  url: string;
-  /** @format int64 */
-  userId: number;
-  /** @format uuid */
-  userUuid: string;
-}
-
 export interface UserTable {
   avatarUrl: string;
   /** @format date-time */
@@ -1577,20 +1608,6 @@ export interface UserTable {
   uuid: string;
 }
 
-export interface ProjectChannelTable {
-  color: Color;
-  /** @format date-time */
-  createdAt: string;
-  description: string;
-  /** @uniqueItems true */
-  flags: ChannelFlag[];
-  /** @format int64 */
-  id: number;
-  name: string;
-  /** @format int64 */
-  projectId: number;
-}
-
 export interface ProjectOwner {
   /** @format int64 */
   id: number;
@@ -1598,6 +1615,18 @@ export interface ProjectOwner {
   organization: boolean;
   /** @format int64 */
   userId: number;
+}
+
+export interface ProjectPageTable {
+  contents: string;
+  /** @format date-time */
+  createdAt: string;
+  deletable: boolean;
+  homepage: boolean;
+  /** @format int64 */
+  id: number;
+  name: string;
+  slug: string;
 }
 
 export interface OrganizationRoleTable {
@@ -1887,11 +1916,6 @@ export interface ProjectValidations {
   sponsorsContent: Validation;
 }
 
-export enum JobType {
-  SEND_EMAIL = "SEND_EMAIL",
-  SEND_WEBHOOK = "SEND_WEBHOOK",
-}
-
 export interface HangarLoggedAction {
   action: Object;
   address?: {
@@ -1966,18 +1990,6 @@ export interface LogVersion {
   versionString: string;
 }
 
-export interface ExtendedProjectPage {
-  contents: string;
-  /** @format date-time */
-  createdAt: string;
-  deletable: boolean;
-  /** @format int64 */
-  id: number;
-  isHome: boolean;
-  name: string;
-  slug: string;
-}
-
 export interface HangarChannel {
   color: Color;
   /** @format date-time */
@@ -2017,7 +2029,7 @@ export interface HangarProject {
   lastVisibilityChangeComment: string;
   lastVisibilityChangeUserName: string;
   mainChannelVersions: Record<string, Version>;
-  mainPage: ExtendedProjectPage;
+  mainPage: ProjectPageTable;
   members: JoinableMemberProjectRoleTable[];
   /** The unique name of the project */
   name: string;
@@ -2033,6 +2045,8 @@ export interface HangarProject {
   settings: ProjectSettings;
   /** Stats of the project */
   stats: ProjectStats;
+  /** The platforms and versions the project supports */
+  supportedPlatforms: Record<string, string[]>;
   /** Information about your interactions with the project */
   userActions: UserActions;
   /** The visibility of the project */
@@ -2056,6 +2070,7 @@ export interface PinnedVersion {
   channel: ProjectChannel;
   downloads: Record<string, PlatformVersionDownload>;
   name: string;
+  platformDependencies: Record<string, string[]>;
   platformDependenciesFormatted: Record<string, string[]>;
   type: Type;
   /** @format int64 */
@@ -2379,10 +2394,7 @@ export interface HttpHeaders {
   }[];
   acceptLanguage?: {
     range?: string;
-    /**
-     * @format double
-     * @example null
-     */
+    /** @format double */
     weight?: number;
   }[];
   acceptLanguageAsLocales?: {
@@ -2511,10 +2523,7 @@ export interface MediaType {
   };
   concrete?: boolean;
   parameters?: Record<string, string>;
-  /**
-   * @format double
-   * @example null
-   */
+  /** @format double */
   qualityValue?: number;
   subtype?: string;
   subtypeSuffix?: string;
@@ -2534,6 +2543,8 @@ export interface ProblemDetail {
   /** @format uri */
   type?: string;
 }
+
+export type StreamingResponseBody = Record<string, any>;
 
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
@@ -2922,17 +2933,17 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /** Filters based on a project page */
         pageId?: string;
         /** Filters logs by a project namespace */
-        authorName?: string;
-        /** Filters logs by a project namespace */
         projectSlug?: string;
+        /** Filters logs by a project namespace */
+        authorName?: string;
         /** Filters by subject name, usually a user action where the subject name is the user the action is about, not the user that performed the action */
         subjectName?: string;
         /** The user whose action created the log entry */
         user?: string;
         /** Filters logs based on a version string and platform */
-        versionString?: string;
-        /** Filters logs based on a version string and platform */
         platform?: string;
+        /** Filters logs based on a version string and platform */
+        versionString?: string;
       },
       params: RequestParams = {}
     ) =>
@@ -3223,7 +3234,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/internal/auth/email/verify
      */
     verifyEmail: (data: string, params: RequestParams = {}) =>
-      this.request<HttpMethod, any>({
+      this.request<JsonNode, any>({
         path: `/api/internal/auth/email/verify`,
         method: "POST",
         body: data,
@@ -3382,7 +3393,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/internal/auth/reset/set
      */
     setNewPassword: (data: ResetForm, params: RequestParams = {}) =>
-      this.request<HttpMethod, any>({
+      this.request<JsonNode, any>({
         path: `/api/internal/auth/reset/set`,
         method: "POST",
         body: data,
@@ -3399,7 +3410,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/internal/auth/reset/verify
      */
     verifyResetCode: (data: ResetForm, params: RequestParams = {}) =>
-      this.request<HttpMethod, any>({
+      this.request<JsonNode, any>({
         path: `/api/internal/auth/reset/verify`,
         method: "POST",
         body: data,
@@ -3431,7 +3442,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/internal/auth/signup
      */
     signup: (data: SignupForm, params: RequestParams = {}) =>
-      this.request<HttpMethod, any>({
+      this.request<JsonNode, any>({
         path: `/api/internal/auth/signup`,
         method: "POST",
         body: data,
@@ -3448,7 +3459,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/internal/auth/totp/register
      */
     registerTotp: (data: TotpForm, params: RequestParams = {}) =>
-      this.request<HttpMethod, any>({
+      this.request<JsonNode, any>({
         path: `/api/internal/auth/totp/register`,
         method: "POST",
         body: data,
@@ -3592,7 +3603,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/internal/avatar/{type}/{subject}.webp
      */
     getAvatar: (type: string, subject: string, params: RequestParams = {}) =>
-      this.request<string, any>({
+      this.request<File, any>({
         path: `/api/internal/avatar/${type}/${subject}.webp`,
         method: "GET",
         ...params,
@@ -3698,7 +3709,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name DeleteChannel
      * @request POST:/api/internal/channels/{project}/delete/{channel}
      */
-    deleteChannel: (project: string, channel: ProjectChannelTable, params: RequestParams = {}) =>
+    deleteChannel: (project: string, channel: string, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/api/internal/channels/${project}/delete/${channel}`,
         method: "POST",
@@ -3709,16 +3720,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags cors-proxy-controller
-     * @name Proxy
+     * @name Proxy1
      * @request GET:/api/internal/cors/
      */
-    proxy: (
+    proxy1: (
       query: {
         url: string;
       },
       params: RequestParams = {}
     ) =>
-      this.request<HttpMethod, any>({
+      this.request<JsonNode, any>({
         path: `/api/internal/cors/`,
         method: "GET",
         query: query,
@@ -4100,6 +4111,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags image-proxy-controller
+     * @name Proxy
+     * @request GET:/api/internal/image/**
+     */
+    proxy: (params: RequestParams = {}) =>
+      this.request<StreamingResponseBody, any>({
+        path: `/api/internal/image/**`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags hangar-user-controller
      * @name GetUserInvites
      * @request GET:/api/internal/invites
@@ -4252,6 +4277,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/api/internal/markallread`,
         method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags meili-webhook-controller
+     * @name Handle
+     * @request POST:/api/internal/meili/webhook
+     */
+    handle: (data: Webhook[], params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/internal/meili/webhook`,
+        method: "POST",
+        body: data,
         ...params,
       }),
 
@@ -4480,7 +4520,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetOrganization
      * @request GET:/api/internal/organizations/org/{org}
      */
-    getOrganization: (org: OrganizationTable, params: RequestParams = {}) =>
+    getOrganization: (org: string, params: RequestParams = {}) =>
       this.request<HangarOrganization, any>({
         path: `/api/internal/organizations/org/${org}`,
         method: "GET",
@@ -4495,7 +4535,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name CancelOrganizationTransfer
      * @request POST:/api/internal/organizations/org/{org}/canceltransfer
      */
-    cancelOrganizationTransfer: (org: OrganizationTable, params: RequestParams = {}) =>
+    cancelOrganizationTransfer: (org: string, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/api/internal/organizations/org/${org}/canceltransfer`,
         method: "POST",
@@ -4509,7 +4549,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name Delete
      * @request POST:/api/internal/organizations/org/{org}/delete
      */
-    delete: (org: OrganizationTable, data: StringContent, params: RequestParams = {}) =>
+    delete: (org: string, data: StringContent, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/api/internal/organizations/org/${org}/delete`,
         method: "POST",
@@ -4525,7 +4565,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AddOrganizationMember
      * @request POST:/api/internal/organizations/org/{org}/members/add
      */
-    addOrganizationMember: (org: OrganizationTable, data: OrgMember, params: RequestParams = {}) =>
+    addOrganizationMember: (org: string, data: OrgMember, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/api/internal/organizations/org/${org}/members/add`,
         method: "POST",
@@ -4541,7 +4581,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name EditOrganizationMember
      * @request POST:/api/internal/organizations/org/{org}/members/edit
      */
-    editOrganizationMember: (org: OrganizationTable, data: OrgMember, params: RequestParams = {}) =>
+    editOrganizationMember: (org: string, data: OrgMember, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/api/internal/organizations/org/${org}/members/edit`,
         method: "POST",
@@ -4557,7 +4597,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name LeaveOrganization
      * @request POST:/api/internal/organizations/org/{org}/members/leave
      */
-    leaveOrganization: (org: OrganizationTable, params: RequestParams = {}) =>
+    leaveOrganization: (org: string, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/api/internal/organizations/org/${org}/members/leave`,
         method: "POST",
@@ -4571,7 +4611,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name RemoveOrganizationMember
      * @request POST:/api/internal/organizations/org/{org}/members/remove
      */
-    removeOrganizationMember: (org: OrganizationTable, data: OrgMember, params: RequestParams = {}) =>
+    removeOrganizationMember: (org: string, data: OrgMember, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/api/internal/organizations/org/${org}/members/remove`,
         method: "POST",
@@ -4588,13 +4628,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/internal/organizations/org/{org}/settings/avatar
      */
     changeAvatar2: (
-      org: OrganizationTable,
+      org: string,
       data: {
-        /**
-         * @format binary
-         * @example null
-         */
-        avatar: string;
+        /** @format binary */
+        avatar: File;
       },
       params: RequestParams = {}
     ) =>
@@ -4613,7 +4650,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name SaveSocials2
      * @request POST:/api/internal/organizations/org/{org}/settings/socials
      */
-    saveSocials2: (org: OrganizationTable, data: Record<string, string>, params: RequestParams = {}) =>
+    saveSocials2: (org: string, data: Record<string, string>, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/api/internal/organizations/org/${org}/settings/socials`,
         method: "POST",
@@ -4629,7 +4666,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name SaveTagline2
      * @request POST:/api/internal/organizations/org/{org}/settings/tagline
      */
-    saveTagline2: (org: OrganizationTable, data: StringContent, params: RequestParams = {}) =>
+    saveTagline2: (org: string, data: StringContent, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/api/internal/organizations/org/${org}/settings/tagline`,
         method: "POST",
@@ -4645,7 +4682,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name TransferOrganization
      * @request POST:/api/internal/organizations/org/{org}/transfer
      */
-    transferOrganization: (org: OrganizationTable, data: StringContent, params: RequestParams = {}) =>
+    transferOrganization: (org: string, data: StringContent, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/api/internal/organizations/org/${org}/transfer`,
         method: "POST",
@@ -4682,7 +4719,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/internal/organizations/{org}/userOrganizationsVisibility
      */
     changeUserOrganizationMembershipVisibility: (
-      org: OrganizationTable,
+      org: string,
       query: {
         hidden: boolean;
       },
@@ -4806,6 +4843,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<HangarProjectPage[], any>({
         path: `/api/internal/pages/list/${projectId}`,
         method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags project-page-controller
+     * @name GetProjectPage
+     * @request GET:/api/internal/pages/page/{project}/**
+     */
+    getProjectPage: (project: string, params: RequestParams = {}) =>
+      this.request<ProjectPageTable, any>({
+        path: `/api/internal/pages/page/${project}/**`,
+        method: "GET",
+        format: "json",
         ...params,
       }),
 
@@ -5108,11 +5160,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     saveProjectIcon: (
       slugOrId: string,
       data: {
-        /**
-         * @format binary
-         * @example null
-         */
-        projectIcon: string;
+        /** @format binary */
+        projectIcon: File;
       },
       params: RequestParams = {}
     ) =>
@@ -5543,7 +5592,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/internal/users/@me
      */
     getCurrentUser: (params: RequestParams = {}) =>
-      this.request<HttpMethod, any>({
+      this.request<JsonNode, any>({
         path: `/api/internal/users/@me`,
         method: "GET",
         format: "json",
@@ -5558,7 +5607,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/internal/users/@me
      */
     getCurrentUser1: (params: RequestParams = {}) =>
-      this.request<HttpMethod, any>({
+      this.request<JsonNode, any>({
         path: `/api/internal/users/@me`,
         method: "POST",
         format: "json",
@@ -5669,11 +5718,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     changeAvatar: (
       userName: string,
       data: {
-        /**
-         * @format binary
-         * @example null
-         */
-        avatar: string;
+        /** @format binary */
+        avatar: File;
       },
       params: RequestParams = {}
     ) =>
@@ -5695,11 +5741,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     changeAvatar1: (
       userName: string,
       data: {
-        /**
-         * @format binary
-         * @example null
-         */
-        avatar: string;
+        /** @format binary */
+        avatar: File;
       },
       params: RequestParams = {}
     ) =>
@@ -5863,7 +5906,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data: {
         channel: string;
         data: MultipartFileOrUrl[];
-        files?: string[];
+        files?: File[];
       },
       params: RequestParams = {}
     ) =>
@@ -6000,7 +6043,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/internal/versions/version/{project}/versions/{version}/{platform}/download
      */
     download: (project: string, version: string, platform: Platform, params: RequestParams = {}) =>
-      this.request<HttpMethod, any>({
+      this.request<JsonNode, any>({
         path: `/api/internal/versions/version/${project}/versions/${version}/${platform}/download`,
         method: "GET",
         ...params,
@@ -6124,7 +6167,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     createKey: (data: CreateAPIKeyForm, params: RequestParams = {}) =>
-      this.request<HttpMethod, string>({
+      this.request<string, string>({
         path: `/api/v1/keys`,
         method: "POST",
         body: data,
@@ -6180,7 +6223,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/v1/pages/main/{project}
      */
     getMainPage: (project: string, params: RequestParams = {}) =>
-      this.request<HttpMethod, string>({
+      this.request<string, string>({
         path: `/api/v1/pages/main/${project}`,
         method: "GET",
         ...params,
@@ -6202,7 +6245,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<HttpMethod, string>({
+      this.request<string, string>({
         path: `/api/v1/pages/page/${project}`,
         method: "GET",
         query: query,
@@ -6226,7 +6269,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          */
         slug?: string;
         /** The id or name of the organization to check permissions in. Must not be used together with `project` */
-        organization?: OrganizationTable;
+        organization?: string;
         /** The id or slug of the project to check permissions in. Must not be used together with `organization` */
         project?: string;
       },
@@ -6265,7 +6308,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          */
         slug?: string;
         /** The id or name of the organization to check permissions in. Must not be used together with `slug` */
-        organization?: OrganizationTable;
+        organization?: string;
         /** The id or slug of the project to check permissions in. Must not be used together with `organization` */
         project?: string;
       },
@@ -6302,7 +6345,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          */
         slug?: string;
         /** The id or name of the organization to check permissions in. Must not be used together with `project` */
-        organization?: OrganizationTable;
+        organization?: string;
         /** The id or slug of the project to check permissions in. Must not be used together with `organization` */
         project?: string;
       },
@@ -6330,6 +6373,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query: {
         /**
          * Whether to prioritize the project with an exact name match if present
+         * @deprecated
          * @default true
          */
         prioritizeExactMatch?: boolean;
@@ -6343,13 +6387,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         platform?: string;
         /** The author of the project */
         owner?: string;
-        /** The query to use when searching */
-        query?: string;
         /**
          * Deprecated: Use 'query' instead
          * @deprecated
          */
         q?: string;
+        /** The query to use when searching */
+        query?: string;
         /** A license to filter for */
         license?: string;
         /** A platform version to filter for */
@@ -6424,7 +6468,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       slugOrId: string,
       data: {
         /** The version files in order of selected platforms, if any */
-        files?: string[];
+        files?: File[];
         /** Version data. See the VersionUpload schema for more info */
         versionUpload: VersionUpload;
       },
@@ -6523,7 +6567,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @deprecated
      */
     downloadVersion1: (author: string, slugOrId: string, nameOrId: string, platform: Platform, params: RequestParams = {}) =>
-      this.request<HttpMethod, any>({
+      this.request<JsonNode, any>({
         path: `/api/v1/projects/${author}/${slugOrId}/versions/${nameOrId}/${platform}/download`,
         method: "GET",
         format: "json",
@@ -6565,7 +6609,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<HttpMethod, string>({
+      this.request<string, string>({
         path: `/api/v1/projects/${slugOrId}/latest`,
         method: "GET",
         query: query,
@@ -6583,7 +6627,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     latestReleaseVersion: (slugOrId: string, params: RequestParams = {}) =>
-      this.request<HttpMethod, string>({
+      this.request<string, string>({
         path: `/api/v1/projects/${slugOrId}/latestrelease`,
         method: "GET",
         secure: true,
@@ -6689,7 +6733,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       slugOrId: string,
       data: {
         /** The version files in order of selected platforms, if any */
-        files?: string[];
+        files?: File[];
         /** Version data. See the VersionUpload schema for more info */
         versionUpload: VersionUpload;
       },
@@ -6803,7 +6847,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     downloadVersion: (slugOrId: string, nameOrId: string, platform: Platform, params: RequestParams = {}) =>
-      this.request<HttpMethod, HttpMethod>({
+      this.request<JsonNode, JsonNode>({
         path: `/api/v1/projects/${slugOrId}/versions/${nameOrId}/${platform}/download`,
         method: "GET",
         secure: true,
@@ -7067,7 +7111,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     downloadVersionById: (id: string, platform: Platform, params: RequestParams = {}) =>
-      this.request<HttpMethod, HttpMethod>({
+      this.request<JsonNode, JsonNode>({
         path: `/api/v1/versions/${id}/${platform}/download`,
         method: "GET",
         secure: true,

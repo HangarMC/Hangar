@@ -1,9 +1,8 @@
 import type { Router } from "vue-router";
-import { NamedPermission } from "~/types/backend";
+import { NamedPermission, type ProjectPageTable } from "~/types/backend";
 import type {
   ApiKey,
   DayStats,
-  ExtendedProjectPage,
   HangarChannel,
   HangarProjectFlag,
   HangarProjectNote,
@@ -414,7 +413,7 @@ export function usePage(params: () => { project: string; path?: string }) {
   const { data: page, status: pageStatus } = useData(
     params,
     (p) => "page:" + p.project + ":" + p.path,
-    (p) => useInternalApi<ExtendedProjectPage>(`pages/page/${p.project}` + (p.path ? "/" + p.path.replaceAll(",", "/") : ""))
+    (p) => useInternalApi<ProjectPageTable>(`pages/page/${p.project}` + (p.path ? "/" + p.path.replaceAll(",", "/") : ""))
   );
   return { page, pageStatus };
 }

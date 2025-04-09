@@ -1,8 +1,8 @@
 import type { Router } from "vue-router";
 import type { RouteLocationNormalized } from "vue-router/auto";
-import type { ExtendedProjectPage, HangarProject } from "~/types/backend";
+import type { HangarProject, ProjectPageTable } from "~/types/backend";
 
-export function useProjectPage(route: RouteLocationNormalized<"user-project-pages-page">, router: Router, project?: HangarProject, page?: ExtendedProjectPage) {
+export function useProjectPage(route: RouteLocationNormalized<"user-project-pages-page">, router: Router, project?: HangarProject, page?: ProjectPageTable) {
   const editingPage = ref<boolean>(false);
 
   // Helper setter function, v-model cannot directly edit from inside a slot.
