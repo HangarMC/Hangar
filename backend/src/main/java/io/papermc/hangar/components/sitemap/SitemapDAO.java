@@ -33,7 +33,7 @@ public interface SitemapDAO {
 
     @SqlQuery("""
         SELECT p.slug FROM project_pages p
-        WHERE p.project_id = :projectId AND NOT exists(SELECT 1 FROM project_home_pages php WHERE php.page_id = p.id AND php.project_id = :projectId)
+        WHERE p.project_id = :projectId AND homepage = false
         """)
     List<String> getPages(long projectId);
 }

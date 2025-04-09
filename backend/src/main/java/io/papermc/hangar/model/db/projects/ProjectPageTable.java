@@ -15,9 +15,10 @@ public class ProjectPageTable extends Table implements Named, ProjectIdentified 
     private String contents;
     private final boolean deletable;
     private Long parentId;
+    private final boolean homepage;
 
     @JdbiConstructor
-    public ProjectPageTable(final OffsetDateTime createdAt, final long id, final long projectId, final String name, final String slug, final String contents, final boolean deletable, final Long parentId) {
+    public ProjectPageTable(final OffsetDateTime createdAt, final long id, final long projectId, final String name, final String slug, final String contents, final boolean deletable, final Long parentId, final boolean homepage) {
         super(createdAt, id);
         this.projectId = projectId;
         this.name = name;
@@ -25,15 +26,17 @@ public class ProjectPageTable extends Table implements Named, ProjectIdentified 
         this.contents = contents;
         this.deletable = deletable;
         this.parentId = parentId;
+        this.homepage = homepage;
     }
 
-    public ProjectPageTable(final long projectId, final String name, final String slug, final String contents, final boolean deletable, final Long parentId) {
+    public ProjectPageTable(final long projectId, final String name, final String slug, final String contents, final boolean deletable, final Long parentId, final boolean homepage) {
         this.projectId = projectId;
         this.name = name;
         this.slug = slug;
         this.contents = contents;
         this.deletable = deletable;
         this.parentId = parentId;
+        this.homepage = homepage;
     }
 
     @JsonIgnore
@@ -70,6 +73,10 @@ public class ProjectPageTable extends Table implements Named, ProjectIdentified 
 
     public void setParentId(final Long parentId) {
         this.parentId = parentId;
+    }
+
+    public boolean isHomepage() {
+        return homepage;
     }
 
     @Override

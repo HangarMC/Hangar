@@ -15,11 +15,11 @@ public class HangarProjectPage {
     private final boolean home;
     private final Map<Long, HangarProjectPage> children;
 
-    public HangarProjectPage(final ProjectPageTable projectPageTable, final boolean home) {
+    public HangarProjectPage(final ProjectPageTable projectPageTable) {
         this.id = projectPageTable.getId();
         this.name = projectPageTable.getName();
         this.slug = projectPageTable.getSlug();
-        this.home = home;
+        this.home = projectPageTable.isHomepage();
         this.children = new LinkedHashMap<>();
     }
 
