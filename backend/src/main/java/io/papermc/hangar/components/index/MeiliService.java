@@ -57,7 +57,7 @@ public class MeiliService implements ApplicationListener<ContextRefreshedEvent> 
         restClient.post().uri("/indexes").contentType(MediaType.APPLICATION_JSON).body(createIndexBody).retrieve().onStatus(errorHandler).toEntity(Task.class);
         var settings = Map.of(
             "distinctAttribute", "id",
-            "searchableAttributes", List.of("name", "namespace.owner", "description", "category", "createdAt", "lastUpdated", "stats", "settings.keywords", "settings.tags"),
+            "searchableAttributes", List.of("name", "namespace.owner", "description", "category", "mainPageContent", "createdAt", "lastUpdated", "stats", "settings.keywords", "settings.tags"),
             "displayedAttributes", List.of("*"),
             "filterableAttributes", List.of("category", "settings.tags", "namespace.owner", "createdAt", "lastUpdated", "settings.license.type", "supportedPlatforms"), // TODO members <---
             "sortableAttributes", List.of("stats.views", "stats.downloads", "stats.recentDownloads", "stats.recentViews", "stats.stars", "createdAt", "lastUpdated", "name")
@@ -82,7 +82,6 @@ public class MeiliService implements ApplicationListener<ContextRefreshedEvent> 
     }
 
     // TODO can see hidden?
-    // TODO what about main page content?
 
     public void sendProjects(List<Project> projects) {
         sendDocuments("projects", projects);

@@ -19,7 +19,7 @@ public interface IndexDAO {
         SELECT p.id,
                p.created_at,
                p.name,
-               p.owner_name                                                               AS owner,
+               p.owner_name                                                                                 AS owner,
                p.slug,
                p.category,
                p.description,
@@ -44,11 +44,11 @@ public interface IndexDAO {
             /* avatar stuff */
                (SELECT '/project/' || p.id || '.webp?v=' || a.version
                 FROM avatars a
-                WHERE a.type = 'project' AND a.subject = p.id::text)                      AS avatar,
+                WHERE a.type = 'project' AND a.subject = p.id::text)                                        AS avatar,
                (SELECT '/user/' || o.uuid::text || '.webp?v=' || a.version
                 FROM avatars a
                     JOIN users o ON a.subject = o.uuid::text
-                WHERE o.id = p.owner_id AND a.type = 'user' AND a.subject = o.uuid::text) AS avatar_fallback,
+                WHERE o.id = p.owner_id AND a.type = 'user' AND a.subject = o.uuid::text)                   AS avatar_fallback,
             /* platforms */
                (SELECT jsonb_agg(jsonb_build_object('platform', platform, 'versions', versions)) AS platforms
                 FROM (SELECT platformelement ->> 'platform'            AS platform,
@@ -59,7 +59,8 @@ public interface IndexDAO {
                       WHERE pv.project_id = p.id
                       GROUP BY platformelement ->> 'platform') sub)                       AS supported_platforms
             /* todo project memebers, for user profile page */
-            /* todo main page content */
+                      GROUP BY platformelement ->> 'platform') sub)                                         AS supported_platforms,
+               (SELECT pp.contents FROM project_pages pp WHERE pp.project_id = p.id AND pp.homepage = TRUE) AS main_page_content
         FROM projects p
             JOIN project_stats_view ps ON ps.id = p.id;
         <where>
