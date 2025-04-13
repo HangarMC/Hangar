@@ -2,6 +2,7 @@
 @import "color.css";
 @import "scrollbar.css";
 @import "transitions.css";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
 
 html {
   font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
@@ -10,4 +11,8 @@ html {
 
 .w-fit {
   width: fit-content;
+}
+
+.test {
+  background: linear-gradient(135deg, hsl(0, 0, 0, 0) 60%, #004EE9);
 }
