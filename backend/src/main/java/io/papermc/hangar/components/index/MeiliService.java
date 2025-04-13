@@ -13,9 +13,11 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestClient;
@@ -30,6 +32,8 @@ public class MeiliService implements ApplicationListener<ContextRefreshedEvent> 
         // TODO config
         // TODO auth
         restClient = RestClient.create("http://localhost:7700");
+    public MeiliService(final List<HttpMessageConverter<?>> messageConverters) {
+        restClient = RestClient.builder().messageConverters(messageConverters).baseUrl("http://localhost:7700").build();
         this.errorHandler = new ResponseErrorHandler() {
             @Override
             public boolean hasError(final @NotNull ClientHttpResponse response) throws IOException {
@@ -91,7 +95,7 @@ public class MeiliService implements ApplicationListener<ContextRefreshedEvent> 
         sendDocuments("versions", versions);
     }
 
-    private <T> void  sendDocuments(String index, List<T> documents) {
+    private <T> void sendDocuments(String index, List<T> documents) {
         restClient.post().uri("/indexes/" + index + "/documents").contentType(MediaType.APPLICATION_JSON).body(documents).retrieve().onStatus(errorHandler).toEntity(Task.class);
     }
 
@@ -120,9 +124,13 @@ public class MeiliService implements ApplicationListener<ContextRefreshedEvent> 
             // TODO show facet stats in UI <---
             //"facets", List.of("*")
         );
-        var entity = restClient.post().uri("/indexes/projects/search").contentType(MediaType.APPLICATION_JSON).body(searchBody).retrieve().onStatus(errorHandler).toEntity(SearchResult.class);
+        var entity = restClient.post()
+            .uri("/indexes/projects/search")
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(searchBody)
+            .retrieve().onStatus(errorHandler)
+            .toEntity(new ParameterizedTypeReference<SearchResult<Project>>() {});
         if (entity.getStatusCode().is2xxSuccessful()) {
-            // noinspection unchecked
             return entity.getBody();
         }
         throw new HangarApiException("Error searching projects", entity.getStatusCode());
@@ -137,9 +145,15 @@ public class MeiliService implements ApplicationListener<ContextRefreshedEvent> 
             "limit", limit
             // "facets", List.of("platformDependencies", "channel.name")
         );
-        var entity = restClient.post().uri("/indexes/versions/search").contentType(MediaType.APPLICATION_JSON).body(searchBody).retrieve().onStatus(errorHandler).toEntity(SearchResult.class);
+
+        var entity = restClient.post()
+            .uri("/indexes/versions/search")
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(searchBody)
+            .retrieve()
+            .onStatus(errorHandler)
+            .toEntity(new ParameterizedTypeReference<SearchResult<Version>>() {});
         if (entity.getStatusCode().is2xxSuccessful()) {
-            // noinspection unchecked
             return entity.getBody();
         }
         throw new HangarApiException("Error searching versions", entity.getStatusCode());

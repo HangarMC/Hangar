@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.api.project.version;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.Model;
@@ -36,6 +37,7 @@ public class Version extends Model implements Named, Visible, Identified {
     private final Map<Platform, SortedSet<String>> platformDependencies;
     private final Map<Platform, List<String>> platformDependenciesFormatted;
 
+    @JsonCreator
     public Version(final OffsetDateTime createdAt,
                    final long id, final long projectId,
                    @ColumnName("version_string") final String name,

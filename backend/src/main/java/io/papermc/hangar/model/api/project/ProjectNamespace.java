@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.api.project;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 import org.jdbi.v3.core.mapper.PropagateNull;
@@ -11,6 +12,7 @@ public class ProjectNamespace {
     @Schema(description = "The unique name of a project", example = "Maintenance")
     private final String slug;
 
+    @JsonCreator
     @JdbiConstructor
     public ProjectNamespace(@PropagateNull final String owner, final String slug) {
         this.owner = owner;
