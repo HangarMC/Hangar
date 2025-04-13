@@ -42,7 +42,6 @@ public class IndexService {
         this.meiliService.sendVersions(versions);
     }
 
-    // TODO when do we need to call this
     public void removeVersion(long id) {
         this.meiliService.removeVersion(id);
     }
