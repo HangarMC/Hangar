@@ -15,7 +15,7 @@ const props = withDefaults(
     custom: false,
   }
 );
-const classes = computed<string>(() => "font-bold " + (props.disabled ? "color-gray-400 cursor-not-allowed" : "color-primary hover:(underline)"));
+const classes = computed<string>(() => (props.disabled ? "color-gray-400 cursor-not-allowed" : "color-primary hover:(underline)"));
 
 defineSlots<{
   default(props: { classes?: string }): any;
