@@ -46,6 +46,13 @@ public class ProjectMemberFilter implements Filter<ProjectMemberFilter.ProjectMe
         }
 
         @Override
+        public void createMeili(final StringBuilder sb) {
+            sb.append("memberNames IN [");
+            sb.append(this.memberName.toLowerCase(Locale.ROOT));
+            sb.append("]");
+        }
+
+        @Override
         public String toString() {
             return "ProjectMemberFilterInstance{" +
                 "memberName='" + this.memberName + '\'' +
