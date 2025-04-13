@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.api.project;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.model.api.project.settings.ProjectSettings;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Category;
@@ -27,6 +28,7 @@ public class Project extends ProjectCompact {
     @Schema(description = "The names of the members of the project")
     private final List<String> memberNames;
 
+    @JsonCreator
     @JdbiConstructor
     public Project(final OffsetDateTime createdAt, final long id, final String name, @Nested final ProjectNamespace namespace, @Nested final ProjectStats stats, @EnumByOrdinal final Category category, final String description, final OffsetDateTime lastUpdated, @EnumByOrdinal final Visibility visibility, @Nested @Nullable final UserActions userActions, @Nested final ProjectSettings settings, final String avatar, final String avatarFallback, final Map<Platform, SortedSet<String>> supportedPlatforms, @Nullable final String mainPageContent, @Nullable final List<String> memberNames) {
         super(createdAt, id, name, namespace, description, stats, category, lastUpdated, visibility, avatar, avatarFallback);

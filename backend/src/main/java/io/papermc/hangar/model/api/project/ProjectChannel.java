@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.api.project;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.ChannelFlag;
@@ -16,6 +17,7 @@ public class ProjectChannel extends Model implements Named {
     private final Color color;
     private final Set<ChannelFlag> flags;
 
+    @JsonCreator
     public ProjectChannel(final OffsetDateTime createdAt, final String name, final String description, @EnumByOrdinal final Color color, final Set<ChannelFlag> flags) {
         super(createdAt);
         this.name = name;

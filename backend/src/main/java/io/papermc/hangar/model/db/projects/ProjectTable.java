@@ -50,9 +50,9 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.links = new JSONB(form.getSettings().getLinks());
         this.tags = form.getSettings().getTags();
         this.keywords = form.getSettings().getKeywords();
-        this.licenseType = form.getSettings().getLicense().getType();
-        this.licenseName = form.getSettings().getLicense().getName();
-        this.licenseUrl = form.getSettings().getLicense().getUrl();
+        this.licenseType = form.getSettings().getLicense().type();
+        this.licenseName = form.getSettings().getLicense().name();
+        this.licenseUrl = form.getSettings().getLicense().url();
         this.donationEnabled = form.getSettings().getDonation().isEnable();
         this.donationSubject = form.getSettings().getDonation().getSubject();
         this.sponsors = "";

@@ -7,21 +7,22 @@ import io.papermc.hangar.util.StaticContextAccessor;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public class ProjectLicense {
+/**
+ * @param name @el(root: String)
+ * @param url  @el(root: String)
+ * @param type @el(root: String)
+ */
+public record ProjectLicense(@Validate(SpEL = "@validations.regex(#root, @hangarConfig.projects.licenseNameRegex)", message = "project.new.error.invalidLicense")
+                             @Validate(SpEL = "@validations.max(#root, @hangarConfig.projects.maxLicenseNameLen)", message = "project.new.error.tooLongLicense")
+                             String name,
+                             @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "fieldError.url")
+                             String url,
+                             @Validate(SpEL = "@validate.required(#root)")
+                             @Validate(SpEL = "@validations.regex(#root, @hangarConfig.projects.licenseNameRegex)", message = "project.new.error.invalidLicense")
+                             @Validate(SpEL = "@validations.max(#root, @hangarConfig.projects.maxLicenseNameLen)", message = "project.new.error.tooLongLicense")
+                             String type) {
 
     private static final HangarConfig config = StaticContextAccessor.getBean(HangarConfig.class);
-
-    // @el(root: String)
-    private final @Validate(SpEL = "@validations.regex(#root, @hangarConfig.projects.licenseNameRegex)", message = "project.new.error.invalidLicense")
-    @Validate(SpEL = "@validations.max(#root, @hangarConfig.projects.maxLicenseNameLen)", message = "project.new.error.tooLongLicense") String name;
-
-    // @el(root: String)
-    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "fieldError.url") String url;
-
-    // @el(root: String)
-    private final @Validate(SpEL = "@validate.required(#root)")
-    @Validate(SpEL = "@validations.regex(#root, @hangarConfig.projects.licenseNameRegex)", message = "project.new.error.invalidLicense")
-    @Validate(SpEL = "@validations.max(#root, @hangarConfig.projects.maxLicenseNameLen)", message = "project.new.error.tooLongLicense") String type;
 
     @JsonCreator
     @JdbiConstructor
@@ -33,26 +34,5 @@ public class ProjectLicense {
         } else {
             this.type = "(custom)";
         }
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public @Nullable String getUrl() {
-        return this.url;
-    }
-
-    public String getType() {
-        return this.type;
-    }
-
-    @Override
-    public String toString() {
-        return "ProjectLicense{" +
-            "name='" + this.name + '\'' +
-            ", url='" + this.url + '\'' +
-            ", type='" + this.type + '\'' +
-            '}';
     }
 }
