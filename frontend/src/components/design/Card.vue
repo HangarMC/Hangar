@@ -17,10 +17,8 @@ const clazz = computed(() => {
     border: true,
     "dark:border-gray-800": true,
     "!border-top-primary": props.accent,
-    "shadow-md": true,
-    "rounded-md": true,
+    "rounded-2xl": true,
     "p-4": true,
-    "overflow-auto": true,
   };
 });
 </script>

@@ -21,43 +21,60 @@ async function togglePin() {
     <Card
       :class="{
         '!border-red-500 border-1px': project.visibility === Visibility.SoftDelete,
-        '!border-gray-300 !dark:border-gray-700 border-1px': project.visibility === Visibility.Public,
+        '!border-gray-300 !dark:border-gray-800 border-1px': project.visibility === Visibility.Public,
         'hover:background-card group': true,
+        'transition-all  duration-200': true,
       }"
     >
       <div class="flex space-x-4">
         <div>
-          <UserAvatar :username="project.namespace.owner" :img-src="project.avatarUrl" size="md" disable-link />
+          <UserAvatar :username="project.namespace.owner" :img-src="project.avatarUrl" size="xl" disable-link />
         </div>
-        <div class="overflow-clip overflow-hidden min-w-0">
-          <div class="inline-flex items-center gap-x-1">
-            <h3>
-              <span class="text-xl font-bold">{{ project.name }}&nbsp;</span>
-              <span class="text-sm"> {{ i18n.t("general.by") }}&nbsp;</span>
-              <span class="text-sm">
+        <div class="flex flex-col justify-between min-w-0 w-full h-31.25">
+          <div class="flex justify-start w-full">
+            <div class="flex-1 w-75% overflow-x-hidden">
+              <div class="inline-flex items-center gap-x-1">
+                <h3>
+                  <span class="text-3xl font-bold">{{ project.name }}&nbsp;</span>
+                  <span class="text-lg text-gray"> {{ i18n.t("general.by") }}&nbsp;</span>
+                  <span class="text-lg">
                 <object type="html/sucks">
                   <Link v-slot="{ classes }" custom>
                     <RouterLink :to="'/' + project.namespace.owner" :class="classes"> {{ project.namespace.owner }} </RouterLink>
                   </Link>
                 </object>
               </span>
-            </h3>
-            <IconMdiCancel v-if="project.visibility === Visibility.SoftDelete" />
-            <IconMdiEyeOff v-if="project.visibility !== Visibility.Public" />
-            <button v-if="canEdit" :title="'Toggle pinned status for project ' + project.namespace.slug" @click.prevent="togglePin">
-              <IconMdiPinOff v-if="pinned" class="hidden group-hover:block" />
-              <IconMdiPin v-else class="hidden group-hover:block" />
-            </button>
+                </h3>
+                <IconMdiCancel v-if="project.visibility === Visibility.SoftDelete" />
+                <IconMdiEyeOff v-if="project.visibility !== Visibility.Public" />
+                <button v-if="canEdit" :title="'Toggle pinned status for project ' + project.namespace.slug" @click.prevent="togglePin">
+                  <IconMdiPinOff v-if="pinned" class="hidden group-hover:block" />
+                  <IconMdiPin v-else class="hidden group-hover:block" />
+                </button>
+              </div>
+              <div v-if="'description' in project && project.description" class="mb-1 text-gray">{{ project.description }}</div>
+              <div v-else />
+            </div>
+            <div class="flex-grow-0 flex-basis-auto lt-sm:hidden flex flex-col items-end gap-1 pl-8 pb-4 border-b border-charcoal-500">
+              <span class="inline-flex items-center text-md">
+                {{ project.stats.stars.toLocaleString("en-US") }} <IconMdiStar class="ml-1 text-primary-300" />
+              </span>
+                <span class="inline-flex items-center text-md">
+                {{ project.stats.downloads }} <IconMdiDownload class="ml-1 text-primary-300" />
+              </span>
+              <Tooltip>
+                <template #content> {{ i18n.t("project.info.lastUpdatedTooltip") }}<PrettyTime :time="project.lastUpdated" long /> </template>
+                <span class="inline-flex items-center text-md"><PrettyTime :time="project.lastUpdated" short-relative /><IconMdiCalendar class="ml-1 text-primary-300" /></span>
+              </Tooltip>
+            </div>
           </div>
-
-          <div v-if="'description' in project && project.description" class="mb-1">{{ project.description }}</div>
-          <div v-else />
-          <div class="inline-flex items-center text-gray-500 dark:text-gray-400 lt-sm:hidden">
-            <CategoryLogo :category="project.category" :size="16" class="mr-1" />
-            {{ i18n.t("project.category." + project.category) }}
-            <div v-if="'settings' in project && project.settings" class="inline-flex ml-2 space-x-1">
-              <span class="border-l-1 border-gray-500 dark:border-gray-400" />
-              <span v-for="tag in project.settings.tags" :key="tag" class="inline-flex items-center">
+          <div class="flex justify-between w-full">
+            <div class="flex items-center">
+              <CategoryLogo :category="project.category" :size="16" class="mr-1" />
+              {{ i18n.t("project.category." + project.category) }}
+              <div v-if="'settings' in project && project.settings" class="inline-flex ml-2 space-x-1">
+                <span class="border-l-1 border-gray-500 dark:border-gray-400" />
+                <span v-for="tag in project.settings.tags" :key="tag" class="inline-flex items-center">
                 <Tooltip>
                   <template #content>
                     {{ i18n.t("project.settings.tags." + tag + ".tooltip") }}
@@ -67,23 +84,11 @@ async function togglePin() {
                   <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
                 </Tooltip>
               </span>
+              </div>
             </div>
           </div>
         </div>
         <div class="flex-grow" />
-        <div class="lt-sm:hidden flex flex-col flex-shrink-0 min-w-40">
-          <span class="inline-flex items-center">
-            <IconMdiStar class="mx-1" /> {{ project.stats.stars.toLocaleString("en-US") }} {{ i18n.t("project.info.stars", project.stats.stars) }}
-          </span>
-          <span class="inline-flex items-center">
-            <IconMdiDownload class="mx-1" />
-            {{ project.stats.downloads.toLocaleString("en-US") }} {{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}
-          </span>
-          <Tooltip>
-            <template #content> {{ i18n.t("project.info.lastUpdatedTooltip") }}<PrettyTime :time="project.lastUpdated" long /> </template>
-            <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" /><PrettyTime :time="project.lastUpdated" short-relative /></span>
-          </Tooltip>
-        </div>
       </div>
       <div class="sm:hidden space-x-1 text-center mt-2">
         <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" />{{ lastUpdated(project.lastUpdated) }}</span>

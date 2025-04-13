@@ -225,74 +225,80 @@ useSeo(
     </Container>
     <Container lg="flex items-start gap-6">
       <!-- Projects -->
-      <div class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
+      <div class="w-full min-w-0 mb-5 flex flex-col gap-4 lg:mb-0">
         <h2 class="font-bold text-2xl lg:(absolute -mt-11)">Projects</h2>
         <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage) => (page = newPage)" />
       </div>
       <!-- Sidebar -->
-      <Card accent class="min-w-300px flex flex-col gap-4">
-        <h2 class="font-bold text-xl -mb-2">Filters</h2>
-        <div v-if="!platform" class="platforms">
-          <h3 class="font-bold mb-1">
-            {{ i18n.t("hangar.projectSearch.platforms") }}
-            <span
-              v-if="filters.platform"
-              class="font-normal text-sm hover:(underline) text-gray-600 dark:text-gray-400"
-              cursor="pointer"
-              @click="filters.platform = undefined"
-            >
-              {{ i18n.t("hangar.projectSearch.clear") }}
-            </span>
-          </h3>
+      <div class="flex flex-col gap-4">
+        <!-- Platform Filter -->
+        <Card class="min-w-300px flex flex-col gap-4">
           <div class="flex flex-col gap-1">
+            <div v-if="!platform" class="platforms">
+              <h3 class="font-semibold text-xl mb-1">
+                {{ i18n.t("hangar.projectSearch.platforms") }}
+                <span
+                  v-if="filters.platform"
+                  class="font-normal text-sm hover:(underline) text-gray-600 dark:text-gray-400"
+                  cursor="pointer"
+                  @click="filters.platform = undefined"
+                >
+                  {{ i18n.t("hangar.projectSearch.clear") }}
+                </span>
+              </h3>
+            </div>
             <ul>
-              <li v-for="visiblePlatform in useVisiblePlatforms" :key="visiblePlatform.enumName" class="inline-flex w-full">
+              <li v-for="visiblePlatform in useVisiblePlatforms" :key="visiblePlatform.enumName" class="inline-flex w-full mt-1">
                 <InputRadio
                   :label="visiblePlatform.name"
                   :model-value="filters.platform"
                   :value="visiblePlatform.enumName"
                   @update:model-value="updatePlatform"
                 >
-                  <PlatformLogo :platform="visiblePlatform.enumName" :size="24" class="mr-1" />
+                  <PlatformLogo :platform="visiblePlatform.enumName" :size="20" class="ml-3 mr-1" />
                 </InputRadio>
               </li>
             </ul>
           </div>
-        </div>
-        <div v-if="filters.platform" class="versions">
-          <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions." + filters.platform) }}</h3>
-          <div class="max-h-40 overflow-auto">
-            <VersionSelector v-model="filters.versions" :versions="versions(filters.platform)" :open="false" col />
+        </Card>
+        <Card v-if="filters.platform" class="min-w-300px flex flex-col gap-4">
+          <div class="versions">
+            <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions." + filters.platform) }}</h3>
+            <div class="max-h-40 overflow-auto">
+              <VersionSelector v-model="filters.versions" :versions="versions(filters.platform)" :open="false" col />
+            </div>
           </div>
-        </div>
-        <div class="tags">
-          <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.tags") }}</h3>
-          <div class="flex flex-col gap-1">
-            <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="filters.tags" :value="tag">
-              <template #label>
-                <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
-                <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
-                <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
-                <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
-              </template>
-            </InputCheckbox>
+        </Card>
+        <Card accent class="min-w-300px flex flex-col gap-4">
+          <div class="tags">
+            <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.tags") }}</h3>
+            <div class="flex flex-col gap-1">
+              <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="filters.tags" :value="tag">
+                <template #label>
+                  <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
+                  <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
+                  <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
+                  <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
+                </template>
+              </InputCheckbox>
+            </div>
           </div>
-        </div>
-        <div class="categories">
-          <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.categories") }}</h3>
-          <div class="flex flex-col gap-1">
-            <InputCheckbox
-              v-for="category in useVisibleCategories"
-              :key="category.apiName"
-              v-model="filters.categories"
-              :value="category.apiName"
-              :label="i18n.t(category.title)"
-            >
-              <CategoryLogo :category="category.apiName as Category" :size="22" class="mr-1" />
-            </InputCheckbox>
+          <div class="categories">
+            <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.categories") }}</h3>
+            <div class="flex flex-col gap-1">
+              <InputCheckbox
+                v-for="category in useVisibleCategories"
+                :key="category.apiName"
+                v-model="filters.categories"
+                :value="category.apiName"
+                :label="i18n.t(category.title)"
+              >
+                <CategoryLogo :category="category.apiName as Category" :size="22" class="mr-1" />
+              </InputCheckbox>
+            </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+      </div>
     </Container>
     <h2 class="text-2xl text-center font-bold mt-8">Frequently asked Questions about Hangar (FAQ)</h2>
     <div class="md:(ml-15 mr-15)">
