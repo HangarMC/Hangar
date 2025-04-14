@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.3</version>
+        <version>3.4.4</version>
         <relativePath/>
     </parent>
 
@@ -26,23 +26,23 @@
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
         <!-- dependency management -->
-        <jdbi3-bom.version>3.48.0</jdbi3-bom.version>
+        <jdbi3-bom.version>3.49.0</jdbi3-bom.version>
         <configurate.version>4.2.0</configurate.version>
         <spring-cloud-aws.version>3.3.0</spring-cloud-aws.version>
 
         <!-- dependencies -->
-        <sentry.version>8.3.0</sentry.version>
-        <springdoc.version>2.8.5</springdoc.version>
+        <sentry.version>8.8.0</sentry.version>
+        <springdoc.version>2.8.6</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20250107</org-json.version>
         <bucket4j.version>8.14.0</bucket4j.version>
-        <datafaker.version>2.4.2</datafaker.version>
+        <datafaker.version>2.4.3</datafaker.version>
         <apache-commons-lang.version>3.17.0</apache-commons-lang.version>
         <jwt.version>4.5.0</jwt.version>
         <jetbrains-annotations.version>26.0.2</jetbrains-annotations.version>
         <caffeine.version>3.2.0</caffeine.version>
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
-        <jgroups.version>5.4.4.Final</jgroups.version>
+        <jgroups.version>5.4.6.Final</jgroups.version>
         <jgroups-kube.version>2.0.2.Final</jgroups-kube.version>
         <totp.version>1.7.2-SNAPSHOT</totp.version>
         <webp.version>0.1.6</webp.version>
