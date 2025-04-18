@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import type { TranslateResult } from "vue-i18n";
-
 defineProps<{
-  title: string | TranslateResult;
+  title: string;
   markdownInput: string;
 }>();
 </script>

@@ -227,7 +227,7 @@ useSeo(
       <!-- Projects -->
       <div class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
         <h2 class="font-bold text-2xl lg:(absolute -mt-11)">Projects</h2>
-        <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage) => (page = newPage)" />
+        <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage: number) => (page = newPage)" />
       </div>
       <!-- Sidebar -->
       <Card accent class="min-w-300px flex flex-col gap-4">

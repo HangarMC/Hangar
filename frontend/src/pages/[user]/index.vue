@@ -150,7 +150,7 @@ useSeo(
         :loading="projectsStatus === 'loading'"
         :can-edit="hasPerms(NamedPermission.EditOwnUserSettings)"
         :pinned
-        @update:page="(newPage) => (page = newPage)"
+        @update:page="(newPage: number) => (page = newPage)"
       />
     </div>
     <div class="flex-basis-full flex-grow lg:max-w-3/10 lg:min-w-2/10">

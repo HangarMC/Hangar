@@ -36,8 +36,8 @@ const languages = (useRuntimeConfig().public.i18n.locales as { code: string; nam
 }));
 
 watch(locale, async (newLocale) => {
-  await i18n.loadLocaleMessages(newLocale);
   i18n.locale.value = newLocale;
+  window.location.reload();
 });
 </script>
 

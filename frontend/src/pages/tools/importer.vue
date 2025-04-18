@@ -256,7 +256,7 @@ useSeo(computed(() => ({ title: t("importer.title"), route })));
                     :saveable="false"
                     :cancellable="false"
                     no-padding-top
-                    @update:raw="(e) => updatePageContent(project, e)"
+                    @update:raw="(e: string) => updatePageContent(project, e)"
                   />
                 </ClientOnly>
               </template>

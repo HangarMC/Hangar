@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import type { TranslateResult } from "vue-i18n";
 import { DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diff_match_patch as Diff } from "diff-match-patch";
 
 const props = defineProps<{
-  title: string | TranslateResult;
+  title: string;
   left: string;
   right: string;
 }>();
