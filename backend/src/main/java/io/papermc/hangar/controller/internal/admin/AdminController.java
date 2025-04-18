@@ -172,7 +172,7 @@ public class AdminController extends HangarComponent {
     @GetMapping(path = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
     public HealthReport getHealthReport() {
         if (true) {
-            //TODO
+            //TODO health report
             throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Health report is disabled");
         }
 

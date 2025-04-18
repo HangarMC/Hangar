@@ -29,8 +29,6 @@ public record HangarConfig(
     @NestedConfigurationProperty
     OrganizationsConfig org,
     @NestedConfigurationProperty
-    ApiConfig api,
-    @NestedConfigurationProperty
     HangarSecurityConfig security,
     @NestedConfigurationProperty
     QueueConfig queue,
