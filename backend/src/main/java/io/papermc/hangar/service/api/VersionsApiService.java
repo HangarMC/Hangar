@@ -8,10 +8,12 @@ import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.PaginatedResult;
+import io.papermc.hangar.model.api.Pagination;
 import io.papermc.hangar.model.api.project.version.UploadedVersion;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.api.requests.RequestPagination;
+import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.projects.ProjectTable;
@@ -160,17 +162,11 @@ public class VersionsApiService extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
-        // TODO includeHiddenChannels <---
-        if (!includeHiddenChannels) {
-            // versions = versions.filter(version -> !version.getChannel().getFlags().contains(ChannelFlag.HIDE_BY_DEFAULT));
-        }
-
         final StringBuilder filters = new StringBuilder();
         filters.append("projectId = ").append(project.getId());
-        if (!pagination.getFilters().isEmpty()) {
-            filters.append(" AND ");
-        }
+
         for (final Filter.FilterInstance filterInstance : pagination.getFilters().values()) {
+            filters.append(" AND ");
             filterInstance.createMeili(filters);
         }
 
@@ -185,6 +181,11 @@ public class VersionsApiService extends HangarComponent {
         }
 
         final SearchResult<Version> result = this.meiliService.searchVersions("", filters.toString(), sort, pagination.getOffset(), pagination.getLimit());
+        // this is awful, but good enough for now
+        if (!includeHiddenChannels) {
+            var versions = result.hits().stream().filter(version -> !version.getChannel().getFlags().contains(ChannelFlag.HIDE_BY_DEFAULT)).toList();
+            return new PaginatedResult<>(new Pagination((long) result.estimatedTotalHits(), new RequestPagination((long) result.limit(), (long) result.offset())), versions);
+        }
         return result.asPaginatedResult();
     }
 
