@@ -8,11 +8,13 @@ import io.papermc.hangar.service.internal.admin.StatService;
 import io.sentry.ITransaction;
 import io.sentry.Sentry;
 import io.sentry.SpanStatus;
-import jakarta.annotation.PostConstruct;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SchedulerService extends HangarComponent {
+public class SchedulerService extends HangarComponent implements ApplicationListener<ContextRefreshedEvent> {
 
     private final SchedulerDAO schedulerDAO;
     private final StatService statService;
@@ -62,8 +64,8 @@ public class SchedulerService extends HangarComponent {
         this.runScheduledTask("refreshHomePage");
     }
 
-    @PostConstruct
-    public void ensureJobsExist() {
+    @Override
+    public void onApplicationEvent(@NotNull ContextRefreshedEvent event) {
         this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateVersionDownloads", this.config.updateTasks().versionDownloads().toMillis()));
         this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateProjectViews", this.config.updateTasks().projectViews().toMillis()));
         this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateProjectIndex", this.config.updateTasks().projectIndex().toMillis()));
