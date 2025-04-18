@@ -17,32 +17,34 @@ public class IndexService {
     }
 
     public void fullUpdateProjects() {
-        // TODO index switch instead of full update? <---
         List<Project> projects = this.indexDAO.getAllProjects("");
-        this.meiliService.sendProjects(projects);
+        this.meiliService.setupProjectIndex("-new");
+        this.meiliService.waitForTask(this.meiliService.sendDocuments(MeiliService.PROJECT_INDEX + "-new", projects));
+        this.meiliService.swapIndexes(MeiliService.PROJECT_INDEX, MeiliService.PROJECT_INDEX + "-new");
     }
 
     public void updateProject(long id) {
         List<Project> projects = this.indexDAO.getAllProjects("p.id = " + id + " LIMIT 1");
-        this.meiliService.sendProjects(projects);
+        this.meiliService.sendDocuments(MeiliService.PROJECT_INDEX, projects);
     }
 
     public void removeProject(long id) {
-        this.meiliService.removeProject(id);
+        this.meiliService.removeDocument(MeiliService.PROJECT_INDEX, id);
     }
 
     public void fullUpdateVersions() {
-        // TODO index switch instead of full update?
         List<Version> versions = this.indexDAO.getAllVersions("");
-        this.meiliService.sendVersions(versions);
+        this.meiliService.setupVersionIndex("-new");
+        this.meiliService.waitForTask(this.meiliService.sendDocuments(MeiliService.VERSION_INDEX + "-new", versions));
+        this.meiliService.swapIndexes(MeiliService.VERSION_INDEX, MeiliService.VERSION_INDEX + "-new");
     }
 
     public void updateVersion(long id) {
         List<Version> versions = this.indexDAO.getAllVersions("v.id = " + id + " LIMIT 1");
-        this.meiliService.sendVersions(versions);
+        this.meiliService.sendDocuments(MeiliService.VERSION_INDEX, versions);
     }
 
     public void removeVersion(long id) {
-        this.meiliService.removeVersion(id);
+        this.meiliService.removeDocument(MeiliService.VERSION_INDEX, id);
     }
 }
