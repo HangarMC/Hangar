@@ -77,7 +77,7 @@ public class MailService extends HangarComponent {
     public void sendMail(final String subject, final String recipient, final String text) throws MessagingException {
         final MimeMessage message = this.mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setFrom(this.config.mail.from());
+        helper.setFrom(this.config.mail().from());
         helper.setTo(recipient);
         helper.setSubject(subject);
         helper.setText(text, true);

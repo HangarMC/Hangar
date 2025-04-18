@@ -34,7 +34,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        if (this.hangarConfig.isDisableRateLimiting()) {
+        if (this.hangarConfig.disableRateLimiting()) {
             return true;
         }
 

@@ -222,7 +222,7 @@ public class ReviewService extends HangarComponent {
         for (final HangarReviewQueueEntry entry : reviewQueue) {
             final ProjectVersionTable projectVersionTable = this.projectVersionsDAO.getProjectVersionTable(entry.getVersionId());
             final List<ProjectVersionDownloadTable> downloads = this.downloadsDAO.getDownloads(projectVersionTable.getVersionId());
-            if (downloads.stream().anyMatch(download -> download.getExternalUrl() == null || !this.config.security.checkSafe(download.getExternalUrl()))) {
+            if (downloads.stream().anyMatch(download -> download.getExternalUrl() == null || !this.config.security().checkSafe(download.getExternalUrl()))) {
                 continue;
             }
 

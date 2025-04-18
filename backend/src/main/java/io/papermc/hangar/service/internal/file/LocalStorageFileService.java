@@ -107,11 +107,11 @@ public class LocalStorageFileService implements FileService {
 
     @Override
     public String getVersionDownloadUrl(final String user, final String project, final String version, final Platform platform, final String fileName) {
-        return this.hangarConfig.getBaseUrl() + "/api/v1/projects/" + user + "/" + project + "/versions/" + version + "/" + platform.name() + "/download";
+        return this.hangarConfig.baseUrl() + "/api/v1/projects/" + user + "/" + project + "/versions/" + version + "/" + platform.name() + "/download";
     }
 
     @Override
     public String getAvatarUrlPrefix() {
-        return this.hangarConfig.getBaseUrl() + "/api/internal/avatar";
+        return this.hangarConfig.baseUrl() + "/api/internal/avatar";
     }
 }

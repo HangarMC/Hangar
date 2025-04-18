@@ -20,8 +20,8 @@ public class VersionControllerConfig {
     @Bean
     public MultipartConfigElement multipartConfigElement() {
         final MultipartConfigFactory factory = new MultipartConfigFactory();
-        factory.setMaxFileSize(DataSize.ofBytes(this.config.projects.maxFileSize()));
-        factory.setMaxRequestSize(DataSize.ofBytes(this.config.projects.maxTotalFilesSize()));
+        factory.setMaxFileSize(DataSize.ofBytes(this.config.projects().maxFileSize()));
+        factory.setMaxRequestSize(DataSize.ofBytes(this.config.projects().maxTotalFilesSize()));
         return factory.createMultipartConfig();
     }
 }

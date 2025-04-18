@@ -18,14 +18,14 @@ public class ProjectSettings {
     // @el(root: List<String>)
     private final @NotNull @Validate(SpEL = "@validate.max(#root, 4)", message = "Too many link sections") List<@Valid LinkSection> links;
     // @el(root: Collection<String>)
-    private final @NotNull @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxTags)", message = "project.new.error.tooManyTags") Collection<Tag> tags;
+    private final @NotNull @Validate(SpEL = "@validate.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.maxTags)", message = "project.new.error.tooManyTags") Collection<Tag> tags;
     private final @Valid ProjectLicense license;
 
     // @el(root: Collection<String>)
-    private final @NotNull @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywords)", message = "project.new.error.tooManyKeywords") Collection<String> keywords;
+    private final @NotNull @Validate(SpEL = "@validate.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.maxKeywords)", message = "project.new.error.tooManyKeywords") Collection<String> keywords;
 
     // @el(root: String)
-    private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxSponsorsLen)", message = "project.new.error.tooLongSponsors") String sponsors;
+    private final @Validate(SpEL = "@validate.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.maxSponsorsLen)", message = "project.new.error.tooLongSponsors") String sponsors;
 
     @JdbiConstructor
     public ProjectSettings(final JSONB links, final List<Tag> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final String sponsors) {

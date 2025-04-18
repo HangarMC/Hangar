@@ -38,16 +38,16 @@ public class ProjectPageService extends HangarComponent {
 
     @Transactional
     public ProjectPageTable createPage(final long projectId, final String name, final String slug, final String contents, final boolean deletable, final @Nullable Long parentId, final boolean isHome) {
-        if (!isHome && contents.length() < this.config.pages.minLen()) {
+        if (!isHome && contents.length() < this.config.pages().minLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.minLength");
         }
-        if (contents.length() > this.config.pages.maxLen()) {
+        if (contents.length() > this.config.pages().maxLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
-        if (slug.length() > this.config.pages.maxSlugLen()) {
+        if (slug.length() > this.config.pages().maxSlugLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxSlugLength");
         }
-        if (org.apache.commons.lang3.StringUtils.countMatches(slug, '/') > this.config.pages.maxNestingLevel()) {
+        if (org.apache.commons.lang3.StringUtils.countMatches(slug, '/') > this.config.pages().maxNestingLevel()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxSlugLength");
         }
 
@@ -137,7 +137,7 @@ public class ProjectPageService extends HangarComponent {
 
     @Transactional
     public void saveProjectPage(final long projectId, final long pageId, final String newContents) {
-        if (newContents.length() > this.config.pages.maxLen()) {
+        if (newContents.length() > this.config.pages().maxLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
 

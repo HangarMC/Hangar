@@ -100,11 +100,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     @Override
     protected void addCorsMappings(final CorsRegistry registry) {
         final CorsRegistration corsRegistration = registry.addMapping("/api/internal/**");
-        if (this.hangarConfig.isDev()) {
-            corsRegistration.allowedOrigins("http://localhost:3333");
-        } else {
-            corsRegistration.allowedOrigins(this.hangarConfig.getBaseUrl());
-        }
+        corsRegistration.allowedOrigins(this.hangarConfig.baseUrl());
         corsRegistration.allowedMethods("GET", "HEAD", "POST", "DELETE");
     }
 
@@ -122,7 +118,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     public Filter identifyFilter() {
         return new OncePerRequestFilter() {
             @Override
-            protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
+            protected void doFilterInternal(final @NotNull HttpServletRequest request, final @NotNull HttpServletResponse response, final @NotNull FilterChain filterChain) throws ServletException, IOException {
                 response.setHeader("Server", "Hangar");
                 filterChain.doFilter(request, response);
             }

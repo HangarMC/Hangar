@@ -35,7 +35,7 @@ public class SitemapService extends HangarComponent {
     public void updateTotalSitemap() {
         logger.info("Updating sitemap...");
         LocalDateTime start = LocalDateTime.now();
-        SitemapGenerator generator = SitemapGenerator.of(this.config.getBaseUrl());
+        SitemapGenerator generator = SitemapGenerator.of(this.config.baseUrl());
         addGlobal(generator);
         this.sitemapDAO.getUsers().forEach((u) -> addUser(u, generator));
         this.totalSitemap = generator.toString();
@@ -51,7 +51,7 @@ public class SitemapService extends HangarComponent {
 
     @Cacheable(CacheConfig.INDEX_SITEMAP)
     public String getSitemap() {
-        final SitemapIndexGenerator generator = SitemapIndexGenerator.of(this.config.getBaseUrl())
+        final SitemapIndexGenerator generator = SitemapIndexGenerator.of(this.config.baseUrl())
             .addPage(WebPage.builder().name("global-sitemap.xml").build());
 
         this.sitemapDAO.getUsers().forEach(user -> generator.addPage(user.name() + "/sitemap.xml"));
@@ -60,7 +60,7 @@ public class SitemapService extends HangarComponent {
 
     @Cacheable(CacheConfig.GLOBAL_SITEMAP)
     public String getGlobalSitemap() {
-        return addGlobal(SitemapGenerator.of(this.config.getBaseUrl())).toString();
+        return addGlobal(SitemapGenerator.of(this.config.baseUrl())).toString();
     }
 
     private static SitemapGenerator addGlobal(SitemapGenerator generator) {
@@ -86,7 +86,7 @@ public class SitemapService extends HangarComponent {
             throw HangarApiException.notFound();
         }
 
-        return addUser(user, SitemapGenerator.of(this.config.getBaseUrl())).toString();
+        return addUser(user, SitemapGenerator.of(this.config.baseUrl())).toString();
     }
 
     private SitemapGenerator addUser(SitemapUser user, SitemapGenerator generator) {
@@ -101,7 +101,7 @@ public class SitemapService extends HangarComponent {
             // add all versions of said projects
             final List<SitemapVersion> projectVersions = this.sitemapDAO.getVersions(project.id());
             projectVersions.forEach(pv -> generator.addPage(WebPage.builder().name(this.path(user.name(), project.slug(), "versions", pv.versionString()))
-                .priority(pv.channel().equals(this.config.channels.nameDefault()) ? 0.5 : 0.1)
+                .priority(pv.channel().equals(this.config.channels().nameDefault()) ? 0.5 : 0.1)
                 .changeFreqMonthly()
                 .build())
             );

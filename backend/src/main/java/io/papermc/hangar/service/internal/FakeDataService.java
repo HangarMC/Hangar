@@ -25,7 +25,6 @@ import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
-import io.papermc.hangar.service.internal.projects.ProjectService;
 import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.List;
@@ -105,7 +104,7 @@ public class FakeDataService extends HangarComponent {
     }
 
     public void createProject(final long ownerId) {
-        final String type = this.config.getLicenses().get(this.faker.random().nextInt(this.config.getLicenses().size()));
+        final String type = this.config.licenses().get(this.faker.random().nextInt(this.config.licenses().size()));
         final ProjectLicense licence = new ProjectLicense(null, null, type);
         final Set<String> keyWords = new HashSet<>();
         for (int i = 0; i < this.faker.random().nextInt(2, 5); i++) {
@@ -171,8 +170,8 @@ public class FakeDataService extends HangarComponent {
             this.avatarService.getDefaultAvatarUrl(),
             new JSONB(Map.of()));
 
-        final String password = this.config.e2e.password();
-        final String totpSecret = this.config.e2e.totpSecret();
+        final String password = this.config.e2e().password();
+        final String totpSecret = this.config.e2e().totpSecret();
         this.credentialsService.registerCredential(admin.getUserId(), new PasswordCredential(this.passwordEncoder.encode(password)));
         this.credentialsService.registerCredential(user.getUserId(), new PasswordCredential(this.passwordEncoder.encode(password)));
 

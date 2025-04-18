@@ -52,12 +52,12 @@ public class ChannelService extends HangarComponent {
     }
 
     private void validateChannel(final String name, final Color color, final long projectId, final List<ProjectChannelTable> existingChannels) {
-        if (!this.config.channels.isValidChannelName(name)) {
+        if (!this.config.channels().isValidChannelName(name)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.invalidName");
         }
 
-        if (existingChannels.size() >= this.config.projects.maxChannels()) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.maxChannels", this.config.projects.maxChannels());
+        if (existingChannels.size() >= this.config.projects().maxChannels()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.maxChannels", this.config.projects().maxChannels());
         }
 
         this.checkName(projectId, name, null, ignored -> existingChannels);

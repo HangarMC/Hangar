@@ -8,6 +8,6 @@ import java.util.List;
 
 public record LinkSection(long id,
                           @NotNull @Schema(description = "Type of the link. Either SIDEBAR or TOP", example = "TOP") String type,
-                          @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxNameLen())") String title,
+                          @Validate(SpEL = "@validate.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.pages.maxNameLen())") String title,
                           @NotNull @Validate(SpEL = "@validate.max(#root, 10)", message = "Too many links") List<@Valid Link> links) {
 }

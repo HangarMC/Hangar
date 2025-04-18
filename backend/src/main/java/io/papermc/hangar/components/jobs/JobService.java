@@ -47,14 +47,14 @@ public class JobService extends HangarComponent {
 
     @PostConstruct
     public void initThreadPool() {
-        this.executorService = new ThreadPoolExecutor(1, this.config.jobs.maxConcurrentJobs(), 60, TimeUnit.SECONDS, new SynchronousQueue<>(), new ThreadFactory("JobService", false));
+        this.executorService = new ThreadPoolExecutor(1, this.config.jobs().maxConcurrentJobs(), 60, TimeUnit.SECONDS, new SynchronousQueue<>(), new ThreadFactory("JobService", false));
     }
 
     public void checkAndProcess() {
         final long awaitingJobs = this.jobsDAO.countAwaitingJobs();
         this.logger.trace("Found {} awaiting jobs", awaitingJobs);
         if (awaitingJobs > 0) {
-            final long numberToProcess = Math.max(1, Math.min(awaitingJobs, this.config.jobs.maxConcurrentJobs()));
+            final long numberToProcess = Math.max(1, Math.min(awaitingJobs, this.config.jobs().maxConcurrentJobs()));
             for (long i = 0; i < numberToProcess; i++) {
                 this.executorService.submit(this::process);
             }

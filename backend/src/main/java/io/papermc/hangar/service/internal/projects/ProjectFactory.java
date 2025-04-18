@@ -73,14 +73,14 @@ public class ProjectFactory extends HangarComponent {
         ProjectTable projectTable = null;
         try {
             projectTable = this.projectsDAO.insert(new ProjectTable(projectOwner, newProject));
-            this.channelService.createProjectChannel(this.config.channels.nameDefault(), this.config.channels.descriptionDefault(), this.config.channels.colorDefault(), projectTable.getId(), Set.of(ChannelFlag.FROZEN, ChannelFlag.PINNED, ChannelFlag.SENDS_NOTIFICATIONS));
+            this.channelService.createProjectChannel(this.config.channels().nameDefault(), this.config.channels().descriptionDefault(), this.config.channels().colorDefault(), projectTable.getId(), Set.of(ChannelFlag.FROZEN, ChannelFlag.PINNED, ChannelFlag.SENDS_NOTIFICATIONS));
             this.projectMemberService.addNewAcceptedByDefaultMember(ProjectRole.PROJECT_OWNER.create(projectTable.getId(), null, projectOwner.getUserId(), true));
             String newPageContent = newProject.getPageContent();
             if (newPageContent == null) {
-                newPageContent = "# " + projectTable.getName() + "\n\n" + this.config.pages.home().message();
+                newPageContent = "# " + projectTable.getName() + "\n\n" + this.config.pages().home().message();
             }
 
-            final String defaultName = this.config.pages.home().name();
+            final String defaultName = this.config.pages().home().name();
             this.projectPageService.createPage(projectTable.getId(), defaultName, StringUtils.slugify(defaultName), newPageContent, false, null, true);
             if (newProject.getAvatarUrl() != null) {
                 this.avatarService.importProjectAvatar(projectTable.getId(), newProject.getAvatarUrl());

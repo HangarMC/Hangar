@@ -12,7 +12,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 @Schema(description = "List of different jars/external links that are part of the version")
 public record MultipartFileOrUrl(
     @Schema(description = "List of platforms this jar runs on", example = "[PAPER, WATERFALL, VELOCITY]") List<Platform> platforms,
-    @Nullable @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "fieldError.url")
+    @Nullable @Validate(SpEL = "@validate.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.urlRegex)", message = "fieldError.url")
     @Schema(description = "External url to download the jar from if not provided via an attached jar, else null", example = "https://papermc.io/downloads")
     String externalUrl
 ) {

@@ -72,8 +72,8 @@ public class HangarExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(final Exception ex, final Object body, final HttpHeaders headers, final HttpStatusCode status, final WebRequest request) {
-        if (this.config.isDev()) {
+    protected ResponseEntity<Object> handleExceptionInternal(final @NotNull Exception ex, final Object body, final @NotNull HttpHeaders headers, final @NotNull HttpStatusCode status, final @NotNull WebRequest request) {
+        if (this.config.dev()) {
             return new ResponseEntity<>(new HangarApiException(ex.getMessage()), status);
         } else {
             return super.handleExceptionInternal(ex, body, headers, status, request);
@@ -87,19 +87,19 @@ public class HangarExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(MultiPartParserDefinition.FileTooLargeException.class)
     public ResponseEntity<HangarApiException> handleException(final MultiPartParserDefinition.FileTooLargeException exception) {
-        final HangarApiException apiException = new HangarApiException(HttpStatus.PAYLOAD_TOO_LARGE, "File too large - files have to be less than " + this.config.projects.maxFileSizeMB() + "MB in size");
+        final HangarApiException apiException = new HangarApiException(HttpStatus.PAYLOAD_TOO_LARGE, "File too large - files have to be less than " + this.config.projects().maxFileSizeMB() + "MB in size");
         return new ResponseEntity<>(apiException, HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
     @ExceptionHandler(RequestTooBigException.class)
     public ResponseEntity<HangarApiException> handleException(final RequestTooBigException exception) {
-        final HangarApiException apiException = new HangarApiException(HttpStatus.PAYLOAD_TOO_LARGE, "File too large - files have to be less than " + this.config.projects.maxTotalFilesSizeMB() + "MB total");
+        final HangarApiException apiException = new HangarApiException(HttpStatus.PAYLOAD_TOO_LARGE, "File too large - files have to be less than " + this.config.projects().maxTotalFilesSizeMB() + "MB total");
         return new ResponseEntity<>(apiException, HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
     @Override
-    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(final MaxUploadSizeExceededException ex, final HttpHeaders headers, final HttpStatusCode status, final WebRequest request) {
-        final HangarApiException apiException = new HangarApiException(HttpStatus.PAYLOAD_TOO_LARGE, "File too large - files have to be less than " + this.config.projects.maxTotalFilesSizeMB() + "MB total");
+    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(final @NotNull MaxUploadSizeExceededException ex, final @NotNull HttpHeaders headers, final @NotNull HttpStatusCode status, final @NotNull WebRequest request) {
+        final HangarApiException apiException = new HangarApiException(HttpStatus.PAYLOAD_TOO_LARGE, "File too large - files have to be less than " + this.config.projects().maxTotalFilesSizeMB() + "MB total");
         return new ResponseEntity<>(apiException, HttpStatus.PAYLOAD_TOO_LARGE);
     }
 }

@@ -21,9 +21,9 @@ public class TurnstileService extends HangarComponent {
     }
 
     public void validate(String token) {
-        if (this.config.security.turnstileSecret() != null && !this.config.security.turnstileSecret().isBlank()) {
+        if (this.config.security().turnstileSecret() != null && !this.config.security().turnstileSecret().isBlank()) {
             MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-            formData.add("secret", this.config.security.turnstileSecret());
+            formData.add("secret", this.config.security().turnstileSecret());
             formData.add("response", token);
             formData.add("remoteip", RequestUtil.getRemoteAddress(this.request));
 
