@@ -1,6 +1,4 @@
-import type { Composer } from "vue-i18n";
-
-export function lastUpdated(date: Date | string, i18n?: Composer): string {
+export function lastUpdated(date: Date | string, i18n?: ReturnType<typeof useI18n>): string {
   // some dum linter hates me
   const lang = (i18n ?? useI18n())!;
   date = new Date(date);

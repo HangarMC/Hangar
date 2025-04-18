@@ -1,11 +1,10 @@
 import type { Script } from "@unhead/vue";
-import type { TranslateResult } from "vue-i18n";
 import type { RouteLocationNormalized } from "vue-router/auto";
 
 export function useSeo(
   input: ComputedRef<{
-    title: string | TranslateResult | null | undefined;
-    description?: string | TranslateResult | null;
+    title: string | null | undefined;
+    description?: string | null;
     route: RouteLocationNormalized;
     image?: string | null;
     additionalScripts?: { type: string; textContent: string; key: string }[];

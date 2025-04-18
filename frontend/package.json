@@ -1,7 +1,7 @@
 {
   "private": true,
   "engines": {
-    "node": ">=16"
+    "node": ">=22"
   },
   "scripts": {
     "build": "nuxt build --dotenv .config/prod.env",
@@ -27,6 +27,8 @@
   "dependencies": {
     "@github/webauthn-json": "2.1.1",
     "@headlessui/vue": "1.7.23",
+    "@nuxt/kit": "3.16.2",
+    "@nuxt/scripts": "0.11.6",
     "@pinia/nuxt": "0.11.0",
     "@vuelidate/core": "2.0.3",
     "@vuelidate/validators": "2.0.4",
@@ -56,10 +58,15 @@
     "prismjs": "1.30.0",
     "qs": "6.14.0",
     "rapidoc": "9.3.8",
+    "scule": "1.3.0",
     "swagger-typescript-api": "13.1.1",
     "universal-cookie": "7.2.2",
+    "unocss": "66.1.0-beta.12",
+    "vue": "3.5.13",
     "vue-advanced-cropper": "2.8.9",
     "vue-chartjs": "5.3.2",
+    "vue-i18n": "11.1.3",
+    "vue-router": "4.5.0",
     "vuedraggable": "4.1.0"
   },
   "devDependencies": {
@@ -84,6 +91,7 @@
     "@types/qs": "6.9.18",
     "@unocss/nuxt": "66.0.0",
     "@vue/language-server": "3.0.0-alpha.4",
+    "eslint": "9.25.0",
     "eslint-import-resolver-alias": "1.1.2",
     "eslint-plugin-oxlint": "0.16.6",
     "eslint-plugin-unicorn": "58.0.0",
@@ -97,13 +105,24 @@
     "typescript": "5.8.3",
     "unplugin-icons": "22.1.0",
     "unplugin-vue-components": "28.5.0",
+    "unplugin-vue-router": "0.12.0",
     "vue-tsc": "3.0.0-alpha.4"
   },
   "packageManager": "pnpm@10.6.1+sha512.40ee09af407fa9fbb5fbfb8e1cb40fbb74c0af0c3e10e9224d7b53c7658528615b2c92450e74cfad91e3a2dcafe3ce4050d80bda71d757756d2ce2b66213e9a3",
   "pnpm": {
     "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@sentry-internal/node-cpu-profiler",
+      "@sentry/cli",
+      "@tree-sitter-grammars/tree-sitter-yaml",
+      "core-js-pure",
       "esbuild",
+      "tree-sitter",
+      "tree-sitter-json",
       "vue-demi"
+    ],
+    "ignoredBuiltDependencies": [
+      "@scarf/scarf"
     ]
   }
 }

@@ -81,6 +81,7 @@ export default defineNuxtConfig({
     bundle: {
       runtimeOnly: true,
       dropMessageCompiler: true,
+      optimizeTranslationDirective: false,
     },
   },
   vite: {
