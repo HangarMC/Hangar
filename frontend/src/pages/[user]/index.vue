@@ -94,7 +94,7 @@ useSeo(
       {
         key: "profilePage",
         type: "application/ld+json",
-        children: JSON.stringify({
+        textContent: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "ProfilePage",
           mainEntity: {
