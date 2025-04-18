@@ -25,13 +25,11 @@ public record HangarConfig(
     @NestedConfigurationProperty
     ProjectsConfig projects,
     @NestedConfigurationProperty
-    UserConfig user,
+    UserConfig users,
     @NestedConfigurationProperty
-    OrganizationsConfig org,
+    OrganizationsConfig orgs,
     @NestedConfigurationProperty
     HangarSecurityConfig security,
-    @NestedConfigurationProperty
-    QueueConfig queue,
     @NestedConfigurationProperty
     JobsConfig jobs,
     @NestedConfigurationProperty

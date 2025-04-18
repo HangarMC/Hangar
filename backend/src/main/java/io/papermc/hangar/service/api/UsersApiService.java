@@ -118,8 +118,8 @@ public class UsersApiService extends HangarComponent {
     @Transactional(readOnly = true)
     public PaginatedResult<User> getStaff(final String query, final RequestPagination pagination) {
         final boolean hasQuery = !StringUtils.isBlank(query);
-        final List<User> users = this.usersApiDAO.getStaff(hasQuery, query, this.config.user().staffRoles(), pagination);
-        final long count = this.usersApiDAO.getStaffCount(hasQuery, query, this.config.user().staffRoles());
+        final List<User> users = this.usersApiDAO.getStaff(hasQuery, query, this.config.users().staffRoles(), pagination);
+        final long count = this.usersApiDAO.getStaffCount(hasQuery, query, this.config.users().staffRoles());
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
 
@@ -159,7 +159,7 @@ public class UsersApiService extends HangarComponent {
         if (hangarPrincipal.isPresent() && hangarPrincipal.get().isAllowedGlobal(Permission.SeeHidden)) {
             userNameHistory = this.usersApiDAO.getUserNameHistory(user.getName(), OffsetDateTime.MIN);
         } else {
-            userNameHistory = this.usersApiDAO.getUserNameHistory(user.getName(), OffsetDateTime.now().minus(this.config.user().nameChangeHistory(), ChronoUnit.DAYS));
+            userNameHistory = this.usersApiDAO.getUserNameHistory(user.getName(), OffsetDateTime.now().minus(this.config.users().nameChangeHistory(), ChronoUnit.DAYS));
         }
         user.setNameHistory(userNameHistory);
     }
