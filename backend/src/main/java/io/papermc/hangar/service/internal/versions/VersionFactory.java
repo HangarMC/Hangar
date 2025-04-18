@@ -312,7 +312,13 @@ public class VersionFactory extends HangarComponent {
             // do slow stuff later
             final ProjectChannelTable finalProjectChannelTable = projectChannelTable;
             final ProjectVersionTable finalProjectVersionTable = projectVersionTable;
-            CompletableFuture.runAsync(() -> postPublish(pendingVersion, projectTable, finalProjectChannelTable, finalProjectVersionTable, firstPublish));
+            CompletableFuture.runAsync(() -> {
+                try {
+                    postPublish(pendingVersion, projectTable, finalProjectChannelTable, finalProjectVersionTable, firstPublish);
+                } catch (Throwable ex) {
+                    logger.warn("Error in post publish for version {} of project {}", pendingVersion.getVersionString(), projectTable.getName(), ex);
+                }
+            });
 
             return projectVersionTable;
         } catch (final HangarApiException e) {
@@ -419,7 +425,7 @@ public class VersionFactory extends HangarComponent {
 
             final String platformPath = this.fileService.resolve(versionDir, platform.name());
             final String platformJarPath = this.fileService.resolve(platformPath, fileInfo.getName());
-            //noinspection StatementWithEmptyBody
+            // noinspection StatementWithEmptyBody
             if (this.fileService instanceof S3FileService) {
                 // this isn't nice, but we cant link, so what am I supposed to do?
                 // fileService.move(tmpVersionJar.toString(), platformJarPath);

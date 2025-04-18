@@ -9,9 +9,6 @@ public interface SchedulerDAO {
     @SqlUpdate("REFRESH MATERIALIZED VIEW home_projects")
     void refreshHomeProjects();
 
-    @SqlUpdate("REFRESH MATERIALIZED VIEW version_view")
-    void refreshVersionView();
-
     @SqlUpdate("REFRESH MATERIALIZED VIEW version_stats_view")
     void refreshVersionStatsView();
 
