@@ -22,7 +22,7 @@ public class ValidationService {
     }
 
     public boolean isValidOrgName(final String name) {
-        return this.config.org().testOrgName(name) && this.isValidUsername(name);
+        return this.config.orgs().testOrgName(name) && this.isValidUsername(name);
     }
 
     public boolean isValidUsername(String name) {
@@ -31,13 +31,9 @@ public class ValidationService {
             return false;
         } else if (name.length() < 3) {
             return false;
-        } else if (name.length() > this.config.user().maxNameLen()) {
+        } else if (name.length() > this.config.users().maxNameLen()) {
             return false;
-        } else if (!this.config.user().nameRegex().test(name)) {
-            return false;
-        } else {
-            return true;
-        }
+        } else return this.config.users().nameRegex().test(name);
     }
 
     public @Nullable String isValidProjectName(String name) {
@@ -60,7 +56,7 @@ public class ValidationService {
         if (BANNED_ROUTES.contains(name) || name.contains(ProjectFactory.SOFT_DELETION_SUFFIX)) {
             return false;
         }
-        return name.length() >= 1 && name.length() <= this.config.projects().maxVersionNameLen() && this.config.projects().versionNameRegex().test(name);
+        return !name.isEmpty() && name.length() <= this.config.projects().maxVersionNameLen() && this.config.projects().versionNameRegex().test(name);
     }
 
     public void testPageName(String name) {

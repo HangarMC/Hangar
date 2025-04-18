@@ -47,10 +47,10 @@ public record Validations(
         );
         return new Validations(
             project,
-            config.user().userTagline(),
+            config.users().userTagline(),
             config.projects().versionName(),
-            config.org().orgName(),
-            config.org().createLimit(),
+            config.orgs().orgName(),
+            config.orgs().createLimit(),
             config.urlRegex()
         );
     }
