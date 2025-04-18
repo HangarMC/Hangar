@@ -124,7 +124,7 @@ public interface IVersionsController {
     @GetMapping("/projects/{slugOrId}/versions")
     PaginatedResult<Version> getVersions(@Parameter(description = "The slug or id of the project to return versions for") @PathVariable("slugOrId") ProjectTable project,
                                          @Parameter(description = "Pagination information") @NotNull RequestPagination pagination,
-                                         @Parameter(description = "Whether to include hidden-by-default channels in the result, defaults to try") boolean includeHiddenChannels);
+                                         @Parameter(description = "Whether to include hidden-by-default channels in the result, defaults to true") boolean includeHiddenChannels);
 
     @GetMapping("/projects/{author}/{slugOrId}/versions")
     @Deprecated(forRemoval = true)
