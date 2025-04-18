@@ -1,0 +1,1220 @@
+{
+  "meta": {
+    "code": "crwdns10730:0crwdne10730:0",
+    "iso": "crwdns10732:0crwdne10732:0",
+    "name": "crwdns10734:0crwdne10734:0",
+    "icon": "crwdns10736:0crwdne10736:0"
+  },
+  "general": {
+    "by": "crwdns12440:0crwdne12440:0",
+    "close": "crwdns10738:0crwdne10738:0",
+    "submit": "crwdns10740:0crwdne10740:0",
+    "save": "crwdns10742:0crwdne10742:0",
+    "comment": "crwdns10744:0crwdne10744:0",
+    "change": "crwdns10746:0crwdne10746:0",
+    "donate": "crwdns10748:0crwdne10748:0",
+    "continue": "crwdns10750:0crwdne10750:0",
+    "create": "crwdns10752:0crwdne10752:0",
+    "delete": "crwdns10754:0crwdne10754:0",
+    "or": "crwdns10756:0crwdne10756:0",
+    "reset": "crwdns10758:0crwdne10758:0",
+    "edit": "crwdns10760:0crwdne10760:0",
+    "required": "crwdns10762:0crwdne10762:0",
+    "optional": "crwdns10764:0crwdne10764:0",
+    "add": "crwdns10766:0crwdne10766:0",
+    "name": "crwdns10768:0crwdne10768:0",
+    "link": "crwdns10770:0crwdne10770:0",
+    "send": "crwdns10772:0crwdne10772:0",
+    "home": "crwdns10774:0crwdne10774:0",
+    "message": "crwdns10776:0crwdne10776:0",
+    "refresh": "crwdns10778:0crwdne10778:0",
+    "confirm": "crwdns10780:0crwdne10780:0",
+    "today": "crwdns10782:0crwdne10782:0",
+    "yesterday": "crwdns10784:0crwdne10784:0",
+    "tomorrow": "crwdns10786:0crwdne10786:0",
+    "used": "crwdns12442:0crwdne12442:0",
+    "reveal": "crwdns12444:0crwdne12444:0",
+    "error": {
+      "invalidUrl": "crwdns10788:0crwdne10788:0",
+      "nameEmpty": "crwdns10790:0crwdne10790:0",
+      "fieldEmpty": "crwdns10792:0crwdne10792:0"
+    }
+  },
+  "hangar": {
+    "footer": {
+      "api": "crwdns10794:0crwdne10794:0",
+      "org": "crwdns10796:0crwdne10796:0",
+      "terms": "crwdns10798:0crwdne10798:0",
+      "privacypolicy": "crwdns10800:0crwdne10800:0",
+      "legalNotice": "crwdns10802:0crwdne10802:0",
+      "status": "crwdns10804:0crwdne10804:0"
+    },
+    "projectSearch": {
+      "clear": "crwdns10806:0crwdne10806:0",
+      "query": "crwdns10808:0{0}crwdne10808:0",
+      "sortBy": "crwdns10810:0crwdne10810:0",
+      "noProjects": "crwdns10812:0crwdne10812:0",
+      "noProjectsFound": "crwdns10814:0crwdne10814:0",
+      "title": "crwdns10816:0crwdne10816:0",
+      "subTitle": "crwdns10818:0crwdne10818:0",
+      "categories": "crwdns10820:0crwdne10820:0",
+      "licenses": "crwdns10822:0crwdne10822:0",
+      "versions": {
+        "PAPER": "crwdns10824:0crwdne10824:0",
+        "WATERFALL": "crwdns10826:0crwdne10826:0",
+        "VELOCITY": "crwdns10828:0crwdne10828:0"
+      },
+      "platforms": "crwdns10830:0crwdne10830:0",
+      "tags": "crwdns10832:0crwdne10832:0"
+    },
+    "subtitle": "crwdns10834:0crwdne10834:0",
+    "sponsoredBy": "crwdns10836:0crwdne10836:0"
+  },
+  "pages": {
+    "guidelinesTitle": "crwdns10838:0crwdne10838:0",
+    "privacypolicyTitle": "crwdns10840:0crwdne10840:0",
+    "termsTitle": "crwdns10842:0crwdne10842:0",
+    "staffTitle": "crwdns10844:0crwdne10844:0",
+    "authorsTitle": "crwdns10846:0crwdne10846:0",
+    "headers": {
+      "username": "crwdns10848:0crwdne10848:0",
+      "roles": "crwdns10850:0crwdne10850:0",
+      "joined": "crwdns10852:0crwdne10852:0",
+      "projects": "crwdns10854:0crwdne10854:0",
+      "locked": "crwdns10856:0crwdne10856:0",
+      "organization": "crwdns10858:0crwdne10858:0"
+    }
+  },
+  "nav": {
+    "indexTitle": "crwdns12446:0crwdne12446:0",
+    "authorsTitle": "crwdns12448:0crwdne12448:0",
+    "staffTitle": "crwdns12450:0crwdne12450:0",
+    "login": "crwdns10860:0crwdne10860:0",
+    "signup": "crwdns10862:0crwdne10862:0",
+    "user": {
+      "profile": "crwdns10864:0crwdne10864:0",
+      "notifications": "crwdns10866:0crwdne10866:0",
+      "flags": "crwdns10868:0crwdne10868:0",
+      "settings": "crwdns10870:0crwdne10870:0",
+      "apiKeys": "crwdns10872:0crwdne10872:0",
+      "projectApprovals": "crwdns10874:0crwdne10874:0",
+      "versionApprovals": "crwdns10876:0crwdne10876:0",
+      "stats": "crwdns10878:0crwdne10878:0",
+      "health": "crwdns10880:0crwdne10880:0",
+      "log": "crwdns10882:0crwdne10882:0",
+      "adminSettings": "crwdns10884:0crwdne10884:0",
+      "userList": "crwdns10886:0crwdne10886:0",
+      "logout": "crwdns10888:0crwdne10888:0",
+      "error": {
+        "loginFailed": "crwdns10890:0crwdne10890:0",
+        "invalidUsername": "crwdns10892:0crwdne10892:0",
+        "usernameTaken": "crwdns10894:0crwdne10894:0",
+        "emailTaken": "crwdns10896:0crwdne10896:0",
+        "hangarAuth": "crwdns10898:0crwdne10898:0",
+        "loginDisabled": "crwdns10900:0crwdne10900:0"
+      }
+    },
+    "createNew": "crwdns10902:0crwdne10902:0",
+    "darkModeOn": "crwdns10904:0crwdne10904:0",
+    "darkModeOff": "crwdns10906:0crwdne10906:0",
+    "new": {
+      "title": "crwdns10908:0crwdne10908:0",
+      "project": "crwdns10910:0crwdne10910:0",
+      "organization": "crwdns10912:0crwdne10912:0"
+    },
+    "tools": {
+      "title": "crwdns10914:0crwdne10914:0",
+      "bbcode": "crwdns10916:0crwdne10916:0",
+      "markdown": "crwdns10918:0crwdne10918:0",
+      "importer": "crwdns10920:0crwdne10920:0",
+      "version": "crwdns10922:0crwdne10922:0"
+    },
+    "hangar": {
+      "tools": "crwdns10924:0crwdne10924:0",
+      "moreFrom": "crwdns10926:0crwdne10926:0",
+      "home": "crwdns10928:0crwdne10928:0",
+      "forums": "crwdns10930:0crwdne10930:0",
+      "code": "crwdns10932:0crwdne10932:0",
+      "docs": "crwdns10934:0crwdne10934:0",
+      "javadocs": "crwdns10936:0crwdne10936:0",
+      "downloads": "crwdns10938:0crwdne10938:0",
+      "community": "crwdns10940:0crwdne10940:0"
+    },
+    "links": {
+      "createProject": "crwdns12452:0crwdne12452:0",
+      "createOrganization": "crwdns12454:0crwdne12454:0"
+    }
+  },
+  "guidelines": {
+    "title": "crwdns10942:0crwdne10942:0"
+  },
+  "project": {
+    "stargazers": "crwdns10944:0crwdne10944:0",
+    "noStargazers": "crwdns10946:0crwdne10946:0",
+    "watchers": "crwdns10948:0crwdne10948:0",
+    "noWatchers": "crwdns10950:0crwdne10950:0",
+    "members": "crwdns10952:0crwdne10952:0",
+    "noPublicMembers": "crwdns10954:0crwdne10954:0",
+    "sorting": {
+      "mostStars": "crwdns10956:0crwdne10956:0",
+      "mostDownloads": "crwdns10958:0crwdne10958:0",
+      "mostViews": "crwdns10960:0crwdne10960:0",
+      "newest": "crwdns10962:0crwdne10962:0",
+      "recentlyUpdated": "crwdns10964:0crwdne10964:0",
+      "recentViews": "crwdns10966:0crwdne10966:0",
+      "recentDownloads": "crwdns10968:0crwdne10968:0",
+      "slug": "crwdns10970:0crwdne10970:0"
+    },
+    "category": {
+      "info": "crwdns10972:0crwdne10972:0",
+      "admin_tools": "crwdns10974:0crwdne10974:0",
+      "chat": "crwdns10976:0crwdne10976:0",
+      "dev_tools": "crwdns10978:0crwdne10978:0",
+      "economy": "crwdns10980:0crwdne10980:0",
+      "gameplay": "crwdns10982:0crwdne10982:0",
+      "games": "crwdns10984:0crwdne10984:0",
+      "protection": "crwdns10986:0crwdne10986:0",
+      "role_playing": "crwdns10988:0crwdne10988:0",
+      "world_management": "crwdns10990:0crwdne10990:0",
+      "misc": "crwdns10992:0crwdne10992:0",
+      "undefined": "crwdns10994:0crwdne10994:0"
+    },
+    "actions": {
+      "unwatch": "crwdns10996:0crwdne10996:0",
+      "watch": "crwdns10998:0crwdne10998:0",
+      "watched": "crwdns11000:0crwdne11000:0",
+      "unwatched": "crwdns11002:0crwdne11002:0",
+      "flag": "crwdns11004:0crwdne11004:0",
+      "openReport": "crwdns11006:0crwdne11006:0",
+      "star": "crwdns11008:0crwdne11008:0",
+      "unstar": "crwdns11010:0crwdne11010:0",
+      "starred": "crwdns11012:0crwdne11012:0",
+      "unstarred": "crwdns11014:0crwdne11014:0",
+      "adminActions": "crwdns11016:0crwdne11016:0",
+      "flagHistory": "crwdns11018:0{0}crwdne11018:0",
+      "staffNotes": "crwdns11020:0{0}crwdne11020:0",
+      "userActionLogs": "crwdns11022:0crwdne11022:0",
+      "forum": "crwdns11024:0crwdne11024:0"
+    },
+    "flag": {
+      "flagProject": "crwdns11026:0{0}crwdne11026:0",
+      "flagSend": "crwdns11028:0crwdne11028:0",
+      "flagSent": "crwdns11030:0crwdne11030:0",
+      "flags": {
+        "inappropriateContent": "crwdns11032:0crwdne11032:0",
+        "impersonation": "crwdns11034:0crwdne11034:0",
+        "spam": "crwdns11036:0crwdne11036:0",
+        "malIntent": "crwdns11038:0crwdne11038:0",
+        "other": "crwdns11040:0crwdne11040:0"
+      },
+      "error": {
+        "alreadyOpen": "crwdns11042:0crwdne11042:0",
+        "alreadyResolved": "crwdns11044:0crwdne11044:0",
+        "commentTooLong": "crwdns11046:0crwdne11046:0"
+      }
+    },
+    "tabs": {
+      "docs": "crwdns11048:0crwdne11048:0",
+      "versions": "crwdns11050:0crwdne11050:0",
+      "discuss": "crwdns11052:0crwdne11052:0",
+      "channels": "crwdns11054:0crwdne11054:0",
+      "settings": "crwdns11056:0crwdne11056:0",
+      "homepage": "crwdns11058:0crwdne11058:0",
+      "issues": "crwdns11060:0crwdne11060:0",
+      "source": "crwdns11062:0crwdne11062:0",
+      "support": "crwdns11064:0crwdne11064:0",
+      "wiki": "crwdns11066:0crwdne11066:0"
+    },
+    "new": {
+      "step1": {
+        "title": "crwdns11068:0crwdne11068:0",
+        "text1": "crwdns11070:0crwdne11070:0",
+        "text2": "crwdns11072:0crwdne11072:0",
+        "importer_text": "crwdns11074:0crwdne11074:0",
+        "continue": "crwdns11076:0crwdne11076:0",
+        "back": "crwdns11078:0crwdne11078:0"
+      },
+      "step2": {
+        "title": "crwdns11080:0crwdne11080:0",
+        "description": "crwdns11082:0crwdne11082:0",
+        "continue": "crwdns11084:0crwdne11084:0",
+        "back": "crwdns11086:0crwdne11086:0",
+        "userSelect": "crwdns11088:0crwdne11088:0",
+        "projectName": "crwdns11090:0crwdne11090:0",
+        "projectSummary": "crwdns11092:0crwdne11092:0",
+        "projectCategory": "crwdns11094:0crwdne11094:0"
+      },
+      "step3": {
+        "title": "crwdns11096:0crwdne11096:0",
+        "description": "crwdns11098:0crwdne11098:0",
+        "description2": "crwdns11100:0crwdne11100:0",
+        "continue": "crwdns11102:0crwdne11102:0",
+        "back": "crwdns11104:0crwdne11104:0",
+        "optional": "crwdns11106:0crwdne11106:0",
+        "links": "crwdns11108:0crwdne11108:0",
+        "tags": "crwdns11110:0crwdne11110:0",
+        "homepage": "crwdns11112:0crwdne11112:0",
+        "issues": "crwdns11114:0crwdne11114:0",
+        "source": "crwdns11116:0crwdne11116:0",
+        "support": "crwdns11118:0crwdne11118:0",
+        "wiki": "crwdns11120:0crwdne11120:0",
+        "license": "crwdns11122:0crwdne11122:0",
+        "type": "crwdns11124:0crwdne11124:0",
+        "customName": "crwdns11126:0crwdne11126:0",
+        "url": "crwdns11128:0crwdne11128:0",
+        "keywords": "crwdns11130:0crwdne11130:0"
+      },
+      "step4": {
+        "title": "crwdns11132:0crwdne11132:0",
+        "text": "crwdns11134:0crwdne11134:0"
+      },
+      "error": {
+        "create": "crwdns11136:0crwdne11136:0",
+        "nameExists": "crwdns11138:0crwdne11138:0",
+        "slugExists": "crwdns11140:0crwdne11140:0",
+        "invalidName": "crwdns11142:0crwdne11142:0",
+        "tooLongName": "crwdns11144:0crwdne11144:0",
+        "tooShortName": "crwdns11146:0crwdne11146:0",
+        "tooLongDesc": "crwdns11148:0crwdne11148:0",
+        "tooLongLicense": "crwdns11150:0crwdne11150:0",
+        "invalidLicense": "crwdns11152:0crwdne11152:0",
+        "tooLongSponsors": "crwdns11154:0crwdne11154:0",
+        "tooManyKeywords": "crwdns11156:0crwdne11156:0",
+        "keywordTooLong": "crwdns11158:0crwdne11158:0",
+        "noCategory": "crwdns11160:0crwdne11160:0",
+        "noDescription": "crwdns11162:0crwdne11162:0",
+        "tooManyDependencies": "crwdns11164:0crwdne11164:0"
+      }
+    },
+    "sendForApproval": "crwdns11166:0crwdne11166:0",
+    "info": {
+      "title": "crwdns11168:0crwdne11168:0",
+      "publishDate": "crwdns11170:0crwdne11170:0",
+      "license": "crwdns11172:0crwdne11172:0",
+      "views": "crwdns11174:0crwdne11174:0",
+      "totalDownloads": "crwdns11176:0crwdne11176:0",
+      "totalTotalDownloads": "crwdns11178:0crwdne11178:0",
+      "stars": "crwdns11180:0crwdne11180:0",
+      "watchers": "crwdns11182:0crwdne11182:0",
+      "lastUpdatedTooltip": "crwdns11184:0crwdne11184:0"
+    },
+    "pinnedVersions": "crwdns11186:0crwdne11186:0",
+    "sponsors": "crwdns11188:0crwdne11188:0",
+    "sponsorsTooltip": "crwdns11190:0crwdne11190:0",
+    "license": {
+      "link": "crwdns11192:0crwdne11192:0"
+    },
+    "error": {
+      "star": "crwdns11194:0crwdne11194:0",
+      "watch": "crwdns11196:0crwdne11196:0"
+    },
+    "settings": {
+      "title": "crwdns11198:0crwdne11198:0",
+      "category": "crwdns11200:0crwdne11200:0",
+      "categorySub": "crwdns11202:0crwdne11202:0",
+      "keywords": "crwdns11204:0crwdne11204:0",
+      "keywordsSub": "crwdns11206:0crwdne11206:0",
+      "keywordTooLong": "crwdns11208:0{0}crwdne11208:0",
+      "keywordTooShort": "crwdns11210:0{0}crwdne11210:0",
+      "keywordInvalid": "crwdns11212:0{0}crwdne11212:0",
+      "tags": {
+        "title": "crwdns11214:0crwdne11214:0",
+        "SUPPORTS_FOLIA": {
+          "title": "crwdns11216:0crwdne11216:0",
+          "description": "crwdns11218:0crwdne11218:0",
+          "tooltip": "crwdns11220:0crwdne11220:0"
+        },
+        "ADDON": {
+          "title": "crwdns11222:0crwdne11222:0",
+          "description": "crwdns11224:0crwdne11224:0",
+          "tooltip": "crwdns11226:0crwdne11226:0"
+        },
+        "LIBRARY": {
+          "title": "crwdns11228:0crwdne11228:0",
+          "description": "crwdns11230:0crwdne11230:0",
+          "tooltip": "crwdns11232:0crwdne11232:0"
+        }
+      },
+      "tagsSub": "crwdns11234:0crwdne11234:0",
+      "invalidTag": "crwdns11236:0crwdne11236:0",
+      "links": {
+        "title": "crwdns11238:0crwdne11238:0",
+        "sub": "crwdns11240:0crwdne11240:0",
+        "typeField": "crwdns11242:0crwdne11242:0",
+        "titleField": "crwdns11244:0crwdne11244:0",
+        "top": "crwdns11246:0crwdne11246:0",
+        "sidebar": "crwdns11248:0crwdne11248:0",
+        "addSection": "crwdns11250:0crwdne11250:0",
+        "addLink": "crwdns11252:0crwdne11252:0",
+        "nameField": "crwdns11254:0crwdne11254:0",
+        "urlField": "crwdns11256:0crwdne11256:0"
+      },
+      "license": "crwdns11258:0crwdne11258:0",
+      "licenseSub": "crwdns11260:0crwdne11260:0",
+      "forum": "crwdns11262:0crwdne11262:0",
+      "forumSub": "crwdns11264:0crwdne11264:0",
+      "description": "crwdns11266:0crwdne11266:0",
+      "descriptionSub": "crwdns11268:0crwdne11268:0",
+      "icon": "crwdns11270:0crwdne11270:0",
+      "iconSub": "crwdns11272:0crwdne11272:0",
+      "iconUpload": "crwdns11274:0crwdne11274:0",
+      "iconReset": "crwdns11276:0crwdne11276:0",
+      "rename": "crwdns11278:0crwdne11278:0",
+      "renameSub": "crwdns11280:0crwdne11280:0",
+      "transfer": "crwdns11282:0crwdne11282:0",
+      "transferSub": "crwdns11284:0crwdne11284:0",
+      "transferTo": "crwdns11286:0crwdne11286:0",
+      "newName": "crwdns11288:0crwdne11288:0",
+      "delete": "crwdns11290:0crwdne11290:0",
+      "deleteSub": "crwdns11292:0crwdne11292:0",
+      "hardDelete": "crwdns11294:0crwdne11294:0",
+      "hardDeleteSub": "crwdns11296:0crwdne11296:0",
+      "save": "crwdns11298:0crwdne11298:0",
+      "optional": "crwdns11300:0crwdne11300:0",
+      "licenseCustom": "crwdns11302:0crwdne11302:0",
+      "licenseType": "crwdns11304:0crwdne11304:0",
+      "licenseUrl": "crwdns11306:0crwdne11306:0",
+      "donation": {
+        "enable": "crwdns11308:0crwdne11308:0",
+        "enableSub": "crwdns11310:0crwdne11310:0",
+        "subject": "crwdns11312:0crwdne11312:0",
+        "subjectSub": "crwdns11314:0crwdne11314:0",
+        "subjectLabel": "crwdns11316:0crwdne11316:0"
+      },
+      "error": {
+        "invalidFile": "crwdns11318:0{0}crwdne11318:0",
+        "noFile": "crwdns11320:0crwdne11320:0",
+        "members": {
+          "invalidUser": "crwdns11322:0{0}crwdne11322:0",
+          "alreadyInvited": "crwdns11324:0{0}crwdne11324:0",
+          "notMember": "crwdns11326:0{0}crwdne11326:0",
+          "invalidRole": "crwdns11328:0{0}crwdne11328:0",
+          "pendingTransfer": "crwdns11330:0crwdne11330:0"
+        }
+      },
+      "success": {
+        "changedIcon": "crwdns11332:0crwdne11332:0",
+        "changedIconWarn": "crwdns11334:0{0}crwdne11334:0",
+        "resetIcon": "crwdns11336:0crwdne11336:0",
+        "resetIconWarn": "crwdns11338:0{0}crwdne11338:0",
+        "rename": "crwdns11340:0{0}crwdne11340:0",
+        "transferRequest": "crwdns11342:0{0}crwdne11342:0",
+        "softDelete": "crwdns11344:0crwdne11344:0",
+        "hardDelete": "crwdns11346:0crwdne11346:0"
+      },
+      "tabs": {
+        "general": "crwdns11348:0crwdne11348:0",
+        "links": "crwdns11350:0crwdne11350:0",
+        "management": "crwdns11352:0crwdne11352:0",
+        "donation": "crwdns11354:0crwdne11354:0"
+      }
+    },
+    "discuss": {
+      "login": "crwdns11356:0crwdne11356:0",
+      "toReply": "crwdns11358:0crwdne11358:0",
+      "noTopic": "crwdns11360:0crwdne11360:0",
+      "send": "crwdns11362:0crwdne11362:0"
+    }
+  },
+  "page": {
+    "plural": "crwdns11364:0crwdne11364:0",
+    "new": {
+      "title": "crwdns11366:0crwdne11366:0",
+      "error": {
+        "minLength": "crwdns11368:0crwdne11368:0",
+        "maxLength": "crwdns11370:0crwdne11370:0",
+        "maxSlugLength": "crwdns11372:0crwdne11372:0",
+        "duplicateName": "crwdns11374:0crwdne11374:0",
+        "invalidName": "crwdns11376:0crwdne11376:0",
+        "name": {
+          "maxLength": "crwdns11378:0crwdne11378:0",
+          "minLength": "crwdns11380:0crwdne11380:0",
+          "invalidChars": "crwdns11382:0crwdne11382:0"
+        },
+        "save": "crwdns11384:0crwdne11384:0"
+      },
+      "name": "crwdns11386:0crwdne11386:0",
+      "parent": "crwdns11388:0crwdne11388:0"
+    },
+    "delete": {
+      "title": "crwdns11390:0crwdne11390:0",
+      "text": "crwdns11392:0crwdne11392:0"
+    }
+  },
+  "version": {
+    "new": {
+      "title": "crwdns11394:0crwdne11394:0",
+      "upload": "crwdns11396:0crwdne11396:0",
+      "uploadNew": "crwdns11398:0crwdne11398:0",
+      "url": "crwdns11400:0crwdne11400:0",
+      "form": {
+        "file": "crwdns11402:0crwdne11402:0",
+        "url": "crwdns11404:0crwdne11404:0",
+        "versionString": "crwdns11406:0crwdne11406:0",
+        "fileName": "crwdns11408:0crwdne11408:0",
+        "fileSize": "crwdns11410:0crwdne11410:0",
+        "externalUrl": "crwdns11412:0crwdne11412:0",
+        "hangarProject": "crwdns11414:0crwdne11414:0",
+        "linkOrProject": "crwdns11416:0crwdne11416:0",
+        "channel": "crwdns11418:0crwdne11418:0",
+        "addChannel": "crwdns11420:0crwdne11420:0",
+        "unstable": "crwdns11422:0crwdne11422:0",
+        "forumPost": "crwdns11424:0crwdne11424:0",
+        "release": {
+          "bulletin": "crwdns11426:0crwdne11426:0",
+          "desc": "crwdns11428:0crwdne11428:0"
+        },
+        "platforms": "crwdns11430:0crwdne11430:0",
+        "platformVersions": "crwdns11432:0crwdne11432:0",
+        "platformVersionsDescription": "crwdns11434:0crwdne11434:0",
+        "versionDescription": "crwdns11436:0crwdne11436:0",
+        "tags": "crwdns11438:0crwdne11438:0",
+        "dependencies": "crwdns11440:0crwdne11440:0",
+        "changelogTitle": "crwdns11442:0crwdne11442:0",
+        "artifactTitle": "crwdns11444:0crwdne11444:0",
+        "artifactNumber": "crwdns11446:0#{0}crwdne11446:0",
+        "externalLinkAlert": "crwdns11448:0crwdne11448:0",
+        "addedArtifacts": "crwdns11450:0crwdne11450:0"
+      },
+      "steps": {
+        "1": {
+          "header": "crwdns11452:0crwdne11452:0",
+          "back": "crwdns11454:0crwdne11454:0",
+          "continue": "crwdns11456:0crwdne11456:0"
+        },
+        "2": {
+          "header": "crwdns11458:0crwdne11458:0",
+          "back": "crwdns11460:0crwdne11460:0",
+          "continue": "crwdns11462:0crwdne11462:0"
+        },
+        "3": {
+          "header": "crwdns11464:0crwdne11464:0",
+          "back": "crwdns11466:0crwdne11466:0",
+          "continue": "crwdns11468:0crwdne11468:0"
+        },
+        "4": {
+          "header": "crwdns11470:0crwdne11470:0",
+          "back": "crwdns11472:0crwdne11472:0",
+          "continue": "crwdns11474:0crwdne11474:0"
+        }
+      },
+      "error": {
+        "metaNotFound": "crwdns11476:0crwdne11476:0",
+        "jarNotFound": "crwdns11478:0crwdne11478:0",
+        "fileExtension": "crwdns11480:0crwdne11480:0",
+        "unexpected": "crwdns11482:0crwdne11482:0",
+        "invalidVersionString": "crwdns11484:0crwdne11484:0",
+        "duplicateNameAndPlatform": "crwdns11486:0crwdne11486:0",
+        "invalidNumOfPlatforms": "crwdns11488:0crwdne11488:0",
+        "duplicate": "crwdns11490:0crwdne11490:0",
+        "noFile": "crwdns11492:0crwdne11492:0",
+        "mismatchedFileSize": "crwdns11494:0crwdne11494:0",
+        "hashMismatch": "crwdns11496:0crwdne11496:0",
+        "invalidPlatformVersion": "crwdns11498:0crwdne11498:0",
+        "invalidPlatformVersionList": "crwdns11500:0{0}crwdne11500:0",
+        "fileIOError": "crwdns11502:0crwdne11502:0",
+        "unknown": "crwdns11504:0crwdne11504:0",
+        "incomplete": "crwdns11506:0{0}crwdne11506:0",
+        "noDescription": "crwdns11508:0crwdne11508:0",
+        "invalidPluginDependencyNamespace": "crwdns11510:0{0}crwdne11510:0",
+        "invalidName": "crwdns11512:0crwdne11512:0",
+        "channel": {
+          "noName": "crwdns11514:0crwdne11514:0",
+          "noColor": "crwdns11516:0crwdne11516:0"
+        }
+      },
+      "gradle-plugin-info": "crwdns11518:0crwdne11518:0"
+    },
+    "edit": {
+      "platformVersions": "crwdns11520:0{0}crwdne11520:0",
+      "pluginDeps": "crwdns11522:0{0}crwdne11522:0",
+      "error": {
+        "noPlatformVersions": "crwdns11524:0crwdne11524:0",
+        "invalidVersionForPlatform": "crwdns11526:0{0}crwdnd11526:0{1}crwdne11526:0",
+        "invalidProjectNamespace": "crwdns11528:0{0}crwdne11528:0"
+      }
+    },
+    "page": {
+      "subheader": "crwdns11530:0{0}crwdnd11530:0{1}crwdne11530:0",
+      "dependencies": "crwdns11532:0crwdne11532:0",
+      "platforms": "crwdns11534:0crwdne11534:0",
+      "required": "crwdns11536:0crwdne11536:0",
+      "adminMsg": "crwdns11538:0{0}crwdnd11538:0{1}crwdne11538:0",
+      "reviewLogs": "crwdns11540:0crwdne11540:0",
+      "reviewStart": "crwdns11542:0crwdne11542:0",
+      "scans": "crwdns11544:0crwdne11544:0",
+      "manage": "crwdns11546:0crwdne11546:0",
+      "visibility": "crwdns11548:0{0}crwdne11548:0",
+      "pinned": {
+        "tooltip": {
+          "none": "crwdns11550:0crwdne11550:0",
+          "version": "crwdns11552:0crwdne11552:0",
+          "channel": "crwdns11554:0crwdne11554:0"
+        },
+        "button": {
+          "none": "crwdns11556:0crwdne11556:0",
+          "version": "crwdns11558:0crwdne11558:0",
+          "channel": "crwdns11560:0crwdne11560:0"
+        },
+        "request": {
+          "true": "crwdns11562:0crwdne11562:0",
+          "false": "crwdns11564:0crwdne11564:0"
+        }
+      },
+      "delete": "crwdns11566:0crwdne11566:0",
+      "hardDelete": "crwdns11568:0crwdne11568:0",
+      "restore": "crwdns11570:0crwdne11570:0",
+      "download": "crwdns11572:0crwdne11572:0",
+      "downloadExternal": "crwdns11574:0crwdne11574:0",
+      "adminActions": "crwdns11576:0crwdne11576:0",
+      "partiallyApproved": "crwdns11578:0crwdne11578:0",
+      "approved": "crwdns11580:0crwdne11580:0",
+      "userAdminLogs": "crwdns11582:0crwdne11582:0",
+      "unsafeWarning": "crwdns11584:0crwdne11584:0",
+      "unsafeWarningExternal": "crwdns11586:0crwdne11586:0",
+      "downloadUrlCopied": "crwdns11588:0crwdne11588:0",
+      "downloadUrlHover": "crwdns11590:0crwdne11590:0",
+      "noVersions": "crwdns11592:0crwdne11592:0",
+      "confirmation": {
+        "title": "crwdns11594:0{0}crwdnd11594:0{1}crwdnd11594:0{2}crwdne11594:0",
+        "alert": "crwdns11596:0crwdne11596:0",
+        "disclaimer": "crwdns11598:0crwdne11598:0",
+        "agree": "crwdns11600:0crwdne11600:0",
+        "deny": "crwdns11602:0crwdne11602:0"
+      }
+    },
+    "channels": "crwdns11604:0crwdne11604:0",
+    "editChannels": "crwdns11606:0crwdne11606:0",
+    "platforms": "crwdns11608:0crwdne11608:0",
+    "error": {
+      "onlyOnePublic": "crwdns11610:0crwdne11610:0",
+      "oldNameTaken": "crwdns11612:0crwdne11612:0"
+    },
+    "success": {
+      "softDelete": "crwdns11614:0crwdne11614:0",
+      "hardDelete": "crwdns11616:0crwdne11616:0",
+      "restore": "crwdns11618:0crwdne11618:0"
+    }
+  },
+  "channel": {
+    "modal": {
+      "titleNew": "crwdns11620:0crwdne11620:0",
+      "titleEdit": "crwdns11622:0crwdne11622:0",
+      "name": "crwdns11624:0crwdne11624:0",
+      "description": "crwdns11626:0crwdne11626:0",
+      "color": "crwdns11628:0crwdne11628:0",
+      "pickedColor": "crwdns11630:0crwdne11630:0",
+      "flags": {
+        "unstable": "crwdns11632:0crwdne11632:0",
+        "pinned": "crwdns11634:0crwdne11634:0",
+        "sends_notifications": "crwdns11636:0crwdne11636:0",
+        "hide_by_default": "crwdns11638:0crwdne11638:0"
+      },
+      "error": {
+        "invalidName": "crwdns11640:0crwdne11640:0",
+        "maxChannels": "crwdns11642:0{0}crwdne11642:0",
+        "duplicateColor": "crwdns11644:0crwdne11644:0",
+        "duplicateName": "crwdns11646:0crwdne11646:0",
+        "tooLongName": "crwdns11648:0crwdne11648:0",
+        "tooLongDescription": "crwdns11650:0crwdne11650:0",
+        "cannotDelete": "crwdns11652:0crwdne11652:0",
+        "cannotEdit": "crwdns11654:0crwdne11654:0",
+        "invalidFlag": "crwdns11656:0crwdne11656:0"
+      },
+      "success": {
+        "addedChannel": "crwdns11658:0{0}crwdne11658:0",
+        "editedChannel": "crwdns11660:0{0}crwdne11660:0",
+        "deletedChannel": "crwdns11662:0{0}crwdne11662:0"
+      }
+    },
+    "manage": {
+      "title": "crwdns11664:0crwdne11664:0",
+      "reviewInfo": "crwdns11666:0crwdne11666:0",
+      "subtitle": "crwdns11668:0crwdne11668:0",
+      "channelName": "crwdns11670:0crwdne11670:0",
+      "channelDescription": "crwdns11672:0crwdne11672:0",
+      "versionCount": "crwdns11674:0crwdne11674:0",
+      "reviewed": "crwdns11676:0crwdne11676:0",
+      "edit": "crwdns11678:0crwdne11678:0",
+      "trash": "crwdns11680:0crwdne11680:0",
+      "editButton": "crwdns11682:0crwdne11682:0",
+      "deleteButton": "crwdns11684:0crwdne11684:0",
+      "add": "crwdns11686:0crwdne11686:0"
+    }
+  },
+  "organization": {
+    "new": {
+      "title": "crwdns11688:0crwdne11688:0",
+      "text": "crwdns11690:0crwdne11690:0",
+      "name": "crwdns11692:0crwdne11692:0",
+      "error": {
+        "duplicateName": "crwdns11694:0crwdne11694:0",
+        "invalidName": "crwdns11696:0crwdne11696:0",
+        "tooManyOrgs": "crwdns11698:0{0}crwdne11698:0",
+        "notEnabled": "crwdns11700:0crwdne11700:0",
+        "jsonError": "crwdns11702:0crwdne11702:0",
+        "hangarAuthValidationError": "crwdns11704:0{0}crwdne11704:0",
+        "unknownError": "crwdns11706:0crwdne11706:0",
+        "noSpaces": "crwdns11708:0crwdne11708:0"
+      }
+    },
+    "settings": {
+      "changeAvatar": "crwdns11710:0crwdne11710:0",
+      "members": {
+        "invalidUser": "crwdns11712:0{0}crwdne11712:0",
+        "alreadyInvited": "crwdns11714:0{0}crwdne11714:0",
+        "notMember": "crwdns11716:0{0}crwdne11716:0",
+        "invalidRole": "crwdns11718:0{0}crwdne11718:0",
+        "pendingTransfer": "crwdns11720:0crwdne11720:0"
+      },
+      "transferModal": {
+        "title": "crwdns11722:0{0}crwdne11722:0",
+        "description": "crwdns11724:0{0}crwdne11724:0",
+        "transferTo": "crwdns11726:0crwdne11726:0"
+      },
+      "deleteModal": {
+        "title": "crwdns11728:0{0}crwdne11728:0",
+        "description": "crwdns11730:0crwdne11730:0"
+      },
+      "success": {
+        "transferRequest": "crwdns11732:0{0}crwdne11732:0"
+      }
+    }
+  },
+  "form": {
+    "memberList": {
+      "info": "crwdns11734:0crwdne11734:0",
+      "addUser": "crwdns11736:0crwdne11736:0",
+      "create": "crwdns11738:0crwdne11738:0",
+      "editUser": "crwdns11740:0crwdne11740:0",
+      "invitedAs": "crwdns11742:0{0}crwdne11742:0",
+      "leave": "crwdns11744:0crwdne11744:0",
+      "remove": "crwdns11746:0crwdne11746:0",
+      "cancelTransfer": "crwdns11748:0crwdne11748:0",
+      "leaveModal": {
+        "title": "crwdns11750:0{0}crwdne11750:0",
+        "description": "crwdns11752:0{0}crwdne11752:0"
+      }
+    }
+  },
+  "notifications": {
+    "title": "crwdns11754:0crwdne11754:0",
+    "invites": "crwdns11756:0crwdne11756:0",
+    "invited": "crwdns11758:0{0}crwdne11758:0",
+    "inviteAccepted": "crwdns11760:0{0}crwdne11760:0",
+    "invitedOrg": "crwdns11762:0{0}crwdnd11762:0{1}crwdne11762:0",
+    "inviteAcceptedOrg": "crwdns11764:0{0}crwdnd11764:0{1}crwdne11764:0",
+    "readAll": "crwdns11766:0crwdne11766:0",
+    "unread": "crwdns11768:0crwdne11768:0",
+    "read": "crwdns11770:0crwdne11770:0",
+    "all": "crwdns11772:0crwdne11772:0",
+    "viewAll": "crwdns11774:0crwdne11774:0",
+    "viewMoreUnread": "crwdns11776:0{0}crwdne11776:0",
+    "markAsRead": "crwdns11778:0crwdne11778:0",
+    "invite": {
+      "all": "crwdns11780:0crwdne11780:0",
+      "projects": "crwdns11782:0crwdne11782:0",
+      "organizations": "crwdns11784:0crwdne11784:0",
+      "btns": {
+        "accept": "crwdns11786:0crwdne11786:0",
+        "decline": "crwdns11788:0crwdne11788:0",
+        "unaccept": "crwdns11790:0crwdne11790:0"
+      },
+      "msgs": {
+        "accept": "crwdns11792:0{0}crwdne11792:0",
+        "decline": "crwdns11794:0{0}crwdne11794:0",
+        "unaccept": "crwdns11796:0{0}crwdne11796:0"
+      }
+    },
+    "empty": {
+      "unread": "crwdns11798:0crwdne11798:0",
+      "recent": "crwdns11800:0crwdne11800:0",
+      "read": "crwdns11802:0crwdne11802:0",
+      "all": "crwdns11804:0crwdne11804:0",
+      "invites": "crwdns11806:0crwdne11806:0"
+    },
+    "project": {
+      "visibilityChanged": "crwdns11808:0{0}crwdnd11808:0{1}crwdne11808:0",
+      "visibilityChangedComment": "crwdns11810:0{0}crwdnd11810:0{1}crwdnd11810:0{2}crwdne11810:0",
+      "manualReportComment": "crwdns11812:0{0}crwdnd11812:0{1}crwdne11812:0",
+      "reviewed": "crwdns11814:0{0}crwdnd11814:0{1}crwdne11814:0",
+      "reviewedPartial": "crwdns11816:0{0}crwdnd11816:0{1}crwdne11816:0",
+      "newVersion": "crwdns11818:0{0}crwdnd11818:0{1}crwdne11818:0",
+      "invite": "crwdns11820:0{0}crwdnd11820:0{1}crwdne11820:0",
+      "inviteRescinded": "crwdns11822:0{0}crwdnd11822:0{1}crwdne11822:0",
+      "removed": "crwdns11824:0{0}crwdnd11824:0{1}crwdne11824:0",
+      "roleChanged": "crwdns11826:0{0}crwdnd11826:0{1}crwdne11826:0",
+      "transfer": "crwdns11828:0{0}crwdnd11828:0{1}crwdne11828:0"
+    },
+    "organization": {
+      "invite": "crwdns11830:0{0}crwdnd11830:0{1}crwdne11830:0",
+      "inviteRescinded": "crwdns11832:0{0}crwdnd11832:0{1}crwdne11832:0",
+      "removed": "crwdns11834:0{0}crwdnd11834:0{1}crwdne11834:0",
+      "roleChanged": "crwdns11836:0{0}crwdnd11836:0{1}crwdne11836:0",
+      "transfer": "crwdns11838:0{0}crwdnd11838:0{1}crwdne11838:0"
+    }
+  },
+  "visibility": {
+    "notice": {
+      "new": "crwdns11840:0crwdne11840:0",
+      "needsChanges": "crwdns11842:0crwdne11842:0",
+      "needsApproval": "crwdns11844:0crwdne11844:0",
+      "softDelete": "crwdns11846:0{0}crwdne11846:0"
+    },
+    "name": {
+      "new": "crwdns11848:0crwdne11848:0",
+      "public": "crwdns11850:0crwdne11850:0",
+      "needsChanges": "crwdns11852:0crwdne11852:0",
+      "needsApproval": "crwdns11854:0crwdne11854:0",
+      "softDelete": "crwdns11856:0crwdne11856:0"
+    },
+    "changes": {
+      "version": {
+        "reviewed": "crwdns11858:0crwdne11858:0"
+      }
+    },
+    "modal": {
+      "activatorBtn": "crwdns11860:0crwdne11860:0",
+      "title": "crwdns11862:0{0}crwdne11862:0",
+      "reason": "crwdns11864:0crwdne11864:0",
+      "success": "crwdns11866:0{0}crwdnd11866:0{1}crwdne11866:0"
+    }
+  },
+  "author": {
+    "watching": "crwdns11868:0crwdne11868:0",
+    "stars": "crwdns11870:0crwdne11870:0",
+    "orgs": "crwdns11872:0crwdne11872:0",
+    "management": "crwdns11874:0crwdne11874:0",
+    "viewOnForums": "crwdns11876:0crwdne11876:0",
+    "taglineLabel": "crwdns11878:0crwdne11878:0",
+    "editTagline": "crwdns11880:0crwdne11880:0",
+    "editOrgVisibility": "crwdns11882:0crwdne11882:0",
+    "orgVisibilityModal": "crwdns11884:0crwdne11884:0",
+    "memberSince": "crwdns11886:0{0}crwdne11886:0",
+    "numProjects": "crwdns11888:0{0}crwdnd11888:0{0}crwdne11888:0",
+    "addTagline": "crwdns11890:0crwdne11890:0",
+    "noOrgs": "crwdns11892:0{0}crwdne11892:0",
+    "noWatching": "crwdns11894:0{0}crwdne11894:0",
+    "noStarred": "crwdns11896:0{0}crwdne11896:0",
+    "tooltips": {
+      "settings": "crwdns11898:0crwdne11898:0",
+      "lock": "crwdns11900:0crwdne11900:0",
+      "unlock": "crwdns11902:0crwdne11902:0",
+      "apiKeys": "crwdns11904:0crwdne11904:0",
+      "activity": "crwdns11906:0crwdne11906:0",
+      "admin": "crwdns11908:0crwdne11908:0",
+      "transfer": "crwdns11910:0crwdne11910:0",
+      "delete": "crwdns11912:0crwdne11912:0",
+      "deleteUser": "crwdns11914:0crwdne11914:0",
+      "lockOrg": "crwdns11916:0crwdne11916:0",
+      "unlockOrg": "crwdns11918:0crwdne11918:0"
+    },
+    "lock": {
+      "confirmLock": "crwdns11920:0{0}crwdne11920:0",
+      "confirmUnlock": "crwdns11922:0{0}crwdne11922:0",
+      "successLock": "crwdns11924:0{0}crwdne11924:0",
+      "successUnlock": "crwdns11926:0{0}crwdne11926:0",
+      "confirmLockOrg": "crwdns11928:0{0}crwdne11928:0",
+      "confirmUnlockOrg": "crwdns11930:0{0}crwdne11930:0",
+      "successLockOrg": "crwdns11932:0{0}crwdne11932:0",
+      "successUnlockOrg": "crwdns11934:0{0}crwdne11934:0",
+      "deleteProjects": "crwdns11936:0crwdne11936:0",
+      "reinstateProjects": "crwdns11938:0crwdne11938:0",
+      "deleteProjectsOrg": "crwdns11940:0crwdne11940:0",
+      "reinstateProjectsOrg": "crwdns11942:0crwdne11942:0",
+      "reasonLock": "crwdns11944:0crwdne11944:0",
+      "reasonUnlock": "crwdns11946:0crwdne11946:0"
+    },
+    "org": {
+      "editAvatar": "crwdns11948:0crwdne11948:0"
+    },
+    "error": {
+      "invalidTagline": "crwdns11950:0crwdne11950:0",
+      "invalidUsername": "crwdns11952:0crwdne11952:0"
+    }
+  },
+  "linkout": {
+    "title": "crwdns11954:0crwdne11954:0",
+    "text": "crwdns11956:0{0}crwdne11956:0",
+    "abort": "crwdns11958:0crwdne11958:0",
+    "continue": "crwdns11960:0crwdne11960:0",
+    "trust": "crwdns11962:0crwdne11962:0"
+  },
+  "flags": {
+    "header": "crwdns11964:0crwdne11964:0",
+    "noFlags": "crwdns11966:0crwdne11966:0",
+    "resolved": "crwdns11968:0{0}crwdnd11968:0{1}crwdne11968:0",
+    "notResolved": "crwdns11970:0crwdne11970:0"
+  },
+  "notes": {
+    "header": "crwdns11972:0crwdne11972:0",
+    "noNotes": "crwdns11974:0crwdne11974:0",
+    "addNote": "crwdns11976:0crwdne11976:0",
+    "notes": "crwdns11978:0crwdne11978:0",
+    "placeholder": "crwdns11980:0crwdne11980:0"
+  },
+  "stats": {
+    "title": "crwdns11982:0crwdne11982:0",
+    "plugins": "crwdns11984:0crwdne11984:0",
+    "reviews": "crwdns11986:0crwdne11986:0",
+    "uploads": "crwdns11988:0crwdne11988:0",
+    "downloads": "crwdns11990:0crwdne11990:0",
+    "totalDownloads": "crwdns11992:0crwdne11992:0",
+    "flags": "crwdns11994:0crwdne11994:0",
+    "openedFlags": "crwdns11996:0crwdne11996:0",
+    "closedFlags": "crwdns11998:0crwdne11998:0"
+  },
+  "health": {
+    "title": "crwdns12000:0crwdne12000:0",
+    "noTopicProject": "crwdns12002:0crwdne12002:0",
+    "erroredJobs": "crwdns12004:0crwdne12004:0",
+    "jobText": "crwdns12006:0{0}crwdnd12006:0{1}crwdnd12006:0{2}crwdne12006:0",
+    "staleProjects": "crwdns12008:0crwdne12008:0",
+    "notPublicProjects": "crwdns12010:0crwdne12010:0",
+    "noPlatform": "crwdns12012:0crwdne12012:0",
+    "missingFileProjects": "crwdns12014:0crwdne12014:0",
+    "empty": "crwdns12016:0crwdne12016:0"
+  },
+  "reviews": {
+    "headline": "crwdns12018:0{0}crwdnd12018:0{1}crwdne12018:0",
+    "title": "crwdns12020:0crwdne12020:0",
+    "projectPage": "crwdns12022:0crwdne12022:0",
+    "downloadFile": "crwdns12024:0crwdne12024:0",
+    "startReview": "crwdns12026:0crwdne12026:0",
+    "stopReview": "crwdns12028:0crwdne12028:0",
+    "approve": "crwdns12030:0crwdne12030:0",
+    "approvePartial": "crwdns12032:0crwdne12032:0",
+    "notUnderReview": "crwdns12034:0crwdne12034:0",
+    "reviewMessage": "crwdns12036:0crwdne12036:0",
+    "addMessage": "crwdns12038:0crwdne12038:0",
+    "reopenReview": "crwdns12040:0crwdne12040:0",
+    "undoApproval": "crwdns12042:0crwdne12042:0",
+    "hideClosed": "crwdns12044:0crwdne12044:0",
+    "error": {
+      "noReviewStarted": "crwdns12046:0crwdne12046:0",
+      "notCorrectUser": "crwdns12048:0crwdne12048:0",
+      "cannotReopen": "crwdns12050:0crwdne12050:0",
+      "onlyOneReview": "crwdns12052:0crwdne12052:0",
+      "badUndo": "crwdns12054:0crwdne12054:0"
+    },
+    "presets": {
+      "message": "crwdns12056:0{msg}crwdne12056:0",
+      "start": "crwdns12058:0{name}crwdne12058:0",
+      "stop": "crwdns12060:0{name}crwdnd12060:0{msg}crwdne12060:0",
+      "reopen": "crwdns12062:0{name}crwdne12062:0",
+      "approve": "crwdns12064:0{name}crwdne12064:0",
+      "approvePartial": "crwdns12066:0{name}crwdne12066:0",
+      "undoApproval": "crwdns12068:0{name}crwdne12068:0",
+      "reviewTitle": "crwdns12070:0{name}crwdne12070:0"
+    },
+    "state": {
+      "ongoing": "crwdns12072:0crwdne12072:0",
+      "stopped": "crwdns12074:0crwdne12074:0",
+      "approved": "crwdns12076:0crwdne12076:0",
+      "partiallyApproved": "crwdns12078:0crwdne12078:0",
+      "lastUpdate": "crwdns12080:0crwdne12080:0"
+    }
+  },
+  "apiKeys": {
+    "title": "crwdns12082:0crwdne12082:0",
+    "createNew": "crwdns12084:0crwdne12084:0",
+    "existing": "crwdns12086:0crwdne12086:0",
+    "name": "crwdns12088:0crwdne12088:0",
+    "created": "crwdns12090:0crwdne12090:0",
+    "keyIdentifier": "crwdns12092:0crwdne12092:0",
+    "permissions": "crwdns12094:0crwdne12094:0",
+    "lastUsed": "crwdns12096:0crwdne12096:0",
+    "permissionRequired": "crwdns12098:0crwdne12098:0",
+    "delete": "crwdns12100:0crwdne12100:0",
+    "copy": "crwdns12102:0crwdne12102:0",
+    "copied": "crwdns12104:0crwdne12104:0",
+    "createKey": "crwdns12106:0crwdne12106:0",
+    "noKeys": "crwdns12108:0crwdne12108:0",
+    "success": {
+      "delete": "crwdns12110:0{0}crwdne12110:0",
+      "create": "crwdns12112:0{0}crwdne12112:0"
+    },
+    "error": {
+      "notEnoughPerms": "crwdns12114:0crwdne12114:0",
+      "duplicateName": "crwdns12116:0crwdne12116:0"
+    }
+  },
+  "auth": {
+    "settings": {
+      "profile": {
+        "header": "crwdns12118:0crwdne12118:0",
+        "avatar": "crwdns12456:0crwdne12456:0",
+        "tagline": "crwdns12458:0crwdne12458:0",
+        "social": "crwdns12460:0crwdne12460:0"
+      },
+      "account": {
+        "header": "crwdns12120:0crwdne12120:0",
+        "username": "crwdns12462:0crwdne12462:0",
+        "verifyEmail": "crwdns12464:0crwdne12464:0",
+        "currentPassword": "crwdns12466:0crwdne12466:0",
+        "newPassword": "crwdns12468:0crwdne12468:0"
+      },
+      "security": {
+        "header": "crwdns12122:0crwdne12122:0",
+        "authApp": "crwdns12470:0crwdne12470:0",
+        "devices": "crwdns12472:0crwdne12472:0",
+        "button": {
+          "setupAuthApp": "crwdns12474:0crwdne12474:0",
+          "setupSecurityKey": "crwdns12476:0crwdne12476:0",
+          "linkGithub": "crwdns12478:0crwdne12478:0",
+          "linkOther": "crwdns12480:0{0}crwdne12480:0",
+          "unlinkAccount": "crwdns12482:0{0}crwdnd12482:0{1}crwdne12482:0"
+        },
+        "authAppSetup": {
+          "scan": "crwdns12484:0crwdne12484:0",
+          "cantScan": "crwdns12486:0crwdne12486:0",
+          "enterTotp": "crwdns12488:0crwdne12488:0",
+          "verifyTotp": "crwdns12490:0crwdne12490:0"
+        },
+        "securityKeys": {
+          "name": "crwdns12492:0crwdne12492:0",
+          "keyName": "crwdns12494:0crwdne12494:0",
+          "unregister": "crwdns12496:0crwdne12496:0",
+          "rename": "crwdns12498:0crwdne12498:0"
+        },
+        "backupCodes": {
+          "name": "crwdns12500:0crwdne12500:0",
+          "generateNew": "crwdns12502:0crwdne12502:0",
+          "modal": {
+            "title": "crwdns12504:0crwdne12504:0",
+            "needConfigure": "crwdns12506:0crwdne12506:0",
+            "confirm": "crwdns12508:0crwdne12508:0",
+            "backupCode": "crwdns12510:0crwdne12510:0"
+          }
+        },
+        "unlinkOAuth": {
+          "cantUnlink": "crwdns12512:0crwdne12512:0",
+          "modal": {
+            "title": "crwdns12514:0crwdne12514:0",
+            "message": "crwdns12516:0{0}crwdne12516:0",
+            "unlinkUrl": "crwdns12518:0{0}crwdne12518:0"
+          }
+        }
+      },
+      "apiKeys": {
+        "header": "crwdns12124:0crwdne12124:0"
+      },
+      "misc": {
+        "header": "crwdns12126:0crwdne12126:0",
+        "accentColor": "crwdns12128:0crwdne12128:0",
+        "language": "crwdns12520:0crwdne12520:0",
+        "alert": {
+          "colorAlert": "crwdns12522:0crwdne12522:0",
+          "languageAlert": "crwdns12524:0crwdne12524:0"
+        }
+      }
+    }
+  },
+  "apiDocs": {
+    "title": "crwdns12130:0crwdne12130:0"
+  },
+  "importer": {
+    "title": "crwdns12132:0crwdne12132:0",
+    "notLoggedIn": "crwdns12134:0crwdne12134:0",
+    "step1": {
+      "title": "crwdns12136:0crwdne12136:0",
+      "text1": "crwdns12138:0crwdne12138:0",
+      "text2": "crwdns12140:0crwdne12140:0",
+      "continue": "crwdns12142:0crwdne12142:0",
+      "back": "crwdns12144:0crwdne12144:0"
+    },
+    "step2": {
+      "title": "crwdns12146:0crwdne12146:0",
+      "text": "crwdns12148:0crwdne12148:0",
+      "continue": "crwdns12150:0crwdne12150:0"
+    },
+    "step3": {
+      "title": "crwdns12152:0crwdne12152:0",
+      "label": "crwdns12154:0crwdne12154:0",
+      "continue": "crwdns12156:0crwdne12156:0",
+      "back": "crwdns12158:0crwdne12158:0"
+    },
+    "step4": {
+      "title": "crwdns12160:0crwdne12160:0",
+      "continue": "crwdns12162:0crwdne12162:0",
+      "back": "crwdns12164:0crwdne12164:0"
+    },
+    "step5": {
+      "title": "crwdns12166:0crwdne12166:0"
+    }
+  },
+  "platformVersions": {
+    "title": "crwdns12168:0crwdne12168:0",
+    "platform": "crwdns12170:0crwdne12170:0",
+    "versions": "crwdns12172:0crwdne12172:0",
+    "addVersion": "crwdns12174:0crwdne12174:0",
+    "saveChanges": "crwdns12176:0crwdne12176:0",
+    "success": "crwdns12178:0crwdne12178:0"
+  },
+  "flagReview": {
+    "notification": {
+      "projectTitle": "crwdns12180:0{0}crwdne12180:0",
+      "reporterTitle": "crwdns12182:0{0}crwdne12182:0",
+      "asWarning": "crwdns12184:0crwdne12184:0",
+      "button": "crwdns12186:0crwdne12186:0",
+      "reporterButton": "crwdns12188:0crwdne12188:0",
+      "prompt": "crwdns12190:0crwdne12190:0"
+    },
+    "title": "crwdns12192:0crwdne12192:0",
+    "resolved": "crwdns12194:0crwdne12194:0",
+    "unresolved": "crwdns12196:0crwdne12196:0",
+    "noFlags": "crwdns12198:0crwdne12198:0",
+    "markResolved": "crwdns12200:0crwdne12200:0",
+    "markUnresolved": "crwdns12202:0crwdne12202:0",
+    "line1": "crwdns12204:0{0}crwdnd12204:0{1}crwdnd12204:0{2}crwdne12204:0",
+    "line2": "crwdns12206:0{0}crwdne12206:0",
+    "line3": "crwdns12208:0{0}crwdne12208:0"
+  },
+  "userActivity": {
+    "title": "crwdns12210:0{0}crwdne12210:0",
+    "reviews": "crwdns12212:0crwdne12212:0",
+    "flags": "crwdns12214:0crwdne12214:0",
+    "reviewApproved": "crwdns12216:0crwdne12216:0",
+    "flagResolved": "crwdns12218:0crwdne12218:0",
+    "error": {
+      "isOrg": "crwdns12220:0crwdne12220:0"
+    }
+  },
+  "userAdmin": {
+    "title": "crwdns12222:0crwdne12222:0",
+    "organizations": "crwdns12224:0crwdne12224:0",
+    "organization": "crwdns12226:0crwdne12226:0",
+    "projects": "crwdns12228:0crwdne12228:0",
+    "project": "crwdns12230:0crwdne12230:0",
+    "owner": "crwdns12232:0crwdne12232:0",
+    "role": "crwdns12234:0crwdne12234:0",
+    "accepted": "crwdns12236:0crwdne12236:0",
+    "sidebar": "crwdns12238:0crwdne12238:0",
+    "hangarAuth": "crwdns12240:0crwdne12240:0",
+    "forum": "crwdns12242:0crwdne12242:0",
+    "roles": "crwdns12244:0crwdne12244:0"
+  },
+  "userList": {
+    "title": "crwdns12246:0crwdne12246:0"
+  },
+  "userActionLog": {
+    "title": "crwdns12248:0crwdne12248:0",
+    "user": "crwdns12250:0crwdne12250:0",
+    "address": "crwdns12252:0crwdne12252:0",
+    "time": "crwdns12254:0crwdne12254:0",
+    "action": "crwdns12256:0crwdne12256:0",
+    "context": "crwdns12258:0crwdne12258:0",
+    "oldState": "crwdns12260:0crwdne12260:0",
+    "newState": "crwdns12262:0crwdne12262:0",
+    "markdownView": "crwdns12264:0crwdne12264:0",
+    "diffView": "crwdns12266:0crwdne12266:0",
+    "types": {
+      "ProjectVisibilityChanged": "crwdns12268:0crwdne12268:0",
+      "ProjectRename": "crwdns12270:0crwdne12270:0",
+      "ProjectFlagged": "crwdns12272:0crwdne12272:0",
+      "ProjectSettingsChanged": "crwdns12274:0crwdne12274:0",
+      "ProjectIconChanged": "crwdns12276:0crwdne12276:0",
+      "ProjectFlagResolved": "crwdns12278:0crwdne12278:0",
+      "ProjectChannelCreated": "crwdns12280:0crwdne12280:0",
+      "ProjectChannelEdited": "crwdns12282:0crwdne12282:0",
+      "ProjectChannelDeleted": "crwdns12284:0crwdne12284:0",
+      "ProjectInvitesSent": "crwdns12286:0crwdne12286:0",
+      "ProjectInviteDeclined": "crwdns12288:0crwdne12288:0",
+      "ProjectInviteUnaccepted": "crwdns12290:0crwdne12290:0",
+      "ProjectMemberAdded": "crwdns12292:0crwdne12292:0",
+      "ProjectMembersRemoved": "crwdns12294:0crwdne12294:0",
+      "ProjectMemberRolesChanged": "crwdns12296:0crwdne12296:0",
+      "ProjectPageCreated": "crwdns12298:0crwdne12298:0",
+      "ProjectPageDeleted": "crwdns12300:0crwdne12300:0",
+      "ProjectPageEdited": "crwdns12302:0crwdne12302:0",
+      "VersionVisibilityChanged": "crwdns12304:0crwdne12304:0",
+      "VersionDeleted": "crwdns12306:0crwdne12306:0",
+      "VersionCreated": "crwdns12308:0crwdne12308:0",
+      "VersionDescriptionChanged": "crwdns12310:0crwdne12310:0",
+      "VersionReviewStateChanged": "crwdns12312:0crwdne12312:0",
+      "VersionPluginDependencyAdded": "crwdns12314:0crwdne12314:0",
+      "VersionPluginDependencyEdited": "crwdns12316:0crwdne12316:0",
+      "VersionPluginDependencyRemoved": "crwdns12318:0crwdne12318:0",
+      "VersionPlatformDependencyAdded": "crwdns12320:0crwdne12320:0",
+      "VersionPlatformDependencyRemoved": "crwdns12322:0crwdne12322:0",
+      "UserTaglineChanged": "crwdns12324:0crwdne12324:0",
+      "UserLocked": "crwdns12326:0crwdne12326:0",
+      "UserUnlocked": "crwdns12328:0crwdne12328:0",
+      "UserApikeyCreated": "crwdns12330:0crwdne12330:0",
+      "UserApikeyDeleted": "crwdns12332:0crwdne12332:0",
+      "OrganizationInvitesSent": "crwdns12334:0crwdne12334:0",
+      "OrganizationInviteDeclined": "crwdns12336:0crwdne12336:0",
+      "OrganizationInviteUnaccepted": "crwdns12338:0crwdne12338:0",
+      "OrganizationMemberAdded": "crwdns12340:0crwdne12340:0",
+      "OrganizationMembersRemoved": "crwdns12342:0crwdne12342:0",
+      "OrganizationMemberRolesChanged": "crwdns12344:0crwdne12344:0"
+    }
+  },
+  "versionApproval": {
+    "title": "crwdns12346:0crwdne12346:0",
+    "inReview": "crwdns12348:0crwdne12348:0",
+    "approvalQueue": "crwdns12350:0crwdne12350:0",
+    "queuedBy": "crwdns12352:0crwdne12352:0",
+    "status": "crwdns12354:0crwdne12354:0",
+    "project": "crwdns12356:0crwdne12356:0",
+    "date": "crwdns12358:0crwdne12358:0",
+    "version": "crwdns12360:0crwdne12360:0",
+    "started": "crwdns12362:0{0}crwdne12362:0",
+    "ended": "crwdns12364:0{0}crwdne12364:0",
+    "statuses": {
+      "ongoing": "crwdns12366:0{0}crwdne12366:0",
+      "stopped": "crwdns12368:0{0}crwdne12368:0",
+      "approved": "crwdns12370:0{0}crwdne12370:0"
+    }
+  },
+  "projectApproval": {
+    "title": "crwdns12372:0crwdne12372:0",
+    "sendForApproval": "crwdns12374:0crwdne12374:0",
+    "noProjects": "crwdns12376:0crwdne12376:0",
+    "needsApproval": "crwdns12378:0crwdne12378:0",
+    "awaitingChanges": "crwdns12380:0crwdne12380:0",
+    "description": "crwdns12382:0{0}crwdnd12382:0{1}crwdne12382:0"
+  },
+  "donate": {
+    "success": "crwdns12384:0{0}crwdnd12384:0{1}crwdnd12384:0{2}crwdne12384:0",
+    "buttonError": "crwdns12386:0crwdne12386:0"
+  },
+  "lang": {
+    "button": "crwdns12388:0crwdne12388:0",
+    "title": "crwdns12390:0crwdne12390:0",
+    "available": "crwdns12392:0crwdne12392:0",
+    "hangarAuth": "crwdns12394:0crwdne12394:0"
+  },
+  "validation": {
+    "email": "crwdns12396:0crwdne12396:0",
+    "required": "crwdns12398:0{property}crwdne12398:0",
+    "requiredIf": "crwdns12400:0{property}crwdne12400:0",
+    "maxLength": "crwdns12402:0{max}crwdne12402:0",
+    "minLength": "crwdns12404:0{min}crwdne12404:0",
+    "pattern": "crwdns12406:0{property}crwdnd12406:0{model}crwdnd12406:0{regex}crwdne12406:0",
+    "noDuplicated": "crwdns12408:0{property}crwdne12408:0",
+    "url": "crwdns12410:0crwdne12410:0",
+    "maxFileSize": "crwdns12412:0crwdne12412:0",
+    "validProjectName": "crwdns12414:0crwdne12414:0"
+  },
+  "fieldError": {
+    "url": "crwdns12416:0{0}crwdnd12416:0{1}crwdne12416:0"
+  },
+  "prompts": {
+    "confirm": "crwdns12418:0crwdne12418:0",
+    "changeAvatar": {
+      "title": "crwdns12420:0crwdne12420:0",
+      "message": "crwdns12422:0crwdne12422:0"
+    }
+  },
+  "error": {
+    "userLocked": "crwdns12424:0crwdne12424:0",
+    "401": "crwdns12426:0crwdne12426:0",
+    "403": "crwdns12428:0crwdne12428:0",
+    "404": "crwdns12430:0crwdne12430:0",
+    "unknown": "crwdns12432:0crwdne12432:0",
+    "aal1": "crwdns12434:0crwdne12434:0",
+    "aal2": "crwdns12436:0crwdne12436:0",
+    "privileged": "crwdns12438:0crwdne12438:0"
+  }
+}

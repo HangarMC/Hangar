@@ -1,4 +1,5 @@
 *.json
 !en.json
+!dum.json
 processed
 processed/en.json

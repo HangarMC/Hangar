@@ -1,5 +1,5 @@
 import type { Router } from "vue-router";
-import { NamedPermission, type ProjectPageTable } from "~/types/backend";
+import { NamedPermission } from "~/types/backend";
 import type {
   ApiKey,
   DayStats,
@@ -24,6 +24,7 @@ import type {
   SettingsResponse,
   User,
   VersionInfo,
+  ProjectPageTable,
   Platform,
 } from "~/types/backend";
 
