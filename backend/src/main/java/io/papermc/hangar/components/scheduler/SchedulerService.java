@@ -41,7 +41,6 @@ public class SchedulerService extends HangarComponent {
                 case "updateProjectIndex" -> this.indexService.fullUpdateProjects();
                 case "updateVersionIndex" -> this.indexService.fullUpdateVersions();
                 case "refreshHomePage" -> this.schedulerDAO.refreshHomeProjects();
-                case "refreshVersionView" -> this.schedulerDAO.refreshVersionView();
                 default -> throw new RuntimeException("Unknown scheduled task name: " + taskName);
             }
         } catch (Exception e) {
@@ -61,7 +60,6 @@ public class SchedulerService extends HangarComponent {
         this.runScheduledTask("updateProjectIndex");
         this.runScheduledTask("updateVersionIndex");
         this.runScheduledTask("refreshHomePage");
-        this.runScheduledTask("refreshVersionView");
     }
 
     @PostConstruct
@@ -71,6 +69,5 @@ public class SchedulerService extends HangarComponent {
         this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateProjectIndex", this.config.updateTasks().projectIndex().toMillis()));
         this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateVersionIndex", this.config.updateTasks().versionIndex().toMillis()));
         this.jobService.scheduleIfNotExists(new ScheduledTaskJob("refreshHomePage", this.config.updateTasks().homepage().toMillis()));
-        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("refreshVersionView", this.config.updateTasks().versionView().toMillis()));
     }
 }

@@ -24,7 +24,7 @@ public class IndexService {
     }
 
     public void updateProject(long id) {
-        List<Project> projects = this.indexDAO.getAllProjects("p.id = " + id + " LIMIT 1");
+        List<Project> projects = this.indexDAO.getAllProjects("WHERE p.id = " + id + " LIMIT 1");
         this.meiliService.sendDocuments(MeiliService.PROJECT_INDEX, projects);
     }
 
@@ -40,7 +40,7 @@ public class IndexService {
     }
 
     public void updateVersion(long id) {
-        List<Version> versions = this.indexDAO.getAllVersions("v.id = " + id + " LIMIT 1");
+        List<Version> versions = this.indexDAO.getAllVersions("WHERE pv.id = " + id + " LIMIT 1");
         this.meiliService.sendDocuments(MeiliService.VERSION_INDEX, versions);
     }
 
