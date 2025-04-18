@@ -66,11 +66,11 @@ public class SchedulerService extends HangarComponent {
 
     @PostConstruct
     public void ensureJobsExist() {
-        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateVersionDownloads", this.config.updateTasks.versionDownloads().toMillis()));
-        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateProjectViews", this.config.updateTasks.projectViews().toMillis()));
-        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateProjectIndex", this.config.updateTasks.projectIndex().toMillis()));
-        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateVersionIndex", this.config.updateTasks.versionIndex().toMillis()));
-        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("refreshHomePage", this.config.updateTasks.homepage().toMillis()));
-        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("refreshVersionView", this.config.updateTasks.versionView().toMillis()));
+        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateVersionDownloads", this.config.updateTasks().versionDownloads().toMillis()));
+        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateProjectViews", this.config.updateTasks().projectViews().toMillis()));
+        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateProjectIndex", this.config.updateTasks().projectIndex().toMillis()));
+        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateVersionIndex", this.config.updateTasks().versionIndex().toMillis()));
+        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("refreshHomePage", this.config.updateTasks().homepage().toMillis()));
+        this.jobService.scheduleIfNotExists(new ScheduledTaskJob("refreshVersionView", this.config.updateTasks().versionView().toMillis()));
     }
 }

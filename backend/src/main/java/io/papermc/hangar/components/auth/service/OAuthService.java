@@ -60,10 +60,10 @@ public class OAuthService extends HangarComponent {
 
     @PostConstruct
     private void setup() {
-        if (!this.config.security.oAuthEnabled()) {
+        if (!this.config.security().oAuthEnabled()) {
             return;
         }
-        this.config.security.oAuthProviders().forEach(this::setupProvider);
+        this.config.security().oAuthProviders().forEach(this::setupProvider);
     }
 
     private void setupProvider(final OAuthProvider provider) {
@@ -95,7 +95,7 @@ public class OAuthService extends HangarComponent {
 
     public String oauthState(final Long user, final OAuthMode mode, final String returnUrl) {
         return JWT.create()
-            .withIssuer(this.config.security.tokenIssuer())
+            .withIssuer(this.config.security().tokenIssuer())
             .withExpiresAt(Instant.now().plus(10, ChronoUnit.MINUTES))
             .withSubject(String.valueOf(user))
             .withClaim("mode", mode.name())
@@ -105,7 +105,7 @@ public class OAuthService extends HangarComponent {
 
     public String registerState(final OAuthUserDetails details, final String provider, final String returnUrl) {
         return JWT.create()
-            .withIssuer(this.config.security.tokenIssuer())
+            .withIssuer(this.config.security().tokenIssuer())
             .withExpiresAt(Instant.now().plus(10, ChronoUnit.MINUTES))
             .withSubject(details.id())
             .withClaim("email", details.email())
@@ -123,7 +123,7 @@ public class OAuthService extends HangarComponent {
 
         final UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(oAuthProvider.authorizationEndpoint())
             .queryParam("client_id", oAuthProvider.clientId())
-            .queryParam("redirect_uri", this.config.getBaseUrl() + "/api/internal/oauth/" + oAuthProvider.name() + "/callback")
+            .queryParam("redirect_uri", this.config.baseUrl() + "/api/internal/oauth/" + oAuthProvider.name() + "/callback")
             .queryParam("scope", String.join("+", oAuthProvider.scopes()))
             .queryParam("state", state);
 
@@ -150,7 +150,7 @@ public class OAuthService extends HangarComponent {
                     "client_secret", List.of(oAuthProvider.clientSecret()),
                     "code", List.of(code),
                     "grant_type", List.of("authorization_code"),
-                    "redirect_uri", List.of(this.config.getBaseUrl() + "/api/internal/oauth/" + oAuthProvider.name() + "/callback")
+                    "redirect_uri", List.of(this.config.baseUrl() + "/api/internal/oauth/" + oAuthProvider.name() + "/callback")
                 )))
                 .retrieve()
                 .body(OAuthCodeResponse.class);

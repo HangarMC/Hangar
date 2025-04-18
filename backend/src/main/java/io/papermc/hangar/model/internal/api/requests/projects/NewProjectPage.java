@@ -8,7 +8,7 @@ public class NewProjectPage {
 
     // @el(root: String)
     @NotBlank
-    private final @Validate(SpEL = "@validate.min(#root, @hangarConfig.pages.minNameLen)", message = "page.new.error.name.minLength") @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxNameLen)", message = "page.new.error.name.maxLength") @Validate(SpEL = "@validate.regex(#root, @hangarConfig.pages.nameRegex)", message = "page.new.error.name.invalidChars") String name;
+    private final @Validate(SpEL = "@validate.min(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.pages.minNameLen)", message = "page.new.error.name.minLength") @Validate(SpEL = "@validate.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.pages.maxNameLen)", message = "page.new.error.name.maxLength") @Validate(SpEL = "@validate.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.pages.nameRegex)", message = "page.new.error.name.invalidChars") String name;
     private final Long parentId;
 
     @JsonCreator

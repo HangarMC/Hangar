@@ -128,7 +128,7 @@ public class ProjectService extends HangarComponent {
 
         final Map<Platform, Version> mainChannelVersions = new EnumMap<>(Platform.class);
         final CompletableFuture<Void> mainChannelFuture = CompletableFuture.runAsync(() -> Arrays.stream(Platform.getValues()).parallel().forEach(platform -> {
-            final Version version = this.getLastVersion(projectTable.getProjectId(), platform, this.config.channels.nameDefault());
+            final Version version = this.getLastVersion(projectTable.getProjectId(), platform, this.config.channels().nameDefault());
             if (version != null) {
                 mainChannelVersions.put(platform, version);
             }
@@ -158,7 +158,7 @@ public class ProjectService extends HangarComponent {
     }
 
     public @Nullable Version getLastVersion(final long projectId, final Platform platform, final @Nullable String channel) {
-        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(projectId, channel == null ? this.config.channels.nameDefault() : channel, platform);
+        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(projectId, channel == null ? this.config.channels().nameDefault() : channel, platform);
         if (lastVersion == null) {
             return null;
         }
@@ -171,7 +171,7 @@ public class ProjectService extends HangarComponent {
         for (final String keyword : settingsForm.getSettings().getKeywords()) {
             if (keyword.length() < 3) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordTooShort", keyword);
-            } else if (keyword.length() > this.config.projects.maxKeywordLen()) {
+            } else if (keyword.length() > this.config.projects().maxKeywordLen()) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordTooLong", keyword);
             } else if (!KEYWORD_PATTERN.matcher(keyword).matches()) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordInvalid", keyword);
@@ -187,28 +187,21 @@ public class ProjectService extends HangarComponent {
     public void saveSettings(final ProjectTable projectTable, final ProjectSettingsForm settingsForm) {
         this.validateSettings(settingsForm);
 
-        // final boolean requiresHomepageUpdate = !projectTable.getKeywords().equals(settingsForm.getSettings().getKeywords())
-        //    || !projectTable.getDescription().equals(settingsForm.getDescription());
-
         projectTable.setCategory(settingsForm.getCategory());
         projectTable.setTags(new LinkedHashSet<>(settingsForm.getSettings().getTags()));
         projectTable.setKeywords(settingsForm.getSettings().getKeywords());
         projectTable.setLinks(new JSONB(settingsForm.getSettings().getLinks()));
-        String licenseName = org.apache.commons.lang3.StringUtils.stripToNull(settingsForm.getSettings().getLicense().getName());
+        String licenseName = org.apache.commons.lang3.StringUtils.stripToNull(settingsForm.getSettings().getLicense().name());
         if (licenseName == null) {
-            licenseName = settingsForm.getSettings().getLicense().getType();
+            licenseName = settingsForm.getSettings().getLicense().type();
         }
-        projectTable.setLicenseType(settingsForm.getSettings().getLicense().getType());
+        projectTable.setLicenseType(settingsForm.getSettings().getLicense().type());
         projectTable.setLicenseName(licenseName);
-        projectTable.setLicenseUrl(settingsForm.getSettings().getLicense().getUrl());
+        projectTable.setLicenseUrl(settingsForm.getSettings().getLicense().url());
         projectTable.setDescription(settingsForm.getDescription());
         projectTable.setDonationEnabled(settingsForm.getSettings().getDonation().isEnable());
         projectTable.setDonationSubject(settingsForm.getSettings().getDonation().getSubject());
         this.projectsDAO.update(projectTable);
-
-        /*if (requiresHomepageUpdate) {
-            this.refreshHomeProjects();
-        }*/
 
         // TODO what settings changed
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
@@ -241,7 +234,7 @@ public class ProjectService extends HangarComponent {
     @Transactional
     public void saveSponsors(final ProjectTable projectTable, final @Nullable String content) {
         final String trimmedContent = content != null ? content.trim() : "";
-        if (trimmedContent.length() > this.config.projects.maxSponsorsLen()) {
+        if (trimmedContent.length() > this.config.projects().maxSponsorsLen()) {
             throw new HangarApiException("page.new.error.maxLength");
         }
 

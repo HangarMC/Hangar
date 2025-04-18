@@ -61,7 +61,7 @@ public class VersionsApiService extends HangarComponent {
         final PendingVersion preparedPendingVersion = this.versionFactory.createPendingVersion(project.getId(), versionUpload.getFiles(), files, versionUpload.getChannel(), false);
         final PendingVersion pendingVersion = versionUpload.toPendingVersion(preparedPendingVersion.getFiles());
         this.versionFactory.publishPendingVersion(project.getId(), pendingVersion);
-        return new UploadedVersion(this.config.getBaseUrl() + "/" + project.getOwnerName() + "/" + project.getSlug() + "/versions/" + pendingVersion.getVersionString());
+        return new UploadedVersion(this.config.baseUrl() + "/" + project.getOwnerName() + "/" + project.getSlug() + "/versions/" + pendingVersion.getVersionString());
     }
 
     private void matchVersionRanges(final Map<Platform, SortedSet<String>> versions) {
@@ -201,7 +201,7 @@ public class VersionsApiService extends HangarComponent {
 
     @Cacheable(value = CacheConfig.LATEST_VERSION, key = "#project.getId()")
     public @Nullable String latestVersion(final ProjectTable project) {
-        return this.latestVersion(project, this.config.channels.nameDefault());
+        return this.latestVersion(project, this.config.channels().nameDefault());
     }
 
     @CacheEvict(value = CacheConfig.LATEST_VERSION, key = "{#id, #channel != null ? #channel.toLowerCase() : null}")
@@ -210,7 +210,7 @@ public class VersionsApiService extends HangarComponent {
 
     @Cacheable(value = CacheConfig.LATEST_VERSION, key = "{#project.getId(), #channel != null ? #channel.toLowerCase() : null}")
     public @Nullable String latestVersion(final ProjectTable project, final String channel) {
-        final String version = this.versionsApiDAO.getLatestVersion(project.getId(), channel == null ? this.config.channels.nameDefault() : channel);
+        final String version = this.versionsApiDAO.getLatestVersion(project.getId(), channel == null ? this.config.channels().nameDefault() : channel);
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "No version found for " + project.getSlug() + " on channel " + channel);
         }

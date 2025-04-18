@@ -80,7 +80,7 @@ public class VersionsController implements IVersionsController {
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
     @ApplicableFilters({VersionChannelFilter.class, VersionPlatformFilter.class})
     public PaginatedResult<Version> getVersions(final ProjectTable project,
-                                                @ConfigurePagination(defaultLimitString = "@hangarConfig.projects.initVersionLoad", maxLimit = 25, paginationType = PaginationType.MEILI) final @NotNull RequestPagination pagination,
+                                                @ConfigurePagination(defaultLimitString = "@'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.initVersionLoad", maxLimit = 25, paginationType = PaginationType.MEILI) final @NotNull RequestPagination pagination,
                                                 @RequestParam(required = false, defaultValue = "true") final boolean includeHiddenChannels) {
         return this.versionsApiService.getVersions(project, pagination, includeHiddenChannels);
     }

@@ -104,7 +104,7 @@ public class BackendDataController extends HangarComponent {
     @GetMapping("/announcements")
     @Cacheable(CacheConfig.ANNOUNCEMENTS)
     public List<Announcement> getAnnouncements() {
-        return this.config.getAnnouncements();
+        return this.config.announcements();
     }
 
     @GetMapping("/projectRoles")
@@ -128,7 +128,7 @@ public class BackendDataController extends HangarComponent {
     @GetMapping("/licenses")
     @Cacheable(CacheConfig.LICENSES)
     public List<String> getLicenses() {
-        return this.config.getLicenses();
+        return this.config.licenses();
     }
 
     @GetMapping("/visibilities")
@@ -185,6 +185,6 @@ public class BackendDataController extends HangarComponent {
 
     @GetMapping("/security")
     public Security getSecurity() {
-        return new Security(this.config.security.safeDownloadHosts(), this.oAuthService.getProviders().keySet());
+        return new Security(this.config.security().safeDownloadHosts(), this.oAuthService.getProviders().keySet());
     }
 }

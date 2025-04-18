@@ -30,14 +30,14 @@ public class ReplicationService implements Receiver {
     public ReplicationService(@Lazy final CaffeineCacheManager cacheManager, final HangarConfig config) {
         this.cacheManager = cacheManager;
 
-        if (config.isDisableJGroups()) {
+        if (config.disableJGroups()) {
             log.warn("JGroups is disabled, replication of cache clearing will not work!");
             this.channel = null;
             return;
         }
 
         try {
-            this.channel = new JChannel(config.isDev() ? "jgroups-local.xml": "jgroups-kube.xml");
+            this.channel = new JChannel(config.dev() ? "jgroups-local.xml": "jgroups-kube.xml");
             this.channel.setReceiver(this);
             this.channel.connect("hangar-replication");
         } catch (final Exception e) {

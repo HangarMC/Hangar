@@ -84,7 +84,7 @@ public class VersionDependencyService extends HangarComponent {
 
     @Transactional
     public void updateVersionPluginDependencies(final long projectId, final long versionId, final UpdatePluginDependencies form) {
-        if (form.getPluginDependencies().size() > this.config.projects.maxDependencies()) {
+        if (form.getPluginDependencies().size() > this.config.projects().maxDependencies()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.tooManyDependencies");
         }
 

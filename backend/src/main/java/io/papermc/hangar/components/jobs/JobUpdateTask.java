@@ -16,7 +16,7 @@ public class JobUpdateTask {
     }
 
     @SentryTransaction(operation = "task", name = "JobUpdateTask#checkAndProcess")
-    @Scheduled(fixedRateString = "#{@hangarConfig.jobs.checkInterval.toMillis()}", initialDelayString = "#{@hangarConfig.jobs.checkInterval.toMillis()}")
+    @Scheduled(fixedRateString = "#{@'hangar-io.papermc.hangar.config.hangar.HangarConfig'.jobs.checkInterval.toMillis()}", initialDelayString = "#{@'hangar-io.papermc.hangar.config.hangar.HangarConfig'.jobs.checkInterval.toMillis()}")
     public void checkAndProcess() {
         this.service.checkAndProcess();
     }

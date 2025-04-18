@@ -29,7 +29,7 @@ public class ApplicationController extends HangarComponent {
 
     @GetMapping(path = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
     public String robots() {
-        if (!this.config.isAllowIndexing()) {
+        if (!this.config.allowIndexing()) {
             return new RobotsBuilder()
                 .group("*")
                 .disallow("/")
@@ -67,7 +67,7 @@ public class ApplicationController extends HangarComponent {
             .disallow("/*/*/versions/*/confirm")
             .disallow("/*/*/versions/*/*/reviews")
             .endGroup()
-            .sitemap(this.config.getBaseUrl() + "/sitemap.xml")
+            .sitemap(this.config.baseUrl() + "/sitemap.xml")
             .build();
     }
 }

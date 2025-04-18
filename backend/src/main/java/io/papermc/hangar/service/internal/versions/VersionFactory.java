@@ -249,7 +249,7 @@ public class VersionFactory extends HangarComponent {
         if (!this.validationService.isValidVersionName(pendingVersion.getVersionString())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidName");
         }
-        if (pendingVersion.getPluginDependencies().values().stream().anyMatch(pluginDependencies -> pluginDependencies.size() > this.config.projects.maxDependencies())) {
+        if (pendingVersion.getPluginDependencies().values().stream().anyMatch(pluginDependencies -> pluginDependencies.size() > this.config.projects().maxDependencies())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.tooManyDependencies");
         }
         if (this.exists(projectId, pendingVersion.getVersionString())) {
@@ -341,7 +341,7 @@ public class VersionFactory extends HangarComponent {
         final List<String> platformString = pendingVersion.getPlatformDependencies().keySet().stream().map(Platform::getName).toList();
         // TODO rewrite avatar fetching (for move this code to an async method)
         final String avatarUrl = this.avatarService.getProjectAvatarUrl(projectTable.getProjectId(), projectTable.getOwnerName());
-        final String url = this.config.getBaseUrl() + "/" + projectTable.getOwnerName() + "/" + projectTable.getSlug();
+        final String url = this.config.baseUrl() + "/" + projectTable.getOwnerName() + "/" + projectTable.getSlug();
         if (firstPublish) {
             this.webhookService.handleEvent(new ProjectPublishedEvent(projectTable.getOwnerName(), projectTable.getName(), avatarUrl, url, projectTable.getDescription(), platformString));
         }
@@ -365,7 +365,7 @@ public class VersionFactory extends HangarComponent {
             }
 
             hasExternalLink = true;
-            safeLinks = safeLinks && this.config.security.checkSafe(file.externalUrl());
+            safeLinks = safeLinks && this.config.security().checkSafe(file.externalUrl());
         }
 
         final boolean hasUnsafeLinks = hasExternalLink && !safeLinks;
@@ -473,7 +473,7 @@ public class VersionFactory extends HangarComponent {
 
     @Transactional(readOnly = true)
     public @Nullable LastDependencies getLastVersionDependencies(final ProjectTable project, final @Nullable String channel, final Platform platform) {
-        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(project.getProjectId(), channel == null ? this.config.channels.nameDefault() : channel, platform);
+        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(project.getProjectId(), channel == null ? this.config.channels().nameDefault() : channel, platform);
         if (lastVersion != null) {
             final ProjectVersionTable projectVersionTable = this.projectVersionsDAO.getProjectVersionTable(lastVersion);
             if (projectVersionTable != null) {

@@ -32,26 +32,26 @@ public record Validations(
 
     public static Validations create(final HangarConfig config) {
         final ProjectValidations project = new ProjectValidations(
-            config.projects.projectName(),
-            config.projects.projectDescription(),
-            config.projects.licenseName(),
-            config.projects.projectKeywords(),
-            config.projects.projectKeywordName(),
-            config.channels.channelName(),
-            config.pages.pageName(),
-            config.pages.pageContent(),
-            config.projects.sponsorsContent(),
-            config.projects.maxPages(),
-            config.projects.maxChannels(),
-            config.projects.maxFileSize()
+            config.projects().projectName(),
+            config.projects().projectDescription(),
+            config.projects().licenseName(),
+            config.projects().projectKeywords(),
+            config.projects().projectKeywordName(),
+            config.channels().channelName(),
+            config.pages().pageName(),
+            config.pages().pageContent(),
+            config.projects().sponsorsContent(),
+            config.projects().maxPages(),
+            config.projects().maxChannels(),
+            config.projects().maxFileSize()
         );
         return new Validations(
             project,
-            config.user.userTagline(),
-            config.projects.versionName(),
-            config.org.orgName(),
-            config.org.createLimit(),
-            config.getUrlRegex()
+            config.user().userTagline(),
+            config.projects().versionName(),
+            config.org().orgName(),
+            config.org().createLimit(),
+            config.urlRegex()
         );
     }
 }

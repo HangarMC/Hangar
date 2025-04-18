@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +44,7 @@ public class VersionService extends HangarComponent {
     private final IndexService indexService;
 
     @Autowired
-    public VersionService(final ProjectVersionsDAO projectVersionDAO, final ProjectVisibilityService projectVisibilityService, final ProjectVersionVisibilityService projectVersionVisibilityService, final ProjectVersionDownloadsDAO projectVersionDownloadsDAO, final ProjectFiles projectFiles, final ProjectsDAO projectsDAO, final FileService fileService, final StatService statService, final IndexService indexService) {
+    public VersionService(final ProjectVersionsDAO projectVersionDAO, final ProjectVisibilityService projectVisibilityService, final ProjectVersionVisibilityService projectVersionVisibilityService, final ProjectVersionDownloadsDAO projectVersionDownloadsDAO, final ProjectFiles projectFiles, final ProjectsDAO projectsDAO, final FileService fileService, final StatService statService, @Lazy final IndexService indexService) {
         this.projectVersionsDAO = projectVersionDAO;
         this.projectVisibilityService = projectVisibilityService;
         this.projectVersionVisibilityService = projectVersionVisibilityService;
