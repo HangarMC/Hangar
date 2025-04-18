@@ -231,3 +231,7 @@ backend:
       pass: dum
       host: mailslurper
       port: 1025
+    meili:
+      url: "todo"
+      key: "todo"
+      prefix: "todo"
