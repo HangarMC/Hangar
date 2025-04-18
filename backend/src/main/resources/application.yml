@@ -253,6 +253,11 @@ hangar:
     password: "password"
     totp-secret: "JBSWY3DPEHPK3PXP"
 
+  meili:
+    url: "http://localhost:7700"
+    key: ""
+    prefix: "local-"
+
 #################
 # Debug Logging #
 #################
