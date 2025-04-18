@@ -8,7 +8,7 @@ export function useSeo(
     description?: string | TranslateResult | null;
     route: RouteLocationNormalized;
     image?: string | null;
-    additionalScripts?: { type: string; children: string; key: string }[];
+    additionalScripts?: { type: string; textContent: string; key: string }[];
     manualTitle?: boolean;
   }>
 ) {
@@ -56,7 +56,7 @@ export function useSeo(
     const result = [
       {
         type: "application/ld+json",
-        children: JSON.stringify({
+        textContent: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: generateBreadcrumbs(input.value.route, config.public.host),
