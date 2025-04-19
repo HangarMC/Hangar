@@ -87,7 +87,6 @@ hangar:
 
   update-tasks:
     homepage: 2m
-    version-view: 2m
     version-downloads: 2m
     project-views: 10m
     project-index: 10m
