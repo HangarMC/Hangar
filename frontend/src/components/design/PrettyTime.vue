@@ -4,15 +4,18 @@ import type { DateTimeFormatOptions } from "@intlify/core-base";
 const i18n = useI18n();
 
 const props = defineProps<{
-  time: string | number | Date;
+  time?: string | number | Date;
   long?: boolean;
   shortRelative?: boolean;
 }>();
 
-const date = computed(() => (typeof props.time === "object" ? props.time : new Date(props.time)));
+const date = computed(() => {
+  if (!props.time) return;
+  return typeof props.time === "object" ? props.time : new Date(props.time);
+});
 
 const options = computed<DateTimeFormatOptions & { prefix?: string }>(() => {
-  if (props.shortRelative) {
+  if (props.shortRelative && date.value) {
     const today: Date = new Date();
     const todayTime = today.getTime();
     const dateTime = date.value.getTime();
@@ -44,7 +47,7 @@ const formattedDate = computed(() => {
   const prefix = options.value.prefix ? options.value.prefix + " " : "";
   return prefix + formatted;
 });
-const isoDate = computed(() => date.value.toISOString());
+const isoDate = computed(() => date.value?.toISOString());
 </script>
 
 <template>
