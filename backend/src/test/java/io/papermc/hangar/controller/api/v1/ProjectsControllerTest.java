@@ -84,11 +84,11 @@ class ProjectsControllerTest extends ControllerTest {
                 .with(this.apiKey(TestData.KEY_ADMIN)))
             .andExpect(status().is(200))
             .andExpect(jsonPath("$.pagination.count", is(2)))
-            .andExpect(jsonPath("$.result[0].name", is("TestProject")))
-            .andExpect(jsonPath("$.result[0].namespace.owner", is("PaperMC")))
-            .andExpect(jsonPath("$.result[1].name", is("PrivateProject")))
+            .andExpect(jsonPath("$.result[1].name", is("TestProject")))
             .andExpect(jsonPath("$.result[1].namespace.owner", is("PaperMC")))
-            .andExpect(jsonPath("$.result[1].visibility", is("new")));
+            .andExpect(jsonPath("$.result[0].name", is("PrivateProject")))
+            .andExpect(jsonPath("$.result[0].namespace.owner", is("PaperMC")))
+            .andExpect(jsonPath("$.result[0].visibility", is("new")));
     }
 
     @Test
@@ -102,7 +102,7 @@ class ProjectsControllerTest extends ControllerTest {
 
     @Test
     void testGetProjectsByQuery() throws Exception {
-        this.mockMvc.perform(get("/api/v1/projects?q=Test")
+        this.mockMvc.perform(get("/api/v1/projects?q=TestPr")
                 .with(this.apiKey(TestData.KEY_ADMIN)))
             .andExpect(status().is(200))
             .andExpect(jsonPath("$.pagination.count", is(1)))

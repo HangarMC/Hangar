@@ -79,10 +79,12 @@ public class ProjectsApiService extends HangarComponent {
     }
 
     public PaginatedResult<Project> getProjects(final RequestPagination pagination) {
+        // filters
         String query = "";
         final StringBuilder filters = new StringBuilder();
         boolean first = true;
         for (final Filter.FilterInstance filterInstance : pagination.getFilters().values()) {
+            // we extract the query out for meili
             if (filterInstance instanceof ProjectQueryFilterInstance(String q)) {
                 query = q.toLowerCase();
             } else {
@@ -95,6 +97,20 @@ public class ProjectsApiService extends HangarComponent {
             }
         }
 
+        // manually handle the visibility filter
+        final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
+        if (!canSeeHidden) {
+            if (!first) {
+                filters.append(" AND ");
+            }
+            filters.append("(visibility = public");
+            this.getOptionalHangarPrincipal().ifPresent(principal -> {
+                filters.append(" OR (visibility != softDelete AND memberNames IN [").append(principal.getName().toLowerCase()).append("])");
+            });
+            filters.append(")");
+        }
+
+        // sorters
         final List<String> sort = new ArrayList<>();
         pagination.getSorters().forEach((key, value) -> {
             StringBuilder sb = new StringBuilder();
@@ -102,6 +118,7 @@ public class ProjectsApiService extends HangarComponent {
             sort.add(sb.toString());
         });
 
+        // action
         SearchResult<Project> result = this.meiliService.searchProjects(query, filters.toString(), sort, pagination.getOffset(), pagination.getLimit());
         return result.asPaginatedResult();
     }

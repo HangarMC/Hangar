@@ -162,14 +162,27 @@ public class VersionsApiService extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
+        // manually filter to project
         final StringBuilder filters = new StringBuilder();
         filters.append("projectId = ").append(project.getId());
 
+        // filters
         for (final Filter.FilterInstance filterInstance : pagination.getFilters().values()) {
             filters.append(" AND ");
             filterInstance.createMeili(filters);
         }
 
+        // manually handle the visibility filter
+        final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
+        if (!canSeeHidden) {
+            filters.append(" AND (visibility = public");
+            this.getOptionalHangarPrincipal().ifPresent(principal -> {
+                filters.append(" OR (visibility != softDelete AND memberNames IN [").append(principal.getName().toLowerCase()).append("])");
+            });
+            filters.append(")");
+        }
+
+        // sort
         final List<String> sort = new ArrayList<>();
         pagination.getSorters().forEach((key, value) -> {
             StringBuilder sb = new StringBuilder();
