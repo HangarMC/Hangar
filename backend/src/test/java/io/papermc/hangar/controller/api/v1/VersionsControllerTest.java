@@ -98,6 +98,14 @@ class VersionsControllerTest extends ControllerTest {
     }
 
     @Test
+    void testGetVersionsHiddenVersion() throws Exception {
+        this.mockMvc.perform(get("/api/v1/projects/TestProject/versions"))
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.pagination.count", is(1)))
+            .andExpect(jsonPath("$.result[0].name", is("1.0")));
+    }
+
+    @Test
     void testGetLatestRelease() throws Exception {
         this.mockMvc.perform(get("/api/v1/projects/TestProject/latestrelease")
                 .with(this.apiKey(TestData.KEY_ADMIN)))

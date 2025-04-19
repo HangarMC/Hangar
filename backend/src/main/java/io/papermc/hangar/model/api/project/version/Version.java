@@ -10,6 +10,7 @@ import io.papermc.hangar.model.api.project.ProjectChannel;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
+import jakarta.annotation.Nullable;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ public class Version extends Model implements Named, Visible, Identified {
     private final Map<Platform, Set<PluginDependency>> pluginDependencies;
     private final Map<Platform, SortedSet<String>> platformDependencies;
     private final Map<Platform, List<String>> platformDependenciesFormatted;
+    private final List<String> memberNames;
 
     @JsonCreator
     public Version(final OffsetDateTime createdAt,
@@ -51,7 +53,8 @@ public class Version extends Model implements Named, Visible, Identified {
                    final Map<Platform, PlatformVersionDownload> downloads,
                    final Map<Platform, Set<PluginDependency>> pluginDependencies,
                    final Map<Platform, SortedSet<String>> platformDependencies,
-                   final Map<Platform, List<String>> platformDependenciesFormatted) {
+                   final Map<Platform, List<String>> platformDependenciesFormatted,
+                   @Nullable final List<String> memberNames) {
         super(createdAt);
         this.id = id;
         this.projectId = projectId;
@@ -67,6 +70,7 @@ public class Version extends Model implements Named, Visible, Identified {
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
         this.platformDependenciesFormatted = platformDependenciesFormatted;
+        this.memberNames = memberNames;
     }
 
     @Override
@@ -128,6 +132,10 @@ public class Version extends Model implements Named, Visible, Identified {
         return this.platformDependenciesFormatted;
     }
 
+    public List<String> getMemberNames() {
+        return memberNames;
+    }
+
     @Override
     public String toString() {
         return "Version{" +
@@ -145,6 +153,7 @@ public class Version extends Model implements Named, Visible, Identified {
                 ", pluginDependencies=" + this.pluginDependencies +
                 ", platformDependencies=" + this.platformDependencies +
                 ", platformDependenciesFormatted=" + this.platformDependenciesFormatted +
+                ", memberNames=" + this.memberNames +
                 "} " + super.toString();
     }
 
