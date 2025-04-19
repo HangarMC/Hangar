@@ -99,7 +99,7 @@ public class SecurityConfig {
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-        source.registerCorsConfiguration("/api/v1/", config);
+        source.registerCorsConfiguration("/api/v1/**", config);
         // TODO more cors?
         return source;
     }
