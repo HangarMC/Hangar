@@ -31,7 +31,7 @@ public class SitemapService extends HangarComponent {
         this.sitemapDAO = sitemapDAO;
     }
 
-    //@Scheduled(fixedDelayString = "PT6H", initialDelayString = "PT1S")
+    @Scheduled(fixedDelayString = "PT6H", initialDelayString = "PT1S")
     public void updateTotalSitemap() {
         logger.info("Updating sitemap...");
         LocalDateTime start = LocalDateTime.now();
