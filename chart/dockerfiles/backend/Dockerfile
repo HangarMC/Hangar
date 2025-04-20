@@ -9,11 +9,7 @@ WORKDIR hangar
 ENV TERM xterm-256color
 
 EXPOSE 8080
-ENTRYPOINT ["sh", "run-java.sh"]
+# "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005" is for debug only
+ENTRYPOINT ["java", "-XX:+ExitOnOutOfMemoryError", "-XX:+HeapDumpOnOutOfMemoryError", "-jar", "app.jar"]
 
-ENV JAVA_APP_JAR app.jar
-ENV JAVA_APP_NAME hangar
-ENV JAVA_ENABLE_DEBUG false
-
-ADD --chown=java:java chart/dockerfiles/backend/run-java.sh /hangar/run-java.sh
 ADD --chown=java:java backend/target/hangar-*.jar /hangar/app.jar
