@@ -29,28 +29,19 @@ public class SchedulerService extends HangarComponent implements ApplicationList
     }
 
     public void runScheduledTask(String taskName) {
-        ITransaction transaction = Sentry.startTransaction("runScheduledTask(" + taskName + ")", "task");
-        try {
-            switch (taskName) {
-                case "updateVersionDownloads" -> {
-                    this.statService.processVersionDownloads();
-                    this.schedulerDAO.refreshVersionStatsView();
-                }
-                case "updateProjectViews" -> {
-                    this.statService.processProjectViews();
-                    this.schedulerDAO.refreshProjectStatsView();
-                }
-                case "updateProjectIndex" -> this.indexService.fullUpdateProjects();
-                case "updateVersionIndex" -> this.indexService.fullUpdateVersions();
-                case "refreshHomePage" -> this.schedulerDAO.refreshHomeProjects();
-                default -> throw new RuntimeException("Unknown scheduled task name: " + taskName);
+        switch (taskName) {
+            case "updateVersionDownloads" -> {
+                this.statService.processVersionDownloads();
+                this.schedulerDAO.refreshVersionStatsView();
             }
-        } catch (Exception e) {
-            transaction.setThrowable(e);
-            transaction.setStatus(SpanStatus.INTERNAL_ERROR);
-            throw e;
-        } finally {
-            transaction.finish();
+            case "updateProjectViews" -> {
+                this.statService.processProjectViews();
+                this.schedulerDAO.refreshProjectStatsView();
+            }
+            case "updateProjectIndex" -> this.indexService.fullUpdateProjects();
+            case "updateVersionIndex" -> this.indexService.fullUpdateVersions();
+            case "refreshHomePage" -> this.schedulerDAO.refreshHomeProjects();
+            default -> throw new RuntimeException("Unknown scheduled task name: " + taskName);
         }
     }
 
