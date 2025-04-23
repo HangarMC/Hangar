@@ -130,14 +130,18 @@ public interface VersionsApiDAO {
     """)
     @Nullable String getLatestVersion(long projectId, String channel);
 
-    // TODO platform <---
     @SqlQuery("""
         SELECT pv.id
            FROM project_versions pv
                JOIN project_channels pc ON pv.channel_id = pc.id
-           WHERE pv.visibility = 0 AND pc.name = :channel AND pv.project_id = :projectId
+           WHERE pv.visibility = 0
+             AND pc.name = :channel
+             AND pv.project_id = :projectId
+             AND EXISTS (
+                 SELECT 1 FROM jsonb_array_elements(pv.platforms) elem WHERE (elem->>'platform')::int = :platform
+             )
            ORDER BY pv.created_at DESC
            LIMIT 1
     """)
-    Long getLatestVersionId(long projectId, @Nullable String channel, Platform platform);
+    Long getLatestVersionId(long projectId, @Nullable String channel, int platform);
 }

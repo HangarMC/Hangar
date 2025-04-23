@@ -158,7 +158,7 @@ public class ProjectService extends HangarComponent {
     }
 
     public @Nullable Version getLastVersion(final long projectId, final Platform platform, final @Nullable String channel) {
-        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(projectId, channel == null ? this.config.channels().nameDefault() : channel, platform);
+        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(projectId, channel == null ? this.config.channels().nameDefault() : channel, platform.ordinal());
         if (lastVersion == null) {
             return null;
         }

@@ -479,7 +479,7 @@ public class VersionFactory extends HangarComponent {
 
     @Transactional(readOnly = true)
     public @Nullable LastDependencies getLastVersionDependencies(final ProjectTable project, final @Nullable String channel, final Platform platform) {
-        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(project.getProjectId(), channel == null ? this.config.channels().nameDefault() : channel, platform);
+        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(project.getProjectId(), channel == null ? this.config.channels().nameDefault() : channel, platform.ordinal());
         if (lastVersion != null) {
             final ProjectVersionTable projectVersionTable = this.projectVersionsDAO.getProjectVersionTable(lastVersion);
             if (projectVersionTable != null) {
