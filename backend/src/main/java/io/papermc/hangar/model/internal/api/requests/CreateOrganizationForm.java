@@ -5,7 +5,11 @@ import java.util.List;
 
 public class CreateOrganizationForm extends EditMembersForm.EditOrgMembersForm {
     // @el(root: String)
-    private final @Validate(SpEL = "@validate.required(#root)", message = "organization.new.error.invalidName") @Validate(SpEL = "@validate.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.org.nameRegex)", message = "organization.new.error.invalidName") @Validate(SpEL = "@validate.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.org.maxNameLen)", message = "organization.new.error.invalidName") @Validate(SpEL = "@validate.min(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.org.minNameLen)", message = "organization.new.error.invalidName") String name;
+    @Validate(SpEL = "@validate.required(#root)", message = "organization.new.error.invalidName")
+    @Validate(SpEL = "@validate.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.orgs.nameRegex)", message = "organization.new.error.invalidName")
+    @Validate(SpEL = "@validate.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.orgs.maxNameLen)", message = "organization.new.error.invalidName")
+    @Validate(SpEL = "@validate.min(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.orgs.minNameLen)", message = "organization.new.error.invalidName")
+    private final String name;
 
     public CreateOrganizationForm(final List<OrgMember> members, final String name) {
         super(members);
