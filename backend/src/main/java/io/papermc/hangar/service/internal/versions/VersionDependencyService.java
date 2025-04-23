@@ -73,6 +73,8 @@ public class VersionDependencyService extends HangarComponent {
         }
 
         platforms.put(form.platform(), form.versions());
+        version.setPlatforms(platforms);
+        this.projectVersionsDAO.update(version);
 
         if (!toBeAdded.isEmpty()) {
             this.actionLogger.version(LogAction.VERSION_PLATFORM_DEPENDENCIES_ADDED.create(VersionContext.of(projectId, versionId), "Added: " + String.join(", ", toBeAdded), String.join(", ", oldVersions)));
