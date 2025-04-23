@@ -53,7 +53,7 @@ public interface ProjectPagesDAO {
     @SqlQuery("""
         SELECT pp.*
            FROM project_pages pp
-           WHERE lower(pp.slug) = lower(:pageSlug)
+           WHERE lower(pp.slug) = lower(:pageSlug) AND pp.project_id = :projectId
         """)
     ProjectPageTable getProjectPage(long projectId, String pageSlug);
 
