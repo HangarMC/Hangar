@@ -128,7 +128,7 @@ public class ProjectService extends HangarComponent {
 
         final Map<Platform, Version> mainChannelVersions = new EnumMap<>(Platform.class);
         final CompletableFuture<Void> mainChannelFuture = CompletableFuture.runAsync(() -> Arrays.stream(Platform.getValues()).parallel().forEach(platform -> {
-            final Version version = this.getLastVersion(projectTable.getProjectId(), platform, this.config.channels().nameDefault());
+            final Version version = this.getLastVersion(projectTable.getProjectId(), platform);
             if (version != null) {
                 mainChannelVersions.put(platform, version);
             }
@@ -157,12 +157,21 @@ public class ProjectService extends HangarComponent {
         return CompletableFuture.supplyAsync(supplier);
     }
 
-    public @Nullable Version getLastVersion(final long projectId, final Platform platform, final @Nullable String channel) {
-        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(projectId, channel == null ? this.config.channels().nameDefault() : channel, platform.ordinal());
-        if (lastVersion == null) {
-            return null;
-        }
-        return this.versionsApiDAO.getVersion(lastVersion, false, null);
+    /**
+     * Returns the last release version for the given platform. If no release version exists, the last version of any channel will be returned.
+     *
+     * @param projectId project id
+     * @param platform platform
+     * @return the last version for the given platform, prioritizing release versions, or null if no version exists
+     */
+    public @Nullable Version getLastVersion(final long projectId, final Platform platform) {
+        final Version version = this.getLastVersion(projectId, platform, this.config.channels().nameDefault());
+        return version != null ? version : this.getLastVersion(projectId, platform, null);
+    }
+
+    private @Nullable Version getLastVersion(final long projectId, final Platform platform, final @Nullable String channel) {
+        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(projectId, channel, platform.ordinal());
+        return lastVersion == null ? null : this.versionsApiDAO.getVersion(lastVersion, false, null);
     }
 
     public void validateSettings(final ProjectSettingsForm settingsForm) {
