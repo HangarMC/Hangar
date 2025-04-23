@@ -6,6 +6,7 @@ import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilt
 import io.papermc.hangar.controller.extras.pagination.annotations.ConfigurePagination;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformVersionFilter;
 import io.papermc.hangar.controller.internal.config.VersionControllerConfig;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.project.version.UploadedVersion;
@@ -78,7 +79,7 @@ public class VersionsController implements IVersionsController {
 
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
-    @ApplicableFilters({VersionChannelFilter.class, VersionPlatformFilter.class})
+    @ApplicableFilters({VersionChannelFilter.class, VersionPlatformFilter.class, VersionPlatformVersionFilter.class})
     public PaginatedResult<Version> getVersions(final ProjectTable project,
                                                 @ConfigurePagination(defaultLimitString = "@'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.initVersionLoad", maxLimit = 25, paginationType = PaginationType.MEILI) final @NotNull RequestPagination pagination,
                                                 @RequestParam(required = false, defaultValue = "true") final boolean includeHiddenChannels) {
