@@ -143,5 +143,5 @@ public interface VersionsApiDAO {
            ORDER BY pv.created_at DESC
            LIMIT 1
     """)
-    Long getLatestVersionId(long projectId, @Nullable String channel, int platform);
+    Long getLatestVersionId(long projectId, @Nullable String channel, @EnumByOrdinal Platform platform);
 }

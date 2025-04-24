@@ -110,6 +110,10 @@ public class ProjectService extends HangarComponent {
         // TODO All of this is dumb and needs to be redone into as little queries as possible
         final Long hangarUserId = this.getHangarUserId();
         final Project project = this.hangarProjectsDAO.getProject(projectTable.getId(), hangarUserId);
+        if (project == null) {
+            // some view hasn't updated yet
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Project is still creating...");
+        }
         final long projectId = project.getId();
 
         String lastVisibilityChangeComment = "";
@@ -170,7 +174,7 @@ public class ProjectService extends HangarComponent {
     }
 
     private @Nullable Version getLastVersion(final long projectId, final Platform platform, final @Nullable String channel) {
-        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(projectId, channel, platform.ordinal());
+        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(projectId, channel, platform);
         return lastVersion == null ? null : this.versionsApiDAO.getVersion(lastVersion, false, null);
     }
 
