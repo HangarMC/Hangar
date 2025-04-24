@@ -38,7 +38,7 @@ const dialogTitle = computed(() => {
     return i18n.t("auth.login.twoFactor.title");
   }
   return i18n.t("auth.login.main.title");
-})
+});
 
 const dialogInfo = computed(() => {
   if (privileged) {
@@ -48,7 +48,7 @@ const dialogInfo = computed(() => {
     return i18n.t("auth.login.twoFactor.info");
   }
   return null;
-})
+});
 
 async function loginPassword() {
   if (!(await v.value.$validate())) return;
@@ -161,7 +161,7 @@ useSeo(computed(() => ({ title: "Login", route })));
       />
       <InputPassword v-model="password" label="Password" name="password" autocomplete="current-password" :rules="[required()]" />
       <div class="flex flex-col gap-2">
-        <Button :disabled="loading" @click.prevent="loginPassword">Login</Button>
+        <Button :disabled="loading" @click.prevent="loginPassword">Log in</Button>
         <template v-if="!privileged">
           <div class="flex items-center space-x-2">
             <hr class="flex-grow border-zinc-200 dark:border-zinc-700" />
