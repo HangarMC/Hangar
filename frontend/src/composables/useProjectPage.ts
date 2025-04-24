@@ -2,7 +2,12 @@ import type { Router } from "vue-router";
 import type { RouteLocationNormalized } from "vue-router/auto";
 import type { HangarProject, ProjectPageTable } from "~/types/backend";
 
-export function useProjectPage(route: RouteLocationNormalized<"user-project-pages-page">, router: Router, project?: HangarProject, page?: ProjectPageTable) {
+export function useProjectPage(
+  route: MaybeRefOrGetter<RouteLocationNormalized<"user-project-pages-page">>,
+  router: Router,
+  project: MaybeRefOrGetter<HangarProject | undefined>,
+  page: MaybeRefOrGetter<ProjectPageTable | undefined>
+) {
   const editingPage = ref<boolean>(false);
 
   // Helper setter function, v-model cannot directly edit from inside a slot.
@@ -11,20 +16,22 @@ export function useProjectPage(route: RouteLocationNormalized<"user-project-page
   }
 
   async function savePage(content: string) {
-    if (!page) return;
-    await useInternalApi(`pages/save/${project?.id}/${page?.id}`, "post", {
+    const pageVal = toValue(page);
+    if (!pageVal) return;
+    await useInternalApi(`pages/save/${toValue(project)?.id}/${pageVal?.id}`, "post", {
       content,
     }).catch((err) => handleRequestError(err, "page.new.error.save"));
-    if (page && "contents" in page) {
-      page.contents = content;
+    if (pageVal && "contents" in pageVal) {
+      pageVal.contents = content;
     }
     editingPage.value = false;
   }
 
   async function deletePage() {
-    if (!page) return;
-    await useInternalApi(`pages/delete/${project?.id}/${page?.id}`, "post").catch((err) => handleRequestError(err, "page.new.error.save"));
-    await router.replace(`/${route.params.user}/${route.params.project}`);
+    const pageVal = toValue(page);
+    if (!pageVal) return;
+    await useInternalApi(`pages/delete/${toValue(project)?.id}/${pageVal.id}`, "post").catch((err) => handleRequestError(err, "page.new.error.save"));
+    await router.replace(`/${toValue(route).params.user}/${toValue(route).params.project}`);
   }
 
   return { editingPage, changeEditingPage, savePage, deletePage };

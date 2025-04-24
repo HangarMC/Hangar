@@ -13,10 +13,10 @@ const router = useRouter();
 const updateProjectPages = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
 
 const { editingPage, changeEditingPage, savePage, deletePage } = useProjectPage(
-  route,
+  () => route,
   router,
-  props.project,
-  props.mainPage ? props.project?.mainPage : props.page
+  () => props.project,
+  () => (props.mainPage ? props.project?.mainPage : props.page)
 );
 if (!props.mainPage) {
   useSeo(

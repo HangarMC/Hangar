@@ -38,7 +38,7 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
 
         promises.push(
           new Promise<void>(async (resolve, reject) => {
-            console.log("load loading", key);
+            console.log("load loading", key, newParam);
             const result = await loader(newParam).catch((err) => {
               if (lenient) resolve();
               else reject(err);
@@ -46,7 +46,7 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
             // await new Promise((resolve) => setTimeout(resolve, 5000));
             if (result) {
               data.value = result;
-              console.log("load loaded", key);
+              console.log("load loaded", key, newParam);
               resolve();
             }
           })

@@ -57,14 +57,23 @@ if (import.meta.client && props.editing) {
 defineExpose({ rawEdited });
 
 watch(
-  ref(props),
+  () => props.editing,
   (val) => {
-    if (!val.editing) {
+    if (!val) {
       loading.save = false;
       loading.delete = false;
     }
+  }
+);
+
+watch(
+  () => props.raw,
+  (val) => {
+    if (val !== rawEdited.value) {
+      rawEdited.value = val || "";
+    }
   },
-  { deep: true }
+  { immediate: true }
 );
 
 watch(rawEdited, (e) => emit("update:raw", e));
