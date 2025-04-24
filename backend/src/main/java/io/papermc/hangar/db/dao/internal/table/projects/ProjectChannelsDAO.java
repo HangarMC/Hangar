@@ -30,18 +30,9 @@ public interface ProjectChannelsDAO {
     @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId")
     List<ProjectChannelTable> getProjectChannels(long projectId);
 
-    @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId AND name = :name AND color = :color")
-    ProjectChannelTable getProjectChannel(long projectId, String name, @EnumByOrdinal Color color);
-
-    @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId AND name = :name")
+    @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId AND lower(name) = lower(:name)")
     ProjectChannelTable getProjectChannel(long projectId, String name);
 
     @SqlQuery("SELECT * FROM project_channels WHERE id = :channelId")
     ProjectChannelTable getProjectChannel(long channelId);
-
-    @SqlQuery("SELECT pc.* FROM project_channels pc JOIN project_versions pv ON pc.id = pv.channel_id WHERE pv.id = :versionId")
-    ProjectChannelTable getProjectChannelForVersion(long versionId);
-
-    @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId ORDER BY created_at LIMIT 1")
-    ProjectChannelTable getFirstChannel(long projectId);
 }

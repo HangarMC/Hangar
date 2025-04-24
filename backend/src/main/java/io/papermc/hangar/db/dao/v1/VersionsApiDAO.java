@@ -124,7 +124,7 @@ public interface VersionsApiDAO {
         SELECT pv.version_string
            FROM project_versions pv
                JOIN project_channels pc ON pv.channel_id = pc.id
-           WHERE pv.visibility = 0 AND pc.name = :channel AND pv.project_id = :projectId
+           WHERE pv.visibility = 0 AND lower(pc.name) = lower(:channel) AND pv.project_id = :projectId
            ORDER BY pv.created_at DESC
            LIMIT 1
     """)
@@ -135,7 +135,7 @@ public interface VersionsApiDAO {
            FROM project_versions pv
                JOIN project_channels pc ON pv.channel_id = pc.id
            WHERE pv.visibility = 0
-             AND (:channel IS NULL OR pc.name = :channel)
+             AND (:channel IS NULL OR lower(pc.name) = lower(:channel))
              AND pv.project_id = :projectId
              AND EXISTS (
                  SELECT 1 FROM jsonb_array_elements(pv.platforms) elem WHERE (elem->>'platform')::int = :platform

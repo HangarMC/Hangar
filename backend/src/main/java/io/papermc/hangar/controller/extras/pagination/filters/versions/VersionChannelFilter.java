@@ -42,10 +42,10 @@ public class VersionChannelFilter implements Filter<VersionChannelFilterInstance
 
         @Override
         public void createSql(final StringBuilder sb, final SqlStatement<?> q) {
-            sb.append(" AND vv.pc_name IN (");
+            sb.append(" AND lower(vv.pc_name) IN (");
             for (int i = 0; i < this.channels.length; i++) {
                 sb.append(":__channelName_").append(i);
-                q.bind("__channelName_" + i, this.channels[i]);
+                q.bind("__channelName_" + i, this.channels[i].toLowerCase());
                 if (i + 1 != this.channels.length) {
                     sb.append(",");
                 }
