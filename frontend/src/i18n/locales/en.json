@@ -153,6 +153,8 @@
     "noWatchers": "There are no watchers on this project yet 😢",
     "members": "Members",
     "noPublicMembers": "There are no public members.",
+    "bannersInfo": "Did you know? You can show off your project with awesome community provided banners and badges! Check out the Banners tab in",
+    "bannersInfoSettings": "your project settings!",
     "sorting": {
       "mostStars": "Most Stars",
       "mostDownloads": "Most Downloads",
@@ -379,6 +381,21 @@
         "subjectSub": "Enter your PayPal email here. Alternatively, you can setup a hosted button on PayPals Website and enter the hosted button id here.",
         "subjectLabel": "PayPal email or button id"
       },
+      "banners": {
+        "markdown": "Copy markdown",
+        "url": "Copy url",
+        "style": "Style",
+        "author": "Author",
+        "resource": "Resource",
+        "downloads": "Downloads",
+        "stars": "Stars",
+        "views": "Views",
+        "copied": "Copied to clipboard!",
+        "mcbanners": "MCBanners",
+        "mcbannersSub": "MCBanners is a service provides banners for authors or resources you can embed anywhere. Find out more at mcbanners.com",
+        "shields": "shields.io",
+        "shieldsSub": "shields.io is a service that provides small badges for resources. Find out more at shields.io"
+      },
       "error": {
         "invalidFile": "{0} is an invalid file type",
         "noFile": "No file submitted",
@@ -404,7 +421,8 @@
         "general": "General",
         "links": "Links",
         "management": "Management",
-        "donation": "Donations"
+        "donation": "Donations",
+        "banners": "Banners"
       }
     },
     "discuss": {

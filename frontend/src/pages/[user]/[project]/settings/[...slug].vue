@@ -27,6 +27,7 @@ const selectedTab = ref(route.params.slug?.[0] || "general");
 const tabs = ref([
   { value: "general", header: i18n.t("project.settings.tabs.general") },
   { value: "links", header: i18n.t("project.settings.tabs.links") },
+  { value: "banners", header: i18n.t("project.settings.tabs.banners") },
   // { value: "donation", header: i18n.t("project.settings.tabs.donation") },
 ] satisfies Tab<string>[]);
 
@@ -230,6 +231,25 @@ async function resetIcon() {
   loading.resetIcon = false;
 }
 
+const shieldIoStyle = ref("flat");
+const mcBannersStyle = ref("DARK_GUNMETAL");
+const bannerUrls = computed(() => ({
+  author: `https://api.mcbanners.com/banner/author/hangar/${props.project?.namespace?.slug}/banner.png?background__template=${mcBannersStyle.value}`,
+  resource: `https://api.mcbanners.com/banner/resource/hangar/${props.project?.namespace?.slug}/banner.png?background__template=${mcBannersStyle.value}`,
+  downloads: `https://img.shields.io/hangar/dt/${props.project?.namespace?.slug}?link=https%3A%2F%2Fhangar.papermc.io%2F${props.project?.namespace?.owner}%2F${props.project?.namespace?.slug}&style=${shieldIoStyle.value}`,
+  stars: `https://img.shields.io/hangar/stars/${props.project?.namespace?.slug}?link=https%3A%2F%2Fhangar.papermc.io%2F${props.project?.namespace?.owner}%2F${props.project?.namespace?.slug}&style=${shieldIoStyle.value}`,
+  views: `https://img.shields.io/hangar/views/${props.project?.namespace?.slug}?link=https%3A%2F%2Fhangar.papermc.io%2F${props.project?.namespace?.owner}%2F${props.project?.namespace?.slug}&style=${shieldIoStyle.value}`,
+}));
+
+function copyToClipboard(event: any, url: string, type: string = "url") {
+  const clipboardData = event.clipboardData || event.originalEvent?.clipboardData || navigator.clipboard;
+  if (type === "markdown") {
+    url = `[![${props.project.name}](${url})](https://hangar.papermc.io/${props.project.namespace.owner}/${props.project.namespace.slug})`;
+  }
+  clipboardData.writeText(url);
+  notificationStore.success(i18n.t("project.settings.banners.copied"));
+}
+
 useSeo(
   computed(() => ({
     title: i18n.t("project.settings.title") + " | " + props.project?.name,
@@ -431,6 +451,68 @@ useSeo(
             />
           </ProjectSettingsSection>
         </template>-->
+        <template #banners>
+          <ProjectSettingsSection title="project.settings.banners.mcbanners" description="project.settings.banners.mcbannersSub">
+            <div class="mb-2">
+              <InputSelect
+                v-model="mcBannersStyle"
+                :values="[
+                  'BLUE_RADIAL',
+                  'BURNING_ORANGE',
+                  'MANGO',
+                  'MOONLIGHT_PURPLE',
+                  'ORANGE_RADIAL',
+                  'VELVET',
+                  'YELLOW',
+                  'MALACHITE_GREEN',
+                  'DARK_GUNMETAL',
+                  'PURPLE_TAUPE',
+                  'LIGHT_MODE',
+                ]"
+                :label="i18n.t('project.settings.banners.style')"
+              />
+            </div>
+            <div class="mb-1">{{ i18n.t("project.settings.banners.author") }}:</div>
+            <img :src="bannerUrls.author" alt="" />
+            <div class="flex gap-2 my-2">
+              <Button @click="copyToClipboard($event, bannerUrls.author, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
+              <Button @click="copyToClipboard($event, bannerUrls.author)">{{ i18n.t("project.settings.banners.url") }}</Button>
+            </div>
+            <div class="mb-1">{{ i18n.t("project.settings.banners.resource") }}:</div>
+            <img :src="bannerUrls.resource" alt="" />
+            <div class="flex gap-2 my-2">
+              <Button @click="copyToClipboard($event, bannerUrls.resource, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
+              <Button @click="copyToClipboard($event, bannerUrls.resource)">{{ i18n.t("project.settings.banners.url") }}</Button>
+            </div>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection title="project.settings.banners.shields" description="project.settings.banners.shieldsSub">
+            <div class="mb-2">
+              <InputSelect
+                v-model="shieldIoStyle"
+                :values="['flat', 'flat-square', 'plastic', 'for-the-badge', 'social']"
+                :label="i18n.t('project.settings.banners.style')"
+              />
+            </div>
+            <div class="mb-1">{{ i18n.t("project.settings.banners.downloads") }}:</div>
+            <img :src="bannerUrls.downloads" alt="" />
+            <div class="flex gap-2 my-2">
+              <Button @click="copyToClipboard($event, bannerUrls.downloads, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
+              <Button @click="copyToClipboard($event, bannerUrls.downloads)">{{ i18n.t("project.settings.banners.url") }}</Button>
+            </div>
+            <div class="mb-1">{{ i18n.t("project.settings.banners.stars") }}:</div>
+            <img :src="bannerUrls.stars" alt="" />
+            <div class="flex gap-2 my-2">
+              <Button @click="copyToClipboard($event, bannerUrls.stars, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
+              <Button @click="copyToClipboard($event, bannerUrls.stars)">{{ i18n.t("project.settings.banners.url") }}</Button>
+            </div>
+            <div class="mb-1">{{ i18n.t("project.settings.banners.views") }}:</div>
+            <img :src="bannerUrls.views" alt="" />
+            <div class="flex gap-2 my-2">
+              <Button @click="copyToClipboard($event, bannerUrls.views, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
+              <Button @click="copyToClipboard($event, bannerUrls.views)">{{ i18n.t("project.settings.banners.url") }}</Button>
+            </div>
+          </ProjectSettingsSection>
+        </template>
       </Tabs>
     </Card>
     <MemberList :members="project?.members || []" :author="project?.namespace?.owner" :slug="project?.name" class="basis-full md:basis-3/12 h-max" />
