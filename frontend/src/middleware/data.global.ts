@@ -86,6 +86,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         newPath = newPath.replace(pageSlug, page.value.slug);
       }
     }
+    // check if we need to redirect to proper owner
+    if (projectName && userName && project.value && project.value.namespace.owner !== userName) {
+      newPath = newPath.replace(userName, project.value.namespace.owner);
+    }
+
+    // do redirect
     if (newPath !== to.fullPath) {
       console.log("Redirect to " + newPath + " from (" + to.fullPath + ")");
       return navigateTo(newPath, { redirectCode: 301 });
