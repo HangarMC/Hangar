@@ -122,10 +122,12 @@ useSeo(
         </template>
       </Card>
       <Alert v-if="hasPerms(NamedPermission.EditSubjectSettings)" type="neutral" class="mt-2">
-        {{ i18n.t("project.bannersInfo") }}&nbsp;
-        <Link :to="'/' + project?.namespace?.owner + '/' + project?.namespace?.slug + '/settings/banner'">
-          {{ i18n.t("project.bannersInfoSettings") }}
-        </Link>
+        <div>
+          {{ i18n.t("project.bannersInfo") }}&nbsp;
+          <Link :to="'/' + project?.namespace?.owner + '/' + project?.namespace?.slug + '/settings/banners'">
+            {{ i18n.t("project.bannersInfoSettings") }}
+          </Link>
+        </div>
       </Alert>
     </section>
     <section class="basis-full md:basis-4/15 space-y-4 min-w-280px">
