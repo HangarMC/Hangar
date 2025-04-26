@@ -11,6 +11,7 @@ import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Prompt;
+import io.papermc.hangar.model.common.UnreadCount;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
@@ -304,8 +305,8 @@ public class HangarUserController extends HangarComponent {
     }
 
     @GetMapping("/unreadcount")
-    public ResponseEntity<Long> getUnreadNotifications() {
-        return ResponseEntity.ok(this.notificationService.getUnreadNotifications());
+    public ResponseEntity<UnreadCount> getUnreadCount() {
+        return ResponseEntity.ok(this.notificationService.getUnreadCount());
     }
 
     @Unlocked

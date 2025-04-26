@@ -13,6 +13,7 @@ import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.UnreadCount;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
@@ -136,16 +137,14 @@ public class UsersApiService extends HangarComponent {
 
     public HangarUser supplyHeaderData(final HangarUser hangarUser) {
         final Permission globalPermission = this.permissionService.getGlobalPermissions(hangarUser.getId());
-        final long unreadNotifs = this.notificationsDAO.getUnreadNotificationCount(hangarUser.getId());
-        final long unansweredInvites = this.notificationsDAO.getUnansweredInvites(hangarUser.getId());
+        final UnreadCount unreadCount = this.notificationsDAO.getUnreadCount(hangarUser.getId());
         final long unresolvedFlags = globalPermission.has(Permission.ModNotesAndFlags) ? this.flagService.getFlagsQueueSize(false) : 0;
         final long projectApprovals = globalPermission.has(Permission.ModNotesAndFlags.add(Permission.SeeHidden)) ? this.projectAdminService.getApprovalQueueSize() : 0;
         final long reviewQueueCount = globalPermission.has(Permission.Reviewer) ? this.reviewService.getApprovalQueueSize() : 0;
         final long organizationCount = this.organizationService.getUserOrganizationCount(hangarUser.getId());
         hangarUser.setHeaderData(new HangarUser.HeaderData(
             globalPermission,
-            unreadNotifs,
-            unansweredInvites,
+            unreadCount,
             unresolvedFlags,
             projectApprovals,
             reviewQueueCount,

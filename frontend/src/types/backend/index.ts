@@ -2182,12 +2182,16 @@ export interface HeaderData {
   projectApprovals: number;
   /** @format int64 */
   reviewQueueCount: number;
-  /** @format int64 */
-  unansweredInvites: number;
-  /** @format int64 */
-  unreadNotifications: number;
+  unreadCount: UnreadCount;
   /** @format int64 */
   unresolvedFlags: number;
+}
+
+export interface UnreadCount {
+  /** @format int64 */
+  notifications: number;
+  /** @format int64 */
+  invites: number;
 }
 
 export interface JoinableMemberOrganizationRoleTable {

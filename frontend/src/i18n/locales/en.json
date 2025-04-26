@@ -697,7 +697,9 @@
   },
   "notifications": {
     "title": "Notifications",
+    "recentNotifications": "Recent notifications",
     "invites": "Invites",
+    "invitesPending": "Pending invites: {0}",
     "invited": "You have been invited to join the {0}",
     "inviteAccepted": "You have accepted an invitation to the {0}",
     "invitedOrg": "Your organization {0} has been invited to join the {1}",
@@ -706,7 +708,7 @@
     "unread": "Unread",
     "read": "Read",
     "all": "All",
-    "viewAll": "View all notifications",
+    "viewAll": "View all notifications and invites",
     "viewMoreUnread": "View {0} more unread notifications",
     "markAsRead": "Mark as read",
     "invite": {
@@ -729,7 +731,7 @@
       "recent": "You have no recent notifications!",
       "read": "You have no read notifications.",
       "all": "You have no notifications.",
-      "invites": "You have no invites."
+      "invites": "You have no pending invites."
     },
     "project": {
       "visibilityChanged": "The visibility of {0} has been changed to {1}",
@@ -739,14 +741,19 @@
       "reviewedPartial": "{0} {1} has been reviewed and is partially approved",
       "newVersion": "A new version has been released for {0}: {1}",
       "invite": "You have been invited to join the group {0} on the project {1}",
-      "inviteRescinded": "Your invite to you the group {0} in the project {1} has been rescinded",
+      "inviteOrg": "Your organization {0} has been invited to join the group {1} on the project {2}",
+      "inviteRescinded": "Your invite to join the group {0} in the project {1} has been rescinded",
+      "inviteRescindedOrg": "Your organizations {0} invite to join the group {1} in the project {2} has been rescinded",
       "removed": "You have been removed from the group {0} in the project {1}",
+      "removedOrg": "Your organization {0} has been removed from the group {1} in the project {2}",
       "roleChanged": "You have been added to the {0} group in the project {1}",
-      "transfer": "{0} would like to transfer the project {1} to you"
+      "roleChangedOrg": "Your organization {0} has been added to the {0} group in the project {1}",
+      "transfer": "{0} would like to transfer the project {1} to you",
+      "transferOrg": "{0} would like to transfer the project {1} to your organization {2}"
     },
     "organization": {
       "invite": "You have been invited to join the group {0} in the organization {1}",
-      "inviteRescinded": "Your invite to you the group {0} in the organization {1} has been rescinded",
+      "inviteRescinded": "Your invite to join the group {0} in the organization {1} has been rescinded",
       "removed": "You have been removed from the group {0} in the organization {1}",
       "roleChanged": "You have been added to the {0} group in the organization {1}",
       "transfer": "{0} would like to transfer the organization {1} to you"

@@ -1,5 +1,6 @@
 package io.papermc.hangar.db.dao.internal.table;
 
+import io.papermc.hangar.model.common.UnreadCount;
 import io.papermc.hangar.model.db.NotificationTable;
 import java.util.Collection;
 import java.util.List;
@@ -32,13 +33,21 @@ public interface NotificationsDAO {
     @SqlUpdate("UPDATE notifications SET read = TRUE WHERE read = FALSE AND user_id = :userId")
     void markAllAsRead(long userId);
 
-    @SqlQuery("SELECT count(*)" +
-        "   FROM notifications n" +
-        "   WHERE n.user_id = :userId" +
-        "       AND n.read IS FALSE")
-    long getUnreadNotificationCount(long userId);
-
-    @SqlQuery("SELECT (SELECT count(*) FROM user_project_roles upr WHERE upr.user_id = :userId AND upr.accepted IS FALSE) + " +
-        "       (SELECT count(*) FROM user_organization_roles uor WHERE uor.user_id = :userId AND uor.accepted IS FALSE) AS count")
-    long getUnansweredInvites(long userId);
+    @SqlQuery("""
+        SELECT (SELECT count(*)
+          FROM notifications n
+          WHERE n.user_id = :userId
+            AND n.read IS FALSE) AS notifications,
+         (SELECT count(*)
+          FROM user_organization_roles uor
+              LEFT JOIN organizations o ON o.user_id = uor.organization_id
+          WHERE (uor.user_id = :userId OR o.owner_id = :userId) AND uor.accepted IS FALSE) +
+         (SELECT count(*)
+          FROM user_project_roles upr
+              LEFT JOIN organizations o ON o.user_id = upr.user_id
+          WHERE (upr.user_id = :userId OR o.owner_id = :userId) AND upr.accepted IS FALSE)
+                                 AS invites;
+        """)
+    @RegisterConstructorMapper(UnreadCount.class)
+    UnreadCount getUnreadCount(long userId);
 }

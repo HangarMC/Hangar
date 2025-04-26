@@ -148,23 +148,23 @@ export function useReadNotifications() {
   return { readNotifications, readNotificationsStatus };
 }
 
-export function useUnreadNotificationCount() {
+export function useUnreadCount() {
   const authStore = useAuthStore();
   const {
-    data: unreadNotifications,
+    data: unreadCount,
     status: unreadCountStatus,
-    refresh: refreshUnreadNotifications,
+    refresh: refreshUnreadCount,
   } = useData(
     () => ({}),
     () => "unreadCount",
-    () => useInternalApi<number>("unreadcount"),
-    true,
+    () => useInternalApi<{ notifications: number; invites: number }>("unreadcount"),
+    false,
     () => !authStore.user,
     () => {},
-    0
+    authStore.user?.headerData?.unreadCount
   );
   // TODO a default value should change the type so that this cast isnt needed
-  return { unreadNotifications: unreadNotifications as Ref<number>, unreadCountStatus, refreshUnreadNotifications };
+  return { unreadCount: unreadCount as Ref<{ notifications: number; invites: number }>, unreadCountStatus, refreshUnreadCount };
 }
 
 export function useNotifications() {

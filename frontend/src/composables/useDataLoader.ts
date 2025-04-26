@@ -94,6 +94,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
   }
 
   if (import.meta.server && !server) {
+    setState(defaultValue ?? undefined);
     return { data, status, refresh };
   }
 

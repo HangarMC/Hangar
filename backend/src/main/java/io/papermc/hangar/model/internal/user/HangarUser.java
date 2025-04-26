@@ -4,6 +4,7 @@ import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.UnreadCount;
 import jakarta.annotation.Nullable;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -85,8 +86,7 @@ public class HangarUser extends User {
     }
 
     public record HeaderData(Permission globalPermission,
-                             long unreadNotifications,
-                             long unansweredInvites,
+                             UnreadCount unreadCount,
                              long unresolvedFlags,
                              long projectApprovals,
                              long reviewQueueCount,

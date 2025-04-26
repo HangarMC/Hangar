@@ -63,7 +63,14 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
             throw new HangarApiException(this.errorPrefix + "alreadyInvited", invitee.getName());
         }
 
-        this.joinableNotificationService.invited(List.of(roleTable), joinable, this.getHangarUserId());
+        // If invitee is an organization, notify the organization owner
+        final OrganizationTable organizationTable = this.organizationService.getOrganizationTableByUser(userTable.getId());
+        if (organizationTable != null) {
+            this.joinableNotificationService.invitedOrg(organizationTable, roleTable.getRole().getTitle(), joinable, this.getHangarPrincipal().getUserId());
+        } else {
+            this.joinableNotificationService.invited(roleTable.getUserId(), roleTable.getRole().getTitle(), joinable, this.getHangarPrincipal().getUserId());
+        }
+
         this.logInvitesSent(joinable, "Invited: " + userTable.getName() + " (" + invitee.getRole().getTitle() + ")");
     }
 
@@ -97,12 +104,11 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
         }
 
         // If transferred to an organization, notify the organization owner
-        this.joinableNotificationService.transferRequest(
-            organizationTable != null ? organizationTable.getOwnerId() : userTable.getId(),
-            joinable,
-            this.getHangarPrincipal().getUserId(),
-            this.getHangarPrincipal().getName()
-        );
+        if (organizationTable != null) {
+            this.joinableNotificationService.transferRequestOrg(organizationTable, joinable, this.getHangarPrincipal().getUserId(), this.getHangarPrincipal().getName());
+        } else {
+            this.joinableNotificationService.transferRequest(userTable.getId(), joinable, this.getHangarPrincipal().getUserId(), this.getHangarPrincipal().getName());
+        }
         this.logInvitesSent(joinable, "Sent transfer request: " + userTable.getName());
     }
 
