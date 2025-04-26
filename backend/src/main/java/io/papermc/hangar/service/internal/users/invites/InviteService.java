@@ -84,10 +84,16 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
             throw new HangarApiException(this.errorPrefix + "pendingTransfer");
         }
 
-        //TODO Allow sending transfer request to current members
         final RT roleTable = this.roleService.addRole(this.getOwnerRole().create(joinable.getId(), null, userTable.getId(), false), true);
         if (roleTable == null) {
-            throw new HangarApiException(this.errorPrefix + "alreadyInvited", user);
+            final RT existingRole = this.roleService.getRole(joinable.getId(), userTable.getId());
+            if (existingRole == null || !existingRole.isAccepted()) {
+                throw new HangarApiException(this.errorPrefix + "alreadyInvited", user);
+            }
+
+            existingRole.setRole(this.getOwnerRole());
+            existingRole.setAccepted(false);
+            this.roleService.updateRole(existingRole);
         }
 
         // If transferred to an organization, notify the organization owner
@@ -130,7 +136,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
         }
 
         roleTable = this.roleService.changeAcceptance(roleTable, true);
-        this.memberService.addMember(roleTable);
+        this.memberService.addMemberIfNeeded(roleTable);
 
         final UserTable userTable = this.userDAO.getUserTable(roleTable.getUserId());
         this.logInviteAccepted(roleTable, userTable);
@@ -141,7 +147,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
     }
 
     @Transactional
-    public void setOwner(final J joinable, final UserTable userTable, final boolean addRole) { // TODO make sure new owner doesn't have project of the same name
+    public void setOwner(final J joinable, final UserTable userTable, final boolean addRole) {
         if (addRole) {
             final RT oldRole = this.roleService.getRole(joinable.getId(), userTable.getId());
             if (oldRole != null) {
@@ -150,7 +156,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
                 this.roleService.updateRole(oldRole);
             } else {
                 final RT roleTable = this.roleService.addRole(this.getOwnerRole().create(joinable.getId(), null, userTable.getId(), true), false);
-                this.memberService.addMember(roleTable);
+                this.memberService.addMemberIfNeeded(roleTable);
             }
         }
 

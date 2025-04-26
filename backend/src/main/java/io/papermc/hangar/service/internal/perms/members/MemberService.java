@@ -74,8 +74,11 @@ public abstract class MemberService<
         return roleTable;
     }
 
-    public void addMember(final RT roleTable) {
-        this.membersDao.insert(this.constructor.create(roleTable.getUserId(), roleTable.getPrincipalId()));
+    public void addMemberIfNeeded(final RT roleTable) {
+        final MT existingMember = this.membersDao.getMemberTable(roleTable.getPrincipalId(), roleTable.getUserId());
+        if (existingMember == null) {
+            this.membersDao.insert(this.constructor.create(roleTable.getUserId(), roleTable.getPrincipalId()));
+        }
     }
 
     @Transactional
