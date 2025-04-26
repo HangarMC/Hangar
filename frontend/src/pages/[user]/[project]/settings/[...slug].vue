@@ -244,7 +244,7 @@ const bannerUrls = computed(() => ({
 function copyToClipboard(event: any, url: string, type: string = "url") {
   const clipboardData = event.clipboardData || event.originalEvent?.clipboardData || navigator.clipboard;
   if (type === "markdown") {
-    url = `[![${props.project.name}](${url})](https://hangar.papermc.io/${props.project.namespace.owner}/${props.project.namespace.slug})`;
+    url = `[![${props.project?.name}](${url})](https://hangar.papermc.io/${props.project?.namespace.owner}/${props.project?.namespace.slug})`;
   }
   clipboardData.writeText(url);
   notificationStore.success(i18n.t("project.settings.banners.copied"));
