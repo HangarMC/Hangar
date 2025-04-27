@@ -26,7 +26,7 @@ public class ProjectTableResolver extends HangarModelResolver<ProjectTable> {
     @Override
     protected ProjectTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
         ProjectTable projectTable = null;
-        if (StringUtils.isLong(param)) {
+        if (this.supportsId(request) && StringUtils.isLong(param)) {
             projectTable = this.projectService.getProjectTable(Long.parseLong(param));
         }
 

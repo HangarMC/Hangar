@@ -26,7 +26,7 @@ public class ProjectVersionTableResolver extends HangarModelResolver<ProjectVers
     @Override
     protected ProjectVersionTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
         ProjectVersionTable projectVersionTable = null;
-        if (StringUtils.isLong(param)) {
+        if (this.supportsId(request) && StringUtils.isLong(param)) {
             projectVersionTable = this.versionService.getProjectVersionTable(Long.parseLong(param));
         }
 

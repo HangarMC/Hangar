@@ -26,7 +26,7 @@ public class UserTableResolver extends HangarModelResolver<UserTable> {
     @Override
     protected UserTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
         UserTable userTable = null;
-        if (StringUtils.isLong(param)) {
+        if (this.supportsId(request) && StringUtils.isLong(param)) {
             userTable = this.userService.getUserTable(Long.parseLong(param));
         }
 
