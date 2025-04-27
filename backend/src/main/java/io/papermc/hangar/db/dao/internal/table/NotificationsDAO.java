@@ -40,8 +40,7 @@ public interface NotificationsDAO {
             AND n.read IS FALSE) AS notifications,
          (SELECT count(*)
           FROM user_organization_roles uor
-              LEFT JOIN organizations o ON o.user_id = uor.organization_id
-          WHERE (uor.user_id = :userId OR o.owner_id = :userId) AND uor.accepted IS FALSE) +
+          WHERE uor.user_id = :userId AND uor.accepted IS FALSE) +
          (SELECT count(*)
           FROM user_project_roles upr
               LEFT JOIN organizations o ON o.user_id = upr.user_id
