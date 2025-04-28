@@ -139,7 +139,7 @@ function isRecent(date: string): boolean {
       <!-- Left side items -->
       <div class="flex items-center gap-4">
         <Popover v-slot="{ close, open }" class="relative">
-          <PopoverButton id="menu-button" aria-label="Menu" v-on="useTracking('nav-burger-button', { open })" class="flex">
+          <PopoverButton id="menu-button" aria-label="Menu" class="flex" v-on="useTracking('nav-burger-button', { open })">
             <icon-mdi-menu class="transition-transform text-[1.2em]" :class="open ? 'transform rotate-90' : ''" />
           </PopoverButton>
 

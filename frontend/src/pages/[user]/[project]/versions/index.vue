@@ -6,7 +6,7 @@ const i18n = useI18n();
 const router = useRouter();
 const route = useRoute("user-project-versions");
 
-const toArray = <T,>(input: unknown): T => (Array.isArray(input) ? input : input ? [input] : []) as T;
+const toArray = <T,>(input: unknown): T => (Array.isArray(input) ? input : (input ? [input] : [])) as T;
 const filter = reactive({
   channels: toArray<string[]>(route.query.channel),
   platforms: toArray<Platform[]>(route.query.platform),
