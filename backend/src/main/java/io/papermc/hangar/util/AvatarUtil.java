@@ -19,4 +19,6 @@ public final class AvatarUtil {
             return AvatarService.getInstance().getDefaultAvatarUrl();
         }
     }
+
+
 }
