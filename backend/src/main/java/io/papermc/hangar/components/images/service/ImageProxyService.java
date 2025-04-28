@@ -35,7 +35,7 @@ public class ImageProxyService {
                 }
                 // check status code
                 if (!clientResponse.statusCode().is2xxSuccessful()) {
-                    throw new ResponseStatusException(clientResponse.statusCode(), "Encountered " + clientResponse.statusCode().value() + " while trying to load " + imageUrl);
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Encountered " + clientResponse.statusCode().value() + " while trying to load " + imageUrl);
                 }
                 // block large stuff
                 if (this.contentTooLarge(clientResponse)) {
