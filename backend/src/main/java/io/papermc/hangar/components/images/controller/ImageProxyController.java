@@ -3,10 +3,7 @@ package io.papermc.hangar.components.images.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.UnknownHostException;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -40,11 +37,12 @@ public class ImageProxyController {
     public StreamingResponseBody proxy(final HttpServletRequest request, final HttpServletResponse res) {
         final String query = StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "";
         final String url = this.cleanUrl(request.getRequestURI() + query);
-        if (this.validTarget(url)) {
+        final URI uri = this.parseAndValidate(url);
+        if (uri != null) {
             ClientResponse clientResponse = null;
             try {
                 clientResponse = this.webClient.get()
-                    .uri(new URL(url).toURI())
+                    .uri(uri)
                     .headers((headers) -> this.passHeaders(headers, request))
                     .exchange().block(); // Block the request, we don't get the body at this point!
                 if (clientResponse == null) {
@@ -56,7 +54,7 @@ public class ImageProxyController {
                 }
                 // forward headers
                 for (final Map.Entry<String, List<String>> stringListEntry : clientResponse.headers().asHttpHeaders().entrySet()) {
-                    res.setHeader(stringListEntry.getKey(), stringListEntry.getValue().get(0));
+                    res.setHeader(stringListEntry.getKey(), stringListEntry.getValue().getFirst());
                 }
                 // Ask to have the body put into a stream of data buffers
                 final Flux<DataBuffer> body = clientResponse.body(BodyExtractors.toDataBuffers());
@@ -78,7 +76,7 @@ public class ImageProxyController {
                 } else {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad content type");
                 }
-            } catch (final WebClientRequestException | MalformedURLException | URISyntaxException ex) {
+            } catch (final WebClientRequestException ex) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Encountered " + ex.getClass().getSimpleName() + " while trying to load " + url, ex);
             } finally {
                 if (clientResponse != null) {
@@ -121,22 +119,21 @@ public class ImageProxyController {
         }
     }
 
-    private boolean validTarget(final String url) {
+    private URI parseAndValidate(final String url) {
         try {
-            final URL parsedUrl = new URL(url);
+            final URI parsedUrl = new URI(url);
             // valid proto
-            if (!parsedUrl.getProtocol().equals("http") && !parsedUrl.getProtocol().equals("https")) {
-                return false;
+            if (!parsedUrl.getScheme().equals("http") && !parsedUrl.getScheme().equals("https")) {
+                return null;
             }
             final InetAddress inetAddress = InetAddress.getByName(parsedUrl.getHost());
             // not local ip
             if (inetAddress.isAnyLocalAddress() || inetAddress.isLoopbackAddress() || inetAddress.isSiteLocalAddress()) {
-                return false;
+                return null;
             }
-        } catch (final MalformedURLException | UnknownHostException e) {
-            return false;
+            return parsedUrl;
+        } catch (final Exception e) {
+            return null;
         }
-
-        return true;
     }
 }
