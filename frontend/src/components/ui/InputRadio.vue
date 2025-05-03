@@ -16,7 +16,7 @@ const { v } = useValidation(props.label, undefined, internalVal);
 </script>
 
 <template>
-  <label class="customRadioButton relative cursor-pointer flex items-center select-none w-full bg-[linear-gradient(270deg,_transparent_-10%,_#004EE9_350%)] rounded-lg py-1.5 border border-gray-800">
+  <label class="relative cursor-pointer flex items-center w-full">
     <input
       v-model="internalVal"
       type="radio"
@@ -25,13 +25,12 @@ const { v } = useValidation(props.label, undefined, internalVal);
       @blur="v.$touch()"
     />
 
-    <slot />
-    <template v-if="props.label">{{ props.label }}</template>
+    <span
+      class="flex items-center rounded-full border w-full border-transparent py-1.5 transition-all duration-250
+             peer-checked:bg-blue-600 peer-hover:bg-gray-700 peer-hover:scale-[1.015]"
+    >
+      <slot />
+      <span v-if="props.label" class="ml-1">{{ props.label }}</span>
+    </span>
   </label>
 </template>
-
-<style>
-.customRadioButton input:checked ~ svg {
-  @apply opacity-100;
-}
-</style>

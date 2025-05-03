@@ -10,6 +10,10 @@ const props = defineProps<{
   pinned?: boolean;
 }>();
 
+const formatName = (name: String) => {
+  return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+};
+
 async function togglePin() {
   await useInternalApi(`/projects/project/${props.project.namespace.slug}/pin/${!props.pinned}`, "POST").catch(handleRequestError);
   router.go(0); // I am lazy
@@ -35,7 +39,7 @@ async function togglePin() {
             <div class="flex-1 w-75% overflow-x-hidden">
               <div class="inline-flex items-center gap-x-1">
                 <h3>
-                  <span class="text-3xl font-bold">{{ project.name }}&nbsp;</span>
+                  <span class="text-2xl font-bold">{{ project.name }}&nbsp;</span>
                   <span class="text-lg text-gray"> {{ i18n.t("general.by") }}&nbsp;</span>
                   <span class="text-lg">
                 <object type="html/sucks">
@@ -55,7 +59,7 @@ async function togglePin() {
               <div v-if="'description' in project && project.description" class="mb-1 text-gray">{{ project.description }}</div>
               <div v-else />
             </div>
-            <div class="flex-grow-0 flex-basis-auto lt-sm:hidden flex flex-col items-end gap-1 pl-8 pb-4 border-b border-charcoal-500">
+            <div class="flex-grow-0 flex-basis-auto lt-sm:hidden flex flex-col items-end gap-1 pl-8 pb-2 border-b-2 border-charcoal-500">
               <span class="inline-flex items-center text-md">
                 {{ project.stats.stars.toLocaleString("en-US") }} <IconMdiStar class="ml-1 text-primary-300" />
               </span>
@@ -85,6 +89,18 @@ async function togglePin() {
                 </Tooltip>
               </span>
               </div>
+            </div>
+            <!-- Platforms -->
+            <div class="flex items-center gap-1">
+              <template v-for="platform in Object.keys(project.supportedPlatforms)" :key="platform">
+                <div class="pl-1 pr-4 py-0.5 rounded-full flex items-center"
+                     :class="{
+                        'bg-charcoal-500': platform === platform,
+                }">
+                  <PlatformLogo :platform="platform" :size="15" class="ml-3 mr-1" />
+                  <h2 class="text-sm">{{ formatName(platform) }}</h2>
+                </div>
+              </template>
             </div>
           </div>
         </div>
