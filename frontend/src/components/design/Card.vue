@@ -17,15 +17,15 @@ const clazz = computed(() => {
     border: true,
     "dark:border-gray-800": true,
     "!border-top-primary": props.accent,
-    "rounded-2xl": true,
-    "p-4": true,
+    "rounded-xl": true,
+    "px-3.5 py-2.5": true,
   };
 });
 </script>
 
 <template>
   <div :class="clazz">
-    <div v-if="hasSlotContent($slots.header)" class="text-xl font-bold mb-2">
+    <div v-if="hasSlotContent($slots.header)" class="text-xl font-bold">
       <slot name="header" />
     </div>
     <slot name="default" />
