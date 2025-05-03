@@ -9,7 +9,7 @@ const i18n = useI18n();
 const route = useRoute("admin-health");
 const { healthReport } = useHealthReport();
 
-async function retryJob(jobId: string) {
+async function retryJob(jobId: number) {
   try {
     await useInternalApi("admin/health/retry/" + jobId, "POST");
     useNotificationStore().success(i18n.t("health.jobRetryScheduled"));
