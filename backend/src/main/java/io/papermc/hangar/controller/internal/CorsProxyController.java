@@ -32,7 +32,7 @@ public class CorsProxyController extends HangarComponent {
     @GetMapping("/")
     public ResponseEntity<Object> proxy(@RequestParam final String url) throws MalformedURLException {
         final URL u = new URL(url);
-        if (this.config.cors.allowedHosts().contains(u.getHost())) {
+        if (this.config.cors().allowedHosts().contains(u.getHost())) {
             try {
                 return this.restTemplate.getForEntity(url, Object.class);
             } catch (final HttpStatusCodeException ex) {

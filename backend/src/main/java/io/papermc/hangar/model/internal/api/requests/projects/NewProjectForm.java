@@ -13,10 +13,10 @@ public class NewProjectForm extends ProjectSettingsForm {
 
     // @el(root: String)
     @NotNull(message = "project.new.error.invalidName")
-    private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxNameLen)", message = "project.new.error.tooLongName") @Validate(SpEL = "@validate.regex(#root, @hangarConfig.projects.nameRegex)", message = "project.new.error.invalidName") String name;
+    private final @Validate(SpEL = "@validate.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.maxNameLen)", message = "project.new.error.tooLongName") @Validate(SpEL = "@validate.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.nameRegex)", message = "project.new.error.invalidName") String name;
 
     // @el(root: String)
-    private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxLen)", message = "page.new.error.maxLength") String pageContent;
+    private final @Validate(SpEL = "@validate.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.pages.maxLen)", message = "page.new.error.maxLength") String pageContent;
 
     private final @Nullable String avatarUrl;
 

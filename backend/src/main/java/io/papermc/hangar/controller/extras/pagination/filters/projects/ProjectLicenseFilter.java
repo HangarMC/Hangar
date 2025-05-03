@@ -62,6 +62,18 @@ public class ProjectLicenseFilter implements Filter<ProjectLicenseFilter.Project
         }
 
         @Override
+        public void createMeili(final StringBuilder sb) {
+            sb.append("settings.license.type in [");
+            for (int  i = 0; i < this.licenses.length; i++) {
+                sb.append(this.licenses[i]);
+                if (i + 1 != this.licenses.length) {
+                    sb.append(',');
+                }
+            }
+            sb.append("]");
+        }
+
+        @Override
         public String toString() {
             return "ProjectLicenseFilterInstance{" +
                 "licenses=" + Arrays.toString(this.licenses) +

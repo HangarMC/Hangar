@@ -33,7 +33,7 @@ public class ImageService extends HangarComponent {
         BufferedImage bufferedImage = ImageIO.read(in);
 
         // scale
-        bufferedImage = this.scale(bufferedImage, this.config.image.size(), this.config.image.size());
+        bufferedImage = this.scale(bufferedImage, this.config.image().size(), this.config.image().size());
 
         // convert to webp and optimize
         final Iterator<ImageWriter> writers = ImageIO.getImageWritersByMIMEType(WEBP.toString());
@@ -42,7 +42,7 @@ public class ImageService extends HangarComponent {
             final ImageWriteParam params = new WebPWriteParam(writer.getLocale());
             params.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
             params.setCompressionType(params.getCompressionTypes()[WebPWriteParam.LOSSY_COMPRESSION]);
-            params.setCompressionQuality(this.config.image.quality());
+            params.setCompressionQuality(this.config.image().quality());
 
             final ByteArrayOutputStream out = new ByteArrayOutputStream();
             final ImageOutputStream ios = ImageIO.createImageOutputStream(out);

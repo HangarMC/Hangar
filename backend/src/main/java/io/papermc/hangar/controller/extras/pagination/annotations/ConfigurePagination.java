@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller.extras.pagination.annotations;
 
+import io.papermc.hangar.controller.extras.pagination.PaginationType;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,4 +25,6 @@ public @interface ConfigurePagination {
 
     @Language("SpEL")
     String defaultLimitString() default "";
+
+    PaginationType paginationType() default PaginationType.DB;
 }

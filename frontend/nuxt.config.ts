@@ -68,7 +68,7 @@ export default defineNuxtConfig({
     "./src/module/componentsFix",
   ],
   i18n: {
-    vueI18n: "./src/i18n/i18n.config.ts",
+    vueI18n: "../src/i18n/i18n.config.ts",
     strategy: "no_prefix",
     lazy: true,
     langDir: "../src/i18n/locales/processed",
@@ -81,6 +81,7 @@ export default defineNuxtConfig({
     bundle: {
       runtimeOnly: true,
       dropMessageCompiler: true,
+      optimizeTranslationDirective: false,
     },
   },
   vite: {

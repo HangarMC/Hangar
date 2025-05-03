@@ -2,30 +2,24 @@ package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.images.service.AvatarService;
+import io.papermc.hangar.components.index.IndexService;
 import io.papermc.hangar.components.webhook.model.event.ProjectPublishedEvent;
 import io.papermc.hangar.components.webhook.model.event.VersionPublishedEvent;
 import io.papermc.hangar.components.webhook.service.WebhookService;
-import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
-import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionDependenciesDAO;
-import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionPlatformDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.downloads.ProjectVersionDownloadsDAO;
-import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.version.FileInfo;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
-import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
-import io.papermc.hangar.model.db.PlatformVersionTable;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionDependencyTable;
-import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionPlatformDependencyTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
@@ -74,7 +68,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class VersionFactory extends HangarComponent {
 
-    private final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependenciesDAO;
     private final ProjectVersionDependenciesDAO projectVersionDependenciesDAO;
     private final ProjectVersionsDAO projectVersionsDAO;
     private final ProjectFiles projectFiles;
@@ -94,11 +87,10 @@ public class VersionFactory extends HangarComponent {
     private final WebhookService webhookService;
     private final AvatarService avatarService;
     private final VersionsApiService versionApiService;
-    private final HangarVersionsDAO hangarVersionsDAO;
+    private final IndexService indexService;
 
     @Autowired
-    public VersionFactory(final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService, final WebhookService webhookService, final AvatarService avatarService, final @Lazy VersionsApiService versionApiService, final HangarVersionsDAO hangarVersionsDAO) {
-        this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
+    public VersionFactory(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService, final WebhookService webhookService, final AvatarService avatarService, final @Lazy VersionsApiService versionApiService, final IndexService indexService) {
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.projectVersionsDAO = projectVersionDAO;
         this.projectFiles = projectFiles;
@@ -118,7 +110,7 @@ public class VersionFactory extends HangarComponent {
         this.webhookService = webhookService;
         this.avatarService = avatarService;
         this.versionApiService = versionApiService;
-        this.hangarVersionsDAO = hangarVersionsDAO;
+        this.indexService = indexService;
     }
 
     @Transactional
@@ -257,7 +249,7 @@ public class VersionFactory extends HangarComponent {
         if (!this.validationService.isValidVersionName(pendingVersion.getVersionString())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidName");
         }
-        if (pendingVersion.getPluginDependencies().values().stream().anyMatch(pluginDependencies -> pluginDependencies.size() > this.config.projects.maxDependencies())) {
+        if (pendingVersion.getPluginDependencies().values().stream().anyMatch(pluginDependencies -> pluginDependencies.size() > this.config.projects().maxDependencies())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.tooManyDependencies");
         }
         if (this.exists(projectId, pendingVersion.getVersionString())) {
@@ -293,7 +285,8 @@ public class VersionFactory extends HangarComponent {
                 pendingVersion.getDescription(),
                 projectId,
                 projectChannelTable.getId(),
-                this.getHangarPrincipal().getUserId()
+                this.getHangarPrincipal().getUserId(),
+                pendingVersion.getPlatformDependencies()
             ));
 
             // insert dependencies
@@ -319,7 +312,13 @@ public class VersionFactory extends HangarComponent {
             // do slow stuff later
             final ProjectChannelTable finalProjectChannelTable = projectChannelTable;
             final ProjectVersionTable finalProjectVersionTable = projectVersionTable;
-            CompletableFuture.runAsync(() -> postPublish(pendingVersion, projectTable, finalProjectChannelTable, finalProjectVersionTable, firstPublish));
+            CompletableFuture.runAsync(() -> {
+                try {
+                    postPublish(pendingVersion, projectTable, finalProjectChannelTable, finalProjectVersionTable, firstPublish);
+                } catch (Throwable ex) {
+                    logger.warn("Error in post publish for version {} of project {}", pendingVersion.getVersionString(), projectTable.getName(), ex);
+                }
+            });
 
             return projectVersionTable;
         } catch (final HangarApiException e) {
@@ -348,15 +347,15 @@ public class VersionFactory extends HangarComponent {
         final List<String> platformString = pendingVersion.getPlatformDependencies().keySet().stream().map(Platform::getName).toList();
         // TODO rewrite avatar fetching (for move this code to an async method)
         final String avatarUrl = this.avatarService.getProjectAvatarUrl(projectTable.getProjectId(), projectTable.getOwnerName());
-        final String url = this.config.getBaseUrl() + "/" + projectTable.getOwnerName() + "/" + projectTable.getSlug();
+        final String url = this.config.baseUrl() + "/" + projectTable.getOwnerName() + "/" + projectTable.getSlug();
         if (firstPublish) {
             this.webhookService.handleEvent(new ProjectPublishedEvent(projectTable.getOwnerName(), projectTable.getName(), avatarUrl, url, projectTable.getDescription(), platformString));
         }
         this.webhookService.handleEvent(new VersionPublishedEvent(projectTable.getOwnerName(), projectTable.getName(), avatarUrl, url + "/versions/" + projectVersionTable.getVersionString(), projectVersionTable.getVersionString(), projectVersionTable.getDescription(), platformString));
 
         // cache purging
-        this.projectService.refreshHomeProjects();
-        this.hangarVersionsDAO.refreshVersionView();
+        this.indexService.updateProject(projectTable.getId());
+        this.indexService.updateVersion(projectVersionTable.getId());
         this.usersApiService.clearAuthorsCache();
         this.versionApiService.evictLatestRelease(projectTable.getId());
         this.versionApiService.evictLatest(projectTable.getId(), projectChannelTable.getName());
@@ -372,7 +371,7 @@ public class VersionFactory extends HangarComponent {
             }
 
             hasExternalLink = true;
-            safeLinks = safeLinks && this.config.security.checkSafe(file.externalUrl());
+            safeLinks = safeLinks && this.config.security().checkSafe(file.externalUrl());
         }
 
         final boolean hasUnsafeLinks = hasExternalLink && !safeLinks;
@@ -385,29 +384,15 @@ public class VersionFactory extends HangarComponent {
     }
 
     private void processDependencies(final PendingVersion pendingVersion, final long versionId) {
-        // platform deps
-        final List<ProjectVersionPlatformDependencyTable> platformDependencyTables = new ArrayList<>();
-        for (final Map.Entry<Platform, SortedSet<String>> entry : pendingVersion.getPlatformDependencies().entrySet()) {
-            for (final String version : entry.getValue()) {
-                final PlatformVersionTable platformVersionTable = this.platformService.getByPlatformAndVersion(entry.getKey(), version);
-                platformDependencyTables.add(new ProjectVersionPlatformDependencyTable(versionId, platformVersionTable.getId()));
-            }
-        }
-        this.projectVersionPlatformDependenciesDAO.insertAll(platformDependencyTables);
-
-        // plugin deps
         final List<ProjectVersionDependencyTable> pluginDependencyTables = new ArrayList<>();
         for (final Map.Entry<Platform, Set<PluginDependency>> platformListEntry : pendingVersion.getPluginDependencies().entrySet()) {
             for (final PluginDependency pluginDependency : platformListEntry.getValue()) {
                 Long depProjectId = null;
                 if (pluginDependency.getExternalUrl() == null) {
-                    // TODO only get id
-                    // Hangar project dependency
-                    final ProjectTable depProjectTable = this.projectService.getProjectTable(pluginDependency.getName());
-                    if (depProjectTable == null) {
+                    depProjectId = this.projectService.getProjectId(pluginDependency.getName());
+                    if (depProjectId == null) {
                         throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPluginDependencyNamespace", pluginDependency.getName());
                     }
-                    depProjectId = depProjectTable.getProjectId();
                 }
 
                 pluginDependencyTables.add(new ProjectVersionDependencyTable(versionId, platformListEntry.getKey(), pluginDependency.getName(), pluginDependency.isRequired(), depProjectId, pluginDependency.getExternalUrl()));
@@ -440,6 +425,7 @@ public class VersionFactory extends HangarComponent {
 
             final String platformPath = this.fileService.resolve(versionDir, platform.name());
             final String platformJarPath = this.fileService.resolve(platformPath, fileInfo.getName());
+            // noinspection StatementWithEmptyBody
             if (this.fileService instanceof S3FileService) {
                 // this isn't nice, but we cant link, so what am I supposed to do?
                 // fileService.move(tmpVersionJar.toString(), platformJarPath);
@@ -493,25 +479,14 @@ public class VersionFactory extends HangarComponent {
 
     @Transactional(readOnly = true)
     public @Nullable LastDependencies getLastVersionDependencies(final ProjectTable project, final @Nullable String channel, final Platform platform) {
-        // TODO Optimize with specific query
-        final RequestPagination pagination = new RequestPagination(1L, 0L);
-        pagination.getFilters().put("platform", new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
-        if (channel != null) {
-            // Find the last version with the specified channel
-            pagination.getFilters().put("channel", new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
-        }
-
-        final Long versionId = this.versionsApiDAO.getVersions(project.getId(), false, this.getHangarUserId(), pagination).keySet().stream().findAny().orElse(null);
-        if (versionId != null) {
-            final SortedSet<String> platformDependency = this.versionsApiDAO.getPlatformDependencies(versionId).get(platform);
-            if (platformDependency != null) {
-                return new LastDependencies(platformDependency, this.versionsApiDAO.getPluginDependencies(versionId, platform));
+        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(project.getProjectId(), channel == null ? this.config.channels().nameDefault() : channel, platform);
+        if (lastVersion != null) {
+            final ProjectVersionTable projectVersionTable = this.projectVersionsDAO.getProjectVersionTable(lastVersion);
+            if (projectVersionTable != null) {
+                return new LastDependencies(projectVersionTable.getPlatformsAsMap().get(platform), this.versionsApiDAO.getPluginDependencies(lastVersion, platform));
             }
-            return null;
         }
-
-        // Try again with any channel, else empty
-        return channel != null ? this.getLastVersionDependencies(project, null, platform) : null;
+        return null;
     }
 
     private boolean exists(final long projectId, final String versionString) {

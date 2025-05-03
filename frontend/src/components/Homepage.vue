@@ -21,7 +21,7 @@ const sorters = [
   { id: "-newest", label: i18n.t("project.sorting.newest") },
 ];
 
-const toArray = (input: (string | null)[] | string | null): string[] => (Array.isArray(input) ? (input as string[]) : input ? [input!] : []);
+const toArray = (input: (string | null)[] | string | null): string[] => (Array.isArray(input) ? (input as string[]) : (input ? [input!] : []));
 const filters = ref({
   versions: toArray(route.query.version),
   categories: toArray(route.query.category),
@@ -101,7 +101,7 @@ useSeo(
     additionalScripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify({
+        textContent: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
           url: config.public.host,
@@ -227,7 +227,7 @@ useSeo(
       <!-- Projects -->
       <div class="w-full min-w-0 mb-5 flex flex-col gap-4 lg:mb-0">
         <h2 class="font-bold text-2xl lg:(absolute -mt-11)">Projects</h2>
-        <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage) => (page = newPage)" />
+        <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage: number) => (page = newPage)" />
       </div>
       <!-- Sidebar -->
       <div class="flex flex-col gap-4">

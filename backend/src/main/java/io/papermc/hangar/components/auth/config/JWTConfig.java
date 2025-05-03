@@ -14,13 +14,13 @@ public class JWTConfig extends HangarComponent {
     public JWTVerifier jwtVerifier(final Algorithm algorithm) {
         return JWT.require(algorithm)
             .acceptLeeway(10)
-            .withIssuer(this.config.security.tokenIssuer())
+            .withIssuer(this.config.security().tokenIssuer())
             .build();
     }
 
     @Bean
     public Algorithm algorithm() {
-        return Algorithm.HMAC256(this.config.security.tokenSecret());
+        return Algorithm.HMAC256(this.config.security().tokenSecret());
     }
 
     @Bean

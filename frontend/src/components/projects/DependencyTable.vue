@@ -32,6 +32,7 @@ function addDep() {
     mode: "file",
     id: "id" + Math.random(),
     externalUrl: undefined,
+    projectId: -1,
   });
 }
 

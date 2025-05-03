@@ -1,15 +1,12 @@
 package io.papermc.hangar.db.dao.v1;
 
-import io.papermc.hangar.db.extras.BindPagination;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
-import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Platform;
 import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.SortedSet;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.enums.EnumStrategy;
@@ -30,61 +27,65 @@ import org.jetbrains.annotations.Nullable;
 public interface VersionsApiDAO {
 
     @SqlQuery("""
-           SELECT * FROM version_view vv
-           WHERE
-               <if(!canSeeHidden)>
-                   (vv.visibility = 0
-                   <if(userId)>
-                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = vv.project_id) AND vv.visibility != 4)
-                   <endif>)
-                   AND
-               <endif>
-               vv.id = :versionId
-           ORDER BY vv.created_at DESC
+     SELECT pv.id,
+            pv.created_at,
+            pv.version_string,
+            pv.visibility,
+            pv.description,
+            pv.project_id,
+            coalesce(vsv.totaldownloads, 0)                        AS vs_totaldownloads,
+            vsv.platformdownloads                                  AS vs_platformdownloads,
+            (SELECT u.name FROM users u WHERE u.id = pv.author_id) AS author,
+            pv.review_state,
+            pc.created_at                                          AS pc_created_at,
+            pc.name                                                AS pc_name,
+            pc.description                                         AS pc_description,
+            pc.color                                               AS pc_color,
+            pc.flags                                               AS pc_flags,
+            CASE
+                WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'channel')
+                    THEN 'CHANNEL'
+                WHEN exists(SELECT * FROM pinned_versions piv WHERE piv.version_id = pv.id AND lower(type) = 'version')
+                    THEN 'VERSION'
+                ELSE 'NONE'
+                END                                                AS pinnedstatus,
+            (SELECT ARRAY [p.owner_name, p.slug]
+             FROM projects p
+             WHERE p.id = pv.project_id
+             LIMIT 1)                                              AS project_namespace,-- needed for downloads
+            (SELECT json_agg(json_build_object('file_size', file_size,
+                                               'hash', hash,
+                                               'file_name', file_name,
+                                               'external_url', external_url,
+                                               'platforms', platforms,
+                                               'download_platform', download_platform)) AS value
+             FROM project_version_downloads
+             WHERE version_id = pv.id
+             GROUP BY version_id)                                  AS downloads,
+            (SELECT json_agg(json_build_object('name', pvd.name,
+                                               'project_id', pvd.project_id,
+                                               'required', pvd.required,
+                                               'external_url', pvd.external_url,
+                                               'platform', pvd.platform)) AS value
+             FROM project_version_dependencies pvd
+             WHERE pvd.version_id = pv.id)                         AS plugin_dependencies,
+            pv.platforms                                           AS platform_dependencies,
+            'dum'                                                  AS platform_dependencies_formatted
+     FROM project_versions pv
+         JOIN project_channels pc ON pv.channel_id = pc.id
+         LEFT JOIN version_stats_view vsv ON pv.id = vsv.id
+     WHERE
+         <if(!canSeeHidden)>
+             (pv.visibility = 0
+             <if(userId)>
+                 OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = pv.project_id) AND pv.visibility != 4)
+             <endif>)
+             AND
+         <endif>
+         pv.id = :versionId
+     ORDER BY pv.created_at DESC
     """)
     @Nullable Version getVersion(long versionId, @Define boolean canSeeHidden, @Define Long userId);
-
-    @KeyColumn("id")
-    @SqlQuery("""
-        <if(platformfilter)>
-        WITH sq AS (SELECT array_agg(DISTINCT plv.platform) platforms, array_agg(DISTINCT plv.version) versions, pvpd.version_id
-                    FROM project_version_platform_dependencies pvpd
-                             JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
-                    GROUP BY pvpd.version_id)
-        <endif>
-        SELECT * FROM version_view vv
-               <if(platformfilter)>INNER JOIN sq ON vv.id = sq.version_id<endif>
-           WHERE TRUE <filters>
-               <if(!canSeeHidden)>
-                   AND (vv.visibility = 0
-                   <if(userId)>
-                       OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = :projectId) AND vv.visibility != 4)
-                   <endif>)
-               <endif>
-               AND vv.project_id = :projectId
-           ORDER BY vv.created_at DESC <offsetLimit>
-    """)
-    SortedMap<Long, Version> getVersions(long projectId, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
-
-    @SqlQuery("""
-           <if(platformfilter)>
-           WITH sq AS (SELECT array_agg(DISTINCT plv.platform) platforms, array_agg(DISTINCT plv.version) versions, pvpd.version_id
-                       FROM project_version_platform_dependencies pvpd
-                                JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
-                       GROUP BY pvpd.version_id)
-           <endif>
-           SELECT count(DISTINCT vv.id)
-           FROM version_view vv
-                    <if(platformfilter)>INNER JOIN sq ON vv.id = sq.version_id<endif>
-           WHERE TRUE <filters>
-               <if(!canSeeHidden)>
-                   AND (vv.visibility = 0
-                   <if(userId)>
-                      OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = :projectId) AND vv.visibility != 4)
-                   <endif>)
-               <endif>
-               AND vv.project_id = :projectId""")
-    Long getVersionCount(long projectId, @Define boolean canSeeHidden, @Define Long userId, @BindPagination(isCount = true) RequestPagination pagination);
 
     @SqlQuery("SELECT " +
         "       pvd.name," +
@@ -99,17 +100,6 @@ public interface VersionsApiDAO {
         "   WHERE pvd.version_id = :versionId AND pvd.platform = :platform")
     @RegisterConstructorMapper(PluginDependency.class)
     Set<PluginDependency> getPluginDependencies(long versionId, @EnumByOrdinal Platform platform); // TODO make into one db call for all platforms?
-
-    @KeyColumn("platform")
-    @ValueColumn("versions")
-    @SqlQuery("SELECT" +
-        "       pv.platform," +
-        "       array_agg(pv.version ORDER BY pv.created_at) versions" +
-        "   FROM project_version_platform_dependencies pvpd " +
-        "       JOIN platform_versions pv ON pvpd.platform_version_id = pv.id" +
-        "   WHERE pvpd.version_id = :versionId" +
-        "   GROUP BY pv.platform")
-    Map<Platform, SortedSet<String>> getPlatformDependencies(long versionId);
 
     @KeyColumn("date")
     @RegisterConstructorMapper(value = VersionStats.class, prefix = "vs")
@@ -134,9 +124,24 @@ public interface VersionsApiDAO {
         SELECT pv.version_string
            FROM project_versions pv
                JOIN project_channels pc ON pv.channel_id = pc.id
-           WHERE pv.visibility = 0 AND pc.name = :channel AND pv.project_id = :projectId
+           WHERE pv.visibility = 0 AND lower(pc.name) = lower(:channel) AND pv.project_id = :projectId
            ORDER BY pv.created_at DESC
            LIMIT 1
     """)
     @Nullable String getLatestVersion(long projectId, String channel);
+
+    @SqlQuery("""
+        SELECT pv.id
+           FROM project_versions pv
+               JOIN project_channels pc ON pv.channel_id = pc.id
+           WHERE pv.visibility = 0
+             AND (:channel IS NULL OR lower(pc.name) = lower(:channel))
+             AND pv.project_id = :projectId
+             AND EXISTS (
+                 SELECT 1 FROM jsonb_array_elements(pv.platforms) elem WHERE (elem->>'platform')::int = :platform
+             )
+           ORDER BY pv.created_at DESC
+           LIMIT 1
+    """)
+    Long getLatestVersionId(long projectId, @Nullable String channel, @EnumByOrdinal Platform platform);
 }

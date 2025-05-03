@@ -26,7 +26,7 @@ public class OrganizationTableResolver extends HangarModelResolver<OrganizationT
     @Override
     protected OrganizationTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
         OrganizationTable organizationTable = null;
-        if (StringUtils.isLong(param)) {
+        if (this.supportsId(request) && StringUtils.isLong(param)) {
             organizationTable = this.organizationService.getOrganizationTable(Long.parseLong(param));
         }
 

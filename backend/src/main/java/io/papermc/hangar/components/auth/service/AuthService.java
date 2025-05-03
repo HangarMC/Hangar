@@ -84,7 +84,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
             this.turnstileService.validate(form.captcha());
         }
 
-        if (!this.config.isDisableRateLimiting()) {
+        if (!this.config.disableRateLimiting()) {
             Bucket bucket = this.bucketService.bucket("register-user", new RateLimit.Model(1, 1, 60 * 5, false, "register-user"));
             if (bucket != null && !bucket.tryConsume(1)) {
                 throw HangarApiException.rateLimited();
@@ -173,7 +173,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         final List<UserNameChange> userNameHistory = this.userDAO.getUserNameHistory(user.getUuid());
         if (!userNameHistory.isEmpty()) {
             userNameHistory.sort(Comparator.comparing(UserNameChange::date).reversed());
-            final OffsetDateTime nextChange = userNameHistory.get(0).date().plusDays(this.config.user.nameChangeInterval());
+            final OffsetDateTime nextChange = userNameHistory.getFirst().date().plusDays(this.config.users().nameChangeInterval());
             if (nextChange.isAfter(OffsetDateTime.now())) {
                 throw new HangarApiException("You have to wait until " + nextChange.format(DateTimeFormatter.RFC_1123_DATE_TIME) + " before being able to change your username again");
             }

@@ -21,15 +21,20 @@ The project consists of 3 main parts
 * Backend (Spring Boot)
 * Database (PostgreSQL)
 
+Additionally, we use the following services:
+* Search Engine (MeiliSearch)
+* Storage (MinIO locally, b2 bucket in production)
+* Email (mailslurper locally, MailGun in production)
+
 ## Development Setup
 
 Fork the project and pull it in your IDE.
 
 ### Prerequisites
 
-* Docker is required in order to run the PostgreSQL database and the dummy email server
+* Docker is required in order to run the PostgreSQL database, the MeiliSearch engine and the dummy email server
 * Java 21 or higher
-* [pnpm](https://pnpm.io/installation)
+* [pnpm](https://pnpm.io/installation) and [node](https://nodejs.org) (v22 or higher)
 * mvn
 * git
 * we strongly recommend using IntelliJ IDEA (Ultimate) as your IDE
@@ -51,7 +56,7 @@ To get the project running locally, you need to follow a few steps:
 
 #### Frontend and Backend
 
-1. Get the dummy database, storage and email server up and running.  
+1. Get the dummy database, storage, search engine and email server up and running.  
    **Using Intellij**: Run the `docker` run config (or click the green arrow in the gutter on this line)  
    **Manually**: Move to the docker folder `cd docker` then run `docker-compose -f dev.yml up -d` (`-d` as an optional parameter to run the containers in the background).
 2. Start the backend.  

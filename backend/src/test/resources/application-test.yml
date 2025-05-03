@@ -21,3 +21,7 @@ hangar:
     type: "local"
   security:
     turnstile-secret: ""
+  meili:
+    url: "http://localhost:8800"
+    key: "masterKey"
+    prefix: "test-"

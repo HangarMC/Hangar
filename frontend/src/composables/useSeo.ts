@@ -1,14 +1,13 @@
 import type { Script } from "@unhead/vue";
-import type { TranslateResult } from "vue-i18n";
 import type { RouteLocationNormalized } from "vue-router/auto";
 
 export function useSeo(
   input: ComputedRef<{
-    title: string | TranslateResult | null | undefined;
-    description?: string | TranslateResult | null;
+    title: string | null | undefined;
+    description?: string | null;
     route: RouteLocationNormalized;
     image?: string | null;
-    additionalScripts?: { type: string; children: string; key: string }[];
+    additionalScripts?: { type: string; textContent: string; key: string }[];
     manualTitle?: boolean;
   }>
 ) {
@@ -56,7 +55,7 @@ export function useSeo(
     const result = [
       {
         type: "application/ld+json",
-        children: JSON.stringify({
+        textContent: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: generateBreadcrumbs(input.value.route, config.public.host),

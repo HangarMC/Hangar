@@ -72,7 +72,7 @@ useSeo(
     additionalScripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify({
+        textContent: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebContent",
           about: {

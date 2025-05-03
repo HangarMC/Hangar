@@ -59,11 +59,11 @@ public class TokenService extends HangarComponent {
 
     public void issueRefreshToken(final long userId, final HttpServletResponse response) {
         final UserRefreshToken userRefreshToken = this.userRefreshTokenDAO.insert(new UserRefreshToken(userId, UUID.randomUUID(), UUID.randomUUID()));
-        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), this.config.security.refreshTokenExpiry().toSeconds(), true, response);
+        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), this.config.security().refreshTokenExpiry().toSeconds(), true, response);
     }
 
     private void addCookie(final String name, final String value, final long maxAge, final boolean httpOnly, final HttpServletResponse response) {
-        response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, value).path("/").secure(this.config.security.secure()).maxAge(maxAge).sameSite("Lax").httpOnly(httpOnly).build().toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, value).path("/").secure(this.config.security().secure()).maxAge(maxAge).sameSite("Lax").httpOnly(httpOnly).build().toString());
     }
 
     public record RefreshResponse(String accessToken, UserTable userTable) {}
@@ -82,7 +82,7 @@ public class TokenService extends HangarComponent {
         if (userRefreshToken == null) {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Unrecognized refresh token " + uuid);
         }
-        if (userRefreshToken.getLastUpdated().isBefore(OffsetDateTime.now().minus(this.config.security.refreshTokenExpiry()))) {
+        if (userRefreshToken.getLastUpdated().isBefore(OffsetDateTime.now().minus(this.config.security().refreshTokenExpiry()))) {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Expired refresh token" + uuid);
         }
         final UserTable userTable = this.userService.getUserTable(userRefreshToken.getUserId());
@@ -97,7 +97,7 @@ public class TokenService extends HangarComponent {
             userRefreshToken = this.userRefreshTokenDAO.update(userRefreshToken);
         }
         // in any case, refreshing the cookie is good
-        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), this.config.security.refreshTokenExpiry().toSeconds(), true, this.response);
+        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, userRefreshToken.getToken().toString(), this.config.security().refreshTokenExpiry().toSeconds(), true, this.response);
 
         // oauth only users are always privileged
         final boolean privileged = this.credentialsService.isOAuthOnly(userTable.getUserId());
@@ -126,8 +126,8 @@ public class TokenService extends HangarComponent {
 
     public String expiring(final UserTable userTable, final Permission globalPermission, final @Nullable String apiKeyIdentifier, final int aal, final boolean privileged) {
         return JWT.create()
-            .withIssuer(this.config.security.tokenIssuer())
-            .withExpiresAt(Instant.now().plus(this.config.security.tokenExpiry()))
+            .withIssuer(this.config.security().tokenIssuer())
+            .withExpiresAt(Instant.now().plus(this.config.security().tokenExpiry()))
             .withSubject(userTable.getName())
             .withClaim("id", userTable.getId())
             .withClaim("permissions", globalPermission.toBinString())
@@ -141,7 +141,7 @@ public class TokenService extends HangarComponent {
 
     public String otp(final long user) {
         return JWT.create()
-            .withIssuer(this.config.security.tokenIssuer())
+            .withIssuer(this.config.security().tokenIssuer())
             .withExpiresAt(Instant.now().plus(10, ChronoUnit.MINUTES))
             .withSubject(String.valueOf(user))
             .sign(this.algo);

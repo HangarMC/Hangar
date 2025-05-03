@@ -44,7 +44,7 @@ useSeo(
     additionalScripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify({
+        textContent: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebContent",
           author: {
@@ -121,6 +121,14 @@ useSeo(
           <Markdown :raw="sponsors" class="pt-0" />
         </template>
       </Card>
+      <Alert v-if="hasPerms(NamedPermission.EditSubjectSettings)" type="neutral" class="mt-2">
+        <div>
+          {{ i18n.t("project.bannersInfo") }}&nbsp;
+          <Link :to="'/' + project?.namespace?.owner + '/' + project?.namespace?.slug + '/settings/banners'">
+            {{ i18n.t("project.bannersInfoSettings") }}
+          </Link>
+        </div>
+      </Alert>
     </section>
     <section class="basis-full md:basis-4/15 space-y-4 min-w-280px">
       <ProjectInfo :project="project" />

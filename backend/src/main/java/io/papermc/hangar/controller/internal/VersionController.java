@@ -101,7 +101,7 @@ public class VersionController extends HangarComponent {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{projectId}/{versionId}/saveDescription", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveDescription(@PathVariable final long projectId, @PathVariable final long versionId, @RequestBody @Valid final StringContent stringContent) {
-        if (stringContent.getContent().length() > this.config.pages.maxLen()) {
+        if (stringContent.getContent().length() > this.config.pages().maxLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
 

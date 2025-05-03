@@ -1,5 +1,5 @@
 import type { RouteLocationNormalized } from "vue-router";
-import type { ExtendedProjectPage, HangarOrganization, HangarProject, Version, User } from "~/types/backend";
+import type { HangarOrganization, HangarProject, Version, User, ProjectPageTable } from "~/types/backend";
 
 type routeParams = "user" | "project" | "version" | "page";
 type DataLoaderTypes = {
@@ -7,7 +7,7 @@ type DataLoaderTypes = {
   project: HangarProject;
   version: Version;
   organization: HangarOrganization;
-  page: ExtendedProjectPage;
+  page: ProjectPageTable;
 };
 
 // TODO check every handling of the reject stuff (for both composables)
@@ -38,7 +38,7 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
 
         promises.push(
           new Promise<void>(async (resolve, reject) => {
-            console.log("load loading", key);
+            console.log("load loading", key, newParam);
             const result = await loader(newParam).catch((err) => {
               if (lenient) resolve();
               else reject(err);
@@ -46,7 +46,7 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
             // await new Promise((resolve) => setTimeout(resolve, 5000));
             if (result) {
               data.value = result;
-              console.log("load loaded", key);
+              console.log("load loaded", key, newParam);
               resolve();
             }
           })
@@ -94,6 +94,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
   }
 
   if (import.meta.server && !server) {
+    setState(defaultValue ?? undefined);
     return { data, status, refresh };
   }
 

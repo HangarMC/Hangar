@@ -1,5 +1,5 @@
 import { isAxiosError } from "axios";
-import type { ExtendedProjectPage, HangarOrganization, HangarProject, Version, User } from "~/types/backend";
+import type { HangarOrganization, HangarProject, Version, User, ProjectPageTable } from "~/types/backend";
 import { useDataLoader } from "~/composables/useDataLoader";
 
 // this middleware takes care of fetching the "important" data for pages, like user/project/org/version/page, based on route params
@@ -19,15 +19,28 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const promises: Promise<any>[] = [];
 
   const { loader: userLoader, data: user } = useDataLoader("user");
-  const userName = userLoader("user", to, from, (userName) => useApi<User>("users/" + userName), promises);
+  const userName = userLoader("user", to, from, (userName) => useApi<User>("users/" + userName + "?resolveId=false"), promises);
 
   const { loader: projectLoader, data: project } = useDataLoader("project");
-  const projectName = projectLoader("project", to, from, (projectName) => useInternalApi<HangarProject>("projects/project/" + projectName), promises);
+  const projectName = projectLoader(
+    "project",
+    to,
+    from,
+    (projectName) => useInternalApi<HangarProject>("projects/project/" + projectName + "?resolveId=false"),
+    promises
+  );
 
   // TODO ideally we only make this request _after_ the user request returned and we know we need to fetch an org
   // alternatively we could make a new controller that returns both
   const { loader: organizationLoader } = useDataLoader("organization");
-  organizationLoader("user", to, from, (organizationName) => useInternalApi<HangarOrganization>("organizations/org/" + organizationName), promises, true);
+  organizationLoader(
+    "user",
+    to,
+    from,
+    (organizationName) => useInternalApi<HangarOrganization>("organizations/org/" + organizationName + "?resolveId=false"),
+    promises,
+    true
+  );
 
   const { loader: versionLoader, data: version } = useDataLoader("version");
   const versionName = versionLoader(
@@ -36,7 +49,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     from,
     (versionName) => {
       if ("project" in to.params) {
-        return useApi<Version>(`projects/${to.params.project}/versions/${versionName}`);
+        return useApi<Version>(`projects/${to.params.project}/versions/${versionName}?resolveId=false"`);
       }
       throw createError({ statusCode: 500, statusMessage: "No project param?!" });
     },
@@ -50,7 +63,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     from,
     (pagePath) => {
       if ("project" in to.params) {
-        return useInternalApi<ExtendedProjectPage>(`pages/page/${to.params.project}/` + pagePath.toString().replaceAll(",", "/"));
+        return useInternalApi<ProjectPageTable>(`pages/page/${to.params.project}/` + pagePath.toString().replaceAll(",", "/"));
       }
       throw createError({ statusCode: 500, statusMessage: "No project param?!" });
     },
@@ -86,6 +99,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         newPath = newPath.replace(pageSlug, page.value.slug);
       }
     }
+    // check if we need to redirect to proper owner
+    if (projectName && userName && project.value && project.value.namespace.owner !== userName) {
+      newPath = newPath.replace(userName, project.value.namespace.owner);
+    }
+
+    // do redirect
     if (newPath !== to.fullPath) {
       console.log("Redirect to " + newPath + " from (" + to.fullPath + ")");
       return navigateTo(newPath, { redirectCode: 301 });

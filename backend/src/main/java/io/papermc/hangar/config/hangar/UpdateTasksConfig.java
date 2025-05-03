@@ -10,6 +10,8 @@ import org.springframework.boot.convert.DurationUnit;
 public record UpdateTasksConfig(
     @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("2") Duration homepage,
     @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("2") Duration versionDownloads,
-    @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration projectViews
+    @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration projectViews,
+    @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration projectIndex,
+    @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration versionIndex
 ) {
 }

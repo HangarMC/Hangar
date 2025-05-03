@@ -6,7 +6,6 @@ import io.papermc.hangar.components.auth.model.credential.PasswordCredential;
 import io.papermc.hangar.components.auth.model.credential.TotpCredential;
 import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.components.images.service.AvatarService;
-import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -26,7 +25,6 @@ import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
-import io.papermc.hangar.service.internal.projects.ProjectService;
 import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +33,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import net.datafaker.Faker;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,7 +44,6 @@ public class FakeDataService extends HangarComponent {
 
     private final UserDAO userDAO;
     private final GlobalRoleService globalRoleService;
-    private final ProjectService projectService;
     private final ProjectFactory projectFactory;
     private final ProjectsDAO projectsDAO;
     private final CredentialsService credentialsService;
@@ -55,10 +51,9 @@ public class FakeDataService extends HangarComponent {
     private final QrDataFactory qrDataFactory;
     private final AvatarService avatarService;
 
-    public FakeDataService(final UserDAO userDAO, final GlobalRoleService globalRoleService, final ProjectService projectService, final ProjectFactory projectFactory, final ProjectsDAO projectsDAO, final CredentialsService credentialsService, final PasswordEncoder passwordEncoder, final QrDataFactory qrDataFactory, final AvatarService avatarService) {
+    public FakeDataService(final UserDAO userDAO, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectsDAO projectsDAO, final CredentialsService credentialsService, final PasswordEncoder passwordEncoder, final QrDataFactory qrDataFactory, final AvatarService avatarService) {
         this.userDAO = userDAO;
         this.globalRoleService = globalRoleService;
-        this.projectService = projectService;
         this.projectFactory = projectFactory;
         this.projectsDAO = projectsDAO;
         this.credentialsService = credentialsService;
@@ -67,7 +62,6 @@ public class FakeDataService extends HangarComponent {
         this.avatarService = avatarService;
     }
 
-    @CacheEvict(cacheNames = CacheConfig.PROJECTS, allEntries = true)
     public void generate(final int users, final int projectsPerUser) {
         final HangarAuthenticationToken oldAuth = (HangarAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         try {
@@ -90,7 +84,6 @@ public class FakeDataService extends HangarComponent {
             e.printStackTrace();
         } finally {
             SecurityContextHolder.getContext().setAuthentication(oldAuth);
-            this.projectService.refreshHomeProjects();
         }
     }
 
@@ -111,7 +104,7 @@ public class FakeDataService extends HangarComponent {
     }
 
     public void createProject(final long ownerId) {
-        final String type = this.config.getLicenses().get(this.faker.random().nextInt(this.config.getLicenses().size()));
+        final String type = this.config.licenses().get(this.faker.random().nextInt(this.config.licenses().size()));
         final ProjectLicense licence = new ProjectLicense(null, null, type);
         final Set<String> keyWords = new HashSet<>();
         for (int i = 0; i < this.faker.random().nextInt(2, 5); i++) {
@@ -177,8 +170,8 @@ public class FakeDataService extends HangarComponent {
             this.avatarService.getDefaultAvatarUrl(),
             new JSONB(Map.of()));
 
-        final String password = this.config.e2e.password();
-        final String totpSecret = this.config.e2e.totpSecret();
+        final String password = this.config.e2e().password();
+        final String totpSecret = this.config.e2e().totpSecret();
         this.credentialsService.registerCredential(admin.getUserId(), new PasswordCredential(this.passwordEncoder.encode(password)));
         this.credentialsService.registerCredential(user.getUserId(), new PasswordCredential(this.passwordEncoder.encode(password)));
 

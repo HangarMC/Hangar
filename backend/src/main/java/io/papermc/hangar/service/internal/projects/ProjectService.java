@@ -2,8 +2,6 @@ package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.images.service.AvatarService;
-import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
-import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -14,18 +12,17 @@ import io.papermc.hangar.model.api.project.settings.LinkSection;
 import io.papermc.hangar.model.api.project.settings.LinkSectionType;
 import io.papermc.hangar.model.api.project.settings.Tag;
 import io.papermc.hangar.model.api.project.version.Version;
-import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
+import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
-import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.model.internal.user.JoinableMember;
@@ -43,7 +40,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -53,9 +49,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -104,6 +98,10 @@ public class ProjectService extends HangarComponent {
         return this.organizationService.getOrganizationTableWithPermission(this.getHangarPrincipal().getId(), userId, Permission.CreateProject);
     }
 
+    public Long getProjectId(String slug) {
+        return this.projectsDAO.getIdBySlug(slug);
+    }
+
     public String getProjectUrlFromSlug(final ProjectTable project) {
         return "/" + project.getOwnerName() + "/" + project.getSlug();
     }
@@ -112,6 +110,10 @@ public class ProjectService extends HangarComponent {
         // TODO All of this is dumb and needs to be redone into as little queries as possible
         final Long hangarUserId = this.getHangarUserId();
         final Project project = this.hangarProjectsDAO.getProject(projectTable.getId(), hangarUserId);
+        if (project == null) {
+            // some view hasn't updated yet
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Project is still creating...");
+        }
         final long projectId = project.getId();
 
         String lastVisibilityChangeComment = "";
@@ -130,7 +132,7 @@ public class ProjectService extends HangarComponent {
 
         final Map<Platform, Version> mainChannelVersions = new EnumMap<>(Platform.class);
         final CompletableFuture<Void> mainChannelFuture = CompletableFuture.runAsync(() -> Arrays.stream(Platform.getValues()).parallel().forEach(platform -> {
-            final Version version = this.getLastVersion(projectTable.getProjectId(), platform, this.config.channels.nameDefault());
+            final Version version = this.getLastVersion(projectTable.getProjectId(), platform);
             if (version != null) {
                 mainChannelVersions.put(platform, version);
             }
@@ -139,7 +141,7 @@ public class ProjectService extends HangarComponent {
         final HangarProject.HangarProjectInfo info = this.hangarProjectsDAO.getHangarProjectInfo(projectId);
         final Map<Long, HangarProjectPage> pages = this.projectPageService.getProjectPages(projectId);
         final CompletableFuture<List<HangarProject.PinnedVersion>> pinnedVersions = this.supply(() -> this.pinnedVersionService.getPinnedVersions(projectId));
-        final ExtendedProjectPage projectPage = this.projectPageService.getProjectHomePage(projectId);
+        final ProjectPageTable projectPage = this.projectPageService.getProjectHomePage(projectId);
 
         mainChannelFuture.join();
         return new HangarProject(
@@ -159,22 +161,21 @@ public class ProjectService extends HangarComponent {
         return CompletableFuture.supplyAsync(supplier);
     }
 
-    public @Nullable Version getLastVersion(final long projectId, final Platform platform, final @Nullable String channel) {
-        final RequestPagination pagination = new RequestPagination(1L, 0L);
-        pagination.getFilters().put("platform", new VersionPlatformFilter.VersionPlatformFilterInstance(new Platform[]{platform}));
-        if (channel != null) {
-            // Find the last version with the specified channel
-            pagination.getFilters().put("channel", new VersionChannelFilter.VersionChannelFilterInstance(new String[]{channel}));
-        }
+    /**
+     * Returns the last release version for the given platform. If no release version exists, the last version of any channel will be returned.
+     *
+     * @param projectId project id
+     * @param platform platform
+     * @return the last version for the given platform, prioritizing release versions, or null if no version exists
+     */
+    public @Nullable Version getLastVersion(final long projectId, final Platform platform) {
+        final Version version = this.getLastVersion(projectId, platform, this.config.channels().nameDefault());
+        return version != null ? version : this.getLastVersion(projectId, platform, null);
+    }
 
-        final Long userId = this.getHangarUserId();
-        final SortedMap<Long, Version> versions = this.versionsApiDAO.getVersions(projectId, this.getGlobalPermissions().has(Permission.SeeHidden), userId, pagination);
-        if (!versions.isEmpty()) {
-            return versions.values().iterator().next();
-        }
-
-        // Try again with any channel, else empty
-        return channel != null ? this.getLastVersion(projectId, platform, null) : null;
+    private @Nullable Version getLastVersion(final long projectId, final Platform platform, final @Nullable String channel) {
+        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(projectId, channel, platform);
+        return lastVersion == null ? null : this.versionsApiDAO.getVersion(lastVersion, false, null);
     }
 
     public void validateSettings(final ProjectSettingsForm settingsForm) {
@@ -183,7 +184,7 @@ public class ProjectService extends HangarComponent {
         for (final String keyword : settingsForm.getSettings().getKeywords()) {
             if (keyword.length() < 3) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordTooShort", keyword);
-            } else if (keyword.length() > this.config.projects.maxKeywordLen()) {
+            } else if (keyword.length() > this.config.projects().maxKeywordLen()) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordTooLong", keyword);
             } else if (!KEYWORD_PATTERN.matcher(keyword).matches()) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordInvalid", keyword);
@@ -199,28 +200,21 @@ public class ProjectService extends HangarComponent {
     public void saveSettings(final ProjectTable projectTable, final ProjectSettingsForm settingsForm) {
         this.validateSettings(settingsForm);
 
-        // final boolean requiresHomepageUpdate = !projectTable.getKeywords().equals(settingsForm.getSettings().getKeywords())
-        //    || !projectTable.getDescription().equals(settingsForm.getDescription());
-
         projectTable.setCategory(settingsForm.getCategory());
         projectTable.setTags(new LinkedHashSet<>(settingsForm.getSettings().getTags()));
         projectTable.setKeywords(settingsForm.getSettings().getKeywords());
         projectTable.setLinks(new JSONB(settingsForm.getSettings().getLinks()));
-        String licenseName = org.apache.commons.lang3.StringUtils.stripToNull(settingsForm.getSettings().getLicense().getName());
+        String licenseName = org.apache.commons.lang3.StringUtils.stripToNull(settingsForm.getSettings().getLicense().name());
         if (licenseName == null) {
-            licenseName = settingsForm.getSettings().getLicense().getType();
+            licenseName = settingsForm.getSettings().getLicense().type();
         }
-        projectTable.setLicenseType(settingsForm.getSettings().getLicense().getType());
+        projectTable.setLicenseType(settingsForm.getSettings().getLicense().type());
         projectTable.setLicenseName(licenseName);
-        projectTable.setLicenseUrl(settingsForm.getSettings().getLicense().getUrl());
+        projectTable.setLicenseUrl(settingsForm.getSettings().getLicense().url());
         projectTable.setDescription(settingsForm.getDescription());
         projectTable.setDonationEnabled(settingsForm.getSettings().getDonation().isEnable());
         projectTable.setDonationSubject(settingsForm.getSettings().getDonation().getSubject());
         this.projectsDAO.update(projectTable);
-
-        /*if (requiresHomepageUpdate) {
-            this.refreshHomeProjects();
-        }*/
 
         // TODO what settings changed
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
@@ -253,7 +247,7 @@ public class ProjectService extends HangarComponent {
     @Transactional
     public void saveSponsors(final ProjectTable projectTable, final @Nullable String content) {
         final String trimmedContent = content != null ? content.trim() : "";
-        if (trimmedContent.length() > this.config.projects.maxSponsorsLen()) {
+        if (trimmedContent.length() > this.config.projects().maxSponsorsLen()) {
             throw new HangarApiException("page.new.error.maxLength");
         }
 
@@ -275,12 +269,6 @@ public class ProjectService extends HangarComponent {
 
     public List<UserTable> getProjectWatchers(final long projectId) {
         return this.projectsDAO.getProjectWatchers(projectId);
-    }
-
-    @Async
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void refreshHomeProjects() {
-        this.hangarProjectsDAO.refreshHomeProjects();
     }
 
     private @Nullable <T> ProjectTable getProjectTable(final @Nullable T identifier, final @NotNull Function<T, ProjectTable> projectTableFunction) {

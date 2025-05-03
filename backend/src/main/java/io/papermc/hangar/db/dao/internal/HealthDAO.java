@@ -14,42 +14,44 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 @RegisterConstructorMapper(UnhealthyProject.class)
 public interface HealthDAO {
 
-    @SqlQuery(" SELECT hp.owner_name \"owner\"," +
-        "          hp.slug," +
-        "          hp.last_updated," +
-        "          hp.visibility" +
-        "   FROM home_projects hp" +
-        "   WHERE hp.last_updated < (now() - interval <age>)" +
-        "   ORDER BY hp.created_at DESC")
+    // TODO remove view, what about last_updated?
+    @SqlQuery("""
+         SELECT hp.owner_name "owner",
+                  hp.slug,
+                  hp.last_updated,
+                  hp.visibility
+           FROM home_projects hp
+           WHERE hp.last_updated < (now() - interval <age>)
+           ORDER BY hp.created_at DESC
+        """)
     List<UnhealthyProject> getStaleProjects(@Define("age") String staleAgeSeconds);
 
-    @SqlQuery(" SELECT hp.owner_name \"owner\"," +
-        "          hp.slug," +
-        "          hp.last_updated," +
-        "          hp.visibility" +
-        "   FROM home_projects hp" +
-        "   WHERE hp.visibility != 0" +
-        "   ORDER BY hp.created_at DESC")
+    // TODO remove view, what about last_updated?
+    @SqlQuery("""
+         SELECT hp.owner_name "owner",
+                  hp.slug,
+                  hp.last_updated,
+                  hp.visibility
+           FROM home_projects hp
+           WHERE hp.visibility != 0
+           ORDER BY hp.created_at DESC
+        """)
     List<UnhealthyProject> getNonPublicProjects();
 
     @UseEnumStrategy(EnumStrategy.BY_ORDINAL)
     @RegisterConstructorMapper(MissingFileCheck.class)
     @SqlQuery("""
         SELECT pv.version_string,
-               p.owner_name "owner",
+               p.owner_name                                        AS owner,
                p.slug,
-               array_agg(pvpd.file_name) as fileNames,
-               array_agg(DISTINCT pvpd.platform) AS platforms
+               array_agg(pvd.file_name)                            AS filenames,
+               array_agg(DISTINCT platform ORDER BY platform DESC) AS platforms
         FROM project_versions pv
-        JOIN projects p ON p.id = pv.project_id
-        LEFT JOIN (
-            SELECT DISTINCT ON (pvpd.download_id) pvpd.id, pvpd.version_id, pvpd.platform, pvd.file_name
-            FROM project_version_platform_downloads pvpd
-            LEFT JOIN project_version_downloads pvd ON pvd.id = pvpd.download_id AND pvd.file_name IS NOT NULL
-            WHERE pvd.id IS NOT NULL
-            ORDER BY pvpd.download_id
-        ) pvpd ON pvpd.version_id = pv.id
-        WHERE pvpd.id IS NOT NULL
-        GROUP BY p.id, pv.id""")
+                 JOIN projects p ON p.id = pv.project_id
+                 LEFT JOIN project_version_downloads pvd ON pvd.version_id = pv.id
+                 CROSS JOIN unnest(pvd.platforms) AS platform
+        WHERE pvd.id IS NOT NULL
+          AND pvd.file_name IS NOT NULL
+        GROUP BY p.id, pv.id;""")
     List<MissingFileCheck> getVersionsForMissingFiles();
 }

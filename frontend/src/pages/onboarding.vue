@@ -54,7 +54,7 @@ async function createE2EData() {
       <div class="grid cols-2 gap-4">
         <Card>
           <template #header> Create new verified user </template>
-          <form @submit="createUser" class="grid gap-2">
+          <form class="grid gap-2" @submit="createUser">
             <InputText v-model="form.username" label="Username" />
             <InputText v-model="form.email" type="email" label="E-Mail" />
             <InputPassword v-model="form.password" label="Password" />
@@ -64,7 +64,7 @@ async function createE2EData() {
         </Card>
         <Card>
           <template #header> Create Fake Data (requires login)</template>
-          <form @submit="createFakeData" class="grid gap-2">
+          <form class="grid gap-2" @submit="createFakeData">
             <InputText v-model="usersCount" type="number" label="Users" />
             <InputText v-model="projectsPerUser" type="number" label="Projects per User" />
             <Button class="mt-2" type="submit" @click.prevent="createFakeData">Create</Button>

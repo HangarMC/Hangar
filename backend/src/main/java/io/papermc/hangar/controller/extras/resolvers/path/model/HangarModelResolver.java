@@ -81,5 +81,9 @@ public abstract class HangarModelResolver<M> extends AbstractNamedValueMethodArg
         return resolvedValue;
     }
 
+    protected boolean supportsId(final NativeWebRequest request) {
+        return !"false".equals(request.getParameter("resolveId"));
+    }
+
     protected abstract M resolveParameter(@NotNull String param, NativeWebRequest request);
 }

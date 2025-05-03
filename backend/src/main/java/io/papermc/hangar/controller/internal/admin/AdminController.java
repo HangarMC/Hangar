@@ -20,7 +20,7 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.common.roles.GlobalRole;
-import io.papermc.hangar.model.db.JobTable;
+import io.papermc.hangar.components.jobs.db.JobTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
@@ -35,7 +35,7 @@ import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
-import io.papermc.hangar.service.internal.JobService;
+import io.papermc.hangar.components.jobs.JobService;
 import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.admin.HealthService;
 import io.papermc.hangar.service.internal.admin.StatService;
@@ -172,14 +172,20 @@ public class AdminController extends HangarComponent {
     @GetMapping(path = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
     public HealthReport getHealthReport() {
         if (true) {
-            //TODO
             throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Health report is disabled");
         }
 
         final List<UnhealthyProject> staleProjects = this.healthService.getStaleProjects();
         final List<MissingFileCheck> missingFiles = this.healthService.getVersionsWithMissingFiles();
+        final List<UnhealthyProject> nonPublicProjects = this.healthService.getNonPublicProjects();
         final List<JobTable> erroredJobs = this.jobService.getErroredJobs();
-        return new HealthReport(staleProjects, missingFiles, erroredJobs);
+        return new HealthReport(staleProjects, missingFiles, nonPublicProjects, erroredJobs);
+    }
+
+    @PermissionRequired(NamedPermission.VIEW_HEALTH)
+    @PostMapping(path = "/health/retry/{jobId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void retryJob(@PathVariable final long jobId) {
+        this.jobService.retryJob(jobId);
     }
 
     @ResponseStatus(HttpStatus.OK)

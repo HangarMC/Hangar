@@ -1,6 +1,6 @@
-DROP VIEW IF EXISTS pinned_versions;
+DROP VIEW IF EXISTS pinned_versions CASCADE;
 
-DROP VIEW IF EXISTS pinned_projects;
+DROP VIEW IF EXISTS pinned_projects CASCADE;
 
 CREATE OR REPLACE VIEW pinned_versions AS
     SELECT *
@@ -15,28 +15,18 @@ CREATE OR REPLACE VIEW pinned_versions AS
                        ppv.version_id,
                        pv.created_at,
                        pv.version_string,
-                       array(SELECT DISTINCT plv.platform
-                             FROM project_version_platform_dependencies pvpd
-                                 JOIN platform_versions plv ON plv.id = pvpd.platform_version_id
-                             WHERE pvpd.version_id = pv.id
-                             ORDER BY plv.platform
-                       )         AS platforms,
-                       'version' AS type,
+                       pv.platforms AS platforms,
+                       'version'    AS type,
                        pv.project_id
                 FROM pinned_project_versions ppv
                     JOIN project_versions pv ON pv.id = ppv.version_id
                 UNION ALL
                 (SELECT pc.id,
-                        pv.id     AS version_id,
+                        pv.id        AS version_id,
                         pv.created_at,
                         pv.version_string,
-                        array(SELECT DISTINCT plv.platform
-                              FROM project_version_platform_dependencies pvpd
-                                  JOIN platform_versions plv ON plv.id = pvpd.platform_version_id
-                              WHERE pvpd.version_id = pv.id
-                              ORDER BY plv.platform
-                        )         AS platforms,
-                        'channel' AS type,
+                        pv.platforms AS platforms,
+                        'channel'    AS type,
                         pv.project_id
                  FROM project_channels pc
                      JOIN project_versions pv ON pc.id = pv.channel_id

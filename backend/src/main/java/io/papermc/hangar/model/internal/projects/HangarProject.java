@@ -9,6 +9,7 @@ import io.papermc.hangar.model.api.project.version.PlatformVersionDownload;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.identified.ProjectIdentified;
 import io.papermc.hangar.model.internal.Joinable;
@@ -16,7 +17,7 @@ import io.papermc.hangar.model.internal.user.JoinableMember;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.SortedSet;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.mapper.Nested;
 
@@ -27,11 +28,11 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     private final String lastVisibilityChangeUserName;
     private final HangarProjectInfo info;
     private final Collection<HangarProjectPage> pages;
-    private final ExtendedProjectPage mainPage;
+    private final ProjectPageTable mainPage;
     private final List<PinnedVersion> pinnedVersions;
     private final Map<Platform, Version> mainChannelVersions;
 
-    public HangarProject(final Project project, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, Version> mainChannelVersions, final ExtendedProjectPage mainPage) {
+    public HangarProject(final Project project, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, Version> mainChannelVersions, final ProjectPageTable mainPage) {
         super(project);
         this.members = members;
         this.lastVisibilityChangeComment = lastVisibilityChangeComment;
@@ -82,7 +83,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         return this.mainChannelVersions;
     }
 
-    public ExtendedProjectPage getMainPage() {
+    public ProjectPageTable getMainPage() {
         return this.mainPage;
     }
 
@@ -119,14 +120,14 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
                                 String name,
                                 ProjectChannel channel,
                                 Map<Platform, PlatformVersionDownload> downloads,
-                                Map<Platform, Set<String>> platformDependencies,
+                                Map<Platform, SortedSet<String>> platformDependencies,
                                 Map<Platform, List<String>> platformDependenciesFormatted) {
             public PinnedVersion(final long versionId,
                                  final Type type,
                                  final String name,
                                  @Nested("pc") final ProjectChannel channel,
                                  final Map<Platform, PlatformVersionDownload> downloads,
-                                 final Map<Platform, Set<String>> platformDependencies,
+                                 final Map<Platform, SortedSet<String>> platformDependencies,
                                  final Map<Platform, List<String>> platformDependenciesFormatted) {
                 this.versionId = versionId;
                 this.type = type;

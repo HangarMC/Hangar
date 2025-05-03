@@ -3,7 +3,6 @@ import { NamedPermission } from "~/types/backend";
 import type {
   ApiKey,
   DayStats,
-  ExtendedProjectPage,
   HangarChannel,
   HangarProjectFlag,
   HangarProjectNote,
@@ -25,6 +24,7 @@ import type {
   SettingsResponse,
   User,
   VersionInfo,
+  ProjectPageTable,
   Platform,
 } from "~/types/backend";
 
@@ -148,23 +148,23 @@ export function useReadNotifications() {
   return { readNotifications, readNotificationsStatus };
 }
 
-export function useUnreadNotificationCount() {
+export function useUnreadCount() {
   const authStore = useAuthStore();
   const {
-    data: unreadNotifications,
+    data: unreadCount,
     status: unreadCountStatus,
-    refresh: refreshUnreadNotifications,
+    refresh: refreshUnreadCount,
   } = useData(
     () => ({}),
     () => "unreadCount",
-    () => useInternalApi<number>("unreadcount"),
-    true,
+    () => useInternalApi<{ notifications: number; invites: number }>("unreadcount"),
+    false,
     () => !authStore.user,
     () => {},
-    0
+    authStore.user?.headerData?.unreadCount
   );
   // TODO a default value should change the type so that this cast isnt needed
-  return { unreadNotifications: unreadNotifications as Ref<number>, unreadCountStatus, refreshUnreadNotifications };
+  return { unreadCount: unreadCount as Ref<{ notifications: number; invites: number }>, unreadCountStatus, refreshUnreadCount };
 }
 
 export function useNotifications() {
@@ -414,7 +414,7 @@ export function usePage(params: () => { project: string; path?: string }) {
   const { data: page, status: pageStatus } = useData(
     params,
     (p) => "page:" + p.project + ":" + p.path,
-    (p) => useInternalApi<ExtendedProjectPage>(`pages/page/${p.project}` + (p.path ? "/" + p.path.replaceAll(",", "/") : ""))
+    (p) => useInternalApi<ProjectPageTable>(`pages/page/${p.project}` + (p.path ? "/" + p.path.replaceAll(",", "/") : ""))
   );
   return { page, pageStatus };
 }

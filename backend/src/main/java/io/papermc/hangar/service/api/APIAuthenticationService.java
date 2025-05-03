@@ -48,7 +48,7 @@ public class APIAuthenticationService extends HangarComponent {
         }
 
         final String token = apiKey.substring(UUID_LENGTH + 1, API_KEY_LENGTH);
-        final String hashedToken = CryptoUtils.hmacSha256(this.config.security.tokenSecret(), token.getBytes(StandardCharsets.UTF_8));
+        final String hashedToken = CryptoUtils.hmacSha256(this.config.security().tokenSecret(), token.getBytes(StandardCharsets.UTF_8));
         final ApiKeyTable apiKeyTable = this.apiKeyDAO.findApiKey(identifierUUID, hashedToken);
         if (apiKeyTable == null) {
             throw new HangarApiException("No valid API Key found");
@@ -59,6 +59,6 @@ public class APIAuthenticationService extends HangarComponent {
         final UserTable userTable = this.userDAO.getUserTable(apiKeyTable.getOwnerId());
         final int aal = this.credentialsService.getAal(userTable);
         final String jwt = this.tokenService.expiring(userTable, apiKeyTable.getPermissions(), identifier, aal, false);
-        return new ApiSession(jwt, this.config.security.refreshTokenExpiry().toSeconds());
+        return new ApiSession(jwt, this.config.security().refreshTokenExpiry().toSeconds());
     }
 }

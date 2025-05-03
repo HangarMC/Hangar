@@ -3,6 +3,7 @@ package io.papermc.hangar.controller.extras.resolvers;
 import io.papermc.hangar.controller.extras.ApiUtils;
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.controller.extras.pagination.FilterRegistry;
+import io.papermc.hangar.controller.extras.pagination.PaginationType;
 import io.papermc.hangar.controller.extras.pagination.SorterRegistry;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
@@ -89,10 +90,12 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
 
     @Override
     public RequestPagination resolveArgument(final @NotNull MethodParameter parameter, final ModelAndViewContainer mavContainer, final @NotNull NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
+        final ConfigurePagination settings = parameter.getParameterAnnotation(ConfigurePagination.class);
+        final PaginationType paginationType = settings != null ? settings.paginationType() : PaginationType.DB;
         final RequestPagination pagination = this.create(
             ApiUtils.mapParameter(webRequest, "offset", this::parseLong),
             ApiUtils.mapParameter(webRequest, "limit", this::parseLong),
-            parameter.getParameterAnnotation(ConfigurePagination.class)
+            settings
         );
 
         // find filters
@@ -140,7 +143,8 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
             if (!applicableSorters.contains(sortKey)) {
                 throw new HangarApiException(sortKey + " is an invalid sort type for this request");
             }
-            pagination.getSorters().put(sorter, sorter.startsWith("-") ? SorterRegistry.getSorter(sortKey).descending() : SorterRegistry.getSorter(sortKey).ascending());
+            final SorterRegistry resolvedSorter = SorterRegistry.getSorter(sortKey);
+            pagination.getSorters().put(sorter, sorter.startsWith("-") ? resolvedSorter.descending(paginationType) : resolvedSorter.ascending(paginationType));
         }
 
         return pagination;

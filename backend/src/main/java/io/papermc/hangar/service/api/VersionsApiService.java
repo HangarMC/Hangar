@@ -1,7 +1,10 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.index.MeiliService;
+import io.papermc.hangar.components.index.MeiliService.SearchResult;
 import io.papermc.hangar.config.CacheConfig;
+import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.PaginatedResult;
@@ -18,17 +21,15 @@ import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.model.internal.versions.VersionUpload;
 import io.papermc.hangar.service.internal.PlatformService;
-import io.papermc.hangar.service.internal.projects.ProjectService;
-import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.versions.VersionFactory;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -42,18 +43,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class VersionsApiService extends HangarComponent {
 
     private final VersionsApiDAO versionsApiDAO;
-    private final VersionDependencyService versionDependencyService;
     private final VersionFactory versionFactory;
     private final PlatformService platformService;
-    private final ProjectService projectService;
+    private final MeiliService meiliService;
 
     @Autowired
-    public VersionsApiService(final VersionsApiDAO versionsApiDAO, final VersionDependencyService versionDependencyService, final VersionFactory versionFactory, final PlatformService platformService, final ProjectService projectService) {
+    public VersionsApiService(final VersionsApiDAO versionsApiDAO, final VersionFactory versionFactory, final PlatformService platformService, final MeiliService meiliService) {
         this.versionsApiDAO = versionsApiDAO;
-        this.versionDependencyService = versionDependencyService;
         this.versionFactory = versionFactory;
         this.platformService = platformService;
-        this.projectService = projectService;
+        this.meiliService = meiliService;
     }
 
     @Transactional
@@ -64,7 +63,7 @@ public class VersionsApiService extends HangarComponent {
         final PendingVersion preparedPendingVersion = this.versionFactory.createPendingVersion(project.getId(), versionUpload.getFiles(), files, versionUpload.getChannel(), false);
         final PendingVersion pendingVersion = versionUpload.toPendingVersion(preparedPendingVersion.getFiles());
         this.versionFactory.publishPendingVersion(project.getId(), pendingVersion);
-        return new UploadedVersion(this.config.getBaseUrl() + "/" + project.getOwnerName() + "/" + project.getSlug() + "/versions/" + pendingVersion.getVersionString());
+        return new UploadedVersion(this.config.baseUrl() + "/" + project.getOwnerName() + "/" + project.getSlug() + "/versions/" + pendingVersion.getVersionString());
     }
 
     private void matchVersionRanges(final Map<Platform, SortedSet<String>> versions) {
@@ -159,21 +158,48 @@ public class VersionsApiService extends HangarComponent {
     }
 
     public PaginatedResult<Version> getVersions(final ProjectTable project, final RequestPagination pagination, final boolean includeHiddenChannels) {
-        final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
         if (project == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
 
-        final Long userId = this.getHangarUserId();
-        Stream<Version> versions = this.versionsApiDAO.getVersions(project.getId(), canSeeHidden, userId, pagination).values().stream()
-            .sorted((v1, v2) -> v2.getCreatedAt().compareTo(v1.getCreatedAt()));
+        // manually filter to project
+        final StringBuilder filters = new StringBuilder();
+        filters.append("projectId = ").append(project.getId());
 
-        if (!includeHiddenChannels) {
-            versions = versions.filter(version -> !version.getChannel().getFlags().contains(ChannelFlag.HIDE_BY_DEFAULT));
+        // filters
+        for (final Filter.FilterInstance filterInstance : pagination.getFilters().values()) {
+            filters.append(" AND ");
+            filterInstance.createMeili(filters);
         }
 
-        final Long versionCount = this.versionsApiDAO.getVersionCount(project.getId(), canSeeHidden, userId, pagination);
-        return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount, pagination), versions.toList());
+        // manually handle the visibility filter
+        final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
+        if (!canSeeHidden) {
+            filters.append(" AND (visibility = public");
+            this.getOptionalHangarPrincipal().ifPresent(principal -> {
+                filters.append(" OR (visibility != softDelete AND memberNames IN [").append(principal.getName().toLowerCase()).append("])");
+            });
+            filters.append(")");
+        }
+
+        // sort
+        final List<String> sort = new ArrayList<>();
+        pagination.getSorters().forEach((key, value) -> {
+            StringBuilder sb = new StringBuilder();
+            value.accept(sb);
+            sort.add(sb.toString());
+        });
+        if (sort.isEmpty()) {
+            sort.add("createdAt:desc");
+        }
+
+        final SearchResult<Version> result = this.meiliService.searchVersions("", filters.toString(), sort, pagination.getOffset(), pagination.getLimit());
+        // this is awful, but good enough for now
+        if (!includeHiddenChannels) {
+            var versions = result.hits().stream().filter(version -> !version.getChannel().getFlags().contains(ChannelFlag.HIDE_BY_DEFAULT)).toList();
+            return new PaginatedResult<>(new Pagination((long) result.estimatedTotalHits(), new RequestPagination((long) result.limit(), (long) result.offset())), versions);
+        }
+        return result.asPaginatedResult();
     }
 
     public Map<String, VersionStats> getVersionStats(final ProjectVersionTable version, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
@@ -189,7 +215,7 @@ public class VersionsApiService extends HangarComponent {
 
     @Cacheable(value = CacheConfig.LATEST_VERSION, key = "#project.getId()")
     public @Nullable String latestVersion(final ProjectTable project) {
-        return this.latestVersion(project, this.config.channels.nameDefault());
+        return this.latestVersion(project, this.config.channels().nameDefault());
     }
 
     @CacheEvict(value = CacheConfig.LATEST_VERSION, key = "{#id, #channel != null ? #channel.toLowerCase() : null}")
@@ -198,7 +224,7 @@ public class VersionsApiService extends HangarComponent {
 
     @Cacheable(value = CacheConfig.LATEST_VERSION, key = "{#project.getId(), #channel != null ? #channel.toLowerCase() : null}")
     public @Nullable String latestVersion(final ProjectTable project, final String channel) {
-        final String version = this.versionsApiDAO.getLatestVersion(project.getId(), channel);
+        final String version = this.versionsApiDAO.getLatestVersion(project.getId(), channel == null ? this.config.channels().nameDefault() : channel);
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "No version found for " + project.getSlug() + " on channel " + channel);
         }

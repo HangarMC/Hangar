@@ -55,7 +55,7 @@ public class APIKeyService extends HangarComponent {
 
         final UUID tokenIdentifier = UUID.randomUUID();
         final String token = UUID.randomUUID().toString();
-        final String hashedToken = CryptoUtils.hmacSha256(this.config.security.tokenSecret(), token.getBytes(StandardCharsets.UTF_8));
+        final String hashedToken = CryptoUtils.hmacSha256(this.config.security().tokenSecret(), token.getBytes(StandardCharsets.UTF_8));
         this.apiKeyDAO.insert(new ApiKeyTable(apiKeyForm.name(), userIdentified.getUserId(), tokenIdentifier, hashedToken, keyPermission));
         this.actionLogger.user(LogAction.USER_APIKEY_CREATED.create(UserContext.of(userIdentified.getUserId()), "Key '" + apiKeyForm.name() + "': " + apiKeyForm.permissions().stream().map(NamedPermission::getFrontendName).collect(Collectors.joining(", ")), ""));
         return tokenIdentifier + "." + token;

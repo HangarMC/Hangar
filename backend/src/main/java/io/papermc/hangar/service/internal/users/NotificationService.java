@@ -9,6 +9,7 @@ import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.UnreadCount;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.NotificationTable;
 import io.papermc.hangar.model.db.UserTable;
@@ -49,11 +50,11 @@ public class NotificationService extends HangarComponent {
     @Transactional(readOnly = true)
     public PaginatedResult<HangarNotification> getNotifications(final RequestPagination pagination, final @Nullable Boolean read) {
         final List<HangarNotification> notifications = read != null ? this.hangarNotificationsDAO.getNotifications(this.getHangarUserId(), read, pagination) : this.hangarNotificationsDAO.getNotifications(this.getHangarUserId(), pagination);
-        return new PaginatedResult<>(new Pagination(this.getUnreadNotifications(), pagination), notifications);
+        return new PaginatedResult<>(new Pagination(this.getUnreadCount().notifications(), pagination), notifications);
     }
 
-    public long getUnreadNotifications() {
-        return this.notificationsDAO.getUnreadNotificationCount(this.getHangarUserId());
+    public UnreadCount getUnreadCount() {
+        return this.notificationsDAO.getUnreadCount(this.getHangarUserId());
     }
 
     public boolean markNotificationAsRead(final long notificationId) {

@@ -132,7 +132,7 @@ async function updateInvite(invite: HangarProjectInvite & { accepted?: boolean }
       </template>
       <Tabs v-model="selectedInvitesTab" :tabs="selectedInvitesTabs" :vertical="false" />
       <Card v-for="(invite, index) in filteredInvites" :key="index">
-        <span v-if="'representingOrg' in invite">
+        <span v-if="'representingOrg' in invite && invite.representingOrg">
           {{ i18n.t(!invite.accepted ? "notifications.invitedOrg" : "notifications.inviteAcceptedOrg", [invite.representingOrg, invite.type]) }}:
         </span>
         <span v-else> {{ i18n.t(!invite.accepted ? "notifications.invited" : "notifications.inviteAccepted", [invite.type]) }}: </span>

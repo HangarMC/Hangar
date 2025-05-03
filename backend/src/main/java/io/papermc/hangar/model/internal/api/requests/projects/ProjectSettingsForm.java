@@ -16,7 +16,7 @@ public class ProjectSettingsForm {
 
     // @el(root: String)
     @NotNull(message = "project.new.error.noDescription")
-    private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxDescLen)", message = "project.new.error.tooLongDesc") String description;
+    private final @Validate(SpEL = "@validate.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.maxDescLen)", message = "project.new.error.tooLongDesc") String description;
 
     @JsonCreator
     public ProjectSettingsForm(final ProjectSettings settings, final Category category, final String description) {

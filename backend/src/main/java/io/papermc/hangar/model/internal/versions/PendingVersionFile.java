@@ -11,5 +11,5 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public record PendingVersionFile(
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms") List<Platform> platforms,
     @Nullable FileInfo fileInfo,
-    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "fieldError.url") @Nullable String externalUrl) {
+    @Validate(SpEL = "@validate.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.urlRegex)", message = "fieldError.url") @Nullable String externalUrl) {
 }

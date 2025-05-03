@@ -21,8 +21,8 @@ public class WebAuthNConfig {
     @Bean
     public RelyingPartyIdentity relyingPartyIdentity() {
         return RelyingPartyIdentity.builder()
-            .id(this.config.security.rpId())
-            .name(this.config.security.rpName())
+            .id(this.config.security().rpId())
+            .name(this.config.security().rpName())
             .build();
     }
 

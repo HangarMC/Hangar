@@ -1,12 +1,14 @@
 package io.papermc.hangar.service.internal.perms.members;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.db.dao.internal.table.OrganizationDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.members.MembersDAO;
 import io.papermc.hangar.db.dao.internal.table.roles.IRolesDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.roles.Role;
+import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.members.MemberTable;
@@ -37,6 +39,8 @@ public abstract class MemberService<
 
     @Autowired
     private UserDAO userDAO;
+    @Autowired
+    private OrganizationDAO organizationDAO;
 
     private final S roleService;
     private final MD membersDao;
@@ -74,8 +78,11 @@ public abstract class MemberService<
         return roleTable;
     }
 
-    public void addMember(final RT roleTable) {
-        this.membersDao.insert(this.constructor.create(roleTable.getUserId(), roleTable.getPrincipalId()));
+    public void addMemberIfNeeded(final RT roleTable) {
+        final MT existingMember = this.membersDao.getMemberTable(roleTable.getPrincipalId(), roleTable.getUserId());
+        if (existingMember == null) {
+            this.membersDao.insert(this.constructor.create(roleTable.getUserId(), roleTable.getPrincipalId()));
+        }
     }
 
     @Transactional
@@ -95,7 +102,15 @@ public abstract class MemberService<
         final RT roleTable = this.handleEditOrRemoval(member, joinable.getId());
         this.membersDao.delete(roleTable.getPrincipalId(), roleTable.getUserId());
         this.roleService.deleteRole(roleTable);
-        this.joinableNotificationService.removedFrom(roleTable, joinable, this.getHangarUserId());
+
+        final OrganizationTable org = this.organizationDAO.getByUserId(roleTable.getUserId());
+        // notify org owner
+        if (org != null) {
+            this.joinableNotificationService.removedFromOrg(roleTable, org, joinable, this.getHangarUserId());
+        } else {
+            this.joinableNotificationService.removedFrom(roleTable, joinable, this.getHangarUserId());
+        }
+
         this.logMemberRemoval(joinable, "Removed: " + member.getName() + " (" + member.getRole().getTitle() + ")");
     }
 
@@ -114,7 +129,15 @@ public abstract class MemberService<
         roleTable.setRole(member.getRole());
 
         this.roleService.updateRole(roleTable);
-        this.joinableNotificationService.roleChanged(roleTable, joinable, this.getHangarUserId());
+
+        // notify org owner
+        final OrganizationTable org = this.organizationDAO.getByUserId(roleTable.getUserId());
+        if (org != null) {
+            this.joinableNotificationService.roleChangedOrg(roleTable, org, joinable, this.getHangarUserId());
+        } else {
+            this.joinableNotificationService.roleChanged(roleTable, joinable, this.getHangarUserId());
+        }
+
         this.logMemberUpdate(joinable,
             "Old Roles: " + member.getName() + " (" + oldTitle + ")",
             "New Roles: " + member.getName() + " (" + roleTable.getRole().getTitle() + ")");

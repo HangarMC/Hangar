@@ -169,7 +169,7 @@ public class OrganizationController extends HangarComponent {
     @PostMapping(path = "/org/{org}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveTagline(@PathVariable final OrganizationTable org, @RequestBody final StringContent content) {
         final String s = content.contentOrEmpty();
-        if (s.length() > this.config.user.maxTaglineLen()) {
+        if (s.length() > this.config.users().maxTaglineLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "author.error.invalidTagline");
         }
 

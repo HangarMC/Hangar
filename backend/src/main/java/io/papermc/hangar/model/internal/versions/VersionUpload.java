@@ -17,7 +17,7 @@ public class VersionUpload {
     // @el(root: String)
     @NotBlank(message = "version.new.error.invalidVersionString")
     @Schema(description = "Version string of the version to be published", example = "1.0.0-SNAPSHOT+1")
-    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.projects.versionNameRegex)", message = "version.new.error.invalidVersionString") String version;
+    private final @Validate(SpEL = "@validate.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.versionNameRegex)", message = "version.new.error.invalidVersionString") String version;
     @Schema(description = "Map of each platform's plugin dependencies")
     private final Map<Platform, Set<@Valid PluginDependency>> pluginDependencies;
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
@@ -25,14 +25,14 @@ public class VersionUpload {
     private final Map<Platform, @Size(min = 1, message = "version.edit.error.noPlatformVersions") SortedSet<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
 
     // @el(root: String)
-    private final @Validate(SpEL = "@validate.max(#root, @hangarConfig.pages.maxLen)", message = "page.new.error.maxLength") String description;
+    private final @Validate(SpEL = "@validate.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.pages.maxLen)", message = "page.new.error.maxLength") String description;
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
     private final List<@Valid MultipartFileOrUrl> files;
 
     // @el(root: String)
     @NotBlank(message = "version.new.error.channel.noName")
     @Schema(description = "Channel of the version to be published under", example = "Release")
-    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName") String channel;
+    private final @Validate(SpEL = "@validate.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.channels.nameRegex)", message = "channel.modal.error.invalidName") String channel;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public VersionUpload(final String version, final Map<Platform, Set<PluginDependency>> pluginDependencies, final EnumMap<Platform, SortedSet<String>> platformDependencies, final @Nullable String description, final List<MultipartFileOrUrl> files, final String channel) {

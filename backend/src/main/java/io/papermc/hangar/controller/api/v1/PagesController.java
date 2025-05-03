@@ -5,9 +5,9 @@ import io.papermc.hangar.controller.api.v1.interfaces.IPagesController;
 import io.papermc.hangar.model.api.project.PageEditForm;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
+import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
-import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
@@ -37,7 +37,7 @@ public class PagesController extends HangarComponent implements IPagesController
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public String getMainPage(final ProjectTable project) {
-        final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(project, "");
+        final ProjectPageTable projectPage = this.projectPageService.getProjectPage(project, "");
         return projectPage.getContents();
     }
 
@@ -47,7 +47,7 @@ public class PagesController extends HangarComponent implements IPagesController
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public String getPage(final ProjectTable project, final String path) {
-        final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(project, path);
+        final ProjectPageTable projectPage = this.projectPageService.getProjectPage(project, path);
         return projectPage.getContents();
     }
 
@@ -68,7 +68,7 @@ public class PagesController extends HangarComponent implements IPagesController
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#project}")
     @ResponseStatus(HttpStatus.OK)
     public void editPage(final ProjectTable project, final PageEditForm pageEditForm) {
-        final ExtendedProjectPage projectPage = this.projectPageService.getProjectPage(project, pageEditForm.path());
+        final ProjectPageTable projectPage = this.projectPageService.getProjectPage(project, pageEditForm.path());
         this.projectPageService.saveProjectPage(projectPage.getProjectId(), projectPage.getId(), pageEditForm.content());
     }
 }

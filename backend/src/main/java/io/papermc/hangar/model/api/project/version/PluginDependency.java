@@ -23,7 +23,7 @@ public class PluginDependency implements Named, Comparable<PluginDependency> {
     @Schema(description = "Whether the dependency is required for the plugin to function")
     private final boolean required;
     @Schema(description = "External url to download the dependency from if not a Hangar project, else null", example = "https://papermc.io/downloads")
-    private final @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "fieldError.url") String externalUrl;
+    private final @Validate(SpEL = "@validate.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.urlRegex)", message = "fieldError.url") String externalUrl;
     @Schema(description = "Platform the dependency runs on")
     private final Platform platform;
 

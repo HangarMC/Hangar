@@ -2,6 +2,7 @@
 # General #
 ###########
 server:
+  address: 0.0.0.0
   port: 8080
   servlet:
     encoding:
@@ -54,7 +55,7 @@ springdoc:
 management:
   endpoints:
     access:
-      default: none
+      default: read_only
     web:
       exposure:
         include: "*"
@@ -65,6 +66,7 @@ management:
 hangar:
   dev: true
   base-url: "http://localhost:3333"
+  url-regex: "^(https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})"
   allow-indexing: true
   disable-jgroups: true
   disable-ratelimiting: false
@@ -87,6 +89,8 @@ hangar:
     homepage: 2m
     version-downloads: 2m
     project-views: 10m
+    project-index: 10m
+    version-index: 10m
 
   channels:
     max-name-len: 15
@@ -248,6 +252,11 @@ hangar:
   e2e:
     password: "password"
     totp-secret: "JBSWY3DPEHPK3PXP"
+
+  meili:
+    url: "http://localhost:7700"
+    key: ""
+    prefix: "local-"
 
 #################
 # Debug Logging #

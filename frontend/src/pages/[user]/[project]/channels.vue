@@ -93,7 +93,7 @@ async function editChannel(channel: HangarChannel | ProjectChannel) {
             </ChannelModal>
           </td>
           <td v-if="channels.length !== 1">
-            <Button v-if="channel.versionCount === 0" :disabled="channel.flags.indexOf(ChannelFlag.FROZEN) > -1" @click="deleteChannel(channel)">
+            <Button v-if="channel.versionCount === 0" :disabled="channel.flags.includes(ChannelFlag.FROZEN)" @click="deleteChannel(channel)">
               {{ i18n.t("channel.manage.deleteButton") }}
             </Button>
           </td>

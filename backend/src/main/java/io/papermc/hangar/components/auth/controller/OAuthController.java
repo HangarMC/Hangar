@@ -129,7 +129,7 @@ public class OAuthController extends HangarComponent {
         if (returnUrl == null) {
             returnUrl = "/";
         }
-        if (this.config.isDev() && !returnUrl.startsWith("http")) {
+        if (this.config.dev() && !returnUrl.startsWith("http")) {
             returnUrl = "http://localhost:3333" + returnUrl;
         }
         this.response.sendRedirect(returnUrl);

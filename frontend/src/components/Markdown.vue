@@ -37,7 +37,7 @@ watchPostEffect(async () => {
         <IconMdiFormatListBulleted />
       </template>
       <template #default="{ close }">
-        <div class="w-max flex flex-col max-h-lg overflow-x-auto">
+        <div class="w-max flex flex-col max-h-lg max-w-lg overflow-x-auto">
           <!-- eslint-disable vue/no-v-html -->
           <a
             v-for="heading in renderedMarkdown.headings"

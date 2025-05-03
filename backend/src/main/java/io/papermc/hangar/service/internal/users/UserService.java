@@ -99,7 +99,7 @@ public class UserService extends HangarComponent {
             if (!ACCEPTED_SOCIAL_TYPES.contains(social.getKey())) {
                 throw new HangarApiException("Badly formatted request, social type " + social.getKey() + " is unknown!");
             }
-            if ("website".equals(social.getKey()) && !social.getValue().matches(this.config.getUrlRegex())) {
+            if ("website".equals(social.getKey()) && !social.getValue().matches(this.config.urlRegex())) {
                 throw new HangarApiException("Badly formatted request, website " + social.getValue() + " is not a valid url! (Did you add https://?)");
             }
         }

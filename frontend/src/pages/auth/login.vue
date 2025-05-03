@@ -30,6 +30,27 @@ if (privileged) {
   loading.value = false;
 }
 
+const dialogTitle = computed(() => {
+  if (privileged) {
+    return i18n.t("auth.login.sudo.title");
+  }
+  if (supportedMethods.value.length > 0) {
+    return i18n.t("auth.login.twoFactor.title");
+  }
+  return i18n.t("auth.login.main.title");
+});
+
+const dialogInfo = computed(() => {
+  if (privileged) {
+    return i18n.t("auth.login.sudo.info");
+  }
+  if (supportedMethods.value.length > 0) {
+    return i18n.t("auth.login.twoFactor.info");
+  }
+  // eslint-disable-next-line unicorn/no-useless-undefined
+  return undefined;
+});
+
 async function loginPassword() {
   if (!(await v.value.$validate())) return;
   loading.value = true;
@@ -125,9 +146,9 @@ useSeo(computed(() => ({ title: "Login", route })));
 
 <template>
   <Card class="w-xl mx-auto max-w-full">
-    <template #header>{{ privileged ? "Sudo" : "Login" }}</template>
+    <template #header>{{ dialogTitle }}</template>
 
-    <div v-if="privileged" class="mb-2">Please authenticate again to do this action</div>
+    <div v-if="!!dialogInfo" class="mb-2">{{ dialogInfo }}</div>
 
     <form v-if="supportedMethods.length === 0" class="flex flex-col gap-2">
       <InputText
@@ -141,7 +162,7 @@ useSeo(computed(() => ({ title: "Login", route })));
       />
       <InputPassword v-model="password" label="Password" name="password" autocomplete="current-password" :rules="[required()]" />
       <div class="flex flex-col gap-2">
-        <Button :disabled="loading" @click.prevent="loginPassword">Login</Button>
+        <Button :disabled="loading" @click.prevent="loginPassword">Log in</Button>
         <template v-if="!privileged">
           <div class="flex items-center space-x-2">
             <hr class="flex-grow border-zinc-200 dark:border-zinc-700" />
@@ -184,32 +205,33 @@ useSeo(computed(() => ({ title: "Login", route })));
       <Link v-if="!privileged" to="/auth/reset" class="w-max">Forgot your password?</Link>
     </form>
 
-    <form v-if="supportedMethods.length > 0" class="flex flex-col gap-2 hide-last-hr">
-      <p>Please verify your sign in using one of your second factors</p>
+    <form v-if="supportedMethods.length > 0" class="flex flex-col gap-2">
       <template v-if="supportedMethods.includes('WEBAUTHN')">
-        <Button class="w-max" :disabled="loading" @click.prevent="loginWebAuthN">Use WebAuthN</Button>
+        <Button class="w-max" :disabled="loading" @click.prevent="loginWebAuthN">Use WebAuthn</Button>
+      </template>
+      <template v-if="supportedMethods.includes('WEBAUTHN') && supportedMethods.includes('TOTP')">
         <hr />
       </template>
       <template v-if="supportedMethods.includes('TOTP')">
         <div class="flex flex-col gap-2">
-          <InputText v-model="totpCode" label="Totp code" inputmode="numeric" />
-          <Button class="w-max" :disabled="loading" @click.prevent="loginTotp">Use totp</Button>
+          <InputText v-model="totpCode" label="TOTP code" inputmode="numeric" />
+          <Button class="w-max" :disabled="loading" @click.prevent="loginTotp">Use TOTP</Button>
         </div>
-        <hr />
       </template>
       <template v-if="supportedMethods.includes('BACKUP_CODES')">
-        <div class="flex flex-col gap-2">
-          <InputText v-model="backupCode" label="Backup code" />
-          <Button class="w-max" :disabled="loading" @click.prevent="loginBackupCode">Use backup code</Button>
-        </div>
-        <hr />
+        <Modal title="Recover account">
+          <template #activator="{ on }">
+            <Link v-on="on">Lost access?</Link>
+          </template>
+          <template #default>
+            <div class="flex flex-col gap-2">
+              <p>Enter one of your saved backup codes to login.</p>
+              <InputText v-model="backupCode" label="Backup code" />
+              <Button class="w-max mt-2" :disabled="loading" @click.prevent="loginBackupCode">Use backup code</Button>
+            </div>
+          </template>
+        </Modal>
       </template>
     </form>
   </Card>
 </template>
-
-<style scoped>
-.hide-last-hr > hr:last-of-type {
-  display: none;
-}
-</style>

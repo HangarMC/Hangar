@@ -50,7 +50,7 @@ async function create() {
         ]"
       />
 
-      <Button size="medium" :disabled="!canCreate" title="Create Org" @click="create">
+      <Button size="medium" class="mt-4" :disabled="!canCreate" title="Create Org" @click="create">
         {{ i18n.t("form.memberList.create") }}
       </Button>
     </div>

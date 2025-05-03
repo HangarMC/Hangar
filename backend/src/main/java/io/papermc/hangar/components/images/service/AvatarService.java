@@ -12,14 +12,20 @@ import io.papermc.hangar.util.CryptoUtils;
 import jakarta.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.BodyExtractors;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -38,17 +44,19 @@ public class AvatarService extends HangarComponent {
     private final UserService userService;
     private final RestTemplate restTemplate;
     private final UserDAO userDAO;
+    private final ImageProxyService imageProxyService;
 
     private String defaultAvatarUrl;
     private String defaultAvatarPath;
 
-    public AvatarService(final FileService fileService, final ImageService imageService, final AvatarDAO avatarDAO, final UserService userService, final RestTemplate restTemplate, final UserDAO userDAO) {
+    public AvatarService(final FileService fileService, final ImageService imageService, final AvatarDAO avatarDAO, final UserService userService, final RestTemplate restTemplate, final UserDAO userDAO, final ImageProxyService imageProxyService) {
         this.fileService = fileService;
         this.imageService = imageService;
         this.avatarDAO = avatarDAO;
         this.userService = userService;
         this.restTemplate = restTemplate;
         this.userDAO = userDAO;
+        this.imageProxyService = imageProxyService;
     }
 
     @PostConstruct
@@ -175,15 +183,17 @@ public class AvatarService extends HangarComponent {
      * misc
      */
     public void importProjectAvatar(final long projectId, final String avatarUrl) {
+        ClientResponse clientResponse = null;
         try {
-            final ResponseEntity<byte[]> avatar = this.restTemplate.getForEntity(avatarUrl, byte[].class);
-            if (avatar.getStatusCode().is2xxSuccessful()) {
-                this.changeProjectAvatar(projectId, avatar.getBody());
-            } else {
-                logger.warn("Couldn't import project avatar from {}, {}", avatarUrl, avatar.getStatusCode());
-            }
+            clientResponse = this.imageProxyService.proxyImage(avatarUrl, null);
+            byte[] avatar = clientResponse.bodyToMono(ByteArrayResource.class).map(ByteArrayResource::getByteArray).block();
+            this.changeProjectAvatar(projectId, avatar);
         } catch (final Exception ex) {
-            logger.warn("Couldn't import project avatar from " + avatarUrl, ex);
+            logger.warn("Couldn't import project avatar from {}", avatarUrl, ex);
+        } finally {
+            if (clientResponse != null) {
+                clientResponse.releaseBody();
+            }
         }
     }
 

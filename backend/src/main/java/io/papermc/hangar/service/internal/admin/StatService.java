@@ -4,7 +4,6 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.HangarStatsDAO;
 import io.papermc.hangar.db.dao.internal.table.stats.ProjectVersionDownloadStatsDAO;
 import io.papermc.hangar.db.dao.internal.table.stats.ProjectViewsDAO;
-import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.stats.ProjectVersionDownloadIndividualTable;
 import io.papermc.hangar.model.db.stats.ProjectViewIndividualTable;
@@ -24,7 +23,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
@@ -36,14 +34,12 @@ public class StatService extends HangarComponent {
     private final HangarStatsDAO hangarStatsDAO;
     private final ProjectViewsDAO projectViewsDAO;
     private final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO;
-    private final HangarVersionsDAO hangarVersionsDAO;
 
     @Autowired
-    public StatService(final HangarStatsDAO hangarStatsDAO, final ProjectViewsDAO projectViewsDAO, final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO, final HangarVersionsDAO hangarVersionsDAO) {
+    public StatService(final HangarStatsDAO hangarStatsDAO, final ProjectViewsDAO projectViewsDAO, final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO) {
         this.hangarStatsDAO = hangarStatsDAO;
         this.projectViewsDAO = projectViewsDAO;
         this.projectVersionDownloadStatsDAO = projectVersionDownloadStatsDAO;
-        this.hangarVersionsDAO = hangarVersionsDAO;
     }
 
     public List<DayStats> getStats(final LocalDate from, final LocalDate to) {
@@ -95,7 +91,7 @@ public class StatService extends HangarComponent {
     private void setCookie(final UUID cookieValue) {
         this.response.addHeader(HttpHeaders.SET_COOKIE,
             ResponseCookie.from(STAT_TRACKING_COOKIE, cookieValue.toString())
-                .secure(this.config.security.secure())
+                .secure(this.config.security().secure())
                 .path("/")
                 .maxAge((long) (60 * 60 * 24 * 356.24 * 1000))
                 .sameSite("Strict")
@@ -106,8 +102,6 @@ public class StatService extends HangarComponent {
     @Transactional
     public void processVersionDownloads() {
         this.processStats("project_versions_downloads_individual", "project_versions_downloads", "downloads", true);
-        this.hangarStatsDAO.refreshVersionStatsView();
-        this.hangarVersionsDAO.refreshVersionView();
     }
 
     @Transactional

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { ExtendedProjectPage, HangarProject, HangarProjectPage } from "~/types/backend";
+import type { HangarProject, HangarProjectPage, ProjectPageTable } from "~/types/backend";
 
 const props = defineProps<{
   project?: HangarProject;
-  page?: ExtendedProjectPage;
+  page?: ProjectPageTable;
   mainPage: boolean;
 }>();
 
@@ -13,10 +13,10 @@ const router = useRouter();
 const updateProjectPages = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
 
 const { editingPage, changeEditingPage, savePage, deletePage } = useProjectPage(
-  route,
+  () => route,
   router,
-  props.project,
-  props.mainPage ? props.project?.mainPage : props.page
+  () => props.project,
+  () => (props.mainPage ? props.project?.mainPage : props.page)
 );
 if (!props.mainPage) {
   useSeo(

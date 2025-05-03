@@ -12,8 +12,8 @@ public class ChannelForm {
 
     // @el(root: String)
     @NotBlank
-    private final @Validate(SpEL = "@validations.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName") @Validate(SpEL = "@validations.max(#root, @hangarConfig.channels.maxNameLen)", message = "channel.modal.error.tooLongName") String name;
-    private final @Validate(SpEL = "@validations.max(#root, @hangarConfig.channels.maxDescriptionLen)", message = "channel.modal.error.tooLongDescription") String description;
+    private final @Validate(SpEL = "@validations.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.channels.nameRegex)", message = "channel.modal.error.invalidName") @Validate(SpEL = "@validations.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.channels.maxNameLen)", message = "channel.modal.error.tooLongName") String name;
+    private final @Validate(SpEL = "@validations.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.channels.maxDescriptionLen)", message = "channel.modal.error.tooLongDescription") String description;
     @NotNull
     private final Color color;
     private final Set<ChannelFlag> flags;

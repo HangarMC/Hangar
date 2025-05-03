@@ -21,7 +21,7 @@ import IconMdiFolderWrenchOutline from "~icons/mdi/folder-wrench-outline";
 import IconMdiFolderInformationOutline from "~icons/mdi/folder-information-outline";
 
 import { type HangarNotification, type HangarUser, NamedPermission } from "~/types/backend";
-import { useUnreadNotificationCount } from "~/composables/useData";
+import { useUnreadCount } from "~/composables/useData";
 
 // @ts-expect-error marker so that you can inspect backend data in dev tools
 const backendData = useBackendData;
@@ -33,7 +33,7 @@ const authStore = useAuthStore();
 const route = useRoute();
 
 const notifications = ref<HangarNotification[]>([]);
-const { unreadNotifications, refreshUnreadNotifications } = useUnreadNotificationCount();
+const { unreadCount, refreshUnreadCount } = useUnreadCount();
 const loadedUnreadNotifications = ref<number>(0);
 
 type NavBarLinks = { link: keyof RouteMap; label: string; icon?: any }[];
@@ -84,7 +84,7 @@ function markNotificationsRead() {
 function markNotificationRead(notification: HangarNotification) {
   if (!notification.read) {
     notification.read = true;
-    unreadNotifications.value--;
+    unreadCount.value.notifications--;
     loadedUnreadNotifications.value--;
     useInternalApi(`notifications/${notification.id}`, "post").catch((err) => handleRequestError(err));
   }
@@ -100,7 +100,7 @@ function updateNavData() {
 }
 
 function updateNotifications() {
-  refreshUnreadNotifications();
+  refreshUnreadCount();
   // only actually load them when clicked
   useInternalApi<HangarNotification[]>("recentnotifications?amount=30")
     .catch(handleRequestError)
@@ -139,7 +139,7 @@ function isRecent(date: string): boolean {
       <!-- Left side items -->
       <div class="flex items-center gap-4">
         <Popover v-slot="{ close, open }" class="relative">
-          <PopoverButton id="menu-button" aria-label="Menu" v-on="useTracking('nav-burger-button', { open })" class="flex">
+          <PopoverButton id="menu-button" aria-label="Menu" class="flex" v-on="useTracking('nav-burger-button', { open })">
             <icon-mdi-menu class="transition-transform text-[1.2em]" :class="open ? 'transform rotate-90' : ''" />
           </PopoverButton>
 
@@ -244,10 +244,10 @@ function isRecent(date: string): boolean {
               class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))"
               aria-label="Notifications"
               @click="updateNotifications"
-              v-on="useTracking('nav-notifications', { unread: unreadNotifications })"
+              v-on="useTracking('nav-notifications', { unread: unreadCount.notifications + unreadCount.invites })"
             >
-              <IconMdiBellOutline v-show="unreadNotifications === 0" class="text-[1.2em]" />
-              <div v-show="unreadNotifications !== 0" class="relative">
+              <IconMdiBellOutline v-show="unreadCount.notifications + unreadCount.invites === 0" class="text-[1.2em]" />
+              <div v-show="unreadCount.notifications + unreadCount.invites !== 0" class="relative">
                 <!-- This is fine:tm: -->
                 <IconMdiBellBadge class="text-[1.2em]" />
                 <svg class="absolute top-0.6 left-3.3" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -258,6 +258,14 @@ function isRecent(date: string): boolean {
             <template #content="{ close }">
               <ClientOnly>
                 <div class="-mt-1 flex flex-col rounded border-t-2 border-primary-500 background-default filter shadow-default overflow-auto max-w-150">
+                  <div v-if="unreadCount.invites != 0">
+                    <span class="flex shadow-0 p-2 pb-0 mt-2 ml-3 mr-2">
+                      <Link class="font-bold" to="/notifications" @click="close()">
+                        {{ i18n.t("notifications.invitesPending", [unreadCount.invites]) }}
+                      </Link>
+                    </span>
+                  </div>
+                  <span class="flex font-bold shadow-0 p-2 pt-0 mt-2 ml-3 mr-2">{{ i18n.t("notifications.recentNotifications") }}</span>
                   <div v-if="notifications.length === 0">
                     <span class="flex shadow-0 p-2 mt-2 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
                   </div>
@@ -292,11 +300,11 @@ function isRecent(date: string): boolean {
                   </div>
                   <div class="p-2 mb-1 ml-2 space-x-3 text-sm">
                     <Link to="/notifications" @click="close()">
-                      <span :class="loadedUnreadNotifications >= unreadNotifications ? 'font-normal' : ''">
+                      <span :class="loadedUnreadNotifications >= unreadCount.notifications ? 'font-normal' : ''">
                         {{
-                          loadedUnreadNotifications >= unreadNotifications
+                          loadedUnreadNotifications >= unreadCount.notifications
                             ? i18n.t("notifications.viewAll")
-                            : i18n.t("notifications.viewMoreUnread", [unreadNotifications - loadedUnreadNotifications])
+                            : i18n.t("notifications.viewMoreUnread", [unreadCount.notifications - loadedUnreadNotifications])
                         }}
                       </span>
                     </Link>
@@ -341,8 +349,7 @@ function isRecent(date: string): boolean {
                   <span v-if="authStore.user.headerData.reviewQueueCount !== 0">{{ "(" + authStore.user?.headerData.reviewQueueCount + ")" }}</span>
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.ViewStats)" to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
-                <!-- todo -->
-                <!--<DropdownItem v-if="hasPerms(NamedPermission.ViewHealth)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>-->
+                <DropdownItem v-if="hasPerms(NamedPermission.ViewHealth)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.ViewLogs)" to="/admin/log">{{ t("nav.user.log") }}</DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.ManualValueChanges)" to="/admin/settings">
                   {{ t("nav.user.adminSettings") }}

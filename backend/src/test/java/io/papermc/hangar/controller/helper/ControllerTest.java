@@ -5,7 +5,9 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.hangar.model.api.auth.ApiSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import net.bytebuddy.utility.dispatcher.JavaDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -32,6 +38,16 @@ public class ControllerTest {
     protected ObjectMapper objectMapper;
     @Autowired
     protected JWTVerifier jwtVerifier;
+
+    public static GenericContainer<?> meili = new GenericContainer<>(DockerImageName.parse("getmeili/meilisearch:v1.13"))
+        .withReuse(true)
+        .withEnv("MEILI_MASTER_KEY", "masterKey")
+        .withEnv("MEILI_ENV", "development");
+
+    static {
+        meili.setPortBindings(List.of("8800:7700"));
+        meili.start();
+    }
 
     private final Map<String, String> jwtCache = new HashMap<>();
 

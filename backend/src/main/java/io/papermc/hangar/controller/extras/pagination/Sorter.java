@@ -5,13 +5,13 @@ import java.util.function.Consumer;
 @FunctionalInterface
 public interface Sorter {
 
-    void applySorting(StringBuilder sb, SorterRegistry.SortDirection dir);
+    void applySorting(StringBuilder sb, SorterRegistry.SortDirection dir, PaginationType type);
 
-    default Consumer<StringBuilder> ascending() {
-        return sb -> this.applySorting(sb, SorterRegistry.SortDirection.ASCENDING);
+    default Consumer<StringBuilder> ascending(final PaginationType type) {
+        return sb -> this.applySorting(sb, SorterRegistry.SortDirection.ASCENDING, type);
     }
 
-    default Consumer<StringBuilder> descending() {
-        return sb -> this.applySorting(sb, SorterRegistry.SortDirection.DESCENDING);
+    default Consumer<StringBuilder> descending(final PaginationType type) {
+        return sb -> this.applySorting(sb, SorterRegistry.SortDirection.DESCENDING, type);
     }
 }

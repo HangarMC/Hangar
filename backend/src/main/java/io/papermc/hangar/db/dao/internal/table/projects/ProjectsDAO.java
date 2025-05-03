@@ -42,6 +42,9 @@ public interface ProjectsDAO {
     @SqlQuery("SELECT * FROM projects WHERE id = :projectId")
     ProjectTable getById(long projectId);
 
+    @SqlQuery("SELECT id FROM projects WHERE lower(slug) = lower(:slug)")
+    Long getIdBySlug(String slug);
+
     @UseStringTemplateEngine
     @SqlQuery("SELECT * FROM projects WHERE owner_id = :userId <if(!seeHidden)> AND visibility = 0<endif>")
     List<ProjectTable> getUserProjects(long userId, @Define boolean seeHidden);

@@ -11,6 +11,7 @@ import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Prompt;
+import io.papermc.hangar.model.common.UnreadCount;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
@@ -151,7 +152,7 @@ public class HangarUserController extends HangarComponent {
     @PostMapping(path = "/users/{userName}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveTagline(@PathVariable final String userName, @RequestBody final StringContent content) {
         final String s = content.contentOrEmpty();
-        if (s.length() > this.config.user.maxTaglineLen()) {
+        if (s.length() > this.config.users().maxTaglineLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "author.error.invalidTagline");
         }
 
@@ -304,8 +305,8 @@ public class HangarUserController extends HangarComponent {
     }
 
     @GetMapping("/unreadcount")
-    public ResponseEntity<Long> getUnreadNotifications() {
-        return ResponseEntity.ok(this.notificationService.getUnreadNotifications());
+    public ResponseEntity<UnreadCount> getUnreadCount() {
+        return ResponseEntity.ok(this.notificationService.getUnreadCount());
     }
 
     @Unlocked

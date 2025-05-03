@@ -50,36 +50,33 @@ public interface HangarReviewsDAO {
     @UseRowReducer(ReviewQueueReducer.class)
     @RegisterConstructorMapper(HangarReviewQueueEntry.class)
     @RegisterConstructorMapper(value = HangarReviewQueueEntry.Review.class, prefix = "r_")
-    @SqlQuery("SELECT pv.id AS version_id," +
-        "       p.owner_name pn_owner," +
-        "       p.slug pn_slug," +
-        "       pv.version_string," +
-        "       array(SELECT DISTINCT plv.platform " +
-        "               FROM project_version_platform_dependencies pvpd " +
-        "                   JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
-        "               WHERE pv.id = pvpd.version_id" +
-        "               ORDER BY plv.platform" +
-        "       ) platforms," +
-        "       pv.created_at version_created_at," +
-        "       coalesce(pvu.name, 'DELETED USER') version_author," +
-        "       pc.name channel_name," +
-        "       pc.description channel_description," +
-        "       pc.color channel_color," +
-        "       ru.name r_reviewer_name," +
-        "       pvr.created_at r_review_started," +
-        "       pvr.ended_at r_review_ended," +
-        "       (SELECT pvrm.action FROM project_version_review_messages pvrm WHERE pvr.id = pvrm.review_id ORDER BY pvrm.created_at DESC LIMIT 1) r_last_action" +
-        "   FROM project_versions pv" +
-        "       LEFT JOIN project_version_reviews pvr ON pv.id = pvr.version_id" +
-        "       LEFT JOIN users ru ON pvr.user_id = ru.id" +
-        "       LEFT JOIN users pvu ON pv.author_id = pvu.id" +
-        "       JOIN project_channels pc ON pv.channel_id = pc.id" +
-        "       JOIN projects p ON pv.project_id = p.id" +
-        "   WHERE pv.review_state = :reviewState AND" +
-        "         p.visibility != 4 AND" +
-        "         pv.visibility != 4" +
-        "   GROUP BY pv.id, p.id, pvu.id, pc.id, pvr.id, ru.id" +
-        "   ORDER BY pv.created_at")
+    @SqlQuery("""
+        SELECT pv.id AS version_id,
+               p.owner_name pn_owner,
+               p.slug pn_slug,
+               pv.version_string,
+               array(SELECT (jsonb_array_elements(pv.platforms)->>'platform')::int) as platforms,
+               pv.created_at version_created_at,
+               coalesce(pvu.name, 'DELETED USER') version_author,
+               pc.name channel_name,
+               pc.description channel_description,
+               pc.color channel_color,
+               ru.name r_reviewer_name,
+               pvr.created_at r_review_started,
+               pvr.ended_at r_review_ended,
+               (SELECT pvrm.action FROM project_version_review_messages pvrm WHERE pvr.id = pvrm.review_id ORDER BY pvrm.created_at DESC LIMIT 1) r_last_action
+           FROM project_versions pv
+               LEFT JOIN project_version_reviews pvr ON pv.id = pvr.version_id
+               LEFT JOIN users ru ON pvr.user_id = ru.id
+               LEFT JOIN users pvu ON pv.author_id = pvu.id
+               JOIN project_channels pc ON pv.channel_id = pc.id
+               JOIN projects p ON pv.project_id = p.id
+           WHERE pv.review_state = :reviewState AND
+                 p.visibility != 4 AND
+                 pv.visibility != 4
+           GROUP BY pv.id, p.id, pvu.id, pc.id, pvr.id, ru.id
+           ORDER BY pv.created_at
+        """)
     List<HangarReviewQueueEntry> getReviewQueue(@EnumByOrdinal ReviewState reviewState);
 
     @SqlQuery("""

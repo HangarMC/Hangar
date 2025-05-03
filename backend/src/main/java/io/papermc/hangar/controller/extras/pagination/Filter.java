@@ -33,6 +33,9 @@ public interface Filter<F extends FilterInstance, V> {
     interface FilterInstance {
 
         void createSql(StringBuilder sb, SqlStatement<?> q);
-    }
 
+        default void createMeili(StringBuilder sb) {
+            throw new UnsupportedOperationException("not implemented yet: " + this.getClass().getSimpleName() + "#createMeili");
+        }
+    }
 }
