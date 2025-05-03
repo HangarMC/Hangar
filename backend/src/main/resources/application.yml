@@ -55,7 +55,7 @@ springdoc:
 management:
   endpoints:
     access:
-      default: none
+      default: read_only
     web:
       exposure:
         include: "*"
