@@ -2,6 +2,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { Platform, Tag } from "~/types/backend";
 import type { PlatformVersion, Category } from "~/types/backend";
+import CollapsibleCard from "~/components/design/CollapsibleCard.vue";
 
 const props = defineProps<{
   platform?: Platform;
@@ -101,7 +102,7 @@ useSeo(
     additionalScripts: [
       {
         type: "application/ld+json",
-        textContent: JSON.stringify({
+        children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
           url: config.public.host,
@@ -226,16 +227,16 @@ useSeo(
     <Container lg="flex items-start gap-6">
       <!-- Projects -->
       <div class="w-full min-w-0 mb-5 flex flex-col gap-4 lg:mb-0">
-        <h2 class="font-bold text-2xl lg:(absolute -mt-11)">Projects</h2>
-        <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage: number) => (page = newPage)" />
+        <h2 class="font-bold text-3xl">Projects</h2>
+        <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage) => (page = newPage)" />
       </div>
       <!-- Sidebar -->
       <div class="flex flex-col gap-4">
         <!-- Platform Filter -->
-        <Card class="min-w-300px flex flex-col gap-4">
-          <div class="flex flex-col gap-1">
-            <div v-if="!platform" class="platforms">
-              <h3 class="font-semibold text-xl mb-1">
+        <CollapsibleCard :title="i18n.t('hangar.projectSearch.platforms')" class="min-w-300px flex flex-col gap-1">
+          <div class="flex flex-col">
+            <!-- <div v-if="!platform" class="platforms">
+              <h3 class="font-semibold text-xl">
                 {{ i18n.t("hangar.projectSearch.platforms") }}
                 <span
                   v-if="filters.platform"
@@ -247,6 +248,7 @@ useSeo(
                 </span>
               </h3>
             </div>
+            -->
             <ul>
               <li v-for="visiblePlatform in useVisiblePlatforms" :key="visiblePlatform.enumName" class="inline-flex w-full mt-1">
                 <InputRadio
@@ -259,19 +261,32 @@ useSeo(
                 </InputRadio>
               </li>
             </ul>
+            <div v-if="!platform" class="platforms">
+              <div v-if="filters.platform" class="border-t-1 border-gray-800 mt-2 pt-2"></div>
+              <Transition name="collapse">
+                <span
+                  v-if="filters.platform"
+                  class="flex items-center rounded-full border w-full border-transparent py-1.5 transition-all duration-250
+                          hover:bg-red-900 hover:scale-[1.015]"
+                  cursor="pointer"
+                  @click="filters.platform = undefined"
+                >
+                  <IconMdiDelete class="ml-3 mr-1" />
+                  <span class="ml-1">{{ i18n.t("hangar.projectSearch.clear") }}</span>
+                </span>
+              </Transition>
+            </div>
           </div>
-        </Card>
-        <Card v-if="filters.platform" class="min-w-300px flex flex-col gap-4">
+        </CollapsibleCard>
+        <CollapsibleCard v-if="filters.platform" class="min-w-300px flex flex-col gap-1" :title="i18n.t('hangar.projectSearch.versions.' + filters.platform)">
           <div class="versions">
-            <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions." + filters.platform) }}</h3>
             <div class="max-h-40 overflow-auto">
               <VersionSelector v-model="filters.versions" :versions="versions(filters.platform)" :open="false" col />
             </div>
           </div>
-        </Card>
-        <Card accent class="min-w-300px flex flex-col gap-4">
+        </CollapsibleCard>
+        <CollapsibleCard :title="i18n.t('hangar.projectSearch.tags')" class="min-w-300px flex flex-col gap-4">
           <div class="tags">
-            <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.tags") }}</h3>
             <div class="flex flex-col gap-1">
               <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="filters.tags" :value="tag">
                 <template #label>
@@ -297,7 +312,7 @@ useSeo(
               </InputCheckbox>
             </div>
           </div>
-        </Card>
+        </CollapsibleCard>
       </div>
     </Container>
     <h2 class="text-2xl text-center font-bold mt-8">Frequently asked Questions about Hangar (FAQ)</h2>
