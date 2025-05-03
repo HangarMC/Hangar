@@ -7,5 +7,6 @@ import java.util.List;
 
 public record HealthReport(List<UnhealthyProject> staleProjects,
                            List<MissingFileCheck> missingFiles,
+                           List<UnhealthyProject> nonPublicProjects,
                            List<JobTable> erroredJobs) {
 }

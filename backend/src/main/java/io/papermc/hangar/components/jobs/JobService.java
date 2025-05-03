@@ -11,6 +11,7 @@ import io.papermc.hangar.components.jobs.model.Job;
 import io.papermc.hangar.components.jobs.model.JobException;
 import io.papermc.hangar.components.jobs.model.SendMailJob;
 import io.papermc.hangar.components.jobs.model.SendWebhookJob;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.service.internal.MailService;
 import io.papermc.hangar.util.ThreadFactory;
 import jakarta.annotation.PostConstruct;
@@ -23,6 +24,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -134,11 +136,29 @@ public class JobService extends HangarComponent {
             // scheduled repeating things
             case SCHEDULED_TASK -> {
                 final ScheduledTaskJob scheduledTaskJob = ScheduledTaskJob.loadFromTable(job);
-                this.schedulerService.runScheduledTask(scheduledTaskJob.getTaskName());
-                this.jobsDAO.retryIn(job.getId(), OffsetDateTime.now().plus(scheduledTaskJob.getInterval(), ChronoUnit.MILLIS), null, null);
+                try {
+                    this.schedulerService.runScheduledTask(scheduledTaskJob.getTaskName());
+                    this.jobsDAO.retryIn(job.getId(), OffsetDateTime.now().plus(scheduledTaskJob.getInterval(), ChronoUnit.MILLIS), null, null);
+                } catch (final Exception ex) {
+                    // scheduled tasks get special error handling
+                    this.logger.debug("scheduled job failed to process: {} {}", ex.getMessage(), job, ex);
+                    final String error = "Encountered error when processing scheduled job\n" +
+                        this.toJobString(job) +
+                        "Exception: " + ex.getClass().getName() + "\n" +
+                        this.toMessageString(ex);
+                    this.jobsDAO.retryIn(job.getId(), OffsetDateTime.now().plus(scheduledTaskJob.getInterval(), ChronoUnit.MILLIS), error, "exception");
+                }
             }
             default -> throw new JobException("Unknown job type " + job, "unknown_job_type");
         }
+    }
+
+    public void retryJob(long jobId) {
+        JobTable job = this.jobsDAO.getJob(jobId);
+        if (job == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Job not found");
+        }
+        this.jobsDAO.retryIn(jobId, OffsetDateTime.now(), null, null);
     }
 
     public static class JobAuthentication extends PreAuthenticatedAuthenticationToken {

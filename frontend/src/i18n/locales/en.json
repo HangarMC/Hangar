@@ -897,7 +897,8 @@
     "notPublicProjects": "Hidden projects",
     "noPlatform": "No platform detected",
     "missingFileProjects": "Missing File",
-    "empty": "Empty! All good!"
+    "empty": "Empty! All good!",
+    "jobRetryScheduled": "Job retry scheduled"
   },
   "reviews": {
     "headline": "{0} released {1} on ",

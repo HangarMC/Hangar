@@ -171,15 +171,17 @@ public class AdminController extends HangarComponent {
     @PermissionRequired(NamedPermission.VIEW_HEALTH)
     @GetMapping(path = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
     public HealthReport getHealthReport() {
-        if (true) {
-            //TODO health report
-            throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Health report is disabled");
-        }
-
         final List<UnhealthyProject> staleProjects = this.healthService.getStaleProjects();
         final List<MissingFileCheck> missingFiles = this.healthService.getVersionsWithMissingFiles();
+        final List<UnhealthyProject> nonPublicProjects = this.healthService.getNonPublicProjects();
         final List<JobTable> erroredJobs = this.jobService.getErroredJobs();
-        return new HealthReport(staleProjects, missingFiles, erroredJobs);
+        return new HealthReport(staleProjects, missingFiles, nonPublicProjects, erroredJobs);
+    }
+
+    @PermissionRequired(NamedPermission.VIEW_HEALTH)
+    @PostMapping(path = "/health/retry/{jobId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void retryJob(@PathVariable final long jobId) {
+        this.jobService.retryJob(jobId);
     }
 
     @ResponseStatus(HttpStatus.OK)

@@ -1863,6 +1863,7 @@ export interface HealthReport {
   erroredJobs: JobTable[];
   missingFiles: MissingFileCheck[];
   staleProjects: UnhealthyProject[];
+  nonPublicProjects: UnhealthyProject[];
 }
 
 export interface PossibleProjectOwner {
