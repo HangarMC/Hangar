@@ -1213,6 +1213,8 @@ export interface ProjectCompact {
   stats: ProjectStats;
   /** The visibility of the project */
   visibility: Visibility;
+  /** The platforms and versions the project supports */
+  supportedPlatforms: Record<string, string[]>;
 }
 
 export interface ProjectDonationSettings {
