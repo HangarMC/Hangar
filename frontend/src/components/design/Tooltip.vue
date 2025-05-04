@@ -30,13 +30,10 @@ withDefaults(
 
 .v-popper--theme-tooltip .v-popper__inner {
   max-width: 700px;
-  background-color: #464646;
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  color: #fff;
+  @apply max-w-2xl text-white bg-charcoal-500 border border-gray-700 rounded-full py-2 px-4;
 }
 
 .v-popper--theme-tooltip .v-popper__arrow-outer {
-  border-color: #464646;
+  @apply border-gray-700;
 }
 </style>
