@@ -224,7 +224,7 @@ useSeo(
         </div>
       </div>
     </Container>
-    <Container lg="flex items-start gap-6">
+    <Container lg="flex items-start gap-4">
       <!-- Projects -->
       <div class="w-full min-w-0 mb-5 flex flex-col gap-4 lg:mb-0">
         <h2 class="font-bold text-3xl">Projects</h2>
@@ -232,23 +232,32 @@ useSeo(
       </div>
       <!-- Sidebar -->
       <div class="flex flex-col gap-4">
+
         <!-- Platform Filter -->
-        <CollapsibleCard :title="i18n.t('hangar.projectSearch.platforms')" class="min-w-300px flex flex-col gap-1">
+        <CollapsibleCard class="min-w-300px flex flex-col gap-1">
+          <template #title>
+            {{ i18n.t('hangar.projectSearch.platforms') }}
+            <Transition name="collapse">
+              <div v-if="!platform" class="flex items-center justify-between w-full h-full">
+                <span />
+                <Tooltip>
+                  <span
+                    v-if="filters.platform"
+                    class="flex items-center rounded-full border border-transparent py-1 transition-all duration-250
+                            hover:bg-red-900 hover:scale-[1.015]"
+                    cursor="pointer"
+                    @click="filters.platform = undefined"
+                  >
+                    <IconMdiBroom class="text-sm mx-2" />
+                  </span>
+                  <template #content>
+                    {{ i18n.t('hangar.projectSearch.clear') }}
+                  </template>
+                </Tooltip>
+              </div>
+            </Transition>
+          </template>
           <div class="flex flex-col">
-            <!-- <div v-if="!platform" class="platforms">
-              <h3 class="font-semibold text-xl">
-                {{ i18n.t("hangar.projectSearch.platforms") }}
-                <span
-                  v-if="filters.platform"
-                  class="font-normal text-sm hover:(underline) text-gray-600 dark:text-gray-400"
-                  cursor="pointer"
-                  @click="filters.platform = undefined"
-                >
-                  {{ i18n.t("hangar.projectSearch.clear") }}
-                </span>
-              </h3>
-            </div>
-            -->
             <ul>
               <li v-for="visiblePlatform in useVisiblePlatforms" :key="visiblePlatform.enumName" class="inline-flex w-full mt-1">
                 <InputRadio
@@ -261,56 +270,89 @@ useSeo(
                 </InputRadio>
               </li>
             </ul>
-            <div v-if="!platform" class="platforms">
-              <div v-if="filters.platform" class="border-t-1 border-gray-800 mt-2 pt-2"></div>
-              <Transition name="collapse">
-                <span
-                  v-if="filters.platform"
-                  class="flex items-center rounded-full border w-full border-transparent py-1.5 transition-all duration-250
-                          hover:bg-red-900 hover:scale-[1.015]"
-                  cursor="pointer"
-                  @click="filters.platform = undefined"
-                >
-                  <IconMdiDelete class="ml-3 mr-1" />
-                  <span class="ml-1">{{ i18n.t("hangar.projectSearch.clear") }}</span>
-                </span>
-              </Transition>
-            </div>
           </div>
         </CollapsibleCard>
+
+        <!-- Version Filter -->
         <CollapsibleCard v-if="filters.platform" class="min-w-300px flex flex-col gap-1" :title="i18n.t('hangar.projectSearch.versions.' + filters.platform)">
           <div class="versions">
             <div class="max-h-40 overflow-auto">
-              <VersionSelector v-model="filters.versions" :versions="versions(filters.platform)" :open="false" col />
+              <VersionSelector v-model="filters.versions" :show-all="true" :versions="versions(filters.platform)" :open="false" col />
             </div>
           </div>
         </CollapsibleCard>
-        <CollapsibleCard :title="i18n.t('hangar.projectSearch.tags')" class="min-w-300px flex flex-col gap-4">
-          <div class="tags">
-            <div class="flex flex-col gap-1">
-              <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="filters.tags" :value="tag">
-                <template #label>
-                  <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
-                  <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
-                  <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
-                  <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
-                </template>
-              </InputCheckbox>
-            </div>
+
+        <!-- Tags Filter -->
+        <CollapsibleCard class="min-w-300px flex flex-col gap-1">
+          <template #title>
+            {{ i18n.t('hangar.projectSearch.tags') }}
+            <Transition name="collapse">
+              <div v-if="filters.tags.length > 0" class="flex items-center justify-between w-full h-full">
+                <span />
+                <Tooltip>
+                  <span
+                    v-if="filters.tags"
+                    class="flex items-center rounded-full border border-transparent py-1 transition-all duration-250
+                            hover:bg-red-900 hover:scale-[1.015]"
+                    cursor="pointer"
+                    @click="filters.tags = []"
+                  >
+                    <IconMdiBroom class="text-sm mx-2" />
+                  </span>
+                  <template #content>
+                    {{ i18n.t('hangar.projectSearch.clear') }}
+                  </template>
+                </Tooltip>
+              </div>
+            </Transition>
+          </template>
+          <div class="flex flex-col gap-1 mt-1">
+            <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="filters.tags" :value="tag">
+              <template #label>
+                <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" class="ml-3 mr-1"/>
+                <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" class="ml-3 mr-1"/>
+                <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" class="ml-3 mr-1"/>
+                <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
+              </template>
+            </InputCheckbox>
           </div>
-          <div class="categories">
-            <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.categories") }}</h3>
-            <div class="flex flex-col gap-1">
-              <InputCheckbox
-                v-for="category in useVisibleCategories"
-                :key="category.apiName"
-                v-model="filters.categories"
-                :value="category.apiName"
-                :label="i18n.t(category.title)"
-              >
-                <CategoryLogo :category="category.apiName as Category" :size="22" class="mr-1" />
-              </InputCheckbox>
-            </div>
+        </CollapsibleCard>
+
+        <!-- Categories Filter -->
+        <CollapsibleCard class="min-w-300px flex flex-col gap-1">
+          <template #title>
+            {{ i18n.t("hangar.projectSearch.categories") }}
+            <Transition name="collapse">
+              <div v-if="filters.categories.length > 0" class="flex items-center justify-between w-full h-full">
+                <span />
+                <Tooltip>
+                  <span
+                    v-if="filters.tags"
+                    class="flex items-center rounded-full border border-transparent py-1 transition-all duration-250
+                            hover:bg-red-900 hover:scale-[1.015]"
+                    cursor="pointer"
+                    @click="filters.categories = []"
+                  >
+                    <IconMdiBroom class="text-sm mx-2" />
+                  </span>
+                  <template #content>
+                    {{ i18n.t('hangar.projectSearch.clear') }}
+                  </template>
+                </Tooltip>
+              </div>
+            </Transition>
+          </template>
+          <div class="flex flex-col gap-1 mt-1">
+            <InputCheckbox
+              v-for="category in useVisibleCategories"
+              :key="category.apiName"
+              v-model="filters.categories"
+              class=""
+              :value="category.apiName"
+              :label="i18n.t(category.title)"
+            >
+              <CategoryLogo :category="category.apiName as Category" :size="22" class="ml-3 mr-1" />
+            </InputCheckbox>
           </div>
         </CollapsibleCard>
       </div>
