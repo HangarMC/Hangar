@@ -28,6 +28,7 @@
   "dependencies": {
     "@github/webauthn-json": "2.1.1",
     "@headlessui/vue": "1.7.23",
+    "@nuxt/fonts": "0.11.2",
     "@nuxt/scripts": "0.12.1",
     "@pinia/nuxt": "0.11.2",
     "@vuelidate/core": "2.0.3",
