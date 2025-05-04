@@ -50,7 +50,7 @@
       "status": "Status"
     },
     "projectSearch": {
-      "clear": "Clear All",
+      "clear": "Clear",
       "query": "Search in {0} projects...",
       "sortBy": "Sort by",
       "noProjects": "There are no projects. 😢",
