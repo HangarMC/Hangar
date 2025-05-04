@@ -1,12 +1,10 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import Card from './Card.vue';
-import { Tag } from "~/types/backend";
 
 // Props passthrough
 const props = withDefaults(
   defineProps<{
-    title: string;
     accent?: boolean;
     alternateBackground?: boolean;
     initiallyOpen?: boolean;
@@ -36,7 +34,7 @@ const hasSlotContent = (slot: any) => !!slot && slot().length > 0;
         class="cursor-pointer flex items-center justify-between"
         @click="toggle"
       >
-        <slot name="header" /> {{ props.title }}
+        <slot name="title" />
         <span class="ml-2 text-sm text-gray-400">
           <IconMdiChevronDown v-if="isOpen" class="text-xl text-white"/>
           <IconMdiChevronUp v-else class="text-xl text-white"/>
