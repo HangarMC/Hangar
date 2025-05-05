@@ -18,7 +18,7 @@ const clazz = computed(() => {
     "dark:border-gray-800": true,
     "!border-top-primary": props.accent,
     "rounded-xl": true,
-    "px-3.5 py-2.5": true,
+    "p-3.5": true,
   };
 });
 </script>
