@@ -32,7 +32,7 @@ const hasSlotContent = (slot: any) => !!slot && slot().length > 0;
     <template #header>
       <div class="flex items-center justify-between">
         <slot name="title" />
-        <span
+        <button
           class="cursor-pointer flex items-center justify-between"
           @click="toggle"
         >
@@ -40,7 +40,7 @@ const hasSlotContent = (slot: any) => !!slot && slot().length > 0;
           <IconMdiChevronDown v-if="isOpen" class="text-xl text-white"/>
           <IconMdiChevronUp v-else class="text-xl text-white"/>
         </span>
-      </span>
+      </button>
       </div>
     </template>
 

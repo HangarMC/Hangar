@@ -241,7 +241,7 @@ useSeo(
               <div v-if="!platform" class="flex items-center justify-between w-full h-full">
                 <span />
                 <Tooltip>
-                  <span
+                  <button
                     v-if="filters.platform"
                     class="flex items-center rounded-full border border-transparent p-1 transition-all duration-250
                             hover:bg-red-900 hover:scale-[1.015]"
@@ -249,7 +249,7 @@ useSeo(
                     @click="filters.platform = undefined"
                   >
                     <IconMdiBroom class="text-sm" />
-                  </span>
+                  </button>
                   <template #content>
                     {{ i18n.t('hangar.projectSearch.clear') }}
                   </template>
@@ -293,7 +293,7 @@ useSeo(
               <div v-if="filters.tags.length > 0" class="flex items-center justify-between w-full h-full">
                 <span />
                 <Tooltip>
-                  <span
+                  <button
                     v-if="filters.tags"
                     class="flex items-center rounded-full border border-transparent py-1 px-1 transition-all duration-250
                             hover:bg-red-900 hover:scale-[1.015]"
@@ -301,7 +301,7 @@ useSeo(
                     @click="filters.tags = []"
                   >
                     <IconMdiBroom class="text-sm" />
-                  </span>
+                  </button>
                   <template #content>
                     {{ i18n.t('hangar.projectSearch.clear') }}
                   </template>
@@ -329,7 +329,7 @@ useSeo(
               <div v-if="filters.categories.length > 0" class="flex items-center justify-between w-full h-full">
                 <span />
                 <Tooltip>
-                  <span
+                  <button
                     v-if="filters.tags"
                     class="text-sm flex items-center rounded-full border border-transparent p-1 transition-all duration-250
                             hover:bg-red-900 hover:scale-[1.015]"
@@ -337,7 +337,7 @@ useSeo(
                     @click="filters.categories = []"
                   >
                     <IconMdiBroom class="text-sm" />
-                  </span>
+                  </button>
                   <template #content>
                     {{ i18n.t('hangar.projectSearch.clear') }}
                   </template>
