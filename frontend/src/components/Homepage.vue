@@ -243,12 +243,12 @@ useSeo(
                 <Tooltip>
                   <span
                     v-if="filters.platform"
-                    class="flex items-center rounded-full border border-transparent py-1 transition-all duration-250
+                    class="flex items-center rounded-full border border-transparent p-1 transition-all duration-250
                             hover:bg-red-900 hover:scale-[1.015]"
                     cursor="pointer"
                     @click="filters.platform = undefined"
                   >
-                    <IconMdiBroom class="text-sm mx-2" />
+                    <IconMdiBroom class="text-sm" />
                   </span>
                   <template #content>
                     {{ i18n.t('hangar.projectSearch.clear') }}
@@ -274,13 +274,16 @@ useSeo(
         </CollapsibleCard>
 
         <!-- Version Filter -->
-        <CollapsibleCard v-if="filters.platform" class="min-w-300px flex flex-col gap-1" :title="i18n.t('hangar.projectSearch.versions.' + filters.platform)">
-          <div class="versions">
-            <div class="max-h-40 overflow-auto">
-              <VersionSelector v-model="filters.versions" :show-all="true" :versions="versions(filters.platform)" :open="false" col />
-            </div>
-          </div>
-        </CollapsibleCard>
+        <Transition name="collapse">
+          <CollapsibleCard v-if="filters.platform" class="min-w-300px flex flex-col gap-1" :title="i18n.t('hangar.projectSearch.versions.' + filters.platform)">
+              <div class="versions">
+                <div class="max-h-40 overflow-auto">
+                  <VersionSelector v-model="filters.versions" :show-all="true" :versions="versions(filters.platform)" :open="false" col />
+                </div>
+              </div>
+
+          </CollapsibleCard>
+        </Transition>
 
         <!-- Tags Filter -->
         <CollapsibleCard class="min-w-300px flex flex-col gap-1">
@@ -292,12 +295,12 @@ useSeo(
                 <Tooltip>
                   <span
                     v-if="filters.tags"
-                    class="flex items-center rounded-full border border-transparent py-1 transition-all duration-250
+                    class="flex items-center rounded-full border border-transparent py-1 px-1 transition-all duration-250
                             hover:bg-red-900 hover:scale-[1.015]"
                     cursor="pointer"
                     @click="filters.tags = []"
                   >
-                    <IconMdiBroom class="text-sm mx-2" />
+                    <IconMdiBroom class="text-sm" />
                   </span>
                   <template #content>
                     {{ i18n.t('hangar.projectSearch.clear') }}
@@ -328,12 +331,12 @@ useSeo(
                 <Tooltip>
                   <span
                     v-if="filters.tags"
-                    class="flex items-center rounded-full border border-transparent py-1 transition-all duration-250
+                    class="text-sm flex items-center rounded-full border border-transparent p-1 transition-all duration-250
                             hover:bg-red-900 hover:scale-[1.015]"
                     cursor="pointer"
                     @click="filters.categories = []"
                   >
-                    <IconMdiBroom class="text-sm mx-2" />
+                    <IconMdiBroom class="text-sm" />
                   </span>
                   <template #content>
                     {{ i18n.t('hangar.projectSearch.clear') }}

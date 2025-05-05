@@ -30,15 +30,17 @@ const hasSlotContent = (slot: any) => !!slot && slot().length > 0;
   <Card :accent="props.accent" :alternate-background="props.alternateBackground">
     <!-- Header Slot -->
     <template #header>
-      <div
-        class="cursor-pointer flex items-center justify-between"
-        @click="toggle"
-      >
+      <div class="flex items-center justify-between">
         <slot name="title" />
-        <span class="ml-2 text-sm text-gray-400">
+        <span
+          class="cursor-pointer flex items-center justify-between"
+          @click="toggle"
+        >
+        <span class="ml-1 text-sm text-gray-400 hover:bg-gray-700 p-0.5 rounded-full">
           <IconMdiChevronDown v-if="isOpen" class="text-xl text-white"/>
           <IconMdiChevronUp v-else class="text-xl text-white"/>
         </span>
+      </span>
       </div>
     </template>
 
