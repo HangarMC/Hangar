@@ -40,7 +40,6 @@ function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
     >
       <slot class="outline-none flex-grow bg-transparent w-full py-0.5" />
       <span class="flex pl-2 self-center">
-        <span v-if="loading" class="w-[24px] h-[24px]"><Spinner class="stroke-gray-400" /></span>
         <span v-if="counter && maxlength" class="inline-flex items-center ml-2">{{ value?.length || 0 }}/{{ maxlength }}</span>
         <span v-else-if="counter">{{ value?.length || 0 }}</span>
         <slot name="append" />
