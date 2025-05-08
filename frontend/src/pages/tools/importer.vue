@@ -340,8 +340,7 @@ useSeo(computed(() => ({ title: t("importer.title"), route })));
         <div class="flex flex-col">
           <div v-for="s in status" :key="s.project.name" class="text-center mb-2">
             <div class="text-xl font-bold">{{ s.project.name }}</div>
-            <div v-if="s.loading"><Spinner class="stroke-red-500" :diameter="20" :stroke="2" /></div>
-            <template v-else-if="s.errors && s.errors.length > 0">
+            <template v-if="s.errors && s.errors.length > 0">
               <div>
                 {{ t("project.new.error.create") }}
                 {{ s.errors }}

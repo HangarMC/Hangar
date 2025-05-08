@@ -62,6 +62,5 @@ const classes = computed<string>(() => {
     @click="$emit('click', $event)"
   >
     <slot />
-    <span v-if="loading" class="pl-1"><Spinner class="stroke-gray-400" :diameter="1" :stroke="0.01" unit="rem" /></span>
   </component>
 </template>

@@ -10,3 +10,4 @@ src/types/generated/
 .output
 tsconfig.tsbuildinfo
 .unlighthouse
+.data
