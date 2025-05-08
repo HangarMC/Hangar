@@ -73,7 +73,8 @@ public class MeiliService extends HangarComponent implements ApplicationListener
             "searchableAttributes", List.of("name", "namespace.owner", "description", "category", "mainPageContent", "memberNames", "createdAt", "lastUpdated", "stats", "settings.keywords", "settings.tags"),
             "displayedAttributes", List.of("*"),
             "filterableAttributes", List.of("category", "settings.tags", "namespace.owner", "createdAt", "lastUpdated", "settings.license.type", "supportedPlatforms", "memberNames", "visibility"),
-            "sortableAttributes", List.of("stats.views", "stats.downloads", "stats.recentDownloads", "stats.recentViews", "stats.stars", "createdAt", "lastUpdated", "name")
+            "sortableAttributes", List.of("stats.views", "stats.downloads", "stats.recentDownloads", "stats.recentViews", "stats.stars", "createdAt", "lastUpdated", "name"),
+            "pagination", Map.of("maxTotalHits", 5000)
         );
         waitForTask(restClient.patch().uri("/indexes/" + this.config.meili().prefix() + PROJECT_INDEX + suffix + "/settings").contentType(MediaType.APPLICATION_JSON).body(settings).retrieve().toEntity(Task.class));
     }
@@ -89,7 +90,8 @@ public class MeiliService extends HangarComponent implements ApplicationListener
             "searchableAttributes", List.of("name", "description", "author", "platformDependencies", "channel.name", "projectId"),
             "displayedAttributes", List.of("*"),
             "filterableAttributes", List.of("platformDependencies", "channel.name", "projectId", "visibility", "memberNames"),
-            "sortableAttributes", List.of("createdAt")
+            "sortableAttributes", List.of("createdAt"),
+            "pagination", Map.of("maxTotalHits", 5000)
         );
         waitForTask(restClient.patch().uri("/indexes/" + this.config.meili().prefix() + VERSION_INDEX + suffix + "/settings").contentType(MediaType.APPLICATION_JSON).body(settings).retrieve().toEntity(Task.class));
     }
