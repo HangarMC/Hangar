@@ -1,19 +1,6 @@
 import type { AxiosRequestConfig, AxiosResponse } from "axios";
 import axios from "axios";
-import NProgress from "nprogress";
 import type { NuxtApp } from "nuxt/app";
-
-let progressBarTimeout: any;
-
-const startProgressBar = () => {
-  clearTimeout(progressBarTimeout);
-  progressBarTimeout = setTimeout(NProgress.start, 400);
-};
-
-const stopProgressBar = () => {
-  clearTimeout(progressBarTimeout);
-  NProgress.done();
-};
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();
@@ -32,8 +19,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       // forward other headers for ssr
       if (import.meta.server) forwardRequestHeaders(config, nuxtApp as NuxtApp);
       // axiosLog("calling with headers", config.headers);
-      // Progress bar
-      if (import.meta.client) startProgressBar();
       return config;
     },
     (error) => {
@@ -45,8 +30,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     (res) => {
       // forward cookies and stuff to browser
       forwardResponseHeaders(res, nuxtApp as NuxtApp);
-      // Progress bar
-      if (import.meta.client) stopProgressBar();
       return res;
     },
     async (err) => {
@@ -70,9 +53,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       } else {
         axiosLog("got error", transformAxiosError(err));
       }
-
-      // Progress bar
-      if (import.meta.client) stopProgressBar();
 
       throw err;
     }
