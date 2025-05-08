@@ -1,7 +1,6 @@
 @import "reset.css";
 @import "color.css";
 @import "scrollbar.css";
-@import "loader.css";
 @import "transitions.css";
 
 html {
@@ -11,8 +10,4 @@ html {
 
 .w-fit {
   width: fit-content;
-}
-
-.test {
-  background: linear-gradient(135deg, hsl(0, 0, 0, 0) 60%, #004EE9);
 }
