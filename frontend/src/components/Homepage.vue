@@ -246,8 +246,10 @@ useSeo(
                     class="flex items-center rounded-full border border-transparent p-1 transition-all duration-250
                             hover:bg-red-900 hover:scale-[1.015]"
                     cursor="pointer"
-                    @click="filters.platform = undefined"
-                  >
+                    @click="() => {
+                      filters.platform = undefined;
+                      filters.versions = [];
+                    }">
                     <IconMdiBroom class="text-sm" />
                   </button>
                   <template #content>
@@ -276,12 +278,12 @@ useSeo(
         <!-- Version Filter -->
         <Transition name="collapse">
           <CollapsibleCard v-if="filters.platform" class="min-w-300px flex flex-col gap-1" :title="i18n.t('hangar.projectSearch.versions.' + filters.platform)">
-              <div class="versions">
-                <div class="max-h-40 overflow-auto">
-                  <VersionSelector v-model="filters.versions" :show-all="true" :versions="versions(filters.platform)" :open="false" col />
-                </div>
+            <template #title>
+              {{ i18n.t("hangar.projectSearch.versions." + filters.platform) }}
+            </template>
+              <div class="max-h-40 -px-1 overflow-y-auto overflow-x-hidden">
+                <VersionSelector v-model="filters.versions" :show-all="true" :versions="versions(filters.platform)" :open="false" col />
               </div>
-
           </CollapsibleCard>
         </Transition>
 
