@@ -11,7 +11,3 @@ html {
 .w-fit {
   width: fit-content;
 }
-
-.test {
-  background: linear-gradient(135deg, hsl(0, 0, 0, 0) 60%, #004EE9);
-}
