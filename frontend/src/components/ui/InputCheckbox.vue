@@ -18,13 +18,14 @@ const { v } = useValidation(props.label, undefined, internalVal);
 </script>
 
 <template>
-  <label class="w-full flex items-center select-none" :cursor="disabled ? 'auto' : 'pointer'">
+  <label class="w-full flex items-center select-none" :class="{
+           'cursor-pointer': !disabled,
+         }">
     <input
       v-model="internalVal"
       v-bind="$attrs"
       type="checkbox"
       class="appearance-none peer"
-      :cursor="disabled ? 'auto' : 'pointer'"
       :disabled="disabled"
       :value="value"
       @blur="v.$touch()"
@@ -35,7 +36,7 @@ const { v } = useValidation(props.label, undefined, internalVal);
     >
       <slot />
       <slot name="label">
-        <span v-if="props.label" class="ml-1">{{ props.label }}</span>
+        <span v-if="props.label" class="ml-4">{{ props.label }}</span>
       </slot>
     </span>
   </label>
