@@ -52,9 +52,13 @@
     "projectSearch": {
       "clear": "Clear",
       "query": "Search in {0} projects...",
+      "searchVersion": "Search a version...",
+      "searchCategory": "Search a category...",
       "sortBy": "Sort by",
       "noProjects": "There are no projects. 😢",
       "noProjectsFound": "Found 0 projects. 😢",
+      "noVersions": "No version found.",
+      "noCategories": "No category found.",
       "categories": "Categories",
       "licenses": "Licenses",
       "versions": {
