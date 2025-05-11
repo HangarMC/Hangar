@@ -36,7 +36,7 @@ const hasSlotContent = (slot: any) => !!slot && slot().length > 0;
           class="cursor-pointer flex items-center justify-between"
           @click="toggle"
         >
-        <span class="ml-1 text-sm text-gray-400 hover:bg-gray-700 p-0.5 rounded-full">
+        <span class="ml-1 text-sm text-gray-400 hover:bg-gray-700 p-0.5 rounded-full transition-all duration-250 hover:scale-[1.015]">
           <IconMdiChevronDown v-if="isOpen" class="text-xl text-white"/>
           <IconMdiChevronUp v-else class="text-xl text-white"/>
         </span>
