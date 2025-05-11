@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
+import type { Category, PlatformVersion } from "~/types/backend";
 import { Platform, Tag } from "~/types/backend";
-import type { PlatformVersion, Category } from "~/types/backend";
 import CollapsibleCard from "~/components/design/CollapsibleCard.vue";
 
 const props = defineProps<{
@@ -23,6 +23,7 @@ const sorters = [
 ];
 
 const toArray = (input: (string | null)[] | string | null): string[] => (Array.isArray(input) ? (input as string[]) : (input ? [input!] : []));
+const showAllVersions = ref(false);
 const filters = ref({
   versions: toArray(route.query.version),
   categories: toArray(route.query.category),
@@ -53,6 +54,7 @@ const requestParams = computed(() => {
   }
   if (activeSorter.value) {
     params.sort = activeSorter.value;
+    params.limit = 20;
   }
 
   return params;
@@ -84,10 +86,10 @@ function versions(platform: Platform): PlatformVersion[] {
 function updatePlatform(platform: any) {
   filters.value.platform = platform;
 
-  const allowedVersion = versions(platform);
-  filters.value.versions = filters.value.versions.filter((existingVersion) => {
-    return allowedVersion.find((allowedNewVersion) => allowedNewVersion.version === existingVersion);
-  });
+  const allowedVersions = versions(platform);
+  filters.value.versions = filters.value.versions.filter((existingVersion) =>
+    allowedVersions.some((allowedVersion) => allowedVersion.version === existingVersion)
+  );
 }
 
 const config = useRuntimeConfig();
@@ -118,6 +120,15 @@ useSeo(
     manualTitle: true,
   }))
 );
+
+const versionSearch = ref('');
+
+const categorySearch = ref('');
+const filteredCategories = computed(() => {
+  return useVisibleCategories.value.filter((category) =>
+    category.title.toLowerCase().includes(categorySearch.value.toLowerCase())
+  );
+});
 </script>
 
 <template>
@@ -279,11 +290,57 @@ useSeo(
         <Transition name="collapse">
           <CollapsibleCard v-if="filters.platform" class="min-w-300px flex flex-col gap-1" :title="i18n.t('hangar.projectSearch.versions.' + filters.platform)">
             <template #title>
-              {{ i18n.t("hangar.projectSearch.versions." + filters.platform) }}
+              <span  class="text-nowrap">{{ i18n.t("hangar.projectSearch.versions." + filters.platform) }}</span>
+              <Transition name="collapse">
+                <div v-if="filters.versions.length > 0" class="flex items-center justify-between w-full h-full">
+                  <span />
+                  <Tooltip>
+                    <button
+                      v-if="filters.versions"
+                      class="flex items-center rounded-full border border-transparent py-1 px-1 transition-all duration-250
+                            hover:bg-red-900 hover:scale-[1.015]"
+                      cursor="pointer"
+                      @click="() => {
+                        filters.versions = [];
+                        versionSearch = '';
+                      }"
+                    >
+                      <IconMdiBroom class="text-sm" />
+                    </button>
+                    <template #content>
+                      {{ i18n.t('hangar.projectSearch.clear') }}
+                    </template>
+                  </Tooltip>
+                </div>
+              </Transition>
             </template>
-              <div class="max-h-40 -px-1 overflow-y-auto overflow-x-hidden">
-                <VersionSelector v-model="filters.versions" :show-all="true" :versions="versions(filters.platform)" :open="false" col />
+            <!-- Version Search -->
+            <input
+              v-model="versionSearch"
+              name="versionSearch"
+              class="rounded-full px-3 py-2 w-full dark:bg-gray-700 my-1 hover:scale-[1.015] transition-all duration-250"
+              type="text"
+              :placeholder="i18n.t('hangar.projectSearch.searchVersion')"
+            />
+            <div class="relative">
+              <div class="h-40 -px-1 overflow-y-auto overflow-x-hidden">
+                <VersionSelector v-model="filters.versions" :version-search-query="versionSearch" :show-all-versions="showAllVersions" :versions="versions(filters.platform)" :open="false" col />
               </div>
+              <!-- Gradient Overlay -->
+              <div class="absolute inset-x-0 bottom-0 w-full h-8
+                bg-gradient-to-b from-transparent to-charcoal-600
+                pointer-events-none" />
+              <div class="absolute inset-x-0 top-0 w-full h-3
+                bg-gradient-to-b to-transparent from-charcoal-600
+                pointer-events-none" />
+            </div>
+            <Transition name="collapse">
+              <div v-if="filters.platform === Platform.PAPER" class="mt-2 pt-2 border-t border-gray-800">
+                <InputCheckbox v-model:model-value="showAllVersions">
+                  <span class="ml-4">{{ i18n.t("hangar.projectSearch.showAllVersions") }}</span>
+                </InputCheckbox>
+              </div>
+            </Transition>
           </CollapsibleCard>
         </Transition>
 
@@ -347,18 +404,41 @@ useSeo(
               </div>
             </Transition>
           </template>
-          <div class="flex flex-col gap-1 mt-1">
-            <InputCheckbox
-              v-for="category in useVisibleCategories"
-              :key="category.apiName"
-              v-model="filters.categories"
-              class=""
-              :value="category.apiName"
-              :label="i18n.t(category.title)"
-            >
-              <CategoryLogo :category="category.apiName as Category" :size="22" class="ml-3 mr-1" />
-            </InputCheckbox>
+          <!-- Category Search -->
+          <input
+            v-model="categorySearch"
+            name="categorySearch"
+            class="rounded-full px-3 py-2 w-full dark:bg-gray-700 my-1 hover:scale-[1.015] transition-all duration-250"
+            type="text"
+            :placeholder="i18n.t('hangar.projectSearch.searchCategory')"
+          />
+          <div class="relative h-60 flex flex-col">
+            <template v-if="filteredCategories.length === 0">
+              <span class="text-center text-gray-400 my-auto">{{ i18n.t("hangar.projectSearch.noCategories") }}</span>
+            </template>
+            <div v-else class="flex flex-col gap-1 mt-1 h-60 -px-1 overflow-y-auto overflow-x-hidden pt-2 pb-3">
+              <template v-for="category in filteredCategories" :key="category.apiName">
+                <div class="mr-4 ml-1">
+                  <InputCheckbox
+                    v-model="filters.categories"
+                    :value="category.apiName"
+                    :label="i18n.t(category.title)"
+                  >
+                    <CategoryLogo :category="category.apiName as Category" :size="22" class="ml-3 mr-1" />
+                  </InputCheckbox>
+                </div>
+              </template>
+
+            </div>
+            <!-- Gradient Overlay -->
+            <div class="absolute inset-x-0 bottom-0 w-full h-8
+                bg-gradient-to-b from-transparent to-charcoal-600
+                pointer-events-none" />
+            <div class="absolute inset-x-0 top-0 w-full h-3
+                bg-gradient-to-b to-transparent from-charcoal-600
+                pointer-events-none" />
           </div>
+
         </CollapsibleCard>
       </div>
     </Container>
