@@ -62,6 +62,7 @@
         "WATERFALL": "Waterfall versions",
         "VELOCITY": "Velocity versions"
       },
+      "showAllVersions": "Show all versions",
       "platforms": "Platforms",
       "tags": "Tags"
     },
