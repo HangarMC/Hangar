@@ -405,13 +405,16 @@ const filteredCategories = computed(() => {
             </Transition>
           </template>
           <!-- Category Search -->
-          <input
-            v-model="categorySearch"
-            name="categorySearch"
-            class="rounded-full px-3 py-2 w-full dark:bg-gray-700 my-1 hover:scale-[1.015] transition-all duration-250"
-            type="text"
-            :placeholder="i18n.t('hangar.projectSearch.searchCategory')"
-          />
+          <div class="relative">
+            <input
+              v-model="categorySearch"
+              name="categorySearch"
+              class="rounded-full px-3 py-2 w-full dark:bg-gray-700 my-1 hover:scale-[1.015] transition-all duration-250"
+              type="text"
+              :placeholder="i18n.t('hangar.projectSearch.searchCategory')"
+            />
+            <IconMdiMagnify class="absolute"/>
+          </div>
           <div class="relative h-60 flex flex-col">
             <template v-if="filteredCategories.length === 0">
               <span class="text-center text-gray-400 my-auto">{{ i18n.t("hangar.projectSearch.noCategories") }}</span>
