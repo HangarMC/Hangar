@@ -315,13 +315,19 @@ const filteredCategories = computed(() => {
               </Transition>
             </template>
             <!-- Version Search -->
-            <input
-              v-model="versionSearch"
-              name="versionSearch"
-              class="rounded-full px-3 py-2 w-full dark:bg-gray-700 my-1 hover:scale-[1.015] transition-all duration-250"
-              type="text"
-              :placeholder="i18n.t('hangar.projectSearch.searchVersion')"
-            />
+            <div class="relative hover:scale-[1.015] transition-all duration-250">
+              <input
+                v-model="versionSearch"
+                name="versionSearch"
+                class="rounded-full px-9 py-2 w-full dark:bg-gray-700 my-1"
+                type="text"
+                :placeholder="i18n.t('hangar.projectSearch.searchVersion')"
+              />
+              <IconMdiMagnify class="absolute top-3.75 left-3 text-gray-500" />
+              <button v-if="versionSearch.length > 0" class="transition-all duration-250" @click="versionSearch = ''">
+                <IconMdiClose class="absolute top-3.75 right-3 text-gray-500 hover:text-white" />
+              </button>
+            </div>
             <div class="relative">
               <div class="h-40 -px-1 overflow-y-auto overflow-x-hidden">
                 <VersionSelector v-model="filters.versions" :version-search-query="versionSearch" :show-all-versions="showAllVersions" :versions="versions(filters.platform)" :open="false" col />
@@ -405,15 +411,18 @@ const filteredCategories = computed(() => {
             </Transition>
           </template>
           <!-- Category Search -->
-          <div class="relative">
+          <div class="relative hover:scale-[1.015] transition-all duration-250">
             <input
               v-model="categorySearch"
               name="categorySearch"
-              class="rounded-full px-3 py-2 w-full dark:bg-gray-700 my-1 hover:scale-[1.015] transition-all duration-250"
+              class="rounded-full px-9 py-2 w-full dark:bg-gray-700 my-1"
               type="text"
               :placeholder="i18n.t('hangar.projectSearch.searchCategory')"
             />
-            <IconMdiMagnify class="absolute"/>
+            <IconMdiMagnify class="absolute top-3.75 left-3 text-gray-500" />
+            <button v-if="categorySearch.length > 0" class="transition-all duration-250" @click="categorySearch = ''">
+              <IconMdiClose class="absolute top-3.75 right-3 text-gray-500 hover:text-white" />
+            </button>
           </div>
           <div class="relative h-60 flex flex-col">
             <template v-if="filteredCategories.length === 0">
