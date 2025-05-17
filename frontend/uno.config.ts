@@ -26,7 +26,7 @@ export default defineConfig({
     "shadow-default": "shadow-lg shadow-gray-300 dark:shadow-gray-900",
     "color-primary": "text-primary-500 dark:text-primary-300",
     "border-top-primary": "border-solid border-t-4 border-t-primary-500",
-    "button-primary": "bg-primary-500 enabled:hover:bg-primary-400",
+    "button-primary": "bg-primary-500 enabled:hover:bg-gray-700",
     "button-secondary": "bg-secondary-500 enabled:hover:(bg-secondary-400 dark:bg-secondary-600)",
     "button-transparent": "bg-transparent enabled:hover:(bg-primary-500/15 text-primary-500 dark:text-primary-200)",
     "button-red": "bg-red-500 dark:bg-red-600 enabled:hover:(bg-red-400 dark:bg-red-500)",

@@ -40,10 +40,10 @@ const classes = computed<string>(() => {
   const button = " button-" + props.buttonType;
   const loading = props.loading ? " !cursor-wait" : " cursor-pointer";
   return (
-    "rounded-md font-semibold h-min inline-flex items-center justify-center " +
+    "rounded-full font-semibold inline-flex items-center justify-center border-1 border-gray-800 hover:scale-[1.075] transition-all duration-250" +
     (props.buttonType === "transparent"
       ? "text-black dark:text-white disabled:cursor-not-allowed disabled:text-gray-400 "
-      : "text-white disabled:(bg-gray-300 cursor-not-allowed) disabled:dark:(text-gray-500 bg-gray-700) ") +
+      : "text-white disabled:(bg-gray-300 cursor-not-allowed) disabled:dark:(text-gray-500 bg-charcoal-600) ") +
     paddingClass.value +
     button +
     loading
