@@ -52,6 +52,7 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     "@sentry/nuxt/module",
     "@nuxtjs/turnstile",
+    '@nuxt/fonts',
     "floating-vue/nuxt",
     [
       "unplugin-icons/nuxt",
