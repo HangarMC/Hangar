@@ -186,42 +186,6 @@ const filteredCategories = computed(() => {
           :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
           v-on="useTracking('homepage-search', { platformName })"
         />
-        <div class="md:hidden flex">
-          <Menu as="div">
-            <MenuButton
-              id="sort-button"
-              class="bg-gradient-to-r from-primary-500 to-primary-400 rounded-r-md text-left font-semibold flex items-center gap-2 text-white p-2 h-full"
-            >
-              <span class="whitespace-nowrap">{{ i18n.t("hangar.projectSearch.sortBy") }}</span>
-              <icon-mdi-sort-variant class="text-xl pointer-events-none" />
-            </MenuButton>
-            <transition
-              enter-active-class="transition duration-100 ease-out"
-              enter-from-class="transform scale-95 opacity-0"
-              enter-to-class="transform scale-100 opacity-100"
-              leave-active-class="transition duration-75 ease-out"
-              leave-from-class="transform scale-100 opacity-100"
-              leave-to-class="transform scale-95 opacity-0"
-            >
-              <MenuItems
-                class="absolute right-0 top-15 flex flex-col z-10 background-default filter shadow-default drop-shadow-md rounded border-top-primary border-t-3"
-              >
-                <MenuItem v-for="sorter in sorters" :key="sorter.id" v-slot="{ active }">
-                  <button
-                    :class="{
-                      'bg-gray-100 dark:bg-gray-700': active,
-                      'bg-gradient-to-r from-primary-500 to-primary-400 text-white': activeSorter === sorter.id,
-                    }"
-                    class="px-4 py-2 text-left"
-                    @click="activeSorter = sorter.id"
-                  >
-                    {{ sorter.label }}
-                  </button>
-                </MenuItem>
-              </MenuItems>
-            </transition>
-          </Menu>
-        </div>
       </div>
       <div class="justify-center inline-flex gap-1 lt-md:hidden">
         <div v-for="sorter in sorters" :key="sorter.id">
@@ -238,7 +202,27 @@ const filteredCategories = computed(() => {
     <Container lg="flex items-start gap-4">
       <!-- Projects -->
       <div class="w-full min-w-0 mb-5 flex flex-col gap-4 lg:mb-0">
-        <h2 class="font-bold text-3xl">Projects</h2>
+        <div class="flex justify-between">
+          <h2 class="font-bold text-3xl">Projects</h2>
+          <DropdownButton :button-arrow="true" button-size="medium" button-type="secondary">
+            <template #button-label>
+              <span class="font-medium ml-2">{{ i18n.t("hangar.projectSearch.sortBy") }}</span>:&nbsp;<span>{{ sorters.find(s => s.id === activeSorter)!.label }}</span>
+            </template>
+            <template #default="{ close }">
+              <div class="w-max flex flex-col gap-1 max-h-lg max-w-lg overflow-x-auto py-1.5">
+                <!-- eslint-disable vue/no-v-html -->
+                <a
+                  v-for="sorter in sorters"
+                  :key="sorter.id"
+                  class="mx-2 px-4 py-1.5 font-semibold hover:bg-gray-100 hover:dark:bg-gray-700 rounded-full cursor-pointer decoration-none transition-all duration-250 hover:scale-[1.01]"
+                  @click="() => { activeSorter = sorter.id; close(); }"
+                  v-html="sorter.label"
+                />
+                <!-- eslint-enable vue/no-v-html -->
+              </div>
+            </template>
+          </DropdownButton>
+        </div>
         <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage) => (page = newPage)" />
       </div>
       <!-- Sidebar -->
