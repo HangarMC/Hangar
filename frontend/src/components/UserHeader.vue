@@ -65,7 +65,7 @@ const canEditCurrentUser = computed<boolean>(() => {
           >
             <IconMdiYoutube class="mr-1 hover:text-slate-400" />
           </a>
-          <a v-if="viewingUser.socials?.website" :href="viewingUser.socials.website" class="ml-1" rel="external nofollow" title="Website Link">
+          <a v-if="viewingUser.socials?.website" :href="linkout(viewingUser.socials.website)" class="ml-1" rel="external nofollow" title="Website Link">
             <IconMdiWeb class="mr-1 hover:text-slate-400" />
           </a>
           <Tooltip v-if="viewingUser.socials?.discord">
