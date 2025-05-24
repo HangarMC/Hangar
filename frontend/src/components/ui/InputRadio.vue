@@ -27,7 +27,7 @@ const { v } = useValidation(props.label, undefined, internalVal);
     <IconMdiCheck class="absolute hidden peer-checked:block top-2.25 right-3.5 z-10" />
     <span
       class="flex items-center rounded-full border w-full border-transparent py-1.5 transition-all duration-250
-             peer-checked:bg-blue-600 peer-hover:bg-gray-700 peer-hover:scale-[1.015] z-0"
+             peer-checked:bg-primary-500 peer-hover:bg-gray-700 peer-hover:scale-[1.015] z-0"
     >
       <slot />
       <span v-if="props.label" class="ml-1">{{ props.label }}</span>
