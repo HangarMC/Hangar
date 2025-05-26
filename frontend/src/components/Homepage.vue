@@ -40,7 +40,7 @@ const page = ref(route.query.page ? Number(route.query.page) : 0);
 const query = ref<string>((route.query.query as string) || "");
 
 const requestParams = computed(() => {
-  const limit = 10;
+  const limit = 20;
   const params: ReturnType<Parameters<typeof useProjects>[0]> = {
     limit,
     offset: page.value * limit,
@@ -175,53 +175,49 @@ const filteredCategories = computed(() => {
           </Button>
         </div>
       </div>
-      <!-- Search Bar -->
-      <div class="relative rounded-md flex shadow-md w-full max-w-screen-md">
-        <!-- Text Input -->
-        <input
-          v-model="query"
-          name="query"
-          class="rounded-l-md md:rounded-md p-4 basis-full min-w-0 dark:bg-gray-700"
-          type="text"
-          :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
-          v-on="useTracking('homepage-search', { platformName })"
-        />
-      </div>
-      <div class="justify-center inline-flex gap-1 lt-md:hidden">
-        <div v-for="sorter in sorters" :key="sorter.id">
-          <button
-            :class="{ 'bg-gradient-to-r from-primary-500 to-primary-400 text-white': activeSorter === sorter.id }"
-            class="rounded-lg py-2 px-4 hover:(bg-gray-300 dark:bg-gray-700)"
-            @click="activeSorter = sorter.id"
-          >
-            {{ sorter.label }}
-          </button>
-        </div>
-      </div>
     </Container>
     <Container lg="flex items-start gap-4">
       <!-- Projects -->
       <div class="w-full min-w-0 mb-5 flex flex-col gap-4 lg:mb-0">
         <div class="flex justify-between">
           <h2 class="font-bold text-3xl">Projects</h2>
-          <DropdownButton :button-arrow="true" button-size="medium" button-type="secondary">
-            <template #button-label>
-              <span class="font-medium ml-2">{{ i18n.t("hangar.projectSearch.sortBy") }}</span>:&nbsp;<span>{{ sorters.find(s => s.id === activeSorter)!.label }}</span>
-            </template>
-            <template #default="{ close }">
-              <div class="w-max flex flex-col gap-1 max-h-lg max-w-lg overflow-x-auto py-1.5">
-                <!-- eslint-disable vue/no-v-html -->
-                <a
-                  v-for="sorter in sorters"
-                  :key="sorter.id"
-                  class="mx-2 px-4 py-1.5 font-semibold hover:bg-gray-100 hover:dark:bg-gray-700 rounded-full cursor-pointer decoration-none transition-all duration-250 hover:scale-[1.01]"
-                  @click="() => { activeSorter = sorter.id; close(); }"
-                  v-html="sorter.label"
-                />
-                <!-- eslint-enable vue/no-v-html -->
-              </div>
-            </template>
-          </DropdownButton>
+          <div class="flex justify-end gap-4 w-full">
+            <!-- Search Bar -->
+            <div class="relative rounded-md flex xl:w-full h-10.5 lg:w-60 w-45 max-w-100">
+              <!-- Text Input -->
+              <input
+                v-model="query"
+                name="query"
+                class="rounded-2xl px-9 p-2 basis-full min-w-0 dark:bg-gray-800"
+                type="text"
+                :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
+                v-on="useTracking('homepage-search', { platformName })"
+              />
+              <IconMdiMagnify class="absolute top-3 left-3 text-gray-500" />
+              <button v-if="query.length > 0" class="transition-all duration-250" @click="query = ''">
+                <IconMdiClose class="absolute top-3 right-3 text-gray-500 hover:text-white" />
+              </button>
+            </div>
+            <!-- Sort by Button -->
+            <DropdownButton :button-arrow="true" button-size="medium" button-type="secondary">
+              <template #button-label>
+                <span class="font-medium ml-2">{{ i18n.t("hangar.projectSearch.sortBy") }}</span>:&nbsp;<span>{{ sorters.find(s => s.id === activeSorter)!.label }}</span>
+              </template>
+              <template #default="{ close }">
+                <div class="w-max flex flex-col gap-1 max-h-lg max-w-lg overflow-x-auto py-1.5">
+                  <!-- eslint-disable vue/no-v-html -->
+                  <a
+                    v-for="sorter in sorters"
+                    :key="sorter.id"
+                    class="mx-2 px-4 py-1.5 font-semibold hover:bg-gray-100 hover:dark:bg-gray-700 rounded-full cursor-pointer decoration-none transition-all duration-250 hover:scale-[1.01]"
+                    @click="() => { activeSorter = sorter.id; close(); }"
+                    v-html="sorter.label"
+                  />
+                  <!-- eslint-enable vue/no-v-html -->
+                </div>
+              </template>
+            </DropdownButton>
+          </div>
         </div>
         <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage) => (page = newPage)" />
       </div>
@@ -303,7 +299,7 @@ const filteredCategories = computed(() => {
               <input
                 v-model="versionSearch"
                 name="versionSearch"
-                class="rounded-full px-9 py-2 w-full dark:bg-gray-700 my-1"
+                class="rounded-full px-9 py-2 w-full dark:bg-gray-800 my-1"
                 type="text"
                 :placeholder="i18n.t('hangar.projectSearch.searchVersion')"
               />
@@ -399,7 +395,7 @@ const filteredCategories = computed(() => {
             <input
               v-model="categorySearch"
               name="categorySearch"
-              class="rounded-full px-9 py-2 w-full dark:bg-gray-700 my-1"
+              class="rounded-full px-9 py-2 w-full dark:bg-gray-800 my-1"
               type="text"
               :placeholder="i18n.t('hangar.projectSearch.searchCategory')"
             />

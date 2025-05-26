@@ -6,6 +6,7 @@ const props = withDefaults(
     buttonType?: "primary" | "red" | "transparent" | "secondary";
     buttonArrow?: boolean;
     placement?: "bottom" | "top" | "left" | "right" | "bottom-end" | "bottom-start";
+    isSortBy?: boolean;
   }>(),
   {
     name: "Dropdown",
@@ -13,6 +14,7 @@ const props = withDefaults(
     buttonType: "primary",
     buttonArrow: true,
     placement: "bottom-end",
+    isSortBy: false,
   }
 );
 </script>
@@ -20,7 +22,7 @@ const props = withDefaults(
 <template>
   <Popper :placement="placement">
     <template #default="{ shown }">
-      <Button :button-type="props.buttonType" :size="props.buttonSize">
+      <Button class="h-10.5" :class="{ 'min-w-50': props.isSortBy }" :button-type="props.buttonType" :size="props.buttonSize">
         <slot name="button-label">
           <span class="mx-1">{{ props.name }}</span>
         </slot>
