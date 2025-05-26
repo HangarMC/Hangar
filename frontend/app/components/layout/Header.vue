@@ -132,12 +132,12 @@ function isRecent(date: string): boolean {
 </script>
 
 <template>
-  <header class="background-default shadow-md">
-    <div v-if="globalData?.announcements">
-      <Announcement v-for="(announcement, idx) in globalData?.announcements" :key="idx" :announcement="announcement" />
+  <header class="max-w-screen-2xl mx-auto">
+    <div v-if="globalData?.announcements" class="-px-100 w-full">
+      <Announcement  v-for="(announcement, idx) in globalData?.announcements" :key="idx" class="my-2 mx-8" :announcement="announcement" />
     </div>
-
-    <nav class="max-w-screen-xl mx-auto flex flex-wrap justify-end px-4 py-2 gap-3">
+    <!-- Navbar -->
+    <nav class="mx-4 flex flex-wrap justify-end px-4 py-2 gap-3">
       <!-- Left side items -->
       <div class="flex items-center gap-4">
         <Popover v-slot="{ close, open }" class="relative">
@@ -217,7 +217,18 @@ function isRecent(date: string): boolean {
         </div>
       </div>
 
-      <!-- Gap between the sides -->
+      <!-- Gap for the left side -->
+      <div class="flex-grow-1" />
+
+      <input
+        v-model="query"
+        name="query"
+        class="rounded-full max-w-200 min-w-130 px-4 my-1 dark:bg-gray-800"
+        type="text"
+        :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
+      />
+
+      <!-- Gap for the right side -->
       <div class="flex-grow-1" />
 
       <!-- Right side items -->
@@ -330,7 +341,6 @@ function isRecent(date: string): boolean {
               v-on="useTracking('nav-profile-dropdown')"
             >
               <UserAvatar :username="authStore.user.name" :avatar-url="authStore.user.avatarUrl" size="xs" :disable-link="true" />
-              {{ authStore.user.name }}
             </button>
             <template #content="{ close }">
               <div class="-mt-2 py-1 rounded border-t-2 border-primary-500 background-default filter shadow-default flex flex-col" @click="close()">
