@@ -43,7 +43,7 @@ type NavBarLinks = { link: keyof RouteMap; label: string; icon?: any }[];
 const navBarLinks: NavBarLinks = [
   { link: "index", label: t("nav.indexTitle") },
   { link: "authors", label: t("nav.authorsTitle") },
-  { link: "staff", label: t("nav.staffTitle") },
+  //{ link: "staff", label: t("nav.staffTitle") }, @Todo merge authors and staff
 ];
 
 const navBarMenuLinksHangar: NavBarLinks = [
@@ -223,9 +223,9 @@ function isRecent(date: string): boolean {
       <input
         v-model="query"
         name="query"
-        class="rounded-full max-w-200 min-w-130 px-4 my-1 dark:bg-gray-800"
+        class="rounded-full max-w-200 min-w-130 px-4 py-1 dark:bg-gray-800"
         type="text"
-        :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
+        :placeholder="i18n.t('hangar.globalSearch.query')"
       />
 
       <!-- Gap for the right side -->
