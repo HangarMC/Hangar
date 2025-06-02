@@ -150,7 +150,7 @@ const filteredCategories = computed(() => {
             </div>
           </template>
         </h1>
-        <div class="text-1xl text-center mb-2">
+        <div class="text-1xl text-center mb-10">
           Hangar allows you to find and download the best Paper plugins, Velocity plugins or Waterfall plugins for your Minecraft server
         </div>
       </template>
@@ -159,7 +159,7 @@ const filteredCategories = computed(() => {
           Find your favorite
           <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent"> {{ platformName }} plugins </strong>
         </h1>
-        <div class="text-1xl text-center mb-2">Hangar allows you to find and download the best {{ platformName }} plugins for your Minecraft server</div>
+        <div class="text-1xl text-center mb-10">Hangar allows you to find and download the best {{ platformName }} plugins for your Minecraft server</div>
       </template>
       <div v-if="!index" class="text-center -mt-2">
         Looking for other platforms?
