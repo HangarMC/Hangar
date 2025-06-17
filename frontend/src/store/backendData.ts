@@ -40,11 +40,11 @@ export function getRoleByValue(id: string): RoleData | undefined {
 }
 
 function getRoleFromRolesValue(id: string, roles: RoleData[]): RoleData | undefined {
-  return roles.find((r) => r.value === id);
+  return roles?.find((r) => r.value === id);
 }
 
 function getRoleFromRoles(id: number, roles: RoleData[]): RoleData | undefined {
-  return roles.find((r) => r.roleId === id);
+  return roles?.find((r) => r.roleId === id);
 }
 
 // helpers
