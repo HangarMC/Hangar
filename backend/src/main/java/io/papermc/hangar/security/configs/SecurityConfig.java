@@ -1,9 +1,12 @@
 package io.papermc.hangar.security.configs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.samstevens.totp.spring.autoconfigure.TotpAutoConfiguration;
 import io.papermc.hangar.components.auth.service.TokenService;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.security.authentication.HangarAuthenticationFilter;
 import io.papermc.hangar.security.authentication.HangarAuthenticationProvider;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +21,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.RequestRejectedHandler;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -26,7 +30,6 @@ import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import static org.springframework.security.config.Customizer.*;
 
@@ -34,6 +37,8 @@ import static org.springframework.security.config.Customizer.*;
 @EnableWebSecurity
 @ImportAutoConfiguration(TotpAutoConfiguration.class)
 public class SecurityConfig {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(SecurityConfig.class);
 
     public static final String AUTH_NAME = "HangarAuth";
     public static final String REFRESH_COOKIE_NAME = AUTH_NAME + "_REFRESH";
@@ -82,7 +87,7 @@ public class SecurityConfig {
             )
 
             // Permit all (use method security for controller access)
-            .authorizeHttpRequests(s-> s.anyRequest().permitAll());
+            .authorizeHttpRequests(s -> s.anyRequest().permitAll());
 
         return http.build();
     }
@@ -111,5 +116,16 @@ public class SecurityConfig {
         strictHttpFirewall.setAllowUrlEncodedSlash(true);
         strictHttpFirewall.setAllowUrlEncodedDoubleSlash(true);
         return strictHttpFirewall;
+    }
+
+    @Bean
+    public RequestRejectedHandler requestRejectedHandler(ObjectMapper objectMapper) {
+        return (request, response, exception) -> {
+            log.info("Request {} {} {} rejected: {}", request.getProtocol(), request.getMethod(), request.getRequestURI(), exception.getMessage());
+            response.setStatus(400);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(objectMapper.writeValueAsString(new HangarApiException("Bad Request", "The request was rejected.")));
+        };
     }
 }

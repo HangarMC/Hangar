@@ -38,7 +38,7 @@ class ImageProxyControllerTest extends ControllerTest {
     public void proxyShouldRejectViaSpringFirewallForInvalidRequests(final String url) throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get(new URI("/api/internal/image/" + url)))
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(""));
+            .andExpect(content().string("{\"message\":\"Bad Request\",\"messageArgs\":[\"The request was rejected.\"],\"isHangarApiException\":true,\"httpError\":{\"statusCode\":400}}"));
     }
 
     @ParameterizedTest
