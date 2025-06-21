@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { remove } from "lodash-es";
 import type { Step } from "~/types/components/design/Steps";
 import type { Tab } from "~/types/components/design/Tabs";
 import type { HangarChannel, HangarProject, PendingVersion, Platform, PlatformData } from "~/types/backend";
@@ -237,7 +236,7 @@ async function createVersion() {
 
 function addChannel(channel: HangarChannel) {
   if (!channels.value) return;
-  remove(channels.value, (c) => c.temp);
+  channels.value = channels.value.filter((c) => !c.temp);
   channels.value.push(Object.assign({ temp: true }, channel));
   selectedChannel.value = channel.name;
 }

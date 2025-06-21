@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { NuxtError } from "nuxt/app";
 import type { HangarNuxtError } from "~/types/components/error";
+import type { Composer } from "vue-i18n";
 
 const props = defineProps<{
   error: NuxtError<HangarNuxtError>;
@@ -28,7 +29,7 @@ if (!(props.error?.data?.dummyError === true)) {
 }
 
 // custom
-let i18n: ReturnType<typeof useI18n>;
+let i18n: Composer;
 try {
   i18n = useI18n();
 } catch (err) {

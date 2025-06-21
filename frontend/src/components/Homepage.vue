@@ -21,7 +21,7 @@ const sorters = [
   { id: "-newest", label: i18n.t("project.sorting.newest") },
 ];
 
-const toArray = (input: (string | null)[] | string | null): string[] => (Array.isArray(input) ? (input as string[]) : (input ? [input!] : []));
+const toArray = (input: (string | null)[] | string | null): string[] => (Array.isArray(input) ? (input as string[]) : input ? [input!] : []);
 const filters = ref({
   versions: toArray(route.query.version),
   categories: toArray(route.query.category),
