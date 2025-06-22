@@ -35,14 +35,17 @@ public class ImageProxyService {
                 }
                 // check status code
                 if (!clientResponse.statusCode().is2xxSuccessful()) {
+                    clientResponse.releaseBody().block();
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Encountered " + clientResponse.statusCode().value() + " while trying to load " + imageUrl);
                 }
                 // block large stuff
                 if (this.contentTooLarge(clientResponse)) {
+                    clientResponse.releaseBody().block();
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The image you are trying too proxy is too large");
                 }
                 // check content type
                 if (!this.validContentType(clientResponse)) {
+                    clientResponse.releaseBody().block();
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad content type");
                 }
                 return clientResponse;

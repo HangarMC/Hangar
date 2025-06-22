@@ -57,7 +57,7 @@ public class ImageProxyController {
             };
         } finally {
             if (clientResponse != null) {
-                clientResponse.releaseBody();
+                clientResponse.releaseBody().block();
             }
         }
     }
