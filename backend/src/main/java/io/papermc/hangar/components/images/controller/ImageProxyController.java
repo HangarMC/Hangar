@@ -32,9 +32,8 @@ public class ImageProxyController {
     public StreamingResponseBody proxy(final HttpServletRequest request, final HttpServletResponse res) {
         final String query = StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "";
         final String url = request.getRequestURI() + query;
-        ClientResponse clientResponse = null;
+        final ClientResponse clientResponse = this.imageProxyService.proxyImage(url, request);
         try {
-            clientResponse = this.imageProxyService.proxyImage(url, request);
             // forward headers
             for (final Map.Entry<String, List<String>> stringListEntry : clientResponse.headers().asHttpHeaders().entrySet()) {
                 res.setHeader(stringListEntry.getKey(), stringListEntry.getValue().getFirst());
@@ -43,22 +42,27 @@ public class ImageProxyController {
             final Flux<DataBuffer> body = clientResponse.body(BodyExtractors.toDataBuffers());
             res.setHeader("Content-Security-Policy", "default-src 'self'; img-src 'self' data:;"); // no xss for you sir
             return o -> {
-                // Write the data buffers into the outputstream as they come!
-                final Flux<DataBuffer> flux = DataBufferUtils
-                    .write(body, o)
-                    .publish()
-                    .autoConnect(2);
-                flux.subscribe(DataBufferUtils.releaseConsumer()); // Release the consumer as we are using exchange, prevent memory leaks!
                 try {
-                    flux.blockLast(); // Wait until the last block has been passed and then tell Spring to close the stream!
-                } catch (final RuntimeException ex) {
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Encountered " + ex.getClass().getSimpleName() + " while trying to load " + url);
+                    // Write the data buffers into the outputstream as they come!
+                    final Flux<DataBuffer> flux = DataBufferUtils
+                        .write(body, o)
+                        .publish()
+                        .autoConnect(2);
+                    flux.subscribe(DataBufferUtils.releaseConsumer()); // Release the consumer as we are using exchange, prevent memory leaks!
+                    try {
+                        flux.blockLast(); // Wait until the last block has been passed and then tell Spring to close the stream!
+                    } catch (final RuntimeException ex) {
+                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Encountered " + ex.getClass().getSimpleName() + " while trying to load " + url);
+                    }
+                } finally {
+                    clientResponse.releaseBody().block();
                 }
             };
-        } finally {
+        } catch (final Exception e) {
             if (clientResponse != null) {
-                clientResponse.releaseBody();
+                clientResponse.releaseBody().block();
             }
+            throw e;
         }
     }
 }
