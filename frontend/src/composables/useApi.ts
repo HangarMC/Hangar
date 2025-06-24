@@ -38,23 +38,8 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
         resolve(data);
       })
       .catch((err_: AxiosError) => {
-        fetchLog("failed", err_.toJSON());
-        if (err_.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          console.log(err_.response.data);
-          console.log(err_.response.status);
-          console.log(err_.response.headers);
-        } else if (err_.request) {
-          // The request was made but no response was received
-          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-          // http.ClientRequest in node.js
-          console.log(err_.request);
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.log("Error", err_.message);
-        }
-        console.log(err_.config);
+        const { trace, ...err } = (err_.response?.data as { trace: any }) || {};
+        fetchLog("failed", err);
         reject(err_);
       });
   });
