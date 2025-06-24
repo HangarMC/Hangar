@@ -10,8 +10,8 @@ function request<T>(url: string, method: AxiosRequestConfig["method"], data: obj
       .request<T>({
         method,
         url: `/api/${url}`,
-        data: method?.toLowerCase() === "get" ? {} : data,
-        params: method?.toLowerCase() === "get" ? data : {},
+        data: method?.toLowerCase() === "get" ? undefined : data,
+        params: method?.toLowerCase() === "get" ? data : undefined,
         ...axiosOptions,
         paramsSerializer: (params) => {
           return qs.stringify(params, {
