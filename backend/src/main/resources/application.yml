@@ -41,6 +41,7 @@ spring:
     aws:
       s3:
         endpoint: "${hangar.storage.object-storage-endpoint}"
+        checksum-validation-enabled: false
     kubernetes:
       secrets:
         enableApi: true
