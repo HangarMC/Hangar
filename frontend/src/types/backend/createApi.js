@@ -5,7 +5,8 @@ const { generateApi } = require("swagger-typescript-api");
 generateApi({
   name: "index.ts",
   input: path.resolve(process.cwd(), "api.json"),
-  createClient: true,
+  fileName: "index.ts",
+  generateClient: false,
   hooks: {
     onFormatTypeName(typeName, rawTypeName, schemaType) {
       let prefix = "";
@@ -41,34 +42,34 @@ generateApi({
       // patch permission data
       fileContent = fileContent.replace(
         `export interface PermissionData {
-  value: string;
   frontendName: string;
   permission: string;
+  value: string;
 }`,
         `export interface PermissionData {
-  value: string;
   frontendName: string;
   permission: bigint;
+  value: string;
 }`
       );
 
       // patch platform data
       fileContent = fileContent.replace(
         `export interface PlatformData {
-  name: string;
   category: Category;
-  url: string;
   enumName: string;
-  visible: boolean;
+  name: string;
   platformVersions: PlatformVersion[];
+  url: string;
+  visible: boolean;
 }`,
         `export interface PlatformData {
-  name: string;
   category: Category;
-  url: string;
   enumName: Platform;
-  visible: boolean;
+  name: string;
   platformVersions: PlatformVersion[];
+  url: string;
+  visible: boolean;
 }`
       );
 

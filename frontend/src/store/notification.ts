@@ -4,10 +4,8 @@ export interface Notification {
   message: string;
   clearable: boolean;
   addedAt: number;
-}
-
-function waitTimeout(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  key?: string;
+  paused?: boolean;
 }
 
 const defaultTimeout = 7000;
@@ -16,11 +14,6 @@ export const useNotificationStore = defineStore("notification", () => {
 
   async function show(notification: Notification) {
     notifications.value.add(notification);
-    if (notification.timeout === -1) {
-      return;
-    }
-    await waitTimeout(notification.timeout || defaultTimeout);
-    remove(notification);
   }
 
   async function success(message: string, clearable = true, timeout = defaultTimeout) {
@@ -50,5 +43,9 @@ export const useNotificationStore = defineStore("notification", () => {
     notifications.value.delete(notification);
   }
 
-  return { notifications, show, remove, success, error, fromError, warn };
+  function pause(notification: Notification, paused: boolean) {
+    notification.paused = paused;
+  }
+
+  return { notifications, show, remove, success, error, fromError, warn, pause };
 });

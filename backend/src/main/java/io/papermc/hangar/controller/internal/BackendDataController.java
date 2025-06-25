@@ -24,6 +24,7 @@ import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.internal.PlatformService;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.GitProperties;
@@ -186,5 +187,16 @@ public class BackendDataController extends HangarComponent {
     @GetMapping("/security")
     public Security getSecurity() {
         return new Security(this.config.security().safeDownloadHosts(), this.oAuthService.getProviders().keySet());
+    }
+
+    @GetMapping("/globalData")
+    public GlobalData getGlobalData() {
+        // TODO store these in the database, make them editable by admins
+        return new GlobalData(Map.of("outage-2025.6", "We are sorry the rocky ride over the last few days, everything should be back to normal now. <br>If you are still experiencing issues, please contact us on Discord #hangar-help."));
+    }
+
+    public record GlobalData(
+        Map<String, String> globalNotifications
+    ) {
     }
 }

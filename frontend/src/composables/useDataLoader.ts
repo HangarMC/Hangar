@@ -1,5 +1,5 @@
 import type { RouteLocationNormalized } from "vue-router";
-import type { HangarOrganization, HangarProject, Version, User, ProjectPageTable } from "~/types/backend";
+import type { HangarOrganization, HangarProject, Version, User, ProjectPageTable, GlobalData } from "~/types/backend";
 
 type routeParams = "user" | "project" | "version" | "page";
 type DataLoaderTypes = {
@@ -8,6 +8,7 @@ type DataLoaderTypes = {
   version: Version;
   organization: HangarOrganization;
   page: ProjectPageTable;
+  globalData: GlobalData;
 };
 
 // TODO check every handling of the reject stuff (for both composables)
@@ -15,7 +16,7 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
   const data = useState<DataLoaderTypes[K] | undefined>(key);
 
   function loader(
-    param: routeParams,
+    param: routeParams | undefined,
     to: RouteLocationNormalized,
     from: RouteLocationNormalized,
     loader: (param: string) => Promise<DataLoaderTypes[K]>,
@@ -23,23 +24,23 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
     lenient = false
   ) {
     const meta = to.meta["dataLoader_" + key];
-    if (meta) {
-      const oldParam = param in from.params ? (from.params[param as never] as string) : undefined;
-      const newParam = param in to.params ? (to.params[param as never] as string) : undefined;
+    if (meta || key === "globalData") {
+      const oldParam = param && param in from.params ? (from.params[param as never] as string) : undefined;
+      const newParam = param && param in to.params ? (to.params[param as never] as string) : undefined;
       if (data.value && oldParam === newParam) {
         console.log("skip loading", key); // TODO test this
         return newParam;
-      } else if (newParam) {
+      } else if (!param || newParam) {
         // sanitize a bit to make undertow happy
         const regex = /["#<>\\^`{|}]/;
-        if (regex.test(newParam)) {
+        if (newParam && regex.test(newParam)) {
           throw createError({ statusCode: 404, statusMessage: "Not found" });
         }
 
         promises.push(
           new Promise<void>(async (resolve, reject) => {
             console.log("load loading", key, newParam);
-            const result = await loader(newParam).catch((err) => {
+            const result = await loader(newParam!).catch((err) => {
               if (lenient) resolve();
               else reject(err);
             });

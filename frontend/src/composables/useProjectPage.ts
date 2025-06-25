@@ -1,5 +1,4 @@
-import type { Router } from "vue-router";
-import type { RouteLocationNormalized } from "vue-router/auto";
+import type { Router, RouteLocationNormalized } from "vue-router";
 import type { HangarProject, ProjectPageTable } from "~/types/backend";
 
 export function useProjectPage(
