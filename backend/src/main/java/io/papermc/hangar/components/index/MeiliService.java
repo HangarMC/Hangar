@@ -166,7 +166,7 @@ public class MeiliService extends HangarComponent implements ApplicationListener
         if (task.getStatusCode().is2xxSuccessful() && task.getBody() != null) {
             waitForTask(task.getBody());
         } else {
-            throw new HangarApiException("Error waiting for meili task: " + task.getStatusCode() + " " + task.getBody());
+            throw new HangarApiException("Error waiting for meili task: " + task);
         }
     }
 
@@ -176,7 +176,7 @@ public class MeiliService extends HangarComponent implements ApplicationListener
 
         while (task.status().equals("enqueued") || task.status().equals("processing")) {
             if (elapsedTime >= 5000) {
-                throw new RuntimeException("Timeout waiting for meili task " + task.taskUid());
+                throw new RuntimeException("Timeout waiting for meili task " + task);
             }
             task = this.getTask(task.uid() != null ? task.uid() : task.taskUid());
             try {
@@ -184,7 +184,7 @@ public class MeiliService extends HangarComponent implements ApplicationListener
                 Thread.sleep(50);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                throw new RuntimeException("Interrupted while waiting for meili task " + task.taskUid());
+                throw new RuntimeException("Interrupted while waiting for meili task " + task);
             }
             elapsedTime = System.currentTimeMillis() - startTime;
         }
