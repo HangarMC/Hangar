@@ -5,8 +5,22 @@ const emit = defineEmits<{
   (e: "update:modelValue", date: string): void;
 }>();
 const date = computed({
-  get: () => props.modelValue,
-  set: (value) => emit("update:modelValue", value),
+  get: () => {
+    if (props.time && props.modelValue) {
+      // we need to cut off seconds and millis from iso format...
+      const split = props.modelValue.split(":");
+      return split[0] + ":" + split[1];
+    }
+    return props.modelValue;
+  },
+  set: (value) => {
+    let valueToEmit = value;
+    if (props.time && value) {
+      // add seconds and millies back...
+      valueToEmit += ":00.000Z";
+    }
+    emit("update:modelValue", valueToEmit);
+  },
 });
 const props = defineProps<{
   modelValue: string;
@@ -17,6 +31,7 @@ const props = defineProps<{
   errorMessages?: string[];
   rules?: ValidationRule<string | undefined>[];
   noErrorTooltip?: boolean;
+  time?: boolean;
 }>();
 
 const errorMessages = computed(() => props.errorMessages);
@@ -36,7 +51,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, date, er
   >
     <template #default="slotProps">
       <!-- todo make fancy -->
-      <input v-model="date" type="date" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" />
+      <input v-model="date" :type="time ? 'datetime-local' : 'date'" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" />
     </template>
     <!-- @vue-ignore -->
     <template v-for="(_, name) in $slots" #[name]="slotData">

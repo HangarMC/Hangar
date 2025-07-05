@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { Platform, Tag } from "~/types/backend";
-import type { PlatformVersion, Category } from "~/types/backend";
+import type { Category } from "~/types/backend";
 
 const props = defineProps<{
   platform?: Platform;
@@ -71,19 +71,10 @@ watch(
   { deep: true }
 );
 
-function versions(platform: Platform): PlatformVersion[] {
-  const platformData = useBackendData.platforms?.get(platform);
-  if (!platformData) {
-    return [];
-  }
-
-  return platformData.platformVersions;
-}
-
 function updatePlatform(platform: any) {
   filters.value.platform = platform;
 
-  const allowedVersion = versions(platform);
+  const allowedVersion = usePlatformVersions(platform);
   filters.value.versions = filters.value.versions.filter((existingVersion) => {
     return allowedVersion.find((allowedNewVersion) => allowedNewVersion.version === existingVersion);
   });
@@ -262,7 +253,7 @@ useSeo(
         <div v-if="filters.platform" class="versions">
           <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions." + filters.platform) }}</h3>
           <div class="max-h-40 overflow-auto">
-            <VersionSelector v-model="filters.versions" :versions="versions(filters.platform)" :open="false" col />
+            <VersionSelector v-model="filters.versions" :versions="usePlatformVersions(filters.platform)" :open="false" col />
           </div>
         </div>
         <div class="tags">

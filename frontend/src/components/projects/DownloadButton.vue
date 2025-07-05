@@ -113,7 +113,7 @@ function formatVersionRange(versions: string[]): string {
           v-on="useTracking('download-link', { pinned: false, dropdown: true, mainchannel: false, platform: p, project: project.name })"
         >
           <PlatformLogo :platform="p as Platform" :size="24" class="mr-1 flex-shrink-0" />
-          {{ useBackendData.platforms.get(p as Platform)?.name }}
+          {{ usePlatformName(p) }}
           <span v-if="showVersions" class="ml-1">({{ formatVersionRange(v) }})</span>
           <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" class="ml-0.5 text-sm pb-0.5" />
         </DropdownItem>
@@ -166,7 +166,7 @@ function formatVersionRange(versions: string[]): string {
         v-on="useTracking('download-link', { pinned: false, dropdown: true, mainchannel: false, platform: p, project: project.name })"
       >
         <PlatformLogo :platform="p as Platform" :size="24" class="mr-1 flex-shrink-0" />
-        {{ useBackendData.platforms.get(p as Platform)?.name }}
+        {{ usePlatformName(p) }}
         <span v-if="showVersions && version.platformDependencies" class="ml-1">({{ formatVersionRange(version.platformDependenciesFormatted[p]) }})</span>
         <span v-if="v.fileInfo?.sizeBytes" class="ml-1"> ({{ formatSize(v.fileInfo.sizeBytes) }}) </span>
         <IconMdiOpenInNew v-if="v.externalUrl" class="ml-0.5 text-sm pb-0.5" />
@@ -192,7 +192,7 @@ function formatVersionRange(versions: string[]): string {
         v-on="useTracking('download-link', { pinned: false, dropdown: true, mainchannel: true, platform: p, project: project.name })"
       >
         <PlatformLogo :platform="p as Platform" :size="24" class="mr-1 flex-shrink-0" />
-        {{ useBackendData.platforms.get(p as Platform)?.name }}
+        {{ usePlatformName(p) }}
         <span v-if="v.platformDependencies && showVersions" class="ml-1">({{ formatVersionRange(v.platformDependenciesFormatted[p]) }})</span>
         <IconMdiOpenInNew v-if="v.downloads[p]?.externalUrl" class="ml-0.5 text-sm pb-0.5" />
       </DropdownItem>

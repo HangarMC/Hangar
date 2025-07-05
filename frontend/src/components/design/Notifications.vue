@@ -4,9 +4,8 @@ import type { Notification } from "~/store/notification";
 const notificationStore = useNotificationStore();
 
 // handle global notifications
-const notifications = useNotificationStore();
 const clearedGlobalNotifications = useLocalStorage<string[]>("clearedGlobalNotifications", []);
-const { data: globalData } = useDataLoader("globalData");
+const globalData = useGlobalData();
 watchEffect(() => {
   if (import.meta.server) return;
   const globalNotifications = globalData.value?.globalNotifications;
@@ -14,11 +13,11 @@ watchEffect(() => {
   if (globalNotifications) {
     for (const key in globalNotifications) {
       if (clearedGlobalNotifications.value.includes(key)) continue;
-      notifications.show({
+      notificationStore.show({
         message: globalNotifications[key],
         color: "var(--primary-500)",
         clearable: true,
-        timeout: 1000,
+        timeout: -1,
         addedAt: Date.now(),
         key,
       });
@@ -28,14 +27,12 @@ watchEffect(() => {
 
 function clearNotification(notification: Notification) {
   notificationStore.remove(notification);
-  console.log("Cleared notification", notification);
   if (notification.key && globalData.value?.globalNotifications?.[notification.key]) {
     clearedGlobalNotifications.value.push(notification.key);
   }
 }
 
 function pauseNotification(notification: Notification, paused: boolean) {
-  console.log("Paused notification", notification, paused);
   notificationStore.pause(notification, paused);
 }
 </script>
@@ -66,7 +63,7 @@ function pauseNotification(notification: Notification, paused: boolean) {
           </div>
           <div v-if="notification.timeout == -1" class="mb-2" />
         </div>
-        <div v-if="notification.timeout !== -2" class="bar">
+        <div v-if="notification.timeout !== -1" class="bar">
           <div
             class="progress"
             :style="{

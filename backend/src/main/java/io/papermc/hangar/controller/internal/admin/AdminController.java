@@ -28,7 +28,6 @@ import io.papermc.hangar.model.internal.admin.DayStats;
 import io.papermc.hangar.model.internal.admin.health.MissingFileCheck;
 import io.papermc.hangar.model.internal.admin.health.UnhealthyProject;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
-import io.papermc.hangar.model.internal.api.requests.admin.ChangePlatformVersionsForm;
 import io.papermc.hangar.model.internal.api.requests.admin.ChangeRoleForm;
 import io.papermc.hangar.model.internal.api.responses.HealthReport;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
@@ -36,7 +35,6 @@ import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.components.jobs.JobService;
-import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.admin.HealthService;
 import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
@@ -76,7 +74,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/internal/admin")
 public class AdminController extends HangarComponent {
 
-    private final PlatformService platformService;
     private final StatService statService;
     private final HealthService healthService;
     private final JobService jobService;
@@ -92,8 +89,7 @@ public class AdminController extends HangarComponent {
     private final AvatarService avatarService;
 
     @Autowired
-    public AdminController(final PlatformService platformService, final StatService statService, final HealthService healthService, final JobService jobService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectService projectService, final ProjectAdminService projectAdminService, final VersionService versionService, final ReviewService reviewService, final RolesDAO rolesDAO, final AvatarService avatarService) {
-        this.platformService = platformService;
+    public AdminController(final StatService statService, final HealthService healthService, final JobService jobService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectService projectService, final ProjectAdminService projectAdminService, final VersionService versionService, final ReviewService reviewService, final RolesDAO rolesDAO, final AvatarService avatarService) {
         this.statService = statService;
         this.healthService = healthService;
         this.jobService = jobService;
@@ -107,13 +103,6 @@ public class AdminController extends HangarComponent {
         this.reviewService = reviewService;
         this.rolesDAO = rolesDAO;
         this.avatarService = avatarService;
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping(path = "/platformVersions", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
-    public void changePlatformVersions(@RequestBody @Valid final ChangePlatformVersionsForm form) {
-        this.platformService.updatePlatformVersions(form);
     }
 
     @ResponseStatus(HttpStatus.OK)

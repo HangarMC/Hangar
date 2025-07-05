@@ -19,7 +19,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const promises: Promise<any>[] = [];
 
   const { loader: globalDataLoader } = useDataLoader("globalData");
-  globalDataLoader(undefined, to, from, () => useInternalApi("data/globalData"), promises);
+  globalDataLoader(undefined, to, from, () => useInternalApi("globalData/"), promises);
 
   const { loader: userLoader, data: user } = useDataLoader("user");
   const userName = userLoader("user", to, from, (userName) => useApi<User>("users/" + userName + "?resolveId=false"), promises);

@@ -1,5 +1,8 @@
 package io.papermc.hangar.service.internal.defaults;
 
+import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.globaldata.dao.AnnouncementTable;
+import io.papermc.hangar.components.globaldata.dao.GlobalDataDAO;
 import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.roles.RolesDAO;
 import io.papermc.hangar.model.common.Permission;
@@ -25,17 +28,19 @@ import org.springframework.web.client.RestClient;
 import static io.papermc.hangar.components.observability.TransactionUtil.withTransaction;
 
 @Component
-public class PopulationService {
+public class PopulationService extends HangarComponent {
 
     private static final Logger log = LoggerFactory.getLogger(PopulationService.class);
 
     private final RolesDAO rolesDAO;
     private final PlatformVersionDAO platformVersionDAO;
+    private final GlobalDataDAO globalDataDAO;
     private final RestClient restClient;
 
-    public PopulationService(final RolesDAO rolesDAO, final PlatformVersionDAO platformVersionsDao, final RestClient restClient) {
+    public PopulationService(final RolesDAO rolesDAO, final PlatformVersionDAO platformVersionsDao, final GlobalDataDAO globalDataDAO, final RestClient restClient) {
         this.rolesDAO = rolesDAO;
         this.platformVersionDAO = platformVersionsDao;
+        this.globalDataDAO = globalDataDAO;
         this.restClient = restClient;
     }
 
@@ -44,6 +49,7 @@ public class PopulationService {
         withTransaction("task", "PopulationService#populateTables()", () -> {
             this.populateRoles();
             this.populatePlatformVersions();
+            this.populateAnnouncements();
         });
     }
 
@@ -92,12 +98,9 @@ public class PopulationService {
         List<PlatformVersionTable> tables = new ArrayList<>();
         for (final var project : Objects.requireNonNull(fillResponse.getBody()).data().projects()) {
             switch (project.id) {
-                case "paper" ->
-                    project.versions.stream().map(v -> new PlatformVersionTable(Platform.PAPER, v.id)).forEach(tables::add);
-                case "waterfall" ->
-                    project.versions.stream().map(v -> new PlatformVersionTable(Platform.WATERFALL, v.id)).forEach(tables::add);
-                case "velocity" ->
-                    project.versions.stream().map(v -> new PlatformVersionTable(Platform.VELOCITY, v.id)).forEach(tables::add);
+                case "paper" -> project.versions.stream().map(v -> new PlatformVersionTable(Platform.PAPER, v.id)).forEach(tables::add);
+                case "waterfall" -> project.versions.stream().map(v -> new PlatformVersionTable(Platform.WATERFALL, v.id)).forEach(tables::add);
+                case "velocity" -> project.versions.stream().map(v -> new PlatformVersionTable(Platform.VELOCITY, v.id)).forEach(tables::add);
             }
         }
 
@@ -110,6 +113,17 @@ public class PopulationService {
             log.info("Populated 'platform_versions' table with {} new versions", result);
         } else {
             log.info("No new versions were added to the 'platform_versions' table");
+        }
+    }
+
+    private void populateAnnouncements() {
+        if (config.dev()) {
+            if (!this.globalDataDAO.getAnnouncements().isEmpty()) {
+                log.info("The 'announcements' table is already populated");
+                return;
+            }
+            this.globalDataDAO.insertAnnouncement(new AnnouncementTable("This is a local server for testing purposes. There is a public staging instance at <a href=\"https://hangar.papermc.dev\" style=\"text-decoration: underline\">https://hangar.papermc.dev</a> and the production site can be found at <a href=\"https://hangar.papermc.io\" style=\"text-decoration: underline\">https://hangar.papermc.io</a>.", "#2f4476", 1));
+            log.info("Inserted local development announcement into 'announcements' table");
         }
     }
 }

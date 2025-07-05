@@ -4,19 +4,7 @@ import { type AxiosInstance, isAxiosError } from "axios";
 import axios from "axios";
 // noinspection ES6PreferShortImport
 import { backendDataLog } from "../composables/useLog";
-import type {
-  Announcement,
-  RoleData,
-  Security,
-  Validations,
-  CategoryData,
-  PermissionData,
-  PlatformData,
-  VisibilityData,
-  ColorData,
-  FlagReasonData,
-  PromptData,
-} from "~/types/backend";
+import type { RoleData, Security, Validations, CategoryData, PermissionData, VisibilityData, ColorData, FlagReasonData, PromptData } from "~/types/backend";
 import type { ServerBackendData } from "~/types/backendData";
 
 // inspired by knossos build hook: https://github.com/modrinth/knossos/blob/master/nuxt.config.js
@@ -131,10 +119,8 @@ async function loadData(state: ServerBackendData, axiosInstance: AxiosInstance) 
   const result = await Promise.all([
     axiosInstance.get<CategoryData[]>("/categories"),
     axiosInstance.get<PermissionData[]>("/permissions"),
-    axiosInstance.get<PlatformData[]>("/platforms"),
     axiosInstance.get<Validations>("/validations"),
     axiosInstance.get<PromptData[]>("/prompts"),
-    axiosInstance.get<Announcement[]>("/announcements"),
     axiosInstance.get<VisibilityData[]>("/visibilities"),
     axiosInstance.get<string[]>("/licenses"),
     axiosInstance.get<RoleData[]>("/orgRoles"),
@@ -148,10 +134,8 @@ async function loadData(state: ServerBackendData, axiosInstance: AxiosInstance) 
   const [
     projectCategories,
     permissions,
-    platforms,
     validations,
     prompts,
-    announcements,
     visibilities,
     licenses,
     orgRoles,
@@ -165,10 +149,8 @@ async function loadData(state: ServerBackendData, axiosInstance: AxiosInstance) 
 
   state.projectCategories = projectCategories as typeof state.projectCategories;
   state.permissions = permissions as typeof state.permissions;
-  state.platforms = platforms as typeof state.platforms;
   state.validations = validations as typeof state.validations;
   state.prompts = prompts as typeof state.prompts;
-  state.announcements = announcements as typeof state.announcements;
   state.visibilities = visibilities as typeof state.visibilities;
   state.licenses = licenses as typeof state.licenses;
   state.orgRoles = orgRoles as typeof state.orgRoles;

@@ -31,6 +31,7 @@ const i18n = useI18n();
 const t = i18n.t;
 const authStore = useAuthStore();
 const route = useRoute();
+const globalData = useGlobalData();
 
 const notifications = ref<HangarNotification[]>([]);
 const { unreadCount, refreshUnreadCount } = useUnreadCount();
@@ -131,8 +132,8 @@ function isRecent(date: string): boolean {
 
 <template>
   <header class="background-default shadow-md">
-    <div v-if="useBackendData.announcements">
-      <Announcement v-for="(announcement, idx) in useBackendData.announcements" :key="idx" :announcement="announcement" />
+    <div v-if="globalData?.announcements">
+      <Announcement v-for="(announcement, idx) in globalData?.announcements" :key="idx" :announcement="announcement" />
     </div>
 
     <nav class="max-w-screen-xl mx-auto flex flex-wrap justify-end px-4 py-2 gap-3">

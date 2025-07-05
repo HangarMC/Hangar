@@ -7,6 +7,7 @@ definePageMeta({
   projectPermsRequired: ["CreateVersion"],
 });
 
+const globalData = useGlobalData();
 const route = useRoute("user-project-versions-new");
 const router = useRouter();
 const i18n = useI18n();
@@ -121,13 +122,10 @@ const descriptionToLoad = computed(() => {
 const selectedChannel = ref<string>("Release");
 const currentChannel = computed(() => channels.value?.find((c) => c.name === selectedChannel.value));
 
-const platforms = computed<PlatformData[]>(() => {
-  return [...useBackendData.platforms.values()];
-});
 const selectedPlatformsData = computed<PlatformData[]>(() => {
   const result: PlatformData[] = [];
   for (const platformName of selectedPlatforms.value) {
-    const p = useBackendData.platforms.get(platformName);
+    const p = usePlatformData(platformName);
     if (p) {
       result.push(p);
     }
@@ -242,12 +240,15 @@ function addChannel(channel: HangarChannel) {
 }
 
 function togglePlatform(platformFile: PlatformFile, platform: Platform) {
+  if (!globalData.value?.platforms) return;
   if (platformFile.platforms.includes(platform)) {
     platformFile.platforms = platformFile.platforms.filter((p) => p !== platform);
   } else {
     platformFile.platforms.push(platform);
   }
-  platformFile.platforms.sort((a, b) => platforms.value.findIndex((p) => p.enumName === a) - platforms.value.findIndex((p) => p.enumName === b));
+  platformFile.platforms.sort(
+    (a, b) => globalData.value!.platforms.findIndex((p) => p.enumName === a) - globalData.value!.platforms.findIndex((p) => p.enumName === b)
+  );
 }
 
 useSeo(
@@ -305,7 +306,7 @@ useSeo(
             </Tabs>
             <div class="mt-4">
               <InputGroup v-model="platformFile.platforms" label="Platforms" :rules="platformRules" :silent-errors="false">
-                <div v-for="platform in platforms" :key="platform.name">
+                <div v-for="platform in globalData?.platforms" :key="platform.name">
                   <InputCheckbox
                     :model-value="platformFile.platforms.includes(platform.enumName)"
                     :label="platform.name"
@@ -319,7 +320,7 @@ useSeo(
             </div>
           </div>
         </div>
-        <Button :disabled="useBackendData.platforms.size > 0 && platformFiles.length >= useBackendData.platforms.size" @click="addPlatformFile()">
+        <Button :disabled="!!globalData?.platforms?.length && platformFiles.length >= globalData.platforms.length" @click="addPlatformFile()">
           <IconMdiPlus /> Add file/url for another platform
         </Button>
       </template>

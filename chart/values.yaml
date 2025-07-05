@@ -223,7 +223,6 @@ backend:
       objectStorageEndpoint: "http://localhost:9000"
       cdnEndpoint: ""
       cdnIncludeBucket: true
-    announcement: "This is a staging server for testing purposes. Data could be deleted at any time. That said, signups are open, please test stuff and report and feedback on github or discord!"
     tracing: true
     mail:
       from: noreply@mail.papermc.dev

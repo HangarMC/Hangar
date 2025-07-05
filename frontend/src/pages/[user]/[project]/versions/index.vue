@@ -5,6 +5,7 @@ import { ChannelFlag, NamedPermission, Visibility } from "~/types/backend";
 const i18n = useI18n();
 const router = useRouter();
 const route = useRoute("user-project-versions");
+const globalData = useGlobalData();
 
 const toArray = <T,>(input: unknown): T => (Array.isArray(input) ? input : input ? [input] : []) as T;
 const filter = reactive({
@@ -21,7 +22,6 @@ const props = defineProps<{
 }>();
 
 const pageChangeScrollAnchor = useTemplateRef("pageChangeScrollAnchor");
-const platforms = computed(() => [...(useBackendData.platforms?.values() || [])]);
 const page = ref(route.query.page ? Number(route.query.page) : 0);
 const requestParams = computed(() => {
   const limit = 7;
@@ -38,8 +38,8 @@ if (!route.query.channel) {
   await channelPromise;
   filter.channels.push(...channels.value!.filter((c) => !c.flags.includes(ChannelFlag.HIDE_BY_DEFAULT)).map((c) => c.name));
 }
-if (!route.query.platform) {
-  filter.platforms.push(...platforms.value.map((p) => p.enumName));
+if (!route.query.platform && globalData.value) {
+  filter.platforms.push(...globalData.value.platforms.map((p) => p.enumName));
 }
 const { versions, versionsStatus } = useProjectVersions(
   () => ({
@@ -63,7 +63,7 @@ function checkAllChannels() {
 }
 
 function checkAllPlatforms() {
-  filter.platforms = filter.allChecked.platforms ? platforms.value.map((c) => c.enumName) : [];
+  filter.platforms = filter.allChecked.platforms ? globalData.value!.platforms.map((c) => c.enumName) : [];
 }
 
 function updateChannelCheckAll() {
@@ -71,7 +71,7 @@ function updateChannelCheckAll() {
 }
 
 function updatePlatformCheckAll() {
-  filter.allChecked.platforms = filter.platforms.length === platforms.value.length;
+  filter.allChecked.platforms = filter.platforms.length === globalData.value!.platforms.length;
 }
 
 function getBorderClasses(version: Version): string {
@@ -189,7 +189,7 @@ function getVisibilityTitle(visibility: Visibility) {
           </template>
 
           <ul>
-            <li v-for="platform in platforms" :key="platform.name" class="inline-flex w-full">
+            <li v-for="platform in globalData?.platforms" :key="platform.name" class="inline-flex w-full">
               <InputCheckbox v-model="filter.platforms" :value="platform.enumName" :label="platform.name" @change="updatePlatformCheckAll">
                 <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
               </InputCheckbox>

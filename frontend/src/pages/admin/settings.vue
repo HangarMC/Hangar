@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { Platform, PlatformVersion } from "~/types/backend";
+import type { AnnouncementTable, GlobalNotificationTable, Platform, PlatformVersion } from "~/types/backend";
+import { useVisiblePlatforms } from "~/composables/useGlobalData";
 
 definePageMeta({
   globalPermsRequired: ["ManualValueChanges"],
@@ -9,9 +10,9 @@ const i18n = useI18n();
 const route = useRoute("admin-settings");
 const router = useRouter();
 const notification = useNotificationStore();
+const globalData = useGlobalData();
+const authStore = useAuthStore();
 
-const platformMap = useBackendData.platforms;
-const platforms = platformMap ? [...platformMap.values()] : [];
 const loading = ref<boolean>(false);
 
 useSeo(computed(() => ({ title: i18n.t("platformVersions.title"), route })));
@@ -38,11 +39,11 @@ function versions(versions: PlatformVersion[]): string[] {
 async function savePlatformVersions() {
   loading.value = true;
   const data: { [key: string]: string[] } = {};
-  for (const pl of platforms || []) {
+  for (const pl of useVisiblePlatforms.value) {
     data[pl.enumName] = fullVersions.value[pl.enumName];
   }
   try {
-    await useInternalApi("admin/platformVersions", "post", data);
+    await useInternalApi("globalData/platformVersions", "post", data);
     notification.success(i18n.t("platformVersions.success"));
     router.go(0);
   } catch (err: any) {
@@ -52,7 +53,10 @@ async function savePlatformVersions() {
 }
 
 function resetPlatformVersions() {
-  for (const platform of useBackendData.platforms.values()) {
+  if (!globalData.value?.platforms) {
+    return;
+  }
+  for (const platform of globalData.value.platforms) {
     fullVersions.value[platform.enumName] = versions(platform.platformVersions);
   }
 }
@@ -62,10 +66,10 @@ async function saveRoles() {
   loading.value = true;
   const data = [];
   for (const role of roles.value) {
-    data.push({ roleId: role.roleId, title: role.title, color: role.color, rank: role.rank });
+    data.push({ roleId: role.roleId, title: role.title, color: role.color, rank: Number(role.rank) });
   }
   try {
-    await useInternalApi("admin/roles", "post", roles.value);
+    await useInternalApi("admin/roles", "post", data);
     notification.success("Updated roles!");
     router.go(0);
   } catch (err: any) {
@@ -97,12 +101,39 @@ async function fixAvatars() {
   }
   loading.value = false;
 }
+
+const announcements = ref(await useInternalApi<AnnouncementTable[]>("globalData/announcements"));
+async function updateAnnouncements() {
+  loading.value = true;
+  try {
+    await useInternalApi("globalData/announcements", "post", announcements.value);
+    announcements.value = await useInternalApi<AnnouncementTable[]>("globalData/announcements");
+    notification.success("Updated announcements!");
+  } catch (err: any) {
+    loading.value = false;
+    handleRequestError(err);
+  }
+}
+
+const notifications = ref(await useInternalApi<GlobalNotificationTable[]>("globalData/notifications"));
+async function updateNotifications() {
+  loading.value = true;
+  try {
+    await useInternalApi("globalData/notifications", "post", notifications.value);
+    notifications.value = await useInternalApi<GlobalNotificationTable[]>("globalData/notifications");
+    notification.success("Updated notifications!");
+  } catch (err: any) {
+    loading.value = false;
+    handleRequestError(err);
+  }
+}
 </script>
 
 <template>
   <div>
-    <PageTitle>{{ i18n.t("platformVersions.title") }}</PageTitle>
+    <PageTitle>Admin Settings</PageTitle>
     <Card>
+      <PageTitle>{{ i18n.t("platformVersions.title") }}</PageTitle>
       <Table class="w-full">
         <thead>
           <tr>
@@ -111,7 +142,7 @@ async function fixAvatars() {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="platform in platforms" :key="platform.name">
+          <tr v-for="platform in globalData?.platforms" :key="platform.name">
             <td>{{ platform.name }}</td>
             <td>
               <InputTag v-model="fullVersions[platform.enumName]" />
@@ -122,7 +153,6 @@ async function fixAvatars() {
 
       <template #footer>
         <span class="flex justify-end items-center gap-2">
-          Updates need a rebuild + redeploy to take affect!
           <Button @click="resetPlatformVersions">{{ i18n.t("general.reset") }}</Button>
           <Button :disabled="loading" @click="savePlatformVersions"> {{ i18n.t("platformVersions.saveChanges") }}</Button>
         </span>
@@ -150,7 +180,7 @@ async function fixAvatars() {
               <InputText v-model="role.color" />
             </td>
             <td>
-              <InputText v-model.number="role.rank as unknown as string" :rules="[integer()]" />
+              <InputText v-model="role.rank" :rules="[integer()]" />
             </td>
             <td>
               <Tag :color="{ background: role.color }" :name="role.title" class="ml-1" />
@@ -177,6 +207,114 @@ async function fixAvatars() {
       <br />
       <InputCheckbox v-model="forceFixAvatars" label="Force" />
       <Button button-type="red" class="mt-2" :disabled="loading" @click="fixAvatars">Run</Button>
+    </Card>
+    <Card class="mt-5">
+      <PageTitle>Announcements</PageTitle>
+      <Table class="w-full">
+        <thead>
+          <tr>
+            <th>Text</th>
+            <th>Color</th>
+            <th>Created At</th>
+            <th>Created By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="announcement in announcements" :key="announcement.id">
+            <td>
+              <InputText v-model="announcement.text" label="Text" />
+            </td>
+            <td>
+              <InputText v-model="announcement.color" label="Color" />
+            </td>
+            <td>
+              <PrettyTime :time="announcement.createdAt" />
+            </td>
+            <td>
+              {{ announcement.createdBy }}
+            </td>
+          </tr>
+        </tbody>
+      </Table>
+      <template #footer>
+        <span class="flex justify-end items-center gap-2">
+          <Button
+            @click="
+              announcements.push({
+                id: announcements.length + 1,
+                text: '',
+                color: '#000000',
+                createdAt: new Date().toISOString(),
+                createdBy: authStore.user!.id,
+              })
+            "
+            >Add new</Button
+          >
+          <Button :disabled="loading" @click="updateAnnouncements">Update Announcements</Button>
+        </span>
+      </template>
+    </Card>
+    <Card class="mt-5">
+      <PageTitle>Global notifications</PageTitle>
+      <Table class="w-full">
+        <thead>
+          <tr>
+            <th>key</th>
+            <th>Content</th>
+            <th>Color</th>
+            <th>Active From</th>
+            <th>Active To</th>
+            <th>Created At</th>
+            <th>Created By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="noti in notifications" :key="noti.id">
+            <td>
+              <InputText v-model="noti.key" label="Key" />
+            </td>
+            <td>
+              <InputText v-model="noti.content" label="Content" />
+            </td>
+            <td>
+              <InputText v-model="noti.color" label="Color" />
+            </td>
+            <td>
+              <InputDate v-model="noti.activeFrom" label="Active From" time />
+            </td>
+            <td>
+              <InputDate v-model="noti.activeTo" label="Active To" time />
+            </td>
+            <td>
+              <PrettyTime :time="noti.createdAt" />
+            </td>
+            <td>
+              {{ noti.createdBy }}
+            </td>
+          </tr>
+        </tbody>
+      </Table>
+      <template #footer>
+        <span class="flex justify-end items-center gap-2">
+          <Button
+            @click="
+              notifications.push({
+                id: notifications.length + 1,
+                key: '',
+                content: '',
+                color: '#000000',
+                activeFrom: new Date().toISOString(),
+                activeTo: new Date().toISOString(),
+                createdAt: new Date().toISOString(),
+                createdBy: authStore.user!.id,
+              })
+            "
+          >
+            Add new
+          </Button>
+          <Button :disabled="loading" @click="updateNotifications">Update Global Notifications</Button>
+        </span>
+      </template>
     </Card>
   </div>
 </template>

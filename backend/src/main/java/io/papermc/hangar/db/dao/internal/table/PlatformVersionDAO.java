@@ -14,24 +14,21 @@ import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.UseEnumStrategy;
 import org.jdbi.v3.sqlobject.config.ValueColumn;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
-import org.jdbi.v3.sqlobject.customizer.Timestamped;
+import org.jdbi.v3.sqlobject.customizer.BindBeanList;
 import org.jdbi.v3.sqlobject.statement.SqlBatch;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 @JdbiRepository
 @RegisterConstructorMapper(PlatformVersionTable.class)
 @UseEnumStrategy(EnumStrategy.BY_ORDINAL)
 public interface PlatformVersionDAO {
 
-    @Timestamped
-    @SqlBatch("INSERT INTO platform_versions (created_at, platform, version) VALUES (:now, :platform, :version)")
-    void insertAll(@BindBean Collection<PlatformVersionTable> platformVersionTables);
+    @SqlUpdate("INSERT INTO platform_versions (created_at, platform, version) VALUES <platformVersionTables> ON CONFLICT DO NOTHING")
+    int insertAll(@BindBeanList(propertyNames = {"createdAt", "platform", "version"}) Collection<PlatformVersionTable> platformVersionTables);
 
     @SqlBatch("DELETE FROM platform_versions WHERE id = :id")
     void deleteAll(@BindBean Collection<PlatformVersionTable> platformVersionTables);
-
-    @SqlQuery("SELECT * FROM platform_versions WHERE version = :version AND platform = :platform")
-    PlatformVersionTable getByPlatformAndVersion(@EnumByOrdinal Platform platform, String version);
 
     @KeyColumn("platform")
     @ValueColumn("versions")

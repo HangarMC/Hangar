@@ -307,7 +307,7 @@
           {
             "description": "Filters logs by a project namespace",
             "in": "query",
-            "name": "authorName",
+            "name": "projectSlug",
             "schema": {
               "type": "string"
             },
@@ -316,7 +316,7 @@
           {
             "description": "Filters logs by a project namespace",
             "in": "query",
-            "name": "projectSlug",
+            "name": "authorName",
             "schema": {
               "type": "string"
             },
@@ -343,7 +343,7 @@
           {
             "description": "Filters logs based on a version string and platform",
             "in": "query",
-            "name": "versionString",
+            "name": "platform",
             "schema": {
               "type": "string"
             },
@@ -352,7 +352,7 @@
           {
             "description": "Filters logs based on a version string and platform",
             "in": "query",
-            "name": "platform",
+            "name": "versionString",
             "schema": {
               "type": "string"
             },
@@ -368,27 +368,6 @@
                 }
               }
             },
-            "description": "OK"
-          }
-        },
-        "tags": ["admin-controller"]
-      }
-    },
-    "/api/internal/admin/platformVersions": {
-      "post": {
-        "operationId": "changePlatformVersions",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/io.papermc.hangar.model.internal.api.requests.admin.ChangePlatformVersionsForm"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
             "description": "OK"
           }
         },
@@ -1646,27 +1625,6 @@
         "tags": ["cors-proxy-controller"]
       }
     },
-    "/api/internal/data/announcements": {
-      "get": {
-        "operationId": "getAnnouncements",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/io.papermc.hangar.model.Announcement"
-                  }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "tags": ["backend-data-controller"]
-      }
-    },
     "/api/internal/data/categories": {
       "get": {
         "operationId": "getCategories",
@@ -1721,24 +1679,6 @@
                   "items": {
                     "$ref": "#/components/schemas/io.papermc.hangar.controller.internal.BackendDataController.FlagReasonData"
                   }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "tags": ["backend-data-controller"]
-      }
-    },
-    "/api/internal/data/globalData": {
-      "get": {
-        "operationId": "getGlobalData",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/io.papermc.hangar.controller.internal.BackendDataController.GlobalData"
                 }
               }
             },
@@ -1843,27 +1783,6 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/io.papermc.hangar.controller.internal.BackendDataController.PermissionData"
-                  }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "tags": ["backend-data-controller"]
-      }
-    },
-    "/api/internal/data/platforms": {
-      "get": {
-        "operationId": "getPlatforms",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/io.papermc.hangar.controller.internal.BackendDataController.PlatformData"
                   }
                 }
               }
@@ -2210,6 +2129,131 @@
           }
         },
         "tags": ["flag-controller"]
+      }
+    },
+    "/api/internal/globalData/": {
+      "get": {
+        "operationId": "getGlobalData",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/io.papermc.hangar.components.globaldata.GlobalDataService.GlobalData"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": ["global-data-controller"]
+      }
+    },
+    "/api/internal/globalData/announcements": {
+      "get": {
+        "operationId": "getAnnouncements",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/io.papermc.hangar.components.globaldata.dao.AnnouncementTable"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": ["global-data-controller"]
+      },
+      "post": {
+        "operationId": "updateAnnouncements",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/io.papermc.hangar.components.globaldata.dao.AnnouncementTable"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["global-data-controller"]
+      }
+    },
+    "/api/internal/globalData/notifications": {
+      "get": {
+        "operationId": "getGlobalNotifications",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/io.papermc.hangar.components.globaldata.dao.GlobalNotificationTable"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": ["global-data-controller"]
+      },
+      "post": {
+        "operationId": "updateGlobalNotifications",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/io.papermc.hangar.components.globaldata.dao.GlobalNotificationTable"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["global-data-controller"]
+      }
+    },
+    "/api/internal/globalData/platformVersions": {
+      "post": {
+        "operationId": "updatePlatformVersions",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/io.papermc.hangar.components.globaldata.GlobalDataController.UpdatePlatformVersionsForm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["global-data-controller"]
       }
     },
     "/api/internal/image/**": {
@@ -6503,19 +6547,19 @@
             "style": "form"
           },
           {
-            "description": "The query to use when searching",
+            "deprecated": true,
+            "description": "Deprecated: Use 'query' instead",
             "in": "query",
-            "name": "query",
+            "name": "q",
             "schema": {
               "type": "string"
             },
             "style": "form"
           },
           {
-            "deprecated": true,
-            "description": "Deprecated: Use 'query' instead",
+            "description": "The query to use when searching",
             "in": "query",
-            "name": "q",
+            "name": "query",
             "schema": {
               "type": "string"
             },
@@ -8940,6 +8984,143 @@
         "type": "string",
         "enum": ["LOGIN", "SIGNUP", "SETTINGS"]
       },
+      "io.papermc.hangar.components.globaldata.GlobalDataController.UpdatePlatformVersionsForm": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          }
+        },
+        "required": ["empty"]
+      },
+      "io.papermc.hangar.components.globaldata.GlobalDataService.GlobalData": {
+        "type": "object",
+        "properties": {
+          "announcements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/io.papermc.hangar.components.globaldata.GlobalDataService.GlobalData.Announcement"
+            }
+          },
+          "globalNotifications": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/io.papermc.hangar.components.globaldata.GlobalDataService.GlobalData.PlatformData"
+            }
+          }
+        },
+        "required": ["globalNotifications", "announcements", "platforms"]
+      },
+      "io.papermc.hangar.components.globaldata.GlobalDataService.GlobalData.Announcement": {
+        "type": "object",
+        "properties": {
+          "color": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": ["text", "color"]
+      },
+      "io.papermc.hangar.components.globaldata.GlobalDataService.GlobalData.PlatformData": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/io.papermc.hangar.model.common.Platform.Category"
+          },
+          "enumName": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "platformVersions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/io.papermc.hangar.model.common.PlatformVersion"
+            }
+          },
+          "url": {
+            "type": "string"
+          },
+          "visible": {
+            "type": "boolean"
+          }
+        },
+        "required": ["name", "category", "url", "enumName", "visible", "platformVersions"]
+      },
+      "io.papermc.hangar.components.globaldata.dao.AnnouncementTable": {
+        "type": "object",
+        "properties": {
+          "color": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": ["createdAt", "color", "createdBy", "id", "text"]
+      },
+      "io.papermc.hangar.components.globaldata.dao.GlobalNotificationTable": {
+        "type": "object",
+        "properties": {
+          "activeFrom": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "activeTo": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "color": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "key": {
+            "type": "string"
+          }
+        },
+        "required": ["createdAt", "color", "createdBy", "activeTo", "id", "key", "content", "activeFrom"]
+      },
       "io.papermc.hangar.components.index.webhook.Webhook": {
         "type": "object",
         "properties": {
@@ -9096,18 +9277,6 @@
         },
         "required": ["type", "title"]
       },
-      "io.papermc.hangar.controller.internal.BackendDataController.GlobalData": {
-        "type": "object",
-        "properties": {
-          "globalNotifications": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            }
-          }
-        },
-        "required": ["globalNotifications"]
-      },
       "io.papermc.hangar.controller.internal.BackendDataController.PermissionData": {
         "type": "object",
         "properties": {
@@ -9122,33 +9291,6 @@
           }
         },
         "required": ["value", "frontendName", "permission"]
-      },
-      "io.papermc.hangar.controller.internal.BackendDataController.PlatformData": {
-        "type": "object",
-        "properties": {
-          "category": {
-            "$ref": "#/components/schemas/io.papermc.hangar.model.common.Platform.Category"
-          },
-          "enumName": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "platformVersions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/io.papermc.hangar.model.common.PlatformVersion"
-            }
-          },
-          "url": {
-            "type": "string"
-          },
-          "visible": {
-            "type": "boolean"
-          }
-        },
-        "required": ["name", "category", "url", "enumName", "visible", "platformVersions"]
       },
       "io.papermc.hangar.controller.internal.BackendDataController.PromptData": {
         "type": "object",
@@ -11157,18 +11299,6 @@
           }
         }
       },
-      "io.papermc.hangar.model.Announcement": {
-        "type": "object",
-        "properties": {
-          "color": {
-            "type": "string"
-          },
-          "text": {
-            "type": "string"
-          }
-        },
-        "required": ["color", "text"]
-      },
       "io.papermc.hangar.model.api.ApiKey": {
         "type": "object",
         "properties": {
@@ -12686,21 +12816,6 @@
           }
         },
         "required": ["theme", "language"]
-      },
-      "io.papermc.hangar.model.internal.api.requests.admin.ChangePlatformVersionsForm": {
-        "type": "object",
-        "additionalProperties": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "properties": {
-          "empty": {
-            "type": "boolean"
-          }
-        },
-        "required": ["empty"]
       },
       "io.papermc.hangar.model.internal.api.requests.admin.ChangeRoleForm": {
         "type": "object",

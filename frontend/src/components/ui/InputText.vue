@@ -1,15 +1,7 @@
-<script lang="ts" setup>
+<script lang="ts" setup generic="T, M extends PropertyKey">
 import type { ValidationRule } from "@vuelidate/core";
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value?: string | null): void;
-}>();
-const value = computed({
-  get: () => props.modelValue,
-  set: (val) => emit("update:modelValue", val),
-});
 const props = defineProps<{
-  modelValue?: string | null;
   label?: string;
   counter?: boolean;
   maxlength?: number;
@@ -21,6 +13,8 @@ const props = defineProps<{
   noErrorTooltip?: boolean;
   readonly?: boolean;
 }>();
+
+const value = defineModel<T, M>();
 
 const errorMessages = computed(() => props.errorMessages);
 const { v, errors, hasError } = useValidation(props.label, props.rules, value, errorMessages, false, props.readonly);

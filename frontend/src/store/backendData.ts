@@ -19,7 +19,6 @@ const permissionResult = serverBackendData.permissions?.map(
 // convert to maps
 typedBackendData.projectCategories = convertToMap(serverBackendData.projectCategories, (value) => value.apiName);
 typedBackendData.permissions = convertToMap(permissionResult, (value) => value.value);
-typedBackendData.platforms = convertToMap(serverBackendData.platforms, (value) => value.name.toUpperCase());
 typedBackendData.prompts = convertToMap(serverBackendData.prompts, (value) => value.name);
 
 // main export
@@ -49,7 +48,6 @@ function getRoleFromRoles(id: number, roles: RoleData[]): RoleData | undefined {
 
 // helpers
 export const useVisibleCategories = computed<CategoryData[]>(() => [...(useBackendData.projectCategories?.values() || [])].filter((value) => value.visible));
-export const useVisiblePlatforms = computed(() => (useBackendData.platforms ? [...useBackendData.platforms.values()].filter((value) => value.visible) : []));
 
 export const useLicenseOptions = computed<Option<string>[]>(() => useBackendData.licenses.map<Option<string>>((l) => ({ value: l, text: l })));
 export const useCategoryOptions = computed<Option<string>[]>(() =>

@@ -331,6 +331,58 @@ export interface LoginWebAuthNForm {
   usernameOrEmail: string;
 }
 
+export interface UpdatePlatformVersionsForm {
+  empty: boolean;
+  [key: string]: any;
+}
+
+export interface GlobalData {
+  announcements: Announcement[];
+  globalNotifications: Record<string, string>;
+  platforms: PlatformData[];
+}
+
+export interface Announcement {
+  color: string;
+  text: string;
+}
+
+export interface PlatformData {
+  category: Category;
+  enumName: Platform;
+  name: string;
+  platformVersions: PlatformVersion[];
+  url: string;
+  visible: boolean;
+}
+
+export interface AnnouncementTable {
+  color: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format int64 */
+  createdBy: number;
+  /** @format int64 */
+  id: number;
+  text: string;
+}
+
+export interface GlobalNotificationTable {
+  /** @format date-time */
+  activeFrom: string;
+  /** @format date-time */
+  activeTo: string;
+  color: string;
+  content: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format int64 */
+  createdBy: number;
+  /** @format int64 */
+  id: number;
+  key: string;
+}
+
 export interface Webhook {
   canceledBy: string;
   details: Details;
@@ -394,23 +446,10 @@ export interface FlagReasonData {
   type: string;
 }
 
-export interface GlobalData {
-  globalNotifications: Record<string, string>;
-}
-
 export interface PermissionData {
   frontendName: string;
   permission: bigint;
   value: string;
-}
-
-export interface PlatformData {
-  category: Category;
-  enumName: Platform;
-  name: string;
-  platformVersions: PlatformVersion[];
-  url: string;
-  visible: boolean;
 }
 
 export interface PromptData {
@@ -1054,11 +1093,6 @@ export interface MultiHangarApiException {
   typeMessageCode?: string;
 }
 
-export interface Announcement {
-  color: string;
-  text: string;
-}
-
 export interface ApiKey {
   /** @format date-time */
   createdAt: string;
@@ -1655,11 +1689,6 @@ export interface UserProfileSettings {
 export interface UserSettings {
   language: string;
   theme: string;
-}
-
-export interface ChangePlatformVersionsForm {
-  empty: boolean;
-  [key: string]: any;
 }
 
 export interface ChangeRoleForm {

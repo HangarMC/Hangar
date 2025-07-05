@@ -343,14 +343,14 @@ async function restoreVersion() {
 
         <div v-for="platform in versionPlatforms" :key="platform" class="flex items-center mb-1">
           <PlatformLogo :platform="platform" :size="24" class="mr-1 flex-shrink-0" />
-          {{ useBackendData.platforms.get(platform)?.name }}
+          {{ usePlatformName(platform) }}
           ({{ version?.platformDependenciesFormatted[platform].join(", ") }})
           <span class="flex-grow" />
           <PlatformVersionEditModal
             v-if="project && version && hasPerms(NamedPermission.EditVersion)"
             :project="project"
             :version="version"
-            :platform="useBackendData.platforms.get(platform)!"
+            :platform="usePlatformData(platform)!"
           />
         </div>
       </Card>
@@ -367,9 +367,9 @@ async function restoreVersion() {
             <template #title>
               <div class="flex gap-1 w-full">
                 <PlatformLogo :platform="platform" :size="24" class="flex-shrink-0" />
-                {{ useBackendData.platforms.get(platform)?.name }}
+                {{ usePlatformName(platform) }}
                 <span class="flex-grow" />
-                <DependencyEditModal v-if="project && version" :project="project" :version="version" :platform="useBackendData.platforms.get(platform)!" />
+                <DependencyEditModal v-if="project && version" :project="project" :version="version" :platform="usePlatformData(platform)!" />
               </div>
             </template>
             <template #content>

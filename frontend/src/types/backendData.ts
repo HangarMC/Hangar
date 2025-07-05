@@ -1,15 +1,12 @@
 import type {
   NamedPermission,
   Category,
-  Platform,
   Prompt,
-  Announcement,
   RoleData,
   Security,
   Validations,
   CategoryData,
   PermissionData,
-  PlatformData,
   VisibilityData,
   ColorData,
   FlagReasonData,
@@ -19,10 +16,8 @@ import type {
 export interface BackendData {
   projectCategories: Map<Category, CategoryData>;
   permissions: Map<NamedPermission, PermissionData>;
-  platforms: Map<Platform, PlatformData>;
   validations: Validations;
   prompts: Map<Prompt, PromptData>;
-  announcements: Announcement[];
   visibilities: VisibilityData[];
   licenses: string[];
   orgRoles: RoleData[];
@@ -37,10 +32,8 @@ export interface BackendData {
 export interface ServerBackendData {
   projectCategories: CategoryData[];
   permissions: PermissionData[];
-  platforms: PlatformData[];
   validations: Validations;
   prompts: PromptData[];
-  announcements: Announcement[];
   visibilities: VisibilityData[];
   licenses: string[];
   orgRoles: RoleData[];
