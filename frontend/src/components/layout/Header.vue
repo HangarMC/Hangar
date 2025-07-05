@@ -130,12 +130,12 @@ function isRecent(date: string): boolean {
 </script>
 
 <template>
-  <header class="background-default shadow-md">
+  <header>
     <div v-if="useBackendData.announcements">
       <Announcement v-for="(announcement, idx) in useBackendData.announcements" :key="idx" :announcement="announcement" />
     </div>
 
-    <nav class="max-w-screen-xl mx-auto flex flex-wrap justify-end px-4 py-2 gap-3">
+    <div class="max-w-screen-xl mx-auto flex justify-between px-4 py-2">
       <!-- Left side items -->
       <div class="flex items-center gap-4">
         <Popover v-slot="{ close, open }" class="relative">
@@ -148,7 +148,7 @@ function isRecent(date: string): boolean {
             class="absolute top-10 z-10 w-max lt-sm:w-90vw background-default left-1/20 filter shadow-default rounded-r-md rounded-bl-md border-top-primary text-sm p-[20px]"
           >
             <p class="text-base font-semibold color-primary mb-3">Hangar</p>
-            <div class="grid grid-cols-2">
+            <nav class="grid grid-cols-2">
               <NuxtLink
                 v-for="link in navBarMenuLinksHangar"
                 :key="link.label"
@@ -161,10 +161,10 @@ function isRecent(date: string): boolean {
                 <component :is="link.icon" class="mr-3 text-[1.2em]" />
                 {{ link.label }}
               </NuxtLink>
-            </div>
+            </nav>
 
             <p class="text-base font-semibold color-primary mb-3 mt-6">{{ t("nav.hangar.tools") }}</p>
-            <div class="grid grid-cols-2">
+            <nav class="grid grid-cols-2">
               <NuxtLink
                 v-for="link in navBarMenuLinksTools"
                 :key="link.label"
@@ -177,10 +177,10 @@ function isRecent(date: string): boolean {
                 <component :is="link.icon" class="mr-3 text-[1.2em]" />
                 {{ link.label }}
               </NuxtLink>
-            </div>
+            </nav>
 
             <p class="text-base font-semibold color-primary mb-3 mt-6">{{ t("nav.hangar.moreFrom") }}</p>
-            <div class="grid grid-cols-2">
+            <nav class="grid grid-cols-2">
               <a
                 v-for="link in navBarMenuLinksMoreFromPaper"
                 :key="link.label"
@@ -191,7 +191,7 @@ function isRecent(date: string): boolean {
                 <component :is="link.icon" class="mr-3 text-[1.2em]" />
                 {{ link.label }}
               </a>
-            </div>
+            </nav>
           </PopoverPanel>
         </Popover>
 
@@ -201,7 +201,7 @@ function isRecent(date: string): boolean {
         </NuxtLink>
 
         <!-- Desktop links -->
-        <div class="gap-4 hidden sm:flex sm:items-center">
+        <nav class="gap-4 hidden sm:flex sm:items-center">
           <NuxtLink
             v-for="navBarLink in navBarLinks"
             :key="navBarLink.label"
@@ -212,16 +212,13 @@ function isRecent(date: string): boolean {
           >
             {{ navBarLink.label }}
           </NuxtLink>
-        </div>
+        </nav>
       </div>
-
-      <!-- Gap between the sides -->
-      <div class="flex-grow-1" />
 
       <!-- Right side items -->
       <div class="flex items-center gap-2">
         <div v-if="authStore.user" class="flex items-center lt-sm:hidden">
-          <DropdownButton :name="t('nav.new.title')" v-on="useTracking('nav-create-dropdwon')">
+          <DropdownButton :name="t('nav.new.title')" v-on="useTracking('nav-create-dropdown')">
             <template #default="{ close }">
               <DropdownItem to="/new" @click="close()" v-on="useTracking('nav-new')">{{ t("nav.new.project") }}</DropdownItem>
               <DropdownItem to="/neworganization" @click="close()" v-on="useTracking('nav-new-org')">{{ t("nav.new.organization") }}</DropdownItem>
@@ -317,8 +314,7 @@ function isRecent(date: string): boolean {
             </template>
           </Popper>
         </div>
-      </div>
-      <div class="flex items-center gap-2">
+
         <!-- Profile dropdown -->
         <div v-if="authStore.user">
           <Popper placement="bottom-end">
@@ -383,7 +379,7 @@ function isRecent(date: string): boolean {
           </NuxtLink>
         </div>
       </div>
-    </nav>
+    </div>
   </header>
 </template>
 
