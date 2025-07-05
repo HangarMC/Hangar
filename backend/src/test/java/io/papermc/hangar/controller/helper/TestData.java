@@ -141,8 +141,8 @@ public class TestData {
             Category.CHAT, "", ORG.getUserId(), "PrivateProject", "# PrivateProject", null));
 
         logger.info("Creating some test versions...");
-        VERSION = this.versionFactory.publishPendingVersion(PROJECT.getProjectId(), new PendingVersion("1.0", Map.of(), new EnumMap<>(Map.of(Platform.PAPER, new TreeSet<>(Set.of("1.8")))), "# 1.0", List.of(new PendingVersionFile(List.of(Platform.PAPER), null, "https://google.com")), "Release", "Release channel", null, Set.of()));
-        VERSION_HIDDEN = this.versionFactory.publishPendingVersion(PROJECT.getProjectId(), new PendingVersion("2.0", Map.of(), new EnumMap<>(Map.of(Platform.PAPER, new TreeSet<>(Set.of("1.8")))), "# 2.0", List.of(new PendingVersionFile(List.of(Platform.PAPER), null, "https://google.com")), "Release", "Release channel", null, Set.of()));
+        VERSION = this.versionFactory.publishPendingVersion(PROJECT.getProjectId(), new PendingVersion("1.0", Map.of(), new EnumMap<>(Map.of(Platform.PAPER, new TreeSet<>(Set.of("1.8.8")))), "# 1.0", List.of(new PendingVersionFile(List.of(Platform.PAPER), null, "https://google.com")), "Release", "Release channel", null, Set.of()));
+        VERSION_HIDDEN = this.versionFactory.publishPendingVersion(PROJECT.getProjectId(), new PendingVersion("2.0", Map.of(), new EnumMap<>(Map.of(Platform.PAPER, new TreeSet<>(Set.of("1.8.8")))), "# 2.0", List.of(new PendingVersionFile(List.of(Platform.PAPER), null, "https://google.com")), "Release", "Release channel", null, Set.of()));
         VERSION_HIDDEN.setVisibility(Visibility.NEEDSAPPROVAL);
         this.projectVersionsDAO.update(VERSION_HIDDEN);
 

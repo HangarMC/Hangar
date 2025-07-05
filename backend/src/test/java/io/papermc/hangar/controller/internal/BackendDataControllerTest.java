@@ -15,10 +15,8 @@ class BackendDataControllerTest extends ControllerTest {
         Map<String, Object> stuff = new LinkedHashMap<>();
         stuff.put("categories", doGet("/api/internal/data/categories"));
         stuff.put("permissions", doGet("/api/internal/data/permissions"));
-        stuff.put("platforms", doGet("/api/internal/data/platforms"));
         stuff.put("validations", doGet("/api/internal/data/validations"));
         stuff.put("prompts", doGet("/api/internal/data/prompts"));
-        stuff.put("announcements", doGet("/api/internal/data/announcements"));
         stuff.put("visibilities", doGet("/api/internal/data/visibilities"));
         stuff.put("licenses", doGet("/api/internal/data/licenses"));
         stuff.put("orgRoles", doGet("/api/internal/data/orgRoles"));

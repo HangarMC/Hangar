@@ -118,12 +118,16 @@ public class PopulationService extends HangarComponent {
 
     private void populateAnnouncements() {
         if (config.dev()) {
-            if (!this.globalDataDAO.getAnnouncements().isEmpty()) {
-                log.info("The 'announcements' table is already populated");
-                return;
+            try {
+                if (!this.globalDataDAO.getAnnouncements().isEmpty()) {
+                    log.info("The 'announcements' table is already populated");
+                    return;
+                }
+                this.globalDataDAO.insertAnnouncement(new AnnouncementTable("This is a local server for testing purposes. There is a public staging instance at <a href=\"https://hangar.papermc.dev\" style=\"text-decoration: underline\">https://hangar.papermc.dev</a> and the production site can be found at <a href=\"https://hangar.papermc.io\" style=\"text-decoration: underline\">https://hangar.papermc.io</a>.", "#2f4476", 1));
+                log.info("Inserted local development announcement into 'announcements' table");
+            } catch (Exception ex) {
+                log.warn("Failed to populate announcement table: {}:  {}", ex.getClass().getName(), ex.getMessage());
             }
-            this.globalDataDAO.insertAnnouncement(new AnnouncementTable("This is a local server for testing purposes. There is a public staging instance at <a href=\"https://hangar.papermc.dev\" style=\"text-decoration: underline\">https://hangar.papermc.dev</a> and the production site can be found at <a href=\"https://hangar.papermc.io\" style=\"text-decoration: underline\">https://hangar.papermc.io</a>.", "#2f4476", 1));
-            log.info("Inserted local development announcement into 'announcements' table");
         }
     }
 }
