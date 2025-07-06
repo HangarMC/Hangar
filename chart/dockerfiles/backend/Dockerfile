@@ -1,4 +1,4 @@
-FROM bellsoft/liberica-openjdk-alpine:21
+FROM bellsoft/liberica-runtime-container:24-cds
 
 RUN addgroup -g 1000 java \
   && adduser -Ss /bin/false -u 1000 -G java -h /home/java java
