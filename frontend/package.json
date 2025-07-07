@@ -93,7 +93,7 @@
     "@vue/language-server": "3.0.0-beta.2",
     "eslint": "9.29.0",
     "eslint-import-resolver-alias": "1.1.2",
-    "eslint-plugin-oxlint": "0.16.6",
+    "eslint-plugin-oxlint": "1.6.0",
     "eslint-plugin-unicorn": "58.0.0",
     "husky": "9.1.7",
     "lint-staged": "15.5.1",
