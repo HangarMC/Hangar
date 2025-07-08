@@ -187,6 +187,7 @@ hangar:
       - "giphy.com"
       - "media.giphy.com"
       - "bstats.org"
+      - "img.shields.io"
     o-auth-enabled: true
     o-auth-providers:
       - name: "github"

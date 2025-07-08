@@ -690,7 +690,8 @@
             "imgur.com",
             "giphy.com",
             "media.giphy.com",
-            "bstats.org"
+            "bstats.org",
+            "img.shields.io"
         ],
         "oauthProviders": [
             "github",
