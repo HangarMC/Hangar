@@ -15,10 +15,12 @@ export default defineNuxtPlugin((nuxtApp) => {
     environment: sentry.environment,
     integrations: [Sentry.browserTracingIntegration({ router }), Sentry.piniaIntegration(usePinia(), {})],
 
-    tracePropagationTargets: ["http://localhost:3333", "https://hangar.papermc.dev", "https://hangar.papermc.io"],
+    tracePropagationTargets: sentry.tracePropagationTargets,
+    tracesSampleRate: sentry.tracesSampleRate,
 
-    tracesSampleRate: 1,
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1,
+
+    debug: sentry.debug,
   });
 });

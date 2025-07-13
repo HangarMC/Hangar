@@ -2,6 +2,7 @@ import IconsResolver from "unplugin-icons/resolver";
 // import EslintPlugin from "vite-plugin-eslint";
 import Components from "unplugin-vue-components/vite";
 import { defineNuxtConfig } from "nuxt/config";
+import devtoolsJson from "vite-plugin-devtools-json";
 
 // noinspection ES6PreferShortImport
 import { loadLocales } from "./src/i18n/i18n-util";
@@ -41,6 +42,15 @@ export default defineNuxtConfig({
       sentry: {
         dsn: "",
         environment: "",
+        tracePropagationTargets: [
+          "http://localhost:3333",
+          "https://hangar.papermc.dev",
+          "https://hangar.papermc.io",
+          "http://hangar-backend:8080",
+          "http://localhost:8080",
+        ],
+        debug: false,
+        tracesSampleRate: 1,
       },
     },
   },
@@ -98,6 +108,8 @@ export default defineNuxtConfig({
         ],
         dts: "types/generated/icons.d.ts",
       }),
+      // https://github.com/ChromeDevTools/vite-plugin-devtools-json
+      devtoolsJson(),
     ],
     ssr: {
       // Workaround until they support native ESM
@@ -122,6 +134,7 @@ export default defineNuxtConfig({
     tsConfig: {
       include: ["./types/typed-router.d.ts"],
       compilerOptions: {
+        types: ["bun"],
         strictNullChecks: true,
         noUnusedLocals: true,
       },
@@ -138,6 +151,9 @@ export default defineNuxtConfig({
     preset: "bun",
     compressPublicAssets: true,
     timing: false,
+  },
+  sentry: {
+    autoInjectServerSentry: "experimental_dynamic-import",
   },
   sourcemap: {
     server: true,
