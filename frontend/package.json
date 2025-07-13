@@ -10,7 +10,7 @@
     "dev": "nuxt dev --port 3333 --dotenv .config/local.env",
     "devStaging": "nuxt dev --port 3333 --dotenv .config/localStaging.env",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
+    "preview": "bun --import=./.output/server/sentry.server.config.mjs --env-file=./.config/local.env run ./.output/server/index.mjs",
     "previewBuild": "nuxt build && nuxt preview",
     "lint:eslint": "eslint . --fix",
     "lint:prettier": "prettier -w .",
@@ -92,12 +92,13 @@
     "@types/prismjs": "1.26.5",
     "@types/qs": "6.14.0",
     "@unocss/nuxt": "66.3.3",
-    "@vue/language-server": "3.0.0-beta.2",
+    "@vue/language-server": "3.0.1",
     "eslint": "9.31.0",
     "eslint-import-resolver-alias": "1.1.2",
     "eslint-plugin-oxlint": "1.6.0",
     "eslint-plugin-unicorn": "59.0.1",
     "husky": "9.1.7",
+    "import-in-the-middle": "1.14.2",
     "lint-staged": "16.1.2",
     "nuxt": "3.17.5",
     "oxlint": "1.6.0",
@@ -109,7 +110,7 @@
     "unplugin-vue-components": "28.8.0",
     "unplugin-vue-router": "0.14.0",
     "vite-plugin-devtools-json": "0.2.1",
-    "vue-tsc": "3.0.0-beta.2"
+    "vue-tsc": "3.0.1"
   },
   "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184",
   "pnpm": {
@@ -128,11 +129,12 @@
       "@scarf/scarf"
     ],
     "overrides": {
-      "@vercel/nft": "0.27.4",
       "rollup": "4.44.2"
     },
     "overrides-comments": {
-      "@vercel/nft": "https://github.com/getsentry/sentry-javascript/issues/14514",
+      "nitropack": "~2.9.7",
+      "@vercel/nft": "0.27.4",
+      "nitropack/@vercel/nft": "https://github.com/getsentry/sentry-javascript/issues/14514",
       "rollup": "https://github.com/rollup/rollup/issues/5770"
     }
   }

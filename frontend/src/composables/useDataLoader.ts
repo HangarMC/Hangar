@@ -1,5 +1,6 @@
 import type { RouteLocationNormalized } from "vue-router";
 import type { HangarOrganization, HangarProject, Version, User, ProjectPageTable, GlobalData } from "~/types/backend";
+import * as Sentry from "@sentry/nuxt";
 
 type routeParams = "user" | "project" | "version" | "page";
 type DataLoaderTypes = {
@@ -109,22 +110,26 @@ export function useData<T, P extends Record<string, unknown> | string>(
       return;
     }
 
-    return new Promise<void>(async (resolve, reject) => {
-      console.log("load", key(params));
-      try {
-        const result = await loader(params);
-        // await new Promise((resolve) => setTimeout(resolve, 5000));
-        console.log("loaded", key(params));
-        setState(result);
-        status.value = "success";
-        callback(params);
-        resolve();
-      } catch (err) {
-        status.value = "error";
-        callback(params);
-        reject(err);
-      }
-    });
+    return Sentry.startSpan(
+      { op: "hangar.data", name: key(params) },
+      () =>
+        new Promise<void>(async (resolve, reject) => {
+          console.log("load", key(params));
+          try {
+            const result = await loader(params);
+            // await new Promise((resolve) => setTimeout(resolve, 5000));
+            console.log("loaded", key(params));
+            setState(result);
+            status.value = "success";
+            callback(params);
+            resolve();
+          } catch (err) {
+            status.value = "error";
+            callback(params);
+            reject(err);
+          }
+        })
+    );
   }
 
   // load initial state

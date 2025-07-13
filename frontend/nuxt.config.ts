@@ -152,9 +152,6 @@ export default defineNuxtConfig({
     compressPublicAssets: true,
     timing: false,
   },
-  sentry: {
-    autoInjectServerSentry: "experimental_dynamic-import",
-  },
   sourcemap: {
     server: true,
     client: true,
