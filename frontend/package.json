@@ -28,9 +28,8 @@
   "dependencies": {
     "@github/webauthn-json": "2.1.1",
     "@headlessui/vue": "1.7.23",
-    "@nuxt/kit": "3.17.6",
-    "@nuxt/scripts": "0.11.9",
-    "@pinia/nuxt": "0.11.1",
+    "@nuxt/scripts": "0.11.10",
+    "@pinia/nuxt": "0.11.2",
     "@vuelidate/core": "2.0.3",
     "@vuelidate/validators": "2.0.4",
     "@vueuse/components": "13.5.0",
@@ -43,13 +42,13 @@
     "diff-match-patch": "1.0.5",
     "dompurify": "3.2.6",
     "easymde": "2.20.0",
-    "filesize": "11.0.0",
+    "filesize": "11.0.2",
     "floating-vue": "5.2.2",
     "github-slugger": "2.0.0",
     "jsdom": "26.1.0",
     "jwt-decode": "4.0.0",
     "lodash-es": "4.17.21",
-    "marked": "16.0.0",
+    "marked": "16.1.1",
     "marked-alert": "2.1.2",
     "marked-extended-tables": "2.0.1",
     "marked-linkify-it": "3.1.13",
@@ -66,7 +65,7 @@
     "vue": "3.5.17",
     "vue-advanced-cropper": "2.8.9",
     "vue-chartjs": "5.3.2",
-    "vue-i18n": "11.1.9",
+    "vue-i18n": "11.1.10",
     "vue-router": "4.5.1",
     "vuedraggable": "4.1.0"
   },
@@ -74,6 +73,7 @@
     "@eslint-community/eslint-plugin-eslint-comments": "4.5.0",
     "@iconify-json/mdi": "1.2.3",
     "@nuxt/eslint": "1.5.2",
+    "@nuxt/kit": "4.0.0",
     "@nuxtjs/i18n": "9.5.6",
     "@nuxtjs/turnstile": "1.0.0",
     "@sentry/bun": "9.38.0",
@@ -100,7 +100,7 @@
     "husky": "9.1.7",
     "import-in-the-middle": "1.14.2",
     "lint-staged": "16.1.2",
-    "nuxt": "3.17.5",
+    "nuxt": "4.0.0",
     "oxlint": "1.6.0",
     "pnpm": "10.13.1",
     "prettier": "3.6.2",
@@ -127,15 +127,6 @@
     ],
     "ignoredBuiltDependencies": [
       "@scarf/scarf"
-    ],
-    "overrides": {
-      "rollup": "4.44.2"
-    },
-    "overrides-comments": {
-      "nitropack": "~2.9.7",
-      "@vercel/nft": "0.27.4",
-      "nitropack/@vercel/nft": "https://github.com/getsentry/sentry-javascript/issues/14514",
-      "rollup": "https://github.com/rollup/rollup/issues/5770"
-    }
+    ]
   }
 }
