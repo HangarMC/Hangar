@@ -6,7 +6,6 @@
 pnpm-lock.yaml
 .vscode/**
 .idea/**
-server/**
 .output/**
 .nuxt/**
 .unlighthouse

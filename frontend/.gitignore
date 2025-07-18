@@ -1,12 +1,9 @@
 .DS_Store
 *.local
 dist
-dist-ssr
 node_modules
 **/_*
 .nuxt
-src/server/middleware/@proxy/proxy.ts
-src/types/generated/
 .output
 tsconfig.tsbuildinfo
 .unlighthouse

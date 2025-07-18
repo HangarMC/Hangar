@@ -5,7 +5,7 @@ import { defineNuxtConfig } from "nuxt/config";
 import devtoolsJson from "vite-plugin-devtools-json";
 
 // noinspection ES6PreferShortImport
-import { loadLocales } from "./src/i18n/i18n-util";
+import { loadLocales } from "./app/i18n/i18n-util";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
@@ -32,7 +32,6 @@ export default defineNuxtConfig({
       mode: "in-out",
     },
   },
-  srcDir: "src",
   runtimeConfig: {
     backendHost: "",
     public: {
@@ -63,24 +62,19 @@ export default defineNuxtConfig({
     "@sentry/nuxt/module",
     "@nuxtjs/turnstile",
     "floating-vue/nuxt",
+    "unplugin-icons/nuxt",
     [
-      "unplugin-icons/nuxt",
-      {
-        autoInstall: true,
-      },
-    ],
-    [
-      "./src/module/backendData",
+      "./modules/backendData",
       {
         serverUrl: process.env.BACKEND_DATA_HOST,
       },
     ],
-    "./src/module/componentsFix",
+    "./modules/componentsFix",
   ],
   i18n: {
-    vueI18n: "../src/i18n/i18n.config.ts",
+    vueI18n: "../app/i18n/i18n.config.ts",
     strategy: "no_prefix",
-    langDir: "../src/i18n/locales/processed",
+    langDir: "../app/i18n/locales/processed",
     defaultLocale: "en",
     locales: loadLocales(),
     detectBrowserLanguage: false,
@@ -121,6 +115,9 @@ export default defineNuxtConfig({
       },
     },
   },
+  build: {
+    transpile: ["form-data"],
+  },
   experimental: {
     writeEarlyHints: false,
     componentIslands: true,
@@ -130,7 +127,6 @@ export default defineNuxtConfig({
   typescript: {
     typeCheck: "build",
     tsConfig: {
-      include: ["./types/typed-router.d.ts"],
       compilerOptions: {
         types: ["bun"],
         strictNullChecks: true,
