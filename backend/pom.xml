@@ -249,6 +249,10 @@
             <artifactId>sentry-opentelemetry-core</artifactId>
             <version>${sentry.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
 
         <!-- logging -->
         <dependency>
