@@ -8,6 +8,10 @@ server:
     encoding:
       charset: "UTF-8"
 
+  tomcat:
+    mbeanregistry:
+      enabled: true
+
 spring:
   application:
     name: "Hangar Backend"
