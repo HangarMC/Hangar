@@ -4,6 +4,7 @@ metadata:
   name: {{ include "hangar.fullname" . }}-frontend
   labels:
     {{- include "hangar.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "frontend"
   annotations:
     service.kubernetes.io/topology-aware-hints: "auto"
 spec:
