@@ -14,7 +14,7 @@
     "browserstack-local": "1.5.8",
     "chai": "4.5.0",
     "codeceptjs": "3.7.3",
-    "dotenv": "16.6.1",
+    "dotenv": "17.2.1",
     "jwt-decode": "4.0.0",
     "totp-generator": "1.0.0",
     "ts-node": "10.9.2",
