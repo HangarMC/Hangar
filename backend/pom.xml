@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.3</version>
+        <version>3.5.4</version>
         <relativePath/>
     </parent>
 
@@ -31,16 +31,16 @@
         <spring-cloud-aws.version>3.4.0</spring-cloud-aws.version>
 
         <!-- dependencies -->
-        <sentry.version>8.14.0</sentry.version>
+        <sentry.version>8.18.0</sentry.version>
         <springdoc.version>2.8.9</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20250517</org-json.version>
         <bucket4j.version>8.14.0</bucket4j.version>
-        <datafaker.version>2.4.3</datafaker.version>
-        <apache-commons-lang.version>3.17.0</apache-commons-lang.version>
+        <datafaker.version>2.4.4</datafaker.version>
+        <apache-commons-lang.version>3.18.0</apache-commons-lang.version>
         <jwt.version>4.5.0</jwt.version>
         <jetbrains-annotations.version>26.0.2</jetbrains-annotations.version>
-        <caffeine.version>3.2.1</caffeine.version>
+        <caffeine.version>3.2.2</caffeine.version>
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
         <jgroups.version>5.4.8.Final</jgroups.version>
         <jgroups-kube.version>2.0.2.Final</jgroups-kube.version>
@@ -53,8 +53,8 @@
         <otel-semconv.version>1.30.0-alpha</otel-semconv.version>
 
         <!-- test -->
-        <testcontainer.version>1.21.2</testcontainer.version>
-        <openapi-generator.version>7.13.0</openapi-generator.version>
+        <testcontainer.version>1.21.3</testcontainer.version>
+        <openapi-generator.version>7.14.0</openapi-generator.version>
         <argLine/>
 
         <!-- plugins -->
